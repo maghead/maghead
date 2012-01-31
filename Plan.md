@@ -4,6 +4,40 @@ LazyRecord ORM
 Requirement
 -----------
 
+- Schema export, loader, generator
+
+
+### Command-line interface
+
+To generate SQL schema:
+
+    lazy sql path/to/AuthorSchema.php
+
+To import SQL schema into database:
+
+    lazy import path/to/AuthorSchema.php
+
+    lazy import path/to/schema/
+
+LazyRecord will generate schema in pure-php array:
+
+    schema/build/AuthorSchema.php
+    schema/build/Author.php
+    schema/build/AuthorCollection.php
+    schema/build/foo/bar/Book.php
+    schema/build/foo/bar/BookCollection.php
+    schema/build/foo/bar/BookSchema.php
+
+Application can load Model schema from:
+
+    schema/autoload.php
+
+### Model
+
+    $authors = new AuthorCollection;
+    $authors->find();
+    $authors->where(); ... etc
+
 ### Schema Columns
 
 - basic column attributes:
@@ -12,6 +46,14 @@ Requirement
 - a schema writer: write pure PHP schema into JSON or YAML
 - type cast.
 
+### Schema Loader Process
+
+When Model object created, try to load the `ModelSchema` file, which is an
+array reference that handles.
+
+Should have a global cache for schema array, like LazyRecord::schemas[ $class ]
+
+    $schema = \LazyRecord\SchemaLoader::load( $class );
 
 ### PHP Schema
 
@@ -22,8 +64,20 @@ class AuthorSchema
 
     function schema()
     {
-        $this->column('name')->varchar(30)
+        $this->column('name')
+                ->varchar(30)
+                ->isa('String') // default, apply String validator
+                ->isa('DateTime')  // DateTime object.
+                ->isa('Integer') // Integer object.
+
                 ->validator('ValidatorClass')
+                ->validator( array($validator,'method') )
+                ->validator('function_name')
+                ->validator(function($val) { .... })
+
+                ->maxLength(30)
+                ->minLength(12)
+
                 ->canonicalizer('CanonicalClass')
                 ->default('Default')
                 ->validValues( 1,2,3,4,5 )
@@ -36,7 +90,6 @@ class AuthorSchema
     }
 }
 ```
-
 
 ### Relationship
 
@@ -62,7 +115,7 @@ tell schema, create a `books` accessor for getting from `AuthorBook->books`:
 
     ( relation key, relation key, relation foreign key )
 
-This can create a SQL query by:
+To handle many to many relationship, here is the flow:
 
 1. books accessor is created from AuthorBook accessor.
 2. get AuthorBook relation from self object
@@ -73,6 +126,25 @@ This can create a SQL query by:
 7. left join `books` on `book.id = author_books.book_id`
 
 Here is the code:
+
+
+To retrieve books from author
+    
+    foreach( $author->books as $book ) {
+        $title = $book->title;     
+    }
+
+should create a query:
+
+    SELECT books.* from books b
+        LEFT JOIN author_books ab ON (b.id = ab.book_id)
+        LEFT JOIN authors a ON (a.id = ab.author_id)
+        where a.id = :author_id
+
+(is `->title` through `__get` faster than native property? 
+or better than getTitle() ? )
+
+Implementation:
 
     class Relation {
         public $key; // relation key
@@ -179,23 +251,6 @@ Here is the code:
 
     }
 
-To retrieve books from author
-    
-    foreach( $author->books as $book ) {
-        $title = $book->title;     
-    }
-
-should create a query:
-
-    SELECT books.* from books b
-        LEFT JOIN author_books ab ON (b.id = ab.book_id)
-        LEFT JOIN authors a ON (a.id = ab.author_id)
-        where a.id = :author_id
-
-(is `->title` through `__get` faster than native property? 
-or better than getTitle() ? )
-
-
 
 
 
@@ -208,6 +263,4 @@ or better than getTitle() ? )
     - parameter validation.
     - chained validators
     - canonicalizer
-
-
 
