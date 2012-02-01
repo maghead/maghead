@@ -33,6 +33,4 @@ class Schema
         return $this->relations[ $relationId ];
 	}
 
-
 }
-
