@@ -101,17 +101,21 @@ To import SQL schema into database:
 
 LazyRecord will generate schema in pure-php array:
 
-    build/Schema/AuthorSchema.php
-    build/Schema/Author.php
-    build/Schema/AuthorCollection.php
-    build/Schema/foo/bar/BookBase.php
-    build/Schema/foo/bar/Book.php
-    build/Schema/foo/bar/BookCollection.php
-    build/Schema/foo/bar/BookSchema.php
+    build/schema/AuthorSchemaProxy.php
+    build/schema/AuthorBase.php           // auto-generated AuthoBase 
+    build/schema/Author.php               // customizeable
 
-Application can load Model schema from:
+    build/schema/AuthorCollectionBase.php // auto-generated AuthorCollection extends AuthorCollectionBase {  }
+    build/schema/AuthorCollection.php     // customizable
 
-    build/classmap.php
+    build/schema/foo/bar/BookBase.php
+    build/schema/foo/bar/Book.php
+
+    build/schema/foo/bar/BookCollection.php
+    build/schema/foo/bar/BookSchemaProxy.php
+
+    build/classmap.php        // application can load Model, Schema class from this mapping file
+    build/datasource.php      // export datasource config
 
 class map content:
 

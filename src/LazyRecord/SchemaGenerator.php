@@ -81,32 +81,73 @@ class SchemaGenerator
 	}
 
 
+	public function buildSchemaProxyClass($schema)
+	{
+		$schemaArray = $schema->export();
+
+		$reflection = new \ReflectionObject( $schema );
+
+		$source = $this->renderTemplate( 'Schema.php', array(
+			'schema' => $schemaArray,
+			'reflection' => $reflection,
+		));
+
+
+		/**
+		* classname with namespace 
+		*/
+		$schemaClass = $reflection->getName();
+		$modelClass  = $schemaArray['model_class'];
+		$schemaProxyClass = $schemaArray['model_class'] . 'SchemaProxy';
+
+		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
+			. str_replace( '\\' , DIRECTORY_SEPARATOR , $schemaProxyClass ) . '.php';
+
+			// . str_replace( '\\' , DIRECTORY_SEPARATOR , $reflection->getNamespaceName() );
+
+		if( ! file_exists( dirname($sourceFile) ) ) {
+			mkdir( dirname($sourceFile), 0755, true );
+		}
+
+		if( file_exists($sourceFile) ) {
+			$this->logger->info("$sourceFile found, overwriting.");
+		}
+
+		$this->logger->info( "Generating schema proxy $schemaProxyClass => $sourceFile" );
+		file_put_contents( $sourceFile , $source );
+		return array( $schemaProxyClass , $sourceFile );
+	}
+
+
+	protected function buildBaseModelClass()
+	{
+
+	}
+
+
 	public function generate()
 	{
 		$this->loadSchemaFiles();
 		$classes = $this->getSchemaClasses();
 
+
+		/**
+		 * schema class mapping 
+		 */
+		$classMap = array();
+
 		$this->logger->info( 'Found schema classes: ' . join(', ', $classes ) );
 		foreach( $classes as $class ) {
-			$this->logger->info( 'Building schema class: ' . $class );
-
 			$schema = new $class;
 			$schema->build();   /* initialize schema data */
-			$schemaArray = $schema->export();
 
-			$reflection = new \ReflectionObject( $schema );
+			$this->logger->info( 'Building schema proxy class: ' . $class );
+			list( $schemaProxyClass, $schemaProxyFile ) = $this->buildSchemaProxyClass( $class );
 
-			$source = $this->renderTemplate( 'Schema.php', array(
-				'schema' => $schemaArray,
-				'reflection' => $reflection,
-		   	));
+			$classMap[ $schemaProxyClass ] = $schemaProxyFile;
 
-			$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
-				. str_replace( '\\' , DIRECTORY_SEPARATOR , $reflection->getNamespaceName() )
-				. DIRECTORY_SEPARATOR
-				. $schemaArray['model_class'] . 'SchemaProxy.php';
+			$this->buildBaseModelClass( $class );
 
-			file_put_contents( $sourceFile , $source );
 		}
 
 	}
