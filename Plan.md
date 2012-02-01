@@ -185,10 +185,14 @@ class AuthorSchema extends LazyORM\SchemaBuilder
 
 ### Relationship
 
-HasOne Relation:
+Has one Relation:
 
+    just do left join on main table with b.
 
-HasMany Relation
+Has many Relation:
+
+    just do left join on main table with b.
+
 
 
 ManyToMany Relation:
