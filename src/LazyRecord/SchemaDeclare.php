@@ -7,7 +7,18 @@ abstract class SchemaDeclare
 {
     public $columns = array();
 
+
     abstract function schema();
+
+    function __construct()
+    {
+
+    }
+
+    public function build()
+    {
+        $this->schema();
+    }
 
     protected function column($name)
     {
