@@ -73,6 +73,10 @@ abstract class SchemaDeclare
             : $this->_classnameToTable();
     }
 
+
+    /**
+     * classname methods
+     */
     public function getModelClass()
     {
         static $class;
@@ -84,6 +88,29 @@ abstract class SchemaDeclare
         }
         throw new Exception('Can not get model class from ' . $class );
     }
+
+    public function getSchemaProxyClass()
+    {
+        return $this->getModelClass() . 'SchemaProxy';
+    }
+
+    public function getNamespace()
+    {
+        $refl = new \ReflectionObject($this);
+        return $refl->getNamespaceName();
+    }
+
+    public function getClass()
+    {
+        return get_class($this);
+    }
+
+    public function getShortName()
+    {
+        $refl = new \ReflectionObject($this);
+        return $refl->getShortName();
+    }
+
 
     protected function _classnameToTable() 
     {
@@ -169,6 +196,7 @@ abstract class SchemaDeclare
             'relation_foreign_key'  => $relationForeignKey,
         );
     }
+
 
 }
 

@@ -81,7 +81,7 @@ class SchemaGenerator
 	}
 
 
-	public function buildSchemaProxyClass($schema)
+	protected function buildSchemaProxyClass($schema)
 	{
 		$schemaArray = $schema->export();
 
@@ -96,9 +96,9 @@ class SchemaGenerator
 		/**
 		* classname with namespace 
 		*/
-		$schemaClass = $reflection->getName();
-		$modelClass  = $schemaArray['model_class'];
-		$schemaProxyClass = $schemaArray['model_class'] . 'SchemaProxy';
+		$schemaClass = $schema->getClass();
+		$modelClass  = $schema->getModelClass();
+		$schemaProxyClass = $schema->getSchemaProxyClass();
 
 		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
 			. str_replace( '\\' , DIRECTORY_SEPARATOR , $schemaProxyClass ) . '.php';
@@ -142,11 +142,11 @@ class SchemaGenerator
 			$schema->build();   /* initialize schema data */
 
 			$this->logger->info( 'Building schema proxy class: ' . $class );
-			list( $schemaProxyClass, $schemaProxyFile ) = $this->buildSchemaProxyClass( $class );
+			list( $schemaProxyClass, $schemaProxyFile ) = $this->buildSchemaProxyClass( $schema );
 
 			$classMap[ $schemaProxyClass ] = $schemaProxyFile;
 
-			$this->buildBaseModelClass( $class );
+			// $this->buildBaseModelClass( $class );
 
 		}
 

@@ -124,7 +124,7 @@ class map content:
     <?php 
     return array(  
         'Author' => 'schema/build/Author.php',
-        'AuthorSchema' => 'schema/build/AuthorSchema.php',
+        'AuthorSchemaProxy' => 'schema/build/AuthorSchema.php',
         'Ns1\Ns2\Book' => 'schema/build/AuthorSchema.php',
     );
 
