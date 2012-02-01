@@ -128,8 +128,17 @@ class SchemaGenerator
 	protected function buildBaseModelClass($schema)
 	{
 		$baseClass = $schema->getBaseModelClass();
+		$baseName  = explode('\\',$baseClass); $baseName = end($baseName);
+		$namespace = $schema->getNamespace();
 
+		$source = $this->renderTemplate( 'BaseModel.php', array(
+			'namespace'  => $namespace,
+			'base_class' => $baseClass,
+			'base_name' => $baseName,
+			'schema_proxy_class' => '\\'. $schema->getSchemaProxyClass(),
+		));
 
+		var_dump( $source ); 
 
 	}
 
