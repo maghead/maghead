@@ -85,7 +85,6 @@ abstract class SchemaDeclare
         throw new Exception('Can not get model class from ' . $class );
     }
 
-
     protected function _classnameToTable() 
     {
         $class = $this->getModelClass();
@@ -169,8 +168,6 @@ abstract class SchemaDeclare
             'relation_foreign_key'  => $relationForeignKey,
         );
     }
-
-
 
 }
 
