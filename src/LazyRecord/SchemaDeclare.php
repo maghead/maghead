@@ -79,7 +79,7 @@ abstract class SchemaDeclare
         if( $class )
             return $class;
 
-        if( -1 != ( $p = strrpos( $class = get_class($this) , 'Schema' ) ) ) {
+        if( ( $p = strrpos( $class = get_class($this) , 'Schema' ) ) !== false ) {
             return $class = substr( $class , 0 , $p );
         }
         throw new Exception('Can not get model class from ' . $class );
@@ -88,13 +88,14 @@ abstract class SchemaDeclare
     protected function _classnameToTable() 
     {
         $class = $this->getModelClass();
+
         /**
          * If we got Yasumi\Model\UserModel, we have to strip. 
          */
         if( preg_match( '/(\w+?)(?:Model)?$/', $class ,$reg) ) {
             $table = @$reg[1];
             if( ! $table )
-                throw new Exception( 'Table name error' );
+                throw new Exception( "Table name error: $class" );
 
             /* convert BlahBlah to blah_blah */
             $table =  strtolower( preg_replace( 
