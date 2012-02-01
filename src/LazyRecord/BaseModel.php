@@ -1,7 +1,7 @@
 <?php
 namespace LazyRecord;
 
-class Model
+class BaseModel
 {
 	public $schemaClass;
 	public $collectionClass;
