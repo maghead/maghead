@@ -91,6 +91,11 @@ class Column
         return $this;
     }
 
+    public function export()
+    {
+        return var_export( $this->attributes , true );
+    }
+
     public function __call($method,$args)
     {
         if( isset($this->supportedAttributes[ $method ] ) ) {

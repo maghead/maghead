@@ -17,7 +17,12 @@ class ColumnTest extends PHPUnit_Framework_TestCase
             ->varchar(128)
             ->default( 'string' )
             ->validator('is_string');
-        
+
+        ok( $this->createColumn('size')->integer() );
+
+        ok( $c->export() );
+
+        // var_dump( var_export( $c->attributes, true ) ); 
     }
 
 }
