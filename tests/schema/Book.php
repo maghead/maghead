@@ -1,6 +1,6 @@
 <?php
 
-class Book extends LazyRecord\SchemaDeclare
+class BookSchema extends LazyRecord\SchemaDeclare
 {
 
     function schema()
