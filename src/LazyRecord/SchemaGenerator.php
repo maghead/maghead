@@ -91,12 +91,9 @@ class SchemaGenerator
 	protected function buildSchemaProxyClass($schema)
 	{
 		$schemaArray = $schema->export();
-
-		$reflection = new \ReflectionObject( $schema );
-
 		$source = $this->renderTemplate( 'Schema.php', array(
-			'schema' => $schemaArray,
-			'reflection' => $reflection,
+			'schema_data' => $schemaArray,
+			'schema' => $schema,
 		));
 
 		/**
@@ -109,8 +106,6 @@ class SchemaGenerator
 		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
 			. str_replace( '\\' , DIRECTORY_SEPARATOR , $schemaProxyClass ) . '.php';
 
-			// . str_replace( '\\' , DIRECTORY_SEPARATOR , $reflection->getNamespaceName() );
-
 		$this->preventFileDir( $sourceFile );
 
 		if( file_exists($sourceFile) ) {
@@ -119,11 +114,22 @@ class SchemaGenerator
 
 		$this->logger->info( "Generating schema proxy $schemaProxyClass => $sourceFile" );
 		file_put_contents( $sourceFile , $source );
+
+		// try to require 
+		try {
+			require $sourceFile;
+		} catch ( Exception $e ) {
+			$this->logger->error( $e->getMessage() );
+			throw $e;
+		}
 		return array( $schemaProxyClass , $sourceFile );
 	}
 
 	protected function buildBaseModelClass($schema)
 	{
+		$baseClass = $schema->getBaseModelClass();
+
+
 
 	}
 
@@ -147,7 +153,7 @@ class SchemaGenerator
 
 			$classMap[ $schemaProxyClass ] = $schemaProxyFile;
 
-			// $this->buildBaseModelClass( $class );
+			$this->buildBaseModelClass( $schema );
 		}
 
 	}

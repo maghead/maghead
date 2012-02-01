@@ -89,7 +89,7 @@ abstract class SchemaDeclare
         throw new Exception('Can not get model class from ' . $class );
     }
 
-    public function getModelBaseClass()
+    public function getBaseModelClass()
     {
         return $this->getModelClass() . 'Base';
     }
@@ -99,11 +99,10 @@ abstract class SchemaDeclare
         return $this->getModelClass() . 'Collection';
     }
 
-    public function getCollectionBaseClass()
+    public function getBaseCollectionClass()
     {
         return $this->getModelClass() . 'CollectionBase';
     }
-
 
     public function getSchemaProxyClass()
     {
