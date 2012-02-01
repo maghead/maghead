@@ -100,11 +100,11 @@ class Column
     {
         if( isset($this->supportedAttributes[ $method ] ) ) {
             $c = count($args);
-
-#              if( $c == 0 )
-#                  throw new Exception( 'Attribute value is required.' );
-
             $t = $this->supportedAttributes[ $method ];
+
+            if( $t != self::attr_flag && $c == 0 )
+                throw new Exception( 'Attribute value is required.' );
+
             switch( $t ) {
                 case self::attr_any:
                     $this->attributes[ $method ] = $args[0];
