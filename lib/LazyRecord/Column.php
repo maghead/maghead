@@ -1,6 +1,4 @@
 <?php
-
-
 /*
 
 list column type field value table
@@ -82,30 +80,6 @@ class Column
     public function varchar( $length = null ) 
     {
         $this->type = $length ? 'varchar(' . $length . ')' : 'varchar';
-        return $this;
-    }
-
-    public function timestamp()
-    {
-        $this->type = 'timestamp';
-        return $this;
-    }
-
-    public function text()
-    {
-        $this->type = 'text';
-        return $this;
-    }
-
-    public function integer()
-    {
-        $this->type = 'integer';
-        return $this;
-    }
-
-    public function boolean()
-    {
-        $this->type = 'boolean';
         return $this;
     }
 
