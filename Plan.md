@@ -81,7 +81,7 @@ Generated Model class:
 Generated Collection class:
 
     <?php
-    class Collection extends LazyRecord\Collection
+    class BookCollection extends LazyRecord\Collection
     {
 
     }
@@ -95,15 +95,16 @@ To generate SQL schema:
 
 To import SQL schema into database:
 
-    lazy import path/to/AuthorSchema.php
+    lazy build path/to/AuthorSchema.php
 
-    lazy import path/to/schema/
+    lazy build path/to/schema/
 
 LazyRecord will generate schema in pure-php array:
 
     build/Schema/AuthorSchema.php
     build/Schema/Author.php
     build/Schema/AuthorCollection.php
+    build/Schema/foo/bar/BookBase.php
     build/Schema/foo/bar/Book.php
     build/Schema/foo/bar/BookCollection.php
     build/Schema/foo/bar/BookSchema.php
