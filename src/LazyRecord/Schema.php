@@ -25,5 +25,14 @@ class Schema
 		$this->modelClass = $schemaArray['model_class'];
 	}
 
+	public function getRelation($relationId)
+	{
+        if( ! isset($this->relations[ $relationId ]) ) {
+            throw new Exception("Relation $relationId is not defined.");
+        }
+        return $this->relations[ $relationId ];
+	}
+
+
 }
 
