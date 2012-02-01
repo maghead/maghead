@@ -14,26 +14,26 @@ LazyORM configuration file:
 
 configuration file content:
 
-    [connection master]
+    [source master]
     driver = mysql
     host = 
     user = 
     pass = 
 
-translate this into php config file `build/config.php`.
+translate this into php config file `build/datasource_config.php`.
 
     <?php
-    $config = array(
-        'connection' => array(
+    return array(
+        'source' => array(
             'master' => array( .... )
         )
     );
 
 ### API
 
-Connection 
+Create connection from data source:
 
-    $conn = LazyRecord\ORM::createConnection('master');
+    $conn = LazyRecord\ORM::getConnection('master');
 
     LazyRecord\ORM::setConnection( $conn );
     LazyRecord\ORM::setSchemaLoaderPath( array( 'build/schema' , 'path/to/other/schema' ) );
@@ -44,8 +44,48 @@ Connection
     $gen->build();
 
     $loader = new SchemaClassLoader;
-    $loader->load( 'build/schema/autoload.php' );
+    $loader->load( 'build/schema/classmap.php' );
     $loader->register();
+
+    $record = new Book;
+    $collection = new BookCollection;
+
+Generated Schema class:
+
+    <?php
+
+    class BookSchema extends LazyRecord\BaseSchema
+    {
+        function __construct()
+        {
+            $this->columns = array( 
+                ....
+            );
+            $this->relations = array(
+            
+            );
+        }
+    }
+
+Generated Model class:
+
+    <?php
+
+    class Book extends LazyRecord\Model
+    {
+        // load schema data in __construct
+
+
+    }
+
+Generated Collection class:
+
+    <?php
+    class Collection extends LazyRecord\Collection
+    {
+
+    }
+
 
 ### Command-line interface
 
@@ -61,18 +101,18 @@ To import SQL schema into database:
 
 LazyRecord will generate schema in pure-php array:
 
-    schema/build/AuthorSchema.php
-    schema/build/Author.php
-    schema/build/AuthorCollection.php
-    schema/build/foo/bar/Book.php
-    schema/build/foo/bar/BookCollection.php
-    schema/build/foo/bar/BookSchema.php
+    build/Schema/AuthorSchema.php
+    build/Schema/Author.php
+    build/Schema/AuthorCollection.php
+    build/Schema/foo/bar/Book.php
+    build/Schema/foo/bar/BookCollection.php
+    build/Schema/foo/bar/BookSchema.php
 
 Application can load Model schema from:
 
-    schema/autoload.php
+    build/classmap.php
 
-Autoloader content:
+class map content:
 
     class => path to class
 
@@ -82,13 +122,12 @@ Autoloader content:
         'AuthorSchema' => 'schema/build/AuthorSchema.php',
         'Ns1\Ns2\Book' => 'schema/build/AuthorSchema.php',
     );
-    ?>
 
 ### Model
 
     $authors = new AuthorCollection;
     $authors->find();
-    $authors->where(); ... etc
+    $authors->where(); ... etc  (can use sqlbuilder for query)
 
 ### Schema Columns
 
