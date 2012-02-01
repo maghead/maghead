@@ -1,9 +1,22 @@
 <?php
-
 namespace LazyRecord;
+use LazyRecord\SchemaDeclare\Column;
+use Exception;
 
-class SchemaDeclare
+abstract class SchemaDeclare
 {
+    public $columns = array();
+
+    abstract function schema();
+
+    protected function column($name)
+    {
+        if( isset($this->columns[$name]) ) {
+            throw new Exception("column $name is already defined.");
+        }
+        return $this->columns[ $name ] = new Column( $name );
+    }
+
 
 }
 
