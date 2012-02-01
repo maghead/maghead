@@ -33,9 +33,8 @@ class SchemaGenerator
 
 	public function setTargetPath($path)
 	{
-		$this->targetPath = $path;
+		$this->targetPath = rtrim($path,DIRECTORY_SEPARATOR);
 	}
-
 
 	public function loadSchemaFiles()
 	{
@@ -95,8 +94,6 @@ class SchemaGenerator
 			$schema->build();   /* initialize schema data */
 			$schemaArray = $schema->export();
 
-			var_dump( $schemaArray ); 
-
 			$reflection = new \ReflectionObject( $schema );
 
 			$source = $this->renderTemplate( 'Schema.php', array(
@@ -104,8 +101,12 @@ class SchemaGenerator
 				'reflection' => $reflection,
 		   	));
 
-			var_dump( $source ); 
+			$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
+				. str_replace( '\\' , DIRECTORY_SEPARATOR , $reflection->getNamespaceName() )
+				. DIRECTORY_SEPARATOR
+				. $schemaArray['model_class'] . 'SchemaProxy.php';
 
+			file_put_contents( $sourceFile , $source );
 		}
 
 	}
