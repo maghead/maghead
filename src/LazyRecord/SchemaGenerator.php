@@ -80,6 +80,13 @@ class SchemaGenerator
 		return $content;
 	}
 
+	private function preventFileDir($path,$mode = 0755)
+	{
+		$dir = dirname($path);
+		if( ! file_exists($dir) )
+			mkdir( $dir , $mode, true );
+	}
+
 
 	protected function buildSchemaProxyClass($schema)
 	{
@@ -91,7 +98,6 @@ class SchemaGenerator
 			'schema' => $schemaArray,
 			'reflection' => $reflection,
 		));
-
 
 		/**
 		* classname with namespace 
@@ -105,9 +111,7 @@ class SchemaGenerator
 
 			// . str_replace( '\\' , DIRECTORY_SEPARATOR , $reflection->getNamespaceName() );
 
-		if( ! file_exists( dirname($sourceFile) ) ) {
-			mkdir( dirname($sourceFile), 0755, true );
-		}
+		$this->preventFileDir( $sourceFile );
 
 		if( file_exists($sourceFile) ) {
 			$this->logger->info("$sourceFile found, overwriting.");
@@ -118,18 +122,15 @@ class SchemaGenerator
 		return array( $schemaProxyClass , $sourceFile );
 	}
 
-
-	protected function buildBaseModelClass()
+	protected function buildBaseModelClass($schema)
 	{
 
 	}
-
 
 	public function generate()
 	{
 		$this->loadSchemaFiles();
 		$classes = $this->getSchemaClasses();
-
 
 		/**
 		 * schema class mapping 
@@ -147,7 +148,6 @@ class SchemaGenerator
 			$classMap[ $schemaProxyClass ] = $schemaProxyFile;
 
 			// $this->buildBaseModelClass( $class );
-
 		}
 
 	}
