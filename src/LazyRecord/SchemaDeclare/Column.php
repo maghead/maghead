@@ -46,6 +46,10 @@ class Column
             'comment'  => self::attr_string,
 
 
+            /* reference to model schema */
+            'refer' => self::attr_string,
+
+
             /* data type: string, integer, DateTime, classname */
             'isa' => self::attr_string,
 
@@ -79,17 +83,20 @@ class Column
         return $this;
     }
 
+
     public function integer()
     {
         $this->type = 'integer';
         return $this;
     }
 
+
     public function boolean()
     {
         $this->type = 'boolean';
         return $this;
     }
+
 
     public function export()
     {
@@ -98,6 +105,7 @@ class Column
 
     public function __call($method,$args)
     {
+
         if( isset($this->supportedAttributes[ $method ] ) ) {
             $c = count($args);
             $t = $this->supportedAttributes[ $method ];
