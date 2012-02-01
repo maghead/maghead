@@ -151,16 +151,16 @@ Should have a global cache for schema array, like LazyRecord::schemas[ $class ]
 
 ```php
 <?php
-class AuthorSchema extends LazyORM\ModelSchema
+class AuthorSchema extends LazyORM\SchemaBuilder
 {
 
     function schema()
     {
         $this->column('name')
                 ->varchar(30)
-                ->isa('String') // default, apply String validator
+                ->isa('string') // default, apply String validator
                 ->isa('DateTime')  // DateTime object.
-                ->isa('Integer') // Integer object.
+                ->isa('integer') // Integer object.
 
                 ->validator('ValidatorClass')
                 ->validator( array($validator,'method') )
