@@ -171,26 +171,6 @@ abstract class SchemaDeclare
     }
 
 
-    /*
-    public function resolveRelation($relationId)
-    {
-        if( ! isset($this->relations[ $relationId ]) ) {
-            throw new Exception("Relation $relationId is not defined.");
-        }
-        $r = $this->relations[ $relationId ];
-        switch( $r['type'] ) {
-            case self::many_to_many:
-            break;
-
-            case self::has_one:
-            break;
-
-            case self::has_many:
-
-            break;
-        }
-    }
-    */
 
 }
 
