@@ -6,6 +6,46 @@ Requirement
 
 - Schema export, loader, generator
 
+### Configuration File
+
+LazyORM configuration file:
+
+    orm.ini
+
+configuration file content:
+
+    [connection master]
+    driver = mysql
+    host = 
+    user = 
+    pass = 
+
+translate this into php config file `build/config.php`.
+
+    <?php
+    $config = array(
+        'connection' => array(
+            'master' => array( .... )
+        )
+    );
+
+### API
+
+Connection 
+
+    $conn = LazyRecord\ORM::createConnection('master');
+
+    LazyRecord\ORM::setConnection( $conn );
+    LazyRecord\ORM::setSchemaLoaderPath( array( 'build/schema' , 'path/to/other/schema' ) );
+
+    $gen = new LazyRecord\SchemaBuilder;
+    $gen->addPath( 'schema/' );
+    $gen->setTargetPath( 'build/schema' );
+    $gen->build();
+
+    $loader = new SchemaClassLoader;
+    $loader->load( 'build/schema/autoload.php' );
+    $loader->register();
 
 ### Command-line interface
 
@@ -31,6 +71,18 @@ LazyRecord will generate schema in pure-php array:
 Application can load Model schema from:
 
     schema/autoload.php
+
+Autoloader content:
+
+    class => path to class
+
+    <?php 
+    return array(  
+        'Author' => 'schema/build/Author.php',
+        'AuthorSchema' => 'schema/build/AuthorSchema.php',
+        'Ns1\Ns2\Book' => 'schema/build/AuthorSchema.php',
+    );
+    ?>
 
 ### Model
 
@@ -59,7 +111,7 @@ Should have a global cache for schema array, like LazyRecord::schemas[ $class ]
 
 ```php
 <?php
-class AuthorSchema 
+class AuthorSchema extends LazyORM\ModelSchema
 {
 
     function schema()
