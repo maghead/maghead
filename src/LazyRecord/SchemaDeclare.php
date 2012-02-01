@@ -5,21 +5,24 @@ use Exception;
 
 abstract class SchemaDeclare
 {
-
     const has_one = 1;
     const has_many = 2;
     const many_to_many = 3;
 
     public $relations = array();
+
     // public $accessors = array();
     public $columns = array();
+
+    public $columnNames = array();
+
+    public $primaryKey;
 
     public $table;
 
     abstract function schema();
 
-
-    function __construct()
+    public function __construct()
     {
 
     }
@@ -27,6 +30,34 @@ abstract class SchemaDeclare
     public function build()
     {
         $this->schema();
+
+        /* find primary key */
+        foreach( $this->columns as $name => $column ) {
+            if( $column->primary )
+                $this->primaryKey = $name;
+        }
+    }
+
+    public function export()
+    {
+        $columnArray = array();
+        foreach( $this->columns as $name => $column ) {
+            $columnArray[ $name ] = $column->export();
+        }
+
+        return array(
+            'table' => $this->getTable(),
+            'columns' => $columnArray,
+            'column_names' => $this->columnNames,
+            'primary_key' => $this->primaryKey,
+            'model_class' => $this->getModelClass(),
+            'relations' => $this->relations,
+        );
+    }
+
+    public function dump()
+    {
+        return var_export( $this->export() , true );
     }
 
     protected function table($table)
@@ -84,6 +115,7 @@ abstract class SchemaDeclare
         if( isset($this->columns[$name]) ) {
             throw new Exception("column $name is already defined.");
         }
+        $this->columnNames[] = $name;
         return $this->columns[ $name ] = new Column( $name );
     }
 
@@ -95,27 +127,70 @@ abstract class SchemaDeclare
         $selfClass = $this->getModelClass();
         $this->relations[ $accessor ] = array(
             'type'           => self::has_one,
-            'self'           => $selfColumn,
-            'self_class'     => $selfClass,
-            'foreign_class'  => $foreignClass,
-            'foreign_column' => $foreignColumn,
+            'self'           => array(
+                'column' => $selfColumn,
+                'model'  => $selfClass,
+            ),
+            'foreign' => array(
+                'column' => $foreignColumn,
+                'model' => $foreignClass,
+            ),
         );
     }
 
     protected function hasMany($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
-        $selfClass = $this->getModelClass();
+        $modelClass = $this->getModelClass();
         $this->relations[ $accessor ] = array(
             'type'           => self::has_many,
-            'self'           => $selfColumn,
-            'self_class'     => $selfClass,
-            'foreign_class'  => $foreignClass,
-            'foreign_column' => $foreignColumn,
+            'self' => array(
+                'column'           => $selfColumn,
+                'model'            => $modelClass,
+            ),
+            'foreign'  => array( 
+                'model' => $foreignClass,
+                'column' => $foreignColumn
+            )
+        );
+    }
+
+    protected function manyToMany($accessor, $relationId, $relationForeignKey )
+    {
+        $modelClass = $this->getModelClass();
+
+        if( ! isset($this->relations[ $relationId ]) ) {
+            throw new Exception("Relation $relationId is not defined.");
+        }
+
+        // $relation = $this->relations[ $relationId ];
+        $this->relations[ $accessor ] = array(
+            'type'           => self::many_to_many,
+            'relation'       => $relationId,
+            'relation_foreign_key'  => $relationForeignKey,
         );
     }
 
 
+    /*
+    public function resolveRelation($relationId)
+    {
+        if( ! isset($this->relations[ $relationId ]) ) {
+            throw new Exception("Relation $relationId is not defined.");
+        }
+        $r = $this->relations[ $relationId ];
+        switch( $r['type'] ) {
+            case self::many_to_many:
+            break;
 
+            case self::has_one:
+            break;
+
+            case self::has_many:
+
+            break;
+        }
+    }
+    */
 
 }
 

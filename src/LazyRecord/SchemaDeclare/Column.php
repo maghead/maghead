@@ -90,17 +90,29 @@ class Column
         return $this;
     }
 
-
     public function boolean()
     {
         $this->type = 'boolean';
         return $this;
     }
 
-
     public function export()
     {
-        return var_export( $this->attributes , true );
+        return array(
+            'name' => $this->name,
+            'attributes' => $this->attributes,
+        );
+    }
+
+    public function dump()
+    {
+        return var_export( $this->export() , true );
+    }
+
+    public function __get($name)
+    {
+        if( isset( $this->attributes[ $name ] ) )
+            return $this->attributes[ $name ];
     }
 
     public function __call($method,$args)
