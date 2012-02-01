@@ -88,6 +88,17 @@ class SchemaGenerator
 	}
 
 
+	protected function tryRequire($file)
+	{
+		// try to require 
+		try {
+			require $file;
+		} catch ( Exception $e ) {
+			$this->logger->error( $e->getMessage() );
+			throw $e;
+		}
+	}
+
 	protected function buildSchemaProxyClass($schema)
 	{
 		$schemaArray = $schema->export();
@@ -115,13 +126,8 @@ class SchemaGenerator
 		$this->logger->info( "Generating schema proxy $schemaProxyClass => $sourceFile" );
 		file_put_contents( $sourceFile , $source );
 
-		// try to require 
-		try {
-			require $sourceFile;
-		} catch ( Exception $e ) {
-			$this->logger->error( $e->getMessage() );
-			throw $e;
-		}
+		$this->tryRequire( $sourceFile );
+
 		return array( $schemaProxyClass , $sourceFile );
 	}
 
@@ -138,8 +144,15 @@ class SchemaGenerator
 			'schema_proxy_class' => '\\'. $schema->getSchemaProxyClass(),
 		));
 
-		var_dump( $source ); 
+		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
+			. str_replace( '\\' , DIRECTORY_SEPARATOR , $baseClass ) . '.php';
 
+		$this->logger->info( "Generating base model $baseClass => $sourceFile" );
+		$this->preventFileDir( $sourceFile );
+
+		file_put_contents( $sourceFile , $source );
+		$this->tryRequire( $sourceFile );
+		return array( $baseClass, $sourceFile );
 	}
 
 	public function generate()
