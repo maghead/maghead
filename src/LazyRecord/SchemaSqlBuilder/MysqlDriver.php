@@ -78,10 +78,8 @@ class MysqlDriver
     }
 
 
-
 	public function build(SchemaDeclare $schema)
 	{
-
         $sql = "CREATE TABLE " . $schema->getTable() . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {

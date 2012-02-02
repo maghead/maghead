@@ -3,9 +3,6 @@ namespace LazyRecord;
 
 class BaseModel
 {
-	public $schemaClass;
-	public $collectionClass;
-
 	public function __construct()
 	{
 
@@ -14,7 +11,7 @@ class BaseModel
 	public function getSchema()
 	{
 		static $schema;
-		return $schema ? $schema : $schema = LazyRecord\SchemaLoader::getInstance()->load( $this->schemaClass );
+		return $schema ? $schema : $schema = LazyRecord\SchemaLoader::getInstance()->load( static::schema_proxy_class );
 	}
 
     public function resolveRelation($relationId)

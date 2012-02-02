@@ -45,7 +45,7 @@ class SchemaGenerator
 			foreach( $regex as $k => $files ) {
 				foreach( $files as $file ) {
 					$this->logger->info( "Loading file: $file" );
-					require $file;
+					require_once $file;
 				}
 			}
 		}
@@ -95,7 +95,10 @@ class SchemaGenerator
 				throw new Exception("$sourceFile write failed.");
 			}
 		}
-		$this->tryRequire( $sourceFile );
+
+        if( ! class_exists($class) )  {
+            $this->tryRequire( $sourceFile );
+        }
 		return array( $class, $sourceFile );
 	}
 
@@ -110,7 +113,7 @@ class SchemaGenerator
 	{
 		// try to require 
 		try {
-			require $file;
+            require $file;
 		} catch ( Exception $e ) {
 			$this->logger->error( $e->getMessage() );
 			throw $e;
@@ -157,7 +160,9 @@ class SchemaGenerator
 		$this->logger->info( "Generating schema proxy $schemaProxyClass => $sourceFile" );
 		file_put_contents( $sourceFile , $source );
 
-		$this->tryRequire( $sourceFile );
+        if( ! class_exists($schemaProxyClass) )  {
+            $this->tryRequire( $sourceFile );
+        }
 
 		return array( $schemaProxyClass , $sourceFile );
 	}
