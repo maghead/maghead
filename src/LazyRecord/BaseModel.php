@@ -1,12 +1,20 @@
 <?php
 namespace LazyRecord;
+use SQLBuilder\QueryBuilder;
 
 class BaseModel
 {
+    protected $query;
+
 	public function __construct()
 	{
 
 	}
+
+    public function createQuery()
+    {
+        $this->query = new QueryBuilder();
+    }
 
 	public function getSchema()
 	{
