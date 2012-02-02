@@ -1,5 +1,7 @@
 <?php
 
+namespace {
+
 class BookSchema extends LazyRecord\SchemaDeclare
 {
 
@@ -32,5 +34,6 @@ class BookSchema extends LazyRecord\SchemaDeclare
 
 }
 
+}
 
 

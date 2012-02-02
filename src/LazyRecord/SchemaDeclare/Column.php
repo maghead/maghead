@@ -124,7 +124,6 @@ class Column
         return $this;
     }
 
-
     public function export()
     {
         return array(

@@ -24,29 +24,8 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 		}
 
 		$author = new \tests\Author;
-		ok( $author , 'author model' );
+		$book = new \tests\Book;
 
-		is( '\tests\Author' , \tests\Author::model_class );
-		is( '\tests\AuthorSchemaProxy' , \tests\Author::schema_proxy_class );
-		is( '\tests\AuthorCollection' , \tests\Author::collection_class );
-
-		$book = new Book;
-		ok( $book );
-
-		$bench = new SimpleBench;
-		$task = $bench->start('create');
-		for( $i = 0 ; $i < 10000 ; $i++ ) {
-			$b = new Book;
-		}
-		$task->end();
-		if( $task->rate < 50 ) {
-			throw new Exception("Model object contruction too slow! Rate: {$task->rate}");
-		}
-
-		/* tear down */
-		foreach( $classMap as $class => $file ) {
-			unlink( $file );
-		}
 	}
 
 }
