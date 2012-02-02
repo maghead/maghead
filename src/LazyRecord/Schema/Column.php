@@ -1,4 +1,5 @@
 <?php
+namespace LazyRecord\Schema;
 
 class Column
 {
@@ -19,7 +20,8 @@ class Column
 
     public function __get($name)
     {
-        return $this->attributes[$name];
+        if( isset($this->attributes[$name]) )
+            return $this->attributes[$name];
     }
 
 

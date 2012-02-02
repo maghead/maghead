@@ -1,4 +1,5 @@
 <?php
+require_once 'tests/schema/AuthorBooks.php';
 use LazyRecord\SchemaSqlBuilder;
 
 class ModelTest extends PHPUnit_Framework_TestCase
@@ -29,19 +30,28 @@ class ModelTest extends PHPUnit_Framework_TestCase
 			unlink('tests.db');
 		}
 
-
-
         // build schema 
 		$dbh = new PDO('sqlite:tests.db'); // success
 		$builder = new SchemaSqlBuilder('sqlite');
 		ok( $builder );
 
-		$s = new \tests\AuthorSchema;
+
+		$generator = new \LazyRecord\SchemaGenerator;
+		$generator->addPath( 'tests/schema/' );
+		$generator->setLogger( $this->getLogger() );
+		$generator->setTargetPath( 'tests/build/' );
+		$classMap = $generator->generate();
+        ok( $classMap );
+
+        /*******************
+         * build schema 
+         * ****************/
+		$authorschema = new \tests\AuthorSchema;
 		$authorbook = new \tests\AuthorBookSchema;
 		$bookschema = new \tests\BookSchema;
-		ok( $s );
+		ok( $authorschema );
 
-		$sql = $builder->build($s);
+		$sql = $builder->build($authorschema);
 		ok( $sql );
         // var_dump( $sql ); 
         $this->pdoQueryOk( $dbh , $sql );
@@ -63,19 +73,26 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $this->pdoQueryOk( $dbh , $sql );
 
 
-		$generator = new \LazyRecord\SchemaGenerator;
-		$generator->addPath( 'tests/schema/' );
-		$generator->setLogger( $this->getLogger() );
-		$generator->setTargetPath( 'tests/build/' );
-		$classMap = $generator->generate();
-        ok( $classMap );
 
+
+
+        /****************************
+         * Basic CRUD Test 
+         * **************************/
+        $author = new \tests\Author;
+        ok( $author->schema );
+
+        $ret = $author->create(array());
+        ok( $ret );
+        ok( ! $ret->success );
+        ok( $ret->message );
+        is( 'Empty arguments' , $ret->message );
+
+        $query = $author->createQuery();
+        ok( $query );
+
+        $ret = $author->create(array( 'name' => 'Foo' ));
         return;
-
-        /* Basic CRUD Test */
-        $author = new Author;
-        $ret = $author->create(array( ));
-
         $author->update(array( ));
 
         $author->delete();

@@ -155,19 +155,6 @@ abstract class SchemaDeclare
         $this->readSourceId = $sourceId;
     }
 
-
-    public function getConnection()
-    {
-        // xxx: process for read/write source
-        $sourceId = 'default';
-
-
-        $connManager = ConnectionManager::getInstance();
-        return $connManager->getDefault();
-    }
-
-
-
     protected function _classnameToTable() 
     {
         $class = $this->getModelClass();
