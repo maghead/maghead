@@ -5,7 +5,7 @@ use LazyRecord\BaseModel;
 
 class BookBase extends BaseModel
 {
-	const schema_proxy_class = '\BookSchemaProxy';
+	const schema_proxy_class = '\\BookSchemaProxy';
 
 }
 
