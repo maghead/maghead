@@ -17,7 +17,6 @@ class BaseModel
 		return $schema ? $schema : $schema = LazyRecord\SchemaLoader::getInstance()->load( $this->schemaClass );
 	}
 
-
     public function resolveRelation($relationId)
     {
         $r = $this->getSchema()->getRelation( $relationId );

@@ -33,14 +33,20 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 		$book = new Book;
 		ok( $book );
 
-#  		$files = array();
-#  		$files[] = 'tests/build/BookSchemaProxy.php';
-#  		$files[] = 'tests/build/tests/AuthorSchemaProxy.php';
-#  		$files[] = 'tests/build/tests/AuthorBookSchemaProxy.php';
-#  		$files[] = 'tests/build/tests/BookSchemaProxy.php';
-#  		$files[] = 'tests/build/tests/BookBase.php';
-#  		$files[] = 'tests/build/tests/Book.php';
+		$bench = new SimpleBench;
+		$task = $bench->start('create');
+		for( $i = 0 ; $i < 10000 ; $i++ ) {
+			$b = new Book;
+		}
+		$task->end();
+		if( $task->rate < 50 ) {
+			throw new Exception("Model object contruction too slow! Rate: {$task->rate}");
+		}
 
+		/* tear down */
+		foreach( $classMap as $class => $file ) {
+			unlink( $file );
+		}
 	}
 
 }
