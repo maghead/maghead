@@ -1,6 +1,6 @@
 <?php
-
 namespace LazyRecord\SchemaSqlBuilder;
+use LazyRecord\SchemaDeclare;
 
 interface DriverInterface
 {
