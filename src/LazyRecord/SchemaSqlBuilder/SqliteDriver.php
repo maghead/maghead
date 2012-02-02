@@ -8,7 +8,7 @@ class SqliteDriver
 
 	public function build(SchemaDeclare $schema)
 	{
-
+		return '';
 	}
 
 }

@@ -9,14 +9,15 @@ class SchemaSqlBuilder
 
 	function __construct($driverType)
 	{
-		$driverClass = self . NS_SEPARATOR . ucfirst( $driverType ) . 'Driver';
+		$driverClass = get_class($this) . '\\' . ucfirst( $driverType ) . 'Driver';
 		$this->driver = new $driverClass;
 		$this->type = $driverType;
 	}
 
-	public function build($schema)
+	public function build(SchemaDeclare $schema)
 	{
-		$this->driver->build( $schema );
+		$sql = $this->driver->build( $schema );
+		return $sql;
 	}
 
 }
