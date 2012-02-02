@@ -167,6 +167,9 @@ class SchemaGenerator
 		$baseClass = $schema->getBaseModelClass();
 		$cTemplate = new CodeGen\ClassTemplate( $baseClass );
 		$cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
+		$cTemplate->addConst( 'collection_class' , '\\' . ltrim($schema->getCollectionClass(),'\\') );
+		$cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
+
 		$cTemplate->extendClass( 'LazyRecord\\BaseModel' );
 		return $this->generateClass( 'Class.php', $cTemplate , array() , true );
 	}
