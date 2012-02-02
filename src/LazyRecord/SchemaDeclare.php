@@ -103,6 +103,11 @@ abstract class SchemaDeclare
         return $this->getModelClass() . 'Base';
     }
 
+    public function getBaseModelName()
+    {
+        return $this->getModelName() . 'Base';
+    }
+
     public function getCollectionClass()
     {
         return $this->getModelClass() . 'Collection';
@@ -134,6 +139,7 @@ abstract class SchemaDeclare
         $refl = new \ReflectionObject($this);
         return $refl->getShortName();
     }
+
 
 
     protected function _classnameToTable() 

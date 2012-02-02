@@ -130,7 +130,7 @@ class SchemaGenerator
 	protected function buildBaseModelClass($schema)
 	{
 		$baseClass = $schema->getBaseModelClass();
-		$baseName  = explode('\\',$baseClass); $baseName = end($baseName);
+		$baseName  = $schema->getBaseModelName();
 		$namespace = $schema->getNamespace();
 
 		$source = $this->renderCode( 'BaseModel.php', array(
@@ -156,18 +156,29 @@ class SchemaGenerator
 		$namespace = $schema->getNamespace();
 
 		$baseClass = $schema->getBaseModelClass();
-		$baseName  = explode('\\',$baseClass); $baseName = end($baseName);
+		$baseName  = $schema->getBaseModelName();
 
 		$modelClass = $schema->getModelClass();
-		$modelName = explode('\\',$modelClass); $modelName = end($modelName);
+		$modelName = $schema->getModelName();
 
-		$source = $this->renderCode( 'BaseModel.php', array(
-			'namespace'  => $namespace,
-			'base_class' => $baseClass,
-			'base_name' => $baseName,
+		$source = $this->renderCode( 'Model.php', array(
+			'namespace'   => $namespace,
+			'base_class'  => $baseClass,
+			'base_name'   => $baseName,
+			'model_name'  => $modelName,
+			'model_class' => $modelClass,
 			'schema_proxy_class' => '\\'. $schema->getSchemaProxyClass(),
 		));
 
+		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
+			. str_replace( '\\' , DIRECTORY_SEPARATOR , $modelClass ) . '.php';
+
+		$this->logger->info( "Generating model class: $modelClass => $sourceFile" );
+		$this->preventFileDir( $sourceFile );
+
+		file_put_contents( $sourceFile , $source );
+		$this->tryRequire( $sourceFile );
+		return array( $baseClass, $sourceFile );
 	}
 
 	protected function buildBaseCollectionClass($schema)
@@ -178,7 +189,8 @@ class SchemaGenerator
 		$baseCOllectionName  = explode('\\',$baseCollectionClass); $baseName = end($baseName);
 
 		$modelClass = $schema->getModelClass();
-		$modelName = explode('\\',$modelClass); $modelName = end($modelName);
+		$modelName = $schema->getModelName();
+
 
 	}
 
@@ -209,6 +221,10 @@ class SchemaGenerator
 			$this->logger->info( 'Building base model class: ' . $class );
 			list( $baseModelClass, $baseModelFile ) = $this->buildBaseModelClass( $schema );
 			$classMap[ $baseModelClass ] = $baseModelFile;
+
+			$this->logger->info( 'Building model class: ' . $class );
+			list( $modelClass, $modelFile ) = $this->buildModelClass( $schema );
+			$classMap[ $modelClass ] = $modelFile;
 		}
 
 	}
