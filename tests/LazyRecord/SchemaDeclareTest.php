@@ -5,9 +5,30 @@ class AuthorSchema extends \LazyRecord\SchemaDeclare
 {
     function schema()
     {
+        $this->column('id')
+            ->type('integer')
+            ->primary()
+            ->autoIncrement();
+
         $this->column('name')
             ->isa('str')
             ->varchar(128);
+
+        $this->column('email')
+            ->isa('str')
+            ->required()
+            ->varchar(128);
+
+        $this->column('identity')
+            ->isa('str')
+            ->unique()
+            ->required()
+            ->varchar(128);
+
+        $this->column('confirmed')
+            ->isa('bool')
+            ->default(false)
+            ->boolean();
     }
 }
 
@@ -87,17 +108,26 @@ namespace main;
 
 class SchemaDeclareTest extends \PHPUnit_Framework_TestCase
 {
-    function test()
+
+    public function testAuthor()
+    {
+        $declare = new \tests\AuthorSchema;
+        $declare->build();
+
+    }
+
+    public function test()
     {
         $declare = new \tests\BookSchema;
         ok( $declare , 'schema ok' );
 
         $declare->build();
         ok( $declare->columns , 'columns' );
-
+        ok( $declare->columns );
         ok( $c = $declare->columns['title'] );
         ok( $c = $declare->columns['subtitle'] );
         ok( $c = $declare->columns['description'] );
+
 
         is( 'tests\Book' , $declare->getModelClass() );
         is( 'books' , $declare->getTable() );
