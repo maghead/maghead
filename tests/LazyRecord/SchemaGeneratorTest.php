@@ -26,6 +26,16 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 		$author = new \tests\Author;
 		$book = new \tests\Book;
 
+        ok( $author );
+        ok( $book );
+
+        $schemaProxy = new \tests\AuthorSchemaProxy;
+        ok( $schemaProxy->table );
+        ok( $schemaProxy->columns );
+        ok( $schemaProxy->modelClass );
+
+        ok( $author::model_class );
+        ok( $author::schema_proxy_class );
 	}
 
 }
