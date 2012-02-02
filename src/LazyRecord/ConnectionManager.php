@@ -2,6 +2,12 @@
 namespace LazyRecord;
 use Exception;
 
+class ConnectionException extends Exception
+{
+
+
+}
+
 /**
  * Connection Manager
  *
@@ -17,6 +23,8 @@ use Exception;
 
 class ConnectionManager
 {
+    public $datasources = array();
+
     public $conns = array();
 
 
@@ -26,6 +34,20 @@ class ConnectionManager
             throw new Exception( "$id connection is already defined." );
 
         $this->conns[ $id ] = $conn;
+    }
+
+
+    /**
+     * Add custom data source:
+     *
+     * source config:
+     *
+     * @param string $id data source id
+     * @param string $config data source config
+     */
+    public function addDataSource($id,$config)
+    {
+        $this->datasources[ $id ] = $config;
     }
 
 
@@ -46,18 +68,34 @@ class ConnectionManager
      *                     sqlite2:mydb.sq2
      *
      */
-    public function create($podString)
+    public function create()
     {
         // $this->conns[ $connection->id ] = $connection;
     }
 
-    public function getDefault()
+    public function getConnection($sourceId)
     {
-        if( isset($this->conns[ 'default' ]) )
-            return $this->conns[ 'default' ];
-        throw new Exception( "Default connection not found." );
+        if( isset($this->conns[$sourceId]) ) {
+            return $this->conns[$sourceId];
+        } elseif( isset($this->datasources[ $sourceId ] ) ) {
+            $config = $this->datasources[ $sourceId ];
+            $conn = new \PDO( $config['dsn'], 
+                @$config['user'] , 
+                @$config['pass'] , 
+                @$config['options']
+            );
+
+            // register connection to connection pool
+            return $this->conns[ $sourceId ] = $conn;
+        }
+
+        throw new ConnectionException("data source $sourceId not found.");
     }
 
+    public function getDefault()
+    {
+        return $this->getConnection('default');
+    }
 
     static function getInstance()
     {
