@@ -39,8 +39,7 @@ class ConnectionManager
      *          'username', 
      *          'password', 
      *          array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8") 
-     *      ); 
-     *
+     *    ); 
      *
      *    $dbh = new PDO('pgsql:dbname=$dbname; host=$host; username=$username; password=$password'); 
      *    $pdo = new PDO( 'sqlite::memory:', null, null, array(PDO::ATTR_PERSISTENT => true) );
