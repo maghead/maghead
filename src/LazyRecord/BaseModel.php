@@ -1,10 +1,14 @@
 <?php
 namespace LazyRecord;
 use SQLBuilder\QueryBuilder;
+use LazyRecord\QueryDriver;
+
+use LazyRecord\OperationResult\OperationError;
+use LazyRecord\OperationResult\OperationSuccess;
 
 class BaseModel
 {
-    protected $schema;
+    public $schema;
     protected $query;
 
 	public function __construct()
@@ -22,6 +26,7 @@ class BaseModel
     public function createQuery()
     {
         $q = new QueryBuilder();
+        $q->driver = QueryDriver::getInstance();
         $q->table( $this->schema->table );
         $q->limit(1);
         return $q;
@@ -39,21 +44,30 @@ class BaseModel
 
     public function create($args)
     {
+        if( empty($args) )
+            return new OperationError( "Empty arguments" );
+            
         $args = $this->beforeCreate( $args );
-
         foreach( $this->schema->columns as $columnHash ) {
             $c = $this->schema->getColumn( $columnHash['name'] );
 
-            if( ! $c->primary && ! isset($args[$name] ) )
-                $args[$name] = $c->defaultBuilder ? call_user_func( $c->defaultBuidler ) : null;
+            if( ! $c->primary 
+                && $c->requried 
+                && ( $c->default || $c->defaultBuilder )
+                && ! isset($args[$c->name]) )
+            {
+                $args[$c->name] = $c->defaultBuilder ? call_user_func( $c->defaultBuidler ) : null;
+            }
         }
 
         $q = $this->createQuery();
         $q->insert($args);
         $sql = $q->build();
 
-        // get connection and insert
 
+        /* get connection, do query */
+        $conn = $this->getConnection();
+        $conn->query( $sql );
 
     }
 
@@ -70,7 +84,7 @@ class BaseModel
 
     public function resolveRelation($relationId)
     {
-        $r = $this->getSchema()->getRelation( $relationId );
+        $r = $this->schema->getRelation( $relationId );
         switch( $r['type'] ) {
             case self::many_to_many:
             break;
@@ -83,6 +97,17 @@ class BaseModel
             break;
         }
     }
+
+    public function getConnection()
+    {
+        // xxx: process for read/write source
+        $sourceId = 'default';
+        $connManager = ConnectionManager::getInstance();
+        return $connManager->getDefault(); // xxx: support read/write connection later
+    }
+
+
+
 
 }
 
