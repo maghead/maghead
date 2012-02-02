@@ -1,6 +1,24 @@
 <?php
 namespace tests;
 
+use LazyRecord\SchemaDeclare;
+
+class PublisherSchema extends SchemaDeclare
+{
+
+    function schema()
+    {
+        $this->column('id')
+            ->type('integer')
+            ->primary()
+            ->autoIncrement();
+        $this->column('name')
+            ->isa('str')
+            ->varchar(128);
+    }
+
+}
+
 class AuthorSchema extends \LazyRecord\SchemaDeclare
 {
     function schema()
@@ -59,6 +77,7 @@ class BookSchema extends \LazyRecord\SchemaDeclare
     function schema()
     {
         $this->column('id')
+            ->integer()
             ->primary()
             ->autoIncrement();
 
@@ -89,14 +108,14 @@ class BookSchema extends \LazyRecord\SchemaDeclare
          * $book->publisher->name;
          *
          **/
-        $this->hasOne('publisher', 'publisher_id', 'PublisherSchema', 'id' );
+        $this->hasOne('publisher', 'publisher_id', '\tests\PublisherSchema', 'id' );
 
         /**
          * accessor , mapping self.id => BookAuthors.book_id
          *
          * link book => author_books
          */
-        $this->hasMany('book_authors', 'AuthorBookSchema', 'book_id', 'id');
+        $this->hasMany('book_authors', '\tests\AuthorBookSchema', 'book_id', 'id');
 
 
         /**

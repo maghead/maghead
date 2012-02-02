@@ -74,6 +74,7 @@ class Column
     public function timestamp()
     {
         $this->type = 'timestamp';
+        $this->isa = 'DateTime';
         return $this;
     }
 
@@ -82,7 +83,6 @@ class Column
         $this->type = 'text';
         return $this;
     }
-
 
     public function integer()
     {
@@ -93,6 +93,7 @@ class Column
     public function boolean()
     {
         $this->type = 'boolean';
+        $this->isa = 'bool';
         return $this;
     }
 
@@ -108,7 +109,20 @@ class Column
         return $this;
     }
 
+    public function datetime()
+    {
+        $this->type = 'datetime';
+        $this->isa = 'DateTime';
+        return $this;
+    }
 
+
+    public function autoIncrement()
+    {
+        $this->autoIncrement = true;
+        $this->type = 'integer';
+        return $this;
+    }
 
 
     public function export()
