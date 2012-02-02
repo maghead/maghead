@@ -21,8 +21,6 @@ abstract class SchemaDeclare
 
     public $table;
 
-    public $datasources = array();
-
     public $readSourceId;
 
     public $writeSourceId;
@@ -147,20 +145,6 @@ abstract class SchemaDeclare
         return $refl->getShortName();
     }
 
-
-    /**
-     * Add custom data source:
-     *
-     * source config:
-     *
-     * @param string $id data source id
-     * @param string $config data source config
-     */
-    public function addDataSource($id,$config)
-    {
-        $this->datasources[ $id ] = $config;
-    }
-
     public function setWriteSource($sourceId)
     {
         $this->writeSourceId = $sourceId;
@@ -170,6 +154,18 @@ abstract class SchemaDeclare
     {
         $this->readSourceId = $sourceId;
     }
+
+
+    public function getConnection()
+    {
+        // xxx: process for read/write source
+        $sourceId = 'default';
+
+
+        $connManager = ConnectionManager::getInstance();
+        return $connManager->getDefault();
+    }
+
 
 
     protected function _classnameToTable() 
