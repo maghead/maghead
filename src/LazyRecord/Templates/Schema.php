@@ -1,5 +1,4 @@
 <?php
-
 {% set ns = schema.getNamespace %}
 {% if ns %}
 namespace {{ ns }};
