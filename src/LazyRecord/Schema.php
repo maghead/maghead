@@ -1,6 +1,6 @@
 <?php
 namespace LazyRecord;
-use LazyRecord\SchemaDeclare\Column;
+use LazyRecord\Schema\Column;
 
 class Schema
 {
@@ -38,14 +38,11 @@ class Schema
 
     public function getColumn($name)
     {
-        $c = null;
         if( isset($this->columnCached[ $name ]) )  {
-            $c = $this->columnCached[ $name ];
+            return $this->columnCached[ $name ];
         } else {
-            $c = new Column( $name );
-            $c->attributes = $this->columns[ $name ]['attributes'];
+            return $this->columnCached[ $name ] = new Column( $name , $this->columns[$name]['attributes'] );
         }
-        return $c;
     }
 
 }
