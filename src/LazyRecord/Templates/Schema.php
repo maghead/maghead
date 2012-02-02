@@ -1,21 +1,22 @@
-<?php echo '<?php'; ?>
+<?php
 
-<?php if( $namespace = $schema->getNamespace() ) : ?>
-namespace <?php echo $namespace; ?>;
-<?php endif ?>
+{% set ns = schema.getNamespace %}
+{% if ns %}
+namespace {{ ns }};
+{% endif %}
 
 use LazyRecord\Schema;
 
-class <?php { $c = $schema->getModelClass(); $cs = explode('\\',$c); echo end($cs); } ?>SchemaProxy extends Schema <?php  ?>
+class {{ schema.getModelName }}SchemaProxy extends Schema
 {
 
 	public function __construct()
 	{
-		$this->columns = <?php var_export($schema_data['columns']); ?>;
-		$this->columnNames = <?php var_export($schema_data['column_names']); ?>;
-		$this->primaryKey =  <?php var_export($schema_data['primary_key']); ?>;
-		$this->table = <?php var_export($schema_data['table']); ?>;
-		$this->modelClass = <?php var_export($schema_data['model_class']); ?>;
+		$this->columns = {{schema_data.columns|export}};
+		$this->columnNames = {{schema_data.column_names|export}};
+		$this->primaryKey =  {{schema_data.primary_key|export}};
+		$this->table = {{schema_data.table|export}};
+		$this->modelClass = {{schema_data.model_class|export}};
 	}
 
 }

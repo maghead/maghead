@@ -69,15 +69,11 @@ class SchemaGenerator
 		return dirname($refl->getFilename()) . DIRECTORY_SEPARATOR . 'Templates';
 	}
 
-	protected function renderTemplate($file, $args)
+	protected function renderCode($file, $args)
 	{
-		$path = $this->getTemplatePath() . DIRECTORY_SEPARATOR . $file;
-		ob_start();
-		extract($args);
-		require $path;
-		$content = ob_get_contents();
-		ob_clean();
-		return $content;
+		$codegen = new CodeGen( $this->getTemplatePath() );
+		$codegen->stash = $args;
+		return $codegen->renderFile($file);
 	}
 
 	private function preventFileDir($path,$mode = 0755)
@@ -102,7 +98,7 @@ class SchemaGenerator
 	protected function buildSchemaProxyClass($schema)
 	{
 		$schemaArray = $schema->export();
-		$source = $this->renderTemplate( 'Schema.php', array(
+		$source = $this->renderCode( 'Schema.php', array(
 			'schema_data' => $schemaArray,
 			'schema' => $schema,
 		));
@@ -137,7 +133,7 @@ class SchemaGenerator
 		$baseName  = explode('\\',$baseClass); $baseName = end($baseName);
 		$namespace = $schema->getNamespace();
 
-		$source = $this->renderTemplate( 'BaseModel.php', array(
+		$source = $this->renderCode( 'BaseModel.php', array(
 			'namespace'  => $namespace,
 			'base_class' => $baseClass,
 			'base_name' => $baseName,
@@ -153,6 +149,42 @@ class SchemaGenerator
 		file_put_contents( $sourceFile , $source );
 		$this->tryRequire( $sourceFile );
 		return array( $baseClass, $sourceFile );
+	}
+
+	protected function buildModelClass($schema)
+	{
+		$namespace = $schema->getNamespace();
+
+		$baseClass = $schema->getBaseModelClass();
+		$baseName  = explode('\\',$baseClass); $baseName = end($baseName);
+
+		$modelClass = $schema->getModelClass();
+		$modelName = explode('\\',$modelClass); $modelName = end($modelName);
+
+		$source = $this->renderCode( 'BaseModel.php', array(
+			'namespace'  => $namespace,
+			'base_class' => $baseClass,
+			'base_name' => $baseName,
+			'schema_proxy_class' => '\\'. $schema->getSchemaProxyClass(),
+		));
+
+	}
+
+	protected function buildBaseCollectionClass($schema)
+	{
+		$namespace = $schema->getNamespace();
+
+		$baseCollectionClass = $schema->getBaseCollectionClass();
+		$baseCOllectionName  = explode('\\',$baseCollectionClass); $baseName = end($baseName);
+
+		$modelClass = $schema->getModelClass();
+		$modelName = explode('\\',$modelClass); $modelName = end($modelName);
+
+	}
+
+	protected function buildCollectionClass($schema)
+	{
+
 	}
 
 	public function generate()
@@ -172,10 +204,11 @@ class SchemaGenerator
 
 			$this->logger->info( 'Building schema proxy class: ' . $class );
 			list( $schemaProxyClass, $schemaProxyFile ) = $this->buildSchemaProxyClass( $schema );
-
 			$classMap[ $schemaProxyClass ] = $schemaProxyFile;
 
-			$this->buildBaseModelClass( $schema );
+			$this->logger->info( 'Building base model class: ' . $class );
+			list( $baseModelClass, $baseModelFile ) = $this->buildBaseModelClass( $schema );
+			$classMap[ $baseModelClass ] = $baseModelFile;
 		}
 
 	}

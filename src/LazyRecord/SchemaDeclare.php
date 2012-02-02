@@ -74,6 +74,9 @@ abstract class SchemaDeclare
     }
 
 
+
+
+
     /**
      * classname methods
      */
@@ -87,6 +90,12 @@ abstract class SchemaDeclare
             return $class = substr( $class , 0 , $p );
         }
         throw new Exception('Can not get model class from ' . $class );
+    }
+
+    public function getModelName()
+    {
+        $p = explode('\\',$this->getModelClass());
+        return end($p);
     }
 
     public function getBaseModelClass()
@@ -211,7 +220,6 @@ abstract class SchemaDeclare
             'relation_foreign_key'  => $relationForeignKey,
         );
     }
-
 
 }
 
