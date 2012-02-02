@@ -2,6 +2,12 @@
 namespace LazyRecord\SchemaSqlBuilder;
 use LazyRecord\SchemaDeclare;
 
+
+/**
+ * Schema SQL builder
+ *
+ * @see http://www.sqlite.org/docs.html
+ */
 class SqliteDriver
 	implements DriverInterface
 {
