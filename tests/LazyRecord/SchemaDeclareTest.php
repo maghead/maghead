@@ -29,7 +29,10 @@ class AuthorSchema extends \LazyRecord\SchemaDeclare
             ->isa('bool')
             ->default(false)
             ->boolean();
+
+        // $this->belongsTo( '\tests\AuthorBookSchema' , 'author_id' );
     }
+
 }
 
 class AuthorBookSchema extends \LazyRecord\SchemaDeclare
@@ -44,9 +47,9 @@ class AuthorBookSchema extends \LazyRecord\SchemaDeclare
                 ->isa('int')
                 ->integer();
 
-        $this->hasOne('book'   , 'book_id'   , 'Book'   , 'id' );
+        $this->hasOne('book'   , 'book_id'   , '\tests\BookSchema'   , 'id' );
 
-        $this->hasOne('author' , 'author_id' , 'Author' , 'id' );
+        $this->hasOne('author' , 'author_id' , '\tests\AuthorSchema' , 'id' );
     }
 }
 
@@ -83,17 +86,17 @@ class BookSchema extends \LazyRecord\SchemaDeclare
         /** 
          * column: author => Author class 
          *
-         * $book->author->title;
+         * $book->publisher->name;
          *
          **/
-        $this->hasOne('publisher', 'publisher_id', 'Publisher', 'id' );
+        $this->hasOne('publisher', 'publisher_id', 'PublisherSchema', 'id' );
 
         /**
          * accessor , mapping self.id => BookAuthors.book_id
          *
          * link book => author_books
          */
-        $this->hasMany('book_authors', 'AuthorBook', 'book_id', 'id');
+        $this->hasMany('book_authors', 'AuthorBookSchema', 'book_id', 'id');
 
 
         /**
@@ -112,7 +115,6 @@ class SchemaDeclareTest extends \PHPUnit_Framework_TestCase
     public function testAuthor()
     {
         $declare = new \tests\AuthorSchema;
-        $declare->build();
 
     }
 
@@ -121,7 +123,6 @@ class SchemaDeclareTest extends \PHPUnit_Framework_TestCase
         $declare = new \tests\BookSchema;
         ok( $declare , 'schema ok' );
 
-        $declare->build();
         ok( $declare->columns , 'columns' );
         ok( $declare->columns );
         ok( $c = $declare->columns['title'] );

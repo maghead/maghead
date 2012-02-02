@@ -218,7 +218,6 @@ class SchemaGenerator
 		$this->logger->info( 'Found schema classes: ' . join(', ', $classes ) );
 		foreach( $classes as $class ) {
 			$schema = new $class;
-			$schema->build();   /* initialize schema data */
 
 			$this->logger->info( 'Building schema proxy class: ' . $class );
 			list( $schemaProxyClass, $schemaProxyFile ) = $this->buildSchemaProxyClass( $schema );
