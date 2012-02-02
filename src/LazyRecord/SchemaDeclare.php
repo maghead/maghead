@@ -21,6 +21,12 @@ abstract class SchemaDeclare
 
     public $table;
 
+    public $datasources = array();
+
+    public $readSourceId;
+
+    public $writeSourceId;
+
     abstract function schema();
 
     public function __construct()
@@ -142,6 +148,29 @@ abstract class SchemaDeclare
     }
 
 
+    /**
+     * Add custom data source:
+     *
+     * source config:
+     *
+     * @param string $id data source id
+     * @param string $config data source config
+     */
+    public function addDataSource($id,$config)
+    {
+        $this->datasources[ $id ] = $config;
+    }
+
+    public function setWriteSource($sourceId)
+    {
+        $this->writeSourceId = $sourceId;
+    }
+
+    public function setReadSource($sourceId)
+    {
+        $this->readSourceId = $sourceId;
+    }
+
 
     protected function _classnameToTable() 
     {
@@ -253,6 +282,7 @@ abstract class SchemaDeclare
             'relation_foreign_key'  => $relationForeignKey,
         );
     }
+
 
 }
 
