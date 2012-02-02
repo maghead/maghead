@@ -2,12 +2,11 @@
 namespace tests;
 
 
-use LazyRecord\BaseModel;
 
-class AuthorBase extends BaseModel
+class AuthorBase 
+	extends \LazyRecord\BaseModel
 {
+
 	const schema_proxy_class = '\\tests\\AuthorSchemaProxy';
 
 }
-
-
