@@ -15,7 +15,8 @@ class BaseModel
 	public function getSchema()
 	{
 		static $schema;
-		return $schema ? $schema : $schema = LazyRecord\SchemaLoader::getInstance()->load( static::schema_proxy_class );
+        $schemaClass = static::schema_proxy_class;
+		return $schema ?: $schema = new $schemaClass;
 	}
 
     public function createQuery()
