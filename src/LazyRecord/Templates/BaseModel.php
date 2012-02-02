@@ -1,14 +1,24 @@
 <?php
+{% if class.class.namespace %}
+namespace {{ class.class.namespace }};
+{% endif %}
 
-{% if namespace %}
-namespace {{ namespace }};
+{# use block #}
+{% if class.uses %}
+{% for u in class.uses %}
+	{{u}}
+{% endfor %}
 {% endif %}
 
 use LazyRecord\BaseModel;
 
-class {{ base_name }} extends BaseModel
+class {{ class.class.name }} extends BaseModel
 {
-	const schema_proxy_class = '{{ schema_proxy_class }}';
+{% if class.consts %}
+{% for con in class.consts %}
+	{{con}}
+{% endfor %}
+{% endif %}
 
 }
 

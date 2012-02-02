@@ -22,10 +22,13 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 		$files[] = 'tests/build/tests/AuthorSchemaProxy.php';
 		$files[] = 'tests/build/tests/AuthorBookSchemaProxy.php';
 		$files[] = 'tests/build/tests/BookSchemaProxy.php';
+		$files[] = 'tests/build/tests/BookBase.php';
+		$files[] = 'tests/build/tests/Book.php';
 
 		foreach($files as $file ) {
 			path_ok( $file );
-			unlink( $file );
+			var_dump( $file ); 
+#  			unlink( $file );
 		}
 
 	}

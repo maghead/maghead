@@ -130,14 +130,12 @@ class SchemaGenerator
 	protected function buildBaseModelClass($schema)
 	{
 		$baseClass = $schema->getBaseModelClass();
-		$baseName  = $schema->getBaseModelName();
+		$cTemplate = new CodeGen\ClassTemplate( $baseClass );
+		$cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
 		$namespace = $schema->getNamespace();
 
 		$source = $this->renderCode( 'BaseModel.php', array(
-			'namespace'  => $namespace,
-			'base_class' => $baseClass,
-			'base_name' => $baseName,
-			'schema_proxy_class' => '\\'. $schema->getSchemaProxyClass(),
+			'class'  => $cTemplate,
 		));
 
 		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
@@ -153,25 +151,18 @@ class SchemaGenerator
 
 	protected function buildModelClass($schema)
 	{
-		$namespace = $schema->getNamespace();
+		$baseClass = $schema->getBaseModelClass();
+		$cTemplate = new CodeGen\ClassTemplate( $schema->getModelClass() );
+		$cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
+		$cTemplate->extendClass( $baseClass );
+		$source = $this->renderCode( 'Model.php', array(
+			'class'   => $cTemplate,
+		));
+		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
+			. str_replace( '\\' , DIRECTORY_SEPARATOR , $cTemplate->class->getFullName() ) . '.php';
 
 		$baseClass = $schema->getBaseModelClass();
-		$baseName  = $schema->getBaseModelName();
-
 		$modelClass = $schema->getModelClass();
-		$modelName = $schema->getModelName();
-
-		$source = $this->renderCode( 'Model.php', array(
-			'namespace'   => $namespace,
-			'base_class'  => $baseClass,
-			'base_name'   => $baseName,
-			'model_name'  => $modelName,
-			'model_class' => $modelClass,
-			'schema_proxy_class' => '\\'. $schema->getSchemaProxyClass(),
-		));
-
-		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
-			. str_replace( '\\' , DIRECTORY_SEPARATOR , $modelClass ) . '.php';
 
 		$this->logger->info( "Generating model class: $modelClass => $sourceFile" );
 		$this->preventFileDir( $sourceFile );
@@ -183,13 +174,24 @@ class SchemaGenerator
 
 	protected function buildBaseCollectionClass($schema)
 	{
-		$namespace = $schema->getNamespace();
+		return;
 
 		$baseCollectionClass = $schema->getBaseCollectionClass();
 		$baseCOllectionName  = explode('\\',$baseCollectionClass); $baseName = end($baseName);
 
 		$modelClass = $schema->getModelClass();
 		$modelName = $schema->getModelName();
+
+		$source = $this->renderCode( 'BaseCollection.php', array(
+			'namespace'   => $namespace,
+			'base_class'  => $baseClass,
+			'base_name'   => $baseName,
+			'model_name'  => $modelName,
+			'model_class' => $modelClass,
+			'schema_proxy_class' => '\\'. $schema->getSchemaProxyClass(),
+		));
+		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
+			. str_replace( '\\' , DIRECTORY_SEPARATOR , $modelClass ) . '.php';
 
 
 	}
