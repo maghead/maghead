@@ -23,7 +23,7 @@ class SchemaGenerator
 
 	public function addPath( $path )
 	{
-		$this->schemaPaths[] = $path;
+		$this->schemaPaths[] = rtrim($path, DIRECTORY_SEPARATOR);
 	}
 
 	public function setLogger($logger)
@@ -76,13 +76,35 @@ class SchemaGenerator
 		return $codegen->renderFile($file);
 	}
 
+	protected function generateClass($templateFile,$cTemplate,$extra = array(), $overwrite = false)
+	{
+		$source = $this->renderCode( $templateFile , array(
+			'class'   => $cTemplate,
+		) + $extra );
+		$sourceFile = $this->targetPath 
+			. DIRECTORY_SEPARATOR 
+			. str_replace( '\\' , DIRECTORY_SEPARATOR , 
+					ltrim($cTemplate->class->getFullName(),'\\' ) ) . '.php';
+
+		$class = $cTemplate->class->getFullName();
+		$this->logger->info( "Generating model class: $class => $sourceFile" );
+		$this->preventFileDir( $sourceFile );
+
+		if( $overwrite || ! file_exists( $sourceFile ) ) {
+			if( file_put_contents( $sourceFile , $source ) === false ) {
+				throw new Exception("$sourceFile write failed.");
+			}
+		}
+		$this->tryRequire( $sourceFile );
+		return array( $class, $sourceFile );
+	}
+
 	private function preventFileDir($path,$mode = 0755)
 	{
 		$dir = dirname($path);
 		if( ! file_exists($dir) )
 			mkdir( $dir , $mode, true );
 	}
-
 
 	protected function tryRequire($file)
 	{
@@ -102,6 +124,19 @@ class SchemaGenerator
 			'schema_data' => $schemaArray,
 			'schema' => $schema,
 		));
+
+		$schemaClass = $schema->getClass();
+		$modelClass  = $schema->getModelClass();
+		$schemaProxyClass = $schema->getSchemaProxyClass();
+
+  		$cTemplate = new CodeGen\ClassTemplate( $schemaProxyClass );
+		$cTemplate->addConst( 'schema_class' , '\\' . ltrim($schemaClass,'\\') );
+		$cTemplate->addConst( 'model_class' , '\\' . ltrim($modelClass,'\\') );
+
+		/*
+			return $this->generateClass( 'Class.php', $cTemplate );
+		 */
+
 
 		/**
 		* classname with namespace 
@@ -132,73 +167,39 @@ class SchemaGenerator
 		$baseClass = $schema->getBaseModelClass();
 		$cTemplate = new CodeGen\ClassTemplate( $baseClass );
 		$cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
-		$namespace = $schema->getNamespace();
-
-		$source = $this->renderCode( 'BaseModel.php', array(
-			'class'  => $cTemplate,
-		));
-
-		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
-			. str_replace( '\\' , DIRECTORY_SEPARATOR , $baseClass ) . '.php';
-
-		$this->logger->info( "Generating base model $baseClass => $sourceFile" );
-		$this->preventFileDir( $sourceFile );
-
-		file_put_contents( $sourceFile , $source );
-		$this->tryRequire( $sourceFile );
-		return array( $baseClass, $sourceFile );
+		$cTemplate->extendClass( 'LazyRecord\\BaseModel' );
+		return $this->generateClass( 'Class.php', $cTemplate , array() , true );
 	}
 
 	protected function buildModelClass($schema)
 	{
 		$baseClass = $schema->getBaseModelClass();
+		$modelClass = $schema->getModelClass();
 		$cTemplate = new CodeGen\ClassTemplate( $schema->getModelClass() );
 		$cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
 		$cTemplate->extendClass( $baseClass );
-		$source = $this->renderCode( 'Model.php', array(
-			'class'   => $cTemplate,
-		));
-		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
-			. str_replace( '\\' , DIRECTORY_SEPARATOR , $cTemplate->class->getFullName() ) . '.php';
-
-		$baseClass = $schema->getBaseModelClass();
-		$modelClass = $schema->getModelClass();
-
-		$this->logger->info( "Generating model class: $modelClass => $sourceFile" );
-		$this->preventFileDir( $sourceFile );
-
-		file_put_contents( $sourceFile , $source );
-		$this->tryRequire( $sourceFile );
-		return array( $baseClass, $sourceFile );
+		return $this->generateClass( 'Class.php', $cTemplate );
 	}
 
 	protected function buildBaseCollectionClass($schema)
 	{
-		return;
-
 		$baseCollectionClass = $schema->getBaseCollectionClass();
-		$baseCOllectionName  = explode('\\',$baseCollectionClass); $baseName = end($baseName);
 
-		$modelClass = $schema->getModelClass();
-		$modelName = $schema->getModelName();
-
-		$source = $this->renderCode( 'BaseCollection.php', array(
-			'namespace'   => $namespace,
-			'base_class'  => $baseClass,
-			'base_name'   => $baseName,
-			'model_name'  => $modelName,
-			'model_class' => $modelClass,
-			'schema_proxy_class' => '\\'. $schema->getSchemaProxyClass(),
-		));
-		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
-			. str_replace( '\\' , DIRECTORY_SEPARATOR , $modelClass ) . '.php';
-
-
+		$cTemplate = new CodeGen\ClassTemplate( $baseCollectionClass );
+		$cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
+		$cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
+		$cTemplate->extendClass( 'LazyRecord\\BaseCollection' );
+		return $this->generateClass( 'Class.php', $cTemplate , array() , true ); // overwrite
 	}
 
 	protected function buildCollectionClass($schema)
 	{
+		$collectionClass = $schema->getCollectionClass();
+		$baseCollectionClass = $schema->getBaseCollectionClass();
 
+		$cTemplate = new CodeGen\ClassTemplate( $collectionClass );
+		$cTemplate->extendClass( $baseCollectionClass );
+		return $this->generateClass( 'Class.php', $cTemplate );
 	}
 
 	public function generate()
@@ -232,13 +233,11 @@ class SchemaGenerator
 			list( $c, $f ) = $this->buildBaseCollectionClass( $schema );
 			$classMap[ $c ] = $f;
 
-
 			$this->logger->info( 'Building collection class: ' . $class );
 			list( $c, $f ) = $this->buildCollectionClass( $schema );
 			$classMap[ $c ] = $f;
-
 		}
-
+		return $classMap;
 	}
 }
 

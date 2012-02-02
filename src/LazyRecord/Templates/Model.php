@@ -1,0 +1,27 @@
+<?php
+{% if class.class.namespace %}
+namespace {{ class.class.namespace }};
+{% endif %}
+
+{% if class.uses %}
+{% for u in class.uses %}
+	{{u}}
+{% endfor %}
+{% endif %}
+
+
+class {{ class.class.name }} 
+{% if class.extends %}
+	extends {{ class.extends }}
+{% endif %}
+{
+
+{% if class.consts %}
+{% for con in class.consts %}
+	{{con}}
+{% endfor %}
+{% endif %}
+
+
+}
+
