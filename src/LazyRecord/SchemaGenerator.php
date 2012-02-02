@@ -225,6 +225,16 @@ class SchemaGenerator
 			$this->logger->info( 'Building model class: ' . $class );
 			list( $modelClass, $modelFile ) = $this->buildModelClass( $schema );
 			$classMap[ $modelClass ] = $modelFile;
+
+			$this->logger->info( 'Building base collection class: ' . $class );
+			list( $c, $f ) = $this->buildBaseCollectionClass( $schema );
+			$classMap[ $c ] = $f;
+
+
+			$this->logger->info( 'Building collection class: ' . $class );
+			list( $c, $f ) = $this->buildCollectionClass( $schema );
+			$classMap[ $c ] = $f;
+
 		}
 
 	}
