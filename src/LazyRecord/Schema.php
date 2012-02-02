@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord;
+use LazyRecord\SchemaDeclare\Column;
 
 class Schema
 {
@@ -15,6 +16,8 @@ class Schema
     public $table;
 
 	public $modelClass;
+
+    public $columnCached = array();
 
 	public function import($schemaArray)
 	{
@@ -32,5 +35,17 @@ class Schema
         }
         return $this->relations[ $relationId ];
 	}
+
+    public function getColumn($name)
+    {
+        $c = null;
+        if( isset($this->columnCached[ $name ]) )  {
+            $c = $this->columnCached[ $name ];
+        } else {
+            $c = new Column( $name );
+            $c->attributes = $this->columns[ $name ]['attributes'];
+        }
+        return $c;
+    }
 
 }
