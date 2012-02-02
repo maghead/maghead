@@ -8,6 +8,7 @@ abstract class SchemaDeclare
     const has_one = 1;
     const has_many = 2;
     const many_to_many = 3;
+    const belongs_to = 4;
 
     public $relations = array();
 
@@ -24,7 +25,7 @@ abstract class SchemaDeclare
 
     public function __construct()
     {
-
+        $this->build();
     }
 
     public function build()
@@ -170,11 +171,37 @@ abstract class SchemaDeclare
     protected function column($name)
     {
         if( isset($this->columns[$name]) ) {
-            throw new Exception("column $name is already defined.");
+            throw new Exception("column $name of ". get_class($this) . " is already defined.");
         }
         $this->columnNames[] = $name;
         return $this->columns[ $name ] = new Column( $name );
     }
+
+
+	public function getRelation($relationId)
+	{
+        if( ! isset($this->relations[ $relationId ]) ) {
+            throw new Exception("Relation $relationId is not defined.");
+        }
+        return $this->relations[ $relationId ];
+	}
+
+
+
+    /**
+     * define foreign key reference
+     */
+    protected function belongsTo($foreignClass,$foreignColumn)
+    {
+        $this->relations[ 'belongs_to:' . $foreignClass ] = array(
+            'type' => self::belongs_to,
+            'foreign' => array(
+                'schema' => $foreignClass,
+                'column' => $foreignColumn,
+            )
+        );
+    }
+
 
     protected function hasOne($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
     {
@@ -185,12 +212,12 @@ abstract class SchemaDeclare
         $this->relations[ $accessor ] = array(
             'type'           => self::has_one,
             'self'           => array(
-                'column' => $selfColumn,
-                'model'  => $selfClass,
+                'column'  => $selfColumn,
+                'schema'  => $selfClass,
             ),
             'foreign' => array(
                 'column' => $foreignColumn,
-                'model' => $foreignClass,
+                'schema' => $foreignClass,
             ),
         );
     }
@@ -202,10 +229,10 @@ abstract class SchemaDeclare
             'type'           => self::has_many,
             'self' => array(
                 'column'           => $selfColumn,
-                'model'            => $modelClass,
+                'schema'           => $modelClass,
             ),
             'foreign'  => array( 
-                'model' => $foreignClass,
+                'schema' => $foreignClass,
                 'column' => $foreignColumn
             )
         );

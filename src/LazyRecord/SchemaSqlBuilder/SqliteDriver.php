@@ -6,8 +6,7 @@ class SqliteDriver
 	implements DriverInterface
 {
 
-
-    function buildColumnSql($column) {      
+    function buildColumnSql($schema, $column) {      
 		$name = $column->name;
 		$isa  = $column->isa ?: 'str';
 		$type = $column->type;
@@ -50,8 +49,34 @@ class SqliteDriver
 		if( $column->unique )
 			$sql .= ' unique';
 
+		// build reference
+        // track(
+		//		FOREIGN KEY(trackartist) REFERENCES artist(artistid)
+		//		artist_id INTEGER REFERENCES artist
+        // )
+		foreach( $schema->relations as $rel ) {
+			switch( $rel['type'] ) {
+
+                // XXX: keep this
+                case SchemaDeclare::belongs_to:
+                    var_dump( $rel ); 
+                    $fs = new $rel['foreign']['schema'];
+                    $fcName = $rel['foreign']['column'];
+                    $fc = $fs->columns[$fcName];
+                break;
+
+				case SchemaDeclare::has_one:
+					if( $rel['self']['column'] == $name ) { 
+						$fs = new $rel['foreign']['schema'];
+						$sql .= ' references ' . $fs->getTable();
+					}
+				break;
+			}
+		}
+
         return $sql;
     }
+
 
 
 	public function build(SchemaDeclare $schema)
@@ -60,7 +85,7 @@ class SqliteDriver
         $sql = "CREATE TABLE " . $schema->getTable() . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
-			$columnSql[] = $this->buildColumnSql( $column );
+			$columnSql[] = $this->buildColumnSql( $schema, $column );
         }
         $sql .= join(",\n",$columnSql);
         $sql .= "\n);\n";

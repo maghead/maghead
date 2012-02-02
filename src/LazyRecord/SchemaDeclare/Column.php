@@ -96,6 +96,21 @@ class Column
         return $this;
     }
 
+    public function blob()
+    {
+        $this->type = 'blob';
+        return $this;
+    }
+
+    public function binary()
+    {
+        $this->type = 'binary';
+        return $this;
+    }
+
+
+
+
     public function export()
     {
         return array(
