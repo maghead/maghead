@@ -117,6 +117,28 @@ class BaseModel
         return $result;
     }
 
+    public function delete()
+    {
+        $k = $this->schema->primaryKey;
+        if( $k && ! isset($this->_data[$k]) ) {
+            return new OperationError('Record is not loaded, Record delete failed.');
+        }
+        $kVal = isset($this->_data[$k]) ? $this->_data[$k] : null;
+
+        $query = $this->createQuery();
+        $query->delete();
+        $query->where()
+            ->equal( $k , $kVal );
+        $sql = $query->build();
+
+        try {
+            $this->dbQuery($sql);
+        } catch( PDOException $e ) {
+            return new OperationError("Delete failed.");
+        }
+        return new OperationSuccess;
+    }
+
     public function update( $args ) 
     {
         $k = $this->schema->primaryKey;
@@ -178,8 +200,6 @@ class BaseModel
         }
         return $args;
     }
-
-
 
 
 

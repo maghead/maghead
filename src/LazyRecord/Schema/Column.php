@@ -30,6 +30,9 @@ class Column
      **/
     public function deflate( $value )
     {
+        // check self type, do type casting
+
+
         // XXX:
         return $value;
     }
