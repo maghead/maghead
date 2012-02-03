@@ -25,6 +25,15 @@ class Column
     }
 
 
+    /** 
+     * deflate value 
+     **/
+    public function deflate( $value )
+    {
+        // XXX:
+        return $value;
+    }
+
 }
 
 
