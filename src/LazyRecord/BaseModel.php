@@ -68,7 +68,9 @@ class BaseModel
 
             foreach( $this->_data as $k => $v ) {
                 $col = $this->schema->getColumn( $k );
-                $this->_data[ $k ] = Deflator::deflate( $v , $col->isa );
+                $this->_data[ $k ] = $col 
+                    ? Deflator::deflate( $v , $col->isa ) 
+                    : $v;
             }
 
         }
