@@ -65,14 +65,7 @@ class BaseModel
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             $data = $stm->fetch( PDO::FETCH_ASSOC );
             $this->_data = $data;
-
-            foreach( $this->_data as $k => $v ) {
-                $col = $this->schema->getColumn( $k );
-                $this->_data[ $k ] = $col 
-                    ? Deflator::deflate( $v , $col->isa ) 
-                    : $v;
-            }
-
+            $this->deflateHash( $this->_data );
         }
         catch ( PDOException $e ) {
             return new OperationError( "Load data failed" );
@@ -103,7 +96,6 @@ class BaseModel
         $q = $this->createQuery();
         $q->insert($args);
         $sql = $q->build();
-
 
         /* get connection, do query */
         try {
@@ -291,6 +283,16 @@ class BaseModel
 
     }
 
+
+    public function deflateHash( & $args)
+    {
+        foreach( $args as $k => $v ) {
+            $col = $this->schema->getColumn( $k );
+            $args[ $k ] = $col 
+                ? Deflator::deflate( $v , $col->isa ) 
+                : $v;
+        }
+    }
 
 
 }
