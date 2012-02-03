@@ -162,6 +162,8 @@ class BaseModel
     }
 
 
+
+    // XXX: bug
     public function deflateArgs( $args ) {
         foreach( $args as $k => $v ) {
             $c = $this->schema->getColumn($k);
