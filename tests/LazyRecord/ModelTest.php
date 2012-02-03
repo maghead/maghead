@@ -107,7 +107,11 @@ class ModelTest extends PHPUnit_Framework_TestCase
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
 
-        # $author->update(array( 'name' => 'Bar' ));
+        $ret = $author->update(array( 'name' => 'Bar' ));
+        ok( $ret->success );
+
+        is( 'Bar', $author->name );
+
 #          $author->delete();
 
         return;

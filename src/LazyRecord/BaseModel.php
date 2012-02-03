@@ -141,9 +141,9 @@ class BaseModel
 #          $args = $this->deflateArgs( $args ); // apply args to columns
 
         $query = $this->createQuery();
-        $sql = $query->update($args)->where()
-            ->equal( $k , $kVal )
-            ->back()->build();
+        $query->update($args)->where()
+            ->equal( $k , $kVal );
+        $sql = $query->build();
 
         try {
             $stm = $this->dbQuery($sql);
@@ -151,6 +151,9 @@ class BaseModel
         catch( PDOException $e ) {
             return new OperationError( 'Update failed: ' .  $e->getMessage() );
         }
+
+        // merge updated data
+        $this->_data = array_merge($this->_data,$args);
 
         // throw new Exception( "Update failed." . $dbc->error );
         $result = new OperationSuccess;
