@@ -664,6 +664,7 @@ class ModelBase extends \LazyRecord\SQLExecutor
 
     public function beforeUpdate( $args ) { return $args; }
     public function afterUpdate( $args ) {  }
+
     public function doUpdate( $args ) 
     {
         $args = $this->beforeUpdate( $args );

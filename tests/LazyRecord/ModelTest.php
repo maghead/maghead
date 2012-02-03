@@ -31,7 +31,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
 		}
 
         // build schema 
-		$dbh = new PDO('sqlite:tests.db'); // success
+		$dbh = new PDO('sqlite::memory:'); // success
 		$builder = new SchemaSqlBuilder('sqlite');
 		ok( $builder );
 
@@ -74,9 +74,12 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
 
         $connM = \LazyRecord\ConnectionManager::getInstance();
+        $connM->add( $dbh, 'default' );
+        /*
         $connM->addDataSource('default', array( 
             'dsn' => 'sqlite::memory:',
         ));
+        */
 
         /****************************
          * Basic CRUD Test 
@@ -93,17 +96,21 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $query = $author->createQuery();
         ok( $query );
 
-        $ret = $author->create(array( 'name' => 'Foo' ));
+        $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         ok( $ret );
         // sqlite does not support last_insert_id: ok( $ret->id ); 
         ok( $ret->success );
 
+        $ret = $author->load(1);
+        ok( $ret->success );
 
+        is( 'Foo', $author->name );
+        is( 'foo@google.com', $author->email );
 
-
-#          $author->update(array( ));
+        # $author->update(array( 'name' => 'Bar' ));
 #          $author->delete();
 
+        return;
         /**
          * Static CRUD Test 
          */

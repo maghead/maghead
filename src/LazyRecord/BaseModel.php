@@ -45,6 +45,32 @@ class BaseModel
 
     }
 
+    public function load($kVal)
+    {
+        $key = $this->schema->primaryKey;
+        $column = $this->schema->getColumn( $key );
+        $query = $this->createQuery();
+        $query->select('*')
+            ->where()
+                ->equal( $key , $kVal );
+        $sql = $query->build();
+
+
+        // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
+        $stm = null;
+        try {
+            $stm = $this->dbQuery($sql);
+
+            // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
+            $data = $stm->fetch( PDO::FETCH_ASSOC );
+            $this->_data = $data;
+        }
+        catch ( PDOException $e ) {
+            return new OperationError( "Load data failed" );
+        }
+        return new OperationSuccess;
+    }
+
     public function create($args)
     {
         if( empty($args) )
@@ -72,9 +98,7 @@ class BaseModel
 
         /* get connection, do query */
         try {
-            $conn = $this->getConnection();
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $conn->query( $sql );
+            $stm = $this->dbQuery($sql);
         }
         catch ( PDOException $e )
         {
@@ -87,10 +111,53 @@ class BaseModel
         }
         $this->afterCreate( $args );
 
+        $conn = $this->getConnection();
         $result = new OperationSuccess;
         $result->id = $conn->lastInsertId();
         return $result;
     }
+
+    public function update( $args ) 
+    {
+        $k = $this->schema->primaryKey;
+        if( $k && ! isset($args[ $k ]) && ! isset($this->_data[$k]) ) {
+            return new OperationError('Record is not loaded, Can not update record.');
+        }
+
+        $kVal = isset($args[$k]) 
+            ? $args[$k] : isset($this->_data[$k]) 
+            ? $this->_data[$k] : null;
+
+#          $result = $this->validate( 'update', $args );
+#          if( $result )
+#              return $result;
+
+#          $result = $this->validateUpdate( $args );
+#          if( $result )
+#              return $result;
+
+
+#          $args = $this->beforeUpdate( $args );
+#          $args = $this->deflateArgs( $args ); // apply args to columns
+
+        $query = $this->createQuery();
+        $sql = $query->update($args)->where()
+            ->equal( $k , $kVal )
+            ->back()->build();
+
+        try {
+            $stm = $this->dbQuery($sql);
+        } 
+        catch( PDOException $e ) {
+            return new OperationError( 'Update failed: ' .  $e->getMessage() );
+        }
+
+        // throw new Exception( "Update failed." . $dbc->error );
+        $result = new OperationSuccess;
+        $result->id = $kVal;
+        return $result;
+    }
+
 
     public function deflateArgs( $args ) {
         foreach( $args as $k => $v ) {
@@ -118,6 +185,14 @@ class BaseModel
         }
     }
 
+    public function dbQuery($sql)
+    {
+        $conn = $this->getConnection();
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $conn->query( $sql );
+    }
+
+
     public function getConnection()
     {
         // xxx: process for read/write source
@@ -128,7 +203,9 @@ class BaseModel
 
 
 
-    /***** Data Manipulators *****/
+    /*******************
+     * Data Manipulators 
+     *********************/
     public function __set( $name , $value ) 
     {
         $this->_data[ $name ] = $value; 
@@ -148,6 +225,26 @@ class BaseModel
     public function resetData()
     {
         $this->_data = array();
+    }
+
+    public function getData()
+    {
+        return $this->_data;
+    }
+
+
+    /**
+     * support static method of 'delete', 'find' 
+     */
+    public static function __callStatic($n, $a) 
+    {
+        // $model = new static;
+        // return call_user_func_array( array($model,$name), $arguments );
+    }
+
+    public function __call($m,$a)
+    {
+
     }
 
 
