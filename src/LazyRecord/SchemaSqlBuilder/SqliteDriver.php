@@ -1,7 +1,7 @@
 <?php
 namespace LazyRecord\SchemaSqlBuilder;
 use LazyRecord\SchemaDeclare;
-
+use LazyRecord\QueryDriver;
 
 /**
  * Schema SQL builder
@@ -28,21 +28,12 @@ class SqliteDriver
 		/* if it's callable, we should not write the result into sql schema */
 		if( ($default = $column->default) !== null && ! is_callable($column->default )  ) { 
 
-			if( is_string($default) ) {
-				$sql .= " default '" . addslashes($default) . "'";
-			}
-			elseif( is_numeric($default) ) { 
-				$sql .= " default $default";
-			}
-			elseif( is_bool($default) ) {
-				$sql .= ' default ' . ( $default === true ? 'TRUE' : 'FALSE' );
-			}
-			elseif( is_array($default) ) {
-				// raw sql default value
-				$sql .= " default " . $default[0];
+            // raw sql default value
+			if( is_array($default) ) {
+				$sql .= ' default ' . $default[0];
 			}
 			else {
-				$sql .= " default $default";
+                $sql .= ' default ' . QueryDriver::getInstance()->inflate($default);
 			}
 		}
 
@@ -65,7 +56,6 @@ class SqliteDriver
 
                 // XXX: keep this
                 case SchemaDeclare::belongs_to:
-                    var_dump( $rel ); 
                     $fs = new $rel['foreign']['schema'];
                     $fcName = $rel['foreign']['column'];
                     $fc = $fs->columns[$fcName];
