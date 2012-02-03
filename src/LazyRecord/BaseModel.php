@@ -63,8 +63,7 @@ class BaseModel
             $stm = $this->dbQuery($sql);
 
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
-            $data = $stm->fetch( PDO::FETCH_ASSOC );
-            $this->_data = $data;
+            $this->_data = $stm->fetch( PDO::FETCH_ASSOC );
             $this->deflateHash( $this->_data );
         }
         catch ( PDOException $e ) {
@@ -111,6 +110,10 @@ class BaseModel
             return new OperationError( 'Create failed: ' .  $e->getMessage() );
         }
         $this->afterCreate( $args );
+
+
+        // xxx: load it back!
+        $this->_data = $args;
 
         $conn = $this->getConnection();
         $result = new OperationSuccess;
