@@ -104,29 +104,6 @@ class ModelBase extends \LazyRecord\SQLExecutor
     }
 
 
-    /***** Data Manipulators *****/
-
-    function __set( $name , $value ) 
-    {
-        $this->_data[ $name ] = $value; 
-    }
-
-    function __get( $key ) 
-    {
-        if( isset( $this->_data[ $key ] ) )
-            return $this->_data[ $key ];
-    }
-
-    function __isset( $name )
-    {
-        return isset($this->_data[ $name ] );
-    }
-
-    private function _resetData()
-    {
-        $this->_data = array();
-    }
-
     public function loadHash( $args ) 
     {
         $this->_data = $this->_convertArgs( $args );

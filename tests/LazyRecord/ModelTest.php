@@ -73,8 +73,10 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $this->pdoQueryOk( $dbh , $sql );
 
 
-
-
+        $connM = \LazyRecord\ConnectionManager::getInstance();
+        $connM->addDataSource('default', array( 
+            'dsn' => 'sqlite::memory:',
+        ));
 
         /****************************
          * Basic CRUD Test 
@@ -92,10 +94,15 @@ class ModelTest extends PHPUnit_Framework_TestCase
         ok( $query );
 
         $ret = $author->create(array( 'name' => 'Foo' ));
-        return;
-        $author->update(array( ));
+        ok( $ret );
+        // sqlite does not support last_insert_id: ok( $ret->id ); 
+        ok( $ret->success );
 
-        $author->delete();
+
+
+
+#          $author->update(array( ));
+#          $author->delete();
 
         /**
          * Static CRUD Test 
