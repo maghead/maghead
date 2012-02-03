@@ -24,6 +24,7 @@ class AuthorSchema extends \LazyRecord\SchemaDeclare
     {
         $this->column('id')
             ->type('integer')
+            ->isa('int')
             ->primary()
             ->autoIncrement();
 

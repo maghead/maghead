@@ -73,7 +73,10 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $this->pdoQueryOk( $dbh , $sql );
 
         $connM = \LazyRecord\ConnectionManager::getInstance();
-        $connM->close('default' );
+
+        if( $connM->has('default') )
+            $connM->close('default');
+
         $connM->add( $dbh, 'default' );
 
         /*

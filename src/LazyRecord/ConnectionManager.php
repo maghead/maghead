@@ -28,6 +28,13 @@ class ConnectionManager
     public $conns = array();
 
 
+
+
+    public function has($id)
+    {
+        return isset($this->conns[$id]);
+    }
+
     public function add($conn, $id = 'default' )
     {
         if( isset( $this->conns[ $id ] ) )

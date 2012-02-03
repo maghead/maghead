@@ -49,12 +49,13 @@ class BaseModel
     {
         $key = $this->schema->primaryKey;
         $column = $this->schema->getColumn( $key );
+        $kVal = Deflator::deflate( $kVal, $column->isa );
+
         $query = $this->createQuery();
         $query->select('*')
             ->where()
                 ->equal( $key , $kVal );
         $sql = $query->build();
-
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         $stm = null;
@@ -64,6 +65,12 @@ class BaseModel
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             $data = $stm->fetch( PDO::FETCH_ASSOC );
             $this->_data = $data;
+
+            foreach( $this->_data as $k => $v ) {
+                $col = $this->schema->getColumn( $k );
+                $this->_data[ $k ] = Deflator::deflate( $v , $col->isa );
+            }
+
         }
         catch ( PDOException $e ) {
             return new OperationError( "Load data failed" );
