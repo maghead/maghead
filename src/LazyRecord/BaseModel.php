@@ -5,6 +5,8 @@ use LazyRecord\QueryDriver;
 
 use LazyRecord\OperationResult\OperationError;
 use LazyRecord\OperationResult\OperationSuccess;
+use PDOException;
+use PDO;
 
 class BaseModel
 {
@@ -60,15 +62,33 @@ class BaseModel
             }
         }
 
+        // $args = $this->deflateArgs( $args );
+
         $q = $this->createQuery();
         $q->insert($args);
         $sql = $q->build();
 
 
         /* get connection, do query */
-        $conn = $this->getConnection();
-        $conn->query( $sql );
+        try {
+            $conn = $this->getConnection();
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $conn->query( $sql );
+        }
+        catch ( PDOException $e )
+        {
+            /*
+            if ($e->getCode == '2A000') {
+                echo "Syntax Error: " . $e->getMessage();
+            }
+            */
+            return new OperationError( 'Create failed: ' .  $e->getMessage() );
+        }
+        $this->afterCreate( $args );
 
+        $result = new OperationSuccess;
+        $result->id = $conn->lastInsertId;
+        return $result;
     }
 
 
