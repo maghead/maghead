@@ -1,3 +1,4 @@
 vendor
 tests/build
 build
+.onion/
