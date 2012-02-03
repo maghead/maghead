@@ -89,7 +89,7 @@ class BaseModel
             }
         }
 
-        // $args = $this->deflateArgs( $args );
+        // $args = $this->deflateData( $args );
 
         $q = $this->createQuery();
         $q->insert($args);
@@ -138,7 +138,7 @@ class BaseModel
 
 
 #          $args = $this->beforeUpdate( $args );
-#          $args = $this->deflateArgs( $args ); // apply args to columns
+#          $args = $this->deflateData( $args ); // apply args to columns
 
         $query = $this->createQuery();
         $query->update($args)->where()
@@ -170,7 +170,7 @@ class BaseModel
      * for integer  object, deflate it into int type.
      * for boolean  object, deflate it into bool type.
      */
-    public function deflateArgs( $args ) {
+    public function deflateData( $args ) {
         foreach( $args as $k => $v ) {
             $c = $this->schema->getColumn($k);
             if( $c )
@@ -178,6 +178,11 @@ class BaseModel
         }
         return $args;
     }
+
+
+
+
+
 
     public function resolveRelation($relationId)
     {
