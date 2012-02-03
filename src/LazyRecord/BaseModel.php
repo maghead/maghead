@@ -10,6 +10,7 @@ use PDO;
 
 class BaseModel
 {
+    private $_data;
     public $schema;
     protected $query;
 
@@ -87,10 +88,9 @@ class BaseModel
         $this->afterCreate( $args );
 
         $result = new OperationSuccess;
-        $result->id = $conn->lastInsertId;
+        $result->id = $conn->lastInsertId();
         return $result;
     }
-
 
     public function deflateArgs( $args ) {
         foreach( $args as $k => $v ) {
@@ -126,6 +126,29 @@ class BaseModel
         return $connManager->getDefault(); // xxx: support read/write connection later
     }
 
+
+
+    /***** Data Manipulators *****/
+    public function __set( $name , $value ) 
+    {
+        $this->_data[ $name ] = $value; 
+    }
+
+    public function __get( $key ) 
+    {
+        if( isset( $this->_data[ $key ] ) )
+            return $this->_data[ $key ];
+    }
+
+    public function __isset( $name )
+    {
+        return isset($this->_data[ $name ] );
+    }
+
+    public function resetData()
+    {
+        $this->_data = array();
+    }
 
 
 
