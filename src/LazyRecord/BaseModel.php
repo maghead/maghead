@@ -163,16 +163,21 @@ class BaseModel
 
 
 
-    // XXX: bug
+    /**
+     * deflate data from database 
+     *
+     * for datetime object, deflate it into DateTime object.
+     * for integer  object, deflate it into int type.
+     * for boolean  object, deflate it into bool type.
+     */
     public function deflateArgs( $args ) {
         foreach( $args as $k => $v ) {
             $c = $this->schema->getColumn($k);
             if( $c )
-                $args[ $k ] = $this->_data[ $k ] = $c->deflateValue( $v );
+                $args[ $k ] = $this->_data[ $k ] = $c->deflate( $v );
         }
         return $args;
     }
-
 
     public function resolveRelation($relationId)
     {
