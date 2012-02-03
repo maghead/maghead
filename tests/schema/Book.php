@@ -10,16 +10,16 @@ class BookSchema extends LazyRecord\SchemaDeclare
         $this->column('title')
                 ->varchar(256)
                 ->required()        /* will call requried validator, when create or update */
-                ->isa('string');
+                ->isa('str');
 
         $this->column('subtitle')
                 ->varchar(512)
                 ->default(' ')
-                ->isa('string');
+                ->isa('str');
 
         $this->column('isbn')
                 ->varchar(128)
-                ->isa('string')
+                ->isa('str')
                 ->default('---')
                 ->validate('IsbnValidator');
 
