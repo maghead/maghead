@@ -103,5 +103,14 @@ class ConnectionManager
         return $instance ?: $instance = new static;
     }
 
+
+    public function close($sourceId)
+    {
+        if( $conn = $this->getConnection($sourceId) ) {
+            $conn = null;
+            unset( $this->conns[ $sourceId ] );
+        }
+    }
+
 }
 

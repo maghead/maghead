@@ -72,9 +72,10 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
         $this->pdoQueryOk( $dbh , $sql );
 
-
         $connM = \LazyRecord\ConnectionManager::getInstance();
+        $connM->close('default' );
         $connM->add( $dbh, 'default' );
+
         /*
         $connM->addDataSource('default', array( 
             'dsn' => 'sqlite::memory:',
@@ -112,9 +113,10 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
         is( 'Bar', $author->name );
 
-#          $author->delete();
-
+        $ret = $author->delete();
         return;
+
+
         /**
          * Static CRUD Test 
          */
