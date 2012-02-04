@@ -35,15 +35,11 @@ class BaseModel
         return $q;
     }
 
-    public function beforeCreate( $args ) 
-    {
-        return $args;
-    }
 
-    public function afterCreate( $args ) 
-    {
 
-    }
+
+
+
 
     public function load($kVal)
     {
@@ -72,6 +68,29 @@ class BaseModel
         return new OperationSuccess;
     }
 
+
+
+    public function beforeCreate( $args ) 
+    {
+        return $args;
+    }
+
+
+    /**
+     * trigger for after create
+     */
+    public function afterCreate( $args ) 
+    {
+
+    }
+
+
+
+    /**
+     * create a new record
+     *
+     * @param array $args data
+     */
     public function create($args)
     {
         if( empty($args) )
@@ -121,6 +140,13 @@ class BaseModel
         return $result;
     }
 
+
+
+
+    /**
+     * delete current record, the record should be loaded already.
+     *
+     */
     public function delete()
     {
         $k = $this->schema->primaryKey;
@@ -143,6 +169,12 @@ class BaseModel
         return new OperationSuccess;
     }
 
+
+    /**
+     * update current record
+     *
+     * @param array $args
+     */
     public function update( $args ) 
     {
         $k = $this->schema->primaryKey;
@@ -190,6 +222,22 @@ class BaseModel
 
 
     /**
+     * Save current data (create or update)
+     * if primary key is defined, do update
+     * if primary key is not defined, do create
+     */
+    public function save()
+    {
+        $k = $this->schema->primaryKey;
+        $doCreate = ( $k && ! isset($this->_data[$k]) );
+        return $doCreate 
+            ? $this->create( $this->_data )
+            : $this->update( $this->_data );
+    }
+
+
+
+    /**
      * deflate data from database 
      *
      * for datetime object, deflate it into DateTime object.
@@ -208,6 +256,11 @@ class BaseModel
 
 
 
+    /**
+     * resolve record relation ship
+     *
+     * @param string $relationId relation id.
+     */
     public function resolveRelation($relationId)
     {
         $r = $this->schema->getRelation( $relationId );
@@ -224,6 +277,12 @@ class BaseModel
         }
     }
 
+
+    /**
+     * get pdo connetion and make a query
+     *
+     * @param string $sql SQL statement
+     */
     public function dbQuery($sql)
     {
         $conn = $this->getConnection();
@@ -232,6 +291,12 @@ class BaseModel
     }
 
 
+
+    /**
+     * get default connection object (PDO) from connection manager
+     *
+     * @return PDO
+     */
     public function getConnection()
     {
         // xxx: process for read/write source
@@ -272,12 +337,34 @@ class BaseModel
     }
 
 
+
+
     /**
-     * support static method of 'delete', 'find' 
+     * Handle static calls for model class.
+     *
+     * ModelName::delete()
+     *     ->where();
+     *
+     * ModelName::update( $hash )
+     *     ->where()
+     *        ->equal( 'id' , 123 )
+     *     ->back()
+     *     ->execute();
+     *
+     * ModelName::load( $id );
+     *
      */
-    public static function __callStatic($n, $a) 
+    public static function __callStatic($m, $a) 
     {
-        // $model = new static;
+        $called = get_called_class();
+        switch( $m ) {
+            case 'create':
+            case 'update':
+            case 'delete':
+            case 'load':
+                return forward_static_call_array(array( $called , '__static_' . $m), $a);
+                break;
+        }
         // return call_user_func_array( array($model,$name), $arguments );
     }
 
@@ -286,6 +373,25 @@ class BaseModel
 
     }
 
+    public static function __static_create($args)
+    {
+
+    }
+
+    public static function __static_update($args) 
+    {
+
+    }
+
+    public static function __static_delete()
+    {
+
+    }
+
+    public static function __static_load($args)
+    {
+
+    }
 
     public function deflateHash( & $args)
     {
