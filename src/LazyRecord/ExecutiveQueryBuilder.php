@@ -13,6 +13,7 @@ class ExecutiveQueryBuilder extends \SQLBuilder\QueryBuilder
 
         switch( $this->behavior ) {
             case static::INSERT:
+                $caller->__static_create_call();
                 break;
             case static::UPDATE:
                 break;
