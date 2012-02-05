@@ -36,8 +36,6 @@ class BaseCollection
     protected $itemCursor = null;
 
 
-
-
     public function __get( $key ) 
     {
         if( $key == '_schema' ) {
@@ -48,6 +46,9 @@ class BaseCollection
         }
         elseif( $key == '_query' ) {
             return $this->currentQuery ?: $this->createQuery();
+        }
+        elseif( $key == '_items' ) {
+            return $this->itemData ?: $this->_readRows();
         }
     }
 
@@ -105,9 +106,18 @@ class BaseCollection
 
     public function size()
     {
-        if( ! $this->itemData )
-            $this->_readRows();
-        return count($this->itemData);
+        return count($this->_items);
+    }
+
+    public function pager($page = 1,$pageSize = 10)
+    {
+        return new CollectionPager( $this->_items, $page, $pageSize );
+    }
+
+    public function items()
+    {
+
+
     }
 
 
@@ -121,6 +131,11 @@ class BaseCollection
         }
         return $this->itemData;
     }
+
+
+
+
+
 
 
     /**
@@ -155,8 +170,15 @@ class BaseCollection
     }
 
 
+
+
+
+
+
+
+
     /*******************************************
-     * duplicate methods from BaseModel 
+     * XXX: duplicate methods from BaseModel 
      * *****************************************/
 
     /**
