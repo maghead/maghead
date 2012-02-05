@@ -280,8 +280,7 @@ class Collection extends \LazyRecord\SQLExecutor
 
 
 
-    /*
-     *
+    /**
      * Implements Iterator methods 
      *
      * */

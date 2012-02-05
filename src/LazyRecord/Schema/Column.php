@@ -31,10 +31,7 @@ class Column
     public function deflate( $value )
     {
         // check self type, do type casting
-
-
-        // XXX:
-        return $value;
+        return \LazyRecord\Deflator::deflate( $value , $this->isa );
     }
 
 }

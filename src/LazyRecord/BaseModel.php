@@ -10,22 +10,11 @@ use PDO;
 
 class BaseModel
 {
-    public $_schema;
     public $_result;
 
     protected $_data;
 
-	public function __construct()
-	{
-        $this->_schema = $this->getSchema();
-	}
 
-	public function getSchema()
-	{
-		static $schema;
-        $schemaClass = static::schema_proxy_class;
-		return $schema ?: $schema = new $schemaClass;
-	}
 
     public function createQuery()
     {
@@ -44,9 +33,6 @@ class BaseModel
         $q->table( $this->_schema->table );
         return $q;
     }
-
-
-
 
 
 
@@ -260,7 +246,7 @@ class BaseModel
      * for integer  object, deflate it into int type.
      * for boolean  object, deflate it into bool type.
      */
-    public function deflateData( $args ) {
+    public function deflateData(& $args) {
         foreach( $args as $k => $v ) {
             $c = $this->_schema->getColumn($k);
             if( $c )
@@ -269,6 +255,11 @@ class BaseModel
         return $args;
     }
 
+
+    public function deflate()
+    {
+        $this->deflateData( $this->_data );
+    }
 
 
 
@@ -307,7 +298,6 @@ class BaseModel
     }
 
 
-
     /**
      * get default connection object (PDO) from connection manager
      *
@@ -323,6 +313,8 @@ class BaseModel
 
 
 
+
+
     /*******************
      * Data Manipulators 
      *********************/
@@ -333,6 +325,9 @@ class BaseModel
 
     public function __get( $key ) 
     {
+        if( $key == '_schema' )
+            return SchemaLoader::load( static::schema_proxy_class );
+
         if( isset( $this->_data[ $key ] ) )
             return $this->_data[ $key ];
     }
