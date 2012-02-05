@@ -110,7 +110,6 @@ class ConnectionManager
         return $instance ?: $instance = new static;
     }
 
-
     public function close($sourceId)
     {
         if( $conn = $this->getConnection($sourceId) ) {
@@ -119,5 +118,12 @@ class ConnectionManager
         }
     }
 
+
+    public function closeAll()
+    {
+        foreach( $this->conns as $id => $conn ) {
+            $this->close( $id );
+        }
+    }
 }
 
