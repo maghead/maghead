@@ -155,12 +155,11 @@ class BaseModel
 
 
 
-
     /**
      * delete current record, the record should be loaded already.
      *
      */
-    public function delete()
+    public function _delete()
     {
         $k = $this->_schema->primaryKey;
         if( $k && ! isset($this->_data[$k]) ) {
@@ -177,9 +176,12 @@ class BaseModel
         try {
             $this->dbQuery($sql);
         } catch( PDOException $e ) {
-            return new OperationError("Delete failed.");
+            return $this->reportError("Delete failed." , array(
+                'sql' => $sql,
+                'exception' => $e,
+            ));
         }
-        return new OperationSuccess;
+        return $this->reportSuccess('Deleted');
     }
 
 
@@ -192,7 +194,7 @@ class BaseModel
     {
         $k = $this->_schema->primaryKey;
         if( $k && ! isset($args[ $k ]) && ! isset($this->_data[$k]) ) {
-            return new OperationError('Record is not loaded, Can not update record.');
+            return $this->reportError('Record is not loaded, Can not update record.');
         }
 
         $kVal = isset($args[$k]) 
@@ -220,7 +222,10 @@ class BaseModel
             $stm = $this->dbQuery($sql);
         } 
         catch( PDOException $e ) {
-            return new OperationError( 'Update failed: ' .  $e->getMessage() );
+            return $this->reportError( 'Update failed', array(
+                'sql' => $sql,
+                'exception' => $e,
+            ));
         }
 
         // merge updated data
@@ -385,6 +390,7 @@ class BaseModel
     {
         switch($m) {
             case 'create':
+            case 'delete':
             case 'update':
                 return call_user_func_array(array($this,'_' . $m),$a);
                 break;
