@@ -2,28 +2,28 @@
 namespace LazyRecord\SchemaDeclare;
 
 
-
 /**
  * solution for var_export
  */
 class Exporter 
 {
+    const space = '  ';
 
-
-    static function export($data)
+    static function export($data,$level = 0)
     {
         if( is_array($data) ) 
         {
+            $level++;
             $str = "array( \n";
             foreach( $data as $k => $v ) {
                 if( is_integer($k) ) {
-                    $str .= static::export($v) . ",\n";
+                    $str .= str_repeat( static::space ,$level) . static::export($v,$level + 1) . ",\n";
                 }
                 else {
-                    $str .= "'$k' => " . static::export($v) . ",\n";
+                    $str .= str_repeat( static::space ,$level) . "'$k' => " . static::export($v, $level + 1) . ",\n";
                 }
             }
-            $str .= ") ";
+            $str .= str_repeat( static::space ,$level > 0 ? $level - 1 : 0) . ")";
             return $str;
         }
         elseif( is_callable($data) && is_object($data) ) {

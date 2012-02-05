@@ -4,7 +4,8 @@ use Exception;
 
 function twig_var_export($obj)
 {
-	return var_export($obj,true);
+    return \LazyRecord\SchemaDeclare\Exporter::export($obj);
+	// return var_export($obj,true);
 }
 
 class CodeGen
