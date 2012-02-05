@@ -120,6 +120,11 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         }
         is( 10, $authors->size() ); 
 
+        $pager = $authors->pager(1,10);
+        ok( $pager );
+
+        $pager = $authors->pager();
+        ok( $pager );
     }
 }
 
