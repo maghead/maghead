@@ -1,6 +1,9 @@
 
+
+all: phpci phpunit
+
 phpci:
 	phpci print -R --reference=PHP5 src
 
-test:
+phpunit:
 	phpunit --coverage-html build tests

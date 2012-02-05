@@ -10,9 +10,6 @@ class CollectionPager
     /* size of per page */
     public $perPage;
 
-    /* size of items */
-    public $totalItems;
-
     /* size of pages */
     public $totalPages;
 
@@ -31,48 +28,52 @@ class CollectionPager
         $this->perPage     = $pagenum;
         $this->currentPage = $page;
         $this->dataArray   = $dataArray;
-    }
-
-    public function setTotal( $total )
-    {
-        $this->totalItems  = $total;
         $this->calculate();
     }
 
     public function setPerPage( $num ) 
     {
         $this->perPage = $num; 
+        $this->calculate();
     }
 
     public function setPage( $num )
     {
         $this->currentPage = $num; 
+        $this->calculate();
+    }
+
+    public function pages()
+    {
+        return $this->totalPages;
     }
 
     public function next()
     {
         $this->currentPage++;
+        $this->calculate();
     }
 
     public function previous()
     {
         $this->currentPage--;
+        $this->calculate();
     }
 
-    function calculate() 
+    public function calculate() 
     {
         $this->startFrom  = ($this->currentPage - 1) * $this->perPage;
-        if( $this->startFrom > $this->totalItems )
-            throw new \Exception('Pager position exceed.');
-
-        $this->totalPages = $this->totalItems > 0 
-            ?  ceil( $this->totalItems / $this->perPage ) 
+        $this->totalPages = ($c = count($this->dataArray)) > 0 
+            ? ceil( $c / $this->perPage ) 
             : 1;
     }
 
     public function items()
     {
-        return $this->dataArray;
+        return array_slice($this->dataArray, 
+            $this->startFrom, 
+            $this->perPage
+        );
     }
 
 }
