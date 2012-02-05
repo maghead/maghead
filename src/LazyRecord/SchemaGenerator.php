@@ -96,6 +96,7 @@ class SchemaGenerator
 		return array( $class, $sourceFile );
 	}
 
+
 	private function preventFileDir($path,$mode = 0755)
 	{
 		$dir = dirname($path);
