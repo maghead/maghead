@@ -89,7 +89,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
          * Basic CRUD Test 
          * **************************/
         $author = new \tests\Author;
-        ok( $author->schema );
+        ok( $author->_schema );
 
         $ret = $author->create(array());
         ok( $ret );
@@ -119,15 +119,17 @@ class ModelTest extends PHPUnit_Framework_TestCase
         is( 'Bar', $author->name );
 
         $ret = $author->delete();
-        return;
-
+        ok( $ret->success );
 
         /**
          * Static CRUD Test 
          */
-        Author::create(array( 
+        $record = \tests\Author::create(array( 
             'name' => 'Mary'
         ));
+        return;
+
+
 
         Author::update(array( 'name' => 'Rename' ))
             ->where()->equal('')
