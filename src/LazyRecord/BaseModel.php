@@ -10,13 +10,14 @@ use PDO;
 
 class BaseModel
 {
-    private $_data;
-    public $schema;
-    protected $query;
+    public $_schema;
+    public $_result;
+
+    protected $_data;
 
 	public function __construct()
 	{
-        $this->schema = $this->getSchema();
+        $this->_schema = $this->getSchema();
 	}
 
 	public function getSchema()
@@ -30,7 +31,7 @@ class BaseModel
     {
         $q = new QueryBuilder();
         $q->driver = QueryDriver::getInstance();
-        $q->table( $this->schema->table );
+        $q->table( $this->_schema->table );
         $q->limit(1);
         return $q;
     }
@@ -43,8 +44,8 @@ class BaseModel
 
     public function load($kVal)
     {
-        $key = $this->schema->primaryKey;
-        $column = $this->schema->getColumn( $key );
+        $key = $this->_schema->primaryKey;
+        $column = $this->_schema->getColumn( $key );
         $kVal = Deflator::deflate( $kVal, $column->isa );
 
         $query = $this->createQuery();
@@ -91,14 +92,14 @@ class BaseModel
      *
      * @param array $args data
      */
-    public function create($args)
+    protected function _create($args)
     {
         if( empty($args) )
-            return new OperationError( "Empty arguments" );
+            return $this->reportError( "Empty arguments" );
             
         $args = $this->beforeCreate( $args );
-        foreach( $this->schema->columns as $columnHash ) {
-            $c = $this->schema->getColumn( $columnHash['name'] );
+        foreach( $this->_schema->columns as $columnHash ) {
+            $c = $this->_schema->getColumn( $columnHash['name'] );
 
             if( ! $c->primary 
                 && $c->requried 
@@ -149,7 +150,7 @@ class BaseModel
      */
     public function delete()
     {
-        $k = $this->schema->primaryKey;
+        $k = $this->_schema->primaryKey;
         if( $k && ! isset($this->_data[$k]) ) {
             return new OperationError('Record is not loaded, Record delete failed.');
         }
@@ -175,9 +176,9 @@ class BaseModel
      *
      * @param array $args
      */
-    public function update( $args ) 
+    public function _update( $args ) 
     {
-        $k = $this->schema->primaryKey;
+        $k = $this->_schema->primaryKey;
         if( $k && ! isset($args[ $k ]) && ! isset($this->_data[$k]) ) {
             return new OperationError('Record is not loaded, Can not update record.');
         }
@@ -228,7 +229,7 @@ class BaseModel
      */
     public function save()
     {
-        $k = $this->schema->primaryKey;
+        $k = $this->_schema->primaryKey;
         $doCreate = ( $k && ! isset($this->_data[$k]) );
         return $doCreate 
             ? $this->create( $this->_data )
@@ -246,7 +247,7 @@ class BaseModel
      */
     public function deflateData( $args ) {
         foreach( $args as $k => $v ) {
-            $c = $this->schema->getColumn($k);
+            $c = $this->_schema->getColumn($k);
             if( $c )
                 $args[ $k ] = $this->_data[ $k ] = $c->deflate( $v );
         }
@@ -263,7 +264,7 @@ class BaseModel
      */
     public function resolveRelation($relationId)
     {
-        $r = $this->schema->getRelation( $relationId );
+        $r = $this->_schema->getRelation( $relationId );
         switch( $r['type'] ) {
             case self::many_to_many:
             break;
@@ -370,12 +371,19 @@ class BaseModel
 
     public function __call($m,$a)
     {
-
+        switch($m) {
+            case 'create':
+            case 'update':
+                return call_user_func_array(array($this,'_' . $m),$a);
+                break;
+        }
     }
 
     public static function __static_create($args)
     {
-
+        $model = new static;
+        $model->create($args);
+        return $model;
     }
 
     public static function __static_update($args) 
@@ -396,11 +404,21 @@ class BaseModel
     public function deflateHash( & $args)
     {
         foreach( $args as $k => $v ) {
-            $col = $this->schema->getColumn( $k );
+            $col = $this->_schema->getColumn( $k );
             $args[ $k ] = $col 
                 ? Deflator::deflate( $v , $col->isa ) 
                 : $v;
         }
+    }
+
+    protected function reportError($message,$extra = array() )
+    {
+        return $this->_result = new OperationError($message,$extra);
+    }
+
+    protected function reportSuccess($message,$extra = array() )
+    {
+        return $this->_result = new OperationSuccess($message,$extra);
     }
 
 

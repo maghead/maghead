@@ -8,9 +8,12 @@ class OperationResult
     public $success;
     public $message;
 
-    public function __construct($message = null)
+    public function __construct($message = null, $extra = array() )
     {
         $this->message = $message;
+        foreach( $extra as $k => $v ) {
+            $this->$k = $v;
+        }
     }
 }
 
