@@ -126,9 +126,15 @@ class Column
 
     public function export()
     {
+        $attrs = $this->attributes;
+        foreach( $attrs as $k => $v ) {
+            if( is_callable($v) && is_object($v) ) {
+                $attrs[ $k ] = \LazyRecord\ClosureSerializer::serialize($v);
+            }
+        }
         return array(
             'name' => $this->name,
-            'attributes' => $this->attributes,
+            'attributes' => $attrs,
         );
     }
 
