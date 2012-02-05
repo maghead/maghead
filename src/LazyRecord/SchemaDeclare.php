@@ -163,6 +163,12 @@ abstract class SchemaDeclare
         return $refl->getShortName();
     }
 
+    public function getDir()
+    {
+        $refl = new \ReflectionObject($this);
+        return dirname($refl->getFilename());
+    }
+
     public function setWriteSource($sourceId)
     {
         $this->writeSourceId = $sourceId;

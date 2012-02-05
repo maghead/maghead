@@ -13,8 +13,6 @@ class SchemaGenerator
 {
 	public $schemaPaths = array();
 
-	public $targetPath;
-
 	public $logger;
 
 	public function __construct() {  
@@ -29,11 +27,6 @@ class SchemaGenerator
 	public function setLogger($logger)
 	{
 		$this->logger = $logger;
-	}
-
-	public function setTargetPath($path)
-	{
-		$this->targetPath = rtrim($path,DIRECTORY_SEPARATOR);
 	}
 
 	public function loadSchemaFiles()
@@ -76,17 +69,18 @@ class SchemaGenerator
 		return $codegen->renderFile($file);
 	}
 
-	protected function generateClass($templateFile,$cTemplate,$extra = array(), $overwrite = false)
+	protected function generateClass($targetDir,$templateFile,$cTemplate,$extra = array(), $overwrite = false)
 	{
-		$source = $this->renderCode( $templateFile , array(
+		$source = $this->renderCode( $templateFile , array_merge( array(
 			'class'   => $cTemplate,
-		) + $extra );
-		$sourceFile = $this->targetPath 
+		), $extra ) );
+
+		$sourceFile = $targetDir 
 			. DIRECTORY_SEPARATOR 
 			. str_replace( '\\' , DIRECTORY_SEPARATOR , 
 					ltrim($cTemplate->class->getFullName(),'\\' ) ) . '.php';
 
-		$class = $cTemplate->class->getFullName();
+		$class = ltrim($cTemplate->class->getFullName(),'\\');
 		$this->logger->info( "Generating model class: $class => $sourceFile" );
 		$this->preventFileDir( $sourceFile );
 
@@ -148,7 +142,7 @@ class SchemaGenerator
 		$modelClass  = $schema->getModelClass();
 		$schemaProxyClass = $schema->getSchemaProxyClass();
 
-		$sourceFile = $this->targetPath . DIRECTORY_SEPARATOR 
+		$sourceFile = $schema->getDir() . DIRECTORY_SEPARATOR 
 			. str_replace( '\\' , DIRECTORY_SEPARATOR , $schemaProxyClass ) . '.php';
 
 		$this->preventFileDir( $sourceFile );
@@ -176,7 +170,7 @@ class SchemaGenerator
 		$cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
 
 		$cTemplate->extendClass( 'LazyRecord\\BaseModel' );
-		return $this->generateClass( 'Class.php.twig', $cTemplate , array() , true );
+		return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true );
 	}
 
 	protected function buildModelClass($schema)
@@ -186,7 +180,7 @@ class SchemaGenerator
 		$cTemplate = new CodeGen\ClassTemplate( $schema->getModelClass() );
 		$cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
 		$cTemplate->extendClass( $baseClass );
-		return $this->generateClass( 'Class.php.twig', $cTemplate );
+		return $this->generateClass( $schema->getDir() , 'Class.php.twig', $cTemplate );
 	}
 
 	protected function buildBaseCollectionClass($schema)
@@ -197,7 +191,7 @@ class SchemaGenerator
 		$cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
 		$cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
 		$cTemplate->extendClass( 'LazyRecord\\BaseCollection' );
-		return $this->generateClass( 'Class.php.twig', $cTemplate , array() , true ); // overwrite
+		return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true ); // overwrite
 	}
 
 	protected function buildCollectionClass($schema)
@@ -207,7 +201,7 @@ class SchemaGenerator
 
 		$cTemplate = new CodeGen\ClassTemplate( $collectionClass );
 		$cTemplate->extendClass( $baseCollectionClass );
-		return $this->generateClass( 'Class.php.twig', $cTemplate );
+		return $this->generateClass( $schema->getDir() , 'Class.php.twig', $cTemplate );
 	}
 
 	public function generate()
