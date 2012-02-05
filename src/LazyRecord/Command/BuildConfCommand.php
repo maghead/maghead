@@ -28,7 +28,6 @@ class BuildConfCommand extends \CLIFramework\Command
         $builder->validate();
         $content = $builder->build();
 
-
         $outputPath = 'build/lazy/config.php';
         $outputDir  = dirname($outputPath);
 
@@ -38,5 +37,6 @@ class BuildConfCommand extends \CLIFramework\Command
         if( file_put_contents( $outputPath , $content ) !== false ) {
             $this->getLogger()->info("Config file is generated at: $outputPath");
         }
+
     }
 }
