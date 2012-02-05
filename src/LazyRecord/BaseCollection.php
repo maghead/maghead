@@ -113,11 +113,17 @@ class BaseCollection
         return $this->itemData;
     }
 
-
     public function where()
     {
-
+        return $this->_query->where();
     }
+
+    public function join($table)
+    {
+        return $this->_query->join($table);
+    }
+
+
 
 
     /**
