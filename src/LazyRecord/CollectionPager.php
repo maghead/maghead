@@ -54,6 +54,11 @@ class CollectionPager
         $this->currentPage++;
     }
 
+    public function previous()
+    {
+        $this->currentPage--;
+    }
+
     function calculate() 
     {
         $this->startFrom  = ($this->currentPage - 1) * $this->perPage;
@@ -65,7 +70,7 @@ class CollectionPager
             : 1;
     }
 
-    public function getItems()
+    public function items()
     {
         return $this->dataArray;
     }
