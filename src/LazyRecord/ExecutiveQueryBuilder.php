@@ -4,28 +4,23 @@ namespace LazyRecord;
 
 class ExecutiveQueryBuilder extends \SQLBuilder\QueryBuilder
 {
-    public $caller;
+    public $callback;
 
     public function execute()
     {
-        $caller = $this->caller;
         $sql = $this->build();
-
         switch( $this->behavior ) {
             case static::INSERT:
-                $caller->__static_create_call();
-                break;
             case static::UPDATE:
-                break;
             case static::DELETE:
-                break;
             case static::SELECT:
+                return call_user_func( $this->callback, $this, $sql);
+                break;
+            default:
+                throw new \Exception('behavior is not defined.');
                 break;
         }
-
-        // $caller->
     }
-
 }
 
 
