@@ -15,8 +15,8 @@
     'slave' => 
     array (
       'dsn' => 'mysql:host=localhost;dbname=test',
-      'user' => 'foo',
-      'pass' => 'foo',
+      'user' => 'root',
+      'pass' => 123123,
     ),
   ),
 );
