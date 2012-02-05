@@ -40,7 +40,6 @@ class ConnectionManager
     {
         if( isset( $this->conns[ $id ] ) )
             throw new Exception( "$id connection is already defined." );
-
         $this->conns[ $id ] = $conn;
     }
 
@@ -56,6 +55,13 @@ class ConnectionManager
     public function addDataSource($id,$config)
     {
         $this->datasources[ $id ] = $config;
+    }
+
+
+    public function getDataSource($id)
+    {
+        if( isset($this->datasources[ $id ] ) )
+            return $this->datasources[ $id ];
     }
 
 
@@ -76,15 +82,11 @@ class ConnectionManager
      *                     sqlite2:mydb.sq2
      *
      */
-    public function create()
-    {
-        // $this->conns[ $connection->id ] = $connection;
-    }
-
     public function getConnection($sourceId)
     {
         if( isset($this->conns[$sourceId]) ) {
             return $this->conns[$sourceId];
+
         } elseif( isset($this->datasources[ $sourceId ] ) ) {
             $config = $this->datasources[ $sourceId ];
             $conn = new PDO( $config['dsn'], 
@@ -92,7 +94,6 @@ class ConnectionManager
                 @$config['pass'] , 
                 @$config['options']
             );
-
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // register connection to connection pool
@@ -121,12 +122,22 @@ class ConnectionManager
         }
     }
 
-
     public function closeAll()
     {
         foreach( $this->conns as $id => $conn ) {
             $this->close( $id );
         }
+    }
+
+
+    /**
+     * free connections,
+     * reset data sources
+     */
+    public function free()
+    {
+        $this->closeAll();
+        $this->datasources = array();
     }
 }
 

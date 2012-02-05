@@ -51,6 +51,15 @@ class BaseCollection
         }
     }
 
+    public function __call($m,$a)
+    {
+        $q = $this->_query;
+        if( method_exists($q,$m) ) {
+            return call_user_func_array(array($q,$m),$a);
+        }
+
+    }
+
     public function createQuery()
     {
         $q = new QueryBuilder;
@@ -112,18 +121,6 @@ class BaseCollection
         }
         return $this->itemData;
     }
-
-    public function where()
-    {
-        return $this->_query->where();
-    }
-
-    public function join($table)
-    {
-        return $this->_query->join($table);
-    }
-
-
 
 
     /**
