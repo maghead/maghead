@@ -127,13 +127,23 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $record = \tests\Author::create(array( 
             'name' => 'Mary'
         ));
+
+
+        /**
+         * Which runs:
+         *    UPDATE authors SET name = 'Rename' WHERE name = 'Mary'
+         */
+        $ret = \tests\Author::update(array( 'name' => 'Rename' ))
+            ->where()
+                ->equal('name','Mary')
+                ->back()
+                ->execute();
+        
+        ok( $ret->success );
         return;
 
 
 
-        Author::update(array( 'name' => 'Rename' ))
-            ->where()->equal('')
-            ->back()->execute();
 
         Author::delete()
             ->where()->equal('')

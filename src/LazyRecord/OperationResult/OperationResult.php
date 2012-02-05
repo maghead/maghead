@@ -7,6 +7,7 @@ class OperationResult
     public $code;
     public $success;
     public $message;
+    public $sql;
 
     public function __construct($message = null, $extra = array() )
     {

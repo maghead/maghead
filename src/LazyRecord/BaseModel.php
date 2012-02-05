@@ -37,6 +37,14 @@ class BaseModel
     }
 
 
+    public function createExecutiveQuery()
+    {
+        $q = new ExecutiveQueryBuilder;
+        $q->driver = QueryDriver::getInstance();
+        $q->table( $this->_schema->table );
+        return $q;
+    }
+
 
 
 
@@ -64,9 +72,14 @@ class BaseModel
             $this->deflateHash( $this->_data );
         }
         catch ( PDOException $e ) {
-            return new OperationError( "Load data failed" );
+            return new OperationError( "Load data failed" , array( 
+                'sql' => $sql 
+            ));
         }
-        return new OperationSuccess;
+
+        return new OperationSuccess('Loaded', array( 
+            'sql' => $sql
+        ));
     }
 
 
@@ -122,11 +135,6 @@ class BaseModel
         }
         catch ( PDOException $e )
         {
-            /*
-            if ($e->getCode == '2A000') {
-                echo "Syntax Error: " . $e->getMessage();
-            }
-            */
             return new OperationError( 'Create failed: ' .  $e->getMessage() );
         }
         $this->afterCreate( $args );
@@ -388,7 +396,20 @@ class BaseModel
 
     public static function __static_update($args) 
     {
-
+        $model = new static;
+        $query = $model->createExecutiveQuery();
+        $query->update($args);
+        $query->callback = function($builder,$sql) use ($model) {
+            try {
+                $stm = $model->dbQuery($sql);
+            }
+            catch ( PDOException $e )
+            {
+                return new OperationError( 'Update failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
+            }
+            return new OperationSuccess('Updated', array( 'sql' => $sql ));
+        };
+        return $query;
     }
 
     public static function __static_delete()
@@ -411,12 +432,13 @@ class BaseModel
         }
     }
 
-    protected function reportError($message,$extra = array() )
+
+    public function reportError($message,$extra = array() )
     {
         return $this->_result = new OperationError($message,$extra);
     }
 
-    protected function reportSuccess($message,$extra = array() )
+    public function reportSuccess($message,$extra = array() )
     {
         return $this->_result = new OperationSuccess($message,$extra);
     }
