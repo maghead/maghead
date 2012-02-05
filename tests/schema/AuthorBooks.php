@@ -48,6 +48,11 @@ class AuthorSchema extends \LazyRecord\SchemaDeclare
             ->default(false)
             ->boolean();
 
+        $this->column('created_on')
+            ->isa('DateTime')
+            ->defaultBuilder( function() { return date('c'); } )
+            ->timestamp();
+
         // $this->belongsTo( '\tests\AuthorBookSchema' , 'author_id' );
     }
 

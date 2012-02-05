@@ -143,9 +143,7 @@ class BaseModel
         }
         $this->afterCreate( $args );
 
-
-        // xxx: load it back!
-        $this->_data = $args;
+        $this->_data = $this->deflateData($args);
 
         $conn = $this->getConnection();
         return $this->reportSuccess('Created', array(
