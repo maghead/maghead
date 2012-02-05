@@ -144,9 +144,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
             ->where()
                 ->equal('name','Rename')
             ->back()->execute();
-
-        var_dump( $ret ); 
-
+        ok( $ret->success );
         return;
 	}
 }
