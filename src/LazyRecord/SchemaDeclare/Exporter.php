@@ -31,9 +31,5 @@ class Exporter
         }
         return var_export($data,true);
     }
-
-
 }
-
-
 
