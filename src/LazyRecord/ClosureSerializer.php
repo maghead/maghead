@@ -30,7 +30,3 @@ class ClosureSerializer
     }
 }
 
-
-
-
-
