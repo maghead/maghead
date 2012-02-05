@@ -45,15 +45,10 @@ abstract class SchemaDeclare
                 $this->primaryKey = $name;
         }
 
+        /*
         foreach( $this->mixins as $mixinClass ) {
-            $mixin = new $mixinClass;
-            $mixin->schema();
-
-            /* merge columns into self */
-            $this->columns = array_merge( $mixin->columns, $this->columns );
-            $this->relations = array_merge( $mixin->relations, $this->relations );
         }
-
+        */
     }
 
     public function export()
@@ -87,6 +82,12 @@ abstract class SchemaDeclare
     public function mixin($class)
     {
         $this->mixins[] = $class;
+
+        $mixin = new $class;
+
+        /* merge columns into self */
+        $this->columns = array_merge( $mixin->columns, $this->columns );
+        $this->relations = array_merge( $mixin->relations, $this->relations );
     }
 
     public function getTable() 

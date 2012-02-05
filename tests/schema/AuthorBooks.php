@@ -2,6 +2,19 @@
 namespace tests {
 use LazyRecord\SchemaDeclare;
 
+class MetadataMixinSchema extends SchemaDeclare
+{
+
+    function schema()
+    {
+        $this->column('created_on')
+            ->isa('DateTime')
+            ->defaultBuilder( function() { return date('c'); } )
+            ->timestamp();
+    }
+
+}
+
 class PublisherSchema extends SchemaDeclare
 {
 
@@ -48,10 +61,7 @@ class AuthorSchema extends \LazyRecord\SchemaDeclare
             ->default(false)
             ->boolean();
 
-        $this->column('created_on')
-            ->isa('DateTime')
-            ->defaultBuilder( function() { return date('c'); } )
-            ->timestamp();
+        $this->mixin('tests\MetadataMixinSchema');
 
         // $this->belongsTo( '\tests\AuthorBookSchema' , 'author_id' );
     }
