@@ -1,7 +1,6 @@
 <?php
 namespace LazyRecord\SchemaDeclare;
 
-
 /**
  * solution for var_export
  */
