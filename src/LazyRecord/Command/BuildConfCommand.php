@@ -7,7 +7,7 @@ class BuildConfCommand extends \CLIFramework\Command
 
     public function options($opts)
     {
-        $opts->add('output:','output file.');
+        $opts->add('o|output:','output file.');
     }
 
     public function execute()
