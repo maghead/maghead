@@ -116,8 +116,7 @@ class BaseCollection
 
     public function items()
     {
-
-
+        return $this->_items;
     }
 
 
