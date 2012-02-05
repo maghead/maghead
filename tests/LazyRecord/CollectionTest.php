@@ -85,7 +85,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
                 'name' => 'Foo-' . $i,
                 'email' => 'foo@foo' . $i,
                 'identity' => 'foo' . $i,
-                'confirmed' => true,
+                'confirmed' => $i % 2 ? true : false,
             ));
             ok( $ret->success );
         }
@@ -114,12 +114,11 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $authors->where()
                 ->equal( 'confirmed' , true );
 
+        
         foreach( $authors as $author ) {
             ok( $author->confirmed );
         }
-
-
-
+        is( 10, $authors->size() ); 
 
     }
 }
