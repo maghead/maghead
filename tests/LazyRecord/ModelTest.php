@@ -45,7 +45,6 @@ class ModelTest extends PHPUnit_Framework_TestCase
 		$generator = new \LazyRecord\SchemaGenerator;
 		$generator->addPath( 'tests/schema/' );
 		$generator->setLogger( $this->getLogger() );
-		$generator->setTargetPath( 'tests/build/' );
 		$classMap = $generator->generate();
         ok( $classMap );
 
