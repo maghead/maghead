@@ -126,30 +126,30 @@ class BaseCollection
     /**
      * Implements Iterator methods 
      */
-    function rewind()
+    public function rewind()
     { 
         $this->itemCursor = 0;
     }
 
     /* is current row a valid row ? */
-    function valid()
+    public function valid()
     {
         if( $this->itemData == null )
             $this->_readRows();
         return isset($this->itemData[ $this->itemCursor ] );
     }
 
-    function current() 
+    public function current() 
     { 
         return $this->itemData[ $this->itemCursor ];
     }
 
-    function next() 
+    public function next() 
     {
         return $this->itemData[ $this->itemCursor++ ];
     }
 
-    function key()
+    public function key()
     {
         return $this->itemCursor;
     }
