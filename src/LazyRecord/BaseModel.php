@@ -72,12 +72,13 @@ class BaseModel
             $this->deflateHash( $this->_data );
         }
         catch ( PDOException $e ) {
-            return new OperationError( "Load data failed" , array( 
-                'sql' => $sql 
+            return $this->reportError( "Data load failed" , array( 
+                'sql' => $sql,
+                'exception' => $e,
             ));
         }
 
-        return new OperationSuccess('Loaded', array( 
+        return $this->reportSuccess('Data loaded', array( 
             'sql' => $sql
         ));
     }
@@ -135,7 +136,10 @@ class BaseModel
         }
         catch ( PDOException $e )
         {
-            return new OperationError( 'Create failed: ' .  $e->getMessage() );
+            return $this->reportError( "Create failed" , array( 
+                'sql' => $sql,
+                'exception' => $e,
+            ));
         }
         $this->afterCreate( $args );
 
