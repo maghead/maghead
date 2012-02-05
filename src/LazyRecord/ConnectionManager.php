@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord;
 use Exception;
+use PDO;
 
 class ConnectionException extends Exception
 {
@@ -86,11 +87,13 @@ class ConnectionManager
             return $this->conns[$sourceId];
         } elseif( isset($this->datasources[ $sourceId ] ) ) {
             $config = $this->datasources[ $sourceId ];
-            $conn = new \PDO( $config['dsn'], 
+            $conn = new PDO( $config['dsn'], 
                 @$config['user'] , 
                 @$config['pass'] , 
                 @$config['options']
             );
+
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // register connection to connection pool
             return $this->conns[ $sourceId ] = $conn;
