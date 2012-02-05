@@ -4,6 +4,12 @@ use Exception;
 
 class BuildConfCommand extends \CLIFramework\Command
 {
+
+    public function options($opts)
+    {
+        $opts->add('output:','output file.');
+    }
+
     public function execute()
     {
         /**
@@ -11,6 +17,7 @@ class BuildConfCommand extends \CLIFramework\Command
          * 
          * build/lazy/config.php   # is generated
          */
+        $options = $this->getOptions();
         $configFiles = func_get_args();
 
         if( empty($configFiles) )
@@ -28,7 +35,7 @@ class BuildConfCommand extends \CLIFramework\Command
         $builder->validate();
         $content = $builder->build();
 
-        $outputPath = 'build/lazy/config.php';
+        $outputPath = $options->output ? $options->output->value : 'build/lazy/config.php';
         $outputDir  = dirname($outputPath);
 
         if( ! file_exists($outputDir) )
