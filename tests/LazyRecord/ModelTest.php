@@ -24,14 +24,20 @@ class ModelTest extends PHPUnit_Framework_TestCase
         return $ret;
     }
 
-	function testSqlite()
-	{
+    function getSqliteConnection() 
+    {
 		if( file_exists('tests.db') ) {
 			unlink('tests.db');
 		}
 
         // build schema 
 		$dbh = new PDO('sqlite::memory:'); // success
+        return $dbh;
+    }
+
+	function testSqlite()
+	{
+        $dbh = $this->getSqliteConnection();
 		$builder = new SchemaSqlBuilder('sqlite');
 		ok( $builder );
 
