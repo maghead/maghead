@@ -138,18 +138,16 @@ class ModelTest extends PHPUnit_Framework_TestCase
                 ->equal('name','Mary')
                 ->back()
                 ->execute();
-        
         ok( $ret->success );
-        return;
 
-
-
-
-        Author::delete()
-            ->where()->equal('')
+        $ret = \tests\Author::delete()
+            ->where()
+                ->equal('name','Rename')
             ->back()->execute();
 
+        var_dump( $ret ); 
 
+        return;
 	}
 }
 

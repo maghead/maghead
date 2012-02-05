@@ -4,7 +4,6 @@ namespace LazyRecord\OperationResult;
 class OperationResult
 {
     public $id;
-    public $code;
     public $success;
     public $message;
     public $sql;

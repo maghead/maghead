@@ -5,7 +5,7 @@ class OperationError extends OperationResult
 {
     public $success = false;
     public $exception;
-
+    public $code;
 
     public function __toString()
     {
