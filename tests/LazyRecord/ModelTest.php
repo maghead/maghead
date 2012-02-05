@@ -125,9 +125,14 @@ class ModelTest extends PHPUnit_Framework_TestCase
          * Static CRUD Test 
          */
         $record = \tests\Author::create(array( 
-            'name' => 'Mary'
+            'name' => 'Mary',
+            'email' => 'zz@zz',
+            'identity' => 'zz',
         ));
+        ok( $record->_result->success );
 
+        
+        
 
         /**
          * Which runs:
@@ -145,6 +150,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
                 ->equal('name','Rename')
             ->back()->execute();
         ok( $ret->success );
+
         return;
 	}
 }

@@ -17,7 +17,7 @@ class OperationError extends OperationResult
         $str .= ' ' . $this->message;
 
         if( $this->exception ) 
-            $str .= ' E: ' . $this->excpetion->getMessage();
+            $str .= ' E: ' . $this->exception->getMessage();
         return $str;
     }
 

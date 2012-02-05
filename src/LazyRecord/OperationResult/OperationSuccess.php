@@ -7,7 +7,7 @@ class OperationSuccess extends OperationResult
 
     public function __toString()
     {
-        return $this->message;
+        return (string) $this->message;
     }
 }
 

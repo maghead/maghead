@@ -148,9 +148,9 @@ class BaseModel
         $this->_data = $args;
 
         $conn = $this->getConnection();
-        $result = new OperationSuccess;
-        $result->id = $conn->lastInsertId();
-        return $result;
+        return $this->reportSuccess('Created', array(
+            'id' => $conn->lastInsertId(),
+        ));
     }
 
 
@@ -400,7 +400,7 @@ class BaseModel
     public static function __static_create($args)
     {
         $model = new static;
-        $model->create($args);
+        $ret = $model->create($args);
         return $model;
     }
 
