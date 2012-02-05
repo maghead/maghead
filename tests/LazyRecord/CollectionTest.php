@@ -4,6 +4,12 @@
 class CollectionTest extends PHPUnit_Framework_TestCase
 {
 
+    function setUp()
+    {
+        \LazyRecord\ConnectionManager::getInstance()->free();
+        \LazyRecord\QueryDriver::getInstance()->free();
+    }
+
 	function getLogger()
 	{
 		return new TestLogger;
@@ -24,21 +30,14 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         return $ret;
     }
 
-    function getSqliteConnection() 
-    {
-		if( file_exists('tests.db') ) {
-			unlink('tests.db');
-		}
-
-        // build schema 
-        $dbh = new PDO('sqlite::memory:'); // success
-		// $dbh = new PDO('sqlite:tests.db'); // success
-        return $dbh;
-    }
-
     function test()
     {
-        $dbh = $this->getSqliteConnection();
+        $connM = \LazyRecord\ConnectionManager::getInstance();
+        $connM->addDataSource('default',array(
+            'dsn' => 'sqlite::memory:'
+        ));
+
+        $dbh = $connM->getDefault();
 		$builder = new SchemaSqlBuilder('sqlite');
 		ok( $builder );
 
@@ -79,13 +78,6 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
         $this->pdoQueryOk( $dbh , $sql );
 
-        $connM = \LazyRecord\ConnectionManager::getInstance();
-
-        if( $connM->has('default') )
-            $connM->close('default');
-
-        $connM->add( $dbh, 'default' );
-
 
         $author = new \tests\Author;
         foreach( range(1,20) as $i ) {
@@ -93,6 +85,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
                 'name' => 'Foo-' . $i,
                 'email' => 'foo@foo' . $i,
                 'identity' => 'foo' . $i,
+                'confirmed' => true,
             ));
             ok( $ret->success );
         }
@@ -108,7 +101,6 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
         is( 20, $authors->size() ); 
 
-
         $cnt = 0;
         foreach( $authors as $author ) {
             $cnt++;
@@ -118,7 +110,17 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
         is( 20, $cnt );
 
-        
+        $authors = new \tests\AuthorCollection;
+        $authors->where()
+                ->equal( 'confirmed' , true );
+
+        foreach( $authors as $author ) {
+            ok( $author->confirmed );
+        }
+
+
+
+
     }
 }
 
