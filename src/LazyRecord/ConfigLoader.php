@@ -4,12 +4,17 @@ use Exception;
 
 class ConfigLoader
 {
-
     public $config;
 
     public function load($file)
     {
-        return $this->config = require $file;
+        $this->config = require $file;
+
+        // load data source into connection manager
+        $manager = ConnectionManager::getInstance();
+        foreach( $this->getDataSources() as $sourceId => $ds ) {
+            $manager->addDataSource( $sourceId , $ds );
+        }
     }
 
     public function getDataSources()
@@ -34,6 +39,8 @@ class ConfigLoader
     {
         return $this->config['schema']['paths'];
     }
+
+
 
 }
 

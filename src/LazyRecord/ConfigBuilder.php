@@ -45,7 +45,7 @@ class ConfigBuilder
 
     function build()
     {
-        return '<?php return ' . var_export($this->config,true);
+        return '<?php return ' . var_export($this->config,true) . ';';
     }
 
 }
