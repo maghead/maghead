@@ -18,7 +18,6 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 		$classMap = $generator->generate();
 
 		foreach( $classMap as $class => $file ) {
-			var_dump( $file ); 
 			path_ok( $file , $class );
 #  			unlink( $file );
 		}
