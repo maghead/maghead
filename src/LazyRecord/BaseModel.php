@@ -424,7 +424,20 @@ class BaseModel
 
     public static function __static_delete()
     {
-
+        $model = new static;
+        $query = $model->createExecutiveQuery();
+        $query->delete();
+        $query->callback = function($builder,$sql) use ($model) {
+            try {
+                $stm = $model->dbQuery($sql);
+            }
+            catch ( PDOException $e )
+            {
+                return new OperationError( 'Delete failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
+            }
+            return new OperationSuccess('Deleted', array( 'sql' => $sql ));
+        };
+        return $query;
     }
 
     public static function __static_load($args)
