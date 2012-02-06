@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Command;
+namespace Lazy\Command;
 
 class BuildSchemaCommand extends \CLIFramework\Command
 {

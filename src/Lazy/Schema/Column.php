@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Schema;
+namespace Lazy\Schema;
 
 class Column
 {
@@ -31,7 +31,7 @@ class Column
     public function deflate( $value )
     {
         // check self type, do type casting
-        return \LazyRecord\Deflator::deflate( $value , $this->isa );
+        return \Lazy\Deflator::deflate( $value , $this->isa );
     }
 
 }

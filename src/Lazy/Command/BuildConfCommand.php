@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Command;
+namespace Lazy\Command;
 use Exception;
 
 class BuildConfCommand extends \CLIFramework\Command
@@ -25,7 +25,7 @@ class BuildConfCommand extends \CLIFramework\Command
 
         $mainConfigFile = array_shift($configFiles);
 
-        $builder = new \LazyRecord\ConfigBuilder;
+        $builder = new \Lazy\ConfigBuilder;
         $builder->read( $mainConfigFile );
 
         foreach( $configFiles as $file ) {
