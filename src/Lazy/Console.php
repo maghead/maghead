@@ -8,7 +8,7 @@ class Console extends Application
 	{
 		parent::init();
         $this->registerCommand('build-conf', 'Lazy\Command\BuildConfCommand');
-        $this->registerCommand('schema', 'Lazy\Command\BuildSchemaCommand');
+        $this->registerCommand('build-schema', 'Lazy\Command\BuildSchemaCommand');
         $this->registerCommand('sql', 'Lazy\Command\BuildSqlCommand');
 	}
 }
