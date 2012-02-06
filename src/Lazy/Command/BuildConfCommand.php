@@ -5,6 +5,11 @@ use Exception;
 class BuildConfCommand extends \CLIFramework\Command
 {
 
+    public function brief()
+    {
+        return 'build configuration file.';
+    }
+
     public function options($opts)
     {
         $opts->add('o|output:','output file.');

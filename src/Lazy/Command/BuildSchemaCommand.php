@@ -10,6 +10,11 @@ namespace Lazy\Command;
 class BuildSchemaCommand extends \CLIFramework\Command
 {
 
+    public function brief()
+    {
+        return 'build configuration file.';
+    }
+
     public function options($opts)
     {
         $opts->add('c|config:','config file');
