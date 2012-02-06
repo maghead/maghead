@@ -18,7 +18,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
     public function execute()
     {
         $defaultConfigFile = 'config/lazy.php';
-		$generator = new \Lazy\SchemaGenerator;
+		$generator = new \Lazy\Schema\SchemaGenerator;
 		$generator->setLogger( $this->getLogger() );
 
         $args = func_get_args();
