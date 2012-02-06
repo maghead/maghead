@@ -12,7 +12,6 @@ class MetadataMixinSchema extends SchemaDeclare
             ->defaultBuilder( function() { return date('c'); } )
             ->timestamp();
     }
-
 }
 
 class PublisherSchema extends SchemaDeclare

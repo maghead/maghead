@@ -126,6 +126,8 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $ret = $author->delete();
         ok( $ret->success );
 
+
+
         /**
          * Static CRUD Test 
          */
