@@ -1,5 +1,5 @@
 <?php
-namespace Lazy\SchemaDeclare;
+namespace Lazy\Schema\SchemaDeclare;
 
 /**
  * solution for var_export

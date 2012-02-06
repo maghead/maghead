@@ -1,5 +1,6 @@
 <?php
-namespace Lazy\SchemaDeclare;
+namespace Lazy\Schema\SchemaDeclare;
+
 use Exception;
 
 class Column 

@@ -4,7 +4,7 @@ use Exception;
 
 function twig_var_export($obj)
 {
-    return \Lazy\SchemaDeclare\Exporter::export($obj);
+    return \Lazy\Schema\SchemaDeclare\Exporter::export($obj);
 	// return var_export($obj,true);
 }
 
