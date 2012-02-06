@@ -17,7 +17,7 @@ class ConnectionManagerTest extends PHPUnit_Framework_TestCase
         ok( $conn );
 
         $manager->addDataSource( 'master', array( 
-            'dsn' => 'sqlite::memory',
+            'dsn' => 'sqlite::memory:',
             'user' => null,
             'pass' => null,
             'options' => array(),
@@ -25,6 +25,8 @@ class ConnectionManagerTest extends PHPUnit_Framework_TestCase
 
         $master = $manager->getConnection('master');
         ok( $master );
+
+        $manager->free();
     }
 }
 
