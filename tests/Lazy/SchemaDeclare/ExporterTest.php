@@ -14,7 +14,7 @@ class ExporterTest extends PHPUnit_Framework_TestCase
             ),
         );
 
-        $str = Lazy\SchemaDeclare\Exporter::export($a);
+        $str = Lazy\Schema\SchemaDeclare\Exporter::export($a);
         eval('$b = ' . $str . ';');
         is( '123123', $b['a'] );
         is( 1.24, $b['b'] );

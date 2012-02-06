@@ -1,6 +1,6 @@
 <?php
 namespace Lazy\SchemaSqlBuilder;
-use Lazy\SchemaDeclare;
+use Lazy\Schema\SchemaDeclare;
 use Lazy\QueryDriver;
 
 /**

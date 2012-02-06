@@ -1,6 +1,6 @@
 <?php
 namespace tests {
-use Lazy\SchemaDeclare;
+use Lazy\Schema\SchemaDeclare;
 use Lazy\Schema;
 
 class MetadataMixinSchema extends Schema\MixinSchemaDeclare
@@ -31,7 +31,7 @@ class PublisherSchema extends SchemaDeclare
 
 }
 
-class AuthorSchema extends \Lazy\SchemaDeclare
+class AuthorSchema extends SchemaDeclare
 {
     function schema()
     {
@@ -68,7 +68,7 @@ class AuthorSchema extends \Lazy\SchemaDeclare
 
 }
 
-class AuthorBookSchema extends \Lazy\SchemaDeclare
+class AuthorBookSchema extends SchemaDeclare
 {
     function schema()
     {
@@ -86,7 +86,7 @@ class AuthorBookSchema extends \Lazy\SchemaDeclare
     }
 }
 
-class BookSchema extends \Lazy\SchemaDeclare
+class BookSchema extends SchemaDeclare
 {
 
     function schema()

@@ -1,6 +1,7 @@
 <?php
-namespace Lazy;
-use Lazy\SchemaDeclare\Column;
+namespace Lazy\Schema;
+use Lazy\Schema\SchemaDeclare\Column;
+use Lazy\Inflector;
 use Exception;
 
 abstract class SchemaDeclare

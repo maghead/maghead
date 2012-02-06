@@ -1,7 +1,7 @@
 <?php
 namespace Lazy\Schema;
 
-class MixinSchemaDeclare extends \Lazy\SchemaDeclare
+class MixinSchemaDeclare extends SchemaDeclare
 {
     /* is_a can not work on an abstract class */
     function schema() { }

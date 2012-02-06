@@ -46,7 +46,7 @@ class SchemaFinder
             if( is_subclass_of( $class, '\Lazy\Schema\MixinSchemaDeclare' ) )
                 continue;
 
-            if( is_subclass_of( $class, '\Lazy\SchemaDeclare' ) )
+            if( is_subclass_of( $class, '\Lazy\Schema\SchemaDeclare' ) )
             {
 				$list[] = $class;
 			}
