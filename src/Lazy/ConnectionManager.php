@@ -64,6 +64,12 @@ class ConnectionManager
             return $this->datasources[ $id ];
     }
 
+    public function getDataSourceDriver($id)
+    {
+        $config = $this->getDataSource($id);
+        list($driverType) = explode( ':', $config['dsn'] );
+        return $driverType;
+    }
 
     /**
      * create connection

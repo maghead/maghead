@@ -11,9 +11,8 @@ class QueryDriver extends \SQLBuilder\Driver
             return static::$drivers[ $id ];
         
         $driver = new static;
-        if( $config = ConnectionManager::getInstance()->getDataSource($id) ) {
-            list($driverType) = explode( ':', $config['dsn'] );
-            $driver->configure('driver',$driverType);
+        if( $type = ConnectionManager::getInstance()->getDataSourceDriver($id) ) {
+            $driver->configure('driver',$type);
         }
         return static::$drivers[ $id ] = $driver;
     }

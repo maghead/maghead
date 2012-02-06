@@ -1,6 +1,5 @@
 <?php
 namespace Lazy;
-
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
@@ -31,22 +30,6 @@ class SchemaGenerator
 
 	public function loadSchemaFiles()
 	{
-		foreach( $this->schemaPaths as $path ) {
-            if( is_file($path) ) {
-                require_once $path;
-            }
-            else {
-                $rdi = new RecursiveDirectoryIterator($path);
-                $rii = new RecursiveIteratorIterator($rdi);
-                $regex = new RegexIterator($rii, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
-                foreach( $regex as $k => $files ) {
-                    foreach( $files as $file ) {
-                        $this->logger->info( "Loading file: $file" );
-                        require_once $file;
-                    }
-                }
-            }
-		}
 	}
 
 	protected function getSchemaClasses()
@@ -60,6 +43,7 @@ class SchemaGenerator
 		}
 		return $schemaClasses;
 	}
+
 
 	protected function getTemplatePath()
 	{
@@ -212,8 +196,10 @@ class SchemaGenerator
 
 	public function generate()
 	{
-		$this->loadSchemaFiles();
-		$classes = $this->getSchemaClasses();
+        $finder = new Schema\SchemaFinder;
+        $finder->paths = $this->schemaPaths;
+        $finder->load();
+		$classes = $finder->getSchemas();
 
 		/**
 		 * schema class mapping 
