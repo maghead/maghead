@@ -39,16 +39,18 @@ class SchemaFinder
 		$classes = get_declared_classes();
 		foreach( $classes as $class ) {
 
-            if( is_a( $class, '\Lazy\Schema\MixinSchemaDeclare' ) )
+            if( is_a( $class, 'Lazy\Schema\MixinSchemaDeclare' ) 
+                || $class == 'Lazy\Schema\MixinSchemaDeclare' )
                 continue;
 
-            if( is_subclass_of( $class, 'Lazy\Schema\MixinSchemaDeclare' ) )
+            if( is_subclass_of( $class, '\Lazy\Schema\MixinSchemaDeclare' ) )
                 continue;
 
-            if( is_subclass_of( $class, 'Lazy\SchemaDeclare' ) )
+            if( is_subclass_of( $class, '\Lazy\SchemaDeclare' ) )
             {
 				$list[] = $class;
 			}
+
 		}
 		return $list;
 	}
