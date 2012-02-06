@@ -1,4 +1,6 @@
 ---
+bootstrap:
+  - tests/bootstrap.php
 schema:
   paths:
     - tests/schema

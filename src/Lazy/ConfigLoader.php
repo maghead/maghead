@@ -11,8 +11,8 @@ class ConfigLoader
         $this->config = require $file;
 
         if( isset($this->config['bootstrap'] ) ) {
-            foreach( (array) $this->config['bootstrap'] as $bootsrap ) {
-                require $boostrap;
+            foreach( (array) $this->config['bootstrap'] as $bootstrap ) {
+                require_once $bootstrap;
             }
         }
 
