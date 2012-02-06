@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord;
+namespace Lazy;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -49,7 +49,7 @@ class SchemaGenerator
 		$schemaClasses = array();
 		$classes = get_declared_classes();
 		foreach( $classes as $class ) {
-			if( is_subclass_of( $class , '\\LazyRecord\\SchemaDeclare' ) ) {
+			if( is_subclass_of( $class , '\\Lazy\\SchemaDeclare' ) ) {
 				$schemaClasses[] = $class;
 			}
 		}
@@ -170,7 +170,7 @@ class SchemaGenerator
 		$cTemplate->addConst( 'collection_class' , '\\' . ltrim($schema->getCollectionClass(),'\\') );
 		$cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
 
-		$cTemplate->extendClass( 'LazyRecord\\BaseModel' );
+		$cTemplate->extendClass( 'Lazy\\BaseModel' );
 		return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true );
 	}
 
@@ -191,7 +191,7 @@ class SchemaGenerator
 		$cTemplate = new CodeGen\ClassTemplate( $baseCollectionClass );
 		$cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
 		$cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
-		$cTemplate->extendClass( 'LazyRecord\\BaseCollection' );
+		$cTemplate->extendClass( 'Lazy\\BaseCollection' );
 		return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true ); // overwrite
 	}
 

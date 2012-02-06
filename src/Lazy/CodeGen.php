@@ -1,10 +1,10 @@
 <?php
-namespace LazyRecord;
+namespace Lazy;
 use Exception;
 
 function twig_var_export($obj)
 {
-    return \LazyRecord\SchemaDeclare\Exporter::export($obj);
+    return \Lazy\SchemaDeclare\Exporter::export($obj);
 	// return var_export($obj,true);
 }
 
@@ -26,7 +26,7 @@ class CodeGen
 			'debug' => true,
 	   	) + $options );
 
-		$this->twig->addFilter('export', new \Twig_Filter_Function('\LazyRecord\twig_var_export'));
+		$this->twig->addFilter('export', new \Twig_Filter_Function('\Lazy\twig_var_export'));
 	}
 
 	public function __set($n,$v)

@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord;
+namespace Lazy;
 
 class SchemaLoader
 {

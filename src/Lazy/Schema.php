@@ -1,6 +1,6 @@
 <?php
-namespace LazyRecord;
-use LazyRecord\Schema\Column;
+namespace Lazy;
+use Lazy\Schema\Column;
 
 class Schema
 {

@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord;
+namespace Lazy;
 
 
 class ExecutiveQueryBuilder extends \SQLBuilder\QueryBuilder

@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord;
+namespace Lazy;
 use DateTime;
 
 class Deflator

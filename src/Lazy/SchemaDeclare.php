@@ -1,6 +1,6 @@
 <?php
-namespace LazyRecord;
-use LazyRecord\SchemaDeclare\Column;
+namespace Lazy;
+use Lazy\SchemaDeclare\Column;
 use Exception;
 
 abstract class SchemaDeclare

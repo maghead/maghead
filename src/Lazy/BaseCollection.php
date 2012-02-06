@@ -1,12 +1,12 @@
 <?php
-namespace LazyRecord;
+namespace Lazy;
 
 use PDO,
     Exception,
     Iterator;
 
-use LazyRecord\OperationResult\OperationSuccess,
-    LazyRecord\OperationResult\OperationError;
+use Lazy\OperationResult\OperationSuccess,
+    Lazy\OperationResult\OperationError;
 use SQLBuilder\QueryBuilder;
 
 class BaseCollection
