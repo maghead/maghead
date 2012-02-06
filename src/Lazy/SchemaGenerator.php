@@ -32,15 +32,20 @@ class SchemaGenerator
 	public function loadSchemaFiles()
 	{
 		foreach( $this->schemaPaths as $path ) {
-			$rdi = new RecursiveDirectoryIterator($path);
-			$rii = new RecursiveIteratorIterator($rdi);
-			$regex = new RegexIterator($rii, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
-			foreach( $regex as $k => $files ) {
-				foreach( $files as $file ) {
-					$this->logger->info( "Loading file: $file" );
-					require_once $file;
-				}
-			}
+            if( is_file($path) ) {
+                require_once $path;
+            }
+            else {
+                $rdi = new RecursiveDirectoryIterator($path);
+                $rii = new RecursiveIteratorIterator($rdi);
+                $regex = new RegexIterator($rii, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
+                foreach( $regex as $k => $files ) {
+                    foreach( $files as $file ) {
+                        $this->logger->info( "Loading file: $file" );
+                        require_once $file;
+                    }
+                }
+            }
 		}
 	}
 
