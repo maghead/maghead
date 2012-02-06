@@ -4,7 +4,7 @@ class CodeGenTest extends PHPUnit_Framework_TestCase
 {
 	function test()
 	{
-		$codegen = new LazyRecord\CodeGen( 'src/LazyRecord/Templates' );
+		$codegen = new Lazy\CodeGen( 'src/Lazy/Templates' );
 		ok( $codegen );
 	}
 }

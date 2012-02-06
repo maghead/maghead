@@ -7,7 +7,7 @@ class ColumnTest extends PHPUnit_Framework_TestCase
 
     function createColumn($name)
     {
-        return new \LazyRecord\SchemaDeclare\Column( $name );
+        return new \Lazy\SchemaDeclare\Column( $name );
     }
 
     function testVarchar()

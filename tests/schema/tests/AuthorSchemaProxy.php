@@ -1,7 +1,7 @@
 <?php
 namespace tests;
 
-use LazyRecord\Schema;
+use Lazy\Schema;
 
 class AuthorSchemaProxy extends Schema
 {

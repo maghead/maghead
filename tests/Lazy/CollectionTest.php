@@ -1,13 +1,13 @@
 <?php
-    use LazyRecord\SchemaSqlBuilder;
+    use Lazy\SchemaSqlBuilder;
 
 class CollectionTest extends PHPUnit_Framework_TestCase
 {
 
     function setUp()
     {
-        \LazyRecord\ConnectionManager::getInstance()->free();
-        \LazyRecord\QueryDriver::getInstance()->free();
+        \Lazy\ConnectionManager::getInstance()->free();
+        \Lazy\QueryDriver::getInstance()->free();
     }
 
 	function getLogger()
@@ -32,7 +32,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
     function test()
     {
-        $connM = \LazyRecord\ConnectionManager::getInstance();
+        $connM = \Lazy\ConnectionManager::getInstance();
         $connM->addDataSource('default',array(
             'dsn' => 'sqlite::memory:'
         ));
@@ -42,7 +42,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 		ok( $builder );
 
 
-		$generator = new \LazyRecord\SchemaGenerator;
+		$generator = new \Lazy\SchemaGenerator;
 		$generator->addPath( 'tests/schema/' );
 		$generator->setLogger( $this->getLogger() );
 		$classMap = $generator->generate();

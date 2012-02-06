@@ -29,7 +29,7 @@ class SchemaDeclareTest extends \PHPUnit_Framework_TestCase
         $schemaArray = $declare->export();
         ok( $schemaArray );
 
-        $schema = new \LazyRecord\Schema;
+        $schema = new \Lazy\Schema;
         $schema->import( $schemaArray );
 
         ok( $schema );

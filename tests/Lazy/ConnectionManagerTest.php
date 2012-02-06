@@ -8,7 +8,7 @@ class ConnectionManagerTest extends PHPUnit_Framework_TestCase
         $conn = new PDO( 'sqlite::memory:' );
         ok( $conn );
 
-        $manager = LazyRecord\ConnectionManager::getInstance();
+        $manager = Lazy\ConnectionManager::getInstance();
         ok( $manager );
 
         $manager->add($conn, 'default');

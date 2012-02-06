@@ -10,7 +10,7 @@ class ClosureSerializerTest extends PHPUnit_Framework_TestCase
             // content
             return 123;
         };
-        $content = LazyRecord\ClosureSerializer::serialize( $a );
+        $content = Lazy\ClosureSerializer::serialize( $a );
         ok( $content );
 
         eval( '$b = ' . $content . ';' );
