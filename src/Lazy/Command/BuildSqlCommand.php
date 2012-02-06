@@ -1,18 +1,22 @@
 <?php
 namespace Lazy\Command;
 use CLIFramework\Command;
+use Lazy\Schema;
 
 class BuildSqlCommand extends \CLIFramework\Command
 {
     public function execute()
     {
+        $options = $this->getOptions();
+
+        $config = new \Lazy\ConfigLoader;
+
         $configFile = 'config/lazy.php';
-        $loader = new \Lazy\ConfigLoader;
         if( file_exists($configFile) ) {
             if( $options->config )
-                $loader->load( $options->config->value );
+                $config->load( $options->config->value );
             else
-                $loader->load( $defaultConfigFile );
+                $config->load( $configFile );
         }
 
         $connectionManager = \Lazy\ConnectionManager::getInstance();
@@ -20,9 +24,15 @@ class BuildSqlCommand extends \CLIFramework\Command
         $id = 'default';
         $conn = $connectionManager->getConnection($id);
         $type = $connectionManager->getDataSourceDriver($id);
-		$builder = new SchemaSqlBuilder($type); // driver
+		$builder = new \Lazy\SchemaSqlBuilder($type); // driver
 
+        // find schema classes 
+        $finder = new Schema\SchemaFinder;
+        $finder->paths = $config->getSchemaPaths();
+        $finder->load();
+		$classes = $finder->getSchemas();
 
+        var_dump( $classes ); 
 
 
     }
