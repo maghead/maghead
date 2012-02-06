@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord;
+namespace Lazy;
 use ReflectionFunction;
 use SplFileObject;
 

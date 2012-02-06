@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord;
+namespace Lazy;
 
 class QueryDriver extends \SQLBuilder\Driver
 {

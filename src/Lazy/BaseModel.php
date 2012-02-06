@@ -1,10 +1,10 @@
 <?php
-namespace LazyRecord;
+namespace Lazy;
 use SQLBuilder\QueryBuilder;
-use LazyRecord\QueryDriver;
+use Lazy\QueryDriver;
 
-use LazyRecord\OperationResult\OperationError;
-use LazyRecord\OperationResult\OperationSuccess;
+use Lazy\OperationResult\OperationError;
+use Lazy\OperationResult\OperationSuccess;
 use PDOException;
 use PDO;
 
