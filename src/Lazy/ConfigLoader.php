@@ -9,6 +9,7 @@ class ConfigLoader
     public function load($file)
     {
         $this->config = require $file;
+
         if( isset($this->config['bootstrap'] ) ) {
             foreach( (array) $this->config['bootstrap'] as $bootsrap ) {
                 require $boostrap;
