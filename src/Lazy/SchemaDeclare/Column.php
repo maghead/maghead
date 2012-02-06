@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\SchemaDeclare;
+namespace Lazy\SchemaDeclare;
 use Exception;
 
 class Column 

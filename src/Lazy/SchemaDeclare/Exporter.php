@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\SchemaDeclare;
+namespace Lazy\SchemaDeclare;
 
 /**
  * solution for var_export
@@ -26,7 +26,7 @@ class Exporter
             return $str;
         }
         elseif( is_callable($data) && is_object($data) ) {
-            return \LazyRecord\ClosureSerializer::serialize($data);
+            return \Lazy\ClosureSerializer::serialize($data);
         }
         return var_export($data,true);
     }

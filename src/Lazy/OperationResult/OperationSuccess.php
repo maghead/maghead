@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\OperationResult;
+namespace Lazy\OperationResult;
 
 class OperationSuccess extends OperationResult
 {

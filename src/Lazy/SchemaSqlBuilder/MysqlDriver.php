@@ -1,7 +1,7 @@
 <?php
-namespace LazyRecord\SchemaSqlBuilder;
-use LazyRecord\SchemaDeclare;
-use LazyRecord\QueryDriver;
+namespace Lazy\SchemaSqlBuilder;
+use Lazy\SchemaDeclare;
+use Lazy\QueryDriver;
 
 class MysqlDriver
 	implements DriverInterface
