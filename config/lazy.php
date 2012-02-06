@@ -10,7 +10,7 @@
   array (
     'default' => 
     array (
-      'dsn' => 'sqlite::memory:',
+      'dsn' => 'sqlite:tests.db',
     ),
     'slave' => 
     array (
