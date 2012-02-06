@@ -9,12 +9,19 @@ class ConfigLoader
     public function load($file)
     {
         $this->config = require $file;
+        if( isset($this->config['bootstrap'] ) ) {
+            foreach( (array) $this->config['bootstrap'] as $bootsrap ) {
+                require $boostrap;
+            }
+        }
 
         // load data source into connection manager
         $manager = ConnectionManager::getInstance();
         foreach( $this->getDataSources() as $sourceId => $ds ) {
             $manager->addDataSource( $sourceId , $ds );
         }
+
+
     }
 
     public function getDataSources()
