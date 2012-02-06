@@ -11,7 +11,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 
 	function test()
 	{
-		$generator = new LazyRecord\SchemaGenerator;
+		$generator = new Lazy\SchemaGenerator;
 		$generator->addPath( 'tests/schema/' );
 		$generator->setLogger( $this->getLogger() );
 		$classMap = $generator->generate();

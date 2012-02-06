@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Types;
+use Lazy\Types;
 class TypesTest extends PHPUnit_Framework_TestCase
 {
     function test()

@@ -4,7 +4,7 @@ class ConfigBuilderTest extends PHPUnit_Framework_TestCase
 {
     function test()
     {
-        $builder = new LazyRecord\ConfigBuilder;
+        $builder = new Lazy\ConfigBuilder;
         ok($builder);
 
         $builder->read('tests/lazy.yml');
@@ -16,10 +16,10 @@ class ConfigBuilderTest extends PHPUnit_Framework_TestCase
                 ,$content);
 
 
-        $loader = new LazyRecord\ConfigLoader;
+        $loader = new Lazy\ConfigLoader;
         $loader->load( 'tests/lazy-config.php');
 
-        $conM = LazyRecord\ConnectionManager::getInstance();
+        $conM = Lazy\ConnectionManager::getInstance();
         $conn = $conM->getDefault();
         ok( $conn );
 

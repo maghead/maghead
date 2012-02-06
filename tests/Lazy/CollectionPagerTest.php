@@ -4,7 +4,7 @@ class CollectionPagerTest extends PHPUnit_Framework_TestCase
 {
 	function test()
 	{
-		$pager = new LazyRecord\CollectionPager( range(1,200) , 1 , 10 );
+		$pager = new Lazy\CollectionPager( range(1,200) , 1 , 10 );
 		$items = $pager->items();
 		is( 1, $items[0] );
 		is( 2, $items[1] );

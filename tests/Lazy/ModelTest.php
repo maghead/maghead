@@ -1,6 +1,6 @@
 <?php
 require_once 'tests/schema/AuthorBooks.php';
-use LazyRecord\SchemaSqlBuilder;
+use Lazy\SchemaSqlBuilder;
 
 class ModelTest extends PHPUnit_Framework_TestCase
 {
@@ -42,7 +42,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
 		ok( $builder );
 
 
-		$generator = new \LazyRecord\SchemaGenerator;
+		$generator = new \Lazy\SchemaGenerator;
 		$generator->addPath( 'tests/schema/' );
 		$generator->setLogger( $this->getLogger() );
 		$classMap = $generator->generate();
@@ -77,7 +77,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
         $this->pdoQueryOk( $dbh , $sql );
 
-        $connM = \LazyRecord\ConnectionManager::getInstance();
+        $connM = \Lazy\ConnectionManager::getInstance();
 
         if( $connM->has('default') )
             $connM->close('default');

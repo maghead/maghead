@@ -4,7 +4,7 @@ namespace tests;
 
 
 class MetadataMixinCollectionBase 
-	extends \LazyRecord\BaseCollection
+	extends \Lazy\BaseCollection
 {
 
 	const schema_proxy_class = '\\tests\\MetadataMixinSchemaProxy';

@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\SchemaSqlBuilder;
+use Lazy\SchemaSqlBuilder;
 
 class SchemaSqlBuilderTest extends PHPUnit_Framework_TestCase
 {
