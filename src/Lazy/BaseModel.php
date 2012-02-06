@@ -14,8 +14,6 @@ class BaseModel
 
     protected $_data;
 
-
-
     public function createQuery()
     {
         $q = new QueryBuilder();
@@ -36,7 +34,7 @@ class BaseModel
 
 
 
-    public function load($kVal)
+    public function _load($kVal)
     {
         $key = $this->_schema->primaryKey;
         $column = $this->_schema->getColumn( $key );
@@ -385,6 +383,7 @@ class BaseModel
             case 'create':
             case 'delete':
             case 'update':
+            case 'load':
                 return call_user_func_array(array($this,'_' . $m),$a);
                 break;
         }
@@ -435,7 +434,23 @@ class BaseModel
 
     public static function __static_load($args)
     {
-
+        $model = new static;
+        if( is_array($args) ) {
+            $q = $model->createExecutiveQuery();
+            $q->callback = function($b,$sql) use ($model) {
+                $stm = $model->dbQuery($sql);
+                $record = $stm->fetchObject( get_class($model) );
+                $record->deflate();
+                return $record;
+            };
+            $q->limit(1);
+            $q->whereFromArgs($args);
+            return $q->execute();
+        }
+        else {
+            $model->load($args);
+            return $model;
+        }
     }
 
     public function deflateHash( & $args)
