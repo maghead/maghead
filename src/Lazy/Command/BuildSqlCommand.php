@@ -32,9 +32,18 @@ class BuildSqlCommand extends \CLIFramework\Command
         $finder->load();
 		$classes = $finder->getSchemas();
 
-        var_dump( $classes ); 
+        foreach( $classes as $class ) {
+            $this->getLogger()->info( "Building SQL for $class" );
 
+            $schema = new $class;
+            $sql = $builder->build($schema);
+            $conn->query( $sql );
 
+            $error = $conn->errorInfo();
+            if( $error[1] ) {
+                $this->getLogger()->info( var_export( $error , true ) );
+            }
+        }
     }
 }
 
