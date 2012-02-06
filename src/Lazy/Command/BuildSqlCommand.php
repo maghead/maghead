@@ -5,6 +5,11 @@ use Lazy\Schema;
 
 class BuildSqlCommand extends \CLIFramework\Command
 {
+    public function brief()
+    {
+        return 'build sql';
+    }
+
     public function execute()
     {
         $options = $this->getOptions();

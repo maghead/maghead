@@ -7,8 +7,8 @@ class Console extends Application
 	public function init()
 	{
 		parent::init();
-        $this->registerCommand('conf',   'Lazy\Command\BuildConfCommand');
-        $this->registerCommand('schema', 'Lazy\Command\BuildSchemaCommand');
-        $this->registerCommand('sql',    'Lazy\Command\BuildSqlCommand');
+        $this->registerCommand('build-conf',   'Lazy\Command\BuildConfCommand');
+        $this->registerCommand('build-schema', 'Lazy\Command\BuildSchemaCommand');
+        $this->registerCommand('build-sql',    'Lazy\Command\BuildSqlCommand');
 	}
 }

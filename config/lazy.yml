@@ -4,7 +4,8 @@ schema:
     - tests/schema
 data_sources:
   default:
-    dsn: 'sqlite::memory:'
+    dsn: 'sqlite:tests.db'
+    # dsn: 'sqlite::memory:'
   slave:
     dsn: 'mysql:host=localhost;dbname=test'
     user: root
