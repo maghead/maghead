@@ -1,9 +1,10 @@
 <?php
-namespace Lazy;
+namespace Lazy\Schema;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
 use RegexIterator;
+use Lazy\CodeGen;
 
 /**
  * builder for building static schema class file
@@ -28,23 +29,6 @@ class SchemaGenerator
 		$this->logger = $logger;
 	}
 
-	public function loadSchemaFiles()
-	{
-	}
-
-	protected function getSchemaClasses()
-	{
-		$schemaClasses = array();
-		$classes = get_declared_classes();
-		foreach( $classes as $class ) {
-			if( is_subclass_of( $class , '\\Lazy\\SchemaDeclare' ) ) {
-				$schemaClasses[] = $class;
-			}
-		}
-		return $schemaClasses;
-	}
-
-
 	protected function getTemplatePath()
 	{
 		$refl = new \ReflectionObject($this);
@@ -53,7 +37,7 @@ class SchemaGenerator
 
 	protected function renderCode($file, $args)
 	{
-		$codegen = new CodeGen( $this->getTemplatePath() );
+		$codegen = new \Lazy\CodeGen( $this->getTemplatePath() );
 		$codegen->stash = $args;
 		return $codegen->renderFile($file);
 	}
@@ -116,7 +100,7 @@ class SchemaGenerator
 		$modelClass  = $schema->getModelClass();
 		$schemaProxyClass = $schema->getSchemaProxyClass();
 
-  		$cTemplate = new CodeGen\ClassTemplate( $schemaProxyClass );
+  		$cTemplate = new \Lazy\CodeGen\ClassTemplate( $schemaProxyClass );
 		$cTemplate->addConst( 'schema_class' , '\\' . ltrim($schemaClass,'\\') );
 		$cTemplate->addConst( 'model_class' , '\\' . ltrim($modelClass,'\\') );
 
@@ -196,7 +180,7 @@ class SchemaGenerator
 
 	public function generate()
 	{
-        $finder = new Schema\SchemaFinder;
+        $finder = new SchemaFinder;
         $finder->paths = $this->schemaPaths;
         $finder->load();
 		$classes = $finder->getSchemas();
