@@ -136,7 +136,15 @@ class ModelTest extends PHPUnit_Framework_TestCase
         ));
         ok( $record->_result->success );
 
-        
+        $record = \tests\Author::load( (int) $record->_result->id );
+        ok( $record );
+        ok( $id = $record->id );
+
+        $record = \tests\Author::load( array( 
+            'id' => $id
+        ));
+        ok( $record );
+        ok( $record->id );
         
 
         /**
