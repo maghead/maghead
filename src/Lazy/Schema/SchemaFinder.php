@@ -35,22 +35,24 @@ class SchemaFinder
 
 	public function getSchemas()
 	{
-		$schemaClasses = array();
+		$list = array();
 		$classes = get_declared_classes();
 		foreach( $classes as $class ) {
-			if( is_subclass_of( $class , '\\Lazy\\SchemaDeclare' ) ) {
-				$schemaClasses[] = $class;
+
+            if( is_a( $class, '\Lazy\Schema\MixinSchemaDeclare' ) )
+                continue;
+
+            if( is_subclass_of( $class, 'Lazy\Schema\MixinSchemaDeclare' ) )
+                continue;
+
+            if( is_subclass_of( $class, 'Lazy\SchemaDeclare' ) )
+            {
+				$list[] = $class;
 			}
 		}
-		return $schemaClasses;
+		return $list;
 	}
 
 
-
-
-
 }
-
-
-
 
