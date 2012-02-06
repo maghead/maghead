@@ -30,7 +30,6 @@ class BuildSchemaCommand extends \CLIFramework\Command
             $options = $this->getOptions();
             if( $options->config || file_exists($defaultConfigFile) ) {
                 $loader = new \Lazy\ConfigLoader;
-
                 if( $options->config )
                     $loader->load( $options->config->value );
                 else
