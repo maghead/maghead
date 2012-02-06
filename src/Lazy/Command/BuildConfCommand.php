@@ -21,7 +21,7 @@ class BuildConfCommand extends \CLIFramework\Command
         $configFiles = func_get_args();
 
         if( empty($configFiles) )
-            throw new Exception("config file path is required.");
+            $configFiles = (array) 'config/lazy.php';
 
         $mainConfigFile = array_shift($configFiles);
         $dir = dirname($mainConfigFile);
