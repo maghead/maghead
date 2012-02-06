@@ -24,6 +24,7 @@ class BuildConfCommand extends \CLIFramework\Command
             throw new Exception("config file path is required.");
 
         $mainConfigFile = array_shift($configFiles);
+        $dir = dirname($mainConfigFile);
 
         $builder = new \Lazy\ConfigBuilder;
         $builder->read( $mainConfigFile );
@@ -35,7 +36,8 @@ class BuildConfCommand extends \CLIFramework\Command
         $builder->validate();
         $content = $builder->build();
 
-        $outputPath = $options->output ? $options->output->value : 'build/lazy/config.php';
+        $outputPath = $options->output ? $options->output->value 
+                : $dir . DIRECTORY_SEPARATOR . basename( $mainConfigFile , '.yml' ) . '.php';
         $outputDir  = dirname($outputPath);
 
         if( ! file_exists($outputDir) )
