@@ -54,7 +54,6 @@ class BuildSqlCommand extends \CLIFramework\Command
         $logger->info("Initialize schema builder...");
 		$builder = new \Lazy\SchemaSqlBuilder($type); // driver
 
-
         $logger->info("Finding schema classes...");
 
         // find schema classes 

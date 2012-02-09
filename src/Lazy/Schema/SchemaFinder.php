@@ -50,10 +50,19 @@ class SchemaFinder
             {
 				$list[] = $class;
 			}
-
 		}
-		return $list;
+		// return $list;
+        $schemas = array();
+        foreach( $list as $class ) {
+            $schema = new $class;
+            $refs = $schema->getReferenceSchemas();
+            foreach( $refs as $ref => $v )
+                $schemas[] = $ref;
+            $schemas[] = $class;
+        }
+        return array_unique($schemas);
 	}
+
 
 
 }
