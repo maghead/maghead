@@ -149,6 +149,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         ok( $record->id );
         
 
+
         /**
          * Which runs:
          *    UPDATE authors SET name = 'Rename' WHERE name = 'Mary'
