@@ -56,26 +56,29 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 		$bookschema = new \tests\BookSchema;
 		ok( $authorschema );
 
-		$sql = $builder->build($authorschema);
-		ok( $sql );
+		$sqls = $builder->build($authorschema);
+		ok( $sqls );
         // var_dump( $sql ); 
-        $this->pdoQueryOk( $dbh , $sql );
+        foreach( $sqls as $sql )
+            $this->pdoQueryOk( $dbh , $sql );
 
 
 		ok( $authorbook );
-		$sql = $builder->build($authorbook);
-		ok( $sql );
+		$sqls = $builder->build($authorbook);
+		ok( $sqls );
         // var_dump( $sql ); 
 
-        $this->pdoQueryOk( $dbh , $sql );
+        foreach( $sqls as $sql )
+            $this->pdoQueryOk( $dbh , $sql );
 
 
 		ok( $bookschema );
-		$sql = $builder->build($bookschema);
-		ok( $sql );
+		$sqls = $builder->build($bookschema);
+		ok( $sqls );
         // var_dump( $sql ); 
 
-        $this->pdoQueryOk( $dbh , $sql );
+        foreach( $sqls as $sql )
+            $this->pdoQueryOk( $dbh , $sql );
 
 
         $author = new \tests\Author;
