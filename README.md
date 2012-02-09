@@ -3,14 +3,55 @@ LazyRecord
 
 Command-line Usage
 ------------------
+Create a config skeleton:
 
-To build config:
+    $ lazy init-conf
 
-    lazy build-conf path/to/config.yml
+Then build config:
+
+    $ lazy build-conf path/to/config.yml
+
+Define your model schema, note: the schema file name must be with suffix "Schema".
+
+    $ vim src/App/Model/AuthorSchema.php
+
+    class AuthorSchema extends SchemaDeclare
+    {
+        function schema()
+        {
+            $this->column('id')
+                ->type('integer')
+                ->isa('int')
+                ->primary()
+                ->autoIncrement();
+
+            $this->column('name')
+                ->isa('str')
+                ->varchar(128);
+
+            $this->column('email')
+                ->isa('str')
+                ->required()
+                ->varchar(128);
+
+            $this->column('confirmed')
+                ->isa('bool')
+                ->default(false)
+                ->boolean();
+        }
+    }
 
 To generate SQL schema:
 
     lazy build-schema path/to/AuthorSchema.php
+
+Then you should have these files:
+
+    src/App/Model/AuthorSchema.php
+    src/App/Model/AuthorBase.php
+    src/App/Model/Author.php
+    src/App/Model/AuthorBaseCollection.php
+    src/App/Model/AuthorCollection.php
 
 To import SQL schema into database:
 
