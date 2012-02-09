@@ -22,25 +22,29 @@ class BuildSchemaCommand extends \CLIFramework\Command
 
     public function execute()
     {
-        $defaultConfigFile = 'config/lazy.php';
+        $logger = $this->getLogger();
+        $options = $this->getOptions();
+
 		$generator = new \Lazy\Schema\SchemaGenerator;
-		$generator->setLogger( $this->getLogger() );
+		$generator->setLogger( $logger );
 
         $args = func_get_args();
         if( count($args) ) {
             foreach( $args as $path ) {
+                $logger->info("Adding schema path $path");
                 $generator->addPath( $path );
             }
         } else {
-            $options = $this->getOptions();
-            if( $options->config || file_exists($defaultConfigFile) ) {
-                $loader = new \Lazy\ConfigLoader;
-                if( $options->config )
-                    $loader->load( $options->config->value );
-                else
-                    $loader->load( $defaultConfigFile );
+            // default config file.
+            $configFile = 'config/lazy.php';
+            if( $options->config )
+                $configFile = $options->config->value;
 
+            if( file_exists($configFile) ) {
+                $loader = new \Lazy\ConfigLoader;
+                $loader->load( $configFile );
                 foreach( $loader->getSchemaPaths() as $path ) {
+                    $logger->info("Adding schema path $path");
                     $generator->addPath( $path );
                 }
             }
@@ -51,11 +55,9 @@ class BuildSchemaCommand extends \CLIFramework\Command
 
         $classMap = $generator->generate();
 		foreach( $classMap as $class => $file ) {
-			// path_ok( $file , $class );
-#  			unlink( $file );
+            $logger->info("$class => $file");
 		}
-
-        $this->getLogger()->info('Done');
+        $logger->info('Done');
     }
 }
 

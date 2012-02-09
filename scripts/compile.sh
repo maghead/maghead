@@ -3,7 +3,7 @@ onion -d compile \
     --lib src \
     --lib vendor/pear \
     --classloader \
-    --bootstrap scripts/lazy-embed.php \
+    --bootstrap scripts/lazy.emb.php \
     --executable \
     --output lazy.phar
 mv lazy.phar lazy

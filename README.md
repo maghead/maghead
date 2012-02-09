@@ -41,9 +41,9 @@ LazyRecord will generate schema in pure-php array, in-place
 Initialize loader:
 
     $lazyLoader = new ConfigLoader;
-    $lazyLoader->load( 'path/to/config.php' );
+    $lazyLoader->load( 'path/to/config.php' );   // this initialize data source into connection manager.
 
-create a model record:
+To create a model record:
 
     $author = new Author;
     $author->create(array(
@@ -52,14 +52,15 @@ create a model record:
 
     Author::load( ... );
 
-create a collection object:
+To create a collection object:
 
     $authors = new Collection;
     $authors->where()
         ->equal( 'id' , 'foo' );
 
-get PDO connection:
+To get PDO connection:
 
     $pdo = \LazyRecord\ConnectionManager::getInstance()->getConnection('default');
+
 
 
