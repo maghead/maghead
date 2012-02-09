@@ -54,8 +54,13 @@ class BuildSchemaCommand extends \CLIFramework\Command
         }
 
         $classMap = $generator->generate();
+
+        $logger->info('Classmap:');
 		foreach( $classMap as $class => $file ) {
-            $logger->info("$class => $file");
+            $path = $file;
+            if( strpos( $path , getcwd() ) === 0 )
+                $path = substr( $path , strlen(getcwd()) + 1 );
+            $logger->info(sprintf("%-32s",$class) . " => $path",1);
 		}
         $logger->info('Done');
     }
