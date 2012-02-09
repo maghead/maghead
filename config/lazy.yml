@@ -6,7 +6,8 @@ schema:
     - tests/schema
 data_sources:
   default:
-    dsn: 'sqlite:tests.db'
+    # dsn: 'sqlite:tests.db'
+    dsn: 'pgsql:dbname=lazy_test'
     # dsn: 'sqlite::memory:'
   mysql:
     dsn: 'mysql:host=localhost;dbname=test'

@@ -14,7 +14,7 @@
   array (
     'default' => 
     array (
-      'dsn' => 'sqlite:tests.db',
+      'dsn' => 'pgsql:dbname=lazy_test',
     ),
     'mysql' => 
     array (
