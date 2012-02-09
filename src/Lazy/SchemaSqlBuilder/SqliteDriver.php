@@ -12,6 +12,7 @@ class SqliteDriver
 	implements DriverInterface
 {
 
+
     function buildColumnSql($schema, $column) {      
 		$name = $column->name;
 		$isa  = $column->isa ?: 'str';
@@ -74,7 +75,6 @@ class SqliteDriver
     }
 
 
-
 	public function build(SchemaDeclare $schema)
 	{
 
@@ -89,4 +89,3 @@ class SqliteDriver
 	}
 
 }
-

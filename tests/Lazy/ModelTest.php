@@ -1,5 +1,5 @@
 <?php
-require_once 'tests/schema/AuthorBooks.php';
+require_once 'tests/schema/tests/AuthorBooks.php';
 use Lazy\SchemaSqlBuilder;
 
 class ModelTest extends PHPUnit_Framework_TestCase
