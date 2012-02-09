@@ -67,11 +67,13 @@ class BuildSqlCommand extends \CLIFramework\Command
             $logger->info( "Building SQL for $class" );
 
             $schema = new $class;
-            $sql = $builder->build($schema);
-            $conn->query( $sql );
-            $error = $conn->errorInfo();
-            if( $error[1] ) {
-                $this->getLogger()->error( var_export( $error , true ) );
+            $sqls = $builder->build($schema);
+            foreach( $sqls as $sql ) {
+                $conn->query( $sql );
+                $error = $conn->errorInfo();
+                if( $error[1] ) {
+                    $logger->error( $class . ': ' . var_export( $error , true ) );
+                }
             }
         }
     }

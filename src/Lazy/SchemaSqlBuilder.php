@@ -3,20 +3,24 @@ namespace Lazy;
 
 class SchemaSqlBuilder
 {
-	public $driver;
+	public $builder;
 	public $type;
 
+
+    /**
+     * xxx: should get the driver type from datasource (defined in model schema)
+     */
 	function __construct($driverType)
 	{
-		$driverClass = get_class($this) . '\\' . ucfirst( $driverType ) . 'Driver';
-		$this->driver = new $driverClass;
+		$builderClass = get_class($this) . '\\' . ucfirst( $driverType ) . 'Driver';
+		$this->builder = new $builderClass;
 		$this->type = $driverType;
 	}
 
 	public function build(Schema\SchemaDeclare $schema)
 	{
-		$sql = $this->driver->build( $schema );
-		return $sql;
+		$sqls = (array) $this->builder->build( $schema );
+		return $sqls;
 	}
 
 }

@@ -1,5 +1,5 @@
 <?php
-    use Lazy\SchemaSqlBuilder;
+use Lazy\SchemaSqlBuilder;
 
 class CollectionTest extends PHPUnit_Framework_TestCase
 {
