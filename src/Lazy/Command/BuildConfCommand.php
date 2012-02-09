@@ -1,6 +1,7 @@
 <?php
 namespace Lazy\Command;
 use Exception;
+use Lazy\ConfigBuilder;
 
 class BuildConfCommand extends \CLIFramework\Command
 {
@@ -24,7 +25,6 @@ class BuildConfCommand extends \CLIFramework\Command
          */
         $options = $this->getOptions();
         $configFiles = func_get_args();
-
         if( empty($configFiles) ) {
             if( file_exists( 'config/lazy.yml' ) )
                 $configFiles = (array)'config/lazy.yml';
