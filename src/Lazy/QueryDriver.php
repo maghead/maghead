@@ -1,7 +1,21 @@
 <?php
 namespace Lazy;
+use SQLBuilder\Driver;
 
-class QueryDriver extends \SQLBuilder\Driver
+
+/**
+ * QueryDriver
+ *
+ * to setup QueryDriver:
+ *
+ *      $driver = QueryDriver::getInstance('data_source_id');
+ *      $driver->configure('driver','pgsql');
+ *      $driver->configure('quote_column',true);
+ *      $driver->configure('quote_table',true);
+ *
+ *
+ */
+class QueryDriver extends Driver
 {
     static $drivers = array();
 

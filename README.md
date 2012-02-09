@@ -43,6 +43,13 @@ Initialize loader:
     $lazyLoader = new ConfigLoader;
     $lazyLoader->load( 'path/to/config.php' );   // this initialize data source into connection manager.
 
+To setup QueryDriver:
+ 
+    $driver = QueryDriver::getInstance('data_source_id');
+    $driver->configure('driver','pgsql');
+    $driver->configure('quote_column',true);
+    $driver->configure('quote_table',true);
+
 To create a model record:
 
     $author = new Author;
