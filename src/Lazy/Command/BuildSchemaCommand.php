@@ -64,5 +64,8 @@ class BuildSchemaCommand extends \CLIFramework\Command
 		}
         $logger->info('Done');
     }
+
+
+
 }
 

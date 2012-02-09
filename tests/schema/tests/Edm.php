@@ -7,4 +7,5 @@ class Edm
 
 	const schema_proxy_class = '\\tests\\EdmSchemaProxy';
 
+
 }

@@ -37,6 +37,3 @@ class EdmSchema extends SchemaDeclare
     }
 }
 
-
-
-
