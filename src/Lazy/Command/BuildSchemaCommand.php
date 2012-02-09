@@ -22,7 +22,11 @@ class BuildSchemaCommand extends \CLIFramework\Command
 
     public function execute()
     {
-        $defaultConfigFile = 'config/lazy.php';
+        $logger = $this->getLogger();
+        $options = $this->getOptions();
+        $configFile = 'config/lazy.php';
+
+
 		$generator = new \Lazy\Schema\SchemaGenerator;
 		$generator->setLogger( $this->getLogger() );
 
@@ -32,14 +36,13 @@ class BuildSchemaCommand extends \CLIFramework\Command
                 $generator->addPath( $path );
             }
         } else {
-            $options = $this->getOptions();
-            if( $options->config || file_exists($defaultConfigFile) ) {
-                $loader = new \Lazy\ConfigLoader;
-                if( $options->config )
-                    $loader->load( $options->config->value );
-                else
-                    $loader->load( $defaultConfigFile );
 
+            if( $options->config )
+                $configFile = $options->config->value;
+
+            if( file_exists($configFile) ) {
+                $loader = new \Lazy\ConfigLoader;
+                $loader->load( $configFile );
                 foreach( $loader->getSchemaPaths() as $path ) {
                     $generator->addPath( $path );
                 }

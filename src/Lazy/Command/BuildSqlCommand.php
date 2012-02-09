@@ -9,7 +9,7 @@ class BuildSqlCommand extends \CLIFramework\Command
 
     public function options($opts)
     {
-
+        $opts->add('c|config:','config file');
     }
 
 
@@ -23,10 +23,11 @@ class BuildSqlCommand extends \CLIFramework\Command
         $options = $this->getOptions();
         $logger  = $this->getLogger();
 
+        $configFile = 'config/lazy.php';
         $config = new \Lazy\ConfigLoader;
 
-        if( ! $configFile ) 
-            $configFile = 'config/lazy.php';
+        if( $options->config )
+            $configFile = $options->config->value;
 
         $logger->info("Checking config $configFile");
         if( file_exists($configFile) ) {
@@ -62,7 +63,7 @@ class BuildSqlCommand extends \CLIFramework\Command
 		$classes = $finder->getSchemas();
 
         foreach( $classes as $class ) {
-            $this->getLogger()->info( "Building SQL for $class" );
+            $logger->info( "Building SQL for $class" );
 
             $schema = new $class;
             $sql = $builder->build($schema);
