@@ -34,26 +34,30 @@ class SchemaSqlBuilderTest extends PHPUnit_Framework_TestCase
 		$bookschema = new \tests\BookSchema;
 		ok( $s );
 
-		$sql = $builder->build($s);
-		ok( $sql );
+		$sqls = $builder->build($s);
+		ok( $sqls );
+
         // var_dump( $sql ); 
-        $this->pdoQueryOk( $dbh , $sql );
+        foreach( $sqls as $sql ) 
+            $this->pdoQueryOk( $dbh , $sql );
 
 
 		ok( $authorbook );
-		$sql = $builder->build($authorbook);
-		ok( $sql );
+		$sqls = $builder->build($authorbook);
+		ok( $sqls );
         // var_dump( $sql ); 
 
-        $this->pdoQueryOk( $dbh , $sql );
+        foreach( $sqls as $sql )
+            $this->pdoQueryOk( $dbh , $sql );
 
 
 		ok( $bookschema );
-		$sql = $builder->build($bookschema);
-		ok( $sql );
+		$sqls = $builder->build($bookschema);
+		ok( $sqls );
         // var_dump( $sql ); 
 
-        $this->pdoQueryOk( $dbh , $sql );
+        foreach( $sqls as $sql )
+            $this->pdoQueryOk( $dbh , $sql );
 	}
 
 
@@ -81,14 +85,17 @@ class SchemaSqlBuilderTest extends PHPUnit_Framework_TestCase
         ok( $authorbookschema );
         ok( $bookschema );
 
-        ok( $sql = $builder->build( $authorschema ) );
-        $this->pdoQueryOk( $pdo, $sql );
+        ok( $sqls = $builder->build( $authorschema ) );
+        foreach( $sqls as $sql )
+            $this->pdoQueryOk( $pdo, $sql );
 
-        ok( $sql = $builder->build( $bookschema ) );
-        $this->pdoQueryOk( $pdo, $sql );
+        ok( $sqls = $builder->build( $bookschema ) );
+        foreach( $sqls as $sql )
+            $this->pdoQueryOk( $pdo, $sql );
 
-        ok( $sql = $builder->build( $authorbookschema ) );
-        $this->pdoQueryOk( $pdo, $sql );
+        ok( $sqls = $builder->build( $authorbookschema ) );
+        foreach( $sqls as $sql )
+            $this->pdoQueryOk( $pdo, $sql );
 
 	}
 }
