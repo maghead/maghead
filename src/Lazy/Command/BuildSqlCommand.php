@@ -2,6 +2,7 @@
 namespace Lazy\Command;
 use CLIFramework\Command;
 use Lazy\Schema;
+use Exception;
 
 class BuildSqlCommand extends \CLIFramework\Command
 {
@@ -10,18 +11,23 @@ class BuildSqlCommand extends \CLIFramework\Command
         return 'build sql';
     }
 
-    public function execute()
+    public function execute($configFile = null)
     {
         $options = $this->getOptions();
 
         $config = new \Lazy\ConfigLoader;
 
-        $configFile = 'config/lazy.php';
+        if( ! $configFile ) 
+            $configFile = 'config/lazy.php';
+
         if( file_exists($configFile) ) {
             if( $options->config )
                 $config->load( $options->config->value );
             else
                 $config->load( $configFile );
+        }
+        else {
+            throw new Exception("Config file $configFile not found.");
         }
 
         $connectionManager = \Lazy\ConnectionManager::getInstance();
