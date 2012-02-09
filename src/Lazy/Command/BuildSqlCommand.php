@@ -6,6 +6,13 @@ use Exception;
 
 class BuildSqlCommand extends \CLIFramework\Command
 {
+
+    public function options($opts)
+    {
+
+    }
+
+
     public function brief()
     {
         return 'build sql';
@@ -14,12 +21,14 @@ class BuildSqlCommand extends \CLIFramework\Command
     public function execute($configFile = null)
     {
         $options = $this->getOptions();
+        $logger  = $this->getLogger();
 
         $config = new \Lazy\ConfigLoader;
 
         if( ! $configFile ) 
             $configFile = 'config/lazy.php';
 
+        $logger->info("Checking config $configFile");
         if( file_exists($configFile) ) {
             if( $options->config )
                 $config->load( $options->config->value );
@@ -32,10 +41,19 @@ class BuildSqlCommand extends \CLIFramework\Command
 
         $connectionManager = \Lazy\ConnectionManager::getInstance();
 
+
+        $logger->info("Initialize connection manager...");
+
         $id = 'default';
         $conn = $connectionManager->getConnection($id);
         $type = $connectionManager->getDataSourceDriver($id);
+
+
+        $logger->info("Initialize schema builder...");
 		$builder = new \Lazy\SchemaSqlBuilder($type); // driver
+
+
+        $logger->info("Finding schema classes...");
 
         // find schema classes 
         $finder = new Schema\SchemaFinder;
@@ -49,7 +67,6 @@ class BuildSqlCommand extends \CLIFramework\Command
             $schema = new $class;
             $sql = $builder->build($schema);
             $conn->query( $sql );
-
             $error = $conn->errorInfo();
             if( $error[1] ) {
                 $this->getLogger()->error( var_export( $error , true ) );
