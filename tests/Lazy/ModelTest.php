@@ -145,10 +145,10 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $record = \tests\Author::load( array( 
             'id' => $id
         ));
+
         ok( $record );
         ok( $record->id );
         
-
 
         /**
          * Which runs:
@@ -160,6 +160,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
                 ->back()
                 ->execute();
         ok( $ret->success );
+
 
         $ret = \tests\Author::delete()
             ->where()

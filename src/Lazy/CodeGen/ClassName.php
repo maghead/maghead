@@ -36,6 +36,6 @@ class ClassName
     {
         return $this->getFullName();
     }
-}
 
+}
 
