@@ -49,9 +49,8 @@ class SchemaGenerator
 		), $extra ) );
 
 		$sourceFile = $targetDir 
-			. DIRECTORY_SEPARATOR 
-			. str_replace( '\\' , DIRECTORY_SEPARATOR , 
-					ltrim($cTemplate->class->getFullName(),'\\' ) ) . '.php';
+            . DIRECTORY_SEPARATOR 
+            . $cTemplate->class->getName() . '.php';
 
 		$class = ltrim($cTemplate->class->getFullName(),'\\');
 		$this->logger->info( "Generating model class: $class => $sourceFile" );
@@ -116,8 +115,11 @@ class SchemaGenerator
 		$modelClass  = $schema->getModelClass();
 		$schemaProxyClass = $schema->getSchemaProxyClass();
 
-		$sourceFile = $schema->getDir() . DIRECTORY_SEPARATOR 
-			. str_replace( '\\' , DIRECTORY_SEPARATOR , $schemaProxyClass ) . '.php';
+
+        $filename = explode( '\\' , $schemaProxyClass );
+        $filename = (string) end($filename);
+        $sourceFile = $schema->getDir() 
+            . DIRECTORY_SEPARATOR . $filename . '.php';
 
 		$this->preventFileDir( $sourceFile );
 
