@@ -2,8 +2,8 @@
 <?php
 require 'vendor/pear/Universal/ClassLoader/BasePathClassLoader.php';
 $loader = new \Universal\ClassLoader\BasePathClassLoader(array(
-    __DIR__ . '/src', 
-    'vendor/pear', 
+    dirname(__DIR__) . '/src', 
+    dirname(__DIR__) . '/vendor/pear', 
 ));
 $loader->register();
 

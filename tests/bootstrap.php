@@ -3,9 +3,9 @@
 require 'PHPUnit_TestMore.php';
 require 'vendor/pear/Universal/ClassLoader/BasePathClassLoader.php';
 $loader = new \Universal\ClassLoader\BasePathClassLoader(array(
-    __DIR__ . '/src', 
-    'vendor/pear', 
-    'tests',
+    dirname(__DIR__) . '/src', 
+    dirname(__DIR__) . '/vendor/pear',
+    dirname(__DIR__) . '/tests',
     'tests/schema',
     'tests/src'
 ));
