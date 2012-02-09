@@ -46,7 +46,7 @@ class BuildSqlCommand extends \CLIFramework\Command
 
             $error = $conn->errorInfo();
             if( $error[1] ) {
-                $this->getLogger()->info( var_export( $error , true ) );
+                $this->getLogger()->error( var_export( $error , true ) );
             }
         }
     }
