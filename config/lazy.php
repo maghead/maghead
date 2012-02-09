@@ -16,7 +16,7 @@
     array (
       'dsn' => 'sqlite:tests.db',
     ),
-    'slave' => 
+    'mysql' => 
     array (
       'dsn' => 'mysql:host=localhost;dbname=test',
       'user' => 'root',
