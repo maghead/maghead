@@ -24,7 +24,7 @@ class InitConfCommand extends Command
         $configFile = 'config/lazy.yml';
 
         if( file_exists($configFile) ) {
-            $logger->info("Config file already exists.");
+            $logger->info("Config file $configFile already exists.");
             return;
         }
 
