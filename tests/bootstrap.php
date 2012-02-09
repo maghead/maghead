@@ -6,7 +6,7 @@ $loader = new \Universal\ClassLoader\BasePathClassLoader(array(
     dirname(__DIR__) . '/src', 
     dirname(__DIR__) . '/vendor/pear',
     dirname(__DIR__) . '/tests',
-    'tests/schema',
+    dirname(__DIR__) . '/tests/schema',
     'tests/src'
 ));
 $loader->register();
