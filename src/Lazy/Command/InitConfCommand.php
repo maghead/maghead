@@ -22,7 +22,13 @@ class InitConfCommand extends Command
         $logger = $this->getLogger();
 
         $configFile = 'config/lazy.yml';
-        $logger->info("Creating config skeleton...");
+
+        if( file_exists($configFile) ) {
+            $logger->info("Config file already exists.");
+            return;
+        }
+
+        $logger->info("Creating config file skeleton...");
 
         $content =<<<EOS
 ---
