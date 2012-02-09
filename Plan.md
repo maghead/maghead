@@ -9,16 +9,23 @@ Requirement
 ### Configuration File
 
 LazyORM configuration file:
-
-    orm.ini
-
+    
 configuration file content:
 
-    [source master]
-    driver = mysql
-    host = 
-    user = 
-    pass = 
+    ---
+    bootstrap:
+      - tests/bootstrap.php
+    schema:
+      paths:
+        - tests/schema
+    data_sources:
+      default:
+        dsn: 'sqlite:tests.db'
+        # dsn: 'sqlite::memory:'
+      slave:
+        dsn: 'mysql:host=localhost;dbname=test'
+        user: root
+        pass: 123123
 
 translate this into php config file `build/datasource_config.php`.
 
@@ -89,17 +96,21 @@ Generated Collection class:
 
 ### Command-line interface
 
+To build config:
+
+    lazy build-conf path/to/config.yml
+
 To generate SQL schema:
 
-    lazy sql path/to/AuthorSchema.php
+    lazy build-schema path/to/AuthorSchema.php
 
 To import SQL schema into database:
 
-    lazy build path/to/AuthorSchema.php
+    lazy build-sql path/to/AuthorSchema.php
 
-    lazy build path/to/schema/
+    lazy build-sql path/to/schema/
 
-LazyRecord will generate schema in pure-php array:
+LazyRecord will generate schema in pure-php array, in-place
 
     build/schema/AuthorSchemaProxy.php
     build/schema/AuthorBase.php           // auto-generated AuthoBase 
