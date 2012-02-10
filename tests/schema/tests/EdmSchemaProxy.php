@@ -67,7 +67,7 @@ class EdmSchemaProxy extends Schema
   'edmUpdatedOn',
 );
         $this->primaryKey =  'edmNo';
-        $this->table = 'edms';
+        $this->table = 'Edm';
         $this->modelClass = 'tests\\Edm';
     }
 

@@ -4,13 +4,21 @@ use Exception;
 use ArrayAccess;
 
 /**
- * available config key:
+ * Available config key:
  *
  * schema
  * schema.paths = [ dirpath , path, ... ]
  *
  * data_sources
- * data_sources{ ds id } = { dsn => ..., user => , pass => }
+ * data_sources{ ds id } = { 
+ *      dsn => ..., 
+ *      user => , 
+ *      pass => 
+ *      query_driver_options => { 
+ *          quote_column => true,
+ *          quote_table => true,
+ *      }
+ * }
  *
  * bootstrap = [ script path, script path ]
  *

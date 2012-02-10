@@ -23,12 +23,7 @@ class QueryDriver extends Driver
     {
         if( isset(static::$drivers[ $id ]) )
             return static::$drivers[ $id ];
-        
-        $driver = new static;
-        if( $type = ConnectionManager::getInstance()->getDataSourceDriver($id) ) {
-            $driver->configure('driver',$type);
-        }
-        return static::$drivers[ $id ] = $driver;
+        return static::$drivers[ $id ] = new static;
     }
 
     static function free()

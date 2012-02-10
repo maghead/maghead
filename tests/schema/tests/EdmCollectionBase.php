@@ -9,6 +9,6 @@ extends \Lazy\BaseCollection
 
             const schema_proxy_class = '\\tests\\EdmSchemaProxy';
         const model_class = '\\tests\\Edm';
-        const table = 'edms';
+        const table = 'Edm';
         
 }
