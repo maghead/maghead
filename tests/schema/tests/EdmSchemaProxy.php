@@ -26,12 +26,14 @@ class EdmSchemaProxy extends Schema
   'edmStart' => array( 
       'name' => 'edmStart',
       'attributes' => array( 
+          'type' => 'date',
           'isa' => 'DateTime',
         ),
     ),
   'edmEnd' => array( 
       'name' => 'edmEnd',
       'attributes' => array( 
+          'type' => 'date',
           'isa' => 'DateTime',
         ),
     ),

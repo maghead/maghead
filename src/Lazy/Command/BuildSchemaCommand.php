@@ -42,7 +42,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
 
             if( file_exists($configFile) ) {
                 $loader = new \Lazy\ConfigLoader;
-                $loader->load( $configFile );
+                $loader->loadConfig( $configFile );
                 foreach( $loader->getSchemaPaths() as $path ) {
                     $logger->info("Adding schema path $path");
                     $generator->addPath( $path );
