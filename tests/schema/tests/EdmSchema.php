@@ -6,6 +6,8 @@ class EdmSchema extends SchemaDeclare
 {
     function schema()
     {
+        $this->table('Edm');
+
         $this->column('edmNo')
             ->primary()
             ->integer()

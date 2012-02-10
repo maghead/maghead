@@ -74,6 +74,8 @@ class BuildSqlCommand extends \CLIFramework\Command
             $sqls = $builder->build($schema);
             foreach( $sqls as $sql ) {
 
+                $logger->info("--- SQL for $class ");
+                $logger->info( $sql );
                 fwrite( $fp , $sql . "\n" );
 
                 $conn->query( $sql );
