@@ -53,7 +53,7 @@ class BuildSqlCommand extends \CLIFramework\Command
         $type = $connectionManager->getDataSourceDriver($id);
 
         $logger->info("Initialize schema builder...");
-		$builder = new \Lazy\SchemaSqlBuilder($type); // driver
+        $builder = new \Lazy\SchemaSqlBuilder($type); // driver
 
         $logger->info("Finding schema classes...");
 
@@ -61,7 +61,7 @@ class BuildSqlCommand extends \CLIFramework\Command
         $finder = new Schema\SchemaFinder;
         $finder->paths = $loader->getSchemaPaths();
         $finder->load();
-		$classes = $finder->getSchemas();
+        $classes = $finder->getSchemas();
 
         foreach( $classes as $class ) {
             $logger->info( "Building SQL for $class" );

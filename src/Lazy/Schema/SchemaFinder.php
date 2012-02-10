@@ -14,9 +14,9 @@ class SchemaFinder
         $this->paths[] = $path;
     }
 
-	public function load()
-	{
-		foreach( $this->paths as $path ) {
+    public function load()
+    {
+        foreach( $this->paths as $path ) {
             if( is_file($path) ) {
                 require_once $path;
             }
@@ -30,14 +30,14 @@ class SchemaFinder
                     }
                 }
             }
-		}
-	}
+        }
+    }
 
-	public function getSchemas()
-	{
-		$list = array();
-		$classes = get_declared_classes();
-		foreach( $classes as $class ) {
+    public function getSchemas()
+    {
+        $list = array();
+        $classes = get_declared_classes();
+        foreach( $classes as $class ) {
 
             if( is_a( $class, 'Lazy\Schema\MixinSchemaDeclare' ) 
                 || $class == 'Lazy\Schema\MixinSchemaDeclare' )
@@ -48,10 +48,10 @@ class SchemaFinder
 
             if( is_subclass_of( $class, '\Lazy\Schema\SchemaDeclare' ) )
             {
-				$list[] = $class;
-			}
-		}
-		// return $list;
+                $list[] = $class;
+            }
+        }
+        // return $list;
         $schemas = array();
         foreach( $list as $class ) {
             $schema = new $class;
@@ -61,7 +61,7 @@ class SchemaFinder
             $schemas[] = $class;
         }
         return array_unique($schemas);
-	}
+    }
 
 
 

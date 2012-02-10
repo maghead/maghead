@@ -5,22 +5,22 @@ namespace {{ class.class.namespace }};
 
 {% if class.uses %}
 {% for u in class.uses %}
-	{{u}}
+{{u}}
 {% endfor %}
 {% endif %}
 
 
 class {{ class.class.name }} 
 {% if class.extends %}
-	extends {{ class.extends }}
+extends {{ class.extends }}
 {% endif %}
 {
 
-{% if class.consts %}
-{% for con in class.consts %}
-	{{con}}
-{% endfor %}
-{% endif %}
+    {% if class.consts %}
+    {% for con in class.consts %}
+    {{con}}
+    {% endfor %}
+    {% endif %}
 
 }
 

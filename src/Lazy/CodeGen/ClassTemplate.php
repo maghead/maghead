@@ -9,7 +9,7 @@ class ClassTemplate
     public $uses = array();
     public $methods = array();
     public $consts  = array();
-	public $members = array();
+    public $members = array();
 
     public function __construct($className,$namespace = null)
     {
@@ -51,10 +51,10 @@ class ClassTemplate
         $this->consts[] = new ClassConst($name,$value);
     }
 
-	public function addMember($name,$value,$scope = 'public')
-	{
-		$this->members[] = new ClassMember($name,$value,$scope);
-	}
+    public function addMember($name,$value,$scope = 'public')
+    {
+        $this->members[] = new ClassMember($name,$value,$scope);
+    }
 
 
 }
