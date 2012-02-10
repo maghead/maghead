@@ -14,6 +14,7 @@ use ArrayAccess;
  *      dsn => ..., 
  *      user => , 
  *      pass => 
+ *      connection_options => { ... pdo connection options },
  *      query_options => { 
  *          quote_column => true,
  *          quote_table => true,
