@@ -6,9 +6,9 @@ use Lazy\Schema;
 class PublisherSchemaProxy extends Schema
 {
 
-	public function __construct()
-	{
-		$this->columns = array( 
+    public function __construct()
+    {
+        $this->columns = array( 
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
@@ -24,13 +24,13 @@ class PublisherSchemaProxy extends Schema
         ),
     ),
 );
-		$this->columnNames = array( 
+        $this->columnNames = array( 
   'id',
   'name',
 );
-		$this->primaryKey =  'id';
-		$this->table = 'publishers';
-		$this->modelClass = 'tests\\Publisher';
-	}
+        $this->primaryKey =  'id';
+        $this->table = 'publishers';
+        $this->modelClass = 'tests\\Publisher';
+    }
 
 }
