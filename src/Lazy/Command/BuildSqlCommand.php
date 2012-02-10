@@ -24,16 +24,16 @@ class BuildSqlCommand extends \CLIFramework\Command
         $logger  = $this->getLogger();
 
         $configFile = 'config/lazy.php';
-        $config = new \Lazy\ConfigLoader;
+        $loader = new \Lazy\ConfigLoader;
 
         if( $options->config )
             $configFile = $options->config->value;
 
         if( file_exists($configFile) ) {
             if( $options->config )
-                $config->loadConfig( $options->config->value );
+                $loader->loadConfig( $options->config->value );
             else
-                $config->loadConfig( $configFile );
+                $loader->loadConfig( $configFile );
 
             $logger->info("config $configFile loaded.");
         }
@@ -61,7 +61,7 @@ class BuildSqlCommand extends \CLIFramework\Command
 
         // find schema classes 
         $finder = new Schema\SchemaFinder;
-        $finder->paths = $config->getSchemaPaths();
+        $finder->paths = $loader->getSchemaPaths();
         $finder->load();
 		$classes = $finder->getSchemas();
 
