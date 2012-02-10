@@ -108,8 +108,8 @@ class ConnectionManager
             }
 
             // setup query driver options
-            if( isset( $config['query_driver_options'] ) ) {
-                $queryOptions = $config['query_driver_options'];
+            if( isset( $config['query_options'] ) ) {
+                $queryOptions = $config['query_options'];
                 foreach( $queryOptions as $option => $value ) {
                     $driver->configure( $option , $value );
                 }
