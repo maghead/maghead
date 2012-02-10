@@ -31,9 +31,9 @@ class BuildSqlCommand extends \CLIFramework\Command
 
         if( file_exists($configFile) ) {
             if( $options->config )
-                $config->load( $options->config->value );
+                $config->loadConfig( $options->config->value );
             else
-                $config->load( $configFile );
+                $config->loadConfig( $configFile );
 
             $logger->info("config $configFile loaded.");
         }
