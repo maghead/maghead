@@ -96,7 +96,7 @@ class ConnectionManager
             $conn = new PDO( $config['dsn'], 
                 @$config['user'], 
                 @$config['pass'], 
-                @$config['options']
+                @$config['connection_options']
             );
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
