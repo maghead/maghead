@@ -4,6 +4,14 @@ use Lazy\SchemaSqlBuilder;
 
 class ModelTest extends PHPUnit_Framework_TestCase
 {
+    public function setup()
+    {
+        Lazy\QueryDriver::free();
+        Lazy\ConnectionManager::getInstance()->addDataSource('default', array( 
+            'dsn' => 'sqlite::memory:',
+        ));
+    }
+
 	function getLogger()
 	{
 		return new TestLogger;
@@ -24,21 +32,10 @@ class ModelTest extends PHPUnit_Framework_TestCase
         return $ret;
     }
 
-    function getSqliteConnection() 
-    {
-		if( file_exists('tests.db') ) {
-			unlink('tests.db');
-		}
-
-        // build schema 
-		$dbh = new PDO('sqlite::memory:'); // success
-        return $dbh;
-    }
-
 	function testSqlite()
 	{
-        $dbh = $this->getSqliteConnection();
-		$builder = new SchemaSqlBuilder('sqlite');
+        $dbh = Lazy\ConnectionManager::getInstance()->getConnection();
+        $builder = new SchemaSqlBuilder('sqlite', Lazy\ConnectionManager::getInstance()->getQueryDriver('default'));
 		ok( $builder );
 
 

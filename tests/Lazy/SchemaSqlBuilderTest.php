@@ -3,6 +3,25 @@ use Lazy\SchemaSqlBuilder;
 
 class SchemaSqlBuilderTest extends PHPUnit_Framework_TestCase
 {
+    function setup()
+    {
+        Lazy\QueryDriver::free();
+        $connm = Lazy\ConnectionManager::getInstance();
+        $connm->free();
+
+        $connm->addDataSource('sqlite', array( 
+            'dsn' => 'sqlite::memory:'
+        ));
+
+        $connm->addDataSource('mysql', array( 
+            'dsn' => 'mysql:host=localhost;dbname=lazy_tests',
+            'user' => 'root',
+            'pass' => '123123',
+            'connection_options' => array(
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+            ) 
+        ));
+    }
 
     function pdoQueryOk($dbh,$sql)
     {
@@ -21,12 +40,8 @@ class SchemaSqlBuilderTest extends PHPUnit_Framework_TestCase
 
 	function testSqlite()
 	{
-		if( file_exists('tests.db') ) {
-			unlink('tests.db');
-		}
-
-		$dbh = new PDO('sqlite:tests.db'); // success
-		$builder = new SchemaSqlBuilder('sqlite');
+		$dbh = Lazy\ConnectionManager::getInstance()->getConnection('sqlite');
+		$builder = new SchemaSqlBuilder('sqlite', Lazy\ConnectionManager::getInstance()->getQueryDriver('sqlite') );
 		ok( $builder );
 
 		$s = new \tests\AuthorSchema;
@@ -63,16 +78,12 @@ class SchemaSqlBuilderTest extends PHPUnit_Framework_TestCase
 
 	function testMysql()
 	{
-		$builder = new SchemaSqlBuilder('mysql');
-		ok( $builder );
-
-        $pdo = new PDO( 
-            'mysql:host=localhost;dbname=lazy_tests', 
-            'root', 
-            '123123', 
-            array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8") 
-        ); 
+        $connManager = Lazy\ConnectionManager::getInstance();
+        $pdo = $connManager->getConnection('mysql');
         ok( $pdo , 'pdo connection' );
+
+		$builder = new SchemaSqlBuilder('mysql', $connManager->getQueryDriver('mysql') );
+		ok( $builder );
 
         $this->pdoQueryOk( $pdo, 'drop TABLE IF EXISTS authors' );
         $this->pdoQueryOk( $pdo, 'drop TABLE IF EXISTS author_books' );

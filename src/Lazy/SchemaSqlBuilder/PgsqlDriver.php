@@ -9,6 +9,7 @@ use Lazy\QueryDriver;
  * @see http://www.sqlite.org/docs.html
  */
 class PgsqlDriver
+    extends BaseDriver
     implements DriverInterface
 {
 

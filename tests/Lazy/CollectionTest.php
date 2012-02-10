@@ -7,7 +7,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     function setUp()
     {
         \Lazy\ConnectionManager::getInstance()->free();
-        \Lazy\QueryDriver::getInstance()->free();
+        Lazy\QueryDriver::free();
     }
 
 	function getLogger()
@@ -38,7 +38,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         ));
 
         $dbh = $connM->getDefault();
-		$builder = new SchemaSqlBuilder('sqlite');
+		$builder = new SchemaSqlBuilder('sqlite', $connM->getQueryDriver() );
 		ok( $builder );
 
 
