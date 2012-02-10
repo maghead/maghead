@@ -93,9 +93,7 @@ abstract class SchemaDeclare
 
     public function getTable() 
     {
-        return $this->table 
-            ? $this->table 
-            : $this->_classnameToTable();
+        return $this->table ?: $this->_classnameToTable();
     }
 
 
