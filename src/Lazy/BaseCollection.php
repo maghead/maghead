@@ -6,8 +6,8 @@ use PDOException;
 use Exception;
 use Iterator;
 
-use Lazy\OperationResult\OperationSuccess,
-    Lazy\OperationResult\OperationError;
+use Lazy\OperationResult\OperationSuccess;
+use Lazy\OperationResult\OperationError;
 use SQLBuilder\QueryBuilder;
 
 
@@ -86,6 +86,12 @@ class BaseCollection
     }
 
 
+
+    /**
+     * fetch data from database, and catch the handle.
+     *
+     * Which calls doFetch() to do a query operation.
+     */
     public function fetch($force = false)
     {
         if( $this->handle == null || $force ) {
@@ -96,6 +102,11 @@ class BaseCollection
 
 
 
+    /**
+     * Build sql from current query and make a query to database.
+     *
+     * @return OperationResult
+     */
     public function doFetch()
     {
         /* fetch by current query */
@@ -119,22 +130,44 @@ class BaseCollection
         return new OperationSuccess('Updated', array( 'sql' => $sql ));
     }
 
+
+    /**
+     * get selected item size
+     *
+     * @return integer size
+     */
     public function size()
     {
         return count($this->_items);
     }
 
+
+    /**
+     * Get selected items and wrap it into a CollectionPager object
+     *
+     * @return CollectionPager
+     */
     public function pager($page = 1,$pageSize = 10)
     {
         return new CollectionPager( $this->_items, $page, $pageSize );
     }
 
+
+    /**
+     * Get items
+     */
     public function items()
     {
         return $this->_items;
     }
 
 
+
+    /**
+     * Read rows from database handle
+     *
+     * @return model_class[]
+     */
     protected function _readRows()
     {
         $h = $this->_handle;
@@ -145,8 +178,6 @@ class BaseCollection
         }
         return $this->itemData;
     }
-
-
 
 
 
@@ -218,7 +249,7 @@ class BaseCollection
      */
     public function getConnection()
     {
-        // xxx: process for read/write source
+        // xxx: get data source id from schema.
         $sourceId = 'default';
         $connManager = ConnectionManager::getInstance();
         return $connManager->getDefault(); // xxx: support read/write connection later
