@@ -26,10 +26,12 @@ class PgsqlDriver
             $sql .= ' ' . $type;
 
         if( $column->required )
-            $sql .= " not null";
+            $sql .= ' not null';
 
         /* if it's callable, we should not write the result into sql schema */
-        if( ($default = $column->default) !== null && ! is_callable($column->default )  ) { 
+        if( ($default = $column->default) !== null 
+            && ! is_callable($column->default )  ) 
+        {
 
             // raw sql default value
             if( is_array($default) ) {
@@ -40,7 +42,7 @@ class PgsqlDriver
                  * note that we sometime need the data source id from model schema define.
                  * $sourceId = $schema->getDataSourceId();
                  */
-                $sql .= ' default ' . QueryDriver::getInstance()->inflate($default);
+                $sql .= ' default ' . $this->driver->inflate($default);
             }
         }
 
@@ -84,10 +86,10 @@ class PgsqlDriver
     {
         $sqls = array();
 
-        $createSql = "CREATE TABLE " . $schema->getTable() . "( \n";
+        $createSql = 'CREATE TABLE ' . $this->driver->getQuoteTable($schema->getTable()) . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
-            $columnSql[] = $this->buildColumnSql( $schema, $column );
+            $columnSql[] = "\t" . $this->buildColumnSql( $schema, $column );
         }
         $createSql .= join(",\n",$columnSql);
         $createSql .= "\n);\n";
