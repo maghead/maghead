@@ -31,8 +31,5 @@ class QueryDriver extends Driver
         static::$drivers = array();
     }
 
-
-    /* extended methods */
-
 }
 
