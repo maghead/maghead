@@ -6,9 +6,9 @@ use Lazy\Schema;
 class BookSchemaProxy extends Schema
 {
 
-	public function __construct()
-	{
-		$this->columns = array( 
+    public function __construct()
+    {
+        $this->columns = array( 
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
@@ -49,7 +49,7 @@ class BookSchemaProxy extends Schema
         ),
     ),
 );
-		$this->columnNames = array( 
+        $this->columnNames = array( 
   'id',
   'title',
   'subtitle',
@@ -57,9 +57,9 @@ class BookSchemaProxy extends Schema
   'publisher_id',
   'published_at',
 );
-		$this->primaryKey =  'id';
-		$this->table = 'books';
-		$this->modelClass = 'tests\\Book';
-	}
+        $this->primaryKey =  'id';
+        $this->table = 'books';
+        $this->modelClass = 'tests\\Book';
+    }
 
 }

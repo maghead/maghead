@@ -6,9 +6,9 @@ use Lazy\Schema;
 class EdmSchemaProxy extends Schema
 {
 
-	public function __construct()
-	{
-		$this->columns = array( 
+    public function __construct()
+    {
+        $this->columns = array( 
   'edmNo' => array( 
       'name' => 'edmNo',
       'attributes' => array( 
@@ -57,7 +57,7 @@ class EdmSchemaProxy extends Schema
         ),
     ),
 );
-		$this->columnNames = array( 
+        $this->columnNames = array( 
   'edmNo',
   'edmTitle',
   'edmStart',
@@ -66,9 +66,9 @@ class EdmSchemaProxy extends Schema
   'edmCreatedOn',
   'edmUpdatedOn',
 );
-		$this->primaryKey =  'edmNo';
-		$this->table = 'edms';
-		$this->modelClass = 'tests\\Edm';
-	}
+        $this->primaryKey =  'edmNo';
+        $this->table = 'edms';
+        $this->modelClass = 'tests\\Edm';
+    }
 
 }

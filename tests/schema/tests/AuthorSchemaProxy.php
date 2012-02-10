@@ -6,9 +6,9 @@ use Lazy\Schema;
 class AuthorSchemaProxy extends Schema
 {
 
-	public function __construct()
-	{
-		$this->columns = array( 
+    public function __construct()
+    {
+        $this->columns = array( 
   'created_on' => array( 
       'name' => 'created_on',
       'attributes' => array( 
@@ -56,16 +56,16 @@ class AuthorSchemaProxy extends Schema
         ),
     ),
 );
-		$this->columnNames = array( 
+        $this->columnNames = array( 
   'id',
   'name',
   'email',
   'identity',
   'confirmed',
 );
-		$this->primaryKey =  'id';
-		$this->table = 'authors';
-		$this->modelClass = 'tests\\Author';
-	}
+        $this->primaryKey =  'id';
+        $this->table = 'authors';
+        $this->modelClass = 'tests\\Author';
+    }
 
 }
