@@ -1,8 +1,10 @@
 <?php
 namespace Lazy;
 use Exception;
+use ArrayAccess;
 
 class ConfigLoader
+    implements ArrayAccess
 {
     public $config;
 
@@ -88,6 +90,32 @@ class ConfigLoader
     public function getSchemaPaths()
     {
         return $this->config['schema']['paths'];
+    }
+
+
+
+
+    /******************************
+     * Implements interface of ArrayAccess
+     ******************************/
+    public function offsetGet($offset)
+    {
+        return $this->config[ $offset ];
+    }
+
+    public function offsetSet($offset,$value)
+    {
+        $this->config[ $offset ] = $value;
+    }
+
+    public function offsetExists ($offset)
+    {
+        return isset($this->config[$offset]);
+    }
+    
+    public function offsetUnset($offset) 
+    {
+        unset($this->config[$offset]);
     }
 
 }
