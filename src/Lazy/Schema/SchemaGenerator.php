@@ -102,6 +102,7 @@ class SchemaGenerator
   		$cTemplate = new \Lazy\CodeGen\ClassTemplate( $schemaProxyClass );
 		$cTemplate->addConst( 'schema_class' , '\\' . ltrim($schemaClass,'\\') );
 		$cTemplate->addConst( 'model_class' , '\\' . ltrim($modelClass,'\\') );
+        $cTemplate->addConst( 'table', $schema->getTable() );
 
 		/*
 			return $this->generateClass( 'Class.php', $cTemplate );
