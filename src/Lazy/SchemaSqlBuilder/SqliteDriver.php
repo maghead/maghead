@@ -9,9 +9,9 @@ use Lazy\QueryDriver;
  * @see http://www.sqlite.org/docs.html
  */
 class SqliteDriver
+    extends BaseDriver
     implements DriverInterface
 {
-
 
     function buildColumnSql($schema, $column) {      
         $name = $column->name;

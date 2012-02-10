@@ -3,18 +3,20 @@ namespace Lazy;
 
 class SchemaSqlBuilder
 {
+    /**
+     * builder object
+     */
     public $builder;
-    public $type;
-
 
     /**
      * xxx: should get the driver type from datasource (defined in model schema)
      */
-    function __construct($driverType)
+    function __construct($driverType,$driver)
     {
         $builderClass = get_class($this) . '\\' . ucfirst( $driverType ) . 'Driver';
-        $this->builder = new $builderClass;
-        $this->type = $driverType;
+        $this->builder = new $builderClass( $driver );
+        $this->builder->driver = $driver;
+        $this->builder->driverType = $driverType;
     }
 
     public function build(Schema\SchemaDeclare $schema)

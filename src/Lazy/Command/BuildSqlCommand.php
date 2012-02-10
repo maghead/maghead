@@ -51,9 +51,11 @@ class BuildSqlCommand extends \CLIFramework\Command
         $id = 'default';
         $conn = $connectionManager->getConnection($id);
         $type = $connectionManager->getDataSourceDriver($id);
+        $driver = $connectionManager->getQueryDriver($id);
 
         $logger->info("Initialize schema builder...");
-        $builder = new \Lazy\SchemaSqlBuilder($type); // driver
+        $builder = new \Lazy\SchemaSqlBuilder($type,$driver); // driver
+
 
         $logger->info("Finding schema classes...");
 

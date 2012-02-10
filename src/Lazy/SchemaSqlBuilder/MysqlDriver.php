@@ -4,6 +4,7 @@ use Lazy\Schema\SchemaDeclare;
 use Lazy\QueryDriver;
 
 class MysqlDriver
+    extends BaseDriver
     implements DriverInterface
 {
 

@@ -56,13 +56,13 @@ class ConnectionManager
     }
 
 
-    public function getDataSource($id)
+    public function getDataSource($id = 'default')
     {
         if( isset($this->datasources[ $id ] ) )
             return $this->datasources[ $id ];
     }
 
-    public function getQueryDriver($id)
+    public function getQueryDriver($id = 'default')
     {
         return QueryDriver::getInstance($id);
     }
@@ -91,7 +91,7 @@ class ConnectionManager
      *                     sqlite2:mydb.sq2
      *
      */
-    public function getConnection($sourceId)
+    public function getConnection($sourceId = 'default')
     {
         if( isset($this->conns[$sourceId]) ) {
             return $this->conns[$sourceId];
