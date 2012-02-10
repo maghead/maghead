@@ -78,7 +78,8 @@ class SqliteDriver
     public function build(SchemaDeclare $schema)
     {
 
-        $sql = "CREATE TABLE " . $schema->getTable() . "( \n";
+        $sql = 'CREATE TABLE ' 
+            . $this->driver->getQuoteTable($schema->getTable()) . " ( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
             $columnSql[] = $this->buildColumnSql( $schema, $column );
