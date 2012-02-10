@@ -14,7 +14,7 @@ use ArrayAccess;
  *      dsn => ..., 
  *      user => , 
  *      pass => 
- *      query_driver_options => { 
+ *      query_options => { 
  *          quote_column => true,
  *          quote_table => true,
  *      }
