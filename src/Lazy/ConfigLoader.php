@@ -3,6 +3,18 @@ namespace Lazy;
 use Exception;
 use ArrayAccess;
 
+/**
+ * available config key:
+ *
+ * schema
+ * schema.paths = [ dirpath , path, ... ]
+ *
+ * data_sources
+ * data_sources{ ds id } = { dsn => ..., user => , pass => }
+ *
+ * bootstrap = [ script path, script path ]
+ *
+ */
 class ConfigLoader
     implements ArrayAccess
 {
