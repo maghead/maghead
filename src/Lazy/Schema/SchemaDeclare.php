@@ -180,15 +180,13 @@ abstract class SchemaDeclare
 
     protected function _classnameToTable() 
     {
-        $class = $this->getModelClass();
+        $name = $this->getModelName();
 
-        /**
-         * If we got Yasumi\Model\UserModel, we have to strip. 
-         */
-        if( preg_match( '/(\w+?)(?:Model)?$/', $class ,$reg) ) {
+        if( preg_match( '/(\w+?)(?:Model)?$/', $name ,$reg) ) 
+        {
             $table = @$reg[1];
             if( ! $table )
-                throw new Exception( "Table name error: $class" );
+                throw new Exception( "Table name error: $name" );
 
             /* convert BlahBlah to blah_blah */
             $table =  strtolower( preg_replace( 
@@ -198,7 +196,9 @@ abstract class SchemaDeclare
 
             $inf = Inflector::getInstance();
             return $inf->pluralize( $table );
-        } else { 
+        } 
+        else 
+        {
             throw new Exception('Table name convert error');
         }
     }
