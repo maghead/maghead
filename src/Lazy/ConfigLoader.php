@@ -57,6 +57,8 @@ class ConfigLoader
 
     /**
      * get data source by data source id
+     *
+     * @param string $sourceId
      */
     public function getDataSource($sourceId)
     {
@@ -87,7 +89,6 @@ class ConfigLoader
     {
         return $this->config['schema']['paths'];
     }
-
 
 }
 

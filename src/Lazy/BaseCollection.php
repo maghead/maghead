@@ -1,20 +1,25 @@
 <?php
 namespace Lazy;
 
-use PDO,
-    Exception,
-    Iterator;
+use PDO;
+use PDOException;
+use Exception;
+use Iterator;
 
 use Lazy\OperationResult\OperationSuccess,
     Lazy\OperationResult\OperationError;
 use SQLBuilder\QueryBuilder;
 
+
+/**
+ * base collection class
+ */
 class BaseCollection
     implements Iterator
 {
 
     /**
-     * SQLBuilder\QueryBuilder
+     * @var SQLBuilder\QueryBuilder
      */
     protected $currentQuery;
 
@@ -26,18 +31,26 @@ class BaseCollection
 
     /**
      * handle data for items
+     *
+     * @var array
      */ 
     protected $itemData = null;
 
 
     /**
      * current data item cursor position
+     *
+     * @var integer
      */
     protected $itemCursor = null;
 
 
     public function __get( $key ) 
     {
+
+        /**
+         * lazy attributes
+         */
         if( $key == '_schema' ) {
             return SchemaLoader::load( static::schema_proxy_class );
         }
@@ -51,6 +64,8 @@ class BaseCollection
             return $this->itemData ?: $this->_readRows();
         }
     }
+
+
 
     public function __call($m,$a)
     {

@@ -5,17 +5,15 @@ use SplFileObject;
 
 class ClosureSerializer
 {
+
+    /**
+     * serialize closure
+     *
+     * @param Closure 
+     */
     static function serialize($closure)
     {
         $ref = new ReflectionFunction($closure);
-        /*
-        var_dump(
-            $ref->getName(), 
-            $ref->getNumberOfParameters(), 
-            $ref->getNumberOfRequiredParameters()
-        );
-         */
-
         $file = new SplFileObject($ref->getFileName());
         $file->seek($ref->getStartLine()-1);
         $code = '';
