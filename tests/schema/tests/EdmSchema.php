@@ -17,11 +17,11 @@ class EdmSchema extends SchemaDeclare
             ->isa('str');
 
         $this->column('edmStart')
-            ->datetime()
+            ->type('date')
             ->isa('DateTime');
 
         $this->column('edmEnd')
-            ->datetime()
+            ->type('date')
             ->isa('DateTime');
 
         $this->column('edmContent')
