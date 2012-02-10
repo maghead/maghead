@@ -62,6 +62,11 @@ class ConnectionManager
             return $this->datasources[ $id ];
     }
 
+    public function getQueryDriver($id)
+    {
+        return QueryDriver::getInstance($id);
+    }
+
     public function getDataSourceDriver($id)
     {
         $config = $this->getDataSource($id);
@@ -100,7 +105,7 @@ class ConnectionManager
             );
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $driver = QueryDriver::getInstance( $sourceId );
+            $driver = $this->getQueryDriver( $sourceId );
 
             // configure query driver type
             if( $driverType = $this->getDataSourceDriver($sourceId) ) {
