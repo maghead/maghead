@@ -29,7 +29,7 @@ class MysqlDriver
                 $sql .= ' default ' . $default[0];
             }
             else {
-                $sql .= ' default ' . QueryDriver::getInstance()->inflate($default);
+                $sql .= ' default ' . $this->driver->inflate($default);
             }
         }
 
