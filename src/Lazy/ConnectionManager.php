@@ -29,8 +29,6 @@ class ConnectionManager
     public $conns = array();
 
 
-
-
     public function has($id)
     {
         return isset($this->conns[$id]);
@@ -96,11 +94,26 @@ class ConnectionManager
         } elseif( isset($this->datasources[ $sourceId ] ) ) {
             $config = $this->datasources[ $sourceId ];
             $conn = new PDO( $config['dsn'], 
-                @$config['user'] , 
-                @$config['pass'] , 
+                @$config['user'], 
+                @$config['pass'], 
                 @$config['options']
             );
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $driver = QueryDriver::getInstance( $sourceId );
+
+            // configure query driver type
+            if( $driverType = $this->getDataSourceDriver($sourceId) ) {
+                $driver->configure('driver',$driverType);
+            }
+
+            // setup query driver options
+            if( isset( $config['query_driver_options'] ) ) {
+                $queryOptions = $config['query_driver_options'];
+                foreach( $queryOptions as $option => $value ) {
+                    $driver->configure( $option , $value );
+                }
+            }
 
             // register connection to connection pool
             return $this->conns[ $sourceId ] = $conn;
