@@ -49,7 +49,7 @@ abstract class SchemaDeclare
         /*
         foreach( $this->mixins as $mixinClass ) {
         }
-        */
+         */
     }
 
     public function export()
@@ -213,13 +213,13 @@ abstract class SchemaDeclare
     }
 
 
-	public function getRelation($relationId)
-	{
+    public function getRelation($relationId)
+    {
         if( ! isset($this->relations[ $relationId ]) ) {
             throw new Exception("Relation $relationId is not defined.");
         }
         return $this->relations[ $relationId ];
-	}
+    }
 
 
 
@@ -292,7 +292,7 @@ abstract class SchemaDeclare
     public function getReferenceSchemas($recursive = true)
     {
         $schemas = array();
-		foreach( $this->relations as $rel ) {
+        foreach( $this->relations as $rel ) {
             if( ! isset($rel['foreign']['schema']) )
                 continue;
 

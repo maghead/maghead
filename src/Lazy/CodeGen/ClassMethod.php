@@ -20,13 +20,13 @@ class ClassMethod
         foreach( $this->arguments as $name => $default ) {
             $argStrings[] = " \$$name = " . var_export( $default,true);
         }
-        
+
         return $this->scope . ' function ' . $this->name . '(' . join(', ', $argStrings) . ')' . " { " . "\n"
             . $this->code
             . "\n"
             . "}"
             . "\n"
-        ;
+            ;
     }
 }
 

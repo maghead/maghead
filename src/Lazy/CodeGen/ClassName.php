@@ -26,10 +26,10 @@ class ClassName
 
     public function getFullName()
     {
-		if( $this->namespace )
-			return '\\' .  $this->namespace . '\\' . $this->name;
-		else
-			return '\\' . $this->name;
+        if( $this->namespace )
+            return '\\' .  $this->namespace . '\\' . $this->name;
+        else
+            return '\\' . $this->name;
     }
 
     public function __toString()

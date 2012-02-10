@@ -6,7 +6,7 @@ namespace {{ class.class.namespace }};
 {# use block #}
 {% if class.uses %}
 {% for u in class.uses %}
-	{{u}}
+{{u}}
 {% endfor %}
 {% endif %}
 
@@ -14,11 +14,11 @@ use Lazy\BaseModel;
 
 class {{ class.class.name }} extends BaseModel
 {
-{% if class.consts %}
-{% for con in class.consts %}
-	{{con}}
-{% endfor %}
-{% endif %}
+    {% if class.consts %}
+    {% for con in class.consts %}
+    {{con}}
+    {% endfor %}
+    {% endif %}
 
 }
 
