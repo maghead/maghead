@@ -51,6 +51,9 @@ class BuildSchemaCommand extends \CLIFramework\Command
             else {
                 die('Please specify a schema file path or with --config option.');
             }
+
+            $loader->loadDataSources();
+            $loader->loadBootstrap();
         }
 
         $classMap = $generator->generate();

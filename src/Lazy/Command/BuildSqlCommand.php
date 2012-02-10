@@ -41,6 +41,9 @@ class BuildSqlCommand extends \CLIFramework\Command
             throw new Exception("Config file $configFile not found.");
         }
 
+        $loader->loadDataSources();
+        $loader->loadBootstrap();
+
         $connectionManager = \Lazy\ConnectionManager::getInstance();
 
 
