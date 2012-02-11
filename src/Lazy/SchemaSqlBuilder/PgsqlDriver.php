@@ -86,7 +86,9 @@ class PgsqlDriver
     {
         $sqls = array();
 
-        $createSql = 'CREATE TABLE ' . $this->driver->getQuoteTable($schema->getTable()) . "( \n";
+        var_dump( $this->driver ); 
+
+        $createSql = 'CREATE TABLE ' . $this->driver->getQuoteTableName($schema->getTable()) . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
             $columnSql[] = "\t" . $this->buildColumnSql( $schema, $column );
