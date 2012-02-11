@@ -73,7 +73,7 @@ class MysqlDriver
     public function build(SchemaDeclare $schema)
     {
         $sql = 'CREATE TABLE ' 
-            . $this->driver->getQuoteTable( $schema->getTable() )
+            . $this->driver->getQuoteTableName( $schema->getTable() )
             . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
