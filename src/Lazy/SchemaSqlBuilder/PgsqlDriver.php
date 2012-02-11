@@ -86,8 +86,6 @@ class PgsqlDriver
     {
         $sqls = array();
 
-        var_dump( $this->driver ); 
-
         $createSql = 'CREATE TABLE ' . $this->driver->getQuoteTableName($schema->getTable()) . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
