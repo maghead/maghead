@@ -24,7 +24,7 @@ class SqliteDriver
         $sql .= ' ' . $type;
 
         if( $column->required )
-            $sql .= " not null";
+            $sql .= ' NOT NULL';
 
         /**
          * if it's callable, we should not write the result into sql schema 
@@ -76,11 +76,10 @@ class SqliteDriver
         return $sql;
     }
 
-
     public function build(SchemaDeclare $schema)
     {
         $sqls = array();
-        $sqls[] = 'DROP TABLE IF EXISTS ' . 
+        $sqls[] = 'DROP TABLE IF EXISTS ' 
             . $this->driver->getQuoteTableName( $schema->getTable() );
 
         $sql = 'CREATE TABLE ' 
