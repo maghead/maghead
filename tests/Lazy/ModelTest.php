@@ -20,17 +20,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
     function pdoQueryOk($dbh,$sql)
     {
-		$ret = $dbh->query( $sql );
-
-		$error = $dbh->errorInfo();
-		if($error[1] != null ) {
-            throw new Exception( 
-                var_export( $error, true ) 
-                . ' SQL: ' . $sql 
-            );
-		}
-        // ok( $error[1] != null );
-        return $ret;
+		return $dbh->query( $sql );
     }
 
 	function testSqlite()
@@ -151,7 +141,6 @@ class ModelTest extends PHPUnit_Framework_TestCase
                 ->back()
                 ->execute();
         ok( $ret->success );
-
 
         $ret = \tests\Author::delete()
             ->where()
