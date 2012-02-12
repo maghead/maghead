@@ -5,6 +5,7 @@ use Lazy\QueryDriver;
 
 use Lazy\OperationResult\OperationError;
 use Lazy\OperationResult\OperationSuccess;
+use Lazy\ConnectionManager;
 use Exception;
 use PDOException;
 use PDO;
@@ -15,15 +16,15 @@ class BaseModel
 
     protected $_data;
 
-    public function getQueryDriver()
+    public function getCurrentQueryDriver()
     {
-        return QueryDriver::getInstance( $this->getDataSourceId() );
+        return ConnectionManager::getInstance()->getQueryDriver( $this->getDataSourceId() );
     }
 
     public function createQuery()
     {
         $q = new QueryBuilder();
-        $q->driver = $this->getQueryDriver();
+        $q->driver = $this->getCurrentQueryDriver();
         $q->table( $this->_schema->table );
         $q->limit(1);
         return $q;
@@ -33,7 +34,7 @@ class BaseModel
     public function createExecutiveQuery()
     {
         $q = new ExecutiveQueryBuilder;
-        $q->driver = $this->getQueryDriver();
+        $q->driver = $this->getCurrentQueryDriver();
         $q->table( $this->_schema->table );
         return $q;
     }
@@ -175,7 +176,7 @@ class BaseModel
 
         $this->_data = array();
         $conn = $this->getConnection();
-        $driver = $this->getQueryDriver();
+        $driver = $this->getCurrentQueryDriver();
 
         $pkId = null;
         if( $driver->type == 'pgsql' ) {

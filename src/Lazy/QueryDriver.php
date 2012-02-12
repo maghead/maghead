@@ -29,7 +29,13 @@ class QueryDriver extends Driver
     {
         if( isset(static::$drivers[ $id ]) )
             return static::$drivers[ $id ];
-        return static::$drivers[ $id ] = new static;
+        $driver = new static;
+        return static::$drivers[ $id ] = $driver;
+    }
+
+    static function hasInstance($id = 'default')
+    {
+        return ( isset(static::$drivers[ $id ]) );
     }
 
 

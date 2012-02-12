@@ -64,7 +64,26 @@ class ConnectionManager
 
     public function getQueryDriver($id = 'default')
     {
-        return QueryDriver::getInstance($id);
+        if( QueryDriver::hasInstance($id) ) {
+            return QueryDriver::getInstance($id);
+        }
+
+        $driver = QueryDriver::getInstance($id);
+        $config = $this->datasources[ $id ];
+
+        // configure query driver type
+        if( $driverType = $this->getDataSourceDriver($id) ) {
+            $driver->configure('driver',$driverType);
+        }
+
+        // setup query driver options
+        if( isset( $config['query_options'] ) ) {
+            $queryOptions = $config['query_options'];
+            foreach( $queryOptions as $option => $value ) {
+                $driver->configure( $option , $value );
+            }
+        }
+        return $driver;
     }
 
     public function getDataSourceDriver($id)
@@ -104,21 +123,7 @@ class ConnectionManager
                 @$config['connection_options']
             );
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            $driver = $this->getQueryDriver( $sourceId );
-
-            // configure query driver type
-            if( $driverType = $this->getDataSourceDriver($sourceId) ) {
-                $driver->configure('driver',$driverType);
-            }
-
-            // setup query driver options
-            if( isset( $config['query_options'] ) ) {
-                $queryOptions = $config['query_options'];
-                foreach( $queryOptions as $option => $value ) {
-                    $driver->configure( $option , $value );
-                }
-            }
+            // $driver = $this->getQueryDriver($sourceId);
 
             // register connection to connection pool
             return $this->conns[ $sourceId ] = $conn;
@@ -152,7 +157,6 @@ class ConnectionManager
             $this->close( $id );
         }
     }
-
 
     /**
      * free connections,
