@@ -29,13 +29,13 @@ class SqliteDriver
         /**
          * if it's callable, we should not write the result into sql schema 
          */
-        if( null !== ($default = $column->default) && ! is_callable($column->default )  ) { 
-
-            // raw sql default value
+        if( null !== ($default = $column->default) 
+            && ! is_callable($column->default )  ) 
+        {
+            // for raw sql default value
             if( is_array($default) ) {
                 $sql .= ' default ' . $default[0];
-            }
-            else {
+            } else {
                 $sql .= ' default ' . $this->driver->inflate($default);
             }
         }
