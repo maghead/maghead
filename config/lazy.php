@@ -15,6 +15,11 @@
     'default' => 
     array (
       'dsn' => 'pgsql:dbname=lazy_test',
+      'query_options' => 
+      array (
+        'quote_column' => true,
+        'quote_table' => true,
+      ),
     ),
     'mysql' => 
     array (
