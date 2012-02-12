@@ -148,9 +148,14 @@ class BaseModel
 
         $this->afterCreate( $args );
 
+        $conn = $this->getConnection();
+        if( $pkId = $conn->lastInsertId() ) {
+            $k = $this->_schema->primaryKey;
+            $this->_data[ $k ] = $pkId;
+        }
         $this->_data = $this->deflateData($args);
 
-        $conn = $this->getConnection();
+
         return $this->reportSuccess('Created', array(
             'id' => $conn->lastInsertId(),
         ));
