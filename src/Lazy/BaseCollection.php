@@ -108,7 +108,7 @@ class BaseCollection
     public function doFetch()
     {
         /* fetch by current query */
-        $sql = $this->currentQuery->build();
+        $sql = $this->_query->build();
         try {
             $this->handle = $this->dbQuery($sql);
 

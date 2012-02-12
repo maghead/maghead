@@ -98,13 +98,25 @@ To create a model record:
         'name' => 'Foo'
     ));
 
-    Author::load( ... );
+    Author::load(array( 'name' => 'Foo' ));
 
 To create a collection object:
 
     $authors = new Collection;
     $authors->where()
         ->equal( 'id' , 'foo' );
+
+    $authors = new AuthorCollection;
+    $items = $authors->items();
+    foreach( $items as $item ) {
+        echo $item->id;
+    }
+
+    $authors = new AuthorCollection;
+    foreach( $authors as $author ) {
+        echo $author->name;
+    }
+
 
 To get PDO connection:
 
