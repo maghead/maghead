@@ -38,7 +38,6 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $builder = new SchemaSqlBuilder('sqlite', Lazy\ConnectionManager::getInstance()->getQueryDriver('default'));
 		ok( $builder );
 
-
 		$generator = new \Lazy\Schema\SchemaGenerator;
 		$generator->addPath( 'tests/schema/' );
 		$generator->setLogger( $this->getLogger() );

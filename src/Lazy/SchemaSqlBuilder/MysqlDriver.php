@@ -74,7 +74,7 @@ class MysqlDriver
     {
         $sqls = array();
 
-        $sqls[] = 'DROP TABLE IF EXISTS ' . 
+        $sqls[] = 'DROP TABLE IF EXISTS ' 
             . $this->driver->getQuoteTableName( $schema->getTable() );
 
         $create = 'CREATE TABLE ' 
