@@ -153,8 +153,6 @@ class ModelTest extends PHPUnit_Framework_TestCase
                 ->equal('name','Rename')
             ->back()->execute();
         ok( $ret->success );
-
-        return;
 	}
 }
 
