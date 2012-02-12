@@ -7,6 +7,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
     public function setup()
     {
         Lazy\QueryDriver::free();
+        Lazy\ConnectionManager::getInstance()->free();
         Lazy\ConnectionManager::getInstance()->addDataSource('default', array( 
             'dsn' => 'sqlite::memory:',
         ));
