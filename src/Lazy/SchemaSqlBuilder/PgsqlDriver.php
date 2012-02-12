@@ -86,6 +86,9 @@ class PgsqlDriver
     {
         $sqls = array();
 
+        $sqls[] = 'DROP TABLE IF EXISTS ' . 
+            . $this->driver->getQuoteTableName( $schema->getTable() );
+
         $createSql = 'CREATE TABLE ' . $this->driver->getQuoteTableName($schema->getTable()) . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
