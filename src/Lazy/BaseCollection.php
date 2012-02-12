@@ -5,9 +5,10 @@ use PDOException;
 use Exception;
 use Iterator;
 
+use SQLBuilder\QueryBuilder;
 use Lazy\OperationResult\OperationSuccess;
 use Lazy\OperationResult\OperationError;
-use SQLBuilder\QueryBuilder;
+use Lazy\ConnectionManager;
 
 
 /**
@@ -46,7 +47,6 @@ class BaseCollection
 
     public function __get( $key ) 
     {
-
         /**
          * lazy attributes
          */
@@ -77,7 +77,7 @@ class BaseCollection
     public function createQuery()
     {
         $q = new QueryBuilder;
-        $q->driver = QueryDriver::getInstance();
+        $q->driver = $this->getCurrentQueryDriver();
         $q->table( $this->_schema->table );
         $q->select('*');
         return $this->currentQuery = $q;
@@ -159,6 +159,16 @@ class BaseCollection
         return $this->_items;
     }
 
+    public function getCurrentQueryDriver()
+    {
+        return ConnectionManager::getInstance()->getQueryDriver( $this->getDataSourceId() );
+    }
+
+    // xxx: should retrieve id from _schema class.
+    public function getDataSourceId()
+    {
+        return 'default';
+    }
 
 
     /**
