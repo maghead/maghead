@@ -76,19 +76,6 @@ class ModelTest extends PHPUnit_Framework_TestCase
         foreach( $sqls as $sql )
             $this->pdoQueryOk( $dbh , $sql );
 
-        $connM = \Lazy\ConnectionManager::getInstance();
-
-        if( $connM->has('default') )
-            $connM->close('default');
-
-        $connM->add( $dbh, 'default' );
-
-        /*
-        $connM->addDataSource('default', array( 
-            'dsn' => 'sqlite::memory:',
-        ));
-        */
-
         /****************************
          * Basic CRUD Test 
          * **************************/

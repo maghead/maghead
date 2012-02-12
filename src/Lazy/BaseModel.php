@@ -5,6 +5,7 @@ use Lazy\QueryDriver;
 
 use Lazy\OperationResult\OperationError;
 use Lazy\OperationResult\OperationSuccess;
+use Exception;
 use PDOException;
 use PDO;
 
@@ -52,10 +53,14 @@ class BaseModel
             $stm = $this->dbQuery($sql);
 
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
-            $this->_data = $stm->fetch( PDO::FETCH_ASSOC );
-            $this->deflateHash( $this->_data );
+            if( false !== ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
+                $this->deflateHash( $this->_data );
+            }
+            else {
+                throw new Exception('data fetch failed.');
+            }
         }
-        catch ( PDOException $e ) {
+        catch ( Exception $e ) {
             return $this->reportError( "Data load failed" , array( 
                 'sql' => $sql,
                 'exception' => $e,
@@ -149,14 +154,19 @@ class BaseModel
         $this->afterCreate( $args );
 
         $conn = $this->getConnection();
+        $k = $this->_schema->primaryKey;
         if( $pkId = $conn->lastInsertId() ) {
-            $k = $this->_schema->primaryKey;
             $this->_data[ $k ] = $pkId;
         }
-        $this->_data = $this->deflateData($args);
+        $this->_data = array_merge( 
+            $this->_data,
+            $args
+        );
+        $this->deflate();
 
         return $this->reportSuccess('Created', array(
-            'id' => $conn->lastInsertId(),
+            $k => $this->_data[ $k ],
+            'sql' => $sql,
         ));
     }
 
