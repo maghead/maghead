@@ -253,6 +253,8 @@ class BaseModel
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
 
+        try {
+
 #          $result = $this->validate( 'update', $args );
 #          if( $result )
 #              return $result;
@@ -261,29 +263,27 @@ class BaseModel
 #          if( $result )
 #              return $result;
 
-        $args = $this->beforeUpdate($args);
+            $args = $this->beforeUpdate($args);
 
-        // $args = $this->deflateData( $args ); // apply args to columns
+            // $args = $this->deflateData( $args ); // apply args to columns
 
-        $query = $this->createQuery();
-        $query->update($args)->where()
-            ->equal( $k , $kVal );
-        $sql = $query->build();
-
-        try {
+            $query = $this->createQuery();
+            $query->update($args)->where()
+                ->equal( $k , $kVal );
+            $sql = $query->build();
             $stm = $this->dbQuery($sql);
+
+            // merge updated data
+            $this->_data = array_merge($this->_data,$args);
+            $this->afterUpdate($args);
         } 
-        catch( PDOException $e ) {
+        catch( Exception $e ) 
+        {
             return $this->reportError( 'Update failed', array(
                 'sql' => $sql,
                 'exception' => $e,
             ));
         }
-
-        // merge updated data
-        $this->_data = array_merge($this->_data,$args);
-
-        $this->afterUpdate($args);
 
         // throw new Exception( "Update failed." . $dbc->error );
         $result = new OperationSuccess;
