@@ -15,7 +15,7 @@ class MysqlDriver
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql  = $name;
+        $sql = $this->driver->getQuoteColumn( $name );
         $sql .= ' ' . $type;
 
         if( $column->required )
