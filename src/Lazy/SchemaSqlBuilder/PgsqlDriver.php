@@ -20,7 +20,7 @@ class PgsqlDriver
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql  = $name;
+        $sql = $this->driver->getQuoteColumn( $name );
 
         if( ! $column->autoIncrement )
             $sql .= ' ' . $type;
