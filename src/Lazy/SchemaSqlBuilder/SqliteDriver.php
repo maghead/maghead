@@ -26,8 +26,10 @@ class SqliteDriver
         if( $column->required )
             $sql .= " not null";
 
-        /* if it's callable, we should not write the result into sql schema */
-        if( ($default = $column->default) !== null && ! is_callable($column->default )  ) { 
+        /**
+         * if it's callable, we should not write the result into sql schema 
+         */
+        if( null !== ($default = $column->default) && ! is_callable($column->default )  ) { 
 
             // raw sql default value
             if( is_array($default) ) {
