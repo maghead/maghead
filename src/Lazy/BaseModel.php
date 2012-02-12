@@ -138,31 +138,33 @@ class BaseModel
         if( empty($args) )
             return $this->reportError( "Empty arguments" );
             
-        $args = $this->beforeCreate( $args );
-        foreach( $this->_schema->columns as $columnHash ) {
-            $c = $this->_schema->getColumn( $columnHash['name'] );
-
-            if( ! $c->primary 
-                && $c->requried 
-                && ( $c->default || $c->defaultBuilder )
-                && ! isset($args[$c->name]) )
-            {
-                $args[$c->name] = $c->defaultBuilder ? call_user_func( $c->defaultBuidler ) : null;
-            }
-        }
-
-        // $args = $this->deflateData( $args );
-
-        $q = $this->createQuery();
-        $q->insert($args);
-        $q->returning( $k );
-
-        $sql = $q->build();
-
-        /* get connection, do query */
-        $stm = null;
         try {
+            $args = $this->beforeCreate( $args );
+            foreach( $this->_schema->columns as $columnHash ) {
+                $c = $this->_schema->getColumn( $columnHash['name'] );
+
+                if( ! $c->primary 
+                    && $c->requried 
+                    && ( $c->default || $c->defaultBuilder )
+                    && ! isset($args[$c->name]) )
+                {
+                    $args[$c->name] = $c->defaultBuilder ? call_user_func( $c->defaultBuidler ) : null;
+                }
+            }
+
+            // $args = $this->deflateData( $args );
+
+            $q = $this->createQuery();
+            $q->insert($args);
+            $q->returning( $k );
+
+            $sql = $q->build();
+
+            /* get connection, do query */
+            $stm = null;
             $stm = $this->dbQuery($sql);
+
+            $this->afterCreate( $args );
         }
         catch ( Exception $e )
         {
@@ -172,7 +174,6 @@ class BaseModel
             ));
         }
 
-        $this->afterCreate( $args );
 
         $this->_data = array();
         $conn = $this->getConnection();
