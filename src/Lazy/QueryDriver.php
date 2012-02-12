@@ -19,6 +19,12 @@ class QueryDriver extends Driver
 {
     static $drivers = array();
 
+
+    /**
+     * get query driver by data source id
+     *
+     * @param string $id data source id
+     */
     static function getInstance($id = 'default')
     {
         if( isset(static::$drivers[ $id ]) )
@@ -26,6 +32,10 @@ class QueryDriver extends Driver
         return static::$drivers[ $id ] = new static;
     }
 
+
+    /**
+     * free all driver objects
+     */
     static function free()
     {
         static::$drivers = array();

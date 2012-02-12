@@ -15,10 +15,15 @@ class BaseModel
 
     protected $_data;
 
+    public function getQueryDriver()
+    {
+        return QueryDriver::getInstance( $this->getDataSourceId() );
+    }
+
     public function createQuery()
     {
         $q = new QueryBuilder();
-        $q->driver = QueryDriver::getInstance();
+        $q->driver = $this->getQueryDriver();
         $q->table( $this->_schema->table );
         $q->limit(1);
         return $q;
@@ -28,23 +33,31 @@ class BaseModel
     public function createExecutiveQuery()
     {
         $q = new ExecutiveQueryBuilder;
-        $q->driver = QueryDriver::getInstance();
+        $q->driver = $this->getQueryDriver();
         $q->table( $this->_schema->table );
         return $q;
     }
 
 
 
-    public function _load($kVal)
+    public function _load($args)
     {
-        $key = $this->_schema->primaryKey;
-        $column = $this->_schema->getColumn( $key );
-        $kVal = Deflator::deflate( $kVal, $column->isa );
-
+        $pk = $this->_schema->primaryKey;
         $query = $this->createQuery();
-        $query->select('*')
-            ->where()
-                ->equal( $key , $kVal );
+        $kVal = null;
+        if( is_array($args) ) {
+            $query->select('*')
+                ->whereFromArgs($args);
+        }
+        else {
+            $kVal = $args;
+            $column = $this->_schema->getColumn( $pk );
+            $kVal = Deflator::deflate( $kVal, $column->isa );
+            $query->select('*')
+                ->where()
+                    ->equal( $pk , $kVal );
+        }
+
         $sql = $query->build();
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
@@ -54,13 +67,14 @@ class BaseModel
 
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             if( false !== ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
-                $this->deflateHash( $this->_data );
+                $this->deflate();
             }
             else {
                 throw new Exception('data fetch failed.');
             }
         }
-        catch ( Exception $e ) {
+        catch ( Exception $e ) 
+        {
             return $this->reportError( "Data load failed" , array( 
                 'sql' => $sql,
                 'exception' => $e,
@@ -68,6 +82,7 @@ class BaseModel
         }
 
         return $this->reportSuccess('Data loaded', array( 
+            'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
             'sql' => $sql
         ));
     }
@@ -117,6 +132,8 @@ class BaseModel
      */
     protected function _create($args)
     {
+        $k = $this->_schema->primaryKey;
+
         if( empty($args) )
             return $this->reportError( "Empty arguments" );
             
@@ -137,13 +154,16 @@ class BaseModel
 
         $q = $this->createQuery();
         $q->insert($args);
+        $q->returning( $k );
+
         $sql = $q->build();
 
         /* get connection, do query */
+        $stm = null;
         try {
             $stm = $this->dbQuery($sql);
         }
-        catch ( PDOException $e )
+        catch ( Exception $e )
         {
             return $this->reportError( "Create failed" , array( 
                 'sql' => $sql,
@@ -153,21 +173,31 @@ class BaseModel
 
         $this->afterCreate( $args );
 
+        $this->_data = array();
         $conn = $this->getConnection();
-        $k = $this->_schema->primaryKey;
-        if( $pkId = $conn->lastInsertId() ) {
-            $this->_data[ $k ] = $pkId;
-        }
-        $this->_data = array_merge( 
-            $this->_data,
-            $args
-        );
-        $this->deflate();
+        $driver = $this->getQueryDriver();
 
-        return $this->reportSuccess('Created', array(
-            $k => $this->_data[ $k ],
-            'sql' => $sql,
-        ));
+        $pkId = null;
+        if( $driver->type == 'pgsql' ) {
+            $pkId = $stm->fetchColumn();
+        } else {
+            $pkId = $conn->lastInsertId();
+        }
+
+        if($pkId) {
+            // auto-reload data
+            // $this->_data[ $k ] = $pkId;
+            $this->load( $pkId );
+        } else {
+            $this->_data = $args;
+            $this->deflate();
+        }
+
+        $ret = array( 'sql' => $sql );
+        if( isset($this->_data[ $k ]) ) {
+            $ret['id'] = $this->_data[ $k ];
+        }
+        return $this->reportSuccess('Created', $ret );
     }
 
     /**

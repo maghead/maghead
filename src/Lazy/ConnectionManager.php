@@ -162,6 +162,7 @@ class ConnectionManager
     {
         $this->closeAll();
         $this->datasources = array();
+        $this->conns = array();
     }
 }
 
