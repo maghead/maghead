@@ -94,6 +94,15 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
         $authors = new \tests\AuthorCollection;
 
+        $items = $authors->items();
+        ok( $items );
+        ok( is_array( $items ));
+        foreach( $items as $item ) {
+            ok( $item->id );
+            isa_ok( '\tests\Author', $item );
+        }
+
+
         $q = $authors->createQuery();
         ok( $q );
 

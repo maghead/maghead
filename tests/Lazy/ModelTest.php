@@ -99,7 +99,13 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
         $ret = $author->load(1);
         ok( $ret->success );
+        is( 1 , $author->id );
+        is( 'Foo', $author->name );
+        is( 'foo@google.com', $author->email );
+        is( false , $author->confirmed );
 
+        $ret = $author->load(array( 'name' => 'Foo' ));
+        ok( $ret->success );
         is( 1 , $author->id );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
