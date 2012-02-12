@@ -145,6 +145,7 @@ class BaseModel
                 'exception' => $e,
             ));
         }
+
         $this->afterCreate( $args );
 
         $this->_data = $this->deflateData($args);
