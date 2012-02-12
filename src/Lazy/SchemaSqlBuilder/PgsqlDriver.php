@@ -86,7 +86,7 @@ class PgsqlDriver
     {
         $sqls = array();
 
-        $sqls[] = 'DROP TABLE IF EXISTS ' . 
+        $sqls[] = 'DROP TABLE IF EXISTS ' 
             . $this->driver->getQuoteTableName( $schema->getTable() );
 
         $createSql = 'CREATE TABLE ' . $this->driver->getQuoteTableName($schema->getTable()) . "( \n";
@@ -96,12 +96,10 @@ class PgsqlDriver
         }
         $createSql .= join(",\n",$columnSql);
         $createSql .= "\n);\n";
+
         $sqls[] = $createSql;
 
         // generate sequence
-        // $sqls[] = '';
-
-        // $sqls[] = 
         return $sqls;
     }
 
