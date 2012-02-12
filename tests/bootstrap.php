@@ -9,4 +9,5 @@ $loader = new \Universal\ClassLoader\BasePathClassLoader(array(
     dirname(__DIR__) . '/tests/schema',
     'tests/src'
 ));
+$loader->useIncludePath(true);
 $loader->register();
