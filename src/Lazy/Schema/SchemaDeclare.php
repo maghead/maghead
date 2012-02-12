@@ -24,10 +24,11 @@ abstract class SchemaDeclare
 
     public $mixins = array();
 
-    // XXX: 
     public $readSourceId;
 
     public $writeSourceId;
+
+    public $dataSourceId = 'default';
 
     abstract function schema();
 
@@ -66,6 +67,7 @@ abstract class SchemaDeclare
             'primary_key' => $this->primaryKey,
             'model_class' => $this->getModelClass(),
             'relations' => $this->relations,
+            'data_source_id' => $this->dataSourceId,
         );
     }
 

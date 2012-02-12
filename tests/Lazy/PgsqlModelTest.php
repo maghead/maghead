@@ -80,8 +80,9 @@ class PgsqlModelTest extends PHPUnit_Framework_TestCase
 
         // sqlite does not support last_insert_id: ok( $ret->id ); 
         ok( $ret->success );
-        // ok( $ret->id );
-        // is( 1 , $ret->id );
+        ok( $ret->id );
+        is( 1 , $ret->id );
+        is( ' INSERT INTO "authors" ( "name","email","identity") VALUES (\'Foo\',\'foo@google.com\',\'foo\') RETURNING "id"', $ret->sql );
 
         $ret = $author->load(1);
         ok( $ret->success );

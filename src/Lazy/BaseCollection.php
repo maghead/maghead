@@ -1,6 +1,5 @@
 <?php
 namespace Lazy;
-
 use PDO;
 use PDOException;
 use Exception;
@@ -73,7 +72,6 @@ class BaseCollection
         if( method_exists($q,$m) ) {
             return call_user_func_array(array($q,$m),$a);
         }
-
     }
 
     public function createQuery()
