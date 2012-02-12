@@ -155,13 +155,10 @@ class BaseModel
         }
         $this->_data = $this->deflateData($args);
 
-
         return $this->reportSuccess('Created', array(
             'id' => $conn->lastInsertId(),
         ));
     }
-
-
 
     /**
      * delete current record, the record should be loaded already.

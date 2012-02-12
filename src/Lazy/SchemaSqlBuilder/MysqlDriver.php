@@ -72,16 +72,23 @@ class MysqlDriver
 
     public function build(SchemaDeclare $schema)
     {
-        $sql = 'CREATE TABLE ' 
+        $sqls = array();
+
+        $sqls[] = 'DROP TABLE IF EXISTS ' . 
+            . $this->driver->getQuoteTableName( $schema->getTable() );
+
+        $create = 'CREATE TABLE ' 
             . $this->driver->getQuoteTableName( $schema->getTable() )
             . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
             $columnSql[] = $this->buildColumnSql( $schema, $column );
         }
-        $sql .= join(",\n",$columnSql);
-        $sql .= "\n);\n";
-        return $sql;
+        $create .= join(",\n",$columnSql);
+        $create .= "\n);\n";
+
+        $sqls[] = $create;
+        return $sqls;
     }
 
 }

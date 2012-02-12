@@ -79,6 +79,9 @@ class SqliteDriver
 
     public function build(SchemaDeclare $schema)
     {
+        $sqls = array();
+        $sqls[] = 'DROP TABLE IF EXISTS ' . 
+            . $this->driver->getQuoteTableName( $schema->getTable() );
 
         $sql = 'CREATE TABLE ' 
             . $this->driver->getQuoteTableName($schema->getTable()) . " ( \n";
@@ -88,7 +91,8 @@ class SqliteDriver
         }
         $sql .= join(",\n",$columnSql);
         $sql .= "\n);\n";
-        return $sql;
+        $sqls[] = $sql;
+        return $sqls;
     }
 
 }
