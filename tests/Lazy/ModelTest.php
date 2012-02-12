@@ -94,8 +94,10 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         ok( $ret );
-        // sqlite does not support last_insert_id: ok( $ret->id ); 
+        ok( $ret->id );
         ok( $ret->success );
+        is( 'Foo', $author->name );
+        is( 'foo@google.com', $author->email );
 
         $ret = $author->load(1);
         ok( $ret->success );
@@ -120,7 +122,6 @@ class ModelTest extends PHPUnit_Framework_TestCase
         ok( $ret->success );
 
 
-
         /**
          * Static CRUD Test 
          */
@@ -135,13 +136,10 @@ class ModelTest extends PHPUnit_Framework_TestCase
         ok( $record );
         ok( $id = $record->id );
 
-        $record = \tests\Author::load( array( 
-            'id' => $id
-        ));
-
+        $record = \tests\Author::load( array( 'id' => $id ));
         ok( $record );
         ok( $record->id );
-        
+
 
         /**
          * Which runs:
