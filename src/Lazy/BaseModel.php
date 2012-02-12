@@ -393,9 +393,8 @@ class BaseModel
      */
     public function getConnection()
     {
-        $sourceId = $this->getDataSourceId();
         $connManager = ConnectionManager::getInstance();
-        return $connManager->getConnection( $sourceId ); // xxx: support read/write connection later
+        return $connManager->getConnection( $this->getDataSourceId() ); // xxx: support read/write connection later
     }
 
 
