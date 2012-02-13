@@ -23,6 +23,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
 		return $dbh->query( $sql );
     }
 
+
 	function testSqlite()
 	{
         $dbh = Lazy\ConnectionManager::getInstance()->getConnection();
@@ -72,6 +73,11 @@ class ModelTest extends PHPUnit_Framework_TestCase
          * **************************/
         $author = new \tests\Author;
         ok( $author->_schema );
+
+        $a2 = new \tests\Author;
+        $ret = $a2->load( array( 'name' => 'A record does not exist.' ) );
+        ok( ! $ret->success );
+        ok( ! $a2->id );
 
         $ret = $author->create(array());
         ok( $ret );

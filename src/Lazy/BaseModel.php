@@ -41,52 +41,6 @@ class BaseModel
 
 
 
-    public function _load($args)
-    {
-        $pk = $this->_schema->primaryKey;
-        $query = $this->createQuery();
-        $kVal = null;
-        if( is_array($args) ) {
-            $query->select('*')
-                ->whereFromArgs($args);
-        }
-        else {
-            $kVal = $args;
-            $column = $this->_schema->getColumn( $pk );
-            $kVal = Deflator::deflate( $kVal, $column->isa );
-            $query->select('*')
-                ->where()
-                    ->equal( $pk , $kVal );
-        }
-
-        $sql = $query->build();
-
-        // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
-        $stm = null;
-        try {
-            $stm = $this->dbQuery($sql);
-
-            // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
-            if( false !== ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
-                $this->deflate();
-            }
-            else {
-                throw new Exception('data fetch failed.');
-            }
-        }
-        catch ( Exception $e ) 
-        {
-            return $this->reportError( "Data load failed" , array( 
-                'sql' => $sql,
-                'exception' => $e,
-            ));
-        }
-
-        return $this->reportSuccess('Data loaded', array( 
-            'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
-            'sql' => $sql
-        ));
-    }
 
     public function beforeDelete( $args )
     {
@@ -122,6 +76,44 @@ class BaseModel
 
     }
 
+
+
+
+
+    public function __call($m,$a)
+    {
+        switch($m) {
+            case 'create':
+            case 'delete':
+            case 'update':
+            case 'load':
+                return call_user_func_array(array($this,'_' . $m),$a);
+                break;
+        }
+        throw new Exception("$m does not exist.");
+    }
+
+    public function createOrUpdate($args, $byKeys = null )
+    {
+        $pk = $this->_schema->primaryKey;
+        if( isset($args[$pk]) ) {
+            $val = $args[$pk];
+            $this->load(array( $pk => $val ));
+        } elseif( $byKeys ) {
+            $conds = array();
+            foreach( $byKeys as $k ) {
+                if( isset($args[$k]) )
+                    $conds[$k] = $args[$k];
+            }
+            $this->load( $conds );
+        }
+
+        if( $this->{ $pk } ) {
+            return $this->update($args);
+        } else {
+            return $this->create($args);
+        }
+    }
 
 
     /**
@@ -201,6 +193,55 @@ class BaseModel
         }
         return $this->reportSuccess('Created', $ret );
     }
+
+
+    public function _load($args)
+    {
+        $pk = $this->_schema->primaryKey;
+        $query = $this->createQuery();
+        $kVal = null;
+        if( is_array($args) ) {
+            $query->select('*')
+                ->whereFromArgs($args);
+        }
+        else {
+            $kVal = $args;
+            $column = $this->_schema->getColumn( $pk );
+            $kVal = Deflator::deflate( $kVal, $column->isa );
+            $query->select('*')
+                ->where()
+                    ->equal( $pk , $kVal );
+        }
+
+        $sql = $query->build();
+
+        // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
+        $stm = null;
+        try {
+            $stm = $this->dbQuery($sql);
+
+            // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
+            if( false !== ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
+                $this->deflate();
+            }
+            else {
+                throw new Exception('data load failed.');
+            }
+        }
+        catch ( Exception $e ) 
+        {
+            return $this->reportError( "Data load failed" , array( 
+                'sql' => $sql,
+                'exception' => $e,
+            ));
+        }
+
+        return $this->reportSuccess('Data loaded', array( 
+            'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
+            'sql' => $sql
+        ));
+    }
+
 
     /**
      * delete current record, the record should be loaded already.
@@ -400,9 +441,6 @@ class BaseModel
     }
 
 
-
-
-
     /*******************
      * Data Manipulators 
      *********************/
@@ -468,6 +506,11 @@ class BaseModel
         return $data;
     }
 
+
+
+
+
+
     /**
      * Handle static calls for model class.
      *
@@ -500,18 +543,6 @@ class BaseModel
         // return call_user_func_array( array($model,$name), $arguments );
     }
 
-    public function __call($m,$a)
-    {
-        switch($m) {
-            case 'create':
-            case 'delete':
-            case 'update':
-            case 'load':
-                return call_user_func_array(array($this,'_' . $m),$a);
-                break;
-        }
-        throw new Exception("$m does not exist.");
-    }
 
     /**
      * Create new record with data array
