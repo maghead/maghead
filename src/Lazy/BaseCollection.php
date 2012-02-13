@@ -64,7 +64,11 @@ class BaseCollection
         }
     }
 
-
+    public function free()
+    {
+        $this->itemData = null;
+        return $this;
+    }
 
     public function __call($m,$a)
     {
