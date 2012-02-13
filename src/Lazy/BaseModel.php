@@ -163,7 +163,10 @@ class BaseModel
 
         if( empty($args) )
             return $this->reportError( "Empty arguments" );
-            
+
+        // first, filter the array
+        $this->filterRefArrayWithColumns($args);
+
         try {
             $args = $this->beforeCreate( $args );
             foreach( $this->_schema->columns as $columnHash ) {
@@ -323,10 +326,13 @@ class BaseModel
             return $this->reportError('Record is not loaded, Can not update record.');
         }
 
+
         // check if we get primary key value
         $kVal = isset($args[$k]) 
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
+
+        $this->filterRefArrayWithColumns($args);
 
         try {
 
@@ -668,6 +674,16 @@ class BaseModel
         else {
             $model->load($args);
             return $model;
+        }
+    }
+
+    public function filterRefArrayWithColumns( & $args )
+    {
+        $schema = $this->_schema;
+        foreach( $args as $k => $v ) {
+            if( ! $schema->getColumn($k) ) {
+                unset($args[$k]);
+            }
         }
     }
 
