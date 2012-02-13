@@ -89,6 +89,10 @@ class ModelTest extends PHPUnit_Framework_TestCase
         ok( $ret->success );
         ok( $a2->id );
 
+        $ret = $a2->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
+        ok( $ret->success );
+        ok( $a2->id );
+
 
 
         $ret = $author->create(array());
