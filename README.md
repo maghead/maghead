@@ -1,6 +1,11 @@
 LazyRecord
 ==========
 
+
+Requirement
+-----------
+REQUIRED PHP 5.3.0 (MIN) 
+
 Command-line Usage
 ------------------
 Create a config skeleton:
