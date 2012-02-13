@@ -16,6 +16,10 @@ class NameSchema extends SchemaDeclare
             ->isa('str')
             ->varchar(128);
 
+        $this->column('address')
+            ->isa('str')
+            ->varchar(256);
+
         $this->column('confirmed')
             ->isa('bool')
             ->boolean();

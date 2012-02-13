@@ -106,6 +106,22 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         is( false, $name->confirmed );
 
         $name->delete();
+
+        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1' ))->success );
+        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1' ))->success );
+        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1' ))->success );
+        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1' ))->success );
+        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1' ))->success );
+
+        $names = new \tests\NameCollection;
+        $names->where()
+            ->equal('name','Foo')
+            ->groupBy('name','address');
+
+        ok( $items = $names->items() );
+        ok( $size = $names->size() );
+        is( 1 , $size );
+        is( 'Foo', $items[0]->name );
     }
 
     function testMeta()
@@ -137,7 +153,6 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
         ok( $authors->items() );
         is( 10 , count($authors->items()) );
-
     }
 }
 
