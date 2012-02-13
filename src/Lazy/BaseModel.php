@@ -165,7 +165,7 @@ class BaseModel
             return $this->reportError( "Empty arguments" );
 
         // first, filter the array
-        $this->filterRefArrayWithColumns($args);
+        $args = $this->filterArrayWithColumns($args);
 
         try {
             $args = $this->beforeCreate( $args );
@@ -332,7 +332,7 @@ class BaseModel
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
 
-        $this->filterRefArrayWithColumns($args);
+        $args = $this->filterArrayWithColumns($args);
 
         try {
 
@@ -677,14 +677,18 @@ class BaseModel
         }
     }
 
-    public function filterRefArrayWithColumns( & $args )
+    public function filterArrayWithColumns( $args )
     {
         $schema = $this->_schema;
+        $new = array();
         foreach( $args as $k => $v ) {
-            if( ! $schema->getColumn($k) ) {
-                unset($args[$k]);
+            if( $c = $schema->getColumn($k) ) {
+                if( $k == 'xxx' )
+                    var_dump( $c ); 
+                $new[ $k ] = $v;
             }
         }
+        return $new;
     }
 
     public function deflateHash( & $args)

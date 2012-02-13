@@ -40,7 +40,7 @@ class Schema
     {
         if( isset($this->columnCached[ $name ]) )  {
             return $this->columnCached[ $name ];
-        } else {
+        } elseif( isset($this->columns[$name]) ) {
             return $this->columnCached[ $name ] = new Column( $name , $this->columns[$name]['attributes'] );
         }
     }
