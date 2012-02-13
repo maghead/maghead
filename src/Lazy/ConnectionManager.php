@@ -64,6 +64,8 @@ class ConnectionManager
 
     public function getQueryDriver($id = 'default')
     {
+        $self = $this;
+
         if( QueryDriver::hasInstance($id) ) {
             return QueryDriver::getInstance($id);
         }
@@ -74,6 +76,9 @@ class ConnectionManager
         // configure query driver type
         if( $driverType = $this->getDataSourceDriver($id) ) {
             $driver->configure('driver',$driverType);
+            $driver->quoter = function($string) use ($self,$id) {
+                return $self->getConnection($id)->quote($string);
+            };
         }
 
         // setup query driver options
