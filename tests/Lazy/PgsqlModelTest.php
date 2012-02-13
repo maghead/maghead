@@ -72,6 +72,28 @@ class PgsqlModelTest extends PHPUnit_Framework_TestCase
         ok( $ret->message );
         is( 'Empty arguments' , $ret->message );
 
+
+
+
+        $book = new \tests\Book;
+        $ret = $book->create(array( 
+            'title' => 'title',
+            'subtitle' => 'subtitle',
+        ));
+        ok( $book->id );
+        ok( $ret->success );
+
+
+        $ret = $book->create(array( 
+            'title' => 'ti--string--tle--\'q"qq',
+            'subtitle' => 'subtitle',
+        ));
+        ok( $book->id );
+        ok( $ret->success );
+
+
+
+
         $query = $author->createQuery();
         ok( $query );
 
