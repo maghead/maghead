@@ -111,6 +111,10 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $ret = $author->delete();
         ok( $ret->success );
 
+        $data = $author->toArray();
+        ok( $data );
+        ok( !empty($data));
+
 
         /**
          * Static CRUD Test 

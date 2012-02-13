@@ -223,9 +223,15 @@ class BaseCollection
     }
 
 
-
-
-
+    public function toArray()
+    {
+        $array = array();
+        $items = $this->items();
+        foreach( $items as $item ) {
+            $array[] = $item->toArray();
+        }
+        return $array;
+    }
 
 
 

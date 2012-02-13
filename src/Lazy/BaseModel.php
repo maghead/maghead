@@ -444,6 +444,30 @@ class BaseModel
         return $this->_data;
     }
 
+
+    /**
+     * return data stash array,
+     * might need inflate.
+     */
+    public function toArray()
+    {
+        return $this->_data;
+    }
+
+    public function toInflateArray()
+    {
+        $data = array();
+        foreach( $this->_data as $k => $v ) {
+            $col = $this->_schema->getColumn( $k );
+            if( $col->isa ) {
+                $data[ $k ] = Inflator::inflate( $v , $col->isa );
+            } else {
+                $data[ $k ] = $v;
+            }
+        }
+        return $data;
+    }
+
     /**
      * Handle static calls for model class.
      *
@@ -486,6 +510,7 @@ class BaseModel
                 return call_user_func_array(array($this,'_' . $m),$a);
                 break;
         }
+        throw new Exception("$m does not exist.");
     }
 
     /**
@@ -601,6 +626,7 @@ class BaseModel
     {
         return $this->_result = new OperationSuccess($message,$extra);
     }
+
 
 
 }
