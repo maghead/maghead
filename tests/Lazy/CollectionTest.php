@@ -3,44 +3,21 @@ use Lazy\SchemaSqlBuilder;
 
 class CollectionTest extends PHPUnit_Framework_TestCase
 {
+    public $dbh;
 
     function setUp()
     {
-        \Lazy\ConnectionManager::getInstance()->free();
         Lazy\QueryDriver::free();
-    }
-
-	function getLogger()
-	{
-		return new TestLogger;
-	}
-
-    function pdoQueryOk($dbh,$sql)
-    {
-		$ret = $dbh->query( $sql );
-
-		$error = $dbh->errorInfo();
-		if($error[1] != null ) {
-            throw new Exception( 
-                var_export( $error, true ) 
-                . ' SQL: ' . $sql 
-            );
-		}
-        // ok( $error[1] != null );
-        return $ret;
-    }
-
-    function test()
-    {
         $connM = \Lazy\ConnectionManager::getInstance();
+        $connM->free();
         $connM->addDataSource('default',array(
             'dsn' => 'sqlite::memory:'
         ));
+        $this->dbh = $connM->getDefault();
 
-        $dbh = $connM->getDefault();
+        $dbh = $this->dbh;
 		$builder = new SchemaSqlBuilder('sqlite', $connM->getQueryDriver() );
 		ok( $builder );
-
 
 		$generator = new \Lazy\Schema\SchemaGenerator;
 		$generator->addPath( 'tests/schema/' );
@@ -54,33 +31,29 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 		$authorschema = new \tests\AuthorSchema;
 		$authorbook = new \tests\AuthorBookSchema;
 		$bookschema = new \tests\BookSchema;
-		ok( $authorschema );
+        $nameschema = new \tests\NameSchema;
 
-		$sqls = $builder->build($authorschema);
+        $this->buildSchema($builder, $authorschema );
+        $this->buildSchema($builder, $authorbook );
+        $this->buildSchema($builder, $bookschema );
+        $this->buildSchema($builder, $nameschema );
+    }
+
+    function buildSchema($builder,$schema)
+    {
+		$sqls = $builder->build($schema);
 		ok( $sqls );
-        // var_dump( $sql ); 
         foreach( $sqls as $sql )
-            $this->pdoQueryOk( $dbh , $sql );
+            $this->dbh->query( $sql );
+    }
 
+	function getLogger()
+	{
+		return new TestLogger;
+	}
 
-		ok( $authorbook );
-		$sqls = $builder->build($authorbook);
-		ok( $sqls );
-        // var_dump( $sql ); 
-
-        foreach( $sqls as $sql )
-            $this->pdoQueryOk( $dbh , $sql );
-
-
-		ok( $bookschema );
-		$sqls = $builder->build($bookschema);
-		ok( $sqls );
-        // var_dump( $sql ); 
-
-        foreach( $sqls as $sql )
-            $this->pdoQueryOk( $dbh , $sql );
-
-
+    function testCollection()
+    {
         $author = new \tests\Author;
         foreach( range(1,20) as $i ) {
             $ret = $author->create(array(
@@ -93,39 +66,63 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         }
 
         $authors = new \tests\AuthorCollection;
-
         $items = $authors->items();
+        $size = $authors->size();
+
+        ok( $size );
+        is( 20, $size );
         ok( $items );
         ok( is_array( $items ));
         foreach( $items as $item ) {
             ok( $item->id );
             isa_ok( '\tests\Author', $item );
+            $ret = $item->delete();
+            ok( $ret->success );
         }
 
+        $size = $authors->free()->size();
+        is( 0, $size );
+    }
 
-        $q = $authors->createQuery();
-        ok( $q );
 
+    function testBooleanType()
+    {
+        $name = new \tests\Name;
+        $ret = $name->create(array( 
+            'name' => 'Foo',
+            'confirmed' => false,
+        ));
+        ok( $ret->success );
+        is( false, $name->confirmed );
 
+        $ret = $name->load( array( 'name' => 'Foo' ));
+        ok( $ret->success );
+        is( false, $name->confirmed );
+
+        $name->update(array( 'confirmed' => true ) );
+        is( true, $name->confirmed );
+
+        $name->update(array( 'confirmed' => false ) );
+        is( false, $name->confirmed );
+
+        $name->delete();
+    }
+
+    function testMeta()
+    {
+        $authors = new \tests\AuthorCollection;
         ok( $authors::schema_proxy_class );
         ok( $authors::model_class );
+    }
 
-        is( 20, $authors->size() ); 
-
-        $cnt = 0;
-        foreach( $authors as $author ) {
-            $cnt++;
-            ok( $author->id );
-            is( $cnt , $author->id );
-        }
-
-        is( 20, $cnt );
-
+    function test()
+    {
+        return;
+        $author = new \tests\Author;
         $authors = new \tests\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed' , true );
 
-        
         foreach( $authors as $author ) {
             ok( $author->confirmed );
         }
