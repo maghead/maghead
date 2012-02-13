@@ -113,14 +113,9 @@ class BaseCollection
     {
         /* fetch by current query */
         $sql = $this->_query->build();
+
         try {
             $this->handle = $this->dbQuery($sql);
-
-            /*
-            foreach( $this->handle as $row ) {
-                var_dump( $row ); 
-            }
-            */
         }
         catch ( PDOException $e )
         {
