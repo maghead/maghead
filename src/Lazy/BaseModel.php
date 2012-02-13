@@ -93,26 +93,59 @@ class BaseModel
         throw new Exception("$m does not exist.");
     }
 
+
+
     public function createOrUpdate($args, $byKeys = null )
     {
         $pk = $this->_schema->primaryKey;
+        $ret = null;
         if( isset($args[$pk]) ) {
             $val = $args[$pk];
-            $this->load(array( $pk => $val ));
+            $ret = $this->load(array( $pk => $val ));
         } elseif( $byKeys ) {
             $conds = array();
             foreach( $byKeys as $k ) {
                 if( isset($args[$k]) )
                     $conds[$k] = $args[$k];
             }
-            $this->load( $conds );
+            $ret = $this->load( $conds );
         }
 
-        if( $this->{ $pk } ) {
+        if( $ret && $ret->success 
+            || ( $pk && $this->_data[ $pk ] ) ) {
             return $this->update($args);
         } else {
             return $this->create($args);
         }
+    }
+
+
+    public function loadOrCreate($args, $byKeys = null)
+    {
+        $pk = $this->_schema->primaryKey;
+        $ret = null;
+        if( isset($args[$pk]) ) {
+            $val = $args[$pk];
+            $ret = $this->load(array( $pk => $val ));
+        } elseif( $byKeys ) {
+            $conds = array();
+            foreach( $byKeys as $k ) {
+                if( isset($args[$k]) )
+                    $conds[$k] = $args[$k];
+            }
+            $ret = $this->load( $conds );
+        }
+
+        if( $ret && $ret->success 
+            || ( $pk && $this->_data[ $pk ] ) ) 
+        {
+            // just load
+            return $ret;
+        } else {
+            // record not found, create
+            return $this->create($args);
+        }
+
     }
 
 
