@@ -82,6 +82,7 @@ class PgsqlModelTest extends PHPUnit_Framework_TestCase
         ));
         ok( $book->id );
         ok( $ret->success );
+        ok( $book->delete()->success );
 
 
         $ret = $book->create(array( 
@@ -89,6 +90,8 @@ class PgsqlModelTest extends PHPUnit_Framework_TestCase
             'subtitle' => 'subtitle',
         ));
         ok( $book->id );
+        ok( $ret->success );
+        ok( $ret = $book->delete() );
         ok( $ret->success );
 
 
