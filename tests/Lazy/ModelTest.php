@@ -79,6 +79,14 @@ class ModelTest extends PHPUnit_Framework_TestCase
         ok( ! $ret->success );
         ok( ! $a2->id );
 
+        $a2->loadOrCreate( array( 'name' => 'Record1' , 'email' => 'record@record.org' , 'identity' => 'record' ) , 'name' );
+        ok( $id = $a2->id );
+
+        $a2->loadOrCreate( array( 'name' => 'Record1' , 'email' => 'record@record.org' , 'identity' => 'record' ) , 'name' );
+        is( $id, $a2->id );
+
+
+
         $ret = $author->create(array());
         ok( $ret );
         ok( ! $ret->success );
@@ -90,21 +98,21 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         ok( $ret );
-        ok( $ret->id );
+        ok( $id = $ret->id );
         ok( $ret->success );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
 
-        $ret = $author->load(1);
+        $ret = $author->load( $id );
         ok( $ret->success );
-        is( 1 , $author->id );
+        is( $id , $author->id );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
         is( false , $author->confirmed );
 
         $ret = $author->load(array( 'name' => 'Foo' ));
         ok( $ret->success );
-        is( 1 , $author->id );
+        is( $id , $author->id );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
         is( false , $author->confirmed );
