@@ -99,12 +99,12 @@ class BaseModel
     {
         $pk = $this->_schema->primaryKey;
         $ret = null;
-        if( isset($args[$pk]) ) {
+        if( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
             $ret = $this->load(array( $pk => $val ));
         } elseif( $byKeys ) {
             $conds = array();
-            foreach( $byKeys as $k ) {
+            foreach( (array) $byKeys as $k ) {
                 if( isset($args[$k]) )
                     $conds[$k] = $args[$k];
             }
@@ -123,13 +123,14 @@ class BaseModel
     public function loadOrCreate($args, $byKeys = null)
     {
         $pk = $this->_schema->primaryKey;
+
         $ret = null;
-        if( isset($args[$pk]) ) {
+        if( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
             $ret = $this->load(array( $pk => $val ));
         } elseif( $byKeys ) {
             $conds = array();
-            foreach( $byKeys as $k ) {
+            foreach( (array) $byKeys as $k ) {
                 if( isset($args[$k]) )
                     $conds[$k] = $args[$k];
             }
