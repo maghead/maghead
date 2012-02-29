@@ -96,6 +96,15 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
+	public function testFilter()
+	{
+        $name = new \tests\Name;
+        $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John' ));
+		ok( $ret );
+		ok( $ret->success );
+		is( 'XXXX' , $name->address , 'Be canonicalized' );
+	}
+
     public function testDefaultBuilder()
     {
         $name = new \tests\Name;
