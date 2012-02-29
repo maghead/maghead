@@ -45,7 +45,7 @@ class BuildConfCommand extends \CLIFramework\Command
         }
 
         $builder->validate();
-        $content = $builder->build();
+        $content = $builder->build(); // php source content
 
         $outputPath = $options->output ? $options->output->value 
                 : $dir . DIRECTORY_SEPARATOR . basename( $mainConfigFile , '.yml' ) . '.php';
@@ -58,5 +58,10 @@ class BuildConfCommand extends \CLIFramework\Command
             $this->getLogger()->info("Config file is generated at: $outputPath");
         }
 
+        // make master config link
+        $this->getLogger()->info("Making link => .lazy.php");
+        symlink( ".lazy.php" , $outputPath );
+
+        $this->getLogger()->info("Done.");
     }
 }
