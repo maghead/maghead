@@ -35,6 +35,7 @@ class InitConfCommand extends Command
 bootstrap:
   - tests/bootstrap.php
 schema:
+  loader: custom_schema_loader.php
   paths:
     - tests/schema
 data_sources:

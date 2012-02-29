@@ -23,8 +23,7 @@ class BuildSqlCommand extends \CLIFramework\Command
 
         $loader = new \Lazy\ConfigLoader;
         $loader->loadConfig();
-        $loader->loadDataSources();
-        $loader->loadBootstrap();
+        $loader->init();
 
         $connectionManager = \Lazy\ConnectionManager::getInstance();
 

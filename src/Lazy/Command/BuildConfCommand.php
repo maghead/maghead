@@ -60,13 +60,13 @@ class BuildConfCommand extends \CLIFramework\Command
         }
 
         // make master config link
-        $config = new \Lazy\ConfigLoader;
-        $this->getLogger()->info("Making link => " . $config->symbolFilename );
+        $loader = new \Lazy\ConfigLoader;
+        $this->getLogger()->info("Making link => " . $loader->symbolFilename );
 
-        if( file_exists( $config->symbolFilename ) )
-            unlink( $config->symbolFilename );
+        if( file_exists( $loader->symbolFilename ) )
+            unlink( $loader->symbolFilename );
 
-        symlink( $outputPath, $config->symbolFilename );
+        symlink( $outputPath, $loader->symbolFilename );
         $this->getLogger()->info("Done.");
     }
 }
