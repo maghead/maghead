@@ -54,14 +54,20 @@ class ModelTest extends PHPUnit_ModelTestCase
             '\tests\AuthorSchema', 
             '\tests\BookSchema',
             '\tests\AuthorBookSchema',
+            '\tests\NameSchema',
         );
     }
 
+    public function testClass()
+    {
+        class_ok( '\tests\Author' );
+    }
+
+    /****************************
+     * Basic CRUD Test 
+     ***************************/
 	public function testModel()
 	{
-        /****************************
-         * Basic CRUD Test 
-         * **************************/
         $author = new \tests\Author;
         ok( $author->_schema );
 
@@ -129,12 +135,15 @@ class ModelTest extends PHPUnit_ModelTestCase
         ok( !empty($data));
     }
 
-    public function testStaticFunctions() 
+
+    public function testDefaultBuilder()
     {
 
-        /**
-         * Static CRUD Test 
-         */
+
+    }
+
+    public function testStaticFunctions() 
+    {
         $record = \tests\Author::create(array( 
             'name' => 'Mary',
             'email' => 'zz@zz',
