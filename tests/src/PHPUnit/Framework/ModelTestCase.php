@@ -49,4 +49,8 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 		return new TestLogger;
 	}
 
+
 }
+
+
+

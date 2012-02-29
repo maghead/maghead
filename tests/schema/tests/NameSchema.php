@@ -20,6 +20,9 @@ namespace tests {
 
             $this->column('address')
                 ->isa('str')
+                ->validator( function($val,$args,$record) { 
+                    return array( true , "Message" );
+                })
                 ->defaultBuilder( function() { 
                     return 'Default Address';
                 })
