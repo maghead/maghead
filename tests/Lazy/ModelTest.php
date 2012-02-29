@@ -6,11 +6,42 @@ class ModelTest extends PHPUnit_Framework_TestCase
 {
     public function setup()
     {
+        $dsn = 'sqlite::memory:';
+        $driverType = 'sqlite';
+        $schemaPath = 'tests/schema';
         Lazy\QueryDriver::free();
         Lazy\ConnectionManager::getInstance()->free();
         Lazy\ConnectionManager::getInstance()->addDataSource('default', array( 
-            'dsn' => 'sqlite::memory:',
+            'dsn' => $dsn,
         ));
+
+        $dbh = Lazy\ConnectionManager::getInstance()->getConnection();
+
+        // initialize schema files
+        $builder = new SchemaSqlBuilder( $driverType , Lazy\ConnectionManager::getInstance()->getQueryDriver('default'));
+		ok( $builder );
+
+		$generator = new \Lazy\Schema\SchemaGenerator;
+		$generator->addPath( $schemaPath );
+		$generator->setLogger( $this->getLogger() );
+		$classMap = $generator->generate();
+        ok( $classMap );
+
+
+        $schemaClasses = array( 
+            '\tests\AuthorSchema', 
+            '\tests\BookSchema',
+            '\tests\AuthorBookSchema',
+        );
+
+        foreach( $schemaClasses as $class ) {
+            $schema = new $class;
+            $sqls = $builder->build($schema);
+            ok( $sqls );
+            foreach( $sqls as $sql )
+                $this->pdoQueryOk( $dbh , $sql );
+        }
+
     }
 
 	function getLogger()
@@ -23,51 +54,8 @@ class ModelTest extends PHPUnit_Framework_TestCase
 		return $dbh->query( $sql );
     }
 
-
 	function testSqlite()
 	{
-        $dbh = Lazy\ConnectionManager::getInstance()->getConnection();
-        $builder = new SchemaSqlBuilder('sqlite', Lazy\ConnectionManager::getInstance()->getQueryDriver('default'));
-		ok( $builder );
-
-		$generator = new \Lazy\Schema\SchemaGenerator;
-		$generator->addPath( 'tests/schema/' );
-		$generator->setLogger( $this->getLogger() );
-		$classMap = $generator->generate();
-        ok( $classMap );
-
-        /*******************
-         * build schema 
-         * ****************/
-		$authorschema = new \tests\AuthorSchema;
-		$authorbook = new \tests\AuthorBookSchema;
-		$bookschema = new \tests\BookSchema;
-		ok( $authorschema );
-
-		$sqls = $builder->build($authorschema);
-		ok( $sqls );
-        // var_dump( $sql ); 
-        foreach( $sqls as $sql )
-            $this->pdoQueryOk( $dbh , $sql );
-
-
-		ok( $authorbook );
-		$sqls = $builder->build($authorbook);
-		ok( $sqls );
-        // var_dump( $sql ); 
-
-        foreach( $sqls as $sql )
-            $this->pdoQueryOk( $dbh , $sql );
-
-
-		ok( $bookschema );
-		$sqls = $builder->build($bookschema);
-		ok( $sqls );
-        // var_dump( $sql ); 
-
-        foreach( $sqls as $sql )
-            $this->pdoQueryOk( $dbh , $sql );
-
         /****************************
          * Basic CRUD Test 
          * **************************/
