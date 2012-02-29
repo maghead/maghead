@@ -2,6 +2,7 @@
 namespace Lazy\Command;
 use CLIFramework\Command;
 use Lazy\Schema;
+use Lazy\Schema\SchemaFinder;
 use Exception;
 
 class BuildSqlCommand extends \CLIFramework\Command
@@ -41,10 +42,16 @@ class BuildSqlCommand extends \CLIFramework\Command
         $logger->info("Finding schema classes...");
 
         // find schema classes 
-        $finder = new Schema\SchemaFinder;
-        $finder->paths = $loader->getSchemaPaths();
-        $finder->load();
-        $classes = $finder->getSchemas();
+        $finder = new SchemaFinder;
+        if( $paths = $loader->getSchemaPaths() ) {
+            $finder->paths = $loader->getSchemaPaths();
+            $finder->loadFiles();
+        }
+        if( $classMap = $loader->getClassMap() ) {
+            foreach( $classMap as $class => $file )
+                require $file;
+        }
+        $classes = $finder->getSchemaClasses();
 
         $fp = fopen('schema.sql','a+');
 

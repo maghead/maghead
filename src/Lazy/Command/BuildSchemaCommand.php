@@ -1,6 +1,9 @@
 <?php
 namespace Lazy\Command;
 
+use Lazy\Schema\SchemaFinder;
+use Lazy\ConfigLoader;
+use Lazy\Schema\SchemaGenerator;
 
 /**
  *
@@ -24,27 +27,32 @@ class BuildSchemaCommand extends \CLIFramework\Command
         $logger = $this->getLogger();
         $options = $this->getOptions();
 
-        $generator = new \Lazy\Schema\SchemaGenerator;
+        $generator = new SchemaGenerator;
         $generator->setLogger( $logger );
 
-        $loader = new \Lazy\ConfigLoader;
+        $loader = new ConfigLoader;
         $loader->loadConfig();
         $loader->init();
 
+        $finder = new SchemaFinder;
+
         $args = func_get_args();
         if( count($args) ) {
-            foreach( $args as $path ) {
-                $logger->info("Adding schema path $path");
-                $generator->addPath( $path );
-            }
-        } else {
-            foreach( $loader->getSchemaPaths() as $path ) {
-                $logger->info("Adding schema path $path");
-                $generator->addPath( $path );
-            }
+            $finder->paths = $args;
+        }
+        elseif( $paths = $loader->getSchemaPaths() ) {
+            $finder->paths = $paths;
+        }
+        $finder->loadFiles();
+
+        if( $classMap = $loader->getClassMap() ) {
+            foreach( $classMap as $class => $file )
+                require $file;
         }
 
-        $classMap = $generator->generate();
+        $classes = $finder->getSchemaClasses();
+
+        $classMap = $generator->generate($classes);
 
         $logger->info('Classmap:');
         foreach( $classMap as $class => $file ) {
