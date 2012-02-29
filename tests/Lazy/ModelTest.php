@@ -127,7 +127,10 @@ class ModelTest extends PHPUnit_ModelTestCase
         $data = $author->toArray();
         ok( $data );
         ok( !empty($data));
+    }
 
+    public function testStaticFunctions() 
+    {
 
         /**
          * Static CRUD Test 
