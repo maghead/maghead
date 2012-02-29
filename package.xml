@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-02-29</date>
-  <time>23:17:28</time>
+  <date>2012-03-01</date>
+  <time>00:02:13</time>
   <version>
-    <release>1.0.5</release>
-    <api>1.0.5</api>
+    <release>1.0.6</release>
+    <api>1.0.6</api>
   </version>
   <stability>
     <release>stable</release>
@@ -96,12 +96,12 @@
       <file name="src/Lazy/CodeGen/UseClass.php" role="php" md5sum="f52cb8f0020091e21bda3a86b110b29b"/>
       <file name="src/Lazy/CodeGen.php" role="php" md5sum="e7885d51e118ddc84851d9178423ef48"/>
       <file name="src/Lazy/CollectionPager.php" role="php" md5sum="7ebd1146957ed43c749e9a57f3c89be1"/>
-      <file name="src/Lazy/Command/BuildConfCommand.php" role="php" md5sum="034aea9dd6e31f01d943876894204745"/>
-      <file name="src/Lazy/Command/BuildSchemaCommand.php" role="php" md5sum="1baff8d457293ba524befab5724767b7"/>
-      <file name="src/Lazy/Command/BuildSqlCommand.php" role="php" md5sum="0df604e59ad9a21f2da43214360bf206"/>
-      <file name="src/Lazy/Command/InitConfCommand.php" role="php" md5sum="3d5e9cc4c815e3146db7c52634c1f1d1"/>
+      <file name="src/Lazy/Command/BuildConfCommand.php" role="php" md5sum="51bf6ccd5a754e8234b6785c0892bf55"/>
+      <file name="src/Lazy/Command/BuildSchemaCommand.php" role="php" md5sum="c2ae76981426a97930c896d9e196ebce"/>
+      <file name="src/Lazy/Command/BuildSqlCommand.php" role="php" md5sum="c1be78d8a9121f67eb824cc8023cd53e"/>
+      <file name="src/Lazy/Command/InitConfCommand.php" role="php" md5sum="bdd79a03a48b0f08b0f45fe5f9bdad37"/>
       <file name="src/Lazy/ConfigBuilder.php" role="php" md5sum="2204d0d5547b9bac61e2a725680fc433"/>
-      <file name="src/Lazy/ConfigLoader.php" role="php" md5sum="77cef55d8e8ff2fb4ebd334c584a5120"/>
+      <file name="src/Lazy/ConfigLoader.php" role="php" md5sum="1e097a7bcb55b4f759b50386ffbd3f8b"/>
       <file name="src/Lazy/ConnectionManager.php" role="php" md5sum="aa80e3b2b66a0b8e254f191d364be17c"/>
       <file name="src/Lazy/Console.php" role="php" md5sum="a39f592164bb440ac448e5401fb07c37"/>
       <file name="src/Lazy/Deflator.php" role="php" md5sum="2af8cc17d90db828e3bccb735221acab"/>
@@ -134,9 +134,9 @@
       <file name="src/Lazy/SchemaSqlBuilder/SqliteDriver.php" role="php" md5sum="82c432af758f2f1548baa73f754834d3"/>
       <file name="src/Lazy/SchemaSqlBuilder.php" role="php" md5sum="03e631d3d4878835b373d9e0c9a7233e"/>
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
-      <file name="package.ini" role="data" md5sum="4db041e37be1ac90d1311aff8966cc99"/>
+      <file name="package.ini" role="data" md5sum="5841ce721e00cbd8694645cc44debe0a"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="b5bdd6ca4103e7bcf96e265cfa1055c0"/>
+      <file name="lazy" role="script" md5sum="928cb69fcc0f692edc062749625e44f8"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
