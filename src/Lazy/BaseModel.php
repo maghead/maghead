@@ -449,13 +449,11 @@ class BaseModel
                         $validateResults[$n] = 
                             $this->_validate_validator( $c, $val, $args, $validateFail );
                     }
-                    if( $c->validValues || $c->validValueBuilder ) {
-                        $this->_validate_validvalues( $c, $val ,$args, $validateFail );
+                    if( $r = $this->_validate_validvalues( $c, $val ,$args, $validateFail ) ) {
+                        $validateResults[$n] = $r;
                     }
                 }
             }
-
-
 
 
             // $args = $this->deflateData( $args ); // apply args to columns
