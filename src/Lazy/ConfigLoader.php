@@ -29,14 +29,21 @@ class ConfigLoader
 {
     public $config;
 
+    public $symbolFilename = '.lazy.php';
 
     /**
      * load configuration file
      *
      * @param string $file config file.
      */
-    public function loadConfig($file)
+    public function loadConfig($file = null)
     {
+        if( ! $file )
+            $file = $this->symbolFilename;
+
+        if( ! file_exists($file) ) 
+            throw new Exception("$file does not exist.");
+
         $this->config = require $file;
     }
 
