@@ -76,10 +76,6 @@ class BaseModel
 
     }
 
-
-
-
-
     public function __call($m,$a)
     {
         switch($m) {
@@ -172,12 +168,24 @@ class BaseModel
             foreach( $this->_schema->columns as $columnHash ) {
                 $c = $this->_schema->getColumn( $columnHash['name'] );
 
-                if( ! $c->primary 
-                    && $c->requried 
-                    && ( $c->default || $c->defaultBuilder )
-                    && ! isset($args[$c->name]) )
+
+                // if column is required (can not be empty)
+                //   and default or defaultBuilder is defined.
+                if(
+                    ! isset($args[$c->name])
+                    && $c->requried  
+                    && ! $c->primary 
+                    )
                 {
-                    $args[$c->name] = $c->defaultBuilder ? call_user_func( $c->defaultBuidler ) : null;
+                    if( $c->defaultBuilder ) {
+                        $args[$c->name] = call_user_func( $c->defaultBuilder );
+                    }
+                    elseif( $c->default ) {
+                        $args[$c->name] = $c->default; // might contains array() which is a raw sql statement.
+                    }
+                    else {
+                        throw new Exception( __("%1 is required.", $c->name) );
+                    }
                 }
             }
 

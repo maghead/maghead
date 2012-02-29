@@ -18,6 +18,9 @@ class NameSchema extends SchemaDeclare
 
         $this->column('address')
             ->isa('str')
+            ->defaultBuilder( function() { 
+                return 'Default Address';
+            })
             ->varchar(256);
 
         $this->column('confirmed')
