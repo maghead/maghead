@@ -63,12 +63,20 @@ class Column
             'validator'  => self::attr_callable,
 
             'validValueBuilder' => self::attr_callable,
+
+
+			// canonicalizer
+			'canonicalizer' => self::attr_callable,
+
+			// an alias of canonicalizer
+			'filter' => self::attr_callable,
         );
     }
 
     public function varchar($size)
     {
         $this->attributes[ 'type' ] = 'varchar(' . $size . ')';
+		$this->attributes[ 'isa' ]  = 'str';
         return $this;
     }
 
@@ -82,12 +90,14 @@ class Column
     public function text()
     {
         $this->type = 'text';
+		$this->attributes[ 'isa' ]  = 'str';
         return $this;
     }
 
     public function integer()
     {
         $this->type = 'integer';
+		$this->attributes[ 'isa' ]  = 'int';
         return $this;
     }
 
@@ -122,6 +132,7 @@ class Column
     {
         $this->autoIncrement = true;
         $this->type = 'integer';
+		$this->isa = 'int';
         return $this;
     }
 
@@ -155,9 +166,11 @@ class Column
                 throw new Exception( 'Attribute value is required.' );
 
             switch( $t ) {
+
                 case self::attr_any:
                     $this->attributes[ $method ] = $args[0];
                     break;
+
                 case self::attr_array:
                     if( $c > 1 ) {
                         $this->attributes[ $method ] = $args;
@@ -171,6 +184,7 @@ class Column
                         $this->attributes[ $method ] = (array) $args[0];
                     }
                     break;
+
                 case self::attr_string:
                     if( is_string($args[0]) ) {
                         $this->attributes[ $method ] = $args[0];
