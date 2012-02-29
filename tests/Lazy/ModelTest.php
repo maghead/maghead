@@ -111,6 +111,9 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 		$n = new \tests\Name;
 		$ret = $n->create(array( 'name' => false , 'country' => 'Tokyo' ));
 		ok( ! $ret->success );
+
+		$ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 123 ));
+		ok( ! $ret->success );
 	}
 
     public function testDefaultBuilder()
