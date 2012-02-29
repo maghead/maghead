@@ -5,6 +5,7 @@ $loader = new \Universal\ClassLoader\BasePathClassLoader(array(
     dirname(__DIR__) . '/src', 
     dirname(__DIR__) . '/vendor/pear', 
 ));
+$loader->useIncludePath(true);
 $loader->register();
 
 $console = new Lazy\Console;
