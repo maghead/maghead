@@ -44,9 +44,12 @@ class BuildSchemaCommand extends \CLIFramework\Command
         }
         $finder->loadFiles();
 
+
+        // load class from class map
         if( $classMap = $loader->getClassMap() ) {
-            foreach( $classMap as $class => $file ) {
-                require $file;
+            foreach( $classMap as $file => $class ) {
+                if( ! is_integer($file) && is_string($file) )
+                    require $file;
             }
         }
 

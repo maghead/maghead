@@ -47,10 +47,15 @@ class BuildSqlCommand extends \CLIFramework\Command
             $finder->paths = $loader->getSchemaPaths();
             $finder->loadFiles();
         }
+
+        // load class from class map
         if( $classMap = $loader->getClassMap() ) {
-            foreach( $classMap as $class => $file )
-                require $file;
+            foreach( $classMap as $file => $class ) {
+                if( ! is_integer($file) && is_string($file) )
+                    require $file;
+            }
         }
+
         $classes = $finder->getSchemaClasses();
 
         $fp = fopen('schema.sql','a+');
