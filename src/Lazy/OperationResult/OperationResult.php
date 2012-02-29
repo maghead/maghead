@@ -23,6 +23,10 @@ class OperationResult
         }
     }
 
+
+    /**
+     * returns an array contains success validations 
+     */
     public function getSuccessValidations() 
     {
         $vlds = array();

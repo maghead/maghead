@@ -204,7 +204,6 @@ class BaseModel
 
             if( $validateFail ) {
                 return $this->reportError( _('Validation Error') , array( 
-                    'sql'         => $sql,
                     'validations' => $validateResults,
                 ));
             }
