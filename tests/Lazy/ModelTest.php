@@ -105,7 +105,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $ret->validations );
 
         ok( $ret->validations['address'] );
-        ok( $ret->validations['address'][0] );
+        ok( $ret->validations['address']->success );
 
         ok( $vlds = $ret->getSuccessValidations() );
 

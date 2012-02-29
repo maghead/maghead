@@ -27,7 +27,7 @@ class OperationResult
     {
         $vlds = array();
         foreach( $this->validations as $k => $vld ) {
-            if( $vld[0] === true )
+            if( $vld->success === true )
                 $vlds[$k] = $vld;
         }
         return $vlds;
@@ -37,7 +37,7 @@ class OperationResult
     {
         $vlds = array();
         foreach( $this->validations as $k => $vld ) {
-            if( $vld[0] === false )
+            if( $vld->success === false )
                 $vlds[$k] = $vld;
         }
         return $vlds;

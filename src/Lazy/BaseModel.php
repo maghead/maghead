@@ -176,10 +176,7 @@ class BaseModel
 
                 // if column is required (can not be empty)
                 //   and default or defaultBuilder is defined.
-                if(
-                    ! isset($args[$c->name])
-                    && ! $c->primary 
-                    )
+                if( ! isset($args[$c->name]) && ! $c->primary )
                 {
                     if( $c->defaultBuilder ) {
                         $args[$c->name] = call_user_func( $c->defaultBuilder );
@@ -198,11 +195,18 @@ class BaseModel
                     if( $v[0] === false )
                         $validateFail = true;
 
-                    $validateResults[ $c->name ] = array( 
+                    $validateResults[ $c->name ] = (object) array(
                         'success' => $v[0],
                         'message' => $v[1],
                     );
                 }
+            }
+
+            if( $validateFail ) {
+                return $this->reportError( _('Validation Error') , array( 
+                    'sql'         => $sql,
+                    'validations' => $validateResults,
+                ));
             }
 
             // $args = $this->deflateData( $args );
@@ -222,8 +226,8 @@ class BaseModel
         catch ( Exception $e )
         {
             return $this->reportError( "Create failed" , array( 
-                'sql' => $sql,
-                'exception' => $e,
+                'sql'         => $sql,
+                'exception'   => $e,
                 'validations' => $validateResults,
             ));
         }
