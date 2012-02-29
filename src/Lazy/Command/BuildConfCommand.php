@@ -25,6 +25,7 @@ class BuildConfCommand extends \CLIFramework\Command
          */
         $options = $this->getOptions();
         $configFiles = func_get_args();
+
         if( empty($configFiles) ) {
             if( file_exists( 'config/lazy.yml' ) )
                 $configFiles = (array)'config/lazy.yml';
@@ -61,7 +62,7 @@ class BuildConfCommand extends \CLIFramework\Command
         // make master config link
         $config = new \Lazy\ConfigLoader;
         $this->getLogger()->info("Making link => " . $config->symbolFilename );
-        symlink( $config->symbolFilename , $outputPath );
+        symlink( $outputPath, $config->symbolFilename );
 
         $this->getLogger()->info("Done.");
     }
