@@ -14,7 +14,12 @@ class SchemaFinder
         $this->paths[] = $path;
     }
 
-    public function load()
+    public function addPath($path)
+    {
+        $this->paths[] = $path;
+    }
+
+    public function loadFiles()
     {
         foreach( $this->paths as $path ) {
             if( is_file($path) ) {
@@ -33,7 +38,7 @@ class SchemaFinder
         }
     }
 
-    public function getSchemas()
+    public function getSchemaClasses()
     {
         $list = array();
         $classes = get_declared_classes();

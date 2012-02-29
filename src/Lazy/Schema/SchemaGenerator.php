@@ -11,17 +11,10 @@ use Lazy\CodeGen;
  */
 class SchemaGenerator
 {
-    public $schemaPaths = array();
-
     public $logger;
 
     public function __construct() {  
 
-    }
-
-    public function addPath( $path )
-    {
-        $this->schemaPaths[] = rtrim($path, DIRECTORY_SEPARATOR);
     }
 
     public function setLogger($logger)
@@ -183,13 +176,8 @@ class SchemaGenerator
         return $this->generateClass( $schema->getDir() , 'Class.php.twig', $cTemplate );
     }
 
-    public function generate()
+    public function generate($classes)
     {
-        $finder = new SchemaFinder;
-        $finder->paths = $this->schemaPaths;
-        $finder->load();
-        $classes = $finder->getSchemas();
-
         /**
          * schema class mapping 
          */
@@ -218,6 +206,7 @@ class SchemaGenerator
             $this->logger->info( 'Building collection class: ' . $class );
             list( $c, $f ) = $this->buildCollectionClass( $schema );
             $classMap[ $c ] = $f;
+
         }
         return $classMap;
     }
