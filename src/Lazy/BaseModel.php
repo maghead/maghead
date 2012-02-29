@@ -173,7 +173,6 @@ class BaseModel
                 //   and default or defaultBuilder is defined.
                 if(
                     ! isset($args[$c->name])
-                    && $c->requried  
                     && ! $c->primary 
                     )
                 {
@@ -183,7 +182,7 @@ class BaseModel
                     elseif( $c->default ) {
                         $args[$c->name] = $c->default; // might contains array() which is a raw sql statement.
                     }
-                    else {
+                    elseif( $c->requried ) {
                         throw new Exception( __("%1 is required.", $c->name) );
                     }
                 }
