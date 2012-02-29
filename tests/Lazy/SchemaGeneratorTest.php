@@ -11,10 +11,13 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 
 	function test()
 	{
+        $finder = new Lazy\Schema\SchemaFinder;
+        $finder->addPath( 'tests/schema' );
+        $finder->loadFiles();
+
 		$generator = new Lazy\Schema\SchemaGenerator;
-		$generator->addPath( 'tests/schema/' );
 		$generator->setLogger( $this->getLogger() );
-		$classMap = $generator->generate();
+		$classMap = $generator->generate( $finder->getSchemaClasses() );
 
 		foreach( $classMap as $class => $file ) {
 			path_ok( $file , $class );

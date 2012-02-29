@@ -19,10 +19,13 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 		$builder = new SchemaSqlBuilder('sqlite', $connM->getQueryDriver() );
 		ok( $builder );
 
+        $finder = new Lazy\Schema\SchemaFinder;
+        $finder->addPath( 'tests/schema/' );
+        $finder->loadFiles();
+
 		$generator = new \Lazy\Schema\SchemaGenerator;
-		$generator->addPath( 'tests/schema/' );
 		$generator->setLogger( $this->getLogger() );
-		$classMap = $generator->generate();
+		$classMap = $generator->generate( $finder->getSchemaClasses() );
         ok( $classMap );
 
         /*******************
