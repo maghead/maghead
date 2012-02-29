@@ -2,13 +2,18 @@
 require_once 'tests/schema/tests/AuthorBooks.php';
 use Lazy\SchemaSqlBuilder;
 
-class PHPUnit_ModelTestCase extends PHPUnit_Framework_TestCase
+abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
 {
 
     public $driverType = 'sqlite';
+
     public $dsn = 'sqlite::memory:';
+
     public $schemaPath = 'tests/schema';
+
     public $schemaClasses = array( );
+
+
 
     public function setup()
     {
@@ -45,7 +50,7 @@ class PHPUnit_ModelTestCase extends PHPUnit_Framework_TestCase
 
 }
 
-class ModelTest extends PHPUnit_ModelTestCase
+class ModelTest extends PHPUnit_Framework_ModelTestCase
 {
 
     public function getModels()
@@ -141,8 +146,12 @@ class ModelTest extends PHPUnit_ModelTestCase
 
     public function testDefaultBuilder()
     {
+        $name = new \tests\Name;
+        $ret = $name->create(array(  'name' => 'Foo' ));
 
-
+        ok( $ret->success );
+        ok( $name->id );
+        ok( $name->address );
     }
 
     public function testStaticFunctions() 
