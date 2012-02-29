@@ -111,12 +111,14 @@ class Column
     public function blob()
     {
         $this->type = 'blob';
+        $this->isa = 'str';
         return $this;
     }
 
     public function binary()
     {
         $this->type = 'binary';
+        $this->isa = 'str';
         return $this;
     }
 
