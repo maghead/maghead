@@ -59,8 +59,9 @@ class BuildConfCommand extends \CLIFramework\Command
         }
 
         // make master config link
-        $this->getLogger()->info("Making link => .lazy.php");
-        symlink( ".lazy.php" , $outputPath );
+        $config = new \Lazy\ConfigLoader;
+        $this->getLogger()->info("Making link => " . $config->symbolFilename );
+        symlink( $config->symbolFilename , $outputPath );
 
         $this->getLogger()->info("Done.");
     }
