@@ -452,6 +452,7 @@ class BaseModel
                     if( $r = $this->_validate_validvalues( $c, $val ,$args, $validateFail ) ) {
                         $validateResults[$n] = $r;
                     }
+
                 }
             }
 
