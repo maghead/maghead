@@ -102,6 +102,11 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $ret = $name->create(array(  'name' => 'Foo' ));
 
         ok( $ret->success );
+        ok( $ret->validations );
+
+        ok( $ret->validations['address'] );
+        ok( $ret->validations['address'][0] );
+
         ok( $name->id );
         ok( $name->address );
     }

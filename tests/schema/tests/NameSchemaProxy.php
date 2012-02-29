@@ -27,6 +27,9 @@ class NameSchemaProxy extends Schema
       'name' => 'address',
       'attributes' => array( 
           'isa' => 'str',
+          'validator' => function($val,$args,$record) { 
+                    return array( true , "Message" );
+                },
           'defaultBuilder' => function() { 
                     return 'Default Address';
                 },
