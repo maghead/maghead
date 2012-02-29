@@ -173,29 +173,32 @@ class BaseModel
             foreach( $this->_schema->columns as $columnHash ) {
 
                 $c = $this->_schema->getColumn( $columnHash['name'] );
+                $n = $c->name;
 
                 // if column is required (can not be empty)
                 //   and default or defaultBuilder is defined.
-                if( ! isset($args[$c->name]) && ! $c->primary )
+                if( ! isset($args[$n]) && ! $c->primary )
                 {
                     if( $c->defaultBuilder ) {
-                        $args[$c->name] = call_user_func( $c->defaultBuilder );
+                        $args[$n] = call_user_func( $c->defaultBuilder );
                     }
                     elseif( $c->default ) {
-                        $args[$c->name] = $c->default; // might contains array() which is a raw sql statement.
+                        $args[$n] = $c->default; // might contains array() which is a raw sql statement.
                     }
                     elseif( $c->requried ) {
-                        throw new Exception( __("%1 is required.", $c->name) );
+                        throw new Exception( __("%1 is required.", $n ) );
                     }
                 }
 
+                $val = $args[$n];
+
                 // do validate
                 if( $c->validator ) {
-                    $v = call_user_func( $c->validator, $args[$c->name], $args, $this );
+                    $v = call_user_func( $c->validator, $val, $args, $this );
                     if( $v[0] === false )
                         $validateFail = true;
 
-                    $validateResults[ $c->name ] = (object) array(
+                    $validateResults[$n] = (object) array(
                         'success' => $v[0],
                         'message' => $v[1],
                     );
@@ -203,10 +206,10 @@ class BaseModel
 
                 // check valid values
                 if( $validValues = $c->getValidValues( $this, $args ) ) {
-                    if( false === in_array( $args[$c->name] , $validValues ) ) {
-                        $validateResults[ $c->name ] = (object) array(
+                    if( false === in_array( $val , $validValues ) ) {
+                        $validateResults[$n] = (object) array(
                             'success' => false,
-                            'message' => __("%1 is not a valid value for %2", $args[$c->name] , $c->name ),
+                            'message' => __("%1 is not a valid value for %2", $val , $n),
                         );
                     }
                 }
