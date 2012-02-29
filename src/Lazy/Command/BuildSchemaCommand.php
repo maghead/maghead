@@ -39,15 +39,15 @@ class BuildSchemaCommand extends \CLIFramework\Command
         $args = func_get_args();
         if( count($args) ) {
             $finder->paths = $args;
-        }
-        elseif( $paths = $loader->getSchemaPaths() ) {
+        } elseif( $paths = $loader->getSchemaPaths() ) {
             $finder->paths = $paths;
         }
         $finder->loadFiles();
 
         if( $classMap = $loader->getClassMap() ) {
-            foreach( $classMap as $class => $file )
+            foreach( $classMap as $class => $file ) {
                 require $file;
+            }
         }
 
         $classes = $finder->getSchemaClasses();
