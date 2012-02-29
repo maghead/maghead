@@ -181,7 +181,7 @@ class BaseModel
 
 
     /**
-     * create a new record
+     * Create a new record
      *
      * @param array $args data
      *
@@ -214,11 +214,8 @@ class BaseModel
                 //   and default or defaultBuilder is defined.
                 if( ! isset($args[$n]) && ! $c->primary )
                 {
-                    if( $c->defaultBuilder ) {
-                        $args[$n] = call_user_func( $c->defaultBuilder );
-                    }
-                    elseif( $c->default ) {
-                        $args[$n] = $c->default; // might contains array() which is a raw sql statement.
+                    if( $val = $c->getDefaultValue($this ,$args) ) {
+                        $args[$n] = $val;
                     }
                     elseif( $c->requried ) {
                         throw new Exception( __("%1 is required.", $n ) );
@@ -338,14 +335,14 @@ class BaseModel
         }
         catch ( Exception $e ) 
         {
-            return $this->reportError( "Data load failed" , array( 
+            return $this->reportError( 'Data load failed' , array(
                 'sql' => $sql,
                 'exception' => $e,
                 'validations' => $validateResults,
             ));
         }
 
-        return $this->reportSuccess('Data loaded', array( 
+        return $this->reportSuccess( 'Data loaded', array( 
             'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
             'sql' => $sql,
             'validations' => $validateResults,
@@ -354,7 +351,7 @@ class BaseModel
 
 
     /**
-     * delete current record, the record should be loaded already.
+     * Delete current record, the record should be loaded already.
      *
      * @return OperationResult operation result (success or error)
      */
@@ -376,13 +373,13 @@ class BaseModel
         try {
             $this->dbQuery($sql);
         } catch( PDOException $e ) {
-            return $this->reportError("Delete failed." , array(
-                'sql' => $sql,
-                'exception' => $e,
+            return $this->reportError( _('Delete failed.') , array(
+                'sql'         => $sql,
+                'exception'   => $e,
                 'validations' => $validateResults,
             ));
         }
-        return $this->reportSuccess('Deleted');
+        return $this->reportSuccess( _('Deleted'));
     }
 
 
@@ -409,9 +406,9 @@ class BaseModel
 
         $args = $this->filterArrayWithColumns($args);
 
-        try {
+        try 
+        {
             $args = $this->beforeUpdate($args);
-
 
             foreach( $this->_schema->columns as $columnHash ) {
                 $c = $this->_schema->getColumn( $columnHash['name'] );
@@ -419,24 +416,21 @@ class BaseModel
 
                 // if column is required (can not be empty)
                 //   and default or defaultBuilder is defined.
-                if( isset($args[$c->name]) 
+                if( isset($args[$n]) 
                     && $c->required
-                    && ! $args[$c->name]
+                    && ! $args[$n]
                     && ! $c->primary )
                 {
-                    if( $c->defaultBuilder ) {
-                        $args[$c->name] = call_user_func( $c->defaultBuilder );
-                    }
-                    elseif( $c->default ) {
-                        $args[$c->name] = $c->default; // might contains array() which is a raw sql statement.
+                    if( $val = $c->getDefaultValue($this ,$args) ) {
+                        $args[$n] = $val;
                     }
                     elseif( $c->requried ) {
-                        throw new Exception( __("%1 is required.", $c->name) );
+                        throw new Exception( __("%1 is required.", $n) );
                     }
                 }
 
                 // column validate
-                if( isset($args[$c->name]) ) 
+                if( isset($args[$n]) )
                 {
                     // short alias for argument value.
                     $val = isset($args[$n]) ? $args[$n] : null;
