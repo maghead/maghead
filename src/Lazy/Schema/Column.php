@@ -59,19 +59,21 @@ class Column
 
 	public function checkTypeConstraint($value)
 	{
-		if( $this->isa ) 
+		if( $this->isa )
 		{
 			if( $this->isa === 'str' ) {
-				return is_string( $value );
+				if( false === is_string( $value ) ) 
+					return 'Value is not a string value.';
 			}
 			elseif( $this->isa === 'int' ) {
-				return is_integer( $value );
+				if( false === is_integer( $value ) )
+					return 'Value is not a integer value.';
 			}
 			elseif( $this->isa === 'bool' || $this->isa === 'boolean' ) {
-				return is_bool( $value );
+				if( false === is_bool( $value ) )
+					return 'Value is not a boolean value.';
 			}
 		}
-		return true;
 	}
 
     /** 
