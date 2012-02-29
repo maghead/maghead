@@ -38,6 +38,16 @@ class Column
 		}
 	}
 
+	public function getDefaultValue( $record = null, $args = null )
+	{
+		if( $this->defaultBuilder ) {
+			return call_user_func( $this->defaultBuilder , $record, $args );
+		}
+		elseif( $this->default ) {
+			return $this->default; // might contains array() which is a raw sql statement.
+		}
+	}
+
     /** 
      * deflate value 
      **/
