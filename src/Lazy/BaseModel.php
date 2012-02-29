@@ -163,11 +163,16 @@ class BaseModel
         // first, filter the array
         $args = $this->filterArrayWithColumns($args);
 
+
+        $validateFail = false;
+        $validateResults = array();
+
         try {
             $args = $this->beforeCreate( $args );
-            foreach( $this->_schema->columns as $columnHash ) {
-                $c = $this->_schema->getColumn( $columnHash['name'] );
 
+            foreach( $this->_schema->columns as $columnHash ) {
+
+                $c = $this->_schema->getColumn( $columnHash['name'] );
 
                 // if column is required (can not be empty)
                 //   and default or defaultBuilder is defined.
@@ -185,6 +190,14 @@ class BaseModel
                     elseif( $c->requried ) {
                         throw new Exception( __("%1 is required.", $c->name) );
                     }
+                }
+
+                // do validate
+                if( $c->validator ) {
+                    $v = call_user_func( $c->validator, $args[$c->name], $args, $this );
+                    if( $v[0] === false )
+                        $validateFail = true;
+                    $validateResults[] = $v;
                 }
             }
 
