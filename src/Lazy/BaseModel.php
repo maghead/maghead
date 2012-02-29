@@ -200,6 +200,18 @@ class BaseModel
                         'message' => $v[1],
                     );
                 }
+
+                // check valid values
+                if( $validValues = $c->getValidValues( $this, $args ) ) {
+                    if( false === in_array( $args[$c->name] , $validValues ) ) {
+                        $validateResults[ $c->name ] = (object) array(
+                            'success' => false,
+                            'message' => __("%1 is not a valid value for %2", $args[$c->name] , $c->name ),
+                        );
+                    }
+                }
+
+
             }
 
             if( $validateFail ) {
@@ -396,6 +408,9 @@ class BaseModel
                         throw new Exception( __("%1 is required.", $c->name) );
                     }
                 }
+
+                // validate column
+
             }
 
 

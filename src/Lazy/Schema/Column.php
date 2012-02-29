@@ -24,12 +24,17 @@ class Column
             return $this->attributes[$name];
     }
 
-	public function getValidValues()
+
+	/**
+	 * xxx:
+	 *   for an existing record, we might need the record data to return specified valid values.
+	 */
+	public function getValidValues( $record = null , $args = null )
 	{
 		if( $this->validValues ) {
 			return $this->validValues;
 		} elseif( $this->validValueBuilder ) {
-			return call_user_func_array( $this->validValueBuilder );
+			return call_user_func( $this->validValueBuilder , $record , $args );
 		}
 	}
 
