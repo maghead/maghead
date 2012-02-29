@@ -31,7 +31,7 @@ class NameSchemaProxy extends Schema
           'validator' => function($val,$args,$record) { 
                     if( preg_match( '/fuck/', $val ) )
                         return array( false , "Please don't" );
-                    return array( true , "Message" );
+                    return array( true , "Good" );
                 },
           'defaultBuilder' => function() { 
                     return 'Default Address';
