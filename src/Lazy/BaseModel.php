@@ -146,6 +146,27 @@ class BaseModel
     }
 
 
+
+    /**
+     * validate validator 
+     *
+     * @param $c  column object.
+     * @param $val value object.
+     * @param $args arguments
+     * @param $validateFail fail flag.
+     */
+    protected function _validate_validator($c, $val, $args, & $validateFail )
+    {
+        $v = call_user_func( $c->validator, $val, $args, $this );
+        if( $v[0] === false )
+            $validateFail = true;
+        return (object) array(
+            'success' => $v[0],
+            'message' => $v[1],
+        );
+    }
+
+
     /**
      * create a new record
      *
@@ -164,6 +185,7 @@ class BaseModel
         $args = $this->filterArrayWithColumns($args);
 
 
+        $sql = null;
         $validateFail = false;
         $validateResults = array();
 
@@ -190,23 +212,18 @@ class BaseModel
                     }
                 }
 
-                $val = $args[$n];
+                $val = isset($args[$n]) ? $args[$n] : null;
 
                 // do validate
                 if( $c->validator ) {
-                    $v = call_user_func( $c->validator, $val, $args, $this );
-                    if( $v[0] === false )
-                        $validateFail = true;
-
-                    $validateResults[$n] = (object) array(
-                        'success' => $v[0],
-                        'message' => $v[1],
-                    );
+                    $validateResults[$n] = 
+                        $this->_validate_validator( $c, $val, $args, $validateFail );
                 }
 
                 // check valid values
                 if( $validValues = $c->getValidValues( $this, $args ) ) {
                     if( false === in_array( $val , $validValues ) ) {
+                        $validateFail = true;
                         $validateResults[$n] = (object) array(
                             'success' => false,
                             'message' => __("%1 is not a valid value for %2", $val , $n),
@@ -218,9 +235,7 @@ class BaseModel
             }
 
             if( $validateFail ) {
-                return $this->reportError( _('Validation Error') , array( 
-                    'validations' => $validateResults,
-                ));
+                throw new Exception( 'Validation Fail' );
             }
 
             // $args = $this->deflateData( $args );
@@ -239,6 +254,7 @@ class BaseModel
         }
         catch ( Exception $e )
         {
+            // die( $e->getMessage() . $e->getFile() . $e->getLine() );
             return $this->reportError( "Create failed" , array( 
                 'sql'         => $sql,
                 'exception'   => $e,
