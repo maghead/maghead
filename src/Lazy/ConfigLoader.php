@@ -42,7 +42,7 @@ class ConfigLoader
             $file = $this->symbolFilename;
 
         if( ! file_exists($file) ) 
-            throw new Exception("$file does not exist.");
+            throw new Exception("$file does not exist, please run build-conf command to build config file for PHP.");
 
         $this->config = require $file;
     }

@@ -17,7 +17,6 @@ class BuildSchemaCommand extends \CLIFramework\Command
 
     public function options($opts)
     {
-        $opts->add('c|config:','config file');
     }
 
     public function execute()
@@ -28,6 +27,9 @@ class BuildSchemaCommand extends \CLIFramework\Command
         $generator = new \Lazy\Schema\SchemaGenerator;
         $generator->setLogger( $logger );
 
+        $loader = new \Lazy\ConfigLoader;
+        $loader->loadConfig();
+
         $args = func_get_args();
         if( count($args) ) {
             foreach( $args as $path ) {
@@ -35,26 +37,13 @@ class BuildSchemaCommand extends \CLIFramework\Command
                 $generator->addPath( $path );
             }
         } else {
-            // default config file.
-            $configFile = 'config/lazy.php';
-            if( $options->config )
-                $configFile = $options->config->value;
-
-            if( file_exists($configFile) ) {
-                $loader = new \Lazy\ConfigLoader;
-                $loader->loadConfig( $configFile );
-                foreach( $loader->getSchemaPaths() as $path ) {
-                    $logger->info("Adding schema path $path");
-                    $generator->addPath( $path );
-                }
+            foreach( $loader->getSchemaPaths() as $path ) {
+                $logger->info("Adding schema path $path");
+                $generator->addPath( $path );
             }
-            else {
-                die('Please specify a schema file path or with --config option.');
-            }
-
-            $loader->loadDataSources();
-            $loader->loadBootstrap();
         }
+        $loader->loadDataSources();
+        $loader->loadBootstrap();
 
         $classMap = $generator->generate();
 
