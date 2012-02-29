@@ -38,11 +38,11 @@ class PHPUnit_ModelTestCase extends PHPUnit_Framework_TestCase
         }
     }
 
-
 	public function getLogger()
 	{
 		return new TestLogger;
 	}
+
 }
 
 class ModelTest extends PHPUnit_ModelTestCase
@@ -58,13 +58,13 @@ class ModelTest extends PHPUnit_ModelTestCase
         );
     }
 
+
     public function testClass()
     {
-        class_ok( '\tests\Author' );
-        class_ok( '\tests\AuthorSchema' );
-        class_ok( '\tests\Book' );
-        class_ok( '\tests\BookSchema' );
+        foreach( $this->getModels() as $class ) 
+            class_ok( $class );
     }
+
 
     /****************************
      * Basic CRUD Test 
