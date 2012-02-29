@@ -9,9 +9,7 @@ class BuildSqlCommand extends \CLIFramework\Command
 
     public function options($opts)
     {
-        $opts->add('c|config:','config file');
     }
-
 
     public function brief()
     {
@@ -23,24 +21,8 @@ class BuildSqlCommand extends \CLIFramework\Command
         $options = $this->getOptions();
         $logger  = $this->getLogger();
 
-        $configFile = 'config/lazy.php';
         $loader = new \Lazy\ConfigLoader;
-
-        if( $options->config )
-            $configFile = $options->config->value;
-
-        if( file_exists($configFile) ) {
-            if( $options->config )
-                $loader->loadConfig( $options->config->value );
-            else
-                $loader->loadConfig( $configFile );
-
-            $logger->info("config $configFile loaded.");
-        }
-        else {
-            throw new Exception("Config file $configFile not found.");
-        }
-
+        $loader->loadConfig();
         $loader->loadDataSources();
         $loader->loadBootstrap();
 
