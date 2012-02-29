@@ -22,7 +22,6 @@ use ArrayAccess;
  * }
  *
  * bootstrap = [ script path, script path ]
- *
  */
 class ConfigLoader
     implements ArrayAccess
@@ -148,7 +147,7 @@ class ConfigLoader
     public function getSchema()
     {
         return isset($this->config['schema']) ?
-                     $this->config['schema']) : null;
+                     $this->config['schema'] : null;
     }
 
 
