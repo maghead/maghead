@@ -39,6 +39,13 @@ class NameSchemaProxy extends Schema
           'type' => 'varchar(256)',
         ),
     ),
+  'country' => array( 
+      'name' => 'country',
+      'attributes' => array( 
+          'isa' => 'str',
+          'required' => true,
+        ),
+    ),
   'confirmed' => array( 
       'name' => 'confirmed',
       'attributes' => array( 
@@ -50,6 +57,7 @@ class NameSchemaProxy extends Schema
   'id',
   'name',
   'address',
+  'country',
   'confirmed',
 );
         $this->primaryKey =  'id';

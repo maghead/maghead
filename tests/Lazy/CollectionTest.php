@@ -91,6 +91,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $ret = $name->create(array( 
             'name' => 'Foo',
             'confirmed' => false,
+            'country' => 'Tokyo',
         ));
         ok( $ret->success );
         is( false, $name->confirmed );
@@ -107,11 +108,11 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
         $name->delete();
 
-        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1' ))->success );
-        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1' ))->success );
-        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1' ))->success );
-        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1' ))->success );
-        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1' ))->success );
+        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
+        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
+        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
+        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
+        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
 
         $names = new \tests\NameCollection;
         $names->where()

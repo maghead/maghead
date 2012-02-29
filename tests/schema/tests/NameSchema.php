@@ -31,6 +31,11 @@ namespace tests {
                 })
                 ->varchar(256);
 
+            $this->column('country')
+                ->isa('str')
+                ->required()
+                ->validValues( array( 'Taiwan' , 'Taipei' , 'Tokyo' ));
+
             $this->column('confirmed')
                 ->isa('bool')
                 ->boolean();

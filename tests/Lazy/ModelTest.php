@@ -99,7 +99,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     public function testDefaultBuilder()
     {
         $name = new \tests\Name;
-        $ret = $name->create(array(  'name' => 'Foo' ));
+        $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' ));
 
         ok( $ret->success );
         ok( $ret->validations );
@@ -113,7 +113,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $name->id );
         ok( $name->address );
 
-        $ret = $name->create(array(  'name' => 'Foo', 'address' => 'fuck' ));
+        $ret = $name->create(array(  'name' => 'Foo', 'address' => 'fuck' , 'country' => 'Tokeyo' ));
         ok( $ret->validations );
 
         foreach( $ret->getErrorValidations() as $vld ) {
