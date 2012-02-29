@@ -197,7 +197,11 @@ class BaseModel
                     $v = call_user_func( $c->validator, $args[$c->name], $args, $this );
                     if( $v[0] === false )
                         $validateFail = true;
-                    $validateResults[ $c->name ] = $v;
+
+                    $validateResults[ $c->name ] = array( 
+                        'success' => $v[0],
+                        'message' => $v[1],
+                    );
                 }
             }
 
