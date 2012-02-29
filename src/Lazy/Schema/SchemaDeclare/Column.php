@@ -17,9 +17,21 @@ class Column
      * @var string column name
      */
     public $name;
+
+	/**
+	 * @var array $supportedAttributes
+	 */
     public $supportedAttributes = array();
+
+	/**
+	 * @var array $attributes
+	 */
     public $attributes = array();
 
+
+	/**
+	 * @var string $name column name (id)
+	 */
     public function __construct( $name )
     {
         $this->name = $name;
