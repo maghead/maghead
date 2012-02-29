@@ -28,10 +28,13 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         $builder = new SchemaSqlBuilder( $this->driverType , Lazy\ConnectionManager::getInstance()->getQueryDriver('default'));
 		ok( $builder );
 
+        $finder = new Lazy\Schema\SchemaFinder;
+        $finder->addPath( 'tests/schema/' );
+        $finder->loadFiles();
+
 		$generator = new \Lazy\Schema\SchemaGenerator;
-		$generator->addPath( $this->schemaPath );
 		$generator->setLogger( $this->getLogger() );
-		$classMap = $generator->generate();
+		$classMap = $generator->generate( $finder->getSchemaClasses() );
         ok( $classMap );
 
         $schemaClasses = $this->getModels();

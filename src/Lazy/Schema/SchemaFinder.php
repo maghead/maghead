@@ -4,6 +4,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
 use RegexIterator;
+use ReflectionClass;
 
 class SchemaFinder
 {
@@ -43,6 +44,10 @@ class SchemaFinder
         $list = array();
         $classes = get_declared_classes();
         foreach( $classes as $class ) {
+
+            $rf = new ReflectionClass( $class );
+            if( $rf->isAbstract() )
+                continue;
 
             if( is_a( $class, 'Lazy\Schema\MixinSchemaDeclare' ) 
                 || $class == 'Lazy\Schema\MixinSchemaDeclare' )
