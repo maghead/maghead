@@ -31,6 +31,8 @@ class ConfigLoader
 
     public $symbolFilename = '.lazy.php';
 
+    public $classMap;
+
     /**
      * load configuration file
      *
@@ -81,6 +83,18 @@ class ConfigLoader
 
 
     /**
+     * load class from php source,
+     * to PHP source should return a PHP array.
+     */
+    public function loadClassFile() 
+    {
+        if( isset($this->config['schema']['class_file']) ) {
+            $this->classMap = require $this->config['schema']['class_file'];
+        }
+    }
+
+
+    /**
      * load data sources to connection manager
      */
     public function loadDataSources()
@@ -91,6 +105,14 @@ class ConfigLoader
             $manager->addDataSource( $sourceId , $ds );
         }
     }
+
+
+    public function getClassMap()
+    {
+        return $this->classMap;
+    }
+
+
 
 
     /**
