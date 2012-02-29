@@ -26,8 +26,7 @@ class Column
 
 
 	/**
-	 * xxx:
-	 *   for an existing record, we might need the record data to return specified valid values.
+	 * for an existing record, we might need the record data to return specified valid values.
 	 */
 	public function getValidValues( $record = null , $args = null )
 	{
