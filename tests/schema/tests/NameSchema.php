@@ -26,6 +26,9 @@ namespace tests {
                         return array( false , "Please don't" );
                     return array( true , "Good" );
                 })
+				->filter( function($val,$args,$record)  { 
+					return str_replace( 'John' , 'XXXX' , $val );
+				})
                 ->defaultBuilder( function() { 
                     return 'Default Address';
                 })

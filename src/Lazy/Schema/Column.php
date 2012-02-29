@@ -25,6 +25,16 @@ class Column
     }
 
 
+
+	public function canonicalizeValue( & $value , $record = null , $args = null )
+	{
+		$cb = $this->filter ?: $this->canonicalizer ?: null;
+		if( $cb ) {
+			return $value = call_user_func( $cb , $value , $record, $args );
+		}
+		return $value;
+	}
+
 	/**
 	 * for an existing record, we might need the record data to return specified valid values.
 	 */

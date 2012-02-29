@@ -225,6 +225,10 @@ class BaseModel
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
+                if( $c->filter || $c->canonicalizer ) {
+                    $c->canonicalizeValue( $args[$n], $this, $args );
+                }
+
                 // do validate
                 if( $c->validator ) {
                     $validateResults[$n] = 
@@ -429,11 +433,16 @@ class BaseModel
                     }
                 }
 
+
                 // column validate
                 if( isset($args[$n]) )
                 {
                     // short alias for argument value.
-                    $val = isset($args[$n]) ? $args[$n] : null;
+                    $val = $args[$n];
+
+                    if( $c->filter || $c->canonicalizer ) {
+                        $c->canonicalizeValue( $args[$n], $this, $args );
+                    }
 
                     // do validate
                     if( $c->validator ) {

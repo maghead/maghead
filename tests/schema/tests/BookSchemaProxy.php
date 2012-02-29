@@ -12,6 +12,7 @@ class BookSchemaProxy extends Schema
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
+          'isa' => 'int',
           'primary' => true,
         ),
     ),
