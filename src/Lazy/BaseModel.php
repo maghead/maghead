@@ -197,10 +197,9 @@ class BaseModel
                     $v = call_user_func( $c->validator, $args[$c->name], $args, $this );
                     if( $v[0] === false )
                         $validateFail = true;
-                    $validateResults[] = $v;
+                    $validateResults[ $c->name ] = $v;
                 }
             }
-
 
             // $args = $this->deflateData( $args );
 
@@ -221,6 +220,7 @@ class BaseModel
             return $this->reportError( "Create failed" , array( 
                 'sql' => $sql,
                 'exception' => $e,
+                'validations' => $validateResults,
             ));
         }
 
@@ -245,9 +245,13 @@ class BaseModel
             $this->deflate();
         }
 
-        $ret = array( 'sql' => $sql );
+        $ret = array( 
+            'sql' => $sql,
+            'validations' => $validateResults,
+        );
         if( isset($this->_data[ $k ]) ) {
             $ret['id'] = $this->_data[ $k ];
+
         }
         return $this->reportSuccess('Created', $ret );
     }
@@ -273,6 +277,8 @@ class BaseModel
 
         $sql = $query->build();
 
+        $validateResults = array();
+
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         $stm = null;
         try {
@@ -291,12 +297,14 @@ class BaseModel
             return $this->reportError( "Data load failed" , array( 
                 'sql' => $sql,
                 'exception' => $e,
+                'validations' => $validateResults,
             ));
         }
 
         return $this->reportSuccess('Data loaded', array( 
             'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
-            'sql' => $sql
+            'sql' => $sql,
+            'validations' => $validateResults,
         ));
     }
 
@@ -320,12 +328,14 @@ class BaseModel
             ->equal( $k , $kVal );
         $sql = $query->build();
 
+        $validateResults = array();
         try {
             $this->dbQuery($sql);
         } catch( PDOException $e ) {
             return $this->reportError("Delete failed." , array(
                 'sql' => $sql,
                 'exception' => $e,
+                'validations' => $validateResults,
             ));
         }
         return $this->reportSuccess('Deleted');
