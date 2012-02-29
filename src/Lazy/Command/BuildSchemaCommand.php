@@ -29,6 +29,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
 
         $loader = new \Lazy\ConfigLoader;
         $loader->loadConfig();
+        $loader->init();
 
         $args = func_get_args();
         if( count($args) ) {
@@ -42,8 +43,6 @@ class BuildSchemaCommand extends \CLIFramework\Command
                 $generator->addPath( $path );
             }
         }
-        $loader->loadDataSources();
-        $loader->loadBootstrap();
 
         $classMap = $generator->generate();
 

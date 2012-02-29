@@ -11,14 +11,14 @@
     <active>yes</active>
   </lead>
   <date>2012-02-29</date>
-  <time>23:07:53</time>
+  <time>23:17:28</time>
   <version>
-    <release>0.0.4</release>
-    <api>0.0.4</api>
+    <release>1.0.5</release>
+    <api>1.0.5</api>
   </version>
   <stability>
-    <release>alpha</release>
-    <api>alpha</api>
+    <release>stable</release>
+    <api>stable</api>
   </stability>
   <license>PHP</license>
   <notes>-</notes>
@@ -134,9 +134,10 @@
       <file name="src/Lazy/SchemaSqlBuilder/SqliteDriver.php" role="php" md5sum="82c432af758f2f1548baa73f754834d3"/>
       <file name="src/Lazy/SchemaSqlBuilder.php" role="php" md5sum="03e631d3d4878835b373d9e0c9a7233e"/>
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
-      <file name="package.ini" role="data" md5sum="51a3333055cbe74d59cae6524e311ef1"/>
+      <file name="package.ini" role="data" md5sum="4db041e37be1ac90d1311aff8966cc99"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="9a163aa7696a461903ef417ca992aab3"/>
+      <file name="lazy" role="script" md5sum="b5bdd6ca4103e7bcf96e265cfa1055c0"/>
+      <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
   <dependencies>
@@ -169,11 +170,6 @@
       </package>
       <package>
         <name>CLIFramework</name>
-        <channel>pear.corneltek.com</channel>
-        <min>0.0.0</min>
-      </package>
-      <package>
-        <name>GenPHP</name>
         <channel>pear.corneltek.com</channel>
         <min>0.0.0</min>
       </package>
@@ -294,6 +290,7 @@
       <install name="package.ini" as="package.ini"/>
       <install name="phpunit.xml" as="phpunit.xml"/>
       <install name="lazy" as="lazy"/>
+      <install name="scripts/lazy.php" as="scripts/lazy.php"/>
     </filelist>
   </phprelease>
 </package>

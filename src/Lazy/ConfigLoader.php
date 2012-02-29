@@ -48,6 +48,14 @@ class ConfigLoader
     }
 
 
+    public function init()
+    {
+        $this->loadDataSources();
+        $this->loadBootstrap();
+        $this->loadExternalSchemaLoader();
+    }
+
+
     /**
      * run bootstrap code
      */
@@ -57,6 +65,17 @@ class ConfigLoader
             foreach( (array) $this->config['bootstrap'] as $bootstrap ) {
                 require_once $bootstrap;
             }
+        }
+    }
+
+
+    /**
+     * load external schema loader
+     */
+    public function loadExternalSchemaLoader()
+    {
+        if( isset($this->config['schema']['loader']) ) {
+            require_once $this->config['schema']['loader'];
         }
     }
 
@@ -144,6 +163,7 @@ class ConfigLoader
     {
         unset($this->config[$offset]);
     }
+
 
 }
 
