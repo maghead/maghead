@@ -110,7 +110,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 		// if it's a str type , we should not accept types not str.
 		$n = new \tests\Name;
 		$ret = $n->create(array( 'name' => false , 'country' => 'Tokyo' ));
-		// ok( ! $ret->success );
+		ok( ! $ret->success );
 	}
 
     public function testDefaultBuilder()

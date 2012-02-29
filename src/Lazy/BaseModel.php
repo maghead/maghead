@@ -225,6 +225,10 @@ class BaseModel
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
+                if( $val !== null && $msg = $c->checkTypeConstraint( $val ) ) {
+                    throw new Exception($msg);
+                }
+
                 if( $c->filter || $c->canonicalizer ) {
                     $c->canonicalizeValue( $args[$n], $this, $args );
                 }
@@ -439,6 +443,10 @@ class BaseModel
                 {
                     // short alias for argument value.
                     $val = $args[$n];
+
+                    if( $val !== null && $msg = $c->checkTypeConstraint( $val ) ) {
+                        throw new Exception($msg);
+                    }
 
                     if( $c->filter || $c->canonicalizer ) {
                         $c->canonicalizeValue( $args[$n], $this, $args );
