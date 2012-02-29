@@ -54,6 +54,7 @@ class ConfigLoader
         $this->loadDataSources();
         $this->loadBootstrap();
         $this->loadExternalSchemaLoader();
+        $this->loadClassMapFile();
     }
 
 
@@ -85,10 +86,10 @@ class ConfigLoader
      * load class from php source,
      * to PHP source should return a PHP array.
      */
-    public function loadClassFile() 
+    public function loadClassMapFile() 
     {
-        if( isset($this->config['schema']['class_file']) ) {
-            $this->classMap = require $this->config['schema']['class_file'];
+        if( isset($this->config['schema']['class_map_file']) ) {
+            $this->classMap = require $this->config['schema']['class_map_file'];
         }
     }
 
