@@ -21,6 +21,8 @@ namespace tests {
             $this->column('address')
                 ->isa('str')
                 ->validator( function($val,$args,$record) { 
+                    if( preg_match( '/fuck/', $val ) )
+                        return array( false , "Please don't" );
                     return array( true , "Message" );
                 })
                 ->defaultBuilder( function() { 

@@ -108,9 +108,18 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $ret->validations['address']->success );
 
         ok( $vlds = $ret->getSuccessValidations() );
+        count_ok( 1, $vlds );
 
         ok( $name->id );
         ok( $name->address );
+
+        $ret = $name->create(array(  'name' => 'Foo', 'address' => 'fuck' ));
+        ok( $ret->validations );
+
+        foreach( $ret->getErrorValidations() as $vld ) {
+            ok( $vld->success === false );
+            ok( $vld->message === "Please don't" );
+        }
     }
 
     public function testStaticFunctions() 
