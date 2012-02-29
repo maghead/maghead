@@ -2,6 +2,7 @@
 namespace Lazy\Command;
 use Exception;
 use Lazy\ConfigBuilder;
+use Lazy\ConfigLoader;
 
 class BuildConfCommand extends \CLIFramework\Command
 {
@@ -38,7 +39,7 @@ class BuildConfCommand extends \CLIFramework\Command
         $mainConfigFile = array_shift($configFiles);
         $dir = dirname($mainConfigFile);
 
-        $builder = new \Lazy\ConfigBuilder;
+        $builder = new ConfigBuilder;
         $builder->read( $mainConfigFile );
 
         foreach( $configFiles as $file ) {
@@ -60,7 +61,7 @@ class BuildConfCommand extends \CLIFramework\Command
         }
 
         // make master config link
-        $loader = new \Lazy\ConfigLoader;
+        $loader = new ConfigLoader;
         $this->getLogger()->info("Making link => " . $loader->symbolFilename );
 
         if( file_exists( $loader->symbolFilename ) )
@@ -69,4 +70,8 @@ class BuildConfCommand extends \CLIFramework\Command
         symlink( $outputPath, $loader->symbolFilename );
         $this->getLogger()->info("Done.");
     }
+
+
 }
+
+
