@@ -20,6 +20,7 @@ class NameSchemaProxy extends Schema
       'name' => 'name',
       'attributes' => array( 
           'isa' => 'str',
+          'required' => true,
           'type' => 'varchar(128)',
         ),
     ),

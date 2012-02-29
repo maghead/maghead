@@ -16,6 +16,7 @@ namespace tests {
 
             $this->column('name')
                 ->isa('str')
+                ->required()
                 ->varchar(128);
 
             $this->column('address')

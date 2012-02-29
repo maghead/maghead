@@ -24,6 +24,14 @@ class Column
             return $this->attributes[$name];
     }
 
+	public function getValidValues()
+	{
+		if( $this->validValues ) {
+			return $this->validValues;
+		} elseif( $this->validValueBuilder ) {
+			return call_user_func_array( $this->validValueBuilder );
+		}
+	}
 
     /** 
      * deflate value 
