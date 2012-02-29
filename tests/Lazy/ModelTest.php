@@ -2,59 +2,62 @@
 require_once 'tests/schema/tests/AuthorBooks.php';
 use Lazy\SchemaSqlBuilder;
 
-class ModelTest extends PHPUnit_Framework_TestCase
+class PHPUnit_ModelTestCase extends PHPUnit_Framework_TestCase
 {
+
+    public $driverType = 'sqlite';
+    public $dsn = 'sqlite::memory:';
+    public $schemaPath = 'tests/schema';
+    public $schemaClasses = array( );
+
     public function setup()
     {
-        $dsn = 'sqlite::memory:';
-        $driverType = 'sqlite';
-        $schemaPath = 'tests/schema';
         Lazy\QueryDriver::free();
         Lazy\ConnectionManager::getInstance()->free();
-        Lazy\ConnectionManager::getInstance()->addDataSource('default', array( 
-            'dsn' => $dsn,
-        ));
+        Lazy\ConnectionManager::getInstance()->addDataSource('default', array( 'dsn' => $this->dsn ));
 
         $dbh = Lazy\ConnectionManager::getInstance()->getConnection();
 
         // initialize schema files
-        $builder = new SchemaSqlBuilder( $driverType , Lazy\ConnectionManager::getInstance()->getQueryDriver('default'));
+        $builder = new SchemaSqlBuilder( $this->driverType , Lazy\ConnectionManager::getInstance()->getQueryDriver('default'));
 		ok( $builder );
 
 		$generator = new \Lazy\Schema\SchemaGenerator;
-		$generator->addPath( $schemaPath );
+		$generator->addPath( $this->schemaPath );
 		$generator->setLogger( $this->getLogger() );
 		$classMap = $generator->generate();
         ok( $classMap );
 
-
-        $schemaClasses = array( 
-            '\tests\AuthorSchema', 
-            '\tests\BookSchema',
-            '\tests\AuthorBookSchema',
-        );
-
+        $schemaClasses = $this->getModels();
         foreach( $schemaClasses as $class ) {
             $schema = new $class;
             $sqls = $builder->build($schema);
             ok( $sqls );
             foreach( $sqls as $sql )
-                $this->pdoQueryOk( $dbh , $sql );
+                $dbh->query( $sql );
         }
-
     }
 
-	function getLogger()
+
+	public function getLogger()
 	{
 		return new TestLogger;
 	}
+}
 
-    function pdoQueryOk($dbh,$sql)
+class ModelTest extends PHPUnit_ModelTestCase
+{
+
+    public function getModels()
     {
-		return $dbh->query( $sql );
+        return array( 
+            '\tests\AuthorSchema', 
+            '\tests\BookSchema',
+            '\tests\AuthorBookSchema',
+        );
     }
 
-	function testSqlite()
+	public function testModel()
 	{
         /****************************
          * Basic CRUD Test 
