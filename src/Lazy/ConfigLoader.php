@@ -147,7 +147,8 @@ class ConfigLoader
      */
     public function getSchema()
     {
-        return $this->config['schema'];
+        return isset($this->config['schema']) ?
+                     $this->config['schema']) : null;
     }
 
 
@@ -158,7 +159,8 @@ class ConfigLoader
      */
     public function getSchemaPaths()
     {
-        return $this->config['schema']['paths'];
+        return isset($this->config['schema']['paths'])
+                    ? $this->config['schema']['paths'] : null;
     }
 
 
