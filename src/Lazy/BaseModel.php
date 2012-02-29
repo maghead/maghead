@@ -166,6 +166,19 @@ class BaseModel
         );
     }
 
+    protected function _validate_validvalues($c, $val, $args, & $validateFail )
+    {
+        if( $validValues = $c->getValidValues( $this, $args ) ) {
+            if( false === in_array( $val , $validValues ) ) {
+                $validateFail = true;
+                return (object) array(
+                    'success' => false,
+                    'message' => __("%1 is not a valid value for %2", $val , $n),
+                );
+            }
+        }
+    }
+
 
     /**
      * create a new record
@@ -212,6 +225,7 @@ class BaseModel
                     }
                 }
 
+                // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
                 // do validate
@@ -219,19 +233,11 @@ class BaseModel
                     $validateResults[$n] = 
                         $this->_validate_validator( $c, $val, $args, $validateFail );
                 }
-
-                // check valid values
-                if( $validValues = $c->getValidValues( $this, $args ) ) {
-                    if( false === in_array( $val , $validValues ) ) {
-                        $validateFail = true;
-                        $validateResults[$n] = (object) array(
-                            'success' => false,
-                            'message' => __("%1 is not a valid value for %2", $val , $n),
-                        );
+                if( $c->validValues || $c->validValueBuilder ) {
+                    if( $r = $this->_validate_validvalues( $c, $val ,$args, $validateFail ) ) {
+                        $validateResults[$n] = $r;
                     }
                 }
-
-
             }
 
             if( $validateFail ) {
@@ -409,6 +415,7 @@ class BaseModel
 
             foreach( $this->_schema->columns as $columnHash ) {
                 $c = $this->_schema->getColumn( $columnHash['name'] );
+                $n = $c->name;
 
                 // if column is required (can not be empty)
                 //   and default or defaultBuilder is defined.
@@ -428,8 +435,21 @@ class BaseModel
                     }
                 }
 
-                // validate column
+                // column validate
+                if( isset($args[$c->name]) ) 
+                {
+                    // short alias for argument value.
+                    $val = isset($args[$n]) ? $args[$n] : null;
 
+                    // do validate
+                    if( $c->validator ) {
+                        $validateResults[$n] = 
+                            $this->_validate_validator( $c, $val, $args, $validateFail );
+                    }
+                    if( $c->validValues || $c->validValueBuilder ) {
+                        $this->_validate_validvalues( $c, $val ,$args, $validateFail );
+                    }
+                }
             }
 
 
