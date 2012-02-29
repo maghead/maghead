@@ -373,16 +373,33 @@ class BaseModel
         $args = $this->filterArrayWithColumns($args);
 
         try {
-
-#          $result = $this->validate( 'update', $args );
-#          if( $result )
-#              return $result;
-
-#          $result = $this->validateUpdate( $args );
-#          if( $result )
-#              return $result;
-
             $args = $this->beforeUpdate($args);
+
+
+            foreach( $this->_schema->columns as $columnHash ) {
+                $c = $this->_schema->getColumn( $columnHash['name'] );
+
+                // if column is required (can not be empty)
+                //   and default or defaultBuilder is defined.
+                if( isset($args[$c->name]) 
+                    && $c->required
+                    && ! $args[$c->name]
+                    && ! $c->primary )
+                {
+                    if( $c->defaultBuilder ) {
+                        $args[$c->name] = call_user_func( $c->defaultBuilder );
+                    }
+                    elseif( $c->default ) {
+                        $args[$c->name] = $c->default; // might contains array() which is a raw sql statement.
+                    }
+                    elseif( $c->requried ) {
+                        throw new Exception( __("%1 is required.", $c->name) );
+                    }
+                }
+            }
+
+
+
 
             // $args = $this->deflateData( $args ); // apply args to columns
 
