@@ -47,6 +47,11 @@ class NameSchemaProxy extends Schema
       'attributes' => array( 
           'isa' => 'str',
           'required' => true,
+          'validValues' => array( 
+              'Taiwan',
+              'Taipei',
+              'Tokyo',
+            ),
         ),
     ),
   'confirmed' => array( 
