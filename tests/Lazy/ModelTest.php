@@ -32,7 +32,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $author->_schema );
 
         $a2 = new \tests\Author;
-        $ret = $a2->load( array( 'name' => 'A record does not exist.' ) );
+        $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
         ok( ! $ret->success );
         ok( ! $a2->id );
 
@@ -75,7 +75,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         is( 'foo@google.com', $author->email );
         is( false , $author->confirmed );
 
-        $ret = $author->load(array( 'name' => 'Foo' ));
+        $ret = $author->find(array( 'name' => 'Foo' ));
         ok( $ret->success );
         is( $id , $author->id );
         is( 'Foo', $author->name );
@@ -91,8 +91,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $ret->success );
 
         $data = $author->toArray();
-        ok( $data );
-        ok( !empty($data));
+        ok( empty($data), 'should be empty');
     }
 
 
