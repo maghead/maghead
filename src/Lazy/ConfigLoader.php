@@ -41,8 +41,8 @@ class ConfigLoader
      */
     public function load($file = null)
     {
-        if( $this->loaded )
-            throw new Exception('Config is already loaded.');
+        if( $this->loaded == true )
+            throw new Exception("Can not load $file. Config is already loaded.");
 
         if( $file === null )
             $file = $this->symbolFilename;
@@ -64,6 +64,12 @@ class ConfigLoader
         $this->config = null;
     }
 
+
+    /**
+     * 1. inject config into data source
+     * 2. load bootstrap
+     * 3. load external schema loader.
+     */
     public function init()
     {
         if( $this->loaded ) {
@@ -71,7 +77,7 @@ class ConfigLoader
             $this->loadBootstrap();
             $this->loadExternalSchemaLoader();
         } else {
-            throw new Exception('config is not loaded.');
+            throw new Exception('Can not initialize config: Config is not loaded.');
         }
     }
 
