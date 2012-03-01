@@ -661,7 +661,9 @@ class BaseModel
 
     public function __isset( $name )
     {
-        return isset($this->_data[ $name ] );
+        return isset($this->_schema->columns[ $name ]) 
+                || isset($this->_data[ $name ])
+                || $name === '_schema';
     }
 
     /**
