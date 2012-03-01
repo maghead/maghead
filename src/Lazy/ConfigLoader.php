@@ -30,7 +30,7 @@ class ConfigLoader
 
     public $symbolFilename = '.lazy.php';
 
-    public $classMap;
+    public $classMap = array();
 
     /**
      * load configuration file
