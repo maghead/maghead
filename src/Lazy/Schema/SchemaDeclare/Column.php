@@ -79,6 +79,10 @@ class Column
             'validValueBuilder' => self::attr_callable,
 
 
+            /* contains an associative array */
+            'validPairs' => self::attr_any,
+
+
 			// canonicalizer
 			'canonicalizer' => self::attr_callable,
 
@@ -245,6 +249,22 @@ class Column
         $this->attributes[ $method ] = $args[0];
         return $this;
     }
+
+
+    public function display( $value )
+    {
+        if( $this->validPairs && isset( $this->validPairs[ $value ] ) )
+            return $this->validPairs[ $value ];
+
+        if( $this->isa == 'bool' )
+            return $value ? _('Yes') : _('No');
+
+        if( $value )
+            return _( $value );
+
+        return $value;
+    }
+
 
 }
 

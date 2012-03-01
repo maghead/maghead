@@ -543,6 +543,15 @@ class BaseModel
         return null;
     }
 
+    /* pass a value to a column for displaying */
+    public function display( $name )
+    {
+        $c = $this->_schema->getColumn( $name );
+        return $c->display( $this->value( $name ) );
+    }
+
+
+
     /**
      * deflate data from database 
      *
