@@ -42,6 +42,13 @@ class BookSchemaProxy extends Schema
           'isa' => 'DateTime',
         ),
     ),
+  'id' => array( 
+      'name' => 'id',
+      'attributes' => array( 
+          'isa' => 'int',
+          'primary' => true,
+        ),
+    ),
 );
         $this->columnNames = array( 
   'title',
@@ -49,8 +56,9 @@ class BookSchemaProxy extends Schema
   'description',
   'publisher_id',
   'published_at',
+  'id',
 );
-        $this->primaryKey =  NULL;
+        $this->primaryKey =  'id';
         $this->table = 'books';
         $this->modelClass = 'tests\\Book';
     }

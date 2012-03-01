@@ -16,11 +16,19 @@ class PublisherSchemaProxy extends Schema
           'type' => 'varchar(128)',
         ),
     ),
+  'id' => array( 
+      'name' => 'id',
+      'attributes' => array( 
+          'isa' => 'int',
+          'primary' => true,
+        ),
+    ),
 );
         $this->columnNames = array( 
   'name',
+  'id',
 );
-        $this->primaryKey =  NULL;
+        $this->primaryKey =  'id';
         $this->table = 'publishers';
         $this->modelClass = 'tests\\Publisher';
     }

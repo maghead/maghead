@@ -1,61 +1,20 @@
 <?php
 use Lazy\SchemaSqlBuilder;
 
-class CollectionTest extends PHPUnit_Framework_TestCase
+class Collection2Test extends PHPUnit_Framework_ModelTestCase
 {
-    public $dbh;
 
-    function setUp()
+    public function getModels()
     {
-        Lazy\QueryDriver::free();
-        $connM = \Lazy\ConnectionManager::getInstance();
-        $connM->free();
-        $connM->addDataSource('default',array(
-            'dsn' => 'sqlite::memory:'
-        ));
-        $this->dbh = $connM->getDefault();
-
-        $dbh = $this->dbh;
-		$builder = new SchemaSqlBuilder('sqlite', $connM->getQueryDriver() );
-		ok( $builder );
-
-        $finder = new Lazy\Schema\SchemaFinder;
-        $finder->addPath( 'tests/schema/' );
-        $finder->loadFiles();
-
-		$generator = new \Lazy\Schema\SchemaGenerator;
-		$generator->setLogger( $this->getLogger() );
-		$classMap = $generator->generate( $finder->getSchemaClasses() );
-        ok( $classMap );
-
-        /*******************
-         * build schema 
-         * ****************/
-		$authorschema = new \tests\AuthorSchema;
-		$authorbook = new \tests\AuthorBookSchema;
-		$bookschema = new \tests\BookSchema;
-        $nameschema = new \tests\NameSchema;
-
-        $this->buildSchema($builder, $authorschema );
-        $this->buildSchema($builder, $authorbook );
-        $this->buildSchema($builder, $bookschema );
-        $this->buildSchema($builder, $nameschema );
+        return array( 
+            '\tests\AuthorSchema', 
+            '\tests\BookSchema',
+            '\tests\AuthorBookSchema',
+            '\tests\NameSchema',
+        );
     }
 
-    function buildSchema($builder,$schema)
-    {
-		$sqls = $builder->build($schema);
-		ok( $sqls );
-        foreach( $sqls as $sql )
-            $this->dbh->query( $sql );
-    }
-
-	function getLogger()
-	{
-		return new TestLogger;
-	}
-
-    function testCollection()
+    public function testCollection()
     {
         $author = new \tests\Author;
         foreach( range(1,20) as $i ) {

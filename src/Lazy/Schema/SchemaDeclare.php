@@ -49,12 +49,14 @@ abstract class SchemaDeclare
 
     public function build()
     {
+
         $this->schema();
 
         if( $config = ConfigLoader::getInstance() )
         {
             if( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
                 $this->column('id')
+                    ->isa('int')
                     ->integer()
                     ->primary()
                     ->autoIncrement();

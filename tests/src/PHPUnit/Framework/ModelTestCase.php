@@ -23,9 +23,13 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         ConnectionManager::getInstance()->free();
         ConnectionManager::getInstance()->addDataSource('default', array( 'dsn' => $this->dsn ));
 
+
+        // a little patch for config (we need auto_id for testing)
         $config = ConfigLoader::getInstance();
         $config->unload();
+        $config->loaded = true;
         $config->config = array( 'schema' => array( 'auto_id' => true ) );
+
 
         $dbh = ConnectionManager::getInstance()->getConnection();
 
@@ -57,6 +61,12 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 		return new TestLogger;
 	}
 
+
+    public function testClass()
+    {
+        foreach( $this->getModels() as $class ) 
+            class_ok( $class );
+    }
 
 }
 
