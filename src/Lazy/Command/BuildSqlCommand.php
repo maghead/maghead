@@ -82,7 +82,8 @@ class BuildSqlCommand extends \CLIFramework\Command
                 }
             }
 
-            $schema->bootstrap( new $schema->getModelClass() );
+            $modelClass = $schema->getModelClass();
+            $schema->bootstrap( new $modelClass );
         }
 
         $logger->info('Schema SQL is generated, please check schema.sql file.');
