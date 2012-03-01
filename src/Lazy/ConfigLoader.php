@@ -87,6 +87,7 @@ class ConfigLoader
     public function initForBuild()
     {
         if( $this->loaded ) {
+            $this->loadDataSources();
             $this->loadBootstrap();
             $this->loadExternalSchemaLoader();
         } else {
