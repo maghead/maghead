@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-01</date>
-  <time>16:20:53</time>
+  <time>16:23:37</time>
   <version>
     <release>1.0.7</release>
     <api>1.0.7</api>
@@ -102,7 +102,7 @@
       <file name="src/Lazy/Command/InitConfCommand.php" role="php" md5sum="bdd79a03a48b0f08b0f45fe5f9bdad37"/>
       <file name="src/Lazy/ConfigBuilder.php" role="php" md5sum="07df8e705b90efad858af1a0929b622b"/>
       <file name="src/Lazy/ConfigLoader.php" role="php" md5sum="8734feb69bec9a4464207f517e1a5d73"/>
-      <file name="src/Lazy/ConnectionManager.php" role="php" md5sum="aa80e3b2b66a0b8e254f191d364be17c"/>
+      <file name="src/Lazy/ConnectionManager.php" role="php" md5sum="bc1200758619e12702103cd5bdbc0e0a"/>
       <file name="src/Lazy/Console.php" role="php" md5sum="a39f592164bb440ac448e5401fb07c37"/>
       <file name="src/Lazy/Deflator.php" role="php" md5sum="c02791787e9d8e8205242caa350f4b9c"/>
       <file name="src/Lazy/ExecutiveQueryBuilder.php" role="php" md5sum="25762426780a1f4b9776ce5156f30c2b"/>
@@ -136,7 +136,7 @@
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
       <file name="package.ini" role="data" md5sum="8494b88e412faf6d0d2cd9fdad990436"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="5e6ec6405cfd10855e850840ca84512a"/>
+      <file name="lazy" role="script" md5sum="0b5874a552aaaf032ea4d50e73eadbde"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
