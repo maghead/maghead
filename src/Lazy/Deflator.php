@@ -15,9 +15,9 @@ class Deflator
 
     }
 
-    static function deflate($value,$dataType)
+    static function deflate($value,$dataType = null)
     {
-        if( $value === null )
+        if( $value === null || $dataType === null )
             return $value;
 
         /* respect the data type to inflate value */

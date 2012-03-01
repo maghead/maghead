@@ -1,14 +1,14 @@
 <?php
 namespace Lazy;
-use SQLBuilder\QueryBuilder;
-use Lazy\QueryDriver;
-
-use Lazy\OperationResult\OperationError;
-use Lazy\OperationResult\OperationSuccess;
-use Lazy\ConnectionManager;
 use Exception;
 use PDOException;
 use PDO;
+
+use SQLBuilder\QueryBuilder;
+use Lazy\QueryDriver;
+use Lazy\OperationResult\OperationError;
+use Lazy\OperationResult\OperationSuccess;
+use Lazy\ConnectionManager;
 
 class BaseModel
 {
@@ -337,6 +337,9 @@ class BaseModel
         else {
             $kVal = $args;
             $column = $this->_schema->getColumn( $pk );
+            if( ! $column ) {
+                throw new Exception("Primary key is not defined: $pk .");
+            }
             $kVal = Deflator::deflate( $kVal, $column->isa );
             $query->select('*')
                 ->where()

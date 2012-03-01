@@ -16,12 +16,6 @@ class AuthorSchemaProxy extends Schema
           'defaultBuilder' => function() { return date('c'); },
         ),
     ),
-  'id' => array( 
-      'name' => 'id',
-      'attributes' => array( 
-          'primary' => true,
-        ),
-    ),
   'name' => array( 
       'name' => 'name',
       'attributes' => array( 
@@ -60,7 +54,7 @@ class AuthorSchemaProxy extends Schema
   'identity',
   'confirmed',
 );
-        $this->primaryKey =  'id';
+        $this->primaryKey =  NULL;
         $this->table = 'authors';
         $this->modelClass = 'tests\\Author';
     }

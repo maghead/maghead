@@ -24,6 +24,10 @@ class Column
             return $this->attributes[$name];
     }
 
+    public function __set($n,$v) 
+    {
+        return $this->attributes[$n] = $v;
+    }
 
 
 	public function canonicalizeValue( & $value , $record = null , $args = null )
