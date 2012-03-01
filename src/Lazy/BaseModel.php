@@ -173,7 +173,7 @@ class BaseModel
                 $validateFail = true;
                 return (object) array(
                     'success' => false,
-                    'message' => __("%1 is not a valid value for %2", $val , $n),
+                    'message' => _( sprintf("%s is not a valid value for %s", $val , $n )),
                 );
             }
         }
@@ -218,7 +218,7 @@ class BaseModel
                         $args[$n] = $val;
                     }
                     elseif( $c->requried ) {
-                        throw new Exception( __("%1 is required.", $n ) );
+                        throw new Exception( _( sprintf("%s is required.", $n ) ) );
                     }
                 }
 
