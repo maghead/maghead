@@ -173,7 +173,7 @@ class BaseModel
                 $validateFail = true;
                 return (object) array(
                     'success' => false,
-                    'message' => _( sprintf("%s is not a valid value for %s", $val , $n )),
+                    'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
                 );
             }
         }
