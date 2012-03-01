@@ -14,6 +14,15 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         );
     }
 
+    public function testIterator()
+    {
+        $authors = new \tests\AuthorCollection;
+        ok( $authors );
+        foreach( $authors as $a ) {
+            ok( $a->id );
+        }
+    }
+
     public function testCollection()
     {
         $author = new \tests\Author;
@@ -96,17 +105,29 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
 
     function test()
     {
-        return;
         $author = new \tests\Author;
+        foreach( range(1,10) as $i ) {
+            $ret = $author->create(array(
+                'name' => 'Foo-' . $i,
+                'email' => 'foo@foo' . $i,
+                'identity' => 'foo' . $i,
+                'confirmed' => true,
+            ));
+            ok( $ret->success );
+        }
+
+
         $authors = new \tests\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed' , true );
+
 
         foreach( $authors as $author ) {
             ok( $author->confirmed );
         }
         is( 10, $authors->size() ); 
 
+        /* page 1, 10 per page */
         $pager = $authors->pager(1,10);
         ok( $pager );
 
@@ -116,6 +137,12 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
 
         ok( $authors->items() );
         is( 10 , count($authors->items()) );
+        foreach( $authors as $a ) {
+            $ret = $a->delete();
+            ok( $ret->success );
+        }
+
+
     }
 }
 
