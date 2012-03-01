@@ -642,7 +642,8 @@ class BaseModel
 
     public function __get( $key ) 
     {
-        if( $key == '_schema' )
+        // lazy schema loader
+        if( $key === '_schema' )
             return SchemaLoader::load( static::schema_proxy_class );
 
         if( isset( $this->_data[ $key ] ) )
@@ -874,10 +875,15 @@ class BaseModel
         return $this->_schema->getColumns();
     }
 
-#      public function getLabel()
-#      {
-#          return $this->_schema->label;
-#      }
+    public function getLabel()
+    {
+        return $this->_schema->label;
+    }
+
+    public function getTable()
+    {
+        return $this->_schema->table;
+    }
 
 }
 
