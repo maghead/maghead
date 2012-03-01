@@ -39,11 +39,6 @@ class BookSchema extends SchemaDeclare
 
     function schema()
     {
-        $this->column('id')
-            ->integer()
-            ->primary()
-            ->autoIncrement();
-
         $this->column('title')
             ->isa('str')
             ->unique()

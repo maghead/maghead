@@ -19,8 +19,6 @@ class AuthorSchemaProxy extends Schema
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
-          'type' => 'integer',
-          'isa' => 'int',
           'primary' => true,
         ),
     ),
@@ -57,7 +55,6 @@ class AuthorSchemaProxy extends Schema
     ),
 );
         $this->columnNames = array( 
-  'id',
   'name',
   'email',
   'identity',

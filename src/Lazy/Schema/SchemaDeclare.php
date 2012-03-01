@@ -53,7 +53,7 @@ abstract class SchemaDeclare
 
         if( $config = ConfigLoader::getInstance() )
         {
-            if( $config->loaded && $config->hasAutoId() )
+            if( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) )
                 $this->column('id')->primary()
                         ->autoIncrement();
         }
