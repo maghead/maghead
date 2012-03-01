@@ -3,6 +3,8 @@ bootstrap:
   - tests/bootstrap.php
 schema:
   auto_id: true
+  base_model: '\Lazy\BaseModel'
+  base_collection: '\Lazy\BaseCollection'
   paths:
     - tests/schema
 data_sources:
