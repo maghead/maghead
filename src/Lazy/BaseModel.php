@@ -529,7 +529,7 @@ class BaseModel
 
     public function value($column) 
     {
-        if( isset($this->_data[ $column ] )
+        if( isset($this->_data[ $column ] ) )
             return $this->_data[ $column ];
         return null;
     }
