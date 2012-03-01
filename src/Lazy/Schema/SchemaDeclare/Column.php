@@ -171,7 +171,6 @@ class Column
 
     public function __call($method,$args)
     {
-
         if( isset($this->supportedAttributes[ $method ] ) ) {
             $c = count($args);
             $t = $this->supportedAttributes[ $method ];
@@ -236,6 +235,10 @@ class Column
 
                 default:
                     throw new Exception("Unsupported attribute type: $method");
+            }
+            else {
+                // save unknown attribute by default
+                $this->attributes[ $method ] = $args[0];
             }
             return $this;
         }
