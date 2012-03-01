@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-02</date>
-  <time>03:53:45</time>
+  <time>03:54:48</time>
   <version>
     <release>1.0.8</release>
     <api>1.0.8</api>
@@ -86,7 +86,7 @@
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/Lazy/Adapter/PdoAdapter.php" role="php" md5sum="c5476be0988d632622d1c22c42b0e7c2"/>
       <file name="src/Lazy/BaseCollection.php" role="php" md5sum="449da0447ad5a4763223a3af4df168a3"/>
-      <file name="src/Lazy/BaseModel.php" role="php" md5sum="e7cb739709131f4cd9c0558c918a159f"/>
+      <file name="src/Lazy/BaseModel.php" role="php" md5sum="e2d74b0c5c4c19486fcb54e09dd91366"/>
       <file name="src/Lazy/ClosureSerializer.php" role="php" md5sum="4f3700f6f978ffec92e4a460481d5c0e"/>
       <file name="src/Lazy/CodeGen/ClassConst.php" role="php" md5sum="b7a8737b1be1758471c47f47bcf7fb79"/>
       <file name="src/Lazy/CodeGen/ClassMember.php" role="php" md5sum="686c5a04dbcb4c2b5e63a947e1ceca53"/>
@@ -136,7 +136,7 @@
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
       <file name="package.ini" role="data" md5sum="7172535d279c840a2798b51acd3a6494"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="e091fa2c1741931984a4bc8a37dc01df"/>
+      <file name="lazy" role="script" md5sum="1da9f2870b69fe2f8593f8fe36e5087b"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>

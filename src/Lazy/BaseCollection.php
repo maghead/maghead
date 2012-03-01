@@ -44,6 +44,10 @@ class BaseCollection
      */
     protected $itemCursor = null;
 
+    public function __construct() {
+        // init a query
+    }
+
 
     public function __get( $key ) 
     {
