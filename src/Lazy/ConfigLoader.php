@@ -32,11 +32,6 @@ class ConfigLoader
 
     public $classMap;
 
-    public function getInstance()
-    {
-        static $instance;
-        return $instance ?: $instance = new static;
-    }
 
     /**
      * load configuration file
@@ -60,6 +55,13 @@ class ConfigLoader
         $this->loadBootstrap();
         $this->loadExternalSchemaLoader();
     }
+
+    public function getInstance()
+    {
+        static $instance;
+        return $instance ?: $instance = new static;
+    }
+
 
     /**
      * run bootstrap code

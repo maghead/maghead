@@ -61,7 +61,7 @@ class BuildConfCommand extends \CLIFramework\Command
         }
 
         // make master config link
-        $loader = new ConfigLoader;
+        $loader = ConfigLoader::getInstance();
         $this->getLogger()->info("Making link => " . $loader->symbolFilename );
 
         if( file_exists( $loader->symbolFilename ) )

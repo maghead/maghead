@@ -3,6 +3,7 @@ namespace Lazy\Command;
 use CLIFramework\Command;
 use Lazy\Schema;
 use Lazy\Schema\SchemaFinder;
+use Lazy\ConfigLoader;
 use Exception;
 
 class BuildSqlCommand extends \CLIFramework\Command
@@ -22,7 +23,7 @@ class BuildSqlCommand extends \CLIFramework\Command
         $options = $this->getOptions();
         $logger  = $this->getLogger();
 
-        $loader = new \Lazy\ConfigLoader;
+        $loader = ConfigLoader::getInstance();
         $loader->loadConfig();
         $loader->init();
 
