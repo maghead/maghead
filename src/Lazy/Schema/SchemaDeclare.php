@@ -38,8 +38,6 @@ abstract class SchemaDeclare
 
     abstract function schema();
 
-
-
     /**
      * bootstrap script (to create basedata)
      */
@@ -61,7 +59,7 @@ abstract class SchemaDeclare
         /*
         foreach( $this->mixins as $mixinClass ) {
         }
-         */
+        */
     }
 
     public function export()
