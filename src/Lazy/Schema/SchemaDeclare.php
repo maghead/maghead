@@ -271,6 +271,7 @@ abstract class SchemaDeclare
         );
     }
 
+
     protected function hasMany($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
         $modelClass = $this->getModelClass();
@@ -295,7 +296,6 @@ abstract class SchemaDeclare
             throw new Exception("Relation $relationId is not defined.");
         }
 
-        // $relation = $this->relations[ $relationId ];
         $this->relations[ $accessor ] = array(
             'type'           => self::many_to_many,
             'relation'       => $relationId,
@@ -320,7 +320,6 @@ abstract class SchemaDeclare
                 $schemas = array_merge($schemas, $fs->getReferenceSchemas(false));
         }
         return $schemas;
-        // return array_unique($schemas);
     }
 
 }

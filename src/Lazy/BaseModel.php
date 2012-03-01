@@ -14,6 +14,12 @@ class BaseModel
 {
     public $_result;
 
+
+    /**
+     * auto reload record after creating new record
+     */
+    public $_autoReload = true;
+
     protected $_data;
 
     public function getCurrentQueryDriver()
@@ -258,8 +264,6 @@ class BaseModel
                 throw new Exception( 'Validation Fail' );
             }
 
-            // $args = $this->deflateData( $args );
-
             $q = $this->createQuery();
             $q->insert($args);
             $q->returning( $k );
@@ -274,7 +278,6 @@ class BaseModel
         }
         catch ( Exception $e )
         {
-            // die( $e->getMessage() . $e->getFile() . $e->getLine() );
             return $this->reportError( "Create failed" , array( 
                 'sql'         => $sql,
                 'exception'   => $e,
@@ -294,13 +297,16 @@ class BaseModel
             $pkId = $conn->lastInsertId();
         }
 
-        if($pkId) {
-            // auto-reload data
-            // $this->_data[ $k ] = $pkId;
-            $this->load( $pkId );
-        } else {
-            $this->_data = $args;
-            $this->deflate();
+
+        if( $this->_autoReload ) {
+            // if possible, we should reload the data.
+            if($pkId) {
+                // auto-reload data
+                $this->load( $pkId );
+            } else {
+                $this->_data = $args;
+                $this->deflate();
+            }
         }
 
         $ret = array( 
