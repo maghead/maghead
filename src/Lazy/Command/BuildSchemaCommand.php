@@ -54,7 +54,6 @@ class BuildSchemaCommand extends \CLIFramework\Command
         }
 
         $classes = $finder->getSchemaClasses();
-
         $classMap = $generator->generate($classes);
 
         $logger->info('Classmap:');
@@ -66,8 +65,6 @@ class BuildSchemaCommand extends \CLIFramework\Command
         }
         $logger->info('Done');
     }
-
-
 
 }
 
