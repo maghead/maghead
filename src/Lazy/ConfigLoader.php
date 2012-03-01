@@ -81,7 +81,7 @@ class ConfigLoader
         }
     }
 
-    public function getInstance()
+    static function getInstance()
     {
         static $instance;
         return $instance ? $instance : $instance = new self;
