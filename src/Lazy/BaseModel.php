@@ -675,6 +675,9 @@ class BaseModel
     }
 
 
+    /**
+     * return the collection object of current model object.
+     */
     public function asCollection()
     {
         $class = static::collection_class;
@@ -684,12 +687,19 @@ class BaseModel
     /**
      * return data stash array,
      * might need inflate.
+     *
+     * @return array
      */
     public function toArray()
     {
         return $this->_data;
     }
 
+    /**
+     * inflate data and return.
+     *
+     * @return array
+     */
     public function toInflateArray()
     {
         $data = array();
