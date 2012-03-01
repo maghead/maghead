@@ -178,6 +178,10 @@ class BaseCollection
     protected function _readRows()
     {
         $h = $this->_handle;
+
+        if( $h === null )
+            throw new Exception( 'Empty handle: ' . static::model_class );
+
         $this->itemData = array();
         while( $o = $h->fetchObject( static::model_class ) ) {
             $o->deflate();
