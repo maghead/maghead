@@ -48,6 +48,12 @@ abstract class SchemaDeclare
 
     public function build()
     {
+        if( $config = ConfigLoader::getInstance() 
+            && $config->hasAutoId() ) {
+                $this->column('id')->primary()
+                        ->autoIncrement();
+        }
+
         $this->schema();
 
         /* find primary key */
@@ -55,6 +61,7 @@ abstract class SchemaDeclare
             if( $column->primary )
                 $this->primaryKey = $name;
         }
+
 
         /*
         foreach( $this->mixins as $mixinClass ) {
