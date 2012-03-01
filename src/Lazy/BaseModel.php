@@ -97,14 +97,14 @@ class BaseModel
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
-            $ret = $this->load(array( $pk => $val ));
+            $ret = $this->find(array( $pk => $val ));
         } elseif( $byKeys ) {
             $conds = array();
             foreach( (array) $byKeys as $k ) {
                 if( isset($args[$k]) )
                     $conds[$k] = $args[$k];
             }
-            $ret = $this->load( $conds );
+            $ret = $this->find( $conds );
         }
 
         if( $ret && $ret->success 
@@ -123,14 +123,14 @@ class BaseModel
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
-            $ret = $this->load(array( $pk => $val ));
+            $ret = $this->find(array( $pk => $val ));
         } elseif( $byKeys ) {
             $conds = array();
             foreach( (array) $byKeys as $k ) {
                 if( isset($args[$k]) )
                     $conds[$k] = $args[$k];
             }
-            $ret = $this->load( $conds );
+            $ret = $this->find( $conds );
         }
 
         if( $ret && $ret->success 
@@ -305,6 +305,11 @@ class BaseModel
         return $this->reportSuccess('Created', $ret );
     }
 
+
+    public function find($args)
+    {
+        return $this->_load($args);
+    }
 
     public function _load($args)
     {
