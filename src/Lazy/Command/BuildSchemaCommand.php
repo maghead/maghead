@@ -27,12 +27,12 @@ class BuildSchemaCommand extends \CLIFramework\Command
         $logger = $this->getLogger();
         $options = $this->getOptions();
 
-        $generator = new SchemaGenerator;
-        $generator->setLogger( $logger );
-
         $loader = ConfigLoader::getInstance();
         $loader->load();
         $loader->init();
+
+        $generator = new SchemaGenerator;
+        $generator->setLogger( $logger );
 
         $finder = new SchemaFinder;
 
