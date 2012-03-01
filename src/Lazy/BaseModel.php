@@ -42,7 +42,7 @@ class BaseModel
 
 
 
-    public function beforeDelete( $args )
+    public function beforeDelete($args)
     {
         return $args;
     }
@@ -371,6 +371,8 @@ class BaseModel
         }
         $kVal = isset($this->_data[$k]) ? $this->_data[$k] : null;
 
+        $this->beforeDelete( $this->_data );
+
         $query = $this->createQuery();
         $query->delete();
         $query->where()
@@ -387,6 +389,9 @@ class BaseModel
                 'validations' => $validateResults,
             ));
         }
+
+        $this->afterDelete( $this->_data );
+        $this->clearData();
         return $this->reportSuccess( _('Deleted'));
     }
 
