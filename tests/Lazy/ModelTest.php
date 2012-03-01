@@ -16,6 +16,13 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
+    public function testSchemaInterface()
+    {
+        $author = new \tests\Author;
+        ok( $author->getColumnNames() );
+        ok( $author->getColumns() );
+    }
+
     /****************************
      * Basic CRUD Test 
      ***************************/

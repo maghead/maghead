@@ -43,6 +43,21 @@ class Schema
         } elseif( isset($this->columns[$name]) ) {
             return $this->columnCached[ $name ] = new Column( $name , $this->columns[$name]['attributes'] );
         }
+        return null;
+    }
+
+    public function getColumnNames()
+    {
+        return array_keys( $this->columns );
+    }
+
+    public function getColumns() 
+    {
+        $columns = array();
+        foreach( $this->columns as $name => $data ) {
+            $columns[] = $this->getColumn( $name );
+        }
+        return $columns;
     }
 
 }

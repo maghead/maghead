@@ -864,6 +864,15 @@ class BaseModel
     }
 
 
+    public function getColumnNames()
+    {
+        return $this->_schema->getColumnNames();
+    }
+
+    public function getColumns()
+    {
+        return $this->_schema->getColumns();
+    }
 }
 
 
