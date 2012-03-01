@@ -251,20 +251,6 @@ class Column
     }
 
 
-    public function display( $value )
-    {
-        if( $this->validPairs && isset( $this->validPairs[ $value ] ) )
-            return $this->validPairs[ $value ];
-
-        if( $this->isa == 'bool' )
-            return $value ? _('Yes') : _('No');
-
-        if( $value )
-            return _( $value );
-
-        return $value;
-    }
-
 
 }
 
