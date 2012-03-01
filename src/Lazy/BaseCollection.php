@@ -121,7 +121,7 @@ class BaseCollection
         try {
             $this->handle = $this->dbQuery($sql);
         }
-        catch ( PDOException $e )
+        catch ( Exception $e )
         {
             return new OperationError( 'Collection fetch failed: ' . $e->getMessage() , array( 
                 'sql' => $sql,
