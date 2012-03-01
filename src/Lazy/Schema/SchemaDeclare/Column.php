@@ -55,7 +55,9 @@ class Column
 
             /* column label */
             'label' => self::attr_string,
+
             'desc'  => self::attr_string,
+
             'comment'  => self::attr_string,
 
 

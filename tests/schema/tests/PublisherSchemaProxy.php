@@ -8,7 +8,8 @@ class PublisherSchemaProxy extends Schema
 
     public function __construct()
     {
-        $this->columns = array( 
+        /** columns might have closure, so it can not be const */
+        $this->columns     = array( 
   'name' => array( 
       'name' => 'name',
       'attributes' => array( 
@@ -28,9 +29,10 @@ class PublisherSchemaProxy extends Schema
   'name',
   'id',
 );
-        $this->primaryKey =  'id';
-        $this->table = 'publishers';
-        $this->modelClass = 'tests\\Publisher';
+        $this->primaryKey  =  'id';
+        $this->table       = 'publishers';
+        $this->modelClass  = 'tests\\Publisher';
+        $this->label       = 'Publisher';
     }
 
 }

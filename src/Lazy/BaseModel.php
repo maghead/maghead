@@ -873,7 +873,11 @@ class BaseModel
     {
         return $this->_schema->getColumns();
     }
+
+#      public function getLabel()
+#      {
+#          return $this->_schema->label;
+#      }
+
 }
-
-
 

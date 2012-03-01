@@ -21,6 +21,8 @@ abstract class SchemaDeclare
 
     public $primaryKey;
 
+    public $label;
+
     public $table;
 
     public $mixins = array();
@@ -78,6 +80,7 @@ abstract class SchemaDeclare
         }
 
         return array(
+            'label' => $this->getLabel(), // model label
             'table' => $this->getTable(),
             'columns' => $columnArray,
             'column_names' => $this->columnNames,
@@ -326,6 +329,25 @@ abstract class SchemaDeclare
         }
         return $schemas;
     }
+
+    public function getLabel()
+    {
+        return $this->label ?: $this->_modelClassToLabel();
+    }
+
+    protected function _modelClassToLabel() {
+        /* Get the latest token. */
+        if( preg_match( '/(\w+)(?:Model)?$/', $this->getModelClass() , $reg) ) 
+        {
+            $label = @$reg[1];
+            if( ! $label )
+                throw new Exception( "Table name error" );
+
+            /* convert blah_blah to BlahBlah */
+            return ucfirst(preg_replace( '/[_]/' , ' ' , $label ));
+        }
+    }
+
 
 }
 

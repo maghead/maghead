@@ -8,7 +8,8 @@ class NameSchemaProxy extends Schema
 
     public function __construct()
     {
-        $this->columns = array( 
+        /** columns might have closure, so it can not be const */
+        $this->columns     = array( 
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
@@ -68,9 +69,10 @@ class NameSchemaProxy extends Schema
   'country',
   'confirmed',
 );
-        $this->primaryKey =  'id';
-        $this->table = 'names';
-        $this->modelClass = 'tests\\Name';
+        $this->primaryKey  =  'id';
+        $this->table       = 'names';
+        $this->modelClass  = 'tests\\Name';
+        $this->label       = 'Name';
     }
 
 }
