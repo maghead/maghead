@@ -675,6 +675,12 @@ class BaseModel
     }
 
 
+    public function asCollection()
+    {
+        $class = static::collection_class;
+        return new $class;
+    }
+
     /**
      * return data stash array,
      * might need inflate.
