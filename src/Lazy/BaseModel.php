@@ -80,9 +80,9 @@ class BaseModel
     {
         switch($m) {
             case 'create':
-            case 'delete':
             case 'update':
             case 'load':
+            case 'delete':
                 return call_user_func_array(array($this,'_' . $m),$a);
                 break;
         }
@@ -187,7 +187,7 @@ class BaseModel
      *
      * @return OperationResult operation result (success or error)
      */
-    protected function _create($args)
+    public function _create($args)
     {
         $k = $this->_schema->primaryKey;
 
@@ -304,7 +304,6 @@ class BaseModel
         }
         return $this->reportSuccess('Created', $ret );
     }
-
 
     public function find($args)
     {
