@@ -2,6 +2,7 @@
 use Lazy\QueryDriver;
 use Lazy\ConnectionManager;
 use Lazy\SchemaSqlBuilder;
+use Lazy\ConfigLoader;
 
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
 {
@@ -21,6 +22,10 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         QueryDriver::free();
         ConnectionManager::getInstance()->free();
         ConnectionManager::getInstance()->addDataSource('default', array( 'dsn' => $this->dsn ));
+
+        $config = ConfigLoader::getInstance();
+        $config->unload();
+        $config->config = array( 'schema' => array( 'auto_id' => true ) );
 
         $dbh = ConnectionManager::getInstance()->getConnection();
 
