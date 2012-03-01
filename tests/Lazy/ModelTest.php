@@ -24,6 +24,12 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         // ok( $author->getLabel() );
     }
 
+    public function testCollection()
+    {
+        $author = new \tests\Author;
+        $collection = $author->asCollection();
+    }
+
     /****************************
      * Basic CRUD Test 
      ***************************/

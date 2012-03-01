@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-03-02</date>
-  <time>03:19:56</time>
+  <time>03:41:10</time>
   <version>
-    <release>1.0.7</release>
-    <api>1.0.7</api>
+    <release>1.0.8</release>
+    <api>1.0.8</api>
   </version>
   <stability>
     <release>stable</release>
@@ -134,9 +134,9 @@
       <file name="src/Lazy/SchemaSqlBuilder/SqliteDriver.php" role="php" md5sum="821c763550daf387a062669d566e5f0e"/>
       <file name="src/Lazy/SchemaSqlBuilder.php" role="php" md5sum="03e631d3d4878835b373d9e0c9a7233e"/>
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
-      <file name="package.ini" role="data" md5sum="8494b88e412faf6d0d2cd9fdad990436"/>
+      <file name="package.ini" role="data" md5sum="7172535d279c840a2798b51acd3a6494"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="96f1c91911c0343aa41dfb7636d9439b"/>
+      <file name="lazy" role="script" md5sum="732e8e3712457034fca8dd2567c886c5"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
