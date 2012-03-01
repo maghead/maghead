@@ -129,3 +129,16 @@ To get PDO connection:
 
 
 
+Setup Testing Environment
+-------------------------
+
+    lazy init-conf
+    lazy build-conf config/lazy.yml
+    lazy build-schema
+    lazy build-sql
+
+For pgsql:
+
+    createuser {user}
+    createdb {database}
+
