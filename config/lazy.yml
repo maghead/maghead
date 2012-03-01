@@ -2,6 +2,7 @@
 bootstrap:
   - tests/bootstrap.php
 schema:
+  auto_id: true
   paths:
     - tests/schema
 data_sources:

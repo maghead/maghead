@@ -164,6 +164,10 @@ class ConfigLoader
                     ? $this->config['schema']['paths'] : null;
     }
 
+    public function hasAutoId()
+    {
+        return isset($this->config['schema']['auto_id']) ? true : false;
+    }
 
 
     /******************************
