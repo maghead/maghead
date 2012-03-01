@@ -30,7 +30,7 @@ class ConfigLoader
 
     public $symbolFilename = '.lazy.php';
 
-    public $classMap = array();
+    public $classMap;
 
     /**
      * load configuration file
@@ -54,9 +54,7 @@ class ConfigLoader
         $this->loadDataSources();
         $this->loadBootstrap();
         $this->loadExternalSchemaLoader();
-        $this->loadClassMapFile();
     }
-
 
     /**
      * run bootstrap code
@@ -88,9 +86,12 @@ class ConfigLoader
      */
     public function loadClassMapFile() 
     {
-        if( isset($this->config['schema']['class_map_file']) ) {
-            $this->classMap = require $this->config['schema']['class_map_file'];
+        if( isset($this->config['schema']['class_map_file']) && 
+            $file = $this->config['schema']['class_map_file'] ) 
+        {
+            return $this->classMap = require $file;
         }
+        return array();
     }
 
 
@@ -109,7 +110,7 @@ class ConfigLoader
 
     public function getClassMap()
     {
-        return $this->classMap;
+        return $this->classMap ?: $this->loadClassMapFile();
     }
 
 
