@@ -123,10 +123,10 @@ class BaseCollection
         }
         catch ( PDOException $e )
         {
-            return new OperationError( 'Collection fetch failed: ' , array( 
+            return new OperationError( 'Collection fetch failed: ' . $e->getMessage() , array( 
                 'sql' => $sql,
                 'exception' => $e,
-            ) );
+            ));
         }
         return new OperationSuccess('Updated', array( 'sql' => $sql ));
     }
