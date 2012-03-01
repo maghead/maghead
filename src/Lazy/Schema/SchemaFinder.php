@@ -61,7 +61,7 @@ class SchemaFinder
                 $list[] = $class;
             }
         }
-        // return $list;
+
         $schemas = array();
         foreach( $list as $class ) {
             $schema = new $class;
@@ -72,8 +72,6 @@ class SchemaFinder
         }
         return array_unique($schemas);
     }
-
-
 
 }
 
