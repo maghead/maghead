@@ -22,6 +22,11 @@ use ArrayAccess;
  * }
  *
  * bootstrap = [ script path, script path ]
+ *
+ * $config->load();
+ * $config->init();
+ *
+ * $config->initForBuild();  // for build command.
  */
 class ConfigLoader
     implements ArrayAccess
@@ -74,6 +79,14 @@ class ConfigLoader
     {
         if( $this->loaded ) {
             $this->loadDataSources();
+        } else {
+            throw new Exception('Can not initialize config: Config is not loaded.');
+        }
+    }
+
+    public function initForBuild()
+    {
+        if( $this->loaded ) {
             $this->loadBootstrap();
             $this->loadExternalSchemaLoader();
         } else {
