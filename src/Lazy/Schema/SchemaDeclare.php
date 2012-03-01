@@ -63,9 +63,6 @@ abstract class SchemaDeclare
             if( $column->primary )
                 $this->primaryKey = $name;
         }
-
-        /* foreach( $this->mixins as $mixinClass ) {
-        } */
     }
 
     public function export()
