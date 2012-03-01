@@ -23,10 +23,10 @@ class SqliteDriver
         $sql = $this->driver->getQuoteColumn( $name );
         $sql .= ' ' . $type;
 
-        if( $column->required )
+        if( $column->required || $column->notNull )
             $sql .= ' NOT NULL';
-        else
-            $sql .= ' IS NULL';
+        elseif( $column->null )
+            $sql .= ' NULL';
 
         /**
          * if it's callable, we should not write the result into sql schema 

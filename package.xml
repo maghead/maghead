@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-01</date>
-  <time>10:28:44</time>
+  <time>10:32:45</time>
   <version>
     <release>1.0.7</release>
     <api>1.0.7</api>
@@ -129,14 +129,14 @@
       <file name="src/Lazy/SchemaLoader.php" role="php" md5sum="092cb6b2cff81f423da46835bb691b1f"/>
       <file name="src/Lazy/SchemaSqlBuilder/BaseDriver.php" role="php" md5sum="cf8e0f1ce8a84e44d497d6ef49aa43d5"/>
       <file name="src/Lazy/SchemaSqlBuilder/DriverInterface.php" role="php" md5sum="4f49ceeac3801edad16ad1c33717cb02"/>
-      <file name="src/Lazy/SchemaSqlBuilder/MysqlDriver.php" role="php" md5sum="928020959cab6f3358f090a5f9e9b61d"/>
-      <file name="src/Lazy/SchemaSqlBuilder/PgsqlDriver.php" role="php" md5sum="840708aad41ac0f73a8a182cbdcb1c4f"/>
-      <file name="src/Lazy/SchemaSqlBuilder/SqliteDriver.php" role="php" md5sum="82c432af758f2f1548baa73f754834d3"/>
+      <file name="src/Lazy/SchemaSqlBuilder/MysqlDriver.php" role="php" md5sum="84487c48efe38f18a683917b63a562bf"/>
+      <file name="src/Lazy/SchemaSqlBuilder/PgsqlDriver.php" role="php" md5sum="d1ad57db1f32b44c01c4737fee740631"/>
+      <file name="src/Lazy/SchemaSqlBuilder/SqliteDriver.php" role="php" md5sum="c529898aee686aaf74966128d76bd88d"/>
       <file name="src/Lazy/SchemaSqlBuilder.php" role="php" md5sum="03e631d3d4878835b373d9e0c9a7233e"/>
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
       <file name="package.ini" role="data" md5sum="8494b88e412faf6d0d2cd9fdad990436"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="6a240984cb936e2a35f1af1c734b8969"/>
+      <file name="lazy" role="script" md5sum="e9d709b8ab211f4f473b6d96a1072676"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
