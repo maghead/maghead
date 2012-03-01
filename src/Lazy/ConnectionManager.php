@@ -71,7 +71,6 @@ class ConnectionManager
         }
 
         $driver = QueryDriver::getInstance($id);
-        $config = $this->datasources[ $id ];
 
         // configure query driver type
         if( $driverType = $this->getDataSourceDriver($id) ) {
@@ -82,7 +81,8 @@ class ConnectionManager
         }
 
         // setup query driver options
-        if( isset( $config['query_options'] ) ) {
+        $config = isset($this->datasources[ $id ]) ? $this->datasources[ $id ] : null;
+        if( $config && isset( $config['query_options'] ) ) {
             $queryOptions = $config['query_options'];
             foreach( $queryOptions as $option => $value ) {
                 $driver->configure( $option , $value );
