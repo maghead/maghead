@@ -74,7 +74,9 @@ class SchemaGenerator
         // try to require 
         try {
             require $file;
-        } catch ( Exception $e ) {
+        } 
+        catch ( Exception $e ) 
+        {
             $this->logger->error( $e->getMessage() );
             throw $e;
         }
@@ -96,6 +98,7 @@ class SchemaGenerator
         $cTemplate->addConst( 'schema_class' , '\\' . ltrim($schemaClass,'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($modelClass,'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
+        $cTemplate->addConst( 'label',  $schema->getLabel() );
 
         /*
             return $this->generateClass( 'Class.php', $cTemplate );

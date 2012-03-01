@@ -8,7 +8,8 @@ class BookSchemaProxy extends Schema
 
     public function __construct()
     {
-        $this->columns = array( 
+        /** columns might have closure, so it can not be const */
+        $this->columns     = array( 
   'title' => array( 
       'name' => 'title',
       'attributes' => array( 
@@ -58,9 +59,10 @@ class BookSchemaProxy extends Schema
   'published_at',
   'id',
 );
-        $this->primaryKey =  'id';
-        $this->table = 'books';
-        $this->modelClass = 'tests\\Book';
+        $this->primaryKey  =  'id';
+        $this->table       = 'books';
+        $this->modelClass  = 'tests\\Book';
+        $this->label       = 'Book';
     }
 
 }

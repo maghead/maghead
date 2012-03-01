@@ -21,6 +21,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $author = new \tests\Author;
         ok( $author->getColumnNames() );
         ok( $author->getColumns() );
+        // ok( $author->getLabel() );
     }
 
     /****************************

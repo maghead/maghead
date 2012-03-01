@@ -8,7 +8,8 @@ class AuthorSchemaProxy extends Schema
 
     public function __construct()
     {
-        $this->columns = array( 
+        /** columns might have closure, so it can not be const */
+        $this->columns     = array( 
   'created_on' => array( 
       'name' => 'created_on',
       'attributes' => array( 
@@ -61,9 +62,10 @@ class AuthorSchemaProxy extends Schema
   'identity',
   'confirmed',
 );
-        $this->primaryKey =  'id';
-        $this->table = 'authors';
-        $this->modelClass = 'tests\\Author';
+        $this->primaryKey  =  'id';
+        $this->table       = 'authors';
+        $this->modelClass  = 'tests\\Author';
+        $this->label       = 'Author';
     }
 
 }

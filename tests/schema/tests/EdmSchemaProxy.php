@@ -8,7 +8,8 @@ class EdmSchemaProxy extends Schema
 
     public function __construct()
     {
-        $this->columns = array( 
+        /** columns might have closure, so it can not be const */
+        $this->columns     = array( 
   'edmNo' => array( 
       'name' => 'edmNo',
       'attributes' => array( 
@@ -74,9 +75,10 @@ class EdmSchemaProxy extends Schema
   'edmUpdatedOn',
   'id',
 );
-        $this->primaryKey =  'id';
-        $this->table = 'Edm';
-        $this->modelClass = 'tests\\Edm';
+        $this->primaryKey  =  'id';
+        $this->table       = 'Edm';
+        $this->modelClass  = 'tests\\Edm';
+        $this->label       = 'Edm';
     }
 
 }
