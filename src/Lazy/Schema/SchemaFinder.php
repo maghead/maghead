@@ -33,7 +33,7 @@ class SchemaFinder
                 foreach( $regex as $k => $files ) {
                     foreach( $files as $file ) {
                         try { 
-                            require $file;
+                            @require_once $file;
                         } catch( Exception $e ) {  }
                     }
                 }
