@@ -25,10 +25,10 @@ class PgsqlDriver
         if( ! $column->autoIncrement )
             $sql .= ' ' . $type;
 
-        if( $column->required )
-            $sql .= ' not null';
-        else
-            $sql .= ' is null';
+        if( $column->required || $column->notNull )
+            $sql .= ' NOT NULL';
+        elseif( $column->null )
+            $sql .= ' NULL';
 
 
         /* if it's callable, we should not write the result into sql schema */
