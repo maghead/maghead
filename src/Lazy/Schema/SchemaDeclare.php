@@ -30,12 +30,23 @@ abstract class SchemaDeclare
 
     public $dataSourceId = 'default';
 
-    abstract function schema();
 
     public function __construct()
     {
         $this->build();
     }
+
+    abstract function schema();
+
+
+
+    /**
+     * bootstrap script (to create basedata)
+     */
+    public function bootstrap($record) {
+
+    }
+
 
     public function build()
     {
