@@ -5,9 +5,9 @@ class Column
 {
     public $name;
 
-    private $attributes = array();
+    public $attributes = array();
 
-    function __construct($name, & $attributes)
+    public function __construct($name, & $attributes)
     {
         $this->name = $name;
         $this->attributes = $attributes;
