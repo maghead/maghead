@@ -5,6 +5,8 @@ use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
 use RegexIterator;
 use Lazy\CodeGen;
+use Lazy\ConfigLoader;
+use Exception;
 
 /**
  * builder for building static schema class file
@@ -13,8 +15,13 @@ class SchemaGenerator
 {
     public $logger;
 
-    public function __construct() {  
+    public $config;
 
+    public function __construct() 
+    {
+        $this->config = ConfigLoader::getInstance();
+        if( false === $this->config->loaded )
+            throw new Exception("SchemaGenerator: Config is not loaded.");
     }
 
     public function setLogger($logger)
@@ -142,8 +149,7 @@ class SchemaGenerator
         $cTemplate->addConst( 'collection_class' , '\\' . ltrim($schema->getCollectionClass(),'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
-
-        $cTemplate->extendClass( 'Lazy\\BaseModel' );
+        $cTemplate->extendClass( ltrim($this->config->getBaseModelClass(),'\\') );
         return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true );
     }
 

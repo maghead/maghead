@@ -32,7 +32,9 @@ class SchemaFinder
                 $regex = new RegexIterator($rii, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
                 foreach( $regex as $k => $files ) {
                     foreach( $files as $file ) {
-                        require_once $file;
+                        try { 
+                            require $file;
+                        } catch( Exception $e ) {  }
                     }
                 }
             }
