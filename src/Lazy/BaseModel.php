@@ -181,6 +181,15 @@ class BaseModel
 
 
     /**
+     * return columns
+     */
+    public function columns()
+    {
+        return $this->_schema->columns;
+    }
+
+
+    /**
      * Create a new record
      *
      * @param array $args data
@@ -518,7 +527,12 @@ class BaseModel
             : $this->update( $this->_data );
     }
 
-
+    public function value($column) 
+    {
+        if( isset($this->_data[ $column ] )
+            return $this->_data[ $column ];
+        return null;
+    }
 
     /**
      * deflate data from database 
@@ -839,7 +853,6 @@ class BaseModel
     {
         return $this->_result = new OperationSuccess($message,$extra);
     }
-
 
 
 }

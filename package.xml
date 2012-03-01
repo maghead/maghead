@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-01</date>
-  <time>11:04:37</time>
+  <time>11:13:30</time>
   <version>
     <release>1.0.7</release>
     <api>1.0.7</api>
@@ -98,7 +98,7 @@
       <file name="src/Lazy/CollectionPager.php" role="php" md5sum="7ebd1146957ed43c749e9a57f3c89be1"/>
       <file name="src/Lazy/Command/BuildConfCommand.php" role="php" md5sum="bfd0c80100d5c096643b61832cba33a3"/>
       <file name="src/Lazy/Command/BuildSchemaCommand.php" role="php" md5sum="cedeecf6dad4ba495714853cedb2a438"/>
-      <file name="src/Lazy/Command/BuildSqlCommand.php" role="php" md5sum="220478c15e20d41595f7096a29358773"/>
+      <file name="src/Lazy/Command/BuildSqlCommand.php" role="php" md5sum="1051a80a9d82a8d92ca594eae43e1e56"/>
       <file name="src/Lazy/Command/InitConfCommand.php" role="php" md5sum="bdd79a03a48b0f08b0f45fe5f9bdad37"/>
       <file name="src/Lazy/ConfigBuilder.php" role="php" md5sum="07df8e705b90efad858af1a0929b622b"/>
       <file name="src/Lazy/ConfigLoader.php" role="php" md5sum="d7f5569915691f02c284c83e11e999b2"/>
@@ -116,7 +116,7 @@
       <file name="src/Lazy/Schema/MixinSchemaDeclare.php" role="php" md5sum="cb9874944bbee37a9f62166a7bc2e7f3"/>
       <file name="src/Lazy/Schema/SchemaDeclare/Column.php" role="php" md5sum="84f5d1b1998b13ac33eadf021d936049"/>
       <file name="src/Lazy/Schema/SchemaDeclare/Exporter.php" role="php" md5sum="6d9bf43092743f246924820c549d19fa"/>
-      <file name="src/Lazy/Schema/SchemaDeclare.php" role="php" md5sum="71d28501d3aca16f687013735ab038f7"/>
+      <file name="src/Lazy/Schema/SchemaDeclare.php" role="php" md5sum="8f1d793eee4ee1639ff014ce175967a7"/>
       <file name="src/Lazy/Schema/SchemaFinder.php" role="php" md5sum="72ace46258c301375db7be5000930dee"/>
       <file name="src/Lazy/Schema/SchemaGenerator.php" role="php" md5sum="152fdc4121397706fdea969471e3c02e"/>
       <file name="src/Lazy/Schema/Templates/BaseCollection.php.twig" role="php" md5sum="4f3fa444776cc4f53a42dbd3dee0ce9d"/>
@@ -136,7 +136,7 @@
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
       <file name="package.ini" role="data" md5sum="8494b88e412faf6d0d2cd9fdad990436"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="1ad3078610afcbb6c16e42c61147f327"/>
+      <file name="lazy" role="script" md5sum="917b7715f09022b32607157358b92066"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
