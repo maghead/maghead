@@ -5,6 +5,7 @@
   ),
   'schema' => 
   array (
+    'auto_id' => true,
     'paths' => 
     array (
       0 => 'tests/schema',

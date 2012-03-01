@@ -7,12 +7,6 @@ class AuthorSchema extends SchemaDeclare
 {
     function schema()
     {
-        $this->column('id')
-            ->type('integer')
-            ->isa('int')
-            ->primary()
-            ->autoIncrement();
-
         $this->column('name')
             ->isa('str')
             ->varchar(128);

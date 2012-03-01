@@ -56,6 +56,12 @@ class EdmSchemaProxy extends Schema
             ),
         ),
     ),
+  'id' => array( 
+      'name' => 'id',
+      'attributes' => array( 
+          'primary' => true,
+        ),
+    ),
 );
         $this->columnNames = array( 
   'edmNo',
@@ -65,8 +71,9 @@ class EdmSchemaProxy extends Schema
   'edmContent',
   'edmCreatedOn',
   'edmUpdatedOn',
+  'id',
 );
-        $this->primaryKey =  'edmNo';
+        $this->primaryKey =  'id';
         $this->table = 'Edm';
         $this->modelClass = 'tests\\Edm';
     }

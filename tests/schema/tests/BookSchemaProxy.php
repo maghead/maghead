@@ -9,13 +9,6 @@ class BookSchemaProxy extends Schema
     public function __construct()
     {
         $this->columns = array( 
-  'id' => array( 
-      'name' => 'id',
-      'attributes' => array( 
-          'isa' => 'int',
-          'primary' => true,
-        ),
-    ),
   'title' => array( 
       'name' => 'title',
       'attributes' => array( 
@@ -49,14 +42,20 @@ class BookSchemaProxy extends Schema
           'isa' => 'DateTime',
         ),
     ),
+  'id' => array( 
+      'name' => 'id',
+      'attributes' => array( 
+          'primary' => true,
+        ),
+    ),
 );
         $this->columnNames = array( 
-  'id',
   'title',
   'subtitle',
   'description',
   'publisher_id',
   'published_at',
+  'id',
 );
         $this->primaryKey =  'id';
         $this->table = 'books';

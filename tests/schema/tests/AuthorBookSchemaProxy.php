@@ -21,12 +21,19 @@ class AuthorBookSchemaProxy extends Schema
           'isa' => 'int',
         ),
     ),
+  'id' => array( 
+      'name' => 'id',
+      'attributes' => array( 
+          'primary' => true,
+        ),
+    ),
 );
         $this->columnNames = array( 
   'author_id',
   'book_id',
+  'id',
 );
-        $this->primaryKey =  NULL;
+        $this->primaryKey =  'id';
         $this->table = 'author_books';
         $this->modelClass = 'tests\\AuthorBook';
     }
