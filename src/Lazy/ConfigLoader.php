@@ -42,7 +42,7 @@ class ConfigLoader
     public function load($file = null)
     {
         if( $this->loaded )
-            throw new Exception('config is already loaded.');
+            throw new Exception('Config is already loaded.');
 
         if( $file === null )
             $file = $this->symbolFilename;
