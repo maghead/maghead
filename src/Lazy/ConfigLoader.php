@@ -32,34 +32,53 @@ class ConfigLoader
 
     public $classMap;
 
+    public $loaded = false;
 
     /**
      * load configuration file
      *
      * @param string $file config file.
      */
-    public function loadConfig($file = null)
+    public function load($file = null)
     {
-        if( ! $file )
+        if( $this->loaded )
+            throw new Exception('config is already loaded.');
+
+        if( $file === null )
             $file = $this->symbolFilename;
 
         if( ! file_exists($file) ) 
             throw new Exception("$file does not exist, please run build-conf command to build config file for PHP.");
 
         $this->config = require $file;
+        $this->loaded = true;
+    }
+
+
+    /**
+     * unload config and stash
+     */
+    public function unload()
+    {
+        $this->loaded = false;
+        $this->config = null;
     }
 
     public function init()
     {
-        $this->loadDataSources();
-        $this->loadBootstrap();
-        $this->loadExternalSchemaLoader();
+        if( $this->loaded ) {
+            $this->loadDataSources();
+            $this->loadBootstrap();
+            $this->loadExternalSchemaLoader();
+        } else {
+            throw new Exception('config is not loaded.');
+        }
     }
 
     public function getInstance()
     {
         static $instance;
-        return $instance ?: $instance = new static;
+        return $instance ? $instance : $instance = new self;
     }
 
 

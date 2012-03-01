@@ -2,6 +2,7 @@
 namespace Lazy\Schema;
 use Lazy\Schema\SchemaDeclare\Column;
 use Lazy\Inflector;
+use Lazy\ConfigLoader;
 use Exception;
 
 abstract class SchemaDeclare
@@ -48,13 +49,14 @@ abstract class SchemaDeclare
 
     public function build()
     {
-        if( $config = ConfigLoader::getInstance() 
-            && $config->hasAutoId() ) {
+        $this->schema();
+
+        if( $config = ConfigLoader::getInstance() )
+        {
+            if( $config->loaded && $config->hasAutoId() )
                 $this->column('id')->primary()
                         ->autoIncrement();
         }
-
-        $this->schema();
 
         /* find primary key */
         foreach( $this->columns as $name => $column ) {
@@ -62,11 +64,8 @@ abstract class SchemaDeclare
                 $this->primaryKey = $name;
         }
 
-
-        /*
-        foreach( $this->mixins as $mixinClass ) {
-        }
-        */
+        /* foreach( $this->mixins as $mixinClass ) {
+        } */
     }
 
     public function export()

@@ -17,10 +17,8 @@ class ConfigBuilderTest extends PHPUnit_Framework_TestCase
 
 
         $loader = new Lazy\ConfigLoader;
-        $loader->loadConfig( 'tests/lazy-config.php');
-
-        $loader->loadBootstrap();
-        $loader->loadDataSources();
+        $loader->load( 'tests/lazy-config.php');
+        $loader->init();
 
         $conM = Lazy\ConnectionManager::getInstance();
         $conn = $conM->getDefault();
