@@ -16,13 +16,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
-    public function testClass()
-    {
-        foreach( $this->getModels() as $class ) 
-            class_ok( $class );
-    }
-
-
     /****************************
      * Basic CRUD Test 
      ***************************/
