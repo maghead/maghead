@@ -19,7 +19,9 @@ class MysqlDriver
         $sql .= ' ' . $type;
 
         if( $column->required )
-            $sql .= " not null";
+            $sql .= ' not null';
+        else
+            $sql .= ' is null';
 
         /* if it's callable, we should not write the result into sql schema */
         if( ($default = $column->default) !== null && ! is_callable($column->default )  ) { 

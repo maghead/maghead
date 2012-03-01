@@ -25,6 +25,8 @@ class SqliteDriver
 
         if( $column->required )
             $sql .= ' NOT NULL';
+        else
+            $sql .= ' IS NULL';
 
         /**
          * if it's callable, we should not write the result into sql schema 

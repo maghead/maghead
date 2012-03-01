@@ -27,6 +27,9 @@ class PgsqlDriver
 
         if( $column->required )
             $sql .= ' not null';
+        else
+            $sql .= ' is null';
+
 
         /* if it's callable, we should not write the result into sql schema */
         if( ($default = $column->default) !== null 
