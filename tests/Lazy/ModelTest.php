@@ -132,12 +132,12 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $name->id );
         ok( $name->address );
 
-        $ret = $name->create(array(  'name' => 'Foo', 'address' => 'fuck' , 'country' => 'Tokeyo' ));
+        $ret = $name->create(array(  'name' => 'Foo', 'address' => 'fuck' , 'country' => 'Tokyo' ));
         ok( $ret->validations );
 
         foreach( $ret->getErrorValidations() as $vld ) {
-            ok( $vld->success === false );
-            ok( $vld->message === "Please don't" );
+            is( false , $vld->success );
+            is( 'Please don\'t',  $vld->message );
         }
     }
 
