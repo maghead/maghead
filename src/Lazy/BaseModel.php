@@ -642,7 +642,7 @@ class BaseModel
 
     public function __get( $key ) 
     {
-        // lazy schema loader
+        // lazy schema loader, xxx: make this static.
         if( $key === '_schema' )
             return SchemaLoader::load( static::schema_proxy_class );
 
