@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-02</date>
-  <time>16:59:46</time>
+  <time>17:05:09</time>
   <version>
     <release>1.0.8</release>
     <api>1.0.8</api>
@@ -53,7 +53,7 @@
       <file name="tests/schema/tests/AuthorBookBase.php" role="test" md5sum="2f3283a1be301c26837b03f4cda5cefd"/>
       <file name="tests/schema/tests/AuthorBookCollection.php" role="test" md5sum="6822b7a52935d801b3a92c4f442da618"/>
       <file name="tests/schema/tests/AuthorBookCollectionBase.php" role="test" md5sum="e6e1263989dc7adff2424d426b92ed1e"/>
-      <file name="tests/schema/tests/AuthorBooks.php" role="test" md5sum="a2b9e042bc379c334efa1a67bd4a39d4"/>
+      <file name="tests/schema/tests/AuthorBooks.php" role="test" md5sum="4c4b5b1b77f1de49b2c72eeeabc2b8da"/>
       <file name="tests/schema/tests/AuthorBookSchemaProxy.php" role="test" md5sum="198b9a00f8b473bb8e6b58f2ab5aa3d1"/>
       <file name="tests/schema/tests/AuthorCollection.php" role="test" md5sum="95a7ef60275823bfde873a008b3061ed"/>
       <file name="tests/schema/tests/AuthorCollectionBase.php" role="test" md5sum="63a682ccf335887ed94b6dfad2b31079"/>
@@ -70,6 +70,7 @@
       <file name="tests/schema/tests/EdmCollectionBase.php" role="test" md5sum="c25ab5471d64e8299e09b781e373ca4f"/>
       <file name="tests/schema/tests/EdmSchema.php" role="test" md5sum="04eeca18745f6e17cb2bbfc42c3be766"/>
       <file name="tests/schema/tests/EdmSchemaProxy.php" role="test" md5sum="d10a3d8b1eda33f34e716596ca9c2d96"/>
+      <file name="tests/schema/tests/MetadataMixinSchema.php" role="test" md5sum="5d7c45b4e718112dbe665cc0bfab3794"/>
       <file name="tests/schema/tests/Name.php" role="test" md5sum="5ae0dec2bb11e050363fc74225505bd5"/>
       <file name="tests/schema/tests/NameBase.php" role="test" md5sum="a208077727dc9a06814f4277ba74ea86"/>
       <file name="tests/schema/tests/NameCollection.php" role="test" md5sum="f4a65ffd6fd7936f3e9c7844367c27e5"/>
@@ -134,9 +135,9 @@
       <file name="src/Lazy/SchemaSqlBuilder/SqliteDriver.php" role="php" md5sum="821c763550daf387a062669d566e5f0e"/>
       <file name="src/Lazy/SchemaSqlBuilder.php" role="php" md5sum="03e631d3d4878835b373d9e0c9a7233e"/>
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
-      <file name="package.ini" role="data" md5sum="7172535d279c840a2798b51acd3a6494"/>
+      <file name="package.ini" role="data" md5sum="7099d8f682311f2df9ec5da4c3997249"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="a7507508f899ae269ddf6ee9da9dd098"/>
+      <file name="lazy" role="script" md5sum="602999f728e4b00347be30f2202b979b"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
@@ -171,6 +172,11 @@
       <package>
         <name>CLIFramework</name>
         <channel>pear.corneltek.com</channel>
+        <min>0.0.0</min>
+      </package>
+      <package>
+        <name>Twig</name>
+        <channel>pear.twig-project.org</channel>
         <min>0.0.0</min>
       </package>
     </required>
@@ -223,6 +229,7 @@
       <install name="tests/schema/tests/EdmCollectionBase.php" as="schema/tests/EdmCollectionBase.php"/>
       <install name="tests/schema/tests/EdmSchema.php" as="schema/tests/EdmSchema.php"/>
       <install name="tests/schema/tests/EdmSchemaProxy.php" as="schema/tests/EdmSchemaProxy.php"/>
+      <install name="tests/schema/tests/MetadataMixinSchema.php" as="schema/tests/MetadataMixinSchema.php"/>
       <install name="tests/schema/tests/Name.php" as="schema/tests/Name.php"/>
       <install name="tests/schema/tests/NameBase.php" as="schema/tests/NameBase.php"/>
       <install name="tests/schema/tests/NameCollection.php" as="schema/tests/NameCollection.php"/>

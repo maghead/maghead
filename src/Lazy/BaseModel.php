@@ -640,6 +640,11 @@ class BaseModel
         return $connManager->getConnection( $this->getDataSourceId() ); // xxx: support read/write connection later
     }
 
+    public function getSchemaProxyClass()
+    {
+        return static::schema_proxy_class;
+    }
+
 
     /*******************
      * Data Manipulators 
@@ -649,11 +654,11 @@ class BaseModel
         $this->_data[ $name ] = $value; 
     }
 
-    public function __get( $key ) 
+    public function __get( $key )
     {
         // lazy schema loader, xxx: make this static.
         if( $key === '_schema' )
-            return SchemaLoader::load( static::schema_proxy_class );
+            return SchemaLoader::load( $this->getSchemaProxyClass() );
 
         if( isset( $this->_data[ $key ] ) )
             return $this->_data[ $key ];

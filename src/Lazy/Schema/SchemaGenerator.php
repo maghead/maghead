@@ -220,7 +220,6 @@ class SchemaGenerator
             $this->logger->info( 'Building collection class: ' . $class );
             list( $c, $f ) = $this->buildCollectionClass( $schema );
             $classMap[ $c ] = $f;
-
         }
 
         restore_error_handler();
