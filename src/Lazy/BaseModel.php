@@ -176,6 +176,7 @@ class BaseModel
         return (object) array(
             'success' => $v[0],
             'message' => $v[1],
+            'field' => $c->name,
         );
     }
 
@@ -187,6 +188,7 @@ class BaseModel
                 return (object) array(
                     'success' => false,
                     'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
+                    'field' => $c->name,
                 );
             }
         }
