@@ -29,7 +29,7 @@ class SchemaFinder
             else {
                 $rdi = new RecursiveDirectoryIterator($path);
                 $rii = new RecursiveIteratorIterator($rdi);
-                $regex = new RegexIterator($rii, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
+                $regex = new RegexIterator($rii, '/^.+Schema\.php$/i', RecursiveRegexIterator::GET_MATCH);
                 foreach( $regex as $k => $files ) {
                     foreach( $files as $file ) {
                         try { 
