@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-02</date>
-  <time>17:05:09</time>
+  <time>18:36:18</time>
   <version>
     <release>1.0.8</release>
     <api>1.0.8</api>
@@ -87,7 +87,7 @@
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/Lazy/Adapter/PdoAdapter.php" role="php" md5sum="c5476be0988d632622d1c22c42b0e7c2"/>
       <file name="src/Lazy/BaseCollection.php" role="php" md5sum="9339bf99ac97446888015100bffc0425"/>
-      <file name="src/Lazy/BaseModel.php" role="php" md5sum="1663f526afc20c622b35cd0eb3376e51"/>
+      <file name="src/Lazy/BaseModel.php" role="php" md5sum="ed640c8b8ef2b20ef5da532bd913d366"/>
       <file name="src/Lazy/ClosureSerializer.php" role="php" md5sum="4f3700f6f978ffec92e4a460481d5c0e"/>
       <file name="src/Lazy/CodeGen/ClassConst.php" role="php" md5sum="b7a8737b1be1758471c47f47bcf7fb79"/>
       <file name="src/Lazy/CodeGen/ClassMember.php" role="php" md5sum="686c5a04dbcb4c2b5e63a947e1ceca53"/>
@@ -119,14 +119,14 @@
       <file name="src/Lazy/Schema/SchemaDeclare/Exporter.php" role="php" md5sum="6d9bf43092743f246924820c549d19fa"/>
       <file name="src/Lazy/Schema/SchemaDeclare.php" role="php" md5sum="001c4d52e52f91689181424cb05f4c7d"/>
       <file name="src/Lazy/Schema/SchemaFinder.php" role="php" md5sum="30708e603965c7f09d1be012d6e04b56"/>
-      <file name="src/Lazy/Schema/SchemaGenerator.php" role="php" md5sum="725e847940fe124ca75e996db9c8082c"/>
+      <file name="src/Lazy/Schema/SchemaGenerator.php" role="php" md5sum="4859fdbc64e5ea69ea7e881e8d61e028"/>
       <file name="src/Lazy/Schema/Templates/BaseCollection.php.twig" role="php" md5sum="4f3fa444776cc4f53a42dbd3dee0ce9d"/>
       <file name="src/Lazy/Schema/Templates/BaseModel.php.twig" role="php" md5sum="ac3366307f22b37af72af3def8790620"/>
       <file name="src/Lazy/Schema/Templates/Class.php.twig" role="php" md5sum="edd4c2ac7a28d7e74554c7c0cbd68948"/>
       <file name="src/Lazy/Schema/Templates/Collection.php.twig" role="php" md5sum="70c3409a9ce3030a49cfcc0b59da0e25"/>
       <file name="src/Lazy/Schema/Templates/Model.php.twig" role="php" md5sum="2b23467dad36aed3630b57ad12c44bc6"/>
       <file name="src/Lazy/Schema/Templates/Schema.php.twig" role="php" md5sum="febf1114091e2ea9d6570c897d5ed5c8"/>
-      <file name="src/Lazy/Schema.php" role="php" md5sum="9b35980fd4290fb83a3ca31cae049835"/>
+      <file name="src/Lazy/Schema.php" role="php" md5sum="3db0299bef379b5aeb9c97437798798b"/>
       <file name="src/Lazy/SchemaLoader.php" role="php" md5sum="092cb6b2cff81f423da46835bb691b1f"/>
       <file name="src/Lazy/SchemaSqlBuilder/BaseDriver.php" role="php" md5sum="cf8e0f1ce8a84e44d497d6ef49aa43d5"/>
       <file name="src/Lazy/SchemaSqlBuilder/DriverInterface.php" role="php" md5sum="4f49ceeac3801edad16ad1c33717cb02"/>
@@ -137,7 +137,7 @@
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
       <file name="package.ini" role="data" md5sum="7099d8f682311f2df9ec5da4c3997249"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="602999f728e4b00347be30f2202b979b"/>
+      <file name="lazy" role="script" md5sum="908ec4906c701ff83268e17069e93fc1"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
