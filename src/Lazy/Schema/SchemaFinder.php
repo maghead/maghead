@@ -45,20 +45,21 @@ class SchemaFinder
         $list = array();
         $classes = get_declared_classes();
         foreach( $classes as $class ) {
-
             $rf = new ReflectionClass( $class );
-            if( $rf->isAbstract() )
+
+            // skip abstract classes.
+            if( $rf->isAbstract() ) {
                 continue;
+            }
 
             if( is_a( $class, 'Lazy\Schema\MixinSchemaDeclare' ) 
-                || $class == 'Lazy\Schema\MixinSchemaDeclare' )
-                continue;
-
-            if( is_subclass_of( $class, '\Lazy\Schema\MixinSchemaDeclare' ) )
-                continue;
-
-            if( is_subclass_of( $class, '\Lazy\Schema\SchemaDeclare' ) )
+                || $class == 'Lazy\Schema\MixinSchemaDeclare' 
+                || is_subclass_of( $class, '\Lazy\Schema\MixinSchemaDeclare' ) ) 
             {
+                continue;
+            }
+
+            if( is_subclass_of( $class, '\Lazy\Schema\SchemaDeclare' ) ) {
                 $list[] = $class;
             }
         }
