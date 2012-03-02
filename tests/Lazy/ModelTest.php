@@ -46,6 +46,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $columnMap = $author->getColumns();
 
         ok( isset($columnMap['identity']) );
+        ok( isset($columnMap['name']) );
     }
 
     /****************************
