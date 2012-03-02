@@ -55,7 +55,7 @@ class Schema
     {
         $columns = array();
         foreach( $this->columns as $name => $data ) {
-            $columns[] = $this->getColumn( $name );
+            $columns[$name] = $this->getColumn( $name );
         }
         return $columns;
     }
