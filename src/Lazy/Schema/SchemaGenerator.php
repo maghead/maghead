@@ -82,7 +82,7 @@ class SchemaGenerator
         try {
             require $file;
         } 
-        catch ( Exception $e ) 
+        catch ( GlobalError $e ) 
         {
             $this->logger->error( $e->getMessage() );
             throw $e;
@@ -187,6 +187,11 @@ class SchemaGenerator
 
     public function generate($classes)
     {
+        // for generated class source code.
+        set_error_handler(function($errno, $errstr, $errfile, $errline) {
+            printf( "ERROR %s:%s  [%s] %s\n" , $errfile, $errline, $errno, $errstr );
+        });
+
         /**
          * schema class mapping 
          */
@@ -217,6 +222,8 @@ class SchemaGenerator
             $classMap[ $c ] = $f;
 
         }
+
+        restore_error_handler();
         return $classMap;
     }
 }
