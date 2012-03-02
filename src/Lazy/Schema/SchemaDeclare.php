@@ -54,7 +54,14 @@ abstract class SchemaDeclare
 
         $this->schema();
 
-        if( $config = ConfigLoader::getInstance() )
+
+        /* find primary key */
+        foreach( $this->columns as $name => $column ) {
+            if( $column->primary )
+                $this->primaryKey = $name;
+        }
+
+        if( null === $this->primaryKey && $config = ConfigLoader::getInstance() )
         {
             if( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
                 $this->column('id')
@@ -62,13 +69,8 @@ abstract class SchemaDeclare
                     ->integer()
                     ->primary()
                     ->autoIncrement();
+                $this->primaryKey = 'id';
             }
-        }
-
-        /* find primary key */
-        foreach( $this->columns as $name => $column ) {
-            if( $column->primary )
-                $this->primaryKey = $name;
         }
     }
 

@@ -88,6 +88,7 @@ class BaseCollection
         $q->driver = $this->getCurrentQueryDriver();
         $q->table( $this->_schema->table );
         $q->select('*');
+        $q->alias('m'); // main table alias
         return $this->currentQuery = $q;
     }
 
