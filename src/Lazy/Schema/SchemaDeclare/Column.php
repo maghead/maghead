@@ -147,6 +147,12 @@ class Column
         return $this;
     }
 
+    public function refer($class)
+    {
+        $this->type = 'integer';
+        $this->isa = 'int';
+        return $this;
+    }
 
     public function autoIncrement()
     {
@@ -174,6 +180,7 @@ class Column
         if( isset( $this->attributes[ $name ] ) )
             return $this->attributes[ $name ];
     }
+
 
     public function __call($method,$args)
     {
