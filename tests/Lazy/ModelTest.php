@@ -30,6 +30,18 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $collection = $author->asCollection();
     }
 
+    public function testSchema()
+    {
+        $author = new \tests\Author;
+        ok( $author->_schema );
+
+        $columnMap = $author->_schema->getColumns();
+
+        ok( isset($columnMap['confirmed']) );
+        ok( isset($columnMap['identity']) );
+        ok( isset($columnMap['name']) );
+    }
+
     /****************************
      * Basic CRUD Test 
      ***************************/
