@@ -1,8 +1,8 @@
 #!/bin/bash
 # onion bundle
 phpunit tests && ( 
-    ./lazy build-schema
-    ./lazy build-sql
+    php scripts/lazy.php build-schema
+    php scripts/lazy.php build-sql
 ) && (
     bash scripts/compile.sh
     onion build
