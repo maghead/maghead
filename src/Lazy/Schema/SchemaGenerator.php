@@ -190,7 +190,7 @@ class SchemaGenerator
         // for generated class source code.
         set_error_handler(function($errno, $errstr, $errfile, $errline) {
             printf( "ERROR %s:%s  [%s] %s\n" , $errfile, $errline, $errno, $errstr );
-        });
+        }, E_ERROR );
 
         /**
          * schema class mapping 
