@@ -42,12 +42,19 @@ class BuildSqlCommand extends \CLIFramework\Command
 
         $logger->info("Finding schema classes...");
 
+
+        /*
+         */
+
         // find schema classes 
         $finder = new SchemaFinder;
-        if( $paths = $loader->getSchemaPaths() ) {
-            $finder->paths = $loader->getSchemaPaths();
-            $finder->loadFiles();
+        $args = func_get_args();
+        if( count($args) ) {
+            $finder->paths = $args;
+        } elseif( $paths = $loader->getSchemaPaths() ) {
+            $finder->paths = $paths;
         }
+        $finder->loadFiles();
 
         // load class from class map
         if( $classMap = $loader->getClassMap() ) {
