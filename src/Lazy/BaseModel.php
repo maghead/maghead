@@ -22,6 +22,13 @@ class BaseModel
 
     protected $_data;
 
+
+    public function __construct($args = null) 
+    {
+        if( $args )
+            $this->load( $args );
+    }
+
     public function getCurrentQueryDriver()
     {
         return ConnectionManager::getInstance()->getQueryDriver( $this->getDataSourceId() );
