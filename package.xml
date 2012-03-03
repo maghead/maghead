@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-03-03</date>
-  <time>02:56:51</time>
+  <date>2012-03-04</date>
+  <time>03:07:08</time>
   <version>
     <release>1.0.8</release>
     <api>1.0.8</api>
@@ -117,7 +117,7 @@
       <file name="src/Lazy/Schema/MixinSchemaDeclare.php" role="php" md5sum="cb9874944bbee37a9f62166a7bc2e7f3"/>
       <file name="src/Lazy/Schema/SchemaDeclare/Column.php" role="php" md5sum="6e82a422dfc5bb755b643f9cb2455672"/>
       <file name="src/Lazy/Schema/SchemaDeclare/Exporter.php" role="php" md5sum="6d9bf43092743f246924820c549d19fa"/>
-      <file name="src/Lazy/Schema/SchemaDeclare.php" role="php" md5sum="3b81447862ff5063aaa64a43e574b4b0"/>
+      <file name="src/Lazy/Schema/SchemaDeclare.php" role="php" md5sum="5aa6198e31a6f6f670346b091f0efeb0"/>
       <file name="src/Lazy/Schema/SchemaFinder.php" role="php" md5sum="30708e603965c7f09d1be012d6e04b56"/>
       <file name="src/Lazy/Schema/SchemaGenerator.php" role="php" md5sum="4859fdbc64e5ea69ea7e881e8d61e028"/>
       <file name="src/Lazy/Schema/Templates/BaseCollection.php.twig" role="php" md5sum="4f3fa444776cc4f53a42dbd3dee0ce9d"/>
@@ -135,9 +135,9 @@
       <file name="src/Lazy/SchemaSqlBuilder/SqliteDriver.php" role="php" md5sum="821c763550daf387a062669d566e5f0e"/>
       <file name="src/Lazy/SchemaSqlBuilder.php" role="php" md5sum="03e631d3d4878835b373d9e0c9a7233e"/>
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
-      <file name="package.ini" role="data" md5sum="7099d8f682311f2df9ec5da4c3997249"/>
+      <file name="package.ini" role="data" md5sum="cb38956ef3ce4b926dfc131fbcb94e0d"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="34fc4e1c3e597160cecc66c86ed82de1"/>
+      <file name="lazy" role="script" md5sum="e9b93ce6df8aff4bf4eb5f8a66ebbdf2"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
@@ -161,11 +161,6 @@
       </package>
       <package>
         <name>PHPUnit_TestMore</name>
-        <channel>pear.corneltek.com</channel>
-        <min>0.0.0</min>
-      </package>
-      <package>
-        <name>ValidationKit</name>
         <channel>pear.corneltek.com</channel>
         <min>0.0.0</min>
       </package>

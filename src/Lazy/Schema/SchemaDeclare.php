@@ -43,8 +43,11 @@ abstract class SchemaDeclare
 
     /**
      * bootstrap script (to create basedata)
+     *
+     * @param $record current model object.
      */
-    public function bootstrap($record) {
+    public function bootstrap($record) 
+    {
 
     }
 
