@@ -39,7 +39,6 @@ class BaseModel
         $q = new QueryBuilder();
         $q->driver = $this->getCurrentQueryDriver();
         $q->table( $this->_schema->table );
-        $q->alias( 'm' );
         $q->limit(1);
         return $q;
     }
