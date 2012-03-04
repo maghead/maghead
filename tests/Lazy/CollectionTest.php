@@ -51,7 +51,6 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
             $ret = $item->delete();
             ok( $ret->success );
         }
-
         $size = $authors->free()->size();
         is( 0, $size );
     }

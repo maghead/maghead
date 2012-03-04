@@ -149,8 +149,8 @@ class Column
 
     public function refer($class)
     {
-        $this->type = 'integer';
         $this->isa = 'int';
+        $this->type = 'integer';
         return $this;
     }
 

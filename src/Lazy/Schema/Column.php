@@ -64,13 +64,13 @@ class Column
     public function typeCasting( & $value)
     {
         if( $this->isa === 'int' ) {
-            return (int) $value;
+            return $value = (int) $value;
         }
         elseif( $this->isa === 'str' ) {
-            return (string) $value;
+            return $value = (string) $value;
         }
         elseif( $this->isa === 'bool' ) {
-            return (boolean) $value;
+            return $value = (boolean) $value;
         }
         return $value;
     }
