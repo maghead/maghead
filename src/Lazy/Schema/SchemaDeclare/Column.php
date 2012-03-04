@@ -102,57 +102,57 @@ class Column
 
     public function timestamp()
     {
-        $this->type = 'timestamp';
-        $this->isa = 'DateTime';
+        $this->attributes['type'] = 'timestamp';
+        $this->attributes['isa'] = 'DateTime';
         return $this;
     }
 
     public function text()
     {
-        $this->type = 'text';
-		$this->attributes[ 'isa' ]  = 'str';
+        $this->attributes['type'] = 'text';
+		$this->attributes['isa'] = 'str';
         return $this;
     }
 
     public function integer()
     {
-        $this->type = 'integer';
-		$this->attributes[ 'isa' ]  = 'int';
+        $this->attributes['type'] = 'integer';
+		$this->attributes['isa'] = 'int';
         return $this;
     }
 
     public function boolean()
     {
-        $this->type = 'boolean';
-        $this->isa = 'bool';
+        $this->attributes['type'] = 'boolean';
+        $this->attributes['isa'] = 'bool';
         return $this;
     }
 
     public function blob()
     {
-        $this->type = 'blob';
-        $this->isa = 'str';
+        $this->attributes['type'] = 'blob';
+        $this->attributes['isa'] = 'str';
         return $this;
     }
 
     public function binary()
     {
-        $this->type = 'binary';
-        $this->isa = 'str';
+        $this->attributes['type'] = 'binary';
+        $this->attributes['isa'] = 'str';
         return $this;
     }
 
     public function datetime()
     {
-        $this->type = 'datetime';
-        $this->isa = 'DateTime';
+        $this->attributes['type'] = 'datetime';
+        $this->attributes['isa'] = 'DateTime';
         return $this;
     }
 
     public function refer($class)
     {
-        $this->isa = 'int';
-        $this->type = 'integer';
+        $this->attributes['isa'] = 'int';
+        $this->attributes['type'] = 'integer';
         return $this;
     }
 
@@ -183,6 +183,10 @@ class Column
             return $this->attributes[ $name ];
     }
 
+    public function __set($name,$value)
+    {
+        $this->attributes[ $name ] = $value;
+    }
 
     public function __call($method,$args)
     {
