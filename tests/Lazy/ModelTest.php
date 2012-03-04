@@ -134,11 +134,15 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 		// if it's a str type , we should not accept types not str.
 		$n = new \tests\Name;
 		$ret = $n->create(array( 'name' => false , 'country' => 'Tokyo' ));
-		ok( $ret->success );
-        ok( $n->id );
+
+        /**
+         * name column is required, after type casting, it's NULL, so
+         * create should fail.
+         */
+		ok( ! $ret->success );
+        ok( ! $n->id );
 
 		$ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 123 ));
-
 		ok( $ret->success );
         ok( $n->id );
 	}

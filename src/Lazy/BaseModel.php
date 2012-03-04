@@ -222,8 +222,9 @@ class BaseModel
         $args = $this->filterArrayWithColumns($args);
 
 
-        $sql = null;
-        $validateFail = false;
+        $vars            = null;
+        $sql             = null;
+        $validateFail    = false;
         $validateResults = array();
 
         try {
@@ -253,7 +254,7 @@ class BaseModel
                 }
 
                 // xxx: make this optional.
-                if( $val !== null && $msg = $c->checkTypeConstraint( $val ) ) {
+                if( $val !== null && $c->required && $msg = $c->checkTypeConstraint( $val ) ) {
                     throw new Exception($msg);
                 }
 
@@ -284,14 +285,16 @@ class BaseModel
             $sql = $q->build();
 
             /* get connection, do query */
+            $vars = $q->vars;
             $stm = null;
-            $stm = $this->dbPrepareAndExecute($sql,$q->vars );
+            $stm = $this->dbPrepareAndExecute($sql,$vars);
 
             $this->afterCreate( $args );
         }
         catch ( Exception $e )
         {
             return $this->reportError( "Create failed" , array( 
+                'vars'        => $vars,
                 'args'        => $args,
                 'sql'         => $sql,
                 'exception'   => $e,
