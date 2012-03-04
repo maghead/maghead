@@ -13,6 +13,7 @@ class AuthorSchemaProxy extends Schema
   'created_on' => array( 
       'name' => 'created_on',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'DateTime',
           'defaultBuilder' => function() { return date('c'); },
         ),
@@ -20,6 +21,7 @@ class AuthorSchemaProxy extends Schema
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'int',
           'primary' => true,
         ),
@@ -27,30 +29,31 @@ class AuthorSchemaProxy extends Schema
   'name' => array( 
       'name' => 'name',
       'attributes' => array( 
-          'isa' => 'str',
           'type' => 'varchar(128)',
+          'isa' => 'str',
         ),
     ),
   'email' => array( 
       'name' => 'email',
       'attributes' => array( 
+          'type' => 'varchar(128)',
           'isa' => 'str',
           'required' => true,
-          'type' => 'varchar(128)',
         ),
     ),
   'identity' => array( 
       'name' => 'identity',
       'attributes' => array( 
+          'type' => 'varchar(128)',
           'isa' => 'str',
           'unique' => true,
           'required' => true,
-          'type' => 'varchar(128)',
         ),
     ),
   'confirmed' => array( 
       'name' => 'confirmed',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'bool',
           'default' => false,
         ),

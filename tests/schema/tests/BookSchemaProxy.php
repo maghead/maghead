@@ -13,39 +13,43 @@ class BookSchemaProxy extends Schema
   'title' => array( 
       'name' => 'title',
       'attributes' => array( 
+          'type' => 'varchar(128)',
           'isa' => 'str',
           'unique' => true,
-          'type' => 'varchar(128)',
         ),
     ),
   'subtitle' => array( 
       'name' => 'subtitle',
       'attributes' => array( 
-          'isa' => 'str',
           'type' => 'varchar(256)',
+          'isa' => 'str',
         ),
     ),
   'description' => array( 
       'name' => 'description',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'str',
         ),
     ),
   'publisher_id' => array( 
       'name' => 'publisher_id',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'int',
         ),
     ),
   'published_at' => array( 
       'name' => 'published_at',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'DateTime',
         ),
     ),
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'int',
           'primary' => true,
         ),
