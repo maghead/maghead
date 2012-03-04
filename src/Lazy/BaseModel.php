@@ -248,12 +248,15 @@ class BaseModel
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
-                /*
+
+                if( $val !== null ) {
+                    $val = $c->typeCasting( $val );
+                }
+
                 // xxx: make this optional.
                 if( $val !== null && $msg = $c->checkTypeConstraint( $val ) ) {
                     throw new Exception($msg);
                 }
-                */
 
                 if( $c->filter || $c->canonicalizer ) {
                     $c->canonicalizeValue( $args[$n], $this, $args );
@@ -638,9 +641,8 @@ class BaseModel
 
     public function dbPrepareAndExecute($sql,$args = array() )
     {
-        // var_dump( $sql,$args ); 
         $conn = $this->getConnection();
-        $stm = $conn->prepare( $sql );
+        $stm  = $conn->prepare( $sql );
         $stm->execute( $args );
         return $stm;
     }

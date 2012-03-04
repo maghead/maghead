@@ -138,6 +138,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $n->id );
 
 		$ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 123 ));
+
 		ok( $ret->success );
         ok( $n->id );
 	}
@@ -174,7 +175,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $ret = $book->create(array( 
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',
-            'publisher_id' => '',  /* cast this to null or empty */
+            'publisher_id' => '""',  /* cast this to null or empty */
         ));
         ok( $ret->success );
     }
@@ -195,7 +196,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $record = \tests\Author::load( array( 'id' => $id ));
         ok( $record );
         ok( $record->id );
-
 
         /**
          * Which runs:
