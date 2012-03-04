@@ -1,9 +1,23 @@
 <?php
-require_once 'tests/schema/tests/AuthorBooks.php';
 use Lazy\SchemaSqlBuilder;
 
 class PgsqlModelTest extends PHPUnit_Framework_TestCase
 {
+
+    public function resultOK($expect,$ret)
+    {
+        ok( $ret );
+        if( $ret->success == $expect ) {
+            is( $expect , $ret->success , $ret->message );
+        }
+        else {
+            ok( $ret->success );
+            var_dump( $ret->exception->getMessage() ); 
+            var_dump( $ret->sql ); 
+        }
+    }
+
+
     public function setup()
     {
         Lazy\QueryDriver::free();
@@ -17,12 +31,12 @@ class PgsqlModelTest extends PHPUnit_Framework_TestCase
         ));
     }
 
-	function getLogger()
+	public function getLogger()
 	{
 		return new TestLogger;
 	}
 
-    function buildSchema($dbh,$builder,$schema)
+    public function buildSchema($dbh,$builder,$schema)
     {
         ok( $schema );
 		$sqls = $builder->build($schema);
@@ -32,6 +46,7 @@ class PgsqlModelTest extends PHPUnit_Framework_TestCase
             $dbh->query( $sql );
         }
     }
+
 
 	function testCRUD()
 	{
@@ -70,12 +85,9 @@ class PgsqlModelTest extends PHPUnit_Framework_TestCase
         ok( $author->_schema );
 
         $ret = $author->create(array());
-        ok( $ret );
-        ok( ! $ret->success );
-        ok( $ret->message );
+
         is( 'Empty arguments' , $ret->message );
-
-
+        $this->resultOK( false , $ret );
 
 
         $book = new \tests\Book;
@@ -83,8 +95,9 @@ class PgsqlModelTest extends PHPUnit_Framework_TestCase
             'title' => 'title',
             'subtitle' => 'subtitle',
         ));
-        ok( $book->id );
+        
         ok( $ret->success );
+        ok( $book->id );
         ok( $book->delete()->success );
 
 
@@ -165,7 +178,8 @@ class PgsqlModelTest extends PHPUnit_Framework_TestCase
                 ->equal('name','Mary')
                 ->back()
                 ->execute();
-        ok( $ret->success );
+
+        $this->resultOK( true, $ret );
 
 
         $ret = \tests\Author::delete()

@@ -7,6 +7,7 @@ use Lazy\ConfigLoader;
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
 {
 
+
     public $driverType = 'sqlite';
 
     public $dsn = 'sqlite::memory:';
@@ -14,7 +15,6 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
     public $schemaPath = 'tests/schema';
 
     public $schemaClasses = array( );
-
 
 
     public function setup()
@@ -33,8 +33,10 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
         $dbh = ConnectionManager::getInstance()->getConnection();
 
+        $driver = Lazy\ConnectionManager::getInstance()->getQueryDriver('default');
+
         // initialize schema files
-        $builder = new SchemaSqlBuilder( $this->driverType , Lazy\ConnectionManager::getInstance()->getQueryDriver('default'));
+        $builder = new SchemaSqlBuilder( $this->driverType , $driver );
 		ok( $builder );
 
         $finder = new Lazy\Schema\SchemaFinder;
@@ -61,13 +63,24 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 		return new TestLogger;
 	}
 
-
     public function testClass()
     {
         foreach( $this->getModels() as $class ) 
             class_ok( $class );
     }
 
+    public function resultOK($expect,$ret)
+    {
+        ok( $ret );
+        if( $ret->success == $expect ) {
+            ok( $ret->success , $ret->message );
+        }
+        else {
+            ok( $ret->success );
+            var_dump( $ret->exception->getMessage() ); 
+            var_dump( $ret->sql ); 
+        }
+    }
 }
 
 

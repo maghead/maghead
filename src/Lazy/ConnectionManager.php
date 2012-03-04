@@ -88,6 +88,9 @@ class ConnectionManager
                 $driver->configure( $option , $value );
             }
         }
+
+        // always use named parameter
+        $driver->configure( 'placeholder', 'named' );
         return $driver;
     }
 

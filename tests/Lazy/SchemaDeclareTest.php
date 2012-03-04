@@ -1,6 +1,5 @@
 <?php
 namespace main;
-require_once 'tests/schema/tests/AuthorBooks.php';
 
 class SchemaDeclareTest extends \PHPUnit_Framework_TestCase
 {

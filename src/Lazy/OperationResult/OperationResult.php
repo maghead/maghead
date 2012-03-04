@@ -15,6 +15,8 @@ class OperationResult
 
     public $errors;
 
+    public $args;
+
     public function __construct($message = null, $extra = array() )
     {
         $this->message = $message;

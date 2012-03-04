@@ -240,8 +240,7 @@ class BaseModel
                 {
                     if( $val = $c->getDefaultValue($this ,$args) ) {
                         $args[$n] = $val;
-                    }
-                    elseif( $c->requried ) {
+                    } elseif( $c->requried ) {
                         throw new Exception( _( sprintf("%s is required.", $n ) ) );
                     }
                 }
@@ -249,9 +248,12 @@ class BaseModel
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
+                /*
+                // xxx: make this optional.
                 if( $val !== null && $msg = $c->checkTypeConstraint( $val ) ) {
                     throw new Exception($msg);
                 }
+                */
 
                 if( $c->filter || $c->canonicalizer ) {
                     $c->canonicalizeValue( $args[$n], $this, $args );
@@ -281,13 +283,14 @@ class BaseModel
 
             /* get connection, do query */
             $stm = null;
-            $stm = $this->dbQuery($sql);
+            $stm = $this->dbPrepareAndExecute($sql,$q->vars );
 
             $this->afterCreate( $args );
         }
         catch ( Exception $e )
         {
             return $this->reportError( "Create failed" , array( 
+                'args'        => $args,
                 'sql'         => $sql,
                 'exception'   => $e,
                 'validations' => $validateResults,
@@ -350,9 +353,9 @@ class BaseModel
                 throw new Exception("Primary key is not defined: $pk .");
             }
             $kVal = Deflator::deflate( $kVal, $column->isa );
+            $args = array( $pk => $kVal );
             $query->select('*')
-                ->where()
-                    ->equal( $pk , $kVal );
+                ->whereFromArgs($args);
         }
 
         $sql = $query->build();
@@ -362,7 +365,7 @@ class BaseModel
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         $stm = null;
         try {
-            $stm = $this->dbQuery($sql);
+            $stm = $this->dbPrepareAndExecute($sql,$query->vars);
 
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             if( false !== ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
@@ -412,7 +415,7 @@ class BaseModel
 
         $validateResults = array();
         try {
-            $this->dbQuery($sql);
+            $this->dbPrepareAndExecute($sql, $query->vars );
         } catch( PDOException $e ) {
             return $this->reportError( _('Delete failed.') , array(
                 'sql'         => $sql,
@@ -507,7 +510,7 @@ class BaseModel
             $query->update($args)->where()
                 ->equal( $k , $kVal );
             $sql = $query->build();
-            $stm = $this->dbQuery($sql);
+            $stm = $this->dbPrepareAndExecute($sql,$query->vars);
 
             // merge updated data
             $this->_data = array_merge($this->_data,$args);
@@ -516,6 +519,7 @@ class BaseModel
         catch( Exception $e ) 
         {
             return $this->reportError( 'Update failed', array(
+                'args' => $args,
                 'sql' => $sql,
                 'exception' => $e,
             ));
@@ -627,8 +631,18 @@ class BaseModel
     public function dbQuery($sql)
     {
         $conn = $this->getConnection();
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        // $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $conn->query( $sql );
+    }
+
+
+    public function dbPrepareAndExecute($sql,$args = array() )
+    {
+        // var_dump( $sql,$args ); 
+        $conn = $this->getConnection();
+        $stm = $conn->prepare( $sql );
+        $stm->execute( $args );
+        return $stm;
     }
 
 
@@ -808,7 +822,7 @@ class BaseModel
         $query->update($args);
         $query->callback = function($builder,$sql) use ($model) {
             try {
-                $stm = $model->dbQuery($sql);
+                $stm = $model->dbPrepareAndExecute($sql,$builder->vars);
             }
             catch ( PDOException $e )
             {
@@ -838,7 +852,7 @@ class BaseModel
         $query->delete();
         $query->callback = function($builder,$sql) use ($model) {
             try {
-                $stm = $model->dbQuery($sql);
+                $stm = $model->dbPrepareAndExecute($sql,$builder->vars);
             }
             catch ( PDOException $e )
             {
@@ -855,7 +869,7 @@ class BaseModel
         if( is_array($args) ) {
             $q = $model->createExecutiveQuery();
             $q->callback = function($b,$sql) use ($model) {
-                $stm = $model->dbQuery($sql);
+                $stm = $model->dbPrepareAndExecute($sql,$b->vars);
                 $record = $stm->fetchObject( get_class($model) );
                 $record->deflate();
                 return $record;
