@@ -63,14 +63,16 @@ class Column
 
     public function typeCasting( & $value)
     {
-        if( $this->isa === 'int' ) {
-            return $value = (int) $value;
-        }
-        elseif( $this->isa === 'str' ) {
-            return $value = (string) $value;
-        }
-        elseif( $this->isa === 'bool' ) {
-            return $value = (boolean) $value;
+        if( $this->isa ) {
+            if( $this->isa === 'int' ) {
+                return $value = (int) $value;
+            }
+            elseif( $this->isa === 'str' ) {
+                return $value = (string) $value;
+            }
+            elseif( $this->isa === 'bool' ) {
+                return $value = (boolean) $value;
+            }
         }
         return $value;
     }
@@ -121,6 +123,8 @@ class Column
     {
         return $this->label;
     }
+
+
 
 }
 

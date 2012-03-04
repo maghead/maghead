@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-05</date>
-  <time>01:28:35</time>
+  <time>01:43:57</time>
   <version>
     <release>1.0.10</release>
     <api>1.0.10</api>
@@ -29,7 +29,7 @@
       <file name="tests/Lazy/CodeGen/ClassTemplateTest.php" role="test" md5sum="4c17e20c653e609bb00f32ae6fffc723"/>
       <file name="tests/Lazy/CodeGenTest.php" role="test" md5sum="462e12c038f258753cf82d6548b422c4"/>
       <file name="tests/Lazy/CollectionPagerTest.php" role="test" md5sum="afef357b0f1e6dac590644333c1d6f09"/>
-      <file name="tests/Lazy/CollectionTest.php" role="test" md5sum="4a3d3e9fc14920cb8a56c615a53065b3"/>
+      <file name="tests/Lazy/CollectionTest.php" role="test" md5sum="a03b45e738a365b77b318bb4b3f3ea03"/>
       <file name="tests/Lazy/ConfigBuilderTest.php" role="test" md5sum="6cc56645993d2fe544c9035df8641843"/>
       <file name="tests/Lazy/ConnectionManagerTest.php" role="test" md5sum="1e83bd36185f289d7050a41352b8f350"/>
       <file name="tests/Lazy/DeflatorTest.php" role="test" md5sum="1d2aa1c2e6cd67c0e699b843c541e863"/>
@@ -114,7 +114,7 @@
       <file name="src/Lazy/OperationResult/OperationResult.php" role="php" md5sum="5523ecd8943e5bf852b2e293601deb49"/>
       <file name="src/Lazy/OperationResult/OperationSuccess.php" role="php" md5sum="4cc9654ac10ec84c2d9b97088a2a2f20"/>
       <file name="src/Lazy/QueryDriver.php" role="php" md5sum="5dbbfdba16ef91a5d38e405625bd5d14"/>
-      <file name="src/Lazy/Schema/Column.php" role="php" md5sum="5fcb1d38a0119cca5e83d7f143fc1b28"/>
+      <file name="src/Lazy/Schema/Column.php" role="php" md5sum="c548a3ec4bf88ee93bf72821b4affbe8"/>
       <file name="src/Lazy/Schema/MixinSchemaDeclare.php" role="php" md5sum="cb9874944bbee37a9f62166a7bc2e7f3"/>
       <file name="src/Lazy/Schema/SchemaDeclare/Column.php" role="php" md5sum="0513757ccb475f2831305a8c26a0f4bc"/>
       <file name="src/Lazy/Schema/SchemaDeclare/Exporter.php" role="php" md5sum="6d9bf43092743f246924820c549d19fa"/>
@@ -138,7 +138,7 @@
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
       <file name="package.ini" role="data" md5sum="9d91093342cd77543a3f40aeb6d93c1a"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="ccb49cf74da93c1bdb361aeb18d80b17"/>
+      <file name="lazy" role="script" md5sum="da4387462730afc56f91fc862e655c26"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
