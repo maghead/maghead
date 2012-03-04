@@ -167,6 +167,17 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         }
     }
 
+    public function testTypeConstraint()
+    {
+        $book = new Book;
+        $ret = $book->create(array( 
+            'title' => 'Programming Perl',
+            'subtitle' => 'Way Way to Roman',
+            'publisher_id' => '',
+        ));
+        ok( $ret->success );
+    }
+
     public function testStaticFunctions() 
     {
         $record = \tests\Author::create(array( 
