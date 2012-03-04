@@ -248,9 +248,8 @@ class BaseModel
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
-
                 if( $val !== null ) {
-                    $val = $c->typeCasting( $val );
+                    $c->typeCasting( $args[$n] );
                 }
 
                 // xxx: make this optional.
