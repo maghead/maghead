@@ -19,6 +19,14 @@ namespace tests {
                 ->required()
                 ->varchar(128);
 
+			$this->column('description')
+				->isa('str')
+				->varchar(128);
+
+			$this->column('category_id')
+				->isa('int')
+				->integer();
+
             $this->column('address')
                 ->isa('str')
                 ->validator( function($val,$args,$record) { 
@@ -42,6 +50,7 @@ namespace tests {
             $this->column('confirmed')
                 ->isa('bool')
                 ->boolean();
+
         }
     }
 

@@ -25,6 +25,19 @@ class NameSchemaProxy extends Schema
           'type' => 'varchar(128)',
         ),
     ),
+  'description' => array( 
+      'name' => 'description',
+      'attributes' => array( 
+          'isa' => 'str',
+          'type' => 'varchar(128)',
+        ),
+    ),
+  'category_id' => array( 
+      'name' => 'category_id',
+      'attributes' => array( 
+          'isa' => 'int',
+        ),
+    ),
   'address' => array( 
       'name' => 'address',
       'attributes' => array( 
@@ -65,6 +78,8 @@ class NameSchemaProxy extends Schema
         $this->columnNames = array( 
   'id',
   'name',
+  'description',
+  'category_id',
   'address',
   'country',
   'confirmed',
