@@ -4,6 +4,7 @@ use Lazy\SchemaSqlBuilder;
 class Collection2Test extends PHPUnit_Framework_ModelTestCase
 {
 
+
     public function getModels()
     {
         return array( 
@@ -33,7 +34,7 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
                 'identity' => 'foo' . $i,
                 'confirmed' => $i % 2 ? true : false,
             ));
-            ok( $ret->success );
+            $this->resultOK( true, $ret );
         }
 
         $authors = new \tests\AuthorCollection;
@@ -89,8 +90,9 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         $names->where()
             ->equal('name','Foo')
             ->groupBy('name','address');
+        
 
-        ok( $items = $names->items() );
+        ok( $items = $names->items() , 'Test name collection with name,address condition' );
         ok( $size = $names->size() );
         is( 1 , $size );
         is( 'Foo', $items[0]->name );

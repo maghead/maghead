@@ -1,5 +1,4 @@
 <?php
-require_once 'tests/schema/tests/AuthorBooks.php';
 use Lazy\SchemaSqlBuilder;
 
 class ModelTest extends PHPUnit_Framework_ModelTestCase
@@ -135,10 +134,12 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 		// if it's a str type , we should not accept types not str.
 		$n = new \tests\Name;
 		$ret = $n->create(array( 'name' => false , 'country' => 'Tokyo' ));
-		ok( ! $ret->success );
+		ok( $ret->success );
+        ok( $n->id );
 
 		$ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 123 ));
-		ok( ! $ret->success );
+		ok( $ret->success );
+        ok( $n->id );
 	}
 
     public function testDefaultBuilder()
@@ -169,11 +170,11 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
     public function testTypeConstraint()
     {
-        $book = new Book;
+        $book = new \tests\Book;
         $ret = $book->create(array( 
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',
-            'publisher_id' => '',
+            'publisher_id' => '',  /* cast this to null or empty */
         ));
         ok( $ret->success );
     }

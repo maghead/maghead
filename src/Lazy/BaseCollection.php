@@ -18,6 +18,8 @@ class BaseCollection
     implements Iterator
 {
 
+    protected $lastSQL;
+
     /**
      * @var SQLBuilder\QueryBuilder
      */
@@ -117,10 +119,11 @@ class BaseCollection
     public function doFetch()
     {
         /* fetch by current query */
-        $sql = $this->_query->build();
+        $query = $this->_query;
+        $this->lastSQL = $sql = $query->build();
 
         try {
-            $this->handle = $this->dbQuery($sql);
+            $this->handle = $this->dbPrepareAndExecute($sql, $query->vars );
         }
         catch ( Exception $e )
         {
@@ -263,6 +266,14 @@ class BaseCollection
         return $stm;
     }
 
+    public function dbPrepareAndExecute($sql,$args = array() )
+    {
+        // var_dump( $sql, $args ); 
+        $conn = $this->getConnection();
+        $stm = $conn->prepare( $sql );
+        $stm->execute( $args );
+        return $stm;
+    }
 
     /**
      * get default connection object (PDO) from connection manager
@@ -277,6 +288,11 @@ class BaseCollection
         return $connManager->getDefault(); // xxx: support read/write connection later
     }
 
+
+    public function getLastSQL()
+    {
+        return $this->lastSQL;
+    }
 
 }
 
