@@ -17,6 +17,12 @@ class OperationResult
 
     public $args;
 
+
+    /**
+     * variables from SQL Query Builder
+     */
+    public $vars;
+
     public function __construct($message = null, $extra = array() )
     {
         $this->message = $message;
