@@ -13,8 +13,9 @@ class EdmSchemaProxy extends Schema
   'edmNo' => array( 
       'name' => 'edmNo',
       'attributes' => array( 
-          'primary' => true,
+          'type' => 'text',
           'isa' => 'int',
+          'primary' => true,
         ),
     ),
   'edmTitle' => array( 
@@ -41,17 +42,22 @@ class EdmSchemaProxy extends Schema
   'edmContent' => array( 
       'name' => 'edmContent',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'str',
         ),
     ),
   'edmCreatedOn' => array( 
       'name' => 'edmCreatedOn',
       'attributes' => array( 
+          'type' => 'text',
+          'isa' => 'str',
         ),
     ),
   'edmUpdatedOn' => array( 
       'name' => 'edmUpdatedOn',
       'attributes' => array( 
+          'type' => 'text',
+          'isa' => 'str',
           'default' => array( 
               'current_timestamp',
             ),

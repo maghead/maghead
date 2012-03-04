@@ -14,33 +14,36 @@ class NameSchemaProxy extends Schema
       'name' => 'id',
       'attributes' => array( 
           'type' => 'integer',
+          'isa' => 'str',
           'primary' => true,
         ),
     ),
   'name' => array( 
       'name' => 'name',
       'attributes' => array( 
+          'type' => 'varchar(128)',
           'isa' => 'str',
           'required' => true,
-          'type' => 'varchar(128)',
         ),
     ),
   'description' => array( 
       'name' => 'description',
       'attributes' => array( 
-          'isa' => 'str',
           'type' => 'varchar(128)',
+          'isa' => 'str',
         ),
     ),
   'category_id' => array( 
       'name' => 'category_id',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'int',
         ),
     ),
   'address' => array( 
       'name' => 'address',
       'attributes' => array( 
+          'type' => 'varchar(256)',
           'isa' => 'str',
           'validator' => function($val,$args,$record) { 
                     if( preg_match( '/fuck/', $val ) )
@@ -53,12 +56,12 @@ class NameSchemaProxy extends Schema
           'defaultBuilder' => function() { 
                     return 'Default Address';
                 },
-          'type' => 'varchar(256)',
         ),
     ),
   'country' => array( 
       'name' => 'country',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'str',
           'required' => true,
           'validValues' => array( 
@@ -71,6 +74,7 @@ class NameSchemaProxy extends Schema
   'confirmed' => array( 
       'name' => 'confirmed',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'bool',
         ),
     ),

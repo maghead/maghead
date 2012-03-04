@@ -13,13 +13,14 @@ class PublisherSchemaProxy extends Schema
   'name' => array( 
       'name' => 'name',
       'attributes' => array( 
-          'isa' => 'str',
           'type' => 'varchar(128)',
+          'isa' => 'str',
         ),
     ),
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
+          'type' => 'text',
           'isa' => 'int',
           'primary' => true,
         ),
