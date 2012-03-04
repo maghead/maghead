@@ -61,6 +61,20 @@ class Column
 		}
 	}
 
+    public function typeCasting($value)
+    {
+        if( $this->isa === 'int' ) {
+            return (int) $value;
+        }
+        elseif( $this->isa === 'str' ) {
+            return (string) $value;
+        }
+        elseif( $this->isa === 'bool' ) {
+            return (boolean) $value;
+        }
+        return $value;
+    }
+
 	public function checkTypeConstraint($value)
 	{
 		if( $this->isa )
