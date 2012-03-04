@@ -61,7 +61,7 @@ class Column
 		}
 	}
 
-    public function typeCasting($value)
+    public function typeCasting( & $value)
     {
         if( $this->isa === 'int' ) {
             return (int) $value;
