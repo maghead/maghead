@@ -1,25 +1,7 @@
 <?php
-namespace tests {
+namespace tests;
 use Lazy\Schema\SchemaDeclare;
 use Lazy\Schema;
-
-class AuthorBookSchema extends SchemaDeclare
-{
-    function schema()
-    {
-        $this->column('author_id')
-                ->isa('int')
-                ->integer();
-
-        $this->column('book_id')
-                ->isa('int')
-                ->integer();
-
-        $this->hasOne('book'   , 'book_id'   , '\tests\BookSchema'   , 'id' );
-
-        $this->hasOne('author' , 'author_id' , '\tests\AuthorSchema' , 'id' );
-    }
-}
 
 class BookSchema extends SchemaDeclare
 {
@@ -68,7 +50,5 @@ class BookSchema extends SchemaDeclare
          */
         $this->manyToMany( 'authors', 'book_authors', 'author' );
     }
-
-}
 
 }
