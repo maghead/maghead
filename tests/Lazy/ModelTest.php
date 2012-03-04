@@ -142,9 +142,17 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 		ok( ! $ret->success );
         ok( ! $n->id );
 
+
+        /** confirmed will be cast to true **/
 		$ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 123 ));
 		ok( $ret->success );
         ok( $n->id );
+
+        $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo' , 'category_id' => '' ));
+        ok( $ret->success );
+
+        $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo' , 'category_id' => '  ' ));
+        ok( $ret->success );
 	}
 
     public function testDefaultBuilder()
