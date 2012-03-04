@@ -26,8 +26,10 @@ class Column
 	/**
 	 * @var array $attributes
 	 */
-    public $attributes = array();
-
+    public $attributes = array(
+        'type' => 'text',
+        'isa' => 'str',
+    );
 
 	/**
 	 * @var string $name column name (id)
