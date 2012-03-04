@@ -103,6 +103,11 @@ class Column
         return $value;
     }
 
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
 }
 
 
