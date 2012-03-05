@@ -40,6 +40,9 @@ class Inflator
                     return $value = 'TRUE';
                 }
             }
+            elseif( is_null($value) ) {
+                return 'NULL';
+            }
 
             $value = (boolean) $value;
             if( $value ) {
