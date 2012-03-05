@@ -71,6 +71,13 @@ class Column
                 return $value = (string) $value;
             }
             elseif( $this->isa === 'bool' ) {
+                if( is_string($value) ) {
+                    if( strncasecmp($value,'false',5) == 0 ) {
+                        return $value = false;
+                    } elseif( strncasecmp($value,'true',4 ) == 0 ) {
+                        return $value = true;
+                    }
+                }
                 return $value = (boolean) $value;
             }
         }
