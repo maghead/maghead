@@ -8,9 +8,16 @@ use Exception;
 abstract class SchemaDeclare
 {
     const has_one = 1;
+
     const has_many = 2;
+
     const many_to_many = 3;
+
     const belongs_to = 4;
+
+
+
+
 
     public $relations = array();
 

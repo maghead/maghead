@@ -192,6 +192,56 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $ret->success );
     }
 
+    public function testJoin()
+    {
+        $author = new \tests\Author;
+        $author->create(array( 
+            'name' => 'Mary III',
+            'email' => 'zz3@zz3',
+            'identity' => 'zz3',
+        ));
+
+        $ab = new \tests\AuthorBook;
+        $book = new \tests\Book;
+
+        ok( $book->create(array( 'title' => 'Book I' ))->success );
+        ok( $ab->create(array( 
+            'author_id' => $author->id,
+            'book_id' => $book->id,
+        ))->success );
+
+        ok( $book->create(array( 'title' => 'Book II' ))->success );
+        $ab->create(array( 
+            'author_id' => $author->id,
+            'book_id' => $book->id,
+        ));
+
+        ok( $book->create(array( 'title' => 'Book III' ))->success );
+        $ab->create(array( 
+            'author_id' => $author->id,
+            'book_id' => $book->id,
+        ));
+
+        $books = new \tests\BookCollection;
+        $books->join('author_books')
+                ->alias('ab')
+                ->on()
+                    ->equal( 'ab.book_id' , array('m.id') );
+        $books->where()
+                ->equal( 'ab.author_id' , $author->id );
+        $items = $books->items();
+
+        $bookTitles = array();
+        foreach( $items as $item ) {
+            $bookTitles[ $item->title ] = true;
+        }
+
+        count_ok( 3, array_keys($bookTitles) );
+        ok( $bookTitles[ 'Book I' ] );
+        ok( $bookTitles[ 'Book II' ] );
+        ok( $bookTitles[ 'Book III' ] );
+    }
+
     public function testStaticFunctions() 
     {
         $record = \tests\Author::create(array( 

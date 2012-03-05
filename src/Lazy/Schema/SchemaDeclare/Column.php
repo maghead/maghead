@@ -1,10 +1,10 @@
 <?php
 namespace Lazy\Schema\SchemaDeclare;
-
 use Exception;
 
 class Column 
 {
+
     const  attr_any = 0;
     const  attr_array = 1;
     const  attr_string = 2;
@@ -39,24 +39,16 @@ class Column
         $this->name = $name;
         $this->supportedAttributes = array(
 
-            'primary' => self::attr_flag,
-
+            'primary'       => self::attr_flag,
             'autoIncrement' => self::attr_flag,
-
-            'immutable' => self::attr_flag,
-
-            /* unique, should support by SQL syntax */
-            'unique' => self::attr_flag,
-
-            'null' => self::attr_flag,
-
-            'notNull' => self::attr_flag,
-
-            'required' => self::attr_flag,
-
+            'immutable'     => self::attr_flag,
+            'unique'        => self::attr_flag, /* unique, should support by SQL syntax */
+            'null'          => self::attr_flag,
+            'notNull'       => self::attr_flag,
+            'required'      => self::attr_flag,
 
             /* column label */
-            'label' => self::attr_string,
+            'label' => self::attr_any,
 
             'desc'  => self::attr_string,
 
@@ -194,8 +186,9 @@ class Column
             $c = count($args);
             $t = $this->supportedAttributes[ $method ];
 
-            if( $t != self::attr_flag && $c == 0 )
+            if( $t != self::attr_flag && $c == 0 ) {
                 throw new Exception( 'Attribute value is required.' );
+            }
 
             switch( $t ) {
 
@@ -242,8 +235,7 @@ class Column
                      */
                     if( is_callable($args[0]) ) {
                         $this->attributes[ $method ] = $args[0];
-                    } 
-                    else {
+                    } else {
                         throw new Exception("attribute value of $method is not callable type.");
                     }
                     break;
@@ -262,8 +254,6 @@ class Column
         $this->attributes[ $method ] = $args[0];
         return $this;
     }
-
-
 
 }
 

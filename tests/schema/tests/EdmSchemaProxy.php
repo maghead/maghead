@@ -13,9 +13,10 @@ class EdmSchemaProxy extends Schema
   'edmNo' => array( 
       'name' => 'edmNo',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'integer',
           'isa' => 'int',
           'primary' => true,
+          'autoIncrement' => true,
         ),
     ),
   'edmTitle' => array( 
@@ -49,15 +50,15 @@ class EdmSchemaProxy extends Schema
   'edmCreatedOn' => array( 
       'name' => 'edmCreatedOn',
       'attributes' => array( 
-          'type' => 'text',
-          'isa' => 'str',
+          'type' => 'timestamp',
+          'isa' => 'DateTime',
         ),
     ),
   'edmUpdatedOn' => array( 
       'name' => 'edmUpdatedOn',
       'attributes' => array( 
-          'type' => 'text',
-          'isa' => 'str',
+          'type' => 'timestamp',
+          'isa' => 'DateTime',
           'default' => array( 
               'current_timestamp',
             ),

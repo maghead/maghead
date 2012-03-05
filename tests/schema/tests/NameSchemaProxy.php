@@ -14,8 +14,9 @@ class NameSchemaProxy extends Schema
       'name' => 'id',
       'attributes' => array( 
           'type' => 'integer',
-          'isa' => 'str',
+          'isa' => 'int',
           'primary' => true,
+          'autoIncrement' => true,
         ),
     ),
   'name' => array( 
@@ -36,7 +37,7 @@ class NameSchemaProxy extends Schema
   'category_id' => array( 
       'name' => 'category_id',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'integer',
           'isa' => 'int',
         ),
     ),
@@ -74,7 +75,7 @@ class NameSchemaProxy extends Schema
   'confirmed' => array( 
       'name' => 'confirmed',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'boolean',
           'isa' => 'bool',
         ),
     ),

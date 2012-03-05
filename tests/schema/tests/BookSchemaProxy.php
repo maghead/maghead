@@ -35,23 +35,24 @@ class BookSchemaProxy extends Schema
   'publisher_id' => array( 
       'name' => 'publisher_id',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'integer',
           'isa' => 'int',
         ),
     ),
   'published_at' => array( 
       'name' => 'published_at',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'timestamp',
           'isa' => 'DateTime',
         ),
     ),
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'integer',
           'isa' => 'int',
           'primary' => true,
+          'autoIncrement' => true,
         ),
     ),
 );

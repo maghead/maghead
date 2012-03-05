@@ -121,10 +121,9 @@ class Column
 
     public function getLabel()
     {
-        return $this->label;
+        if( $this->label )
+            return _( $this->label );
     }
-
-
 
 }
 
