@@ -242,6 +242,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $bookTitles[ 'Book III' ] );
     }
 
+
     public function testStaticFunctions() 
     {
         $record = \tests\Author::create(array( 

@@ -92,13 +92,13 @@ abstract class SchemaDeclare
         }
 
         return array(
-            'label' => $this->getLabel(), // model label
-            'table' => $this->getTable(),
-            'columns' => $columnArray,
-            'column_names' => $this->columnNames,
-            'primary_key' => $this->primaryKey,
-            'model_class' => $this->getModelClass(),
-            'relations' => $this->relations,
+            'label'          => $this->getLabel(), // model label
+            'table'          => $this->getTable(),
+            'columns'        => $columnArray,
+            'column_names'   => $this->columnNames,
+            'primary_key'    => $this->primaryKey,
+            'model_class'    => $this->getModelClass(),
+            'relations'      => $this->relations,
             'data_source_id' => $this->dataSourceId,
         );
     }
@@ -259,11 +259,17 @@ abstract class SchemaDeclare
 
     /**
      * define foreign key reference
+     *
+     * publisher(
+     *    id => author.post
+     *
+     * )
      */
     protected function belongsTo($foreignClass,$foreignColumn)
     {
         $this->relations[ 'belongs_to:' . $foreignClass ] = array(
             'type' => self::belongs_to,
+            'self' => array( ),
             'foreign' => array(
                 'schema' => $foreignClass,
                 'column' => $foreignColumn,
@@ -272,6 +278,15 @@ abstract class SchemaDeclare
     }
 
 
+
+    /**
+     * hasOne relationship
+     *
+     *   model(
+     *      post_id => post
+     *   )
+     *
+     */
     protected function hasOne($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
     {
         // foreignColumn is default to foreignClass.primary key
