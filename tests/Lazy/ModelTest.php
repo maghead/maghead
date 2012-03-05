@@ -147,6 +147,23 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 		$ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 123 ));
 		ok( $ret->success );
         ok( $n->id );
+        ok( $n->delete()->success );
+
+		$ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => true ));
+		ok( $ret->success );
+        ok( $n->id );
+        is( true, $n->confirmed );
+        ok( $n->load( $n->id )->success );
+        is( true, $n->confirmed );
+        ok( $n->delete()->success );
+
+		$ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => false ));
+		ok( $ret->success );
+        ok( $n->id );
+        is( false, $n->confirmed );
+        ok( $n->load( $n->id )->success );
+        is( false, $n->confirmed );
+        ok( $n->delete()->success );
 
         $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo' , 'category_id' => '' ));
         ok( $ret->success );
