@@ -10,6 +10,7 @@ class InflatorTest extends PHPUnit_Framework_TestCase
         is( '1.1', Lazy\Inflator::inflate( 1.1 , 'str' ) );
         is( 'TRUE' , Lazy\Inflator::inflate( 1.1 , 'bool' ) );
         is( 'FALSE' , Lazy\Inflator::inflate( 0 , 'bool' ) );
+        is( 'NULL' , Lazy\Inflator::inflate( null , 'bool' ) );
     }
 }
 
