@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-06</date>
-  <time>01:21:04</time>
+  <time>01:22:43</time>
   <version>
     <release>1.0.10</release>
     <api>1.0.10</api>
@@ -114,7 +114,7 @@
       <file name="src/Lazy/OperationResult/OperationResult.php" role="php" md5sum="5523ecd8943e5bf852b2e293601deb49"/>
       <file name="src/Lazy/OperationResult/OperationSuccess.php" role="php" md5sum="4cc9654ac10ec84c2d9b97088a2a2f20"/>
       <file name="src/Lazy/QueryDriver.php" role="php" md5sum="5dbbfdba16ef91a5d38e405625bd5d14"/>
-      <file name="src/Lazy/Schema/Column.php" role="php" md5sum="f16512c484020ab49c8e65c6163000e8"/>
+      <file name="src/Lazy/Schema/Column.php" role="php" md5sum="f64fad536c2e792fde4f4219f863a6df"/>
       <file name="src/Lazy/Schema/MixinSchemaDeclare.php" role="php" md5sum="cb9874944bbee37a9f62166a7bc2e7f3"/>
       <file name="src/Lazy/Schema/SchemaDeclare/Column.php" role="php" md5sum="4ea7e476763fce9b484079bb3199adc1"/>
       <file name="src/Lazy/Schema/SchemaDeclare/Exporter.php" role="php" md5sum="6d9bf43092743f246924820c549d19fa"/>
@@ -138,7 +138,7 @@
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
       <file name="package.ini" role="data" md5sum="9d91093342cd77543a3f40aeb6d93c1a"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="615dfc5efa1a72ccb751b2dfb4db6ec5"/>
+      <file name="lazy" role="script" md5sum="8519777679ec8571120f6151912d9422"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
