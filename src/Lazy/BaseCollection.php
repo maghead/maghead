@@ -279,7 +279,6 @@ class BaseCollection
 
     public function dbPrepareAndExecute($sql,$args = array() )
     {
-        // var_dump( $sql, $args ); 
         $conn = $this->getConnection();
         $stm = $conn->prepare( $sql );
         $stm->execute( $args );
