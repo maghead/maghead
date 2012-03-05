@@ -108,6 +108,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         is( false , $author->confirmed );
 
         $ret = $author->update(array( 'name' => 'Bar' ));
+        var_dump( $ret . '' ); 
+        
         ok( $ret->success );
 
         is( 'Bar', $author->name );

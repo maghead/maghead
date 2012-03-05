@@ -16,6 +16,12 @@ class Inflator
         elseif( $dataType == 'str' ) {
             return (string) $value;
         }
+        elseif( $dataType == 'DateTime' ) {
+            if( is_a($value, 'DateTime') ) {
+                return $value->format( DateTime::ATOM );
+            }
+            return $value; // might return ""
+        }
         elseif( $dataType == 'bool' ) {
             /**
              * PDO can't accept false or true boolean value, can only accept string

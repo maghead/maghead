@@ -121,14 +121,24 @@ class BaseCollection
         /* fetch by current query */
         $query = $this->_query;
         $this->lastSQL = $sql = $query->build();
+        $vars = $query->vars;
+
+        // XXX: here we use SQLBuilder\QueryBuilder to build our variables,
+        //   but PDO doesnt accept boolean type value, we need to transform it.
+        foreach( $vars as $k => & $v ) {
+            if( $v === false )
+                $v = 'FALSE';
+            elseif( $v === true )
+                $v = 'TRUE';
+        }
 
         try {
-            $this->handle = $this->dbPrepareAndExecute($sql, $query->vars );
+            $this->handle = $this->dbPrepareAndExecute($sql, $vars );
         }
         catch ( Exception $e )
         {
-            throw $e;
             return new OperationError( 'Collection fetch failed: ' . $e->getMessage() , array( 
+                'vars' => $vars,
                 'sql' => $sql,
                 'exception' => $e,
             ));
