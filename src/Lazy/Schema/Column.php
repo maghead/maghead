@@ -72,9 +72,19 @@ class Column
             }
             elseif( $this->isa === 'bool' || $this->isa === 'boolean' ) {
                 if( is_string($value) ) {
-                    if( strncasecmp($value,'false',5) == 0 ) {
+                    if( ! $value ) {
                         return $value = false;
-                    } elseif( strncasecmp($value,'true',4 ) == 0 ) {
+                    }
+                    elseif( $value === '1' ) {
+                        return $value = true;
+                    }
+                    elseif( $value === '0' ) {
+                        return $value = false;
+                    }
+                    elseif( strncasecmp($value,'false',5) == 0 ) {
+                        return $value = false;
+                    } 
+                    elseif( strncasecmp($value,'true',4 ) == 0 ) {
                         return $value = true;
                     }
                 }
