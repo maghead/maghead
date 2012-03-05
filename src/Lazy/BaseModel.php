@@ -457,6 +457,7 @@ class BaseModel
             ? $this->_data[$k] : null;
 
         $args = $this->filterArrayWithColumns($args);
+        $sql = null;
 
         try 
         {
@@ -535,7 +536,6 @@ class BaseModel
         $result->id = $kVal;
         return $result;
     }
-
 
 
     /**
