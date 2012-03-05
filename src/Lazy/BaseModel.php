@@ -487,9 +487,14 @@ class BaseModel
                 if( isset($args[$n]) )
                 {
                     // short alias for argument value.
-                    $val = $args[$n];
+                    $val = & $args[$n];
 
-                    if( $val !== null && $msg = $c->checkTypeConstraint( $val ) ) {
+                    if( $val !== null ) {
+                        $c->typeCasting( $args[$n] );
+                    }
+
+                    // xxx: make this optional.
+                    if( $val !== null && $c->required && $msg = $c->checkTypeConstraint( $val ) ) {
                         throw new Exception($msg);
                     }
 

@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-06</date>
-  <time>00:43:45</time>
+  <time>01:13:06</time>
   <version>
     <release>1.0.10</release>
     <api>1.0.10</api>
@@ -36,7 +36,7 @@
       <file name="tests/Lazy/ExecutiveQueryBuilderTest.php" role="test" md5sum="88d8f9a60ccba199feb45c73616a3d34"/>
       <file name="tests/Lazy/InflatorTest.php" role="test" md5sum="31f1a84b14745c3638b17d985faa9735"/>
       <file name="tests/Lazy/InflectorTest.php" role="test" md5sum="f7dc7688a60d18b8c7111a1e080fd0eb"/>
-      <file name="tests/Lazy/ModelTest.php" role="test" md5sum="b932d5bf45cb943d992ebf2f50cd22f2"/>
+      <file name="tests/Lazy/ModelTest.php" role="test" md5sum="2e19a155a514071fb723e5d1f322b0a6"/>
       <file name="tests/Lazy/PgsqlModelTest.php" role="test" md5sum="4f225642ff1abbc5871a9c1d4c177bdc"/>
       <file name="tests/Lazy/SchemaDeclare/ColumnTest.php" role="test" md5sum="35d7ea0727a8b5d84bc06585aa4ed2bc"/>
       <file name="tests/Lazy/SchemaDeclare/ExporterTest.php" role="test" md5sum="849110a96c4b5388a783d6edfe7b547a"/>
@@ -88,7 +88,7 @@
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/Lazy/Adapter/PdoAdapter.php" role="php" md5sum="c5476be0988d632622d1c22c42b0e7c2"/>
       <file name="src/Lazy/BaseCollection.php" role="php" md5sum="f7493336e1b85b6ea117ac191bd09755"/>
-      <file name="src/Lazy/BaseModel.php" role="php" md5sum="09d9f049fae403f3ea15401a8306c341"/>
+      <file name="src/Lazy/BaseModel.php" role="php" md5sum="b9aa08a578d65ed216f5f6cf4a791675"/>
       <file name="src/Lazy/ClosureSerializer.php" role="php" md5sum="4f3700f6f978ffec92e4a460481d5c0e"/>
       <file name="src/Lazy/CodeGen/ClassConst.php" role="php" md5sum="b7a8737b1be1758471c47f47bcf7fb79"/>
       <file name="src/Lazy/CodeGen/ClassMember.php" role="php" md5sum="686c5a04dbcb4c2b5e63a947e1ceca53"/>
@@ -118,7 +118,7 @@
       <file name="src/Lazy/Schema/MixinSchemaDeclare.php" role="php" md5sum="cb9874944bbee37a9f62166a7bc2e7f3"/>
       <file name="src/Lazy/Schema/SchemaDeclare/Column.php" role="php" md5sum="4ea7e476763fce9b484079bb3199adc1"/>
       <file name="src/Lazy/Schema/SchemaDeclare/Exporter.php" role="php" md5sum="6d9bf43092743f246924820c549d19fa"/>
-      <file name="src/Lazy/Schema/SchemaDeclare.php" role="php" md5sum="252d0d11b12dbc81932fec33e4179a0e"/>
+      <file name="src/Lazy/Schema/SchemaDeclare.php" role="php" md5sum="cd077d2fc0e071ff4b9755bcf931d017"/>
       <file name="src/Lazy/Schema/SchemaFinder.php" role="php" md5sum="30708e603965c7f09d1be012d6e04b56"/>
       <file name="src/Lazy/Schema/SchemaGenerator.php" role="php" md5sum="4859fdbc64e5ea69ea7e881e8d61e028"/>
       <file name="src/Lazy/Schema/Templates/BaseCollection.php.twig" role="php" md5sum="4f3fa444776cc4f53a42dbd3dee0ce9d"/>
@@ -138,7 +138,7 @@
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
       <file name="package.ini" role="data" md5sum="9d91093342cd77543a3f40aeb6d93c1a"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="64850a77a71dca3c055c84e8a4f168bc"/>
+      <file name="lazy" role="script" md5sum="3c8f9056399ddfceb392b02c73e5e621"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
