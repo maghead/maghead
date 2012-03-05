@@ -127,6 +127,7 @@ class BaseCollection
         }
         catch ( Exception $e )
         {
+            throw $e;
             return new OperationError( 'Collection fetch failed: ' . $e->getMessage() , array( 
                 'sql' => $sql,
                 'exception' => $e,

@@ -20,9 +20,10 @@ class PublisherSchemaProxy extends Schema
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'integer',
           'isa' => 'int',
           'primary' => true,
+          'autoIncrement' => true,
         ),
     ),
 );

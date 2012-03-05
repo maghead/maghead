@@ -13,23 +13,24 @@ class AuthorBookSchemaProxy extends Schema
   'author_id' => array( 
       'name' => 'author_id',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'integer',
           'isa' => 'int',
         ),
     ),
   'book_id' => array( 
       'name' => 'book_id',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'integer',
           'isa' => 'int',
         ),
     ),
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'integer',
           'isa' => 'int',
           'primary' => true,
+          'autoIncrement' => true,
         ),
     ),
 );
