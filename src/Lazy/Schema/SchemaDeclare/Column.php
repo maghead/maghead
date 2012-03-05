@@ -113,6 +113,11 @@ class Column
         return $this;
     }
 
+    public function bool()
+    {
+        return $this->boolean();
+    }
+
     public function boolean()
     {
         $this->attributes['type'] = 'boolean';
