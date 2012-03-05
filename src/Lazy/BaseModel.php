@@ -458,6 +458,7 @@ class BaseModel
 
         $args = $this->filterArrayWithColumns($args);
         $sql = null;
+        $vars = null;
 
         try 
         {
@@ -521,7 +522,8 @@ class BaseModel
             $query->update($args)->where()
                 ->equal( $k , $kVal );
             $sql = $query->build();
-            $stm = $this->dbPrepareAndExecute($sql,$query->vars);
+            $vars = $query->vars;
+            $stm = $this->dbPrepareAndExecute($sql,$vars);
 
             // merge updated data
             $this->_data = array_merge($this->_data,$args);
@@ -530,6 +532,7 @@ class BaseModel
         catch( Exception $e ) 
         {
             return $this->reportError( 'Update failed', array(
+                'vars' => $vars,
                 'args' => $args,
                 'sql' => $sql,
                 'exception' => $e,
