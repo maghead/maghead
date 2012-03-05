@@ -259,7 +259,7 @@ class BaseModel
                 }
 
                 if( $c->filter || $c->canonicalizer ) {
-                    $c->canonicalizeValue( $args[$n], $this, $args );
+                    $c->canonicalizeValue( $val , $this, $args );
                 }
 
                 // do validate
@@ -272,6 +272,9 @@ class BaseModel
                         $validateResults[$n] = $r;
                     }
                 }
+
+                if( $val )
+                    $args[ $n ] = Inflator::inflate( $val , $c->isa );
             }
 
             if( $validateFail ) {
@@ -508,6 +511,9 @@ class BaseModel
                     if( $r = $this->_validate_validvalues( $c, $args[$n] ,$args, $validateFail ) ) {
                         $validateResults[$n] = $r;
                     }
+
+                    // inflate
+                    $args[ $n ] = Inflator::inflate( $args[$n] , $c->isa );
                 }
             }
 
@@ -525,6 +531,7 @@ class BaseModel
 
             // merge updated data
             $this->_data = array_merge($this->_data,$args);
+            $this->deflate();
             $this->afterUpdate($args);
         } 
         catch( Exception $e ) 

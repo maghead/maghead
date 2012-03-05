@@ -114,6 +114,7 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
                 'identity' => 'foo' . $i,
                 'confirmed' => true,
             ));
+            ok( $author->confirmed , 'is true' );
             ok( $ret->success );
         }
 
@@ -122,10 +123,10 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         $authors->where()
                 ->equal( 'confirmed' , true );
 
-
         foreach( $authors as $author ) {
             ok( $author->confirmed );
         }
+
         is( 10, $authors->size() ); 
 
         /* page 1, 10 per page */

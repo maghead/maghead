@@ -40,7 +40,14 @@ class Deflator
             return (float) $value;
         }
         elseif( $dataType == 'DateTime' ) {
-            return new DateTime( $value );
+            // already a DateTime object
+            if( is_a( $value , 'DateTime' ) ) {
+                return $value;
+            }
+            if( $value ) {
+                return new DateTime( $value );
+            }
+            return null;
         }
         return $value;
     }
