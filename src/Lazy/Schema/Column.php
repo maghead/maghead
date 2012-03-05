@@ -71,7 +71,9 @@ class Column
                 return $value = (string) $value;
             }
             elseif( $this->isa === 'bool' || $this->isa === 'boolean' ) {
-                if( is_string($value) ) {
+
+                if( is_string($value) ) 
+                {
                     if( ! $value ) {
                         return $value = false;
                     }
@@ -88,8 +90,8 @@ class Column
                         return $value = true;
                     }
                 }
+
                 $value = (boolean) $value;
-                settype( $value , 'boolean');
                 return $value;
             }
         }

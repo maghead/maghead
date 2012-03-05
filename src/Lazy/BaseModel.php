@@ -487,15 +487,12 @@ class BaseModel
                 // column validate
                 if( isset($args[$n]) )
                 {
-                    // short alias for argument value.
-                    $val = & $args[$n];
-
-                    if( $val !== null ) {
+                    if( $args[$n] !== null ) {
                         $c->typeCasting( $args[$n] );
                     }
 
                     // xxx: make this optional.
-                    if( $val !== null && $c->required && $msg = $c->checkTypeConstraint( $val ) ) {
+                    if( $args[$n] !== null && $c->required && $msg = $c->checkTypeConstraint( $args[$n] ) ) {
                         throw new Exception($msg);
                     }
 
@@ -506,12 +503,11 @@ class BaseModel
                     // do validate
                     if( $c->validator ) {
                         $validateResults[$n] = 
-                            $this->_validate_validator( $c, $val, $args, $validateFail );
+                            $this->_validate_validator( $c, $args[$n], $args, $validateFail );
                     }
-                    if( $r = $this->_validate_validvalues( $c, $val ,$args, $validateFail ) ) {
+                    if( $r = $this->_validate_validvalues( $c, $args[$n] ,$args, $validateFail ) ) {
                         $validateResults[$n] = $r;
                     }
-
                 }
             }
 
@@ -519,8 +515,10 @@ class BaseModel
             // $args = $this->deflateData( $args ); // apply args to columns
 
             $query = $this->createQuery();
+
             $query->update($args)->where()
                 ->equal( $k , $kVal );
+
             $sql = $query->build();
             $vars = $query->vars;
             $stm = $this->dbPrepareAndExecute($sql,$vars);
