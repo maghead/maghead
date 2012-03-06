@@ -1,9 +1,9 @@
 <?php
 namespace tests;
 
-use Lazy\Schema;
+use Lazy\Schema\RuntimeSchema;
 
-class NameSchemaProxy extends Schema
+class NameSchemaProxy extends RuntimeSchema
 {
 
     public function __construct()
@@ -89,7 +89,7 @@ class NameSchemaProxy extends Schema
   'country',
   'confirmed',
 );
-        $this->primaryKey  =  'id';
+        $this->primaryKey  = 'id';
         $this->table       = 'names';
         $this->modelClass  = 'tests\\Name';
         $this->label       = 'Name';

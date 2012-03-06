@@ -28,7 +28,7 @@ class SchemaDeclareTest extends \PHPUnit_Framework_TestCase
         $schemaArray = $declare->export();
         ok( $schemaArray );
 
-        $schema = new \Lazy\Schema;
+        $schema = new \Lazy\Schema\RuntimeSchema;
         $schema->import( $schemaArray );
 
         ok( $schema );

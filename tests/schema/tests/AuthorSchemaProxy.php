@@ -1,9 +1,9 @@
 <?php
 namespace tests;
 
-use Lazy\Schema;
+use Lazy\Schema\RuntimeSchema;
 
-class AuthorSchemaProxy extends Schema
+class AuthorSchemaProxy extends RuntimeSchema
 {
 
     public function __construct()
@@ -66,7 +66,7 @@ class AuthorSchemaProxy extends Schema
   'identity',
   'confirmed',
 );
-        $this->primaryKey  =  'id';
+        $this->primaryKey  = 'id';
         $this->table       = 'authors';
         $this->modelClass  = 'tests\\Author';
         $this->label       = 'Author';

@@ -4,9 +4,9 @@
 namespace {{ ns }};
 {% endif %}
 
-use Lazy\Schema;
+use Lazy\Schema\RuntimeSchema;
 
-class {{ schema.getModelName }}SchemaProxy extends Schema
+class {{ schema.getModelName }}SchemaProxy extends RuntimeSchema
 {
 
     public function __construct()
@@ -14,7 +14,7 @@ class {{ schema.getModelName }}SchemaProxy extends Schema
         /** columns might have closure, so it can not be const */
         $this->columns     = {{schema_data.columns|export}};
         $this->columnNames = {{schema_data.column_names|export}};
-        $this->primaryKey  =  {{schema_data.primary_key|export}};
+        $this->primaryKey  = {{schema_data.primary_key|export}};
         $this->table       = {{schema_data.table|export}};
         $this->modelClass  = {{schema_data.model_class|export}};
         $this->label       = {{schema_data.label|export}};
