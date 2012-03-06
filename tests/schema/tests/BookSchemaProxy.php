@@ -1,9 +1,9 @@
 <?php
 namespace tests;
 
-use Lazy\Schema;
+use Lazy\Schema\RuntimeSchema;
 
-class BookSchemaProxy extends Schema
+class BookSchemaProxy extends RuntimeSchema
 {
 
     public function __construct()
@@ -64,7 +64,7 @@ class BookSchemaProxy extends Schema
   'published_at',
   'id',
 );
-        $this->primaryKey  =  'id';
+        $this->primaryKey  = 'id';
         $this->table       = 'books';
         $this->modelClass  = 'tests\\Book';
         $this->label       = 'Book';

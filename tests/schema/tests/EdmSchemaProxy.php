@@ -1,9 +1,9 @@
 <?php
 namespace tests;
 
-use Lazy\Schema;
+use Lazy\Schema\RuntimeSchema;
 
-class EdmSchemaProxy extends Schema
+class EdmSchemaProxy extends RuntimeSchema
 {
 
     public function __construct()
@@ -74,7 +74,7 @@ class EdmSchemaProxy extends Schema
   'edmCreatedOn',
   'edmUpdatedOn',
 );
-        $this->primaryKey  =  'edmNo';
+        $this->primaryKey  = 'edmNo';
         $this->table       = 'Edm';
         $this->modelClass  = 'tests\\Edm';
         $this->label       = 'Edm';
