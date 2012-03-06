@@ -199,7 +199,7 @@ class BaseCollection
         $h = $this->_handle;
 
         if( $h === null )
-            throw new Exception( 'Empty handle: ' . static::model_class );
+            throw new Exception( get_class($this) . ':' . $this->_result->message );
 
         $this->itemData = array();
         while( $o = $h->fetchObject( static::model_class ) ) {

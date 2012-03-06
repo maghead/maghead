@@ -1,10 +1,10 @@
 <?php
 namespace tests;
 use Lazy\Schema\SchemaDeclare;
-use Lazy\Schema;
 
 class AuthorBookSchema extends SchemaDeclare
 {
+
     function schema()
     {
         $this->column('author_id')
