@@ -62,31 +62,14 @@ class SchemaGenerator
             }
         }
 
-        if( ! class_exists($class) )  {
-            $this->tryRequire( $sourceFile );
-        }
         return array( $class, $sourceFile );
     }
-
 
     private function preventFileDir($path,$mode = 0755)
     {
         $dir = dirname($path);
         if( ! file_exists($dir) )
             mkdir( $dir , $mode, true );
-    }
-
-    protected function tryRequire($file)
-    {
-        // try to require 
-        try {
-            require $file;
-        } 
-        catch ( GlobalError $e ) 
-        {
-            $this->logger->error( $e->getMessage() );
-            throw $e;
-        }
     }
 
     protected function buildSchemaProxyClass($schema)
@@ -133,10 +116,6 @@ class SchemaGenerator
 
         $this->logger->info( "Generating schema proxy $schemaProxyClass => $sourceFile" );
         file_put_contents( $sourceFile , $source );
-
-        if( ! class_exists($schemaProxyClass) )  {
-            $this->tryRequire( $sourceFile );
-        }
 
         return array( $schemaProxyClass , $sourceFile );
     }
