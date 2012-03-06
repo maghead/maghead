@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-06</date>
-  <time>02:38:02</time>
+  <time>17:50:25</time>
   <version>
     <release>1.0.10</release>
     <api>1.0.10</api>
@@ -120,7 +120,7 @@
       <file name="src/Lazy/Schema/SchemaDeclare/Exporter.php" role="php" md5sum="6d9bf43092743f246924820c549d19fa"/>
       <file name="src/Lazy/Schema/SchemaDeclare.php" role="php" md5sum="cd077d2fc0e071ff4b9755bcf931d017"/>
       <file name="src/Lazy/Schema/SchemaFinder.php" role="php" md5sum="30708e603965c7f09d1be012d6e04b56"/>
-      <file name="src/Lazy/Schema/SchemaGenerator.php" role="php" md5sum="4859fdbc64e5ea69ea7e881e8d61e028"/>
+      <file name="src/Lazy/Schema/SchemaGenerator.php" role="php" md5sum="a4284cd1b8a5c6d95ffbee7c01936ba9"/>
       <file name="src/Lazy/Schema/Templates/BaseCollection.php.twig" role="php" md5sum="4f3fa444776cc4f53a42dbd3dee0ce9d"/>
       <file name="src/Lazy/Schema/Templates/BaseModel.php.twig" role="php" md5sum="ac3366307f22b37af72af3def8790620"/>
       <file name="src/Lazy/Schema/Templates/Class.php.twig" role="php" md5sum="edd4c2ac7a28d7e74554c7c0cbd68948"/>
@@ -138,7 +138,7 @@
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
       <file name="package.ini" role="data" md5sum="9d91093342cd77543a3f40aeb6d93c1a"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="99274c486aa2fb9ae00167cdcdfb4a9c"/>
+      <file name="lazy" role="script" md5sum="b5577ef2189613fbe826e12848560ef8"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
