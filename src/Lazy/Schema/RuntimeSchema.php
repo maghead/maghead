@@ -1,8 +1,8 @@
 <?php
-namespace Lazy;
+namespace Lazy\Schema;
 use Lazy\Schema\Column;
 
-class Schema
+class RuntimeSchema
 {
     public $relations = array();
 
