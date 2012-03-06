@@ -20,6 +20,15 @@ class SchemaFinder
         $this->paths[] = $path;
     }
 
+
+    public function _loadSchemaFile($file) 
+    {
+        $code = file_get_contents($file);
+        if( preg_match( '#' . preg_quote('SchemaDeclare') . '#xsm' , $code ) ) {
+            require_once $file;
+        }
+    }
+
     public function loadFiles()
     {
         foreach( $this->paths as $path ) {
@@ -30,10 +39,11 @@ class SchemaFinder
                 // directory iterator
                 $rdi   = new RecursiveDirectoryIterator($path);
                 $rii   = new RecursiveIteratorIterator($rdi);
-                $regex = new RegexIterator($rii, '/.*Schema\.php$/i', RecursiveRegexIterator::GET_MATCH);
+                $regex = new RegexIterator($rii, '/^.*\.php$/i', RecursiveRegexIterator::GET_MATCH);
                 foreach( $regex as $k => $files ) {
                     foreach( $files as $file ) {
-                        require_once $file;
+                        // make sure there schema class.
+                        $this->_loadSchemaFile($file);
                     }
                 }
             }
