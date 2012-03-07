@@ -103,7 +103,38 @@ To create a model record:
         'name' => 'Foo'
     ));
 
-    Author::load(array( 'name' => 'Foo' ));
+Find record:
+    
+    $author->find(123);
+    $author->find(array( 'foo' => 'Name' ));
+
+Find record with (static):
+
+    $record = Author::load(array( 'name' => 'Foo' ));
+
+Find record with primary key:
+
+    $record = Author::load( 1 );
+
+Update record:
+
+    $author->update(array(  
+        'name' => 'Author',
+    ));
+
+Update record (static):
+
+    $ret = Author::update( array( 'name' => 'Author' ) )
+        ->where()
+            ->equal('id',3)
+            ->execute();
+
+    if( $ret->success ) {
+        echo $ret->message;
+    }
+    else {
+        echo $ret->exception->getMessage();
+    }
 
 To create a collection object:
 
