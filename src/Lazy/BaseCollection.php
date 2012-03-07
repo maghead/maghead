@@ -18,12 +18,14 @@ class BaseCollection
     implements Iterator
 {
 
-    protected $lastSQL;
+    protected $_lastSQL;
+
+    protected $_vars;
 
     /**
      * @var SQLBuilder\QueryBuilder
      */
-    protected $currentQuery;
+    protected $_currentQuery;
 
     /**
      * @var PDOStatement handle
@@ -46,6 +48,9 @@ class BaseCollection
      */
     protected $itemCursor = null;
 
+
+    protected $_result;
+
     public function __construct() {
         // init a query
     }
@@ -63,7 +68,7 @@ class BaseCollection
             return $this->handle ?: $this->fetch();
         }
         elseif( $key == '_query' ) {
-            return $this->currentQuery ?: $this->createQuery();
+            return $this->_currentQuery ?: $this->createQuery();
         }
         elseif( $key == '_items' ) {
             return $this->itemData ?: $this->_readRows();
@@ -91,7 +96,7 @@ class BaseCollection
         $q->table( $this->_schema->table );
         $q->select('*');
         $q->alias('m'); // main table alias
-        return $this->currentQuery = $q;
+        return $this->_currentQuery = $q;
     }
 
 
@@ -104,7 +109,7 @@ class BaseCollection
     public function fetch($force = false)
     {
         if( $this->handle == null || $force ) {
-            $ret = $this->doFetch();
+            $this->_result = $this->doFetch();
         }
         return $this->handle;
     }
@@ -120,8 +125,9 @@ class BaseCollection
     {
         /* fetch by current query */
         $query = $this->_query;
-        $this->lastSQL = $sql = $query->build();
-        $vars = $query->vars;
+        $this->_lastSQL = $sql = $query->build();
+        $this->_vars = $vars = $query->vars;
+
 
         // XXX: here we use SQLBuilder\QueryBuilder to build our variables,
         //   but PDO doesnt accept boolean type value, we need to transform it.
@@ -299,10 +305,26 @@ class BaseCollection
     }
 
 
+
+
+
+
     public function getLastSQL()
     {
-        return $this->lastSQL;
+        return $this->_lastSQL;
     }
+
+
+    public function getVars()
+    {
+        return $this->_vars;
+    }
+
+    public function getResult()
+    {
+        return $this->result;
+    }
+
 
 }
 
