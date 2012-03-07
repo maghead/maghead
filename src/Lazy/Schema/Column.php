@@ -1,5 +1,6 @@
 <?php
 namespace Lazy\Schema;
+use DateTime;
 
 class Column
 {
@@ -134,16 +135,23 @@ class Column
         if( $this->isa == 'bool' )
             return $value ? _('Yes') : _('No');
 
-        if( $value )
-            return _( $value );
-
+        if( $value ) {
+            if( is_string($value) ) {
+                return _( $value );
+            } 
+            // quick inflator for DateTime object.
+            elseif( is_a($value,'DateTime') ) {
+                return $value->format( DateTime::ATOM );
+            }
+        }
         return $value;
     }
 
     public function getLabel()
     {
-        if( $this->label )
+        if( $this->label ) {
             return _( $this->label );
+        }
     }
 
 }
