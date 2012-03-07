@@ -284,16 +284,14 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $ret = \tests\Author::update(array( 'name' => 'Rename' ))
             ->where()
                 ->equal('name','Mary')
-                ->back()
                 ->execute();
         ok( $ret->success );
 
         $ret = \tests\Author::delete()
             ->where()
                 ->equal('name','Rename')
-            ->back()->execute();
+            ->execute();
         ok( $ret->success );
-
 	}
 }
 

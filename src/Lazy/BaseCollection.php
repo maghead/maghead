@@ -153,6 +153,7 @@ class BaseCollection
     }
 
 
+
     /**
      * get selected item size
      *
