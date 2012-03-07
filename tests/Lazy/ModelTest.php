@@ -209,6 +209,31 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $ret->success );
     }
 
+
+    public function testUpdateNull()
+    {
+        $author = new \tests\Author;
+        $author->create(array( 
+            'name' => 'Mary III',
+            'email' => 'zz3@zz3',
+            'identity' => 'zz3',
+        ));
+
+        $id = $author->id;
+
+        ok( $author->update(array( 'name' => 'I' ))->success );
+        is( $id , $author->id );
+        is( 'I', $author->name );
+
+        ok( $author->update(array( 'name' => null ))->success );
+        is( $id , $author->id );
+        is( null, $author->name );
+
+        ok( $author->load( $author->id )->success );
+        is( $id , $author->id );
+        is( null, $author->name );
+    }
+
     public function testJoin()
     {
         $author = new \tests\Author;
