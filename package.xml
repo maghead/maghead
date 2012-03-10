@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-03-08</date>
-  <time>12:17:59</time>
+  <date>2012-03-10</date>
+  <time>21:37:31</time>
   <version>
-    <release>1.0.10</release>
-    <api>1.0.10</api>
+    <release>1.0.11</release>
+    <api>1.0.11</api>
   </version>
   <stability>
     <release>stable</release>
@@ -136,9 +136,9 @@
       <file name="src/Lazy/SchemaSqlBuilder/SqliteDriver.php" role="php" md5sum="821c763550daf387a062669d566e5f0e"/>
       <file name="src/Lazy/SchemaSqlBuilder.php" role="php" md5sum="03e631d3d4878835b373d9e0c9a7233e"/>
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
-      <file name="package.ini" role="data" md5sum="9d91093342cd77543a3f40aeb6d93c1a"/>
+      <file name="package.ini" role="data" md5sum="dd2e53c533b7525ac67a856830d70846"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="ab9b673a479492a2fefacd56bebb1993"/>
+      <file name="lazy" role="script" md5sum="10e971b5f17ef6defe89d02fc805be92"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
