@@ -160,13 +160,47 @@ Has one Relation:
 
     just do left join on main table with b.
 
+    $author->profile = array( ... ); // create with current author_id
+
 Has many Relation:
 
     just do left join on main table with b.
 
+    create:
+
+        $father->children[] = array( ... );   // append one book with current author_id
+
+    search
+    
+        $father->children->where()
+            ->like( 'name' , '%Bill%' );
 
 
-ManyToMany Relation:
+Many to many relation:
+
+    create:
+
+    $author->books[] = array( 'title' => 'New book' );   
+
+
+/*
+    find "books" relation 
+    found many to many relationship:(author => author_books => books)
+
+    create new book 
+    book.id belongs to author_books.book_id
+    author_books.author_id belongs to author.id
+    create author_book link with (author_id, book_id)
+*/
+
+
+    list:
+
+    foreach( $author->books as $book ) {
+
+    }
+
+ManyToMany relation implementation:
 
 tell schema, `AuthorBook.author_id` is linking to `self.id`
 
