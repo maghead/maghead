@@ -262,10 +262,9 @@ abstract class SchemaDeclare
      *
      * publisher(
      *    id => author.post
-     *
      * )
      */
-    protected function belongsTo($foreignClass,$foreignColumn)
+    protected function belongsTo($foreignClass,$foreignColumn, $selfKey)
     {
         $this->relations[ 'belongs_to:' . $foreignClass ] = array(
             'type' => self::belongs_to,

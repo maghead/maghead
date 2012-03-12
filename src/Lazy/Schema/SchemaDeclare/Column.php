@@ -4,7 +4,6 @@ use Exception;
 
 class Column 
 {
-
     const  attr_any = 0;
     const  attr_array = 1;
     const  attr_string = 2;
