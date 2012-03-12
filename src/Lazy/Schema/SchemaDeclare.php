@@ -40,7 +40,6 @@ abstract class SchemaDeclare
 
     public $dataSourceId = 'default';
 
-
     public function __construct()
     {
         $this->build();
@@ -258,7 +257,7 @@ abstract class SchemaDeclare
 
 
     /**
-     * define foreign key reference
+     * define self primary key to foreign key reference
      *
      * comments(
      *    post_id => author.comment_id
@@ -274,7 +273,10 @@ abstract class SchemaDeclare
     {
         $this->relations[ 'belongs_to:' . $foreignClass ] = array(
             'type' => self::belongs_to,
-            'self' => array( ),
+            'self' => array(
+                'schema' => $this->getSchemaProxyClass(),
+                'column' => $this->primaryKey,
+            ),
             'foreign' => array(
                 'schema' => $foreignClass,
                 'column' => $foreignColumn,
@@ -297,12 +299,11 @@ abstract class SchemaDeclare
         // foreignColumn is default to foreignClass.primary key
 
         // $this->accessors[ $accessor ] = array( );
-        $selfClass = $this->getModelClass();
         $this->relations[ $accessor ] = array(
             'type'           => self::has_one,
             'self'           => array(
                 'column'  => $selfColumn,
-                'schema'  => $selfClass,
+                'schema' => $this->getSchemaProxyClass(),
             ),
             'foreign' => array(
                 'column' => $foreignColumn,
@@ -316,12 +317,11 @@ abstract class SchemaDeclare
 
     protected function hasMany($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
-        $modelClass = $this->getModelClass();
         $this->relations[ $accessor ] = array(
             'type'           => self::has_many,
             'self' => array(
                 'column'           => $selfColumn,
-                'schema'           => $modelClass,
+                'schema'           => $self->getSchemaProxyClass(),
             ),
             'foreign'  => array( 
                 'column' => $foreignColumn,
@@ -333,7 +333,6 @@ abstract class SchemaDeclare
     protected function manyToMany($accessor, $relationId, $relationForeignKey )
     {
         $modelClass = $this->getModelClass();
-
         if( ! isset($this->relations[ $relationId ]) ) {
             throw new Exception("Relation $relationId is not defined.");
         }
@@ -372,7 +371,8 @@ abstract class SchemaDeclare
         return $this->label ?: $this->_modelClassToLabel();
     }
 
-    protected function _modelClassToLabel() {
+    protected function _modelClassToLabel() 
+    {
         /* Get the latest token. */
         if( preg_match( '/(\w+)(?:Model)?$/', $this->getModelClass() , $reg) ) 
         {

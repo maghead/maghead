@@ -285,6 +285,12 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
+    public function testRelation()
+    {
+
+    }
+
+
     public function testStaticFunctions() 
     {
         $record = \tests\Author::create(array( 
