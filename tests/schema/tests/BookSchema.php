@@ -35,7 +35,7 @@ class BookSchema extends SchemaDeclare
          * $book->publisher->name;
          *
          **/
-        $this->hasOne('publisher', 'publisher_id', '\tests\PublisherSchema', 'id' );
+        $this->belongsTo('publisher', 'publisher_id', '\tests\PublisherSchema', 'id' );
 
         /**
          * accessor , mapping self.id => BookAuthors.book_id

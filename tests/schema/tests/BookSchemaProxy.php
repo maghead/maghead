@@ -71,14 +71,14 @@ class BookSchemaProxy extends RuntimeSchema
         $this->label           = 'Book';
         $this->relations       = array( 
   'publisher' => array( 
-      'type' => 1,
+      'type' => 4,
       'self' => array( 
+          'schema' => 'tests\\BookSchema',
           'column' => 'publisher_id',
-          'schema' => 'tests\\BookSchemaProxy',
         ),
       'foreign' => array( 
-          'column' => 'id',
           'schema' => '\\tests\\PublisherSchema',
+          'column' => 'id',
         ),
     ),
   'book_authors' => array( 
