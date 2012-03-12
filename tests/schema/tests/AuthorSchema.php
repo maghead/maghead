@@ -68,7 +68,11 @@ class AuthorSchema extends SchemaDeclare
          *
          */
         $this->hasMany( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
-        // $this->belongsTo( '\tests\Company' , 'company' );
+
+        $this->hasMany( '_author_books', '\tests\AuthorBookSchema', 'author_id', 'id');
+
+
+        $this->manyToMany( 'books', '_author_books' , 'book' );
     }
 
 }

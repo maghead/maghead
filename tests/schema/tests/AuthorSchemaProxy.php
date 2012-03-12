@@ -83,6 +83,24 @@ class AuthorSchemaProxy extends RuntimeSchema
           'schema' => '\\tests\\AddressSchema',
         ),
     ),
+  '_author_books' => array( 
+      'type' => 2,
+      'self' => array( 
+          'column' => 'id',
+          'schema' => 'tests\\AuthorSchema',
+        ),
+      'foreign' => array( 
+          'column' => 'author_id',
+          'schema' => '\\tests\\AuthorBookSchema',
+        ),
+    ),
+  'books' => array( 
+      'type' => 3,
+      'relation' => array( 
+          'id' => '_author_books',
+          'id2' => 'book',
+        ),
+    ),
 );
     }
 

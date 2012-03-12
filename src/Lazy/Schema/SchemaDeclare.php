@@ -312,18 +312,24 @@ abstract class SchemaDeclare extends SchemaBase
         );
     }
 
-    protected function manyToMany($accessor, $relationId, $relationForeignKey )
-    {
-        $modelClass = $this->getModelClass();
-        if( ! isset($this->relations[ $relationId ]) ) {
-            throw new Exception("Relation $relationId is not defined.");
-        }
 
-        $this->relations[ $accessor ] = array(
-            'type'           => self::many_to_many,
-            'relation'       => $relationId,
-            'relation_foreign_key'  => $relationForeignKey,
-        );
+    /**
+     * @param string $relationId a hasMany relationship 
+     */
+    protected function manyToMany($accessor, $relationId, $foreignRelationId )
+    {
+        if( $r = $this->getRelation($relationId) ) {
+            $this->relations[ $accessor ] = array(
+                'type'           => self::many_to_many,
+                'relation'        => array( 
+                    'id'             => $relationId,
+                    'id2'            => $foreignRelationId,
+                ),
+            );
+            return;
+        }
+        throw new Exception("Relation $relationId is not defined.");
+
     }
 
     public function getReferenceSchemas($recursive = true)
