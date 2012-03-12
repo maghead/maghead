@@ -3,10 +3,29 @@ namespace tests;
 use Lazy\Schema\SchemaDeclare;
 use Lazy\Schema;
 
+class AddressSchema extends SchemaDeclare
+{
+    function schema()
+    {
+        $this->column('author_id')
+                ->integer();
+
+        $this->column('address')
+                ->varchar(128);
+
+
+        /**
+         * $address->author 
+         */
+        // $this->belongsTo( '\tests\Author' , 'author_id', 'author' );
+    }
+}
+
 class AuthorSchema extends SchemaDeclare
 {
     function schema()
     {
+
         $this->column('name')
             ->isa('str')
             ->varchar(128);
@@ -29,7 +48,14 @@ class AuthorSchema extends SchemaDeclare
 
         $this->mixin('tests\MetadataMixinSchema');
 
-        // $this->belongsTo( '\tests\AuthorBookSchema' , 'author_id' );
+
+        /**
+         * foreach( $author->addresses as $address ) {
+         *
+         * }
+         */
+        // $this->hasMany( '\tests\Address' , 'author_id' , 'addresses' );
+        // $this->belongsTo( '\tests\Company' , 'company' );
     }
 
 }
