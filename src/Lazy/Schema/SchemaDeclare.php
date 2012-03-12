@@ -297,7 +297,7 @@ abstract class SchemaDeclare extends SchemaBase
     }
 
 
-    protected function hasMany($accessor,$foreignClass,$foreignColumn,$selfColumn)
+    protected function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
         $this->relations[ $accessor ] = array(
             'type' => self::has_many,
