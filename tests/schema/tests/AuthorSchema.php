@@ -50,11 +50,24 @@ class AuthorSchema extends SchemaDeclare
 
 
         /**
-         * foreach( $author->addresses as $address ) {
+         * for append:
          *
-         * }
+         *     $author->address[] = array(  );
+         *
+         *     $record = $author->createAddress(array( ... ));  // return false on failure.
+         *
+         * for fetch:
+         *
+         *     foreach( $author->addresses as $address ) {
+         *
+         *     }
+         *
+         * for search/find:
+         *
+         *     $address = $author->addresses->find(k);
+         *
          */
-        // $this->hasMany( '\tests\Address' , 'author_id' , 'addresses' );
+        $this->hasMany( '\tests\Address' , 'author_id' , 'addresses' );
         // $this->belongsTo( '\tests\Company' , 'company' );
     }
 
