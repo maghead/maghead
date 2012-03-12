@@ -260,11 +260,17 @@ abstract class SchemaDeclare
     /**
      * define foreign key reference
      *
-     * publisher(
-     *    id => author.post
+     * comments(
+     *    post_id => author.comment_id
      * )
+     *
+     * $post->publisher
+     *
+     * @param string $foreignClass foreign schema class.
+     * @param string $foreignColumn foreign reference schema column.
+     * @param string $selfKey self reference key. (default by id)
      */
-    protected function belongsTo($foreignClass,$foreignColumn, $selfKey)
+    protected function belongsTo($accessor, $foreignClass,$foreignColumn)
     {
         $this->relations[ 'belongs_to:' . $foreignClass ] = array(
             'type' => self::belongs_to,
@@ -305,6 +311,9 @@ abstract class SchemaDeclare
         );
     }
 
+
+
+
     protected function hasMany($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
         $modelClass = $this->getModelClass();
@@ -315,8 +324,8 @@ abstract class SchemaDeclare
                 'schema'           => $modelClass,
             ),
             'foreign'  => array( 
+                'column' => $foreignColumn,
                 'schema' => $foreignClass,
-                'column' => $foreignColumn
             )
         );
     }
@@ -354,6 +363,9 @@ abstract class SchemaDeclare
         }
         return $schemas;
     }
+
+
+
 
     public function getLabel()
     {
