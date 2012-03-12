@@ -309,6 +309,12 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $addresses = $author->addresses->items();
         ok( $addresses );
         is( 'Harvard' , $addresses[0]->address );
+
+        $a = $addresses[0];
+        ok( $retAuthor = $a->author );
+        ok( $retAuthor->id );
+        ok( $retAuthor->name );
+        is( 'Z', $retAuthor->name );
     }
 
 

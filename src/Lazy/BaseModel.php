@@ -725,10 +725,8 @@ class BaseModel
         if( $relation = $this->_schema->getRelation( $key ) ) {
             if( SchemaDeclare::has_many === $relation['type'] ) {
                 $sColumn = $relation['self']['column'];
-
                 $fSchema = new $relation['foreign']['schema'];
                 $fColumn = $relation['foreign']['column'];
-
                 $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
                 if( ! $this->hasValue($sColumn) )
@@ -743,6 +741,21 @@ class BaseModel
                     $fColumn => $this->getValue( $sColumn )
                 ));
                 return $collection;
+            }
+            // belongs to one record
+            elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
+                $sColumn = $relation['self']['column'];
+                $fSchema = new $relation['foreign']['schema'];
+                $fColumn = $relation['foreign']['column'];
+                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+                $model = $fpSchema->newModel();
+
+                if( ! $this->hasValue($sColumn) )
+                    throw new Exception("The value of $sColumn is not defined.");
+                $sValue = $this->getValue( $sColumn );
+
+                $ret = $model->load(array( $fColumn => $sValue ));
+                return $model;
             }
         }
     }
