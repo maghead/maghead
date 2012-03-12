@@ -11,6 +11,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             '\tests\BookSchema',
             '\tests\AuthorBookSchema',
             '\tests\NameSchema',
+            '\tests\AddressSchema',
         );
     }
 
@@ -301,10 +302,24 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             'address' => 'Taiwan Taipei',
         ));
 
+        $address->create(array( 
+            'author_id' => $author->id,
+            'address' => 'Taiwan Taipei II',
+        ));
+
+        // xxx: provide getAddresses() method generator
         $addresses = $author->addresses;
         ok( $addresses );
 
+        $items = $addresses->items();
+        ok( $items );
+
         ok( $size = $addresses->size() );
+        is( 2 , $size );
+
+        foreach( $author->addresses as $ad ) {
+            ok( $ad->delete()->success );
+        }
     }
 
 
