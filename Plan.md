@@ -170,11 +170,38 @@ Has many Relation:
 
         $father->children[] = array( ... );   // append one book with current author_id
 
+        /*
+
+        find "children" relationship
+
+        found hasMany relationship
+
+        hasMany "child".
+
+        find hasMany foreight key (fathor_id)
+
+        create nwe child with current fathor_id
+
+        */
+
     search
     
         $father->children->where()
             ->like( 'name' , '%Bill%' );
 
+        /*
+
+        find "children" relationship
+
+        found hasMany relationship
+
+        hasMany "child".
+
+        find hasMany foreight key (fathor_id)
+
+        select children with where child.fathor_id = self.id
+
+        */
 
 Many to many relation:
 
@@ -183,15 +210,21 @@ Many to many relation:
     $author->books[] = array( 'title' => 'New book' );   
 
 
-/*
-    find "books" relation 
-    found many to many relationship:(author => author_books => books)
+    /*
+        find "books" relation 
 
-    create new book 
-    book.id belongs to author_books.book_id
-    author_books.author_id belongs to author.id
-    create author_book link with (author_id, book_id)
-*/
+        found many to many relationship:(author => author_books => books)
+
+        find target model (book)
+
+        create new book 
+
+        the "books" is related to "author_books" (book.id belongs to author_books.book_id)
+
+        author_books.author_id belongs to author.id
+
+        create author_book link with (author_id, book_id)
+    */
 
 
     list:
@@ -199,6 +232,10 @@ Many to many relation:
     foreach( $author->books as $book ) {
 
     }
+
+    find:
+
+        $author->books->find( 123 );   // find 123 in a subset of author books
 
 ManyToMany relation implementation:
 
