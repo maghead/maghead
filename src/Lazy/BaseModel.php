@@ -725,6 +725,8 @@ class BaseModel
             if( SchemaDeclare::has_many === $relation['type'] ) {
                 $fSchema = $relation['foreign']['schema'];
                 $fColumn = $relation['foreign']['column'];
+                $model = $fSchema->newModel();
+
             }
 
 

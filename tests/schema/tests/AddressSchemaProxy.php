@@ -43,8 +43,6 @@ class AddressSchemaProxy extends RuntimeSchema
         $this->table       = 'addresses';
         $this->modelClass  = 'tests\\Address';
         $this->label       = 'Address';
-        $this->relations   = array( 
-);
     }
 
 }

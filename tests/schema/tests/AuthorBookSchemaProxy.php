@@ -43,30 +43,6 @@ class AuthorBookSchemaProxy extends RuntimeSchema
         $this->table       = 'author_books';
         $this->modelClass  = 'tests\\AuthorBook';
         $this->label       = 'AuthorBook';
-        $this->relations   = array( 
-  'book' => array( 
-      'type' => 1,
-      'self' => array( 
-          'column' => 'book_id',
-          'schema' => 'tests\\AuthorBookSchemaProxy',
-        ),
-      'foreign' => array( 
-          'column' => 'id',
-          'schema' => '\\tests\\BookSchema',
-        ),
-    ),
-  'author' => array( 
-      'type' => 1,
-      'self' => array( 
-          'column' => 'author_id',
-          'schema' => 'tests\\AuthorBookSchemaProxy',
-        ),
-      'foreign' => array( 
-          'column' => 'id',
-          'schema' => '\\tests\\AuthorSchema',
-        ),
-    ),
-);
     }
 
 }

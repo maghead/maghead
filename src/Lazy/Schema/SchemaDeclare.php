@@ -91,12 +91,13 @@ abstract class SchemaDeclare
         }
 
         return array(
-            'label'          => $this->getLabel(), // model label
-            'table'          => $this->getTable(),
-            'columns'        => $columnArray,
-            'column_names'   => $this->columnNames,
-            'primary_key'    => $this->primaryKey,
-            'model_class'    => $this->getModelClass(),
+            'label'            => $this->getLabel(), // model label
+            'table'            => $this->getTable(),
+            'columns'          => $columnArray,
+            'column_names'     => $this->columnNames,
+            'primary_key'      => $this->primaryKey,
+            'model_class'      => $this->getModelClass(),
+            'collection_class' => $this->getCollectionClass(),
             'relations'      => $this->relations,
             'data_source_id' => $this->dataSourceId,
         );

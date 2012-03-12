@@ -18,6 +18,8 @@ class RuntimeSchema
 
     public $modelClass;
 
+    public $collectionClass;
+
     public $columnCached = array();
 
     public function import($schemaArray)
@@ -59,6 +61,12 @@ class RuntimeSchema
             $columns[$name] = $this->getColumn( $name );
         }
         return $columns;
+    }
+
+    public function newModel()
+    {
+        $class = $this->modelClass;
+        return new $class;
     }
 
 }
