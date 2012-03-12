@@ -4,6 +4,7 @@ use PDO;
 use PDOException;
 use Exception;
 use Iterator;
+use ArrayAccess;
 
 use SQLBuilder\QueryBuilder;
 use Lazy\OperationResult\OperationSuccess;
@@ -15,7 +16,7 @@ use Lazy\ConnectionManager;
  * base collection class
  */
 class BaseCollection
-    implements Iterator
+    implements Iterator, ArrayAccess
 {
 
     protected $_lastSQL;
@@ -252,6 +253,34 @@ class BaseCollection
     }
 
 
+
+	/** array access interface */
+	
+	public function offsetSet($name,$value)
+	{
+		$this->_items[ $name ] = $value;
+	}
+	
+	public function offsetExists($name)
+	{
+		return isset($this->_items[ $name ]);
+	}
+	
+	public function offsetGet($name)
+	{
+		if( isset( $this->_items[ $name ] ) )
+			return $this->_items[ $name ];
+	}
+	
+	public function offsetUnset($name)
+	{
+		unset($this->_items[$name]);
+	}
+
+
+
+
+
     public function toArray()
     {
         $array = array();
@@ -261,6 +290,7 @@ class BaseCollection
         }
         return $array;
     }
+
 
 
 
