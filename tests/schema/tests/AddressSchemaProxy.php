@@ -45,6 +45,17 @@ class AddressSchemaProxy extends RuntimeSchema
         $this->collectionClass = 'tests\\AddressCollection';
         $this->label           = 'Address';
         $this->relations       = array( 
+  'author' => array( 
+      'type' => 4,
+      'self' => array( 
+          'schema' => 'tests\\AddressSchema',
+          'column' => 'author_id',
+        ),
+      'foreign' => array( 
+          'schema' => '\\tests\\AuthorSchema',
+          'column' => 'id',
+        ),
+    ),
 );
     }
 

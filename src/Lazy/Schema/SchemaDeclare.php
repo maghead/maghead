@@ -247,15 +247,19 @@ abstract class SchemaDeclare extends SchemaBase
      *
      * @param string $foreignClass foreign schema class.
      * @param string $foreignColumn foreign reference schema column.
-     * @param string $selfKey self reference key. (default by id)
      */
-    protected function belongsTo($accessor, $foreignClass,$foreignColumn)
+    protected function belongsTo($accessor, $selfColumn, $foreignClass, $foreignColumn = null)
     {
-        $this->relations[ 'belongs_to:' . $foreignClass ] = array(
+        if( null === $foreignColumn ) {
+            $s = new $foreignClass;
+            $foreignColumn = $s->primaryKey;
+        }
+
+        $this->relations[ $accessor ] = array(
             'type' => self::belongs_to,
             'self' => array(
-                'schema' => $this->getSchemaProxyClass(),
-                'column' => $this->primaryKey,
+                'schema' => get_class($this),
+                'column' => $selfColumn,
             ),
             'foreign' => array(
                 'schema' => $foreignClass,
