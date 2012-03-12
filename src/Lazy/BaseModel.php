@@ -10,6 +10,12 @@ use Lazy\OperationResult\OperationError;
 use Lazy\OperationResult\OperationSuccess;
 use Lazy\ConnectionManager;
 
+
+/**
+ * Base Model class,
+ * every model class extends from this class.
+ *
+ */
 class BaseModel
 {
     public $_result;
@@ -936,7 +942,6 @@ class BaseModel
         return $this->_result = new OperationSuccess($message,$extra);
     }
 
-
     public function getColumn($n)
     {
         return $this->_schema->getColumn($n);
@@ -961,6 +966,7 @@ class BaseModel
     {
         return $this->_schema->table;
     }
+
 
 }
 
