@@ -69,10 +69,9 @@ class AuthorSchema extends SchemaDeclare
          */
         $this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
 
-        $this->many( '_author_books', '\tests\AuthorBookSchema', 'author_id', 'id');
+        $this->many( 'author_books', '\tests\AuthorBookSchema', 'author_id', 'id');
 
-
-        $this->manyToMany( 'books', '_author_books' , 'book' );
+        $this->manyToMany( 'books', 'author_books' , 'book' );
     }
 
 }

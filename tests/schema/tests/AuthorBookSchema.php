@@ -11,6 +11,10 @@ class AuthorBookSchema extends SchemaDeclare
                 ->isa('int')
                 ->integer();
 
+        $this->column('created_on')
+                ->isa('str')
+                ->timestamp();
+
         $this->column('book_id')
                 ->isa('int')
                 ->integer();
