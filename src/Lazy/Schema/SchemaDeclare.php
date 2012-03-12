@@ -5,20 +5,8 @@ use Lazy\Inflector;
 use Lazy\ConfigLoader;
 use Exception;
 
-abstract class SchemaDeclare
+abstract class SchemaDeclare extends SchemaBase
 {
-    const has_one = 1;
-
-    const has_many = 2;
-
-    const many_to_many = 3;
-
-    const belongs_to = 4;
-
-
-
-
-
     public $relations = array();
 
     // public $accessors = array();
@@ -247,14 +235,6 @@ abstract class SchemaDeclare
     }
 
 
-    public function getRelation($relationId)
-    {
-        if( isset($this->relations[ $relationId ]) ) {
-            return $this->relations[ $relationId ];
-        }
-    }
-
-
 
     /**
      * define self primary key to foreign key reference
@@ -313,15 +293,13 @@ abstract class SchemaDeclare
     }
 
 
-
-
     protected function hasMany($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
         $this->relations[ $accessor ] = array(
-            'type'           => self::has_many,
+            'type' => self::has_many,
             'self' => array(
                 'column'           => $selfColumn,
-                'schema'           => $this->getSchemaProxyClass(),
+                'schema'           => get_class($this),
             ),
             'foreign'  => array( 
                 'column' => $foreignColumn,
@@ -384,7 +362,6 @@ abstract class SchemaDeclare
             return ucfirst(preg_replace( '/[_]/' , ' ' , $label ));
         }
     }
-
 
 }
 

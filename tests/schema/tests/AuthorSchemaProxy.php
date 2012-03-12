@@ -76,7 +76,7 @@ class AuthorSchemaProxy extends RuntimeSchema
       'type' => 2,
       'self' => array( 
           'column' => 'id',
-          'schema' => 'tests\\AuthorSchemaProxy',
+          'schema' => 'tests\\AuthorSchema',
         ),
       'foreign' => array( 
           'column' => 'author_id',

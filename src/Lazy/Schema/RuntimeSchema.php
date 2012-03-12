@@ -3,7 +3,7 @@ namespace Lazy\Schema;
 use Lazy\Schema\Column;
 use Exception;
 
-class RuntimeSchema
+class RuntimeSchema extends SchemaBase
 {
     public $relations = array();
 
@@ -32,12 +32,6 @@ class RuntimeSchema
     }
 
 
-    public function getRelation($relationId)
-    {
-        if( isset($this->relations[ $relationId ]) ) {
-            return $this->relations[ $relationId ];
-        }
-    }
 
     public function getColumn($name)
     {
@@ -63,6 +57,7 @@ class RuntimeSchema
         return $columns;
     }
 
+
     public function newModel()
     {
         return new $this->modelClass;
@@ -72,5 +67,6 @@ class RuntimeSchema
     {
         return new $this->collectionClass;
     }
+
 
 }
