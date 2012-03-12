@@ -289,7 +289,19 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     public function testHasManyRelationCreate()
     {
         $author = new \tests\Author;
-        // $author->addresses[] = 
+        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        ok( $author->id );
+
+        $address = $author->addresses->create(array( 
+            'address' => 'farfaraway'
+        ));
+
+        ok( $address->id );
+        ok( $address->author_id );
+        is( $author->id, $address->author_id );
+
+        is( 'farfaraway' , $address->address );
+
     }
 
 
@@ -335,6 +347,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         foreach( $author->addresses as $ad ) {
             ok( $ad->delete()->success );
         }
+
+        $author->delete();
     }
 
 

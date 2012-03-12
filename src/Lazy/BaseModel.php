@@ -733,6 +733,9 @@ class BaseModel
                 $collection = $fpSchema->newCollection();
                 $collection->where()
                     ->equal( $fColumn, $this->getValue( $sColumn ) );
+                $collection->setPresetVars(array( 
+                    $fColumn => $this->getValue( $sColumn )
+                ));
                 return $collection;
             }
         }

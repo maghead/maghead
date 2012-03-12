@@ -42,6 +42,13 @@ class BaseCollection
     protected $itemData = null;
 
 
+
+	/**
+	 * preset vars for creating
+	 */
+	protected $_presetVars = array();
+
+
     /**
      * current data item cursor position
      *
@@ -50,7 +57,14 @@ class BaseCollection
     protected $itemCursor = null;
 
 
+
+	/**
+	 * operation result object
+	 */
     protected $_result;
+
+
+
 
     public function __construct() {
         // init a query
@@ -280,7 +294,6 @@ class BaseCollection
 
 
 
-
     public function toArray()
     {
         $array = array();
@@ -337,8 +350,25 @@ class BaseCollection
 
 
 
+	public function create($args)
+	{
+		if( $this->_presetVars ) {
+			$args = array_merge( $this->_presetVars , $args );
+		}
+		$model = $this->_schema->newModel();
+		$return = $model->create($args);
+		if( true === $return->success ) {
+			return $model;
+		}
+		$this->_result = $return;
+		return false;
+	}
 
 
+	public function setPresetVars($vars)
+	{
+		$this->_presetVars = $vars;
+	}
 
     public function getLastSQL()
     {
