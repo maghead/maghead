@@ -272,6 +272,9 @@ class BaseCollection
 
     public function offsetSet($name,$value)
     {
+        if( null === $name ) {
+            return $this->create($value);
+        }
         $this->_items[ $name ] = $value;
     }
 
