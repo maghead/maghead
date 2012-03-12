@@ -757,6 +757,49 @@ class BaseModel
                 $ret = $model->load(array( $fColumn => $sValue ));
                 return $model;
             }
+            elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
+                $rId = $relation['relation']['id'];  // use relationId to get middle relation.
+                $rId2 = $relation['relation']['id2'];  // get external relationId from the middle relation.
+
+                $middleRelation = $this->_schema->getRelation( $rId );
+
+                // eg. author_books
+                $sColumn = $middleRelation['foreign']['column'];
+                $sSchema = new $middleRelation['foreign']['schema'];
+                $spSchema = SchemaLoader::load( $sSchema->getSchemaProxyClass() );
+
+                $foreignRelation = $spSchema->getRelation( $rId2 );
+
+                $fSchema = new $foreignRelation['foreign']['schema'];
+                $fColumn = $foreignRelation['foreign']['column'];
+                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+
+                $collection = $fpSchema->newCollection();
+
+                /**
+                 * join middle relation ship
+                 *
+                 *    Select * from books b (r2) left join author_books ab on ( ab.book_id = b.id )
+                 *       where b.author_id = :author_id
+                 */
+                $collection->join( $sSchema->getTable() )->alias('b')
+                                ->on()
+                                ->equal( 'b.' . $foreignRelation['self']['column'] , array( 'm.' . $fColumn ) );
+
+                $value = $this->getValue( $middleRelation['self']['column'] );
+                // var_dump( $middleRelation['self']['column']  );
+
+                $collection->where()
+                    ->equal( 
+                        'b.' . $middleRelation['foreign']['column'],
+                        $value
+                    );
+                return $collection;
+            }
+            else {
+                throw new Exception("The relationship type is not supported.");
+            }
+
         }
     }
 

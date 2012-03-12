@@ -277,6 +277,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $bookTitles = array();
         foreach( $items as $item ) {
             $bookTitles[ $item->title ] = true;
+            $item->delete();
         }
 
         count_ok( 3, array_keys($bookTitles) );
@@ -285,6 +286,50 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $bookTitles[ 'Book III' ] );
     }
 
+    public function testManyToManyRelationFetch()
+    {
+        $author = new \tests\Author;
+        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+
+        $ab = new \tests\AuthorBook;
+        $book = new \tests\Book;
+
+        ok( $book->create(array( 'title' => 'Book I Ex' ))->success );
+
+        ok( $book->create(array( 'title' => 'Book I' ))->success );
+        ok( $ab->create(array( 
+            'author_id' => $author->id,
+            'book_id' => $book->id,
+        ))->success );
+
+        ok( $book->create(array( 'title' => 'Book II' ))->success );
+        $ab->create(array( 
+            'author_id' => $author->id,
+            'book_id' => $book->id,
+        ));
+
+        ok( $book->create(array( 'title' => 'Book III' ))->success );
+        $ab->create(array( 
+            'author_id' => $author->id,
+            'book_id' => $book->id,
+        ));
+
+        // retrieve books from relationshipt
+        $books = $author->books;
+        is( 3, $books->size() , 'We have 3 books' );
+
+
+        $bookTitles = array();
+        foreach( $books->items() as $item ) {
+            $bookTitles[ $item->title ] = true;
+            $item->delete();
+        }
+
+        count_ok( 3, array_keys($bookTitles) );
+        ok( $bookTitles[ 'Book I' ] );
+        ok( $bookTitles[ 'Book II' ] );
+        ok( $bookTitles[ 'Book III' ] );
+    }
 
     public function testHasManyRelationCreate()
     {
@@ -315,6 +360,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $retAuthor->id );
         ok( $retAuthor->name );
         is( 'Z', $retAuthor->name );
+
+        $author->delete();
     }
 
     public function testHasManyRelationFetch()

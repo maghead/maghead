@@ -94,8 +94,10 @@ class BookSchemaProxy extends RuntimeSchema
     ),
   'authors' => array( 
       'type' => 3,
-      'relation' => 'book_authors',
-      'relation_foreign_key' => 'author',
+      'relation' => array( 
+          'id' => 'book_authors',
+          'id2' => 'author',
+        ),
     ),
 );
     }
