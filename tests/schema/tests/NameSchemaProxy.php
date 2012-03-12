@@ -9,7 +9,7 @@ class NameSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns     = array( 
+        $this->columns         = array( 
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
@@ -80,7 +80,7 @@ class NameSchemaProxy extends RuntimeSchema
         ),
     ),
 );
-        $this->columnNames = array( 
+        $this->columnNames     = array( 
   'id',
   'name',
   'description',
@@ -89,10 +89,13 @@ class NameSchemaProxy extends RuntimeSchema
   'country',
   'confirmed',
 );
-        $this->primaryKey  = 'id';
-        $this->table       = 'names';
-        $this->modelClass  = 'tests\\Name';
-        $this->label       = 'Name';
+        $this->primaryKey      = 'id';
+        $this->table           = 'names';
+        $this->modelClass      = 'tests\\Name';
+        $this->collectionClass = 'tests\\NameCollection';
+        $this->label           = 'Name';
+        $this->relations       = array( 
+);
     }
 
 }

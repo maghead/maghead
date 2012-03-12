@@ -65,8 +65,12 @@ class RuntimeSchema
 
     public function newModel()
     {
-        $class = $this->modelClass;
-        return new $class;
+        return new $this->modelClass;
+    }
+
+    public function newCollection()
+    {
+        return new $this->collectionClass;
     }
 
 }

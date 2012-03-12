@@ -9,7 +9,7 @@ class AuthorSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns     = array( 
+        $this->columns         = array( 
   'created_on' => array( 
       'name' => 'created_on',
       'attributes' => array( 
@@ -60,16 +60,30 @@ class AuthorSchemaProxy extends RuntimeSchema
         ),
     ),
 );
-        $this->columnNames = array( 
+        $this->columnNames     = array( 
   'name',
   'email',
   'identity',
   'confirmed',
 );
-        $this->primaryKey  = 'id';
-        $this->table       = 'authors';
-        $this->modelClass  = 'tests\\Author';
-        $this->label       = 'Author';
+        $this->primaryKey      = 'id';
+        $this->table           = 'authors';
+        $this->modelClass      = 'tests\\Author';
+        $this->collectionClass = 'tests\\AuthorCollection';
+        $this->label           = 'Author';
+        $this->relations       = array( 
+  'addresses' => array( 
+      'type' => 2,
+      'self' => array( 
+          'column' => 'id',
+          'schema' => 'tests\\AuthorSchemaProxy',
+        ),
+      'foreign' => array( 
+          'column' => 'author_id',
+          'schema' => '\\tests\\AddressSchema',
+        ),
+    ),
+);
     }
 
 }
