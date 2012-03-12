@@ -29,12 +29,12 @@ class RuntimeSchema
         $this->modelClass = $schemaArray['model_class'];
     }
 
+
     public function getRelation($relationId)
     {
-        if( ! isset($this->relations[ $relationId ]) ) {
-            throw new Exception("Relation $relationId is not defined.");
+        if( isset($this->relations[ $relationId ]) ) {
+            return $this->relations[ $relationId ];
         }
-        return $this->relations[ $relationId ];
     }
 
     public function getColumn($name)

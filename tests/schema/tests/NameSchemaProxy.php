@@ -93,6 +93,8 @@ class NameSchemaProxy extends RuntimeSchema
         $this->table       = 'names';
         $this->modelClass  = 'tests\\Name';
         $this->label       = 'Name';
+        $this->relations   = array( 
+);
     }
 
 }

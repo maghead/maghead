@@ -78,6 +78,8 @@ class EdmSchemaProxy extends RuntimeSchema
         $this->table       = 'Edm';
         $this->modelClass  = 'tests\\Edm';
         $this->label       = 'Edm';
+        $this->relations   = array( 
+);
     }
 
 }

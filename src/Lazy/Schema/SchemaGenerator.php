@@ -76,6 +76,7 @@ class SchemaGenerator
     {
         $schemaArray = $schema->export();
         $source = $this->renderCode( 'Schema.php.twig', array(
+            // XXX: take off schema_data
             'schema_data' => $schemaArray,
             'schema' => $schema,
         ));
