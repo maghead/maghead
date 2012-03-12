@@ -286,7 +286,14 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
-    public function testRelationFetch()
+    public function testHasManyRelationCreate()
+    {
+        $author = new \tests\Author;
+        // $author->addresses[] = 
+    }
+
+
+    public function testHasManyRelationFetch()
     {
         $author = new \tests\Author;
         ok( $author );
@@ -313,6 +320,14 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         $items = $addresses->items();
         ok( $items );
+
+        ok( $addresses[0] );
+        ok( $addresses[1] );
+        ok( ! isset($addresses[2]) );
+        ok( ! @$addresses[2] );
+
+        ok( $addresses[0]->id );
+        ok( $addresses[1]->id );
 
         ok( $size = $addresses->size() );
         is( 2 , $size );

@@ -721,6 +721,7 @@ class BaseModel
         if( isset( $this->_data[ $key ] ) )
             return $this->_data[ $key ];
 
+        // return relation object
         if( $relation = $this->_schema->getRelation( $key ) ) {
             if( SchemaDeclare::has_many === $relation['type'] ) {
                 $sColumn = $relation['self']['column'];
