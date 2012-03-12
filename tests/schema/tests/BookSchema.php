@@ -42,7 +42,7 @@ class BookSchema extends SchemaDeclare
          *
          * link book => author_books
          */
-        $this->hasMany('book_authors', '\tests\AuthorBookSchema', 'book_id', 'id');
+        $this->many('book_authors', '\tests\AuthorBookSchema', 'book_id', 'id');
 
 
         /**
