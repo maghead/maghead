@@ -728,7 +728,7 @@ class BaseModel
                 $fSchema = new $relation['foreign']['schema'];
                 $fColumn = $relation['foreign']['column'];
 
-                $fpSchema = SchemaLoader::load( $this->getSchemaProxyClass() );
+                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
                 $collection = $fpSchema->newCollection();
                 $collection->where()
                     ->equal( $fColumn, $this->getValue( $sColumn ) );
