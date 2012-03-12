@@ -730,6 +730,12 @@ class BaseModel
                 $fColumn = $relation['foreign']['column'];
 
                 $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+
+                if( ! $this->hasValue($sColumn) )
+                    throw new Exception("The value of $sColumn is not defined.");
+
+                $sValue = $this->getValue( $sColumn );
+
                 $collection = $fpSchema->newCollection();
                 $collection->where()
                     ->equal( $fColumn, $this->getValue( $sColumn ) );
@@ -739,6 +745,11 @@ class BaseModel
                 return $collection;
             }
         }
+    }
+
+    public function hasValue( $name )
+    {
+        return isset($this->_data[$name]);
     }
 
     public function getValue( $name )
