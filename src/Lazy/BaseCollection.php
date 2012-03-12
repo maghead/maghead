@@ -49,6 +49,13 @@ class BaseCollection
     protected $_presetVars = array();
 
 
+
+    /**
+     * postCreate hook
+     */
+    protected $_postCreate;
+
+
     /**
      * current data item cursor position
      *
@@ -361,12 +368,23 @@ class BaseCollection
         $model = $this->_schema->newModel();
         $return = $model->create($args);
         if( true === $return->success ) {
+            if( $this->_postCreate ) {
+                call_user_func( $this->_postCreate, $model, $args );
+                // $this->_postCreate($model,$args);
+            }
             return $model;
         }
         $this->_result = $return;
         return false;
     }
 
+
+
+
+    public function setPostCreate($cb) 
+    {
+        $this->_postCreate = $cb;
+    }
 
     public function setPresetVars($vars)
     {

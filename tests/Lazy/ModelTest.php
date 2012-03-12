@@ -286,6 +286,18 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $bookTitles[ 'Book III' ] );
     }
 
+
+    public function testManyToManyRelationCreate()
+    {
+        $author = new \tests\Author;
+        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        ok( 
+            $book = $author->books->create( array( 'title' => 'Programming Perl I' )) 
+        );
+        ok( $book->id );
+    }
+
+
     public function testManyToManyRelationFetch()
     {
         $author = new \tests\Author;
@@ -294,6 +306,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $ab = new \tests\AuthorBook;
         $book = new \tests\Book;
 
+        // should not include this
         ok( $book->create(array( 'title' => 'Book I Ex' ))->success );
 
         ok( $book->create(array( 'title' => 'Book I' ))->success );
@@ -329,6 +342,9 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $bookTitles[ 'Book I' ] );
         ok( $bookTitles[ 'Book II' ] );
         ok( $bookTitles[ 'Book III' ] );
+        ok( ! isset($bookTitles[ 'Book I Ex' ] ) );
+
+        $author->delete();
     }
 
     public function testHasManyRelationCreate()
