@@ -9,6 +9,7 @@ use Lazy\QueryDriver;
 use Lazy\OperationResult\OperationError;
 use Lazy\OperationResult\OperationSuccess;
 use Lazy\ConnectionManager;
+use Lazy\Schema\SchemaDeclare;
 
 
 /**
@@ -95,6 +96,9 @@ class BaseModel
 
     }
 
+
+
+
     public function __call($m,$a)
     {
         switch($m) {
@@ -103,6 +107,10 @@ class BaseModel
             case 'load':
             case 'delete':
                 return call_user_func_array(array($this,'_' . $m),$a);
+                break;
+
+                // xxx: can dispatch methods to Schema object.
+                // return call_user_func_array( array(  ) )
                 break;
         }
         throw new Exception("$m does not exist.");
@@ -619,8 +627,12 @@ class BaseModel
 
 
 
+
+
+
+
     /**
-     * resolve record relation ship
+     * XXX: not yet, resolve record relation ship
      *
      * @param string $relationId relation id.
      */
@@ -708,6 +720,15 @@ class BaseModel
 
         if( isset( $this->_data[ $key ] ) )
             return $this->_data[ $key ];
+
+        if( $relation = $this->_schema->getRelation( $relationId ) ) {
+            if( SchemaDeclare::has_many === $relation['type'] ) {
+                $fSchema = $relation['foreign']['schema'];
+                $fColumn = $relation['foreign']['column'];
+            }
+
+
+        }
     }
 
     public function __isset( $name )

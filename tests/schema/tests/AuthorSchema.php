@@ -67,7 +67,7 @@ class AuthorSchema extends SchemaDeclare
          *     $address = $author->addresses->find(k);
          *
          */
-        $this->hasMany( 'addresses', '\tests\Address','author_id', 'id');
+        $this->hasMany( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
         // $this->belongsTo( '\tests\Company' , 'company' );
     }
 
