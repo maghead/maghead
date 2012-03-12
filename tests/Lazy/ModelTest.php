@@ -287,6 +287,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
     public function testRelation()
     {
+        $author = new \tests\Author;
+        ok( $author );
 
     }
 
