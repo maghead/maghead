@@ -723,13 +723,24 @@ class BaseModel
 
         if( $relation = $this->_schema->getRelation( $key ) ) {
             if( SchemaDeclare::has_many === $relation['type'] ) {
-                $fSchema = $relation['foreign']['schema'];
+                $sColumn = $relation['self']['column'];
+
+                $fSchema = new $relation['foreign']['schema'];
                 $fColumn = $relation['foreign']['column'];
-                $collection = $fSchema->newCollection();
+
+                $fpSchema = SchemaLoader::load( $this->getSchemaProxyClass() );
+                $collection = $fpSchema->newCollection();
+                $collection->where()
+                    ->equal( $fColumn, $this->getValue( $sColumn ) );
+                return $collection;
             }
-
-
         }
+    }
+
+    public function getValue( $name )
+    {
+        if( isset($this->_data[$name]) )
+            return $this->_data[$name];
     }
 
     public function __isset( $name )

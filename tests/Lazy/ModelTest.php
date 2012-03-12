@@ -301,8 +301,10 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             'address' => 'Taiwan Taipei',
         ));
 
-        // $author->addresses;
+        $addresses = $author->addresses;
+        ok( $addresses );
 
+        ok( $size = $addresses->size() );
     }
 
 

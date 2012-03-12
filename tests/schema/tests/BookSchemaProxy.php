@@ -85,7 +85,7 @@ class BookSchemaProxy extends RuntimeSchema
       'type' => 2,
       'self' => array( 
           'column' => 'id',
-          'schema' => 'tests\\BookSchemaProxy',
+          'schema' => 'tests\\BookSchema',
         ),
       'foreign' => array( 
           'column' => 'book_id',
