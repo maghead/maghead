@@ -302,6 +302,13 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         is( 'farfaraway' , $address->address );
 
+        $address->delete();
+
+        $author->addresses[] = array( 'address' => 'Harvard' );
+
+        $addresses = $author->addresses->items();
+        ok( $addresses );
+        is( 'Harvard' , $addresses[0]->address );
     }
 
 
