@@ -723,7 +723,9 @@ class BaseModel
 
         // return relation object
         if( $relation = $this->_schema->getRelation( $key ) ) {
-            if( SchemaDeclare::has_many === $relation['type'] ) {
+
+            if( SchemaDeclare::has_many === $relation['type'] ) 
+            {
                 $sColumn = $relation['self']['column'];
                 $fSchema = new $relation['foreign']['schema'];
                 $fColumn = $relation['foreign']['column'];
@@ -787,13 +789,33 @@ class BaseModel
                                 ->equal( 'b.' . $foreignRelation['self']['column'] , array( 'm.' . $fColumn ) );
 
                 $value = $this->getValue( $middleRelation['self']['column'] );
-                // var_dump( $middleRelation['self']['column']  );
-
                 $collection->where()
                     ->equal( 
                         'b.' . $middleRelation['foreign']['column'],
                         $value
                     );
+
+
+                /**
+                 * for many-to-many creation:
+                 *
+                 *    $author->books[] = array(
+                 *        :author_books => array( 'created_on' => date('c') ),
+                 *        'title' => 'Book Title',
+                 *    );
+                 */
+                $collection->setPresetVars(array( 
+                    ':' . $rId => array(   
+                        $middleRelation['foreign']['column'] => $value,
+                    )
+                ));
+                $collection->setPostCreate(function($record,$args) use ($spSchema,$middleRelation,$foreignRelation,$value) {
+                    $a = array( 
+                        $foreignRelation['self']['column'] => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
+                        $middleRelation['foreign']['column'] => $value,  // self id
+                    );
+                    $spSchema->newModel()->create($a);
+                });
                 return $collection;
             }
             else {
