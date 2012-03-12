@@ -305,7 +305,6 @@ abstract class SchemaDeclare
         );
     }
 
-
     protected function hasMany($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
         $modelClass = $this->getModelClass();
