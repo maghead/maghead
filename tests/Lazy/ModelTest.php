@@ -292,9 +292,17 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $author = new \tests\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( 
-            $book = $author->books->create( array( 'title' => 'Programming Perl I' )) 
+            $book = $author->books->create( array( 
+                'title' => 'Programming Perl I',
+                ':author_books' => array( 'created_on' => '2010-01-01' ),
+            ))
         );
         ok( $book->id );
+        is( 'Programming Perl I' , $book->title );
+
+        ok( $author->author_books[0] );
+        ok( $author->author_books[0]->created_on );
+        is( '2010-01-01', $author->author_books[0]->created_on->format('Y-m-d') );
     }
 
 

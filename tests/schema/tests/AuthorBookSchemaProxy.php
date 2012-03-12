@@ -17,6 +17,13 @@ class AuthorBookSchemaProxy extends RuntimeSchema
           'isa' => 'int',
         ),
     ),
+  'created_on' => array( 
+      'name' => 'created_on',
+      'attributes' => array( 
+          'type' => 'timestamp',
+          'isa' => 'DateTime',
+        ),
+    ),
   'book_id' => array( 
       'name' => 'book_id',
       'attributes' => array( 
@@ -36,6 +43,7 @@ class AuthorBookSchemaProxy extends RuntimeSchema
 );
         $this->columnNames     = array( 
   'author_id',
+  'created_on',
   'book_id',
   'id',
 );

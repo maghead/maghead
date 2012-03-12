@@ -760,8 +760,8 @@ class BaseModel
                 return $model;
             }
             elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
-                $rId = $relation['relation']['id'];  // use relationId to get middle relation.
-                $rId2 = $relation['relation']['id2'];  // get external relationId from the middle relation.
+                $rId = $relation['relation']['id'];  // use relationId to get middle relation. (author_books)
+                $rId2 = $relation['relation']['id2'];  // get external relationId from the middle relation. (book from author_books)
 
                 $middleRelation = $this->_schema->getRelation( $rId );
 
@@ -804,17 +804,19 @@ class BaseModel
                  *        'title' => 'Book Title',
                  *    );
                  */
-                $collection->setPresetVars(array( 
-                    ':' . $rId => array(   
-                        $middleRelation['foreign']['column'] => $value,
-                    )
-                ));
-                $collection->setPostCreate(function($record,$args) use ($spSchema,$middleRelation,$foreignRelation,$value) {
+                $collection->setPostCreate(function($record,$args) use ($spSchema,$rId,$middleRelation,$foreignRelation,$value) {
                     $a = array( 
                         $foreignRelation['self']['column'] => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
                         $middleRelation['foreign']['column'] => $value,  // self id
                     );
-                    $spSchema->newModel()->create($a);
+
+                    if( isset($args[':' . $rId ] ) ) {
+                        $a = array_merge( $args[':' . $rId ] , $a );
+                    }
+                    $ret = $spSchema->newModel()->create($a);
+                    if( false === $ret->success ) {
+                        throw new Exception("$rId create failed.");
+                    }
                 });
                 return $collection;
             }
