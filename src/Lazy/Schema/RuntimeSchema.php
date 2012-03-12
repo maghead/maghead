@@ -1,6 +1,7 @@
 <?php
 namespace Lazy\Schema;
 use Lazy\Schema\Column;
+use Exception;
 
 class RuntimeSchema
 {

@@ -721,7 +721,7 @@ class BaseModel
         if( isset( $this->_data[ $key ] ) )
             return $this->_data[ $key ];
 
-        if( $relation = $this->_schema->getRelation( $relationId ) ) {
+        if( $relation = $this->_schema->getRelation( $key ) ) {
             if( SchemaDeclare::has_many === $relation['type'] ) {
                 $fSchema = $relation['foreign']['schema'];
                 $fColumn = $relation['foreign']['column'];

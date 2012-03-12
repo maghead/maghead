@@ -321,7 +321,7 @@ abstract class SchemaDeclare
             'type'           => self::has_many,
             'self' => array(
                 'column'           => $selfColumn,
-                'schema'           => $self->getSchemaProxyClass(),
+                'schema'           => $this->getSchemaProxyClass(),
             ),
             'foreign'  => array( 
                 'column' => $foreignColumn,
