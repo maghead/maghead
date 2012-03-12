@@ -9,7 +9,7 @@ class AuthorBookSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns     = array( 
+        $this->columns         = array( 
   'author_id' => array( 
       'name' => 'author_id',
       'attributes' => array( 
@@ -34,15 +34,40 @@ class AuthorBookSchemaProxy extends RuntimeSchema
         ),
     ),
 );
-        $this->columnNames = array( 
+        $this->columnNames     = array( 
   'author_id',
   'book_id',
   'id',
 );
-        $this->primaryKey  = 'id';
-        $this->table       = 'author_books';
-        $this->modelClass  = 'tests\\AuthorBook';
-        $this->label       = 'AuthorBook';
+        $this->primaryKey      = 'id';
+        $this->table           = 'author_books';
+        $this->modelClass      = 'tests\\AuthorBook';
+        $this->collectionClass = 'tests\\AuthorBookCollection';
+        $this->label           = 'AuthorBook';
+        $this->relations       = array( 
+  'book' => array( 
+      'type' => 1,
+      'self' => array( 
+          'column' => 'book_id',
+          'schema' => 'tests\\AuthorBookSchemaProxy',
+        ),
+      'foreign' => array( 
+          'column' => 'id',
+          'schema' => '\\tests\\BookSchema',
+        ),
+    ),
+  'author' => array( 
+      'type' => 1,
+      'self' => array( 
+          'column' => 'author_id',
+          'schema' => 'tests\\AuthorBookSchemaProxy',
+        ),
+      'foreign' => array( 
+          'column' => 'id',
+          'schema' => '\\tests\\AuthorSchema',
+        ),
+    ),
+);
     }
 
 }

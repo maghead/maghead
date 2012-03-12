@@ -9,7 +9,7 @@ class EdmSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns     = array( 
+        $this->columns         = array( 
   'edmNo' => array( 
       'name' => 'edmNo',
       'attributes' => array( 
@@ -65,7 +65,7 @@ class EdmSchemaProxy extends RuntimeSchema
         ),
     ),
 );
-        $this->columnNames = array( 
+        $this->columnNames     = array( 
   'edmNo',
   'edmTitle',
   'edmStart',
@@ -74,10 +74,13 @@ class EdmSchemaProxy extends RuntimeSchema
   'edmCreatedOn',
   'edmUpdatedOn',
 );
-        $this->primaryKey  = 'edmNo';
-        $this->table       = 'Edm';
-        $this->modelClass  = 'tests\\Edm';
-        $this->label       = 'Edm';
+        $this->primaryKey      = 'edmNo';
+        $this->table           = 'Edm';
+        $this->modelClass      = 'tests\\Edm';
+        $this->collectionClass = 'tests\\EdmCollection';
+        $this->label           = 'Edm';
+        $this->relations       = array( 
+);
     }
 
 }

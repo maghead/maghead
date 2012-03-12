@@ -9,7 +9,7 @@ class AddressSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns     = array( 
+        $this->columns         = array( 
   'author_id' => array( 
       'name' => 'author_id',
       'attributes' => array( 
@@ -34,15 +34,18 @@ class AddressSchemaProxy extends RuntimeSchema
         ),
     ),
 );
-        $this->columnNames = array( 
+        $this->columnNames     = array( 
   'author_id',
   'address',
   'id',
 );
-        $this->primaryKey  = 'id';
-        $this->table       = 'addresses';
-        $this->modelClass  = 'tests\\Address';
-        $this->label       = 'Address';
+        $this->primaryKey      = 'id';
+        $this->table           = 'addresses';
+        $this->modelClass      = 'tests\\Address';
+        $this->collectionClass = 'tests\\AddressCollection';
+        $this->label           = 'Address';
+        $this->relations       = array( 
+);
     }
 
 }

@@ -9,7 +9,7 @@ class PublisherSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns     = array( 
+        $this->columns         = array( 
   'name' => array( 
       'name' => 'name',
       'attributes' => array( 
@@ -27,14 +27,17 @@ class PublisherSchemaProxy extends RuntimeSchema
         ),
     ),
 );
-        $this->columnNames = array( 
+        $this->columnNames     = array( 
   'name',
   'id',
 );
-        $this->primaryKey  = 'id';
-        $this->table       = 'publishers';
-        $this->modelClass  = 'tests\\Publisher';
-        $this->label       = 'Publisher';
+        $this->primaryKey      = 'id';
+        $this->table           = 'publishers';
+        $this->modelClass      = 'tests\\Publisher';
+        $this->collectionClass = 'tests\\PublisherCollection';
+        $this->label           = 'Publisher';
+        $this->relations       = array( 
+);
     }
 
 }
