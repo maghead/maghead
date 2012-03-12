@@ -17,7 +17,7 @@ class AddressSchema extends SchemaDeclare
         /**
          * $address->author 
          */
-        $this->belongsTo( '\tests\Author' , 'author_id', 'author' );
+        // $this->belongsTo( '\tests\Author' , 'author_id', 'author' );
     }
 }
 
@@ -54,7 +54,7 @@ class AuthorSchema extends SchemaDeclare
          *
          * }
          */
-        $this->hasMany( '\tests\Address' , 'author_id' , 'addresses' );
+        // $this->hasMany( '\tests\Address' , 'author_id' , 'addresses' );
         // $this->belongsTo( '\tests\Company' , 'company' );
     }
 
