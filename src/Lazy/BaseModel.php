@@ -102,16 +102,16 @@ class BaseModel
     public function __call($m,$a)
     {
         switch($m) {
-            case 'create':
-            case 'update':
-            case 'load':
-            case 'delete':
-                return call_user_func_array(array($this,'_' . $m),$a);
-                break;
+        case 'create':
+        case 'update':
+        case 'load':
+        case 'delete':
+            return call_user_func_array(array($this,'_' . $m),$a);
+            break;
 
-                // xxx: can dispatch methods to Schema object.
-                // return call_user_func_array( array(  ) )
-                break;
+            // xxx: can dispatch methods to Schema object.
+            // return call_user_func_array( array(  ) )
+            break;
         }
         throw new Exception("$m does not exist.");
     }
@@ -136,10 +136,10 @@ class BaseModel
 
         if( $ret && $ret->success 
             || ( $pk && $this->_data[ $pk ] ) ) {
-            return $this->update($args);
-        } else {
-            return $this->create($args);
-        }
+                return $this->update($args);
+            } else {
+                return $this->create($args);
+            }
     }
 
 
@@ -640,13 +640,13 @@ class BaseModel
     {
         $r = $this->_schema->getRelation( $relationId );
         switch( $r['type'] ) {
-            case self::many_to_many:
+        case self::many_to_many:
             break;
 
-            case self::has_one:
+        case self::has_one:
             break;
 
-            case self::has_many:
+        case self::has_many:
             break;
         }
     }
@@ -750,8 +750,8 @@ class BaseModel
     public function __isset( $name )
     {
         return isset($this->_schema->columns[ $name ]) 
-                || isset($this->_data[ $name ])
-                || $name === '_schema';
+            || isset($this->_data[ $name ])
+            || $name === '_schema';
     }
 
     /**
@@ -840,12 +840,12 @@ class BaseModel
     {
         $called = get_called_class();
         switch( $m ) {
-            case 'create':
-            case 'update':
-            case 'delete':
-            case 'load':
-                return forward_static_call_array(array( $called , '__static_' . $m), $a);
-                break;
+        case 'create':
+        case 'update':
+        case 'delete':
+        case 'load':
+            return forward_static_call_array(array( $called , '__static_' . $m), $a);
+            break;
         }
         // return call_user_func_array( array($model,$name), $arguments );
     }
