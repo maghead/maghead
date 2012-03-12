@@ -285,10 +285,23 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
-    public function testRelation()
+    public function testRelationFetch()
     {
         $author = new \tests\Author;
         ok( $author );
+
+        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        ok( $author->id );
+
+        $address = new \tests\Address;
+        ok( $address );
+
+        $address->create(array( 
+            'author_id' => $author->id,
+            'address' => 'Taiwan Taipei',
+        ));
+
+        // $author->addresses;
 
     }
 

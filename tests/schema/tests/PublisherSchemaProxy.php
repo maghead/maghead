@@ -35,8 +35,6 @@ class PublisherSchemaProxy extends RuntimeSchema
         $this->table       = 'publishers';
         $this->modelClass  = 'tests\\Publisher';
         $this->label       = 'Publisher';
-        $this->relations   = array( 
-);
     }
 
 }

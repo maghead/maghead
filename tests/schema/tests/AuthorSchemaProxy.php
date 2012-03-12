@@ -70,19 +70,6 @@ class AuthorSchemaProxy extends RuntimeSchema
         $this->table       = 'authors';
         $this->modelClass  = 'tests\\Author';
         $this->label       = 'Author';
-        $this->relations   = array( 
-  'addresses' => array( 
-      'type' => 2,
-      'self' => array( 
-          'column' => 'id',
-          'schema' => 'tests\\AuthorSchemaProxy',
-        ),
-      'foreign' => array( 
-          'column' => 'author_id',
-          'schema' => '\\tests\\AddressSchema',
-        ),
-    ),
-);
     }
 
 }
