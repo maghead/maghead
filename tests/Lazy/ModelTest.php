@@ -317,7 +317,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         is( 'Z', $retAuthor->name );
     }
 
-
     public function testHasManyRelationFetch()
     {
         $author = new \tests\Author;
