@@ -11,6 +11,9 @@ use Lazy\OperationResult\OperationSuccess;
 use Lazy\ConnectionManager;
 use Lazy\Schema\SchemaDeclare;
 
+use SerializerKit\XmlSerializer;
+use SerializerKit\JsonSerializer;
+use SerializerKit\YamlSerializer;
 
 /**
  * Base Model class,
@@ -900,6 +903,24 @@ class BaseModel
     public function toArray()
     {
         return $this->_data;
+    }
+
+    public function toJson()
+    {
+        $ser = new JsonSerializer;
+        return $ser->encode( $this->_data );
+    }
+
+    public function toXml()
+    {
+        $ser = new XmlSerializer;
+        return $ser->encode( $this->_data );
+    }
+
+    public function toYaml()
+    {
+        $ser = new YamlSerializer;
+        return $ser->encode( $this->_data );
     }
 
     /**
