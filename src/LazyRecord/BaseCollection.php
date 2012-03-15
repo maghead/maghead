@@ -88,7 +88,7 @@ class BaseCollection
             return SchemaLoader::load( static::schema_proxy_class );
         }
         elseif( $key == '_handle' ) {
-            return $this->handle ?: $this->fetch();
+            return $this->handle ?: $this->prepareData();
         }
         elseif( $key == '_query' ) {
             return $this->_currentQuery ?: $this->createQuery();
@@ -125,14 +125,15 @@ class BaseCollection
 
 
     /**
-     * fetch data from database, and catch the handle.
+     * prepare data handle, call fetch method to read data from database, and 
+     * catch the handle.
      *
      * Which calls doFetch() to do a query operation.
      */
-    public function fetch($force = false)
+    public function prepareData($force = false)
     {
         if( $this->handle == null || $force ) {
-            $this->_result = $this->doFetch();
+            $this->_result = $this->fetch();
         }
         return $this->handle;
     }
@@ -140,11 +141,11 @@ class BaseCollection
 
 
     /**
-     * Build sql from current query and make a query to database.
+     * Fetch Build sql from current query and make a query to database.
      *
      * @return OperationResult
      */
-    public function doFetch()
+    public function fetch()
     {
         /* fetch by current query */
         $query = $this->_query;
