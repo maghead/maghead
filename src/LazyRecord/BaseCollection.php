@@ -10,6 +10,7 @@ use SQLBuilder\QueryBuilder;
 use LazyRecord\OperationResult\OperationSuccess;
 use LazyRecord\OperationResult\OperationError;
 use LazyRecord\ConnectionManager;
+use LazyRecord\Schema\SchemaLoader;
 
 
 /**
