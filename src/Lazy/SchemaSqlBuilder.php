@@ -8,6 +8,12 @@ class SchemaSqlBuilder
      */
     public $builder;
 
+
+    /**
+     * should we rebuild (drop existing tables?)
+     */
+    public $rebuild = true;
+
     /**
      * xxx: should get the driver type from datasource (defined in model schema)
      */
@@ -21,7 +27,7 @@ class SchemaSqlBuilder
 
     public function build(Schema\SchemaDeclare $schema)
     {
-        $sqls = (array) $this->builder->build( $schema );
+        $sqls = (array) $this->builder->build( $schema , $this->rebuild );
         return $sqls;
     }
 

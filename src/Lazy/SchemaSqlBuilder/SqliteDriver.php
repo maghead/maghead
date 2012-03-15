@@ -78,11 +78,14 @@ class SqliteDriver
         return $sql;
     }
 
-    public function build(SchemaDeclare $schema)
+    public function build(SchemaDeclare $schema, $rebuild = false )
     {
         $sqls = array();
-        $sqls[] = 'DROP TABLE IF EXISTS ' 
-            . $this->driver->getQuoteTableName( $schema->getTable() );
+
+        if( $rebuild ) {
+            $sqls[] = 'DROP TABLE IF EXISTS ' 
+                . $this->driver->getQuoteTableName( $schema->getTable() );
+        }
 
         $sql = 'CREATE TABLE ' 
             . $this->driver->getQuoteTableName($schema->getTable()) . " ( \n";
