@@ -325,8 +325,12 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $yaml = $name->toYaml();
         ok( $yaml );
 
+        yaml_parse($yaml);
+
         $json = $name->toJson();
         ok( $json );
+
+        json_decode( $json );
 
         ok( $name->delete()->success );
     }
