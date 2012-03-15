@@ -69,7 +69,7 @@ class Column
 
             'validator'  => self::attr_callable,
 
-            'validValueBuilder' => self::attr_callable,
+            'validValuesBuilder' => self::attr_callable,
 
 
             /* contains an associative array */

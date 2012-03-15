@@ -306,6 +306,19 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
+    public function testValidValueBuilder()
+    {
+        $name = new \tests\Name;
+        $ret = $name->create(array( 
+            'name' => 'John',
+            'country' => 'Taiwan',
+            'type' => 'type-a',
+        ));
+        ok( $ret->success );
+        ok( $name->delete()->success );
+    }
+
+
     public function testManyToManyRelationFetch()
     {
         $author = new \tests\Author;

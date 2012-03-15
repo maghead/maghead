@@ -47,8 +47,8 @@ class Column
 	{
 		if( $this->validValues ) {
 			return $this->validValues;
-		} elseif( $this->validValueBuilder ) {
-			return call_user_func( $this->validValueBuilder , $record , $args );
+		} elseif( $this->validValuesBuilder ) {
+			return call_user_func( $this->validValuesBuilder , $record , $args );
 		}
 	}
 

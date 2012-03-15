@@ -72,6 +72,16 @@ class NameSchemaProxy extends RuntimeSchema
             ),
         ),
     ),
+  'type' => array( 
+      'name' => 'type',
+      'attributes' => array( 
+          'type' => 'text',
+          'isa' => 'str',
+          'validValuesBuilder' => function() { 
+                    return array('type-a','type-b','type-c');
+                },
+        ),
+    ),
   'confirmed' => array( 
       'name' => 'confirmed',
       'attributes' => array( 
@@ -87,6 +97,7 @@ class NameSchemaProxy extends RuntimeSchema
   'category_id',
   'address',
   'country',
+  'type',
   'confirmed',
 );
         $this->primaryKey      = 'id';

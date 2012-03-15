@@ -47,6 +47,12 @@ namespace tests {
                 ->required()
                 ->validValues( array( 'Taiwan' , 'Taipei' , 'Tokyo' ));
 
+            $this->column('type')
+                ->isa('str')
+                ->validValuesBuilder(function() { 
+                    return array('type-a','type-b','type-c');
+                });
+
             $this->column('confirmed')
                 ->isa('bool')
                 ->boolean();
