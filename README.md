@@ -1,10 +1,40 @@
 LazyRecord
 ==========
 
+Synopsis
+--------
+
+
+```php
+<?
+    $author = new Author;
+    $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+
+    // has many
+    $address = $author->addresses->create(array( 
+        'address' => 'farfaraway'
+    ));
+
+    $address->delete();
+
+    // create related address
+    $author->addresses[] = array( 'address' => 'Harvard' );
+
+    $addresses = $author->addresses->items();
+    is( 'Harvard' , $addresses[0]->address );
+
+    foreach( $author->addresses as $address ) {
+        echo $address->address , "\n";
+    }
+```
+
 
 Requirement
 -----------
-REQUIRED PHP 5.3.0 (MIN) 
+- PHP 5.3.0 (MIN) 
+
+
+
 
 Command-line Usage
 ------------------
