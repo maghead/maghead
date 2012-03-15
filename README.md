@@ -50,6 +50,8 @@ Define your model schema, note: the schema file name must be with suffix "Schema
 
     $ vim src/App/Model/AuthorSchema.php
 
+    use LazyRecord\Schema\SchemaDeclare;
+
     class AuthorSchema extends SchemaDeclare
     {
         function schema()
