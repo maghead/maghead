@@ -1,7 +1,7 @@
 <?php
-use Lazy\SchemaSqlBuilder;
+use Lazy\Schema\SqlBuilder;
 
-class SchemaSqlBuilderTest extends PHPUnit_Framework_TestCase
+class SqlBuilderTest extends PHPUnit_Framework_TestCase
 {
     function setup()
     {
@@ -41,7 +41,7 @@ class SchemaSqlBuilderTest extends PHPUnit_Framework_TestCase
 	function testSqlite()
 	{
 		$dbh = Lazy\ConnectionManager::getInstance()->getConnection('sqlite');
-		$builder = new SchemaSqlBuilder('sqlite', Lazy\ConnectionManager::getInstance()->getQueryDriver('sqlite') );
+		$builder = new SqlBuilder('sqlite', Lazy\ConnectionManager::getInstance()->getQueryDriver('sqlite') );
 		ok( $builder );
 
 		$s = new \tests\AuthorSchema;
@@ -82,7 +82,7 @@ class SchemaSqlBuilderTest extends PHPUnit_Framework_TestCase
         $pdo = $connManager->getConnection('mysql');
         ok( $pdo , 'pdo connection' );
 
-		$builder = new SchemaSqlBuilder('mysql', $connManager->getQueryDriver('mysql') );
+		$builder = new SqlBuilder('mysql', $connManager->getQueryDriver('mysql') );
 		ok( $builder );
 
         $this->pdoQueryOk( $pdo, 'drop TABLE IF EXISTS authors' );

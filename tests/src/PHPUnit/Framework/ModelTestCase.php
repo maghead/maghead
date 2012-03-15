@@ -1,7 +1,7 @@
 <?php
 use Lazy\QueryDriver;
 use Lazy\ConnectionManager;
-use Lazy\SchemaSqlBuilder;
+use Lazy\Schema\SqlBuilder;
 use Lazy\ConfigLoader;
 
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
@@ -36,7 +36,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         $driver = Lazy\ConnectionManager::getInstance()->getQueryDriver('default');
 
         // initialize schema files
-        $builder = new SchemaSqlBuilder( $this->driverType , $driver );
+        $builder = new SqlBuilder( $this->driverType , $driver );
 		ok( $builder );
 
         $finder = new Lazy\Schema\SchemaFinder;

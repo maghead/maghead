@@ -1,9 +1,14 @@
 <?php
-namespace Lazy\SchemaSqlBuilder;
+namespace Lazy\Schema\SqlBuilder;
 use Lazy\Schema\SchemaDeclare;
 use Lazy\QueryDriver;
 
-class MysqlDriver
+/**
+ * Schema SQL builder
+ *
+ * @see http://www.sqlite.org/docs.html
+ */
+class PgsqlDriver
     extends BaseDriver
     implements DriverInterface
 {
@@ -16,30 +21,40 @@ class MysqlDriver
             $type = 'text';
 
         $sql = $this->driver->getQuoteColumn( $name );
-        $sql .= ' ' . $type;
+
+        if( ! $column->autoIncrement )
+            $sql .= ' ' . $type;
 
         if( $column->required || $column->notNull )
             $sql .= ' NOT NULL';
         elseif( $column->null )
             $sql .= ' NULL';
 
+
         /* if it's callable, we should not write the result into sql schema */
-        if( ($default = $column->default) !== null && ! is_callable($column->default )  ) { 
+        if( ($default = $column->default) !== null 
+            && ! is_callable($column->default )  ) 
+        {
 
             // raw sql default value
             if( is_array($default) ) {
                 $sql .= ' default ' . $default[0];
             }
             else {
+                /* XXX: 
+                 * note that we sometime need the data source id from model schema define.
+                 * $sourceId = $schema->getDataSourceId();
+                 */
                 $sql .= ' default ' . $this->driver->inflate($default);
             }
         }
 
+        if( $column->autoIncrement )
+            $sql .= ' serial';
+
         if( $column->primary )
             $sql .= ' primary key';
 
-        if( $column->autoIncrement )
-            $sql .= ' auto_increment';
 
         if( $column->unique )
             $sql .= ' unique';
@@ -67,33 +82,32 @@ class MysqlDriver
                 break;
             }
         }
-
         return $sql;
     }
 
-
-    public function build(SchemaDeclare $schema, $rebuild = false )
+    public function build(SchemaDeclare $schema, $rebuild = true )
     {
         $sqls = array();
 
         if( $rebuild ) {
             $sqls[] = 'DROP TABLE IF EXISTS ' 
-                . $this->driver->getQuoteTableName( $schema->getTable() );
+                . $this->driver->getQuoteTableName( $schema->getTable() )
+                . ' CASCADE';
         }
 
-        $create = 'CREATE TABLE ' 
-            . $this->driver->getQuoteTableName( $schema->getTable() )
-            . "( \n";
+
+        $createSql = 'CREATE TABLE ' . $this->driver->getQuoteTableName($schema->getTable()) . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
-            $columnSql[] = $this->buildColumnSql( $schema, $column );
+            $columnSql[] = "\t" . $this->buildColumnSql( $schema, $column );
         }
-        $create .= join(",\n",$columnSql);
-        $create .= "\n);\n";
+        $createSql .= join(",\n",$columnSql);
+        $createSql .= "\n);\n";
 
-        $sqls[] = $create;
+        $sqls[] = $createSql;
+
+        // generate sequence
         return $sqls;
     }
 
 }
-

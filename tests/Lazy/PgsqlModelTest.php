@@ -1,5 +1,5 @@
 <?php
-use Lazy\SchemaSqlBuilder;
+use Lazy\Schema\SqlBuilder;
 
 class PgsqlModelTest extends PHPUnit_Framework_TestCase
 {
@@ -53,7 +53,7 @@ class PgsqlModelTest extends PHPUnit_Framework_TestCase
         $driver = Lazy\ConnectionManager::getInstance()->getQueryDriver('default');
         $dbh = Lazy\ConnectionManager::getInstance()->getConnection('default');
 
-        $builder = new SchemaSqlBuilder('pgsql', $driver );
+        $builder = new SqlBuilder('pgsql', $driver );
 		ok( $builder );
 
         $finder = new Lazy\Schema\SchemaFinder;

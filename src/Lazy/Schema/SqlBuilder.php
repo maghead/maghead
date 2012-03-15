@@ -1,7 +1,7 @@
 <?php
-namespace Lazy;
+namespace Lazy\Schema;
 
-class SchemaSqlBuilder
+class SqlBuilder
 {
     /**
      * builder object
@@ -25,7 +25,7 @@ class SchemaSqlBuilder
         $this->builder->driverType = $driverType;
     }
 
-    public function build(Schema\SchemaDeclare $schema)
+    public function build(SchemaDeclare $schema)
     {
         $sqls = (array) $this->builder->build( $schema , $this->rebuild );
         return $sqls;
