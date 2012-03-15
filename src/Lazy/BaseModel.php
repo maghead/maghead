@@ -21,6 +21,7 @@ use SerializerKit\YamlSerializer;
  *
  */
 class BaseModel
+    implements ExporterInterface
 {
     public $_result;
 
@@ -941,9 +942,6 @@ class BaseModel
         }
         return $data;
     }
-
-
-
 
 
 

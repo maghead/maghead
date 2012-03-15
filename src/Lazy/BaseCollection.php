@@ -16,7 +16,7 @@ use Lazy\ConnectionManager;
  * base collection class
  */
 class BaseCollection
-    implements Iterator, ArrayAccess
+    implements Iterator, ArrayAccess, ExporterInterface
 {
 
     protected $_lastSQL;
@@ -314,7 +314,27 @@ class BaseCollection
         return $array;
     }
 
+    public function toXml()
+    {
+        $list = $this->toArray();
+        $xml = new \SerializerKit\XmlSerializer;
+        return $xml->encode( $list );
+    }
 
+
+    public function toJson()
+    {
+        $list = $this->toArray();
+        $json = new \SerializerKit\JsonSerializer;
+        return $json->encode( $list );
+    }
+
+    public function toYaml()
+    {
+        $list = $this->toArray();
+        $yaml = new \SerializerKit\YamlSerializer;
+        return $yaml->encode( $list );
+    }
 
 
 
@@ -406,6 +426,12 @@ class BaseCollection
     {
         return $this->result;
     }
+
+
+
+
+
+
 
 
 }
