@@ -64,11 +64,11 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
             'confirmed' => false,
             'country' => 'Tokyo',
         ));
-        ok( $ret->success );
+        ok( $ret->success , $ret );
         is( false, $name->confirmed );
 
         $ret = $name->load( array( 'name' => 'Foo' ));
-        ok( $ret->success );
+        ok( $ret->success , $ret );
         is( false, $name->confirmed );
 
         $name->update(array( 'confirmed' => true ) );

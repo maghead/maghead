@@ -49,8 +49,13 @@ namespace tests {
 
             $this->column('type')
                 ->isa('str')
-                ->validValuesBuilder(function() { 
-                    return array('type-a','type-b','type-c');
+                ->validValueBuilder(function() { 
+                    return array(
+                        /* description => value */
+                        'Type Name A' => 'type-a',
+                        'Type Name B' => 'type-b',
+                        'Type Name C' => 'type-c',
+                    );
                 });
 
             $this->column('confirmed')
