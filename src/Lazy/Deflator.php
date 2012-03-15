@@ -1,6 +1,6 @@
 <?php
 namespace Lazy;
-use DateTime;
+use Lazy\Types\DateTime;
 
 class Deflator
 {
