@@ -72,12 +72,14 @@ class MysqlDriver
     }
 
 
-    public function build(SchemaDeclare $schema)
+    public function build(SchemaDeclare $schema, $rebuild = false )
     {
         $sqls = array();
 
-        $sqls[] = 'DROP TABLE IF EXISTS ' 
-            . $this->driver->getQuoteTableName( $schema->getTable() );
+        if( $rebuild ) {
+            $sqls[] = 'DROP TABLE IF EXISTS ' 
+                . $this->driver->getQuoteTableName( $schema->getTable() );
+        }
 
         $create = 'CREATE TABLE ' 
             . $this->driver->getQuoteTableName( $schema->getTable() )
