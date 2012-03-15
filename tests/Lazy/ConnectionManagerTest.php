@@ -26,6 +26,10 @@ class ConnectionManagerTest extends PHPUnit_Framework_TestCase
         $master = $manager->getConnection('master');
         ok( $master );
 
+
+        // array access test.
+        ok( $manager['master'] );
+
         $manager->free();
     }
 }
