@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-15</date>
-  <time>15:23:45</time>
+  <time>17:52:53</time>
   <version>
     <release>1.0.11</release>
     <api>1.0.11</api>
@@ -94,7 +94,7 @@
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/Lazy/Adapter/PdoAdapter.php" role="php" md5sum="c5476be0988d632622d1c22c42b0e7c2"/>
       <file name="src/Lazy/BaseCollection.php" role="php" md5sum="f1507c0d8f25c55dc35a218ef9113257"/>
-      <file name="src/Lazy/BaseModel.php" role="php" md5sum="76d691fe6f81c07cc5e12198c852f0ec"/>
+      <file name="src/Lazy/BaseModel.php" role="php" md5sum="df454dbfd74070784ca83188884e6699"/>
       <file name="src/Lazy/ClosureSerializer.php" role="php" md5sum="4f3700f6f978ffec92e4a460481d5c0e"/>
       <file name="src/Lazy/CodeGen/ClassConst.php" role="php" md5sum="b7a8737b1be1758471c47f47bcf7fb79"/>
       <file name="src/Lazy/CodeGen/ClassMember.php" role="php" md5sum="686c5a04dbcb4c2b5e63a947e1ceca53"/>
@@ -142,14 +142,11 @@
       <file name="src/Lazy/Schema/Templates/Model.php.twig" role="php" md5sum="2b23467dad36aed3630b57ad12c44bc6"/>
       <file name="src/Lazy/Schema/Templates/Schema.php.twig" role="php" md5sum="efc0e7c49c4c2c7c10cb164b2d5b5612"/>
       <file name="src/Lazy/SchemaLoader.php" role="php" md5sum="092cb6b2cff81f423da46835bb691b1f"/>
-      <file name="src/Lazy/Serializer/JsonSerializer.php" role="php" md5sum="6cb44820fd4ad93f4836b3cc965b7de9"/>
-      <file name="src/Lazy/Serializer/XmlSerializer.php" role="php" md5sum="0e408793341b17bb48551bf61c166d9f"/>
-      <file name="src/Lazy/Serializer/YamlSerializer.php" role="php" md5sum="3eae5240da14b5749d2efe926d6363d3"/>
       <file name="src/Lazy/Types/DateTime.php" role="php" md5sum="9663eb6a1d768bea37b81ed1969632fe"/>
       <file name="src/Lazy/Types.php" role="php" md5sum="dccd2bf4cce679444e5b4a445b7b0653"/>
-      <file name="package.ini" role="data" md5sum="dd2e53c533b7525ac67a856830d70846"/>
+      <file name="package.ini" role="data" md5sum="cdcbda7fbedca4667a69d904792c7ef9"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="3d9607a6d7b4d8a72c38412bd7fbc30e"/>
+      <file name="lazy" role="script" md5sum="6d5c18572c90a143042557b44d9c9572"/>
       <file name="scripts/lazy.php" role="script" md5sum="f9173c90e8ff53bf834b55cd00200f7b"/>
     </dir>
   </contents>
@@ -178,6 +175,11 @@
       </package>
       <package>
         <name>CLIFramework</name>
+        <channel>pear.corneltek.com</channel>
+        <min>0.0.0</min>
+      </package>
+      <package>
+        <name>SerializerKit</name>
         <channel>pear.corneltek.com</channel>
         <min>0.0.0</min>
       </package>
@@ -308,9 +310,6 @@
       <install name="src/Lazy/Schema/Templates/Model.php.twig" as="Lazy/Schema/Templates/Model.php.twig"/>
       <install name="src/Lazy/Schema/Templates/Schema.php.twig" as="Lazy/Schema/Templates/Schema.php.twig"/>
       <install name="src/Lazy/SchemaLoader.php" as="Lazy/SchemaLoader.php"/>
-      <install name="src/Lazy/Serializer/JsonSerializer.php" as="Lazy/Serializer/JsonSerializer.php"/>
-      <install name="src/Lazy/Serializer/XmlSerializer.php" as="Lazy/Serializer/XmlSerializer.php"/>
-      <install name="src/Lazy/Serializer/YamlSerializer.php" as="Lazy/Serializer/YamlSerializer.php"/>
       <install name="src/Lazy/Types/DateTime.php" as="Lazy/Types/DateTime.php"/>
       <install name="src/Lazy/Types.php" as="Lazy/Types.php"/>
       <install name="package.ini" as="package.ini"/>
