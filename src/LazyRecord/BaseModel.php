@@ -10,6 +10,7 @@ use LazyRecord\OperationResult\OperationError;
 use LazyRecord\OperationResult\OperationSuccess;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\SchemaLoader;
 
 use SerializerKit\XmlSerializer;
 use SerializerKit\JsonSerializer;
