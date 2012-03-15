@@ -78,7 +78,7 @@ class SqliteDriver
         return $sql;
     }
 
-    public function build($schema, $rebuild = true )
+    public function build(SchemaDeclare $schema, $rebuild = true )
     {
         $sqls = array();
 
