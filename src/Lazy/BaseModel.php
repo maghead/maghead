@@ -197,13 +197,26 @@ class BaseModel
     protected function _validate_validvalues($c, $val, $args, & $validateFail )
     {
         if( $validValues = $c->getValidValues( $this, $args ) ) {
-            if( false === in_array( $val , $validValues ) ) {
+            // sort by index
+            if( isset($validValues[0]) && false === in_array( $val , $validValues ) ) {
                 $validateFail = true;
                 return (object) array(
                     'success' => false,
                     'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
                     'field' => $c->name,
                 );
+            }
+            // order with key => value
+            else {
+                $values = array_values( $validValues );
+                if( false === in_array( $val , $values ) ) {
+                    $validateFail = true;
+                    return (object) array(
+                        'success' => false,
+                        'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
+                        'field' => $c->name,
+                    );
+                }
             }
         }
     }
@@ -281,7 +294,7 @@ class BaseModel
                     $validateResults[$n] = 
                         $this->_validate_validator( $c, $val, $args, $validateFail );
                 }
-                if( $c->validValues || $c->validValuesBuilder ) {
+                if( $val && ($c->validValues || $c->validValueBuilder) ) {
                     if( $r = $this->_validate_validvalues( $c, $val ,$args, $validateFail ) ) {
                         $validateResults[$n] = $r;
                     }
@@ -501,7 +514,7 @@ class BaseModel
                 }
 
 
-                // column validate
+                // column validate (value is set.)
                 if( isset($args[$n]) )
                 {
                     if( $args[$n] !== null ) {
@@ -517,13 +530,17 @@ class BaseModel
                         $c->canonicalizeValue( $args[$n], $this, $args );
                     }
 
+
                     // do validate
                     if( $c->validator ) {
                         $validateResults[$n] = 
                             $this->_validate_validator( $c, $args[$n], $args, $validateFail );
                     }
-                    if( $r = $this->_validate_validvalues( $c, $args[$n] ,$args, $validateFail ) ) {
-                        $validateResults[$n] = $r;
+
+                    if( $c->validValues || $c->validValueBuilder ) {
+                        if( $r = $this->_validate_validvalues( $c, $args[$n] ,$args, $validateFail ) ) {
+                            $validateResults[$n] = $r;
+                        }
                     }
 
                     // inflate
