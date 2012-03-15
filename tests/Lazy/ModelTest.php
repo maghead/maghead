@@ -403,6 +403,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         $address->delete();
 
+        // do create
         $author->addresses[] = array( 'address' => 'Harvard' );
 
         $addresses = $author->addresses->items();
