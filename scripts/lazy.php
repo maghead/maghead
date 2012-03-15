@@ -8,5 +8,5 @@ $loader = new \Universal\ClassLoader\BasePathClassLoader(array(
 $loader->useIncludePath(true);
 $loader->register();
 
-$console = new Lazy\Console;
+$console = new LazyRecord\Console;
 $console->run($argv);

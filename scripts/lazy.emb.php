@@ -1,3 +1,3 @@
 <?php
-$console = new Lazy\Console;
+$console = new LazyRecord\Console;
 $console->run($argv);

@@ -1,9 +1,9 @@
 <?php
 namespace tests;
-use Lazy\Schema\SchemaDeclare;
-use Lazy\Schema;
+use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema;
 
-class MetadataMixinSchema extends \Lazy\Schema\MixinSchemaDeclare
+class MetadataMixinSchema extends \LazyRecord\Schema\MixinSchemaDeclare
 {
 
     function schema()

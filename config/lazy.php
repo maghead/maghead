@@ -6,8 +6,8 @@
   'schema' => 
   array (
     'auto_id' => true,
-    'base_model' => '\\Lazy\\BaseModel',
-    'base_collection' => '\\Lazy\\BaseCollection',
+    'base_model' => '\\LazyRecord\\BaseModel',
+    'base_collection' => '\\LazyRecord\\BaseCollection',
     'paths' => 
     array (
       0 => 'tests/schema',

@@ -4,7 +4,7 @@ namespace tests;
 
 
 class PublisherCollectionBase 
-extends \Lazy\BaseCollection
+extends \LazyRecord\BaseCollection
 {
 
             const schema_proxy_class = '\\tests\\PublisherSchemaProxy';

@@ -4,7 +4,7 @@ namespace tests;
 
 
 class NameBase 
-extends \Lazy\BaseModel
+extends \LazyRecord\BaseModel
 {
 
             const schema_proxy_class = '\\tests\\NameSchemaProxy';

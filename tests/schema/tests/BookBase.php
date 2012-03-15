@@ -4,7 +4,7 @@ namespace tests;
 
 
 class BookBase 
-extends \Lazy\BaseModel
+extends \LazyRecord\BaseModel
 {
 
             const schema_proxy_class = '\\tests\\BookSchemaProxy';
