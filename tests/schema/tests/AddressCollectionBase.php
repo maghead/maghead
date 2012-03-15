@@ -4,7 +4,7 @@ namespace tests;
 
 
 class AddressCollectionBase 
-extends \Lazy\BaseCollection
+extends \LazyRecord\BaseCollection
 {
 
             const schema_proxy_class = '\\tests\\AddressSchemaProxy';

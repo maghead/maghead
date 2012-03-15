@@ -1,8 +1,8 @@
 <?php
-use Lazy\QueryDriver;
-use Lazy\ConnectionManager;
-use Lazy\Schema\SqlBuilder;
-use Lazy\ConfigLoader;
+use LazyRecord\QueryDriver;
+use LazyRecord\ConnectionManager;
+use LazyRecord\Schema\SqlBuilder;
+use LazyRecord\ConfigLoader;
 
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
 {
@@ -33,17 +33,17 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
         $dbh = ConnectionManager::getInstance()->getConnection();
 
-        $driver = Lazy\ConnectionManager::getInstance()->getQueryDriver('default');
+        $driver = LazyRecord\ConnectionManager::getInstance()->getQueryDriver('default');
 
         // initialize schema files
         $builder = new SqlBuilder( $this->driverType , $driver );
 		ok( $builder );
 
-        $finder = new Lazy\Schema\SchemaFinder;
+        $finder = new LazyRecord\Schema\SchemaFinder;
         $finder->addPath( 'tests/schema/' );
         $finder->loadFiles();
 
-		$generator = new \Lazy\Schema\SchemaGenerator;
+		$generator = new \LazyRecord\Schema\SchemaGenerator;
 		$generator->setLogger( $this->getLogger() );
 		$classMap = $generator->generate( $finder->getSchemaClasses() );
         ok( $classMap );

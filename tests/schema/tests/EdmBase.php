@@ -4,7 +4,7 @@ namespace tests;
 
 
 class EdmBase 
-extends \Lazy\BaseModel
+extends \LazyRecord\BaseModel
 {
 
             const schema_proxy_class = '\\tests\\EdmSchemaProxy';

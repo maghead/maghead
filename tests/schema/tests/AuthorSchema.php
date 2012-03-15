@@ -1,7 +1,7 @@
 <?php
 namespace tests;
-use Lazy\Schema\SchemaDeclare;
-use Lazy\Schema;
+use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema;
 
 class AddressSchema extends SchemaDeclare
 {

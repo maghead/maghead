@@ -1,7 +1,7 @@
 <?php
 namespace tests;
 
-use Lazy\Schema\RuntimeSchema;
+use LazyRecord\Schema\RuntimeSchema;
 
 class AuthorBookSchemaProxy extends RuntimeSchema
 {

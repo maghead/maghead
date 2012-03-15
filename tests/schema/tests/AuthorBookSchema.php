@@ -1,6 +1,6 @@
 <?php
 namespace tests;
-use Lazy\Schema\SchemaDeclare;
+use LazyRecord\Schema\SchemaDeclare;
 
 class AuthorBookSchema extends SchemaDeclare
 {

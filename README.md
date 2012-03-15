@@ -121,7 +121,7 @@ Initialize loader:
 
 To setup QueryDriver:
  
-    $driver = Lazy\QueryDriver::getInstance('data_source_id');
+    $driver = LazyRecord\QueryDriver::getInstance('data_source_id');
     $driver->configure('driver','pgsql');
     $driver->configure('quote_column',true);
     $driver->configure('quote_table',true);
