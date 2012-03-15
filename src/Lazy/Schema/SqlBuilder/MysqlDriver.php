@@ -1,14 +1,9 @@
 <?php
-namespace Lazy\SchemaSqlBuilder;
+namespace Lazy\Schema\SqlBuilder;
 use Lazy\Schema\SchemaDeclare;
 use Lazy\QueryDriver;
 
-/**
- * Schema SQL builder
- *
- * @see http://www.sqlite.org/docs.html
- */
-class SqliteDriver
+class MysqlDriver
     extends BaseDriver
     implements DriverInterface
 {
@@ -28,16 +23,14 @@ class SqliteDriver
         elseif( $column->null )
             $sql .= ' NULL';
 
-        /**
-         * if it's callable, we should not write the result into sql schema 
-         */
-        if( null !== ($default = $column->default) 
-            && ! is_callable($column->default )  ) 
-        {
-            // for raw sql default value
+        /* if it's callable, we should not write the result into sql schema */
+        if( ($default = $column->default) !== null && ! is_callable($column->default )  ) { 
+
+            // raw sql default value
             if( is_array($default) ) {
                 $sql .= ' default ' . $default[0];
-            } else {
+            }
+            else {
                 $sql .= ' default ' . $this->driver->inflate($default);
             }
         }
@@ -46,7 +39,7 @@ class SqliteDriver
             $sql .= ' primary key';
 
         if( $column->autoIncrement )
-            $sql .= ' autoincrement';
+            $sql .= ' auto_increment';
 
         if( $column->unique )
             $sql .= ' unique';
@@ -78,7 +71,8 @@ class SqliteDriver
         return $sql;
     }
 
-    public function build(SchemaDeclare $schema, $rebuild = false )
+
+    public function build(SchemaDeclare $schema, $rebuild = true)
     {
         $sqls = array();
 
@@ -87,16 +81,19 @@ class SqliteDriver
                 . $this->driver->getQuoteTableName( $schema->getTable() );
         }
 
-        $sql = 'CREATE TABLE ' 
-            . $this->driver->getQuoteTableName($schema->getTable()) . " ( \n";
+        $create = 'CREATE TABLE ' 
+            . $this->driver->getQuoteTableName( $schema->getTable() )
+            . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
             $columnSql[] = $this->buildColumnSql( $schema, $column );
         }
-        $sql .= join(",\n",$columnSql);
-        $sql .= "\n);\n";
-        $sqls[] = $sql;
+        $create .= join(",\n",$columnSql);
+        $create .= "\n);\n";
+
+        $sqls[] = $create;
         return $sqls;
     }
 
 }
+

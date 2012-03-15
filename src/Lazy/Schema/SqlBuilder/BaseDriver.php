@@ -1,6 +1,5 @@
 <?php
-
-namespace Lazy\SchemaSqlBuilder;
+namespace Lazy\Schema\SqlBuilder;
 
 class BaseDriver
 {
