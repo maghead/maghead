@@ -315,6 +315,19 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             'type' => 'type-a',
         ));
         ok( $ret->success );
+
+        $xml = $name->toXml();
+        ok( $xml );
+
+        $dom = new DOMDocument;
+        $dom->loadXml( $xml );
+
+        $yaml = $name->toYaml();
+        ok( $yaml );
+
+        $json = $name->toJson();
+        ok( $json );
+
         ok( $name->delete()->success );
     }
 
