@@ -2,6 +2,8 @@
 namespace Lazy;
 use Exception;
 use PDO;
+use ArrayAccess;
+
 
 class ConnectionException extends Exception
 {
@@ -23,6 +25,7 @@ class ConnectionException extends Exception
  */
 
 class ConnectionManager
+    implements ArrayAccess
 {
     public $datasources = array();
 
@@ -176,5 +179,33 @@ class ConnectionManager
         $this->datasources = array();
         $this->conns = array();
     }
+
+
+
+    /**
+     * ArrayAccess interface
+     */
+    public function offsetSet($name,$value)
+    {
+        $this->conns[ $name ] = $value;
+    }
+    
+    public function offsetExists($name)
+    {
+        return isset($this->conns[ $name ]);
+    }
+    
+    public function offsetGet($name)
+    {
+        return $this->conns[ $name ];
+    }
+    
+    public function offsetUnset($name)
+    {
+        unset($this->conns[$name]);
+    }
+
+
+    
 }
 

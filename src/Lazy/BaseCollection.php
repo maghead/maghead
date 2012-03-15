@@ -337,7 +337,6 @@ class BaseCollection
     }
 
 
-
     /*******************************************
      * XXX: duplicate methods from BaseModel 
      * *****************************************/
