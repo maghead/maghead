@@ -281,7 +281,7 @@ class BaseModel
                     $validateResults[$n] = 
                         $this->_validate_validator( $c, $val, $args, $validateFail );
                 }
-                if( $c->validValues || $c->validValueBuilder ) {
+                if( $c->validValues || $c->validValuesBuilder ) {
                     if( $r = $this->_validate_validvalues( $c, $val ,$args, $validateFail ) ) {
                         $validateResults[$n] = $r;
                     }
