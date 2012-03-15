@@ -40,7 +40,7 @@ class BaseCollection
      *
      * @var array
      */ 
-    protected $itemData = null;
+    protected $_itemData = null;
 
 
 
@@ -62,7 +62,7 @@ class BaseCollection
      *
      * @var integer
      */
-    protected $itemCursor = null;
+    protected $_itemCursor = null;
 
 
 
@@ -94,13 +94,13 @@ class BaseCollection
             return $this->_currentQuery ?: $this->createQuery();
         }
         elseif( $key == '_items' ) {
-            return $this->itemData ?: $this->_readRows();
+            return $this->_itemData ?: $this->_readRows();
         }
     }
 
     public function free()
     {
-        $this->itemData = null;
+        $this->_itemData = null;
         return $this;
     }
 
@@ -231,12 +231,12 @@ class BaseCollection
         if( $h === null )
             throw new Exception( get_class($this) . ':' . $this->_result->message );
 
-        $this->itemData = array();
+        $this->_itemData = array();
         while( $o = $h->fetchObject( static::model_class ) ) {
             $o->deflate();
-            $this->itemData[] = $o;
+            $this->_itemData[] = $o;
         }
-        return $this->itemData;
+        return $this->_itemData;
     }
 
 
@@ -248,30 +248,30 @@ class BaseCollection
      */
     public function rewind()
     { 
-        $this->itemCursor = 0;
+        $this->_itemCursor = 0;
     }
 
     /* is current row a valid row ? */
     public function valid()
     {
-        if( $this->itemData == null )
+        if( $this->_itemData == null )
             $this->_readRows();
-        return isset($this->itemData[ $this->itemCursor ] );
+        return isset($this->_itemData[ $this->_itemCursor ] );
     }
 
     public function current() 
     { 
-        return $this->itemData[ $this->itemCursor ];
+        return $this->_itemData[ $this->_itemCursor ];
     }
 
     public function next() 
     {
-        return $this->itemData[ $this->itemCursor++ ];
+        return $this->_itemData[ $this->_itemCursor++ ];
     }
 
     public function key()
     {
-        return $this->itemCursor;
+        return $this->_itemCursor;
     }
 
 
