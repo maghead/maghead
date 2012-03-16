@@ -5,6 +5,4 @@ use PDO;
 class PdoAdapter extends PDO
 {
 
-
-
 }
