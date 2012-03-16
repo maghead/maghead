@@ -1,11 +1,13 @@
 <?php
 namespace LazyRecord;
 use Exception;
+use SerializerKit\PhpSerializer;
 
 function twig_var_export($obj)
 {
-    return \LazyRecord\Schema\SchemaDeclare\Exporter::export($obj);
-    // return var_export($obj,true);
+    $ser = new PhpSerializer;
+    $ser->return = false;
+    return $ser->encode( $obj );
 }
 
 class CodeGen
