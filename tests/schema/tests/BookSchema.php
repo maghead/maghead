@@ -29,6 +29,12 @@ class BookSchema extends SchemaDeclare
             ->isa('DateTime')
             ->timestamp();
 
+        $this->column('created_by')
+            ->integer()
+            ->refer('\tests\UserSchema');
+
+        $this->belongsTo('created_by', 'created_by', '\tests\UserSchema','id');
+
         /** 
          * column: author => Author class 
          *
