@@ -218,8 +218,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ));
         ok( $ret );
         is( $user->id, $book->created_by->id );
-
-        ok( $book->getValue('created_by') );
+        ok( $user->id , $book->getValue('created_by') );
     }
 
     public function testTypeConstraint()
