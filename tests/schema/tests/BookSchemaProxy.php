@@ -46,6 +46,13 @@ class BookSchemaProxy extends RuntimeSchema
           'isa' => 'DateTime',
         ),
     ),
+  'created_by' => array( 
+      'name' => 'created_by',
+      'attributes' => array( 
+          'type' => 'integer',
+          'isa' => 'int',
+        ),
+    ),
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
@@ -62,6 +69,7 @@ class BookSchemaProxy extends RuntimeSchema
   'description',
   'publisher_id',
   'published_at',
+  'created_by',
   'id',
 );
         $this->primaryKey      = 'id';
@@ -70,6 +78,17 @@ class BookSchemaProxy extends RuntimeSchema
         $this->collectionClass = 'tests\\BookCollection';
         $this->label           = 'Book';
         $this->relations       = array( 
+  'created_by' => array( 
+      'type' => 4,
+      'self' => array( 
+          'schema' => 'tests\\BookSchema',
+          'column' => 'created_by',
+        ),
+      'foreign' => array( 
+          'schema' => '\\tests\\UserSchema',
+          'column' => 'id',
+        ),
+    ),
   'publisher' => array( 
       'type' => 4,
       'self' => array( 
