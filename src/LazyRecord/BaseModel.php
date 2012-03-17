@@ -740,8 +740,6 @@ class BaseModel
         if( $key === '_schema' )
             return SchemaLoader::load( $this->getSchemaProxyClass() );
 
-        if( isset( $this->_data[ $key ] ) )
-            return $this->_data[ $key ];
 
         // return relation object
         if( $relation = $this->_schema->getRelation( $key ) ) {
@@ -845,8 +843,9 @@ class BaseModel
             else {
                 throw new Exception("The relationship type is not supported.");
             }
-
         }
+        if( isset( $this->_data[ $key ] ) )
+            return $this->_data[ $key ];
     }
 
     public function hasValue( $name )

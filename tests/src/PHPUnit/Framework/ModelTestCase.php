@@ -7,7 +7,6 @@ use LazyRecord\ConfigLoader;
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
 {
 
-
     public $driverType = 'sqlite';
 
     public $dsn = 'sqlite::memory:';
