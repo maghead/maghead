@@ -1,27 +1,16 @@
 <?php
 namespace LazyRecord;
 use Exception;
+use SerializerKit\Serializer;
 
 class ConfigBuilder
 {
     public $config = array();
 
-    function __construct()
-    {
-        if( ! extension_loaded('yaml') ) {
-            dl('yaml.' . PHP_SHLIB_SUFFIX );
-        }
-    }
-
     function read($configFile)
     {
-        return $this->config = yaml_parse_file($configFile);
-    }
-
-    function merge($configFile)
-    {
-        return $this->config = array_merge( $this->config, 
-                yaml_parse_file($configFile));
+        $ser = new Serializer('yaml');
+        return $this->config = $ser->decode( file_get_contents($configFile) );
     }
 
     function validate()
@@ -40,7 +29,8 @@ class ConfigBuilder
 
     function build()
     {
-        return '<?php return ' . var_export($this->config,true) . ';';
+        $ser = new Serializer('php');
+        return "<?php \n" . $ser->encode($this->config) . "\n?>";
     }
 
 }

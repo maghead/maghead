@@ -17,7 +17,7 @@ class BuildConfCommand extends \CLIFramework\Command
         $opts->add('o|output:','output file.');
     }
 
-    public function execute()
+    public function execute($configFile = null)
     {
         /**
          * $ lazy bulid-conf config/lazy.yml phifty/config/lazy.yml
@@ -25,27 +25,20 @@ class BuildConfCommand extends \CLIFramework\Command
          * build/lazy/config.php   # is generated
          */
         $options = $this->getOptions();
-        $configFiles = func_get_args();
-
-        if( empty($configFiles) ) {
-            if( file_exists( 'config/lazy.yml' ) )
-                $configFiles = (array)'config/lazy.yml';
+        if( ! $configFile ) {
+            if( file_exists( 'config/site_database.yml' ) )
+                $configFile = 'config/site_database.yml';
+            if( file_exists( 'config/database.yml' ) )
+                $configFile = 'config/database.yml';
         }
-
-
-        if( empty($configFiles) )
+        if( $configFile )
             throw new Exception("config file path is required.");
 
-        $mainConfigFile = array_shift($configFiles);
+        $mainConfigFile = $configFile;
         $dir = dirname($mainConfigFile);
 
         $builder = new ConfigBuilder;
         $builder->read( $mainConfigFile );
-
-        foreach( $configFiles as $file ) {
-            $builder->merge( $file );
-        }
-
         $builder->validate();
         $content = $builder->build(); // php source content
 
