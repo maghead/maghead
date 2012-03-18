@@ -31,7 +31,7 @@ class BuildConfCommand extends \CLIFramework\Command
             if( file_exists( 'config/database.yml' ) )
                 $configFile = 'config/database.yml';
         }
-        if( $configFile )
+        if( ! $configFile )
             throw new Exception("config file path is required.");
 
         $mainConfigFile = $configFile;
@@ -39,7 +39,6 @@ class BuildConfCommand extends \CLIFramework\Command
 
         $builder = new ConfigBuilder;
         $builder->read( $mainConfigFile );
-        $builder->validate();
         $content = $builder->build(); // php source content
 
         $outputPath = $options->output ? $options->output->value 
