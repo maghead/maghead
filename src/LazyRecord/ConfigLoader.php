@@ -52,10 +52,15 @@ class ConfigLoader
         if( $file === null )
             $file = $this->symbolFilename;
 
-        if( ! file_exists($file) ) 
-            throw new Exception("$file does not exist, please run build-conf command to build config file for PHP.");
-
-        $this->config = require $file;
+        if( is_string($file) && file_exists($file) ) {
+            $this->config = require $file;
+        }
+        elseif( is_array($file) ) {
+            $this->config = $file;
+        }
+        else {
+            throw new Exception("LazyRecord config error.");
+        }
         $this->loaded = true;
     }
 
