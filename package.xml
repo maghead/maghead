@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-03-17</date>
-  <time>14:13:03</time>
+  <date>2012-03-18</date>
+  <time>19:31:16</time>
   <version>
     <release>1.0.11</release>
     <api>1.0.11</api>
@@ -38,7 +38,7 @@
       <file name="tests/LazyRecord/ExecutiveQueryBuilderTest.php" role="test" md5sum="31aeac15025edc000c5c14cdba5f8832"/>
       <file name="tests/LazyRecord/InflatorTest.php" role="test" md5sum="3a27261c1488a27c51df8544ba5de933"/>
       <file name="tests/LazyRecord/InflectorTest.php" role="test" md5sum="c3bc87f3e82557bdcd650047c6e48ec8"/>
-      <file name="tests/LazyRecord/ModelTest.php" role="test" md5sum="b2d9f003da7025603e7eab86ab4fa817"/>
+      <file name="tests/LazyRecord/ModelTest.php" role="test" md5sum="cfac98cbba01590b45c20a5db26b4339"/>
       <file name="tests/LazyRecord/PgsqlModelTest.php" role="test" md5sum="ddd3e166ee3b362b6e36ca219e23b9d5"/>
       <file name="tests/LazyRecord/SchemaDeclare/ColumnTest.php" role="test" md5sum="da778c4ed5ca391f5de2729a7ce64234"/>
       <file name="tests/LazyRecord/SchemaDeclareTest.php" role="test" md5sum="b120fc514a6384ebe553485424b98281"/>
@@ -111,7 +111,7 @@
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="192187a356d2b8fe786b2c53fc75ca8a"/>
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="1f28f5e530d084a13a756415a7fe4224"/>
       <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="3e8373c32db622882422fc1afc8c960b"/>
-      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="35f23fc076d3cae2befc53c36e96097d"/>
+      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="20ce9d08cb37851c02cb354e66e87dc9"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="3a9d95ed46e214fe9f14207125077dae"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="cc9bd27debaac3386fd46409bce31ba9"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="11868dfa955c8bb4f4d1a4aa7a699753"/>
@@ -148,7 +148,7 @@
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="package.ini" role="data" md5sum="de0893b125f7cd904c02047c12c5f3fe"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="b681186d5b2a680970e5028d3d45eb1d"/>
+      <file name="lazy" role="script" md5sum="0bd1ba8313f3644546ba2e817e6c69b9"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
   </contents>
