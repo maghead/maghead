@@ -1,11 +1,12 @@
 ---
-schema:
-  paths:
-    - tests/schema
-data_sources:
-  default:
-    dsn: 'sqlite::memory:'
-  slave:
-    dsn: 'mysql:host=localhost;dbname=test'
-    user: root
-    pass: 123123
+development:
+  schema:
+    paths:
+      - tests/schema
+  data_sources:
+    default:
+      dsn: 'sqlite::memory:'
+    slave:
+      dsn: 'mysql:host=localhost;dbname=test'
+      user: root
+      pass: 123123
