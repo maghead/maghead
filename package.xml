@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-18</date>
-  <time>19:31:31</time>
+  <time>20:00:56</time>
   <version>
     <release>1.0.11</release>
     <api>1.0.11</api>
@@ -25,14 +25,14 @@
   <contents>
     <dir name="/">
       <file name="tests/bootstrap.php" role="test" md5sum="6d84a2d9dcb07ecb2441b92dcdd26acd"/>
-      <file name="tests/lazy-config.php" role="test" md5sum="f71c52ed417eb92f59b1b77d32989188"/>
-      <file name="tests/lazy.php" role="test" md5sum="f71c52ed417eb92f59b1b77d32989188"/>
-      <file name="tests/lazy.yml" role="test" md5sum="a35e7db349dea65da593546c4db8ce19"/>
+      <file name="tests/lazy-config.php" role="test" md5sum="e18463ef3e30c8ea10dc6e39d8f90e1f"/>
+      <file name="tests/lazy.php" role="test" md5sum="0e71de455ba3705ae2f5d45ef922e0be"/>
+      <file name="tests/lazy.yml" role="test" md5sum="a3b82350fab3f47c620afdcf7d4b7aac"/>
       <file name="tests/LazyRecord/CodeGen/ClassTemplateTest.php" role="test" md5sum="c5a4c30183b7e2a8115e1a5aca67d7e4"/>
       <file name="tests/LazyRecord/CodeGenTest.php" role="test" md5sum="05e85cf12094e56c15d8c94013bffbc2"/>
       <file name="tests/LazyRecord/CollectionPagerTest.php" role="test" md5sum="f131d5667b0c554d3bbd8d46ee888743"/>
       <file name="tests/LazyRecord/CollectionTest.php" role="test" md5sum="ece947fc30b0008e9ede7ef3e0b7881a"/>
-      <file name="tests/LazyRecord/ConfigBuilderTest.php" role="test" md5sum="22f5dd41bc58a0379dfa3792901ddec0"/>
+      <file name="tests/LazyRecord/ConfigBuilderTest.php" role="test" md5sum="6e43f0c8bd39ed5b1ca876edbe1eeb97"/>
       <file name="tests/LazyRecord/ConnectionManagerTest.php" role="test" md5sum="3405b1024b2df885a22a52a7dbea8574"/>
       <file name="tests/LazyRecord/DeflatorTest.php" role="test" md5sum="ecac97e55ed97548bac77a7c5b917953"/>
       <file name="tests/LazyRecord/ExecutiveQueryBuilderTest.php" role="test" md5sum="31aeac15025edc000c5c14cdba5f8832"/>
@@ -106,12 +106,12 @@
       <file name="src/LazyRecord/CodeGen/UseClass.php" role="php" md5sum="3fa0ed7b1aaff5bb1ca577b5d4d4fb15"/>
       <file name="src/LazyRecord/CodeGen.php" role="php" md5sum="7149f3fca607645f82bbdfcb89f16614"/>
       <file name="src/LazyRecord/CollectionPager.php" role="php" md5sum="3348100c59a0029db44e27e11c6e60af"/>
-      <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="89ea353863444f7ab198091b6d464795"/>
+      <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="97251f7e5c7f3dc73ab4911e2ddf0eca"/>
       <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="fd41c83fabcd5aedcfab5c841dc70f9b"/>
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="192187a356d2b8fe786b2c53fc75ca8a"/>
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="1f28f5e530d084a13a756415a7fe4224"/>
-      <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="3e8373c32db622882422fc1afc8c960b"/>
-      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="20ce9d08cb37851c02cb354e66e87dc9"/>
+      <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="be57069c96dd9b381320c20d48cb920d"/>
+      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="cf78235a7eec89f450baf8d4d26152a2"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="3a9d95ed46e214fe9f14207125077dae"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="cc9bd27debaac3386fd46409bce31ba9"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="11868dfa955c8bb4f4d1a4aa7a699753"/>
@@ -148,7 +148,7 @@
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="package.ini" role="data" md5sum="de0893b125f7cd904c02047c12c5f3fe"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="0e3932afb3d28e9d0037a2092af58916"/>
+      <file name="lazy" role="script" md5sum="640e7f710ddf4f4594f4486b2c5c9d73"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
   </contents>
