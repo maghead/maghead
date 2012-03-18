@@ -145,8 +145,8 @@ class ConfigLoader
      */
     public function loadClassMapFile() 
     {
-        if( isset($this->config['schema']['class_map_file']) && 
-            $file = $this->config['schema']['class_map_file'] ) 
+        if( isset($this->config['schema']['loader']) && 
+            $file = $this->config['schema']['loader'] ) 
         {
             return $this->classMap = require $file;
         }
