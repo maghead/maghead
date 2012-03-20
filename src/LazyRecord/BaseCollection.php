@@ -20,7 +20,7 @@ class BaseCollection
     implements Iterator, ArrayAccess, ExporterInterface
 {
 
-    protected $_lastSQL;
+    protected $_lastSql;
 
     protected $_vars;
 
@@ -149,7 +149,7 @@ class BaseCollection
     {
         /* fetch by current query */
         $query = $this->_query;
-        $this->_lastSQL = $sql = $query->build();
+        $this->_lastSql = $sql = $query->build();
         $this->_vars = $vars = $query->vars;
 
 
@@ -412,11 +412,10 @@ class BaseCollection
         $this->_presetVars = $vars;
     }
 
-    public function getLastSQL()
+    public function getLastSql()
     {
-        return $this->_lastSQL;
+        return $this->_lastSql;
     }
-
 
     public function getVars()
     {
@@ -429,11 +428,20 @@ class BaseCollection
     }
 
 
-
-
-
-
-
+    /**
+     * convert to sql
+     */
+    public function toSql()
+    {
+        /* fetch by current query */
+        $query = $this->_query;
+        $sql = $query->build();
+        $vars = $query->vars;
+        foreach( $vars as $name => $value ) {
+            $sql = str_replace( $name, $value, $sql );
+        }
+        return $sql;
+    }
 
 }
 
