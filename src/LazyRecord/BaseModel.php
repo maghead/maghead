@@ -466,7 +466,10 @@ class BaseModel
 
         $this->afterDelete( $this->_data );
         $this->clearData();
-        return $this->reportSuccess( _('Deleted'));
+        return $this->reportSuccess( _('Deleted') , array( 
+            'sql' => $sql,
+            'vars' => $query->vars,
+        ));
     }
 
 
@@ -580,10 +583,12 @@ class BaseModel
             ));
         }
 
-        // throw new Exception( "Update failed." . $dbc->error );
-        $result = new OperationSuccess;
-        $result->id = $kVal;
-        return $result;
+        return $this->reportSuccess( _('Deleted') , array( 
+            'id'  => $kVal,
+            'sql' => $sql,
+            'args' => $args,
+            'vars' => $vars,
+        ));
     }
 
 
@@ -1106,6 +1111,10 @@ class BaseModel
         return $this->_result = new OperationSuccess($message,$extra);
     }
 
+
+
+
+    // _schema methods
     public function getColumn($n)
     {
         return $this->_schema->getColumn($n);
