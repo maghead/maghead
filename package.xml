@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-21</date>
-  <time>01:59:05</time>
+  <time>02:11:27</time>
   <version>
     <release>1.0.11</release>
     <api>1.0.11</api>
@@ -96,8 +96,8 @@
       <file name="tests/src/PHPUnit/Framework/ModelTestCase.php" role="test" md5sum="17891d03a1d68a6a609f4ac457e57aff"/>
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
-      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="2e42dd4158262e72ae0ab53521370563"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="858321d1076c5d5fa4cd526e80fa51b7"/>
+      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="5406f6f17f7da5a13eebc5cc39599722"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="5b0e844987bb8427d9d7eddc44e31f22"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
       <file name="src/LazyRecord/CodeGen/ClassMember.php" role="php" md5sum="5862b6f6f9640e9c3795a74aa5f5b70e"/>
       <file name="src/LazyRecord/CodeGen/ClassMethod.php" role="php" md5sum="e7610d981aa5ee8cb14fe52626c54694"/>
@@ -148,7 +148,7 @@
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="package.ini" role="data" md5sum="de0893b125f7cd904c02047c12c5f3fe"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="53566a4273b2a06bf91390473c84eb8b"/>
+      <file name="lazy" role="script" md5sum="f6fae450abdd9e2c63992877a16aedd0"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
   </contents>
