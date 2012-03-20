@@ -332,6 +332,22 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             'title' => 'Programming Perl II',
         );
         is( 2, $author->books->size() , '2 books' );
+
+        $books = $author->books;
+        is( 2, $books->size() , '2 books' );
+
+        foreach( $books as $book ) {
+            ok( $book->id );
+            ok( $book->title );
+        }
+
+        foreach( $author->books as $book ) {
+            ok( $book->id );
+            ok( $book->title );
+        }
+
+        $books = $author->books;
+        is( 2, $books->size() , '2 books' );
         $author->delete();
     }
 
