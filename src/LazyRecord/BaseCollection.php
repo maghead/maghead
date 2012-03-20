@@ -112,17 +112,32 @@ class BaseCollection
         }
     }
 
+    public function getAlias()
+    {
+        return 'm';
+    }
+
     public function createQuery()
     {
         $q = new QueryBuilder;
         $q->driver = $this->getCurrentQueryDriver();
         $q->table( $this->_schema->table );
-        $q->select('*');
-        $q->alias('m'); // main table alias
+        // $q->select('*');
+        $q->select( $this->getExplicitColumnSelect() );
+        $q->alias( $this->getAlias() ); // main table alias
         return $this->_currentQuery = $q;
     }
 
 
+    // xxx: this might be used in other join statements.
+    public function getExplicitColumnSelect()
+    {
+        $alias = $this->getAlias();
+        $sels = array_map( function($name) use($alias) { 
+                return $alias . '.' . $name;
+        }, $this->_schema->getColumnNames());
+        return $sels;
+    }
 
     /**
      * prepare data handle, call fetch method to read data from database, and 
