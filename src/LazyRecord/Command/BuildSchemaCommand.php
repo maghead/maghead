@@ -18,10 +18,6 @@ class BuildSchemaCommand extends \CLIFramework\Command
         return 'build configuration file.';
     }
 
-    public function options($opts)
-    {
-    }
-
     public function execute()
     {
         $logger = $this->getLogger();

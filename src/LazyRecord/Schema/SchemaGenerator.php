@@ -32,6 +32,7 @@ class SchemaGenerator
     protected function getTemplatePath()
     {
         $refl = new \ReflectionObject($this);
+        $path = $refl->getFilename();
         return dirname($refl->getFilename()) . DIRECTORY_SEPARATOR . 'Templates';
     }
 
