@@ -1131,6 +1131,5 @@ class BaseModel
         return $this->_schema->table;
     }
 
-
 }
 
