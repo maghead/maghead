@@ -24,7 +24,7 @@ class BuildConfCommand extends \CLIFramework\Command
          * 
          * build/lazy/config.php   # is generated
          */
-        $options = $this->getOptions();
+        $options = $this->options;
         if( ! $configFile ) {
             if( file_exists( 'config/site_database.yml' ) )
                 $configFile = 'config/site_database.yml';
