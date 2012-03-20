@@ -322,9 +322,17 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $book->id );
         is( 'Programming Perl I' , $book->title );
 
+        is( 1, $author->books->size() );
+        is( 1, $author->author_books->size() );
         ok( $author->author_books[0] );
         ok( $author->author_books[0]->created_on );
         is( '2010-01-01', $author->author_books[0]->created_on->format('Y-m-d') );
+
+        $author->books[] = array( 
+            'title' => 'Programming Perl II',
+        );
+        is( 2, $author->books->size() , '2 books' );
+        $author->delete();
     }
 
 
@@ -407,6 +415,31 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $author->delete();
     }
 
+    public function testHasManyRelationCreate2()
+    {
+        $author = new \tests\Author;
+        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        ok( $author->id );
+
+        // append items
+        $author->addresses[] = array( 'address' => 'Harvard' );
+        $author->addresses[] = array( 'address' => 'Harvard II' );
+
+        is(2, $author->addresses->size() , 'just two item' );
+
+        $addresses = $author->addresses->items();
+        ok( $addresses );
+        is( 'Harvard' , $addresses[0]->address );
+
+        $a = $addresses[0];
+        ok( $retAuthor = $a->author );
+        ok( $retAuthor->id );
+        ok( $retAuthor->name );
+        is( 'Z', $retAuthor->name );
+
+        $author->delete();
+    }
+
     public function testHasManyRelationCreate()
     {
         $author = new \tests\Author;
@@ -424,21 +457,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         is( 'farfaraway' , $address->address );
 
         $address->delete();
-
-        // do create
-        $author->addresses[] = array( 'address' => 'Harvard' );
-
-        $addresses = $author->addresses->items();
-        ok( $addresses );
-        is( 'Harvard' , $addresses[0]->address );
-
-        $a = $addresses[0];
-        ok( $retAuthor = $a->author );
-        ok( $retAuthor->id );
-        ok( $retAuthor->name );
-        is( 'Z', $retAuthor->name );
-
         $author->delete();
+
     }
 
     public function testHasManyRelationFetch()
