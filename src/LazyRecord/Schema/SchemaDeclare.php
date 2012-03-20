@@ -1,6 +1,5 @@
 <?php
 namespace LazyRecord\Schema;
-use LazyRecord\Schema\SchemaDeclare\Column;
 use LazyRecord\Inflector;
 use LazyRecord\ConfigLoader;
 use Exception;
@@ -231,7 +230,7 @@ abstract class SchemaDeclare extends SchemaBase
             throw new Exception("column $name of ". get_class($this) . " is already defined.");
         }
         $this->columnNames[] = $name;
-        return $this->columns[ $name ] = new Column( $name );
+        return $this->columns[ $name ] = new SchemaDeclare\Column( $name );
     }
 
 
