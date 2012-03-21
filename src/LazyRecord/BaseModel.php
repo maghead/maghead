@@ -212,6 +212,7 @@ class BaseModel
                 );
             }
             // order with key => value
+            //    label => value
             else {
                 $values = array_values( $validValues );
                 if( false === in_array( $val , $values ) ) {
