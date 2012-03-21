@@ -132,6 +132,16 @@ class Column
         if( $this->validPairs && isset( $this->validPairs[ $value ] ) )
             return $this->validPairs[ $value ];
 
+        if( $this->validValues && isset( $this->validValues[ $value ]) ) {
+            return $this->validValues[ $value ]; // value => label
+        }
+
+        if( $this->validValueBuilder && $values = call_user_func($this->validValueBuilder) ) {
+            if( isset($values[ $value ]) ) {
+                return $values[ $value ];
+            }
+        }
+
         if( $this->isa == 'bool' )
             return $value ? _('Yes') : _('No');
 
