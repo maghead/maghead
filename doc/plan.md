@@ -20,3 +20,11 @@ Parse database schemas.
 Diff current schemas and databases.
 
     $ lazy diff
+
+## Migration support 
+
+????
+
+
+
+
