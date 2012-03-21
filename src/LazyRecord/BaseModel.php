@@ -869,7 +869,9 @@ class BaseModel
     {
         return isset($this->_schema->columns[ $name ]) 
             || isset($this->_data[ $name ])
-            || $name === '_schema';
+            || $name === '_schema'
+            || $this->_schema->getRelation( $name )
+            ;
     }
 
     /**
