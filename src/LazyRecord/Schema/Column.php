@@ -31,36 +31,36 @@ class Column
     }
 
 
-	public function canonicalizeValue( & $value , $record = null , $args = null )
-	{
-		$cb = $this->filter ?: $this->canonicalizer ?: null;
-		if( $cb ) {
-			return $value = call_user_func( $cb , $value , $record, $args );
-		}
-		return $value;
-	}
+    public function canonicalizeValue( & $value , $record = null , $args = null )
+    {
+        $cb = $this->filter ?: $this->canonicalizer ?: null;
+        if( $cb ) {
+            return $value = call_user_func( $cb , $value , $record, $args );
+        }
+        return $value;
+    }
 
-	/**
-	 * for an existing record, we might need the record data to return specified valid values.
-	 */
-	public function getValidValues( $record = null , $args = null )
-	{
-		if( $this->validValues ) {
-			return $this->validValues;
-		} elseif( $this->validValueBuilder ) {
-			return call_user_func( $this->validValueBuilder , $record , $args );
-		}
-	}
+    /**
+     * for an existing record, we might need the record data to return specified valid values.
+     */
+    public function getValidValues( $record = null , $args = null )
+    {
+        if( $this->validValues ) {
+            return $this->validValues;
+        } elseif( $this->validValueBuilder ) {
+            return call_user_func( $this->validValueBuilder , $record , $args );
+        }
+    }
 
-	public function getDefaultValue( $record = null, $args = null )
-	{
-		if( $this->defaultBuilder ) {
-			return call_user_func( $this->defaultBuilder , $record, $args );
-		}
-		elseif( $this->default ) {
-			return $this->default; // might contains array() which is a raw sql statement.
-		}
-	}
+    public function getDefaultValue( $record = null, $args = null )
+    {
+        if( $this->defaultBuilder ) {
+            return call_user_func( $this->defaultBuilder , $record, $args );
+        }
+        elseif( $this->default ) {
+            return $this->default; // might contains array() which is a raw sql statement.
+        }
+    }
 
     public function typeCasting( & $value)
     {
@@ -99,24 +99,24 @@ class Column
         return $value;
     }
 
-	public function checkTypeConstraint($value)
-	{
-		if( $this->isa )
-		{
-			if( $this->isa === 'str' ) {
-				if( false === is_string( $value ) ) 
-					return 'Value is not a string value.';
-			}
-			elseif( $this->isa === 'int' ) {
-				if( false === is_integer( $value ) )
-					return 'Value is not a integer value.';
-			}
-			elseif( $this->isa === 'bool' || $this->isa === 'boolean' ) {
-				if( false === is_bool( $value ) )
-					return 'Value is not a boolean value.';
-			}
-		}
-	}
+    public function checkTypeConstraint($value)
+    {
+        if( $this->isa )
+        {
+            if( $this->isa === 'str' ) {
+                if( false === is_string( $value ) ) 
+                    return 'Value is not a string value.';
+            }
+            elseif( $this->isa === 'int' ) {
+                if( false === is_integer( $value ) )
+                    return 'Value is not a integer value.';
+            }
+            elseif( $this->isa === 'bool' || $this->isa === 'boolean' ) {
+                if( false === is_bool( $value ) )
+                    return 'Value is not a boolean value.';
+            }
+        }
+    }
 
     /** 
      * deflate value 
