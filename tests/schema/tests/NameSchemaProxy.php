@@ -80,9 +80,9 @@ class NameSchemaProxy extends RuntimeSchema
           'validValueBuilder' => function() { 
                     return array(
                         /* description => value */
-                        'Type Name A' => 'type-a',
-                        'Type Name B' => 'type-b',
-                        'Type Name C' => 'type-c',
+                        'type-a' => 'Type Name A',
+                        'type-b' => 'Type Name B',
+                        'type-c' => 'Type Name C',
                     );
                 },
         ),
