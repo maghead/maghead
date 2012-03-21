@@ -492,6 +492,9 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei',
         ));
+        ok( $address->author );
+        ok( $address->author->id );
+        is( $author->id, $address->author->id );
 
         $address->create(array( 
             'author_id' => $author->id,
