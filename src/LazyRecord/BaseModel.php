@@ -212,9 +212,9 @@ class BaseModel
                 );
             }
             // order with key => value
-            //    label => value
+            //    value => label
             else {
-                $values = array_values( $validValues );
+                $values = array_keys( $validValues );
                 if( false === in_array( $val , $values ) ) {
                     $validateFail = true;
                     return (object) array(
