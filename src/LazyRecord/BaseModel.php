@@ -609,18 +609,11 @@ class BaseModel
             : $this->update( $this->_data );
     }
 
-    public function value($column) 
-    {
-        if( isset($this->_data[ $column ] ) )
-            return $this->_data[ $column ];
-        return null;
-    }
-
     /* pass a value to a column for displaying */
     public function display( $name )
     {
         $c = $this->_schema->getColumn( $name );
-        return $c->display( $this->value( $name ) );
+        return $c->display( $this->getValue( $name ) );
     }
 
 

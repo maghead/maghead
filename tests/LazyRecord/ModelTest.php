@@ -362,6 +362,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ));
         ok( $ret->success );
 
+        is( 'Type Name A', $name->display( 'type' ) );
+
         $xml = $name->toXml();
         ok( $xml );
 
