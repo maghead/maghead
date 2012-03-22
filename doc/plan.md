@@ -21,10 +21,20 @@ Diff current schemas and databases.
 
     $ lazy diff
 
+## Create with relation
+
+    $record->create(array(
+        'mail_id' => $mail->id
+    ));
+
+Rather than this:
+
+    $record->create(array(
+        'mail' => $mail,
+    ));
+
+
 ## Migration support 
 
 ????
-
-
-
 
