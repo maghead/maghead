@@ -351,6 +351,19 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $author->delete();
     }
 
+    public function testLoadFromContstructor()
+    {
+        $name = new \tests\Name;
+        $name->create(array( 
+            'name' => 'John',
+            'country' => 'Taiwan',
+            'type' => 'type-a',
+        ));
+        ok( $name->id );
+        $name2 = new \tests\Name( $name->id );
+        is( $name2->id , $name->id );
+    }
+
 
     public function testValidValueBuilder()
     {
@@ -361,7 +374,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             'type' => 'type-a',
         ));
         ok( $ret->success );
-
         is( 'Type Name A', $name->display( 'type' ) );
 
         $xml = $name->toXml();
