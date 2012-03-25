@@ -4,13 +4,13 @@ use Exception;
 
 class Column 
 {
-    const  attr_any = 0;
-    const  attr_array = 1;
-    const  attr_string = 2;
-    const  attr_integer = 3;
-    const  attr_float = 4;
-    const  attr_callable = 5;
-    const  attr_flag = 6;
+    const  ATTR_ANY = 0;
+    const  ATTR_ARRAY = 1;
+    const  ATTR_STRING = 2;
+    const  ATTR_INTEGER = 3;
+    const  ATTR_FLOAT = 4;
+    const  ATTR_CALLABLE = 5;
+    const  ATTR_FLAG = 6;
 
     /**
      * @var string column name
@@ -38,49 +38,53 @@ class Column
         $this->name = $name;
         $this->supportedAttributes = array(
 
-            'primary'       => self::attr_flag,
-            'autoIncrement' => self::attr_flag,
-            'immutable'     => self::attr_flag,
-            'unique'        => self::attr_flag, /* unique, should support by SQL syntax */
-            'null'          => self::attr_flag,
-            'notNull'       => self::attr_flag,
-            'required'      => self::attr_flag,
+            'primary'       => self::ATTR_FLAG,
+            'autoIncrement' => self::ATTR_FLAG,
+            'immutable'     => self::ATTR_FLAG,
+            'unique'        => self::ATTR_FLAG, /* unique, should support by SQL syntax */
+            'null'          => self::ATTR_FLAG,
+            'notNull'       => self::ATTR_FLAG,
+            'required'      => self::ATTR_FLAG,
 
             /* column label */
-            'label' => self::attr_any,
+            'label' => self::ATTR_ANY,
 
-            'desc'  => self::attr_string,
+            'desc'  => self::ATTR_STRING,
 
-            'comment'  => self::attr_string,
+            'comment'  => self::ATTR_STRING,
 
 
             /* reference to model schema */
-            'refer' => self::attr_string,
+            'refer' => self::ATTR_STRING,
 
 
             /* data type: string, integer, DateTime, classname */
-            'isa' => self::attr_string,
+            'isa' => self::ATTR_STRING,
 
-            'type' => self::attr_string,
+            'type' => self::ATTR_STRING,
 
-            'default' => self::attr_any,
+            'default' => self::ATTR_ANY,
 
-            'defaultBuilder' => self::attr_callable,
+            'defaultBuilder' => self::ATTR_CALLABLE,
 
-            'validator'  => self::attr_callable,
+            'validator'  => self::ATTR_CALLABLE,
 
-            'validValueBuilder' => self::attr_callable,
+            'validValueBuilder' => self::ATTR_CALLABLE,
 
 
             /* contains an associative array */
-            'validPairs' => self::attr_any,
+            'validPairs' => self::ATTR_ANY,
 
 
 			// canonicalizer
-			'canonicalizer' => self::attr_callable,
+			'canonicalizer' => self::ATTR_CALLABLE,
 
 			// an alias of canonicalizer
-			'filter' => self::attr_callable,
+			'filter' => self::ATTR_CALLABLE,
+
+            'inflator' => self::ATTR_CALLABLE,
+
+            'deflator' => self::ATTR_CALLABLE,
         );
     }
 
@@ -190,17 +194,17 @@ class Column
             $c = count($args);
             $t = $this->supportedAttributes[ $method ];
 
-            if( $t != self::attr_flag && $c == 0 ) {
+            if( $t != self::ATTR_FLAG && $c == 0 ) {
                 throw new Exception( 'Attribute value is required.' );
             }
 
             switch( $t ) {
 
-                case self::attr_any:
+                case self::ATTR_ANY:
                     $this->attributes[ $method ] = $args[0];
                     break;
 
-                case self::attr_array:
+                case self::ATTR_ARRAY:
                     if( $c > 1 ) {
                         $this->attributes[ $method ] = $args;
                     }
@@ -214,7 +218,7 @@ class Column
                     }
                     break;
 
-                case self::attr_string:
+                case self::ATTR_STRING:
                     if( is_string($args[0]) ) {
                         $this->attributes[ $method ] = $args[0];
                     }
@@ -223,7 +227,7 @@ class Column
                     }
                     break;
 
-                case self::attr_integer:
+                case self::ATTR_INTEGER:
                     if( is_integer($args[0])) {
                         $this->attributes[ $method ] = $args[0];
                     }
@@ -232,7 +236,7 @@ class Column
                     }
                     break;
 
-                case self::attr_callable:
+                case self::ATTR_CALLABLE:
 
                     /**
                      * handle for __invoke, array($obj,$method), 'function_name 
@@ -244,7 +248,7 @@ class Column
                     }
                     break;
 
-                case self::attr_flag:
+                case self::ATTR_FLAG:
                     $this->attributes[ $method ] = true;
                     break;
 
