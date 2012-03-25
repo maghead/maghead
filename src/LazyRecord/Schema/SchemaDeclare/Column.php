@@ -142,6 +142,13 @@ class Column
         return $this;
     }
 
+    public function date()
+    {
+        $this->attributes['type'] = 'date';
+        $this->attributes['isa'] = 'DateTime';
+        return $this;
+    }
+
     public function datetime()
     {
         $this->attributes['type'] = 'datetime';
