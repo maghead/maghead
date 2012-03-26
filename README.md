@@ -194,11 +194,30 @@ To get PDO connection:
 
 Setup Testing Environment
 -------------------------
+copy the default config:
 
-    lazy init-conf
-    lazy build-conf config/lazy.yml
+    cp config/database.yml.testing config/database.yml
+
+modify database driver, user, pass:
+
+    vim config/database.yml
+
+build php config:
+
+    lazy build-conf config/database.yml
+
+build schema files (if you added new schema files)
+
     lazy build-schema
+
+build sql (inject sql into database)
+
     lazy build-sql
+
+run tests:
+
+    phpunit tests
+
 
 For pgsql:
 
