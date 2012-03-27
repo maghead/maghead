@@ -53,8 +53,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     /****************************
      * Basic CRUD Test 
      ***************************/
-	public function testModel()
-	{
+    public function testModel()
+    {
         $author = new \tests\Author;
         ok( $author->_schema );
 
@@ -122,57 +122,124 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
-	public function testFilter()
-	{
+    public function testFilter()
+    {
         $name = new \tests\Name;
         $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John' ));
-		ok( $ret );
-		ok( $ret->success );
-		is( 'XXXX' , $name->address , 'Be canonicalized' );
-	}
+        ok( $ret );
+        ok( $ret->success );
+        is( 'XXXX' , $name->address , 'Be canonicalized' );
+    }
 
-	public function testValueTypeConstraint()
-	{
-		// if it's a str type , we should not accept types not str.
-		$n = new \tests\Name;
-		$ret = $n->create(array( 'name' => false , 'country' => 'Tokyo' ));
+    public function testBooleanFromIntegerValue()
+    {
+        $n = new \tests\Name;
 
+        /** confirmed will be cast to true **/
+        $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 123 ));
+        ok( $ret->success );
+        ok( $n->id );
+        is( true, $n->confirmed );
+        ok( $n->delete()->success );
+    }
+
+    public function testBooleanFromStringOne()
+    {
+        $n = new \tests\Name;
+
+        /** confirmed will be cast to true **/
+        $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '1' ));
+        ok( $ret->success );
+        ok( $n->id );
+        is( true, $n->confirmed );
+        ok( $n->delete()->success );
+    }
+
+
+    public function testBooleanFromStringZero()
+    {
+        $n = new \tests\Name;
+
+        /** confirmed will be cast to true **/
+        $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ));
+        ok( $ret->success );
+        ok( $n->id );
+        is( false, $n->confirmed );
+        ok( $n->delete()->success );
+    }
+
+
+
+
+    public function booleanTrueTestDataProvider()
+    {
+        return array(
+            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 1 ) ),
+            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '1' ) ),
+            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => true ) ),
+            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'true' ) ),
+            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => ' ' ) ),  // space string (true)
+        );
+    }
+
+    public function booleanFalseTestDataProvider()
+    {
+        return array(
+            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 0 ) ),
+            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ) ),
+            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => false ) ),
+            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'false' ) ),
+            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '' ) ),  // empty string (false)
+        );
+    }
+
+
+    /**
+     * @dataProvider booleanTrueTestDataProvider
+     */
+    public function testBooleanTrue($args)
+    {
+        $n = new \tests\Name;
+        $ret = $n->create($args);
+        ok( $ret->success );
+        ok( $n->id );
+        is( true, $n->confirmed );
+        // reload
+        ok( $n->load( $n->id )->success );
+        is( true, $n->confirmed );
+        ok( $n->delete()->success );
+    }
+
+
+    /**
+     * @dataProvider booleanFalseTestDataProvider
+     */
+    public function testBooleanFalse($args)
+    {
+        $n = new \tests\Name;
+        $ret = $n->create($args);
+        ok( $ret->success );
+        ok( $n->id );
+        is( false, $n->confirmed );
+        // reload
+        ok( $n->load( $n->id )->success );
+        is( false, $n->confirmed );
+        ok( $n->delete()->success );
+    }
+
+
+    public function testValueTypeConstraint()
+    {
+        // if it's a str type , we should not accept types not str.
+        $n = new \tests\Name;
         /**
          * name column is required, after type casting, it's NULL, so
          * create should fail.
          */
-		ok( ! $ret->success );
+        $ret = $n->create(array( 'name' => false , 'country' => 'Tokyo' ));
+        ok( ! $ret->success );
         ok( ! $n->id );
-
-
-        /** confirmed will be cast to true **/
-		$ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 123 ));
-		ok( $ret->success );
-        ok( $n->id );
-        ok( $n->delete()->success );
-
-		$ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => true ));
-		ok( $ret->success );
-        ok( $n->id );
-        is( true, $n->confirmed );
-        ok( $n->load( $n->id )->success );
-        is( true, $n->confirmed );
-        ok( $n->delete()->success );
-
-		$ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => false ));
-		ok( $ret->success );
-        ok( $n->id );
-        is( false, $n->confirmed );
-        ok( $n->load( $n->id )->success );
-        is( false, $n->confirmed );
-        ok( $n->delete()->success );
-
-        $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo' , 'category_id' => '' ));
-        ok( $ret->success );
-
-        $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo' , 'category_id' => '  ' ));
-        ok( $ret->success );
-	}
+    }
 
     public function testDefaultBuilder()
     {
@@ -289,11 +356,11 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         $books = new \tests\BookCollection;
         $books->join('author_books')
-                ->alias('ab')
-                ->on()
-                    ->equal( 'ab.book_id' , array('m.id') );
+            ->alias('ab')
+            ->on()
+            ->equal( 'ab.book_id' , array('m.id') );
         $books->where()
-                ->equal( 'ab.author_id' , $author->id );
+            ->equal( 'ab.author_id' , $author->id );
         $items = $books->items();
 
         $bookTitles = array();
@@ -564,15 +631,15 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
          */
         $ret = \tests\Author::update(array( 'name' => 'Rename' ))
             ->where()
-                ->equal('name','Mary')
-                ->execute();
+            ->equal('name','Mary')
+            ->execute();
         ok( $ret->success );
 
         $ret = \tests\Author::delete()
             ->where()
-                ->equal('name','Rename')
+            ->equal('name','Rename')
             ->execute();
         ok( $ret->success );
-	}
+    }
 }
 
