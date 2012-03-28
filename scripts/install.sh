@@ -6,4 +6,5 @@ phpunit tests && (
     bash scripts/compile.sh
     onion build
     pear -v install -f package.xml
+    sudo /opt/local/bin/pear -v install -f package.xml
 )
