@@ -60,8 +60,9 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
             $schema = new $class;
             $sqls = $builder->build($schema);
             ok( $sqls );
-            foreach( $sqls as $sql )
+            foreach( $sqls as $sql ) {
                 $dbh->query( $sql );
+            }
         }
     }
 
