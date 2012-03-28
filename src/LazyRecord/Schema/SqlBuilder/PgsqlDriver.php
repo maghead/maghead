@@ -45,6 +45,11 @@ class PgsqlDriver
                  * note that we sometime need the data source id from model schema define.
                  * $sourceId = $schema->getDataSourceId();
                  */
+
+                /**
+                 * Here we use query driver builder to inflate default value,
+                 * But the value,
+                 */
                 $sql .= ' default ' . $this->driver->inflate($default);
             }
         }

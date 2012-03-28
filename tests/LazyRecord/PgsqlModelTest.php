@@ -27,8 +27,7 @@ class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
         $ret = $author->create(array());
 
         is( 'Empty arguments' , $ret->message );
-        $this->resultOK( false , $ret );
-
+        is( false , $ret->success );
 
         $book = new \tests\Book;
         $ret = $book->create(array( 
