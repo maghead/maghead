@@ -55,25 +55,21 @@ class Inflator
              *  29 | Foo with "0"      |             |             |         | Taipei  |      | f
              *  (5 rows)
              */
-            if( is_string($value) ) {
+            if( is_bool($value) ) {
+                return $value ? 1 : 0;
+            }
+            elseif( is_string($value) ) {
                 if( $value === '0' || strncasecmp($value,'false',5) == 0 ) {
-                    return $value = '0';
+                    return $value = 0;
                 }
                 elseif( $value === '1' ||  strncasecmp($value,'true',4 ) == 0  ) {
-                    return $value = '1';
+                    return $value = 1;
                 }
             }
             elseif( is_null($value) ) {
-                return $value = 'NULL';
+                return $value = null;
             }
-
-            $value = (boolean) $value;
-            if( $value ) {
-                return $value = '1';
-            } else {
-                return $value = '0';
-            }
-            return $value;
+            return $value = (boolean) $value ? 1 : 0;
         }
         elseif( $dataType == 'float' ) {
             return (float) $value;
