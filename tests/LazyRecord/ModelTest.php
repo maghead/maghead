@@ -131,29 +131,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         is( 'XXXX' , $name->address , 'Be canonicalized' );
     }
 
-    public function testBooleanFromIntegerValue()
-    {
-        $n = new \tests\Name;
-
-        /** confirmed will be cast to true **/
-        $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 123 ));
-        ok( $ret->success );
-        ok( $n->id );
-        is( true, $n->confirmed );
-        ok( $n->delete()->success );
-    }
-
-    public function testBooleanFromStringOne()
-    {
-        $n = new \tests\Name;
-
-        /** confirmed will be cast to true **/
-        $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '1' ));
-        ok( $ret->success );
-        ok( $n->id );
-        is( true, $n->confirmed );
-        ok( $n->delete()->success );
-    }
 
 
     public function testBooleanFromStringZero()
@@ -201,12 +178,12 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     {
         $n = new \tests\Name;
         $ret = $n->create($args);
-        ok( $ret->success );
+        ok( $ret->success , 'Created' );
         ok( $n->id );
-        is( true, $n->confirmed );
+        is( true, $n->confirmed, 'Confirmed value should be TRUE.' );
         // reload
         ok( $n->load( $n->id )->success );
-        is( true, $n->confirmed );
+        is( true, $n->confirmed , 'Confirmed value should be TRUE.' );
         ok( $n->delete()->success );
     }
 

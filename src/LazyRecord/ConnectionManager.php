@@ -128,13 +128,12 @@ class ConnectionManager
 
         } elseif( isset($this->datasources[ $sourceId ] ) ) {
             $config = $this->datasources[ $sourceId ];
-			$conn = new PDO( $config['dsn'],
-				@$config['user'], 
-				@$config['pass'], 
-				@$config['connection_options'] );
+            $conn = new PDO( $config['dsn'],
+                @$config['user'], 
+                @$config['pass'], 
+                @$config['connection_options'] );
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             // $driver = $this->getQueryDriver($sourceId);
-
             // register connection to connection pool
             return $this->conns[ $sourceId ] = $conn;
         }
