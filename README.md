@@ -221,7 +221,7 @@ Run tests:
 To run unit tests with pgsql DSN:
 
     createdb lazy_test
-    DB_DSN="pgsql:dbname=lazy_test;user=root;"
+    DB_DSN="pgsql:dbname=lazy_test;" phpunit tests
 
 To run unit tests with mysql DSN:
 
