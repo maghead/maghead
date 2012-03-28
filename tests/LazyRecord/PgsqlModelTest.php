@@ -1,86 +1,26 @@
 <?php
 use LazyRecord\Schema\SqlBuilder;
 
-class PgsqlModelTest extends PHPUnit_Framework_TestCase
+class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
 {
+    public $dsn = 'pgsql:dbname=lazy_test';
 
-    public function resultOK($expect,$ret)
+    public $schemaPath = 'tests/schema';
+
+    public function getModels()
     {
-        ok( $ret );
-        if( $ret->success == $expect ) {
-            is( $expect , $ret->success , $ret->message );
-        }
-        else {
-            ok( $ret->success );
-            var_dump( $ret->exception->getMessage() ); 
-            var_dump( $ret->sql ); 
-        }
+        return array( 
+            '\tests\AuthorSchema', 
+            '\tests\BookSchema',
+            '\tests\AuthorBookSchema',
+            '\tests\NameSchema',
+            '\tests\AddressSchema',
+            '\tests\UserSchema',
+        );
     }
-
-
-    public function setup()
-    {
-        LazyRecord\QueryDriver::free();
-        LazyRecord\ConnectionManager::getInstance()->free();
-        LazyRecord\ConnectionManager::getInstance()->addDataSource('default', array( 
-            'dsn' => 'pgsql:dbname=lazy_test',
-            'query_options' => array( 
-                'quote_column' => true, 
-                'quote_table' => true 
-            )
-        ));
-    }
-
-	public function getLogger()
-	{
-		return new TestLogger;
-	}
-
-    public function buildSchema($dbh,$builder,$schema)
-    {
-        ok( $schema );
-		$sqls = $builder->build($schema);
-		ok( $sqls );
-        foreach( $sqls as $sql ) {
-            ok( $sql );
-            $dbh->query( $sql );
-        }
-    }
-
 
 	function testCRUD()
 	{
-        $driver = LazyRecord\ConnectionManager::getInstance()->getQueryDriver('default');
-        $dbh = LazyRecord\ConnectionManager::getInstance()->getConnection('default');
-
-        $builder = new SqlBuilder('pgsql', $driver );
-		ok( $builder );
-
-        $finder = new LazyRecord\Schema\SchemaFinder;
-        $finder->addPath( 'tests/schema/' );
-        $finder->loadFiles();
-
-		$generator = new \LazyRecord\Schema\SchemaGenerator;
-		$generator->setLogger( $this->getLogger() );
-
-		$classMap = $generator->generate( $finder->getSchemaClasses() );
-        ok( $classMap );
-
-        /*******************
-         * build schema 
-         * ****************/
-		$authorschema = new \tests\AuthorSchema;
-		$authorbook = new \tests\AuthorBookSchema;
-		$bookschema = new \tests\BookSchema;
-
-        $this->buildSchema( $dbh,$builder, $authorschema );
-        $this->buildSchema( $dbh,$builder, $authorbook );
-        $this->buildSchema( $dbh,$builder, $bookschema );
-
-
-        /****************************
-         * Basic CRUD Test 
-         * **************************/
         $author = new \tests\Author;
         ok( $author->_schema );
 
@@ -188,5 +128,7 @@ class PgsqlModelTest extends PHPUnit_Framework_TestCase
             ->back()->execute();
         ok( $ret->success );
 	}
+
+
 }
 

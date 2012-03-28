@@ -123,10 +123,12 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         $authors->where()
                 ->equal( 'confirmed' , true );
 
+#          $authors->items();
+#          var_dump( $authors->getLastSQL() , $authors->getVars() ); 
+
         foreach( $authors as $author ) {
             ok( $author->confirmed );
         }
-
         is( 10, $authors->size() ); 
 
         /* page 1, 10 per page */
