@@ -196,28 +196,36 @@ Setup Testing Environment
 -------------------------
 copy the default config:
 
-    cp config/database.yml.testing config/database.yml
+    $ cp config/database.yml.testing config/database.yml
 
-modify database driver, user, pass:
+Modify database driver, user, pass:
 
-    vim config/database.yml
+    $ vim config/database.yml
 
-build php config:
+Build php config:
 
-    lazy build-conf config/database.yml
+    $ lazy build-conf config/database.yml
 
-build schema files (if you added new schema files)
+Build schema files (if you added new schema files)
 
-    lazy build-schema
+    $ lazy build-schema
 
-build sql (inject sql into database)
+Build sql (inject sql into database)
 
-    lazy build-sql
+    $ lazy build-sql
 
-run tests:
+Run tests:
 
-    phpunit tests
+    $ phpunit tests
 
+To run unit tests with pgsql DSN:
+
+    createdb lazy_test
+    DB_DSN="pgsql:dbname=lazy_test;user=root;"
+
+To run unit tests with mysql DSN:
+
+	DB_DSN="mysql:dbname=lazy_test" DB_USER=root DB_PASS=123123 phpunit tests
 
 For pgsql:
 
