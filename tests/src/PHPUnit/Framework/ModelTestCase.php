@@ -7,10 +7,7 @@ use LazyRecord\ConfigLoader;
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
 {
 
-    public $driverType = 'sqlite';
-
     public $dsn = 'sqlite::memory:';
-
     public $schemaPath = 'tests/schema';
 
     public $schemaClasses = array( );
@@ -18,9 +15,20 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
     public function setup()
     {
+        if( $dsn = getenv('DB_DSN') )
+            $this->dsn = $dsn;
+
+        $config = array(
+            'dsn'  => $this->dsn,
+        );
+        if( $user = getenv('DB_USER') )
+            $config['user'] = $user;
+        if( $pass = getenv('DB_PASS') )
+            $config['pass'] = $pass;
+
         QueryDriver::free();
         ConnectionManager::getInstance()->free();
-        ConnectionManager::getInstance()->addDataSource('default', array( 'dsn' => $this->dsn ));
+        ConnectionManager::getInstance()->addDataSource('default', $config);
 
 
         // a little patch for config (we need auto_id for testing)
@@ -31,11 +39,11 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
 
         $dbh = ConnectionManager::getInstance()->getConnection();
-
-        $driver = LazyRecord\ConnectionManager::getInstance()->getQueryDriver('default');
+        $driver = ConnectionManager::getInstance()->getQueryDriver('default');
 
         // initialize schema files
-        $builder = new SqlBuilder( $this->driverType , $driver );
+        $driverType = substr($this->dsn,0, strpos($this->dsn,':'));
+        $builder = new SqlBuilder( $driverType , $driver );
 		ok( $builder );
 
         $finder = new LazyRecord\Schema\SchemaFinder;
