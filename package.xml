@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.4.10" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0        http://pear.php.net/dtd/tasks-1.0.xsd        http://pear.php.net/dtd/package-2.0        http://pear.php.net/dtd/package-2.0.xsd">
   <name>LazyRecord</name>
-  <channel>private-pear.corneltek.com</channel>
+  <channel>pear.corneltek.com</channel>
   <summary>LazyRecord</summary>
   <description>LazyRecord</description>
   <lead>
@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-03-28</date>
-  <time>15:46:16</time>
+  <date>2012-03-30</date>
+  <time>14:58:35</time>
   <version>
-    <release>1.0.11</release>
-    <api>1.0.11</api>
+    <release>1.1.11</release>
+    <api>1.1.11</api>
   </version>
   <stability>
     <release>stable</release>
@@ -148,9 +148,9 @@
       <file name="src/LazyRecord/Schema/Templates/Schema.php.twig" role="php" md5sum="3f41d1fd5165c5e13f6be70214a81f86"/>
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
-      <file name="package.ini" role="data" md5sum="de0893b125f7cd904c02047c12c5f3fe"/>
+      <file name="package.ini" role="data" md5sum="d39cf04402f503348d60ad25b60fc4f7"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="86bc045d5cd99b1e3b5d03a0b9e50632"/>
+      <file name="lazy" role="script" md5sum="aef560f3577bcd8254dd9451865dd691"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
   </contents>
