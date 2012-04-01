@@ -1,0 +1,88 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <style>
+        body { 
+        padding: 15px 30px; 
+        background-color: #ccc;
+        font-family: sans-serif;
+    }
+    a { color: blue; }
+    h1, h2, h3, h4 { 
+        color: #232323;
+        text-shadow: #ddd 1px 1px 1px;
+    }
+    p { 
+        color: #333;
+        text-shadow: #ccc 1px 1px 1px;
+    }
+    pre { 
+        background: #ddd;
+        border-radius: 10px;
+        border: 1px solid #999;
+        box-shadow: #666 -2px -2px 5px;
+        padding: 10px;
+    }
+    code { 
+        font-family: Monaco, Monospace, Courier New;
+        font-size: 0.8em;
+    }
+    table { background: #aaa; }
+    table td { 
+        background: #eee; 
+        color: #111;
+        padding: 3px 6px;
+        min-width: 200px;
+    }
+    </style>
+</head>
+<body>
+<h1>Setup</h1>
+
+<h2>Create config file</h2>
+
+<p>Navigate to your application dir, put your configuration file in <code>config/database.yml</code> file:</p>
+
+<pre><code>---
+schema:
+  paths:
+    - path/to/schema
+data_sources:
+  default:
+    dsn: 'sqlite:tests.db'
+</code></pre>
+
+<p>configure your data source:</p>
+
+<p>DSN for mysql:</p>
+
+<pre><code>default:
+  dsn: 'mysql:host=localhost;dbname=test_db'
+  user: root
+  pass: 123123
+</code></pre>
+
+<p>DSN for SQLite:</p>
+
+<pre><code>default:
+  dsn: 'sqlite:tests.db'
+</code></pre>
+
+<p>DSN for SQLite in memory:</p>
+
+<pre><code>default:
+  dsn: 'sqlite::memory:'
+</code></pre>
+
+<p>DSN for pgsql:</p>
+
+<pre><code>default:
+  dsn: 'pgsql:host=localhost;dbname=test_db'
+  user: root
+  pass: 123123
+</code></pre>
+
+<h2>Compile your config file</h2>
+
+</body>
+</html>

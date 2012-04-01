@@ -1,0 +1,145 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <style>
+        body { 
+        padding: 15px 30px; 
+        background-color: #ccc;
+        font-family: sans-serif;
+    }
+    a { color: blue; }
+    h1, h2, h3, h4 { 
+        color: #232323;
+        text-shadow: #ddd 1px 1px 1px;
+    }
+    p { 
+        color: #333;
+        text-shadow: #ccc 1px 1px 1px;
+    }
+    pre { 
+        background: #ddd;
+        border-radius: 10px;
+        border: 1px solid #999;
+        box-shadow: #666 -2px -2px 5px;
+        padding: 10px;
+    }
+    code { 
+        font-family: Monaco, Monospace, Courier New;
+        font-size: 0.8em;
+    }
+    table { background: #aaa; }
+    table td { 
+        background: #eee; 
+        color: #111;
+        padding: 3px 6px;
+        min-width: 200px;
+    }
+    </style>
+</head>
+<body>
+<h1>Schema</h1>
+
+<h2>Schema Example</h2>
+
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br /></span><span style="color: #007700">use&nbsp;</span><span style="color: #0000BB">LazyRecord</span><span style="color: #007700">\</span><span style="color: #0000BB">Schema</span><span style="color: #007700">\</span><span style="color: #0000BB">SchemaDeclare</span><span style="color: #007700">;<br /><br />class&nbsp;</span><span style="color: #0000BB">AddressSchema&nbsp;</span><span style="color: #007700">extends&nbsp;</span><span style="color: #0000BB">SchemaDeclare<br /></span><span style="color: #007700">{<br />&nbsp;&nbsp;&nbsp;&nbsp;function&nbsp;</span><span style="color: #0000BB">schema</span><span style="color: #007700">()<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">column</span><span style="color: #007700">(</span><span style="color: #DD0000">'author_id'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">integer</span><span style="color: #007700">()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">label</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">_</span><span style="color: #007700">(</span><span style="color: #DD0000">'Author'</span><span style="color: #007700">)&nbsp;);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">column</span><span style="color: #007700">(</span><span style="color: #DD0000">'address'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">varchar</span><span style="color: #007700">(</span><span style="color: #0000BB">128</span><span style="color: #007700">);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">column</span><span style="color: #007700">(</span><span style="color: #DD0000">'name'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">varchar</span><span style="color: #007700">(</span><span style="color: #0000BB">30</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">isa</span><span style="color: #007700">(</span><span style="color: #DD0000">'str'</span><span style="color: #007700">)&nbsp;</span><span style="color: #FF8000">//&nbsp;default,&nbsp;apply&nbsp;String&nbsp;validator<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">isa</span><span style="color: #007700">(</span><span style="color: #DD0000">'DateTime'</span><span style="color: #007700">)&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;DateTime&nbsp;object.<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">isa</span><span style="color: #007700">(</span><span style="color: #DD0000">'int'</span><span style="color: #007700">)&nbsp;</span><span style="color: #FF8000">//&nbsp;Integer&nbsp;object.<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">validator</span><span style="color: #007700">(</span><span style="color: #DD0000">'ValidatorClass'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">validator</span><span style="color: #007700">(&nbsp;array(</span><span style="color: #0000BB">$validator</span><span style="color: #007700">,</span><span style="color: #DD0000">'method'</span><span style="color: #007700">)&nbsp;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">validator</span><span style="color: #007700">(</span><span style="color: #DD0000">'function_name'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">validator</span><span style="color: #007700">(function(</span><span style="color: #0000BB">$val</span><span style="color: #007700">)&nbsp;{&nbsp;....&nbsp;})<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">canonicalizer</span><span style="color: #007700">(</span><span style="color: #DD0000">'CanonicalClass'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">canonicalizer</span><span style="color: #007700">(function(</span><span style="color: #0000BB">$val</span><span style="color: #007700">)&nbsp;{&nbsp;return&nbsp;</span><span style="color: #0000BB">$val</span><span style="color: #007700">;&nbsp;})<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">default</span><span style="color: #007700">(</span><span style="color: #DD0000">'Default'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">default</span><span style="color: #007700">(&nbsp;array(</span><span style="color: #DD0000">'current_timestamp'</span><span style="color: #007700">)&nbsp;)&nbsp;</span><span style="color: #FF8000">//&nbsp;raw&nbsp;sql&nbsp;string<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">defaultBuilder</span><span style="color: #007700">(function()&nbsp;{&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">date</span><span style="color: #007700">(</span><span style="color: #DD0000">'c'</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">validValues</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">1</span><span style="color: #007700">,</span><span style="color: #0000BB">2</span><span style="color: #007700">,</span><span style="color: #0000BB">3</span><span style="color: #007700">,</span><span style="color: #0000BB">4</span><span style="color: #007700">,</span><span style="color: #0000BB">5&nbsp;</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">validValues</span><span style="color: #007700">(&nbsp;array(&nbsp;</span><span style="color: #DD0000">'label'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'value'&nbsp;&nbsp;</span><span style="color: #007700">)&nbsp;);<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
+
+<h2>Columns Types</h2>
+
+<p>Varchar:</p>
+
+<pre><code>$this-&gt;column('name')
+        -&gt;varchar(64);
+</code></pre>
+
+<p>Text:</p>
+
+<pre><code>$this-&gt;column('name')
+        -&gt;text();
+</code></pre>
+
+<p>Boolean:</p>
+
+<pre><code>$this-&gt;column('name')
+        -&gt;boolean();
+</code></pre>
+
+<p>Integer:</p>
+
+<pre><code>$this-&gt;column('name')
+        -&gt;integer();
+</code></pre>
+
+<p>Timestamp:</p>
+
+<pre><code>$this-&gt;column('name')
+        -&gt;timestamp();
+</code></pre>
+
+<p>Datetime:</p>
+
+<pre><code>$this-&gt;column('name')
+        -&gt;datetime();
+</code></pre>
+
+<h2>Default Value</h2>
+
+<pre><code>$this-&gt;column('name')
+    -&gt;varchar(13)
+    -&gt;default('default value');
+
+$this-&gt;column('name')
+    -&gt;boolean()
+    -&gt;default(false);
+</code></pre>
+
+<p>Default value builder:</p>
+
+<pre><code>$this-&gt;column('name')
+    -&gt;boolean()
+    -&gt;defaultBuilder(function() { return 'New name'; });
+</code></pre>
+
+<h2>Valid values</h2>
+
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">column</span><span style="color: #007700">(</span><span style="color: #DD0000">'type'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">validValues</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">1</span><span style="color: #007700">,</span><span style="color: #0000BB">2</span><span style="color: #007700">,</span><span style="color: #0000BB">3</span><span style="color: #007700">,</span><span style="color: #0000BB">4</span><span style="color: #007700">,</span><span style="color: #0000BB">5&nbsp;</span><span style="color: #007700">)<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">column</span><span style="color: #007700">(</span><span style="color: #DD0000">'type'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">validValues</span><span style="color: #007700">(array(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'label'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'value1'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'label'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'value2'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'label'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'value3'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'label'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'value4'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;));<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
+
+<h2>Relationships</h2>
+
+<p>Relationships:</p>
+
+<ul>
+<li><p>Belongs To</p>
+
+<p>$this->belongsTo( 'author', 'author_id' , '\tests\AuthorSchema', 'id' );</p></li>
+<li><p>Has Many</p>
+
+<p>$this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
+$this->many( 'author_books', '\tests\AuthorBookSchema', 'author_id', 'id');</p></li>
+<li><p>Many to many</p>
+
+<p>$this->manyToMany( 'books', 'author_books' , 'book' );</p></li>
+</ul>
+
+<h3>Usage</h3>
+
+<p>to append:</p>
+
+<pre><code>$author-&gt;address[] = array(  );
+
+$record = $author-&gt;createAddress(array( ... ));  // return false on failure.
+</code></pre>
+
+<p>to fetch:</p>
+
+<pre><code>foreach( $author-&gt;addresses as $address ) {
+
+}
+</code></pre>
+
+<p>to search/find:</p>
+
+<pre><code>$address = $author-&gt;addresses-&gt;find(k);
+</code></pre>
+
+</body>
+</html>
