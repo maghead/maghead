@@ -41,13 +41,7 @@
 
 <h2>Create</h2>
 
-<pre><code>&lt;?php
-$author = new Author;
-$ret = $author-&gt;create(array(
-    'name' =&gt; 'Foo'
-));
-?&gt;
-</code></pre>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$author&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Author</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$ret&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$author</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">create</span><span style="color: #007700">(array(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'name'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Foo'<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">));<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 <p><code>$ret</code> is an operation result, you can check if this operation succeed.</p>
 
@@ -81,40 +75,24 @@ $ret = $author-&gt;create(array(
 
 <h2>Create</h2>
 
-<pre><code>&lt;?php
-$record = \tests\Author::create(array( 
-    'name' =&gt; 'Mary',
-    'email' =&gt; 'zz@zz',
-    'identity' =&gt; 'zz',
-));
-?&gt;
-</code></pre>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$record&nbsp;</span><span style="color: #007700">=&nbsp;\</span><span style="color: #0000BB">tests</span><span style="color: #007700">\</span><span style="color: #0000BB">Author</span><span style="color: #007700">::</span><span style="color: #0000BB">create</span><span style="color: #007700">(array(&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'name'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Mary'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'email'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'zz@zz'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'identity'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'zz'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;));<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 <h2>Load</h2>
 
-<pre><code>    $record = \tests\Author::load( 1 );
-    $record = \tests\Author::load( array( 'id' =&gt; $id ));
-</code></pre>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$record&nbsp;</span><span style="color: #007700">=&nbsp;\</span><span style="color: #0000BB">tests</span><span style="color: #007700">\</span><span style="color: #0000BB">Author</span><span style="color: #007700">::</span><span style="color: #0000BB">load</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">1&nbsp;</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$record&nbsp;</span><span style="color: #007700">=&nbsp;\</span><span style="color: #0000BB">tests</span><span style="color: #007700">\</span><span style="color: #0000BB">Author</span><span style="color: #007700">::</span><span style="color: #0000BB">load</span><span style="color: #007700">(&nbsp;array(&nbsp;</span><span style="color: #DD0000">'id'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #0000BB">$id&nbsp;</span><span style="color: #007700">));<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 <h2>Update</h2>
 
 <p>The following lines runs:</p>
 
 <pre><code>UPDATE authors SET name = 'Rename' WHERE name = 'Mary'
-
-$ret = \tests\Author::update(array( 'name' =&gt; 'Rename' ))
-    -&gt;where()
-    -&gt;equal('name','Mary')
-    -&gt;execute();
 </code></pre>
+
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;$ret&nbsp;</span><span style="color: #007700">=&nbsp;\</span><span style="color: #0000BB">tests</span><span style="color: #007700">\</span><span style="color: #0000BB">Author</span><span style="color: #007700">::</span><span style="color: #0000BB">update</span><span style="color: #007700">(array(&nbsp;</span><span style="color: #DD0000">'name'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Rename'&nbsp;</span><span style="color: #007700">))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">where</span><span style="color: #007700">()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">equal</span><span style="color: #007700">(</span><span style="color: #DD0000">'name'</span><span style="color: #007700">,</span><span style="color: #DD0000">'Mary'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">execute</span><span style="color: #007700">();<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 <h2>Delete</h2>
 
-<pre><code>$ret = \tests\Author::delete()
-    -&gt;where()
-    -&gt;equal('name','Rename')
-    -&gt;execute();
-</code></pre>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;$ret&nbsp;</span><span style="color: #007700">=&nbsp;\</span><span style="color: #0000BB">tests</span><span style="color: #007700">\</span><span style="color: #0000BB">Author</span><span style="color: #007700">::</span><span style="color: #0000BB">delete</span><span style="color: #007700">()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">where</span><span style="color: #007700">()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">equal</span><span style="color: #007700">(</span><span style="color: #DD0000">'name'</span><span style="color: #007700">,</span><span style="color: #DD0000">'Rename'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">execute</span><span style="color: #007700">();<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 </body>
 </html>
