@@ -82,5 +82,55 @@ else {
 ));
 </code></pre>
 
+<h2>Update</h2>
+
+<pre><code>$author-&gt;update(array(
+    'name' =&gt; 'Mary'
+));
+</code></pre>
+
+<h2>Delete</h2>
+
+<pre><code>$author-&gt;load(1);
+$author-&gt;delete();
+</code></pre>
+
+<h1>Static Helper Functions</h1>
+
+<h2>Create</h2>
+
+<pre><code>$record = \tests\Author::create(array( 
+    'name' =&gt; 'Mary',
+    'email' =&gt; 'zz@zz',
+    'identity' =&gt; 'zz',
+));
+</code></pre>
+
+<h2>Load</h2>
+
+<pre><code>    $record = \tests\Author::load( 1 );
+    $record = \tests\Author::load( array( 'id' =&gt; $id ));
+</code></pre>
+
+<h2>Update</h2>
+
+<p>The following lines runs:</p>
+
+<pre><code>UPDATE authors SET name = 'Rename' WHERE name = 'Mary'
+
+$ret = \tests\Author::update(array( 'name' =&gt; 'Rename' ))
+    -&gt;where()
+    -&gt;equal('name','Mary')
+    -&gt;execute();
+</code></pre>
+
+<h2>Delete</h2>
+
+<pre><code>$ret = \tests\Author::delete()
+    -&gt;where()
+    -&gt;equal('name','Rename')
+    -&gt;execute();
+</code></pre>
+
 </body>
 </html>
