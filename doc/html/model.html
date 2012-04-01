@@ -41,69 +41,53 @@
 
 <h2>Create</h2>
 
-<pre><code>$author = new Author;
+<pre><code>&lt;?php
+$author = new Author;
 $ret = $author-&gt;create(array(
     'name' =&gt; 'Foo'
 ));
+?&gt;
 </code></pre>
 
 <p><code>$ret</code> is an operation result, you can check if this operation succeed.</p>
 
 <p>To check status:</p>
 
-<pre><code>if( true === $ret-&gt;success ) {
-    echo $ret-&gt;message;   // record created
-}
-else {
-    echo $ret-&gt;exception;  // exception
-    echo $ret-&gt;sql;   // sql statement
-    print_r( $ret-&gt;vars );   // variables that applied for PDO
-}
-</code></pre>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">if(&nbsp;</span><span style="color: #0000BB">true&nbsp;</span><span style="color: #007700">===&nbsp;</span><span style="color: #0000BB">$ret</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">success&nbsp;</span><span style="color: #007700">)&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span style="color: #0000BB">$ret</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">message</span><span style="color: #007700">;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;record&nbsp;created<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">}<br />&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span style="color: #0000BB">$ret</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">exception</span><span style="color: #007700">;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;exception<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">echo&nbsp;</span><span style="color: #0000BB">$ret</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">sql</span><span style="color: #007700">;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;sql&nbsp;statement<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">print_r</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">$ret</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">vars&nbsp;</span><span style="color: #007700">);&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">//&nbsp;variables&nbsp;that&nbsp;applied&nbsp;for&nbsp;PDO<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">}<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 <h2>Load</h2>
 
 <p>Load record with primary key through constructor:</p>
 
-<pre><code>$author = new Author( 1 );
-</code></pre>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$author&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Author</span><span style="color: #007700">(&nbsp;</span><span style="color: #0000BB">1&nbsp;</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 <p>Load record with hash through constructor:</p>
 
-<pre><code>$author = new Author( array( 
-    'name' =&gt; 'John'
-));
-</code></pre>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$author&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">Author</span><span style="color: #007700">(&nbsp;array(&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'name'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'John'<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">));<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 <p>use load method to load record:</p>
 
-<pre><code>$author-&gt;load( array(  
-    'name' =&gt; 'John',
-));
-</code></pre>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$author</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">load</span><span style="color: #007700">(&nbsp;array(&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'name'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'John'</span><span style="color: #007700">,<br />&nbsp;&nbsp;&nbsp;&nbsp;));<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 <h2>Update</h2>
 
-<pre><code>$author-&gt;update(array(
-    'name' =&gt; 'Mary'
-));
-</code></pre>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$author</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">update</span><span style="color: #007700">(array(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'name'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'Mary'<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">));<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 <h2>Delete</h2>
 
-<pre><code>$author-&gt;load(1);
-$author-&gt;delete();
-</code></pre>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$author</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">load</span><span style="color: #007700">(</span><span style="color: #0000BB">1</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$author</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">delete</span><span style="color: #007700">();<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 <h1>Static Helper Functions</h1>
 
 <h2>Create</h2>
 
-<pre><code>$record = \tests\Author::create(array( 
+<pre><code>&lt;?php
+$record = \tests\Author::create(array( 
     'name' =&gt; 'Mary',
     'email' =&gt; 'zz@zz',
     'identity' =&gt; 'zz',
 ));
+?&gt;
 </code></pre>
 
 <h2>Load</h2>
