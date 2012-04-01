@@ -30,3 +30,6 @@ ConnectionManager is `ArrayAccess` implemented, so you can use ['key'] to get co
 To close connections:
 
     $conn->free();
+
+
+
