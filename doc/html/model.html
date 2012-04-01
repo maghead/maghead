@@ -1,0 +1,86 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <style>
+        body { 
+        padding: 15px 30px; 
+        background-color: #ccc;
+        font-family: sans-serif;
+    }
+    a { color: blue; }
+    h1, h2, h3, h4 { 
+        color: #232323;
+        text-shadow: #ddd 1px 1px 1px;
+    }
+    p { 
+        color: #333;
+        text-shadow: #ccc 1px 1px 1px;
+    }
+    pre { 
+        background: #ddd;
+        border-radius: 10px;
+        border: 1px solid #999;
+        box-shadow: #666 -2px -2px 5px;
+        padding: 10px;
+    }
+    code { 
+        font-family: Monaco, Monospace, Courier New;
+        font-size: 0.8em;
+    }
+    table { background: #aaa; }
+    table td { 
+        background: #eee; 
+        color: #111;
+        padding: 3px 6px;
+        min-width: 200px;
+    }
+    </style>
+</head>
+<body>
+<h1>Model</h1>
+
+<h2>Create</h2>
+
+<pre><code>$author = new Author;
+$ret = $author-&gt;create(array(
+    'name' =&gt; 'Foo'
+));
+</code></pre>
+
+<p><code>$ret</code> is an operation result, you can check if this operation succeed.</p>
+
+<p>To check status:</p>
+
+<pre><code>if( true === $ret-&gt;success ) {
+    echo $ret-&gt;message;   // record created
+}
+else {
+    echo $ret-&gt;exception;  // exception
+    echo $ret-&gt;sql;   // sql statement
+    print_r( $ret-&gt;vars );   // variables that applied for PDO
+}
+</code></pre>
+
+<h2>Load</h2>
+
+<p>Load record with primary key through constructor:</p>
+
+<pre><code>$author = new Author( 1 );
+</code></pre>
+
+<p>Load record with hash through constructor:</p>
+
+<pre><code>$author = new Author( array( 
+    'name' =&gt; 'John'
+));
+</code></pre>
+
+<p>use load method to load record:</p>
+
+<pre><code>$author-&gt;load( array(  
+    'name' =&gt; 'John',
+));
+</code></pre>
+
+</body>
+</html>
