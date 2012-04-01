@@ -105,20 +105,17 @@ $this-&gt;column('name')
 
 <h2>Relationships</h2>
 
-<p>Relationships:</p>
+<p>Belongs To:</p>
 
-<ul>
-<li><p>Belongs To</p>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">belongsTo</span><span style="color: #007700">(&nbsp;</span><span style="color: #DD0000">'author'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'author_id'&nbsp;</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'\tests\AuthorSchema'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'id'&nbsp;</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
-<p>$this->belongsTo( 'author', 'author_id' , '\tests\AuthorSchema', 'id' );</p></li>
-<li><p>Has Many</p>
+<p>Has Many:</p>
 
-<p>$this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
-$this->many( 'author_books', '\tests\AuthorBookSchema', 'author_id', 'id');</p></li>
-<li><p>Many to many</p>
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">many</span><span style="color: #007700">(&nbsp;</span><span style="color: #DD0000">'addresses'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'\tests\AddressSchema'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'author_id'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'id'</span><span style="color: #007700">);<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">many</span><span style="color: #007700">(&nbsp;</span><span style="color: #DD0000">'author_books'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'\tests\AuthorBookSchema'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'author_id'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'id'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
-<p>$this->manyToMany( 'books', 'author_books' , 'book' );</p></li>
-</ul>
+<p>Many to many</p>
+
+<pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$this</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">manyToMany</span><span style="color: #007700">(&nbsp;</span><span style="color: #DD0000">'books'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'author_books'&nbsp;</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'book'&nbsp;</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
 <h3>Usage</h3>
 
