@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-03-30</date>
-  <time>23:44:54</time>
+  <date>2012-04-01</date>
+  <time>23:59:24</time>
   <version>
     <release>1.1.11</release>
     <api>1.1.11</api>
@@ -24,11 +24,25 @@
   <notes>-</notes>
   <contents>
     <dir name="/">
-      <file name="doc/index.md" role="doc" md5sum="ed14eef02176abfbd3fc65964b596d16"/>
+      <file name="doc/connections.md" role="doc" md5sum="cc86c050f57c6afd1190852fe69bf5bf"/>
+      <file name="doc/development.md" role="doc" md5sum="2aadaa6ff1f642e7e05d2771ad863d93"/>
+      <file name="doc/html/connections.html" role="doc" md5sum="049b9e0b31f50be6248c42250b770405"/>
+      <file name="doc/html/development.html" role="doc" md5sum="1eb106ab8deb8ba0f6d0febf87c3fa13"/>
+      <file name="doc/html/index.html" role="doc" md5sum="1b7cbfca4d224bd4755ea3808be1878f"/>
+      <file name="doc/html/install.html" role="doc" md5sum="fd21ee2cbb8d86000ae3114dc4e0c49f"/>
+      <file name="doc/html/model.html" role="doc" md5sum="6151aa5ddc266fdb13371c1e7c6c15db"/>
+      <file name="doc/html/plan.html" role="doc" md5sum="688260b487eddabe82871b63e078ab4b"/>
+      <file name="doc/html/schema.html" role="doc" md5sum="4c9a18f6ba2bb2fd87b37d36d0631b40"/>
+      <file name="doc/html/setup.html" role="doc" md5sum="035b4d78d8aadd2c9c981de9129ee124"/>
+      <file name="doc/index.md" role="doc" md5sum="b40db30a10f21ee9c1411d1ad33a9ed6"/>
+      <file name="doc/install.md" role="doc" md5sum="8c2975ab1997933fb52331d4da32e075"/>
+      <file name="doc/model.md" role="doc" md5sum="a9b35497c2cdcf1d2917baabf569ef20"/>
       <file name="doc/plan.md" role="doc" md5sum="bbb656ce70fd3345ec0f85a6fc5484b8"/>
+      <file name="doc/schema.md" role="doc" md5sum="33d21404d0fb9cd2d8abbc82c43fa318"/>
+      <file name="doc/setup.md" role="doc" md5sum="4154beedd40311e09cbafe394d81c472"/>
       <file name="tests/bootstrap.php" role="test" md5sum="6d84a2d9dcb07ecb2441b92dcdd26acd"/>
-      <file name="tests/lazy.php" role="test" md5sum="0e71de455ba3705ae2f5d45ef922e0be"/>
-      <file name="tests/lazy.yml" role="test" md5sum="a3b82350fab3f47c620afdcf7d4b7aac"/>
+      <file name="tests/lazy.php" role="test" md5sum="e18463ef3e30c8ea10dc6e39d8f90e1f"/>
+      <file name="tests/lazy.yml" role="test" md5sum="a35e7db349dea65da593546c4db8ce19"/>
       <file name="tests/LazyRecord/CodeGen/ClassTemplateTest.php" role="test" md5sum="c5a4c30183b7e2a8115e1a5aca67d7e4"/>
       <file name="tests/LazyRecord/CodeGenTest.php" role="test" md5sum="05e85cf12094e56c15d8c94013bffbc2"/>
       <file name="tests/LazyRecord/CollectionPagerTest.php" role="test" md5sum="f131d5667b0c554d3bbd8d46ee888743"/>
@@ -44,7 +58,7 @@
       <file name="tests/LazyRecord/SchemaDeclare/ColumnTest.php" role="test" md5sum="da778c4ed5ca391f5de2729a7ce64234"/>
       <file name="tests/LazyRecord/SchemaDeclareTest.php" role="test" md5sum="b120fc514a6384ebe553485424b98281"/>
       <file name="tests/LazyRecord/SchemaGeneratorTest.php" role="test" md5sum="d6d0bb1a9cf503ee36dc981d2c1aebdf"/>
-      <file name="tests/LazyRecord/SchemaSqlBuilderTest.php" role="test" md5sum="9c222172ccfeda70e4cf4f4f1358b403"/>
+      <file name="tests/LazyRecord/SchemaSqlBuilderTest.php" role="test" md5sum="c93ba7a2898f449c8ca075c090fdb32a"/>
       <file name="tests/LazyRecord/TypesTest.php" role="test" md5sum="628788de6ab98b0b7de9bae79d4102e1"/>
       <file name="tests/schema/tests/Address.php" role="test" md5sum="ad9b5fb23faafc1ba5a9ff8bee79aa60"/>
       <file name="tests/schema/tests/AddressBase.php" role="test" md5sum="c6c967855fa60531d483f571d98120bd"/>
@@ -113,7 +127,7 @@
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="192187a356d2b8fe786b2c53fc75ca8a"/>
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="1f28f5e530d084a13a756415a7fe4224"/>
       <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="be57069c96dd9b381320c20d48cb920d"/>
-      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="d5b2a4e73bea4a4610f856d0ea7cf62f"/>
+      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="72fdbf07f05c33bc8058d0cd0976fab7"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="4c3e6f38e0c5230c89602a1d485f8050"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="cc9bd27debaac3386fd46409bce31ba9"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="11868dfa955c8bb4f4d1a4aa7a699753"/>
@@ -150,7 +164,7 @@
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="package.ini" role="data" md5sum="d39cf04402f503348d60ad25b60fc4f7"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="aef560f3577bcd8254dd9451865dd691"/>
+      <file name="lazy" role="script" md5sum="eb5f80cdf08c9abdbb0bcbe9865f89b5"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
   </contents>
@@ -201,8 +215,22 @@
   </dependencies>
   <phprelease>
     <filelist>
+      <install name="doc/connections.md" as="connections.md"/>
+      <install name="doc/development.md" as="development.md"/>
+      <install name="doc/html/connections.html" as="html/connections.html"/>
+      <install name="doc/html/development.html" as="html/development.html"/>
+      <install name="doc/html/index.html" as="html/index.html"/>
+      <install name="doc/html/install.html" as="html/install.html"/>
+      <install name="doc/html/model.html" as="html/model.html"/>
+      <install name="doc/html/plan.html" as="html/plan.html"/>
+      <install name="doc/html/schema.html" as="html/schema.html"/>
+      <install name="doc/html/setup.html" as="html/setup.html"/>
       <install name="doc/index.md" as="index.md"/>
+      <install name="doc/install.md" as="install.md"/>
+      <install name="doc/model.md" as="model.md"/>
       <install name="doc/plan.md" as="plan.md"/>
+      <install name="doc/schema.md" as="schema.md"/>
+      <install name="doc/setup.md" as="setup.md"/>
       <install name="tests/bootstrap.php" as="bootstrap.php"/>
       <install name="tests/lazy.php" as="lazy.php"/>
       <install name="tests/lazy.yml" as="lazy.yml"/>
