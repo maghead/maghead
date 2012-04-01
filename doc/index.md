@@ -7,4 +7,4 @@ Index
 * [[Model]]  - Model usage.
 * [[Collection]] - Collection usage.
 * [[Development]] - Setup Development environment.
-* [[Connections]]
+* [[Connections]] - Connection manager.
