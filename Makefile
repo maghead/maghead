@@ -1,7 +1,7 @@
 
-all: phpci phpunit
+all: 
 
-doc:
+doc: force
 	phpwiki.phar doc doc/html
 
 phpci:
@@ -9,3 +9,5 @@ phpci:
 
 phpunit:
 	phpunit --coverage-html build tests
+
+force: ;
