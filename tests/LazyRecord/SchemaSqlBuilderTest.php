@@ -14,7 +14,7 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
         ));
 
         $connm->addDataSource('mysql', array( 
-            'dsn' => 'mysql:host=localhost;dbname=lazy_tests',
+            'dsn' => 'mysql:host=localhost;dbname=lazy_test',
             'user' => 'root',
             'pass' => '123123',
             'connection_options' => array(

@@ -39,6 +39,57 @@
 <body>
 <h1>Setup</h1>
 
+<h2>Install</h2>
+
+<p>use git to clone this repository, then</p>
+
+<p>use PEAR to install this package:</p>
+
+<pre><code>$ onion build
+$ pear install -f package.xml
+</code></pre>
+
+<p>Make sure that your have <code>lazy</code> binary in your path:</p>
+
+<pre><code>$ which lazy
+</code></pre>
+
+<h2>Setup for LazyRecord development</h2>
+
+<p>Copy testing env config file:</p>
+
+<pre><code>$ cp config/database.yml.testing config/database.yml
+</code></pre>
+
+<p>Create MySql database <code>lazy_test</code>:</p>
+
+<pre><code>$ mysql -uroot -p
+&gt; create database lazy_test charset utf8;
+</code></pre>
+
+<p>Create PgSQL database <code>lazy_test</code>:</p>
+
+<pre><code>$ createuser --pwprompt lazy
+$ createdb --owner lazy lazy_test
+</code></pre>
+
+<p>Modify/Update database config file:</p>
+
+<pre><code>$ vim config/database.yml
+</code></pre>
+
+<p>Build config file:</p>
+
+<pre><code>$ lazy build-conf config/database.yml
+</code></pre>
+
+<p>Run phpunit to test:</p>
+
+<pre><code>$ phpunit tests
+</code></pre>
+
+<h1>Setup for your application</h1>
+
 <h2>Create config file</h2>
 
 <p>Navigate to your application dir, put your configuration file in <code>config/database.yml</code> file:</p>
@@ -83,6 +134,25 @@ data_sources:
 </code></pre>
 
 <h2>Compile your config file</h2>
+
+<pre><code>$ lazy build-conf config/database.yml
+</code></pre>
+
+<p>This will create:</p>
+
+<pre><code>config/database.yaml.php
+.lazy.php (symlink)
+</code></pre>
+
+<h2>Build or Update schema files</h2>
+
+<pre><code>$ lazy build-schema
+</code></pre>
+
+<h2>Build SQL</h2>
+
+<pre><code>$ lazy build-sql
+</code></pre>
 
 </body>
 </html>
