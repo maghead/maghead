@@ -37,16 +37,41 @@
     </style>
 </head>
 <body>
-<h1>Index</h1>
+<h1>Development</h1>
 
-<ul>
-<li><a href="Install.html">Install</a> - Install LazyRecord.</li>
-<li><a href="Setup.html">Setup</a> - Setup LazyRecord for your own applications.</li>
-<li><a href="Schema.html">Schema</a> - Schema usage.</li>
-<li><a href="Model.html">Model</a>  - Model usage.</li>
-<li><a href="Collection.html">Collection</a> - Collection usage.</li>
-<li><a href="Development.html">Development</a> - Setup Development environment.</li>
-</ul>
+<h2>Setup for LazyRecord development</h2>
+
+<p>Copy testing env config file:</p>
+
+<pre><code>$ cp config/database.yml.testing config/database.yml
+</code></pre>
+
+<p>Create MySql database <code>lazy_test</code>:</p>
+
+<pre><code>$ mysql -uroot -p
+&gt; create database lazy_test charset utf8;
+</code></pre>
+
+<p>Create PgSQL database <code>lazy_test</code>:</p>
+
+<pre><code>$ createuser --pwprompt lazy
+$ createdb --owner lazy lazy_test
+</code></pre>
+
+<p>Modify/Update database config file:</p>
+
+<pre><code>$ vim config/database.yml
+</code></pre>
+
+<p>Build config file:</p>
+
+<pre><code>$ lazy build-conf config/database.yml
+</code></pre>
+
+<p>Run phpunit to test:</p>
+
+<pre><code>$ phpunit tests
+</code></pre>
 
 </body>
 </html>
