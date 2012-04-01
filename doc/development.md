@@ -27,3 +27,10 @@ Build config file:
 Run phpunit to test:
 
     $ phpunit tests
+
+When tests rans successful, you can run the below script to compile library
+files into the executable phar file `lazy`:
+
+    $ bash scripts/compile.sh
+
+
