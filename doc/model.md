@@ -3,12 +3,12 @@ Model
 
 ## Create
 
-    <?php
+<?php
     $author = new Author;
     $ret = $author->create(array(
         'name' => 'Foo'
     ));
-    ?>
+?>
 
 `$ret` is an operation result, you can check if this operation succeed.
 
@@ -69,18 +69,20 @@ use load method to load record:
 
 ## Create
 
-    <?php
+<?php
     $record = \tests\Author::create(array( 
         'name' => 'Mary',
         'email' => 'zz@zz',
         'identity' => 'zz',
     ));
-    ?>
+?>
 
 ## Load
 
-        $record = \tests\Author::load( 1 );
-        $record = \tests\Author::load( array( 'id' => $id ));
+<?php
+    $record = \tests\Author::load( 1 );
+    $record = \tests\Author::load( array( 'id' => $id ));
+?>
 
 ## Update
 
@@ -88,15 +90,21 @@ The following lines runs:
 
     UPDATE authors SET name = 'Rename' WHERE name = 'Mary'
 
+<?php
+
     $ret = \tests\Author::update(array( 'name' => 'Rename' ))
         ->where()
         ->equal('name','Mary')
         ->execute();
+?>
 
 ## Delete
+
+<?php
 
     $ret = \tests\Author::delete()
         ->where()
         ->equal('name','Rename')
         ->execute();
+?>
 
