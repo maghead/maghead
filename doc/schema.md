@@ -117,20 +117,24 @@ Valid values
 Relationships
 -------------
 
-Relationships:
+Belongs To:
 
-- Belongs To
-
+<?php
     $this->belongsTo( 'author', 'author_id' , '\tests\AuthorSchema', 'id' );
+?>
 
-- Has Many
+Has Many:
 
+<?php
     $this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
     $this->many( 'author_books', '\tests\AuthorBookSchema', 'author_id', 'id');
+?>
 
-- Many to many
+Many to many
 
+<?php
     $this->manyToMany( 'books', 'author_books' , 'book' );
+?>
 
 ### Usage
 
