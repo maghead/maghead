@@ -1,5 +1,11 @@
 # Development
 
+## Install Bundles
+
+Use Onion to install dependent libraries
+
+    $ onion -d bundle
+
 ## Setup for LazyRecord development 
 
 Copy testing env config file:
