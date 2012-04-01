@@ -40,3 +40,48 @@ use load method to load record:
     ));
 
 
+## Update
+
+    $author->update(array(
+        'name' => 'Mary'
+    ));
+
+## Delete
+
+    $author->load(1);
+    $author->delete();
+
+
+# Static Helper Functions
+
+## Create
+
+    $record = \tests\Author::create(array( 
+        'name' => 'Mary',
+        'email' => 'zz@zz',
+        'identity' => 'zz',
+    ));
+
+## Load
+
+        $record = \tests\Author::load( 1 );
+        $record = \tests\Author::load( array( 'id' => $id ));
+
+## Update
+
+The following lines runs:
+
+    UPDATE authors SET name = 'Rename' WHERE name = 'Mary'
+
+    $ret = \tests\Author::update(array( 'name' => 'Rename' ))
+        ->where()
+        ->equal('name','Mary')
+        ->execute();
+
+## Delete
+
+    $ret = \tests\Author::delete()
+        ->where()
+        ->equal('name','Rename')
+        ->execute();
+
