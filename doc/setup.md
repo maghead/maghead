@@ -42,9 +42,9 @@ Run phpunit to test:
 
     $ phpunit tests
 
-# Setup for your application
+## Setup for your application
 
-## Create config file
+### Create config file
 
 Navigate to your application dir, put your configuration file in `config/database.yml` file:
 
@@ -82,8 +82,7 @@ DSN for pgsql:
       user: root
       pass: 123123
 
-Compile your config file
-------------------------
+### Compile your config file
 
     $ lazy build-conf config/database.yml
 
@@ -93,14 +92,11 @@ This will create:
     .lazy.php (symlink)
 
 
-Build or Update schema files
-----------------------------
+### Build or Update schema files
 
     $ lazy build-schema
 
-
-Build SQL
----------
+### Build SQL
 
     $ lazy build-sql
 
