@@ -39,11 +39,8 @@ class ConfigLoader
 
     public $loaded = false;
 
-    public $environment = 'development';
-
-    public function __construct($environment = 'development')
+    public function __construct()
     {
-        $this->environment = $environment;
     }
 
     /**
@@ -69,7 +66,6 @@ class ConfigLoader
             throw new Exception("LazyRecord config error.");
         }
         $this->loaded = true;
-        $this->config = $this->config[ $this->environment ];
     }
 
 
