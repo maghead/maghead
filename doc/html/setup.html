@@ -88,9 +88,9 @@ $ createdb --owner lazy lazy_test
 <pre><code>$ phpunit tests
 </code></pre>
 
-<h1>Setup for your application</h1>
+<h2>Setup for your application</h2>
 
-<h2>Create config file</h2>
+<h3>Create config file</h3>
 
 <p>Navigate to your application dir, put your configuration file in <code>config/database.yml</code> file:</p>
 
@@ -133,7 +133,7 @@ data_sources:
   pass: 123123
 </code></pre>
 
-<h2>Compile your config file</h2>
+<h3>Compile your config file</h3>
 
 <pre><code>$ lazy build-conf config/database.yml
 </code></pre>
@@ -144,12 +144,12 @@ data_sources:
 .lazy.php (symlink)
 </code></pre>
 
-<h2>Build or Update schema files</h2>
+<h3>Build or Update schema files</h3>
 
 <pre><code>$ lazy build-schema
 </code></pre>
 
-<h2>Build SQL</h2>
+<h3>Build SQL</h3>
 
 <pre><code>$ lazy build-sql
 </code></pre>
