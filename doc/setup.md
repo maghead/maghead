@@ -42,4 +42,22 @@ DSN for pgsql:
 Compile your config file
 ------------------------
 
+    $ lazy build-conf config/database.yml
+
+This will create:
+
+    config/database.yaml.php
+    .lazy.php (symlink)
+
+
+Build or Update schema files
+----------------------------
+
+    $ lazy build-schema
+
+
+Build SQL
+---------
+
+    $ lazy build-sql
 
