@@ -186,6 +186,3 @@ To create a collection object:
     }
 
 
-To get PDO connection:
-
-    $pdo = \LazyRecord\ConnectionManager::getInstance()->getConnection('default');
