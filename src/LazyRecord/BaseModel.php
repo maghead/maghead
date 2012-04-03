@@ -264,7 +264,6 @@ class BaseModel
             $args = $this->beforeCreate( $args );
 
             foreach( $this->_schema->columns as $columnHash ) {
-
                 $c = $this->_schema->getColumn( $columnHash['name'] );
                 $n = $c->name;
 
@@ -306,8 +305,9 @@ class BaseModel
                     }
                 }
 
-                if( $val )
-                    $args[ $n ] = Inflator::inflate( $val , $c->isa );
+                if( $val ) {
+                    $args[ $n ] = $c->inflate( $val );
+                }
             }
 
             if( $validateFail ) {
@@ -549,7 +549,7 @@ class BaseModel
                     }
 
                     // inflate
-                    $args[ $n ] = Inflator::inflate( $args[$n] , $c->isa );
+                    $args[ $n ] = $c->inflate( $args[$n] );
                 }
             }
 
@@ -933,7 +933,7 @@ class BaseModel
         foreach( $this->_data as $k => $v ) {
             $col = $this->_schema->getColumn( $k );
             if( $col->isa ) {
-                $data[ $k ] = Inflator::inflate( $v , $col->isa );
+                $data[ $k ] = $col->inflate( $v );
             } else {
                 $data[ $k ] = $v;
             }

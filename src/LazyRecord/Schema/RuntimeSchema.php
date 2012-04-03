@@ -38,7 +38,7 @@ class RuntimeSchema extends SchemaBase
         if( isset($this->columnCached[ $name ]) )  {
             return $this->columnCached[ $name ];
         } elseif( isset($this->columns[$name]) ) {
-            return $this->columnCached[ $name ] = new Column( $name , $this->columns[$name]['attributes'] );
+            return $this->columnCached[ $name ] = new RuntimeColumn( $name , $this->columns[$name]['attributes'] );
         }
         return null;
     }
