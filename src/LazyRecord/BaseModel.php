@@ -358,7 +358,6 @@ class BaseModel
                 $this->load( $pkId );
             } else {
                 $this->_data = $args;
-                $this->deflate();
             }
         }
 
@@ -409,10 +408,7 @@ class BaseModel
             $stm = $this->dbPrepareAndExecute($sql,$query->vars);
 
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
-            if( false !== ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
-                $this->deflate();
-            }
-            else {
+            if( false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
                 throw new Exception('data load failed.');
             }
         }
@@ -466,7 +462,7 @@ class BaseModel
         }
 
         $this->afterDelete( $this->_data );
-        $this->clearData();
+        $this->clear();
         return $this->reportSuccess( _('Deleted') , array( 
             'sql' => $sql,
             'vars' => $query->vars,
@@ -557,9 +553,6 @@ class BaseModel
                 }
             }
 
-
-            // $args = $this->deflateData( $args ); // apply args to columns
-
             $query = $this->createQuery();
 
             $query->update($args)->where()
@@ -571,7 +564,6 @@ class BaseModel
 
             // merge updated data
             $this->_data = array_merge($this->_data,$args);
-            $this->deflate();
             $this->afterUpdate($args);
         } 
         catch( Exception $e ) 
@@ -853,6 +845,10 @@ class BaseModel
         return isset($this->_data[$name]);
     }
 
+
+    /**
+     * Get raw value (without deflator)
+     */
     public function getValue( $name )
     {
         if( isset($this->_data[$name]) )
@@ -871,7 +867,7 @@ class BaseModel
     /**
      * clear current data stash
      */
-    public function clearData()
+    public function clear()
     {
         $this->_data = array();
     }
@@ -1059,9 +1055,7 @@ class BaseModel
             $q = $model->createExecutiveQuery();
             $q->callback = function($b,$sql) use ($model) {
                 $stm = $model->dbPrepareAndExecute($sql,$b->vars);
-                $record = $stm->fetchObject( get_class($model) );
-                $record->deflate();
-                return $record;
+                return $stm->fetchObject( get_class($model) );
             };
             $q->limit(1);
             $q->whereFromArgs($args);
