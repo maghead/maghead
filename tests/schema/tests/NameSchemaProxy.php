@@ -99,6 +99,11 @@ class NameSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'date',
           'isa' => 'DateTime',
+          'inflator' => function($val) {
+                    if( is_a( 'DateTime', $val ) )
+                        return $val->format('Y-m-d');
+                    return $val;
+                },
           'deflator' => function($val) { 
                     return strtotime($val);
                 },

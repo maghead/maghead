@@ -7,22 +7,22 @@ namespace LazyRecord;
 class Inflator
 {
 
-    static function inflate($value, $dataType)
+    static function inflate($value, $isa)
     {
         /* respect the data type to inflate value */
-        if( $dataType == 'int' ) {
+        if( $isa === 'int' ) {
             return (int) $value;
         }
-        elseif( $dataType == 'str' ) {
+        elseif( $isa === 'str' ) {
             return (string) $value;
         }
-        elseif( $dataType == 'DateTime' ) {
+        elseif( $isa == 'DateTime' ) {
             if( is_a($value, 'DateTime') ) {
                 return $value->format( DateTime::ATOM );
             }
             return $value; // might return ""
         }
-        elseif( $dataType == 'bool' ) 
+        elseif( $isa == 'bool' ) 
         {
             /**
              * PDO can't accept false or true boolean value, can only accept string
@@ -71,7 +71,7 @@ class Inflator
             }
             return $value = (boolean) $value ? 1 : 0;
         }
-        elseif( $dataType == 'float' ) {
+        elseif( $isa == 'float' ) {
             return (float) $value;
         }
         return $value;
