@@ -364,10 +364,11 @@ class BaseModel
         $ret = array( 
             'sql' => $sql,
             'validations' => $validateResults,
+            'args' => $args,
+            'vars' => $vars,
         );
         if( isset($this->_data[ $k ]) ) {
             $ret['id'] = $this->_data[ $k ];
-
         }
         return $this->reportSuccess('Created', $ret );
     }
@@ -392,7 +393,7 @@ class BaseModel
             if( ! $column ) {
                 throw new Exception("Primary key is not defined: $pk .");
             }
-            $kVal = Deflator::deflate( $kVal, $column->isa );
+            $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
             $query->select('*')
                 ->whereFromArgs($args);
@@ -835,7 +836,7 @@ class BaseModel
                 throw new Exception("The relationship type is not supported.");
             }
         }
-        elseif( isset( $this->_data[ $key ] ) ) {
+        if( isset( $this->_data[ $key ] ) ) {
             return $this->deflateColumnValue( $key );
         }
     }
@@ -1087,7 +1088,7 @@ class BaseModel
                     ?  $this->_data[ $n ]
                     : null;
         if( $c = $this->_schema->getColumn( $n ) ) {
-            return Deflator::deflate( $value , $c->isa );
+            return $c->deflate( $value );
         }
         return $value;
     }
