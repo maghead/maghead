@@ -20,7 +20,7 @@ class Deflator
             return $value;
 
         if( isset(self::$deflators[ $isa ]) ) {
-            $deflator = self::deflators[ $isa ];
+            $deflator = self::$deflators[ $isa ];
             if( is_callable($deflator) ) {
                 return call_user_func( $deflator , $value );
             }

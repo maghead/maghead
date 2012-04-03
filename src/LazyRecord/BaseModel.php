@@ -843,8 +843,9 @@ class BaseModel
                 throw new Exception("The relationship type is not supported.");
             }
         }
-        if( isset( $this->_data[ $key ] ) )
-            return $this->_data[ $key ];
+        elseif( isset( $this->_data[ $key ] ) ) {
+            return $this->deflateColumnValue( $key );
+        }
     }
 
     public function hasValue( $name )
@@ -1086,16 +1087,16 @@ class BaseModel
         return $new;
     }
 
-    public function deflateHash( & $args)
+    public function deflateColumnValue( $n ) 
     {
-        foreach( $args as $k => $v ) {
-            $col = $this->_schema->getColumn( $k );
-            $args[ $k ] = $col 
-                ? Deflator::deflate( $v , $col->isa ) 
-                : $v;
+        $value = isset($this->_data[ $n ])
+                    ?  $this->_data[ $n ]
+                    : null;
+        if( $c = $this->_schema->getColumn( $n ) ) {
+            return Deflator::deflate( $value , $c->isa );
         }
+        return $value;
     }
-
 
     public function reportError($message,$extra = array() )
     {
