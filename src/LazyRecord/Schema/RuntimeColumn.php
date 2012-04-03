@@ -2,7 +2,7 @@
 namespace LazyRecord\Schema;
 use DateTime;
 
-class Column
+class RuntimeColumn
 {
     public $name;
 

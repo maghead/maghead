@@ -1,6 +1,6 @@
 <?php
 namespace LazyRecord\Schema;
-use LazyRecord\Schema\Column;
+use LazyRecord\Schema\RuntimeColumn;
 use Exception;
 
 class RuntimeSchema extends SchemaBase
