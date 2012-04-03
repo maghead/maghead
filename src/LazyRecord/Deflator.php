@@ -4,30 +4,40 @@ use LazyRecord\Types\DateTime;
 
 class Deflator
 {
-
+    static $deflators = array();
 
     /** 
      * provide a custom deflator for data type
-     * xxx:
      */
-    static function register($dataType)
+    static function register($isa, $deflator)
     {
-
+        self::$deflators[ $isa ] = $deflator;
     }
 
-    static function deflate($value,$dataType = null)
+    static function deflate($value,$isa = null)
     {
-        if( $value === null || $dataType === null )
+        if( $value === null || $isa === null )
             return $value;
 
+        if( isset(self::$deflators[ $isa ]) ) {
+            $deflator = self::deflators[ $isa ];
+            if( is_callable($deflator) ) {
+                return call_user_func( $deflator , $value );
+            }
+            elseif( class_exists($deflator,true) ) {
+                $d = new $deflator;
+                return $d->deflate( $value );
+            }
+        }
+
         /* respect the data type to inflate value */
-        if( $dataType == 'int' ) {
+        if( $isa == 'int' ) {
             return (int) $value;
         }
-        elseif( $dataType == 'str' ) {
+        elseif( $isa == 'str' ) {
             return (string) $value;
         }
-        elseif( $dataType == 'bool' ) {
+        elseif( $isa == 'bool' ) {
             if( strcasecmp( 'false', $value ) == 0 || $value == '0' ) {
                 return false;
             } 
@@ -36,10 +46,10 @@ class Deflator
             }
             return $value ? true : false;
         }
-        elseif( $dataType == 'float' ) {
+        elseif( $isa == 'float' ) {
             return (float) $value;
         }
-        elseif( $dataType == 'DateTime' ) {
+        elseif( $isa == 'DateTime' ) {
             // already a DateTime object
             if( is_a( $value , 'DateTime' ) ) {
                 return $value;

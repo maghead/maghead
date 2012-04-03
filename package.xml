@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-04-02</date>
-  <time>12:43:44</time>
+  <date>2012-04-03</date>
+  <time>13:58:44</time>
   <version>
     <release>1.1.11</release>
     <api>1.1.11</api>
@@ -24,8 +24,10 @@
   <notes>-</notes>
   <contents>
     <dir name="/">
+      <file name="doc/collection.md" role="doc" md5sum="301f6c794011199fe9faae2f4fc216f2"/>
       <file name="doc/connections.md" role="doc" md5sum="cc86c050f57c6afd1190852fe69bf5bf"/>
       <file name="doc/development.md" role="doc" md5sum="2aadaa6ff1f642e7e05d2771ad863d93"/>
+      <file name="doc/html/collection.html" role="doc" md5sum="616181a5f44391bf5dd4b565f0fe20a0"/>
       <file name="doc/html/connections.html" role="doc" md5sum="049b9e0b31f50be6248c42250b770405"/>
       <file name="doc/html/development.html" role="doc" md5sum="1eb106ab8deb8ba0f6d0febf87c3fa13"/>
       <file name="doc/html/index.html" role="doc" md5sum="1b7cbfca4d224bd4755ea3808be1878f"/>
@@ -164,7 +166,7 @@
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="package.ini" role="data" md5sum="d39cf04402f503348d60ad25b60fc4f7"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="eb5f80cdf08c9abdbb0bcbe9865f89b5"/>
+      <file name="lazy" role="script" md5sum="8299196a97c9d68b64ef2c0234053f56"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
   </contents>
@@ -215,8 +217,10 @@
   </dependencies>
   <phprelease>
     <filelist>
+      <install name="doc/collection.md" as="collection.md"/>
       <install name="doc/connections.md" as="connections.md"/>
       <install name="doc/development.md" as="development.md"/>
+      <install name="doc/html/collection.html" as="html/collection.html"/>
       <install name="doc/html/connections.html" as="html/connections.html"/>
       <install name="doc/html/development.html" as="html/development.html"/>
       <install name="doc/html/index.html" as="html/index.html"/>
