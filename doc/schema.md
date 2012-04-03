@@ -43,6 +43,9 @@ class AddressSchema extends SchemaDeclare
 
                 ->validValues( 1,2,3,4,5 )
                 ->validValues( array( 'label' => 'value'  ) );
+
+        // mixin
+        $this->mixin('tests\MetadataMixinSchema');
     }
 }
 ?>

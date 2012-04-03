@@ -17,6 +17,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
+
+
     public function testSchemaInterface()
     {
         $author = new \tests\Author;
@@ -584,6 +586,21 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $author->delete();
     }
 
+
+    public function testDeflator()
+    {
+        $n = new \tests\Name;
+        $ret = $n->create(array( 
+            'name' => 'Deflator Test' , 
+            'country' => 'Tokyo', 
+            'confirmed' => '0',
+            'date' => '2011-01-01'
+        ));
+        $d = $n->date;
+        ok( $d );
+        isa_ok( 'DateTime' , $d );
+        is( '20110101' , $d->format( 'Ymd' ) );
+    }
 
     public function testStaticFunctions() 
     {

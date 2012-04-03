@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Schema;
 use DateTime;
+use LazyRecord\Deflator;
 
 class RuntimeColumn
 {
@@ -123,8 +124,13 @@ class RuntimeColumn
      **/
     public function deflate( $value )
     {
+        // run column specified deflator
+        if( $this->deflator ) {
+            return call_user_func( $this->deflator, $value );
+        }
+
         // check self type, do type casting
-        return \LazyRecord\Deflator::deflate( $value , $this->isa );
+        return Deflator::deflate( $value , $this->isa );
     }
 
     public function display( $value )
