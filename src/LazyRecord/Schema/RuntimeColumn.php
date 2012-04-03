@@ -2,6 +2,7 @@
 namespace LazyRecord\Schema;
 use DateTime;
 use LazyRecord\Deflator;
+use LazyRecord\Inflator;
 
 class RuntimeColumn
 {
@@ -129,9 +130,19 @@ class RuntimeColumn
             return call_user_func( $this->deflator, $value );
         }
 
-        // check self type, do type casting
+        // use global deflator, check self type, and do type casting
         return Deflator::deflate( $value , $this->isa );
     }
+
+    public function inflate( $value )
+    {
+        if( $this->inflator ) {
+            return call_user_func( $this->inflator , $value );
+        }
+        // use global inflator
+        return Inflator::inflate( $value , $this->isa );
+    }
+
 
     public function display( $value )
     {

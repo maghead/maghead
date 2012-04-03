@@ -64,6 +64,11 @@ namespace tests {
 
             $this->column('date')
                 ->date()
+                ->inflator( function($val) {
+                    if( is_a( 'DateTime', $val ) )
+                        return $val->format('Y-m-d');
+                    return $val;
+                })
                 ->deflator( function($val) { 
                     return strtotime($val);
                 });

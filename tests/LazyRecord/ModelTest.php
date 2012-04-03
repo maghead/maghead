@@ -600,6 +600,26 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $d );
         isa_ok( 'DateTime' , $d );
         is( '20110101' , $d->format( 'Ymd' ) );
+        ok( $n->delete()->success );
+    }
+
+    public function testInflator()
+    {
+        $n = new \tests\Name;
+        $date = strtotime('2011-01-01 00:00:00');
+        $ret = $n->create(array( 
+            'name' => 'Deflator Test' , 
+            'country' => 'Tokyo', 
+            'confirmed' => '0',
+            'date' => $date
+        ));
+        ok( $ret->success );
+
+#          $d = $n->date;
+#          ok( $d );
+#          isa_ok( 'DateTime' , $d );
+#          is( '20110101' , $d->format( 'Ymd' ) );
+        ok( $n->delete()->success );
     }
 
     public function testStaticFunctions() 
