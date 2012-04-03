@@ -29,6 +29,9 @@ class AddressSchema extends SchemaDeclare
                 ->validator('function_name')
                 ->validator(function($val) { .... })
 
+                ->filter( function($val) {  
+                            return preg_replace('#word#','zz',$val);  
+                 })
                 ->canonicalizer('CanonicalClass')
                 ->canonicalizer(function($val) { return $val; })
 
