@@ -62,6 +62,11 @@ namespace tests {
                 ->isa('bool')
                 ->boolean();
 
+            $this->column('date')
+                ->date()
+                ->deflator( function($val) { 
+                    return strtotime($val);
+                });
         }
     }
 

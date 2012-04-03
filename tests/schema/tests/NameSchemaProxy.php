@@ -94,6 +94,16 @@ class NameSchemaProxy extends RuntimeSchema
           'isa' => 'bool',
         ),
     ),
+  'date' => array( 
+      'name' => 'date',
+      'attributes' => array( 
+          'type' => 'date',
+          'isa' => 'DateTime',
+          'deflator' => function($val) { 
+                    return strtotime($val);
+                },
+        ),
+    ),
 );
         $this->columnNames     = array( 
   'id',
@@ -104,6 +114,7 @@ class NameSchemaProxy extends RuntimeSchema
   'country',
   'type',
   'confirmed',
+  'date',
 );
         $this->primaryKey      = 'id';
         $this->table           = 'names';
