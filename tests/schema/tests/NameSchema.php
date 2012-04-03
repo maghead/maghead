@@ -64,13 +64,17 @@ namespace tests {
 
             $this->column('date')
                 ->date()
+                ->isa('DateTime')
                 ->inflator( function($val) {
-                    if( is_a( 'DateTime', $val ) )
+                    if( is_a( $val, 'DateTime' ) )
                         return $val->format('Y-m-d');
+                    elseif( is_integer($val) ) {
+                        return strftime( '%Y-%m-%d' , $val );
+                    }
                     return $val;
                 })
                 ->deflator( function($val) { 
-                    return strtotime($val);
+                    return new \DateTime( $val );
                 });
         }
     }
