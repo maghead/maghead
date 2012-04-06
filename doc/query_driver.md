@@ -1,6 +1,7 @@
 QueryDriver
 ===========
-QueryDriver is used for generating sql statements, like insert, update, delete .. etc.
+QueryDriver saves db driver informations like quote handler, escape handler,
+feature checking, table quotes, column quotes ... etc.
 
 QueryDriver is inherited from SQLBuilder\Driver class.
 
@@ -9,3 +10,28 @@ QueryDriver is inherited from SQLBuilder\Driver class.
 Free all instances
 
     LazyRecord\QueryDriver::getInstance()->free();
+
+The original `sqlbuilder\driver` usage:
+
+    $driver = new SQLBuilder\Driver;
+    $driver->configure('driver','pgsql');
+
+trim spaces
+
+    $driver->configure('trim',true);
+
+use named parameter
+
+    $driver->configure('placeholder','named');
+
+string quote handler
+
+    $driver->configure('quoter',array($pdo,'quote'));
+
+custom quoter
+
+    $driver->quoter = function($string) { 
+        return your_escape_function( $string );
+    };
+
+
