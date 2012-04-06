@@ -11,17 +11,23 @@ class BuildSqlCommand extends \CLIFramework\Command
 
     public function options($opts)
     {
+        // --rebuild
+        $opts->add('rebuild','rebuild all SQL schema.');
     }
 
     public function brief()
     {
-        return 'build sql';
+        return 'build sql and insert into database.';
     }
 
-    public function execute($configFile = null)
+    public function execute()
     {
-        $options = $this->getOptions();
-        $logger  = $this->getLogger();
+        // support for schema file or schema class names
+        $schemas = func_get_args();
+
+
+        $options = $this->options;
+        $logger  = $this->logger;
 
         $loader = ConfigLoader::getInstance();
         $loader->load();
@@ -31,6 +37,7 @@ class BuildSqlCommand extends \CLIFramework\Command
 
         $logger->info("Initialize connection manager...");
 
+        // XXX: from config files
         $id = 'default';
         $conn = $connectionManager->getConnection($id);
         $type = $connectionManager->getDataSourceDriver($id);
@@ -38,7 +45,6 @@ class BuildSqlCommand extends \CLIFramework\Command
 
         $logger->info("Initialize schema builder...");
         $builder = new \LazyRecord\Schema\SqlBuilder($type,$driver); // driver
-
 
         $logger->info("Finding schema classes...");
 
