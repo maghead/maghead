@@ -39,6 +39,8 @@ DSN for pgsql:
       user: root
       pass: 123123
 
+
+
 ### Compile your config file
 
     $ lazy build-conf config/database.yml
