@@ -49,9 +49,6 @@ class BuildSqlCommand extends \CLIFramework\Command
         $logger->info("Finding schema classes...");
 
 
-        /*
-         */
-
         // find schema classes 
         $finder = new SchemaFinder;
         $args = func_get_args();
