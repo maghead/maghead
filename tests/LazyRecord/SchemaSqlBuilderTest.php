@@ -41,7 +41,7 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
 	function testSqlite()
 	{
 		$dbh = LazyRecord\ConnectionManager::getInstance()->getConnection('sqlite');
-		$builder = new SqlBuilder('sqlite', LazyRecord\ConnectionManager::getInstance()->getQueryDriver('sqlite') );
+		$builder = new SqlBuilder(LazyRecord\ConnectionManager::getInstance()->getQueryDriver('sqlite') );
 		ok( $builder );
 
 		$s = new \tests\AuthorSchema;
@@ -82,7 +82,7 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
         $pdo = $connManager->getConnection('mysql');
         ok( $pdo , 'pdo connection' );
 
-		$builder = new SqlBuilder('mysql', $connManager->getQueryDriver('mysql') );
+		$builder = new SqlBuilder($connManager->getQueryDriver('mysql') );
 		ok( $builder );
 
         $this->pdoQueryOk( $pdo, 'drop TABLE IF EXISTS authors' );
