@@ -1,7 +1,32 @@
 <?php
 namespace LazyRecord\Schema;
 
+
 class SqlBuilder
+{
+    public $rebuild;
+
+    public $builder;
+
+    public function __construct($driver, $options = array() ) 
+    {
+        if( isset($options['rebuild']) )
+            $this->rebuild = $options['rebuild'];
+    }
+
+    public function createBuilder()
+    {
+        // get driver type
+
+    }
+
+    public function build($schema)
+    {
+
+    }
+}
+
+class SqlBuilder2
 {
     /**
      * builder object
