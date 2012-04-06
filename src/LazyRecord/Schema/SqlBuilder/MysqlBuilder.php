@@ -1,16 +1,11 @@
 <?php
 namespace LazyRecord\Schema\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
-use LazyRecord\QueryDriver;
+use LazyRecord\QueryBuilder;
 
-/**
- * Schema SQL builder
- *
- * @see http://www.sqlite.org/docs.html
- */
-class PgsqlDriver
-    extends BaseDriver
-    implements DriverInterface
+class MysqlBuilder
+    extends BaseBuilder
+    implements BuilderInterface
 {
 
     function buildColumnSql($schema, $column) {      
@@ -20,46 +15,31 @@ class PgsqlDriver
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql = $this->driver->getQuoteColumn( $name );
-
-        if( ! $column->autoIncrement )
-            $sql .= ' ' . $type;
+        $sql = $this->parent->driver->getQuoteColumn( $name );
+        $sql .= ' ' . $type;
 
         if( $column->required || $column->notNull )
             $sql .= ' NOT NULL';
         elseif( $column->null )
             $sql .= ' NULL';
 
-
         /* if it's callable, we should not write the result into sql schema */
-        if( ($default = $column->default) !== null 
-            && ! is_callable($column->default )  ) 
-        {
+        if( ($default = $column->default) !== null && ! is_callable($column->default )  ) { 
 
             // raw sql default value
             if( is_array($default) ) {
                 $sql .= ' default ' . $default[0];
             }
             else {
-                /* XXX: 
-                 * note that we sometime need the data source id from model schema define.
-                 * $sourceId = $schema->getDataSourceId();
-                 */
-
-                /**
-                 * Here we use query driver builder to inflate default value,
-                 * But the value,
-                 */
-                $sql .= ' default ' . $this->driver->inflate($default);
+                $sql .= ' default ' . $this->parent->driver->inflate($default);
             }
         }
-
-        if( $column->autoIncrement )
-            $sql .= ' serial';
 
         if( $column->primary )
             $sql .= ' primary key';
 
+        if( $column->autoIncrement )
+            $sql .= ' auto_increment';
 
         if( $column->unique )
             $sql .= ' unique';
@@ -87,32 +67,33 @@ class PgsqlDriver
                 break;
             }
         }
+
         return $sql;
     }
 
-    public function build(SchemaDeclare $schema, $rebuild = true )
+
+    public function build($schema)
     {
         $sqls = array();
 
-        if( $rebuild ) {
+        if( $this->parent->rebuild ) {
             $sqls[] = 'DROP TABLE IF EXISTS ' 
-                . $this->driver->getQuoteTableName( $schema->getTable() )
-                . ' CASCADE';
+                . $this->parent->driver->getQuoteTableName( $schema->getTable() );
         }
 
-
-        $createSql = 'CREATE TABLE ' . $this->driver->getQuoteTableName($schema->getTable()) . "( \n";
+        $create = 'CREATE TABLE ' 
+            . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+            . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
-            $columnSql[] = "\t" . $this->buildColumnSql( $schema, $column );
+            $columnSql[] = $this->buildColumnSql( $schema, $column );
         }
-        $createSql .= join(",\n",$columnSql);
-        $createSql .= "\n);\n";
+        $create .= join(",\n",$columnSql);
+        $create .= "\n);\n";
 
-        $sqls[] = $createSql;
-
-        // generate sequence
+        $sqls[] = $create;
         return $sqls;
     }
 
 }
+

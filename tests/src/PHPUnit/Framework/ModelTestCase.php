@@ -43,7 +43,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
         // initialize schema files
         $driverType = substr($this->dsn,0, strpos($this->dsn,':'));
-        $builder = new SqlBuilder( $driverType , $driver );
+        $builder = new SqlBuilder( $driver );
 		ok( $builder );
 
         $finder = new LazyRecord\Schema\SchemaFinder;
