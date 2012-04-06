@@ -11,9 +11,14 @@ Free all instances
 
     LazyRecord\QueryDriver::getInstance()->free();
 
-The original `sqlbuilder\driver` usage:
+## The original `sqlbuilder\driver` usage
 
-    $driver = new SQLBuilder\Driver;
+To create a sql driver for pgsql:
+
+    $driver = new SQLBuilder\Driver('pgsql');
+
+or configure driver type by method:
+
     $driver->configure('driver','pgsql');
 
 trim spaces
@@ -33,5 +38,9 @@ custom quoter
     $driver->quoter = function($string) { 
         return your_escape_function( $string );
     };
+
+    $driver->type; // get driver type
+    $driver->quoter; // get quoter callback
+    $driver->inflator; // get inflator callback
 
 
