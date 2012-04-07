@@ -5,6 +5,7 @@ class ColumnDiff {
     public $name;
     public $flag;
     public $column;
+    public $attrDiffs = array();
 
     public function __construct($name,$flag,$column)
     {
@@ -12,20 +13,6 @@ class ColumnDiff {
         $this->flag = $flag;
         $this->column = $column;
     }
-}
-
-class AttributeDiff 
-{
-
-    public $name;
-    public $flag;
-    public $value;
-
-    public function __construct($name,$flag,$value)
-    {
-        list( $this->name, $this->flag, $this->value ) = array($name,$flag,$value);
-    }
-
 }
 
 class Comparator
@@ -38,7 +25,7 @@ class Comparator
      * @param Schema $a old schema 
      * @param Schema $b new schema
      */
-    static function compare( $a, $b ) 
+    function compare( $a, $b ) 
     {
         $diff = array();
 
@@ -49,19 +36,32 @@ class Comparator
             if( isset($aColumns[$key]) && isset($bColumns[ $key ] ) ) {
                 // have the same column, compare attributes
                 $attributes = array('type','isa','default','label');
+                $ac = $aColumns[$key];
+                $bc = $bColumns[$key];
+                $d = new ColumnDiff( $key, '=', $bc );
                 foreach( $attributes as $attributeName ) {
-
+                    if( $ac->{ $attributeName } === $bc->{ $attributeName } ) {
+                        // is equal
+                    }
+                    else if( $ac->{ $attributeName } !== $bc->{ $attributeName } ) {
+                        $d->attrDiffs[] = (object) array( 
+                            'attribute' => $attributeName , 
+                            'before' => $ac->{ $attributeName },
+                            'after'  => $bc->{ $attributeName },
+                        );
+                    }
                 }
+                $diff[] = $d;
             }
             elseif( isset($aColumns[$key]) ) 
             {
                 // flag: -
-                $diff[] = new ColumnDiff($key,'-',$column);
+                $diff[] = new ColumnDiff($key,'-',$aColumns[$key]);
             }
             elseif( isset($bColumns[$key]) ) 
             {
                 // flag: +
-                $diff[] = new ColumnDiff($key,'+',$column);
+                $diff[] = new ColumnDiff($key,'+',$bColumns[$key]);
             }
         }
         return $diff;
