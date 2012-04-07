@@ -3,7 +3,7 @@ namespace LazyRecord;
 use PDO;
 use Exception;
 
-class MysqlTableParser
+abstract class BaseTablePaser
 {
     public $driver;
     public $connection;
@@ -14,31 +14,46 @@ class MysqlTableParser
         $this->connection = $connection;
     }
 
+    abstract function getTables();
+
+}
+
+class PgsqlTableParser extends BaseTablePaser
+{
+
+    public function getTables()
+    {
+        $stm = $this->connection->query('SELECT table_name FROM information_schema.tables WHERE table_schema = \'public\';');
+        $rows = $stm->fetchAll( PDO::FETCH_NUM);
+        return array_map(function($row) { return $row[0]; },$rows);
+    }
+
+    public function getTableSchema($table)
+    {
+        $sql = "SELECT * FROM information_schema.columns WHERE table_name = '$table';";
+        $stm = $this->connection->query($sql);
+        $schema = new Schema\SchemaDeclare;
+        $schema->columnNames = $schema->columns = array();
+        $rows = $stm->fetchAll( PDO::FETCH_OBJ );
+        foreach( $rows as $row ) {
+            // $row->column_name
+            // $row->ordinal_position
+            // $row->data_type
+            // $row->character_maximum_length
+            // $row->is_nullable = NO | YES
+        }
+        return $schema;
+    }
+}
+
+class MysqlTableParser extends BaseTablePaser
+{
+
     public function getTables()
     {
         $stm = $this->connection->query('show tables;');
         $rows = $stm->fetchAll( PDO::FETCH_NUM);
         return array_map(function($row) { return $row[0]; },$rows);
-    }
-
-    public function _parserType($type)
-    {
-        $type = strtolower($type);
-        if( preg_match( '/^(char|varchar|text)/' , $type ) ) {
-            return 'str';
-        }
-        elseif( preg_match('/^(int|tinyint|smallint|mediumint|bigint)/', $type ) ) {
-            return 'int';
-        }
-        elseif( 'date' === $type ) {
-            return 'DateTime';
-        }
-        elseif( preg_match('/timestamp/', $type ) ) {
-            return 'DateTime';
-        }
-        else {
-            throw new Exception("Unknown type $type");
-        }
     }
 
     public function getTableSchema($table)
@@ -82,6 +97,29 @@ class MysqlTableParser
         }
         return $schema;
     }
+
+
+    public function _parserType($type)
+    {
+        $type = strtolower($type);
+        if( preg_match( '/^(char|varchar|text)/' , $type ) ) {
+            return 'str';
+        }
+        elseif( preg_match('/^(int|tinyint|smallint|mediumint|bigint)/', $type ) ) {
+            return 'int';
+        }
+        elseif( 'date' === $type ) {
+            return 'DateTime';
+        }
+        elseif( preg_match('/timestamp/', $type ) ) {
+            return 'DateTime';
+        }
+        else {
+            throw new Exception("Unknown type $type");
+        }
+    }
+
+
 }
 
 class TableParser
@@ -90,6 +128,10 @@ class TableParser
     {
         if( $driver->type === 'mysql' ) {
             $parser = new MysqlTableParser($driver,$connection);
+            return $parser;
+        }
+        elseif( $driver->type === 'pgsql' ) {
+            $parser = new PgsqlTableParser($driver,$connection);
             return $parser;
         }
         else {
