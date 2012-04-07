@@ -4,7 +4,7 @@ use LazyRecord\Inflector;
 use LazyRecord\ConfigLoader;
 use Exception;
 
-abstract class SchemaDeclare extends SchemaBase
+class SchemaDeclare extends SchemaBase
 {
 
     public $mixins = array();
@@ -20,7 +20,7 @@ abstract class SchemaDeclare extends SchemaBase
         $this->build();
     }
 
-    abstract function schema();
+    public function schema() {  }
 
     /**
      * bootstrap script (to create basedata)
@@ -47,6 +47,7 @@ abstract class SchemaDeclare extends SchemaBase
 
         if( null === $this->primaryKey && $config = ConfigLoader::getInstance() )
         {
+            // XXX: can we prepend ?
             if( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
                 $this->column('id')
                     ->isa('int')
@@ -212,7 +213,7 @@ abstract class SchemaDeclare extends SchemaBase
         }
     }
 
-    protected function column($name)
+    public function column($name)
     {
         if( isset($this->columns[$name]) ) {
             throw new Exception("column $name of ". get_class($this) . " is already defined.");
