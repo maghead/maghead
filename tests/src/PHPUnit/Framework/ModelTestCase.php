@@ -6,7 +6,6 @@ use LazyRecord\ConfigLoader;
 
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
 {
-
     public $dsn = 'sqlite::memory:';
     public $schemaPath = 'tests/schema';
 
@@ -15,34 +14,33 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
     public function setup()
     {
-        if( $dsn = getenv('DB_DSN') )
-            $this->dsn = $dsn;
-
-        $config = array(
-            'dsn'  => $this->dsn,
-        );
-        if( $user = getenv('DB_USER') )
-            $config['user'] = $user;
-        if( $pass = getenv('DB_PASS') )
-            $config['pass'] = $pass;
-
-        QueryDriver::free();
         ConnectionManager::getInstance()->free();
-        ConnectionManager::getInstance()->addDataSource('default', $config);
+
+        if( $dsn = getenv('DB_DSN') ) {
+            $this->dsn = $dsn;
+            $config = array(
+                'dsn'  => $this->dsn,
+            );
+            if( $user = getenv('DB_USER') )
+                $config['user'] = $user;
+            if( $pass = getenv('DB_PASS') )
+                $config['pass'] = $pass;
+
+            ConnectionManager::getInstance()->addDataSource('default', $config);
+        }
 
 
         // a little patch for config (we need auto_id for testing)
         $config = ConfigLoader::getInstance();
         $config->unload();
-        $config->loaded = true;
-        $config->config = array( 'schema' => array( 'auto_id' => true ) );
+        $config->load();
+        $config->initForBuild();
+        // $config->loaded = true;
+        // $config->config = array( 'schema' => array( 'auto_id' => true ) );
 
 
-        $dbh = ConnectionManager::getInstance()->getConnection();
+        $dbh = ConnectionManager::getInstance()->getConnection('default');
         $driver = ConnectionManager::getInstance()->getQueryDriver('default');
-
-        // initialize schema files
-        $driverType = substr($this->dsn,0, strpos($this->dsn,':'));
         $builder = new SqlBuilder( $driver , array(
             'rebuild' => true,
         ));
