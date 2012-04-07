@@ -47,13 +47,6 @@ class EdmSchemaProxy extends RuntimeSchema
           'isa' => 'str',
         ),
     ),
-  'edmCreatedOn' => array( 
-      'name' => 'edmCreatedOn',
-      'attributes' => array( 
-          'type' => 'timestamp',
-          'isa' => 'DateTime',
-        ),
-    ),
   'edmUpdatedOn' => array( 
       'name' => 'edmUpdatedOn',
       'attributes' => array( 
@@ -71,7 +64,6 @@ class EdmSchemaProxy extends RuntimeSchema
   'edmStart',
   'edmEnd',
   'edmContent',
-  'edmCreatedOn',
   'edmUpdatedOn',
 );
         $this->primaryKey      = 'edmNo';
