@@ -63,8 +63,9 @@ class DiffCommand extends Command
                 $a = $tableSchemas[ $t ];
                 $diff = $comparator->compare( $a , $b );
 
-                echo $class , " > " , $t , "\n";
                 $printer = new \LazyRecord\Schema\Comparator\ConsolePrinter($diff);
+                $printer->beforeName = $t;
+                $printer->afterName = $class;
                 $printer->output();
             }
         }
