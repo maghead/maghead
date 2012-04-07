@@ -133,6 +133,9 @@ class ConnectionManager
                 @$config['pass'], 
                 @$config['connection_options'] );
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);  // TODO: make this optional
+
             // $driver = $this->getQueryDriver($sourceId);
             // register connection to connection pool
             return $this->conns[ $sourceId ] = $conn;

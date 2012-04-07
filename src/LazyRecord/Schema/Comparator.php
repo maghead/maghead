@@ -31,9 +31,13 @@ class Comparator
 
         $aColumns = $a->getColumns();
         $bColumns = $b->getColumns();
-        $columnKeys = array_merge(array_keys($aColumns) , array_keys($bColumns));
+
+        $columnKeys = array_unique(
+            array_merge(array_keys($aColumns), array_keys($bColumns) )
+        );
         foreach( $columnKeys as $key ) {
             if( isset($aColumns[$key]) && isset($bColumns[ $key ] ) ) {
+                
                 // have the same column, compare attributes
                 $attributes = array('type','isa','default','label');
                 $ac = $aColumns[$key];
@@ -51,15 +55,16 @@ class Comparator
                         );
                     }
                 }
-                if( count($d->attrDiffs)) 
+                if(count($d->attrDiffs) > 0) {
                     $diff[] = $d;
+                }
             }
-            elseif( isset($aColumns[$key]) ) 
+            elseif( isset($aColumns[$key]) && ! isset($bColumns[$key]) ) 
             {
                 // flag: -
                 $diff[] = new ColumnDiff($key,'-',$aColumns[$key]);
             }
-            elseif( isset($bColumns[$key]) ) 
+            elseif( isset($bColumns[$key]) && ! isset($aColumns[$key]) ) 
             {
                 // flag: +
                 $diff[] = new ColumnDiff($key,'+',$bColumns[$key]);

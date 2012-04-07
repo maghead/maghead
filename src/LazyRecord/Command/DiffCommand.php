@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Command;
 use Exception;
+use ReflectionClass;
 use CLIFramework\Command;
 use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaFinder;
@@ -63,9 +64,11 @@ class DiffCommand extends Command
                 $a = $tableSchemas[ $t ];
                 $diff = $comparator->compare( $a , $b );
 
+                $ref = new ReflectionClass($class);
+
                 $printer = new \LazyRecord\Schema\Comparator\ConsolePrinter($diff);
                 $printer->beforeName = $t;
-                $printer->afterName = $class;
+                $printer->afterName = $class . ':' . $ref->getFilename() ;
                 $printer->output();
             }
         }
