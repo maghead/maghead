@@ -3,18 +3,6 @@ use LazyRecord\Schema\SqlBuilder;
 
 class SqlBuilderTest extends PHPUnit_Framework_TestCase
 {
-    function setup()
-    {
-#          $connm->addDataSource('mysql', array( 
-#              'dsn' => 'mysql:host=localhost;dbname=lazy_test',
-#              'user' => 'root',
-#              'pass' => '123123',
-#              'connection_options' => array(
-#                  PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
-#              ) 
-#          ));
-    }
-
     function pdoQueryOk($dbh,$sql)
     {
 		$ret = $dbh->query( $sql );
