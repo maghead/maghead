@@ -51,11 +51,14 @@ class SqliteBuilder
         if( $column->unique )
             $sql .= ' unique';
 
-        // build reference
-        // track(
-        //		FOREIGN KEY(trackartist) REFERENCES artist(artistid)
-        //		artist_id INTEGER REFERENCES artist
-        // )
+        /**
+         * build sqlite reference
+         *    create table track(
+         *        trackartist INTEGER,
+         *        FOREIGN KEY(trackartist) REFERENCES artist(artistid)
+         *    )
+         * @see http://www.sqlite.org/foreignkeys.html
+        */
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
             case SchemaDeclare::belongs_to:
