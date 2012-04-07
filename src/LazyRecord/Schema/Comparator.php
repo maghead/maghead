@@ -45,7 +45,7 @@ class Comparator
                     }
                     else if( $ac->{ $attributeName } !== $bc->{ $attributeName } ) {
                         $d->attrDiffs[] = (object) array( 
-                            'attribute' => $attributeName , 
+                            'name' => $attributeName , 
                             'before' => $ac->{ $attributeName },
                             'after'  => $bc->{ $attributeName },
                         );
