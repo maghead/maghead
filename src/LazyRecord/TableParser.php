@@ -67,6 +67,7 @@ class MysqlTableParser
                 // $column->default( array($row['Default']) );
             }
         }
+        return $schema;
     }
 }
 

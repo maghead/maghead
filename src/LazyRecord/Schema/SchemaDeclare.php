@@ -323,29 +323,7 @@ class SchemaDeclare extends SchemaBase
             return;
         }
         throw new Exception("Relation $relationId is not defined.");
-
     }
-
-    public function getReferenceSchemas($recursive = true)
-    {
-        $schemas = array();
-        foreach( $this->relations as $rel ) {
-            if( ! isset($rel['foreign']['schema']) )
-                continue;
-
-            $class = ltrim($rel['foreign']['schema'],'\\');
-            $fs = new $class;
-            if( isset($schemas[$class]) )
-                continue;
-
-            $schemas[ $class ] = 1;
-            if( $recursive )
-                $schemas = array_merge($schemas, $fs->getReferenceSchemas(false));
-        }
-        return $schemas;
-    }
-
-
 
 
     public function getLabel()
