@@ -4,6 +4,20 @@ LazyRecord
 Synopsis
 --------
 
+```sh
+    $ lazy build-conf
+
+    $ lazy build-schema
+
+    $ lazy build-sql --data-source=mysql
+
+    $ lazy diff
+
+    $ lazy diff --data-source=mysql
+
+    $ lazy diff --data-source=pgsql
+```
+
 
 ```php
 <?
@@ -50,6 +64,8 @@ Define your model schema, note: the schema file name must be with suffix "Schema
 
     $ vim src/App/Model/AuthorSchema.php
 
+```php
+<?php
     use LazyRecord\Schema\SchemaDeclare;
 
     class AuthorSchema extends SchemaDeclare
@@ -77,6 +93,7 @@ Define your model schema, note: the schema file name must be with suffix "Schema
                 ->boolean();
         }
     }
+```
 
 To generate SQL schema:
 
