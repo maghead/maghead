@@ -6,5 +6,6 @@ phpunit tests && (
     git commit -a -m "Build package.xml and phar file for $VERSION"
     git tag $VERSION -m "Release $VERSION"
     git push origin --tags
+    git push origin HEAD
     sudo pear install -f package.xml
 )
