@@ -76,24 +76,14 @@ class MysqlBuilder
         */
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
-
             case SchemaDeclare::belongs_to:
-                if( $rel['self']['column'] == $name ) { 
+            case SchemaDeclare::has_many:
+            case SchemaDeclare::has_one:
+                if( $name != 'id' && $rel['self']['column'] == $name ) { 
                     $fSchema = new $rel['foreign']['schema'];
                     $fColumn = $rel['foreign']['column'];
                     $fc = $fSchema->columns[$fColumn];
                     $sql .= ' REFERENCES ' . $fSchema->getTable() . '.' . $fColumn;
-                }
-                break;
-
-            case SchemaDeclare::has_many:
-                break;
-
-            case SchemaDeclare::has_one:
-                if( $rel['self']['column'] == $name ) { 
-                    $fs = new $rel['foreign']['schema'];
-                    $fc = $rel['foreign']['column'];
-                    $sql .= ' REFERENCES ' . $fs->getTable() . '.' . $fc;
                 }
                 break;
             }

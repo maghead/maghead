@@ -5,22 +5,14 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
 {
     function setup()
     {
-        LazyRecord\QueryDriver::free();
-        $connm = LazyRecord\ConnectionManager::getInstance();
-        $connm->free();
-
-        $connm->addDataSource('sqlite', array( 
-            'dsn' => 'sqlite::memory:'
-        ));
-
-        $connm->addDataSource('mysql', array( 
-            'dsn' => 'mysql:host=localhost;dbname=lazy_test',
-            'user' => 'root',
-            'pass' => '123123',
-            'connection_options' => array(
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
-            ) 
-        ));
+#          $connm->addDataSource('mysql', array( 
+#              'dsn' => 'mysql:host=localhost;dbname=lazy_test',
+#              'user' => 'root',
+#              'pass' => '123123',
+#              'connection_options' => array(
+#                  PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+#              ) 
+#          ));
     }
 
     function pdoQueryOk($dbh,$sql)
@@ -40,8 +32,10 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
 
 	function testSqlite()
 	{
-		$dbh = LazyRecord\ConnectionManager::getInstance()->getConnection('sqlite');
-		$builder = new SqlBuilder(LazyRecord\ConnectionManager::getInstance()->getQueryDriver('sqlite') );
+		$dbh = LazyRecord\ConnectionManager::getInstance()->getConnection('default');
+        $builder = new SqlBuilder(LazyRecord\ConnectionManager::getInstance()->getQueryDriver('default'), array(
+            'rebuild' => true,
+        ));
 		ok( $builder );
 
 		$s = new \tests\AuthorSchema;
@@ -82,32 +76,21 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
         $pdo = $connManager->getConnection('mysql');
         ok( $pdo , 'pdo connection' );
 
-		$builder = new SqlBuilder($connManager->getQueryDriver('mysql') );
+        $builder = new SqlBuilder($connManager->getQueryDriver('mysql') , array( 
+            'rebuild' => true,
+        ));
 		ok( $builder );
 
-        $this->pdoQueryOk( $pdo, 'drop TABLE IF EXISTS authors' );
-        $this->pdoQueryOk( $pdo, 'drop TABLE IF EXISTS author_books' );
-        $this->pdoQueryOk( $pdo, 'drop TABLE IF EXISTS books' );
-
-		$authorschema = new \tests\AuthorSchema;
-		$authorbookschema = new \tests\AuthorBookSchema;
-		$bookschema = new \tests\BookSchema;
-        ok( $authorschema );
-        ok( $authorbookschema );
-        ok( $bookschema );
-
-        ok( $sqls = $builder->build( $authorschema ) );
-        foreach( $sqls as $sql )
-            $this->pdoQueryOk( $pdo, $sql );
-
-        ok( $sqls = $builder->build( $bookschema ) );
-        foreach( $sqls as $sql )
-            $this->pdoQueryOk( $pdo, $sql );
-
-        ok( $sqls = $builder->build( $authorbookschema ) );
-        foreach( $sqls as $sql )
-            $this->pdoQueryOk( $pdo, $sql );
-
+        $schemas = array();
+		$schemas[] = new \tests\AuthorSchema;
+		$schemas[] = new \tests\AuthorBookSchema;
+		$schemas[] = new \tests\BookSchema;
+        foreach( $schemas as $schema ) {
+            ok( $sqls = $builder->build( $schema ) );
+            foreach( $sqls as $sql ) {
+                $this->pdoQueryOk( $pdo, $sql );
+            }
+        }
 	}
 }
 
