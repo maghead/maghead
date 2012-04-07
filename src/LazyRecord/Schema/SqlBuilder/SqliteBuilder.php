@@ -58,23 +58,19 @@ class SqliteBuilder
         // )
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
-
-                // XXX: keep this
             case SchemaDeclare::belongs_to:
-                $fs = new $rel['foreign']['schema'];
-                $fcName = $rel['foreign']['column'];
-                $fc = $fs->columns[$fcName];
-                break;
-
+            case SchemaDeclare::has_many:
             case SchemaDeclare::has_one:
-                if( $rel['self']['column'] == $name ) { 
-                    $fs = new $rel['foreign']['schema'];
-                    $sql .= ' references ' . $fs->getTable();
+                if( $name != 'id' && $rel['self']['column'] == $name ) 
+                {
+                    $fSchema = new $rel['foreign']['schema'];
+                    $fColumn = $rel['foreign']['column'];
+                    $fc = $fSchema->columns[$fColumn];
+                    $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
                 }
                 break;
             }
         }
-
         return $sql;
     }
 
