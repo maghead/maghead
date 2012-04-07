@@ -16,6 +16,9 @@ class BuildSqlCommand extends \CLIFramework\Command
 
         // --clean
         $opts->add('clean','clean up SQL schema.');
+
+        // --data-source
+        $opts->add('D|data-source:', 'specify data source id');
     }
 
     public function brief()
@@ -27,7 +30,6 @@ class BuildSqlCommand extends \CLIFramework\Command
     {
         // support for schema file or schema class names
         $schemas = func_get_args();
-
 
         $options = $this->options;
         $logger  = $this->logger;
@@ -41,7 +43,7 @@ class BuildSqlCommand extends \CLIFramework\Command
         $logger->info("Initialize connection manager...");
 
         // XXX: from config files
-        $id = 'default';
+        $id = $options->{'data-source'} ?: 'default';
         $conn = $connectionManager->getConnection($id);
         $type = $connectionManager->getDataSourceDriver($id);
         $driver = $connectionManager->getQueryDriver($id);
