@@ -51,7 +51,6 @@ DOC;
         $loader->initForBuild();
 
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
-
         $logger->info("Initialize connection manager...");
 
         // XXX: from config files
@@ -60,11 +59,6 @@ DOC;
         $type = $connectionManager->getDataSourceDriver($id);
         $driver = $connectionManager->getQueryDriver($id);
 
-        $logger->info("Initialize schema builder...");
-        $builder = new \LazyRecord\Schema\SqlBuilder($driver, array( 
-            'rebuild' => $options->rebuild,
-            'clean' => $options->clean,
-        )); // driver
 
         $logger->info("Finding schema classes...");
 
@@ -88,6 +82,12 @@ DOC;
         }
 
         $classes = $finder->getSchemaClasses();
+
+        $logger->info("Initialize schema builder...");
+        $builder = new \LazyRecord\Schema\SqlBuilder($driver, array( 
+            'rebuild' => $options->rebuild,
+            'clean' => $options->clean,
+        )); // driver
 
         $fp = fopen('schema.sql','a+');
 
