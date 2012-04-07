@@ -16,15 +16,20 @@ class AttributeDiff {
 class Comparator
 {
 
+
+    /**
+     * compare two schemas
+     *
+     * @param Schema $a old schema 
+     * @param Schema $b new schema
+     */
     static function compare( $a, $b ) 
     {
         $diff = array();
 
         $aColumns = $a->getColumns();
         $bColumns = $b->getColumns();
-
         $columnKeys = array_merge(array_keys($aColumns) , array_keys($bColumns));
-
         foreach( $columnKeys as $key ) {
             if( isset($aColumns[$key]) && isset($bColumns[ $key ] ) ) {
                 // have the same column, compare attributes
@@ -35,17 +40,15 @@ class Comparator
             }
             elseif( isset($aColumns[$key]) ) 
             {
-
+                // flag: -
             }
             elseif( isset($bColumns[$key]) ) 
             {
-
+                // flag: +
             }
         }
-
+        return $diff;
     }
-
-
 
 }
 
