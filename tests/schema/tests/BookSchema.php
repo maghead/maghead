@@ -33,7 +33,7 @@ class BookSchema extends SchemaDeclare
             ->integer()
             ->refer('\tests\UserSchema');
 
-        // $this->hasOne( 'created_by','created_by','\tests\UserSchema','id');
+        // $this->one( 'created_by','created_by','\tests\UserSchema','id');
 
         $this->belongsTo('created_by', '\tests\UserSchema','id', 'created_by');
 

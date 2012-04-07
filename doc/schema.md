@@ -123,13 +123,21 @@ Valid values
 Relationships
 -------------
 
-Belongs To:
+Belongs To: `(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name = 'id')`
 
 <?php
-    $this->belongsTo( 'author', 'author_id' , '\tests\AuthorSchema', 'id' );
+    $this->belongsTo( 'author' , '\tests\AuthorSchema', 'id' , 'author_id' );
+    $this->belongsTo( 'address' , '\tests\AddressSchema', 'address_id' );
 ?>
 
-Has Many:
+
+Has One: `(accessor_name, self_column_name, foreign_schema_class_name, foreign_schema_column_name)`
+
+<?php 
+    $this->one( 'author', 'author_id', '\tests\AuthorSchema' , 'id' );
+?>
+
+Has Many: `(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name )`
 
 <?php
     $this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');

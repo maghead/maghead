@@ -44,19 +44,46 @@ class MysqlBuilder
         if( $column->unique )
             $sql .= ' unique';
 
-        // build reference
-        // track(
-        //		FOREIGN KEY(trackartist) REFERENCES artist(artistid)
-        //		artist_id INTEGER REFERENCES artist
-        // )
+        /**
+        build reference
+
+        track(
+        	FOREIGN KEY(trackartist) REFERENCES artist(artistid)
+            artist_id INTEGER REFERENCES artist
+        )
+
+        MySQL Syntax:
+        
+            reference_definition:
+
+            REFERENCES tbl_name (index_col_name,...)
+                [MATCH FULL | MATCH PARTIAL | MATCH SIMPLE]
+                [ON DELETE reference_option]
+                [ON UPDATE reference_option]
+
+            reference_option:
+                RESTRICT | CASCADE | SET NULL | NO ACTION
+
+        A reference example:
+
+        PRIMARY KEY (`idEmployee`) ,
+        CONSTRAINT `fkEmployee_Addresses`
+        FOREIGN KEY `fkEmployee_Addresses` (`idAddresses`)
+        REFERENCES `schema`.`Addresses` (`idAddresses`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+
+        */
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
 
-                // XXX: keep this
             case SchemaDeclare::belongs_to:
-                $fSchema = new $rel['foreign']['schema'];
-                $fColumn = $rel['foreign']['column'];
-                $fc = $fSchema->columns[$fColumn];
+                if( $rel['self']['column'] == $name ) { 
+                    $fSchema = new $rel['foreign']['schema'];
+                    $fColumn = $rel['foreign']['column'];
+                    $fc = $fSchema->columns[$fColumn];
+                    $sql .= ' REFERENCES ' . $fSchema->getTable() . '.' . $fColumn;
+                }
                 break;
 
             case SchemaDeclare::has_many:
@@ -65,7 +92,8 @@ class MysqlBuilder
             case SchemaDeclare::has_one:
                 if( $rel['self']['column'] == $name ) { 
                     $fs = new $rel['foreign']['schema'];
-                    $sql .= ' references ' . $fs->getTable();
+                    $fc = $rel['foreign']['column'];
+                    $sql .= ' REFERENCES ' . $fs->getTable() . '.' . $fc;
                 }
                 break;
             }

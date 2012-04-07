@@ -271,13 +271,13 @@ abstract class SchemaDeclare extends SchemaBase
 
 
     /**
-     * hasOne relationship
+     * has-one relationship
      *
      *   model(
      *      post_id => post
      *   )
      */
-    protected function hasOne($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
+    protected function one($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
     {
         // foreignColumn is default to foreignClass.primary key
 
