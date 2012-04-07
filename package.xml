@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-04-07</date>
-  <time>17:15:51</time>
+  <time>17:16:13</time>
   <version>
-    <release>1.1.11</release>
-    <api>1.1.11</api>
+    <release>1.2.0</release>
+    <api>1.2.0</api>
   </version>
   <stability>
     <release>stable</release>
@@ -168,7 +168,7 @@
       <file name="src/LazyRecord/Schema/Templates/Schema.php.twig" role="php" md5sum="3f41d1fd5165c5e13f6be70214a81f86"/>
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
-      <file name="package.ini" role="data" md5sum="d39cf04402f503348d60ad25b60fc4f7"/>
+      <file name="package.ini" role="data" md5sum="4b12fe4088d5d0119e38aa23b0f7c846"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
       <file name="lazy" role="script" md5sum="3d06255334ca690bc2a000adeab1f367"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
