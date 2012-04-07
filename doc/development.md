@@ -30,6 +30,7 @@ Build config file:
 
     $ lazy build-conf config/database.yml
 
+
 Run phpunit to test:
 
     $ phpunit tests
@@ -39,4 +40,9 @@ files into the executable phar file `lazy`:
 
     $ bash scripts/compile.sh
 
+To build sql with specific data source:
+
+    php scripts/lazy.php build-sql --data-source=mysql  --rebuild
+    php scripts/lazy.php build-sql --data-source=master --rebuild
+    php scripts/lazy.php build-sql --data-source=slave  --rebuild
 
