@@ -47,7 +47,10 @@ class Comparator
                     if( $ac->{ $attributeName } === $bc->{ $attributeName } ) {
                         // is equal
                     }
-                    else if( $ac->{ $attributeName } != $bc->{ $attributeName } ) {
+                    else if( $ac->{ $attributeName } != $bc->{ $attributeName } 
+                        && is_string($bc->{ $attributeName }) 
+                        && is_integer($bc->{ $attributeName }) ) 
+                    {
                         $d->attrDiffs[] = (object) array( 
                             'name' => $attributeName , 
                             'before' => $ac->{ $attributeName },
