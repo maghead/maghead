@@ -75,8 +75,14 @@ class TableParser
 {
     static function create($driver,$connection) 
     {
-        $parser = new MysqlTableParser($driver,$connection);
-        return $parser;
+        if( $driver->type === 'mysql' ) {
+            $parser = new MysqlTableParser($driver,$connection);
+            return $parser;
+        }
+        else {
+            throw new Exception("Driver {$driver->type} is not supported.");
+        }
+
     }
 }
 
