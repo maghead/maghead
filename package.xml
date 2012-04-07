@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-04-07</date>
-  <time>17:16:13</time>
+  <time>17:26:31</time>
   <version>
     <release>1.2.0</release>
     <api>1.2.0</api>
@@ -130,7 +130,7 @@
       <file name="src/LazyRecord/CollectionPager.php" role="php" md5sum="3348100c59a0029db44e27e11c6e60af"/>
       <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="28eda14a05fc5b707c2d09bb631446b6"/>
       <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="21869a85a5f311b898b946438960d6b2"/>
-      <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="0ac1639b75f561cec38effef9c48899b"/>
+      <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="1f218f12251f698637f98683e996055d"/>
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="1f28f5e530d084a13a756415a7fe4224"/>
       <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="be57069c96dd9b381320c20d48cb920d"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="72fdbf07f05c33bc8058d0cd0976fab7"/>
@@ -156,10 +156,10 @@
       <file name="src/LazyRecord/Schema/SchemaLoader.php" role="php" md5sum="cd511486b06677d56848159807c3d460"/>
       <file name="src/LazyRecord/Schema/SqlBuilder/BaseBuilder.php" role="php" md5sum="15d7842cacf12b033752122aaf708668"/>
       <file name="src/LazyRecord/Schema/SqlBuilder/BuilderInterface.php" role="php" md5sum="1027a402468c63481e843b2232e222e2"/>
-      <file name="src/LazyRecord/Schema/SqlBuilder/MysqlBuilder.php" role="php" md5sum="5b6ee9d2a9ca9c18d2f8b75bfb0dc319"/>
-      <file name="src/LazyRecord/Schema/SqlBuilder/PgsqlBuilder.php" role="php" md5sum="caceee93618562ba7c9c73a02018faad"/>
-      <file name="src/LazyRecord/Schema/SqlBuilder/SqliteBuilder.php" role="php" md5sum="d793541e9b34c95248b4325d47618413"/>
-      <file name="src/LazyRecord/Schema/SqlBuilder.php" role="php" md5sum="c54fa9d6d31682f5bb2f05b9e81c7764"/>
+      <file name="src/LazyRecord/Schema/SqlBuilder/MysqlBuilder.php" role="php" md5sum="fd35192bc5663202077d301560c19a59"/>
+      <file name="src/LazyRecord/Schema/SqlBuilder/PgsqlBuilder.php" role="php" md5sum="42394936484789446e1cdd11cb3b41f0"/>
+      <file name="src/LazyRecord/Schema/SqlBuilder/SqliteBuilder.php" role="php" md5sum="497562d9dc54a0c5095dd232b6b95787"/>
+      <file name="src/LazyRecord/Schema/SqlBuilder.php" role="php" md5sum="6bfdd99f92e1409d36f6f1375e9c4c89"/>
       <file name="src/LazyRecord/Schema/Templates/BaseCollection.php.twig" role="php" md5sum="4f3fa444776cc4f53a42dbd3dee0ce9d"/>
       <file name="src/LazyRecord/Schema/Templates/BaseModel.php.twig" role="php" md5sum="e9e9259ce61256d6ed15329d518c08fb"/>
       <file name="src/LazyRecord/Schema/Templates/Class.php.twig" role="php" md5sum="edd4c2ac7a28d7e74554c7c0cbd68948"/>
@@ -170,7 +170,7 @@
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="package.ini" role="data" md5sum="4b12fe4088d5d0119e38aa23b0f7c846"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="3d06255334ca690bc2a000adeab1f367"/>
+      <file name="lazy" role="script" md5sum="a7868c14f27f26014b3c99d4fef1518b"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
   </contents>
