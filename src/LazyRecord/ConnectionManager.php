@@ -58,6 +58,10 @@ class ConnectionManager
         $this->datasources[ $id ] = $config;
     }
 
+    public function hasDataSource($id = 'default')
+    {
+        return isset($this->datasources[ $id ] );
+    }
 
     public function getDataSource($id = 'default')
     {
