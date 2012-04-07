@@ -30,6 +30,11 @@ class PgsqlTableParser extends BaseTablePaser
 
     public function getTableSchema($table)
     {
+        /**
+         * postgresql information schema column descriptions
+         *
+         * @see http://www.postgresql.org/docs/8.1/static/infoschema-columns.html
+         */
         $sql = "SELECT * FROM information_schema.columns WHERE table_name = '$table';";
         $stm = $this->connection->query($sql);
         $schema = new Schema\SchemaDeclare;
@@ -69,9 +74,23 @@ class PgsqlTableParser extends BaseTablePaser
             if( $type === 'character varying' )
                 $type = 'varchar(' . $row->character_maximum_length . ')' ;
 
+            $isa = null;
+            if( preg_match( '/^(text|varchar|character)/i', $type ) ) 
+                $isa = 'str';
+            elseif( preg_match( '/^(int|bigint|smallint|integer)/i' , $type ) )
+                $isa = 'int';
+            elseif( preg_match( '/^(timestamp|date)/i' , $type ) )
+                $isa = 'DateTime';
+            elseif( $type === 'boolean' )
+                $isa = 'bool';
+
+            if( $isa )
+                $column->isa( $isa );
+
             $column->type( $type );
             // $row->ordinal_position
             // $row->data_type
+            // $row->column_default
             // $row->character_maximum_length
         }
         return $schema;
