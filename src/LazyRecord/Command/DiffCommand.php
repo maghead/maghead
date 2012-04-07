@@ -56,21 +56,30 @@ class DiffCommand extends Command
             $tableSchemas[ $table ] = $parser->getTableSchema( $table );
         }
 
+        $found = false;
         $comparator = new \LazyRecord\Schema\Comparator;
         foreach( $classes as $class ) {
             $b = new $class;
+            $ref = new ReflectionClass($class);
             $t = $b->getTable();
             if( isset( $tableSchemas[ $t ] ) ) {
                 $a = $tableSchemas[ $t ];
                 $diff = $comparator->compare( $a , $b );
-
-                $ref = new ReflectionClass($class);
-
+                if( count($diff) ) 
+                    $found = true;
                 $printer = new \LazyRecord\Schema\Comparator\ConsolePrinter($diff);
                 $printer->beforeName = $t;
                 $printer->afterName = $class . ':' . $ref->getFilename() ;
                 $printer->output();
             }
+            else {
+                echo "New table: " , $class , ':' , $ref->getFilename() , "\n";
+                $found = true;
+            }
+        }
+
+        if( false === $found ) {
+            $this->logger->info("No diff found");
         }
     }
 }
