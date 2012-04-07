@@ -5,16 +5,7 @@ use Exception;
 
 class RuntimeSchema extends SchemaBase
 {
-    public $relations = array();
 
-    // public $accessors = array();
-    public $columns = array();
-
-    public $columnNames = array();
-
-    public $primaryKey;
-
-    public $table;
 
     public $modelClass;
 

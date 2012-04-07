@@ -50,10 +50,10 @@ class ConfigLoader
      */
     public function load($file = null)
     {
-        if( $this->loaded == true )
+        if( $file !== true && $this->loaded === true )
             throw new Exception("Can not load $file. Config is already loaded.");
 
-        if( $file === null )
+        if( $file === null || is_bool($file) )
             $file = $this->symbolFilename;
 
         if( is_string($file) && file_exists($file) ) {

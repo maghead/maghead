@@ -11,6 +11,20 @@ abstract class SchemaBase
 
     const belongs_to = 4;
 
+
+    public $table;
+
+    public $label;
+
+    public $columns = array();
+
+    public $columnNames = array();
+
+    public $relations = array();
+
+    public $primaryKey;
+
+
     public function getRelation($relationId)
     {
         if( isset($this->relations[ $relationId ]) ) {

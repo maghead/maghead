@@ -6,18 +6,6 @@ use Exception;
 
 abstract class SchemaDeclare extends SchemaBase
 {
-    public $relations = array();
-
-    // public $accessors = array();
-    public $columns = array();
-
-    public $columnNames = array();
-
-    public $primaryKey;
-
-    public $label;
-
-    public $table;
 
     public $mixins = array();
 
