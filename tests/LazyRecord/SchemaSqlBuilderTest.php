@@ -30,67 +30,58 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
         return $ret;
     }
 
-	function testSqlite()
-	{
-		$dbh = LazyRecord\ConnectionManager::getInstance()->getConnection('default');
-        $builder = new SqlBuilder(LazyRecord\ConnectionManager::getInstance()->getQueryDriver('default'), array(
-            'rebuild' => true,
-        ));
-		ok( $builder );
-
-		$s = new \tests\AuthorSchema;
-		$authorbook = new \tests\AuthorBookSchema;
-		$bookschema = new \tests\BookSchema;
-		ok( $s );
-
-		$sqls = $builder->build($s);
-		ok( $sqls );
-
-        // var_dump( $sql ); 
-        foreach( $sqls as $sql ) 
-            $this->pdoQueryOk( $dbh , $sql );
 
 
-		ok( $authorbook );
-		$sqls = $builder->build($authorbook);
-		ok( $sqls );
-        // var_dump( $sql ); 
-
-        foreach( $sqls as $sql )
-            $this->pdoQueryOk( $dbh , $sql );
-
-
-		ok( $bookschema );
-		$sqls = $builder->build($bookschema);
-		ok( $sqls );
-        // var_dump( $sql ); 
-
-        foreach( $sqls as $sql )
-            $this->pdoQueryOk( $dbh , $sql );
-	}
+    function schemaProvider()
+    {
+        return array(
+            array( new \tests\AuthorSchema ),
+            array( new \tests\AddressSchema ),
+            array( new \tests\AuthorBookSchema),
+            array( new \tests\BookSchema ),
+            array( new \tests\NameSchema ),
+        );
+    }
 
 
-	function testMysql()
+
+    /**
+     * @dataProvider schemaProvider
+     */
+	function testMysql($schema)
 	{
         $connManager = LazyRecord\ConnectionManager::getInstance();
         $pdo = $connManager->getConnection('mysql');
         ok( $pdo , 'pdo connection' );
-
         $builder = new SqlBuilder($connManager->getQueryDriver('mysql') , array( 
             'rebuild' => true,
         ));
 		ok( $builder );
-
-        $schemas = array();
-		$schemas[] = new \tests\AuthorSchema;
-		$schemas[] = new \tests\AuthorBookSchema;
-		$schemas[] = new \tests\BookSchema;
-        foreach( $schemas as $schema ) {
-            ok( $sqls = $builder->build( $schema ) );
-            foreach( $sqls as $sql ) {
-                $this->pdoQueryOk( $pdo, $sql );
-            }
+        ok( $sqls = $builder->build( $schema ) );
+        foreach( $sqls as $sql ) {
+            $this->pdoQueryOk( $pdo, $sql );
         }
 	}
+
+
+    /**
+     * @dataProvider schemaProvider
+     */
+	function testSqlite($schema)
+	{
+        $connManager = LazyRecord\ConnectionManager::getInstance();
+        $pdo = $connManager->getConnection('sqlite');
+        ok( $pdo , 'pdo connection' );
+        $builder = new SqlBuilder($connManager->getQueryDriver('sqlite') , array( 
+            'rebuild' => true,
+        ));
+		ok( $builder );
+        ok( $sqls = $builder->build( $schema ) );
+        foreach( $sqls as $sql ) {
+            $this->pdoQueryOk( $pdo, $sql );
+        }
+	}
+
+
 }
 
