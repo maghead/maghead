@@ -41,6 +41,7 @@ class TableParserTest extends PHPUnit_Framework_TestCase
             $schema = $parser->getTableSchema( $table );
 
             ok( $schema );
+            ok( $schema->getColumns() );
         }
     }
 }
