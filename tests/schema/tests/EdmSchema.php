@@ -30,9 +30,6 @@ class EdmSchema extends SchemaDeclare
             ->text()
             ->isa('str');
 
-        $this->column('edmCreatedOn')
-            ->timestamp();
-
         $this->column('edmUpdatedOn')
             ->timestamp()
             ->default( array('current_timestamp') );

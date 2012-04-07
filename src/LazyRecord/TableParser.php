@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord;
+use PDO;
 use Exception;
 
 class MysqlTableParser
@@ -16,7 +17,7 @@ class MysqlTableParser
     public function getTables()
     {
         $stm = $this->connection->query('show tables;');
-        $rows = $stm->fetchAll();
+        $rows = $stm->fetchAll( PDO::FETCH_NUM);
         return array_map(function($row) { return $row[0]; },$rows);
     }
 

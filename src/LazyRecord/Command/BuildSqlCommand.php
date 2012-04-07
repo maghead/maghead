@@ -113,8 +113,8 @@ DOC;
                 }
             }
 
-            $logger->info("Creating base data for $modelClass");
             $modelClass = $schema->getModelClass();
+            $logger->info("Creating base data for $modelClass");
             $schema->bootstrap( new $modelClass );
         }
 
