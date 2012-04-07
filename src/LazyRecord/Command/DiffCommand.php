@@ -39,6 +39,14 @@ class DiffCommand extends Command
         $driver = $connectionManager->getQueryDriver($id);
 
 
+        $finder = new SchemaFinder;
+        if( $paths = $loader->getSchemaPaths() ) {
+            $finder->paths = $paths;
+        }
+        $finder->loadFiles();
+        $classes = $finder->getSchemaClasses();
+
+
         // XXX: currently only mysql support
         $parser = \LazyRecord\TableParser::create( $driver, $conn );
         $tableSchemas = array();
@@ -47,9 +55,17 @@ class DiffCommand extends Command
             $tableSchemas[ $table ] = $parser->getTableSchema( $table );
         }
 
-
-
-
+        $comparator = new \LazyRecord\Schema\Comparator;
+        foreach( $classes as $class ) {
+            $b = new $class;
+            $t = $b->getTable();
+            if( isset( $tableSchemas[ $t ] ) ) {
+                $a = $tableSchemas[ $t ];
+                $diff = $comparator->compare( $a , $b );
+                $printer = new \LazyRecord\Schema\Comparator\ConsolePrinter($diff);
+                $printer->output();
+            }
+        }
     }
 }
 
