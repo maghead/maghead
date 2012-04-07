@@ -345,5 +345,10 @@ class SchemaDeclare extends SchemaBase
         }
     }
 
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
 }
 
