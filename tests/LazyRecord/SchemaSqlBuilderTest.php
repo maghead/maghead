@@ -39,6 +39,10 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
 	function testMysql($schema)
 	{
         $connManager = LazyRecord\ConnectionManager::getInstance();
+
+        if( ! isset($connManager['mysql']) )
+            return;
+
         $pdo = $connManager->getConnection('mysql');
         ok( $pdo , 'pdo connection' );
         $builder = new SqlBuilder($connManager->getQueryDriver('mysql') , array( 
