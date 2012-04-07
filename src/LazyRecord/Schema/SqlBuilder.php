@@ -4,19 +4,27 @@ namespace LazyRecord\Schema;
 
 class SqlBuilder
 {
-    public $rebuild;
 
+    /** options **/
+    public $rebuild;
+    public $clean;
+
+
+    /* query driver object */
     public $driver;
 
+    /** specific builder object **/
     public $builder;
 
     public function __construct($driver, $options = array() ) 
     {
-        $this->driver = $driver;
-
         if( isset($options['rebuild']) )
             $this->rebuild = $options['rebuild'];
 
+        if( isset($options['clean']) )
+            $this->clean = $options['clean'];
+
+        $this->driver = $driver;
         $this->_createBuilder();
     }
 
