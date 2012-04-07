@@ -94,7 +94,7 @@ DOC;
         foreach( $classes as $class ) {
             $logger->info( "Building SQL for $class" );
 
-            fwrite( $fp , "-- schema $class\n" );
+            fwrite( $fp , "--- schema $class\n" );
 
             $schema = new $class;
             $sqls = $builder->build($schema);
@@ -113,6 +113,7 @@ DOC;
                 }
             }
 
+            $logger->info("Creating base data for $modelClass");
             $modelClass = $schema->getModelClass();
             $schema->bootstrap( new $modelClass );
         }
