@@ -35,12 +35,44 @@ class PgsqlTableParser extends BaseTablePaser
         $schema = new Schema\SchemaDeclare;
         $schema->columnNames = $schema->columns = array();
         $rows = $stm->fetchAll( PDO::FETCH_OBJ );
+
+        /**
+         * more detailed attributes
+         *
+         * > select * from pg_attribute, pg_type where typname = 'addresses';
+         * > select * from pg_attribute, pg_type where typname = 'addresses' and attname not in ('cmin','cmax','ctid','oid','tableoid','xmin','xmax');
+         *
+         * > SELECT
+         *      a.attname as "Column",
+         *      pg_catalog.format_type(a.atttypid, a.atttypmod) as "Datatype"
+         *  FROM
+         *      pg_catalog.pg_attribute a
+         *  WHERE
+         *      a.attnum > 0
+         *      AND NOT a.attisdropped
+         *      AND a.attrelid = (
+         *          SELECT c.oid
+         *          FROM pg_catalog.pg_class c
+         *              LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+         *          WHERE c.relname ~ '^(books)$'  
+         *              AND pg_catalog.pg_table_is_visible(c.oid)
+         *      )
+         *  ;
+         *
+         * @see http://notfaq.wordpress.com/2006/07/29/sql-postgresql-get-tables-and-columns/
+         */
         foreach( $rows as $row ) {
-            // $row->column_name
+            $column = $schema->column( $row->column_name );
+            $column->null( $row->is_nullable === 'YES' );
+
+            $type = $row->data_type;
+            if( $type === 'character varying' )
+                $type = 'varchar(' . $row->character_maximum_length . ')' ;
+
+            $column->type( $type );
             // $row->ordinal_position
             // $row->data_type
             // $row->character_maximum_length
-            // $row->is_nullable = NO | YES
         }
         return $schema;
     }
