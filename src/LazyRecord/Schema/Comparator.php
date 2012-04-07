@@ -14,10 +14,18 @@ class ColumnDiff {
     }
 }
 
-class AttributeDiff {
+class AttributeDiff 
+{
+
     public $name;
     public $flag;
-    public $attribute;
+    public $value;
+
+    public function __construct($name,$flag,$value)
+    {
+        list( $this->name, $this->flag, $this->value ) = array($name,$flag,$value);
+    }
+
 }
 
 class Comparator
