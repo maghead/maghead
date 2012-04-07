@@ -7,5 +7,8 @@ phpunit tests && (
     git tag $VERSION -m "Release $VERSION"
     git push origin --tags
     git push origin HEAD
-    sudo pear install -f package.xml
+
+    for p in $(which -a pear) ; do
+        sudo $p install -f package.xml
+    done
 )
