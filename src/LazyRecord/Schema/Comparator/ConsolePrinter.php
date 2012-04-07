@@ -12,6 +12,8 @@ class ConsolePrinter
 
     public function output()
     {
+        if( empty($this->diff) )
+            return;
         $formatter = new \CLIFramework\Formatter;
 
         echo $formatter->format("--- old","red") , "\n";
@@ -29,7 +31,11 @@ class ConsolePrinter
                 }
             }
             else {
-                echo $formatter->format(sprintf("%s %s\n",$d->flag , $d->name ), $d->flag === '+' ? 'green' : 'red' );
+                $line = sprintf("%s %s",$d->flag , $d->name );
+                foreach( $d->column->attributes as $property => $value ) {
+                    $line .= ", $property = $value";
+                }
+                echo $formatter->format($line . "\n", $d->flag === '+' ? 'green' : 'red' );
             }
         }
     }

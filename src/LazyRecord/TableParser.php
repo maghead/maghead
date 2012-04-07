@@ -47,8 +47,20 @@ class MysqlTableParser
         $schema->columnNames = $schema->columns = array();
         $rows = $stm->fetchAll();
         foreach( $rows as $row ) {
+            $type = $row['Type'];
+            $isa = $this->_parserType($type);
+
+            // reverse type for mysql
+            if ( 'int(11)' === $type ) {
+                $type = 'integer';
+            }
+            else if( 'tinyint(1)' === $type ) {
+                $type = 'boolean';
+                $isa = 'bool';
+            }
+
             $column = $schema->column( $row['Field'] );
-            $column->type( $row['Type'] );
+            $column->type( $type );
             $column->null( $row['Null'] === 'YES' );
 
             if( 'PRI' === $row['Key'] ) {
@@ -59,7 +71,7 @@ class MysqlTableParser
                 $column->unique(true);
             }
 
-            if( $isa = $this->_parserType($row['Type']) ) {
+            if($isa) {
                 $column->isa($isa);
             }
 
