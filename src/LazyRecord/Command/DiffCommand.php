@@ -36,8 +36,18 @@ class DiffCommand extends Command
         // XXX: from config files
         $id = $options->{'data-source'} ?: 'default';
         $conn = $connectionManager->getConnection($id);
-        $type = $connectionManager->getDataSourceDriver($id);
         $driver = $connectionManager->getQueryDriver($id);
+
+
+        // XXX: currently only mysql support
+        $parser = \LazyRecord\TableParser::create( $driver, $conn );
+        $tableSchemas = array();
+        $tables = $parser->getTables();
+        foreach(  $tables as $table ) {
+            $tableSchemas[ $table ] = $parser->getTableSchema( $table );
+        }
+
+
 
 
     }
