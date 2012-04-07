@@ -31,7 +31,7 @@ class ConsolePrinter
                 }
             }
             else {
-                $line = sprintf("%s %s",$d->flag , $d->name );
+                $line = sprintf('%s %s',$d->flag , $d->name );
                 foreach( $d->column->attributes as $property => $value ) {
                     $line .= ", $property = $value";
                 }
