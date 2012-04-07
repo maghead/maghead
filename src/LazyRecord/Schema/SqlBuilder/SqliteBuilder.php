@@ -58,7 +58,22 @@ class SqliteBuilder
          *        FOREIGN KEY(trackartist) REFERENCES artist(artistid)
          *    )
          * @see http://www.sqlite.org/foreignkeys.html
-        */
+         *
+         * CREATE TABLE album(
+         *     albumartist TEXT,
+         *     albumname TEXT,
+         *     albumcover BINARY,
+         *     PRIMARY KEY(albumartist, albumname)
+         *     );
+         *
+         * CREATE TABLE song(
+         *     songid     INTEGER,
+         *     songartist TEXT,
+         *     songalbum TEXT,
+         *     songname   TEXT,
+         *     FOREIGN KEY(songartist, songalbum) REFERENCES album(albumartist, albumname)
+         * );
+         */
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
             case SchemaDeclare::belongs_to:
