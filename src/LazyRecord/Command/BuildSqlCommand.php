@@ -21,6 +21,18 @@ class BuildSqlCommand extends \CLIFramework\Command
         $opts->add('D|data-source:', 'specify data source id');
     }
 
+    public function usage()
+    {
+        return <<<DOC
+lazy build-sql --data-source=mysql
+
+lazy build-sql --data-source=master --rebuild
+
+lazy build-sql --data-source=master --clean
+
+DOC;
+    }
+
     public function brief()
     {
         return 'build sql and insert into database.';
