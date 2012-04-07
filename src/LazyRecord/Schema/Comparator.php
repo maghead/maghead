@@ -43,7 +43,7 @@ class Comparator
                     if( $ac->{ $attributeName } === $bc->{ $attributeName } ) {
                         // is equal
                     }
-                    else if( $ac->{ $attributeName } !== $bc->{ $attributeName } ) {
+                    else if( $ac->{ $attributeName } != $bc->{ $attributeName } ) {
                         $d->attrDiffs[] = (object) array( 
                             'name' => $attributeName , 
                             'before' => $ac->{ $attributeName },
@@ -51,7 +51,8 @@ class Comparator
                         );
                     }
                 }
-                $diff[] = $d;
+                if( count($d->attrDiffs)) 
+                    $diff[] = $d;
             }
             elseif( isset($aColumns[$key]) ) 
             {
