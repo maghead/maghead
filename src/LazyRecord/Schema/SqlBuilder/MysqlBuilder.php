@@ -54,9 +54,12 @@ class MysqlBuilder
 
                 // XXX: keep this
             case SchemaDeclare::belongs_to:
-                $fs = new $rel['foreign']['schema'];
-                $fcName = $rel['foreign']['column'];
-                $fc = $fs->columns[$fcName];
+                $fSchema = new $rel['foreign']['schema'];
+                $fColumn = $rel['foreign']['column'];
+                $fc = $fSchema->columns[$fColumn];
+                break;
+
+            case SchemaDeclare::has_many:
                 break;
 
             case SchemaDeclare::has_one:
@@ -78,7 +81,8 @@ class MysqlBuilder
 
         if( $this->parent->rebuild ) {
             $sqls[] = 'DROP TABLE IF EXISTS ' 
-                . $this->parent->driver->getQuoteTableName( $schema->getTable() );
+                . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+                . ';';
         }
 
         $create = 'CREATE TABLE ' 

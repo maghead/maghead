@@ -246,8 +246,9 @@ abstract class SchemaDeclare extends SchemaBase
      *
      * @param string $foreignClass foreign schema class.
      * @param string $foreignColumn foreign reference schema column.
+     * @param string $selfColumn self column name
      */
-    protected function belongsTo($accessor, $selfColumn, $foreignClass, $foreignColumn = null)
+    protected function belongsTo($accessor, $foreignClass, $foreignColumn = null,  $selfColumn = 'id')
     {
         if( null === $foreignColumn ) {
             $s = new $foreignClass;
@@ -275,7 +276,6 @@ abstract class SchemaDeclare extends SchemaBase
      *   model(
      *      post_id => post
      *   )
-     *
      */
     protected function hasOne($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
     {
@@ -296,6 +296,10 @@ abstract class SchemaDeclare extends SchemaBase
     }
 
 
+
+    /**
+     * Add has-many relation
+     */
     protected function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
         $this->relations[ $accessor ] = array(
@@ -313,6 +317,8 @@ abstract class SchemaDeclare extends SchemaBase
 
 
     /**
+     *
+     * @param string $accessor   accessor name
      * @param string $relationId a hasMany relationship 
      */
     protected function manyToMany($accessor, $relationId, $foreignRelationId )
