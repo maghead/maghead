@@ -31,5 +31,3 @@ To close connections:
 
     $conn->free();
 
-
-

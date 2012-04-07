@@ -6,3 +6,4 @@ Config Loader
     $loader->load();
     $loader->init(); // for application
 
+    $loader->initForBuild(); // for command-line application

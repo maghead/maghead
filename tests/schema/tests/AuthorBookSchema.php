@@ -19,9 +19,8 @@ class AuthorBookSchema extends SchemaDeclare
                 ->isa('int')
                 ->integer();
 
-        $this->belongsTo('book'   , 'book_id'   , '\tests\BookSchema'   , 'id' );
-
-        $this->belongsTo('author' , 'author_id' , '\tests\AuthorSchema' , 'id' );
+        $this->belongsTo('book','\tests\BookSchema','id','book_id');
+        $this->belongsTo('author', '\tests\AuthorSchema' , 'id', 'author_id');
     }
 }
 

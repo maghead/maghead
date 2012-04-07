@@ -33,7 +33,9 @@ class BookSchema extends SchemaDeclare
             ->integer()
             ->refer('\tests\UserSchema');
 
-        $this->belongsTo('created_by', 'created_by', '\tests\UserSchema','id');
+        // $this->hasOne( 'created_by','created_by','\tests\UserSchema','id');
+
+        $this->belongsTo('created_by', '\tests\UserSchema','id', 'created_by');
 
         /** 
          * column: author => Author class 
@@ -41,7 +43,7 @@ class BookSchema extends SchemaDeclare
          * $book->publisher->name;
          *
          **/
-        $this->belongsTo('publisher', 'publisher_id', '\tests\PublisherSchema', 'id' );
+        $this->belongsTo('publisher','\tests\PublisherSchema', 'id', 'publisher_id');
 
         /**
          * accessor , mapping self.id => BookAuthors.book_id
