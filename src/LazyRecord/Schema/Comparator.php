@@ -5,6 +5,13 @@ class ColumnDiff {
     public $name;
     public $flag;
     public $column;
+
+    public function __construct($name,$flag,$column)
+    {
+        $this->name = $name;
+        $this->flag = $flag;
+        $this->column = $column;
+    }
 }
 
 class AttributeDiff {
@@ -41,10 +48,12 @@ class Comparator
             elseif( isset($aColumns[$key]) ) 
             {
                 // flag: -
+                $diff[] = new ColumnDiff($key,'-',$column);
             }
             elseif( isset($bColumns[$key]) ) 
             {
                 // flag: +
+                $diff[] = new ColumnDiff($key,'+',$column);
             }
         }
         return $diff;
