@@ -98,11 +98,13 @@ class MysqlBuilder
     {
         $sqls = array();
 
-        if( $this->parent->rebuild ) {
+        if( $this->parent->clean || $this->parent->rebuild ) {
             $sqls[] = 'DROP TABLE IF EXISTS ' 
                 . $this->parent->driver->getQuoteTableName( $schema->getTable() )
                 . ';';
         }
+        if( $this->parent->clean )
+            return $sqls;
 
         $create = 'CREATE TABLE ' 
             . $this->parent->driver->getQuoteTableName( $schema->getTable() )

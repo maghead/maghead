@@ -12,7 +12,10 @@ class BuildSqlCommand extends \CLIFramework\Command
     public function options($opts)
     {
         // --rebuild
-        $opts->add('rebuild','rebuild all SQL schema.');
+        $opts->add('rebuild','rebuild SQL schema.');
+
+        // --clean
+        $opts->add('clean','clean up SQL schema.');
     }
 
     public function brief()
@@ -46,6 +49,7 @@ class BuildSqlCommand extends \CLIFramework\Command
         $logger->info("Initialize schema builder...");
         $builder = new \LazyRecord\Schema\SqlBuilder($driver, array( 
             'rebuild' => $options->rebuild,
+            'clean' => $options->clean,
         )); // driver
 
         $logger->info("Finding schema classes...");

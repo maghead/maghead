@@ -87,11 +87,13 @@ class PgsqlBuilder
     {
         $sqls = array();
 
-        if( $this->parent->rebuild ) {
+        if( $this->parent->clean || $this->parent->rebuild ) {
             $sqls[] = 'DROP TABLE IF EXISTS ' 
                 . $this->parent->driver->getQuoteTableName( $schema->getTable() )
                 . ' CASCADE';
         }
+        if( $this->parent->clean )
+            return $sqls;
 
 
         $createSql = 'CREATE TABLE ' . $this->parent->driver->getQuoteTableName($schema->getTable()) . "( \n";
