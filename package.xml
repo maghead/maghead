@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-04-08</date>
-  <time>03:05:25</time>
+  <time>03:06:22</time>
   <version>
     <release>1.3.1</release>
     <api>1.3.1</api>
@@ -176,7 +176,7 @@
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="package.ini" role="data" md5sum="effc03513b7c9dfcbe36f638145fd797"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="ac5a62bdbb45c1c8ac8df17016d788e3"/>
+      <file name="lazy" role="script" md5sum="8830475383e0cb05e21a39033c0922a0"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
   </contents>
