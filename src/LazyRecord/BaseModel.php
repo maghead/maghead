@@ -738,9 +738,34 @@ class BaseModel
 
 
         // return relation object
-        if( $relation = $this->_schema->getRelation( $key ) ) {
+        if( $relation = $this->_schema->getRelation( $key ) ) 
+        {
+            /*
+            switch($relation['type']) {
+                case SchemaDeclare::has_one:
+                case SchemaDeclare::has_many:
+                break;
+            }
+            */
 
-            if( SchemaDeclare::has_many === $relation['type'] ) 
+            if( SchemaDeclare::has_one === $relation['type'] ) 
+            {
+                $sColumn = $relation['self']['column'];
+                $fSchema = new $relation['foreign']['schema'];
+                $fColumn = $relation['foreign']['column'];
+                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+
+                if( ! $this->hasValue($sColumn) )
+                    throw new Exception("The value of $sColumn is not defined.");
+                $sValue = $this->getValue( $sColumn );
+
+                $model = $fpSchema->newModel();
+                $model->load(array( 
+                    $fColumn => $this->getValue( $sValue ),
+                ));
+                return $model;
+            }
+            elseif( SchemaDeclare::has_many === $relation['type'] )
             {
                 $sColumn = $relation['self']['column'];
                 $fSchema = new $relation['foreign']['schema'];
@@ -754,7 +779,8 @@ class BaseModel
 
                 $collection = $fpSchema->newCollection();
                 $collection->where()
-                    ->equal( $fColumn, $this->getValue( $sColumn ) );
+                    ->equal( $fColumn, $sValue );
+
                 $collection->setPresetVars(array( 
                     $fColumn => $this->getValue( $sColumn )
                 ));
