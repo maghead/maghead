@@ -92,17 +92,8 @@ class SqliteBuilder
         return $sql;
     }
 
-    public function build($schema)
+    public function createTable($schema)
     {
-        $sqls = array();
-
-        if( $this->parent->clean || $this->parent->rebuild ) {
-            $sqls[] = 'DROP TABLE IF EXISTS ' 
-                . $this->parent->driver->getQuoteTableName( $schema->getTable() );
-        }
-        if( $this->parent->clean )
-            return $sqls;
-
         $sql = 'CREATE TABLE ' 
             . $this->parent->driver->getQuoteTableName($schema->getTable()) . " ( \n";
         $columnSql = array();
@@ -111,7 +102,26 @@ class SqliteBuilder
         }
         $sql .= join(",\n",$columnSql);
         $sql .= "\n);\n";
-        $sqls[] = $sql;
+        return $sql;
+    }
+
+    public function dropTable($schema)
+    {
+        return 'DROP TABLE IF EXISTS ' 
+            . $this->parent->driver->getQuoteTableName( $schema->getTable() );
+    }
+
+    public function build($schema)
+    {
+        $sqls = array();
+
+        if( $this->parent->clean || $this->parent->rebuild ) {
+            $sqls[] = $this->dropTable($schema);
+        }
+        if( $this->parent->clean )
+            return $sqls;
+
+        $sqls[] = $this->createTable($schema);
         return $sqls;
     }
 

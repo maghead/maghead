@@ -93,30 +93,38 @@ class MysqlBuilder
         return $sql;
     }
 
+    public function createTable($schema)
+    {
+        $columnSql = array();
+        $create = 'CREATE TABLE ' 
+            . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+            . "( \n";
+        foreach( $schema->columns as $name => $column ) {
+            $columnSql[] = $this->buildColumnSql( $schema, $column );
+        }
+        $create .= join(",\n",$columnSql);
+        $create .= "\n);\n";
+        return $create;
+    }
+
+    public function dropTable($schema)
+    {
+        return 'DROP TABLE IF EXISTS ' 
+            . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+            . ';';
+    }
 
     public function build($schema)
     {
         $sqls = array();
 
         if( $this->parent->clean || $this->parent->rebuild ) {
-            $sqls[] = 'DROP TABLE IF EXISTS ' 
-                . $this->parent->driver->getQuoteTableName( $schema->getTable() )
-                . ';';
+            $sqls[] = $this->dropTable($schema);
         }
         if( $this->parent->clean )
             return $sqls;
 
-        $create = 'CREATE TABLE ' 
-            . $this->parent->driver->getQuoteTableName( $schema->getTable() )
-            . "( \n";
-        $columnSql = array();
-        foreach( $schema->columns as $name => $column ) {
-            $columnSql[] = $this->buildColumnSql( $schema, $column );
-        }
-        $create .= join(",\n",$columnSql);
-        $create .= "\n);\n";
-
-        $sqls[] = $create;
+        $sqls[] = $this->createTable($schema);
         return $sqls;
     }
 
