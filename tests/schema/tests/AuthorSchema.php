@@ -28,7 +28,7 @@ class AuthorSchema extends SchemaDeclare
             ->default(false)
             ->boolean();
 
-        $this->mixin('tests\MetadataMixinSchema');
+        $this->mixin('LazyRecord\Schema\Mixin\MetadataSchema');
 
 
         /**
