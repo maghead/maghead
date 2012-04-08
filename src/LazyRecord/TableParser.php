@@ -169,8 +169,6 @@ class MysqlTableParser extends BaseTablePaser
             throw new Exception("Unknown type $type");
         }
     }
-
-
 }
 
 class TableParser
@@ -191,6 +189,4 @@ class TableParser
 
     }
 }
-
-
 
