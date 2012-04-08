@@ -622,6 +622,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $n->update(array( 
             'view' => array('view + 3')
         ));
+        $n->reload();
         is( 4, $n->view );
     }
 

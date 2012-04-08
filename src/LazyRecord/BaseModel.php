@@ -148,6 +148,26 @@ class BaseModel
     }
 
 
+    public function getPrimaryKey()
+    {
+        return $this->_schema->primaryKey;
+    }
+
+
+    public function reload($pkId = null)
+    {
+        if( $pkId ) {
+            $this->load( $pkId );
+        }
+        elseif( null === $pkId && $pk = $this->getPrimaryKey() ) {
+            $pkId = $this->_data[ $pk ];
+            $this->load( $pkId );
+        }
+        else {
+            throw new Exception("Primary key not found.");
+        }
+    }
+
     public function loadOrCreate($args, $byKeys = null)
     {
         $pk = $this->_schema->primaryKey;
