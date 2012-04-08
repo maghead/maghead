@@ -246,6 +246,12 @@ class Column
         return $this;
     }
 
+
+
+    /************************************************
+     * DateTime related types
+     *************************************************/
+
     public function date()
     {
         $this->attributes['type'] = 'date';
@@ -260,6 +266,10 @@ class Column
         return $this;
     }
 
+
+
+
+    // XXX: reference, it doesn't create relation
     public function refer($class)
     {
         $this->attributes['isa'] = 'int';
