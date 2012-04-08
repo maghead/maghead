@@ -39,8 +39,7 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
 	function testMysql($schema)
 	{
         $connManager = LazyRecord\ConnectionManager::getInstance();
-
-        if( ! isset($connManager['mysql']) )
+        if( ! $connManager->hasDataSource('mysql') )
             return;
 
         $pdo = $connManager->getConnection('mysql');
@@ -62,6 +61,9 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
 	function testSqlite($schema)
 	{
         $connManager = LazyRecord\ConnectionManager::getInstance();
+        if( ! $connManager->hasDataSource('sqlite') )
+            return;
+
         $pdo = $connManager->getConnection('sqlite');
         ok( $pdo , 'pdo connection' );
         $builder = new SqlBuilder($connManager->getQueryDriver('sqlite') , array( 
@@ -73,6 +75,7 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
             $this->pdoQueryOk( $pdo, $sql );
         }
 	}
+
 
 
 }
