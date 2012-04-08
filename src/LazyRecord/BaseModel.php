@@ -1102,8 +1102,6 @@ class BaseModel
         $new = array();
         foreach( $args as $k => $v ) {
             if( $c = $schema->getColumn($k) ) {
-                if( $k == 'xxx' )
-                    var_dump( $c ); 
                 $new[ $k ] = $v;
             }
         }
