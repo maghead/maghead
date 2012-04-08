@@ -671,27 +671,6 @@ class BaseModel
 
 
     /**
-     * XXX: not yet, resolve record relation ship
-     *
-     * @param string $relationId relation id.
-     */
-    public function resolveRelation($relationId)
-    {
-        $r = $this->_schema->getRelation( $relationId );
-        switch( $r['type'] ) {
-        case self::many_to_many:
-            break;
-
-        case self::has_one:
-            break;
-
-        case self::has_many:
-            break;
-        }
-    }
-
-
-    /**
      * get pdo connetion and make a query
      *
      * @param string $sql SQL statement
