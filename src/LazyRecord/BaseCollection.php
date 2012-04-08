@@ -123,18 +123,18 @@ class BaseCollection
         $q->driver = $this->getCurrentQueryDriver();
         $q->table( $this->_schema->table );
         // $q->select('*');
-        $q->select( $this->getExplicitColumnSelect() );
+        $q->select( $this->getExplicitColumnSelect($q->driver) );
         $q->alias( $this->getAlias() ); // main table alias
         return $this->_currentQuery = $q;
     }
 
 
     // xxx: this might be used in other join statements.
-    public function getExplicitColumnSelect()
+    public function getExplicitColumnSelect($driver)
     {
         $alias = $this->getAlias();
-        $sels = array_map( function($name) use($alias) { 
-                return $alias . '.' . $name;
+        $sels = array_map( function($name) use($alias,$driver) { 
+                return $alias . '.' . $driver->getQuoteColumn( $name );
         }, $this->_schema->getColumnNames());
         return $sels;
     }
