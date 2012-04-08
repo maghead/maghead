@@ -10,10 +10,18 @@ class AuthorSchemaProxy extends RuntimeSchema
     {
         /** columns might have closure, so it can not be const */
         $this->columns         = array( 
+  'updated_on' => array( 
+      'name' => 'updated_on',
+      'attributes' => array( 
+          'type' => 'datetime',
+          'isa' => 'DateTime',
+          'defaultBuilder' => function() { return date('c'); },
+        ),
+    ),
   'created_on' => array( 
       'name' => 'created_on',
       'attributes' => array( 
-          'type' => 'timestamp',
+          'type' => 'datetime',
           'isa' => 'DateTime',
           'defaultBuilder' => function() { return date('c'); },
         ),
