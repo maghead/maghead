@@ -110,13 +110,49 @@ class Column
      * MySQL supports float, real, double:
      *      float(3), float, real, real(10)
      *
+     * MySQL permits a nonstandard syntax: FLOAT(M,D) or REAL(M,D) or DOUBLE 
+     * PRECISION(M,D). Here, “(M,D)” means than values can be stored with up 
+     * to M digits in total, of which D digits may be after the decimal point. 
+     * For example, a column defined as 
+     *      FLOAT(7,4) will look like -999.9999 when displayed. 
+     *
+     * MySQL performs rounding when storing values, so if you 
+     * insert 999.00009 into a FLOAT(7,4) column, the approximate result is 
+     * 999.0001.
+     *
      * @link http://dev.mysql.com/doc/refman/5.0/en/floating-point-types.html
+     *
+     * XXX: 
+     * we should handle exceptions when number is out-of-range:
+     * @link http://dev.mysql.com/doc/refman/5.0/en/out-of-range-and-overflow.html
      */
-    public function double()
+    public function double($m = null, $d = null)
     {
-        $this->attributes['type'] = 'double';
+        if( $m && $d ) {
+            $this->attributes['type'] = "double($m,$d)";
+        }
+        elseif( $m ) {
+            $this->attributes['type'] = "double($m)";
+        }
+        else {
+            $this->attributes['type'] = 'double';
+        }
         $this->attributes['isa'] = 'double';
         return $this;
+    }
+
+    public function float($m = null ,$d = null)
+    {
+        if( $m && $d ) {
+            $this->attributes['type'] = "float($m,$d)";
+        }
+        elseif( $m ) {
+            $this->attributes['type'] = "float($m)";
+        }
+        else {
+            $this->attributes['type'] = 'float';
+        }
+        $this->attributes['isa']  = 'float';
     }
 
     public function timestamp()
@@ -130,6 +166,20 @@ class Column
     {
         $this->attributes['type'] = 'text';
 		$this->attributes['isa'] = 'str';
+        return $this;
+    }
+
+    public function smallint()
+    {
+        $this->attributes['type'] = 'smallint';
+		$this->attributes['isa'] = 'int';
+        return $this;
+    }
+
+    public function bigint()
+    {
+        $this->attributes['type'] = 'bigint';
+		$this->attributes['isa'] = 'int';
         return $this;
     }
 
