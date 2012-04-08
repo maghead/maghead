@@ -1,10 +1,6 @@
 #!/bin/bash
-# onion bundle
-php scripts/lazy.php build-schema
-php scripts/lazy.php build-sql
-phpunit tests && (
-    bash scripts/compile.sh
-    onion build
-    pear -v install -f package.xml
-    sudo /opt/local/bin/pear -v install -f package.xml
-)
+onion build
+for p in $(which -a pear) ; do
+    sudo $p channel-discover pear.corneltek.com
+    sudo $p install -f package.xml
+done
