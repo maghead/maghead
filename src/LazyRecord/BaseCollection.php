@@ -74,6 +74,8 @@ class BaseCollection
 
     protected $_alias = 'm';
 
+    protected $_explictSelect = false;
+
 
     public function __construct() {
         // init a query
@@ -124,13 +126,22 @@ class BaseCollection
         return $this;
     }
 
+    public function setExplictSelect($boolean = true)
+    {
+        $this->_explictSelect = $boolean;
+        return $this;
+    }
+
     public function createQuery()
     {
         $q = new QueryBuilder;
         $q->driver = $this->getCurrentQueryDriver();
         $q->table( $this->_schema->table );
-        // $q->select('*');
-        $q->select( $this->getExplicitColumnSelect($q->driver) );
+        $q->select(
+            $this->_explictSelect 
+                ? $this->getExplicitColumnSelect($q->driver)
+                : '*'
+        );
         $q->alias( $this->getAlias() ); // main table alias
         return $this->_currentQuery = $q;
     }
