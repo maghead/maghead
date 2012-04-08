@@ -67,12 +67,20 @@ class AuthorSchemaProxy extends RuntimeSchema
           'default' => false,
         ),
     ),
+  'r' => array( 
+      'name' => 'r',
+      'attributes' => array( 
+          'type' => 'float',
+          'isa' => 'float',
+        ),
+    ),
 );
         $this->columnNames     = array( 
   'name',
   'email',
   'identity',
   'confirmed',
+  'r',
 );
         $this->primaryKey      = 'id';
         $this->table           = 'authors';

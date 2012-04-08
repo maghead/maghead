@@ -95,6 +95,13 @@ class Column
         return $this;
     }
 
+    public function char($limit)
+    {
+        $this->attributes[ 'type' ] = 'char(' . $limit . ')';
+        $this->attributes[ 'isa'  ] = 'str';
+        return $this;
+    }
+
     public function timestamp()
     {
         $this->attributes['type'] = 'timestamp';
