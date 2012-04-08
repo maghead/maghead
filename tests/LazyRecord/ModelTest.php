@@ -645,7 +645,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         }
 
         $duration = (microtime(true) - $s) / $cnt * 1000000; // get average microtime.
-        var_dump( $duration ); 
+        // var_dump( $duration ); 
         ok( $duration < 1500 , 'performance test: less than 1500 microseconds' );
 
         foreach( $ids as $id ) {
