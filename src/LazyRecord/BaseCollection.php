@@ -101,12 +101,23 @@ class BaseCollection
         }
     }
 
+
+    /**
+     * Free cached row data
+     *
+     * @return $this
+     */
     public function free()
     {
         $this->_itemData = null;
         return $this;
     }
 
+
+    /**
+     * Dispatch undefined methods to QueryBuilder object,
+     * To achieve mixin-like feature.
+     */
     public function __call($m,$a)
     {
         $q = $this->_query;
@@ -486,6 +497,16 @@ class BaseCollection
     {
         $this->setExplictSelect(true);
         return $this->_query->join($table,$alias);
+    }
+
+    /**
+     * Override QueryBuilder->where method,
+     * to enable explict selection
+     */
+    public function where()
+    {
+        $this->setExplictSelect(true);
+        return $this->_query->where();
     }
 
 
