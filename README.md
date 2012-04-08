@@ -1,6 +1,13 @@
 LazyRecord
 ==========
 
+Features
+--------
+
+* PDO.
+* MySQL, Pgsql, SQLite support.
+* Fast.
+
 Synopsis
 --------
 
@@ -144,15 +151,24 @@ LazyRecord will generate schema in pure-php array, in-place
 
 Initialize loader:
 
+
+```php
+<?php
     $lazyLoader = new ConfigLoader;
     $lazyLoader->load( 'path/to/config.php' );   // this initialize data source into connection manager.
+    $lazyLoader->init();
+```
 
 To setup QueryDriver:
  
+```php
+<?php
     $driver = LazyRecord\QueryDriver::getInstance('data_source_id');
     $driver->configure('driver','pgsql');
     $driver->configure('quote_column',true);
     $driver->configure('quote_table',true);
+?>
+```
 
 To create a model record:
 
