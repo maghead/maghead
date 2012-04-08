@@ -118,7 +118,7 @@ class BaseModel
             // return call_user_func_array( array(  ) )
             break;
         }
-        throw new Exception("$m does not exist.");
+        throw new Exception("$m method not found.");
     }
 
 
