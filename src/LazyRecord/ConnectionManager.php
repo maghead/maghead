@@ -32,11 +32,25 @@ class ConnectionManager
     public $conns = array();
 
 
+
+    /**
+     * Has connection ? 
+     *
+     * @param PDO $conn pdo connection.
+     * @param string $id data source id.
+     */
     public function has($id)
     {
         return isset($this->conns[$id]);
     }
 
+
+    /**
+     * Add connection
+     *
+     * @param PDO $conn pdo connection
+     * @param string $id data source id
+     */
     public function add($conn, $id = 'default' )
     {
         if( isset( $this->conns[ $id ] ) )
