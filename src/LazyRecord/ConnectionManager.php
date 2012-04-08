@@ -31,8 +31,6 @@ class ConnectionManager
 
     public $conns = array();
 
-
-
     /**
      * Has connection ? 
      *

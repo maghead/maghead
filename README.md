@@ -24,6 +24,9 @@ Synopsis
     $author = new Author;
     $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
+    // PHP5.4
+    $author->create([ 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ]);
+
     // has many
     $address = $author->addresses->create(array( 
         'address' => 'farfaraway'
@@ -60,7 +63,7 @@ Then build config:
 
     $ lazy build-conf path/to/config.yml
 
-Define your model schema, note: the schema file name must be with suffix "Schema".
+Define your model schema:
 
     $ vim src/App/Model/AuthorSchema.php
 
@@ -79,16 +82,22 @@ Define your model schema, note: the schema file name must be with suffix "Schema
                 ->autoIncrement();
 
             $this->column('name')
-                ->isa('str')
-                ->varchar(128);
+                ->varchar(128)
+                ->validator(function($val) { .... })
+                ->filter( function($val) {  
+                            return preg_replace('#word#','zz',$val);  
+                })
+                ->validValues( 1,2,3,4,5 )
+                ->defaultBuilder(function() { 
+                    return date('c');
+                })
+                ;
 
             $this->column('email')
-                ->isa('str')
                 ->required()
                 ->varchar(128);
 
             $this->column('confirmed')
-                ->isa('bool')
                 ->default(false)
                 ->boolean();
         }
