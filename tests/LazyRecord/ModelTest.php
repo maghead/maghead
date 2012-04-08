@@ -632,7 +632,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         $s = microtime(true);
         $ids = array();
-        foreach( range(1,1000) as $i ) {
+        foreach( range(1,20) as $i ) {
             $ret = $n->create(array( 
                 'name' => "Deflator Test $i", 
                 'country' => 'Tokyo', 
@@ -642,8 +642,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             $ids[] = $n->id;
         }
 
-        $duration = microtime(true) - $s;
-        ok( $duration < 2 , 'performance test' );
+        $duration = (microtime(true) - $s) / 20 * 1000000; // get average microtime.
+        ok( $duration < 1500 , 'performance test: less than 1500 microseconds' );
 
         foreach( $ids as $id ) {
             \tests\Name::delete($id);

@@ -6,7 +6,6 @@ use LazyRecord\ConfigLoader;
 
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
 {
-    public $dsn = 'sqlite::memory:';
     public $schemaPath = 'tests/schema';
 
     public $schemaClasses = array( );
