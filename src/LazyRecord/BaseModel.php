@@ -256,7 +256,9 @@ class BaseModel
      */
     public function columns()
     {
-        return $this->_schema->columns;
+        static $columns;
+        $columns = $this->_schema->columns;
+        return $columns;
     }
 
 
@@ -1142,7 +1144,9 @@ class BaseModel
 
     public function getColumns()
     {
-        return $this->_schema->getColumns();
+        static $columns;
+        $columns = $this->_schema->getColumns();
+        return $columns;
     }
 
     public function getLabel()
