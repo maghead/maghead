@@ -461,7 +461,7 @@ class BaseCollection
 
 
     /**
-     * convert to sql
+     * Convert query to sql
      */
     public function toSql()
     {
@@ -474,6 +474,20 @@ class BaseCollection
         }
         return $sql;
     }
+
+
+    /**
+     * Override QueryBuilder->join method,
+     * to enable explict selection.
+     *
+     * XXX: For model/collection objects, we should convert it to table name
+     */
+    public function join($table,$alias = null)
+    {
+        $this->setExplictSelect(true);
+        return parent::join($table,$alias);
+    }
+
 
 }
 
