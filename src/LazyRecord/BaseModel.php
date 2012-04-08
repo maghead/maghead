@@ -364,7 +364,7 @@ class BaseModel
 
 
         $this->_data = array();
-        $conn = $this->getConnection();
+        $conn = $this->_connection;
         $driver = $this->getCurrentQueryDriver();
 
         $pkId = null;
@@ -683,7 +683,7 @@ class BaseModel
      */
     public function dbQuery($sql)
     {
-        $conn = $this->getConnection();
+        $conn = $this->_connection;
         // $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $conn->query( $sql );
     }
@@ -691,7 +691,7 @@ class BaseModel
 
     public function dbPrepareAndExecute($sql,$args = array() )
     {
-        $conn = $this->getConnection();
+        $conn = $this->_connection;
         $stm  = $conn->prepare( $sql );
         $stm->execute( $args );
         return $stm;
@@ -732,8 +732,15 @@ class BaseModel
     public function __get( $key )
     {
         // lazy schema loader, xxx: make this static.
-        if( '_schema' === $key ) {
-            return SchemaLoader::load( static::schema_proxy_class );
+        
+        switch( $key ) {
+            case '_schema':
+                return SchemaLoader::load( static::schema_proxy_class );
+            break;
+            case '_connection':
+                $connManager = ConnectionManager::getInstance();
+                return $connManager->getConnection( 'default' ); // xxx: support read/write connection later
+            break;
         }
 
 
