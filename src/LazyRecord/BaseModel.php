@@ -34,6 +34,8 @@ class BaseModel
 
     protected $_data;
 
+    protected $_pk;
+
 
     public function __construct($args = null) 
     {
@@ -152,12 +154,11 @@ class BaseModel
     }
 
 
+
     public function getPrimaryKey()
     {
         // provide a cache
-        static $k;
-        $k = $this->_schema->primaryKey;
-        return $k;
+        return $this->_schema->primaryKey;
     }
 
 
@@ -291,8 +292,8 @@ class BaseModel
         try {
             $args = $this->beforeCreate( $args );
 
-            foreach( $this->_schema->columns as $columnHash ) {
-                $c = $this->_schema->getColumn( $columnHash['name'] );
+            foreach( $this->_schema->columns as $columnKey => $hash ) {
+                $c = $this->_schema->getColumn( $columnKey );
                 $n = $c->name;
 
                 // if column is required (can not be empty)
