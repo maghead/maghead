@@ -83,30 +83,36 @@ class PgsqlBuilder
         return $sql;
     }
 
+    public function createTable($schema)
+    {
+        $create = 'CREATE TABLE ' . $this->parent->driver->getQuoteTableName($schema->getTable()) . "( \n";
+        $columnSql = array();
+        foreach( $schema->columns as $name => $column ) {
+            $columnSql[] = "\t" . $this->buildColumnSql( $schema, $column );
+        }
+        $create .= join(",\n",$columnSql);
+        $create .= "\n);\n";
+        return $create;
+    }
+
+    public function dropTable($schema)
+    {
+        return 'DROP TABLE IF EXISTS ' 
+                . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+                . ' CASCADE';
+    }
+
     public function build($schema)
     {
         $sqls = array();
 
         if( $this->parent->clean || $this->parent->rebuild ) {
-            $sqls[] = 'DROP TABLE IF EXISTS ' 
-                . $this->parent->driver->getQuoteTableName( $schema->getTable() )
-                . ' CASCADE';
+            $sqls[] = $this->dropTable();
         }
         if( $this->parent->clean )
             return $sqls;
 
-
-        $createSql = 'CREATE TABLE ' . $this->parent->driver->getQuoteTableName($schema->getTable()) . "( \n";
-        $columnSql = array();
-        foreach( $schema->columns as $name => $column ) {
-            $columnSql[] = "\t" . $this->buildColumnSql( $schema, $column );
-        }
-        $createSql .= join(",\n",$columnSql);
-        $createSql .= "\n);\n";
-
-        $sqls[] = $createSql;
-
-        // generate sequence
+        $sqls[] = $this->createTable($schema);
         return $sqls;
     }
 
