@@ -128,7 +128,7 @@ class BaseModel
 
     public function createOrUpdate($args, $byKeys = null )
     {
-        $pk = $this->getPrimaryKey();
+        $pk = $this->_schema->primaryKey;
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
@@ -151,20 +151,12 @@ class BaseModel
     }
 
 
-
-    public function getPrimaryKey()
-    {
-        // provide a cache
-        return $this->_schema->primaryKey;
-    }
-
-
     public function reload($pkId = null)
     {
         if( $pkId ) {
             $this->load( $pkId );
         }
-        elseif( null === $pkId && $pk = $this->getPrimaryKey() ) {
+        elseif( null === $pkId && $pk = $this->_schema->primaryKey ) {
             $pkId = $this->_data[ $pk ];
             $this->load( $pkId );
         }
@@ -175,7 +167,7 @@ class BaseModel
 
     public function loadOrCreate($args, $byKeys = null)
     {
-        $pk = $this->getPrimaryKey();
+        $pk = $this->_schema->primaryKey;
 
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
@@ -273,7 +265,7 @@ class BaseModel
      */
     public function _create($args)
     {
-        $k = $this->getPrimaryKey();
+        $k = $this->_schema->primaryKey;
 
         if( empty($args) || $args === null )
             return $this->reportError( "Empty arguments" );
@@ -397,7 +389,7 @@ class BaseModel
 
     public function _load($args)
     {
-        $pk = $this->getPrimaryKey();
+        $pk = $this->_schema->primaryKey;
         $query = $this->createQuery();
         $kVal = null;
         if( is_array($args) ) {
@@ -454,7 +446,7 @@ class BaseModel
      */
     public function _delete()
     {
-        $k = $this->getPrimaryKey();
+        $k = $this->_schema->primaryKey;
         if( $k && ! isset($this->_data[$k]) ) {
             return new OperationError('Record is not loaded, Record delete failed.');
         }
@@ -498,7 +490,7 @@ class BaseModel
     public function _update( $args ) 
     {
         // check if the record is loaded.
-        $k = $this->getPrimaryKey();
+        $k = $this->_schema->primaryKey;
         if( $k && ! isset($args[ $k ]) && ! isset($this->_data[$k]) ) {
             return $this->reportError('Record is not loaded, Can not update record.');
         }
@@ -612,7 +604,7 @@ class BaseModel
      */
     public function save()
     {
-        $k = $this->getPrimaryKey();
+        $k = $this->_schema->primaryKey;
         $doCreate = ( $k && ! isset($this->_data[$k]) );
         return $doCreate
             ? $this->create( $this->_data )
