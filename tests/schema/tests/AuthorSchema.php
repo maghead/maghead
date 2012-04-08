@@ -30,8 +30,8 @@ class AuthorSchema extends SchemaDeclare
 
         // test for real type
         $this->column('r')
-            ->isa('float')
-            ->type('float'); // only for pgsql
+            ->isa('double')
+            ->type('double'); // only for pgsql
 
         $this->mixin('LazyRecord\Schema\Mixin\MetadataSchema');
 

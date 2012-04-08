@@ -102,6 +102,13 @@ class Column
         return $this;
     }
 
+    public function double()
+    {
+        $this->attributes['type'] = 'double';
+        $this->attributes['isa'] = 'double';
+        return $this;
+    }
+
     public function timestamp()
     {
         $this->attributes['type'] = 'timestamp';
