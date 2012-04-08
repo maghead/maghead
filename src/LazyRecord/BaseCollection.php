@@ -124,6 +124,7 @@ class BaseCollection
         if( method_exists($q,$m) ) {
             return call_user_func_array(array($q,$m),$a);
         }
+        throw new Exception("Undefined method $m");
     }
 
     public function getAlias()
