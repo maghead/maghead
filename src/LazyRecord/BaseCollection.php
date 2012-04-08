@@ -72,6 +72,7 @@ class BaseCollection
     protected $_result;
 
 
+    protected $_alias = 'm';
 
 
     public function __construct() {
@@ -114,7 +115,13 @@ class BaseCollection
 
     public function getAlias()
     {
-        return 'm';
+        return $this->_alias;
+    }
+
+    public function setAlias($alias)
+    {
+        $this->_alias = $alias;
+        return $this;
     }
 
     public function createQuery()
