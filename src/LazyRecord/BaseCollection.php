@@ -72,6 +72,9 @@ class BaseCollection
     protected $_result;
 
 
+    protected $_alias = 'm';
+
+    protected $_explictSelect = false;
 
 
     public function __construct() {
@@ -114,7 +117,19 @@ class BaseCollection
 
     public function getAlias()
     {
-        return 'm';
+        return $this->_alias;
+    }
+
+    public function setAlias($alias)
+    {
+        $this->_alias = $alias;
+        return $this;
+    }
+
+    public function setExplictSelect($boolean = true)
+    {
+        $this->_explictSelect = $boolean;
+        return $this;
     }
 
     public function createQuery()
@@ -122,21 +137,23 @@ class BaseCollection
         $q = new QueryBuilder;
         $q->driver = $this->getCurrentQueryDriver();
         $q->table( $this->_schema->table );
-        // $q->select('*');
-        $q->select( $this->getExplicitColumnSelect() );
+        $q->select(
+            $this->_explictSelect 
+                ? $this->getExplicitColumnSelect($q->driver)
+                : '*'
+        );
         $q->alias( $this->getAlias() ); // main table alias
         return $this->_currentQuery = $q;
     }
 
 
     // xxx: this might be used in other join statements.
-    public function getExplicitColumnSelect()
+    public function getExplicitColumnSelect($driver)
     {
         $alias = $this->getAlias();
-        $sels = array_map( function($name) use($alias) { 
-                return $alias . '.' . $name;
+        return array_map( function($name) use($alias,$driver) { 
+                return $alias . '.' . $driver->getQuoteColumn( $name );
         }, $this->_schema->getColumnNames());
-        return $sels;
     }
 
     /**
@@ -444,7 +461,7 @@ class BaseCollection
 
 
     /**
-     * convert to sql
+     * Convert query to sql
      */
     public function toSql()
     {
@@ -457,6 +474,20 @@ class BaseCollection
         }
         return $sql;
     }
+
+
+    /**
+     * Override QueryBuilder->join method,
+     * to enable explict selection.
+     *
+     * XXX: For model/collection objects, we should convert it to table name
+     */
+    public function join($table,$alias = null)
+    {
+        $this->setExplictSelect(true);
+        return parent::join($table,$alias);
+    }
+
 
 }
 
