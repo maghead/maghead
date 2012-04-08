@@ -732,8 +732,9 @@ class BaseModel
     public function __get( $key )
     {
         // lazy schema loader, xxx: make this static.
-        if( '_schema' == $key )
-            return SchemaLoader::load( $this->getSchemaProxyClass() );
+        if( '_schema' === $key ) {
+            return SchemaLoader::load( static::schema_proxy_class );
+        }
 
 
         // return relation object
@@ -1149,9 +1150,7 @@ class BaseModel
 
     public function getColumns()
     {
-        static $columns;
-        $columns = $this->_schema->getColumns();
-        return $columns;
+        return $this->_schema->getColumns();
     }
 
     public function getLabel()
