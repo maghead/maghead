@@ -43,7 +43,11 @@ class BaseModel
 
     public function getCurrentQueryDriver()
     {
-        return ConnectionManager::getInstance()->getQueryDriver( $this->getDataSourceId() );
+        static $driver;
+        if( $driver )
+            return $driver;
+        $driver = ConnectionManager::getInstance()->getQueryDriver( $this->getDataSourceId() );
+        return $driver;
     }
 
     public function createQuery()
@@ -282,7 +286,7 @@ class BaseModel
 
         $sql = $vars = null;
         $validateFail    = false;
-        $validateResults = array();
+        $this->_data = $validateResults = array();
 
         try {
             $args = $this->beforeCreate( $args );
@@ -346,9 +350,7 @@ class BaseModel
 
             /* get connection, do query */
             $vars = $q->vars;
-            $stm = null;
-            $stm = $this->dbPrepareAndExecute($sql,$vars);
-
+            $this->dbPrepareAndExecute($sql,$vars); // returns $stm
             $this->afterCreate( $args );
         }
         catch ( Exception $e )
@@ -363,26 +365,19 @@ class BaseModel
         }
 
 
-        $this->_data = array();
-        $conn = $this->_connection;
         $driver = $this->getCurrentQueryDriver();
 
         $pkId = null;
-        if( 'pgsql' == $driver->type ) {
+        if( 'pgsql' === $driver->type ) {
             $pkId = $stm->fetchColumn();
         } else {
-            $pkId = $conn->lastInsertId();
+            $pkId = $this->_connection->lastInsertId();
         }
 
 
         if( $this->_autoReload ) {
             // if possible, we should reload the data.
-            if($pkId) {
-                // auto-reload data
-                $this->load( $pkId );
-            } else {
-                $this->_data = $args;
-            }
+            $pkId ? $this->load($pkId) : $this->_data = $args;
         }
 
         $ret = array( 
@@ -691,8 +686,7 @@ class BaseModel
 
     public function dbPrepareAndExecute($sql,$args = array() )
     {
-        $conn = $this->_connection;
-        $stm  = $conn->prepare( $sql );
+        $stm  = $this->_connection->prepare( $sql );
         $stm->execute( $args );
         return $stm;
     }
@@ -701,6 +695,7 @@ class BaseModel
     // xxx: process for read/write source
     public function getDataSourceId()
     {
+        // XXX:
         return 'default';
     }
 
@@ -712,7 +707,7 @@ class BaseModel
     public function getConnection()
     {
         $connManager = ConnectionManager::getInstance();
-        return $connManager->getConnection( $this->getDataSourceId() ); // xxx: support read/write connection later
+        return $connManager->getConnection( 'default' ); // xxx: support read/write connection later
     }
 
     public function getSchemaProxyClass()
