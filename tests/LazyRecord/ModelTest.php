@@ -632,7 +632,9 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         $s = microtime(true);
         $ids = array();
-        foreach( range(1,20) as $i ) {
+        $cnt = 50;
+        foreach( range(1,$cnt) as $i ) {
+            // you can use _create to gain 120ms faster
             $ret = $n->create(array( 
                 'name' => "Deflator Test $i", 
                 'country' => 'Tokyo', 
@@ -642,7 +644,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             $ids[] = $n->id;
         }
 
-        $duration = (microtime(true) - $s) / 20 * 1000000; // get average microtime.
+        $duration = (microtime(true) - $s) / $cnt * 1000000; // get average microtime.
+        var_dump( $duration ); 
         ok( $duration < 1500 , 'performance test: less than 1500 microseconds' );
 
         foreach( $ids as $id ) {
