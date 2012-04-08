@@ -239,6 +239,7 @@ class Column
     public function serial()
     {
         $this->attributes['type'] = 'serial';
+        $this->attributes['isa'] = 'int';
         return $this;
     }
 
