@@ -2,6 +2,20 @@
 namespace LazyRecord\Schema\SchemaDeclare;
 use Exception;
 
+
+/**
+ * Postgresql Data Types:
+ * @link http://www.postgresql.org/docs/9.1/interactive/datatype.html
+ *
+ * MySQL Data Types:
+ * @link http://dev.mysql.com/doc/refman/5.0/en/data-types.html
+ *
+ *
+ * Blob type:
+ *
+ * @link http://dev.mysql.com/doc/refman/5.0/en/blob.html (MySQL)
+ * @link http://www.postgresql.org/docs/9.1/interactive/datatype-binary.html (Postgresql)
+ */
 class Column 
 {
     const  ATTR_ANY = 0;
@@ -105,7 +119,7 @@ class Column
 
 
     /**
-     * PgSQL supports double, real:
+     * PgSQL supports double, real.
      *
      * MySQL supports float, real, double:
      *      float(3), float, real, real(10)
