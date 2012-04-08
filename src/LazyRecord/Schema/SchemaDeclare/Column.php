@@ -121,6 +121,9 @@ class Column
     /**
      * PgSQL supports double, real.
      *
+     * XXX: support for 'Infinity' '-Infinity' 'NaN'.
+     *
+     *
      * MySQL supports float, real, double:
      *      float(3), float, real, real(10)
      *
