@@ -34,9 +34,6 @@ class BaseModel
 
     protected $_data;
 
-    protected $_pk;
-
-
     public function __construct($args = null) 
     {
         if( $args )
