@@ -230,6 +230,18 @@ class Column
         return $this;
     }
 
+
+    /**
+     * serial type
+     *
+     * for postgresql-only
+     */
+    public function serial()
+    {
+        $this->attributes['type'] = 'serial';
+        return $this;
+    }
+
     public function date()
     {
         $this->attributes['type'] = 'date';
