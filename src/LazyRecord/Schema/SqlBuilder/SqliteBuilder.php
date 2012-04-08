@@ -108,7 +108,8 @@ class SqliteBuilder
     public function dropTable($schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-            . $this->parent->driver->getQuoteTableName( $schema->getTable() );
+            . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+            . ';';
     }
 
     public function build($schema)
