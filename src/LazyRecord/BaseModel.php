@@ -1129,6 +1129,7 @@ class BaseModel
     }
 
 
+    // slower than _schema
     public function getSchema()
     {
         return SchemaLoader::load( static::schema_proxy_class );
