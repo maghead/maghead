@@ -213,7 +213,7 @@ class BaseModel
     protected function _validate_validator($c, $val, $args, & $validateFail )
     {
         $v = call_user_func( $c->validator, $val, $args, $this );
-        if( $v[0] === false )
+        if( ! $v[0] )
             $validateFail = true;
         return (object) array(
             'success' => $v[0],
@@ -226,7 +226,7 @@ class BaseModel
     {
         if( $validValues = $c->getValidValues( $this, $args ) ) {
             // sort by index
-            if( isset($validValues[0]) && false === in_array( $val , $validValues ) ) {
+            if( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
                 $validateFail = true;
                 return (object) array(
                     'success' => false,
@@ -238,7 +238,7 @@ class BaseModel
             //    value => label
             else {
                 $values = array_keys( $validValues );
-                if( false === in_array( $val , $values ) ) {
+                if( ! in_array( $val , $values ) ) {
                     $validateFail = true;
                     return (object) array(
                         'success' => false,
@@ -273,15 +273,14 @@ class BaseModel
     {
         $k = $this->getPrimaryKey();
 
-        if( empty($args) )
+        if( empty($args) || $args === null )
             return $this->reportError( "Empty arguments" );
 
         // first, filter the array
         $args = $this->filterArrayWithColumns($args);
 
 
-        $vars            = null;
-        $sql             = null;
+        $sql = $vars = null;
         $validateFail    = false;
         $validateResults = array();
 
@@ -369,7 +368,7 @@ class BaseModel
         $driver = $this->getCurrentQueryDriver();
 
         $pkId = null;
-        if( $driver->type == 'pgsql' ) {
+        if( 'pgsql' == $driver->type ) {
             $pkId = $stm->fetchColumn();
         } else {
             $pkId = $conn->lastInsertId();
@@ -733,7 +732,7 @@ class BaseModel
     public function __get( $key )
     {
         // lazy schema loader, xxx: make this static.
-        if( $key === '_schema' )
+        if( '_schema' == $key )
             return SchemaLoader::load( $this->getSchemaProxyClass() );
 
 
@@ -888,7 +887,7 @@ class BaseModel
     {
         return isset($this->_schema->columns[ $name ]) 
             || isset($this->_data[ $name ])
-            || $name === '_schema'
+            || '_schema' == $name
             || $this->_schema->getRelation( $name )
             ;
     }
@@ -1101,7 +1100,7 @@ class BaseModel
         $schema = $this->_schema;
         $new = array();
         foreach( $args as $k => $v ) {
-            if( $c = $schema->getColumn($k) ) {
+            if( $schema->getColumn($k) ) {
                 $new[ $k ] = $v;
             }
         }
@@ -1130,6 +1129,10 @@ class BaseModel
     }
 
 
+    public function getSchema()
+    {
+        return SchemaLoader::load( static::schema_proxy_class );
+    }
 
 
     // _schema methods

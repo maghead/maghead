@@ -23,6 +23,13 @@ class RuntimeSchema extends SchemaBase
     }
 
 
+    public function hasColumn($name)
+    {
+        if( isset($this->columnCached[ $name ]) || isset($this->columns[$name] ) )  {
+            return true;
+        }
+    }
+
 
     public function getColumn($name)
     {
