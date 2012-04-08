@@ -9,17 +9,18 @@ class BookSchema extends SchemaDeclare
     function schema()
     {
         $this->column('title')
-            ->isa('str')
             ->unique()
             ->type('varchar(128)');
 
         $this->column('subtitle')
-            ->isa('str')
             ->varchar(256);
 
         $this->column('description')
-            ->isa('str')
             ->text();
+
+        $this->column('view')
+            ->default(0)
+            ->integer();
 
         $this->column('publisher_id')
             ->isa('int')
@@ -34,7 +35,6 @@ class BookSchema extends SchemaDeclare
             ->refer('\tests\UserSchema');
 
         // $this->one( 'created_by','created_by','\tests\UserSchema','id');
-
         $this->belongsTo('created_by', '\tests\UserSchema','id', 'created_by');
 
         /** 

@@ -32,6 +32,14 @@ class BookSchemaProxy extends RuntimeSchema
           'isa' => 'str',
         ),
     ),
+  'view' => array( 
+      'name' => 'view',
+      'attributes' => array( 
+          'type' => 'integer',
+          'isa' => 'int',
+          'default' => 0,
+        ),
+    ),
   'publisher_id' => array( 
       'name' => 'publisher_id',
       'attributes' => array( 
@@ -67,6 +75,7 @@ class BookSchemaProxy extends RuntimeSchema
   'title',
   'subtitle',
   'description',
+  'view',
   'publisher_id',
   'published_at',
   'created_by',
