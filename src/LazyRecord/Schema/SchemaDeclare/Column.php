@@ -102,6 +102,16 @@ class Column
         return $this;
     }
 
+
+
+    /**
+     * PgSQL supports double, real:
+     *
+     * MySQL supports float, real, double:
+     *      float(3), float, real, real(10)
+     *
+     * @link http://dev.mysql.com/doc/refman/5.0/en/floating-point-types.html
+     */
     public function double()
     {
         $this->attributes['type'] = 'double';
