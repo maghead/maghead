@@ -603,6 +603,28 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $n->delete()->success );
     }
 
+    public function testRawSQL()
+    {
+        $n = new \tests\Book;
+        $n->create(array(
+            'title' => 'book title',
+            'view' => 0,
+        ));
+        is( 0 , $n->view );
+
+        $ret = $n->update(array( 
+            'view' => array('view + 1')
+        ));
+
+        ok( $ret->success );
+        is( 1 , $n->view );
+
+        $n->update(array( 
+            'view' => array('view + 3')
+        ));
+        is( 4, $n->view );
+    }
+
     public function testInflator()
     {
         $n = new \tests\Name;

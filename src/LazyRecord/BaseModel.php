@@ -281,12 +281,12 @@ class BaseModel
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
-                if( $val !== null ) {
+                if( $val !== null && is_array($val) ) {
                     $c->typeCasting( $args[$n] );
                 }
 
                 // xxx: make this optional.
-                if( $val !== null && $c->required && $msg = $c->checkTypeConstraint( $val ) ) {
+                if( $val !== null && ! is_array($val) && $c->required && $msg = $c->checkTypeConstraint( $val ) ) {
                     throw new Exception($msg);
                 }
 
@@ -306,7 +306,7 @@ class BaseModel
                 }
 
                 if( $val ) {
-                    $args[ $n ] = $c->inflate( $val );
+                    $args[ $n ] = is_array($val) ? $val : $c->inflate( $val );
                 }
             }
 
@@ -523,12 +523,12 @@ class BaseModel
                 // column validate (value is set.)
                 if( isset($args[$n]) )
                 {
-                    if( $args[$n] !== null ) {
+                    if( $args[$n] !== null && ! is_array($args[$n]) ) {
                         $c->typeCasting( $args[$n] );
                     }
 
                     // xxx: make this optional.
-                    if( $args[$n] !== null && $c->required && $msg = $c->checkTypeConstraint( $args[$n] ) ) {
+                    if( $args[$n] !== null && ! is_array($args[$n]) && $c->required && $msg = $c->checkTypeConstraint( $args[$n] ) ) {
                         throw new Exception($msg);
                     }
 
@@ -550,7 +550,7 @@ class BaseModel
                     }
 
                     // inflate
-                    $args[ $n ] = $c->inflate( $args[$n] );
+                    $args[ $n ] = is_array($args[$n]) ? $args[$n] : $c->inflate( $args[$n] );
                 }
             }
 

@@ -159,7 +159,7 @@ class MysqlTableParser extends BaseTablePaser
         elseif( preg_match('/^(int|tinyint|smallint|mediumint|bigint)/', $type ) ) {
             return 'int';
         }
-        elseif( 'date' === $type ) {
+        elseif( 'datetime' === $type || 'date' === $type ) {
             return 'DateTime';
         }
         elseif( preg_match('/timestamp/', $type ) ) {
