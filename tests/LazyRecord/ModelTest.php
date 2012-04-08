@@ -626,6 +626,30 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         is( 4, $n->view );
     }
 
+    public function testCreateSpeed()
+    {
+        $n = new \tests\Name;
+
+        $s = microtime(true);
+        $ids = array();
+        foreach( range(1,1000) as $i ) {
+            $ret = $n->create(array( 
+                'name' => "Deflator Test $i", 
+                'country' => 'Tokyo', 
+                'confirmed' => true,
+                'date' => new DateTime('2011-01-01 00:00:00'),
+            ));
+            $ids[] = $n->id;
+        }
+
+        $duration = microtime(true) - $s;
+        ok( $duration < 2 , 'performance test' );
+
+        foreach( $ids as $id ) {
+            \tests\Name::delete($id);
+        }
+    }
+
     public function testInflator()
     {
         $n = new \tests\Name;
@@ -670,6 +694,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             ->equal('name','Mary')
             ->execute();
         ok( $ret->success );
+
 
         $ret = \tests\Author::delete()
             ->where()
