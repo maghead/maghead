@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-04-08</date>
-  <time>19:55:15</time>
+  <time>22:17:27</time>
   <version>
-    <release>1.3.3</release>
-    <api>1.3.3</api>
+    <release>1.3.4</release>
+    <api>1.3.4</api>
   </version>
   <stability>
     <release>stable</release>
@@ -119,7 +119,7 @@
       <file name="tests/src/PHPUnit/Framework/ModelTestCase.php" role="test" md5sum="be95ce16e294b553e38f521c349b0660"/>
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
-      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="ab69630df5e06f7832b206221edad4a4"/>
+      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="8536d59e82691e8c80c83bec23273346"/>
       <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="38c25b0085bdc94c5e21f9dc1d6992dd"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
       <file name="src/LazyRecord/CodeGen/ClassMember.php" role="php" md5sum="5862b6f6f9640e9c3795a74aa5f5b70e"/>
@@ -136,7 +136,7 @@
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="1f28f5e530d084a13a756415a7fe4224"/>
       <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="be57069c96dd9b381320c20d48cb920d"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="c6d764c85c701a73d9980ec19413a120"/>
-      <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="b7f558c47bf7fb11389b37d0979aceea"/>
+      <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="ec7f574a3e0e61f98d11f1e99d85f5c7"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="721a41f17c53be4e0d2366a598a2d13e"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c1734862a4155d114ae45b2df0914004"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
@@ -174,9 +174,9 @@
       <file name="src/LazyRecord/TableParser.php" role="php" md5sum="67f110738449c068ed5711090bb7cfe1"/>
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
-      <file name="package.ini" role="data" md5sum="9bedc30a83751cb62f3c874adea8e036"/>
+      <file name="package.ini" role="data" md5sum="681f6bc70f2715c4ab965ba16389b9bc"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="f39f8dc96c9fb75ffd30edabc9558a94"/>
+      <file name="lazy" role="script" md5sum="2f57efb055a5854774756ab591ba2648"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
   </contents>
