@@ -485,7 +485,7 @@ class BaseCollection
     public function join($table,$alias = null)
     {
         $this->setExplictSelect(true);
-        return parent::join($table,$alias);
+        return $this->_query->join($table,$alias);
     }
 
 
