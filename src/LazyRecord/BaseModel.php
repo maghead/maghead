@@ -150,7 +150,10 @@ class BaseModel
 
     public function getPrimaryKey()
     {
-        return $this->_schema->primaryKey;
+        // provide a cache
+        static $k;
+        $k = $this->_schema->primaryKey;
+        return $k;
     }
 
 
