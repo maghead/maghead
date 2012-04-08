@@ -16,6 +16,12 @@ class Inflator
         elseif( $isa === 'str' ) {
             return (string) $value;
         }
+        elseif( $isa === 'double' ) {
+            return (double) $value;
+        }
+        elseif( $isa === 'float' ) {
+            return (float) $value;
+        }
         elseif( $isa == 'DateTime' ) {
             if( is_a($value, 'DateTime') ) {
                 return $value->format( DateTime::ATOM );

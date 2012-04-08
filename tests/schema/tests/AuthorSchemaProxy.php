@@ -70,8 +70,8 @@ class AuthorSchemaProxy extends RuntimeSchema
   'r' => array( 
       'name' => 'r',
       'attributes' => array( 
-          'type' => 'float',
-          'isa' => 'float',
+          'type' => 'double',
+          'isa' => 'double',
         ),
     ),
 );
