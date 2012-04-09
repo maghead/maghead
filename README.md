@@ -175,32 +175,50 @@ To setup QueryDriver:
 
 To create a model record:
 
+```php
+<?php
     $author = new Author;
     $author->create(array(
         'name' => 'Foo'
     ));
+```
 
 Find record:
     
+```php
+<?php
     $author->find(123);
     $author->find(array( 'foo' => 'Name' ));
+```
 
 Find record with (static):
 
+```php
+<?php
     $record = Author::load(array( 'name' => 'Foo' ));
+```
 
 Find record with primary key:
 
+```php
+<?php
     $record = Author::load( 1 );
+?>
+```
 
 Update record:
 
+```php
+<?php
     $author->update(array(  
         'name' => 'Author',
     ));
+```
 
 Update record (static):
 
+```php
+<?php
     $ret = Author::update( array( 'name' => 'Author' ) )
         ->where()
             ->equal('id',3)
@@ -212,10 +230,13 @@ Update record (static):
     else {
         echo $ret->exception->getMessage();
     }
+```
 
 To create a collection object:
 
-    $authors = new Collection;
+```php
+<?php
+    $authors = new AuthorCollection;
     $authors->where()
         ->equal( 'id' , 'foo' );
 
@@ -229,5 +250,6 @@ To create a collection object:
     foreach( $authors as $author ) {
         echo $author->name;
     }
-
+?>
+```
 
