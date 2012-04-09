@@ -349,7 +349,6 @@ class BaseCollection
 
 
 
-
     public function toArray()
     {
         return array_map( function($item) { 
