@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-04-09</date>
-  <time>13:52:12</time>
+  <time>18:56:39</time>
   <version>
     <release>1.3.5</release>
     <api>1.3.5</api>
@@ -52,7 +52,7 @@
       <file name="tests/LazyRecord/CodeGen/ClassTemplateTest.php" role="test" md5sum="c5a4c30183b7e2a8115e1a5aca67d7e4"/>
       <file name="tests/LazyRecord/CodeGenTest.php" role="test" md5sum="05e85cf12094e56c15d8c94013bffbc2"/>
       <file name="tests/LazyRecord/CollectionPagerTest.php" role="test" md5sum="f131d5667b0c554d3bbd8d46ee888743"/>
-      <file name="tests/LazyRecord/CollectionTest.php" role="test" md5sum="0aa4797b50c214978b06cd167aef097c"/>
+      <file name="tests/LazyRecord/CollectionTest.php" role="test" md5sum="aef096c113989c77cb140cfa623c849d"/>
       <file name="tests/LazyRecord/ConfigBuilderTest.php" role="test" md5sum="6e43f0c8bd39ed5b1ca876edbe1eeb97"/>
       <file name="tests/LazyRecord/ConnectionManagerTest.php" role="test" md5sum="3405b1024b2df885a22a52a7dbea8574"/>
       <file name="tests/LazyRecord/DeflatorTest.php" role="test" md5sum="ecac97e55ed97548bac77a7c5b917953"/>
@@ -119,8 +119,8 @@
       <file name="tests/src/PHPUnit/Framework/ModelTestCase.php" role="test" md5sum="be95ce16e294b553e38f521c349b0660"/>
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
-      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="1404c84c4cd527f3265c0f889d184805"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="5af4806f3a8992dd209378775b27b3e9"/>
+      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="8769af7abc0c26e54564115acfba5f71"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="d2aeb6a1e0061ddfbd3a67bb9567ed9f"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
       <file name="src/LazyRecord/CodeGen/ClassMember.php" role="php" md5sum="5862b6f6f9640e9c3795a74aa5f5b70e"/>
       <file name="src/LazyRecord/CodeGen/ClassMethod.php" role="php" md5sum="e7610d981aa5ee8cb14fe52626c54694"/>
