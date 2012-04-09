@@ -6,6 +6,8 @@ Features
 
 * PDO.
 * MySQL, Pgsql, SQLite support.
+* Multiple Data source
+* Schema/Database diff
 * Fast.
 
 Synopsis
