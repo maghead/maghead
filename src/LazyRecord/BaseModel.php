@@ -24,6 +24,8 @@ use SerializerKit\YamlSerializer;
 class BaseModel
     implements ExporterInterface
 {
+    protected $_data;
+
     public $_result;
 
     /**
@@ -31,7 +33,19 @@ class BaseModel
      */
     public $_autoReload = true;
 
-    protected $_data;
+
+    /**
+     * @var mixed Current user object
+     */
+    public $_currentUser;
+
+
+    /**
+     * @var mixed Model-Scope current user object
+     *
+     *  Book::$currentUser = new YourCurrentUser;
+     */
+    static $currentUser;
 
     public function __construct($args = null) 
     {
@@ -267,10 +281,19 @@ class BaseModel
         return $columns;
     }
 
+
+    public function setCurrentUser($user)
+    {
+        $this->_currentUser = $user;
+        return $this;
+    }
+
     public function getCurrentUser()
     {
-        if( $this->currentUser )
-            return $this->currentUser;
+        if( $this->_currentUser )
+            return $this->_currentUser;
+        if( static::$currentUser ) 
+            return static::$currentUser;
     }
 
 
