@@ -1,8 +1,11 @@
 #!/bin/bash
 phpunit tests && ( 
     source scripts/build.sh
-    git tag $VERSION -m "Release $VERSION"
+
+    echo "Tagging..."
+    git tag $VERSION -f -m "Release $VERSION"
     git push origin --tags
-    git push origin HEAD
+    git push origin -q HEAD
+    echo "Installing..."
     source scripts/install.sh
 )
