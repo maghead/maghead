@@ -123,6 +123,9 @@ Then you should have these files:
     src/App/Model/AuthorBaseCollection.php
     src/App/Model/AuthorCollection.php
 
+Now edit your src/App/Model/Author.php file to extend.
+
+
 To import SQL schema into database:
 
     lazy build-sql path/to/AuthorSchema.php
