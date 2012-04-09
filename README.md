@@ -183,7 +183,7 @@ To create a model record:
     ));
 ```
 
-Find record:
+To find record:
     
 ```php
 <?php
@@ -191,14 +191,14 @@ Find record:
     $author->find(array( 'foo' => 'Name' ));
 ```
 
-Find record with (static):
+To find record with (static):
 
 ```php
 <?php
     $record = Author::load(array( 'name' => 'Foo' ));
 ```
 
-Find record with primary key:
+To find record with primary key:
 
 ```php
 <?php
@@ -206,7 +206,7 @@ Find record with primary key:
 ?>
 ```
 
-Update record:
+To update record:
 
 ```php
 <?php
@@ -215,7 +215,7 @@ Update record:
     ));
 ```
 
-Update record (static):
+To update record (static):
 
 ```php
 <?php
