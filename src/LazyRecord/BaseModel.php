@@ -26,7 +26,6 @@ class BaseModel
 {
     public $_result;
 
-
     /**
      * auto reload record after creating new record
      */
@@ -268,6 +267,12 @@ class BaseModel
         return $columns;
     }
 
+    public function getCurrentUser()
+    {
+        if( $this->currentUser )
+            return $this->currentUser;
+    }
+
 
     /**
      * Create a new record
@@ -278,15 +283,19 @@ class BaseModel
      */
     public function _create($args)
     {
-        $k = $this->_schema->primaryKey;
-
         if( empty($args) || $args === null )
-            return $this->reportError( "Empty arguments" );
+            return $this->reportError( _('Empty arguments') );
 
         // first, filter the array
         $args = $this->filterArrayWithColumns($args);
 
+        if( ! $this->currentUserCan( $this->getCurrentUser() , 'create', $args ) ) {
+            return $this->reportError( _('Permission denied. Can not create data') , array( 
+                'args'        => $args,
+            ));
+        }
 
+        $k = $this->_schema->primaryKey;
         $sql = $vars = null;
         $validateFail    = false;
         $this->_data = $validateResults = array();
