@@ -40,6 +40,19 @@ class BaseModel
             $this->load( $args );
     }
 
+
+    /**
+     * Provide a basic Access controll
+     *
+     * @param string $right Can be 'create', 'update', 'read', 'delete'
+     * @param mixed  $user  Can be your current user object.
+     * @param array  $args  Arguments for operations (update, create, delete.. etc)
+     */
+    public function currentUserCan($right,$user = null,$args = null)
+    {
+        return true;
+    }
+
     public function getCurrentQueryDriver()
     {
         static $driver;
