@@ -50,16 +50,22 @@ class BaseModel
     public function __construct($args = null) 
     {
         if( $args )
-            $this->load( $args );
+            $this->_load( $args );
     }
 
 
     /**
      * Provide a basic Access controll
      *
-     * @param string $right Can be 'create', 'update', 'read', 'delete'
+     * @param string $right Can be 'create', 'update', 'load', 'delete'
      * @param mixed  $user  Can be your current user object.
      * @param array  $args  Arguments for operations (update, create, delete.. etc)
+     *
+     * XXX: is not working in static-call methods:
+     *  ::create
+     *  ::update
+     *  ::delete
+     *  ::load
      */
     public function currentUserCan($right,$user = null,$args = null)
     {
@@ -313,8 +319,8 @@ class BaseModel
         $args = $this->filterArrayWithColumns($args);
 
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'create', $args ) ) {
-            return $this->reportError( _('Permission denied. Can not create data') , array( 
-                'args'        => $args,
+            return $this->reportError( _('Permission denied. Can not create record.') , array( 
+                'args' => $args,
             ));
         }
 
@@ -434,6 +440,12 @@ class BaseModel
 
     public function _load($args)
     {
+        if( ! $this->currentUserCan( $this->getCurrentUser() , 'load', $args ) ) {
+            return $this->reportError( _('Permission denied. Can not load record.') , array( 
+                'args' => $args,
+            ));
+        }
+
         $pk = $this->_schema->primaryKey;
         $query = $this->createQuery();
         $kVal = null;
@@ -497,6 +509,11 @@ class BaseModel
         }
         $kVal = isset($this->_data[$k]) ? $this->_data[$k] : null;
 
+        if( ! $this->currentUserCan( $this->getCurrentUser() , 'delete' ) ) {
+            return $this->reportError( _('Permission denied. Can not delete record.') , array( ));
+        }
+
+
         $this->beforeDelete( $this->_data );
 
         $query = $this->createQuery();
@@ -538,6 +555,12 @@ class BaseModel
         $k = $this->_schema->primaryKey;
         if( $k && ! isset($args[ $k ]) && ! isset($this->_data[$k]) ) {
             return $this->reportError('Record is not loaded, Can not update record.');
+        }
+
+        if( ! $this->currentUserCan( $this->getCurrentUser() , 'update', $args ) ) {
+            return $this->reportError( _('Permission denied. Can not update record.') , array( 
+                'args' => $args,
+            ));
         }
 
 
