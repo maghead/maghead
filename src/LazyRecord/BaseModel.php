@@ -72,11 +72,13 @@ class BaseModel
         return true;
     }
 
+
     public function getCurrentQueryDriver()
     {
         static $driver;
-        if( $driver )
+        if( $driver ) {
             return $driver;
+        }
         $driver = ConnectionManager::getInstance()->getQueryDriver( $this->getDataSourceId() );
         return $driver;
     }
