@@ -352,12 +352,11 @@ class BaseCollection
 
     public function toArray()
     {
-        $array = array();
-        $items = $this->items();
-        foreach( $items as $item ) {
-            $array[] = $item->toArray();
-        }
-        return $array;
+        return array_map( function($item) { 
+                            return $item->toArray();
+                        } , array_filter($this->items(), function($item) {
+                                return $item->currentUserCan( $item->getCurrentUser() , 'read' );
+                            }));
     }
 
     public function toXml()
