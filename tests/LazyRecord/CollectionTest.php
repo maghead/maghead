@@ -139,13 +139,16 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         ok( $pager );
         ok( $pager->items() );
 
+        $array = $authors->toArray();
+        ok( $array[0] );
+        ok( $array[9] );
+
         ok( $authors->items() );
         is( 10 , count($authors->items()) );
         foreach( $authors as $a ) {
             $ret = $a->delete();
             ok( $ret->success );
         }
-
 
     }
 }
