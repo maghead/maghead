@@ -347,6 +347,30 @@ class BaseCollection
         unset($this->_items[$name]);
     }
 
+    public function each($cb)
+    {
+        return array_map($cb,$this->_items);
+    }
+
+    public function filter($cb)
+    {
+        return array_filter($this->_items,$cb);
+    }
+
+
+    static function newFromArray($list)
+    {
+        $collection = new static;
+        $schema = $this->_schema;
+        $records = array();
+        foreach( $list as $item ) {
+            $model = $schema->newModel();
+            $model->setData($item);
+            $records[] = $model;
+        }
+        $collection->setRecords( $records );
+        return $collection;
+    }
 
 
     public function toArray()
@@ -508,6 +532,18 @@ class BaseCollection
         return $this->_query->where();
     }
 
+
+    public function add($record)
+    {
+        if( ! $this->_itemData )
+            $this->_itemData = array();
+        $this->_itemData[] = $record;
+    }
+
+    public function setRecords($records)
+    {
+        $this->_itemData = $records;
+    }
 
 }
 
