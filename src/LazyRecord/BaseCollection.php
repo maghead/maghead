@@ -364,10 +364,10 @@ class BaseCollection
     }
 
 
-    static function newFromArray($list)
+    static function fromArray($list)
     {
         $collection = new static;
-        $schema = $this->_schema;
+        $schema = $collection->_schema;
         $records = array();
         foreach( $list as $item ) {
             $model = $schema->newModel();
