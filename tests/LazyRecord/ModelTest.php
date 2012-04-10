@@ -657,6 +657,21 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         }
     }
 
+    public function testFromArray()
+    {
+        $instance = \tests\Name::fromArray(array( 
+            'name' => 'Instance'
+        ));
+        ok( $instance );
+        isa_ok( 'tests\Name' ,  $instance );
+
+        $collection = \tests\NameCollection::fromArray(array( 
+            array( 'name' => 'Instance' ),
+            array( 'name' => 'Instance II' ),
+        ));
+        isa_ok( 'tests\NameCollection' , $collection );
+    }
+
     public function testInflator()
     {
         $n = new \tests\Name;
