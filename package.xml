@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-04-09</date>
-  <time>18:56:39</time>
+  <date>2012-04-10</date>
+  <time>14:33:09</time>
   <version>
-    <release>1.3.5</release>
-    <api>1.3.5</api>
+    <release>1.3.6</release>
+    <api>1.3.6</api>
   </version>
   <stability>
     <release>stable</release>
@@ -55,11 +55,11 @@
       <file name="tests/LazyRecord/CollectionTest.php" role="test" md5sum="aef096c113989c77cb140cfa623c849d"/>
       <file name="tests/LazyRecord/ConfigBuilderTest.php" role="test" md5sum="6e43f0c8bd39ed5b1ca876edbe1eeb97"/>
       <file name="tests/LazyRecord/ConnectionManagerTest.php" role="test" md5sum="3405b1024b2df885a22a52a7dbea8574"/>
-      <file name="tests/LazyRecord/DeflatorTest.php" role="test" md5sum="ecac97e55ed97548bac77a7c5b917953"/>
+      <file name="tests/LazyRecord/DeflatorTest.php" role="test" md5sum="aef34a7220cb8c51cc7a16d1f99f66bc"/>
       <file name="tests/LazyRecord/ExecutiveQueryBuilderTest.php" role="test" md5sum="31aeac15025edc000c5c14cdba5f8832"/>
-      <file name="tests/LazyRecord/InflatorTest.php" role="test" md5sum="ebf5af535fef8b78613bb11fb761db7e"/>
+      <file name="tests/LazyRecord/InflatorTest.php" role="test" md5sum="87d1dd1fe33ea2906cdb20f952c46ac1"/>
       <file name="tests/LazyRecord/InflectorTest.php" role="test" md5sum="c3bc87f3e82557bdcd650047c6e48ec8"/>
-      <file name="tests/LazyRecord/ModelTest.php" role="test" md5sum="cb5263013a07293ae652caafef205c4f"/>
+      <file name="tests/LazyRecord/ModelTest.php" role="test" md5sum="f28949cfbd9a5b9ba483853da8ca376e"/>
       <file name="tests/LazyRecord/PgsqlModelTest.php" role="test" md5sum="7f751477f334e60523cf086968dd54f0"/>
       <file name="tests/LazyRecord/Schema/ComparatorTest.php" role="test" md5sum="702b95aeb64b46c33f06ecae625d849d"/>
       <file name="tests/LazyRecord/SchemaDeclare/ColumnTest.php" role="test" md5sum="da778c4ed5ca391f5de2729a7ce64234"/>
@@ -84,7 +84,7 @@
       <file name="tests/schema/tests/AuthorBookSchemaProxy.php" role="test" md5sum="b2bcfb9b0f25c67b0fc5ceb3cd548682"/>
       <file name="tests/schema/tests/AuthorCollection.php" role="test" md5sum="95a7ef60275823bfde873a008b3061ed"/>
       <file name="tests/schema/tests/AuthorCollectionBase.php" role="test" md5sum="486c5f14b14555d663b3b17ce076aa43"/>
-      <file name="tests/schema/tests/AuthorSchema.php" role="test" md5sum="e7b6d6911d58a91815e9075f08a04f45"/>
+      <file name="tests/schema/tests/AuthorSchema.php" role="test" md5sum="1e4f497df6c433d99cb1d19886f58399"/>
       <file name="tests/schema/tests/AuthorSchemaProxy.php" role="test" md5sum="f3915cb5505d9af6191ab332fde4fb55"/>
       <file name="tests/schema/tests/Book.php" role="test" md5sum="1073d4979c339dde0fb08a30abc7fb56"/>
       <file name="tests/schema/tests/BookBase.php" role="test" md5sum="4a818934156adcb38e69fd65c8a0e7f9"/>
@@ -102,8 +102,8 @@
       <file name="tests/schema/tests/NameBase.php" role="test" md5sum="17cdcbd66c1fffe23cc96f1f7bb1b680"/>
       <file name="tests/schema/tests/NameCollection.php" role="test" md5sum="f4a65ffd6fd7936f3e9c7844367c27e5"/>
       <file name="tests/schema/tests/NameCollectionBase.php" role="test" md5sum="192c8c3d2e0a2c20d500af1c661ad5ec"/>
-      <file name="tests/schema/tests/NameSchema.php" role="test" md5sum="0419b20582615e465db0f75538e378d8"/>
-      <file name="tests/schema/tests/NameSchemaProxy.php" role="test" md5sum="988746ec683bdf3925c2050d80e5c5f3"/>
+      <file name="tests/schema/tests/NameSchema.php" role="test" md5sum="a4acc52828fc22a259bf669a0944b572"/>
+      <file name="tests/schema/tests/NameSchemaProxy.php" role="test" md5sum="ad11bc0ba15c8a147c012a5305b0d5ac"/>
       <file name="tests/schema/tests/Publisher.php" role="test" md5sum="c69d392796a02e3acdd796afd7a3cf87"/>
       <file name="tests/schema/tests/PublisherBase.php" role="test" md5sum="b16944a74d8a3b03faa23eac7452fef7"/>
       <file name="tests/schema/tests/PublisherCollection.php" role="test" md5sum="54ee148d61d6c05b832cfa41985c58d0"/>
@@ -120,7 +120,7 @@
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
       <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="8769af7abc0c26e54564115acfba5f71"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="d2aeb6a1e0061ddfbd3a67bb9567ed9f"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="59a013afb543ba4d762662a7dbd9ed58"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
       <file name="src/LazyRecord/CodeGen/ClassMember.php" role="php" md5sum="5862b6f6f9640e9c3795a74aa5f5b70e"/>
       <file name="src/LazyRecord/CodeGen/ClassMethod.php" role="php" md5sum="e7610d981aa5ee8cb14fe52626c54694"/>
@@ -138,10 +138,10 @@
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="c6d764c85c701a73d9980ec19413a120"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="651faa297a7dc583d12d09109dd758c9"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="721a41f17c53be4e0d2366a598a2d13e"/>
-      <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c1734862a4155d114ae45b2df0914004"/>
+      <file name="src/LazyRecord/Deflator.php" role="php" md5sum="eaefc12504235f6af498cb9a56fded48"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
-      <file name="src/LazyRecord/Inflator.php" role="php" md5sum="d7327b38672019653652fe53877d8aff"/>
+      <file name="src/LazyRecord/Inflator.php" role="php" md5sum="fd569cdc9c91c710365c3eecd92caa55"/>
       <file name="src/LazyRecord/Inflector.php" role="php" md5sum="f8bea1b8f18c3331cb734b3af534c1e9"/>
       <file name="src/LazyRecord/OperationResult/OperationError.php" role="php" md5sum="f32057bde208b9dd559712b05f380f68"/>
       <file name="src/LazyRecord/OperationResult/OperationResult.php" role="php" md5sum="2dc400b79fa053e6b1c0e2fa215ce81d"/>
@@ -174,7 +174,7 @@
       <file name="src/LazyRecord/TableParser.php" role="php" md5sum="c7b8d99b1bf06fb84b2de47ddcff57a5"/>
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
-      <file name="package.ini" role="data" md5sum="de4df8e3324c8f27f687d73318ff6533"/>
+      <file name="package.ini" role="data" md5sum="c2c097e4630037e8f758896ac0ff1db1"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
       <file name="lazy" role="script" md5sum="da095ac9b84cdc66c22b519e45430fc3"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
