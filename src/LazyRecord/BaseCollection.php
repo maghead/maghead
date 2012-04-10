@@ -349,12 +349,18 @@ class BaseCollection
 
     public function each($cb)
     {
-        return array_map($cb,$this->_items);
+        $items = array_map($cb,$this->_items);
+        $collection = new static;
+        $collection->setRecords($items);
+        return $collection;
     }
 
     public function filter($cb)
     {
-        return array_filter($this->_items,$cb);
+        $items = array_filter($this->_items,$cb);
+        $collection = new static;
+        $collection->setRecords($items);
+        return $collection;
     }
 
 

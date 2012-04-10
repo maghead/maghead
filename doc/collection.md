@@ -23,6 +23,19 @@ Where condition:
         ->groupBy('name','address');
 ?>
 
+Filter:
+
+    $newCollection = $names->filter(function($item) { return true });
+    $newCollection->filter(function($item) { 
+            return $item->confirmed;
+    });
+
+Each:
+
+    $names->each(function($item) {
+        $item->update(array( .... ));
+    });
+
 To get schema proxy class from collection class:
 
     $authors = new AuthorCollection;
@@ -44,5 +57,6 @@ Collection pager:
     $items = $pager->items();
 
     $pager->next(); // next page
+
 
 
