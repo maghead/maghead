@@ -499,6 +499,13 @@ class BaseModel
     }
 
 
+    static function newFromArray($array)
+    {
+        $record = new static;
+        $record->setData( $array );
+        return $record;
+    }
+
     /**
      * Delete current record, the record should be loaded already.
      *
@@ -975,6 +982,11 @@ class BaseModel
         return $this->_data;
     }
 
+
+    public function setData($array)
+    {
+        $this->_data = $array;
+    }
 
     /**
      * return the collection object of current model object.
