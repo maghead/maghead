@@ -499,7 +499,7 @@ class BaseModel
     }
 
 
-    static function newFromArray($array)
+    static function fromArray($array)
     {
         $record = new static;
         $record->setData( $array );
