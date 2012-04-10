@@ -669,7 +669,10 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ));
         ok( $ret->success , $ret );
 
-        $d = $n->date;
+        $array = $n->toArray();
+        ok( is_string( $array['date'] ) );
+
+        $d = $n->date; // inflated
         isa_ok( 'DateTime' , $d );
         is( '20110101' , $d->format( 'Ymd' ) );
         ok( $n->delete()->success );

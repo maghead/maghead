@@ -99,7 +99,7 @@ class NameSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'date',
           'isa' => 'DateTime',
-          'inflator' => function($val) {
+          'deflator' => function($val) {
                     if( is_a( $val, 'DateTime' ) )
                         return $val->format('Y-m-d');
                     elseif( is_integer($val) ) {
@@ -107,7 +107,7 @@ class NameSchemaProxy extends RuntimeSchema
                     }
                     return $val;
                 },
-          'deflator' => function($val) { 
+          'inflator' => function($val) { 
                     return new \DateTime( $val );
                 },
         ),
