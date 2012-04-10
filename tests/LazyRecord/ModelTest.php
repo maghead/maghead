@@ -603,6 +603,37 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $n->delete()->success );
     }
 
+
+    public function nameDataProvider()
+    {
+        return array( 
+            array(array(
+                'name' => '中文',
+                'country' => 'Tokyo',
+                'confirmed' => true,
+                'date' => new DateTime('2011-01-01 00:00:00'),
+            )),
+            array(array(
+                'name' => 'Test2',
+                'country' => 'Taipei',
+                'confirmed' => false,
+                'date' => '2011-01-01 00:00:00',
+            )),
+        );
+    }
+
+    /**
+     * @dataProvider nameDataProvider
+     */
+    public function testCreateName($args)
+    {
+        $name = new \tests\Name;
+        $ret = $name->create($args);
+        ok( $ret->success );
+        $ret = $name->delete();
+        ok( $ret->success );
+    }
+
     public function testRawSQL()
     {
         $n = new \tests\Book;
