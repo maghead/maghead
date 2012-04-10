@@ -377,7 +377,7 @@ class BaseModel
                 }
 
                 if( $val ) {
-                    $args[ $n ] = is_array($val) ? $val : $c->inflate( $val );
+                    $args[ $n ] = is_array($val) ? $val : $c->deflate( $val );
                 }
             }
 
@@ -398,7 +398,7 @@ class BaseModel
         }
         catch ( Exception $e )
         {
-            return $this->reportError( "Create failed" , array( 
+            return $this->reportError( _("Create failed") , array( 
                 'vars'        => $vars,
                 'args'        => $args,
                 'sql'         => $sql,
@@ -628,8 +628,8 @@ class BaseModel
                         }
                     }
 
-                    // inflate
-                    $args[ $n ] = is_array($args[$n]) ? $args[$n] : $c->inflate( $args[$n] );
+                    // deflate
+                    $args[ $n ] = is_array($args[$n]) ? $args[$n] : $c->deflate( $args[$n] );
                 }
             }
 
@@ -927,7 +927,7 @@ class BaseModel
             }
         }
         if( isset( $this->_data[ $key ] ) ) {
-            return $this->deflateColumnValue( $key );
+            return $this->inflateColumnValue( $key );
         }
     }
 
@@ -986,7 +986,6 @@ class BaseModel
 
     /**
      * return data stash array,
-     * might need inflate.
      *
      * @return array
      */
@@ -1014,11 +1013,11 @@ class BaseModel
     }
 
     /**
-     * inflate data and return.
+     * deflate data and return.
      *
      * @return array
      */
-    public function toInflateArray()
+    public function toInflatedArray()
     {
         $data = array();
         foreach( $this->_data as $k => $v ) {
@@ -1170,13 +1169,13 @@ class BaseModel
         return $new;
     }
 
-    public function deflateColumnValue( $n ) 
+    public function inflateColumnValue( $n ) 
     {
         $value = isset($this->_data[ $n ])
                     ?  $this->_data[ $n ]
                     : null;
         if( $c = $this->_schema->getColumn( $n ) ) {
-            return $c->deflate( $value );
+            return $c->inflate( $value );
         }
         return $value;
     }

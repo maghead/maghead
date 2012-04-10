@@ -65,7 +65,7 @@ namespace tests {
             $this->column('date')
                 ->date()
                 ->isa('DateTime')
-                ->inflator( function($val) {
+                ->deflator( function($val) {
                     if( is_a( $val, 'DateTime' ) )
                         return $val->format('Y-m-d');
                     elseif( is_integer($val) ) {
@@ -73,7 +73,7 @@ namespace tests {
                     }
                     return $val;
                 })
-                ->deflator( function($val) { 
+                ->inflator( function($val) { 
                     return new \DateTime( $val );
                 });
         }

@@ -33,6 +33,7 @@ class AuthorSchema extends SchemaDeclare
             ->isa('double')
             ->type('double'); // only for pgsql
 
+
         $this->mixin('LazyRecord\Schema\Mixin\MetadataSchema');
 
 
