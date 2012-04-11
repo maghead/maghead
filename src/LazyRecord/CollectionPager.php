@@ -60,9 +60,32 @@ class CollectionPager
         $this->calculate();
     }
 
+    public function hasPreviousPage()
+    {
+        return $this->currentPage > 1;
+    }
+
+    public function hasNextPage()
+    {
+        return $this->currentPage < $this->totalPages;
+    }
+
+    public function getNextPage()
+    {
+        if( $this->hasNextPage() ) 
+            return $this->currentPage + 1;
+    }
+
+
+    public function getPreviousPage()
+    {
+        if( $this->hasPreviousPage() ) 
+            return $this->currentPage - 1;
+    }
+
     public function calculate() 
     {
-        $this->startFrom  = ($this->currentPage - 1) * $this->perPage;
+        $this->startFrom  = $this->getOffset();
         $this->totalPages = ($c = count($this->dataArray)) > 0 
             ? ceil( $c / $this->perPage ) 
             : 1;
@@ -75,6 +98,11 @@ class CollectionPager
             $this->perPage
         );
     }
+
+	public function getOffset()
+	{
+		return ($this->currentPage - 1) * $this->perPage;
+	}
 
 }
 
