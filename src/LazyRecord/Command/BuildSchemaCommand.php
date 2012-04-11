@@ -37,12 +37,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
 
 
         $args = func_get_args();
-        $hasArgs = count($args);
-        $isLoadFromPath = $hasArgs && file_exists($args[0]);
-
         $classes = array();
-
-
         if( count($args) && ! file_exists($args[0]) ) {
             // it's classnames
             foreach( $args as $class ) {
