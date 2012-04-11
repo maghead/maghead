@@ -84,7 +84,7 @@ class MysqlBuilder
                     $fSchema = new $rel['foreign']['schema'];
                     $fColumn = $rel['foreign']['column'];
                     $fc = $fSchema->columns[$fColumn];
-                    $sql .= ' REFERENCES ' . $fSchema->getTable() . '.' . $fColumn;
+                    $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
                 }
                 break;
             }
