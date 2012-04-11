@@ -742,7 +742,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $s = microtime(true);
         $n = new \tests\Name;
         $ids = array();
-        $cnt = 30;
+        $cnt = 10;
         foreach( range(1,$cnt) as $i ) {
             // you can use _create to gain 120ms faster
             $ret = $n->create(array(
