@@ -66,6 +66,7 @@ DOC;
         // find schema classes 
         $finder = new SchemaFinder;
         $args = func_get_args();
+
         if( count($args) ) {
             $finder->paths = $args;
         } elseif( $paths = $loader->getSchemaPaths() ) {
