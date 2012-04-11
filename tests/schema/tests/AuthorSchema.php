@@ -28,12 +28,6 @@ class AuthorSchema extends SchemaDeclare
             ->default(false)
             ->boolean();
 
-        // test for real type
-        $this->column('r')
-            ->isa('double')
-            ->type('double'); // only for pgsql
-
-
         $this->mixin('LazyRecord\Schema\Mixin\MetadataSchema');
 
 
