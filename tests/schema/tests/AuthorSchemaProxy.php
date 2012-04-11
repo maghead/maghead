@@ -13,17 +13,17 @@ class AuthorSchemaProxy extends RuntimeSchema
   'updated_on' => array( 
       'name' => 'updated_on',
       'attributes' => array( 
-          'type' => 'datetime',
+          'type' => 'timestamp',
           'isa' => 'DateTime',
-          'defaultBuilder' => function schema() { $this->column('updated_on') ->isa('DateTime') ->defaultBuilder( function() { return date('c'); } ) ->datetime(); $this->column('created_on') ->isa('DateTime') ->defaultBuilder( function() { return date('c'); } ) ->datetime(); } },
+          'defaultBuilder' => function() { return date('c'); },
         ),
     ),
   'created_on' => array( 
       'name' => 'created_on',
       'attributes' => array( 
-          'type' => 'datetime',
+          'type' => 'timestamp',
           'isa' => 'DateTime',
-          'defaultBuilder' => function schema() { $this->column('updated_on') ->isa('DateTime') ->defaultBuilder( function() { return date('c'); } ) ->datetime(); $this->column('created_on') ->isa('DateTime') ->defaultBuilder( function() { return date('c'); } ) ->datetime(); } },
+          'defaultBuilder' => function() { return date('c'); },
         ),
     ),
   'id' => array( 
@@ -67,20 +67,12 @@ class AuthorSchemaProxy extends RuntimeSchema
           'default' => false,
         ),
     ),
-  'r' => array( 
-      'name' => 'r',
-      'attributes' => array( 
-          'type' => 'double',
-          'isa' => 'double',
-        ),
-    ),
 );
         $this->columnNames     = array( 
   'name',
   'email',
   'identity',
   'confirmed',
-  'r',
 );
         $this->primaryKey      = 'id';
         $this->table           = 'authors';
