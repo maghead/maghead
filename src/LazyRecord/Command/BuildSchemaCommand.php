@@ -37,7 +37,10 @@ class BuildSchemaCommand extends \CLIFramework\Command
         $generator->setLogger( $logger );
 
         $args = func_get_args();
-        $classes = \LazyRecord\Utils::getSchemaClassFromPathsOrClassNames( $args , $this->logger );
+        $classes = \LazyRecord\Utils::getSchemaClassFromPathsOrClassNames( 
+            $loader,
+            $args, 
+            $this->logger );
         $classMap = $generator->generate($classes);
 
         $logger->info('Classmap:');
