@@ -107,7 +107,7 @@ class PgsqlBuilder
         $sqls = array();
 
         if( $this->parent->clean || $this->parent->rebuild ) {
-            $sqls[] = $this->dropTable();
+            $sqls[] = $this->dropTable($schema);
         }
         if( $this->parent->clean )
             return $sqls;
