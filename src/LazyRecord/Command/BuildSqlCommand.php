@@ -63,26 +63,10 @@ DOC;
         $logger->info("Finding schema classes...");
 
 
-        // find schema classes 
-        $finder = new SchemaFinder;
         $args = func_get_args();
+        $classes = \LazyRecord\Utils::getSchemaClassFromPathsOrClassNames( $args , $this->logger );
+        $classMap = $generator->generate($classes);
 
-        if( count($args) ) {
-            $finder->paths = $args;
-        } elseif( $paths = $loader->getSchemaPaths() ) {
-            $finder->paths = $paths;
-        }
-        $finder->loadFiles();
-
-        // load class from class map
-        if( $classMap = $loader->getClassMap() ) {
-            foreach( $classMap as $file => $class ) {
-                if( ! is_integer($file) && is_string($file) )
-                    require $file;
-            }
-        }
-
-        $classes = $finder->getSchemaClasses();
 
         $logger->info("Initialize schema builder...");
         $builder = new \LazyRecord\Schema\SqlBuilder($driver, array( 
