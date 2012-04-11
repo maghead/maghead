@@ -13,6 +13,11 @@ use LazyRecord\Schema\SchemaGenerator;
 class BuildSchemaCommand extends \CLIFramework\Command
 {
 
+    public function usage()
+    {
+        return 'build-schema [paths|classes]';
+    }
+
     public function brief()
     {
         return 'build configuration file.';
@@ -30,26 +35,47 @@ class BuildSchemaCommand extends \CLIFramework\Command
         $generator = new SchemaGenerator;
         $generator->setLogger( $logger );
 
-        $finder = new SchemaFinder;
 
         $args = func_get_args();
-        if( count($args) ) {
-            $finder->paths = $args;
-        } elseif( $paths = $loader->getSchemaPaths() ) {
-            $finder->paths = $paths;
-        }
-        $finder->loadFiles();
+        $hasArgs = count($args);
+        $isLoadFromPath = $hasArgs && file_exists($args[0]);
+
+        $classes = array();
 
 
-        // load class from class map
-        if( $classMap = $loader->getClassMap() ) {
-            foreach( $classMap as $file => $class ) {
-                if( ! is_integer($file) && is_string($file) )
-                    require $file;
+        if( count($args) && ! file_exists($args[0]) ) {
+            // it's classnames
+            foreach( $args as $class ) {
+                // call class loader to load
+                if( class_exists($class,true) ) {
+                    $classes[] = $class;
+                }
+                else {
+                    $this->logger->warn( "$class not found." );
+                }
             }
         }
+        else {
+            $finder = new SchemaFinder;
+            if( count($args) && file_exists($args[0]) ) {
+                $finder->paths = $args;
+            } 
+            // load schema paths from config
+            elseif( $paths = $loader->getSchemaPaths() ) {
+                $finder->paths = $paths;
+            }
+            $finder->loadFiles();
 
-        $classes = $finder->getSchemaClasses();
+            // load class from class map
+            if( $classMap = $loader->getClassMap() ) {
+                foreach( $classMap as $file => $class ) {
+                    if( ! is_integer($file) && is_string($file) )
+                        require $file;
+                }
+            }
+            $classes = $finder->getSchemaClasses();
+        }
+
         $classMap = $generator->generate($classes);
 
         $logger->info('Classmap:');
