@@ -330,6 +330,7 @@ class BaseModel
         $sql = $vars = null;
         $validateFail    = false;
         $this->_data = $validateResults = array();
+        $stm = null;
 
         try {
             $args = $this->beforeCreate( $args );
@@ -393,7 +394,7 @@ class BaseModel
 
             /* get connection, do query */
             $vars = $q->vars;
-            $this->dbPrepareAndExecute($sql,$vars); // returns $stm
+            $stm = $this->dbPrepareAndExecute($sql,$vars); // returns $stm
             $this->afterCreate( $args );
         }
         catch ( Exception $e )
