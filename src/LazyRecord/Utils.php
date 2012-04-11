@@ -1,9 +1,10 @@
 <?php
 namespace LazyRecord;
+use LazyRecord\Schema\SchemaFinder;
 
 class Utils
 {
-    static function getSchemaClassFromPathsOrClassNames($args,$logger = null)
+    static function getSchemaClassFromPathsOrClassNames($loader, $args,$logger = null)
     {
         $classes = array();
         if( count($args) && ! file_exists($args[0]) ) {
