@@ -634,6 +634,26 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $ret->success );
     }
 
+    /**
+     * @dataProvider nameDataProvider
+     */
+    public function testFromArray($args)
+    {
+        $instance = \tests\Name::fromArray(array( 
+            $args
+        ));
+        ok( $instance );
+        isa_ok( 'tests\Name' ,  $instance );
+
+        $collection = \tests\NameCollection::fromArray(array( 
+            $args,
+            $args,
+        ));
+        isa_ok( 'tests\NameCollection' , $collection );
+    }
+
+
+
     public function testRawSQL()
     {
         $n = new \tests\Book;
@@ -657,51 +677,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         is( 4, $n->view );
     }
 
-    public function testCreateSpeed()
-    {
-        $n = new \tests\Name;
 
-        $s = microtime(true);
-        $ids = array();
-        $cnt = 50;
-        foreach( range(1,$cnt) as $i ) {
-            // you can use _create to gain 120ms faster
-            $ret = $n->create(array( 
-                'name' => "Deflator Test $i", 
-                'country' => 'Tokyo', 
-                'confirmed' => true,
-                'date' => new DateTime('2011-01-01 00:00:00'),
-            ));
-            $ids[] = $n->id;
-        }
-
-        $duration = (microtime(true) - $s) / $cnt * 1000000; // get average microtime.
-        # var_dump( $duration ); 
-        
-        if( $duration > 1400 ) {
-            var_dump( $duration ); 
-            ok( false , 'performance test: less than 1500 microseconds' );
-        }
-
-        foreach( $ids as $id ) {
-            \tests\Name::delete($id);
-        }
-    }
-
-    public function testFromArray()
-    {
-        $instance = \tests\Name::fromArray(array( 
-            'name' => 'Instance'
-        ));
-        ok( $instance );
-        isa_ok( 'tests\Name' ,  $instance );
-
-        $collection = \tests\NameCollection::fromArray(array( 
-            array( 'name' => 'Instance' ),
-            array( 'name' => 'Instance II' ),
-        ));
-        isa_ok( 'tests\NameCollection' , $collection );
-    }
 
     public function testInflator()
     {
@@ -757,6 +733,37 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             ->equal('name','Rename')
             ->execute();
         ok( $ret->success );
+    }
+
+
+
+    public function testCreateSpeed()
+    {
+        $s = microtime(true);
+        $n = new \tests\Name;
+        $ids = array();
+        $cnt = 30;
+        foreach( range(1,$cnt) as $i ) {
+            // you can use _create to gain 120ms faster
+            $ret = $n->create(array(
+                'name' => "Deflator Test $i", 
+                'country' => 'Tokyo', 
+                'confirmed' => true,
+                'date' => new DateTime('2011-01-01 00:00:00'),
+            ));
+            $ids[] = $n->id;
+        }
+
+        $duration = (microtime(true) - $s) / $cnt * 1000000; // get average microtime.
+        
+        $limit = 1400;
+        if( $duration > $limit ) {
+            ok( false , "performance test: should be less than $limit ms, got $duration ms." );
+        }
+
+        foreach( $ids as $id ) {
+            \tests\Name::delete($id);
+        }
     }
 }
 
