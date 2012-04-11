@@ -23,7 +23,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
         return 'build configuration file.';
     }
 
-    public function getClassFromPathsOrClassNames($args,$logger = null)
+    public function getSchemaClassFromPathsOrClassNames($args,$logger = null)
     {
         $classes = array();
         if( count($args) && ! file_exists($args[0]) ) {
@@ -77,7 +77,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
         $generator->setLogger( $logger );
 
         $args = func_get_args();
-        $classes = $this->getClassFromPathsOrClassNames( $args , $this->logger );
+        $classes = $this->getSchemaClassFromPathsOrClassNames( $args , $this->logger );
         $classMap = $generator->generate($classes);
 
         $logger->info('Classmap:');
