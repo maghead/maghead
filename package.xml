@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-04-11</date>
-  <time>17:51:53</time>
+  <date>2012-04-12</date>
+  <time>15:43:31</time>
   <version>
     <release>1.3.7</release>
     <api>1.3.7</api>
@@ -120,8 +120,8 @@
       <file name="tests/src/PHPUnit/Framework/ModelTestCase.php" role="test" md5sum="be95ce16e294b553e38f521c349b0660"/>
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
-      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="47a9b89233bca686bace16cb2a3aa724"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="12efc458f8684aa1da61c01e1ad01f92"/>
+      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="2d6d973a2f47142be678c6c1c861445d"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="d65883b2c59ea015479d3d2c5168351a"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
       <file name="src/LazyRecord/CodeGen/ClassMember.php" role="php" md5sum="5862b6f6f9640e9c3795a74aa5f5b70e"/>
       <file name="src/LazyRecord/CodeGen/ClassMethod.php" role="php" md5sum="e7610d981aa5ee8cb14fe52626c54694"/>
@@ -129,7 +129,7 @@
       <file name="src/LazyRecord/CodeGen/ClassTemplate.php" role="php" md5sum="75487d2aa24ea9fc47ffc1f7cb3d7c1a"/>
       <file name="src/LazyRecord/CodeGen/UseClass.php" role="php" md5sum="3fa0ed7b1aaff5bb1ca577b5d4d4fb15"/>
       <file name="src/LazyRecord/CodeGen.php" role="php" md5sum="7149f3fca607645f82bbdfcb89f16614"/>
-      <file name="src/LazyRecord/CollectionPager.php" role="php" md5sum="3348100c59a0029db44e27e11c6e60af"/>
+      <file name="src/LazyRecord/CollectionPager.php" role="php" md5sum="80420cd57050cf7714903fb116276d8b"/>
       <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="28eda14a05fc5b707c2d09bb631446b6"/>
       <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="18c8d49ee141d19af9183a6374b7eaf8"/>
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="cec58af19726f7f8b440924b20aab405"/>
