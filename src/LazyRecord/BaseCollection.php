@@ -233,6 +233,7 @@ class BaseCollection
     }
 
 
+
     /**
      * Get selected items and wrap it into a CollectionPager object
      *
@@ -240,6 +241,7 @@ class BaseCollection
      */
     public function pager($page = 1,$pageSize = 10)
     {
+        // setup limit
         return new CollectionPager( $this->_items, $page, $pageSize );
     }
 
