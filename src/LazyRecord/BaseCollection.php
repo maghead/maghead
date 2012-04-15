@@ -11,7 +11,9 @@ use LazyRecord\OperationResult\OperationSuccess;
 use LazyRecord\OperationResult\OperationError;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaLoader;
-
+use SerializerKit\YamlSerializer;
+use SerializerKit\XmlSerializer;
+use SerializerKit\JsonSerializer;
 
 /**
  * base collection class
@@ -27,7 +29,7 @@ class BaseCollection
     /**
      * @var SQLBuilder\QueryBuilder
      */
-    protected $_currentQuery;
+    protected $_readQuery;
 
     /**
      * @var PDOStatement handle
@@ -87,16 +89,19 @@ class BaseCollection
         /**
          * lazy attributes
          */
-        if( $key == '_schema' ) {
+        if( $key === '_schema' ) {
             return SchemaLoader::load( static::schema_proxy_class );
         }
-        elseif( $key == '_handle' ) {
+        elseif( $key === '_connection' ) {
+            return ConnectionManager::getInstance();
+        }
+        elseif( $key === '_handle' ) {
             return $this->handle ?: $this->prepareData();
         }
-        elseif( $key == '_query' ) {
-            return $this->_currentQuery ?: $this->createQuery();
+        elseif( $key === '_query' ) {
+            return $this->_readQuery ?: $this->createQuery( $this->_schema->getReadSourceId() );
         }
-        elseif( $key == '_items' ) {
+        elseif( $key === '_items' ) {
             return $this->_itemData ?: $this->_readRows();
         }
     }
@@ -144,10 +149,29 @@ class BaseCollection
         return $this;
     }
 
-    public function createQuery()
+
+    public function getQueryDriver( $dsId )
+    {
+        return $this->_connection->getQueryDriver( $dsId );
+    }
+
+    public function getWriteQueryDriver()
+    {
+        $id = $this->_schema->getWriteSourceId();
+        return $this->getQueryDriver( $id );
+    }
+
+    public function getReadQueryDriver()
+    {
+        $id = $this->_schema->getReadSourceId();
+        return $this->getQueryDriver( $id );
+    }
+
+
+    public function createQuery( $dsId )
     {
         $q = new QueryBuilder;
-        $q->driver = $this->getCurrentQueryDriver();
+        $q->driver = $this->getQueryDriver( $dsId );
         $q->table( $this->_schema->table );
         $q->select(
             $this->_explictSelect 
@@ -155,7 +179,7 @@ class BaseCollection
                 : '*'
         );
         $q->alias( $this->getAlias() ); // main table alias
-        return $this->_currentQuery = $q;
+        return $this->_readQuery = $q;
     }
 
 
@@ -196,6 +220,7 @@ class BaseCollection
         $this->_lastSql = $sql = $query->build();
         $this->_vars = $vars = $query->vars;
 
+        $dsId = $this->_schema->getReadSourceId();
 
         // XXX: here we use SQLBuilder\QueryBuilder to build our variables,
         //   but PDO doesnt accept boolean type value, we need to transform it.
@@ -207,7 +232,7 @@ class BaseCollection
         }
 
         try {
-            $this->handle = $this->dbPrepareAndExecute($sql, $vars );
+            $this->handle = $this->_connection->prepareAndExecute($dsId,$sql, $vars );
         }
         catch ( Exception $e )
         {
@@ -393,7 +418,7 @@ class BaseCollection
     public function toXml()
     {
         $list = $this->toArray();
-        $xml = new \SerializerKit\XmlSerializer;
+        $xml = new XmlSerializer;
         return $xml->encode( $list );
     }
 
@@ -401,58 +426,16 @@ class BaseCollection
     public function toJson()
     {
         $list = $this->toArray();
-        $json = new \SerializerKit\JsonSerializer;
+        $json = new JsonSerializer;
         return $json->encode( $list );
     }
 
     public function toYaml()
     {
         $list = $this->toArray();
-        $yaml = new \SerializerKit\YamlSerializer;
+        $yaml = new YamlSerializer;
         return $yaml->encode( $list );
     }
-
-
-    /*******************************************
-     * XXX: duplicate methods from BaseModel 
-     * *****************************************/
-
-    /**
-     * get pdo connetion and make a query
-     *
-     * @param string $sql SQL statement
-     */
-    public function dbQuery($sql)
-    {
-        $conn = $this->getConnection();
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        // $conn->setAttribute(PDO::ATTR_AUTOCOMMIT,true);
-        $stm = $conn->prepare( $sql );
-        $stm->execute();
-        return $stm;
-    }
-
-    public function dbPrepareAndExecute($sql,$args = array() )
-    {
-        $conn = $this->getConnection();
-        $stm = $conn->prepare( $sql );
-        $stm->execute( $args );
-        return $stm;
-    }
-
-    /**
-     * get default connection object (PDO) from connection manager
-     *
-     * @return PDO
-     */
-    public function getConnection()
-    {
-        // xxx: get data source id from schema.
-        $sourceId = 'default';
-        $connManager = ConnectionManager::getInstance();
-        return $connManager->getDefault(); // xxx: support read/write connection later
-    }
-
 
 
     public function create($args)
