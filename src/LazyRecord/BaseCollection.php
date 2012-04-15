@@ -279,18 +279,6 @@ class BaseCollection
         return $this->_items;
     }
 
-    public function getCurrentQueryDriver()
-    {
-        return ConnectionManager::getInstance()->getQueryDriver( $this->getDataSourceId() );
-    }
-
-    // xxx: should retrieve id from _schema class.
-    public function getDataSourceId()
-    {
-        return 'default';
-    }
-
-
     /**
      * Read rows from database handle
      *
@@ -300,8 +288,11 @@ class BaseCollection
     {
         $h = $this->_handle;
 
-        if( $h === null )
-            throw new Exception( get_class($this) . ':' . $this->_result->message );
+        if( $h === null ) {
+            if( $this->_result->exception )
+                throw $this->_result->exception;
+            throw new RuntimeException( get_class($this) . ':' . $this->_result->message );
+        }
 
         $this->_itemData = array();
         while( $o = $h->fetchObject( static::model_class ) ) {

@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-04-16</date>
-  <time>00:49:26</time>
+  <time>02:18:49</time>
   <version>
     <release>1.4.0</release>
     <api>1.4.0</api>
@@ -28,14 +28,19 @@
       <file name="doc/config_loader.md" role="doc" md5sum="8bb3bca7c997f898081adfff3fdb5f1e"/>
       <file name="doc/connections.md" role="doc" md5sum="fcd136475eefd739b708e52f7b32cf06"/>
       <file name="doc/development.md" role="doc" md5sum="49756d2f40500134f393c847060b2dd1"/>
-      <file name="doc/html/collection.html" role="doc" md5sum="616181a5f44391bf5dd4b565f0fe20a0"/>
+      <file name="doc/html/collection.html" role="doc" md5sum="6a71af022c3e64faa28c60e5f3850c84"/>
+      <file name="doc/html/config_loader.html" role="doc" md5sum="671dbc7133429589656f68193bedbdc2"/>
       <file name="doc/html/connections.html" role="doc" md5sum="049b9e0b31f50be6248c42250b770405"/>
-      <file name="doc/html/development.html" role="doc" md5sum="1eb106ab8deb8ba0f6d0febf87c3fa13"/>
+      <file name="doc/html/development.html" role="doc" md5sum="db58d2e106403277bd6c2aedc3491a21"/>
       <file name="doc/html/index.html" role="doc" md5sum="1b7cbfca4d224bd4755ea3808be1878f"/>
+      <file name="doc/html/inflator.html" role="doc" md5sum="6c234bf56bea700a1cb806fd357d032a"/>
       <file name="doc/html/install.html" role="doc" md5sum="fd21ee2cbb8d86000ae3114dc4e0c49f"/>
       <file name="doc/html/model.html" role="doc" md5sum="6151aa5ddc266fdb13371c1e7c6c15db"/>
       <file name="doc/html/plan.html" role="doc" md5sum="688260b487eddabe82871b63e078ab4b"/>
-      <file name="doc/html/schema.html" role="doc" md5sum="4c9a18f6ba2bb2fd87b37d36d0631b40"/>
+      <file name="doc/html/plans/schema_builder.html" role="doc" md5sum="dd6eab03e2d8fdb9b282c8af4eb18f4b"/>
+      <file name="doc/html/query_driver.html" role="doc" md5sum="5c1f3f7b2978ec502d2186d0d2825217"/>
+      <file name="doc/html/schema.html" role="doc" md5sum="2d701308fbd8b56f10aedb5efc1a4e16"/>
+      <file name="doc/html/schema_builder.html" role="doc" md5sum="27db8e10f1701c221ec9f10c1a3b3dfa"/>
       <file name="doc/html/setup.html" role="doc" md5sum="035b4d78d8aadd2c9c981de9129ee124"/>
       <file name="doc/index.md" role="doc" md5sum="b40db30a10f21ee9c1411d1ad33a9ed6"/>
       <file name="doc/inflator.md" role="doc" md5sum="054bc6a1d0b31d332a785718568fe6a0"/>
@@ -44,7 +49,7 @@
       <file name="doc/plan.md" role="doc" md5sum="bbb656ce70fd3345ec0f85a6fc5484b8"/>
       <file name="doc/plans/schema_builder.md" role="doc" md5sum="7f259d26a01150c4d43f8c02c7a973b3"/>
       <file name="doc/query_driver.md" role="doc" md5sum="bb11a3186c726a1cc7157a1b15efe720"/>
-      <file name="doc/schema.md" role="doc" md5sum="13b48fc19b14d31403580a1d99378a88"/>
+      <file name="doc/schema.md" role="doc" md5sum="638f91a33c04968afb5b7bd8e5b6f6b6"/>
       <file name="doc/schema_builder.md" role="doc" md5sum="42843a8161f0fa23673651199107b76b"/>
       <file name="doc/setup.md" role="doc" md5sum="636d1f52ac693ebde78866646b4bbb8b"/>
       <file name="tests/bootstrap.php" role="test" md5sum="7f5458797e1e62c2d2a3396fc6216b37"/>
@@ -53,14 +58,14 @@
       <file name="tests/LazyRecord/CodeGen/ClassTemplateTest.php" role="test" md5sum="c5a4c30183b7e2a8115e1a5aca67d7e4"/>
       <file name="tests/LazyRecord/CodeGenTest.php" role="test" md5sum="05e85cf12094e56c15d8c94013bffbc2"/>
       <file name="tests/LazyRecord/CollectionPagerTest.php" role="test" md5sum="f131d5667b0c554d3bbd8d46ee888743"/>
-      <file name="tests/LazyRecord/CollectionTest.php" role="test" md5sum="aef096c113989c77cb140cfa623c849d"/>
+      <file name="tests/LazyRecord/CollectionTest.php" role="test" md5sum="e126bb31f76b2cbdeb746b9c35d639a4"/>
       <file name="tests/LazyRecord/ConfigBuilderTest.php" role="test" md5sum="6e43f0c8bd39ed5b1ca876edbe1eeb97"/>
       <file name="tests/LazyRecord/ConnectionManagerTest.php" role="test" md5sum="3405b1024b2df885a22a52a7dbea8574"/>
       <file name="tests/LazyRecord/DeflatorTest.php" role="test" md5sum="aef34a7220cb8c51cc7a16d1f99f66bc"/>
       <file name="tests/LazyRecord/ExecutiveQueryBuilderTest.php" role="test" md5sum="31aeac15025edc000c5c14cdba5f8832"/>
       <file name="tests/LazyRecord/InflatorTest.php" role="test" md5sum="87d1dd1fe33ea2906cdb20f952c46ac1"/>
       <file name="tests/LazyRecord/InflectorTest.php" role="test" md5sum="c3bc87f3e82557bdcd650047c6e48ec8"/>
-      <file name="tests/LazyRecord/ModelTest.php" role="test" md5sum="7d5842797c4094a5c1ea1f5241ddaf87"/>
+      <file name="tests/LazyRecord/ModelTest.php" role="test" md5sum="133575b4f94b87a070ee0949a8e38a93"/>
       <file name="tests/LazyRecord/PgsqlModelTest.php" role="test" md5sum="b8a81c1ec0de1f4b6db8999e5caed02b"/>
       <file name="tests/LazyRecord/Schema/ComparatorTest.php" role="test" md5sum="702b95aeb64b46c33f06ecae625d849d"/>
       <file name="tests/LazyRecord/SchemaDeclare/ColumnTest.php" role="test" md5sum="da778c4ed5ca391f5de2729a7ce64234"/>
@@ -120,8 +125,8 @@
       <file name="tests/src/PHPUnit/Framework/ModelTestCase.php" role="test" md5sum="be95ce16e294b553e38f521c349b0660"/>
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
-      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="2d6d973a2f47142be678c6c1c861445d"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="9c11f9cca21f6eb200d587549253e531"/>
+      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="0535497a1a5b35ec81e365b977b3d52c"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="ec3eb000af0817885cafce7b90b8bf85"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
       <file name="src/LazyRecord/CodeGen/ClassMember.php" role="php" md5sum="5862b6f6f9640e9c3795a74aa5f5b70e"/>
       <file name="src/LazyRecord/CodeGen/ClassMethod.php" role="php" md5sum="e7610d981aa5ee8cb14fe52626c54694"/>
@@ -137,7 +142,7 @@
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="1f28f5e530d084a13a756415a7fe4224"/>
       <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="be57069c96dd9b381320c20d48cb920d"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="c6d764c85c701a73d9980ec19413a120"/>
-      <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="651faa297a7dc583d12d09109dd758c9"/>
+      <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="07764e5c2fa71e9dabfa3732f4545879"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="a131224280c0588afe333cf3fdfc7aa8"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="eaefc12504235f6af498cb9a56fded48"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
@@ -177,7 +182,7 @@
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="40818497c77ff9c7e1c20dcb49e6f40e"/>
       <file name="package.ini" role="data" md5sum="271e7aaadedf5e0ac4909aec6181cc30"/>
-      <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
+      <file name="phpunit.xml" role="data" md5sum="78eba7f8524f5c711621bd8c7215e76d"/>
       <file name="lazy" role="script" md5sum="500e0b48c94db4867bae18e7305913ba"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
@@ -234,13 +239,18 @@
       <install name="doc/connections.md" as="connections.md"/>
       <install name="doc/development.md" as="development.md"/>
       <install name="doc/html/collection.html" as="html/collection.html"/>
+      <install name="doc/html/config_loader.html" as="html/config_loader.html"/>
       <install name="doc/html/connections.html" as="html/connections.html"/>
       <install name="doc/html/development.html" as="html/development.html"/>
       <install name="doc/html/index.html" as="html/index.html"/>
+      <install name="doc/html/inflator.html" as="html/inflator.html"/>
       <install name="doc/html/install.html" as="html/install.html"/>
       <install name="doc/html/model.html" as="html/model.html"/>
       <install name="doc/html/plan.html" as="html/plan.html"/>
+      <install name="doc/html/plans/schema_builder.html" as="html/plans/schema_builder.html"/>
+      <install name="doc/html/query_driver.html" as="html/query_driver.html"/>
       <install name="doc/html/schema.html" as="html/schema.html"/>
+      <install name="doc/html/schema_builder.html" as="html/schema_builder.html"/>
       <install name="doc/html/setup.html" as="html/setup.html"/>
       <install name="doc/index.md" as="index.md"/>
       <install name="doc/inflator.md" as="inflator.md"/>
