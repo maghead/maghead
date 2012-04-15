@@ -38,6 +38,8 @@ class PublisherSchemaProxy extends RuntimeSchema
         $this->label           = 'Publisher';
         $this->relations       = array( 
 );
+        $this->readSourceId    = 'default';
+        $this->writeSourceId    = 'default';
     }
 
 }

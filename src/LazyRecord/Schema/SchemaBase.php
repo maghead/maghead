@@ -28,7 +28,6 @@ abstract class SchemaBase
 
     public $writeSourceId = 'default';
 
-
     public function getReadSourceId()
     {
         return $this->readSourceId;

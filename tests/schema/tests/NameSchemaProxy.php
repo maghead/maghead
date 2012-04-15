@@ -131,6 +131,8 @@ class NameSchemaProxy extends RuntimeSchema
         $this->label           = 'Name';
         $this->relations       = array( 
 );
+        $this->readSourceId    = 'default';
+        $this->writeSourceId    = 'default';
     }
 
 }
