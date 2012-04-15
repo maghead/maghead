@@ -22,6 +22,17 @@ class SchemaDeclare extends SchemaBase
 
     public function schema() {  }
 
+
+    public function writeTo( $id ) {
+        $this->writeSourceId = $id;
+        return $this;
+    }
+
+    public function readFrom( $id ) {
+        $this->readSourceId = $id;
+        return $this;
+    }
+
     /**
      * bootstrap script (to create basedata)
      *
