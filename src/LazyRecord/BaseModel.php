@@ -73,30 +73,45 @@ class BaseModel
     }
 
 
+    public function getQueryDriver( $dsId )
+    {
+        return $this->_connection->getQueryDriver( $dsId );
+    }
+
+    public function getWriteQueryDriver()
+    {
+        $id = $this->_schema->getWriteSourceId();
+        return $this->getQueryDriver( $id );
+    }
+
+    public function getReadQueryDriver()
+    {
+        $id = $this->_schema->getReadSourceId();
+        return $this->getQueryDriver( $id );
+    }
+
     public function getCurrentQueryDriver()
     {
         static $driver;
         if( $driver ) {
             return $driver;
         }
-        $driver = ConnectionManager::getInstance()->getQueryDriver( $this->getDataSourceId() );
-        return $driver;
+        return ConnectionManager::getInstance()->getQueryDriver( $this->getDataSourceId() );
     }
 
-    public function createQuery()
+    public function createQuery( $dsId = 'default' )
     {
-        $q = new QueryBuilder();
-        $q->driver = $this->getCurrentQueryDriver();
+        $q = new QueryBuilder;
+        $q->driver = $this->getQueryDriver($dsId);
         $q->table( $this->_schema->table );
         $q->limit(1);
         return $q;
     }
 
-
-    public function createExecutiveQuery()
+    public function createExecutiveQuery( $dsId = 'default' )
     {
         $q = new ExecutiveQueryBuilder;
-        $q->driver = $this->getCurrentQueryDriver();
+        $q->driver = $this->getQueryDriver( $dsId );
         $q->table( $this->_schema->table );
         return $q;
     }
@@ -332,6 +347,10 @@ class BaseModel
         $this->_data = $validateResults = array();
         $stm = null;
 
+
+        $dsId = $this->_schema->getWriteSourceId();
+        $conn = $this->getConnection( $dsId );
+
         try {
             $args = $this->beforeCreate( $args );
 
@@ -386,7 +405,7 @@ class BaseModel
                 throw new Exception( 'Validation Fail' );
             }
 
-            $q = $this->createQuery();
+            $q = $this->createQuery( $dsId );
             $q->insert($args);
             $q->returning( $k );
 
@@ -394,7 +413,7 @@ class BaseModel
 
             /* get connection, do query */
             $vars = $q->vars;
-            $stm = $this->dbPrepareAndExecute($sql,$vars); // returns $stm
+            $stm = $this->dbPrepareAndExecute($conn,$sql,$vars); // returns $stm
             $this->afterCreate( $args );
         }
         catch ( Exception $e )
@@ -408,16 +427,14 @@ class BaseModel
             ));
         }
 
-
-        $driver = $this->getCurrentQueryDriver();
+        $driver = $this->getQueryDriver($dsId);
 
         $pkId = null;
         if( 'pgsql' === $driver->type ) {
             $pkId = $stm->fetchColumn();
         } else {
-            $pkId = $this->_connection->lastInsertId();
+            $pkId = $conn->lastInsertId();
         }
-
 
         if( $this->_autoReload ) {
             // if possible, we should reload the data.
@@ -449,9 +466,11 @@ class BaseModel
             ));
         }
 
-        $pk = $this->_schema->primaryKey;
-        $query = $this->createQuery();
-        $kVal = null;
+        $dsId  = $this->_schema->getReadSourceId();
+        $pk    = $this->_schema->primaryKey;
+        $query = $this->createQuery( $dsId );
+        $conn  = $this->getConnection( $dsId );
+        $kVal  = null;
         if( is_array($args) ) {
             $query->select('*')
                 ->whereFromArgs($args);
@@ -475,7 +494,7 @@ class BaseModel
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         $stm = null;
         try {
-            $stm = $this->dbPrepareAndExecute($sql,$query->vars);
+            $stm = $this->dbPrepareAndExecute($conn,$sql,$query->vars);
 
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             if( false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
@@ -514,6 +533,7 @@ class BaseModel
     public function _delete()
     {
         $k = $this->_schema->primaryKey;
+
         if( $k && ! isset($this->_data[$k]) ) {
             return new OperationError('Record is not loaded, Record delete failed.');
         }
@@ -523,10 +543,12 @@ class BaseModel
             return $this->reportError( _('Permission denied. Can not delete record.') , array( ));
         }
 
+        $dsId = $this->_schema->getWriteSourceId();
+        $conn = $this->getConnection( $dsId );
 
         $this->beforeDelete( $this->_data );
 
-        $query = $this->createQuery();
+        $query = $this->createQuery( $dsId );
         $query->delete();
         $query->where()
             ->equal( $k , $kVal );
@@ -534,7 +556,7 @@ class BaseModel
 
         $validateResults = array();
         try {
-            $this->dbPrepareAndExecute($sql, $query->vars );
+            $this->dbPrepareAndExecute($conn,$sql, $query->vars );
         } catch( PDOException $e ) {
             return $this->reportError( _('Delete failed.') , array(
                 'sql'         => $sql,
@@ -580,8 +602,11 @@ class BaseModel
             ? $this->_data[$k] : null;
 
         $args = $this->filterArrayWithColumns($args);
-        $sql = null;
+        $sql  = null;
         $vars = null;
+
+        $dsId = $this->_schema->getWriteSourceId();
+        $conn = $this->getConnection( $dsId );
 
         try 
         {
@@ -641,14 +666,14 @@ class BaseModel
                 }
             }
 
-            $query = $this->createQuery();
+            $query = $this->createQuery( $dsId );
 
             $query->update($args)->where()
                 ->equal( $k , $kVal );
 
             $sql = $query->build();
             $vars = $query->vars;
-            $stm = $this->dbPrepareAndExecute($sql,$vars);
+            $stm = $this->dbPrepareAndExecute($conn, $sql, $vars);
 
             // merge updated data
             $this->_data = array_merge($this->_data,$args);
@@ -744,39 +769,46 @@ class BaseModel
      *              $row['name'];
      *     }
      */
-    public function dbQuery($sql)
+    public function dbQuery($sql,$dsId = 'default')
     {
-        $conn = $this->_connection;
+        $conn = $this->getConnection($dsId);
         // $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $conn->query( $sql );
     }
 
 
-    public function dbPrepareAndExecute($sql,$args = array() )
+    public function dbPrepareAndExecute($conn, $sql,$args = array() )
     {
-        $stm  = $this->_connection->prepare( $sql );
+        $stm  = $conn->prepare( $sql );
         $stm->execute( $args );
         return $stm;
     }
 
-
-    // xxx: process for read/write source
-    public function getDataSourceId()
-    {
-        // XXX:
-        return 'default';
-    }
 
     /**
      * get default connection object (PDO) from connection manager
      *
      * @return PDO
      */
-    public function getConnection()
+    public function getConnection( $dsId = 'default' )
     {
         $connManager = ConnectionManager::getInstance();
-        return $connManager->getConnection( 'default' ); // xxx: support read/write connection later
+        return $connManager->getConnection( $dsId ); 
     }
+
+    public function getReadConnection()
+    {
+        $id = $this->_schema->getReadSourceId();
+        return $this->_connection->getConnection( $id );
+    }
+
+    public function getWriteConnection()
+    {
+        $id = $this->_schema->getWriteSourceId();
+        return $this->_connection->getConnection( $id );
+    }
+
+
 
     public function getSchemaProxyClass()
     {
@@ -801,8 +833,7 @@ class BaseModel
                 return SchemaLoader::load( static::schema_proxy_class );
             break;
             case '_connection':
-                $connManager = ConnectionManager::getInstance();
-                return $connManager->getConnection( 'default' ); // xxx: support read/write connection later
+                return ConnectionManager::getInstance();
             break;
         }
 
@@ -1106,11 +1137,13 @@ class BaseModel
     public static function __static_update($args) 
     {
         $model = new static;
-        $query = $model->createExecutiveQuery();
+        $dsId  = $model->_schema->getWriteSourceId();
+        $conn  = $model->getConnection($dsId);
+        $query = $model->createExecutiveQuery($dsId);
         $query->update($args);
-        $query->callback = function($builder,$sql) use ($model) {
+        $query->callback = function($builder,$sql) use ($model,$conn) {
             try {
-                $stm = $model->dbPrepareAndExecute($sql,$builder->vars);
+                $stm = $model->dbPrepareAndExecute($conn,$sql,$builder->vars);
             }
             catch ( PDOException $e )
             {
@@ -1136,11 +1169,13 @@ class BaseModel
     public static function __static_delete()
     {
         $model = new static;
-        $query = $model->createExecutiveQuery();
+        $dsId  = $model->_schema->getWriteSourceId();
+        $conn  = $model->getConnection($dsId);
+        $query = $model->createExecutiveQuery($dsId);
         $query->delete();
-        $query->callback = function($builder,$sql) use ($model) {
+        $query->callback = function($builder,$sql) use ($model,$conn) {
             try {
-                $stm = $model->dbPrepareAndExecute($sql,$builder->vars);
+                $stm = $model->dbPrepareAndExecute($conn,$sql,$builder->vars);
             }
             catch ( PDOException $e )
             {
@@ -1154,10 +1189,13 @@ class BaseModel
     public static function __static_load($args)
     {
         $model = new static;
+        $dsId  = $model->_schema->getReadSourceId();
+        $conn  = $model->getConnection( $dsId );
+
         if( is_array($args) ) {
-            $q = $model->createExecutiveQuery();
-            $q->callback = function($b,$sql) use ($model) {
-                $stm = $model->dbPrepareAndExecute($sql,$b->vars);
+            $q = $model->createExecutiveQuery($dsId);
+            $q->callback = function($b,$sql) use ($model,$conn) {
+                $stm = $model->dbPrepareAndExecute($conn,$sql,$b->vars);
                 return $stm->fetchObject( get_class($model) );
             };
             $q->limit(1);
