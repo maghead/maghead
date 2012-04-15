@@ -47,6 +47,21 @@
 
 <pre class="php"><code><span style="color: #000000"><span style="color: #0000BB">&lt;?php<br />&nbsp;&nbsp;&nbsp;&nbsp;$names&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">NameCollection</span><span style="color: #007700">;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$names</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">where</span><span style="color: #007700">()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">equal</span><span style="color: #007700">(</span><span style="color: #DD0000">'name'</span><span style="color: #007700">,</span><span style="color: #DD0000">'Foo'</span><span style="color: #007700">)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;</span><span style="color: #0000BB">groupBy</span><span style="color: #007700">(</span><span style="color: #DD0000">'name'</span><span style="color: #007700">,</span><span style="color: #DD0000">'address'</span><span style="color: #007700">);<br /></span><span style="color: #0000BB">?&gt;</span></span></code></pre>
 
+<p>Filter:</p>
+
+<pre><code>$newCollection = $names-&gt;filter(function($item) { return true });
+$newCollection-&gt;filter(function($item) { 
+        return $item-&gt;confirmed;
+});
+</code></pre>
+
+<p>Each:</p>
+
+<pre><code>$names-&gt;each(function($item) {
+    $item-&gt;update(array( .... ));
+});
+</code></pre>
+
 <p>To get schema proxy class from collection class:</p>
 
 <pre><code>$authors = new AuthorCollection;
