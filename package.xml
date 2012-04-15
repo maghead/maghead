@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-04-15</date>
-  <time>21:06:02</time>
+  <date>2012-04-16</date>
+  <time>00:49:26</time>
   <version>
     <release>1.4.0</release>
     <api>1.4.0</api>
@@ -47,6 +47,9 @@
       <file name="doc/schema.md" role="doc" md5sum="13b48fc19b14d31403580a1d99378a88"/>
       <file name="doc/schema_builder.md" role="doc" md5sum="42843a8161f0fa23673651199107b76b"/>
       <file name="doc/setup.md" role="doc" md5sum="636d1f52ac693ebde78866646b4bbb8b"/>
+      <file name="tests/bootstrap.php" role="test" md5sum="7f5458797e1e62c2d2a3396fc6216b37"/>
+      <file name="tests/lazy.php" role="test" md5sum="e18463ef3e30c8ea10dc6e39d8f90e1f"/>
+      <file name="tests/lazy.yml" role="test" md5sum="a35e7db349dea65da593546c4db8ce19"/>
       <file name="tests/LazyRecord/CodeGen/ClassTemplateTest.php" role="test" md5sum="c5a4c30183b7e2a8115e1a5aca67d7e4"/>
       <file name="tests/LazyRecord/CodeGenTest.php" role="test" md5sum="05e85cf12094e56c15d8c94013bffbc2"/>
       <file name="tests/LazyRecord/CollectionPagerTest.php" role="test" md5sum="f131d5667b0c554d3bbd8d46ee888743"/>
@@ -66,9 +69,6 @@
       <file name="tests/LazyRecord/SchemaSqlBuilderTest.php" role="test" md5sum="764521af44a1323a40ca9fb52bffeb00"/>
       <file name="tests/LazyRecord/TableParserTest.php" role="test" md5sum="a79e7bb1843ed211c6bbe6d7f7d4619c"/>
       <file name="tests/LazyRecord/TypesTest.php" role="test" md5sum="628788de6ab98b0b7de9bae79d4102e1"/>
-      <file name="tests/bootstrap.php" role="test" md5sum="7f5458797e1e62c2d2a3396fc6216b37"/>
-      <file name="tests/lazy.php" role="test" md5sum="e18463ef3e30c8ea10dc6e39d8f90e1f"/>
-      <file name="tests/lazy.yml" role="test" md5sum="a35e7db349dea65da593546c4db8ce19"/>
       <file name="tests/schema/tests/Address.php" role="test" md5sum="ad9b5fb23faafc1ba5a9ff8bee79aa60"/>
       <file name="tests/schema/tests/AddressBase.php" role="test" md5sum="c6c967855fa60531d483f571d98120bd"/>
       <file name="tests/schema/tests/AddressCollection.php" role="test" md5sum="df2773e48c567b9115c4d7cd182d277c"/>
@@ -178,7 +178,7 @@
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="40818497c77ff9c7e1c20dcb49e6f40e"/>
       <file name="package.ini" role="data" md5sum="271e7aaadedf5e0ac4909aec6181cc30"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="5aef1bb9db0b6d47058cc58b6e8527e9"/>
+      <file name="lazy" role="script" md5sum="500e0b48c94db4867bae18e7305913ba"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
   </contents>
@@ -252,6 +252,9 @@
       <install name="doc/schema.md" as="schema.md"/>
       <install name="doc/schema_builder.md" as="schema_builder.md"/>
       <install name="doc/setup.md" as="setup.md"/>
+      <install name="tests/bootstrap.php" as="bootstrap.php"/>
+      <install name="tests/lazy.php" as="lazy.php"/>
+      <install name="tests/lazy.yml" as="lazy.yml"/>
       <install name="tests/LazyRecord/CodeGen/ClassTemplateTest.php" as="LazyRecord/CodeGen/ClassTemplateTest.php"/>
       <install name="tests/LazyRecord/CodeGenTest.php" as="LazyRecord/CodeGenTest.php"/>
       <install name="tests/LazyRecord/CollectionPagerTest.php" as="LazyRecord/CollectionPagerTest.php"/>
@@ -271,9 +274,6 @@
       <install name="tests/LazyRecord/SchemaSqlBuilderTest.php" as="LazyRecord/SchemaSqlBuilderTest.php"/>
       <install name="tests/LazyRecord/TableParserTest.php" as="LazyRecord/TableParserTest.php"/>
       <install name="tests/LazyRecord/TypesTest.php" as="LazyRecord/TypesTest.php"/>
-      <install name="tests/bootstrap.php" as="bootstrap.php"/>
-      <install name="tests/lazy.php" as="lazy.php"/>
-      <install name="tests/lazy.yml" as="lazy.yml"/>
       <install name="tests/schema/tests/Address.php" as="schema/tests/Address.php"/>
       <install name="tests/schema/tests/AddressBase.php" as="schema/tests/AddressBase.php"/>
       <install name="tests/schema/tests/AddressCollection.php" as="schema/tests/AddressCollection.php"/>
