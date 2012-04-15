@@ -149,7 +149,6 @@ class ConnectionManager
                 @$config['pass'], 
                 @$config['connection_options'] );
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
             $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);  // TODO: make this optional
 
             // $driver = $this->getQueryDriver($sourceId);
@@ -223,6 +222,24 @@ class ConnectionManager
     }
 
 
+    /**
+     * get pdo connetion and make a query
+     *
+     * @param string $sql SQL statement
+     */
+    public function query($dsId,$sql)
+    {
+        $conn = $this->getConnection($dsId);
+        return $conn->query( $sql );
+    }
+
+    public function prepareAndExecute($dsId,$sql,$args = array() )
+    {
+        $conn = $this->getConnection($dsId);
+        $stm = $conn->prepare( $sql );
+        $stm->execute( $args );
+        return $stm;
+    }
     
 }
 
