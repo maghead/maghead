@@ -4,6 +4,9 @@ use CLIFramework\Application;
 
 class Console extends Application
 {
+    const name = 'LazyRecord';
+    const version = '1.4.0';
+
     public function init()
     {
         parent::init();
