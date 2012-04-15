@@ -20,6 +20,8 @@ class {{ schema.getModelName }}SchemaProxy extends RuntimeSchema
         $this->collectionClass = {{schema_data.collection_class|export}};
         $this->label           = {{schema_data.label|export}};
         $this->relations       = {{schema_data.relations|export}};
+        $this->readSourceId    = {{schema_data.read_data_source|export}};
+        $this->writeSourceId    = {{schema_data.write_data_source|export}};
     }
 
 }
