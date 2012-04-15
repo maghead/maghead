@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-04-15</date>
-  <time>21:03:57</time>
+  <time>21:06:02</time>
   <version>
-    <release>1.3.7</release>
-    <api>1.3.7</api>
+    <release>1.4.0</release>
+    <api>1.4.0</api>
   </version>
   <stability>
     <release>stable</release>
@@ -138,7 +138,7 @@
       <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="be57069c96dd9b381320c20d48cb920d"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="c6d764c85c701a73d9980ec19413a120"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="651faa297a7dc583d12d09109dd758c9"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="721a41f17c53be4e0d2366a598a2d13e"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="a131224280c0588afe333cf3fdfc7aa8"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="eaefc12504235f6af498cb9a56fded48"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
@@ -176,9 +176,9 @@
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="40818497c77ff9c7e1c20dcb49e6f40e"/>
-      <file name="package.ini" role="data" md5sum="2d963f35c0e99f6788e9a97a232644f4"/>
+      <file name="package.ini" role="data" md5sum="271e7aaadedf5e0ac4909aec6181cc30"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
-      <file name="lazy" role="script" md5sum="d3023777e67db17634252eee1e0e0326"/>
+      <file name="lazy" role="script" md5sum="5aef1bb9db0b6d47058cc58b6e8527e9"/>
       <file name="scripts/lazy.php" role="script" md5sum="49d1871a35e05ce0f499b0eba0c470b8"/>
     </dir>
   </contents>
