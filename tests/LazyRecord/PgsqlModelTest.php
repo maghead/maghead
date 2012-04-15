@@ -52,7 +52,7 @@ class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
 
 
 
-        $query = $author->createQuery();
+        $query = $author->createQuery('default');
         ok( $query );
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
