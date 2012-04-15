@@ -9,12 +9,6 @@ class SchemaDeclare extends SchemaBase
 
     public $mixins = array();
 
-    public $readSourceId;
-
-    public $writeSourceId;
-
-    public $dataSourceId = 'default';
-
     public function __construct()
     {
         $this->build();

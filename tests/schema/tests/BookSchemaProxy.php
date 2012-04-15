@@ -128,6 +128,8 @@ class BookSchemaProxy extends RuntimeSchema
         ),
     ),
 );
+        $this->readSourceId    = 'default';
+        $this->writeSourceId    = 'default';
     }
 
 }

@@ -47,6 +47,8 @@ class UserSchemaProxy extends RuntimeSchema
         $this->label           = 'User';
         $this->relations       = array( 
 );
+        $this->readSourceId    = 'default';
+        $this->writeSourceId    = 'default';
     }
 
 }
