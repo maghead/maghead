@@ -72,7 +72,6 @@ class BaseModel
         return true;
     }
 
-
     public function getQueryDriver( $dsId )
     {
         return $this->_connection->getQueryDriver( $dsId );
@@ -88,15 +87,6 @@ class BaseModel
     {
         $id = $this->_schema->getReadSourceId();
         return $this->getQueryDriver( $id );
-    }
-
-    public function getCurrentQueryDriver()
-    {
-        static $driver;
-        if( $driver ) {
-            return $driver;
-        }
-        return ConnectionManager::getInstance()->getQueryDriver( $this->getDataSourceId() );
     }
 
     public function createQuery( $dsId = 'default' )
@@ -794,12 +784,6 @@ class BaseModel
     {
         $connManager = ConnectionManager::getInstance();
         return $connManager->getConnection( $dsId ); 
-    }
-
-    public function getReadConnection()
-    {
-        $id = $this->_schema->getReadSourceId();
-        return $this->_connection->getConnection( $id );
     }
 
     public function getWriteConnection()
