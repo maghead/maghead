@@ -46,6 +46,13 @@ class AddressSchema extends SchemaDeclare
 
         // mixin
         $this->mixin('tests\MetadataMixinSchema');
+
+
+        // optional
+
+
+        $this->writeTo('master');   // data source for writing
+        $this->readFrom('slave');   // data source for reading
     }
 }
 ?>
