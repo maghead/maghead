@@ -20,15 +20,20 @@ class SchemaDeclare extends SchemaBase
         $this->build();
     }
 
-    public function schema() {  }
+    public function schema() 
+    {
+
+    }
 
 
-    public function writeTo( $id ) {
+    public function writeTo( $id ) 
+    {
         $this->writeSourceId = $id;
         return $this;
     }
 
-    public function readFrom( $id ) {
+    public function readFrom( $id ) 
+    {
         $this->readSourceId = $id;
         return $this;
     }
@@ -86,7 +91,8 @@ class SchemaDeclare extends SchemaBase
             'model_class'      => $this->getModelClass(),
             'collection_class' => $this->getCollectionClass(),
             'relations'      => $this->relations,
-            'data_source_id' => $this->dataSourceId,
+            'read_data_source' => $this->readSourceId,
+            'write_data_source' => $this->writeSourceId,
         );
     }
 
