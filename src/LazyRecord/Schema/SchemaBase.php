@@ -24,6 +24,21 @@ abstract class SchemaBase
 
     public $primaryKey;
 
+    public $readSourceId = 'default';
+
+    public $writeSourceId = 'default';
+
+
+    public function getReadSourceId()
+    {
+        return $this->readSourceId;
+    }
+
+    public function getWriteSourceId()
+    {
+        return $this->writeSourceId;
+    }
+
 
     public function getRelation($relationId)
     {

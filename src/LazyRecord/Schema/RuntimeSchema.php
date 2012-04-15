@@ -66,5 +66,4 @@ class RuntimeSchema extends SchemaBase
         return new $this->collectionClass;
     }
 
-
 }
