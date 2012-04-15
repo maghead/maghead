@@ -55,7 +55,6 @@ class RuntimeSchema extends SchemaBase
         return $columns;
     }
 
-
     public function newModel()
     {
         return new $this->modelClass;
