@@ -86,5 +86,12 @@ files into the executable phar file <code>lazy</code>:</p>
 <pre><code>$ bash scripts/compile.sh
 </code></pre>
 
+<p>To build sql with specific data source:</p>
+
+<pre><code>php scripts/lazy.php build-sql --data-source=mysql  --rebuild
+php scripts/lazy.php build-sql --data-source=master --rebuild
+php scripts/lazy.php build-sql --data-source=slave  --rebuild
+</code></pre>
+
 </body>
 </html>
