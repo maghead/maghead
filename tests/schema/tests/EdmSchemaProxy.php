@@ -73,6 +73,8 @@ class EdmSchemaProxy extends RuntimeSchema
         $this->label           = 'Edm';
         $this->relations       = array( 
 );
+        $this->readSourceId    = 'default';
+        $this->writeSourceId    = 'default';
     }
 
 }
