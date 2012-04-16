@@ -23,5 +23,3 @@ class OperationError extends OperationResult
 
 }
 
-
-
