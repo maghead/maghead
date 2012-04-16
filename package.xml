@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-04-16</date>
-  <time>02:18:49</time>
+  <time>16:07:11</time>
   <version>
     <release>1.4.0</release>
     <api>1.4.0</api>
@@ -125,7 +125,7 @@
       <file name="tests/src/PHPUnit/Framework/ModelTestCase.php" role="test" md5sum="be95ce16e294b553e38f521c349b0660"/>
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
-      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="0535497a1a5b35ec81e365b977b3d52c"/>
+      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="2badbf6572b67a292db79950bcc7945a"/>
       <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="ec3eb000af0817885cafce7b90b8bf85"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
       <file name="src/LazyRecord/CodeGen/ClassMember.php" role="php" md5sum="5862b6f6f9640e9c3795a74aa5f5b70e"/>
@@ -149,7 +149,7 @@
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
       <file name="src/LazyRecord/Inflator.php" role="php" md5sum="fd569cdc9c91c710365c3eecd92caa55"/>
       <file name="src/LazyRecord/Inflector.php" role="php" md5sum="f8bea1b8f18c3331cb734b3af534c1e9"/>
-      <file name="src/LazyRecord/OperationResult/OperationError.php" role="php" md5sum="f32057bde208b9dd559712b05f380f68"/>
+      <file name="src/LazyRecord/OperationResult/OperationError.php" role="php" md5sum="633dc701f3ccf96bfdfdc80287d40f2d"/>
       <file name="src/LazyRecord/OperationResult/OperationResult.php" role="php" md5sum="2dc400b79fa053e6b1c0e2fa215ce81d"/>
       <file name="src/LazyRecord/OperationResult/OperationSuccess.php" role="php" md5sum="0223f9434a0f344b6ac24a2e11ca7822"/>
       <file name="src/LazyRecord/QueryDriver.php" role="php" md5sum="7f2b8fae8b6ab267717d4316250d5fe2"/>
