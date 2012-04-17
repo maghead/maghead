@@ -125,6 +125,8 @@ class SchemaGenerator
     protected function buildBaseModelClass($schema)
     {
         $baseClass = $schema->getBaseModelClass();
+
+        // XXX: should export more information, so we don't need to get from schema. 
         $cTemplate = new CodeGen\ClassTemplate( $baseClass );
         $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
         $cTemplate->addConst( 'collection_class' , '\\' . ltrim($schema->getCollectionClass(),'\\') );

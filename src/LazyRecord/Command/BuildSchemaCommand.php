@@ -33,6 +33,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
         $loader->load();
         $loader->initForBuild();
 
+        $this->logger->info("Initializing schema generator...");
         $generator = new SchemaGenerator;
         $generator->setLogger( $logger );
 
