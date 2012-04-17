@@ -756,7 +756,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         $duration = (microtime(true) - $s) / $cnt * 1000000; // get average microtime.
         
-        $limit = 1400;
+        // $limit = 1400; before commit: e9c891ee3640f58871eb676df5f8f54756b14354
+        $limit = 3500;
         if( $duration > $limit ) {
             ok( false , "performance test: should be less than $limit ms, got $duration ms." );
         }

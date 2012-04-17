@@ -15,6 +15,12 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         );
     }
 
+    public function testLazyAttributes()
+    {
+        $authors = new \tests\AuthorCollection;
+        ok( $authors->_query , 'has lazy attribute' );
+    }
+
     public function testIterator()
     {
         $authors = new \tests\AuthorCollection;
@@ -27,6 +33,7 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
     public function testCollection()
     {
         $author = new \tests\Author;
+
         foreach( range(1,20) as $i ) {
             $ret = $author->create(array(
                 'name' => 'Foo-' . $i,
