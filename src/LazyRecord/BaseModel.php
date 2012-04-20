@@ -468,6 +468,7 @@ class BaseModel
         else {
             $kVal = $args;
             $column = $this->_schema->getColumn( $pk );
+            
             if( ! $column ) {
                 throw new Exception("Primary key is not defined: $pk .");
             }
@@ -844,10 +845,9 @@ class BaseModel
                 if( ! $this->hasValue($sColumn) )
                     throw new Exception("The value of $sColumn is not defined.");
                 $sValue = $this->getValue( $sColumn );
-
                 $model = $fpSchema->newModel();
                 $model->load(array( 
-                    $fColumn => $this->getValue( $sValue ),
+                    $fColumn => $sValue,
                 ));
                 return $model;
             }
@@ -868,7 +868,7 @@ class BaseModel
                     ->equal( $fColumn, $sValue );
 
                 $collection->setPresetVars(array( 
-                    $fColumn => $this->getValue( $sColumn )
+                    $fColumn => $sValue,
                 ));
                 return $collection;
             }
