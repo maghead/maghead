@@ -488,13 +488,15 @@ class BaseModel
 
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             if( false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
-                throw new Exception('data load failed.');
+                throw new Exception('Data load failed.');
             }
         }
         catch ( Exception $e ) 
         {
             return $this->reportError( 'Data load failed' , array(
                 'sql' => $sql,
+                'args' => $args,
+                'vars' => $query->vars,
                 'exception' => $e,
                 'validations' => $validateResults,
             ));
