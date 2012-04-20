@@ -337,6 +337,20 @@ class BaseCollection
         return $this->_itemCursor;
     }
 
+    public function splice($pos,$count = null)
+    {
+        return array_splice( $this->_items, $pos, $count);
+    }
+
+    public function first()
+    {
+        return $this->_items[0];
+    }
+
+    public function last()
+    {
+        return end($this->_items);
+    }
 
 
     /** array access interface */
