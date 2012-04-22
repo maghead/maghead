@@ -468,6 +468,7 @@ class BaseModel
         else {
             $kVal = $args;
             $column = $this->_schema->getColumn( $pk );
+            
             if( ! $column ) {
                 throw new Exception("Primary key is not defined: $pk .");
             }
@@ -488,13 +489,15 @@ class BaseModel
 
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             if( false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
-                throw new Exception('data load failed.');
+                throw new Exception('Data load failed.');
             }
         }
         catch ( Exception $e ) 
         {
             return $this->reportError( 'Data load failed' , array(
                 'sql' => $sql,
+                'args' => $args,
+                'vars' => $query->vars,
                 'exception' => $e,
                 'validations' => $validateResults,
             ));
@@ -842,10 +845,9 @@ class BaseModel
                 if( ! $this->hasValue($sColumn) )
                     throw new Exception("The value of $sColumn is not defined.");
                 $sValue = $this->getValue( $sColumn );
-
                 $model = $fpSchema->newModel();
                 $model->load(array( 
-                    $fColumn => $this->getValue( $sValue ),
+                    $fColumn => $sValue,
                 ));
                 return $model;
             }
@@ -866,7 +868,7 @@ class BaseModel
                     ->equal( $fColumn, $sValue );
 
                 $collection->setPresetVars(array( 
-                    $fColumn => $this->getValue( $sColumn )
+                    $fColumn => $sValue,
                 ));
                 return $collection;
             }
