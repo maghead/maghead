@@ -12,30 +12,39 @@ if [[ $os == "Darwin" ]] ; then
     port=$(which port)
     brew=$(which brew)
     if [[ -e $port ]] ; then
-        $port install php5-yaml
-        $port install php5-apc
+        sudo $port install php5-yaml
+        sudo $port install php5-apc
 
-        if [[ $install_mysql != 'n' ]]  ; then $port install php5-mysql      ; fi
-        if [[ $install_sqlite != 'n' ]] ; then $port install php5-sqlite     ; fi
-        if [[ $install_pgsql != 'n' ]]  ; then $port install php5-postgresql ; fi
+        if [[ $install_mysql != 'n' ]]  ; then sudo $port install php5-mysql      ; fi
+        if [[ $install_sqlite != 'n' ]] ; then sudo $port install php5-sqlite     ; fi
+        if [[ $install_pgsql != 'n' ]]  ; then sudo $port install php5-postgresql ; fi
     elif [[ -e $brew ]] ; then
         echo "brew install: not supported yet"
     fi
 elif [[ $os == "Linux" ]] ; then
     apt=$(which apt-get)
     if [[ -e $apt ]] ; then
-        $apt install -y php5-dev
-        $apt install -y php5-cli
-        $apt install -y php-apc
-        if [[ $install_mysql != 'n' ]]  ; then $apt install -y php5-mysql      ; fi
-        if [[ $install_sqlite != 'n' ]] ; then $apt install -y php5-sqlite     ; fi
-        if [[ $install_pgsql != 'n' ]]  ; then $apt install -y php5-postgresql ; fi
+        sudo $apt install -q -y php5-dev
+        sudo $apt install -q -y php5-cli
+        sudo $apt install -q -y php-apc
+        if [[ $install_mysql != 'n' ]]  ; then sudo $apt install -qq -y php5-mysql      ; fi
+        if [[ $install_sqlite != 'n' ]] ; then sudo $apt install -qq -y php5-sqlite     ; fi
+        if [[ $install_pgsql != 'n' ]]  ; then sudo $apt install -qq -y php5-pgsql ; fi
     fi
 fi
 
-mkdir /tmp
+mkdir -p /tmp
+cd /tmp
 pecl install yaml
+pear channel-discover pear.twig-project.org
 pear channel-discover pear.corneltek.com
-git clone https://c9s@github.com/c9s/LazyRecord.git
-cd LazyRecord
+if [[ ! -e LazyRecord ]] ; then
+    git clone git://github.com/c9s/LazyRecord.git
+    cd LazyRecord
+else
+    cd LazyRecord
+    git pull origin master
+fi
 pear install -f package.xml
+
+echo "LazyRecord is installed, please run `lazy` to start."
