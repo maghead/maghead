@@ -64,11 +64,11 @@ Install
 -------
 Install LazyRecord to system:
 
-    sudo bash -c "$(curl -# -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
+    sudo bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
 
 If you're using phpbrew:
 
-    bash -c "$(curl -# -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
+    bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
 
 Command-line Usage
 ------------------
