@@ -8,8 +8,13 @@ read -p "Install php-sqlite? (Y/n)" install_sqlite
 read -p "Install php-pgsql? (Y/n)" install_pgsql
 read -p "Install php-mysql? (Y/n)" install_mysql
 
-echo "Installing Onion..."
-curl -L -s http://install.onionphp.org/ | bash
+
+onion=$(which onion)
+
+if [[ ! -e $onion ]] ; then
+    echo "Onion is not found, Installing Onion..."
+    curl -L -s http://install.onionphp.org/ | bash
+fi
 
 echo "Installing dependencies..."
 if [[ $os == "Darwin" ]] ; then
@@ -43,15 +48,15 @@ pecl install yaml
 pear channel-discover pear.twig-project.org
 pear channel-discover pear.corneltek.com
 if [[ ! -e LazyRecord ]] ; then
-    git -q clone git://github.com/c9s/LazyRecord.git
+    git clone --quiet git://github.com/c9s/LazyRecord.git
     cd LazyRecord
 else
     cd LazyRecord
-    git -q pull origin master
+    git pull --quiet origin master
 fi
 
 echo "Installing LazyRecord..."
 pear install -a -f package.xml
 
 echo "LazyRecord is installed, please run 'lazy' to start."
-lazy
+lazy --version
