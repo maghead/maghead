@@ -58,10 +58,15 @@ Synopsis
 Requirement
 -----------
 - PHP 5.3.0 (MIN) 
+- YAML extension
+- PDO
+- PDO-mysql (optional)
+- PDO-pgsql (optional)
+- PDO-sqlite (optional)
 
+Install from Installer
+----------------------
 
-Install
--------
 Install LazyRecord to system:
 
     sudo bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
@@ -69,6 +74,28 @@ Install LazyRecord to system:
 If you're using phpbrew:
 
     bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
+
+
+Install manually
+----------------
+Install required extensions:
+
+    sudo pecl install apc
+    sudo pecl install yaml
+
+get php source code and install these extensions:
+
+* `pdo_mysql` (optional)
+* `pdo_pgsql` (optional)
+* `pdo_sqlite` (optional)
+
+Install LazyRecord:
+
+    git clone git://github.com/c9s/LazyRecord.git
+    cd LazyRecord
+    sudo pear channel-discover pear.corneltek.com
+    sudo pear channel-discover pear.twig-project.org
+    sudo pear install -f package.xml
 
 Command-line Usage
 ------------------
