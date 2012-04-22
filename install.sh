@@ -47,4 +47,5 @@ else
 fi
 pear install -f package.xml
 
-echo "LazyRecord is installed, please run `lazy` to start."
+echo "LazyRecord is installed, please run 'lazy' to start."
+lazy
