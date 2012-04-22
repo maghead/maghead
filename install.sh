@@ -11,6 +11,7 @@ read -p "Install php-mysql? (Y/n)" install_mysql
 echo "Installing Onion..."
 curl -L -s http://install.onionphp.org/ | bash
 
+echo "Installing dependencies..."
 if [[ $os == "Darwin" ]] ; then
     port=$(which port)
     brew=$(which brew)
@@ -27,12 +28,12 @@ if [[ $os == "Darwin" ]] ; then
 elif [[ $os == "Linux" ]] ; then
     apt=$(which apt-get)
     if [[ -e $apt ]] ; then
-        sudo $apt install -qq -y php5-dev
-        sudo $apt install -qq -y php5-cli
-        sudo $apt install -qq -y php-apc
-        if [[ $install_mysql != 'n' ]]  ; then sudo $apt install -qq -y php5-mysql      ; fi
-        if [[ $install_sqlite != 'n' ]] ; then sudo $apt install -qq -y php5-sqlite     ; fi
-        if [[ $install_pgsql != 'n' ]]  ; then sudo $apt install -qq -y php5-pgsql      ; fi
+        sudo $apt -qq install -y php5-dev
+        sudo $apt -qq install -y php5-cli
+        sudo $apt -qq install -y php-apc
+        if [[ $install_mysql != 'n' ]]  ; then sudo $apt -qq install -y php5-mysql      ; fi
+        if [[ $install_sqlite != 'n' ]] ; then sudo $apt -qq install -y php5-sqlite     ; fi
+        if [[ $install_pgsql != 'n' ]]  ; then sudo $apt -qq install -y php5-pgsql      ; fi
     fi
 fi
 
