@@ -43,13 +43,15 @@ pecl install yaml
 pear channel-discover pear.twig-project.org
 pear channel-discover pear.corneltek.com
 if [[ ! -e LazyRecord ]] ; then
-    git clone git://github.com/c9s/LazyRecord.git
+    git -q clone git://github.com/c9s/LazyRecord.git
     cd LazyRecord
 else
     cd LazyRecord
-    git pull origin master
+    git -q pull origin master
 fi
-pear install -f package.xml
+
+echo "Installing LazyRecord..."
+pear install -a -f package.xml
 
 echo "LazyRecord is installed, please run 'lazy' to start."
 lazy
