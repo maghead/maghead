@@ -60,7 +60,15 @@ Requirement
 - PHP 5.3.0 (MIN) 
 
 
+Install
+-------
+Install LazyRecord to system:
 
+    sudo bash -c "$(curl -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
+
+If you're using phpbrew:
+
+    bash -c "$(curl -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
 
 Command-line Usage
 ------------------
