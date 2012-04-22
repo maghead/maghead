@@ -28,6 +28,8 @@ if [[ $os == "Darwin" ]] ; then
         if [[ $install_sqlite != 'n' ]] ; then sudo $port -q install php5-sqlite     ; fi
         if [[ $install_pgsql != 'n' ]]  ; then sudo $port -q install php5-postgresql ; fi
     elif [[ -e $brew ]] ; then
+        brew install libyaml 
+        pecl install -f yaml
         echo "brew install: not supported yet"
     fi
 elif [[ $os == "Linux" ]] ; then
@@ -44,7 +46,6 @@ fi
 
 mkdir -p /tmp
 cd /tmp
-pecl install yaml
 pear channel-discover pear.twig-project.org
 pear channel-discover pear.corneltek.com
 if [[ ! -e LazyRecord ]] ; then
