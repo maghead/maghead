@@ -237,7 +237,9 @@ class ConnectionManager
     {
         $conn = $this->getConnection($dsId);
         $stm = $conn->prepare( $sql );
-        $stm->execute( $args );
+        $success = $stm->execute( $args );
+        // if failed ?
+        // if( false === $success ) {  }
         return $stm;
     }
     
