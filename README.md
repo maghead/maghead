@@ -78,6 +78,7 @@ If you're using phpbrew:
     bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
 
 
+
 Install manually
 ----------------
 Install required extensions:
@@ -91,6 +92,41 @@ get php source code and install these extensions:
 * `pdo_pgsql` (optional)
 * `pdo_sqlite` (optional)
 
+To build a PHP for LazyRecord, you can use phpbrew:
+
+    phpbrew -d install --no-test php-5.4.1 +mysql +pdo +pgsql +sqlite+pcntl+posix+ipc+readline+openssl
+
+Or to build PHP with custom postgresql base dir:
+
+    phpbrew -d install --no-test php-5.4.1 +pdo +mysql +pgsql=/opt/local/lib/postgresql91 +sqlite+pcntl+posix+ipc+readline+openssl
+
+And that will be:
+
+    ./configure '--prefix=/Users/c9s/.phpbrew/php/php-5.4.1'
+    '--with-config-file-path=/Users/c9s/.phpbrew/php/php-5.4.1/etc'
+    '--with-config-file-scan-dir=/Users/c9s/.phpbrew/php/php-5.4.1/var/db'
+    '--with-pear=/Users/c9s/.phpbrew/php/php-5.4.1/lib/php' '--disable-all'
+    '--enable-bcmath' '--enable-ctype' '--enable-dom' '--enable-exif'
+    '--enable-fileinfo' '--enable-filter' '--enable-hash' '--enable-json'
+    '--enable-libxml' '--enable-mbregex' '--enable-mbstring' '--enable-phar'
+    '--enable-session' '--enable-short-tags' '--enable-simplexml'
+    '--enable-sockets' '--enable-tokenizer' '--enable-xml' '--enable-xmlreader'
+    '--enable-xmlwriter' '--enable-zip' '--with-xsl' '--with-tidy'
+    '--with-xmlrpc' '--with-mhash' '--with-pcre-regex' '--with-zlib=/usr'
+    '--with-libxml-dir=/opt/local' '--with-curl=/opt/local'
+    '--with-gettext=/opt/local' '--enable-pdo' '--with-bz2=/usr' '--enable-cli'
+    '--enable-fpm' '--enable-posix' '--enable-calendar' '--enable-sockets'
+    '--with-readline=/usr' '--with-libedit=/usr' '--with-mysql=mysqlnd'
+    '--with-mysqli=mysqlnd' '--with-pdo-mysql=mysqlnd' '--with-pgsql'
+    '--with-pdo-pgsql' '--with-sqlite3' '--with-pdo-sqlite' '--enable-pcntl'
+    '--enable-shmop' '--enable-sysvsem' '--enable-sysvshm' '--enable-sysvmsg'
+    '--with-openssl=/opt/local'
+
+And update your php.ini:
+
+    date.timezone = Asia/Taipei
+    phar.readonly = Off
+
 Install LazyRecord:
 
     git clone git://github.com/c9s/LazyRecord.git
@@ -98,6 +134,7 @@ Install LazyRecord:
     sudo pear channel-discover pear.corneltek.com
     sudo pear channel-discover pear.twig-project.org
     sudo pear install -f package.xml
+
 
 Command-line Usage
 ------------------
