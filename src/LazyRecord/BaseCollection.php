@@ -395,6 +395,12 @@ class BaseCollection
         return $collection;
     }
 
+    public function loadQuery($dsId, $sql, $args = array() )
+    {
+        $stm = $this->_connection->prepareAndExecute( $dsId, $sql , $args );
+        $this->handle = $stm;
+    }
+
 
     static function fromArray($list)
     {

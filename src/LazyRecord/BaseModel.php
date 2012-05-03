@@ -762,15 +762,45 @@ class BaseModel
      *              $row['name'];
      *     }
      */
-    public function dbQuery($sql,$dsId = 'default')
+    public function dbQuery($dsId, $sql)
     {
         $conn = $this->getConnection($dsId);
-        // $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if( ! $conn )
+            throw new Exception("data source $dsId is not defined.");
         return $conn->query( $sql );
     }
 
 
-    public function dbPrepareAndExecute($conn, $sql,$args = array() )
+
+    /**
+     * Load record from an sql query
+     *
+     * @param string $dsId data source id
+     * @param string $sql  sql statement
+     * @param array  $args 
+     *
+     *     $result = $record->loadQuery( 'default', 'select * from ....', array( ... ) );
+     *
+     * @return OperationResult
+     */
+    public function loadQuery($dsId, $sql , $vars = array() ) 
+    {
+        $conn = $this->getConnection( $dsId );
+        $stm = $this->dbPrepareAndExecute($conn, $sql, $vars);
+        if( false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
+            return $this->reportError('Data load failed.', array( 
+                'sql' => $sql,
+                'vars' => $vars,
+            ));
+        }
+        return $this->reportSuccess( 'Data loaded', array( 
+            'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
+            'sql' => $sql
+        ));
+    }
+
+
+    public function dbPrepareAndExecute($conn, $sql, $args = array() )
     {
         $stm  = $conn->prepare( $sql );
         $stm->execute( $args );

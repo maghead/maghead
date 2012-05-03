@@ -1,6 +1,7 @@
 <?php
 require 'PHPUnit/TestMore.php';
 require 'vendor/pear/Universal/ClassLoader/BasePathClassLoader.php';
+mb_internal_encoding('UTF-8');
 $loader = new \Universal\ClassLoader\BasePathClassLoader(array(
     dirname(__DIR__) . '/src', 
     dirname(__DIR__) . '/vendor/pear',
