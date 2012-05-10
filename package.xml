@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-05-03</date>
-  <time>21:55:06</time>
+  <date>2012-05-10</date>
+  <time>23:02:13</time>
   <version>
-    <release>1.4.1</release>
-    <api>1.4.1</api>
+    <release>1.4.2</release>
+    <api>1.4.2</api>
   </version>
   <stability>
     <release>stable</release>
@@ -142,7 +142,7 @@
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="1f28f5e530d084a13a756415a7fe4224"/>
       <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="be57069c96dd9b381320c20d48cb920d"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="c6d764c85c701a73d9980ec19413a120"/>
-      <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="1d2d2cc4cd281b8d6d9ddd03f2a63bb4"/>
+      <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="2b5e9358dda779e11b80c7e643c78967"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="86777c4d7544a8afe3369216b4151285"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="eaefc12504235f6af498cb9a56fded48"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
@@ -181,7 +181,7 @@
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="40818497c77ff9c7e1c20dcb49e6f40e"/>
-      <file name="package.ini" role="data" md5sum="2dc88c50888d55797bb13c90667830fd"/>
+      <file name="package.ini" role="data" md5sum="d27ac34cc5643ce976cda0843619adc7"/>
       <file name="phpunit.xml" role="data" md5sum="78eba7f8524f5c711621bd8c7215e76d"/>
       <file name="lazy" role="script" md5sum="b3207dca450c7827115f70ae11088d10"/>
       <file name="scripts/lazy.php" role="script" md5sum="2482ce2ad785f5e13093851b59950151"/>
