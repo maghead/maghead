@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-05-10</date>
-  <time>23:02:13</time>
+  <date>2012-05-11</date>
+  <time>22:12:49</time>
   <version>
     <release>1.4.2</release>
     <api>1.4.2</api>
@@ -183,7 +183,7 @@
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="40818497c77ff9c7e1c20dcb49e6f40e"/>
       <file name="package.ini" role="data" md5sum="d27ac34cc5643ce976cda0843619adc7"/>
       <file name="phpunit.xml" role="data" md5sum="78eba7f8524f5c711621bd8c7215e76d"/>
-      <file name="lazy" role="script" md5sum="b3207dca450c7827115f70ae11088d10"/>
+      <file name="lazy" role="script" md5sum="90b7206dd61904633aa28c077c705e7b"/>
       <file name="scripts/lazy.php" role="script" md5sum="2482ce2ad785f5e13093851b59950151"/>
     </dir>
   </contents>
