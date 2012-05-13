@@ -58,5 +58,8 @@ Collection pager:
 
     $pager->next(); // next page
 
+## Query
+
+    $collection->loadQuery( 'master', 'sql....' , array( ':id' => $id ) );
 
 
