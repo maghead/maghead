@@ -1288,6 +1288,10 @@ class BaseModel
         return SchemaLoader::load( static::schema_proxy_class );
     }
 
+    public function newCollection() 
+    {
+        return $this->getSchema()->newCollection();
+    }
 
     // _schema methods
     public function getColumn($n)
