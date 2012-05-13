@@ -108,3 +108,18 @@ The following lines runs:
         ->execute();
 ?>
 
+## Connections
+
+    $pdo = $model->getReadConnection(); // PDO adapter
+    $pdo = $model->getWriteConnection(); // PDO adapter
+
+    $pdo = $model->getConnection( 'master' );
+
+## Query
+
+### load data from query
+
+    $model->loadQuery( 'master', 'select * from ... where id = :id' , array( ':id' => $id ));
+
+    $model->dbPrepareAndExecute( {pdo} , {sql}, {args} );
+

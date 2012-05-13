@@ -89,6 +89,9 @@ class BaseModel
         return $this->getQueryDriver( $id );
     }
 
+
+
+
     public function createQuery( $dsId = 'default' )
     {
         $q = new QueryBuilder;
@@ -800,6 +803,11 @@ class BaseModel
     }
 
 
+    /**
+     * We should move this method into connection manager.
+     *
+     * @return PDOStatement
+     */
     public function dbPrepareAndExecute($conn, $sql, $args = array() )
     {
         $stm  = $conn->prepare( $sql );
@@ -811,6 +819,7 @@ class BaseModel
     /**
      * get default connection object (PDO) from connection manager
      *
+     * @param string $dsId data source id
      * @return PDO
      */
     public function getConnection( $dsId = 'default' )
@@ -819,12 +828,27 @@ class BaseModel
         return $connManager->getConnection( $dsId ); 
     }
 
+
+    /**
+     *
+     * @return PDO
+     */
     public function getWriteConnection()
     {
         $id = $this->_schema->getWriteSourceId();
         return $this->_connection->getConnection( $id );
     }
 
+
+    /**
+     *
+     * @return PDO
+     */
+    public function getReadConnection()
+    {
+        $id = $this->_schema->getReadSourceId();
+        return $this->_connection->getConnection( $id );
+    }
 
 
     public function getSchemaProxyClass()
