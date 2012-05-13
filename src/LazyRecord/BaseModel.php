@@ -778,16 +778,18 @@ class BaseModel
     /**
      * Load record from an sql query
      *
-     * @param string $dsId data source id
      * @param string $sql  sql statement
      * @param array  $args 
+     * @param string $dsId data source id
      *
-     *     $result = $record->loadQuery( 'default', 'select * from ....', array( ... ) );
+     *     $result = $record->loadQuery( 'select * from ....', array( ... ) , 'master' );
      *
      * @return OperationResult
      */
-    public function loadQuery($dsId, $sql , $vars = array() ) 
+    public function loadQuery($sql , $vars = array() , $dsId = null ) 
     {
+        if( ! $dsId )
+            $dsId = $this->getReadSourceId();
         $conn = $this->getConnection( $dsId );
         $stm = $this->dbPrepareAndExecute($conn, $sql, $vars);
         if( false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {

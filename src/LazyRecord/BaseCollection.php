@@ -395,8 +395,10 @@ class BaseCollection
         return $collection;
     }
 
-    public function loadQuery($dsId, $sql, $args = array() )
+    public function loadQuery( $sql, $args = array() , $dsId = null )
     {
+        if( ! $dsId )
+            $dsId = $this->_schema->getReadSourceId();
         $stm = $this->_connection->prepareAndExecute( $dsId, $sql , $args );
         $this->handle = $stm;
     }
