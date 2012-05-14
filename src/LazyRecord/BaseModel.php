@@ -947,6 +947,8 @@ class BaseModel
                 $rId2 = $relation['relation']['id2'];  // get external relationId from the middle relation. (book from author_books)
 
                 $middleRelation = $this->_schema->getRelation( $rId );
+                if( ! $middleRelation )
+                    throw new \InvalidArgumentException("first level relationship of many-to-many $rId is empty");
 
                 // eg. author_books
                 $sColumn = $middleRelation['foreign']['column'];
@@ -956,7 +958,7 @@ class BaseModel
                 $foreignRelation = $spSchema->getRelation( $rId2 );
 
                 if( ! $foreignRelation )
-                    throw new \InvalidArgumentException( "relationship of $rId2 is empty." );
+                    throw new \InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
 
                 $c = $foreignRelation['foreign']['schema'];
                 if( ! $c ) 
