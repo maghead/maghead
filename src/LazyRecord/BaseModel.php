@@ -366,17 +366,17 @@ class BaseModel
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
-                if( $val !== null && is_array($val) ) {
-                    $c->typeCasting( $args[$n] );
+                if( $val !== null && ! is_array($val) ) {
+                    $c->typeCasting( $val );
                 }
 
                 // xxx: make this optional.
                 if( $val !== null 
                         && ! is_array($val) 
-                        && $c->required 
-                        && $msg = $c->checkTypeConstraint( $val ) ) 
+                        && $c->required )
+                        // && $msg = $c->checkTypeConstraint( $val ) ) 
                 {
-                    throw new Exception($msg);
+                    throw new Exception("Value of \"$n\" is required");
                 }
 
                 if( $c->filter || $c->canonicalizer ) {
@@ -875,7 +875,6 @@ class BaseModel
     public function __get( $key )
     {
         // lazy schema loader, xxx: make this static.
-        
         switch( $key ) {
             case '_schema':
                 return SchemaLoader::load( static::schema_proxy_class );
@@ -1002,7 +1001,7 @@ class BaseModel
                  */
                 $collection->setPostCreate(function($record,$args) use ($spSchema,$rId,$middleRelation,$foreignRelation,$value) {
                     $a = array( 
-                        $foreignRelation['self']['column'] => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
+                        $foreignRelation['self']['column']   => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
                         $middleRelation['foreign']['column'] => $value,  // self id
                     );
 
@@ -1020,6 +1019,7 @@ class BaseModel
                 throw new Exception("The relationship type is not supported.");
             }
         }
+
         if( isset( $this->_data[ $key ] ) ) {
             return $this->inflateColumnValue( $key );
         }
