@@ -875,6 +875,90 @@ class BaseModel
         $this->_data[ $name ] = $value; 
     }
 
+
+    /**
+     * get inflate value
+     */
+    public function get($name)
+    {
+        if( isset( $this->_data[ $name ] ) ) {
+            return $this->inflateColumnValue( $name );
+        }
+    }
+
+
+    /**
+     * Check if the value exist
+     *
+     * @param string $name
+     */
+    public function hasValue( $name )
+    {
+        return isset($this->_data[$name]);
+    }
+
+    /**
+     * Get raw value (without deflator)
+     *
+     * @param string $name
+     */
+    public function getValue( $name )
+    {
+        if( isset($this->_data[$name]) )
+            return $this->_data[$name];
+    }
+
+    /**
+     * Clear current data stash
+     */
+    public function clear()
+    {
+        $this->_data = array();
+    }
+
+
+    /**
+     * get current record data stash
+     *
+     * @return array record data stash
+     */
+    public function getData()
+    {
+        return $this->_data;
+    }
+
+
+    /**
+     * set raw data
+     *
+     * @param array $array
+     */
+    public function setData($array)
+    {
+        $this->_data = $array;
+    }
+
+
+
+    /**
+     * Do we have this column ?
+     *
+     * @param string $name
+     */
+    public function __isset( $name )
+    {
+        return isset($this->_schema->columns[ $name ]) 
+            || isset($this->_data[ $name ])
+            || '_schema' == $name
+            || $this->_schema->getRelation( $name )
+            ;
+    }
+
+
+    /**
+     *
+     * @param string $key
+     */
     public function __get( $key )
     {
         // lazy schema loader, xxx: make this static.
@@ -1022,60 +1106,9 @@ class BaseModel
                 throw new Exception("The relationship type is not supported.");
             }
         }
-
-        if( isset( $this->_data[ $key ] ) ) {
-            return $this->inflateColumnValue( $key );
-        }
+        return $this->get($key);
     }
 
-    public function hasValue( $name )
-    {
-        return isset($this->_data[$name]);
-    }
-
-
-    /**
-     * Get raw value (without deflator)
-     */
-    public function getValue( $name )
-    {
-        if( isset($this->_data[$name]) )
-            return $this->_data[$name];
-    }
-
-    public function __isset( $name )
-    {
-        return isset($this->_schema->columns[ $name ]) 
-            || isset($this->_data[ $name ])
-            || '_schema' == $name
-            || $this->_schema->getRelation( $name )
-            ;
-    }
-
-    /**
-     * clear current data stash
-     */
-    public function clear()
-    {
-        $this->_data = array();
-    }
-
-
-    /**
-     * get current record data stash
-     *
-     * @return array record data stash
-     */
-    public function getData()
-    {
-        return $this->_data;
-    }
-
-
-    public function setData($array)
-    {
-        $this->_data = $array;
-    }
 
     /**
      * return the collection object of current model object.
