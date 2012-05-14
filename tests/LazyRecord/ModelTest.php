@@ -447,6 +447,14 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $author = new \tests\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
+        ok( is_string( $author->getValue('id') ) );
+        ok( is_integer( $author->get('id') ) );
+
+        $book = $author->books->create(array( 'title' => 'Book Test' ));
+        ok( $book );
+
+        ok( $book->delete()->success );
+
         $ab = new \tests\AuthorBook;
         $book = new \tests\Book;
 
