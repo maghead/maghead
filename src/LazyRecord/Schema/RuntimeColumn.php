@@ -3,6 +3,7 @@ namespace LazyRecord\Schema;
 use DateTime;
 use LazyRecord\Deflator;
 use LazyRecord\Inflator;
+use Exception;
 
 class RuntimeColumn
 {
@@ -107,16 +108,16 @@ class RuntimeColumn
         {
             if( $this->isa === 'str' ) {
                 if( ! is_string( $value ) ) {
-                    return 'Value is not a string value. ' . "($value)";
+                    throw new Exception('Value is not a string value. ' . "($value)");
                 }
             }
             elseif( $this->isa === 'int' ) {
                 if( ! is_integer( $value ) )
-                    return 'Value is not a integer value.';
+                    throw new Exception( 'Value is not a integer value.' );
             }
             elseif( $this->isa === 'bool' || $this->isa === 'boolean' ) {
                 if( ! is_bool( $value ) )
-                    return 'Value is not a boolean value.';
+                    throw new Exception( 'Value is not a boolean value.' );
             }
         }
     }
