@@ -18,18 +18,27 @@ class InitConfCommand extends Command
          * 
          * build/lazy/config.php   # is generated
          */
-        $options = $this->getOptions();
-        $logger = $this->getLogger();
+        $options = $this->options;
+        $logger = $this->logger;
 
-        $configFile = 'config/lazy.yml';
+        $configFile = 'config/database.yml';
+
+
 
         if( file_exists($configFile) ) {
             $logger->info("Config file $configFile already exists.");
             return;
         }
 
-        $logger->info("Creating config file skeleton...");
+        $driver = $this->ask('Database driver [sqlite]',array('sqlite','pgsql','mysql',null)) ?: 'sqlite';
 
+        $dbName = $this->ask('Database name [:memory:]') ?: ':memory:';
+
+        $logger->info("Use $driver driver");
+        $logger->info("Use database $dbName");
+        $logger->info("DSN: $driver:$dbName");
+
+        $logger->info("Creating config file skeleton...");
         $content =<<<EOS
 ---
 bootstrap:
@@ -40,12 +49,11 @@ schema:
     - tests/schema
 data_sources:
   default:
-    dsn: 'sqlite:tests.db'
-    # dsn: 'sqlite::memory:'
-  mysql:
-    dsn: 'mysql:host=localhost;dbname=test'
-    user: root
-    pass: 123123
+    dsn: '$driver:$dbName'
+#    slave:
+#      dsn: 'mysql:host=localhost;dbname=test'
+#      user: root
+#      pass: 123123
 EOS;
         if( file_put_contents( $configFile , $content ) !== false ) {
             $logger->info("Config file is generated at: $configFile");
