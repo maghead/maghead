@@ -106,15 +106,16 @@ class RuntimeColumn
         if( $this->isa )
         {
             if( $this->isa === 'str' ) {
-                if( false === is_string( $value ) ) 
-                    return 'Value is not a string value.';
+                if( ! is_string( $value ) ) {
+                    return 'Value is not a string value. ' . "($value)";
+                }
             }
             elseif( $this->isa === 'int' ) {
-                if( false === is_integer( $value ) )
+                if( ! is_integer( $value ) )
                     return 'Value is not a integer value.';
             }
             elseif( $this->isa === 'bool' || $this->isa === 'boolean' ) {
-                if( false === is_bool( $value ) )
+                if( ! is_bool( $value ) )
                     return 'Value is not a boolean value.';
             }
         }
