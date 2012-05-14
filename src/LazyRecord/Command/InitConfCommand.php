@@ -11,7 +11,7 @@ class InitConfCommand extends Command
         return 'init configuration file.';
     }
 
-    public function execute()
+    public function execute($configFile = 'config/database.yml')
     {
         /**
          * $ lazy bulid-conf config/lazy.yml phifty/config/lazy.yml
@@ -20,10 +20,6 @@ class InitConfCommand extends Command
          */
         $options = $this->options;
         $logger = $this->logger;
-
-        $configFile = 'config/database.yml';
-
-
 
         if( file_exists($configFile) ) {
             $logger->info("Config file $configFile already exists.");
@@ -38,6 +34,13 @@ class InitConfCommand extends Command
         $logger->info("Use database $dbName");
         $logger->info("DSN: $driver:$dbName");
 
+        $user = '';
+        $password = '';
+        if( $driver != 'sqlite' ) {
+            $user = $this->ask('Database user');
+            $password = $this->ask('Database password');
+        }
+
         $logger->info("Creating config file skeleton...");
         $content =<<<EOS
 ---
@@ -50,6 +53,8 @@ schema:
 data_sources:
   default:
     dsn: '$driver:$dbName'
+    user: $user
+    pass: $password
 #    slave:
 #      dsn: 'mysql:host=localhost;dbname=test'
 #      user: root
