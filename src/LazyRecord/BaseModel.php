@@ -955,7 +955,14 @@ class BaseModel
 
                 $foreignRelation = $spSchema->getRelation( $rId2 );
 
-                $fSchema = new $foreignRelation['foreign']['schema'];
+                if( ! $foreignRelation )
+                    throw new \InvalidArgumentException( "relationship of $rId2 is empty." );
+
+                $c = $foreignRelation['foreign']['schema'];
+                if( ! $c ) 
+                    throw new \InvalidArgumentException('foreign schema class is not defined.');
+
+                $fSchema = new $c;
                 $fColumn = $foreignRelation['foreign']['column'];
                 $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
