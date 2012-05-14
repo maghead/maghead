@@ -366,17 +366,17 @@ class BaseModel
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
-                if( $val !== null && ! is_array($val) ) {
+                if( $val !== null && is_array($val) ) {
                     $c->typeCasting( $val );
                 }
 
-                // xxx: make this optional.
+                // xxx: make type constraint check as optional.
                 if( $val !== null 
                         && ! is_array($val) 
-                        && $c->required )
-                        // && $msg = $c->checkTypeConstraint( $val ) ) 
+                        && $c->required
+                        && $msg = $c->checkTypeConstraint( $val ) ) 
                 {
-                    throw new Exception("Value of \"$n\" is required");
+                    throw new Exception($msg);
                 }
 
                 if( $c->filter || $c->canonicalizer ) {
