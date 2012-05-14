@@ -59,6 +59,7 @@ class Column
             'null'          => self::ATTR_FLAG,
             'notNull'       => self::ATTR_FLAG,
             'required'      => self::ATTR_FLAG,
+            'typeConstraint' => self::ATTR_FLAG,
 
             /* column label */
             'label' => self::ATTR_ANY,
