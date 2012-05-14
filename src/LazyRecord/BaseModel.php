@@ -2,6 +2,7 @@
 namespace LazyRecord;
 use Exception;
 use PDOException;
+use InvalidArgumentException;
 use PDO;
 
 use SQLBuilder\QueryBuilder;
@@ -370,7 +371,11 @@ class BaseModel
                 }
 
                 // xxx: make this optional.
-                if( $val !== null && ! is_array($val) && $c->required && $msg = $c->checkTypeConstraint( $val ) ) {
+                if( $val !== null 
+                        && ! is_array($val) 
+                        && $c->required 
+                        && $msg = $c->checkTypeConstraint( $val ) ) 
+                {
                     throw new Exception($msg);
                 }
 
