@@ -494,7 +494,7 @@ class BaseCollection
 
     public function getResult()
     {
-        return $this->result;
+        return $this->_result;
     }
 
 
