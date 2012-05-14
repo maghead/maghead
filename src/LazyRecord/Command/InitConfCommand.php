@@ -61,7 +61,9 @@ data_sources:
 #      pass: 123123
 EOS;
         if( file_put_contents( $configFile , $content ) !== false ) {
-            $logger->info("Config file is generated at: $configFile");
+            $logger->info("Config file is generated: $configFile");
+            $logger->info("Please run build-conf to compile php format config file.");
         }
+
     }
 }
