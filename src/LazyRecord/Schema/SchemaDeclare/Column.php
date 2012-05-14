@@ -372,7 +372,11 @@ class Column
                     break;
 
                 case self::ATTR_FLAG:
-                    $this->attributes[ $method ] = true;
+                    if( isset($args[0]) ) {
+                        $this->attributes[ $method ] = $args[0];
+                    } else {
+                        $this->attributes[ $method ] = true;
+                    }
                     break;
 
                 default:
