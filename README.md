@@ -56,6 +56,8 @@ Synopsis
     }
 ```
 
+Please check `doc/` directory for more details.
+
 
 Requirement
 -----------
