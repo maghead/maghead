@@ -363,22 +363,23 @@ class BaseModel
                     }
                 }
 
+
+                // if type constraint is on, check type,
+                // if not, we should try to cast the type of value, 
+                // if type casting is fail, we should throw an exception.
+
+
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
-                if( $val !== null && is_array($val) ) {
+                if( $c->typeConstraint ) {
+                    if( $val !== null && ! is_array($val) ) {
+                        $c->checkTypeConstraint( $val );
+                    }
+                } 
+                // try to cast value 
+                else if( $val !== null && ! is_array($val) ) {
                     $c->typeCasting( $val );
-                }
-
-
-                // xxx: make type constraint check as optional.
-                if( $val !== null 
-                        && ! is_array($val) 
-                        && $c->required
-                        && $c->typeConstraint
-                        && $msg = $c->checkTypeConstraint( $val ) ) 
-                {
-                    throw new Exception($msg);
                 }
 
                 if( $c->filter || $c->canonicalizer ) {
