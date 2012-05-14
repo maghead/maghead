@@ -956,7 +956,6 @@ class BaseModel
                 $spSchema = SchemaLoader::load( $sSchema->getSchemaProxyClass() );
 
                 $foreignRelation = $spSchema->getRelation( $rId2 );
-
                 if( ! $foreignRelation )
                     throw new \InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
 
