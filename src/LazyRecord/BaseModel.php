@@ -1112,6 +1112,8 @@ class BaseModel
 
     /**
      * return the collection object of current model object.
+     *
+     * @return LazyRecord\BaseCollection
      */
     public function asCollection()
     {
@@ -1129,18 +1131,36 @@ class BaseModel
         return $this->_data;
     }
 
+
+    /**
+     * return json format data
+     *
+     * @return string JSON string
+     */
     public function toJson()
     {
         $ser = new JsonSerializer;
         return $ser->encode( $this->_data );
     }
 
+
+    /**
+     * return xml format data
+     *
+     * @return string XML string
+     */
     public function toXml()
     {
         $ser = new XmlSerializer;
         return $ser->encode( $this->_data );
     }
 
+
+    /**
+     * Return YAML format data
+     *
+     * @return string YAML string
+     */
     public function toYaml()
     {
         $ser = new YamlSerializer;
@@ -1148,7 +1168,7 @@ class BaseModel
     }
 
     /**
-     * deflate data and return.
+     * Deflate data and return.
      *
      * @return array
      */
