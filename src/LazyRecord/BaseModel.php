@@ -370,10 +370,12 @@ class BaseModel
                     $c->typeCasting( $val );
                 }
 
+
                 // xxx: make type constraint check as optional.
                 if( $val !== null 
                         && ! is_array($val) 
                         && $c->required
+                        && $c->typeConstraint
                         && $msg = $c->checkTypeConstraint( $val ) ) 
                 {
                     throw new Exception($msg);

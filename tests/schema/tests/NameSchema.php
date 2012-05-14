@@ -15,7 +15,7 @@ namespace tests {
                 ->autoIncrement();
 
             $this->column('name')
-                ->isa('str')
+                ->typeConstraint()
                 ->required()
                 ->varchar(128);
 
