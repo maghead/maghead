@@ -246,9 +246,11 @@ class BaseCollection
     }
 
 
+    /**
+     * Select count(*) statement to current query
+     */
     public function queryCount()
     {
-        // TODO: select count(*) statement to current query
         $dsId = $this->_schema->getReadSourceId();
         $query = $this->_query;
         $query->select( 'count(*)' );
@@ -542,7 +544,7 @@ class BaseCollection
 
 
     /**
-     * Convert query to sql
+     * Convert query to plain sql.
      */
     public function toSql()
     {
