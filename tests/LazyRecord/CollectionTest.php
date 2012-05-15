@@ -34,6 +34,16 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
     {
         $author = new \tests\Author;
 
+        foreach( range(1,3) as $i ) {
+            $ret = $author->create(array(
+                'name' => 'Bar-' . $i,
+                'email' => 'bar@bar' . $i,
+                'identity' => 'bar' . $i,
+                'confirmed' => $i % 2 ? true : false,
+            ));
+            $this->resultOK( true, $ret );
+        }
+
         foreach( range(1,20) as $i ) {
             $ret = $author->create(array(
                 'name' => 'Foo-' . $i,
@@ -44,7 +54,16 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
             $this->resultOK( true, $ret );
         }
 
+        $authors2 = new \tests\AuthorCollection;
+        $authors2->where()
+                ->like('name','Foo%');
+        $count = $authors2->queryCount();
+        ok( $count );
+        is( 20 , $count );
+
         $authors = new \tests\AuthorCollection;
+        $authors->where()
+                ->like('name','Foo%');
         $items = $authors->items();
         $size = $authors->size();
 
@@ -60,6 +79,13 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         }
         $size = $authors->free()->size();
         is( 0, $size );
+
+        {
+            $authors = new \tests\AuthorCollection;
+            foreach( $authors as $a ) {
+                $a->delete();
+            }
+        }
     }
 
 
