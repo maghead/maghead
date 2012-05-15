@@ -246,9 +246,22 @@ class BaseCollection
     }
 
 
+    public function queryCount()
+    {
+        // TODO: select count(*) statement to current query
+        $dsId = $this->_schema->getReadSourceId();
+        $query = $this->_query;
+        $query->select( 'count(*)' );
+
+        $sql  = $query->build();
+        $vars = $query->vars;
+        $handle = $this->_connection->prepareAndExecute($dsId,$sql, $vars);
+        return (int) $handle->fetchColumn();
+    }
+
 
     /**
-     * get selected item size
+     * Get selected item size.
      *
      * @return integer size
      */
@@ -256,7 +269,6 @@ class BaseCollection
     {
         return count($this->_items);
     }
-
 
     public function limit($number)
     {
@@ -273,13 +285,16 @@ class BaseCollection
     public function page($page,$pageSize = 20)
     {
         $this->limit($pageSize);
-        $offset = ($page - 1) * $pageSize;
-        $this->offset($offset);
+        $this->offset(
+            ($page - 1) * $pageSize
+        );
         return $this;
     }
 
     /**
      * Get selected items and wrap it into a CollectionPager object
+     *
+     * CollectionPager is a simple data pager, do not depends on database.
      *
      * @return CollectionPager
      */
@@ -296,6 +311,11 @@ class BaseCollection
     public function items()
     {
         return $this->_items;
+    }
+
+    protected function _fetchRow()
+    {
+        return $this->_handle->fetchObject( static::model_class );
     }
 
     /**
@@ -315,8 +335,7 @@ class BaseCollection
 
         // XXX: should be lazy
         $this->_itemData = array();
-        while( $o = $h->fetchObject( static::model_class ) ) {
-            $o->deflate();
+        while( $o = $this->_fetchRow() ) {
             $this->_itemData[] = $o;
         }
         return $this->_itemData;
@@ -326,9 +345,7 @@ class BaseCollection
 
 
 
-    /**
-     * Implements Iterator methods 
-     */
+    /******************** Implements Iterator methods ********************/
     public function rewind()
     { 
         $this->_itemCursor = 0;
@@ -356,6 +373,12 @@ class BaseCollection
     {
         return $this->_itemCursor;
     }
+
+    /*********************** End of Iterator methods ************************/
+
+
+
+
 
     public function splice($pos,$count = null)
     {
