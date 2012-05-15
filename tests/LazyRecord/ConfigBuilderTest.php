@@ -7,7 +7,7 @@ class ConfigBuilderTest extends PHPUnit_Framework_TestCase
         $builder = new LazyRecord\ConfigBuilder;
         ok($builder);
 
-        $builder->read('tests/lazy.yml');
+        $builder->read('tests/database.yml');
         $content = $builder->build();
         ok( $content );
 
