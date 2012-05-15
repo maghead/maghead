@@ -23,18 +23,21 @@ Where condition:
         ->groupBy('name','address');
 ?>
 
-Filter:
+## Filter
 
     $newCollection = $names->filter(function($item) { return true });
     $newCollection->filter(function($item) { 
             return $item->confirmed;
     });
 
-Each:
+## Each
 
     $names->each(function($item) {
         $item->update(array( .... ));
     });
+
+
+## Classes
 
 To get schema proxy class from collection class:
 
@@ -42,12 +45,12 @@ To get schema proxy class from collection class:
     $class = AuthorCollection::schema_proxy_class;
     $class = $authors::schema_proxy_class;
 
-To get model class:
+## To get model class
 
     $class = AuthorCollection::model_class;
     $class = $authors::model_class;
 
-Collection pager:
+## Collection pager
 
     /* page 1, 10 per page */
     $authors = new AuthorCollection;
@@ -58,5 +61,8 @@ Collection pager:
 
     $pager->next(); // next page
 
+## Query
+
+    $collection->loadQuery( 'master', 'sql....' , array( ':id' => $id ) );
 
 

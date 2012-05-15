@@ -148,6 +148,10 @@ class ConnectionManager
                 @$config['user'], 
                 @$config['pass'], 
                 @$config['connection_options'] );
+
+            if ($conn->getAttribute(PDO::ATTR_DRIVER_NAME) == 'mysql') {
+                $conn->setAttribute( PDO::MYSQL_ATTR_INIT_COMMAND , "SET NAMES utf8");
+            }
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);  // TODO: make this optional
 

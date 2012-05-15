@@ -24,6 +24,7 @@ class NameSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'varchar(128)',
           'isa' => 'str',
+          'typeConstraint' => true,
           'required' => true,
         ),
     ),

@@ -8,7 +8,7 @@ class AuthorBookSchema extends SchemaDeclare
     function schema()
     {
         $this->column('author_id')
-                ->isa('int')
+                ->required()
                 ->integer();
 
         $this->column('created_on')
@@ -16,8 +16,8 @@ class AuthorBookSchema extends SchemaDeclare
                 ->timestamp();
 
         $this->column('book_id')
-                ->isa('int')
-                ->integer();
+            ->integer()
+            ->required();
 
         $this->belongsTo('book','\tests\BookSchema','id','book_id');
         $this->belongsTo('author', '\tests\AuthorSchema' , 'id', 'author_id');
