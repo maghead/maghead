@@ -99,10 +99,10 @@ class CollectionPager
         );
     }
 
-	public function getOffset()
-	{
-		return ($this->currentPage - 1) * $this->perPage;
-	}
+    public function getOffset()
+    {
+        return ($this->currentPage - 1) * $this->perPage;
+    }
 
 }
 
