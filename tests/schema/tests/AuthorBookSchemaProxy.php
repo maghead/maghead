@@ -15,6 +15,7 @@ class AuthorBookSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'integer',
           'isa' => 'int',
+          'required' => true,
         ),
     ),
   'created_on' => array( 
@@ -29,6 +30,7 @@ class AuthorBookSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'integer',
           'isa' => 'int',
+          'required' => true,
         ),
     ),
   'id' => array( 
