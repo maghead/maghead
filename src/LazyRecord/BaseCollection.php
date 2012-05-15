@@ -258,6 +258,25 @@ class BaseCollection
     }
 
 
+    public function limit($number)
+    {
+        $this->_query->limit($number);
+        return $this;
+    }
+
+    public function offset($number)
+    {
+        $this->_query->offset($number);
+        return $this;
+    }
+
+    public function page($page,$pageSize = 20)
+    {
+        $this->limit($pageSize);
+        $offset = ($page - 1) * $pageSize;
+        $this->offset($offset);
+        return $this;
+    }
 
     /**
      * Get selected items and wrap it into a CollectionPager object
@@ -294,6 +313,7 @@ class BaseCollection
             throw new RuntimeException( get_class($this) . ':' . $this->_result->message );
         }
 
+        // XXX: should be lazy
         $this->_itemData = array();
         while( $o = $h->fetchObject( static::model_class ) ) {
             $o->deflate();
