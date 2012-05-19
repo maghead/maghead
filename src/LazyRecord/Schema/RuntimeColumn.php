@@ -49,6 +49,10 @@ class RuntimeColumn
     public function getValidValues( $record = null , $args = null )
     {
         if( $this->validValues ) {
+
+            if( is_callable($this->validValues) ) {
+                return call_user_func( $this->validValues, $record, $args );
+            }
             return $this->validValues;
         } elseif( $this->validValueBuilder ) {
             return call_user_func( $this->validValueBuilder , $record , $args );
@@ -151,11 +155,20 @@ class RuntimeColumn
 
     public function display( $value )
     {
-        if( $this->validPairs && isset( $this->validPairs[ $value ] ) )
+        if( $this->validPairs && isset( $this->validPairs[ $value ] ) ) {
             return $this->validPairs[ $value ];
+        }
 
-        if( $this->validValues && isset( $this->validValues[ $value ]) ) {
-            return $this->validValues[ $value ]; // value => label
+        if( $this->validValues ) {
+            if( is_callable($this->validValues) ) {
+                $validValues = call_user_func( $this->validValues );
+            } else {
+                $validValues = $this->validValues;
+            }
+
+            if( $validValues && isset( $validValues[ $value ] ) ) {
+                return $this->validValues[ $value ]; // value => label
+            }
         }
 
         if( $this->validValueBuilder && $values = call_user_func($this->validValueBuilder) ) {
