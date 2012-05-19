@@ -84,6 +84,8 @@ class Column
 
             'validator'  => self::ATTR_CALLABLE,
 
+            'validValues' => self::ATTR_ANY,
+
             'validValueBuilder' => self::ATTR_CALLABLE,
 
 
