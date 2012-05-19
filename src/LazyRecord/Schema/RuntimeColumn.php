@@ -61,6 +61,9 @@ class RuntimeColumn
             return call_user_func( $this->defaultBuilder , $record, $args );
         }
         elseif( $this->default ) {
+            if( is_callable( $this->default ) ) {
+                return call_user_func( $this->default, $record, $args );
+            }
             return $this->default; // might contains array() which is a raw sql statement.
         }
     }
