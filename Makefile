@@ -1,4 +1,10 @@
 
+
+init:
+	curl -O https://raw.github.com/c9s/Onion/master/onion
+	chmod +x onion
+	php onion -q bundle
+
 all: 
 
 doc: force

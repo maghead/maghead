@@ -31,22 +31,22 @@ class Column
      */
     public $name;
 
-	/**
-	 * @var array $supportedAttributes
-	 */
+    /**
+     * @var array $supportedAttributes
+     */
     public $supportedAttributes = array();
 
-	/**
-	 * @var array $attributes
-	 */
+    /**
+     * @var array $attributes
+     */
     public $attributes = array(
         'type' => 'text',
         'isa' => 'str',
     );
 
-	/**
-	 * @var string $name column name (id)
-	 */
+    /**
+     * @var string $name column name (id)
+     */
     public function __construct( $name )
     {
         $this->name = $name;
@@ -59,6 +59,7 @@ class Column
             'null'          => self::ATTR_FLAG,
             'notNull'       => self::ATTR_FLAG,
             'required'      => self::ATTR_FLAG,
+            'typeConstraint' => self::ATTR_FLAG,
 
             /* column label */
             'label' => self::ATTR_ANY,
@@ -83,6 +84,8 @@ class Column
 
             'validator'  => self::ATTR_CALLABLE,
 
+            'validValues' => self::ATTR_ANY,
+
             'validValueBuilder' => self::ATTR_CALLABLE,
 
 
@@ -90,11 +93,11 @@ class Column
             'validPairs' => self::ATTR_ANY,
 
 
-			// canonicalizer
-			'canonicalizer' => self::ATTR_CALLABLE,
+            // canonicalizer
+            'canonicalizer' => self::ATTR_CALLABLE,
 
-			// an alias of canonicalizer
-			'filter' => self::ATTR_CALLABLE,
+            // an alias of canonicalizer
+            'filter' => self::ATTR_CALLABLE,
 
             'inflator' => self::ATTR_CALLABLE,
 
@@ -105,7 +108,7 @@ class Column
     public function varchar($size)
     {
         $this->attributes[ 'type' ] = 'varchar(' . $size . ')';
-		$this->attributes[ 'isa' ]  = 'str';
+        $this->attributes[ 'isa' ]  = 'str';
         return $this;
     }
 
@@ -170,6 +173,7 @@ class Column
             $this->attributes['type'] = 'float';
         }
         $this->attributes['isa']  = 'float';
+        return $this;
     }
 
     public function timestamp()
@@ -182,28 +186,28 @@ class Column
     public function text()
     {
         $this->attributes['type'] = 'text';
-		$this->attributes['isa'] = 'str';
+        $this->attributes['isa'] = 'str';
         return $this;
     }
 
     public function smallint()
     {
         $this->attributes['type'] = 'smallint';
-		$this->attributes['isa'] = 'int';
+        $this->attributes['isa'] = 'int';
         return $this;
     }
 
     public function bigint()
     {
         $this->attributes['type'] = 'bigint';
-		$this->attributes['isa'] = 'int';
+        $this->attributes['isa'] = 'int';
         return $this;
     }
 
     public function integer()
     {
         $this->attributes['type'] = 'integer';
-		$this->attributes['isa'] = 'int';
+        $this->attributes['isa'] = 'int';
         return $this;
     }
 
@@ -281,7 +285,7 @@ class Column
     {
         $this->autoIncrement = true;
         $this->type = 'integer';
-		$this->isa = 'int';
+        $this->isa = 'int';
         return $this;
     }
 
@@ -370,7 +374,11 @@ class Column
                     break;
 
                 case self::ATTR_FLAG:
-                    $this->attributes[ $method ] = true;
+                    if( isset($args[0]) ) {
+                        $this->attributes[ $method ] = $args[0];
+                    } else {
+                        $this->attributes[ $method ] = true;
+                    }
                     break;
 
                 default:
