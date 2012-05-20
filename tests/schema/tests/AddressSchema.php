@@ -13,6 +13,8 @@ class AddressSchema extends SchemaDeclare
         $this->column('address')
                 ->varchar(128);
 
+        $this->column('foo')
+                ->varchar(128);
 
         /**
          * $address->author 
