@@ -3,6 +3,7 @@ namespace LazyRecord\Schema;
 use DateTime;
 use LazyRecord\Deflator;
 use LazyRecord\Inflator;
+use Exception;
 
 class RuntimeColumn
 {
@@ -48,6 +49,10 @@ class RuntimeColumn
     public function getValidValues( $record = null , $args = null )
     {
         if( $this->validValues ) {
+
+            if( is_callable($this->validValues) ) {
+                return call_user_func( $this->validValues, $record, $args );
+            }
             return $this->validValues;
         } elseif( $this->validValueBuilder ) {
             return call_user_func( $this->validValueBuilder , $record , $args );
@@ -60,6 +65,9 @@ class RuntimeColumn
             return call_user_func( $this->defaultBuilder , $record, $args );
         }
         elseif( $this->default ) {
+            if( is_callable( $this->default ) ) {
+                return call_user_func( $this->default, $record, $args );
+            }
             return $this->default; // might contains array() which is a raw sql statement.
         }
     }
@@ -106,16 +114,17 @@ class RuntimeColumn
         if( $this->isa )
         {
             if( $this->isa === 'str' ) {
-                if( false === is_string( $value ) ) 
-                    return 'Value is not a string value.';
+                if( ! is_string( $value ) ) {
+                    throw new Exception('Value is not a string value. ' . "($value)");
+                }
             }
             elseif( $this->isa === 'int' ) {
-                if( false === is_integer( $value ) )
-                    return 'Value is not a integer value.';
+                if( ! is_integer( $value ) )
+                    throw new Exception( 'Value is not a integer value.' );
             }
             elseif( $this->isa === 'bool' || $this->isa === 'boolean' ) {
-                if( false === is_bool( $value ) )
-                    return 'Value is not a boolean value.';
+                if( ! is_bool( $value ) )
+                    throw new Exception( 'Value is not a boolean value.' );
             }
         }
     }
@@ -146,11 +155,20 @@ class RuntimeColumn
 
     public function display( $value )
     {
-        if( $this->validPairs && isset( $this->validPairs[ $value ] ) )
+        if( $this->validPairs && isset( $this->validPairs[ $value ] ) ) {
             return $this->validPairs[ $value ];
+        }
 
-        if( $this->validValues && isset( $this->validValues[ $value ]) ) {
-            return $this->validValues[ $value ]; // value => label
+        if( $this->validValues ) {
+            if( is_callable($this->validValues) ) {
+                $validValues = call_user_func( $this->validValues );
+            } else {
+                $validValues = $this->validValues;
+            }
+
+            if( $validValues && isset( $validValues[ $value ] ) ) {
+                return $this->validValues[ $value ]; // value => label
+            }
         }
 
         if( $this->validValueBuilder && $values = call_user_func($this->validValueBuilder) ) {

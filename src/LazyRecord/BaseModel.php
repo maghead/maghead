@@ -2,6 +2,7 @@
 namespace LazyRecord;
 use Exception;
 use PDOException;
+use InvalidArgumentException;
 use PDO;
 
 use SQLBuilder\QueryBuilder;
@@ -88,6 +89,9 @@ class BaseModel
         $id = $this->_schema->getReadSourceId();
         return $this->getQueryDriver( $id );
     }
+
+
+
 
     public function createQuery( $dsId = 'default' )
     {
@@ -359,16 +363,23 @@ class BaseModel
                     }
                 }
 
+
+                // if type constraint is on, check type,
+                // if not, we should try to cast the type of value, 
+                // if type casting is fail, we should throw an exception.
+
+
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
-                if( $val !== null && is_array($val) ) {
-                    $c->typeCasting( $args[$n] );
-                }
-
-                // xxx: make this optional.
-                if( $val !== null && ! is_array($val) && $c->required && $msg = $c->checkTypeConstraint( $val ) ) {
-                    throw new Exception($msg);
+                if( $c->typeConstraint ) {
+                    if( $val !== null && ! is_array($val) ) {
+                        $c->checkTypeConstraint( $val );
+                    }
+                } 
+                // try to cast value 
+                else if( $val !== null && ! is_array($val) ) {
+                    $c->typeCasting( $val );
                 }
 
                 if( $c->filter || $c->canonicalizer ) {
@@ -762,15 +773,52 @@ class BaseModel
      *              $row['name'];
      *     }
      */
-    public function dbQuery($sql,$dsId = 'default')
+    public function dbQuery($dsId, $sql)
     {
         $conn = $this->getConnection($dsId);
-        // $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if( ! $conn )
+            throw new Exception("data source $dsId is not defined.");
         return $conn->query( $sql );
     }
 
 
-    public function dbPrepareAndExecute($conn, $sql,$args = array() )
+
+    /**
+     * Load record from an sql query
+     *
+     * @param string $sql  sql statement
+     * @param array  $args 
+     * @param string $dsId data source id
+     *
+     *     $result = $record->loadQuery( 'select * from ....', array( ... ) , 'master' );
+     *
+     * @return OperationResult
+     */
+    public function loadQuery($sql , $vars = array() , $dsId = null ) 
+    {
+        if( ! $dsId )
+            $dsId = $this->getReadSourceId();
+        $conn = $this->getConnection( $dsId );
+        $stm = $this->dbPrepareAndExecute($conn, $sql, $vars);
+        if( false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
+            return $this->reportError('Data load failed.', array( 
+                'sql' => $sql,
+                'vars' => $vars,
+            ));
+        }
+        return $this->reportSuccess( 'Data loaded', array( 
+            'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
+            'sql' => $sql
+        ));
+    }
+
+
+    /**
+     * We should move this method into connection manager.
+     *
+     * @return PDOStatement
+     */
+    public function dbPrepareAndExecute($conn, $sql, $args = array() )
     {
         $stm  = $conn->prepare( $sql );
         $stm->execute( $args );
@@ -781,6 +829,7 @@ class BaseModel
     /**
      * get default connection object (PDO) from connection manager
      *
+     * @param string $dsId data source id
      * @return PDO
      */
     public function getConnection( $dsId = 'default' )
@@ -789,12 +838,27 @@ class BaseModel
         return $connManager->getConnection( $dsId ); 
     }
 
+
+    /**
+     *
+     * @return PDO
+     */
     public function getWriteConnection()
     {
         $id = $this->_schema->getWriteSourceId();
         return $this->_connection->getConnection( $id );
     }
 
+
+    /**
+     *
+     * @return PDO
+     */
+    public function getReadConnection()
+    {
+        $id = $this->_schema->getReadSourceId();
+        return $this->_connection->getConnection( $id );
+    }
 
 
     public function getSchemaProxyClass()
@@ -811,10 +875,93 @@ class BaseModel
         $this->_data[ $name ] = $value; 
     }
 
+
+    /**
+     * get inflate value
+     */
+    public function get($name)
+    {
+        if( isset( $this->_data[ $name ] ) ) {
+            return $this->inflateColumnValue( $name );
+        }
+    }
+
+
+    /**
+     * Check if the value exist
+     *
+     * @param string $name
+     */
+    public function hasValue( $name )
+    {
+        return isset($this->_data[$name]);
+    }
+
+    /**
+     * Get raw value (without deflator)
+     *
+     * @param string $name
+     */
+    public function getValue( $name )
+    {
+        if( isset($this->_data[$name]) )
+            return $this->_data[$name];
+    }
+
+    /**
+     * Clear current data stash
+     */
+    public function clear()
+    {
+        $this->_data = array();
+    }
+
+
+    /**
+     * get current record data stash
+     *
+     * @return array record data stash
+     */
+    public function getData()
+    {
+        return $this->_data;
+    }
+
+
+    /**
+     * set raw data
+     *
+     * @param array $array
+     */
+    public function setData($array)
+    {
+        $this->_data = $array;
+    }
+
+
+
+    /**
+     * Do we have this column ?
+     *
+     * @param string $name
+     */
+    public function __isset( $name )
+    {
+        return isset($this->_schema->columns[ $name ]) 
+            || isset($this->_data[ $name ])
+            || '_schema' == $name
+            || $this->_schema->getRelation( $name )
+            ;
+    }
+
+
+    /**
+     *
+     * @param string $key
+     */
     public function __get( $key )
     {
         // lazy schema loader, xxx: make this static.
-        
         switch( $key ) {
             case '_schema':
                 return SchemaLoader::load( static::schema_proxy_class );
@@ -891,6 +1038,8 @@ class BaseModel
                 $rId2 = $relation['relation']['id2'];  // get external relationId from the middle relation. (book from author_books)
 
                 $middleRelation = $this->_schema->getRelation( $rId );
+                if( ! $middleRelation )
+                    throw new \InvalidArgumentException("first level relationship of many-to-many $rId is empty");
 
                 // eg. author_books
                 $sColumn = $middleRelation['foreign']['column'];
@@ -898,8 +1047,14 @@ class BaseModel
                 $spSchema = SchemaLoader::load( $sSchema->getSchemaProxyClass() );
 
                 $foreignRelation = $spSchema->getRelation( $rId2 );
+                if( ! $foreignRelation )
+                    throw new \InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
 
-                $fSchema = new $foreignRelation['foreign']['schema'];
+                $c = $foreignRelation['foreign']['schema'];
+                if( ! $c ) 
+                    throw new \InvalidArgumentException('foreign schema class is not defined.');
+
+                $fSchema = new $c;
                 $fColumn = $foreignRelation['foreign']['column'];
                 $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
@@ -933,7 +1088,7 @@ class BaseModel
                  */
                 $collection->setPostCreate(function($record,$args) use ($spSchema,$rId,$middleRelation,$foreignRelation,$value) {
                     $a = array( 
-                        $foreignRelation['self']['column'] => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
+                        $foreignRelation['self']['column']   => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
                         $middleRelation['foreign']['column'] => $value,  // self id
                     );
 
@@ -951,62 +1106,14 @@ class BaseModel
                 throw new Exception("The relationship type is not supported.");
             }
         }
-        if( isset( $this->_data[ $key ] ) ) {
-            return $this->inflateColumnValue( $key );
-        }
+        return $this->get($key);
     }
 
-    public function hasValue( $name )
-    {
-        return isset($this->_data[$name]);
-    }
-
-
-    /**
-     * Get raw value (without deflator)
-     */
-    public function getValue( $name )
-    {
-        if( isset($this->_data[$name]) )
-            return $this->_data[$name];
-    }
-
-    public function __isset( $name )
-    {
-        return isset($this->_schema->columns[ $name ]) 
-            || isset($this->_data[ $name ])
-            || '_schema' == $name
-            || $this->_schema->getRelation( $name )
-            ;
-    }
-
-    /**
-     * clear current data stash
-     */
-    public function clear()
-    {
-        $this->_data = array();
-    }
-
-
-    /**
-     * get current record data stash
-     *
-     * @return array record data stash
-     */
-    public function getData()
-    {
-        return $this->_data;
-    }
-
-
-    public function setData($array)
-    {
-        $this->_data = $array;
-    }
 
     /**
      * return the collection object of current model object.
+     *
+     * @return LazyRecord\BaseCollection
      */
     public function asCollection()
     {
@@ -1024,18 +1131,36 @@ class BaseModel
         return $this->_data;
     }
 
+
+    /**
+     * return json format data
+     *
+     * @return string JSON string
+     */
     public function toJson()
     {
         $ser = new JsonSerializer;
         return $ser->encode( $this->_data );
     }
 
+
+    /**
+     * return xml format data
+     *
+     * @return string XML string
+     */
     public function toXml()
     {
         $ser = new XmlSerializer;
         return $ser->encode( $this->_data );
     }
 
+
+    /**
+     * Return YAML format data
+     *
+     * @return string YAML string
+     */
     public function toYaml()
     {
         $ser = new YamlSerializer;
@@ -1043,7 +1168,7 @@ class BaseModel
     }
 
     /**
-     * deflate data and return.
+     * Deflate data and return.
      *
      * @return array
      */
@@ -1234,6 +1359,10 @@ class BaseModel
         return SchemaLoader::load( static::schema_proxy_class );
     }
 
+    public function newCollection() 
+    {
+        return $this->getSchema()->newCollection();
+    }
 
     // _schema methods
     public function getColumn($n)

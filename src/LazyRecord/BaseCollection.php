@@ -246,9 +246,24 @@ class BaseCollection
     }
 
 
+    /**
+     * Select count(*) statement to current query
+     */
+    public function queryCount()
+    {
+        $dsId = $this->_schema->getReadSourceId();
+        $query = $this->_query;
+        $query->select( 'count(*)' );
+
+        $sql  = $query->build();
+        $vars = $query->vars;
+        $handle = $this->_connection->prepareAndExecute($dsId,$sql, $vars);
+        return (int) $handle->fetchColumn();
+    }
+
 
     /**
-     * get selected item size
+     * Get selected item size.
      *
      * @return integer size
      */
@@ -257,10 +272,31 @@ class BaseCollection
         return count($this->_items);
     }
 
+    public function limit($number)
+    {
+        $this->_query->limit($number);
+        return $this;
+    }
 
+    public function offset($number)
+    {
+        $this->_query->offset($number);
+        return $this;
+    }
+
+    public function page($page,$pageSize = 20)
+    {
+        $this->limit($pageSize);
+        $this->offset(
+            ($page - 1) * $pageSize
+        );
+        return $this;
+    }
 
     /**
      * Get selected items and wrap it into a CollectionPager object
+     *
+     * CollectionPager is a simple data pager, do not depends on database.
      *
      * @return CollectionPager
      */
@@ -279,6 +315,11 @@ class BaseCollection
         return $this->_items;
     }
 
+    protected function _fetchRow()
+    {
+        return $this->_handle->fetchObject( static::model_class );
+    }
+
     /**
      * Read rows from database handle
      *
@@ -294,9 +335,9 @@ class BaseCollection
             throw new RuntimeException( get_class($this) . ':' . $this->_result->message );
         }
 
+        // XXX: should be lazy
         $this->_itemData = array();
-        while( $o = $h->fetchObject( static::model_class ) ) {
-            $o->deflate();
+        while( $o = $this->_fetchRow() ) {
             $this->_itemData[] = $o;
         }
         return $this->_itemData;
@@ -306,9 +347,7 @@ class BaseCollection
 
 
 
-    /**
-     * Implements Iterator methods 
-     */
+    /******************** Implements Iterator methods ********************/
     public function rewind()
     { 
         $this->_itemCursor = 0;
@@ -336,6 +375,12 @@ class BaseCollection
     {
         return $this->_itemCursor;
     }
+
+    /*********************** End of Iterator methods ************************/
+
+
+
+
 
     public function splice($pos,$count = null)
     {
@@ -393,6 +438,14 @@ class BaseCollection
         $collection = new static;
         $collection->setRecords($items);
         return $collection;
+    }
+
+    public function loadQuery( $sql, $args = array() , $dsId = null )
+    {
+        if( ! $dsId )
+            $dsId = $this->_schema->getReadSourceId();
+        $stm = $this->_connection->prepareAndExecute( $dsId, $sql , $args );
+        $this->handle = $stm;
     }
 
 
@@ -486,12 +539,12 @@ class BaseCollection
 
     public function getResult()
     {
-        return $this->result;
+        return $this->_result;
     }
 
 
     /**
-     * Convert query to sql
+     * Convert query to plain sql.
      */
     public function toSql()
     {

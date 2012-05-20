@@ -190,7 +190,7 @@ class TableParser
             return $parser;
         }
         else {
-            throw new Exception("Driver {$driver->type} is not supported.");
+            throw new Exception("parser driver does not support {$driver->type} currently.");
         }
 
     }

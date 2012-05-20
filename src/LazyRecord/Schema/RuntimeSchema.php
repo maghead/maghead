@@ -30,7 +30,6 @@ class RuntimeSchema extends SchemaBase
         }
     }
 
-
     public function getColumn($name)
     {
         if( isset($this->columnCached[ $name ]) )  {
