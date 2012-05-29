@@ -72,6 +72,14 @@ class RuntimeColumn
         }
     }
 
+
+
+    /**
+     * Column value type casting
+     *
+     *
+     * @param mixed $value referenced value
+     */
     public function typeCasting( & $value)
     {
         if( $this->isa ) {
@@ -85,7 +93,7 @@ class RuntimeColumn
 
                 if( is_string($value) ) 
                 {
-                    if( ! $value ) {
+                    if( $value == null || $value === '' ) {
                         return $value = false;
                     }
                     elseif( $value === '1' ) {
