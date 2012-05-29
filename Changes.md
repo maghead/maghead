@@ -1,5 +1,5 @@
 
-develop -
+develop - 
 - Add closure support to default value schema column
 - Add closure support to validValues schema column
 
