@@ -372,10 +372,8 @@ class BaseModel
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
-                if( $c->typeConstraint ) {
-                    if( $val !== null && ! is_array($val) ) {
-                        $c->checkTypeConstraint( $val );
-                    }
+                if( $c->typeConstraint && ( $val !== null && ! is_array($val) ) ) {
+                    $c->checkTypeConstraint( $val );
                 } 
                 // try to cast value 
                 else if( $val !== null && ! is_array($val) ) {
@@ -407,15 +405,16 @@ class BaseModel
             }
 
             $q = $this->createQuery( $dsId );
+            
             $q->insert($args);
             $q->returning( $k );
 
-            $sql = $q->build();
+            $sql  = $q->build();
+            $vars = $q->vars;
 
             /* get connection, do query */
-            $vars = $q->vars;
-            $stm = $this->dbPrepareAndExecute($conn,$sql,$vars); // returns $stm
-            $this->afterCreate( $args );
+            $stm = $this->dbPrepareAndExecute($conn, $sql, $vars); // returns $stm
+            $this->afterCreate($args);
         }
         catch ( Exception $e )
         {
@@ -1389,6 +1388,5 @@ class BaseModel
     {
         return $this->_schema->table;
     }
-
 }
 

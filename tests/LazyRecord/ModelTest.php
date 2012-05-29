@@ -17,6 +17,22 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
+    /**
+     * @dataProvider booleanFalseTestDataProvider
+     */
+    public function testBooleanFalse($args)
+    {
+        $n = new \tests\Name;
+        $ret = $n->create($args);
+        ok( $ret->success , $ret  . " SQL: " . $ret->sql . print_r($ret->vars,1) );
+        ok( $n->id );
+        is( false, $n->confirmed );
+
+        // reload
+        ok( $n->load( $n->id )->success );
+        is( false, $n->confirmed );
+        ok( $n->delete()->success );
+    }
 
 
     public function testSchemaInterface()
@@ -164,11 +180,13 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     public function booleanFalseTestDataProvider()
     {
         return array(
-            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 0 ) ),
-            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ) ),
-            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => false ) ),
-            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'false' ) ),
-            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '' ) ),  // empty string (false)
+#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 0 ) ),
+#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ) ),
+#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => false ) ),
+#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'false' ) ),
+            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '' ) ),  // empty string should be (false)
+            // array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'aa' ) ),
+            // array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'bb' ) ),
         );
     }
 
@@ -190,21 +208,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
-    /**
-     * @dataProvider booleanFalseTestDataProvider
-     */
-    public function testBooleanFalse($args)
-    {
-        $n = new \tests\Name;
-        $ret = $n->create($args);
-        ok( $ret->success );
-        ok( $n->id );
-        is( false, $n->confirmed );
-        // reload
-        ok( $n->load( $n->id )->success );
-        is( false, $n->confirmed );
-        ok( $n->delete()->success );
-    }
 
 
     public function testValueTypeConstraint()

@@ -119,7 +119,7 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
 
         $names = new \tests\NameCollection;
-        $names->where()
+        $names->select( 'name' )->where()
             ->equal('name','Foo')
             ->groupBy('name','address');
         

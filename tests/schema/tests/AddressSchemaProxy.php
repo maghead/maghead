@@ -24,6 +24,13 @@ class AddressSchemaProxy extends RuntimeSchema
           'isa' => 'str',
         ),
     ),
+  'foo' => array( 
+      'name' => 'foo',
+      'attributes' => array( 
+          'type' => 'varchar(128)',
+          'isa' => 'str',
+        ),
+    ),
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
@@ -37,6 +44,7 @@ class AddressSchemaProxy extends RuntimeSchema
         $this->columnNames     = array( 
   'author_id',
   'address',
+  'foo',
   'id',
 );
         $this->primaryKey      = 'id';
