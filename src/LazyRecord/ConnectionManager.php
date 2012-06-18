@@ -75,6 +75,23 @@ class ConnectionManager
         return isset($this->datasources[ $id ] );
     }
 
+
+    /**
+     * Return datasource id(s)
+     *
+     * @return array key list
+     */
+    public function getDataSourceIdList()
+    {
+        return array_keys($this->datasources);
+    }
+
+
+    /**
+     * Get datasource config
+     *
+     * @return array
+     */
     public function getDataSource($id = 'default')
     {
         if( isset($this->datasources[ $id ] ) )
@@ -144,13 +161,32 @@ class ConnectionManager
 
         } elseif( isset($this->datasources[ $sourceId ] ) ) {
             $config = $this->datasources[ $sourceId ];
-            $conn = new PDO( $config['dsn'],
+            $dsn = null;
+
+            if( isset($config['dsn']) ) {
+                $dsn = $config['dsn'];
+            }
+            else { // Build DSN connection string for PDO
+                $driver = $config['driver'];
+                $params = array();
+                if( isset($config['database']) ) {
+                    $params[] = 'dbname=' . $config['database'];
+                }
+                if( isset($config['host']) ) {
+                    $params[] = ';host=' . $config['host'];
+                }
+                $dsn = $driver . ':' . join(';',$params );
+            }
+
+
+            $conn = new PDO( $dsn,
                 @$config['user'], 
                 @$config['pass'], 
                 @$config['connection_options'] );
 
-            if ($conn->getAttribute(PDO::ATTR_DRIVER_NAME) == 'mysql') {
-                $conn->setAttribute( PDO::MYSQL_ATTR_INIT_COMMAND , "SET NAMES utf8");
+            // for mysql type driver, we should always use utf8;
+            if ($conn->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+                $conn->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND , "SET NAMES utf8");
             }
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);  // TODO: make this optional
