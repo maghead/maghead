@@ -254,6 +254,9 @@ class BaseCollection
         $dsId = $this->_schema->getReadSourceId();
         $query = $this->_query;
         $query->select( 'count(*)' );
+        // XXX: hack
+        $query->groupBys = array();
+        $query->orders = array();
 
         $sql  = $query->build();
         $vars = $query->vars;
