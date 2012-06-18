@@ -133,8 +133,12 @@ class ConnectionManager
     public function getDataSourceDriver($id)
     {
         $config = $this->getDataSource($id);
-        list($driverType) = explode( ':', $config['dsn'] );
-        return $driverType;
+        if( isset($config['driver']) )
+            return $config['driver'];
+        if( isset($config['dsn']) ) {
+            list($driverType) = explode( ':', $config['dsn'] , 2 );
+            return $driverType;
+        }
     }
 
     /**
@@ -173,11 +177,10 @@ class ConnectionManager
                     $params[] = 'dbname=' . $config['database'];
                 }
                 if( isset($config['host']) ) {
-                    $params[] = ';host=' . $config['host'];
+                    $params[] = 'host=' . $config['host'];
                 }
                 $dsn = $driver . ':' . join(';',$params );
             }
-
 
             $conn = new PDO( $dsn,
                 @$config['user'], 
