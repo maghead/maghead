@@ -45,6 +45,29 @@ class Utils
         return $classes;
     }
 
+    static function breakDSN($dsn) {
+        // break DSN string down into parameters
+        $params = array();
+        if( strpos( $dsn, ':' ) === false ) {
+            $params['driver'] = $dsn;
+            return $params;
+        }
 
+        list($driver,$paramString) = explode(':',$dsn,2);
+        $params['driver'] = $driver;
+
+        if( $paramString === ':memory:' ) {
+            $params[':memory:'] = 1;
+            return $params;
+        }
+
+        $paramPairs = explode(';',$paramString);
+        foreach( $paramPairs as $pair ) {
+            if( preg_match('#(\S+)=(\S+)#',$pair,$regs) ) {
+                $params[$regs[1]] = $regs[2];
+            }
+        }
+        return $params;
+    }
 }
 
