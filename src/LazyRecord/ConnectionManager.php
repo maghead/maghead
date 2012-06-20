@@ -142,7 +142,7 @@ class ConnectionManager
     }
 
     /**
-     * create connection
+     * Create connection
      *
      *    $dbh = new PDO('mysql:host=localhost;dbname=test', $user, $pass);
      *
@@ -182,6 +182,7 @@ class ConnectionManager
                 $dsn = $driver . ':' . join(';',$params );
             }
 
+            // TODO: use constant() for `connection_options`
             $conn = new PDO( $dsn,
                 @$config['user'], 
                 @$config['pass'], 
@@ -192,7 +193,9 @@ class ConnectionManager
                 $conn->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND , "SET NAMES utf8");
             }
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);  // TODO: make this optional
+
+            // TODO: can we make this optional ?
+            $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
             // $driver = $this->getQueryDriver($sourceId);
             // register connection to connection pool
