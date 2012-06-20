@@ -169,20 +169,16 @@ class RuntimeColumn
             return $this->validPairs[ $value ];
         }
 
-        if( $this->validValues ) {
-            $validValues = Utils::evaluate($this->validValues);
-
-            if( $validValues ) {
-                // search value in validValues array
-                // because we store the validValues in an (label => value) array.
-                if( ArrayUtils::is_assoc_array( $validValues ) ) {
-                    if( false !== ($label = array_search( $value , $validValues)) ) {
-                        return $label;
-                    }
-                    return;
-                } elseif( in_array($value,$validValues) ) {
-                    return $value;
+        if( $this->validValues && $validValues = Utils::evaluate($this->validValues) ) {
+            // search value in validValues array
+            // because we store the validValues in an (label => value) array.
+            if( ArrayUtils::is_assoc_array( $validValues ) ) {
+                if( false !== ($label = array_search( $value , $validValues)) ) {
+                    return $label;
                 }
+                return;
+            } elseif( in_array($value,$validValues) ) {
+                return $value;
             }
         }
 
