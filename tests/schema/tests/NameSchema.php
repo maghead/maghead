@@ -19,13 +19,13 @@ namespace tests {
                 ->required()
                 ->varchar(128);
 
-			$this->column('description')
-				->isa('str')
-				->varchar(128);
+            $this->column('description')
+                ->isa('str')
+                ->varchar(128);
 
-			$this->column('category_id')
-				->isa('int')
-				->integer();
+            $this->column('category_id')
+                ->isa('int')
+                ->integer();
 
             $this->column('address')
                 ->isa('str')
@@ -34,9 +34,9 @@ namespace tests {
                         return array( false , "Please don't" );
                     return array( true , "Good" );
                 })
-				->filter( function($val,$args,$record)  { 
-					return str_replace( 'John' , 'XXXX' , $val );
-				})
+                ->filter( function($val,$args,$record)  { 
+                    return str_replace( 'John' , 'XXXX' , $val );
+                })
                 ->defaultBuilder( function() { 
                     return 'Default Address';
                 })
@@ -52,9 +52,9 @@ namespace tests {
                 ->validValueBuilder(function() { 
                     return array(
                         /* description => value */
-                        'type-a' => 'Type Name A',
-                        'type-b' => 'Type Name B',
-                        'type-c' => 'Type Name C',
+                        'Type Name A' => 'type-a',
+                        'Type Name B' => 'type-b',
+                        'Type Name C' => 'type-c',
                     );
                 });
 
