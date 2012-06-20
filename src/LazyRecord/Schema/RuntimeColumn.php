@@ -65,7 +65,7 @@ class RuntimeColumn
     {
         // XXX: might contains array() which is a raw sql statement.
         if( $this->default ) {
-            return Utils::evaluate( $this->default , $record, $args );
+            return Utils::evaluate( $this->default , array($record, $args ));
         }
     }
 

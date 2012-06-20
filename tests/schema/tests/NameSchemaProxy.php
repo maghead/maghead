@@ -78,7 +78,7 @@ class NameSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'text',
           'isa' => 'str',
-          'validValueBuilder' => function() { 
+          'validValues' => function() { 
                     return array(
                         /* description => value */
                         'Type Name A' => 'type-a',
