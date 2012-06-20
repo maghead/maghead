@@ -55,7 +55,7 @@ class NameSchemaProxy extends RuntimeSchema
           'filter' => function($val,$args,$record)  { 
                     return str_replace( 'John' , 'XXXX' , $val );
                 },
-          'defaultBuilder' => function() { 
+          'default' => function() { 
                     return 'Default Address';
                 },
         ),

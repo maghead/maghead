@@ -37,7 +37,7 @@ namespace tests {
                 ->filter( function($val,$args,$record)  { 
                     return str_replace( 'John' , 'XXXX' , $val );
                 })
-                ->defaultBuilder( function() { 
+                ->default( function() { 
                     return 'Default Address';
                 })
                 ->varchar(256);
@@ -49,7 +49,7 @@ namespace tests {
 
             $this->column('type')
                 ->isa('str')
-                ->validValueBuilder(function() { 
+                ->validValues(function() { 
                     return array(
                         /* description => value */
                         'Type Name A' => 'type-a',

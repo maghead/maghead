@@ -362,7 +362,7 @@ class BaseModel
                 $n = $c->name;
 
                 // if column is required (can not be empty)
-                //   and default or defaultBuilder is defined.
+                //   and default is defined.
                 if( ! isset($args[$n]) && ! $c->primary )
                 {
                     if( $val = $c->getDefaultValue($this ,$args) ) {
@@ -629,7 +629,7 @@ class BaseModel
                 $n = $c->name;
 
                 // if column is required (can not be empty)
-                //   and default or defaultBuilder is defined.
+                //   and default is defined.
                 if( isset($args[$n]) 
                     && $c->required
                     && ! $args[$n]

@@ -173,7 +173,7 @@ Define your model schema:
                             return preg_replace('#word#','zz',$val);  
                 })
                 ->validValues( 1,2,3,4,5 )
-                ->defaultBuilder(function() { 
+                ->default(function() { 
                     return date('c');
                 })
                 ;
