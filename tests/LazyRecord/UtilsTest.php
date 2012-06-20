@@ -16,5 +16,11 @@ class UtilsTest extends PHPUnit_Framework_TestCase
         is( 'sqlite' , $params['driver'] );
         ok( $params[':memory:'] );
     }
+
+    function testEvaluate()
+    {
+        is( 1, LazyRecord\Utils::evaluate(1) );
+        is( 2, LazyRecord\Utils::evaluate( function() { return 2; }) );
+    }
 }
 
