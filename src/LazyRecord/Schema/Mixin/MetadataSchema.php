@@ -9,12 +9,12 @@ class MetadataSchema extends MixinSchemaDeclare
     {
         $this->column('updated_on')
             ->isa('DateTime')
-            ->defaultBuilder( function() { return date('c'); } )
+            ->default( function() { return date('c'); } )
             ->timestamp();
 
         $this->column('created_on')
             ->isa('DateTime')
-            ->defaultBuilder( function() { return date('c'); } )
+            ->default( function() { return date('c'); } )
             ->timestamp();
     }
 }

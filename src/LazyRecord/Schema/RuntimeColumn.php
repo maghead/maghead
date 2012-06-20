@@ -63,14 +63,9 @@ class RuntimeColumn
 
     public function getDefaultValue( $record = null, $args = null )
     {
-        if( $this->defaultBuilder ) {
-            return call_user_func( $this->defaultBuilder , $record, $args );
-        }
-        elseif( $this->default ) {
-            if( is_callable( $this->default ) ) {
-                return call_user_func( $this->default, $record, $args );
-            }
-            return $this->default; // might contains array() which is a raw sql statement.
+        // XXX: might contains array() which is a raw sql statement.
+        if( $this->default ) {
+            return Utils::evaluate( $this->default , $record, $args );
         }
     }
 

@@ -80,8 +80,6 @@ class Column
 
             'default' => self::ATTR_ANY,
 
-            'defaultBuilder' => self::ATTR_CALLABLE,
-
             'validator'  => self::ATTR_CALLABLE,
 
             'validValues' => self::ATTR_ANY,

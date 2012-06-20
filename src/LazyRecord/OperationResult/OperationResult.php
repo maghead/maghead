@@ -54,9 +54,6 @@ class OperationResult
         }
         return $vlds;
     }
-
-
-
 }
 
 
