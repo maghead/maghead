@@ -271,10 +271,19 @@ class BaseModel
                     'field' => $c->name,
                 );
             }
-            // order with key => value
+            // "Label" => "Value",
+            // "Group" => array( "Label" => "Value" )
+            //
+            // Order with key => value
             //    value => label
             else {
-                $values = array_keys( $validValues );
+                $values = array_values( $validValues );
+                foreach( $values as & $v ) {
+                    if( is_array($v) ) {
+                        $v = array_values($v);
+                    }
+                }
+
                 if( ! in_array( $val , $values ) ) {
                     $validateFail = true;
                     return (object) array(
