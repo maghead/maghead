@@ -3,6 +3,8 @@ namespace LazyRecord\Schema;
 use DateTime;
 use LazyRecord\Deflator;
 use LazyRecord\Inflator;
+use LazyRecord\ArrayUtils;
+use LazyRecord\Utils;
 use Exception;
 
 class RuntimeColumn
@@ -168,20 +170,30 @@ class RuntimeColumn
         }
 
         if( $this->validValues ) {
-            if( is_callable($this->validValues) ) {
-                $validValues = call_user_func( $this->validValues );
-            } else {
-                $validValues = $this->validValues;
-            }
+            $validValues = Utils::evaluate($this->validValues);
 
-            if( $validValues && isset( $validValues[ $value ] ) ) {
-                return $this->validValues[ $value ]; // value => label
+            if( $validValues ) {
+                // search value in validValues array
+                // because we store the validValues in an (label => value) array.
+                if( ArrayUtils::is_assoc_array( $validValues ) ) {
+                    if( false !== ($label = array_search( $value , $validValues)) ) {
+                        return $label;
+                    }
+                    return;
+                } elseif( in_array($value,$validValues) ) {
+                    return $value;
+                }
             }
         }
 
         if( $this->validValueBuilder && $values = call_user_func($this->validValueBuilder) ) {
-            if( isset($values[ $value ]) ) {
-                return $values[ $value ];
+            if( ArrayUtils::is_assoc_array( $values ) ) {
+                if( false !== ($label = array_search($value,$values) ) ) {
+                    return $label;
+                }
+                return;
+            } elseif( in_array($value, $values ) ) {
+                return $value;
             }
         }
 
