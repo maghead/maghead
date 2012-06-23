@@ -404,7 +404,7 @@ class BaseModel
                     }
                 }
 
-                if( $val ) {
+                if( $val !== null ) {
                     $args[ $n ] = is_array($val) ? $val : $c->deflate( $val );
                 }
             }
