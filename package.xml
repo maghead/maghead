@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-06-23</date>
-  <time>12:37:45</time>
+  <date>2012-06-24</date>
+  <time>16:04:36</time>
   <version>
     <release>1.5.3</release>
     <api>1.5.3</api>
@@ -187,14 +187,8 @@
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="e80b2f23d8badec5b61ad5248b3d47eb"/>
-      <file name="package.ini" role="data" md5sum="797cf68710009dc360862f4da326bd83"/>
-      <file name="phpunit.xml" role="data" md5sum="78eba7f8524f5c711621bd8c7215e76d"/>
       <file name="lazy" role="script" md5sum="e561035c8e4b5dd3521ab88f7e0c4d3b"/>
       <file name="scripts/lazy.php" role="script" md5sum="2482ce2ad785f5e13093851b59950151"/>
-      <file name="Changes.md" role="doc" md5sum="765b0aa4eea0645d3553ef2195b88912"/>
-      <file name="Plan.md" role="doc" md5sum="e4407419222fb1c73c5c602ee9bfc7fb"/>
-      <file name="README.md" role="doc" md5sum="7035c922ce6b6b568f42663cbee52490"/>
-      <file name="todo.md" role="doc" md5sum="c7afe65c494f29f6188fb862261d4c65"/>
     </dir>
   </contents>
   <dependencies>
@@ -412,14 +406,8 @@
       <install name="src/LazyRecord/Types/DateTime.php" as="LazyRecord/Types/DateTime.php"/>
       <install name="src/LazyRecord/Types.php" as="LazyRecord/Types.php"/>
       <install name="src/LazyRecord/Utils.php" as="LazyRecord/Utils.php"/>
-      <install name="package.ini" as="package.ini"/>
-      <install name="phpunit.xml" as="phpunit.xml"/>
       <install name="lazy" as="lazy"/>
       <install name="scripts/lazy.php" as="scripts/lazy.php"/>
-      <install name="Changes.md" as="Changes.md"/>
-      <install name="Plan.md" as="Plan.md"/>
-      <install name="README.md" as="README.md"/>
-      <install name="todo.md" as="todo.md"/>
     </filelist>
   </phprelease>
 </package>
