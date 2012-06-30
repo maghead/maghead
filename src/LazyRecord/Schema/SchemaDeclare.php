@@ -101,11 +101,28 @@ class SchemaDeclare extends SchemaBase
         return $this;
     }
 
+
+    /**
+     * Mixin
+     *
+     * Availabel mixins
+     *
+     *     $this->mixin('Metadata');
+     *     $this->mixin('I18n');
+     *
+     * @param string $class mixin class name
+     */
     public function mixin($class)
     {
-        $this->mixins[] = $class;
+        if( ! class_exists($class,true) ) {
+            $class = 'LazyRecord\Schema\Mixin\\' . $class;
+            if( ! class_exists($class,true) ) {
+                throw new Exception("Mixin class $class not found.");
+            }
+        }
 
         $mixin = new $class;
+        $this->mixins[] = $class;
 
         /* merge columns into self */
         $this->columns = array_merge( $mixin->columns, $this->columns );
