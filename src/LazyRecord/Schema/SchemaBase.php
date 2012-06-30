@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord\Schema;
+use RuntimeException;
 
 abstract class SchemaBase
 {
@@ -55,6 +56,10 @@ abstract class SchemaBase
                 continue;
 
             $class = ltrim($rel['foreign']['schema'],'\\');
+            if( ! class_exists($class,true) ) {
+                throw new RuntimeException("Foreign schema class $class not found." );
+            }
+
             $fs = new $class;
             if( isset($schemas[$class]) )
                 continue;
