@@ -504,14 +504,17 @@ class BaseCollection
         if( $this->_presetVars ) {
             $args = array_merge( $this->_presetVars , $args );
         }
-        $model = $this->_schema->newModel();
-        $return = $model->create($args);
-        if( true === $return->success ) {
+
+        // model record
+        $record = $this->_schema->newModel();
+        $return = $record->create($args);
+        if( $return->success ) {
             if( $this->_postCreate ) {
-                call_user_func( $this->_postCreate, $model, $args );
-                // $this->_postCreate($model,$args);
+                $middleRecord = call_user_func( $this->_postCreate, $record, $args );
+                // $this->_postCreate($record,$args);
             }
-            return $model;
+            $this->_itemData[] = $record;
+            return $record;
         }
         $this->_result = $return;
         return false;
