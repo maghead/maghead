@@ -597,5 +597,23 @@ class BaseCollection
         $this->_itemData = $records;
     }
 
+
+
+    /**
+     * Return pair array by columns
+     *
+     * @param string $key
+     * @param string $valueKey
+     */
+    public function asPair($key,$valueKey)
+    {
+        $data = array();
+        foreach( $this as $item ) {
+            $keyValue = $item->get($key);
+            $value    = $item->get($valueKey);
+            $data[ $keyValue ] = $value;
+        }
+        return $data;
+    }
 }
 

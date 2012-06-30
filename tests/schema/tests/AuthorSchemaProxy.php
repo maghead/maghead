@@ -15,7 +15,9 @@ class AuthorSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'timestamp',
           'isa' => 'DateTime',
-          'default' => function() { return date('c'); },
+          'default' => function() { 
+                return date('c'); 
+            },
         ),
     ),
   'created_on' => array( 
@@ -23,7 +25,9 @@ class AuthorSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'timestamp',
           'isa' => 'DateTime',
-          'default' => function() { return date('c'); },
+          'default' => function() { 
+                return date('c'); 
+            },
         ),
     ),
   'id' => array( 
