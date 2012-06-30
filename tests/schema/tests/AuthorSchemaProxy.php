@@ -15,7 +15,7 @@ class AuthorSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'timestamp',
           'isa' => 'DateTime',
-          'default' => function() { return date('c'); },
+          'defaultBuilder' => function schema() { $this->column('updated_on') ->isa('DateTime') ->defaultBuilder( function() { return date('c'); } ) ->timestamp(); $this->column('created_on') ->isa('DateTime') ->defaultBuilder( function() { return date('c'); } ) ->timestamp(); } },
         ),
     ),
   'created_on' => array( 
@@ -23,7 +23,7 @@ class AuthorSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'timestamp',
           'isa' => 'DateTime',
-          'default' => function() { return date('c'); },
+          'defaultBuilder' => function schema() { $this->column('updated_on') ->isa('DateTime') ->defaultBuilder( function() { return date('c'); } ) ->timestamp(); $this->column('created_on') ->isa('DateTime') ->defaultBuilder( function() { return date('c'); } ) ->timestamp(); } },
         ),
     ),
   'id' => array( 
