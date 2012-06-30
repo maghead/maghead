@@ -483,6 +483,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ));
 
         // retrieve books from relationshipt
+        $author->flushCache();
         $books = $author->books;
         is( 3, $books->size() , 'We have 3 books' );
 

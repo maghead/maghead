@@ -1099,11 +1099,12 @@ class BaseModel
                  * for many-to-many creation:
                  *
                  *    $author->books[] = array(
-                 *        :author_books => array( 'created_on' => date('c') ),
+                 *        ':author_books' => array( 'created_on' => date('c') ),
                  *        'title' => 'Book Title',
                  *    );
                  */
                 $collection->setPostCreate(function($record,$args) use ($spSchema,$rId,$middleRelation,$foreignRelation,$value) {
+                    // arguments for creating middle-relationship record
                     $a = array( 
                         $foreignRelation['self']['column']   => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
                         $middleRelation['foreign']['column'] => $value,  // self id
@@ -1112,10 +1113,14 @@ class BaseModel
                     if( isset($args[':' . $rId ] ) ) {
                         $a = array_merge( $args[':' . $rId ] , $a );
                     }
-                    $ret = $spSchema->newModel()->create($a);
-                    if( false === $ret->success ) {
+
+                    // create relationship
+                    $middleRecord = $spSchema->newModel();
+                    $ret = $middleRecord->create($a);
+                    if( ! $ret->success ) {
                         throw new Exception("$rId create failed.");
                     }
+                    return $middleRecord;
                 });
                 return $this->_cache[$key] = $collection;
             }
@@ -1405,6 +1410,11 @@ class BaseModel
     public function getTable()
     {
         return $this->_schema->table;
+    }
+
+    public function flushCache() 
+    {
+        $this->_cache = array();
     }
 }
 
