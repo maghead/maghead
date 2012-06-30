@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-06-24</date>
-  <time>16:04:36</time>
+  <date>2012-06-30</date>
+  <time>12:05:37</time>
   <version>
-    <release>1.5.3</release>
-    <api>1.5.3</api>
+    <release>1.5.4</release>
+    <api>1.5.4</api>
   </version>
   <stability>
     <release>stable</release>
@@ -140,7 +140,7 @@
       <file name="src/LazyRecord/CollectionPager.php" role="php" md5sum="f17355028e8d9f52834c289ed07b6665"/>
       <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="28eda14a05fc5b707c2d09bb631446b6"/>
       <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="bc7ed1278de80e2d1f43f2e943bb8213"/>
-      <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="cec58af19726f7f8b440924b20aab405"/>
+      <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="73c28a49da3d78db9495a604c1feed0f"/>
       <file name="src/LazyRecord/Command/CreateDBCommand.php" role="php" md5sum="75d7247e71e57d40ee43f6873843cfc5"/>
       <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="e7922e87f5633f39c801372868f5c170"/>
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="11fd7b72748c614c94a425ca1971965f"/>
@@ -167,7 +167,7 @@
       <file name="src/LazyRecord/Schema/RuntimeSchema.php" role="php" md5sum="73ef4c393b354989ccea99c6170cb3bb"/>
       <file name="src/LazyRecord/Schema/SchemaBase.php" role="php" md5sum="88bb9e111ed9c97b7deba52c24eef45a"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare/Column.php" role="php" md5sum="051cb9b37614866260f853f5cffea86f"/>
-      <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="e16b212ebd25162c78a120481a49e9ee"/>
+      <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="477fe4b8b23260874deb42ac6377d99f"/>
       <file name="src/LazyRecord/Schema/SchemaFinder.php" role="php" md5sum="020f49032d713d7e8231af10aece559e"/>
       <file name="src/LazyRecord/Schema/SchemaGenerator.php" role="php" md5sum="259cd988d1e9e5382973d1acc540a4f9"/>
       <file name="src/LazyRecord/Schema/SchemaLoader.php" role="php" md5sum="cd511486b06677d56848159807c3d460"/>
@@ -186,7 +186,7 @@
       <file name="src/LazyRecord/TableParser.php" role="php" md5sum="9338eb427bd00a241b64784c3dc6366c"/>
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
-      <file name="src/LazyRecord/Utils.php" role="php" md5sum="e80b2f23d8badec5b61ad5248b3d47eb"/>
+      <file name="src/LazyRecord/Utils.php" role="php" md5sum="19592d256900fc2b80045b8024913ba8"/>
       <file name="lazy" role="script" md5sum="e561035c8e4b5dd3521ab88f7e0c4d3b"/>
       <file name="scripts/lazy.php" role="script" md5sum="2482ce2ad785f5e13093851b59950151"/>
     </dir>
