@@ -85,7 +85,7 @@ class SchemaFinder
                 throw new RuntimeException("Schema class $class not found.");
             }
 
-            $schema = new $class;
+            $schema = new $class; // declare schema
             $refs = $schema->getReferenceSchemas();
             foreach( $refs as $ref => $v )
                 $schemas[] = $ref;
