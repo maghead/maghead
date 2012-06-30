@@ -100,6 +100,10 @@ class Column
             'inflator' => self::ATTR_CALLABLE,
 
             'deflator' => self::ATTR_CALLABLE,
+
+            'widgetClass' => self::ATTR_STRING,
+
+            'widgetAttributes' => self::ATTR_ARRAY,
         );
     }
 
