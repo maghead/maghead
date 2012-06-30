@@ -101,7 +101,7 @@ class Column
 
             'deflator' => self::ATTR_CALLABLE,
 
-            'widgetClass' => self::ATTR_STRING,
+            'renderAs' => self::ATTR_STRING,
 
             'widgetAttributes' => self::ATTR_ARRAY,
         );
@@ -273,6 +273,12 @@ class Column
     }
 
 
+    public function renderAs($renderAs,$widgetAttributes = array() ) {
+        $this->renderAs = $renderAs;
+        $this->widgetAttributes = $widgetAttributes;
+        return $this;
+    }
+
 
 
     // XXX: reference, it doesn't create relation
@@ -393,6 +399,8 @@ class Column
         $this->attributes[ $method ] = $args[0];
         return $this;
     }
+
+
 
 }
 
