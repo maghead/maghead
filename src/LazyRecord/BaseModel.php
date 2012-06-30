@@ -998,7 +998,7 @@ class BaseModel
                 $fColumn = $relation['foreign']['column'];
                 $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
                 if( ! $this->hasValue($sColumn) )
-                    throw new Exception("The value of $sColumn is not defined.");
+                    throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
                 $sValue = $this->getValue( $sColumn );
                 $model = $fpSchema->newModel();
                 $model->load(array( 
@@ -1014,7 +1014,7 @@ class BaseModel
                 $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
                 if( ! $this->hasValue($sColumn) )
-                    throw new Exception("The value of $sColumn is not defined.");
+                    throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
 
                 $sValue = $this->getValue( $sColumn );
 
