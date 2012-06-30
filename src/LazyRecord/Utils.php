@@ -6,8 +6,8 @@ class Utils
 {
     static function getSchemaClassFromPathsOrClassNames($loader, $args,$logger = null)
     {
-        $classes = array();
         if( count($args) && ! file_exists($args[0]) ) {
+            $classes = array();
             // it's classnames
             foreach( $args as $class ) {
                 // call class loader to load
@@ -21,6 +21,7 @@ class Utils
                         echo ">>> $class not found.\n";
                 }
             }
+            return $classes;
         }
         else {
             $finder = new SchemaFinder;
@@ -40,9 +41,8 @@ class Utils
                         require $file;
                 }
             }
-            $classes = $finder->getSchemaClasses();
+            return $finder->getSchemaClasses();
         }
-        return $classes;
     }
 
     static function breakDSN($dsn) {

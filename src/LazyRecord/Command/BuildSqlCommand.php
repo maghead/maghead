@@ -61,10 +61,16 @@ DOC;
 
 
         $logger->info("Finding schema classes...");
-
         $args = func_get_args();
         $classes = \LazyRecord\Utils::getSchemaClassFromPathsOrClassNames( 
             $loader, $args , $this->logger );
+
+        $logger->info('Found schema classes');
+
+        foreach( $classes as $class ) {
+            $logger->info( $logger->formatter->format($class,'green') ,1 );
+        }
+
 
         $logger->info("Initialize schema builder...");
         $builder = new \LazyRecord\Schema\SqlBuilder($driver, array( 
