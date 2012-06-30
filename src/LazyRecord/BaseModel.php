@@ -34,6 +34,7 @@ class BaseModel
      */
     public $_autoReload = true;
 
+    public $_cache = array();
 
     /**
      * @var mixed Current user object
@@ -970,15 +971,16 @@ class BaseModel
     public function __get( $key )
     {
         // lazy schema loader, xxx: make this static.
-        switch( $key ) {
-            case '_schema':
-                return SchemaLoader::load( static::schema_proxy_class );
-            break;
-            case '_connection':
-                return ConnectionManager::getInstance();
-            break;
+        if( '_schema' === $key ) {
+            return SchemaLoader::load( static::schema_proxy_class );
+        }
+        elseif( '_connection' === $key ) {
+            return ConnectionManager::getInstance();
         }
 
+        if( isset($this->_cache[$key]) ) {
+            return $this->_cache[$key];
+        }
 
         // return relation object
         if( $relation = $this->_schema->getRelation( $key ) ) 
@@ -994,6 +996,8 @@ class BaseModel
             if( SchemaDeclare::has_one === $relation['type'] ) 
             {
                 $sColumn = $relation['self']['column'];
+
+
                 $fSchema = new $relation['foreign']['schema'];
                 $fColumn = $relation['foreign']['column'];
                 $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
@@ -1006,7 +1010,8 @@ class BaseModel
                 $model->load(array( 
                     $fColumn => $sValue,
                 ));
-                return $model;
+
+                return $this->_cache[$key] = $model;
             }
             elseif( SchemaDeclare::has_many === $relation['type'] )
             {
@@ -1028,7 +1033,7 @@ class BaseModel
                 $collection->setPresetVars(array( 
                     $fColumn => $sValue,
                 ));
-                return $collection;
+                return $this->_cache[$key] = $collection;
             }
             // belongs to one record
             elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
@@ -1043,7 +1048,7 @@ class BaseModel
                 $sValue = $this->getValue( $sColumn );
                 $model = $fpSchema->newModel();
                 $ret = $model->load(array( $fColumn => $sValue ));
-                return $model;
+                return $this->_cache[$key] = $model;
             }
             elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
                 $rId = $relation['relation']['id'];  // use relationId to get middle relation. (author_books)
@@ -1112,7 +1117,7 @@ class BaseModel
                         throw new Exception("$rId create failed.");
                     }
                 });
-                return $collection;
+                return $this->_cache[$key] = $collection;
             }
             else {
                 throw new Exception("The relationship type is not supported.");
