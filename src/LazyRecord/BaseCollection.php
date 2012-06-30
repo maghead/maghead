@@ -502,6 +502,10 @@ class BaseCollection
     /**
      * Create new record or relationship record, 
      * and append the record into _itemData list
+     *
+     * @param array $args Arguments for creating record
+     *
+     * @return mixed record object
      */
     public function create($args)
     {
