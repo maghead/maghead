@@ -998,7 +998,9 @@ class BaseModel
                 $fColumn = $relation['foreign']['column'];
                 $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
                 if( ! $this->hasValue($sColumn) )
-                    throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
+                    return;
+                    // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
+
                 $sValue = $this->getValue( $sColumn );
                 $model = $fpSchema->newModel();
                 $model->load(array( 
@@ -1014,7 +1016,8 @@ class BaseModel
                 $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
                 if( ! $this->hasValue($sColumn) )
-                    throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
+                    return;
+                    // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
 
                 $sValue = $this->getValue( $sColumn );
 
@@ -1035,7 +1038,8 @@ class BaseModel
                 $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
                 if( ! $this->hasValue($sColumn) )
-                    throw new Exception("The value of $sColumn is not defined.");
+                    return;
+
                 $sValue = $this->getValue( $sColumn );
                 $model = $fpSchema->newModel();
                 $ret = $model->load(array( $fColumn => $sValue ));
@@ -1047,7 +1051,7 @@ class BaseModel
 
                 $middleRelation = $this->_schema->getRelation( $rId );
                 if( ! $middleRelation )
-                    throw new \InvalidArgumentException("first level relationship of many-to-many $rId is empty");
+                    throw new InvalidArgumentException("first level relationship of many-to-many $rId is empty");
 
                 // eg. author_books
                 $sColumn = $middleRelation['foreign']['column'];
@@ -1056,11 +1060,11 @@ class BaseModel
 
                 $foreignRelation = $spSchema->getRelation( $rId2 );
                 if( ! $foreignRelation )
-                    throw new \InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
+                    throw new InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
 
                 $c = $foreignRelation['foreign']['schema'];
                 if( ! $c ) 
-                    throw new \InvalidArgumentException('foreign schema class is not defined.');
+                    throw new InvalidArgumentException('foreign schema class is not defined.');
 
                 $fSchema = new $c;
                 $fColumn = $foreignRelation['foreign']['column'];
