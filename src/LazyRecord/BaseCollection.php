@@ -499,6 +499,10 @@ class BaseCollection
     }
 
 
+    /**
+     * Create new record or relationship record, 
+     * and append the record into _itemData list
+     */
     public function create($args)
     {
         if( $this->_presetVars ) {
