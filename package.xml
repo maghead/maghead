@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-06-30</date>
-  <time>13:23:54</time>
+  <time>13:24:21</time>
   <version>
     <release>1.5.4</release>
     <api>1.5.4</api>
@@ -93,7 +93,7 @@
       <file name="tests/schema/tests/AuthorCollection.php" role="test" md5sum="95a7ef60275823bfde873a008b3061ed"/>
       <file name="tests/schema/tests/AuthorCollectionBase.php" role="test" md5sum="486c5f14b14555d663b3b17ce076aa43"/>
       <file name="tests/schema/tests/AuthorSchema.php" role="test" md5sum="679e650641084e44e18e15fe68fc645b"/>
-      <file name="tests/schema/tests/AuthorSchemaProxy.php" role="test" md5sum="4002aff2d2da0e8e7bfb8c54f68de1f7"/>
+      <file name="tests/schema/tests/AuthorSchemaProxy.php" role="test" md5sum="1b50d217cdf83d8617575bad176a7a78"/>
       <file name="tests/schema/tests/Book.php" role="test" md5sum="1073d4979c339dde0fb08a30abc7fb56"/>
       <file name="tests/schema/tests/BookBase.php" role="test" md5sum="4a818934156adcb38e69fd65c8a0e7f9"/>
       <file name="tests/schema/tests/BookCollection.php" role="test" md5sum="0a5e7b5a626ffddcd33706b4fd42a2b1"/>
@@ -187,7 +187,7 @@
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="19592d256900fc2b80045b8024913ba8"/>
-      <file name="lazy" role="script" md5sum="b9f83e521241ac5f119b64ab6650f4be"/>
+      <file name="lazy" role="script" md5sum="b9fae8173d80f3d8dba4a802c018d7d8"/>
       <file name="scripts/lazy.php" role="script" md5sum="2482ce2ad785f5e13093851b59950151"/>
     </dir>
   </contents>
