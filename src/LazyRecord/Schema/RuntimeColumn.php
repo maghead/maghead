@@ -148,10 +148,10 @@ class RuntimeColumn
         return Deflator::deflate( $value , $this->isa );
     }
 
-    public function inflate( $value )
+    public function inflate( $value, $record )
     {
         if( $this->inflator ) {
-            return call_user_func( $this->inflator , $value );
+            return call_user_func( $this->inflator , $value , $record );
         }
         // use global inflator
         return Inflator::inflate( $value , $this->isa );
