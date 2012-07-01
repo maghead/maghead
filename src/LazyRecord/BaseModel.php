@@ -731,6 +731,9 @@ class BaseModel
     public function display( $name )
     {
         if( $c = $this->_schema->getColumn( $name ) ) {
+            if( $c->virtual ) {
+                return $this->get($name);
+            }
             return $c->display( $this->getValue( $name ) );
         }
         elseif( method_exists($this, $name) ) {
@@ -893,7 +896,8 @@ class BaseModel
 
 
     /**
-     * get inflate value
+     * Get inflate value
+     *
      */
     public function get($name)
     {
