@@ -912,9 +912,11 @@ class BaseModel
     }
 
     /**
-     * Get raw value (without deflator)
+     * Get the raw value from record (without deflator)
      *
      * @param string $name
+     *
+     * @return mixed
      */
     public function getValue( $name )
     {
@@ -997,7 +999,6 @@ class BaseModel
                 break;
             }
             */
-
             if( SchemaDeclare::has_one === $relation['type'] ) 
             {
                 $sColumn = $relation['self']['column'];

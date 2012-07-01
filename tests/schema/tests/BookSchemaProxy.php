@@ -94,7 +94,7 @@ class BookSchemaProxy extends RuntimeSchema
           'column' => 'created_by',
         ),
       'foreign' => array( 
-          'schema' => '\\tests\\UserSchema',
+          'schema' => 'tests\\UserSchema',
           'column' => 'id',
         ),
     ),

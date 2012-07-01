@@ -187,7 +187,7 @@ class BaseCollection
     public function getExplicitColumnSelect($driver)
     {
         $alias = $this->getAlias();
-        return array_map( function($name) use($alias,$driver) { 
+        return array_map(function($name) use($alias,$driver) { 
                 return $alias . '.' . $driver->getQuoteColumn( $name );
         }, $this->_schema->getColumnNames());
     }
