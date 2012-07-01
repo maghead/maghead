@@ -88,6 +88,8 @@ class PgsqlBuilder
         $create = 'CREATE TABLE ' . $this->parent->driver->getQuoteTableName($schema->getTable()) . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
+            if( $column->virtual )
+                continue;
             $columnSql[] = "\t" . $this->buildColumnSql( $schema, $column );
         }
         $create .= join(",\n",$columnSql);
