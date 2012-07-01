@@ -98,6 +98,8 @@ class SqliteBuilder
             . $this->parent->driver->getQuoteTableName($schema->getTable()) . " ( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
+            if( $column->virtual )
+                continue;
             $columnSql[] = $this->buildColumnSql( $schema, $column );
         }
         $sql .= join(",\n",$columnSql);

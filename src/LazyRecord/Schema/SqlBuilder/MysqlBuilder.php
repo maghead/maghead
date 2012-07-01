@@ -100,6 +100,8 @@ class MysqlBuilder
             . $this->parent->driver->getQuoteTableName( $schema->getTable() )
             . "( \n";
         foreach( $schema->columns as $name => $column ) {
+            if( $column->virtual )
+                continue;
             $columnSql[] = $this->buildColumnSql( $schema, $column );
         }
         $create .= join(",\n",$columnSql);
