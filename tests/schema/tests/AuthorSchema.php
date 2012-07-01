@@ -16,6 +16,7 @@ class AuthorSchema extends SchemaDeclare
             ->varchar(128);
 
         $this->column('v')
+            ->label('Virtual Column')
             ->virtual()
             ->inflator(function($value,$record) {
                 return $record->email . $record->email;

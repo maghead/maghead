@@ -40,23 +40,23 @@ class RuntimeSchema extends SchemaBase
         return null;
     }
 
-    public function getColumnNames()
+    public function getColumnNames($includeVirtual = false)
     {
         $names = array();
         foreach( $this->columns as $name => $data ) {
-            if( isset($data['attributes']['virtual']) )
+            if( ! $includeVirtual && isset($data['attributes']['virtual']) )
                 continue;
             $names[] = $name;
         }
         return $names;
     }
 
-    public function getColumns() 
+    public function getColumns($includeVirtual = false) 
     {
         $columns = array();
         foreach( $this->columns as $name => $data ) {
             $column = $this->getColumn( $name );
-            if( $column->virtual )
+            if( ! $includeVirtual && $column->virtual )
                 continue;
             $columns[ $name ] = $column;
         }
