@@ -245,13 +245,13 @@ class BaseModel
      * @param $c  column object.
      * @param $val value object.
      * @param $args arguments
-     * @param $validateFail fail flag.
+     * @param $validateFail array of failed field names.
      */
     protected function _validate_validator($c, $val, $args, & $validateFail )
     {
         $v = call_user_func( $c->validator, $val, $args, $this );
         if( ! $v[0] )
-            $validateFail = true;
+            $validateFail[] = $c->name;
         return (object) array(
             'success' => $v[0],
             'message' => $v[1],
@@ -264,7 +264,7 @@ class BaseModel
         if( $validValues = $c->getValidValues( $this, $args ) ) {
             // sort by index
             if( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
-                $validateFail = true;
+                $validateFail[] = $c->name;
                 return (object) array(
                     'success' => false,
                     'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
@@ -285,7 +285,7 @@ class BaseModel
                 }
 
                 if( ! in_array( $val , $values ) ) {
-                    $validateFail = true;
+                    $validateFail[] = $c->name;
                     return (object) array(
                         'success' => false,
                         'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
@@ -346,7 +346,7 @@ class BaseModel
 
         $k = $this->_schema->primaryKey;
         $sql = $vars = null;
-        $validateFail    = false;
+        $validateFail    = array();
         $this->_data = $validateResults = array();
         $stm = null;
 
@@ -410,7 +410,7 @@ class BaseModel
             }
 
             if( $validateFail ) {
-                throw new Exception( 'Validation Fail' );
+                throw new Exception( 'Validation Fail: ' . implode(', ', $validateFail );
             }
 
             $q = $this->createQuery( $dsId );
