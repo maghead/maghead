@@ -69,6 +69,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         is('pedro@gmail.compedro@gmail.com',$author->get('v'));
 
+        ok( $display = $author->display( 'v' ) );
+
         $authors = new tests\AuthorCollection;
         ok( $authors );
     }
