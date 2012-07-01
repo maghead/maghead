@@ -1,6 +1,6 @@
 <?php
 namespace LazyRecord\Schema;
-
+use Exception;
 
 class SqlBuilder
 {
@@ -36,16 +36,17 @@ class SqlBuilder
     {
         // get driver type
         $type = $this->driver->type;
-        if( ! $type )
+        if( ! $type ) {
             throw new Exception("Driver type is not defined.");
+        }
         $class = get_class($this) . '\\' . ucfirst($type) . 'Builder';
-        $builder = new $class( $this );
-        $this->builder = $builder;
+        $this->builder = new $class($this);
     }
 
     public function build($schema)
     {
-        return (array) $this->builder->build( $schema );
+        $sqls = (array) $this->builder->build( $schema );
+        return $sqls;
     }
 }
 

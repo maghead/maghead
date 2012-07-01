@@ -59,6 +59,7 @@ class AuthorSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'text',
           'isa' => 'str',
+          'label' => 'Virtual Column',
           'virtual' => true,
           'inflator' => function($value,$record) {
                 return $record->email . $record->email;

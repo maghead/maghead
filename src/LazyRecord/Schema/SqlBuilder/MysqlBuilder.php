@@ -130,5 +130,10 @@ class MysqlBuilder
         return $sqls;
     }
 
+    public function buildIndex($schema) 
+    {
+
+    }
+
 }
 

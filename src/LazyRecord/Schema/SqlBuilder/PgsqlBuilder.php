@@ -104,6 +104,7 @@ class PgsqlBuilder
                 . ' CASCADE';
     }
 
+
     public function build($schema)
     {
         $sqls = array();
@@ -116,6 +117,11 @@ class PgsqlBuilder
 
         $sqls[] = $this->createTable($schema);
         return $sqls;
+    }
+
+    public function buildIndex($schema) 
+    {
+
     }
 
 }
