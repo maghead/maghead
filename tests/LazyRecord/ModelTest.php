@@ -49,6 +49,18 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $collection = $author->asCollection();
     }
 
+    public function testVirtualColumn() 
+    {
+        $author = new \tests\Author;
+        $ret = $author->create(array( 
+            'name' => 'Pedro' , 
+            'email' => 'pedro@gmail.com' , 
+            'identity' => 'id',
+        ));
+        ok($ret->success);
+        is('pedro@gmail.compedro@gmail.com',$author->get('v'));
+    }
+
     public function testSchema()
     {
         $author = new \tests\Author;

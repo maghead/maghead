@@ -897,9 +897,7 @@ class BaseModel
      */
     public function get($name)
     {
-        if( isset( $this->_data[ $name ] ) ) {
-            return $this->inflateColumnValue( $name );
-        }
+        return $this->inflateColumnValue( $name );
     }
 
 
