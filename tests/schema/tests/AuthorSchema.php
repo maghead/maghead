@@ -15,6 +15,12 @@ class AuthorSchema extends SchemaDeclare
             ->required()
             ->varchar(128);
 
+        $this->column('v')
+            ->virtual()
+            ->inflator(function($value,$record) {
+                return $record->email . $record->email;
+            });
+
         $this->column('identity')
             ->unique()
             ->required()
@@ -26,6 +32,8 @@ class AuthorSchema extends SchemaDeclare
 
         $this->mixin('LazyRecord\Schema\Mixin\MetadataSchema');
 
+
+        
 
         /**
          * for append:

@@ -54,6 +54,17 @@ class AuthorSchemaProxy extends RuntimeSchema
           'required' => true,
         ),
     ),
+  'v' => array( 
+      'name' => 'v',
+      'attributes' => array( 
+          'type' => 'text',
+          'isa' => 'str',
+          'virtual' => true,
+          'inflator' => function($value,$record) {
+                return $record->email . $record->email;
+            },
+        ),
+    ),
   'identity' => array( 
       'name' => 'identity',
       'attributes' => array( 
@@ -75,6 +86,7 @@ class AuthorSchemaProxy extends RuntimeSchema
         $this->columnNames     = array( 
   'name',
   'email',
+  'v',
   'identity',
   'confirmed',
 );

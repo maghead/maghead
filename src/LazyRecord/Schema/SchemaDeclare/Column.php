@@ -94,7 +94,7 @@ class Column
             // canonicalizer
             'canonicalizer' => self::ATTR_CALLABLE,
 
-            'virtural' => self::ATTR_FLAG,
+            'virtual' => self::ATTR_FLAG,
 
             // an alias of canonicalizer
             'filter' => self::ATTR_CALLABLE,
