@@ -721,10 +721,10 @@ class BaseModel
     public function save()
     {
         $k = $this->_schema->primaryKey;
-        $doCreate = ( $k && ! isset($this->_data[$k]) );
-        return $doCreate
-            ? $this->create( $this->_data )
-            : $this->update( $this->_data );
+        return ( $k && ! isset($this->_data[$k]) )
+                ? $this->create( $this->_data )
+                : $this->update( $this->_data )
+                ;
     }
 
     /* pass a value to a column for displaying */
@@ -889,6 +889,14 @@ class BaseModel
     /*******************
      * Data Manipulators 
      *********************/
+
+
+    /**
+     * Set column value
+     *
+     * @param string $name
+     * @param mixed $value
+     */
     public function __set( $name , $value ) 
     {
         $this->_data[ $name ] = $value; 
@@ -898,6 +906,7 @@ class BaseModel
     /**
      * Get inflate value
      *
+     * @param string $name Column name
      */
     public function get($name)
     {
@@ -909,6 +918,8 @@ class BaseModel
      * Check if the value exist
      *
      * @param string $name
+     *
+     * @return boolean
      */
     public function hasValue( $name )
     {
