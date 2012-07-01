@@ -42,14 +42,23 @@ class RuntimeSchema extends SchemaBase
 
     public function getColumnNames()
     {
-        return array_keys( $this->columns );
+        $names = array();
+        foreach( $this->columns as $name => $data ) {
+            if( isset($data['attributes']['virtual']) )
+                continue;
+            $names[] = $name;
+        }
+        return $names;
     }
 
     public function getColumns() 
     {
         $columns = array();
         foreach( $this->columns as $name => $data ) {
-            $columns[$name] = $this->getColumn( $name );
+            $column = $this->getColumn( $name );
+            if( $column->virtual )
+                continue;
+            $columns[ $name ] = $column;
         }
         return $columns;
     }
