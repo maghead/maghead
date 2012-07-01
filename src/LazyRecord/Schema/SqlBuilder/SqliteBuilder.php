@@ -128,4 +128,9 @@ class SqliteBuilder
         return $sqls;
     }
 
+    public function buildIndex($schema) 
+    {
+
+    }
+
 }
