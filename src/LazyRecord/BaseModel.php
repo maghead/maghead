@@ -730,8 +730,15 @@ class BaseModel
     /* pass a value to a column for displaying */
     public function display( $name )
     {
-        $c = $this->_schema->getColumn( $name );
-        return $c->display( $this->getValue( $name ) );
+        if( $c = $this->_schema->getColumn( $name ) ) {
+            return $c->display( $this->getValue( $name ) );
+        }
+        elseif( method_exists($this, $name) ) {
+            return call_user_func_array($this,array($name));
+        }
+        else {
+            // return "Undefined column $name";
+        }
     }
 
 
@@ -1359,7 +1366,7 @@ class BaseModel
                     ?  $this->_data[ $n ]
                     : null;
         if( $c = $this->_schema->getColumn( $n ) ) {
-            return $c->inflate( $value );
+            return $c->inflate( $value, $this );
         }
         return $value;
     }

@@ -266,6 +266,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             'created_by' => $user->id,
         ));
         ok( $ret );
+        ok( $book->created_by );
         is( $user->id, $book->created_by->id );
         ok( $user->id , $book->getValue('created_by') );
     }

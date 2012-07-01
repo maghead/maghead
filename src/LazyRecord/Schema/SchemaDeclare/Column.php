@@ -94,10 +94,15 @@ class Column
             // canonicalizer
             'canonicalizer' => self::ATTR_CALLABLE,
 
+            'virtural' => self::ATTR_FLAG,
+
             // an alias of canonicalizer
             'filter' => self::ATTR_CALLABLE,
+
             'inflator' => self::ATTR_CALLABLE,
+
             'deflator' => self::ATTR_CALLABLE,
+
             'renderAs' => self::ATTR_STRING,
             'widgetAttributes' => self::ATTR_ARRAY,
         );
@@ -395,8 +400,6 @@ class Column
         $this->attributes[ $method ] = $args[0];
         return $this;
     }
-
-
 
 }
 
