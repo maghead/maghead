@@ -45,10 +45,15 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
 
         $pdo = $connManager->getConnection($dataSource);
         ok( $pdo , 'pdo connection' );
-        $builder = new SqlBuilder($connManager->getQueryDriver($dataSource) , array( 
-            'rebuild' => true,
-        ));
+
+        $queryDriver = $connManager->getQueryDriver($dataSource);
+        ok( $queryDriver );
+
+        $builder = SqlBuilder::create($queryDriver,array( 'rebuild' => true ));
         ok( $builder );
+
+        $builder->build($schema);
+
         ok( $sqls = $builder->build( $schema ) );
         foreach( $sqls as $sql ) {
             $this->pdoQueryOk( $pdo, $sql );
