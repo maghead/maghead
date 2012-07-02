@@ -34,6 +34,7 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
     function testBuilder($schema) {
         $this->insertIntoDataSource('mysql',$schema);
         $this->insertIntoDataSource('sqlite',$schema);
+        $this->insertIntoDataSource('pgsql',$schema);
     }
 
     function insertIntoDataSource($dataSource,$schema)
