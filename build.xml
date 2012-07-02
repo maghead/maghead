@@ -6,7 +6,7 @@
  <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
  <target name="build"
-   depends="prepare,bundle,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpwiki,phpunit,phpcb,package"/>
+   depends="bundle,prepare,init-config,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpwiki,phpunit,phpcb,package"/>
 
  <target name="build-parallel"
    depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -42,7 +42,17 @@
   <mkdir dir="${basedir}/build/pdepend"/>
   <mkdir dir="${basedir}/build/phpdox"/>
 
+
+
+ </target>
+
+ <target name="init-config">
   <copy file="config/database.testing.yml" tofile="config/database.yml"/>
+  <exec executable="php">
+   <arg value="scripts/lazy.php"/>
+   <arg value="build-conf"/>
+   <arg value="config/database.yml"/>
+  </exec>
  </target>
 
  <target name="lint" description="Perform syntax check of sourcecode files">
