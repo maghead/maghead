@@ -20,7 +20,7 @@ class PgsqlBuilder
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql = $this->parent->driver->getQuoteColumn( $name );
+        $sql = $this->driver->getQuoteColumn( $name );
 
         if( ! $column->autoIncrement )
             $sql .= ' ' . $type;
@@ -50,7 +50,7 @@ class PgsqlBuilder
                  * Here we use query driver builder to inflate default value,
                  * But the value,
                  */
-                $sql .= ' default ' . $this->parent->driver->inflate($default);
+                $sql .= ' default ' . $this->driver->inflate($default);
             }
         }
 
@@ -85,7 +85,7 @@ class PgsqlBuilder
 
     public function createTable($schema)
     {
-        $create = 'CREATE TABLE ' . $this->parent->driver->getQuoteTableName($schema->getTable()) . "( \n";
+        $create = 'CREATE TABLE ' . $this->driver->getQuoteTableName($schema->getTable()) . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
             if( $column->virtual )
@@ -100,7 +100,7 @@ class PgsqlBuilder
     public function dropTable($schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-                . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+                . $this->driver->getQuoteTableName( $schema->getTable() )
                 . ' CASCADE';
     }
 
@@ -109,10 +109,10 @@ class PgsqlBuilder
     {
         $sqls = array();
 
-        if( $this->parent->clean || $this->parent->rebuild ) {
+        if( $this->clean || $this->rebuild ) {
             $sqls[] = $this->dropTable($schema);
         }
-        if( $this->parent->clean )
+        if( $this->clean )
             return $sqls;
 
         $sqls[] = $this->createTable($schema);
