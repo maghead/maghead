@@ -14,6 +14,8 @@ data_sources:
     dsn: 'sqlite::memory:'
     query_options: { quote_column: true, quote_table: true }
   mysql:
-    dsn: 'mysql:host=localhost;dbname=test'
-    user: root
-    pass: 123123
+    dsn: 'mysql:host=localhost;dbname=testing'
+    user: testing
+    pass: testing
+# create database testing charset utf8;
+# grant all privileges on testing.* to testing@localhost identified by 'testing';
