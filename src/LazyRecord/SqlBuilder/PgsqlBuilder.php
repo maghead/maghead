@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Schema\SqlBuilder;
+namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\QueryBuilder;
 
@@ -8,7 +8,7 @@ use LazyRecord\QueryBuilder;
  *
  * @see http://www.sqlite.org/docs.html
  */
-class SqliteBuilder
+class PgsqlBuilder
     extends BaseBuilder
     implements BuilderInterface
 {
@@ -21,59 +21,50 @@ class SqliteBuilder
             $type = 'text';
 
         $sql = $this->parent->driver->getQuoteColumn( $name );
-        $sql .= ' ' . $type;
+
+        if( ! $column->autoIncrement )
+            $sql .= ' ' . $type;
 
         if( $column->required || $column->notNull )
             $sql .= ' NOT NULL';
         elseif( $column->null )
             $sql .= ' NULL';
 
-        /**
-         * if it's callable, we should not write the result into sql schema 
-         */
-        if( null !== ($default = $column->default) 
+
+        /* if it's callable, we should not write the result into sql schema */
+        if( ($default = $column->default) !== null 
             && ! is_callable($column->default )  ) 
         {
-            // for raw sql default value
+
+            // raw sql default value
             if( is_array($default) ) {
                 $sql .= ' default ' . $default[0];
-            } else {
+            }
+            else {
+                /* XXX: 
+                 * note that we sometime need the data source id from model schema define.
+                 * $sourceId = $schema->getDataSourceId();
+                 */
+
+                /**
+                 * Here we use query driver builder to inflate default value,
+                 * But the value,
+                 */
                 $sql .= ' default ' . $this->parent->driver->inflate($default);
             }
         }
 
-        if( $column->primary )
-            $sql .= ' primary key';
-
         if( $column->autoIncrement )
-            $sql .= ' autoincrement';
+            $sql .= ' SERIAL'; // use pgsql built-in serial for auto increment column
+
+        if( $column->primary )
+            $sql .= ' PRIMARY KEY';
+
 
         if( $column->unique )
-            $sql .= ' unique';
+            $sql .= ' UNIQUE';
 
-        /**
-         * build sqlite reference
-         *    create table track(
-         *        trackartist INTEGER,
-         *        FOREIGN KEY(trackartist) REFERENCES artist(artistid)
-         *    )
-         * @see http://www.sqlite.org/foreignkeys.html
-         *
-         * CREATE TABLE album(
-         *     albumartist TEXT,
-         *     albumname TEXT,
-         *     albumcover BINARY,
-         *     PRIMARY KEY(albumartist, albumname)
-         *     );
-         *
-         * CREATE TABLE song(
-         *     songid     INTEGER,
-         *     songartist TEXT,
-         *     songalbum TEXT,
-         *     songname   TEXT,
-         *     FOREIGN KEY(songartist, songalbum) REFERENCES album(albumartist, albumname)
-         * );
-         */
+        // build reference
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
             case SchemaDeclare::belongs_to:
@@ -94,25 +85,25 @@ class SqliteBuilder
 
     public function createTable($schema)
     {
-        $sql = 'CREATE TABLE ' 
-            . $this->parent->driver->getQuoteTableName($schema->getTable()) . " ( \n";
+        $create = 'CREATE TABLE ' . $this->parent->driver->getQuoteTableName($schema->getTable()) . "( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
             if( $column->virtual )
                 continue;
-            $columnSql[] = $this->buildColumnSql( $schema, $column );
+            $columnSql[] = "\t" . $this->buildColumnSql( $schema, $column );
         }
-        $sql .= join(",\n",$columnSql);
-        $sql .= "\n);\n";
-        return $sql;
+        $create .= join(",\n",$columnSql);
+        $create .= "\n);\n";
+        return $create;
     }
 
     public function dropTable($schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-            . $this->parent->driver->getQuoteTableName( $schema->getTable() )
-            . ';';
+                . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+                . ' CASCADE';
     }
+
 
     public function build($schema)
     {

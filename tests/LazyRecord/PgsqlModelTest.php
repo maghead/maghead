@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Schema\SqlBuilder;
+use LazyRecord\SqlBuilder;
 
 class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
 {
@@ -19,8 +19,8 @@ class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
         );
     }
 
-	function testCRUD()
-	{
+    function testCRUD()
+    {
         $author = new \tests\Author;
         ok( $author->_schema );
 
@@ -126,7 +126,7 @@ class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
                 ->equal('name','Rename')
             ->back()->execute();
         ok( $ret->success );
-	}
+    }
 
 
 }

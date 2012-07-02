@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Schema;
+namespace LazyRecord;
 use Exception;
 
 class SqlBuilder

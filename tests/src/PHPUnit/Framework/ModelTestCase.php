@@ -1,7 +1,7 @@
 <?php
 use LazyRecord\QueryDriver;
 use LazyRecord\ConnectionManager;
-use LazyRecord\Schema\SqlBuilder;
+use LazyRecord\SqlBuilder;
 use LazyRecord\ConfigLoader;
 
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
