@@ -19,3 +19,7 @@ data_sources:
     pass: testing
 # create database testing charset utf8;
 # grant all privileges on testing.* to testing@localhost identified by 'testing';
+  pgsql:
+    dsn: 'pgsql:host=localhost;dbname=testing'
+    user: testing
+    pass: testing
