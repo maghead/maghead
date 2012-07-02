@@ -5,20 +5,17 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
 {
     function pdoQueryOk($dbh,$sql)
     {
-		$ret = $dbh->query( $sql );
-
-		$error = $dbh->errorInfo();
-		if($error[1] != null ) {
+        $ret = $dbh->query( $sql );
+        $error = $dbh->errorInfo();
+        if($error[1] != null ) {
             throw new Exception( 
                 var_export( $error, true ) 
                 . ' SQL: ' . $sql 
             );
-		}
+        }
         // ok( $error[1] != null );
         return $ret;
     }
-
-
 
     function schemaProvider()
     {
@@ -31,13 +28,11 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
         );
     }
 
-
-
     /**
      * @dataProvider schemaProvider
      */
-	function testMysql($schema)
-	{
+    function testMysql($schema)
+    {
         $connManager = LazyRecord\ConnectionManager::getInstance();
         if( ! $connManager->hasDataSource('mysql') )
             return;
@@ -47,19 +42,20 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
         $builder = new SqlBuilder($connManager->getQueryDriver('mysql') , array( 
             'rebuild' => true,
         ));
-		ok( $builder );
+        ok( $builder );
         ok( $sqls = $builder->build( $schema ) );
         foreach( $sqls as $sql ) {
             $this->pdoQueryOk( $pdo, $sql );
         }
-	}
+    }
+
 
 
     /**
      * @dataProvider schemaProvider
      */
-	function testSqlite($schema)
-	{
+    function testSqlite($schema)
+    {
         $connManager = LazyRecord\ConnectionManager::getInstance();
         if( ! $connManager->hasDataSource('sqlite') )
             return;
@@ -69,12 +65,12 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
         $builder = new SqlBuilder($connManager->getQueryDriver('sqlite') , array( 
             'rebuild' => true,
         ));
-		ok( $builder );
+        ok( $builder );
         ok( $sqls = $builder->build( $schema ) );
         foreach( $sqls as $sql ) {
             $this->pdoQueryOk( $pdo, $sql );
         }
-	}
+    }
 
 
 
