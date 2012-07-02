@@ -11,9 +11,8 @@ class SqlBuilderFactory
         if( ! $type ) {
             throw new Exception("Driver type is not defined.");
         }
-        $class = get_class($this) . '\\' . ucfirst($type) . 'Builder';
-        $builder = new $class($this);
-        return $builder;
+        $class = 'LazyRecord\SqlBuilder\\' . ucfirst($type) . 'Builder';
+        return new $class($driver,$options);
     }
 }
 

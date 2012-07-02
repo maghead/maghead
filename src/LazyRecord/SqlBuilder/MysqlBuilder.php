@@ -15,7 +15,7 @@ class MysqlBuilder
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql = $this->parent->driver->getQuoteColumn( $name );
+        $sql = $this->driver->getQuoteColumn( $name );
         $sql .= ' ' . $type;
 
         if( $column->required || $column->notNull )
@@ -31,7 +31,7 @@ class MysqlBuilder
                 $sql .= ' default ' . $default[0];
             }
             else {
-                $sql .= ' default ' . $this->parent->driver->inflate($default);
+                $sql .= ' default ' . $this->driver->inflate($default);
             }
         }
 
@@ -97,7 +97,7 @@ class MysqlBuilder
     {
         $columnSql = array();
         $create = 'CREATE TABLE ' 
-            . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+            . $this->driver->getQuoteTableName( $schema->getTable() )
             . "( \n";
         foreach( $schema->columns as $name => $column ) {
             if( $column->virtual )
@@ -112,7 +112,7 @@ class MysqlBuilder
     public function dropTable($schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-            . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+            . $this->driver->getQuoteTableName( $schema->getTable() )
             . ';';
     }
 
@@ -120,10 +120,10 @@ class MysqlBuilder
     {
         $sqls = array();
 
-        if( $this->parent->clean || $this->parent->rebuild ) {
+        if( $this->clean || $this->rebuild ) {
             $sqls[] = $this->dropTable($schema);
         }
-        if( $this->parent->clean )
+        if( $this->clean )
             return $sqls;
 
         $sqls[] = $this->createTable($schema);
