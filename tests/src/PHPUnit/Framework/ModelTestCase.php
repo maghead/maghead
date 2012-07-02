@@ -40,7 +40,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
         $dbh = ConnectionManager::getInstance()->getConnection('default');
         $driver = ConnectionManager::getInstance()->getQueryDriver('default');
-        $builder = new SqlBuilder( $driver , array(
+        $builder = LazyRecord\SqlBuilder\SqlBuilderFactory::create( $driver , array(
             'rebuild' => true,
         ));
 		ok( $builder );
