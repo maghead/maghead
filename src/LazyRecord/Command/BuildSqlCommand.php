@@ -72,6 +72,7 @@ DOC;
         }
 
 
+
         $logger->info("Initialize schema builder...");
         $builder = new \LazyRecord\SqlBuilder($driver, array( 
             'rebuild' => $options->rebuild,
