@@ -9,6 +9,8 @@ interface BuilderInterface
 
     public function createTable($schema);
     public function dropTable($schema);
+
+    public function buildColumnSql($schema,$column);
 }
 
 
