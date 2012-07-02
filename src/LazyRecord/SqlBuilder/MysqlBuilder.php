@@ -93,21 +93,6 @@ class MysqlBuilder
         return $sql;
     }
 
-    public function createTable($schema)
-    {
-        $columnSql = array();
-        $create = 'CREATE TABLE ' 
-            . $this->driver->getQuoteTableName( $schema->getTable() )
-            . "( \n";
-        foreach( $schema->columns as $name => $column ) {
-            if( $column->virtual )
-                continue;
-            $columnSql[] = "  " . $this->buildColumnSql( $schema, $column );
-        }
-        $create .= join(",\n",$columnSql);
-        $create .= "\n);\n";
-        return $create;
-    }
 
     public function dropTable($schema)
     {
