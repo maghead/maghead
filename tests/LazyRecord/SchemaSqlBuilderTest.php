@@ -31,15 +31,20 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider schemaProvider
      */
-    function testMysql($schema)
+    function testBuilder($schema) {
+        $this->insertIntoDataSource('mysql',$schema);
+        $this->insertIntoDataSource('sqlite',$schema);
+    }
+
+    function insertIntoDataSource($dataSource,$schema)
     {
         $connManager = LazyRecord\ConnectionManager::getInstance();
-        if( ! $connManager->hasDataSource('mysql') )
+        if( ! $connManager->hasDataSource($dataSource) )
             return;
 
-        $pdo = $connManager->getConnection('mysql');
+        $pdo = $connManager->getConnection($dataSource);
         ok( $pdo , 'pdo connection' );
-        $builder = new SqlBuilder($connManager->getQueryDriver('mysql') , array( 
+        $builder = new SqlBuilder($connManager->getQueryDriver($dataSource) , array( 
             'rebuild' => true,
         ));
         ok( $builder );
@@ -48,31 +53,5 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
             $this->pdoQueryOk( $pdo, $sql );
         }
     }
-
-
-
-    /**
-     * @dataProvider schemaProvider
-     */
-    function testSqlite($schema)
-    {
-        $connManager = LazyRecord\ConnectionManager::getInstance();
-        if( ! $connManager->hasDataSource('sqlite') )
-            return;
-
-        $pdo = $connManager->getConnection('sqlite');
-        ok( $pdo , 'pdo connection' );
-        $builder = new SqlBuilder($connManager->getQueryDriver('sqlite') , array( 
-            'rebuild' => true,
-        ));
-        ok( $builder );
-        ok( $sqls = $builder->build( $schema ) );
-        foreach( $sqls as $sql ) {
-            $this->pdoQueryOk( $pdo, $sql );
-        }
-    }
-
-
-
 }
 
