@@ -13,7 +13,7 @@ class SqliteBuilder
     implements BuilderInterface
 {
 
-    function buildColumnSql($schema, $column) {      
+    function buildColumnSql($schema, $column) {
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         $type = $column->type;
