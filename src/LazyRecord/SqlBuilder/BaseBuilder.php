@@ -39,6 +39,20 @@ class BaseBuilder
         return $this->driver->$name;
     }
 
+    public function build($schema)
+    {
+        $sqls = array();
+
+        if( $this->clean || $this->rebuild ) {
+            $sqls[] = $this->dropTable($schema);
+        }
+        if( $this->clean )
+            return $sqls;
+
+        $sqls[] = $this->createTable($schema);
+        return $sqls;
+    }
+
 }
 
 

@@ -92,20 +92,6 @@ class PgsqlBuilder
     }
 
 
-    public function build($schema)
-    {
-        $sqls = array();
-
-        if( $this->clean || $this->rebuild ) {
-            $sqls[] = $this->dropTable($schema);
-        }
-        if( $this->clean )
-            return $sqls;
-
-        $sqls[] = $this->createTable($schema);
-        return $sqls;
-    }
-
     public function buildIndex($schema) 
     {
 
