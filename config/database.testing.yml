@@ -9,9 +9,9 @@ schema:
     - tests/schema
 data_sources:
   default:
-    dsn: 'pgsql:dbname=lazy_test'
+    # dsn: 'pgsql:dbname=lazy_test'
     # dsn: 'sqlite:tests.db'
-    # dsn: 'sqlite::memory:'
+    dsn: 'sqlite::memory:'
     query_options: { quote_column: true, quote_table: true }
   mysql:
     dsn: 'mysql:host=localhost;dbname=test'
