@@ -30,23 +30,19 @@
   <delete dir="${basedir}/build/coverage"/>
   <delete dir="${basedir}/build/logs"/>
   <delete dir="${basedir}/build/pdepend"/>
-<<<<<<< HEAD
   <delete dir="${basedir}/build/wiki"/>
-=======
->>>>>>> 1512f9667c2e21a4e7607d5f5e5d3651ea923d19
  </target>
 
  <target name="prepare" depends="clean" description="Prepare for build">
   <mkdir dir="${basedir}/build/api"/>
-<<<<<<< HEAD
   <mkdir dir="${basedir}/build/wiki"/>
-=======
->>>>>>> 1512f9667c2e21a4e7607d5f5e5d3651ea923d19
   <mkdir dir="${basedir}/build/code-browser"/>
   <mkdir dir="${basedir}/build/coverage"/>
   <mkdir dir="${basedir}/build/logs"/>
   <mkdir dir="${basedir}/build/pdepend"/>
   <mkdir dir="${basedir}/build/phpdox"/>
+
+  <copy file="config/database.testing.yml" tofile="config/database.yml"/>
  </target>
 
  <target name="lint" description="Perform syntax check of sourcecode files">
@@ -143,7 +139,7 @@
         <then>
             <exec executable="onion" failonerror="true">
                 <arg value="-q"/>
-                <arg value="bundle"/>
+                <arg value="install"/>
             </exec>
         </then>
      </if>
