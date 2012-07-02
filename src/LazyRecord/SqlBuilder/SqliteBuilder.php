@@ -100,7 +100,7 @@ class SqliteBuilder
         foreach( $schema->columns as $name => $column ) {
             if( $column->virtual )
                 continue;
-            $columnSql[] = $this->buildColumnSql( $schema, $column );
+            $columnSql[] = '  ' . $this->buildColumnSql( $schema, $column );
         }
         $sql .= join(",\n",$columnSql);
         $sql .= "\n);\n";

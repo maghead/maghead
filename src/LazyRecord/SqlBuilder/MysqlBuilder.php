@@ -102,7 +102,7 @@ class MysqlBuilder
         foreach( $schema->columns as $name => $column ) {
             if( $column->virtual )
                 continue;
-            $columnSql[] = $this->buildColumnSql( $schema, $column );
+            $columnSql[] = "  " . $this->buildColumnSql( $schema, $column );
         }
         $create .= join(",\n",$columnSql);
         $create .= "\n);\n";
