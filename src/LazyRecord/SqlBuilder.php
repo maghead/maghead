@@ -25,14 +25,14 @@ class SqlBuilder
             $this->clean = $options['clean'];
 
         $this->driver = $driver;
-        $this->_createBuilder();
+        $this->builder = $this->createBuilder();
     }
 
 
     /**
      * create sql builder for specific driver 
      */
-    public function _createBuilder()
+    public function createBuilder()
     {
         // get driver type
         $type = $this->driver->type;
@@ -40,7 +40,7 @@ class SqlBuilder
             throw new Exception("Driver type is not defined.");
         }
         $class = get_class($this) . '\\' . ucfirst($type) . 'Builder';
-        $this->builder = new $class($this);
+        return new $class($this);
     }
 
     public function build($schema)

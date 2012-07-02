@@ -78,6 +78,7 @@ DOC;
             'clean' => $options->clean,
         )); // driver
 
+
         $fp = fopen('schema.sql','a+');
 
         foreach( $classes as $class ) {
@@ -111,6 +112,4 @@ DOC;
         fclose($fp);
     }
 }
-
-
 
