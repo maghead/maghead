@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Schema\SqlBuilder;
+use LazyRecord\Sqlbuilder\SqlBuilderFactory;
 
 class SqlBuilderTest extends PHPUnit_Framework_TestCase
 {
@@ -49,7 +49,7 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
         $queryDriver = $connManager->getQueryDriver($dataSource);
         ok( $queryDriver );
 
-        $builder = SqlBuilder::create($queryDriver,array( 'rebuild' => true ));
+        $builder = SqlBuilderFactory::create($queryDriver,array( 'rebuild' => true ));
         ok( $builder );
 
         $builder->build($schema);
