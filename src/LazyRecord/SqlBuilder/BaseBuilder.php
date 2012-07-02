@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Schema\SqlBuilder;
+namespace LazyRecord\SqlBuilder;
 
 class BaseBuilder
 {

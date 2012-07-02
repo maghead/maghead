@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Schema\SqlBuilder;
+use LazyRecord\SqlBuilder;
 
 class Collection2Test extends PHPUnit_Framework_ModelTestCase
 {
