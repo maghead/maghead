@@ -6,7 +6,7 @@
  <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
  <target name="build"
-   depends="bundle,prepare,init-config,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpwiki,phpunit,phpcb,package"/>
+   depends="bundle,prepare,init-config,lint,phploc,pdepend,phpmd-ci,doxygen,phpcs-ci,phpcpd,phpdox,phpwiki,phpunit,phpcb,package"/>
 
  <target name="build-parallel"
    depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -31,6 +31,7 @@
   <delete dir="${basedir}/build/logs"/>
   <delete dir="${basedir}/build/pdepend"/>
   <delete dir="${basedir}/build/wiki"/>
+  <delete dir="${basedir}/build/doxygen"/>
  </target>
 
  <target name="prepare" depends="clean" description="Prepare for build">
@@ -41,9 +42,7 @@
   <mkdir dir="${basedir}/build/logs"/>
   <mkdir dir="${basedir}/build/pdepend"/>
   <mkdir dir="${basedir}/build/phpdox"/>
-
-
-
+  <mkdir dir="${basedir}/build/doxygen"/>
  </target>
 
  <target name="init-config">
@@ -53,6 +52,16 @@
    <arg value="build-conf"/>
    <arg value="config/database.yml"/>
   </exec>
+ </target>
+
+ <target name="doxygen">
+     <if>
+        <available file="Doxyfile"/>
+        <then>
+            <exec executable="doxygen" failonerror="true">
+            </exec>
+        </then>
+     </if>
  </target>
 
  <target name="lint" description="Perform syntax check of sourcecode files">
