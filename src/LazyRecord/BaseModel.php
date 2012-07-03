@@ -49,6 +49,8 @@ class BaseModel
      */
     static $currentUser;
 
+    static $schemaCache;
+
     public function __construct($args = null) 
     {
         if( $args )
@@ -362,9 +364,6 @@ class BaseModel
             $args = $this->beforeCreate( $args );
 
             foreach( $this->_schema->getColumns() as $n => $c ) {
-                // $c = $this->_schema->getColumn( $columnKey );
-                // $n = $c->name;
-
                 // if column is required (can not be empty)
                 //   and default is defined.
                 if( ! isset($args[$n]) && ! $c->primary )
@@ -628,10 +627,7 @@ class BaseModel
         {
             $args = $this->beforeUpdate($args);
 
-            foreach( $this->_schema->columns as $columnHash ) {
-                $c = $this->_schema->getColumn( $columnHash['name'] );
-                $n = $c->name;
-
+            foreach( $this->_schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
                 if( isset($args[$n]) 
@@ -1394,14 +1390,14 @@ class BaseModel
 
 
     // slower than _schema
-    public function getSchema()
+    public function loadSchema()
     {
         return SchemaLoader::load( static::schema_proxy_class );
     }
 
     public function newCollection() 
     {
-        return $this->getSchema()->newCollection();
+        return $this->loadSchema()->newCollection();
     }
 
     // _schema methods
