@@ -52,6 +52,12 @@
    <arg value="build-conf"/>
    <arg value="config/database.yml"/>
   </exec>
+
+  <exec executable="php">
+   <arg value="scripts/lazy.php"/>
+   <arg value="build-schema"/>
+  </exec>
+
  </target>
 
  <target name="doxygen">
