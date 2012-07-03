@@ -794,7 +794,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         // FIXME: On build machine,  we got 21185.088157654, that's really slow, fix later.
         return;
 
-
         $s = microtime(true);
         $n = new \tests\Name;
         $ids = array();

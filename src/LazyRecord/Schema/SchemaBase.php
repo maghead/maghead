@@ -18,6 +18,7 @@ abstract class SchemaBase
 
     public $label;
 
+
     public $columns = array();
 
     public $columnNames = array();
@@ -29,6 +30,7 @@ abstract class SchemaBase
     public $readSourceId = 'default';
 
     public $writeSourceId = 'default';
+
 
     public function getReadSourceId()
     {

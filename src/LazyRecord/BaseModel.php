@@ -339,11 +339,14 @@ class BaseModel
         // first, filter the array
         $args = $this->filterArrayWithColumns($args);
 
+
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'create', $args ) ) {
             return $this->reportError( _('Permission denied. Can not create record.') , array( 
                 'args' => $args,
             ));
         }
+
+
 
         $k = $this->_schema->primaryKey;
         $sql = $vars = null;
@@ -358,9 +361,9 @@ class BaseModel
         try {
             $args = $this->beforeCreate( $args );
 
-            foreach( $this->_schema->columns as $columnKey => $hash ) {
-                $c = $this->_schema->getColumn( $columnKey );
-                $n = $c->name;
+            foreach( $this->_schema->getColumns() as $n => $c ) {
+                // $c = $this->_schema->getColumn( $columnKey );
+                // $n = $c->name;
 
                 // if column is required (can not be empty)
                 //   and default is defined.
@@ -415,7 +418,7 @@ class BaseModel
             }
 
             $q = $this->createQuery( $dsId );
-            
+
             $q->insert($args);
             $q->returning( $k );
 
@@ -839,7 +842,7 @@ class BaseModel
      */
     public function dbPrepareAndExecute($conn, $sql, $args = array() )
     {
-        $stm  = $conn->prepare( $sql );
+        $stm = $conn->prepare( $sql );
         $stm->execute( $args );
         return $stm;
     }
@@ -1364,14 +1367,8 @@ class BaseModel
 
     public function filterArrayWithColumns( $args )
     {
-        $schema = $this->_schema;
-        $new = array();
-        foreach( $args as $k => $v ) {
-            if( $schema->getColumn($k) ) {
-                $new[ $k ] = $v;
-            }
-        }
-        return $new;
+        $columns = $this->_schema->getColumns();
+        return array_intersect_key( $args ,$columns );
     }
 
     public function inflateColumnValue( $n ) 

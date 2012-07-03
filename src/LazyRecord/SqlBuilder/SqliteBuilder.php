@@ -101,7 +101,7 @@ class SqliteBuilder
 
     public function buildIndex($schema) 
     {
-
+        return array();
     }
 
 }

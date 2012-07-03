@@ -83,8 +83,8 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
             ok( $ret->success , $ret->message );
         }
         else {
-            var_dump( $ret->exception->getMessage() ); 
             var_dump( $ret->sql ); 
+            echo $ret->exception;
             ok( $ret->success );
         }
     }
