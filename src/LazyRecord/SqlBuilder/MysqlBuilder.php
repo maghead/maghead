@@ -104,7 +104,7 @@ class MysqlBuilder
 
     public function buildIndex($schema) 
     {
-
+        return array();
     }
 
 }

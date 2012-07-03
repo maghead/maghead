@@ -64,22 +64,6 @@ class PgsqlBuilder
         if( $column->unique )
             $sql .= ' UNIQUE';
 
-        // build reference
-        foreach( $schema->relations as $rel ) {
-            switch( $rel['type'] ) {
-            case SchemaDeclare::belongs_to:
-            case SchemaDeclare::has_many:
-            case SchemaDeclare::has_one:
-                if( $name != 'id' && $rel['self']['column'] == $name ) 
-                {
-                    $fSchema = new $rel['foreign']['schema'];
-                    $fColumn = $rel['foreign']['column'];
-                    $fc = $fSchema->columns[$fColumn];
-                    $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
-                }
-                break;
-            }
-        }
         return $sql;
     }
 
@@ -94,7 +78,22 @@ class PgsqlBuilder
 
     public function buildIndex($schema) 
     {
-
+        return array();
+        // build reference
+#          foreach( $schema->relations as $rel ) {
+#              switch( $rel['type'] ) {
+#              case SchemaDeclare::belongs_to:
+#              case SchemaDeclare::has_many:
+#              case SchemaDeclare::has_one:
+#                  if( $name != 'id' && $rel['self']['column'] == $name ) 
+#                  {
+#                      $fSchema = new $rel['foreign']['schema'];
+#                      $fColumn = $rel['foreign']['column'];
+#                      $fc = $fSchema->columns[$fColumn];
+#                      $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
+#                  }
+#                  break;
+#              }
+#          }
     }
-
 }

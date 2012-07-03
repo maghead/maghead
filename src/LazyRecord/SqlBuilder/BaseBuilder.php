@@ -39,7 +39,13 @@ class BaseBuilder
         return $this->driver->$name;
     }
 
-    public function build($schema)
+    public function build($schema) {
+        $sqls = $this->buildTable($schema);
+        $indexSqls = $this->buildIndex($schema);
+        return array_merge( $sqls , $indexSqls );
+    }
+
+    public function buildTable($schema)
     {
         $sqls = array();
 
@@ -53,6 +59,10 @@ class BaseBuilder
         return $sqls;
     }
 
+    public function buildIndex($schema) 
+    {
+        return array();
+    }
 }
 
 

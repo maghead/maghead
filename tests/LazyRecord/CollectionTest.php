@@ -8,10 +8,10 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
     public function getModels()
     {
         return array( 
-            '\tests\AuthorSchema', 
-            '\tests\BookSchema',
-            '\tests\AuthorBookSchema',
-            '\tests\NameSchema',
+            'tests\AuthorSchema', 
+            'tests\BookSchema',
+            'tests\AuthorBookSchema',
+            'tests\NameSchema',
         );
     }
 
@@ -33,7 +33,7 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
     public function testCollection()
     {
         $author = new \tests\Author;
-
+        ok($author);
         foreach( range(1,3) as $i ) {
             $ret = $author->create(array(
                 'name' => 'Bar-' . $i,
