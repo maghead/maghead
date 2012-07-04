@@ -383,21 +383,23 @@ class BaseCollection
 
 
 
-
-
     public function splice($pos,$count = null)
     {
-        return array_splice( $this->_items, $pos, $count);
+        if( $this->_items )
+            return array_splice( $this->_items, $pos, $count);
+        return array();
     }
 
     public function first()
     {
-        return $this->_items[0];
+        return isset($this->_items[0]) ?
+                $this->_items[0] : null;
     }
 
     public function last()
     {
-        return end($this->_items);
+        if( $this->_items )
+            return end($this->_items);
     }
 
 
