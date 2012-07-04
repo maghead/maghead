@@ -65,6 +65,7 @@
         <available file="Doxyfile"/>
         <then>
             <exec executable="doxygen" failonerror="true">
+                <arg value="Doxyfile"/>
             </exec>
         </then>
      </if>
