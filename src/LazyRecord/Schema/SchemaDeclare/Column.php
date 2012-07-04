@@ -179,6 +179,13 @@ class Column
         return $this;
     }
 
+    public function tinyint() 
+    {
+        $this->attributes['type'] = 'tinyint';
+        $this->attributes['isa'] = 'int';
+        return $this;
+    }
+
     public function timestamp()
     {
         $this->attributes['type'] = 'timestamp';
