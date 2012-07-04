@@ -71,10 +71,8 @@ DOC;
             $logger->info( $logger->formatter->format($class,'green') ,1 );
         }
 
-
-
         $logger->info("Initialize schema builder...");
-        $builder = new \LazyRecord\SqlBuilder($driver, array( 
+        $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($driver, array( 
             'rebuild' => $options->rebuild,
             'clean' => $options->clean,
         )); // driver
