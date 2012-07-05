@@ -29,7 +29,7 @@ class BaseCollection
     /**
      * @var SQLBuilder\QueryBuilder
      */
-    protected $_readQuery;
+    public $_readQuery;
 
     /**
      * @var PDOStatement handle
@@ -98,7 +98,11 @@ class BaseCollection
             return $this->handle ?: $this->prepareData();
         }
         elseif( $key === '_query' ) {
-            return $this->_readQuery ?: $this->createQuery( $this->_schema->getReadSourceId() );
+            return $this->_readQuery 
+                    ? $this->_readQuery
+                    : $this->_readQuery = $this->createQuery( 
+                        $this->_schema->getReadSourceId() 
+                    );
         }
         elseif( $key === '_items' ) {
             return $this->_itemData ?: $this->_readRows();
@@ -107,7 +111,8 @@ class BaseCollection
 
 
     /**
-     * Free cached row data
+     * Free cached row data and result handle, 
+     * But still keep the same query
      *
      * @return $this
      */
@@ -181,7 +186,7 @@ class BaseCollection
                 : '*'
         );
         $q->alias( $this->getAlias() ); // main table alias
-        return $this->_readQuery = $q;
+        return $q;
     }
 
 
@@ -568,8 +573,8 @@ class BaseCollection
     {
         /* fetch by current query */
         $query = $this->_query;
-        $sql = $query->build();
-        $vars = $query->vars;
+        $sql   = $query->build();
+        $vars  = $query->vars;
         foreach( $vars as $name => $value ) {
             $sql = str_replace( $name, $value, $sql );
         }
@@ -631,12 +636,7 @@ class BaseCollection
 
     public function __clone() 
     {
-        $this->handle = null;
-        $this->_itemData = null;
-        $this->_presetVars = array();
-        $this->_postCreate = null;
-        $this->_itemCursor = null;
-        $this->_result = null;
+        $this->free();
         if( $this->_readQuery ) {
             $this->_readQuery = clone $this->_readQuery;
         }

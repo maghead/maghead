@@ -15,7 +15,6 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         );
     }
 
-
     public function testLazyAttributes()
     {
         $authors = new \tests\AuthorCollection;
@@ -25,6 +24,34 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
     public function testClone()
     {
         $authors = new \tests\AuthorCollection;
+        $clone = clone $authors;
+        ok( $clone !== $authors );
+    }
+
+    public function testCloneWithQuery() 
+    {
+        ok( \tests\Address::delete()->execute()->success );
+
+        $a = new \tests\Address;
+        ok( $a->create(array('address' => 'Cindy'))->success );
+        ok( $a->create(array('address' => 'Hack'))->success );
+
+        $addresses = new \tests\AddressCollection;
+        $addresses->where()
+            ->equal('address','Cindy');
+        $addresses->fetch();
+        is(1,$addresses->size());
+
+        $sql1 = $addresses->toSQL();
+        
+        $clone = clone $addresses;
+        $sql2 = $clone->toSQL();
+
+        is( $sql1 , $sql2 );
+
+#          $authors1->where()
+#                  ->equal('');
+#          $authors2 = clone $authors1;
     }
 
     public function testIterator()
