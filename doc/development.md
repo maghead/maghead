@@ -42,7 +42,7 @@ files into the executable phar file `lazy`:
 
 To build sql with specific data source:
 
-    php scripts/lazy.php build-sql --data-source=mysql  --rebuild
-    php scripts/lazy.php build-sql --data-source=master --rebuild
-    php scripts/lazy.php build-sql --data-source=slave  --rebuild
+    php bin/lazy build-sql --data-source=mysql  --rebuild
+    php bin/lazy build-sql --data-source=master --rebuild
+    php bin/lazy build-sql --data-source=slave  --rebuild
 
