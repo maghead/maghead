@@ -52,7 +52,6 @@ class BaseCollection
     protected $_presetVars = array();
 
 
-
     /**
      * postCreate hook
      */
@@ -115,6 +114,9 @@ class BaseCollection
     public function free()
     {
         $this->_itemData = null;
+        $this->_result = null;
+        $this->_itemCursor = null;
+        $this->handle = null;
         return $this;
     }
 
@@ -622,11 +624,22 @@ class BaseCollection
     {
         $data = array();
         foreach( $this as $item ) {
-            $keyValue = $item->get($key);
-            $value    = $item->get($valueKey);
-            $data[ $keyValue ] = $value;
+            $data[ $item->get($key) ] = $item->get($valueKey);
         }
         return $data;
+    }
+
+    public function __clone() 
+    {
+        $this->handle = null;
+        $this->_itemData = null;
+        $this->_presetVars = array();
+        $this->_postCreate = null;
+        $this->_itemCursor = null;
+        $this->_result = null;
+        if( $this->_readQuery ) {
+            $this->_readQuery = clone $this->_readQuery;
+        }
     }
 }
 
