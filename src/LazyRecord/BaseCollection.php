@@ -158,6 +158,8 @@ class BaseCollection
     }
 
 
+    // TODO: maybe we should move this method into RuntimeSchema.
+    // Because it's used in BaseModel class too
     public function getQueryDriver( $dsId )
     {
         return $this->_connection->getQueryDriver( $dsId );
@@ -613,9 +615,30 @@ class BaseCollection
         $this->_itemData[] = $record;
     }
 
+
+
+    /**
+     * Set record objects
+     */
     public function setRecords($records)
     {
         $this->_itemData = $records;
+    }
+
+
+
+    /**
+     * Free resources and reset query,arguments and data.
+     *
+     * @return $this
+     */
+    public function reset() 
+    {
+        $this->free();
+        $this->_readQuery = null;
+        $this->_vars = null;
+        $this->_lastSQL = null;
+        return $this;
     }
 
 
