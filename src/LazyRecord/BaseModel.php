@@ -83,14 +83,16 @@ class BaseModel
 
     public function getWriteQueryDriver()
     {
-        $id = $this->_schema->getWriteSourceId();
-        return $this->getQueryDriver( $id );
+        return $this->getQueryDriver( 
+            $this->_schema->getWriteSourceId();
+        );
     }
 
     public function getReadQueryDriver()
     {
-        $id = $this->_schema->getReadSourceId();
-        return $this->getQueryDriver( $id );
+        return $this->getQueryDriver( 
+            $this->_schema->getReadSourceId()
+        );
     }
 
 
@@ -1430,5 +1432,11 @@ class BaseModel
     {
         $this->_cache = array();
     }
+
+    public function __clone() {
+        $this->_data = $this->_data;
+        $this->_autoReload = $this->_autoReload;
+    }
+
 }
 

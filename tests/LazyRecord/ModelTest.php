@@ -34,6 +34,13 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $n->delete()->success );
     }
 
+    public function testClone()
+    {
+        $test1 = new \tests\Name;
+        $test2 = clone $test1;
+        ok( $test1 !== $test2 );
+    }
+
 
     public function testSchemaInterface()
     {
