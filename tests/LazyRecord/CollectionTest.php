@@ -15,10 +15,16 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         );
     }
 
+
     public function testLazyAttributes()
     {
         $authors = new \tests\AuthorCollection;
         ok( $authors->_query , 'has lazy attribute' );
+    }
+
+    public function testClone()
+    {
+        $authors = new \tests\AuthorCollection;
     }
 
     public function testIterator()
