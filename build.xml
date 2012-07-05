@@ -48,14 +48,20 @@
  <target name="init-config">
   <copy file="config/database.testing.yml" tofile="config/database.yml"/>
   <exec executable="php">
-   <arg value="scripts/lazy.php"/>
+   <arg value="scripts/lazy"/>
    <arg value="build-conf"/>
    <arg value="config/database.yml"/>
   </exec>
 
   <exec executable="php">
-   <arg value="scripts/lazy.php"/>
+   <arg value="scripts/lazy"/>
    <arg value="build-schema"/>
+  </exec>
+
+  <exec executable="php">
+   <arg value="scripts/lazy"/>
+   <arg value="build-sql"/>
+   <arg value="--rebuild"/>
   </exec>
 
  </target>
