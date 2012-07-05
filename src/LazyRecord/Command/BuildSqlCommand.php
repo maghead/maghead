@@ -81,12 +81,12 @@ DOC;
         )); // driver
 
 
-        $fp = fopen('schema.sql','a+');
+        $fp = fopen('schema.sql','w'); // write only
 
         foreach( $classes as $class ) {
             $logger->info( $logger->formatter->format("Building SQL for $class",'green') );
 
-            fwrite( $fp , "--- schema $class\n" );
+            fwrite( $fp , "--- Schema $class\n" );
 
             $schema = new $class;
             $sqls = $builder->build($schema);
