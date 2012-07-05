@@ -1511,5 +1511,11 @@ class BaseModel
     {
         $this->_cache = array();
     }
+
+    public function __clone() {
+        $this->_data = $this->_data;
+        $this->_autoReload = $this->_autoReload;
+    }
+
 }
 
