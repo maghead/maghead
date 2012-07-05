@@ -658,6 +658,14 @@ class BaseCollection
         return $data;
     }
 
+
+
+    /**
+     * When cloning collection object,
+     * The resources will be free, and the 
+     * query builder will be cloned.
+     *
+     */
     public function __clone() 
     {
         $this->free();
