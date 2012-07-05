@@ -189,7 +189,7 @@
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="19592d256900fc2b80045b8024913ba8"/>
       <file name="lazy" role="script" md5sum="a3594502a4e426f49d4a4a45da067c02"/>
-      <file name="scripts/lazy.php" role="script" md5sum="9c0c176a892613065983eb898bc2c031"/>
+      <file name="bin/lazy" role="script" md5sum="9c0c176a892613065983eb898bc2c031"/>
     </dir>
   </contents>
   <dependencies>
@@ -409,7 +409,7 @@
       <install name="src/LazyRecord/Types.php" as="LazyRecord/Types.php"/>
       <install name="src/LazyRecord/Utils.php" as="LazyRecord/Utils.php"/>
       <install name="lazy" as="lazy"/>
-      <install name="scripts/lazy.php" as="scripts/lazy.php"/>
+      <install name="bin/lazy" as="bin/lazy"/>
     </filelist>
   </phprelease>
 </package>

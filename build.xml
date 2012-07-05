@@ -54,14 +54,30 @@
   </exec>
 
   <exec executable="php">
-   <arg value="scripts/lazy"/>
+   <arg value="bin/lazy"/>
    <arg value="build-schema"/>
   </exec>
 
   <exec executable="php">
-   <arg value="scripts/lazy"/>
-   <arg value="build-sql"/>
-   <arg value="--rebuild"/>
+    <arg value="bin/lazy"/>
+    <arg value="build-sql"/>
+    <arg value="--rebuild"/>
+  </exec>
+
+  <exec executable="php">
+    <arg value="bin/lazy"/>
+    <arg value="build-sql"/>
+    <arg value="--rebuild"/>
+    <arg value="-D"/>
+    <arg value="pgsql"/>
+  </exec>
+
+  <exec executable="php">
+    <arg value="bin/lazy"/>
+    <arg value="build-sql"/>
+    <arg value="--rebuild"/>
+    <arg value="-D"/>
+    <arg value="mysql"/>
   </exec>
 
  </target>

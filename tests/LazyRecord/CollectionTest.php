@@ -30,7 +30,8 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
 
     public function testCloneWithQuery() 
     {
-        ok( \tests\Address::delete()->execute()->success );
+        ok( $ret = \tests\Address::delete()->execute() );
+        ok( $ret->success , $ret->message );
 
         $a = new \tests\Address;
         ok( $a->create(array('address' => 'Cindy'))->success );
