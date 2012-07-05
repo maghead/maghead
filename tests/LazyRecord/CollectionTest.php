@@ -47,11 +47,8 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         $clone = clone $addresses;
         $sql2 = $clone->toSQL();
 
-        is( $sql1 , $sql2 );
-
-#          $authors1->where()
-#                  ->equal('');
-#          $authors2 = clone $authors1;
+        is($sql1, $sql2);
+        is(1,$clone->size());
     }
 
     public function testIterator()
