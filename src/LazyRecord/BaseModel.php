@@ -76,11 +76,26 @@ class BaseModel
         return true;
     }
 
+
+    /**
+     * Get SQL Query Driver by data source id.
+     *
+     * @param string $dsId Data source id.
+     *
+     * @return SQLBuilder\QueryDriver
+     */
     public function getQueryDriver( $dsId )
     {
         return $this->_connection->getQueryDriver( $dsId );
     }
 
+
+
+    /**
+     * Get SQL Query driver object for writing data
+     *
+     * @return SQLBuilder\QueryDriver
+     */
     public function getWriteQueryDriver()
     {
         return $this->getQueryDriver( 
@@ -88,6 +103,12 @@ class BaseModel
         );
     }
 
+
+    /**
+     * Get SQL Query driver object for reading data
+     *
+     * @return SQLBuilder\QueryDriver
+     */
     public function getReadQueryDriver()
     {
         return $this->getQueryDriver( 
@@ -95,6 +116,14 @@ class BaseModel
         );
     }
 
+
+    /**
+     * Create new QueryBuilder object (inherited from SQLBuilder\QueryBuilder
+     *
+     * @param string $dsId Data source id , default connection id is 'default'
+     *
+     * @return SQLBuilder\QueryBuilder
+     */
     public function createQuery( $dsId = 'default' )
     {
         $q = new QueryBuilder;
@@ -104,6 +133,17 @@ class BaseModel
         return $q;
     }
 
+
+    /**
+     * Create executive query builder object, the difference is that
+     * An ExecutiveQueryBuilder has an execute method, that trigger a 
+     * callback function to execute SQL. the callback function takes
+     * a SQL string to insert into database.
+     *
+     * @param string $dsId data source id.
+     *
+     * @return ExecutiveQueryBuilder
+     */
     public function createExecutiveQuery( $dsId = 'default' )
     {
         $q = new ExecutiveQueryBuilder;
@@ -115,6 +155,37 @@ class BaseModel
 
 
 
+
+    /**
+     * Trigger method for "before creating new record"
+     *
+     * By overriding this method, you can modify the 
+     * arguments that is passed to the query builder.
+     *
+     * Remember to return the arguments back.
+     *
+     * @param array $args Arguments
+     * @return array $args Arguments
+     */
+    public function beforeCreate( $args ) 
+    {
+        return $args;
+    }
+
+
+    /**
+     * Trigger for after creating new record
+     *
+     * @param array $args
+     */
+    public function afterCreate( $args ) 
+    {
+
+    }
+
+    /**
+     * Trigger method for
+     */
     public function beforeDelete($args)
     {
         return $args;
@@ -134,22 +205,6 @@ class BaseModel
     {
 
     }
-
-    public function beforeCreate( $args ) 
-    {
-        return $args;
-    }
-
-
-    /**
-     * trigger for after create
-     */
-    public function afterCreate( $args ) 
-    {
-
-    }
-
-
 
 
     public function __call($m,$a)
@@ -171,6 +226,17 @@ class BaseModel
 
 
 
+
+    /**
+     * Create or update an record by checking 
+     * the existence from the $byKeys array 
+     * that you defined.
+     *
+     * If the record exists, then the record should be updated.
+     * If the record does not exist, then the record should be created.
+     *
+     * @param array $byKeys 
+     */
     public function createOrUpdate($args, $byKeys = null )
     {
         $pk = $this->_schema->primaryKey;
@@ -188,14 +254,24 @@ class BaseModel
         }
 
         if( $ret && $ret->success 
-            || ( $pk && $this->_data[ $pk ] ) ) {
-                return $this->update($args);
-            } else {
-                return $this->create($args);
-            }
+            || ( $pk && $this->_data[ $pk ] ) ) 
+        {
+            return $this->update($args);
+        } else {
+            return $this->create($args);
+        }
     }
 
 
+
+
+    /**
+     * Relaod record data by primary key,
+     * parameter is optional if you've already defined 
+     * the primary key column in this model.
+     *
+     * @param string $pkId primary key name
+     */
     public function reload($pkId = null)
     {
         if( $pkId ) {
@@ -206,10 +282,18 @@ class BaseModel
             $this->load( $pkId );
         }
         else {
-            throw new Exception("Primary key not found.");
+            throw new Exception("Primary key not found, can not reload record.");
         }
     }
 
+
+    /**
+     * Create a record if the record does not exists
+     * Otherwise the record should be updated with the arguments.
+     *
+     * @param array $args
+     * @param array $byKeys it's optional if you defined primary key
+     */
     public function loadOrCreate($args, $byKeys = null)
     {
         $pk = $this->_schema->primaryKey;
@@ -300,13 +384,11 @@ class BaseModel
 
 
     /**
-     * return columns
+     * Get the RuntimeColumn objects from RuntimeSchema object.
      */
     public function columns()
     {
-        static $columns;
-        $columns = $this->_schema->columns;
-        return $columns;
+        return $this->_schema->columns;
     }
 
 
