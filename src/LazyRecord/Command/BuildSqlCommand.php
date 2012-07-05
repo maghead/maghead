@@ -55,6 +55,9 @@ DOC;
 
         // XXX: from config files
         $id = $options->{'data-source'} ?: 'default';
+
+        $logger->info("Connecting to data soruce $id...");
+
         $conn = $connectionManager->getConnection($id);
         $type = $connectionManager->getDataSourceDriver($id);
         $driver = $connectionManager->getQueryDriver($id);
@@ -81,7 +84,7 @@ DOC;
         $fp = fopen('schema.sql','a+');
 
         foreach( $classes as $class ) {
-            $logger->info( "Building SQL for $class" );
+            $logger->info( $logger->formatter->format("Building SQL for $class",'green') );
 
             fwrite( $fp , "--- schema $class\n" );
 
@@ -103,7 +106,7 @@ DOC;
             }
 
             $modelClass = $schema->getModelClass();
-            $logger->info("Creating base data for $modelClass");
+            $logger->info( $logger->formatter->format( "Creating base data for $modelClass",'green') );
             $schema->bootstrap( new $modelClass );
         }
 
