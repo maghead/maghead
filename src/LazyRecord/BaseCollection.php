@@ -2,6 +2,7 @@
 namespace LazyRecord;
 use PDO;
 use PDOException;
+use RuntimeException;
 use Exception;
 use Iterator;
 use ArrayAccess;
@@ -342,7 +343,7 @@ class BaseCollection
         if( $h === null ) {
             if( $this->_result->exception )
                 throw $this->_result->exception;
-            throw new RuntimeException( get_class($this) . ':' . $this->_result->message );
+            throw new RuntimeException( get_class($this) . ':' . $this->_result->exception->getMessage() );
         }
 
         // XXX: should be lazy
