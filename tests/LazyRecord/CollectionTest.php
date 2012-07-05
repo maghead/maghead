@@ -12,6 +12,7 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
             'tests\BookSchema',
             'tests\AuthorBookSchema',
             'tests\NameSchema',
+            'tests\AddressSchema',
         );
     }
 
