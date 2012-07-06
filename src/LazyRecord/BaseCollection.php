@@ -167,14 +167,16 @@ class BaseCollection
 
     public function getWriteQueryDriver()
     {
-        $id = $this->_schema->getWriteSourceId();
-        return $this->getQueryDriver( $id );
+        return $this->getQueryDriver( 
+            $this->_schema->getWriteSourceId()
+        );
     }
 
     public function getReadQueryDriver()
     {
-        $id = $this->_schema->getReadSourceId();
-        return $this->getQueryDriver( $id );
+        return $this->getQueryDriver( 
+            $this->_schema->getReadSourceId()
+        );
     }
 
 
@@ -210,7 +212,7 @@ class BaseCollection
      */
     public function prepareData($force = false)
     {
-        if( $this->handle == null || $force ) {
+        if( ! $this->handle || $force ) {
             $this->_result = $this->fetch();
         }
         return $this->handle;
@@ -257,7 +259,7 @@ class BaseCollection
 
 
     /**
-     * Clone Current read query and apply select to count(*)
+     * Clone current read query and apply select to count(*)
      * So that we can use the same conditions to query item count.
      *
      * @return int
@@ -265,21 +267,24 @@ class BaseCollection
     public function queryCount()
     {
         $dsId = $this->_schema->getReadSourceId();
+
         $query = clone $this->_query;
         $query->select( 'count(*)' );
+
         // when selecting count(*), we dont' use groupBys or order by
         $query->groupBys = array();
         $query->orders = array();
 
         $sql  = $query->build();  // build query
         $vars = $query->vars;     // get vars
-        $handle = $this->_connection->prepareAndExecute($dsId,$sql, $vars);
-        return (int) $handle->fetchColumn();
+        return (int) $this->_connection->prepareAndExecute($dsId,$sql, $vars)
+                    ->fetchColumn();
     }
 
 
     /**
-     * Get selected item size.
+     * Get current selected item size 
+     * by using php function `count`
      *
      * @return integer size
      */
@@ -345,10 +350,10 @@ class BaseCollection
     {
         $h = $this->_handle;
 
-        if( $h === null ) {
+        if( ! $h ) {
             if( $this->_result->exception )
                 throw $this->_result->exception;
-            throw new RuntimeException( get_class($this) . ':' . $this->_result->exception->getMessage() );
+            throw new RuntimeException( get_class($this) . ':' . $this->_result->message );
         }
 
         // XXX: should be lazy
@@ -393,7 +398,6 @@ class BaseCollection
     }
 
     /*********************** End of Iterator methods ************************/
-
 
 
     public function splice($pos,$count = null)
@@ -444,17 +448,19 @@ class BaseCollection
 
     public function each($cb)
     {
-        $items = array_map($cb,$this->_items);
         $collection = new static;
-        $collection->setRecords($items);
+        $collection->setRecords(
+            array_map($cb,$this->_items)
+        );
         return $collection;
     }
 
     public function filter($cb)
     {
-        $items = array_filter($this->_items,$cb);
         $collection = new static;
-        $collection->setRecords($items);
+        $collection->setRecords(
+            array_filter($this->_items,$cb)
+        );
         return $collection;
     }
 
@@ -462,8 +468,7 @@ class BaseCollection
     {
         if( ! $dsId )
             $dsId = $this->_schema->getReadSourceId();
-        $stm = $this->_connection->prepareAndExecute( $dsId, $sql , $args );
-        $this->handle = $stm;
+        $this->handle = $this->_connection->prepareAndExecute( $dsId, $sql , $args );
     }
 
 
