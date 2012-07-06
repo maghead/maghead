@@ -110,9 +110,11 @@ class ConnectionManager
 
         // configure query driver type
         if( $driverType = $this->getDataSourceDriver($id) ) {
+            $conn = $this->getConnection($id);
             $driver->configure('driver',$driverType);
-            $driver->quoter = function($string) use ($self,$id) {
-                return $self->getConnection($id)->quote($string);
+            $driver->quoter = function($string) use ($conn,$id) {
+                // It's PDO quote
+                return $conn->quote($string);
             };
         }
 
