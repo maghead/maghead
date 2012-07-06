@@ -1080,9 +1080,11 @@ class BaseModel
             return ConnectionManager::getInstance();
         }
 
-        if( isset($this->_cache[$key]) ) {
-            return $this->_cache[$key];
-        }
+
+# XXX: turn off cache to prevent logical/runtime bug.
+#          if( isset($this->_cache[$key]) ) {
+#              return $this->_cache[$key];
+#          }
 
         // return relation object
         if( $relation = $this->_schema->getRelation( $key ) ) 
