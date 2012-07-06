@@ -170,7 +170,8 @@ class ConnectionManager
             if( isset($config['dsn']) ) {
                 $dsn = $config['dsn'];
             }
-            else { // Build DSN connection string for PDO
+            else { 
+                // Build DSN connection string for PDO
                 $driver = $config['driver'];
                 $params = array();
                 if( isset($config['database']) ) {
@@ -183,15 +184,18 @@ class ConnectionManager
             }
 
             // TODO: use constant() for `connection_options`
+            $connectionOptions = isset($config['connection_options'])
+                                     ? $config['connection_options']) : array();
+
+            if( 'mysql' === $this->getDataSourceDriver($sourceId) ) {
+                $connectionOptions[ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
+            }
+
             $conn = new PDO( $dsn,
                 @$config['user'], 
                 @$config['pass'], 
-                @$config['connection_options'] );
+                $connectionOptions );
 
-            // for mysql type driver, we should always use utf8;
-            if ($conn->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
-                $conn->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND , "SET NAMES utf8");
-            }
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // TODO: can we make this optional ?
