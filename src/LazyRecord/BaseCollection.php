@@ -257,19 +257,22 @@ class BaseCollection
 
 
     /**
-     * Select count(*) statement to current query
+     * Clone Current read query and apply select to count(*)
+     * So that we can use the same conditions to query item count.
+     *
+     * @return int
      */
     public function queryCount()
     {
         $dsId = $this->_schema->getReadSourceId();
-        $query = $this->_query;
+        $query = clone $this->_query;
         $query->select( 'count(*)' );
-        // XXX: hack
+        // when selecting count(*), we dont' use groupBys or order by
         $query->groupBys = array();
         $query->orders = array();
 
-        $sql  = $query->build();
-        $vars = $query->vars;
+        $sql  = $query->build();  // build query
+        $vars = $query->vars;     // get vars
         $handle = $this->_connection->prepareAndExecute($dsId,$sql, $vars);
         return (int) $handle->fetchColumn();
     }
