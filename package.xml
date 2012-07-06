@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-07-06</date>
-  <time>15:56:06</time>
+  <time>16:45:56</time>
   <version>
-    <release>1.5.6</release>
-    <api>1.5.6</api>
+    <release>1.5.7</release>
+    <api>1.5.7</api>
   </version>
   <stability>
     <release>stable</release>
@@ -52,6 +52,7 @@
       <file name="doc/schema.md" role="doc" md5sum="f30b937e4c70dabf53add2ad4603b4f7"/>
       <file name="doc/schema_builder.md" role="doc" md5sum="42843a8161f0fa23673651199107b76b"/>
       <file name="doc/setup.md" role="doc" md5sum="636d1f52ac693ebde78866646b4bbb8b"/>
+      <file name="doc/testing.md" role="doc" md5sum="63934396cacda7bdd9fae2d02a8f8c67"/>
       <file name="tests/bootstrap.php" role="test" md5sum="a62f89626e3b418606409264ba821ece"/>
       <file name="tests/database.yml" role="test" md5sum="a35e7db349dea65da593546c4db8ce19"/>
       <file name="tests/lazy.php" role="test" md5sum="e18463ef3e30c8ea10dc6e39d8f90e1f"/>
@@ -148,7 +149,7 @@
       <file name="src/LazyRecord/Command/ListSchemaCommand.php" role="php" md5sum="08751425815227745bed0d3528d7e520"/>
       <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="be57069c96dd9b381320c20d48cb920d"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="c6d764c85c701a73d9980ec19413a120"/>
-      <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="eedd0a93a35767d98a116a5e175961be"/>
+      <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="68797b66b57080557857300dad3d2373"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="b7dc7e973adb4c58a18aefd98c598b3e"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c750d9b25dd6509c2831197ce7e3da3a"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
@@ -188,7 +189,7 @@
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="19592d256900fc2b80045b8024913ba8"/>
-      <file name="lazy" role="script" md5sum="3700253f25104fb03a8e602bf166fd5a"/>
+      <file name="lazy" role="script" md5sum="606d6c24a6dcb2160bbbcdfee88f1214"/>
       <file name="bin/lazy" role="script" md5sum="9c0c176a892613065983eb898bc2c031"/>
     </dir>
   </contents>
@@ -272,6 +273,7 @@
       <install name="doc/schema.md" as="schema.md"/>
       <install name="doc/schema_builder.md" as="schema_builder.md"/>
       <install name="doc/setup.md" as="setup.md"/>
+      <install name="doc/testing.md" as="testing.md"/>
       <install name="tests/bootstrap.php" as="bootstrap.php"/>
       <install name="tests/database.yml" as="database.yml"/>
       <install name="tests/lazy.php" as="lazy.php"/>
