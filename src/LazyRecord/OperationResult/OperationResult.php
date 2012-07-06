@@ -54,6 +54,17 @@ class OperationResult
         }
         return $vlds;
     }
+
+    public function __toString() {
+        $msg = $this->message . "\n";
+        if( $this->exception ) {
+            $msg .= ' Exception:' . $this->exception->getMessage() . "\n";
+            if( $this->sql ) {
+                $msg .= ' SQL:' . $this->sql . "\n";
+            }
+        }
+        return $msg;
+    }
 }
 
 
