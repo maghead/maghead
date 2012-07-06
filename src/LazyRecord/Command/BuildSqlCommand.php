@@ -83,16 +83,17 @@ DOC;
 
         $fp = fopen('schema.sql','w'); // write only
 
-        foreach( $classes as $class ) {
-            $logger->info( $logger->formatter->format("Building SQL for $class",'green') );
+        $schemas = array_map(function($class) { return new $class; },$classes);
+
+        foreach( $schemas as $schema ) {
+            $class = get_class($schema);
+            $logger->info( $logger->formatter->format("Building SQL for " . $class,'green') );
 
             fwrite( $fp , "--- Schema $class\n" );
 
-            $schema = new $class;
             $sqls = $builder->build($schema);
             foreach( $sqls as $sql ) {
-
-                $logger->info("--- SQL for $class ");
+                $logger->info("--- SQL for schema $class ");
                 $logger->info( $sql );
                 fwrite( $fp , $sql . "\n" );
 
@@ -105,6 +106,10 @@ DOC;
                 }
             }
 
+        }
+
+        foreach( $schemas as $schema ) {
+            $class = get_class($schema);
             $modelClass = $schema->getModelClass();
             $logger->info( $logger->formatter->format( "Creating base data for $modelClass",'green') );
             $schema->bootstrap( new $modelClass );
