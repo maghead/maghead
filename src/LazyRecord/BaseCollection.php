@@ -269,7 +269,7 @@ class BaseCollection
         $dsId = $this->_schema->getReadSourceId();
 
         $query = clone $this->_query;
-        $query->select( 'count(*)' );
+        $query->select( 'count(*)', true ); // override current select.
 
         // when selecting count(*), we dont' use groupBys or order by
         $query->groupBys = array();

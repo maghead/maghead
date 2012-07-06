@@ -95,7 +95,6 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         $authors2->where()
                 ->like('name','Foo%');
         $count = $authors2->queryCount();
-        ok( $count );
         is( 20 , $count );
 
         $authors = new \tests\AuthorCollection;
