@@ -185,7 +185,7 @@ class ConnectionManager
 
             // TODO: use constant() for `connection_options`
             $connectionOptions = isset($config['connection_options'])
-                                     ? $config['connection_options']) : array();
+                                     ? $config['connection_options'] : array();
 
             if( 'mysql' === $this->getDataSourceDriver($sourceId) ) {
                 $connectionOptions[ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
