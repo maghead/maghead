@@ -59,6 +59,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         ok( 'authors' , $author->getTable() );
         ok( 'Author' , $author->getLabel() );
+
+        isa_ok(  '\tests\AuthorCollection' , $author->newCollection() );
     }
 
     public function testCollection()
