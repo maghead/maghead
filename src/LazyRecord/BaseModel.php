@@ -32,7 +32,7 @@ class BaseModel
      *
      * Turn off this if you want performance.
      */
-    public $_autoReload = true;
+    public $autoReload = true;
 
 
     /**
@@ -539,7 +539,7 @@ class BaseModel
             $pkId = $conn->lastInsertId();
         }
 
-        if( $this->_autoReload ) {
+        if( $this->autoReload ) {
             // if possible, we should reload the data.
             $pkId ? $this->load($pkId) : $this->_data = $args;
         }
@@ -1604,7 +1604,7 @@ class BaseModel
     public function __clone() 
     {
         $this->_data = $this->_data;
-        $this->_autoReload = $this->_autoReload;
+        $this->autoReload = $this->autoReload;
     }
 
     public function popResult() 
