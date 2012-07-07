@@ -69,6 +69,22 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     {
         $author = new \tests\Author;
         $collection = $author->asCollection();
+        ok($collection);
+        isa_ok('\tests\AuthorCollection',$collection);
+    }
+
+    public function testGeneralInterface() 
+    {
+        $a = new \tests\Address;
+        ok($a);
+
+        ok( $a->getQueryDriver('default') );
+        ok( $a->getWriteQueryDriver() );
+        ok( $a->getReadQueryDriver() );
+
+        $query = $a->createQuery();
+        ok($query);
+        isa_ok('SQLBuilder\QueryBuilder', $query );
     }
 
     public function testVirtualColumn() 
@@ -746,7 +762,8 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $n->update(array( 
             'view' => array('view + 3')
         ));
-        $n->reload();
+        $ret = $n->reload();
+        ok( $ret->success );
         is( 4, $n->view );
     }
 
