@@ -423,9 +423,8 @@ class BaseCollection
 
     public function splice($pos,$count = null)
     {
-        if( $this->_items )
-            return array_splice( $this->_items, $pos, $count);
-        return array();
+        $items = $this->_items ?: array();
+        return array_splice( $items, $pos, $count);
     }
 
     public function first()

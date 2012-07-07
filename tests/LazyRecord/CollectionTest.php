@@ -252,7 +252,7 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
     }
 
 
-    function testGeneralInterface() 
+    function testFilter() 
     {
         $book = new \tests\Book;
         ok( $book->create(array( 'title' => 'My Book I' ))->success );
@@ -279,7 +279,10 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
             ok( \tests\Book::delete($result->id)->execute()->success );
         }
 
+        $someBooks = $books->splice(0,2);
+        is( 2, count($someBooks) );
     }
+
 
     function test()
     {
