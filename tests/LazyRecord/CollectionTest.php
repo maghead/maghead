@@ -172,28 +172,24 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         $authors = new \tests\AuthorCollection;
         ok($authors);
 
-        $address = new \tests\Author;
+        $address = new \tests\Address;
         $authors->join($address);
 
         $authors->fetch();
         $sql = $authors->toSQL();
 
-        like( '/authors.name\s+AS\s+authors_name/', $sql );
-        like( '/authors.email\s+AS\s+authors_email/', $sql );
+        like( '/addresses.address\s+AS\s+addresses_address/', $sql );
     }
 
     function testJoinWithAlias() {
         $authors = new \tests\AuthorCollection;
         ok($authors);
 
-        $address = new \tests\Author;
-        $authors->join($address,'LEFT','a');
+        $authors->join( new \tests\Address ,'LEFT','a', 'addresses');
 
         $authors->fetch();
         $sql = $authors->toSQL();
-
-        like( '/authors.name\s+AS a_name/', $sql );
-        like( '/authors.email\s+AS a_email/', $sql );
+        is('SELECT m.updated_on, m.created_on, m.id, m.name, m.email, m.identity, m.confirmed, addresses.author_id  AS a_author_id, addresses.address  AS a_address, addresses.foo  AS a_foo, addresses.id  AS a_id FROM authors m  LEFT JOIN addresses a ON (m.id = a.author_id)', $sql );
     }
 
     function testMeta()
