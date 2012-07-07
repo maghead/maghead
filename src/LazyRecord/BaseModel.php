@@ -286,11 +286,11 @@ class BaseModel
     public function reload($pkId = null)
     {
         if( $pkId ) {
-            $this->load( $pkId );
+            return $this->load( $pkId );
         }
         elseif( null === $pkId && $pk = $this->_schema->primaryKey ) {
             $pkId = $this->_data[ $pk ];
-            $this->load( $pkId );
+            return $this->load( $pkId );
         }
         else {
             throw new Exception("Primary key not found, can not reload record.");
