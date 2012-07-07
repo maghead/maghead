@@ -45,8 +45,14 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     public function testSchemaInterface()
     {
         $author = new \tests\Author;
-        ok( $author->getColumnNames() );
+
+        $names = array('updated_on','created_on','id','name','email','identity','confirmed');
+        foreach( $author->getColumnNames() as $n ) {
+            ok( in_array( $n , $names ));
+        }
         ok( $author->getColumns() );
+        ok( 'authors' , $author->getTable() );
+        ok( 'Author' , $author->getLabel() );
 
         // ok( $author->getLabel() );
     }
