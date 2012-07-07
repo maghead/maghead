@@ -479,9 +479,7 @@ class BaseCollection
     public function filter($cb)
     {
         $collection = new static;
-        $collection->setRecords(
-            array_filter($this->_items,$cb)
-        );
+        $collection->setRecords(array_filter($this->_items,$cb));
         return $collection;
     }
 
