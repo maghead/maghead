@@ -6,6 +6,7 @@ Changes
 ### Important changes
 
 - Fixed MySQL connection init command (set names utf8)
+- Improve Collection join method (detects relationship from model schema, and build the join query)
 
 ### Minor changes
 
