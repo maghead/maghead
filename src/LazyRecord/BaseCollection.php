@@ -618,12 +618,33 @@ class BaseCollection
      * Override QueryBuilder->join method,
      * to enable explict selection.
      *
-     * XXX: For model/collection objects, we should convert it to table name
+     * For model/collection objects, we should convert it to table name
+     *
+     *
+     * @param mixed $target (Model object or table name)
+     * @param string $alias Alias
+     *
+     * @return QueryBuilder
      */
-    public function join($table,$alias = null)
+    public function join($target,$alias = null)
     {
         $this->setExplictSelect(true);
-        return $this->_query->join($table,$alias);
+        $query = $this->_query;
+
+        // for models and schemas
+        if( is_object($target) ) {
+            $table = $target->getTable();
+            $columns = $target->getColumnNames();
+            $select = array();
+            $prefix = $alias ?: $table;
+            foreach( $columns as $name ) {
+                $select[ $table . '.' . $name ] = $prefix . '_' . $name;
+            }
+            $query->addSelect($select);
+            return $query->join( $table, $alias );
+        }
+
+        return $this->_query->join($target,$alias);
     }
 
     /**
