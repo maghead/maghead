@@ -194,8 +194,8 @@ class ConnectionManager
             }
 
             $conn = new PDO( $dsn,
-                @$config['user'], 
-                @$config['pass'], 
+                isset($config['user']) ? $config['user'] : null, 
+                isset($config['pass']) ? $config['pass'] : null, 
                 $connectionOptions );
 
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -211,11 +211,21 @@ class ConnectionManager
         throw new ConnectionException("data source $sourceId not found.");
     }
 
+
+    /**
+     * Get default data source id
+     *
+     * @return string 'default'
+     */
     public function getDefault()
     {
         return $this->getConnection('default');
     }
 
+
+    /**
+     * Get singleton instance
+     */
     static function getInstance()
     {
         static $instance;
