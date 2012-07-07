@@ -166,6 +166,36 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         is( 'Foo', $items[0]->name );
     }
 
+
+    function testJoin()
+    {
+        $authors = new \tests\AuthorCollection;
+        ok($authors);
+
+        $address = new \tests\Author;
+        $authors->join($address);
+
+        $authors->fetch();
+        $sql = $authors->toSQL();
+
+        like( '/authors.name\s+AS\s+authors_name/', $sql );
+        like( '/authors.email\s+AS\s+authors_email/', $sql );
+    }
+
+    function testJoinWithAlias() {
+        $authors = new \tests\AuthorCollection;
+        ok($authors);
+
+        $address = new \tests\Author;
+        $authors->join($address,'LEFT','a');
+
+        $authors->fetch();
+        $sql = $authors->toSQL();
+
+        like( '/authors.name\s+AS a_name/', $sql );
+        like( '/authors.email\s+AS a_email/', $sql );
+    }
+
     function testMeta()
     {
         $authors = new \tests\AuthorCollection;

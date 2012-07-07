@@ -493,6 +493,12 @@ class BaseCollection
     }
 
 
+    public function newModel()
+    {
+        return $this->_schema->newModel();
+    }
+
+
     static function fromArray($list)
     {
         $collection = new static;
@@ -582,6 +588,11 @@ class BaseCollection
         $this->_presetVars = $vars;
     }
 
+    public function getSql() 
+    {
+        return $this->_lastSql;
+    }
+
     public function getLastSql()
     {
         return $this->_lastSql;
@@ -621,12 +632,23 @@ class BaseCollection
      * For model/collection objects, we should convert it to table name
      *
      *
+     * Usage:
+     *
+     *       $collection->join( new Author, 'LEFT', 'a' ); // left join with alias 'a'
+     *       $collection->join('authors'); // left join without alias
+     *
+     *       $collection->join( new Author, 'LEFT' , 'a' )
+     *                  ->on('m.author_id','a.id'); // LEFT JOIN authors table on m.author_id = a.id
+     *
+     *       $collection->join('authors','RIGHT','a'); // right join with alias 'a'
+     *
      * @param mixed $target (Model object or table name)
+     * @param string $type  Join Type (default 'LEFT')
      * @param string $alias Alias
      *
      * @return QueryBuilder
      */
-    public function join($target,$alias = null)
+    public function join($target, $type = 'LEFT' , $alias = null)
     {
         $this->setExplictSelect(true);
         $query = $this->_query;
@@ -641,10 +663,19 @@ class BaseCollection
                 $select[ $table . '.' . $name ] = $prefix . '_' . $name;
             }
             $query->addSelect($select);
-            return $query->join( $table, $alias );
+            $expr = $query->join($table, $type); // it returns JoinExpression object
+                // ->on('m.id');
+
+            if( $alias ) {
+                $expr->alias( $alias );
+            }
+            return $expr;
         }
 
-        return $this->_query->join($target,$alias);
+        $expr = $query->join($target);
+        if( $alias )
+            $expr->alias($alias);
+        return $expr;
     }
 
     /**
@@ -722,6 +753,11 @@ class BaseCollection
         if( $this->_readQuery ) {
             $this->_readQuery = clone $this->_readQuery;
         }
+    }
+
+    public function __toString() 
+    {
+        return $this->toSql();
     }
 }
 
