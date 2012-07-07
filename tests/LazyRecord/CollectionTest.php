@@ -186,8 +186,7 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         $authors = new \tests\AuthorCollection;
         ok($authors);
 
-        $address = new \tests\Address;
-        $authors->join($address);
+        $authors->join( new \tests\Address );
 
         $authors->fetch();
         $sql = $authors->toSQL();
