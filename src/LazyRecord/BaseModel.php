@@ -27,6 +27,8 @@ class BaseModel
 {
     protected $_data;
 
+    protected $_cache = array();
+
     /**
      * @var boolean Auto reload record after creating new record
      *
@@ -42,7 +44,6 @@ class BaseModel
      */
     public $saveResults = true;
 
-    public $_cache = array();
 
     public $results = array();
 
