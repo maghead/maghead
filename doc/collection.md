@@ -66,3 +66,18 @@ To get schema proxy class from collection class:
     $collection->loadQuery( 'master', 'sql....' , array( ':id' => $id ) );
 
 
+## Join
+
+Left join table
+
+    $cates->addSelect( array( 'count(forum_posts.id)' => 'posts_count' ) );
+    $cates->join( 'forum_posts' , 'LEFT' )
+            ->on()
+                ->equal('m.id',array('forum_posts.category_id'));
+
+
+Left join with model
+
+    $posts    = $category->posts;
+    $posts->join( new Member , 'LEFT' , 'member' );   // find relation id automatically.
+
