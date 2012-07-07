@@ -22,6 +22,10 @@ class ConnectionException extends Exception
  *    $result = $conn->query( );
  *    $stm = $conn->prepare( );
  *    $stm->execute( );
+ *
+ *    foreach( $connManager as $dataSourceId => $dataSourceConfig ) {
+ *
+ *    }
  */
 
 class ConnectionManager
@@ -135,8 +139,9 @@ class ConnectionManager
     public function getDataSourceDriver($id)
     {
         $config = $this->getDataSource($id);
-        if( isset($config['driver']) )
+        if( isset($config['driver']) ) {
             return $config['driver'];
+        }
         if( isset($config['dsn']) ) {
             list($driverType) = explode( ':', $config['dsn'] , 2 );
             return $driverType;
