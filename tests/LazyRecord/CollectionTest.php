@@ -181,12 +181,19 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         like( '/addresses.address\s+AS\s+addresses_address/', $sql );
     }
 
-    function testJoinWithAlias() {
+    function testJoinWithAliasAndRelationId() {
         $authors = new \tests\AuthorCollection;
         ok($authors);
-
         $authors->join( new \tests\Address ,'LEFT','a', 'addresses');
+        $authors->fetch();
+        $sql = $authors->toSQL();
+        is('SELECT m.updated_on, m.created_on, m.id, m.name, m.email, m.identity, m.confirmed, addresses.author_id  AS a_author_id, addresses.address  AS a_address, addresses.foo  AS a_foo, addresses.id  AS a_id FROM authors m  LEFT JOIN addresses a ON (m.id = a.author_id)', $sql );
+    }
 
+    function testJoinWithAliasAndWithoutRelationId() {
+        $authors = new \tests\AuthorCollection;
+        ok($authors);
+        $authors->join( new \tests\Address ,'LEFT','a');
         $authors->fetch();
         $sql = $authors->toSQL();
         is('SELECT m.updated_on, m.created_on, m.id, m.name, m.email, m.identity, m.confirmed, addresses.author_id  AS a_author_id, addresses.address  AS a_address, addresses.foo  AS a_foo, addresses.id  AS a_id FROM authors m  LEFT JOIN addresses a ON (m.id = a.author_id)', $sql );
