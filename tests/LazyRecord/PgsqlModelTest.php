@@ -93,10 +93,10 @@ class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
             'identity' => 'zz',
         ));
         ok( $id = $record->id );
-        ok( $record->_result->id );
-        ok( $record->_result->success );
+        ok( $record->results[0]->id );
+        ok( $record->results[0]->success );
 
-        $record = \tests\Author::load( (int) $record->_result->id );
+        $record = \tests\Author::load( (int) $record->results[0]->id );
         ok( $record );
         ok( $record->id );
 

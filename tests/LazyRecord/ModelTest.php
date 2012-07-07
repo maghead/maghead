@@ -780,9 +780,9 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             'email' => 'zz@zz',
             'identity' => 'zz',
         ));
-        ok( $record->_result->success );
+        ok( $record->popResult()->success );
 
-        $record = \tests\Author::load( (int) $record->_result->id );
+        $record = \tests\Author::load( (int) $record->popResult()->id );
         ok( $record );
         ok( $id = $record->id );
 
