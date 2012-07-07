@@ -1113,7 +1113,7 @@ class BaseModel
 
             $collection = $fpSchema->newCollection();
             $collection->where()
-                ->equal( $fColumn, $sValue );
+                ->equal( 'm.' . $fColumn, $sValue ); // 'm' is the default alias.
 
             $collection->setPresetVars(array( 
                 $fColumn => $sValue,
