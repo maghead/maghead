@@ -1497,25 +1497,50 @@ class BaseModel
         return $this->_schema->getColumn($n);
     }
 
+
+    /**
+     * Get column name array from RuntimeSchema object.
+     *
+     * @return string[] column names
+     */
     public function getColumnNames()
     {
         return $this->_schema->getColumnNames();
     }
 
+
+    /**
+     * Get column objects from RuntimeSchema object.
+     *
+     * @return RuntimeColumn[name]
+     */
     public function getColumns()
     {
         return $this->_schema->getColumns();
     }
 
+
+    /**
+     * Get model label from RuntimeSchema.
+     *
+     * @return string model label name
+     */
     public function getLabel()
     {
         return $this->_schema->label;
     }
 
+
+    /**
+     * Get model table
+     *
+     * @return string model table name
+     */
     public function getTable()
     {
         return $this->_schema->table;
     }
+
 
     public function flushCache() 
     {
