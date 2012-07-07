@@ -314,11 +314,7 @@ class BaseModel
             $val = $args[$pk];
             $ret = $this->find(array( $pk => $val ));
         } elseif( $byKeys ) {
-            $conds = array();
-            foreach( (array) $byKeys as $k ) {
-                if( isset($args[$k]) )
-                    $conds[$k] = $args[$k];
-            }
+            $conds = array_intersect_key( $args , (array) $byKeys );
             $ret = $this->find( $conds );
         }
 
