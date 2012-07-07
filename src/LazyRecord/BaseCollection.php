@@ -76,7 +76,7 @@ class BaseCollection
 
     protected $_alias = 'm';
 
-    protected $_explictSelect = false;
+    protected $explictSelect = false;
 
 
     public function __construct() {
@@ -153,7 +153,7 @@ class BaseCollection
 
     public function setExplictSelect($boolean = true)
     {
-        $this->_explictSelect = $boolean;
+        $this->explictSelect = $boolean;
         return $this;
     }
 
@@ -186,7 +186,7 @@ class BaseCollection
         $q->driver = $this->getQueryDriver( $dsId );
         $q->table( $this->_schema->table );
         $q->select(
-            $this->_explictSelect 
+            $this->explictSelect 
                 ? $this->getExplicitColumnSelect($q->driver)
                 : '*'
         );
@@ -650,11 +650,10 @@ class BaseCollection
      */
     public function join($target, $type = 'LEFT' , $alias = null, $relationId = null )
     {
-        $this->setExplictSelect(true);
+        $this->explictSelect = true;
         $query = $this->_query;
 
-
-        // for models and schemas
+        // for models and schemas join
         if( is_object($target) ) {
             $table = $target->getTable();
             $columns = $target->getColumnNames();
@@ -694,11 +693,13 @@ class BaseCollection
             }
             return $expr;
         }
-
-        $expr = $query->join($target);
-        if( $alias )
-            $expr->alias($alias);
-        return $expr;
+        else {
+            // For table name join
+            $expr = $query->join($target, $type);
+            if( $alias )
+                $expr->alias($alias);
+            return $expr;
+        }
     }
 
     /**
