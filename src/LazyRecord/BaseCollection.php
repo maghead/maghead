@@ -293,18 +293,39 @@ class BaseCollection
         return count($this->_items);
     }
 
+
+    /**
+     * Query Limit for QueryBuilder
+     *
+     * @param integer $number
+     */
     public function limit($number)
     {
         $this->_query->limit($number);
         return $this;
     }
 
+    /**
+     * Query offset for QueryBuilder
+     *
+     * @param integer $number 
+     */
     public function offset($number)
     {
         $this->_query->offset($number);
         return $this;
     }
 
+
+
+    /**
+     * A Short helper method for using limit and offset of QueryBuilder.
+     *
+     * @param integer $page
+     * @param integer $pageSize
+     *
+     * @return $this
+     */
     public function page($page,$pageSize = 20)
     {
         $this->limit($pageSize);
