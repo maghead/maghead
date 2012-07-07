@@ -50,6 +50,10 @@ abstract class SchemaBase
         }
     }
 
+    public function getRelations() 
+    {
+        return $this->relations;
+    }
 
     public function getReferenceSchemas($recursive = true)
     {

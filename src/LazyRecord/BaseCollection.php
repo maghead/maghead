@@ -638,7 +638,7 @@ class BaseCollection
      *       $collection->join('authors'); // left join without alias
      *
      *       $collection->join( new Author, 'LEFT' , 'a' )
-     *                  ->on('m.author_id','a.id'); // LEFT JOIN authors table on m.author_id = a.id
+     *                  ->on('m.author_id', array('a.id') ); // LEFT JOIN authors table on m.author_id = a.id
      *
      *       $collection->join('authors','RIGHT','a'); // right join with alias 'a'
      *
@@ -648,10 +648,11 @@ class BaseCollection
      *
      * @return QueryBuilder
      */
-    public function join($target, $type = 'LEFT' , $alias = null)
+    public function join($target, $type = 'LEFT' , $alias = null, $relationId = null )
     {
         $this->setExplictSelect(true);
         $query = $this->_query;
+
 
         // for models and schemas
         if( is_object($target) ) {
@@ -664,7 +665,29 @@ class BaseCollection
             }
             $query->addSelect($select);
             $expr = $query->join($table, $type); // it returns JoinExpression object
-                // ->on('m.id');
+
+            if( $relationId ) {
+                $relation = $this->_schema->getRelation( $relationId );
+                $expr->on()
+                    ->equal( $this->getAlias() . '.' . $relation['self']['column'] , 
+                    array(  ($alias ?: $table) . '.' . $relation['foreign']['column'] ));
+            } else {
+                $relations = $this->_schema->relations;
+                foreach( $relations as $relation ) {
+                    if( ! isset($relation['foreign']) )
+                        continue;
+
+                    $fschema = new $relation['foreign']['schema'];
+                    $modelClass = $fschema->getModelClass();
+
+                    if( is_a($target, $fschema->getModelClass() ) ) {
+                        $expr->on()
+                            ->equal( $this->getAlias() . '.' . $relation['self']['column'] , 
+                            array(  ($alias ?: $table) . '.' . $relation['foreign']['column'] ));
+                        break;
+                    }
+                }
+            }
 
             if( $alias ) {
                 $expr->alias( $alias );
