@@ -36,6 +36,27 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         ok( $authors->_query , 'has lazy attribute' );
     }
 
+
+    public function testAsPair()
+    {
+        $address = new \tests\Address;
+        ok( $address->create(array( 'address' => 'Hack' ))->success );
+        ok( $address->create(array( 'address' => 'Hack I' ))->success );
+        ok( $address->create(array( 'address' => 'Hack II' ))->success );
+
+        $addresses = new \tests\AddressCollection;
+        $pair = $addresses->asPair( 'id' , 'address' );
+        ok( $pair );
+
+        foreach( $address->flushResults() as $result ) {
+            $id = $result->id;
+            ok($id);
+            ok(isset($pair[$id]));
+            like('/Hack/',$pair[$id]);
+            $address->delete( array('id' => $result->id ) );
+        }
+    }
+
     public function testLimit()
     {
         // XXX: this should be tested in pgsql or mysql, sqlite does not support limit/offset syntax
@@ -57,8 +78,11 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
     public function testClone()
     {
         $authors = new \tests\AuthorCollection;
+        $authors->fetch();
+
         $clone = clone $authors;
         ok( $clone !== $authors );
+        ok( $clone->_readQuery !== $authors->_readQuery );
     }
 
     public function testCloneWithQuery() 
