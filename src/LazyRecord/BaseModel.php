@@ -1618,7 +1618,6 @@ class BaseModel
     public function flushResults() 
     {
         $r = $this->results;
-        unset($this->results);
         $this->results = array();
         return $r;
     }
