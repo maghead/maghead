@@ -1065,6 +1065,155 @@ class BaseModel
             ;
     }
 
+    public function getRelationalRecords($key,$relation = null)
+    {
+        if( ! $relation ) {
+            $relation = $this->_schema->getRelation( $key );
+        }
+
+        /*
+        switch($relation['type']) {
+            case SchemaDeclare::has_one:
+            case SchemaDeclare::has_many:
+            break;
+        }
+        */
+        if( SchemaDeclare::has_one === $relation['type'] ) 
+        {
+            $sColumn = $relation['self']['column'];
+
+
+            $fSchema = new $relation['foreign']['schema'];
+            $fColumn = $relation['foreign']['column'];
+            $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+            if( ! $this->hasValue($sColumn) )
+                return;
+                // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
+
+            $sValue = $this->getValue( $sColumn );
+            $model = $fpSchema->newModel();
+            $model->load(array( 
+                $fColumn => $sValue,
+            ));
+
+            return $model;
+        }
+        elseif( SchemaDeclare::has_many === $relation['type'] )
+        {
+            $sColumn = $relation['self']['column'];
+            $fSchema = new $relation['foreign']['schema'];
+            $fColumn = $relation['foreign']['column'];
+            $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+
+            if( ! $this->hasValue($sColumn) )
+                return;
+                // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
+
+            $sValue = $this->getValue( $sColumn );
+
+            $collection = $fpSchema->newCollection();
+            $collection->where()
+                ->equal( $fColumn, $sValue );
+
+            $collection->setPresetVars(array( 
+                $fColumn => $sValue,
+            ));
+            return $collection;
+        }
+        // belongs to one record
+        elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
+            $sColumn = $relation['self']['column'];
+            $fSchema = new $relation['foreign']['schema'];
+            $fColumn = $relation['foreign']['column'];
+            $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+
+            if( ! $this->hasValue($sColumn) )
+                return;
+
+            $sValue = $this->getValue( $sColumn );
+            $model = $fpSchema->newModel();
+            $ret = $model->load(array( $fColumn => $sValue ));
+            return $model;
+        }
+        elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
+            $rId = $relation['relation']['id'];  // use relationId to get middle relation. (author_books)
+            $rId2 = $relation['relation']['id2'];  // get external relationId from the middle relation. (book from author_books)
+
+            $middleRelation = $this->_schema->getRelation( $rId );
+            if( ! $middleRelation )
+                throw new InvalidArgumentException("first level relationship of many-to-many $rId is empty");
+
+            // eg. author_books
+            $sColumn = $middleRelation['foreign']['column'];
+            $sSchema = new $middleRelation['foreign']['schema'];
+            $spSchema = SchemaLoader::load( $sSchema->getSchemaProxyClass() );
+
+            $foreignRelation = $spSchema->getRelation( $rId2 );
+            if( ! $foreignRelation )
+                throw new InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
+
+            $c = $foreignRelation['foreign']['schema'];
+            if( ! $c ) 
+                throw new InvalidArgumentException('foreign schema class is not defined.');
+
+            $fSchema = new $c;
+            $fColumn = $foreignRelation['foreign']['column'];
+            $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+
+            $collection = $fpSchema->newCollection();
+
+            /**
+                * join middle relation ship
+                *
+                *    Select * from books b (r2) left join author_books ab on ( ab.book_id = b.id )
+                *       where b.author_id = :author_id
+                */
+            $collection->join( $sSchema->getTable() )->alias('b')
+                            ->on()
+                            ->equal( 'b.' . $foreignRelation['self']['column'] , array( 'm.' . $fColumn ) );
+
+            $value = $this->getValue( $middleRelation['self']['column'] );
+            $collection->where()
+                ->equal( 
+                    'b.' . $middleRelation['foreign']['column'],
+                    $value
+                );
+
+
+            /**
+                * for many-to-many creation:
+                *
+                *    $author->books[] = array(
+                *        ':author_books' => array( 'created_on' => date('c') ),
+                *        'title' => 'Book Title',
+                *    );
+                */
+            $collection->setPostCreate(function($record,$args) use ($spSchema,$rId,$middleRelation,$foreignRelation,$value) {
+                // arguments for creating middle-relationship record
+                $a = array( 
+                    $foreignRelation['self']['column']   => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
+                    $middleRelation['foreign']['column'] => $value,  // self id
+                );
+
+                if( isset($args[':' . $rId ] ) ) {
+                    $a = array_merge( $args[':' . $rId ] , $a );
+                }
+
+                // create relationship
+                $middleRecord = $spSchema->newModel();
+                $ret = $middleRecord->create($a);
+                if( ! $ret->success ) {
+                    throw new Exception("$rId create failed.");
+                }
+                return $middleRecord;
+            });
+            return $collection;
+        }
+        else {
+            throw new Exception("The relationship type is not supported.");
+        }
+    }
+
 
     /**
      *
@@ -1080,157 +1229,16 @@ class BaseModel
             return ConnectionManager::getInstance();
         }
 
+        if( $relation = $this->_schema->getRelation( $key ) ) {
+            return $this->getRelationalRecords($key, $relation);
+        }
+
 
 # XXX: turn off cache to prevent logical/runtime bug.
 #          if( isset($this->_cache[$key]) ) {
 #              return $this->_cache[$key];
 #          }
 
-        // return relation object
-        if( $relation = $this->_schema->getRelation( $key ) ) 
-        {
-            /*
-            switch($relation['type']) {
-                case SchemaDeclare::has_one:
-                case SchemaDeclare::has_many:
-                break;
-            }
-            */
-            if( SchemaDeclare::has_one === $relation['type'] ) 
-            {
-                $sColumn = $relation['self']['column'];
-
-
-                $fSchema = new $relation['foreign']['schema'];
-                $fColumn = $relation['foreign']['column'];
-                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
-                if( ! $this->hasValue($sColumn) )
-                    return;
-                    // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
-
-                $sValue = $this->getValue( $sColumn );
-                $model = $fpSchema->newModel();
-                $model->load(array( 
-                    $fColumn => $sValue,
-                ));
-
-                return $this->_cache[$key] = $model;
-            }
-            elseif( SchemaDeclare::has_many === $relation['type'] )
-            {
-                $sColumn = $relation['self']['column'];
-                $fSchema = new $relation['foreign']['schema'];
-                $fColumn = $relation['foreign']['column'];
-                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
-
-                if( ! $this->hasValue($sColumn) )
-                    return;
-                    // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
-
-                $sValue = $this->getValue( $sColumn );
-
-                $collection = $fpSchema->newCollection();
-                $collection->where()
-                    ->equal( $fColumn, $sValue );
-
-                $collection->setPresetVars(array( 
-                    $fColumn => $sValue,
-                ));
-                return $this->_cache[$key] = $collection;
-            }
-            // belongs to one record
-            elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
-                $sColumn = $relation['self']['column'];
-                $fSchema = new $relation['foreign']['schema'];
-                $fColumn = $relation['foreign']['column'];
-                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
-
-                if( ! $this->hasValue($sColumn) )
-                    return;
-
-                $sValue = $this->getValue( $sColumn );
-                $model = $fpSchema->newModel();
-                $ret = $model->load(array( $fColumn => $sValue ));
-                return $this->_cache[$key] = $model;
-            }
-            elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
-                $rId = $relation['relation']['id'];  // use relationId to get middle relation. (author_books)
-                $rId2 = $relation['relation']['id2'];  // get external relationId from the middle relation. (book from author_books)
-
-                $middleRelation = $this->_schema->getRelation( $rId );
-                if( ! $middleRelation )
-                    throw new InvalidArgumentException("first level relationship of many-to-many $rId is empty");
-
-                // eg. author_books
-                $sColumn = $middleRelation['foreign']['column'];
-                $sSchema = new $middleRelation['foreign']['schema'];
-                $spSchema = SchemaLoader::load( $sSchema->getSchemaProxyClass() );
-
-                $foreignRelation = $spSchema->getRelation( $rId2 );
-                if( ! $foreignRelation )
-                    throw new InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
-
-                $c = $foreignRelation['foreign']['schema'];
-                if( ! $c ) 
-                    throw new InvalidArgumentException('foreign schema class is not defined.');
-
-                $fSchema = new $c;
-                $fColumn = $foreignRelation['foreign']['column'];
-                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
-
-                $collection = $fpSchema->newCollection();
-
-                /**
-                 * join middle relation ship
-                 *
-                 *    Select * from books b (r2) left join author_books ab on ( ab.book_id = b.id )
-                 *       where b.author_id = :author_id
-                 */
-                $collection->join( $sSchema->getTable() )->alias('b')
-                                ->on()
-                                ->equal( 'b.' . $foreignRelation['self']['column'] , array( 'm.' . $fColumn ) );
-
-                $value = $this->getValue( $middleRelation['self']['column'] );
-                $collection->where()
-                    ->equal( 
-                        'b.' . $middleRelation['foreign']['column'],
-                        $value
-                    );
-
-
-                /**
-                 * for many-to-many creation:
-                 *
-                 *    $author->books[] = array(
-                 *        ':author_books' => array( 'created_on' => date('c') ),
-                 *        'title' => 'Book Title',
-                 *    );
-                 */
-                $collection->setPostCreate(function($record,$args) use ($spSchema,$rId,$middleRelation,$foreignRelation,$value) {
-                    // arguments for creating middle-relationship record
-                    $a = array( 
-                        $foreignRelation['self']['column']   => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
-                        $middleRelation['foreign']['column'] => $value,  // self id
-                    );
-
-                    if( isset($args[':' . $rId ] ) ) {
-                        $a = array_merge( $args[':' . $rId ] , $a );
-                    }
-
-                    // create relationship
-                    $middleRecord = $spSchema->newModel();
-                    $ret = $middleRecord->create($a);
-                    if( ! $ret->success ) {
-                        throw new Exception("$rId create failed.");
-                    }
-                    return $middleRecord;
-                });
-                return $this->_cache[$key] = $collection;
-            }
-            else {
-                throw new Exception("The relationship type is not supported.");
-            }
-        }
         return $this->get($key);
     }
 
