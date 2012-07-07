@@ -28,11 +28,14 @@ class ComparatorTest extends \PHPUnit_Framework_TestCase
         # $this->expectOutputRegex('/^= same/sm');
         # $this->expectOutputRegex('/^= changed/sm');
         # $this->expectOutputRegex('/^- removed/sm');
-        # $this->expectOutputRegex('/^\+ added/sm');
-
         
         $printer = new LazyRecord\Schema\Comparator\ConsolePrinter($diff);
+        ob_start();
         $printer->output();
+        $content = ob_get_contents();
+        ob_clean();
+        like('#removed#',$content);
+        like('#added#',$content);
     }
 }
 
