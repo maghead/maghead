@@ -36,6 +36,24 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         ok( $authors->_query , 'has lazy attribute' );
     }
 
+    public function testLimit()
+    {
+        // XXX: this should be tested in pgsql or mysql, sqlite does not support limit/offset syntax
+        return; 
+        $address = new \tests\Address;
+        ok( $address->create(array( 'address' => 'Hack' ))->success );
+        ok( $address->create(array( 'address' => 'Hack I' ))->success );
+        ok( $address->create(array( 'address' => 'Hack II' ))->success );
+
+        $addresses = new \tests\AddressCollection;
+        $addresses->limit(1);
+        
+        is( 1, $addresses->size() );
+        foreach( $address->flushResults() as $result ) {
+            $address->delete( array('id' => $result->id ) );
+        }
+    }
+
     public function testClone()
     {
         $authors = new \tests\AuthorCollection;
@@ -231,6 +249,36 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         $authors = new \tests\AuthorCollection;
         ok( $authors::schema_proxy_class );
         ok( $authors::model_class );
+    }
+
+
+    function testGeneralInterface() 
+    {
+        $book = new \tests\Book;
+        ok( $book->create(array( 'title' => 'My Book I' ))->success );
+        ok( $book->create(array( 'title' => 'My Book II' ))->success );
+        ok( $book->create(array( 'title' => 'Perl Programming' ))->success );
+        ok( $book->create(array( 'title' => 'My Book IV' ))->success );
+
+        $books = new \tests\BookCollection;
+        $books->fetch();
+        count_ok( 4, $books);
+        ok($books);
+
+        $perlBooks = $books->filter(function($item) { 
+            return $item->title == 'Perl Programming';
+        });
+
+        ok($perlBooks);
+        is(1, $perlBooks->size());
+        count_ok(1,$perlBooks->_items);
+
+ 
+        foreach( $book->flushResults() as $result ) {
+            ok( $result->id );
+            ok( \tests\Book::delete($result->id)->execute()->success );
+        }
+
     }
 
     function test()
