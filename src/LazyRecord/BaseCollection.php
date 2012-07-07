@@ -751,7 +751,7 @@ class BaseCollection
      * @param string $key
      * @param string $valueKey
      */
-    public function asPair($key,$valueKey)
+    public function asPairs($key,$valueKey)
     {
         $data = array();
         foreach( $this as $item ) {

@@ -37,7 +37,7 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
     }
 
 
-    public function testAsPair()
+    public function testAsPairs()
     {
         $address = new \tests\Address;
         ok( $address->create(array( 'address' => 'Hack' ))->success );
@@ -45,14 +45,14 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         ok( $address->create(array( 'address' => 'Hack II' ))->success );
 
         $addresses = new \tests\AddressCollection;
-        $pair = $addresses->asPair( 'id' , 'address' );
-        ok( $pair );
+        $pairs = $addresses->asPairs( 'id' , 'address' );
+        ok( $pairs );
 
         foreach( $address->flushResults() as $result ) {
             $id = $result->id;
             ok($id);
-            ok(isset($pair[$id]));
-            like('/Hack/',$pair[$id]);
+            ok(isset($pairs[$id]));
+            like('/Hack/',$pairs[$id]);
             $address->delete( array('id' => $result->id ) );
         }
     }
