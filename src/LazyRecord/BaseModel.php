@@ -27,14 +27,24 @@ class BaseModel
 {
     protected $_data;
 
-    public $_result;
-
     /**
-     * auto reload record after creating new record
+     * @var boolean Auto reload record after creating new record
+     *
+     * Turn off this if you want performance.
      */
     public $_autoReload = true;
 
+
+    /**
+     * @var boolean Save operation results
+     *
+     * Turn off this if you want performance
+     */
+    public $_saveResults = true;
+
     public $_cache = array();
+
+    public $results = array();
 
     /**
      * @var mixed Current user object
@@ -1495,7 +1505,11 @@ class BaseModel
      */
     public function reportError($message,$extra = array() )
     {
-        return $this->_result = new OperationError($message,$extra);
+        $r = new OperationError($message,$extra);
+        if( $this->_saveResults ) {
+            return $this->results[] = $r;
+        }
+        return $r;
     }
 
 
@@ -1508,7 +1522,11 @@ class BaseModel
      */
     public function reportSuccess($message,$extra = array() )
     {
-        return $this->_result = new OperationSuccess($message,$extra);
+        $r = new OperationSuccess($message,$extra);
+        if( $this->_saveResults ) {
+            return $this->results[] = $r;
+        }
+        return $r;
     }
 
 
@@ -1583,10 +1601,28 @@ class BaseModel
         $this->_cache = array();
     }
 
-    public function __clone() {
+    public function __clone() 
+    {
         $this->_data = $this->_data;
         $this->_autoReload = $this->_autoReload;
     }
 
+    public function popResult() 
+    {
+        return array_pop($this->results);
+    }
+
+    public function pushResult($result) 
+    {
+        $this->results[] = $result;
+    }
+
+    public function flushResults() 
+    {
+        $r = $this->results;
+        unset($this->results);
+        $this->results = array();
+        return $r;
+    }
 }
 
