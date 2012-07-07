@@ -659,9 +659,9 @@ class BaseCollection
             $table = $target->getTable();
             $columns = $target->getColumnNames();
             $select = array();
-            $prefix = $alias ?: $table;
+            $alias = $alias ?: $table;
             foreach( $columns as $name ) {
-                $select[ $table . '.' . $name ] = $prefix . '_' . $name;
+                $select[ $alias . '.' . $name ] = $alias . '_' . $name;
             }
             $query->addSelect($select);
             $expr = $query->join($table, $type); // it returns JoinExpression object
