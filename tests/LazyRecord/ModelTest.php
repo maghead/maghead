@@ -50,11 +50,15 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         foreach( $author->getColumnNames() as $n ) {
             ok( in_array( $n , $names ));
         }
-        ok( $author->getColumns() );
+
+        $columns = $author->getColumns();
+        count_ok( 7 , $columns );
+
+        $columns = $author->getColumns(true); // with virtual column 'v'
+        count_ok( 8 , $columns );
+
         ok( 'authors' , $author->getTable() );
         ok( 'Author' , $author->getLabel() );
-
-        // ok( $author->getLabel() );
     }
 
     public function testCollection()
