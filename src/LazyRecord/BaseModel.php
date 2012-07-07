@@ -1514,9 +1514,9 @@ class BaseModel
      *
      * @return RuntimeColumn[name]
      */
-    public function getColumns()
+    public function getColumns($withVirtual = false)
     {
-        return $this->_schema->getColumns();
+        return $this->_schema->getColumns( $withVirtual );
     }
 
 
