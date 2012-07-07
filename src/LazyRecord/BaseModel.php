@@ -40,7 +40,7 @@ class BaseModel
      *
      * Turn off this if you want performance
      */
-    public $_saveResults = true;
+    public $saveResults = true;
 
     public $_cache = array();
 
@@ -1506,7 +1506,7 @@ class BaseModel
     public function reportError($message,$extra = array() )
     {
         $r = new OperationError($message,$extra);
-        if( $this->_saveResults ) {
+        if( $this->saveResults ) {
             return $this->results[] = $r;
         }
         return $r;
@@ -1523,7 +1523,7 @@ class BaseModel
     public function reportSuccess($message,$extra = array() )
     {
         $r = new OperationSuccess($message,$extra);
-        if( $this->_saveResults ) {
+        if( $this->saveResults ) {
             return $this->results[] = $r;
         }
         return $r;
