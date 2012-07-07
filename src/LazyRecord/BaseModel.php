@@ -1454,8 +1454,7 @@ class BaseModel
 
     public function filterArrayWithColumns( $args )
     {
-        $columns = $this->_schema->getColumns();
-        return array_intersect_key( $args ,$columns );
+        return array_intersect_key( $args , $this->_schema->getColumns() );
     }
 
     public function inflateColumnValue( $n ) 
