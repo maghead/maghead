@@ -1244,7 +1244,7 @@ class BaseModel
 
 
     /**
-     * return the collection object of current model object.
+     * Return the collection object of current model object.
      *
      * @return LazyRecord\BaseCollection
      */
@@ -1452,11 +1452,28 @@ class BaseModel
         }
     }
 
+
+
+    /**
+     * use array_intersect_key to filter array with column names
+     *
+     * @param array $args
+     * @return array
+     */
     public function filterArrayWithColumns( $args )
     {
         return array_intersect_key( $args , $this->_schema->getColumns() );
     }
 
+
+
+    /**
+     * Inflate column value 
+     *
+     * @param string $n Column name
+     *
+     * @return mixed
+     */
     public function inflateColumnValue( $n ) 
     {
         $value = isset($this->_data[ $n ])
@@ -1468,11 +1485,27 @@ class BaseModel
         return $value;
     }
 
+
+    /**
+     * Report error 
+     *
+     * @param string $message Error message.
+     * @param array $extra Extra data.
+     * @return OperationError
+     */
     public function reportError($message,$extra = array() )
     {
         return $this->_result = new OperationError($message,$extra);
     }
 
+
+    /**
+     * Report success
+     *
+     * @param string $message Success message.
+     * @param array $extra Extra data.
+     * @return OperationSuccess
+     */
     public function reportSuccess($message,$extra = array() )
     {
         return $this->_result = new OperationSuccess($message,$extra);
@@ -1485,6 +1518,10 @@ class BaseModel
         return SchemaLoader::load( static::schema_proxy_class );
     }
 
+
+    /**
+     * Duplicated with asCollection() method
+     */
     public function newCollection() 
     {
         return $this->loadSchema()->newCollection();

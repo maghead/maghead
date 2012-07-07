@@ -49,6 +49,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');
         foreach( $author->getColumnNames() as $n ) {
             ok( in_array( $n , $names ));
+            ok( $author->getColumn( $n ) );
         }
 
         $columns = $author->getColumns();
@@ -59,6 +60,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         ok( 'authors' , $author->getTable() );
         ok( 'Author' , $author->getLabel() );
+
 
         isa_ok(  '\tests\AuthorCollection' , $author->newCollection() );
     }
