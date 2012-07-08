@@ -33,7 +33,7 @@ class CommandUtils
         return static::$logger;
     }
 
-    static function create_basedata($schemas) {
+    static function build_basedata($schemas) {
         foreach( $schemas as $schema ) {
             $class = get_class($schema);
             $modelClass = $schema->getModelClass();
@@ -50,6 +50,22 @@ class CommandUtils
 
     static function schema_classes_to_objects($classes) {
         return array_map(function($class) { return new $class; },$classes);
+    }
+
+    static function build_schemas_with_options($id, $options, $schemas) {
+        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
+        $conn = $connectionManager->getConnection($id);
+        $driver = $connectionManager->getQueryDriver($id);
+        $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($driver, array( 
+            'rebuild' => $options->rebuild,
+            'clean' => $options->clean,
+        )); // driver
+
+        $sqls = array();
+        foreach( $schemas as $schema ) {
+            $sqls[] = CommandUtils::build_schema_sql($builder,$schema,$conn);
+        }
+        return join("\n", $sqls );
     }
 
     static function build_schema_sql($builder,$schema,$conn) {
