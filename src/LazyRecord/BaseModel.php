@@ -53,6 +53,7 @@ class BaseModel
     public $_currentUser;
 
 
+
     /**
      * @var mixed Model-Scope current user object
      *
@@ -60,12 +61,16 @@ class BaseModel
      */
     static $currentUser;
 
-    static $schemaCache;
+    // static $schemaCache;
 
     public function __construct($args = null) 
     {
         if( $args )
             $this->_load( $args );
+
+        // if( ! static::$schemaCache ) {
+        //     static::$schemaCache = SchemaLoader::load( static::schema_proxy_class );
+        // }
     }
 
 
@@ -227,12 +232,17 @@ class BaseModel
         case 'delete':
             return call_user_func_array(array($this,'_' . $m),$a);
             break;
-
-            // xxx: can dispatch methods to Schema object.
+            // XXX: can dispatch methods to Schema object.
             // return call_user_func_array( array(  ) )
             break;
         }
-        throw new Exception("$m method not found.");
+
+        if( method_exists($this->_schema,$m) ) {
+            return call_user_func_array($this->_schema,$a);
+        }
+
+        // XXX: special case for twig template
+        throw new Exception("BaseModel: $m method not found.");
     }
 
 
@@ -824,9 +834,12 @@ class BaseModel
             }
             return $c->display( $this->getValue( $name ) );
         }
-        elseif( method_exists($this, $name) ) {
-            return call_user_func_array($this,array($name));
+        elseif( isset($this->_data[$name]) ) {
+            return $this->_data[$name];
         }
+#          elseif( method_exists($this, $name) ) {
+#              return call_user_func_array($this,array($name));
+#          }
         else {
             // return "Undefined column $name";
         }
@@ -1066,8 +1079,9 @@ class BaseModel
      */
     public function __isset( $name )
     {
-        return isset($this->_schema->columns[ $name ]) 
-            || isset($this->_data[ $name ])
+        return isset($this->_data[ $name ]) 
+            || array_key_exists($name,$this->_data)
+            || isset($this->_schema->columns[ $name ]) 
             || '_schema' == $name
             || $this->_schema->getRelation( $name )
             ;
@@ -1240,7 +1254,6 @@ class BaseModel
         if( $relation = $this->_schema->getRelation( $key ) ) {
             return $this->getRelationalRecords($key, $relation);
         }
-
 
 # XXX: turn off cache to prevent logical/runtime bug.
 #          if( isset($this->_cache[$key]) ) {
