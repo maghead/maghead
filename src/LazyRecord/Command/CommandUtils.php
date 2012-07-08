@@ -29,7 +29,7 @@ class CommandUtils
         }
     }
 
-    static function get_logger($logger) {
+    static function get_logger() {
         return static::$logger;
     }
 
@@ -52,8 +52,22 @@ class CommandUtils
         return array_map(function($class) { return new $class; },$classes);
     }
 
-    static function build_schema_sql($schemas) {
+    static function build_schema_sql($builder,$schema,$conn) {
+        $class = get_class($schema);
+        static::log("Building SQL for " . $class,'green');
 
+        $sqls = $builder->build($schema);
+        foreach( $sqls as $sql ) {
+            static::log( $sql );
+
+            $conn->query( $sql );
+            $error = $conn->errorInfo();
+            if( $error[1] ) {
+                $msg =  $class . ': ' . var_export( $error , true );
+                static::$logger->error($msg);
+            }
+        }
+        return "--- Schema $class \n" . join("\n",$sqls);
     }
 }
 

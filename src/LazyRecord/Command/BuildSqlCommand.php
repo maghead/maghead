@@ -65,7 +65,6 @@ DOC;
             $logger->info( $logger->formatter->format($class,'green') ,1 );
         }
 
-        $logger->info("Initialize schema builder...");
 
 
         $schemas = CommandUtils::schema_classes_to_objects( $classes );
@@ -77,31 +76,17 @@ DOC;
         $logger->info("Connecting to data soruce $id...");
         $conn = $connectionManager->getConnection($id);
         $driver = $connectionManager->getQueryDriver($id);
+
+        $logger->info("Initialize schema builder...");
         $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($driver, array( 
             'rebuild' => $options->rebuild,
             'clean' => $options->clean,
         )); // driver
         $fp = fopen('schema.sql','w'); // write only
+
         foreach( $schemas as $schema ) {
-            $class = get_class($schema);
-            $logger->info( $logger->formatter->format("Building SQL for " . $class,'green') );
-
-            fwrite( $fp , "--- Schema $class\n" );
-
-            $sqls = $builder->build($schema);
-            foreach( $sqls as $sql ) {
-                $logger->info("--- SQL for schema $class ");
-                $logger->info( $sql );
-                fwrite( $fp , $sql . "\n" );
-
-                $conn->query( $sql );
-                $error = $conn->errorInfo();
-                if( $error[1] ) {
-                    $msg =  $class . ': ' . var_export( $error , true );
-                    $logger->error($msg);
-                    fwrite( $fp , $msg);
-                }
-            }
+            $sql = CommandUtils::build_schema_sql($builder,$schema,$conn);
+            fwrite($fp, $sql );
         }
 
         if( $this->options->basedata ) {
