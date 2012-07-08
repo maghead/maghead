@@ -75,6 +75,27 @@ class Collection2Test extends PHPUnit_Framework_ModelTestCase
         }
     }
 
+    public function testReset()
+    {
+        $book = new \tests\Book;
+        ok( $book->create(array( 'title' => 'My Book I' ))->success );
+        ok( $book->create(array( 'title' => 'My Book II' ))->success );
+
+        $books = new \tests\BookCollection;
+        $books->fetch();
+        is(2,$books->size());
+
+        ok( $book->create(array( 'title' => 'My Book III' ))->success );
+        $books->reset();
+        $books->fetch();
+        is(3,$books->size());
+
+        foreach( $book->flushResults() as $result ) {
+            ok( $result->id );
+            ok( \tests\Book::delete($result->id)->execute()->success );
+        }
+    }
+
     public function testClone()
     {
         $authors = new \tests\AuthorCollection;
