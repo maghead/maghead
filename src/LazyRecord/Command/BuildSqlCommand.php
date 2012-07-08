@@ -51,6 +51,7 @@ DOC;
         $options = $this->options;
         $logger  = $this->logger;
 
+        CommandUtils::set_logger($this->logger);
         CommandUtils::init_config_loader();
 
 
@@ -59,13 +60,9 @@ DOC;
 
         $logger->info("Finding schema classes...");
 
-        CommandUtils::set_logger($this->logger);
         $classes = CommandUtils::find_schemas_with_arguments( func_get_args() );
 
-        $logger->info('Found schema classes');
-        foreach( $classes as $class ) {
-            $logger->info( $logger->formatter->format($class,'green') ,1 );
-        }
+        CommandUtils::print_schema_classes($classes);
 
         $schemas = CommandUtils::schema_classes_to_objects( $classes );
 
