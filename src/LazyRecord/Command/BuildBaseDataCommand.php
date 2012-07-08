@@ -11,8 +11,7 @@ class BuildBaseDataCommand extends Command
 
     function brief() { return 'insert basedata into datasource.'; }
 
-
-    public function execute()
+    function execute()
     {
         $options = $this->options;
         $logger  = $this->logger;
