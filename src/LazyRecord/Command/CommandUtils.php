@@ -52,6 +52,13 @@ class CommandUtils
         return array_map(function($class) { return new $class; },$classes);
     }
 
+    static function print_schema_classes($classes) {
+        static::$logger->info('Found schema classes');
+        foreach( $classes as $class ) {
+            static::$logger->info( static::$logger->formatter->format($class,'green') ,1 );
+        }
+    }
+
     static function build_schemas_with_options($id, $options, $schemas) {
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $conn = $connectionManager->getConnection($id);
