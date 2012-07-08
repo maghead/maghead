@@ -18,6 +18,8 @@ class BuildSqlCommand extends \CLIFramework\Command
         // --clean
         $opts->add('clean','clean up SQL schema.');
 
+        $opts->add('f|file:', 'write schema sql to file');
+
         $opts->add('basedata','insert basedata' );
 
         // --data-source
@@ -65,36 +67,23 @@ DOC;
             $logger->info( $logger->formatter->format($class,'green') ,1 );
         }
 
-
-
         $schemas = CommandUtils::schema_classes_to_objects( $classes );
 
-
-        $logger->info("Initialize connection manager...");
-        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
-
         $logger->info("Connecting to data soruce $id...");
-        $conn = $connectionManager->getConnection($id);
-        $driver = $connectionManager->getQueryDriver($id);
 
         $logger->info("Initialize schema builder...");
-        $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($driver, array( 
-            'rebuild' => $options->rebuild,
-            'clean' => $options->clean,
-        )); // driver
-        $fp = fopen('schema.sql','w'); // write only
-
-        foreach( $schemas as $schema ) {
-            $sql = CommandUtils::build_schema_sql($builder,$schema,$conn);
-            fwrite($fp, $sql );
+        $sqlOutput = CommandUtils::build_schemas_with_options($id, $options, $schemas);
+        if( $file = $this->options->file ) {
+            $fp = fopen($file,'w');
+            fwrite($fp, $sqlOutput);
+            fclose($fp);
         }
 
         if( $this->options->basedata ) {
-            CommandUtils::create_basedata($schemas);
+            CommandUtils::build_basedata($schemas);
         }
 
         $logger->info('Schema SQL is generated, please check schema.sql file.');
-        fclose($fp);
     }
 }
 
