@@ -106,8 +106,11 @@ Default value builder:
 
     $this->column('name')
         ->boolean()
-        ->default(function() { return 'New name'; });
+        ->default(function($record,$args) { return 'New name'; });
 
+The callback function's prototype: ($record, $args)
+
+The `$args` is the arguments of create action.
 
 Valid values
 ------------

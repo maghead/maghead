@@ -36,28 +36,38 @@ class RuntimeColumn
     }
 
 
+
+    /**
+     * Canonicalize a value before updating or creating
+     *
+     * The canonicalize handler takes the original value ($value), current 
+     * record ($record) and the arguments ($args)
+     *
+     * @param mixed $value
+     * @param BaseModel $record
+     * @param array $args
+     *
+     * @return mixed $value
+     */
     public function canonicalizeValue( & $value , $record = null , $args = null )
     {
         $cb = $this->filter ?: $this->canonicalizer ?: null;
         if( $cb ) {
-            return $value = call_user_func( $cb , $value , $record, $args );
+            return $value = call_user_func( $cb , $value,$record,$args);
         }
         return $value;
     }
 
     /**
-     * for an existing record, we might need the record data to return specified valid values.
+     * For an existing record, we might need the record data to return specified valid values.
      */
     public function getValidValues( $record = null , $args = null )
     {
         if( $this->validValues ) {
-
-            if( is_callable($this->validValues) ) {
-                return call_user_func( $this->validValues, $record, $args );
-            }
-            return $this->validValues;
-        } elseif( $this->validValueBuilder ) {
-            return call_user_func( $this->validValueBuilder , $record , $args );
+            return Utils::evaluate( $this->validValues , array($record, $args) );
+        } 
+        elseif( $this->validValueBuilder ) {
+            return Utils::evaluate( $this->validValueBuilder , array($record, $args) );
         }
     }
 
@@ -65,7 +75,7 @@ class RuntimeColumn
     {
         // XXX: might contains array() which is a raw sql statement.
         if( $this->default ) {
-            return Utils::evaluate( $this->default , array($record, $args ));
+            return Utils::evaluate( $this->default , array($record, $args));
         }
     }
 
@@ -136,6 +146,8 @@ class RuntimeColumn
 
     /** 
      * deflate value 
+     *
+     * @param mixed $value
      **/
     public function deflate( $value )
     {
@@ -211,6 +223,3 @@ class RuntimeColumn
     }
 
 }
-
-
-
