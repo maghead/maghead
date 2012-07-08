@@ -83,7 +83,8 @@ DOC;
             CommandUtils::build_basedata($schemas);
         }
 
-        $logger->info('Schema SQL is generated, please check schema.sql file.');
+        $logger->info('Done.');
+        $logger->info(count($schemas) . " schema tables were generated into data source '$id'.");
     }
 }
 
