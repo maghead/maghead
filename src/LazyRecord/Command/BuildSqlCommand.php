@@ -45,9 +45,6 @@ DOC;
 
     public function execute()
     {
-        // support for schema file or schema class names
-        $schemas = func_get_args();
-
         $options = $this->options;
         $logger  = $this->logger;
 
@@ -80,8 +77,11 @@ DOC;
             CommandUtils::build_basedata($schemas);
         }
 
-        $logger->info('Done.');
-        $logger->info(count($schemas) . " schema tables were generated into data source '$id'.");
+        $logger->info(
+            $logger->formatter->format(
+                'Done. ' . count($schemas) . " schema tables were generated into data source '$id'."
+            ,'green')
+        );
     }
 }
 
