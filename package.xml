@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-07-09</date>
-  <time>00:29:51</time>
+  <time>00:38:02</time>
   <version>
     <release>1.5.10</release>
     <api>1.5.10</api>
@@ -140,11 +140,11 @@
       <file name="src/LazyRecord/CodeGen/UseClass.php" role="php" md5sum="3fa0ed7b1aaff5bb1ca577b5d4d4fb15"/>
       <file name="src/LazyRecord/CodeGen.php" role="php" md5sum="7149f3fca607645f82bbdfcb89f16614"/>
       <file name="src/LazyRecord/CollectionPager.php" role="php" md5sum="f17355028e8d9f52834c289ed07b6665"/>
-      <file name="src/LazyRecord/Command/BuildBaseDataCommand.php" role="php" md5sum="7c57c0ed6ccdb94ae1f1dd1b357524bf"/>
+      <file name="src/LazyRecord/Command/BuildBaseDataCommand.php" role="php" md5sum="0318e048d0eda1c142918e47558ed821"/>
       <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="28eda14a05fc5b707c2d09bb631446b6"/>
       <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="b13a4abd48d3e772857618bba393790f"/>
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="5aaafbb1103a593e0c352d19e2b8b9fd"/>
-      <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="3858aefc998fd99bc2b93fa5ff8ac299"/>
+      <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="9964c2fcc631f0ba151f73dbff2f6d70"/>
       <file name="src/LazyRecord/Command/CreateDBCommand.php" role="php" md5sum="75d7247e71e57d40ee43f6873843cfc5"/>
       <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="e7922e87f5633f39c801372868f5c170"/>
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="11fd7b72748c614c94a425ca1971965f"/>
@@ -191,7 +191,7 @@
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="19592d256900fc2b80045b8024913ba8"/>
-      <file name="lazy" role="script" md5sum="5c9f6823d395e24b34ced9a5e31e8569"/>
+      <file name="lazy" role="script" md5sum="bf84c7e1eb4b8bb6d701e601af1f4745"/>
       <file name="bin/lazy" role="script" md5sum="6482bf4fba756021f7b432df137839f1"/>
     </dir>
   </contents>
