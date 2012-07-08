@@ -4,6 +4,7 @@ use CLIFramework\Command;
 use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
+use LazyRecord\Command\CommandUtils;
 use Exception;
 
 class BuildSqlCommand extends \CLIFramework\Command
@@ -16,6 +17,8 @@ class BuildSqlCommand extends \CLIFramework\Command
 
         // --clean
         $opts->add('clean','clean up SQL schema.');
+
+        $opts->add('basedata','insert basedata' );
 
         // --data-source
         $opts->add('D|data-source:', 'specify data source id');
@@ -46,45 +49,39 @@ DOC;
         $options = $this->options;
         $logger  = $this->logger;
 
-        $loader = ConfigLoader::getInstance();
-        $loader->load();
-        $loader->initForBuild();
+        CommandUtils::init_config_loader();
 
-        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
-        $logger->info("Initialize connection manager...");
 
         // XXX: from config files
         $id = $options->{'data-source'} ?: 'default';
 
-        $logger->info("Connecting to data soruce $id...");
-
-        $conn = $connectionManager->getConnection($id);
-        $type = $connectionManager->getDataSourceDriver($id);
-        $driver = $connectionManager->getQueryDriver($id);
-
-
         $logger->info("Finding schema classes...");
-        $args = func_get_args();
-        $classes = \LazyRecord\Utils::getSchemaClassFromPathsOrClassNames( 
-            $loader, $args , $this->logger );
+
+        CommandUtils::set_logger($this->logger);
+        $classes = CommandUtils::find_schemas_with_arguments( func_get_args() );
 
         $logger->info('Found schema classes');
-
         foreach( $classes as $class ) {
             $logger->info( $logger->formatter->format($class,'green') ,1 );
         }
 
         $logger->info("Initialize schema builder...");
+
+
+        $schemas = CommandUtils::schema_classes_to_objects( $classes );
+
+
+        $logger->info("Initialize connection manager...");
+        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
+
+        $logger->info("Connecting to data soruce $id...");
+        $conn = $connectionManager->getConnection($id);
+        $driver = $connectionManager->getQueryDriver($id);
         $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($driver, array( 
             'rebuild' => $options->rebuild,
             'clean' => $options->clean,
         )); // driver
-
-
         $fp = fopen('schema.sql','w'); // write only
-
-        $schemas = array_map(function($class) { return new $class; },$classes);
-
         foreach( $schemas as $schema ) {
             $class = get_class($schema);
             $logger->info( $logger->formatter->format("Building SQL for " . $class,'green') );
@@ -105,14 +102,10 @@ DOC;
                     fwrite( $fp , $msg);
                 }
             }
-
         }
 
-        foreach( $schemas as $schema ) {
-            $class = get_class($schema);
-            $modelClass = $schema->getModelClass();
-            $logger->info( $logger->formatter->format( "Creating base data for $modelClass",'green') );
-            $schema->bootstrap( new $modelClass );
+        if( $this->options->basedata ) {
+            CommandUtils::create_basedata($schemas);
         }
 
         $logger->info('Schema SQL is generated, please check schema.sql file.');
