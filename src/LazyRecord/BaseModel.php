@@ -1547,7 +1547,11 @@ class BaseModel
 
 
     /**
-     * Report success
+     * Report success.
+     *
+     * In this method, which pushs result object into ->results array.
+     * you can use flushResult() method to clean up these 
+     * result objects.
      *
      * @param string $message Success message.
      * @param array $extra Extra data.
