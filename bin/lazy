@@ -8,7 +8,7 @@ $loader = new \Universal\ClassLoader\BasePathClassLoader(array(
 $loader->useIncludePath(true);
 $loader->register();
 $console = new LazyRecord\Console;
-if( $argv[1] == '-d' ) {
+if( isset($argv[1]) && $argv[1] == '-d' ) {
     $console->run($argv);
 } else {
     $console->runWithTry($argv);
