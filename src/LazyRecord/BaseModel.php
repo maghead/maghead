@@ -1252,12 +1252,14 @@ class BaseModel
             return $collection;
         }
         else {
-            throw new Exception("The relationship type is not supported.");
+            throw new Exception("The relationship type of $key is not supported.");
         }
     }
 
 
     /**
+     * Get record data, relational records, schema object or 
+     * connection object.
      *
      * @param string $key
      */
