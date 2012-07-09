@@ -25,7 +25,7 @@ use SerializerKit\YamlSerializer;
 class BaseModel
     implements ExporterInterface
 {
-    protected $_data;
+    protected $_data = array();
 
     protected $_cache = array();
 
