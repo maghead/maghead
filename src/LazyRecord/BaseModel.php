@@ -437,30 +437,27 @@ class BaseModel
         if( empty($args) || $args === null )
             return $this->reportError( _('Empty arguments') );
 
-        // first, filter the array
-        $args = $this->filterArrayWithColumns($args);
-
-
-        if( ! $this->currentUserCan( $this->getCurrentUser() , 'create', $args ) ) {
-            return $this->reportError( _('Permission denied. Can not create record.') , array( 
-                'args' => $args,
-            ));
-        }
-
-
-
-        $k = $this->_schema->primaryKey;
-        $sql = $vars = null;
-        $validateFail    = array();
-        $this->_data = $validateResults = array();
-        $stm = null;
-
-
-        $dsId = $this->_schema->getWriteSourceId();
-        $conn = $this->getConnection( $dsId );
-
         try {
             $args = $this->beforeCreate( $args );
+
+            // first, filter the array
+            $args = $this->filterArrayWithColumns($args);
+
+            if( ! $this->currentUserCan( $this->getCurrentUser() , 'create', $args ) ) {
+                return $this->reportError( _('Permission denied. Can not create record.') , array( 
+                    'args' => $args,
+                ));
+            }
+
+            $k = $this->_schema->primaryKey;
+            $sql = $vars = null;
+            $validateFail    = array();
+            $this->_data = $validateResults = array();
+            $stm = null;
+
+
+            $dsId = $this->_schema->getWriteSourceId();
+            $conn = $this->getConnection( $dsId );
 
             foreach( $this->_schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
