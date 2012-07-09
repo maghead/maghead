@@ -268,15 +268,15 @@ class BaseCollection
     {
         $dsId = $this->_schema->getReadSourceId();
 
-        $query = clone $this->_query;
-        $query->select( 'count(*)' ); // override current select.
+        $q = clone $this->_query;
+        $q->select( 'count(*)' ); // override current select.
 
         // when selecting count(*), we dont' use groupBys or order by
-        $query->groupBys = array();
-        $query->orders = array();
+        $q->groupBys = array();
+        $q->orders = array();
 
-        $sql  = $query->build();  // build query
-        $vars = $query->vars;     // get vars
+        $sql  = $q->build();  // build query
+        $vars = $q->vars;     // get vars
         return (int) $this->_connection->prepareAndExecute($dsId,$sql, $vars)
                     ->fetchColumn();
     }
@@ -336,11 +336,11 @@ class BaseCollection
     }
 
     /**
-     * Get selected items and wrap it into a CollectionPager object
+     * Get selected items and wrap it into a CollectionPager object.
      *
      * CollectionPager is a simple data pager, do not depends on database.
      *
-     * @return CollectionPager
+     * @return LazyRecord\CollectionPager
      */
     public function pager($page = 1,$pageSize = 10)
     {

@@ -9,8 +9,8 @@ class SQLQueryException extends Exception
     public $args = array();
     public $sql;
 
-    function __construct( $msg , $e , $sql , $args ) {
-        parent::__construct($msg, 0, $e);
+    function __construct( $e , $dsId , $sql , $args ) {
+        parent::__construct( 'SQL Query Error at "' . $dsId . '" data source, Message: ' . $e->getMessage() , 0 , $e);
         $this->sql = $sql;
         $this->args = $args;
     }
@@ -18,7 +18,6 @@ class SQLQueryException extends Exception
 
 class ConnectionException extends Exception
 {
-
 
 }
 
@@ -318,7 +317,7 @@ class ConnectionManager
             $stm = $conn->prepare( $sql );
             $success = $stm->execute( $args );
         } catch( Exception $e ) {
-            throw new SQLQueryException('SQL Query Error: ' . $e->getMessage() ,$e,$sql,$args);
+            throw new SQLQueryException($e,$dsId,$sql,$args);
         }
         // if failed ?
         // if( false === $success ) {  }
