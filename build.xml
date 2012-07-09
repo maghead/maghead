@@ -6,7 +6,7 @@
  <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
  <target name="build"
-   depends="bundle,prepare,init-config,lint,phploc,pdepend,phpmd-ci,doxygen,phpcs-ci,phpcpd,phpdox,phpwiki,phpunit,phpcb,package"/>
+   depends="bundle,prepare,lint,phploc,pdepend,phpmd-ci,doxygen,phpcs-ci,phpcpd,phpdox,phpwiki,phpunit,phpcb,package"/>
 
  <target name="build-parallel"
    depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -34,7 +34,7 @@
   <delete dir="${basedir}/build/doxygen"/>
  </target>
 
- <target name="prepare" depends="clean" description="Prepare for build">
+ <target name="prepare" depends="clean,init-config" description="Prepare for build">
   <mkdir dir="${basedir}/build/api"/>
   <mkdir dir="${basedir}/build/wiki"/>
   <mkdir dir="${basedir}/build/code-browser"/>
@@ -48,7 +48,7 @@
  <target name="init-config">
   <copy file="config/database.testing.yml" tofile="config/database.yml"/>
   <exec executable="php">
-   <arg value="scripts/lazy"/>
+   <arg value="bin/lazy"/>
    <arg value="build-conf"/>
    <arg value="config/database.yml"/>
   </exec>
