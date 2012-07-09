@@ -4,6 +4,17 @@ use Exception;
 use PDO;
 use ArrayAccess;
 
+class SQLQueryException extends Exception 
+{
+    public $args = array();
+    public $sql;
+
+    function __construct( $msg , $e , $sql , $args ) {
+        parent::__construct($msg, 0, $e);
+        $this->sql = $sql;
+        $this->args = $args;
+    }
+}
 
 class ConnectionException extends Exception
 {
@@ -302,9 +313,13 @@ class ConnectionManager
 
     public function prepareAndExecute($dsId,$sql,$args = array() )
     {
-        $conn = $this->getConnection($dsId);
-        $stm = $conn->prepare( $sql );
-        $success = $stm->execute( $args );
+        try {
+            $conn = $this->getConnection($dsId);
+            $stm = $conn->prepare( $sql );
+            $success = $stm->execute( $args );
+        } catch( Exception $e ) {
+            throw new SQLQueryException('SQL Query Error: ' . $e->getMessage() ,$e,$sql,$args);
+        }
         // if failed ?
         // if( false === $success ) {  }
         return $stm;
