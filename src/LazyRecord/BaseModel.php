@@ -426,7 +426,26 @@ class BaseModel
 
 
     /**
-     * Create a new record
+     * Create a new record.
+     *
+     * 1. _create method calls beforeCreate to 
+     * trigger events or filter arguments.
+     *
+     * 2. it runs filterArrayWithColumns method to filter 
+     * arguments with column definitions.
+     *
+     * 3. use currentUserCan method to permissions.
+     *
+     * 4. get column definitions and run filters, default value 
+     *    builders, canonicalizer, type constraint checkers to build 
+     *    a new arguments.
+     *
+     * 5. use these new arguments to build a SQL query with 
+     *    SQLBuilder\QueryBuilder.
+     *
+     * 6. insert SQL into data source (write)
+     *
+     * 7. reutrn the operation result.
      *
      * @param array $args data
      *
