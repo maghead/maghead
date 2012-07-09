@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord;
 use Exception;
+use PDOException;
 use PDO;
 use ArrayAccess;
 
@@ -316,7 +317,7 @@ class ConnectionManager
             $conn = $this->getConnection($dsId);
             $stm = $conn->prepare( $sql );
             $success = $stm->execute( $args );
-        } catch( Exception $e ) {
+        } catch( PDOException $e ) {
             throw new SQLQueryException($e,$dsId,$sql,$args);
         }
         // if failed ?
