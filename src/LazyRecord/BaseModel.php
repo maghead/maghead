@@ -45,6 +45,14 @@ class BaseModel
     public $saveResults = true;
 
 
+    /**
+     * @var OperationResult[] OperationResult pool
+     *
+     * When saveResult is enabled, operation result object 
+     * will be pushed into this array.
+     *
+     * @see flushResults method to flush result objects.
+     */
     public $results = array();
 
     /**
