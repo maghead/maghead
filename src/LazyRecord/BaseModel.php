@@ -49,6 +49,7 @@ class BaseModel
 
     /**
      * @var mixed Current user object
+     *
      */
     public $_currentUser;
 
@@ -57,7 +58,8 @@ class BaseModel
     /**
      * @var mixed Model-Scope current user object
      *
-     *  Book::$currentUser = new YourCurrentUser;
+     *    Book::$currentUser = new YourCurrentUser;
+     *
      */
     static $currentUser;
 
@@ -716,7 +718,9 @@ class BaseModel
     {
         // check if the record is loaded.
         $k = $this->_schema->primaryKey;
-        if( $k && ! isset($args[ $k ]) && ! isset($this->_data[$k]) ) {
+        if( $k && ! isset($args[ $k ]) 
+               && ! isset($this->_data[$k]) ) 
+        {
             return $this->reportError('Record is not loaded, Can not update record.');
         }
 
@@ -732,16 +736,15 @@ class BaseModel
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
 
-        $args = $this->filterArrayWithColumns($args);
-        $sql  = null;
-        $vars = null;
-
-        $dsId = $this->_schema->getWriteSourceId();
-        $conn = $this->getConnection( $dsId );
-
         try 
         {
             $args = $this->beforeUpdate($args);
+            $args = $this->filterArrayWithColumns($args);
+            $sql  = null;
+            $vars = null;
+
+            $dsId = $this->_schema->getWriteSourceId();
+            $conn = $this->getConnection( $dsId );
 
             foreach( $this->_schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
