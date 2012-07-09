@@ -426,7 +426,8 @@ class BaseModel
 
 
     /**
-     * Create a new record.
+     * Method for creating new records, which is called from 
+     * static::create and $record->create.
      *
      * 1. _create method calls beforeCreate to 
      * trigger events or filter arguments.
