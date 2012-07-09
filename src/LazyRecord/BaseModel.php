@@ -1165,6 +1165,9 @@ class BaseModel
             $collection->where()
                 ->equal( 'm.' . $fColumn, $sValue ); // 'm' is the default alias.
 
+            // For if we need to create relational records 
+            // though collection object, we need to pre-set 
+            // the relational record id.
             $collection->setPresetVars(array( 
                 $fColumn => $sValue,
             ));
