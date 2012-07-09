@@ -1108,7 +1108,7 @@ class BaseModel
     public function __isset( $name )
     {
         return isset($this->_data[ $name ]) 
-            || array_key_exists($name,$this->_data)
+            || array_key_exists($name, ($this->_data ?: array()) )
             || isset($this->_schema->columns[ $name ]) 
             || '_schema' == $name
             || $this->_schema->getRelation( $name )
