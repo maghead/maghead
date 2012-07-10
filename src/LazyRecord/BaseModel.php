@@ -334,8 +334,9 @@ class BaseModel
             $val = $args[$pk];
             $ret = $this->find(array( $pk => $val ));
         } elseif( $byKeys ) {
-            $ret = $this->find( 
-                array_intersect_key( $args , (array) $byKeys )
+            $ret = $this->find(
+                array_intersect_key( $args , 
+                    array_fill_keys( (array) $byKeys , 1 ))
             );
         }
 
