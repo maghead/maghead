@@ -1515,9 +1515,9 @@ class BaseModel
      * @param array $args
      * @return array
      */
-    public function filterArrayWithColumns( $args )
+    public function filterArrayWithColumns( $args , $withVirtual = false )
     {
-        return array_intersect_key( $args , $this->_schema->getColumns() );
+        return array_intersect_key( $args , $this->_schema->getColumns( $withVirtual ) );
     }
 
 
