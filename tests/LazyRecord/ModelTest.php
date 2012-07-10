@@ -243,12 +243,9 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     {
         $name = new \tests\Name;
         $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John' ));
-        ok( $ret );
-        ok( $ret->success );
+        result_ok($ret);
         is( 'XXXX' , $name->address , 'Be canonicalized' );
     }
-
-
 
     public function testBooleanFromStringZero()
     {
@@ -256,7 +253,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         /** confirmed will be cast to true **/
         $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ));
-        ok( $ret->success );
+        result_ok( $ret );
         ok( $n->id );
         is( false, $n->confirmed );
         ok( $n->delete()->success );
@@ -297,7 +294,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     {
         $n = new \tests\Name;
         $ret = $n->create($args);
-        ok( $ret->success , 'Created' );
+        result_ok($ret);
         ok( $n->id );
         is( true, $n->confirmed, 'Confirmed value should be TRUE.' );
         // reload
@@ -327,7 +324,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $name = new \tests\Name;
         $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' ));
 
-        ok( $ret->success );
+        result_ok( $ret );
         ok( $ret->validations );
 
         ok( $ret->validations['address'] );
@@ -354,7 +351,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $user = new \tests\User;
         ok( $user );
         $ret = $user->create(array( 'account' => 'c9s' ));
-        ok( $ret->success , $ret );
+        result_ok($ret);
         ok( $user->id );
 
         $book = new \tests\Book;
@@ -394,11 +391,12 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     public function testUpdateNull()
     {
         $author = new \tests\Author;
-        $author->create(array( 
+        $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
+        result_ok($ret);
 
         $id = $author->id;
 
