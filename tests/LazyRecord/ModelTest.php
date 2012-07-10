@@ -131,20 +131,51 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( isset($columnMap['name']) );
     }
 
+    public function testLoadOrCreate() 
+    {
+        $b = new \tests\Book;
+        $ret = $b->find( array( 'name' => 'LoadOrCreateTest' ) );
+        result_fail( $ret );
+        ok( ! $b->id );
+
+        $ret = $b->create(array( 'title' => 'Should Not Load This' ));
+        result_ok( $ret );
+
+        $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
+        result_ok( $ret );
+
+        $id = $b->id;
+        ok($id);
+
+        $ret = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        result_ok($ret);
+        is($id, $b->id, 'is the same ID');
+
+
+        $b2 = new \tests\Book;
+        $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        result_ok($ret);
+        is($id,$b2->id);
+    }
+
     /****************************
      * Basic CRUD Test 
      ***************************/
     public function testModel()
     {
         $author = new \tests\Author;
-        ok( $author->_schema );
+        ok($author);
 
         $a2 = new \tests\Author;
         $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
         ok( ! $ret->success );
         ok( ! $a2->id );
 
-        $a2->loadOrCreate( array( 'name' => 'Record1' , 'email' => 'record@record.org' , 'identity' => 'record' ) , 'name' );
+        $a2->loadOrCreate( array( 
+                'name' => 'Record1' , 
+                'email' => 'record@record.org', 
+                'identity' => 'record' 
+            ) , 'name' );
         ok( $id = $a2->id );
 
         $a2->loadOrCreate( array( 'name' => 'Record1' , 'email' => 'record@record.org' , 'identity' => 'record' ) , 'name' );
