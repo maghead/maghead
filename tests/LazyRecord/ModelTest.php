@@ -156,6 +156,26 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         result_ok($ret);
         is($id,$b2->id);
+
+        $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
+        result_ok($ret);
+        ok($b2);
+        ok($id != $b2->id , 'we should create anther one'); 
+
+        $b3 = new \tests\Book;
+        $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
+        result_ok($ret);
+        ok($b3);
+        ok($id != $b3->id , 'we should create anther one'); 
+
+        $b3->delete();
+
+        foreach( $b2->flushResults() as $r ) {
+            result_ok( \tests\Book::delete($r->id)->execute() );
+        }
+        foreach( $b->flushResults() as $r ) {
+            result_ok( \tests\Book::delete($r->id)->execute() );
+        }
     }
 
     /****************************
@@ -171,16 +191,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( ! $ret->success );
         ok( ! $a2->id );
 
-        $a2->loadOrCreate( array( 
-                'name' => 'Record1' , 
-                'email' => 'record@record.org', 
-                'identity' => 'record' 
-            ) , 'name' );
-        ok( $id = $a2->id );
-
-        $a2->loadOrCreate( array( 'name' => 'Record1' , 'email' => 'record@record.org' , 'identity' => 'record' ) , 'name' );
-        is( $id, $a2->id );
-
         $ret = $a2->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
         ok( $ret->success );
         ok( $a2->id );
@@ -189,16 +199,11 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $ret->success );
         ok( $a2->id );
 
-
-
         $ret = $author->create(array());
         ok( $ret );
         ok( ! $ret->success );
         ok( $ret->message );
         is( 'Empty arguments' , $ret->message );
-
-        $query = $author->createQuery();
-        ok( $query );
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         ok( $ret );
