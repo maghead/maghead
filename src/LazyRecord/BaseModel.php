@@ -85,19 +85,14 @@ class BaseModel
 
 
     /**
-     * Provide a basic Access controll
+     * Provide a basic access controll for model
      *
-     * @param string $right Can be 'create', 'update', 'load', 'delete'
      * @param mixed  $user  Can be your current user object.
+     * @param string $right Can be 'create', 'update', 'load', 'delete'
      * @param array  $args  Arguments for operations (update, create, delete.. etc)
      *
-     * XXX: is not working in static-call methods:
-     *  ::create
-     *  ::update
-     *  ::delete
-     *  ::load
      */
-    public function currentUserCan($right,$user = null,$args = null)
+    public function currentUserCan($user, $right , $args = array())
     {
         return true;
     }
@@ -435,7 +430,6 @@ class BaseModel
             return static::$currentUser;
     }
 
-
     /**
      * Method for creating new records, which is called from 
      * static::create and $record->create.
@@ -446,7 +440,7 @@ class BaseModel
      * 2. it runs filterArrayWithColumns method to filter 
      * arguments with column definitions.
      *
-     * 3. use currentUserCan method to permissions.
+     * 3. use currentUserCan method to check permission.
      *
      * 4. get column definitions and run filters, default value 
      *    builders, canonicalizer, type constraint checkers to build 
@@ -474,7 +468,7 @@ class BaseModel
             // first, filter the array
             $args = $this->filterArrayWithColumns($args);
 
-            if( ! $this->currentUserCan( $this->getCurrentUser() , 'create', $args ) ) {
+            if( ! $this->currentUserCan( $this->getCurrentUser(), 'create', $args ) ) {
                 return $this->reportError( _('Permission denied. Can not create record.') , array( 
                     'args' => $args,
                 ));
@@ -498,7 +492,7 @@ class BaseModel
                     if( $val = $c->getDefaultValue($this ,$args) ) {
                         $args[$n] = $val;
                     } elseif( $c->requried ) {
-                        throw new Exception( _( sprintf("%s is required.", $n ) ) );
+                        throw new Exception(sprintf(_("%s is required."), $n ));
                     }
                 }
 
