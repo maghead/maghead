@@ -288,12 +288,16 @@ class Column
     }
 
 
-
-    // XXX: reference, it doesn't create relation
-    public function refer($class)
+    /**
+     * Use referenece from existing relationship 
+     *
+     * @param string $relationship relationship id
+     */
+    public function refer($relationship)
     {
         $this->attributes['isa'] = 'int';
         $this->attributes['type'] = 'integer';
+        $this->attributes['refer'] = $relationship;
         return $this;
     }
 
