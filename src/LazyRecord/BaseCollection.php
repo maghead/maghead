@@ -231,7 +231,6 @@ class BaseCollection
         $query = $this->_query;
         $this->_lastSql = $sql = $query->build();
         $this->_vars = $vars = $query->vars;
-
         $dsId = $this->_schema->getReadSourceId();
 
         // XXX: here we use SQLBuilder\QueryBuilder to build our variables,
@@ -348,9 +347,10 @@ class BaseCollection
         return new CollectionPager( $this->_items, $page, $pageSize );
     }
 
-
     /**
      * Get items
+     *
+     * @return LazyRecord\BaseModel[]
      */
     public function items()
     {
@@ -703,9 +703,12 @@ class BaseCollection
      * Override QueryBuilder->where method,
      * to enable explict selection
      */
-    public function where()
+    public function where($args = null)
     {
         $this->setExplictSelect(true);
+        if( $args && is_array($args) ) {
+            return $this->_query->whereFromArgs($args);
+        }
         return $this->_query->where();
     }
 
