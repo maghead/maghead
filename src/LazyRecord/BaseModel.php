@@ -98,6 +98,12 @@ class BaseModel
     }
 
 
+    public function dataLabel() 
+    {
+        $pk = $this->_schema->primaryKey;
+        return $this->get($pk);
+    }
+
     /**
      * Get SQL Query Driver by data source id.
      *
