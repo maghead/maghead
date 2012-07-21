@@ -180,7 +180,6 @@ class ConnectionManager
     {
         if( isset($this->conns[$sourceId]) ) {
             return $this->conns[$sourceId];
-
         } elseif( isset($this->datasources[ $sourceId ] ) ) {
             $config = $this->datasources[ $sourceId ];
             $dsn = null;
@@ -224,6 +223,7 @@ class ConnectionManager
             return $this->conns[ $sourceId ] = $conn;
         }
 
+        var_dump( $this->datasources ); 
         throw new ConnectionException("data source $sourceId not found.");
     }
 
