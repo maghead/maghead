@@ -271,7 +271,6 @@ class BaseCollection
         $q->select( 'count(*)' ); // override current select.
 
         // when selecting count(*), we dont' use groupBys or order by
-        $q->groupBys = array();
         $q->orders = array();
 
         $sql  = $q->build();  // build query
