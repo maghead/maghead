@@ -83,7 +83,6 @@ class BaseCollection
         // init a query
     }
 
-
     public function __get( $key ) 
     {
         /**
@@ -91,9 +90,6 @@ class BaseCollection
          */
         if( $key === '_schema' ) {
             return SchemaLoader::load( static::schema_proxy_class );
-        }
-        elseif( $key === '_connection' ) {
-            return ConnectionManager::getInstance();
         }
         elseif( $key === '_handle' ) {
             return $this->handle ?: $this->prepareData();
@@ -162,7 +158,7 @@ class BaseCollection
     // Because it's used in BaseModel class too
     public function getQueryDriver( $dsId )
     {
-        return $this->_connection->getQueryDriver( $dsId );
+        return ConnectionManager::getInstance()->getQueryDriver( $dsId );
     }
 
     public function getWriteQueryDriver()
@@ -243,7 +239,7 @@ class BaseCollection
         }
 
         try {
-            $this->handle = $this->_connection->prepareAndExecute($dsId,$sql, $vars );
+            $this->handle = ConnectionManager::getInstance()->prepareAndExecute($dsId,$sql, $vars );
         }
         catch ( Exception $e )
         {
@@ -272,7 +268,7 @@ class BaseCollection
 
         // when selecting count(*), we dont' use groupBys or order by
         $q->orders = array();
-        return (int) $this->_connection
+        return (int) ConnectionManager::getInstance()
                     ->prepareAndExecute($dsId,$q->build(),$q->vars)
                     ->fetchColumn();
     }
@@ -483,7 +479,7 @@ class BaseCollection
     {
         if( ! $dsId )
             $dsId = $this->_schema->getReadSourceId();
-        $this->handle = $this->_connection->prepareAndExecute( $dsId, $sql , $args );
+        $this->handle = ConnectionManager::getInstance()->prepareAndExecute( $dsId, $sql , $args );
     }
 
 
