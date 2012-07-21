@@ -22,6 +22,7 @@ use SerializerKit\JsonSerializer;
 class BaseCollection
     implements Iterator, ArrayAccess, ExporterInterface
 {
+    public $schema;
 
     protected $_lastSql;
 
@@ -81,10 +82,14 @@ class BaseCollection
 
     public function __construct() {
         // init a query
+        $this->schema = SchemaLoader::load( static::schema_proxy_class );
     }
 
-    public function __get( $key ) 
-    {
+    public function getSchema() {
+        return $this->schema;
+    }
+
+    public function __get( $key ) {
         /**
          * lazy attributes
          */
@@ -164,14 +169,14 @@ class BaseCollection
     public function getWriteQueryDriver()
     {
         return $this->getQueryDriver( 
-            $this->_schema->getWriteSourceId()
+            $this->schema->getWriteSourceId()
         );
     }
 
     public function getReadQueryDriver()
     {
         return $this->getQueryDriver( 
-            $this->_schema->getReadSourceId()
+            $this->schema->getReadSourceId()
         );
     }
 
@@ -180,7 +185,7 @@ class BaseCollection
     {
         $q = new QueryBuilder;
         $q->driver = $this->getQueryDriver( $dsId );
-        $q->table( $this->_schema->table );
+        $q->table( $this->schema->table );
         $q->select(
             $this->explictSelect 
                 ? $this->getExplicitColumnSelect($q->driver)
@@ -197,7 +202,7 @@ class BaseCollection
         $alias = $this->getAlias();
         return array_map(function($name) use($alias,$driver) { 
                 return $alias . '.' . $driver->getQuoteColumn( $name );
-        }, $this->_schema->getColumnNames());
+        }, $this->schema->getColumnNames());
     }
 
     /**
@@ -227,7 +232,7 @@ class BaseCollection
         $query = $this->_query;
         $this->_lastSql = $sql = $query->build();
         $this->_vars = $vars = $query->vars;
-        $dsId = $this->_schema->getReadSourceId();
+        $dsId = $this->schema->getReadSourceId();
 
         // XXX: here we use SQLBuilder\QueryBuilder to build our variables,
         //   but PDO doesnt accept boolean type value, we need to transform it.
@@ -261,7 +266,7 @@ class BaseCollection
      */
     public function queryCount()
     {
-        $dsId = $this->_schema->getReadSourceId();
+        $dsId = $this->schema->getReadSourceId();
 
         $q = clone $this->_query;
         $q->select( 'count(*)' ); // override current select.
@@ -478,21 +483,21 @@ class BaseCollection
     public function loadQuery( $sql, $args = array() , $dsId = null )
     {
         if( ! $dsId )
-            $dsId = $this->_schema->getReadSourceId();
+            $dsId = $this->schema->getReadSourceId();
         $this->handle = ConnectionManager::getInstance()->prepareAndExecute( $dsId, $sql , $args );
     }
 
 
     public function newModel()
     {
-        return $this->_schema->newModel();
+        return $this->schema->newModel();
     }
 
 
     static function fromArray($list)
     {
         $collection = new static;
-        $schema = $collection->_schema;
+        $schema = $collection->schema;
         $records = array();
         foreach( $list as $item ) {
             $model = $schema->newModel();
@@ -551,7 +556,7 @@ class BaseCollection
         }
 
         // model record
-        $record = $this->_schema->newModel();
+        $record = $this->schema->newModel();
         $return = $record->create($args);
         if( $return->success ) {
             if( $this->_postCreate ) {
@@ -656,12 +661,12 @@ class BaseCollection
             $expr = $query->join($table, $type); // it returns JoinExpression object
 
             if( $relationId ) {
-                $relation = $this->_schema->getRelation( $relationId );
+                $relation = $this->schema->getRelation( $relationId );
                 $expr->on()
                     ->equal( $this->getAlias() . '.' . $relation['self']['column'] , 
                     array(  ($alias ?: $table) . '.' . $relation['foreign']['column'] ));
             } else {
-                $relations = $this->_schema->relations;
+                $relations = $this->schema->relations;
                 foreach( $relations as $relation ) {
                     if( ! isset($relation['foreign']) )
                         continue;
