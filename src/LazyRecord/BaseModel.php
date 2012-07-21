@@ -100,7 +100,7 @@ class BaseModel
 
     public function dataLabel() 
     {
-        $pk = $this->_schema->primaryKey;
+        $pk = $this->schema->primaryKey;
         return $this->get($pk);
     }
 
@@ -126,7 +126,7 @@ class BaseModel
     public function getWriteQueryDriver()
     {
         return $this->getQueryDriver( 
-            $this->_schema->getWriteSourceId()
+            $this->schema->getWriteSourceId()
         );
     }
 
@@ -139,7 +139,7 @@ class BaseModel
     public function getReadQueryDriver()
     {
         return $this->getQueryDriver( 
-            $this->_schema->getReadSourceId()
+            $this->schema->getReadSourceId()
         );
     }
 
@@ -155,7 +155,7 @@ class BaseModel
     {
         $q = new QueryBuilder;
         $q->driver = $this->getQueryDriver($dsId);
-        $q->table( $this->_schema->table );
+        $q->table( $this->schema->table );
         $q->limit(1);
         return $q;
     }
@@ -175,7 +175,7 @@ class BaseModel
     {
         $q = new ExecutiveQueryBuilder;
         $q->driver = $this->getQueryDriver( $dsId );
-        $q->table( $this->_schema->table );
+        $q->table( $this->schema->table );
         return $q;
     }
 
@@ -248,8 +248,8 @@ class BaseModel
             break;
         }
 
-        if( method_exists($this->_schema,$m) ) {
-            return call_user_func_array($this->_schema,$a);
+        if( method_exists($this->schema,$m) ) {
+            return call_user_func_array($this->schema,$a);
         }
 
         // XXX: special case for twig template
@@ -271,7 +271,7 @@ class BaseModel
      */
     public function createOrUpdate($args, $byKeys = null )
     {
-        $pk = $this->_schema->primaryKey;
+        $pk = $this->schema->primaryKey;
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
@@ -309,7 +309,7 @@ class BaseModel
         if( $pkId ) {
             return $this->load( $pkId );
         }
-        elseif( null === $pkId && $pk = $this->_schema->primaryKey ) {
+        elseif( null === $pkId && $pk = $this->schema->primaryKey ) {
             $pkId = $this->_data[ $pk ];
             return $this->load( $pkId );
         }
@@ -328,7 +328,7 @@ class BaseModel
      */
     public function loadOrCreate($args, $byKeys = null)
     {
-        $pk = $this->_schema->primaryKey;
+        $pk = $this->schema->primaryKey;
 
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
@@ -418,7 +418,7 @@ class BaseModel
      */
     public function columns()
     {
-        return $this->_schema->columns;
+        return $this->schema->columns;
     }
 
 
@@ -480,17 +480,17 @@ class BaseModel
                 ));
             }
 
-            $k = $this->_schema->primaryKey;
+            $k = $this->schema->primaryKey;
             $sql = $vars = null;
             $validateFail    = array();
             $this->_data = $validateResults = array();
             $stm = null;
 
 
-            $dsId = $this->_schema->getWriteSourceId();
+            $dsId = $this->schema->getWriteSourceId();
             $conn = $this->getConnection( $dsId );
 
-            foreach( $this->_schema->getColumns() as $n => $c ) {
+            foreach( $this->schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
                 if( ! isset($args[$n]) && ! $c->primary )
@@ -605,8 +605,8 @@ class BaseModel
             ));
         }
 
-        $dsId  = $this->_schema->getReadSourceId();
-        $pk    = $this->_schema->primaryKey;
+        $dsId  = $this->schema->getReadSourceId();
+        $pk    = $this->schema->primaryKey;
         $query = $this->createQuery( $dsId );
         $conn  = $this->getConnection( $dsId );
         $kVal  = null;
@@ -616,7 +616,7 @@ class BaseModel
         }
         else {
             $kVal = $args;
-            $column = $this->_schema->getColumn( $pk );
+            $column = $this->schema->getColumn( $pk );
             
             if( ! $column ) {
                 throw new Exception("Primary key is not defined: $pk .");
@@ -674,7 +674,7 @@ class BaseModel
      */
     public function _delete()
     {
-        $k = $this->_schema->primaryKey;
+        $k = $this->schema->primaryKey;
 
         if( $k && ! isset($this->_data[$k]) ) {
             return new OperationError('Record is not loaded, Record delete failed.');
@@ -685,7 +685,7 @@ class BaseModel
             return $this->reportError( _('Permission denied. Can not delete record.') , array( ));
         }
 
-        $dsId = $this->_schema->getWriteSourceId();
+        $dsId = $this->schema->getWriteSourceId();
         $conn = $this->getConnection( $dsId );
 
         $this->beforeDelete( $this->_data );
@@ -726,7 +726,7 @@ class BaseModel
     public function _update( $args ) 
     {
         // check if the record is loaded.
-        $k = $this->_schema->primaryKey;
+        $k = $this->schema->primaryKey;
         if( $k && ! isset($args[ $k ]) 
                && ! isset($this->_data[$k]) ) 
         {
@@ -752,10 +752,10 @@ class BaseModel
             $sql  = null;
             $vars = null;
 
-            $dsId = $this->_schema->getWriteSourceId();
+            $dsId = $this->schema->getWriteSourceId();
             $conn = $this->getConnection( $dsId );
 
-            foreach( $this->_schema->getColumns() as $n => $c ) {
+            foreach( $this->schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
                 if( isset($args[$n]) 
@@ -847,7 +847,7 @@ class BaseModel
      */
     public function save()
     {
-        $k = $this->_schema->primaryKey;
+        $k = $this->schema->primaryKey;
         return ( $k && ! isset($this->_data[$k]) )
                 ? $this->create( $this->_data )
                 : $this->update( $this->_data )
@@ -857,7 +857,7 @@ class BaseModel
     /* pass a value to a column for displaying */
     public function display( $name )
     {
-        if( $c = $this->_schema->getColumn( $name ) ) {
+        if( $c = $this->schema->getColumn( $name ) ) {
             if( $c->virtual ) {
                 return $this->get($name);
             }
@@ -888,7 +888,7 @@ class BaseModel
      */
     public function deflateData(& $args) {
         foreach( $args as $k => $v ) {
-            $c = $this->_schema->getColumn($k);
+            $c = $this->schema->getColumn($k);
             if( $c )
                 $args[ $k ] = $this->_data[ $k ] = $c->deflate( $v );
         }
@@ -994,7 +994,7 @@ class BaseModel
      */
     public function getWriteConnection()
     {
-        $id = $this->_schema->getWriteSourceId();
+        $id = $this->schema->getWriteSourceId();
         return $this->_connection->getConnection( $id );
     }
 
@@ -1005,7 +1005,7 @@ class BaseModel
      */
     public function getReadConnection()
     {
-        $id = $this->_schema->getReadSourceId();
+        $id = $this->schema->getReadSourceId();
         return $this->_connection->getConnection( $id );
     }
 
@@ -1110,16 +1110,16 @@ class BaseModel
     {
         return isset($this->_data[ $name ]) 
             || array_key_exists($name, ($this->_data ?: array()) )
-            || isset($this->_schema->columns[ $name ]) 
-            || '_schema' == $name
-            || $this->_schema->getRelation( $name )
+            || isset($this->schema->columns[ $name ]) 
+            || 'schema' == $name
+            || $this->schema->getRelation( $name )
             ;
     }
 
     public function getRelationalRecords($key,$relation = null)
     {
         if( ! $relation ) {
-            $relation = $this->_schema->getRelation( $key );
+            $relation = $this->schema->getRelation( $key );
         }
 
         /*
@@ -1193,7 +1193,7 @@ class BaseModel
             $rId = $relation['relation']['id'];  // use relationId to get middle relation. (author_books)
             $rId2 = $relation['relation']['id2'];  // get external relationId from the middle relation. (book from author_books)
 
-            $middleRelation = $this->_schema->getRelation( $rId );
+            $middleRelation = $this->schema->getRelation( $rId );
             if( ! $middleRelation )
                 throw new InvalidArgumentException("first level relationship of many-to-many $rId is empty");
 
@@ -1278,14 +1278,14 @@ class BaseModel
     public function __get( $key )
     {
         // lazy schema loader, xxx: make this static.
-        if( '_schema' === $key ) {
+        if( 'schema' === $key ) {
             return SchemaLoader::load( static::schema_proxy_class );
         }
         elseif( '_connection' === $key ) {
             return ConnectionManager::getInstance();
         }
 
-        if( $relation = $this->_schema->getRelation( $key ) ) {
+        if( $relation = $this->schema->getRelation( $key ) ) {
             return $this->getRelationalRecords($key, $relation);
         }
 
@@ -1364,7 +1364,7 @@ class BaseModel
     {
         $data = array();
         foreach( $this->_data as $k => $v ) {
-            $col = $this->_schema->getColumn( $k );
+            $col = $this->schema->getColumn( $k );
             if( $col->isa ) {
                 $data[ $k ] = $col->inflate( $v );
             } else {
@@ -1436,7 +1436,7 @@ class BaseModel
     public static function __static_update($args) 
     {
         $model = new static;
-        $dsId  = $model->_schema->getWriteSourceId();
+        $dsId  = $model->schema->getWriteSourceId();
         $conn  = $model->getConnection($dsId);
         $query = $model->createExecutiveQuery($dsId);
         $query->update($args);
@@ -1468,7 +1468,7 @@ class BaseModel
     public static function __static_delete()
     {
         $model = new static;
-        $dsId  = $model->_schema->getWriteSourceId();
+        $dsId  = $model->schema->getWriteSourceId();
         $conn  = $model->getConnection($dsId);
         $query = $model->createExecutiveQuery($dsId);
         $query->delete();
@@ -1488,7 +1488,7 @@ class BaseModel
     public static function __static_load($args)
     {
         $model = new static;
-        $dsId  = $model->_schema->getReadSourceId();
+        $dsId  = $model->schema->getReadSourceId();
         $conn  = $model->getConnection( $dsId );
 
         if( is_array($args) ) {
@@ -1517,7 +1517,7 @@ class BaseModel
      */
     public function filterArrayWithColumns( $args , $withVirtual = false )
     {
-        return array_intersect_key( $args , $this->_schema->getColumns( $withVirtual ) );
+        return array_intersect_key( $args , $this->schema->getColumns( $withVirtual ) );
     }
 
 
@@ -1534,7 +1534,7 @@ class BaseModel
         $value = isset($this->_data[ $n ])
                     ?  $this->_data[ $n ]
                     : null;
-        if( $c = $this->_schema->getColumn( $n ) ) {
+        if( $c = $this->schema->getColumn( $n ) ) {
             return $c->inflate( $value, $this );
         }
         return $value;
@@ -1579,7 +1579,6 @@ class BaseModel
     }
 
 
-    // slower than _schema
     public function loadSchema()
     {
         return SchemaLoader::load( static::schema_proxy_class );
@@ -1594,10 +1593,10 @@ class BaseModel
         return $this->loadSchema()->newCollection();
     }
 
-    // _schema methods
+    // schema methods
     public function getColumn($n)
     {
-        return $this->_schema->getColumn($n);
+        return $this->schema->getColumn($n);
     }
 
 
@@ -1608,7 +1607,7 @@ class BaseModel
      */
     public function getColumnNames()
     {
-        return $this->_schema->getColumnNames();
+        return $this->schema->getColumnNames();
     }
 
 
@@ -1619,7 +1618,7 @@ class BaseModel
      */
     public function getColumns($withVirtual = false)
     {
-        return $this->_schema->getColumns( $withVirtual );
+        return $this->schema->getColumns( $withVirtual );
     }
 
 
@@ -1630,7 +1629,7 @@ class BaseModel
      */
     public function getLabel()
     {
-        return $this->_schema->label;
+        return $this->schema->label;
     }
 
 
@@ -1641,7 +1640,7 @@ class BaseModel
      */
     public function getTable()
     {
-        return $this->_schema->table;
+        return $this->schema->table;
     }
 
 
