@@ -3,7 +3,7 @@ use LazyRecord\SqlBuilder;
 
 class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
 {
-    public $dsn = 'pgsql:dbname=lazy_test';
+    public $dsn = 'pgsql:dbname=testing';
 
     public $schemaPath = 'tests/schema';
 
@@ -126,6 +126,42 @@ class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
                 ->equal('name','Rename')
             ->back()->execute();
         ok( $ret->success );
+    }
+
+
+    public function testBooleanCondition() 
+    {
+        $a = new \tests\Author;
+        $ret = $a->create(array(
+            'name' => 'a',
+            'email' => 'a@a',
+            'identity' => 'a',
+            'confirmed' => false,
+        ));
+        $this->resultOK(true,$ret);
+
+        $ret = $a->create(array(
+            'name' => 'b',
+            'email' => 'b@b',
+            'identity' => 'b',
+            'confirmed' => true,
+        ));
+        $this->resultOK(true,$ret);
+
+        $authors = new \tests\AuthorCollection;
+        $authors->where()
+                ->equal( 'confirmed', false);
+        $ret = $authors->fetch();
+        ok($ret);
+        is(1,$authors->size());
+
+
+        $authors = new \tests\AuthorCollection;
+        $authors->where()
+                ->equal( 'confirmed', true);
+        $ret = $authors->fetch();
+        ok($ret);
+        is(1,$authors->size());
     }
 
 
