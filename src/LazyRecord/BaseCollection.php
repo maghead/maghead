@@ -272,10 +272,8 @@ class BaseCollection
 
         // when selecting count(*), we dont' use groupBys or order by
         $q->orders = array();
-
-        $sql  = $q->build();  // build query
-        $vars = $q->vars;     // get vars
-        return (int) $this->_connection->prepareAndExecute($dsId,$sql, $vars)
+        return (int) $this->_connection
+                    ->prepareAndExecute($dsId,$q->build(),$q->vars)
                     ->fetchColumn();
     }
 
