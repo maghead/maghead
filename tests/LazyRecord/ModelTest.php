@@ -100,7 +100,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $v = $author->getColumn('v') ); // virtual colun
         ok( $v->virtual );
 
-        $columns = $author->_schema->getColumns();
+        $columns = $author->schema->getColumns();
 
         ok( ! isset($columns['v']) );
 
@@ -115,9 +115,9 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
     public function testSchema()
     {
         $author = new \tests\Author;
-        ok( $author->_schema );
+        ok( $author->schema );
 
-        $columnMap = $author->_schema->getColumns();
+        $columnMap = $author->schema->getColumns();
 
         ok( isset($columnMap['confirmed']) );
         ok( isset($columnMap['identity']) );

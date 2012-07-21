@@ -59,6 +59,7 @@ class BookSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'integer',
           'isa' => 'int',
+          'refer' => '\\tests\\UserSchema',
         ),
     ),
   'id' => array( 
