@@ -22,7 +22,7 @@ class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
     function testCRUD()
     {
         $author = new \tests\Author;
-        ok( $author->_schema );
+        ok( $author->schema );
 
         $ret = $author->create(array());
 
