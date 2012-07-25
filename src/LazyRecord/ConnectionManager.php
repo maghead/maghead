@@ -250,8 +250,8 @@ class ConnectionManager
 
     public function close($sourceId)
     {
-        if( $conn = $this->getConnection($sourceId) ) {
-            $conn = null;
+        if( isset($this->conns[ $sourceId ]) ) {
+            $this->conns[ $sourceId ] = null;
             unset( $this->conns[ $sourceId ] );
         }
     }
