@@ -329,4 +329,9 @@ class ConnectionManager
         // if( false === $success ) {  }
         return $stm;
     }
+
+    public function __destruct() 
+    {
+        $this->free();
+    }
 }
