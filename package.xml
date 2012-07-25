@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-07-25</date>
-  <time>12:41:17</time>
+  <time>23:15:57</time>
   <version>
     <release>1.5.13</release>
     <api>1.5.13</api>
@@ -27,7 +27,7 @@
       <file name="doc/collection.md" role="doc" md5sum="2d9d1c20b31a5062439a8c6673fc888d"/>
       <file name="doc/config_loader.md" role="doc" md5sum="8bb3bca7c997f898081adfff3fdb5f1e"/>
       <file name="doc/connections.md" role="doc" md5sum="fcd136475eefd739b708e52f7b32cf06"/>
-      <file name="doc/development.md" role="doc" md5sum="951d83d3df982d17186e3255d89f7f59"/>
+      <file name="doc/development.md" role="doc" md5sum="e8568de1b33653db27fe41bf94728ce9"/>
       <file name="doc/html/collection.html" role="doc" md5sum="0a4cacb40998d28620d60bdf3ef2831e"/>
       <file name="doc/html/config_loader.html" role="doc" md5sum="7c0471fa658311f3047121d3479ad38a"/>
       <file name="doc/html/connections.html" role="doc" md5sum="254c805c660ad41efc373002a7b44eb7"/>
