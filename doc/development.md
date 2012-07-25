@@ -1,10 +1,9 @@
-# Development
 
 ## Install Bundles
 
 Use Onion to install dependent libraries
 
-    $ onion -d bundle
+    $ onion -d install
 
 ## Setup for LazyRecord development 
 
