@@ -55,7 +55,7 @@ class ConnectionManager
     public $conns = array();
 
     /**
-     * Has connection ? 
+     * Check if we have connected already
      *
      * @param PDO $conn pdo connection.
      * @param string $id data source id.
@@ -230,8 +230,6 @@ class ConnectionManager
             // register connection to connection pool
             return $this->conns[ $sourceId ] = $conn;
         }
-
-        var_dump( $this->datasources ); 
         throw new ConnectionException("data source $sourceId not found.");
     }
 
