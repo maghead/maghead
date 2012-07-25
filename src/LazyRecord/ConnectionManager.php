@@ -321,7 +321,7 @@ class ConnectionManager
         try {
             $conn = $this->getConnection($dsId);
             $stm = $conn->prepare( $sql );
-            $success = $stm->execute( $args );
+            $stm->execute( $args ); // $success 
         } catch( PDOException $e ) {
             throw new SQLQueryException($e,$dsId,$sql,$args);
         }
