@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-07-25</date>
-  <time>23:15:57</time>
+  <time>23:20:51</time>
   <version>
     <release>1.5.13</release>
     <api>1.5.13</api>
@@ -46,7 +46,7 @@
       <file name="doc/inflator.md" role="doc" md5sum="ea824bf17ff5a82ddfd17dcd6a8684b6"/>
       <file name="doc/install.md" role="doc" md5sum="8c2975ab1997933fb52331d4da32e075"/>
       <file name="doc/model.md" role="doc" md5sum="42f2c020924891983da74d6b259cdd5d"/>
-      <file name="doc/plan.md" role="doc" md5sum="bbb656ce70fd3345ec0f85a6fc5484b8"/>
+      <file name="doc/Plan.md" role="doc" md5sum="e4407419222fb1c73c5c602ee9bfc7fb"/>
       <file name="doc/plans/schema_builder.md" role="doc" md5sum="7f259d26a01150c4d43f8c02c7a973b3"/>
       <file name="doc/query_driver.md" role="doc" md5sum="bb11a3186c726a1cc7157a1b15efe720"/>
       <file name="doc/schema.md" role="doc" md5sum="122e12fe9e4fc083e17bc843029f5498"/>
@@ -270,7 +270,7 @@
       <install name="doc/inflator.md" as="inflator.md"/>
       <install name="doc/install.md" as="install.md"/>
       <install name="doc/model.md" as="model.md"/>
-      <install name="doc/plan.md" as="plan.md"/>
+      <install name="doc/Plan.md" as="Plan.md"/>
       <install name="doc/plans/schema_builder.md" as="plans/schema_builder.md"/>
       <install name="doc/query_driver.md" as="query_driver.md"/>
       <install name="doc/schema.md" as="schema.md"/>
