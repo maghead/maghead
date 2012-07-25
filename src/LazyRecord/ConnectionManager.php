@@ -42,8 +42,16 @@ class ConnectionException extends Exception
 class ConnectionManager
     implements ArrayAccess
 {
+
+
+    /**
+     * @var array contains data source configurations
+     */
     public $datasources = array();
 
+    /**
+     * @var PDOConnections[] contains PDO connection objects.
+     */
     public $conns = array();
 
     /**
@@ -307,8 +315,7 @@ class ConnectionManager
      */
     public function query($dsId,$sql)
     {
-        $conn = $this->getConnection($dsId);
-        return $conn->query( $sql );
+        return $this->getConnection($dsId)->query( $sql );
     }
 
     public function prepareAndExecute($dsId,$sql,$args = array() )
@@ -324,6 +331,4 @@ class ConnectionManager
         // if( false === $success ) {  }
         return $stm;
     }
-    
 }
-
