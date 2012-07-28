@@ -433,8 +433,9 @@ class BaseCollection
 
     public function last()
     {
-        if( $this->_items )
+        if( !empty($this->_items) ) {
             return end($this->_items);
+        }
     }
 
 
