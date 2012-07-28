@@ -619,7 +619,7 @@ class BaseModel
             $column = $this->schema->getColumn( $pk );
             
             if( ! $column ) {
-                throw new Exception("Primary key is not defined: $pk .");
+                throw new Exception("Primary key $pk is not defined in " . get_class($this->schema) );
             }
             $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
