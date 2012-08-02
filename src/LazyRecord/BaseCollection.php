@@ -6,6 +6,7 @@ use RuntimeException;
 use Exception;
 use Iterator;
 use ArrayAccess;
+use Countable;
 
 use SQLBuilder\QueryBuilder;
 use LazyRecord\OperationResult\OperationSuccess;
@@ -20,7 +21,7 @@ use SerializerKit\JsonSerializer;
  * base collection class
  */
 class BaseCollection
-    implements Iterator, ArrayAccess, ExporterInterface
+    implements Iterator, ArrayAccess, Countable, ExporterInterface
 {
     public $schema;
 
@@ -288,6 +289,11 @@ class BaseCollection
     public function size()
     {
         return count($this->_items);
+    }
+
+    public function count() 
+    {
+        return $this->size();
     }
 
 
