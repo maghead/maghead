@@ -397,7 +397,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         result_ok($ret);
         $ret = $author->update(array( 'id' => array('id + 3') ));
         result_ok($ret);
-        var_dump( $ret ); 
     }
 
     public function testUpdateNull()
