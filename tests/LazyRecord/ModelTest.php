@@ -305,7 +305,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
 
 
-
     public function testValueTypeConstraint()
     {
         // if it's a str type , we should not accept types not str.
@@ -387,6 +386,19 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 #          echo $ret->exception;
     }
 
+    public function testUpdateRaw() 
+    {
+        $author = new \tests\Author;
+        $ret = $author->create(array( 
+            'name' => 'Mary III',
+            'email' => 'zz3@zz3',
+            'identity' => 'zz3',
+        ));
+        result_ok($ret);
+        $ret = $author->update(array( 'id' => array('id + 3') ));
+        result_ok($ret);
+        var_dump( $ret ); 
+    }
 
     public function testUpdateNull()
     {
