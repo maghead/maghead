@@ -745,6 +745,10 @@ class BaseModel
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
 
+        if( ! $kVal ) {
+            return $this->reportError("The value of primary key is undefined.");
+        }
+
         try 
         {
             $args = $this->beforeUpdate($args);
