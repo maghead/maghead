@@ -463,7 +463,7 @@ class BaseModel
      *
      * @return OperationResult operation result (success or error)
      */
-    public function _create($args)
+    public function _create($args, $options = array() )
     {
         if( empty($args) || $args === null )
             return $this->reportError( _('Empty arguments') );
@@ -574,7 +574,7 @@ class BaseModel
             $pkId = $conn->lastInsertId();
         }
 
-        if( $this->autoReload ) {
+        if( $this->autoReload || isset($options['reload']) ) {
             // if possible, we should reload the data.
             $pkId ? $this->load($pkId) : $this->_data = $args;
         }
@@ -723,7 +723,7 @@ class BaseModel
      *
      * @return OperationResult operation result (success or error)
      */
-    public function _update( $args ) 
+    public function _update( $args , $options = array() ) 
     {
         // check if the record is loaded.
         $k = $this->schema->primaryKey;
@@ -815,12 +815,20 @@ class BaseModel
             $query->update($args)->where()
                 ->equal( $k , $kVal );
 
-            $sql = $query->build();
+            $sql  = $query->build();
             $vars = $query->vars;
-            $stm = $this->dbPrepareAndExecute($conn, $sql, $vars);
+            $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
 
-            // merge updated data
-            $this->_data = array_merge($this->_data,$args);
+            // Merge updated data.
+            //
+            // if $args contains a raw SQL string, 
+            // we should reload data from database
+            if( isset($options['reload']) ) {
+                $this->reload();
+            } else {
+                $this->_data = array_merge($this->_data,$args);
+            }
+
             $this->afterUpdate($args);
         } 
         catch( Exception $e ) 
