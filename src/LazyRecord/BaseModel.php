@@ -553,7 +553,6 @@ class BaseModel
 
             /* get connection, do query */
             $stm = $this->dbPrepareAndExecute($conn, $sql, $vars); // returns $stm
-            $this->afterCreate($args);
         }
         catch ( Exception $e )
         {
@@ -579,6 +578,7 @@ class BaseModel
             // if possible, we should reload the data.
             $pkId ? $this->load($pkId) : $this->_data = $args;
         }
+        $this->afterCreate($args);
 
         $ret = array( 
             'sql' => $sql,
