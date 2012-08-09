@@ -849,11 +849,11 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         is( 0 , $b->view );
 
         // test incremental
-        $ret = $b->update(array( 'view'  => array('"view" + 1') ));
+        $ret = $b->update(array( 'view'  => array('"view" + 1') ), array('reload' => true));
         result_ok($ret);
         is( 1,  $b->view );
 
-        $ret = $b->update(array( 'view'  => array('"view" + 1') ));
+        $ret = $b->update(array( 'view'  => array('"view" + 1') ), array('reload' => true));
         result_ok($ret);
         is( 2,  $b->view );
 

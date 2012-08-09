@@ -1032,7 +1032,6 @@ class BaseModel
      * Data Manipulators 
      *********************/
 
-
     /**
      * Set column value
      *
