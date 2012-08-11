@@ -253,6 +253,7 @@ class BaseCollection
     {
         $dsId = $this->_schema->getReadSourceId();
         $query = $this->_query;
+        $query->orders = array();
         $query->select( 'count(*)' );
 
         $sql  = $query->build();
