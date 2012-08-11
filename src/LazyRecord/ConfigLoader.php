@@ -56,7 +56,7 @@ class ConfigLoader
         if( $file === null || is_bool($file) )
             $file = $this->symbolFilename;
 
-        if( is_string($file) && file_exists($file) ) {
+        if( (is_string($file) && file_exists($file)) || $file === true ) {
             $this->config = require $file;
         }
         elseif( is_array($file) ) {

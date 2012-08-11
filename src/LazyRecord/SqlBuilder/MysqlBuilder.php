@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Schema\SqlBuilder;
+namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\QueryBuilder;
 
@@ -15,7 +15,7 @@ class MysqlBuilder
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql = $this->parent->driver->getQuoteColumn( $name );
+        $sql = $this->driver->getQuoteColumn( $name );
         $sql .= ' ' . $type;
 
         if( $column->required || $column->notNull )
@@ -31,7 +31,7 @@ class MysqlBuilder
                 $sql .= ' default ' . $default[0];
             }
             else {
-                $sql .= ' default ' . $this->parent->driver->inflate($default);
+                $sql .= ' default ' . $this->driver->inflate($default);
             }
         }
 
@@ -93,39 +93,18 @@ class MysqlBuilder
         return $sql;
     }
 
-    public function createTable($schema)
-    {
-        $columnSql = array();
-        $create = 'CREATE TABLE ' 
-            . $this->parent->driver->getQuoteTableName( $schema->getTable() )
-            . "( \n";
-        foreach( $schema->columns as $name => $column ) {
-            $columnSql[] = $this->buildColumnSql( $schema, $column );
-        }
-        $create .= join(",\n",$columnSql);
-        $create .= "\n);\n";
-        return $create;
-    }
 
     public function dropTable($schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-            . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+            . $this->driver->getQuoteTableName( $schema->getTable() )
             . ';';
     }
 
-    public function build($schema)
+
+    public function buildIndex($schema) 
     {
-        $sqls = array();
-
-        if( $this->parent->clean || $this->parent->rebuild ) {
-            $sqls[] = $this->dropTable($schema);
-        }
-        if( $this->parent->clean )
-            return $sqls;
-
-        $sqls[] = $this->createTable($schema);
-        return $sqls;
+        return array();
     }
 
 }

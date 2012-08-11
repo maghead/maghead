@@ -21,7 +21,11 @@ class Console extends Application
         $this->registerCommand('build-schema', 'LazyRecord\Command\BuildSchemaCommand');
         $this->registerCOmmand('list-schema',  'LazyRecord\Command\ListSchemaCommand');
 
+        $this->registerCommand('build-basedata', 'LazyRecord\Command\BuildBaseDataCommand');
+
         $this->registerCommand('build-sql',    'LazyRecord\Command\BuildSqlCommand');
         $this->registerCommand('diff',         'LazyRecord\Command\DiffCommand');
+
+        $this->registerCommand('create-db',         'LazyRecord\Command\CreateDBCommand');
     }
 }

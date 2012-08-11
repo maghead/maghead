@@ -1,5 +1,7 @@
 <?php
 namespace LazyRecord\Schema;
+use RuntimeException;
+use InvalidArgumentException;
 
 abstract class SchemaBase
 {
@@ -16,6 +18,7 @@ abstract class SchemaBase
 
     public $label;
 
+
     public $columns = array();
 
     public $columnNames = array();
@@ -27,6 +30,7 @@ abstract class SchemaBase
     public $readSourceId = 'default';
 
     public $writeSourceId = 'default';
+
 
     public function getReadSourceId()
     {
@@ -46,6 +50,10 @@ abstract class SchemaBase
         }
     }
 
+    public function getRelations() 
+    {
+        return $this->relations;
+    }
 
     public function getReferenceSchemas($recursive = true)
     {
@@ -55,13 +63,22 @@ abstract class SchemaBase
                 continue;
 
             $class = ltrim($rel['foreign']['schema'],'\\');
+            if( ! class_exists($class,true) ) {
+                throw new RuntimeException("Foreign schema class $class not found." );
+            }
+
+            if( ! is_subclass_of( $class, 'LazyRecord\Schema\SchemaDeclare' ) ) {
+                throw new InvalidArgumentException("Foreign schema class $class is not a SchemaDeclare class");
+            }
+
             $fs = new $class;
             if( isset($schemas[$class]) )
                 continue;
 
             $schemas[ $class ] = 1;
-            if( $recursive )
+            if( $recursive ) {
                 $schemas = array_merge($schemas, $fs->getReferenceSchemas(false));
+            }
         }
         return $schemas;
     }

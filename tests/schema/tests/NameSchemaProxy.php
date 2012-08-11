@@ -53,9 +53,9 @@ class NameSchemaProxy extends RuntimeSchema
                     return array( true , "Good" );
                 },
           'filter' => function($val,$args,$record)  { 
-					return str_replace( 'John' , 'XXXX' , $val );
-				},
-          'defaultBuilder' => function() { 
+                    return str_replace( 'John' , 'XXXX' , $val );
+                },
+          'default' => function() { 
                     return 'Default Address';
                 },
         ),
@@ -78,12 +78,12 @@ class NameSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'text',
           'isa' => 'str',
-          'validValueBuilder' => function() { 
+          'validValues' => function() { 
                     return array(
                         /* description => value */
-                        'type-a' => 'Type Name A',
-                        'type-b' => 'Type Name B',
-                        'type-c' => 'Type Name C',
+                        'Type Name A' => 'type-a',
+                        'Type Name B' => 'type-b',
+                        'Type Name C' => 'type-c',
                     );
                 },
         ),
@@ -134,6 +134,8 @@ class NameSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
+
+        parent::__construct();
     }
 
 }

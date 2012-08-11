@@ -25,94 +25,194 @@ use SerializerKit\YamlSerializer;
 class BaseModel
     implements ExporterInterface
 {
-    protected $_data;
+    protected $_data = array();
 
-    public $_result;
+    protected $_cache = array();
 
     /**
-     * auto reload record after creating new record
+     * @var boolean Auto reload record after creating new record
+     *
+     * Turn off this if you want performance.
      */
-    public $_autoReload = true;
+    public $autoReload = true;
 
+
+    /**
+     * @var boolean Save operation results
+     *
+     * Turn off this if you want performance
+     */
+    public $saveResults = true;
+
+
+    /**
+     * @var OperationResult[] OperationResult pool
+     *
+     * When saveResult is enabled, operation result object 
+     * will be pushed into this array.
+     *
+     * @see flushResults method to flush result objects.
+     */
+    public $results = array();
 
     /**
      * @var mixed Current user object
+     *
      */
     public $_currentUser;
+
 
 
     /**
      * @var mixed Model-Scope current user object
      *
-     *  Book::$currentUser = new YourCurrentUser;
+     *    Book::$currentUser = new YourCurrentUser;
+     *
      */
     static $currentUser;
+
+    // static $schemaCache;
 
     public function __construct($args = null) 
     {
         if( $args )
             $this->_load( $args );
+
+        // if( ! static::$schemaCache ) {
+        //     static::$schemaCache = SchemaLoader::load( static::schema_proxy_class );
+        // }
     }
 
 
     /**
-     * Provide a basic Access controll
+     * Provide a basic access controll for model
      *
-     * @param string $right Can be 'create', 'update', 'load', 'delete'
      * @param mixed  $user  Can be your current user object.
+     * @param string $right Can be 'create', 'update', 'load', 'delete'
      * @param array  $args  Arguments for operations (update, create, delete.. etc)
      *
-     * XXX: is not working in static-call methods:
-     *  ::create
-     *  ::update
-     *  ::delete
-     *  ::load
      */
-    public function currentUserCan($right,$user = null,$args = null)
+    public function currentUserCan($user, $right , $args = array())
     {
         return true;
     }
 
+
+    public function dataLabel() 
+    {
+        $pk = $this->schema->primaryKey;
+        return $this->get($pk);
+    }
+
+    /**
+     * Get SQL Query Driver by data source id.
+     *
+     * @param string $dsId Data source id.
+     *
+     * @return SQLBuilder\QueryDriver
+     */
     public function getQueryDriver( $dsId )
     {
         return $this->_connection->getQueryDriver( $dsId );
     }
 
+
+
+    /**
+     * Get SQL Query driver object for writing data
+     *
+     * @return SQLBuilder\QueryDriver
+     */
     public function getWriteQueryDriver()
     {
-        $id = $this->_schema->getWriteSourceId();
-        return $this->getQueryDriver( $id );
+        return $this->getQueryDriver( 
+            $this->schema->getWriteSourceId()
+        );
     }
 
+
+    /**
+     * Get SQL Query driver object for reading data
+     *
+     * @return SQLBuilder\QueryDriver
+     */
     public function getReadQueryDriver()
     {
-        $id = $this->_schema->getReadSourceId();
-        return $this->getQueryDriver( $id );
+        return $this->getQueryDriver( 
+            $this->schema->getReadSourceId()
+        );
     }
 
 
-
-
+    /**
+     * Create new QueryBuilder object (inherited from SQLBuilder\QueryBuilder
+     *
+     * @param string $dsId Data source id , default connection id is 'default'
+     *
+     * @return SQLBuilder\QueryBuilder
+     */
     public function createQuery( $dsId = 'default' )
     {
         $q = new QueryBuilder;
         $q->driver = $this->getQueryDriver($dsId);
-        $q->table( $this->_schema->table );
+        $q->table( $this->schema->table );
         $q->limit(1);
         return $q;
     }
 
+
+    /**
+     * Create executive query builder object, the difference is that
+     * An ExecutiveQueryBuilder has an execute method, that trigger a 
+     * callback function to execute SQL. the callback function takes
+     * a SQL string to insert into database.
+     *
+     * @param string $dsId data source id.
+     *
+     * @return ExecutiveQueryBuilder
+     */
     public function createExecutiveQuery( $dsId = 'default' )
     {
         $q = new ExecutiveQueryBuilder;
         $q->driver = $this->getQueryDriver( $dsId );
-        $q->table( $this->_schema->table );
+        $q->table( $this->schema->table );
         return $q;
     }
 
 
 
 
+
+    /**
+     * Trigger method for "before creating new record"
+     *
+     * By overriding this method, you can modify the 
+     * arguments that is passed to the query builder.
+     *
+     * Remember to return the arguments back.
+     *
+     * @param array $args Arguments
+     * @return array $args Arguments
+     */
+    public function beforeCreate( $args ) 
+    {
+        return $args;
+    }
+
+
+    /**
+     * Trigger for after creating new record
+     *
+     * @param array $args
+     */
+    public function afterCreate( $args ) 
+    {
+
+    }
+
+    /**
+     * Trigger method for
+     */
     public function beforeDelete($args)
     {
         return $args;
@@ -133,22 +233,6 @@ class BaseModel
 
     }
 
-    public function beforeCreate( $args ) 
-    {
-        return $args;
-    }
-
-
-    /**
-     * trigger for after create
-     */
-    public function afterCreate( $args ) 
-    {
-
-    }
-
-
-
 
     public function __call($m,$a)
     {
@@ -159,19 +243,35 @@ class BaseModel
         case 'delete':
             return call_user_func_array(array($this,'_' . $m),$a);
             break;
-
-            // xxx: can dispatch methods to Schema object.
+            // XXX: can dispatch methods to Schema object.
             // return call_user_func_array( array(  ) )
             break;
         }
-        throw new Exception("$m method not found.");
+
+        if( method_exists($this->schema,$m) ) {
+            return call_user_func_array($this->schema,$a);
+        }
+
+        // XXX: special case for twig template
+        throw new Exception("BaseModel: $m method not found.");
     }
 
 
 
+
+    /**
+     * Create or update an record by checking 
+     * the existence from the $byKeys array 
+     * that you defined.
+     *
+     * If the record exists, then the record should be updated.
+     * If the record does not exist, then the record should be created.
+     *
+     * @param array $byKeys 
+     */
     public function createOrUpdate($args, $byKeys = null )
     {
-        $pk = $this->_schema->primaryKey;
+        $pk = $this->schema->primaryKey;
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
@@ -186,43 +286,59 @@ class BaseModel
         }
 
         if( $ret && $ret->success 
-            || ( $pk && $this->_data[ $pk ] ) ) {
-                return $this->update($args);
-            } else {
-                return $this->create($args);
-            }
+            || ( $pk && $this->_data[ $pk ] ) ) 
+        {
+            return $this->update($args);
+        } else {
+            return $this->create($args);
+        }
     }
 
 
+
+
+    /**
+     * Relaod record data by primary key,
+     * parameter is optional if you've already defined 
+     * the primary key column in this model.
+     *
+     * @param string $pkId primary key name
+     */
     public function reload($pkId = null)
     {
         if( $pkId ) {
-            $this->load( $pkId );
+            return $this->load( $pkId );
         }
-        elseif( null === $pkId && $pk = $this->_schema->primaryKey ) {
+        elseif( null === $pkId && $pk = $this->schema->primaryKey ) {
             $pkId = $this->_data[ $pk ];
-            $this->load( $pkId );
+            return $this->load( $pkId );
         }
         else {
-            throw new Exception("Primary key not found.");
+            throw new Exception("Primary key not found, can not reload record.");
         }
     }
 
+
+    /**
+     * Create a record if the record does not exists
+     * Otherwise the record should be updated with the arguments.
+     *
+     * @param array $args
+     * @param array $byKeys it's optional if you defined primary key
+     */
     public function loadOrCreate($args, $byKeys = null)
     {
-        $pk = $this->_schema->primaryKey;
+        $pk = $this->schema->primaryKey;
 
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
             $ret = $this->find(array( $pk => $val ));
         } elseif( $byKeys ) {
-            $conds = array();
-            foreach( (array) $byKeys as $k ) {
-                if( isset($args[$k]) )
-                    $conds[$k] = $args[$k];
-            }
-            $ret = $this->find( $conds );
+            $ret = $this->find(
+                array_intersect_key( $args , 
+                    array_fill_keys( (array) $byKeys , 1 ))
+            );
         }
 
         if( $ret && $ret->success 
@@ -245,13 +361,13 @@ class BaseModel
      * @param $c  column object.
      * @param $val value object.
      * @param $args arguments
-     * @param $validateFail fail flag.
+     * @param $validateFail array of failed field names.
      */
     protected function _validate_validator($c, $val, $args, & $validateFail )
     {
         $v = call_user_func( $c->validator, $val, $args, $this );
         if( ! $v[0] )
-            $validateFail = true;
+            $validateFail[] = $c->name;
         return (object) array(
             'success' => $v[0],
             'message' => $v[1],
@@ -264,19 +380,28 @@ class BaseModel
         if( $validValues = $c->getValidValues( $this, $args ) ) {
             // sort by index
             if( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
-                $validateFail = true;
+                $validateFail[] = $c->name;
                 return (object) array(
                     'success' => false,
                     'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
                     'field' => $c->name,
                 );
             }
-            // order with key => value
+            // "Label" => "Value",
+            // "Group" => array( "Label" => "Value" )
+            //
+            // Order with key => value
             //    value => label
             else {
-                $values = array_keys( $validValues );
+                $values = array_values( $validValues );
+                foreach( $values as & $v ) {
+                    if( is_array($v) ) {
+                        $v = array_values($v);
+                    }
+                }
+
                 if( ! in_array( $val , $values ) ) {
-                    $validateFail = true;
+                    $validateFail[] = $c->name;
                     return (object) array(
                         'success' => false,
                         'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
@@ -289,13 +414,11 @@ class BaseModel
 
 
     /**
-     * return columns
+     * Get the RuntimeColumn objects from RuntimeSchema object.
      */
     public function columns()
     {
-        static $columns;
-        $columns = $this->_schema->columns;
-        return $columns;
+        return $this->schema->columns;
     }
 
 
@@ -313,53 +436,69 @@ class BaseModel
             return static::$currentUser;
     }
 
-
     /**
-     * Create a new record
+     * Method for creating new records, which is called from 
+     * static::create and $record->create.
+     *
+     * 1. _create method calls beforeCreate to 
+     * trigger events or filter arguments.
+     *
+     * 2. it runs filterArrayWithColumns method to filter 
+     * arguments with column definitions.
+     *
+     * 3. use currentUserCan method to check permission.
+     *
+     * 4. get column definitions and run filters, default value 
+     *    builders, canonicalizer, type constraint checkers to build 
+     *    a new arguments.
+     *
+     * 5. use these new arguments to build a SQL query with 
+     *    SQLBuilder\QueryBuilder.
+     *
+     * 6. insert SQL into data source (write)
+     *
+     * 7. reutrn the operation result.
      *
      * @param array $args data
      *
      * @return OperationResult operation result (success or error)
      */
-    public function _create($args)
+    public function _create($args, $options = array() )
     {
         if( empty($args) || $args === null )
             return $this->reportError( _('Empty arguments') );
 
-        // first, filter the array
-        $args = $this->filterArrayWithColumns($args);
-
-        if( ! $this->currentUserCan( $this->getCurrentUser() , 'create', $args ) ) {
-            return $this->reportError( _('Permission denied. Can not create record.') , array( 
-                'args' => $args,
-            ));
-        }
-
-        $k = $this->_schema->primaryKey;
-        $sql = $vars = null;
-        $validateFail    = false;
-        $this->_data = $validateResults = array();
-        $stm = null;
-
-
-        $dsId = $this->_schema->getWriteSourceId();
-        $conn = $this->getConnection( $dsId );
-
         try {
             $args = $this->beforeCreate( $args );
 
-            foreach( $this->_schema->columns as $columnKey => $hash ) {
-                $c = $this->_schema->getColumn( $columnKey );
-                $n = $c->name;
+            // first, filter the array
+            $args = $this->filterArrayWithColumns($args);
 
+            if( ! $this->currentUserCan( $this->getCurrentUser(), 'create', $args ) ) {
+                return $this->reportError( _('Permission denied. Can not create record.') , array( 
+                    'args' => $args,
+                ));
+            }
+
+            $k = $this->schema->primaryKey;
+            $sql = $vars = null;
+            $validateFail    = array();
+            $this->_data = $validateResults = array();
+            $stm = null;
+
+
+            $dsId = $this->schema->getWriteSourceId();
+            $conn = $this->getConnection( $dsId );
+
+            foreach( $this->schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
-                //   and default or defaultBuilder is defined.
+                //   and default is defined.
                 if( ! isset($args[$n]) && ! $c->primary )
                 {
                     if( $val = $c->getDefaultValue($this ,$args) ) {
                         $args[$n] = $val;
                     } elseif( $c->requried ) {
-                        throw new Exception( _( sprintf("%s is required.", $n ) ) );
+                        throw new Exception(sprintf(_("%s is required."), $n ));
                     }
                 }
 
@@ -395,17 +534,17 @@ class BaseModel
                     }
                 }
 
-                if( $val ) {
+                if( $val !== null ) {
                     $args[ $n ] = is_array($val) ? $val : $c->deflate( $val );
                 }
             }
 
             if( $validateFail ) {
-                throw new Exception( 'Validation Fail' );
+                throw new Exception( 'Validation Fail, Columns: ' . implode(', ', $validateFail ));
             }
 
             $q = $this->createQuery( $dsId );
-            
+
             $q->insert($args);
             $q->returning( $k );
 
@@ -414,7 +553,6 @@ class BaseModel
 
             /* get connection, do query */
             $stm = $this->dbPrepareAndExecute($conn, $sql, $vars); // returns $stm
-            $this->afterCreate($args);
         }
         catch ( Exception $e )
         {
@@ -436,10 +574,11 @@ class BaseModel
             $pkId = $conn->lastInsertId();
         }
 
-        if( $this->_autoReload ) {
+        if( $this->autoReload || isset($options['reload']) ) {
             // if possible, we should reload the data.
             $pkId ? $this->load($pkId) : $this->_data = $args;
         }
+        $this->afterCreate($args);
 
         $ret = array( 
             'sql' => $sql,
@@ -466,8 +605,8 @@ class BaseModel
             ));
         }
 
-        $dsId  = $this->_schema->getReadSourceId();
-        $pk    = $this->_schema->primaryKey;
+        $dsId  = $this->schema->getReadSourceId();
+        $pk    = $this->schema->primaryKey;
         $query = $this->createQuery( $dsId );
         $conn  = $this->getConnection( $dsId );
         $kVal  = null;
@@ -477,10 +616,10 @@ class BaseModel
         }
         else {
             $kVal = $args;
-            $column = $this->_schema->getColumn( $pk );
+            $column = $this->schema->getColumn( $pk );
             
             if( ! $column ) {
-                throw new Exception("Primary key is not defined: $pk .");
+                throw new Exception("Primary key $pk is not defined in " . get_class($this->schema) );
             }
             $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
@@ -535,7 +674,7 @@ class BaseModel
      */
     public function _delete()
     {
-        $k = $this->_schema->primaryKey;
+        $k = $this->schema->primaryKey;
 
         if( $k && ! isset($this->_data[$k]) ) {
             return new OperationError('Record is not loaded, Record delete failed.');
@@ -546,7 +685,7 @@ class BaseModel
             return $this->reportError( _('Permission denied. Can not delete record.') , array( ));
         }
 
-        $dsId = $this->_schema->getWriteSourceId();
+        $dsId = $this->schema->getWriteSourceId();
         $conn = $this->getConnection( $dsId );
 
         $this->beforeDelete( $this->_data );
@@ -584,11 +723,13 @@ class BaseModel
      *
      * @return OperationResult operation result (success or error)
      */
-    public function _update( $args ) 
+    public function _update( $args , $options = array() ) 
     {
         // check if the record is loaded.
-        $k = $this->_schema->primaryKey;
-        if( $k && ! isset($args[ $k ]) && ! isset($this->_data[$k]) ) {
+        $k = $this->schema->primaryKey;
+        if( $k && ! isset($args[ $k ]) 
+               && ! isset($this->_data[$k]) ) 
+        {
             return $this->reportError('Record is not loaded, Can not update record.');
         }
 
@@ -604,23 +745,23 @@ class BaseModel
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
 
-        $args = $this->filterArrayWithColumns($args);
-        $sql  = null;
-        $vars = null;
-
-        $dsId = $this->_schema->getWriteSourceId();
-        $conn = $this->getConnection( $dsId );
+        if( ! $kVal ) {
+            return $this->reportError("The value of primary key is undefined.");
+        }
 
         try 
         {
             $args = $this->beforeUpdate($args);
+            $args = $this->filterArrayWithColumns($args);
+            $sql  = null;
+            $vars = null;
 
-            foreach( $this->_schema->columns as $columnHash ) {
-                $c = $this->_schema->getColumn( $columnHash['name'] );
-                $n = $c->name;
+            $dsId = $this->schema->getWriteSourceId();
+            $conn = $this->getConnection( $dsId );
 
+            foreach( $this->schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
-                //   and default or defaultBuilder is defined.
+                //   and default is defined.
                 if( isset($args[$n]) 
                     && $c->required
                     && ! $args[$n]
@@ -674,12 +815,20 @@ class BaseModel
             $query->update($args)->where()
                 ->equal( $k , $kVal );
 
-            $sql = $query->build();
+            $sql  = $query->build();
             $vars = $query->vars;
-            $stm = $this->dbPrepareAndExecute($conn, $sql, $vars);
+            $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
 
-            // merge updated data
-            $this->_data = array_merge($this->_data,$args);
+            // Merge updated data.
+            //
+            // if $args contains a raw SQL string, 
+            // we should reload data from database
+            if( isset($options['reload']) ) {
+                $this->reload();
+            } else {
+                $this->_data = array_merge($this->_data,$args);
+            }
+
             $this->afterUpdate($args);
         } 
         catch( Exception $e ) 
@@ -710,18 +859,31 @@ class BaseModel
      */
     public function save()
     {
-        $k = $this->_schema->primaryKey;
-        $doCreate = ( $k && ! isset($this->_data[$k]) );
-        return $doCreate
-            ? $this->create( $this->_data )
-            : $this->update( $this->_data );
+        $k = $this->schema->primaryKey;
+        return ( $k && ! isset($this->_data[$k]) )
+                ? $this->create( $this->_data )
+                : $this->update( $this->_data )
+                ;
     }
 
     /* pass a value to a column for displaying */
     public function display( $name )
     {
-        $c = $this->_schema->getColumn( $name );
-        return $c->display( $this->getValue( $name ) );
+        if( $c = $this->schema->getColumn( $name ) ) {
+            if( $c->virtual ) {
+                return $this->get($name);
+            }
+            return $c->display( $this->getValue( $name ) );
+        }
+        elseif( isset($this->_data[$name]) ) {
+            return $this->_data[$name];
+        }
+#          elseif( method_exists($this, $name) ) {
+#              return call_user_func_array($this,array($name));
+#          }
+        else {
+            // return "Undefined column $name";
+        }
     }
 
 
@@ -738,7 +900,7 @@ class BaseModel
      */
     public function deflateData(& $args) {
         foreach( $args as $k => $v ) {
-            $c = $this->_schema->getColumn($k);
+            $c = $this->schema->getColumn($k);
             if( $c )
                 $args[ $k ] = $this->_data[ $k ] = $c->deflate( $v );
         }
@@ -819,7 +981,7 @@ class BaseModel
      */
     public function dbPrepareAndExecute($conn, $sql, $args = array() )
     {
-        $stm  = $conn->prepare( $sql );
+        $stm = $conn->prepare( $sql );
         $stm->execute( $args );
         return $stm;
     }
@@ -844,7 +1006,7 @@ class BaseModel
      */
     public function getWriteConnection()
     {
-        $id = $this->_schema->getWriteSourceId();
+        $id = $this->schema->getWriteSourceId();
         return $this->_connection->getConnection( $id );
     }
 
@@ -855,7 +1017,7 @@ class BaseModel
      */
     public function getReadConnection()
     {
-        $id = $this->_schema->getReadSourceId();
+        $id = $this->schema->getReadSourceId();
         return $this->_connection->getConnection( $id );
     }
 
@@ -869,6 +1031,13 @@ class BaseModel
     /*******************
      * Data Manipulators 
      *********************/
+
+    /**
+     * Set column value
+     *
+     * @param string $name
+     * @param mixed $value
+     */
     public function __set( $name , $value ) 
     {
         $this->_data[ $name ] = $value; 
@@ -876,13 +1045,13 @@ class BaseModel
 
 
     /**
-     * get inflate value
+     * Get inflate value
+     *
+     * @param string $name Column name
      */
     public function get($name)
     {
-        if( isset( $this->_data[ $name ] ) ) {
-            return $this->inflateColumnValue( $name );
-        }
+        return $this->inflateColumnValue( $name );
     }
 
 
@@ -890,6 +1059,8 @@ class BaseModel
      * Check if the value exist
      *
      * @param string $name
+     *
+     * @return boolean
      */
     public function hasValue( $name )
     {
@@ -897,9 +1068,11 @@ class BaseModel
     }
 
     /**
-     * Get raw value (without deflator)
+     * Get the raw value from record (without deflator)
      *
      * @param string $name
+     *
+     * @return mixed
      */
     public function getValue( $name )
     {
@@ -946,171 +1119,198 @@ class BaseModel
      */
     public function __isset( $name )
     {
-        return isset($this->_schema->columns[ $name ]) 
-            || isset($this->_data[ $name ])
-            || '_schema' == $name
-            || $this->_schema->getRelation( $name )
+        return isset($this->_data[ $name ]) 
+            || array_key_exists($name, ($this->_data ?: array()) )
+            || isset($this->schema->columns[ $name ]) 
+            || 'schema' == $name
+            || $this->schema->getRelation( $name )
             ;
+    }
+
+    public function getRelationalRecords($key,$relation = null)
+    {
+        if( ! $relation ) {
+            $relation = $this->schema->getRelation( $key );
+        }
+
+        /*
+        switch($relation['type']) {
+            case SchemaDeclare::has_one:
+            case SchemaDeclare::has_many:
+            break;
+        }
+        */
+        if( SchemaDeclare::has_one === $relation['type'] ) 
+        {
+            $sColumn = $relation['self']['column'];
+
+
+            $fSchema = new $relation['foreign']['schema'];
+            $fColumn = $relation['foreign']['column'];
+            $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+            if( ! $this->hasValue($sColumn) )
+                return;
+                // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
+
+            $sValue = $this->getValue( $sColumn );
+            $model = $fpSchema->newModel();
+            $model->load(array( 
+                $fColumn => $sValue,
+            ));
+
+            return $model;
+        }
+        elseif( SchemaDeclare::has_many === $relation['type'] )
+        {
+            $sColumn = $relation['self']['column'];
+            $fSchema = new $relation['foreign']['schema'];
+            $fColumn = $relation['foreign']['column'];
+            $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+
+            if( ! $this->hasValue($sColumn) )
+                return;
+                // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
+
+            $sValue = $this->getValue( $sColumn );
+
+            $collection = $fpSchema->newCollection();
+            $collection->where()
+                ->equal( 'm.' . $fColumn, $sValue ); // 'm' is the default alias.
+
+            // For if we need to create relational records 
+            // though collection object, we need to pre-set 
+            // the relational record id.
+            $collection->setPresetVars(array( 
+                $fColumn => $sValue,
+            ));
+            return $collection;
+        }
+        // belongs to one record
+        elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
+            $sColumn = $relation['self']['column'];
+            $fSchema = new $relation['foreign']['schema'];
+            $fColumn = $relation['foreign']['column'];
+            $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+
+            if( ! $this->hasValue($sColumn) )
+                return;
+
+            $sValue = $this->getValue( $sColumn );
+            $model = $fpSchema->newModel();
+            $ret = $model->load(array( $fColumn => $sValue ));
+            return $model;
+        }
+        elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
+            $rId = $relation['relation']['id'];  // use relationId to get middle relation. (author_books)
+            $rId2 = $relation['relation']['id2'];  // get external relationId from the middle relation. (book from author_books)
+
+            $middleRelation = $this->schema->getRelation( $rId );
+            if( ! $middleRelation )
+                throw new InvalidArgumentException("first level relationship of many-to-many $rId is empty");
+
+            // eg. author_books
+            $sColumn = $middleRelation['foreign']['column'];
+            $sSchema = new $middleRelation['foreign']['schema'];
+            $spSchema = SchemaLoader::load( $sSchema->getSchemaProxyClass() );
+
+            $foreignRelation = $spSchema->getRelation( $rId2 );
+            if( ! $foreignRelation )
+                throw new InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
+
+            $c = $foreignRelation['foreign']['schema'];
+            if( ! $c ) 
+                throw new InvalidArgumentException('foreign schema class is not defined.');
+
+            $fSchema = new $c;
+            $fColumn = $foreignRelation['foreign']['column'];
+            $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
+
+            $collection = $fpSchema->newCollection();
+
+            /**
+                * join middle relation ship
+                *
+                *    Select * from books b (r2) left join author_books ab on ( ab.book_id = b.id )
+                *       where b.author_id = :author_id
+                */
+            $collection->join( $sSchema->getTable() )->alias('b')
+                            ->on()
+                            ->equal( 'b.' . $foreignRelation['self']['column'] , array( 'm.' . $fColumn ) );
+
+            $value = $this->getValue( $middleRelation['self']['column'] );
+            $collection->where()
+                ->equal( 
+                    'b.' . $middleRelation['foreign']['column'],
+                    $value
+                );
+
+
+            /**
+                * for many-to-many creation:
+                *
+                *    $author->books[] = array(
+                *        ':author_books' => array( 'created_on' => date('c') ),
+                *        'title' => 'Book Title',
+                *    );
+                */
+            $collection->setPostCreate(function($record,$args) use ($spSchema,$rId,$middleRelation,$foreignRelation,$value) {
+                // arguments for creating middle-relationship record
+                $a = array( 
+                    $foreignRelation['self']['column']   => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
+                    $middleRelation['foreign']['column'] => $value,  // self id
+                );
+
+                if( isset($args[':' . $rId ] ) ) {
+                    $a = array_merge( $args[':' . $rId ] , $a );
+                }
+
+                // create relationship
+                $middleRecord = $spSchema->newModel();
+                $ret = $middleRecord->create($a);
+                if( ! $ret->success ) {
+                    throw new Exception("$rId create failed.");
+                }
+                return $middleRecord;
+            });
+            return $collection;
+        }
+        else {
+            throw new Exception("The relationship type of $key is not supported.");
+        }
     }
 
 
     /**
+     * Get record data, relational records, schema object or 
+     * connection object.
      *
      * @param string $key
      */
     public function __get( $key )
     {
         // lazy schema loader, xxx: make this static.
-        switch( $key ) {
-            case '_schema':
-                return SchemaLoader::load( static::schema_proxy_class );
-            break;
-            case '_connection':
-                return ConnectionManager::getInstance();
-            break;
+        if( 'schema' === $key ) {
+            return SchemaLoader::load( static::schema_proxy_class );
+        }
+        elseif( '_connection' === $key ) {
+            return ConnectionManager::getInstance();
         }
 
-
-        // return relation object
-        if( $relation = $this->_schema->getRelation( $key ) ) 
-        {
-            /*
-            switch($relation['type']) {
-                case SchemaDeclare::has_one:
-                case SchemaDeclare::has_many:
-                break;
-            }
-            */
-
-            if( SchemaDeclare::has_one === $relation['type'] ) 
-            {
-                $sColumn = $relation['self']['column'];
-                $fSchema = new $relation['foreign']['schema'];
-                $fColumn = $relation['foreign']['column'];
-                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
-                if( ! $this->hasValue($sColumn) )
-                    throw new Exception("The value of $sColumn is not defined.");
-                $sValue = $this->getValue( $sColumn );
-                $model = $fpSchema->newModel();
-                $model->load(array( 
-                    $fColumn => $sValue,
-                ));
-                return $model;
-            }
-            elseif( SchemaDeclare::has_many === $relation['type'] )
-            {
-                $sColumn = $relation['self']['column'];
-                $fSchema = new $relation['foreign']['schema'];
-                $fColumn = $relation['foreign']['column'];
-                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
-
-                if( ! $this->hasValue($sColumn) )
-                    throw new Exception("The value of $sColumn is not defined.");
-
-                $sValue = $this->getValue( $sColumn );
-
-                $collection = $fpSchema->newCollection();
-                $collection->where()
-                    ->equal( $fColumn, $sValue );
-
-                $collection->setPresetVars(array( 
-                    $fColumn => $sValue,
-                ));
-                return $collection;
-            }
-            // belongs to one record
-            elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
-                $sColumn = $relation['self']['column'];
-                $fSchema = new $relation['foreign']['schema'];
-                $fColumn = $relation['foreign']['column'];
-                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
-
-                if( ! $this->hasValue($sColumn) )
-                    throw new Exception("The value of $sColumn is not defined.");
-                $sValue = $this->getValue( $sColumn );
-                $model = $fpSchema->newModel();
-                $ret = $model->load(array( $fColumn => $sValue ));
-                return $model;
-            }
-            elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
-                $rId = $relation['relation']['id'];  // use relationId to get middle relation. (author_books)
-                $rId2 = $relation['relation']['id2'];  // get external relationId from the middle relation. (book from author_books)
-
-                $middleRelation = $this->_schema->getRelation( $rId );
-                if( ! $middleRelation )
-                    throw new \InvalidArgumentException("first level relationship of many-to-many $rId is empty");
-
-                // eg. author_books
-                $sColumn = $middleRelation['foreign']['column'];
-                $sSchema = new $middleRelation['foreign']['schema'];
-                $spSchema = SchemaLoader::load( $sSchema->getSchemaProxyClass() );
-
-                $foreignRelation = $spSchema->getRelation( $rId2 );
-                if( ! $foreignRelation )
-                    throw new \InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
-
-                $c = $foreignRelation['foreign']['schema'];
-                if( ! $c ) 
-                    throw new \InvalidArgumentException('foreign schema class is not defined.');
-
-                $fSchema = new $c;
-                $fColumn = $foreignRelation['foreign']['column'];
-                $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
-
-                $collection = $fpSchema->newCollection();
-
-                /**
-                 * join middle relation ship
-                 *
-                 *    Select * from books b (r2) left join author_books ab on ( ab.book_id = b.id )
-                 *       where b.author_id = :author_id
-                 */
-                $collection->join( $sSchema->getTable() )->alias('b')
-                                ->on()
-                                ->equal( 'b.' . $foreignRelation['self']['column'] , array( 'm.' . $fColumn ) );
-
-                $value = $this->getValue( $middleRelation['self']['column'] );
-                $collection->where()
-                    ->equal( 
-                        'b.' . $middleRelation['foreign']['column'],
-                        $value
-                    );
-
-
-                /**
-                 * for many-to-many creation:
-                 *
-                 *    $author->books[] = array(
-                 *        :author_books => array( 'created_on' => date('c') ),
-                 *        'title' => 'Book Title',
-                 *    );
-                 */
-                $collection->setPostCreate(function($record,$args) use ($spSchema,$rId,$middleRelation,$foreignRelation,$value) {
-                    $a = array( 
-                        $foreignRelation['self']['column']   => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
-                        $middleRelation['foreign']['column'] => $value,  // self id
-                    );
-
-                    if( isset($args[':' . $rId ] ) ) {
-                        $a = array_merge( $args[':' . $rId ] , $a );
-                    }
-                    $ret = $spSchema->newModel()->create($a);
-                    if( false === $ret->success ) {
-                        throw new Exception("$rId create failed.");
-                    }
-                });
-                return $collection;
-            }
-            else {
-                throw new Exception("The relationship type is not supported.");
-            }
+        if( $relation = $this->schema->getRelation( $key ) ) {
+            return $this->getRelationalRecords($key, $relation);
         }
+
+# XXX: turn off cache to prevent logical/runtime bug.
+#          if( isset($this->_cache[$key]) ) {
+#              return $this->_cache[$key];
+#          }
+
         return $this->get($key);
     }
 
 
     /**
-     * return the collection object of current model object.
+     * Return the collection object of current model object.
      *
      * @return LazyRecord\BaseCollection
      */
@@ -1175,7 +1375,7 @@ class BaseModel
     {
         $data = array();
         foreach( $this->_data as $k => $v ) {
-            $col = $this->_schema->getColumn( $k );
+            $col = $this->schema->getColumn( $k );
             if( $col->isa ) {
                 $data[ $k ] = $col->inflate( $v );
             } else {
@@ -1247,7 +1447,7 @@ class BaseModel
     public static function __static_update($args) 
     {
         $model = new static;
-        $dsId  = $model->_schema->getWriteSourceId();
+        $dsId  = $model->schema->getWriteSourceId();
         $conn  = $model->getConnection($dsId);
         $query = $model->createExecutiveQuery($dsId);
         $query->update($args);
@@ -1279,7 +1479,7 @@ class BaseModel
     public static function __static_delete()
     {
         $model = new static;
-        $dsId  = $model->_schema->getWriteSourceId();
+        $dsId  = $model->schema->getWriteSourceId();
         $conn  = $model->getConnection($dsId);
         $query = $model->createExecutiveQuery($dsId);
         $query->delete();
@@ -1299,7 +1499,7 @@ class BaseModel
     public static function __static_load($args)
     {
         $model = new static;
-        $dsId  = $model->_schema->getReadSourceId();
+        $dsId  = $model->schema->getReadSourceId();
         $conn  = $model->getConnection( $dsId );
 
         if( is_array($args) ) {
@@ -1318,75 +1518,169 @@ class BaseModel
         }
     }
 
-    public function filterArrayWithColumns( $args )
+
+
+    /**
+     * use array_intersect_key to filter array with column names
+     *
+     * @param array $args
+     * @return array
+     */
+    public function filterArrayWithColumns( $args , $withVirtual = false )
     {
-        $schema = $this->_schema;
-        $new = array();
-        foreach( $args as $k => $v ) {
-            if( $schema->getColumn($k) ) {
-                $new[ $k ] = $v;
-            }
-        }
-        return $new;
+        return array_intersect_key( $args , $this->schema->getColumns( $withVirtual ) );
     }
 
+
+
+    /**
+     * Inflate column value 
+     *
+     * @param string $n Column name
+     *
+     * @return mixed
+     */
     public function inflateColumnValue( $n ) 
     {
         $value = isset($this->_data[ $n ])
                     ?  $this->_data[ $n ]
                     : null;
-        if( $c = $this->_schema->getColumn( $n ) ) {
-            return $c->inflate( $value );
+        if( $c = $this->schema->getColumn( $n ) ) {
+            return $c->inflate( $value, $this );
         }
         return $value;
     }
 
+
+    /**
+     * Report error 
+     *
+     * @param string $message Error message.
+     * @param array $extra Extra data.
+     * @return OperationError
+     */
     public function reportError($message,$extra = array() )
     {
-        return $this->_result = new OperationError($message,$extra);
+        $r = new OperationError($message,$extra);
+        if( $this->saveResults ) {
+            return $this->results[] = $r;
+        }
+        return $r;
     }
 
+
+    /**
+     * Report success.
+     *
+     * In this method, which pushs result object into ->results array.
+     * you can use flushResult() method to clean up these 
+     * result objects.
+     *
+     * @param string $message Success message.
+     * @param array $extra Extra data.
+     * @return OperationSuccess
+     */
     public function reportSuccess($message,$extra = array() )
     {
-        return $this->_result = new OperationSuccess($message,$extra);
+        $r = new OperationSuccess($message,$extra);
+        if( $this->saveResults ) {
+            return $this->results[] = $r;
+        }
+        return $r;
     }
 
 
-    // slower than _schema
-    public function getSchema()
+    public function loadSchema()
     {
         return SchemaLoader::load( static::schema_proxy_class );
     }
 
+
+    /**
+     * Duplicated with asCollection() method
+     */
     public function newCollection() 
     {
-        return $this->getSchema()->newCollection();
+        return $this->loadSchema()->newCollection();
     }
 
-    // _schema methods
+    // schema methods
     public function getColumn($n)
     {
-        return $this->_schema->getColumn($n);
+        return $this->schema->getColumn($n);
     }
 
+
+    /**
+     * Get column name array from RuntimeSchema object.
+     *
+     * @return string[] column names
+     */
     public function getColumnNames()
     {
-        return $this->_schema->getColumnNames();
+        return $this->schema->getColumnNames();
     }
 
-    public function getColumns()
+
+    /**
+     * Get column objects from RuntimeSchema object.
+     *
+     * @return RuntimeColumn[name]
+     */
+    public function getColumns($withVirtual = false)
     {
-        return $this->_schema->getColumns();
+        return $this->schema->getColumns( $withVirtual );
     }
 
+
+    /**
+     * Get model label from RuntimeSchema.
+     *
+     * @return string model label name
+     */
     public function getLabel()
     {
-        return $this->_schema->label;
+        return $this->schema->label;
     }
 
+
+    /**
+     * Get model table
+     *
+     * @return string model table name
+     */
     public function getTable()
     {
-        return $this->_schema->table;
+        return $this->schema->table;
+    }
+
+
+    public function flushCache() 
+    {
+        $this->_cache = array();
+    }
+
+    public function __clone() 
+    {
+        $this->_data = $this->_data;
+        $this->autoReload = $this->autoReload;
+    }
+
+    public function popResult() 
+    {
+        return array_pop($this->results);
+    }
+
+    public function pushResult($result) 
+    {
+        $this->results[] = $result;
+    }
+
+    public function flushResults() 
+    {
+        $r = $this->results;
+        $this->results = array();
+        return $r;
     }
 }
 

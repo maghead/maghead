@@ -11,12 +11,12 @@ class ConfigBuilderTest extends PHPUnit_Framework_TestCase
         $content = $builder->build();
         ok( $content );
 
-        file_put_contents('tests/lazy.php'
+        file_put_contents('tests/config.php'
                 ,$content);
 
 
         $loader = new LazyRecord\ConfigLoader;
-        $loader->load( 'tests/lazy.php');
+        $loader->load( 'tests/config.php');
         $loader->init();
 
         $conM = LazyRecord\ConnectionManager::getInstance();

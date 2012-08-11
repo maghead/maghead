@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Schema\SqlBuilder;
+namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\QueryBuilder;
 
@@ -20,7 +20,7 @@ class PgsqlBuilder
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql = $this->parent->driver->getQuoteColumn( $name );
+        $sql = $this->driver->getQuoteColumn( $name );
 
         if( ! $column->autoIncrement )
             $sql .= ' ' . $type;
@@ -50,7 +50,7 @@ class PgsqlBuilder
                  * Here we use query driver builder to inflate default value,
                  * But the value,
                  */
-                $sql .= ' default ' . $this->parent->driver->inflate($default);
+                $sql .= ' default ' . $this->driver->inflate($default);
             }
         }
 
@@ -64,56 +64,36 @@ class PgsqlBuilder
         if( $column->unique )
             $sql .= ' UNIQUE';
 
-        // build reference
-        foreach( $schema->relations as $rel ) {
-            switch( $rel['type'] ) {
-            case SchemaDeclare::belongs_to:
-            case SchemaDeclare::has_many:
-            case SchemaDeclare::has_one:
-                if( $name != 'id' && $rel['self']['column'] == $name ) 
-                {
-                    $fSchema = new $rel['foreign']['schema'];
-                    $fColumn = $rel['foreign']['column'];
-                    $fc = $fSchema->columns[$fColumn];
-                    $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
-                }
-                break;
-            }
-        }
         return $sql;
     }
 
-    public function createTable($schema)
-    {
-        $create = 'CREATE TABLE ' . $this->parent->driver->getQuoteTableName($schema->getTable()) . "( \n";
-        $columnSql = array();
-        foreach( $schema->columns as $name => $column ) {
-            $columnSql[] = "\t" . $this->buildColumnSql( $schema, $column );
-        }
-        $create .= join(",\n",$columnSql);
-        $create .= "\n);\n";
-        return $create;
-    }
 
     public function dropTable($schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-                . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+                . $this->driver->getQuoteTableName( $schema->getTable() )
                 . ' CASCADE';
     }
 
-    public function build($schema)
+
+    public function buildIndex($schema) 
     {
-        $sqls = array();
-
-        if( $this->parent->clean || $this->parent->rebuild ) {
-            $sqls[] = $this->dropTable($schema);
-        }
-        if( $this->parent->clean )
-            return $sqls;
-
-        $sqls[] = $this->createTable($schema);
-        return $sqls;
+        return array();
+        // build reference
+#          foreach( $schema->relations as $rel ) {
+#              switch( $rel['type'] ) {
+#              case SchemaDeclare::belongs_to:
+#              case SchemaDeclare::has_many:
+#              case SchemaDeclare::has_one:
+#                  if( $name != 'id' && $rel['self']['column'] == $name ) 
+#                  {
+#                      $fSchema = new $rel['foreign']['schema'];
+#                      $fColumn = $rel['foreign']['column'];
+#                      $fc = $fSchema->columns[$fColumn];
+#                      $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
+#                  }
+#                  break;
+#              }
+#          }
     }
-
 }

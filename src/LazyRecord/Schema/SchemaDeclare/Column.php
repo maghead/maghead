@@ -80,8 +80,6 @@ class Column
 
             'default' => self::ATTR_ANY,
 
-            'defaultBuilder' => self::ATTR_CALLABLE,
-
             'validator'  => self::ATTR_CALLABLE,
 
             'validValues' => self::ATTR_ANY,
@@ -96,12 +94,17 @@ class Column
             // canonicalizer
             'canonicalizer' => self::ATTR_CALLABLE,
 
+            'virtual' => self::ATTR_FLAG,
+
             // an alias of canonicalizer
             'filter' => self::ATTR_CALLABLE,
 
             'inflator' => self::ATTR_CALLABLE,
 
             'deflator' => self::ATTR_CALLABLE,
+
+            'renderAs' => self::ATTR_STRING,
+            'widgetAttributes' => self::ATTR_ARRAY,
         );
     }
 
@@ -173,6 +176,13 @@ class Column
             $this->attributes['type'] = 'float';
         }
         $this->attributes['isa']  = 'float';
+        return $this;
+    }
+
+    public function tinyint() 
+    {
+        $this->attributes['type'] = 'tinyint';
+        $this->attributes['isa'] = 'int';
         return $this;
     }
 
@@ -271,13 +281,23 @@ class Column
     }
 
 
+    public function renderAs($renderAs,$widgetAttributes = array() ) {
+        $this->renderAs = $renderAs;
+        $this->widgetAttributes = $widgetAttributes;
+        return $this;
+    }
 
 
-    // XXX: reference, it doesn't create relation
-    public function refer($class)
+    /**
+     * Use referenece from existing relationship 
+     *
+     * @param string $relationship relationship id
+     */
+    public function refer($relationship)
     {
         $this->attributes['isa'] = 'int';
         $this->attributes['type'] = 'integer';
+        $this->attributes['refer'] = $relationship;
         return $this;
     }
 

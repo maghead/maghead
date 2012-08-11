@@ -94,35 +94,26 @@ get php source code and install these extensions:
 * `pdo_pgsql` (optional)
 * `pdo_sqlite` (optional)
 
-To build a PHP for LazyRecord, you can use phpbrew:
 
-    phpbrew -d install --no-test php-5.4.1 +mysql +pdo +pgsql +sqlite+pcntl+posix+ipc+readline+openssl
+To build a PHP with MySQL + PDO support:
+
+    phpbrew install php-5.4.4 +mysql
+
+To build a PHP with PostgreSQL + PDO support:
+
+    phpbrew install php-5.4.4 +pgsql
+
+To build a PHP with SQLite + PDO support:
+
+    phpbrew install php-5.4.4 +sqlite
 
 Or to build PHP with custom postgresql base dir:
 
-    phpbrew -d install --no-test php-5.4.1 +pdo +mysql +pgsql=/opt/local/lib/postgresql91 +sqlite+pcntl+posix+ipc+readline+openssl
+    phpbrew install php-5.4.4 +pgsql=/opt/local/lib/postgresql91
 
-And that will be:
+To build a PHP for LazyRecord with all database driver support, you can use +dbs variant set:
 
-    ./configure '--prefix=/Users/c9s/.phpbrew/php/php-5.4.1'
-    '--with-config-file-path=/Users/c9s/.phpbrew/php/php-5.4.1/etc'
-    '--with-config-file-scan-dir=/Users/c9s/.phpbrew/php/php-5.4.1/var/db'
-    '--with-pear=/Users/c9s/.phpbrew/php/php-5.4.1/lib/php' '--disable-all'
-    '--enable-bcmath' '--enable-ctype' '--enable-dom' '--enable-exif'
-    '--enable-fileinfo' '--enable-filter' '--enable-hash' '--enable-json'
-    '--enable-libxml' '--enable-mbregex' '--enable-mbstring' '--enable-phar'
-    '--enable-session' '--enable-short-tags' '--enable-simplexml'
-    '--enable-sockets' '--enable-tokenizer' '--enable-xml' '--enable-xmlreader'
-    '--enable-xmlwriter' '--enable-zip' '--with-xsl' '--with-tidy'
-    '--with-xmlrpc' '--with-mhash' '--with-pcre-regex' '--with-zlib=/usr'
-    '--with-libxml-dir=/opt/local' '--with-curl=/opt/local'
-    '--with-gettext=/opt/local' '--enable-pdo' '--with-bz2=/usr' '--enable-cli'
-    '--enable-fpm' '--enable-posix' '--enable-calendar' '--enable-sockets'
-    '--with-readline=/usr' '--with-libedit=/usr' '--with-mysql=mysqlnd'
-    '--with-mysqli=mysqlnd' '--with-pdo-mysql=mysqlnd' '--with-pgsql'
-    '--with-pdo-pgsql' '--with-sqlite3' '--with-pdo-sqlite' '--enable-pcntl'
-    '--enable-shmop' '--enable-sysvsem' '--enable-sysvshm' '--enable-sysvmsg'
-    '--with-openssl=/opt/local'
+    phpbrew install php-5.4.4 +default+dbs
 
 And update your php.ini:
 
@@ -173,7 +164,7 @@ Define your model schema:
                             return preg_replace('#word#','zz',$val);  
                 })
                 ->validValues( 1,2,3,4,5 )
-                ->defaultBuilder(function() { 
+                ->default(function() { 
                     return date('c');
                 })
                 ;

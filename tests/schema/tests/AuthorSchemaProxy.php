@@ -15,7 +15,9 @@ class AuthorSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'timestamp',
           'isa' => 'DateTime',
-          'defaultBuilder' => function() { return date('c'); },
+          'default' => function() { 
+                return date('c'); 
+            },
         ),
     ),
   'created_on' => array( 
@@ -23,7 +25,9 @@ class AuthorSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'timestamp',
           'isa' => 'DateTime',
-          'defaultBuilder' => function() { return date('c'); },
+          'default' => function() { 
+                return date('c'); 
+            },
         ),
     ),
   'id' => array( 
@@ -50,6 +54,18 @@ class AuthorSchemaProxy extends RuntimeSchema
           'required' => true,
         ),
     ),
+  'v' => array( 
+      'name' => 'v',
+      'attributes' => array( 
+          'type' => 'text',
+          'isa' => 'str',
+          'label' => 'Virtual Column',
+          'virtual' => true,
+          'inflator' => function($value,$record) {
+                return $record->email . $record->email;
+            },
+        ),
+    ),
   'identity' => array( 
       'name' => 'identity',
       'attributes' => array( 
@@ -71,6 +87,7 @@ class AuthorSchemaProxy extends RuntimeSchema
         $this->columnNames     = array( 
   'name',
   'email',
+  'v',
   'identity',
   'confirmed',
 );
@@ -112,6 +129,8 @@ class AuthorSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
+
+        parent::__construct();
     }
 
 }
