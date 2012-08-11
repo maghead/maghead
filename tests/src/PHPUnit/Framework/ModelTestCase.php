@@ -1,19 +1,24 @@
 <?php
 use LazyRecord\QueryDriver;
 use LazyRecord\ConnectionManager;
-use LazyRecord\Schema\SqlBuilder;
+use LazyRecord\SqlBuilder;
 use LazyRecord\ConfigLoader;
 
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
 {
+    public $dsn;
+
     public $schemaPath = 'tests/schema';
 
     public $schemaClasses = array( );
 
 
-    public function setup()
+    public function setUp()
     {
+        // free and override default connection
         ConnectionManager::getInstance()->free();
+        QueryDriver::free();
+
 
         if( $dsn = getenv('DB_DSN') ) {
             $this->dsn = $dsn;
@@ -24,23 +29,28 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
                 $config['user'] = $user;
             if( $pass = getenv('DB_PASS') )
                 $config['pass'] = $pass;
-
             ConnectionManager::getInstance()->addDataSource('default', $config);
+        } elseif( $this->dsn ) {
+            ConnectionManager::getInstance()->addDataSource('default', array( 
+                'dsn'  => $this->dsn,
+                'user' => 'testing',
+                'pass' => 'testing',
+            ));
+        } else {
+            // a little patch for config (we need auto_id for testing)
+            $config = ConfigLoader::getInstance();
+            $config->unload();
+            $config->load();
+            $config->initForBuild();
         }
 
-
-        // a little patch for config (we need auto_id for testing)
-        $config = ConfigLoader::getInstance();
-        $config->unload();
-        $config->load();
-        $config->initForBuild();
         // $config->loaded = true;
         // $config->config = array( 'schema' => array( 'auto_id' => true ) );
 
 
         $dbh = ConnectionManager::getInstance()->getConnection('default');
         $driver = ConnectionManager::getInstance()->getQueryDriver('default');
-        $builder = new SqlBuilder( $driver , array(
+        $builder = LazyRecord\SqlBuilder\SqlBuilderFactory::create( $driver , array(
             'rebuild' => true,
         ));
 		ok( $builder );
@@ -83,8 +93,8 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
             ok( $ret->success , $ret->message );
         }
         else {
-            var_dump( $ret->exception->getMessage() ); 
             var_dump( $ret->sql ); 
+            echo $ret->exception;
             ok( $ret->success );
         }
     }

@@ -59,6 +59,7 @@ class BookSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'integer',
           'isa' => 'int',
+          'refer' => '\\tests\\UserSchema',
         ),
     ),
   'id' => array( 
@@ -94,7 +95,7 @@ class BookSchemaProxy extends RuntimeSchema
           'column' => 'created_by',
         ),
       'foreign' => array( 
-          'schema' => '\\tests\\UserSchema',
+          'schema' => 'tests\\UserSchema',
           'column' => 'id',
         ),
     ),
@@ -130,6 +131,8 @@ class BookSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
+
+        parent::__construct();
     }
 
 }

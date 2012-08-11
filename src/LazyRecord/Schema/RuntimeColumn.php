@@ -3,6 +3,8 @@ namespace LazyRecord\Schema;
 use DateTime;
 use LazyRecord\Deflator;
 use LazyRecord\Inflator;
+use LazyRecord\ArrayUtils;
+use LazyRecord\Utils;
 use Exception;
 
 class RuntimeColumn
@@ -34,41 +36,46 @@ class RuntimeColumn
     }
 
 
+
+    /**
+     * Canonicalize a value before updating or creating
+     *
+     * The canonicalize handler takes the original value ($value), current 
+     * record ($record) and the arguments ($args)
+     *
+     * @param mixed $value
+     * @param BaseModel $record
+     * @param array $args
+     *
+     * @return mixed $value
+     */
     public function canonicalizeValue( & $value , $record = null , $args = null )
     {
         $cb = $this->filter ?: $this->canonicalizer ?: null;
         if( $cb ) {
-            return $value = call_user_func( $cb , $value , $record, $args );
+            return $value = call_user_func( $cb , $value,$record,$args);
         }
         return $value;
     }
 
     /**
-     * for an existing record, we might need the record data to return specified valid values.
+     * For an existing record, we might need the record data to return specified valid values.
      */
     public function getValidValues( $record = null , $args = null )
     {
         if( $this->validValues ) {
-
-            if( is_callable($this->validValues) ) {
-                return call_user_func( $this->validValues, $record, $args );
-            }
-            return $this->validValues;
-        } elseif( $this->validValueBuilder ) {
-            return call_user_func( $this->validValueBuilder , $record , $args );
+            return Utils::evaluate( $this->validValues , array($record, $args) );
+        } 
+        elseif( $this->validValueBuilder ) {
+            return Utils::evaluate( $this->validValueBuilder , array($record, $args) );
         }
     }
 
     public function getDefaultValue( $record = null, $args = null )
     {
-        if( $this->defaultBuilder ) {
-            return call_user_func( $this->defaultBuilder , $record, $args );
-        }
-        elseif( $this->default ) {
-            if( is_callable( $this->default ) ) {
-                return call_user_func( $this->default, $record, $args );
-            }
-            return $this->default; // might contains array() which is a raw sql statement.
+        // XXX: might contains array() which is a raw sql statement.
+        if( $this->default ) {
+            return Utils::evaluate( $this->default , array($record, $args));
         }
     }
 
@@ -139,6 +146,8 @@ class RuntimeColumn
 
     /** 
      * deflate value 
+     *
+     * @param mixed $value
      **/
     public function deflate( $value )
     {
@@ -151,10 +160,10 @@ class RuntimeColumn
         return Deflator::deflate( $value , $this->isa );
     }
 
-    public function inflate( $value )
+    public function inflate( $value, $record )
     {
         if( $this->inflator ) {
-            return call_user_func( $this->inflator , $value );
+            return call_user_func( $this->inflator , $value , $record );
         }
         // use global inflator
         return Inflator::inflate( $value , $this->isa );
@@ -167,21 +176,27 @@ class RuntimeColumn
             return $this->validPairs[ $value ];
         }
 
-        if( $this->validValues ) {
-            if( is_callable($this->validValues) ) {
-                $validValues = call_user_func( $this->validValues );
-            } else {
-                $validValues = $this->validValues;
-            }
-
-            if( $validValues && isset( $validValues[ $value ] ) ) {
-                return $this->validValues[ $value ]; // value => label
+        if( $this->validValues && $validValues = Utils::evaluate($this->validValues) ) {
+            // search value in validValues array
+            // because we store the validValues in an (label => value) array.
+            if( ArrayUtils::is_assoc_array( $validValues ) ) {
+                if( false !== ($label = array_search( $value , $validValues)) ) {
+                    return $label;
+                }
+                return;
+            } elseif( in_array($value,$validValues) ) {
+                return $value;
             }
         }
 
         if( $this->validValueBuilder && $values = call_user_func($this->validValueBuilder) ) {
-            if( isset($values[ $value ]) ) {
-                return $values[ $value ];
+            if( ArrayUtils::is_assoc_array( $values ) ) {
+                if( false !== ($label = array_search($value,$values) ) ) {
+                    return $label;
+                }
+                return;
+            } elseif( in_array($value, $values ) ) {
+                return $value;
             }
         }
 
@@ -208,6 +223,3 @@ class RuntimeColumn
     }
 
 }
-
-
-

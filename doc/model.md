@@ -106,6 +106,9 @@ The following lines runs:
         ->where()
         ->equal('name','Rename')
         ->execute();
+
+    $ret = \tests\Author::delete()->execute();
+
 ?>
 
 ## Connections

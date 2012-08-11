@@ -6,8 +6,8 @@ class Utils
 {
     static function getSchemaClassFromPathsOrClassNames($loader, $args,$logger = null)
     {
-        $classes = array();
         if( count($args) && ! file_exists($args[0]) ) {
+            $classes = array();
             // it's classnames
             foreach( $args as $class ) {
                 // call class loader to load
@@ -21,6 +21,7 @@ class Utils
                         echo ">>> $class not found.\n";
                 }
             }
+            return $classes;
         }
         else {
             $finder = new SchemaFinder;
@@ -40,11 +41,40 @@ class Utils
                         require $file;
                 }
             }
-            $classes = $finder->getSchemaClasses();
+            return $finder->getSchemaClasses();
         }
-        return $classes;
     }
 
+    static function breakDSN($dsn) {
+        // break DSN string down into parameters
+        $params = array();
+        if( strpos( $dsn, ':' ) === false ) {
+            $params['driver'] = $dsn;
+            return $params;
+        }
 
+        list($driver,$paramString) = explode(':',$dsn,2);
+        $params['driver'] = $driver;
+
+        if( $paramString === ':memory:' ) {
+            $params[':memory:'] = 1;
+            return $params;
+        }
+
+        $paramPairs = explode(';',$paramString);
+        foreach( $paramPairs as $pair ) {
+            if( preg_match('#(\S+)=(\S+)#',$pair,$regs) ) {
+                $params[$regs[1]] = $regs[2];
+            }
+        }
+        return $params;
+    }
+
+    static function evaluate($data, $params = array() ) {
+        if( $data && is_callable($data) ) {
+            return call_user_func_array($data, $params );
+        }
+        return $data;
+    }
 }
 

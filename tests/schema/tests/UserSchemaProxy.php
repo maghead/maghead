@@ -49,6 +49,8 @@ class UserSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
+
+        parent::__construct();
     }
 
 }

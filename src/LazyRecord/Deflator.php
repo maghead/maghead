@@ -26,6 +26,9 @@ class Deflator
             if( is_a($value, 'DateTime') ) {
                 return $value->format( DateTime::ATOM );
             }
+            if( $value === '' ) {
+                return null;
+            }
             return $value; // might return ""
         }
         elseif( $isa == 'bool' ) 

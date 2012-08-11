@@ -37,7 +37,7 @@ class AddressSchema extends SchemaDeclare
 
                 ->default('Default')
                 ->default( array('current_timestamp') ) // raw sql string
-                ->defaultBuilder(function() { 
+                ->default(function() { 
                         return date('c');
                 })
 
@@ -106,8 +106,11 @@ Default value builder:
 
     $this->column('name')
         ->boolean()
-        ->defaultBuilder(function() { return 'New name'; });
+        ->default(function($record,$args) { return 'New name'; });
 
+The callback function's prototype: ($record, $args)
+
+The `$args` is the arguments of create action.
 
 Valid values
 ------------

@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Schema\SqlBuilder;
+namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\QueryBuilder;
 
@@ -13,14 +13,14 @@ class SqliteBuilder
     implements BuilderInterface
 {
 
-    function buildColumnSql($schema, $column) {      
+    function buildColumnSql($schema, $column) {
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         $type = $column->type;
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql = $this->parent->driver->getQuoteColumn( $name );
+        $sql = $this->driver->getQuoteColumn( $name );
         $sql .= ' ' . $type;
 
         if( $column->required || $column->notNull )
@@ -38,7 +38,7 @@ class SqliteBuilder
             if( is_array($default) ) {
                 $sql .= ' default ' . $default[0];
             } else {
-                $sql .= ' default ' . $this->parent->driver->inflate($default);
+                $sql .= ' default ' . $this->driver->inflate($default);
             }
         }
 
@@ -92,38 +92,16 @@ class SqliteBuilder
         return $sql;
     }
 
-    public function createTable($schema)
-    {
-        $sql = 'CREATE TABLE ' 
-            . $this->parent->driver->getQuoteTableName($schema->getTable()) . " ( \n";
-        $columnSql = array();
-        foreach( $schema->columns as $name => $column ) {
-            $columnSql[] = $this->buildColumnSql( $schema, $column );
-        }
-        $sql .= join(",\n",$columnSql);
-        $sql .= "\n);\n";
-        return $sql;
-    }
-
     public function dropTable($schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-            . $this->parent->driver->getQuoteTableName( $schema->getTable() )
+            . $this->driver->getQuoteTableName( $schema->getTable() )
             . ';';
     }
 
-    public function build($schema)
+    public function buildIndex($schema) 
     {
-        $sqls = array();
-
-        if( $this->parent->clean || $this->parent->rebuild ) {
-            $sqls[] = $this->dropTable($schema);
-        }
-        if( $this->parent->clean )
-            return $sqls;
-
-        $sqls[] = $this->createTable($schema);
-        return $sqls;
+        return array();
     }
 
 }

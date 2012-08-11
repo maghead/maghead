@@ -4,6 +4,7 @@ use CLIFramework\Command;
 use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
+use LazyRecord\Command\CommandUtils;
 use Exception;
 
 class BuildSqlCommand extends \CLIFramework\Command
@@ -16,6 +17,10 @@ class BuildSqlCommand extends \CLIFramework\Command
 
         // --clean
         $opts->add('clean','clean up SQL schema.');
+
+        $opts->add('f|file:', 'write schema sql to file');
+
+        $opts->add('basedata','insert basedata' );
 
         // --data-source
         $opts->add('D|data-source:', 'specify data source id');
@@ -40,71 +45,43 @@ DOC;
 
     public function execute()
     {
-        // support for schema file or schema class names
-        $schemas = func_get_args();
-
         $options = $this->options;
         $logger  = $this->logger;
 
-        $loader = ConfigLoader::getInstance();
-        $loader->load();
-        $loader->initForBuild();
+        CommandUtils::set_logger($this->logger);
+        CommandUtils::init_config_loader();
 
-        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
-        $logger->info("Initialize connection manager...");
 
         // XXX: from config files
         $id = $options->{'data-source'} ?: 'default';
-        $conn = $connectionManager->getConnection($id);
-        $type = $connectionManager->getDataSourceDriver($id);
-        $driver = $connectionManager->getQueryDriver($id);
-
 
         $logger->info("Finding schema classes...");
 
-        $args = func_get_args();
-        $classes = \LazyRecord\Utils::getSchemaClassFromPathsOrClassNames( 
-            $loader, $args , $this->logger );
+        $classes = CommandUtils::find_schemas_with_arguments( func_get_args() );
+
+        CommandUtils::print_schema_classes($classes);
+
+        $schemas = CommandUtils::schema_classes_to_objects( $classes );
+
+        $logger->info("Connecting to data soruce $id...");
 
         $logger->info("Initialize schema builder...");
-        $builder = new \LazyRecord\Schema\SqlBuilder($driver, array( 
-            'rebuild' => $options->rebuild,
-            'clean' => $options->clean,
-        )); // driver
-
-        $fp = fopen('schema.sql','a+');
-
-        foreach( $classes as $class ) {
-            $logger->info( "Building SQL for $class" );
-
-            fwrite( $fp , "--- schema $class\n" );
-
-            $schema = new $class;
-            $sqls = $builder->build($schema);
-            foreach( $sqls as $sql ) {
-
-                $logger->info("--- SQL for $class ");
-                $logger->info( $sql );
-                fwrite( $fp , $sql . "\n" );
-
-                $conn->query( $sql );
-                $error = $conn->errorInfo();
-                if( $error[1] ) {
-                    $msg =  $class . ': ' . var_export( $error , true );
-                    $logger->error($msg);
-                    fwrite( $fp , $msg);
-                }
-            }
-
-            $modelClass = $schema->getModelClass();
-            $logger->info("Creating base data for $modelClass");
-            $schema->bootstrap( new $modelClass );
+        $sqlOutput = CommandUtils::build_schemas_with_options($id, $options, $schemas);
+        if( $file = $this->options->file ) {
+            $fp = fopen($file,'w');
+            fwrite($fp, $sqlOutput);
+            fclose($fp);
         }
 
-        $logger->info('Schema SQL is generated, please check schema.sql file.');
-        fclose($fp);
+        if( $this->options->basedata ) {
+            CommandUtils::build_basedata($schemas);
+        }
+
+        $logger->info(
+            $logger->formatter->format(
+                'Done. ' . count($schemas) . " schema tables were generated into data source '$id'."
+            ,'green')
+        );
     }
 }
-
-
 

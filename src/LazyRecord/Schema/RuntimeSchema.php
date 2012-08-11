@@ -5,51 +5,72 @@ use Exception;
 
 class RuntimeSchema extends SchemaBase
 {
-
-
     public $modelClass;
 
     public $collectionClass;
 
-    public $columnCached = array();
+    public $columnObjects = array();
 
+
+    public function __construct() {
+        // build RuntimeColumn objects
+        foreach( $this->columns as $name => $columnMeta ) {
+            $this->columnObjects[ $name ] = new RuntimeColumn( $name , $columnMeta['attributes'] );
+        }
+    }
+
+    /**
+     * Inject schema array data into runtime schema object
+     *
+     * @param array
+     */
     public function import($schemaArray)
     {
-        $this->columns = $schemaArray['columns'];
-        $this->columnNames = $schemaArray['column_names'];
+        $this->columns = $schemaArray['columns']; /* contains column names => column attribute array */
+        $this->columnNames = $schemaArray['column_names']; /* column names array */
         $this->primaryKey = $schemaArray['primary_key'];
         $this->table = $schemaArray['table'];
         $this->modelClass = $schemaArray['model_class'];
-    }
 
+    }
 
     public function hasColumn($name)
     {
-        if( isset($this->columnCached[ $name ]) || isset($this->columns[$name] ) )  {
+        if( isset($this->columns[$name]) ) {
             return true;
         }
     }
 
     public function getColumn($name)
     {
-        if( isset($this->columnCached[ $name ]) )  {
-            return $this->columnCached[ $name ];
-        } elseif( isset($this->columns[$name]) ) {
-            return $this->columnCached[ $name ] = new RuntimeColumn( $name , $this->columns[$name]['attributes'] );
+        if( isset($this->columnObjects[ $name ]) ) {
+            return $this->columnObjects[ $name ];
         }
         return null;
     }
 
-    public function getColumnNames()
+    public function getColumnNames($includeVirtual = false)
     {
-        return array_keys( $this->columns );
+        $names = array();
+        foreach( $this->columnObjects as $name => $column ) {
+            if( ! $includeVirtual && $column->virtual )
+                continue;
+            $names[] = $name;
+        }
+        return $names;
     }
 
-    public function getColumns() 
+    public function getColumns($includeVirtual = false) 
     {
+        if( $includeVirtual )
+            return $this->columnObjects;
+
         $columns = array();
-        foreach( $this->columns as $name => $data ) {
-            $columns[$name] = $this->getColumn( $name );
+        foreach( $this->columnObjects as $name => $column ) {
+            // skip virtal columns
+            if( $column->virtual )
+                continue;
+            $columns[ $name ] = $column;
         }
         return $columns;
     }

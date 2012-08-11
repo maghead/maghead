@@ -7,26 +7,24 @@ class TableParserTest extends PHPUnit_Framework_TestCase
     {
     }
 
-    function getDrivers()
+    function testDrivers()
     {
         $types = array();
         $config = LazyRecord\ConfigLoader::getInstance();
         $config->load(true); // force load from .lazy.php
         $config->init();
         $conns = LazyRecord\ConnectionManager::getInstance();
-
         if( $conns->hasDataSource('mysql') )
-            $types[] = array( 'mysql' );
+            $this->driverTest('mysql');
         if( $conns->hasDataSource('pgsql') )
-            $types[] = array( 'pgsql' );
-        return $types;
+            $this->driverTest('pgsql');
     }
 
 
     /**
      * @dataProvider getDrivers
      */
-    function test($driverType)
+    function driverTest($driverType)
     {
         $conns = LazyRecord\ConnectionManager::getInstance();
         $conn = $conns->getConnection($driverType);

@@ -1,9 +1,9 @@
 <?php
 use LazyRecord\SqlBuilder;
 
-class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
+class MysqlModelTest extends PHPUnit_Framework_ModelTestCase
 {
-    public $dsn = 'pgsql:dbname=testing';
+    public $dsn = 'mysql:dbname=testing';
 
     public $schemaPath = 'tests/schema';
 
@@ -161,6 +161,8 @@ class PgsqlModelTest extends PHPUnit_Framework_ModelTestCase
         $ret = $authors->fetch();
         ok($ret);
         is(1,$authors->size());
+
+        $authors->delete();
     }
 
 }

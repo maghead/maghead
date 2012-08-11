@@ -13,6 +13,6 @@ Then you can define a new type called 'datetime' in your schema column:
 You can also define a inflator callback in your schema column:
 
     $this->column('created_at')
-        ->inflator( function($value) { 
+        ->inflator( function($value, $record) { 
             return new DateTime( $value ); 
         });

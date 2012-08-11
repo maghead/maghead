@@ -1,13 +1,24 @@
 <?php
 namespace LazyRecord;
 use Exception;
+use PDOException;
 use PDO;
 use ArrayAccess;
 
+class SQLQueryException extends Exception 
+{
+    public $args = array();
+    public $sql;
+
+    function __construct( $e , $dsId , $sql , $args ) {
+        parent::__construct( 'SQL Query Error at "' . $dsId . '" data source, Message: ' . $e->getMessage() , 0 , $e);
+        $this->sql = $sql;
+        $this->args = $args;
+    }
+}
 
 class ConnectionException extends Exception
 {
-
 
 }
 
@@ -22,17 +33,29 @@ class ConnectionException extends Exception
  *    $result = $conn->query( );
  *    $stm = $conn->prepare( );
  *    $stm->execute( );
+ *
+ *    foreach( $connManager as $dataSourceId => $dataSourceConfig ) {
+ *
+ *    }
  */
 
 class ConnectionManager
     implements ArrayAccess
 {
+
+
+    /**
+     * @var array contains data source configurations
+     */
     public $datasources = array();
 
+    /**
+     * @var PDOConnections[] contains PDO connection objects.
+     */
     public $conns = array();
 
     /**
-     * Has connection ? 
+     * Check if we have connected already
      *
      * @param PDO $conn pdo connection.
      * @param string $id data source id.
@@ -75,6 +98,23 @@ class ConnectionManager
         return isset($this->datasources[ $id ] );
     }
 
+
+    /**
+     * Return datasource id(s)
+     *
+     * @return array key list
+     */
+    public function getDataSourceIdList()
+    {
+        return array_keys($this->datasources);
+    }
+
+
+    /**
+     * Get datasource config
+     *
+     * @return array
+     */
     public function getDataSource($id = 'default')
     {
         if( isset($this->datasources[ $id ] ) )
@@ -93,9 +133,11 @@ class ConnectionManager
 
         // configure query driver type
         if( $driverType = $this->getDataSourceDriver($id) ) {
+            $conn = $this->getConnection($id);
             $driver->configure('driver',$driverType);
-            $driver->quoter = function($string) use ($self,$id) {
-                return $self->getConnection($id)->quote($string);
+            $driver->quoter = function($string) use ($conn,$id) {
+                // It's PDO quote
+                return $conn->quote($string);
             };
         }
 
@@ -116,12 +158,17 @@ class ConnectionManager
     public function getDataSourceDriver($id)
     {
         $config = $this->getDataSource($id);
-        list($driverType) = explode( ':', $config['dsn'] );
-        return $driverType;
+        if( isset($config['driver']) ) {
+            return $config['driver'];
+        }
+        if( isset($config['dsn']) ) {
+            list($driverType) = explode( ':', $config['dsn'] , 2 );
+            return $driverType;
+        }
     }
 
     /**
-     * create connection
+     * Create connection
      *
      *    $dbh = new PDO('mysql:host=localhost;dbname=test', $user, $pass);
      *
@@ -141,33 +188,66 @@ class ConnectionManager
     {
         if( isset($this->conns[$sourceId]) ) {
             return $this->conns[$sourceId];
-
         } elseif( isset($this->datasources[ $sourceId ] ) ) {
             $config = $this->datasources[ $sourceId ];
-            $conn = new PDO( $config['dsn'],
-                @$config['user'], 
-                @$config['pass'], 
-                @$config['connection_options'] );
+            $dsn = null;
 
-            if ($conn->getAttribute(PDO::ATTR_DRIVER_NAME) == 'mysql') {
-                $conn->setAttribute( PDO::MYSQL_ATTR_INIT_COMMAND , "SET NAMES utf8");
+            if( isset($config['dsn']) ) {
+                $dsn = $config['dsn'];
             }
+            else { 
+                // Build DSN connection string for PDO
+                $driver = $config['driver'];
+                $params = array();
+                if( isset($config['database']) ) {
+                    $params[] = 'dbname=' . $config['database'];
+                }
+                if( isset($config['host']) ) {
+                    $params[] = 'host=' . $config['host'];
+                }
+                $dsn = $driver . ':' . join(';',$params );
+            }
+
+            // TODO: use constant() for `connection_options`
+            $connectionOptions = isset($config['connection_options'])
+                                     ? $config['connection_options'] : array();
+
+            if( 'mysql' === $this->getDataSourceDriver($sourceId) ) {
+                $connectionOptions[ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
+            }
+
+            $conn = new PDO( $dsn,
+                isset($config['user']) ? $config['user'] : null, 
+                isset($config['pass']) ? $config['pass'] : null, 
+                $connectionOptions );
+
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);  // TODO: make this optional
+
+            // TODO: can we make this optional ?
+            $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
             // $driver = $this->getQueryDriver($sourceId);
             // register connection to connection pool
             return $this->conns[ $sourceId ] = $conn;
         }
-
         throw new ConnectionException("data source $sourceId not found.");
     }
 
+
+    /**
+     * Get default data source id
+     *
+     * @return string 'default'
+     */
     public function getDefault()
     {
         return $this->getConnection('default');
     }
 
+
+    /**
+     * Get singleton instance
+     */
     static function getInstance()
     {
         static $instance;
@@ -176,8 +256,8 @@ class ConnectionManager
 
     public function close($sourceId)
     {
-        if( $conn = $this->getConnection($sourceId) ) {
-            $conn = null;
+        if( isset($this->conns[ $sourceId ]) ) {
+            $this->conns[ $sourceId ] = null;
             unset( $this->conns[ $sourceId ] );
         }
     }
@@ -233,19 +313,25 @@ class ConnectionManager
      */
     public function query($dsId,$sql)
     {
-        $conn = $this->getConnection($dsId);
-        return $conn->query( $sql );
+        return $this->getConnection($dsId)->query( $sql );
     }
 
     public function prepareAndExecute($dsId,$sql,$args = array() )
     {
-        $conn = $this->getConnection($dsId);
-        $stm = $conn->prepare( $sql );
-        $success = $stm->execute( $args );
+        try {
+            $conn = $this->getConnection($dsId);
+            $stm = $conn->prepare( $sql );
+            $stm->execute( $args ); // $success 
+        } catch( PDOException $e ) {
+            throw new SQLQueryException($e,$dsId,$sql,$args);
+        }
         // if failed ?
         // if( false === $success ) {  }
         return $stm;
     }
-    
-}
 
+    public function __destruct() 
+    {
+        $this->free();
+    }
+}

@@ -2,9 +2,11 @@
 namespace LazyRecord;
 use PDO;
 use PDOException;
+use RuntimeException;
 use Exception;
 use Iterator;
 use ArrayAccess;
+use Countable;
 
 use SQLBuilder\QueryBuilder;
 use LazyRecord\OperationResult\OperationSuccess;
@@ -19,8 +21,9 @@ use SerializerKit\JsonSerializer;
  * base collection class
  */
 class BaseCollection
-    implements Iterator, ArrayAccess, ExporterInterface
+    implements Iterator, ArrayAccess, Countable, ExporterInterface
 {
+    public $schema;
 
     protected $_lastSql;
 
@@ -29,7 +32,7 @@ class BaseCollection
     /**
      * @var SQLBuilder\QueryBuilder
      */
-    protected $_readQuery;
+    public $_readQuery;
 
     /**
      * @var PDOStatement handle
@@ -50,7 +53,6 @@ class BaseCollection
      * preset vars for creating
      */
     protected $_presetVars = array();
-
 
 
     /**
@@ -76,30 +78,34 @@ class BaseCollection
 
     protected $_alias = 'm';
 
-    protected $_explictSelect = false;
+    protected $explictSelect = false;
 
 
     public function __construct() {
         // init a query
+        $this->schema = SchemaLoader::load( static::schema_proxy_class );
     }
 
+    public function getSchema() {
+        return $this->schema;
+    }
 
-    public function __get( $key ) 
-    {
+    public function __get( $key ) {
         /**
          * lazy attributes
          */
         if( $key === '_schema' ) {
             return SchemaLoader::load( static::schema_proxy_class );
         }
-        elseif( $key === '_connection' ) {
-            return ConnectionManager::getInstance();
-        }
         elseif( $key === '_handle' ) {
             return $this->handle ?: $this->prepareData();
         }
         elseif( $key === '_query' ) {
-            return $this->_readQuery ?: $this->createQuery( $this->_schema->getReadSourceId() );
+            return $this->_readQuery 
+                    ? $this->_readQuery
+                    : $this->_readQuery = $this->createQuery( 
+                        $this->_schema->getReadSourceId() 
+                    );
         }
         elseif( $key === '_items' ) {
             return $this->_itemData ?: $this->_readRows();
@@ -108,13 +114,17 @@ class BaseCollection
 
 
     /**
-     * Free cached row data
+     * Free cached row data and result handle, 
+     * But still keep the same query
      *
      * @return $this
      */
     public function free()
     {
         $this->_itemData = null;
+        $this->_result = null;
+        $this->_itemCursor = null;
+        $this->handle = null;
         return $this;
     }
 
@@ -145,26 +155,30 @@ class BaseCollection
 
     public function setExplictSelect($boolean = true)
     {
-        $this->_explictSelect = $boolean;
+        $this->explictSelect = $boolean;
         return $this;
     }
 
 
+    // TODO: maybe we should move this method into RuntimeSchema.
+    // Because it's used in BaseModel class too
     public function getQueryDriver( $dsId )
     {
-        return $this->_connection->getQueryDriver( $dsId );
+        return ConnectionManager::getInstance()->getQueryDriver( $dsId );
     }
 
     public function getWriteQueryDriver()
     {
-        $id = $this->_schema->getWriteSourceId();
-        return $this->getQueryDriver( $id );
+        return $this->getQueryDriver( 
+            $this->schema->getWriteSourceId()
+        );
     }
 
     public function getReadQueryDriver()
     {
-        $id = $this->_schema->getReadSourceId();
-        return $this->getQueryDriver( $id );
+        return $this->getQueryDriver( 
+            $this->schema->getReadSourceId()
+        );
     }
 
 
@@ -172,14 +186,14 @@ class BaseCollection
     {
         $q = new QueryBuilder;
         $q->driver = $this->getQueryDriver( $dsId );
-        $q->table( $this->_schema->table );
+        $q->table( $this->schema->table );
         $q->select(
-            $this->_explictSelect 
+            $this->explictSelect 
                 ? $this->getExplicitColumnSelect($q->driver)
                 : '*'
         );
         $q->alias( $this->getAlias() ); // main table alias
-        return $this->_readQuery = $q;
+        return $q;
     }
 
 
@@ -187,9 +201,9 @@ class BaseCollection
     public function getExplicitColumnSelect($driver)
     {
         $alias = $this->getAlias();
-        return array_map( function($name) use($alias,$driver) { 
+        return array_map(function($name) use($alias,$driver) { 
                 return $alias . '.' . $driver->getQuoteColumn( $name );
-        }, $this->_schema->getColumnNames());
+        }, $this->schema->getColumnNames());
     }
 
     /**
@@ -200,7 +214,7 @@ class BaseCollection
      */
     public function prepareData($force = false)
     {
-        if( $this->handle == null || $force ) {
+        if( ! $this->handle || $force ) {
             $this->_result = $this->fetch();
         }
         return $this->handle;
@@ -219,8 +233,7 @@ class BaseCollection
         $query = $this->_query;
         $this->_lastSql = $sql = $query->build();
         $this->_vars = $vars = $query->vars;
-
-        $dsId = $this->_schema->getReadSourceId();
+        $dsId = $this->schema->getReadSourceId();
 
         // XXX: here we use SQLBuilder\QueryBuilder to build our variables,
         //   but PDO doesnt accept boolean type value, we need to transform it.
@@ -232,7 +245,7 @@ class BaseCollection
         }
 
         try {
-            $this->handle = $this->_connection->prepareAndExecute($dsId,$sql, $vars );
+            $this->handle = ConnectionManager::getInstance()->prepareAndExecute($dsId,$sql, $vars );
         }
         catch ( Exception $e )
         {
@@ -247,24 +260,28 @@ class BaseCollection
 
 
     /**
-     * Select count(*) statement to current query
+     * Clone current read query and apply select to count(*)
+     * So that we can use the same conditions to query item count.
+     *
+     * @return int
      */
     public function queryCount()
     {
-        $dsId = $this->_schema->getReadSourceId();
-        $query = $this->_query;
-        $query->orders = array();
-        $query->select( 'count(*)' );
+        $dsId = $this->schema->getReadSourceId();
+        $q = clone $this->_query;
+        $q->select( 'count(*)' ); // override current select.
 
-        $sql  = $query->build();
-        $vars = $query->vars;
-        $handle = $this->_connection->prepareAndExecute($dsId,$sql, $vars);
-        return (int) $handle->fetchColumn();
+        // when selecting count(*), we dont' use groupBys or order by
+        $q->orders = array();
+        return (int) ConnectionManager::getInstance()
+                    ->prepareAndExecute($dsId,$q->build(),$q->vars)
+                    ->fetchColumn();
     }
 
 
     /**
-     * Get selected item size.
+     * Get current selected item size 
+     * by using php function `count`
      *
      * @return integer size
      */
@@ -273,18 +290,44 @@ class BaseCollection
         return count($this->_items);
     }
 
+    public function count() 
+    {
+        return $this->size();
+    }
+
+
+    /**
+     * Query Limit for QueryBuilder
+     *
+     * @param integer $number
+     */
     public function limit($number)
     {
         $this->_query->limit($number);
         return $this;
     }
 
+    /**
+     * Query offset for QueryBuilder
+     *
+     * @param integer $number 
+     */
     public function offset($number)
     {
         $this->_query->offset($number);
         return $this;
     }
 
+
+
+    /**
+     * A Short helper method for using limit and offset of QueryBuilder.
+     *
+     * @param integer $page
+     * @param integer $pageSize
+     *
+     * @return $this
+     */
     public function page($page,$pageSize = 20)
     {
         $this->limit($pageSize);
@@ -295,11 +338,11 @@ class BaseCollection
     }
 
     /**
-     * Get selected items and wrap it into a CollectionPager object
+     * Get selected items and wrap it into a CollectionPager object.
      *
      * CollectionPager is a simple data pager, do not depends on database.
      *
-     * @return CollectionPager
+     * @return LazyRecord\CollectionPager
      */
     public function pager($page = 1,$pageSize = 10)
     {
@@ -307,9 +350,10 @@ class BaseCollection
         return new CollectionPager( $this->_items, $page, $pageSize );
     }
 
-
     /**
      * Get items
+     *
+     * @return LazyRecord\BaseModel[]
      */
     public function items()
     {
@@ -330,7 +374,7 @@ class BaseCollection
     {
         $h = $this->_handle;
 
-        if( $h === null ) {
+        if( ! $h ) {
             if( $this->_result->exception )
                 throw $this->_result->exception;
             throw new RuntimeException( get_class($this) . ':' . $this->_result->message );
@@ -380,22 +424,23 @@ class BaseCollection
     /*********************** End of Iterator methods ************************/
 
 
-
-
-
     public function splice($pos,$count = null)
     {
-        return array_splice( $this->_items, $pos, $count);
+        $items = $this->_items ?: array();
+        return array_splice( $items, $pos, $count);
     }
 
     public function first()
     {
-        return $this->_items[0];
+        return isset($this->_items[0]) ?
+                $this->_items[0] : null;
     }
 
     public function last()
     {
-        return end($this->_items);
+        if( !empty($this->_items) ) {
+            return end($this->_items);
+        }
     }
 
 
@@ -427,33 +472,38 @@ class BaseCollection
 
     public function each($cb)
     {
-        $items = array_map($cb,$this->_items);
         $collection = new static;
-        $collection->setRecords($items);
+        $collection->setRecords(
+            array_map($cb,$this->_items)
+        );
         return $collection;
     }
 
     public function filter($cb)
     {
-        $items = array_filter($this->_items,$cb);
         $collection = new static;
-        $collection->setRecords($items);
+        $collection->setRecords(array_filter($this->_items,$cb));
         return $collection;
     }
 
     public function loadQuery( $sql, $args = array() , $dsId = null )
     {
         if( ! $dsId )
-            $dsId = $this->_schema->getReadSourceId();
-        $stm = $this->_connection->prepareAndExecute( $dsId, $sql , $args );
-        $this->handle = $stm;
+            $dsId = $this->schema->getReadSourceId();
+        $this->handle = ConnectionManager::getInstance()->prepareAndExecute( $dsId, $sql , $args );
+    }
+
+
+    public function newModel()
+    {
+        return $this->schema->newModel();
     }
 
 
     static function fromArray($list)
     {
         $collection = new static;
-        $schema = $collection->_schema;
+        $schema = $collection->schema;
         $records = array();
         foreach( $list as $item ) {
             $model = $schema->newModel();
@@ -497,19 +547,30 @@ class BaseCollection
     }
 
 
+    /**
+     * Create new record or relationship record, 
+     * and append the record into _itemData list
+     *
+     * @param array $args Arguments for creating record
+     *
+     * @return mixed record object
+     */
     public function create($args)
     {
         if( $this->_presetVars ) {
             $args = array_merge( $this->_presetVars , $args );
         }
-        $model = $this->_schema->newModel();
-        $return = $model->create($args);
-        if( true === $return->success ) {
+
+        // model record
+        $record = $this->schema->newModel();
+        $return = $record->create($args);
+        if( $return->success ) {
             if( $this->_postCreate ) {
-                call_user_func( $this->_postCreate, $model, $args );
-                // $this->_postCreate($model,$args);
+                $middleRecord = call_user_func( $this->_postCreate, $record, $args );
+                // $this->_postCreate($record,$args);
             }
-            return $model;
+            $this->_itemData[] = $record;
+            return $record;
         }
         $this->_result = $return;
         return false;
@@ -526,6 +587,11 @@ class BaseCollection
     public function setPresetVars($vars)
     {
         $this->_presetVars = $vars;
+    }
+
+    public function getSql() 
+    {
+        return $this->_lastSql;
     }
 
     public function getLastSql()
@@ -551,8 +617,8 @@ class BaseCollection
     {
         /* fetch by current query */
         $query = $this->_query;
-        $sql = $query->build();
-        $vars = $query->vars;
+        $sql   = $query->build();
+        $vars  = $query->vars;
         foreach( $vars as $name => $value ) {
             $sql = str_replace( $name, $value, $sql );
         }
@@ -564,21 +630,89 @@ class BaseCollection
      * Override QueryBuilder->join method,
      * to enable explict selection.
      *
-     * XXX: For model/collection objects, we should convert it to table name
+     * For model/collection objects, we should convert it to table name
+     *
+     *
+     * Usage:
+     *
+     *       $collection->join( new Author, 'LEFT', 'a' ); // left join with alias 'a'
+     *       $collection->join('authors'); // left join without alias
+     *
+     *       $collection->join( new Author, 'LEFT' , 'a' )
+     *                  ->on('m.author_id', array('a.id') ); // LEFT JOIN authors table on m.author_id = a.id
+     *
+     *       $collection->join('authors','RIGHT','a'); // right join with alias 'a'
+     *
+     * @param mixed $target (Model object or table name)
+     * @param string $type  Join Type (default 'LEFT')
+     * @param string $alias Alias
+     *
+     * @return QueryBuilder
      */
-    public function join($table,$alias = null)
+    public function join($target, $type = 'LEFT' , $alias = null, $relationId = null )
     {
-        $this->setExplictSelect(true);
-        return $this->_query->join($table,$alias);
+        $this->explictSelect = true;
+        $query = $this->_query;
+
+        // for models and schemas join
+        if( is_object($target) ) {
+            $table = $target->getTable();
+            $columns = $target->getColumnNames();
+            $select = array();
+            $alias = $alias ?: $table;
+            foreach( $columns as $name ) {
+                $select[ $alias . '.' . $name ] = $alias . '_' . $name;
+            }
+            $query->addSelect($select);
+            $expr = $query->join($table, $type); // it returns JoinExpression object
+
+            if( $relationId ) {
+                $relation = $this->schema->getRelation( $relationId );
+                $expr->on()
+                    ->equal( $this->getAlias() . '.' . $relation['self']['column'] , 
+                    array(  ($alias ?: $table) . '.' . $relation['foreign']['column'] ));
+            } else {
+                $relations = $this->schema->relations;
+                foreach( $relations as $relation ) {
+                    if( ! isset($relation['foreign']) )
+                        continue;
+
+                    $fschema = new $relation['foreign']['schema'];
+                    $modelClass = $fschema->getModelClass();
+
+                    if( is_a($target, $fschema->getModelClass() ) ) {
+                        $expr->on()
+                            ->equal( $this->getAlias() . '.' . $relation['self']['column'] , 
+                            array(  ($alias ?: $table) . '.' . $relation['foreign']['column'] ));
+                        break;
+                    }
+                }
+            }
+
+            if( $alias ) {
+                $expr->alias( $alias );
+            }
+            return $expr;
+        }
+        else {
+            // For table name join
+            $expr = $query->join($target, $type);
+            if( $alias )
+                $expr->alias($alias);
+            return $expr;
+        }
     }
 
     /**
      * Override QueryBuilder->where method,
      * to enable explict selection
      */
-    public function where()
+    public function where($args = null)
     {
         $this->setExplictSelect(true);
+        if( $args && is_array($args) ) {
+            return $this->_query->whereFromArgs($args);
+        }
         return $this->_query->where();
     }
 
@@ -590,10 +724,68 @@ class BaseCollection
         $this->_itemData[] = $record;
     }
 
+
+
+    /**
+     * Set record objects
+     */
     public function setRecords($records)
     {
         $this->_itemData = $records;
     }
 
+
+
+    /**
+     * Free resources and reset query,arguments and data.
+     *
+     * @return $this
+     */
+    public function reset() 
+    {
+        $this->free();
+        $this->_readQuery = null;
+        $this->_vars = null;
+        $this->_lastSQL = null;
+        return $this;
+    }
+
+
+
+    /**
+     * Return pair array by columns
+     *
+     * @param string $key
+     * @param string $valueKey
+     */
+    public function asPairs($key,$valueKey)
+    {
+        $data = array();
+        foreach( $this as $item ) {
+            $data[ $item->get($key) ] = $item->get($valueKey);
+        }
+        return $data;
+    }
+
+
+
+    /**
+     * When cloning collection object,
+     * The resources will be free, and the 
+     * query builder will be cloned.
+     *
+     */
+    public function __clone() 
+    {
+        $this->free();
+        if( $this->_readQuery ) {
+            $this->_readQuery = clone $this->_readQuery;
+        }
+    }
+
+    public function __toString() 
+    {
+        return $this->toSql();
+    }
 }
 

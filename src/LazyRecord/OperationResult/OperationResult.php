@@ -5,21 +5,37 @@ class OperationResult
 {
     public $id;
 
+
+    /**
+     * @var boolean Success or fail.
+     */
     public $success;
 
+
+    /**
+     * @var string Message
+     */
     public $message;
 
+
+    /**
+     * @var string SQL query string
+     */
     public $sql;
 
     public $validations;
 
     public $errors;
 
+
+    /**
+     * @var array Arguments before applying to SQL builder.
+     */
     public $args;
 
 
     /**
-     * variables from SQL Query Builder
+     * @var array Variables that built from SQL Query Builder
      */
     public $vars;
 
@@ -55,8 +71,16 @@ class OperationResult
         return $vlds;
     }
 
-
-
+    public function __toString() {
+        $msg = $this->message . "\n";
+        if( $this->exception ) {
+            $msg .= ' Exception:' . $this->exception->getMessage() . "\n";
+            if( $this->sql ) {
+                $msg .= ' SQL:' . $this->sql . "\n";
+            }
+        }
+        return $msg;
+    }
 }
 
 
