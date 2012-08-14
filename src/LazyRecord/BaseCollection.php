@@ -273,8 +273,9 @@ class BaseCollection
 
         // when selecting count(*), we dont' use groupBys or order by
         $q->orders = array();
+        $sql = $q->build();
         return (int) ConnectionManager::getInstance()
-                    ->prepareAndExecute($dsId,$q->build(),$q->vars)
+                    ->prepareAndExecute($dsId,$sql,$q->vars)
                     ->fetchColumn();
     }
 
