@@ -97,6 +97,11 @@ class BaseModel
         return true;
     }
 
+    public function dataValue()
+    {
+        $pk = $this->schema->primaryKey;
+        return $this->get($pk);
+    }
 
     public function dataLabel() 
     {
