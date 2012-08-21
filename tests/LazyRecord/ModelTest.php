@@ -814,7 +814,7 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
 
 
-    public function testInflator()
+    public function testDateTimeInflator()
     {
         $n = new \tests\Name;
         $date = new DateTime('2011-01-01 00:00:00');
@@ -833,6 +833,32 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         isa_ok( 'DateTime' , $d );
         is( '20110101' , $d->format( 'Ymd' ) );
         ok( $n->delete()->success );
+    }
+
+    public function testZeroInflator()
+    {
+        $b = new \tests\Book;
+        $ret = $b->create(array( 'title' => 'Create X' , 'view' => 0 ));
+        result_ok($ret);
+        ok( $b->id );
+        is( 0 , $b->view );
+
+        $ret = $b->load($ret->id);
+        result_ok($ret);
+        ok( $b->id );
+        is( 0 , $b->view );
+
+        // test incremental
+        $ret = $b->update(array( 'view'  => array('"view" + 1') ), array('reload' => true));
+        result_ok($ret);
+        is( 1,  $b->view );
+
+        $ret = $b->update(array( 'view'  => array('"view" + 1') ), array('reload' => true));
+        result_ok($ret);
+        is( 2,  $b->view );
+
+        $ret = $b->delete();
+        result_ok($ret);
     }
 
     public function testStaticFunctions() 
