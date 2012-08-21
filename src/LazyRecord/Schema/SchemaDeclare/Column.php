@@ -295,8 +295,6 @@ class Column
      */
     public function refer($relationship)
     {
-        $this->attributes['isa'] = 'int';
-        $this->attributes['type'] = 'integer';
         $this->attributes['refer'] = $relationship;
         return $this;
     }
