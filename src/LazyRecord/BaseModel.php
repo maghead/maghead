@@ -97,13 +97,21 @@ class BaseModel
         return true;
     }
 
-    public function dataValue()
+    /**
+     * This is for select widget,
+     * returns label value from specific column.
+     */
+    public function dataLabel() 
     {
         $pk = $this->schema->primaryKey;
         return $this->get($pk);
     }
 
-    public function dataLabel() 
+    /**
+     * This is for select widget,
+     * returns data key from specific column.
+     */
+    public function dataKeyValue()
     {
         $pk = $this->schema->primaryKey;
         return $this->get($pk);
