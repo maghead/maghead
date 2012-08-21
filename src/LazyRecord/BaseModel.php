@@ -476,7 +476,7 @@ class BaseModel
      *
      * @return OperationResult operation result (success or error)
      */
-    public function _create($args)
+    public function _create($args, $options = array() )
     {
         if( empty($args) || $args === null )
             return $this->reportError( _('Empty arguments') );
@@ -553,7 +553,7 @@ class BaseModel
             }
 
             if( $validateFail ) {
-                throw new Exception( 'Validation Fail: ' . implode(', ', $validateFail ));
+                throw new Exception( 'Validation Fail, Columns: ' . implode(', ', $validateFail ));
             }
 
             $q = $this->createQuery( $dsId );
@@ -566,7 +566,6 @@ class BaseModel
 
             /* get connection, do query */
             $stm = $this->dbPrepareAndExecute($conn, $sql, $vars); // returns $stm
-            $this->afterCreate($args);
         }
         catch ( Exception $e )
         {
@@ -588,10 +587,11 @@ class BaseModel
             $pkId = $conn->lastInsertId();
         }
 
-        if( $this->autoReload ) {
+        if( $this->autoReload || isset($options['reload']) ) {
             // if possible, we should reload the data.
             $pkId ? $this->load($pkId) : $this->_data = $args;
         }
+        $this->afterCreate($args);
 
         $ret = array( 
             'sql' => $sql,
@@ -632,7 +632,7 @@ class BaseModel
             $column = $this->schema->getColumn( $pk );
             
             if( ! $column ) {
-                throw new Exception("Primary key is not defined: $pk .");
+                throw new Exception("Primary key $pk is not defined in " . get_class($this->schema) );
             }
             $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
@@ -736,7 +736,7 @@ class BaseModel
      *
      * @return OperationResult operation result (success or error)
      */
-    public function _update( $args ) 
+    public function _update( $args , $options = array() ) 
     {
         // check if the record is loaded.
         $k = $this->schema->primaryKey;
@@ -757,6 +757,10 @@ class BaseModel
         $kVal = isset($args[$k]) 
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
+
+        if( ! $kVal ) {
+            return $this->reportError("The value of primary key is undefined.");
+        }
 
         try 
         {
@@ -824,12 +828,20 @@ class BaseModel
             $query->update($args)->where()
                 ->equal( $k , $kVal );
 
-            $sql = $query->build();
+            $sql  = $query->build();
             $vars = $query->vars;
-            $stm = $this->dbPrepareAndExecute($conn, $sql, $vars);
+            $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
 
-            // merge updated data
-            $this->_data = array_merge($this->_data,$args);
+            // Merge updated data.
+            //
+            // if $args contains a raw SQL string, 
+            // we should reload data from database
+            if( isset($options['reload']) ) {
+                $this->reload();
+            } else {
+                $this->_data = array_merge($this->_data,$args);
+            }
+
             $this->afterUpdate($args);
         } 
         catch( Exception $e ) 
@@ -1032,7 +1044,6 @@ class BaseModel
     /*******************
      * Data Manipulators 
      *********************/
-
 
     /**
      * Set column value
