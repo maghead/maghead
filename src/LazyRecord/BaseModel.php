@@ -553,7 +553,7 @@ class BaseModel
             }
 
             if( $validateFail ) {
-                throw new Exception( 'Validation Fail, Columns: ' . implode(', ', $validateFail ));
+                throw new Exception( 'Validation Fail, Columns: ' . implode(', ', $validateFail ) . print_r($args, true) );
             }
 
             $q = $this->createQuery( $dsId );
