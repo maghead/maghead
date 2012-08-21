@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-08-22</date>
-  <time>00:59:54</time>
+  <time>01:00:12</time>
   <version>
     <release>1.5.14</release>
     <api>1.5.14</api>
@@ -193,7 +193,7 @@
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="19592d256900fc2b80045b8024913ba8"/>
-      <file name="lazy" role="script" md5sum="60361be3c8632c7c9eb9e0e661040db3"/>
+      <file name="bin/lazy" role="script" md5sum="c2294669f96c19bb9ca517fed737d58f"/>
     </dir>
   </contents>
   <dependencies>
@@ -417,7 +417,7 @@
       <install name="src/LazyRecord/Types/DateTime.php" as="LazyRecord/Types/DateTime.php"/>
       <install name="src/LazyRecord/Types.php" as="LazyRecord/Types.php"/>
       <install name="src/LazyRecord/Utils.php" as="LazyRecord/Utils.php"/>
-      <install name="lazy" as="lazy"/>
+      <install name="bin/lazy" as="lazy"/>
     </filelist>
   </phprelease>
 </package>
