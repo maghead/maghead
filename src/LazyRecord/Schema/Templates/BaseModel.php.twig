@@ -14,12 +14,11 @@ use LazyRecord\BaseModel;
 
 class {{ class.class.name }} extends BaseModel
 {
-    {% if class.consts %}
-    {% for con in class.consts %}
+{% if class.consts %}
+{% for con in class.consts %}
     {{con}}
-    {% endfor %}
-    {% endif %}
-
+{% endfor %}
+{% endif %}
 }
 
 
