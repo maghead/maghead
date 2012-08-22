@@ -45,7 +45,12 @@ class CommandUtils
         if( $seeds = $loader->getSeedScripts() ) {
             foreach( $seeds as $seed ) {
                 static::log("Running seed script: $seed",'green');
-                require $seed;
+                if( file_exists($seed) ) {
+                    require $seed;
+                } 
+                elseif( class_exists($seed,true) ) {
+                    $seed::seed();
+                }
             }
         }
     }
