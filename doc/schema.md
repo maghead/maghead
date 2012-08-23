@@ -178,4 +178,43 @@ to search/find:
 
     $address = $author->addresses->find(k);
 
+## RuntimeSchema API
+
+To get schema object in model:
+
+    $schema = $this->getSchema();   // RuntimeSchema
+
+To check if a schema contains column:
+
+    $exists = $schema->hasColumn('name');
+
+To get RuntimeColumn object from RuntimeSchema:
+
+    $column = $schema->getColumn('name'); // RuntimeColumn
+
+To get column names (excluding virtual columns):
+
+    $columnNames = $schema->getColumnNames();  // array('id','name')
+
+To get column names (including virtual columns):
+
+    $columnNames = $schema->getColumnNames(true);
+
+To get RuntimeColumn objects (excluding virtual columns)
+
+    $columns = $schema->getColumns( false );
+
+To get RuntimeColumn objects (including virtual columns)
+
+    $columns = $schema->getColumns( true );
+
+To create a model object from schema object:
+
+    $model = $schema->newModel();
+
+To create a collection object from schema object:
+
+    $collection = $schema->newCollection();
+
+
 
