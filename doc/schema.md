@@ -156,10 +156,12 @@ Valid values
         ));
 ?>
 
-Relationships
--------------
+Relationship
+------------
 
-Belongs To: `(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name = 'id')`
+### Belongs to
+
+`belongsTo(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name = 'id')`
 
 <?php
     $this->belongsTo( 'author' , '\tests\AuthorSchema', 'id' , 'author_id' );
@@ -167,13 +169,17 @@ Belongs To: `(accessor_name, foreign_schema_class_name, foreign_schema_column_na
 ?>
 
 
-Has One: `(accessor_name, self_column_name, foreign_schema_class_name, foreign_schema_column_name)`
+### Has One
+
+`one(accessor_name, self_column_name, foreign_schema_class_name, foreign_schema_column_name)`
 
 <?php 
     $this->one( 'author', 'author_id', '\tests\AuthorSchema' , 'id' );
 ?>
 
-Has Many: `(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name )`
+### Has Many
+
+`many(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name )`
 
 <?php
     $this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
