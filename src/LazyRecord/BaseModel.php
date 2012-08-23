@@ -484,7 +484,10 @@ class BaseModel
         try {
             $args = $this->beforeCreate( $args );
 
-            // first, filter the array
+            // save $args for afterCreate trigger method
+            $origArgs = $args;
+
+            // first, filter the array, arguments for inserting data.
             $args = $this->filterArrayWithColumns($args);
 
             if( ! $this->currentUserCan( $this->getCurrentUser(), 'create', $args ) ) {
@@ -591,7 +594,7 @@ class BaseModel
             // if possible, we should reload the data.
             $pkId ? $this->load($pkId) : $this->_data = $args;
         }
-        $this->afterCreate($args);
+        $this->afterCreate($origArgs);
 
         $ret = array( 
             'sql' => $sql,
@@ -765,6 +768,8 @@ class BaseModel
         try 
         {
             $args = $this->beforeUpdate($args);
+            $origArgs = $args;
+
             $args = $this->filterArrayWithColumns($args);
             $sql  = null;
             $vars = null;
@@ -842,7 +847,7 @@ class BaseModel
                 $this->_data = array_merge($this->_data,$args);
             }
 
-            $this->afterUpdate($args);
+            $this->afterUpdate($origArgs);
         } 
         catch( Exception $e ) 
         {
