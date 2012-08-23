@@ -192,12 +192,11 @@ To define many to many relationship:
     $this->manyToMany( 'books', 'author_books' , 'book' );
 ?>
 
-### Usage
+### Relationship Usage
 
 To append:
 
     $author->address[] = array(  );
-
     $record = $author->createAddress(array( ... ));  // return false on failure.
 
 To fetch:
@@ -247,4 +246,8 @@ To create a model object from schema object:
 To create a collection object from schema object:
 
     $collection = $schema->newCollection();
+
+
+
+
 
