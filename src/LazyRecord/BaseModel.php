@@ -355,9 +355,9 @@ class BaseModel
         }
 
         if( $ret && $ret->success 
-            || ( $pk && $this->_data[ $pk ] ) ) 
+            || ( $pk && isset($this->_data[$pk]) && $this->_data[ $pk ] ) ) 
         {
-            // just load
+            // is loaded
             return $ret;
         } else {
             // record not found, create
