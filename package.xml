@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-08-25</date>
-  <time>15:11:26</time>
+  <time>15:23:57</time>
   <version>
     <release>1.6.1</release>
     <api>1.6.1</api>
@@ -62,7 +62,6 @@
       <file name="tests/LazyRecord/CodeGenTest.php" role="test" md5sum="05e85cf12094e56c15d8c94013bffbc2"/>
       <file name="tests/LazyRecord/CollectionPagerTest.php" role="test" md5sum="f8c975e708292767845980ed4d3afa1c"/>
       <file name="tests/LazyRecord/CollectionTest.php" role="test" md5sum="15a34e9b1e6289227cc0486634c17b00"/>
-      <file name="tests/LazyRecord/ConfigBuilderTest.php" role="test" md5sum="31def8dcaabcf814d394ecaa47ed6b16"/>
       <file name="tests/LazyRecord/ConnectionManagerTest.php" role="test" md5sum="3405b1024b2df885a22a52a7dbea8574"/>
       <file name="tests/LazyRecord/DeflatorTest.php" role="test" md5sum="aef34a7220cb8c51cc7a16d1f99f66bc"/>
       <file name="tests/LazyRecord/ExecutiveQueryBuilderTest.php" role="test" md5sum="31aeac15025edc000c5c14cdba5f8832"/>
@@ -145,7 +144,7 @@
       <file name="src/LazyRecord/CodeGen.php" role="php" md5sum="7149f3fca607645f82bbdfcb89f16614"/>
       <file name="src/LazyRecord/CollectionPager.php" role="php" md5sum="f17355028e8d9f52834c289ed07b6665"/>
       <file name="src/LazyRecord/Command/BuildBaseDataCommand.php" role="php" md5sum="0318e048d0eda1c142918e47558ed821"/>
-      <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="28eda14a05fc5b707c2d09bb631446b6"/>
+      <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="95056f813cf22f62ccf89b0a44329f38"/>
       <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="b13a4abd48d3e772857618bba393790f"/>
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="5aaafbb1103a593e0c352d19e2b8b9fd"/>
       <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="648e339ec2c5777e46705df5f81a1c7d"/>
@@ -153,7 +152,7 @@
       <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="e7922e87f5633f39c801372868f5c170"/>
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="11fd7b72748c614c94a425ca1971965f"/>
       <file name="src/LazyRecord/Command/ListSchemaCommand.php" role="php" md5sum="08751425815227745bed0d3528d7e520"/>
-      <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="be57069c96dd9b381320c20d48cb920d"/>
+      <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="8472988308dfbfae9013be37491cdbbd"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="4d07695677fd484155956876b89ac5ae"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="e4da082d92825d40dbe3fa322c7bf74a"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="cf2f119915f8d84a85f206b0bbf4cb61"/>
@@ -299,7 +298,6 @@
       <install name="tests/LazyRecord/CodeGenTest.php" as="LazyRecord/CodeGenTest.php"/>
       <install name="tests/LazyRecord/CollectionPagerTest.php" as="LazyRecord/CollectionPagerTest.php"/>
       <install name="tests/LazyRecord/CollectionTest.php" as="LazyRecord/CollectionTest.php"/>
-      <install name="tests/LazyRecord/ConfigBuilderTest.php" as="LazyRecord/ConfigBuilderTest.php"/>
       <install name="tests/LazyRecord/ConnectionManagerTest.php" as="LazyRecord/ConnectionManagerTest.php"/>
       <install name="tests/LazyRecord/DeflatorTest.php" as="LazyRecord/DeflatorTest.php"/>
       <install name="tests/LazyRecord/ExecutiveQueryBuilderTest.php" as="LazyRecord/ExecutiveQueryBuilderTest.php"/>
