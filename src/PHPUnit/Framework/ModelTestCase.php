@@ -8,10 +8,35 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 {
     public $dsn;
 
+    public $driver = 'sqlite';
+
     public $schemaPath = 'tests/schema';
 
     public $schemaClasses = array( );
 
+    public function getDSN()
+    {
+        if( $dsn = getenv('DB_' . strtoupper($this->driver) .  '_DSN') )
+            return $dsn;
+    }
+
+    public function getDatabaseName() 
+    {
+        if( $name = getenv('DB_' . strtoupper($this->driver) .  '_NAME') )
+            return $name;
+    }
+
+    public function getDatabaseUser() 
+    {
+        if( $user = getenv('DB_' . strtoupper($this->driver) . '_USER') )
+            return $user;
+    }
+
+    public function getDatabasePassword() 
+    {
+        if( $pass = getenv('DB_' . strtoupper($this->driver) . '_PASS') )
+            return $pass;
+    }
 
     public function setUp()
     {
@@ -19,21 +44,21 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         ConnectionManager::getInstance()->free();
         QueryDriver::free();
 
-        if( $dsn = getenv('DB_DSN') ) {
-            $this->dsn = $dsn;
-            $config = array(
-                'dsn'  => $this->dsn,
-            );
-            if( $user = getenv('DB_USER') )
+        if( $dsn = $this->getDSN() ) {
+            $config = array('dsn' => $this->dsn);
+            $user = $this->getDatabaseUser();
+            $pass = $this->getDatabasePassword();
+            if($user)
                 $config['user'] = $user;
-            if( $pass = getenv('DB_PASS') )
+            if($pass)
                 $config['pass'] = $pass;
             ConnectionManager::getInstance()->addDataSource('default', $config);
-        } elseif( $this->dsn ) {
+        }
+        elseif( $this->getDatabaseName() ) {
             ConnectionManager::getInstance()->addDataSource('default', array( 
-                'dsn'  => $this->dsn,
-                'user' => 'testing',
-                'pass' => 'testing',
+                'database'  => $this->getDatabaseName(),
+                'user' => $this->getDatabaseUser(),
+                'pass' => $this->getDatabasePassword(),
             ));
         } else {
             // a little patch for config (we need auto_id for testing)
@@ -43,24 +68,23 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
             $config->initForBuild();
         }
 
+
         // $config->loaded = true;
         // $config->config = array( 'schema' => array( 'auto_id' => true ) );
 
 
         $dbh = ConnectionManager::getInstance()->getConnection('default');
         $driver = ConnectionManager::getInstance()->getQueryDriver('default');
-        $builder = LazyRecord\SqlBuilder\SqlBuilderFactory::create( $driver , array(
-            'rebuild' => true,
-        ));
+        $builder = LazyRecord\SqlBuilder\SqlBuilderFactory::create( $driver , array( 'rebuild' => true ));
         ok( $builder );
 
         $finder = new LazyRecord\Schema\SchemaFinder;
         $finder->addPath( 'tests/schema/' );
         $finder->loadFiles();
 
-		$generator = new \LazyRecord\Schema\SchemaGenerator;
-		$generator->setLogger( $this->getLogger() );
-		$classMap = $generator->generate( $finder->getSchemaClasses() );
+        $generator = new \LazyRecord\Schema\SchemaGenerator;
+        $generator->setLogger( $this->getLogger() );
+        $classMap = $generator->generate( $finder->getSchemaClasses() );
         ok( $classMap );
 
         $schemaClasses = $this->getModels();
@@ -74,10 +98,10 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         }
     }
 
-	public function getLogger()
-	{
-		return new TestLogger;
-	}
+    public function getLogger()
+    {
+        return new TestLogger;
+    }
 
     public function testClass()
     {
