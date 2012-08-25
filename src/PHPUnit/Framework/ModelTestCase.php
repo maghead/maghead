@@ -72,7 +72,13 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
             $this->markTestSkipped("{$this->driver} database configuration is required.");
         }
 
-        $dbh = ConnectionManager::getInstance()->getConnection('default');
+        try {
+            $dbh = ConnectionManager::getInstance()->getConnection('default');
+        } catch ( PDOException $e ) {
+            $this->markTestSkipped('Can not connect to database, test skipped: ' . $e->getMessage() );
+            return;
+        }
+
         $driver = ConnectionManager::getInstance()->getQueryDriver('default');
         ok( $driver );
 
