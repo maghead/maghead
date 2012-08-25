@@ -18,6 +18,7 @@
     <env name="DB_PGSQL_USER" value="testing"/>
     <env name="DB_PGSQL_PASS" value="testing"/>
 
+    <env name="DB_SQLITE_DSN" value="sqlite::memory:"/>
   </php>
   <testsuites>
     <testsuite name="PHPUnit">

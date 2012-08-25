@@ -18,6 +18,7 @@ class AuthorFactory {
 
 class CollectionTest extends PHPUnit_Framework_ModelTestCase
 {
+    public $driver = 'sqlite';
 
     public function getModels()
     {
