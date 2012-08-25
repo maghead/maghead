@@ -19,7 +19,6 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         ConnectionManager::getInstance()->free();
         QueryDriver::free();
 
-
         if( $dsn = getenv('DB_DSN') ) {
             $this->dsn = $dsn;
             $config = array(
