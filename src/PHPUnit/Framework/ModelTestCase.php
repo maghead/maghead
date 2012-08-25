@@ -10,6 +10,8 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
     public $schemaPath = 'tests/schema';
 
+    public $inIsolation = true;
+
     public $schemaClasses = array( );
 
     public function getDSN()
@@ -91,6 +93,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         $finder = new LazyRecord\Schema\SchemaFinder;
         $finder->addPath( 'tests/schema/' );
         $finder->loadFiles();
+
         $generator = new \LazyRecord\Schema\SchemaGenerator;
         $generator->setLogger( $this->getLogger() );
         $classMap = $generator->generate( $finder->getSchemaClasses() );

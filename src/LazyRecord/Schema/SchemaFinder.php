@@ -11,7 +11,8 @@ use IteratorAggregate;
 
 
 /**
- * find schema classes from files (or from current runtime)
+ * Find schema classes from files (or from current runtime)
+ *
  */
 class SchemaFinder
     implements IteratorAggregate
