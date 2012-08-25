@@ -3,7 +3,7 @@ use LazyRecord\SqlBuilder;
 
 class MysqlModelTest extends PHPUnit_Framework_ModelTestCase
 {
-    public $dsn = 'mysql:dbname=testing';
+    public $driver = 'mysql';
 
     public $schemaPath = 'tests/schema';
 

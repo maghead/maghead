@@ -6,8 +6,6 @@ use LazyRecord\ConfigLoader;
 
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
 {
-    public $dsn;
-
     public $driver = 'sqlite';
 
     public $schemaPath = 'tests/schema';
@@ -45,7 +43,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         QueryDriver::free();
 
         if( $dsn = $this->getDSN() ) {
-            $config = array('dsn' => $this->dsn);
+            $config = array('dsn' => $dsn);
             $user = $this->getDatabaseUser();
             $pass = $this->getDatabasePassword();
             if($user)
@@ -56,6 +54,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         }
         elseif( $this->getDatabaseName() ) {
             ConnectionManager::getInstance()->addDataSource('default', array( 
+                'driver' => $this->driver,
                 'database'  => $this->getDatabaseName(),
                 'user' => $this->getDatabaseUser(),
                 'pass' => $this->getDatabasePassword(),
@@ -66,15 +65,13 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
             $config->unload();
             $config->loadFromSymbol(true); // load force
             $config->initForBuild();
+            // $config->config = array( 'schema' => array( 'auto_id' => true ) );
         }
-
-
-        // $config->loaded = true;
-        // $config->config = array( 'schema' => array( 'auto_id' => true ) );
-
 
         $dbh = ConnectionManager::getInstance()->getConnection('default');
         $driver = ConnectionManager::getInstance()->getQueryDriver('default');
+        ok( $driver );
+
         $builder = LazyRecord\SqlBuilder\SqlBuilderFactory::create( $driver , array( 'rebuild' => true ));
         ok( $builder );
 
