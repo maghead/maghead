@@ -3,6 +3,6 @@ namespace LazyRecord;
 
 abstract class BaseSeed
 {
-    static abstract function seed();
+    static function seed() {  }
 }
 
