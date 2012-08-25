@@ -6,6 +6,7 @@ use RecursiveRegexIterator;
 use RegexIterator;
 use ReflectionClass;
 use RuntimeException;
+use LazyRecord\ClassUtils;
 
 
 /**
@@ -57,27 +58,9 @@ class SchemaFinder
 
     public function getSchemaClasses()
     {
-        $list = array();
         $classes = get_declared_classes();
-        foreach( $classes as $class ) {
-            $rf = new ReflectionClass( $class );
+        $list = ClassUtils::filter_schema_classes($classes);
 
-            // skip abstract classes.
-            if( $rf->isAbstract() ) {
-                continue;
-            }
-
-            if( is_a( $class, 'LazyRecord\Schema\MixinSchemaDeclare' ) 
-                || $class == 'LazyRecord\Schema\MixinSchemaDeclare' 
-                || is_subclass_of( $class, 'LazyRecord\Schema\MixinSchemaDeclare' ) ) 
-            {
-                continue;
-            }
-
-            if( is_subclass_of( $class, 'LazyRecord\Schema\SchemaDeclare' ) ) {
-                $list[] = $class;
-            }
-        }
 
         $schemas = array();
         foreach( $list as $class ) {
