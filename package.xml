@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-08-25</date>
-  <time>15:23:57</time>
+  <time>15:24:56</time>
   <version>
     <release>1.6.1</release>
     <api>1.6.1</api>
@@ -152,7 +152,6 @@
       <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="e7922e87f5633f39c801372868f5c170"/>
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="11fd7b72748c614c94a425ca1971965f"/>
       <file name="src/LazyRecord/Command/ListSchemaCommand.php" role="php" md5sum="08751425815227745bed0d3528d7e520"/>
-      <file name="src/LazyRecord/ConfigBuilder.php" role="php" md5sum="8472988308dfbfae9013be37491cdbbd"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="4d07695677fd484155956876b89ac5ae"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="e4da082d92825d40dbe3fa322c7bf74a"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="cf2f119915f8d84a85f206b0bbf4cb61"/>
@@ -388,7 +387,6 @@
       <install name="src/LazyRecord/Command/DiffCommand.php" as="LazyRecord/Command/DiffCommand.php"/>
       <install name="src/LazyRecord/Command/InitConfCommand.php" as="LazyRecord/Command/InitConfCommand.php"/>
       <install name="src/LazyRecord/Command/ListSchemaCommand.php" as="LazyRecord/Command/ListSchemaCommand.php"/>
-      <install name="src/LazyRecord/ConfigBuilder.php" as="LazyRecord/ConfigBuilder.php"/>
       <install name="src/LazyRecord/ConfigLoader.php" as="LazyRecord/ConfigLoader.php"/>
       <install name="src/LazyRecord/ConnectionManager.php" as="LazyRecord/ConnectionManager.php"/>
       <install name="src/LazyRecord/Console.php" as="LazyRecord/Console.php"/>
