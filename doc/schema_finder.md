@@ -8,4 +8,9 @@ API:
         $finder->loadFiles();
         $classes = $finder->getSchemaClasses();
 
+        foreach( $finder as $class ) {
+            $class; // schema class.
+
+        }
+
 
