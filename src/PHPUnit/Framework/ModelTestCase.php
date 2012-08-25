@@ -42,14 +42,16 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         ConnectionManager::getInstance()->free();
         QueryDriver::free();
 
+        $config = ConfigLoader::getInstance();
+        $config->loaded = true;
+        $config->config = array( 'schema' => array( 'auto_id' => true ) );
+
         if( $dsn = $this->getDSN() ) {
             $config = array('dsn' => $dsn);
             $user = $this->getDatabaseUser();
             $pass = $this->getDatabasePassword();
-            if($user)
-                $config['user'] = $user;
-            if($pass)
-                $config['pass'] = $pass;
+            if($user) $config['user'] = $user;
+            if($pass) $config['pass'] = $pass;
             ConnectionManager::getInstance()->addDataSource('default', $config);
         }
         elseif( $this->getDatabaseName() ) {
@@ -60,12 +62,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
                 'pass' => $this->getDatabasePassword(),
             ));
         } else {
-            // a little patch for config (we need auto_id for testing)
-            $config = ConfigLoader::getInstance();
-            $config->unload();
-            $config->loadFromSymbol(true); // load force
-            $config->initForBuild();
-            // $config->config = array( 'schema' => array( 'auto_id' => true ) );
+            $this->markTestSkipped("{$this->driver} database configuration is required.");
         }
 
         $dbh = ConnectionManager::getInstance()->getConnection('default');

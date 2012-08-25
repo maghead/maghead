@@ -9,7 +9,7 @@ use LazyRecord\ConfigLoader;
 use Exception;
 
 /**
- * builder for building static schema class file
+ * Builder for building static schema class file
  */
 class SchemaGenerator
 {
@@ -20,8 +20,18 @@ class SchemaGenerator
     public function __construct() 
     {
         $this->config = ConfigLoader::getInstance();
-        if( false === $this->config->loaded )
-            throw new Exception("SchemaGenerator: Config is not loaded.");
+    }
+
+    public function getBaseModelClass() {
+        if( $this->config && $this->config->loaded )
+            return ltrim($this->config->getBaseModelClass(),'\\');
+        return '\LazyRecord\BaseModel';
+    }
+
+    public function getBaseCollectionClass() {
+        if( $this->config && $this->config->loaded )
+            return ltrim($this->config->getBaseCollectionClass(),'\\');
+        return '\LazyRecord\BaseCollection';
     }
 
     public function setLogger($logger)
@@ -122,6 +132,7 @@ class SchemaGenerator
         return array( $schemaProxyClass , $sourceFile );
     }
 
+
     protected function buildBaseModelClass($schema)
     {
         $baseClass = $schema->getBaseModelClass();
@@ -132,7 +143,9 @@ class SchemaGenerator
         $cTemplate->addConst( 'collection_class' , '\\' . ltrim($schema->getCollectionClass(),'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
-        $cTemplate->extendClass( ltrim($this->config->getBaseModelClass(),'\\') );
+        $cTemplate->extendClass( 
+            $this->getBaseModelClass()
+        );
         return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true );
     }
 
