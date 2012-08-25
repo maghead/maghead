@@ -4,9 +4,10 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
 use RegexIterator;
-use LazyRecord\CodeGen;
 use LazyRecord\ConfigLoader;
 use Exception;
+use LazyRecord\CodeGen\TemplateView;
+use LazyRecord\CodeGen\ClassTemplate;
 
 /**
  * Builder for building static schema class file
@@ -39,6 +40,11 @@ class SchemaGenerator
         $this->logger = $logger;
     }
 
+
+
+    /**
+     * Returns code template directory
+     */
     protected function getTemplatePath()
     {
         $refl = new \ReflectionObject($this);
@@ -48,10 +54,11 @@ class SchemaGenerator
 
     protected function renderCode($file, $args)
     {
-        $codegen = new \LazyRecord\CodeGen( $this->getTemplatePath() );
+        $codegen = new TemplateView( $this->getTemplatePath() );
         $codegen->stash = $args;
         return $codegen->renderFile($file);
     }
+
 
     protected function generateClass($targetDir,$templateFile,$cTemplate,$extra = array(), $overwrite = false)
     {
@@ -96,7 +103,7 @@ class SchemaGenerator
         $modelClass  = $schema->getModelClass();
         $schemaProxyClass = $schema->getSchemaProxyClass();
 
-        $cTemplate = new \LazyRecord\CodeGen\ClassTemplate( $schemaProxyClass );
+        $cTemplate = new ClassTemplate( $schemaProxyClass );
         $cTemplate->addConst( 'schema_class' , '\\' . ltrim($schemaClass,'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($modelClass,'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
@@ -128,7 +135,6 @@ class SchemaGenerator
 
         $this->logger->info( "Generating schema proxy $schemaProxyClass => $sourceFile" );
         file_put_contents( $sourceFile , $source );
-
         return array( $schemaProxyClass , $sourceFile );
     }
 
@@ -138,7 +144,7 @@ class SchemaGenerator
         $baseClass = $schema->getBaseModelClass();
 
         // XXX: should export more information, so we don't need to get from schema. 
-        $cTemplate = new CodeGen\ClassTemplate( $baseClass );
+        $cTemplate = new ClassTemplate( $baseClass );
         $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
         $cTemplate->addConst( 'collection_class' , '\\' . ltrim($schema->getCollectionClass(),'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
@@ -153,7 +159,7 @@ class SchemaGenerator
     {
         $baseClass = $schema->getBaseModelClass();
         $modelClass = $schema->getModelClass();
-        $cTemplate = new CodeGen\ClassTemplate( $schema->getModelClass() );
+        $cTemplate = new ClassTemplate( $schema->getModelClass() );
         $cTemplate->extendClass( $baseClass );
         return $this->generateClass( $schema->getDir() , 'Class.php.twig', $cTemplate );
     }
@@ -162,7 +168,7 @@ class SchemaGenerator
     {
         $baseCollectionClass = $schema->getBaseCollectionClass();
 
-        $cTemplate = new CodeGen\ClassTemplate( $baseCollectionClass );
+        $cTemplate = new ClassTemplate( $baseCollectionClass );
         $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
@@ -176,10 +182,21 @@ class SchemaGenerator
         $collectionClass = $schema->getCollectionClass();
         $baseCollectionClass = $schema->getBaseCollectionClass();
 
-        $cTemplate = new CodeGen\ClassTemplate( $collectionClass );
+        $cTemplate = new ClassTemplate( $collectionClass );
         $cTemplate->extendClass( $baseCollectionClass );
         return $this->generateClass( $schema->getDir() , 'Class.php.twig', $cTemplate );
     }
+
+
+    /*
+    public function generateClass(\LazyRecord\Schema\SchemaDeclare $class) 
+    {
+        $schema = new $class; // it's a SchemaDeclare class.
+    }
+    */
+
+
+
 
     public function generate($classes)
     {

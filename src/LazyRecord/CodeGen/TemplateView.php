@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord;
+namespace LazyRecord\CodeGen;
 use Exception;
 use SerializerKit\PhpSerializer;
 use Twig_Loader_Filesystem;
@@ -13,7 +13,7 @@ function twig_var_export($obj)
     return $ser->encode( $obj );
 }
 
-class CodeGen
+class TemplateView
 {
     private $loader;
     private $twig;
@@ -74,5 +74,7 @@ class CodeGen
         if( ! file_exists($dir) )
             mkdir( $dir , $mode, true );
     }
+
+
 }
 

@@ -56,6 +56,15 @@ class ClassTemplate
         $this->members[] = new ClassMember($name,$value,$scope);
     }
 
+    public function render($file) 
+    {
+#          $view = new TemplateView( $this->getTemplatePath() );
+#          $codegen = new \LazyRecord\CodeGen( $this->getTemplatePath() );
+#          $codegen->stash = $args;
+#          return $codegen->renderFile($file);
+    }
+
+
 
 }
 
