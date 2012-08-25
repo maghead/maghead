@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-08-22</date>
-  <time>14:27:28</time>
+  <date>2012-08-25</date>
+  <time>15:11:26</time>
   <version>
     <release>1.6.1</release>
     <api>1.6.1</api>
@@ -49,7 +49,7 @@
       <file name="doc/plan.md" role="doc" md5sum="e4407419222fb1c73c5c602ee9bfc7fb"/>
       <file name="doc/plans/schema_builder.md" role="doc" md5sum="7f259d26a01150c4d43f8c02c7a973b3"/>
       <file name="doc/query_driver.md" role="doc" md5sum="bb11a3186c726a1cc7157a1b15efe720"/>
-      <file name="doc/schema.md" role="doc" md5sum="122e12fe9e4fc083e17bc843029f5498"/>
+      <file name="doc/schema.md" role="doc" md5sum="3b8baf019642d9ab46a4943996800c9d"/>
       <file name="doc/schema_builder.md" role="doc" md5sum="42843a8161f0fa23673651199107b76b"/>
       <file name="doc/setup.md" role="doc" md5sum="636d1f52ac693ebde78866646b4bbb8b"/>
       <file name="doc/testing.md" role="doc" md5sum="63934396cacda7bdd9fae2d02a8f8c67"/>
@@ -68,7 +68,7 @@
       <file name="tests/LazyRecord/ExecutiveQueryBuilderTest.php" role="test" md5sum="31aeac15025edc000c5c14cdba5f8832"/>
       <file name="tests/LazyRecord/InflatorTest.php" role="test" md5sum="87d1dd1fe33ea2906cdb20f952c46ac1"/>
       <file name="tests/LazyRecord/InflectorTest.php" role="test" md5sum="c3bc87f3e82557bdcd650047c6e48ec8"/>
-      <file name="tests/LazyRecord/ModelTest.php" role="test" md5sum="a0acd1b97776089d985eab7b7a2993e5"/>
+      <file name="tests/LazyRecord/ModelTest.php" role="test" md5sum="a7ce6cf1917cee4cbdae260131b0aa18"/>
       <file name="tests/LazyRecord/MysqlModelTest.php" role="test" md5sum="1a6d52cd050debfe1e996b2abdb051bf"/>
       <file name="tests/LazyRecord/PgsqlModelTest.php" role="test" md5sum="92aad280a7db1529d4cb20959b70f9e3"/>
       <file name="tests/LazyRecord/Schema/ComparatorTest.php" role="test" md5sum="a2ad5fe796aee969f6aa6e196ff77925"/>
@@ -77,6 +77,7 @@
       <file name="tests/LazyRecord/SchemaDeclareTest.php" role="test" md5sum="b120fc514a6384ebe553485424b98281"/>
       <file name="tests/LazyRecord/SchemaGeneratorTest.php" role="test" md5sum="d6d0bb1a9cf503ee36dc981d2c1aebdf"/>
       <file name="tests/LazyRecord/SchemaSqlBuilderTest.php" role="test" md5sum="f4041b7812dc3049bf0a28d9e1c6eace"/>
+      <file name="tests/LazyRecord/SchemaTest.php" role="test" md5sum="da856c03f176c325c14576e9ccc7a697"/>
       <file name="tests/LazyRecord/TableParserTest.php" role="test" md5sum="dfc16daa83dc0fac6cdf49c122de372b"/>
       <file name="tests/LazyRecord/TypesTest.php" role="test" md5sum="628788de6ab98b0b7de9bae79d4102e1"/>
       <file name="tests/LazyRecord/UtilsTest.php" role="test" md5sum="972fcdf291f4f322db2f1480bf5907b1"/>
@@ -128,13 +129,13 @@
       <file name="tests/schema/tests/UserCollectionBase.php" role="test" md5sum="1c1859ea5e24350820ec0b810d0a1237"/>
       <file name="tests/schema/tests/UserSchema.php" role="test" md5sum="d7ea523406f5a13b272c6a6bf3f5d520"/>
       <file name="tests/schema/tests/UserSchemaProxy.php" role="test" md5sum="9425e1335b014d9d95fc2118cb4d17d4"/>
-      <file name="tests/src/PHPUnit/Framework/ModelTestCase.php" role="test" md5sum="ac0dbced8e542cf1816b073ae5ac4ad7"/>
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
       <file name="src/LazyRecord/ArrayUtils.php" role="php" md5sum="e4050887e137de2f7f7fd18fcbdd09c2"/>
       <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="c824e5c62ad06ef439baea6351bf41e0"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="71c53fb82a74b5e5615d6b827cfb1aee"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="0c7fa0cd7a0f2f94223984dea9933619"/>
       <file name="src/LazyRecord/BaseSeed.php" role="php" md5sum="62e2b4607422cc7dc80e8613216ed4c0"/>
+      <file name="src/LazyRecord/ClassUtils.php" role="php" md5sum="9520670454bfa2538cab1c5c97fd7799"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
       <file name="src/LazyRecord/CodeGen/ClassMember.php" role="php" md5sum="5862b6f6f9640e9c3795a74aa5f5b70e"/>
       <file name="src/LazyRecord/CodeGen/ClassMethod.php" role="php" md5sum="e7610d981aa5ee8cb14fe52626c54694"/>
@@ -169,13 +170,18 @@
       <file name="src/LazyRecord/Schema/Comparator.php" role="php" md5sum="1bcd6dd1de4080debf66d1366b8c7359"/>
       <file name="src/LazyRecord/Schema/Mixin/I18nSchema.php" role="php" md5sum="ef6514fa4f5e71e2b9f88b3e9e065bff"/>
       <file name="src/LazyRecord/Schema/Mixin/MetadataSchema.php" role="php" md5sum="a977af9330a0538126cfa137bf942b28"/>
+      <file name="src/LazyRecord/Schema/Mixin.php" role="php" md5sum="846c250e95349470a47219771d36eec1"/>
+      <file name="src/LazyRecord/Schema/MixinBase.php" role="php" md5sum="1de1de15ef2d24dc0ac2edfdc303976d"/>
+      <file name="src/LazyRecord/Schema/MixinCollection.php" role="php" md5sum="36d62109f15dfe318f75752e83b0db81"/>
+      <file name="src/LazyRecord/Schema/MixinCollectionBase.php" role="php" md5sum="511360d46db2838313e72e5f77ffba55"/>
       <file name="src/LazyRecord/Schema/MixinSchemaDeclare.php" role="php" md5sum="13f1fe6fde2fbab515b8092ce16a3b54"/>
+      <file name="src/LazyRecord/Schema/MixinSchemaProxy.php" role="php" md5sum="f971cc52fd9003b038e446377d67404c"/>
       <file name="src/LazyRecord/Schema/RuntimeColumn.php" role="php" md5sum="a36cc7fca55f6840f0b0adf9d4afc033"/>
       <file name="src/LazyRecord/Schema/RuntimeSchema.php" role="php" md5sum="364d717e14e4a933393d6217ac1a3b1b"/>
-      <file name="src/LazyRecord/Schema/SchemaBase.php" role="php" md5sum="94fec8f8c533881626bd8059ea397842"/>
+      <file name="src/LazyRecord/Schema/SchemaBase.php" role="php" md5sum="d931bd9a48882c5ebdcae24f1bee4a6a"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare/Column.php" role="php" md5sum="257c545620d61e401d7c446aee0154d6"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="477fe4b8b23260874deb42ac6377d99f"/>
-      <file name="src/LazyRecord/Schema/SchemaFinder.php" role="php" md5sum="b992f94303acb224f722b5beec00d43f"/>
+      <file name="src/LazyRecord/Schema/SchemaFinder.php" role="php" md5sum="93998c5c78ba8286692bb016779e8897"/>
       <file name="src/LazyRecord/Schema/SchemaGenerator.php" role="php" md5sum="259cd988d1e9e5382973d1acc540a4f9"/>
       <file name="src/LazyRecord/Schema/SchemaLoader.php" role="php" md5sum="3db3c2f7266be755692fcc0c04639ba5"/>
       <file name="src/LazyRecord/Schema/Templates/BaseCollection.php.twig" role="php" md5sum="4f3fa444776cc4f53a42dbd3dee0ce9d"/>
@@ -194,6 +200,7 @@
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="19592d256900fc2b80045b8024913ba8"/>
+      <file name="src/PHPUnit/Framework/ModelTestCase.php" role="php" md5sum="ad941d38e45ff31e493b1cbefb1a3953"/>
       <file name="bin/lazy" role="script" md5sum="472040828943b899e57691b62d505cd0"/>
     </dir>
   </contents>
@@ -237,6 +244,11 @@
       </package>
       <package>
         <name>DBUtil</name>
+        <channel>pear.corneltek.com</channel>
+        <min>0.0.0</min>
+      </package>
+      <package>
+        <name>ConfigKit</name>
         <channel>pear.corneltek.com</channel>
         <min>0.0.0</min>
       </package>
@@ -302,6 +314,7 @@
       <install name="tests/LazyRecord/SchemaDeclareTest.php" as="LazyRecord/SchemaDeclareTest.php"/>
       <install name="tests/LazyRecord/SchemaGeneratorTest.php" as="LazyRecord/SchemaGeneratorTest.php"/>
       <install name="tests/LazyRecord/SchemaSqlBuilderTest.php" as="LazyRecord/SchemaSqlBuilderTest.php"/>
+      <install name="tests/LazyRecord/SchemaTest.php" as="LazyRecord/SchemaTest.php"/>
       <install name="tests/LazyRecord/TableParserTest.php" as="LazyRecord/TableParserTest.php"/>
       <install name="tests/LazyRecord/TypesTest.php" as="LazyRecord/TypesTest.php"/>
       <install name="tests/LazyRecord/UtilsTest.php" as="LazyRecord/UtilsTest.php"/>
@@ -353,13 +366,13 @@
       <install name="tests/schema/tests/UserCollectionBase.php" as="schema/tests/UserCollectionBase.php"/>
       <install name="tests/schema/tests/UserSchema.php" as="schema/tests/UserSchema.php"/>
       <install name="tests/schema/tests/UserSchemaProxy.php" as="schema/tests/UserSchemaProxy.php"/>
-      <install name="tests/src/PHPUnit/Framework/ModelTestCase.php" as="src/PHPUnit/Framework/ModelTestCase.php"/>
       <install name="tests/src/TestLogger.php" as="src/TestLogger.php"/>
       <install name="src/LazyRecord/Adapter/PdoAdapter.php" as="LazyRecord/Adapter/PdoAdapter.php"/>
       <install name="src/LazyRecord/ArrayUtils.php" as="LazyRecord/ArrayUtils.php"/>
       <install name="src/LazyRecord/BaseCollection.php" as="LazyRecord/BaseCollection.php"/>
       <install name="src/LazyRecord/BaseModel.php" as="LazyRecord/BaseModel.php"/>
       <install name="src/LazyRecord/BaseSeed.php" as="LazyRecord/BaseSeed.php"/>
+      <install name="src/LazyRecord/ClassUtils.php" as="LazyRecord/ClassUtils.php"/>
       <install name="src/LazyRecord/CodeGen/ClassConst.php" as="LazyRecord/CodeGen/ClassConst.php"/>
       <install name="src/LazyRecord/CodeGen/ClassMember.php" as="LazyRecord/CodeGen/ClassMember.php"/>
       <install name="src/LazyRecord/CodeGen/ClassMethod.php" as="LazyRecord/CodeGen/ClassMethod.php"/>
@@ -394,7 +407,12 @@
       <install name="src/LazyRecord/Schema/Comparator.php" as="LazyRecord/Schema/Comparator.php"/>
       <install name="src/LazyRecord/Schema/Mixin/I18nSchema.php" as="LazyRecord/Schema/Mixin/I18nSchema.php"/>
       <install name="src/LazyRecord/Schema/Mixin/MetadataSchema.php" as="LazyRecord/Schema/Mixin/MetadataSchema.php"/>
+      <install name="src/LazyRecord/Schema/Mixin.php" as="LazyRecord/Schema/Mixin.php"/>
+      <install name="src/LazyRecord/Schema/MixinBase.php" as="LazyRecord/Schema/MixinBase.php"/>
+      <install name="src/LazyRecord/Schema/MixinCollection.php" as="LazyRecord/Schema/MixinCollection.php"/>
+      <install name="src/LazyRecord/Schema/MixinCollectionBase.php" as="LazyRecord/Schema/MixinCollectionBase.php"/>
       <install name="src/LazyRecord/Schema/MixinSchemaDeclare.php" as="LazyRecord/Schema/MixinSchemaDeclare.php"/>
+      <install name="src/LazyRecord/Schema/MixinSchemaProxy.php" as="LazyRecord/Schema/MixinSchemaProxy.php"/>
       <install name="src/LazyRecord/Schema/RuntimeColumn.php" as="LazyRecord/Schema/RuntimeColumn.php"/>
       <install name="src/LazyRecord/Schema/RuntimeSchema.php" as="LazyRecord/Schema/RuntimeSchema.php"/>
       <install name="src/LazyRecord/Schema/SchemaBase.php" as="LazyRecord/Schema/SchemaBase.php"/>
@@ -419,6 +437,7 @@
       <install name="src/LazyRecord/Types/DateTime.php" as="LazyRecord/Types/DateTime.php"/>
       <install name="src/LazyRecord/Types.php" as="LazyRecord/Types.php"/>
       <install name="src/LazyRecord/Utils.php" as="LazyRecord/Utils.php"/>
+      <install name="src/PHPUnit/Framework/ModelTestCase.php" as="PHPUnit/Framework/ModelTestCase.php"/>
       <install name="bin/lazy" as="lazy"/>
     </filelist>
   </phprelease>

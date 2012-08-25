@@ -53,7 +53,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         $builder = LazyRecord\SqlBuilder\SqlBuilderFactory::create( $driver , array(
             'rebuild' => true,
         ));
-		ok( $builder );
+        ok( $builder );
 
         $finder = new LazyRecord\Schema\SchemaFinder;
         $finder->addPath( 'tests/schema/' );
