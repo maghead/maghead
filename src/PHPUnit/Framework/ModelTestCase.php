@@ -38,6 +38,13 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
     public function setUp()
     {
+        if( ! extension_loaded('pdo') ) {
+            $this->markTestSkipped('pdo extension is required for model testing');
+            return;
+        }
+
+
+
         // free and override default connection
         ConnectionManager::getInstance()->free();
         QueryDriver::free();
