@@ -55,6 +55,12 @@ abstract class SchemaBase
         return $this->relations;
     }
 
+
+    /**
+     * For schema class, get its reference schema classes recursively.
+     *
+     * @param boolean $recursive
+     */
     public function getReferenceSchemas($recursive = true)
     {
         $schemas = array();
@@ -70,12 +76,12 @@ abstract class SchemaBase
             if( ! is_subclass_of( $class, 'LazyRecord\Schema\SchemaDeclare' ) ) {
                 throw new InvalidArgumentException("Foreign schema class $class is not a SchemaDeclare class");
             }
-
-            $fs = new $class;
-            if( isset($schemas[$class]) )
+            if( isset($schemas[$class]) ) {
                 continue;
+            }
 
             $schemas[ $class ] = 1;
+            $fs = new $class;
             if( $recursive ) {
                 $schemas = array_merge($schemas, $fs->getReferenceSchemas(false));
             }
