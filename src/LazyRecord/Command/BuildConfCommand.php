@@ -33,16 +33,13 @@ class BuildConfCommand extends \CLIFramework\Command
 
         ConfigCompiler::compile($configFile);
 
-        $outputPath = $dir . DIRECTORY_SEPARATOR . basename( $configFile , '.yml' ) . '.php';
-
         // make master config link
         $loader = ConfigLoader::getInstance();
         $this->logger->info("Making link => " . $loader->symbolFilename );
 
         if( file_exists( $loader->symbolFilename ) )
             unlink( $loader->symbolFilename );
-
-        symlink( $outputPath, $loader->symbolFilename );
+        symlink( $configFile , $loader->symbolFilename );
         $this->logger->info("Done.");
     }
 
