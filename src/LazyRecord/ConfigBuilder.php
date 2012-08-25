@@ -2,6 +2,7 @@
 namespace LazyRecord;
 use Exception;
 use SerializerKit\Serializer;
+use ConfigKit\ConfigCompiler;
 
 class ConfigBuilder
 {
@@ -9,14 +10,13 @@ class ConfigBuilder
 
     function read($configFile)
     {
-        $ser = new Serializer('yaml');
-        return $this->config = $ser->decode( file_get_contents($configFile) );
+        return $this->config = ConfigCompiler::load($configFile);
     }
 
     function build()
     {
         $ser = new Serializer('php');
+        ConfigCompiler::load($configFile);
         return "<?php \n" . $ser->encode($this->config) . "\n?>";
     }
-
 }
