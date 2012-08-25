@@ -45,15 +45,23 @@ class ConfigLoader
     {
     }
 
+
+    public function loadFromSymbol($force = false)
+    {
+        return $this->load( $this->symbolFilename, $force );
+    }
+
     /**
      * load configuration file
      *
      * @param string $file config file.
      */
-    public function load($file = null)
+    public function load($file, $force = false)
     {
-        if( $file !== true && $this->loaded === true )
+        // should we load config file force ?
+        if( $force !== true && $this->loaded === true ) {
             throw new Exception("Can not load $file. Config is already loaded.");
+        }
 
         if( $file === null || is_bool($file) )
             $file = $this->symbolFilename;

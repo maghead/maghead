@@ -40,7 +40,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
             // a little patch for config (we need auto_id for testing)
             $config = ConfigLoader::getInstance();
             $config->unload();
-            $config->load();
+            $config->loadFromSymbol(true); // load force
             $config->initForBuild();
         }
 
