@@ -16,7 +16,7 @@ class AuthorFactory {
 
 }
 
-class Collection2Test extends PHPUnit_Framework_ModelTestCase
+class CollectionTest extends PHPUnit_Framework_ModelTestCase
 {
 
     public function getModels()
