@@ -30,12 +30,11 @@ class BuildConfCommand extends \CLIFramework\Command
         if( ! $configFile )
             throw new Exception("config file path is required.");
 
-        $mainConfigFile = $configFile;
-        $dir = dirname($mainConfigFile);
+        $dir = dirname($configFile);
 
-        ConfigCompiler::compile($mainConfigFile);
+        ConfigCompiler::compile($configFile);
 
-        $outputPath = $dir . DIRECTORY_SEPARATOR . basename( $mainConfigFile , '.yml' ) . '.php';
+        $outputPath = $dir . DIRECTORY_SEPARATOR . basename( $configFile , '.yml' ) . '.php';
 
         // make master config link
         $loader = ConfigLoader::getInstance();
