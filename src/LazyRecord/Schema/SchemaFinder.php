@@ -63,10 +63,6 @@ class SchemaFinder
 
         $schemas = array();
         foreach( $list as $class ) {
-            if( ! class_exists($class,true) ) {
-                throw new RuntimeException("Schema class $class not found.");
-            }
-
             $schema = new $class; // declare schema
             $refs = $schema->getReferenceSchemas();
             foreach( $refs as $ref => $v )
