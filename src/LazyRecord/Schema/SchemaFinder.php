@@ -61,7 +61,6 @@ class SchemaFinder
         $classes = get_declared_classes();
         $list = ClassUtils::filter_schema_classes($classes);
 
-
         $schemas = array();
         foreach( $list as $class ) {
             if( ! class_exists($class,true) ) {
