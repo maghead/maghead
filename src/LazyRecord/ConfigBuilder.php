@@ -12,11 +12,4 @@ class ConfigBuilder
     {
         return $this->config = ConfigCompiler::load($configFile);
     }
-
-    function build()
-    {
-        $ser = new Serializer('php');
-        ConfigCompiler::load($configFile);
-        return "<?php \n" . $ser->encode($this->config) . "\n?>";
-    }
 }

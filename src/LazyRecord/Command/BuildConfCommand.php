@@ -1,7 +1,6 @@
 <?php
 namespace LazyRecord\Command;
 use Exception;
-use LazyRecord\ConfigBuilder;
 use LazyRecord\ConfigLoader;
 use ConfigKit\ConfigCompiler;
 
