@@ -3,6 +3,7 @@ namespace LazyRecord\Command;
 use Exception;
 use LazyRecord\ConfigBuilder;
 use LazyRecord\ConfigLoader;
+use ConfigKit\ConfigCompiler;
 
 class BuildConfCommand extends \CLIFramework\Command
 {
@@ -10,11 +11,6 @@ class BuildConfCommand extends \CLIFramework\Command
     public function brief()
     {
         return 'build configuration file.';
-    }
-
-    public function options($opts)
-    {
-        $opts->add('o|output:','output file.');
     }
 
     public function execute($configFile = null)
@@ -37,30 +33,19 @@ class BuildConfCommand extends \CLIFramework\Command
         $mainConfigFile = $configFile;
         $dir = dirname($mainConfigFile);
 
-        $builder = new ConfigBuilder;
-        $builder->read( $mainConfigFile );
-        $content = $builder->build(); // php source content
+        ConfigCompiler::compile($mainConfigFile);
 
-        $outputPath = $options->output ? $options->output->value 
-                : $dir . DIRECTORY_SEPARATOR . basename( $mainConfigFile , '.yml' ) . '.php';
-        $outputDir  = dirname($outputPath);
-
-        if( ! file_exists($outputDir) )
-            mkdir( $outputDir, 0755, true );
-
-        if( file_put_contents( $outputPath , $content ) !== false ) {
-            $this->getLogger()->info("Config file is generated at: $outputPath");
-        }
+        $outputPath = $dir . DIRECTORY_SEPARATOR . basename( $mainConfigFile , '.yml' ) . '.php';
 
         // make master config link
         $loader = ConfigLoader::getInstance();
-        $this->getLogger()->info("Making link => " . $loader->symbolFilename );
+        $this->logger->info("Making link => " . $loader->symbolFilename );
 
         if( file_exists( $loader->symbolFilename ) )
             unlink( $loader->symbolFilename );
 
         symlink( $outputPath, $loader->symbolFilename );
-        $this->getLogger()->info("Done.");
+        $this->logger->info("Done.");
     }
 
 
