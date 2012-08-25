@@ -58,11 +58,9 @@ class SchemaFinder
 
     public function getSchemaClasses()
     {
-        $classes = get_declared_classes();
-        $list = ClassUtils::filter_schema_classes($classes);
-
+        $classes = ClassUtils::get_declared_schema_classes();
         $schemas = array();
-        foreach( $list as $class ) {
+        foreach( $classes as $class ) {
             $schema = new $class; // declare schema
             $refs = $schema->getReferenceSchemas();
             foreach( $refs as $ref => $v )
