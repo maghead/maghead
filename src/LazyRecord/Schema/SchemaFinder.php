@@ -7,14 +7,18 @@ use RegexIterator;
 use ReflectionClass;
 use RuntimeException;
 use LazyRecord\ClassUtils;
+use IteratorAggregate;
 
 
 /**
  * find schema classes from files (or from current runtime)
  */
 class SchemaFinder
+    implements IteratorAggregate
 {
     public $paths = array();
+
+    public $classes = array();
 
     public function in($path)
     {
@@ -62,5 +66,8 @@ class SchemaFinder
         return ClassUtils::expand_schema_classes($classes);
     }
 
+    public function getIterator() {
+        return $this->getSchemaClasses();
+    }
 }
 
