@@ -35,6 +35,42 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $n->delete()->success );
     }
 
+    public function testBooleanCondition() 
+    {
+        $a = new \tests\Author;
+        $ret = $a->create(array(
+            'name' => 'a',
+            'email' => 'a@a',
+            'identity' => 'a',
+            'confirmed' => false,
+        ));
+        $this->resultOK(true,$ret);
+
+        $ret = $a->create(array(
+            'name' => 'b',
+            'email' => 'b@b',
+            'identity' => 'b',
+            'confirmed' => true,
+        ));
+        $this->resultOK(true,$ret);
+
+        $authors = new \tests\AuthorCollection;
+        $authors->where()
+                ->equal( 'confirmed', false);
+        $ret = $authors->fetch();
+        ok($ret);
+        is(1,$authors->size());
+
+        $authors = new \tests\AuthorCollection;
+        $authors->where()
+                ->equal( 'confirmed', true);
+        $ret = $authors->fetch();
+        ok($ret);
+        is(1,$authors->size());
+
+        $authors->delete();
+    }
+
     public function testClone()
     {
         $test1 = new \tests\Name;
@@ -850,11 +886,11 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         is( 0 , $b->view );
 
         // test incremental
-        $ret = $b->update(array( 'view'  => array('"view" + 1') ), array('reload' => true));
+        $ret = $b->update(array( 'view'  => array('view + 1') ), array('reload' => true));
         result_ok($ret);
         is( 1,  $b->view );
 
-        $ret = $b->update(array( 'view'  => array('"view" + 1') ), array('reload' => true));
+        $ret = $b->update(array( 'view'  => array('view + 1') ), array('reload' => true));
         result_ok($ret);
         is( 2,  $b->view );
 
