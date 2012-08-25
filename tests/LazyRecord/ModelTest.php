@@ -178,9 +178,9 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         }
     }
 
-    /****************************
+    /**
      * Basic CRUD Test 
-     ***************************/
+     */
     public function testModel()
     {
         $author = new \tests\Author;
