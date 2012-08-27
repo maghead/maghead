@@ -27,13 +27,13 @@ class SchemaGenerator
     public function getBaseModelClass() {
         if( $this->config && $this->config->loaded )
             return ltrim($this->config->getBaseModelClass(),'\\');
-        return '\LazyRecord\BaseModel';
+        return 'LazyRecord\BaseModel';
     }
 
     public function getBaseCollectionClass() {
         if( $this->config && $this->config->loaded )
             return ltrim($this->config->getBaseCollectionClass(),'\\');
-        return '\LazyRecord\BaseCollection';
+        return 'LazyRecord\BaseCollection';
     }
 
     public function setLogger($logger)
@@ -83,6 +83,8 @@ class SchemaGenerator
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($modelClass,'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
         $cTemplate->addConst( 'label',  $schema->getLabel() );
+        $cTemplate->schema = $schema;
+        $cTemplate->schema_data = $schemaArray;
         return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate, true);
     }
 

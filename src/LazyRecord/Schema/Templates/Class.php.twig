@@ -16,10 +16,10 @@ extends {{ class.extends }}
 {% endif %}
 {
 
-    {% if class.consts %}
-    {% for con in class.consts %}
-    {{con}}
-    {% endfor %}
-    {% endif %}
+{% if class.consts %}
+{% for con in class.consts %}
+{{con}}
+{% endfor %}
+{% endif %}
 
 }

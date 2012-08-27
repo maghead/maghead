@@ -12,6 +12,12 @@ class ClassTemplate
     public $consts  = array();
     public $members = array();
 
+
+    /**
+     * @var TemplateView object.
+     */
+    public $view;
+
     public $templateFile;
     public $templateDirs;
     public $options = array();
@@ -29,6 +35,9 @@ class ClassTemplate
         $this->templateFile = $options['template'];
         $this->templateDirs = $options['template_dirs'];
         $this->setClass($className);
+
+        $this->view = new TemplateView($this->templateDirs);
+        $this->view->class = $this;
     }
 
     public function setClass($className)
@@ -69,14 +78,16 @@ class ClassTemplate
         $this->members[] = new ClassMember($name,$value,$scope);
     }
 
+    public function __set($n,$v) {
+        $this->view->__set($n,$v);
+    }
+
     public function render($args = array())
     {
-        $view = new TemplateView($this->templateDirs);
-        $view->class = $this;
         foreach( $args as $n => $v ) {
-            $view->__set($n,$v);
+            $this->view->__set($n,$v);
         }
-        return $view->renderFile($this->templateFile);
+        return $this->view->renderFile($this->templateFile);
     }
 
 }
