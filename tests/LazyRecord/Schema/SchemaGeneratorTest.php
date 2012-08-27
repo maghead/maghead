@@ -10,21 +10,26 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
         $g = new LazyRecord\Schema\SchemaGenerator;
         ok($g);
 
-        list($class,$file) = $g->generateCollectionClass($schema);
-        ok($class);
-        ok($file);
-        path_ok($file);
+        $classMap = $g->generateCollectionClass($schema);
+        foreach( $classMap as $class => $file ) {
+            ok($class);
+            ok($file);
+            path_ok($file);
+        }
 
-        list($class,$file) = $g->generateBaseCollectionClass($schema);
-        ok($class);
-        ok($file);
-        path_ok($file);
+        $classMap = $g->generateBaseCollectionClass($schema);
+        foreach( $classMap as $class => $file ) {
+            ok($class);
+            ok($file);
+            path_ok($file);
+        }
 
-
-        list($class,$file) = $g->generateBaseCollectionClass($schema);
-        ok($class);
-        ok($file);
-        path_ok($file);
+        $classMap = $g->generateBaseCollectionClass($schema);
+        foreach( $classMap as $class => $file ) {
+            ok($class);
+            ok($file);
+            path_ok($file);
+        }
     }
 }
 
