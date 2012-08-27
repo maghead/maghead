@@ -76,11 +76,9 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $test1 !== $test2 );
     }
 
-
     public function testSchemaInterface()
     {
         $author = new \tests\Author;
-
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');
         foreach( $author->getColumnNames() as $n ) {
             ok( in_array( $n , $names ));

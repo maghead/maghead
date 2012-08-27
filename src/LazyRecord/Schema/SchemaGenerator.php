@@ -172,8 +172,8 @@ class SchemaGenerator
         $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
-
         $cTemplate->extendClass( 'LazyRecord\\BaseCollection' );
+
         return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true ); // overwrite
     }
 
@@ -196,8 +196,6 @@ class SchemaGenerator
     */
 
 
-
-
     public function generate($classes)
     {
         // for generated class source code.
@@ -214,23 +212,23 @@ class SchemaGenerator
         foreach( $classes as $class ) {
             $schema = new $class;
 
-            $this->logger->info( 'Building schema proxy class: ' . $class );
+            $this->logger->debug( 'Building schema proxy class: ' . $class );
             list( $schemaProxyClass, $schemaProxyFile ) = $this->buildSchemaProxyClass( $schema );
             $classMap[ $schemaProxyClass ] = $schemaProxyFile;
 
-            $this->logger->info( 'Building base model class: ' . $class );
+            $this->logger->debug( 'Building base model class: ' . $class );
             list( $baseModelClass, $baseModelFile ) = $this->buildBaseModelClass( $schema );
             $classMap[ $baseModelClass ] = $baseModelFile;
 
-            $this->logger->info( 'Building model class: ' . $class );
+            $this->logger->debug( 'Building model class: ' . $class );
             list( $modelClass, $modelFile ) = $this->buildModelClass( $schema );
             $classMap[ $modelClass ] = $modelFile;
 
-            $this->logger->info( 'Building base collection class: ' . $class );
+            $this->logger->debug( 'Building base collection class: ' . $class );
             list( $c, $f ) = $this->buildBaseCollectionClass( $schema );
             $classMap[ $c ] = $f;
 
-            $this->logger->info( 'Building collection class: ' . $class );
+            $this->logger->debug( 'Building collection class: ' . $class );
             list( $c, $f ) = $this->buildCollectionClass( $schema );
             $classMap[ $c ] = $f;
         }
