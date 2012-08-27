@@ -164,8 +164,10 @@ class SchemaGenerator
     protected function buildBaseCollectionClass($schema)
     {
         $baseCollectionClass = $schema->getBaseCollectionClass();
-
-        $cTemplate = new ClassTemplate( $baseCollectionClass );
+        $cTemplate = new ClassTemplate( $baseCollectionClass, array(
+            'template_dirs' => $this->getTemplateDirs(),
+            'template' => 'Class.php.twig',
+        ));
         $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
@@ -183,12 +185,12 @@ class SchemaGenerator
             'template' => 'Class.php.twig',
         ));
         $cTemplate->extendClass( $baseCollectionClass );
-        $source = $cTemplate->render();
-        $classFile = $this->writeClassFile($schema->getDir(), $cTemplate->class->getName(),$source);
-        return array( $cTemplate->class->getFullName() => $classFile );
+        $sourceCode = $cTemplate->render();
+        $classFile = $this->writeClassFile($schema->getDir(), $cTemplate->class->getName(),$sourceCode);
+        return array( $cTemplate->class->getFullName(), $classFile );
     }
 
-    public function writeClassFile($directory,$className,$source)
+    public function writeClassFile($directory,$className,$sourceCode)
     {
         // get schema dir
         $sourcePath = $directory 
