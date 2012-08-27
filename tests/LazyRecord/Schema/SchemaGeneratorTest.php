@@ -38,7 +38,9 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
         foreach( $classMap as $class => $file ) {
             ok($class);
             ok($file);
-            path_ok($file);
+            path_ok($file,$file);
+
+            echo $file , "\n";
             require $file;
         }
 

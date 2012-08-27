@@ -18,7 +18,7 @@ extends {{ class.extends }}
 
 {% if class.consts %}
 {% for con in class.consts %}
-{{con}}
+{{con|raw}}
 {% endfor %}
 {% endif %}
 

@@ -11,7 +11,6 @@ class RuntimeSchema extends SchemaBase
 
     public $columnObjects = array();
 
-
     public function __construct() {
         // build RuntimeColumn objects
         foreach( $this->columns as $name => $columnMeta ) {
