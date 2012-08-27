@@ -8,6 +8,7 @@ use LazyRecord\ConfigLoader;
 use Exception;
 use LazyRecord\CodeGen\TemplateView;
 use LazyRecord\CodeGen\ClassTemplate;
+use LazyRecord\Schema\SchemaDeclare;
 
 /**
  * Builder for building static schema class file
@@ -166,6 +167,7 @@ class SchemaGenerator
         return array( $cTemplate->class->getFullName(), $classFile );
     }
 
+
     public function generateBaseCollectionClass($schema)
     {
         $baseCollectionClass = $schema->getBaseCollectionClass();
@@ -176,15 +178,20 @@ class SchemaGenerator
         $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
-        $cTemplate->extendClass( 'LazyRecord\\BaseCollection' );
+        $cTemplate->extendClass( 'LazyRecord\BaseCollection' );
 
         // we should overwrite the base collection class.
-        $sourceCode = $cTemplate->render();
-        $classFile = $this->writeClassToDirectory($schema->getDir(), $cTemplate->class->getName(),$sourceCode,true);
-        return array( $cTemplate->class->getFullName(), $classFile );
+        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate, true);
     }
 
-    public function generateCollectionClass($schema)
+
+    /**
+     * Generate collection class from a schema object.
+     *
+     * @param SchemaDeclare $schema
+     * @return array class name, class file path
+     */
+    public function generateCollectionClass(SchemaDeclare $schema)
     {
         $collectionClass = $schema->getCollectionClass();
         $baseCollectionClass = $schema->getBaseCollectionClass();
@@ -193,11 +200,17 @@ class SchemaGenerator
             'template' => 'Class.php.twig',
         ));
         $cTemplate->extendClass( $baseCollectionClass );
-        $sourceCode = $cTemplate->render();
-        $classFile = $this->writeClassToDirectory($schema->getDir(), $cTemplate->class->getName(),$sourceCode);
-        return array( $cTemplate->class->getFullName(), $classFile );
+
+        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate);
     }
 
+
+    public function writeClassTemplateToDirectory($directory,$cTemplate,$overwrite = false)
+    {
+        $sourceCode = $cTemplate->render();
+        $classFile = $this->writeClassToDirectory($directory, $cTemplate->class->getName(),$sourceCode, $overwrite);
+        return array( $cTemplate->class->getFullName(), $classFile );
+    }
 
 
     /**
