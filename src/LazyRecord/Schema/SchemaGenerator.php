@@ -161,7 +161,7 @@ class SchemaGenerator
         return $this->generateClass( $schema->getDir() , 'Class.php.twig', $cTemplate );
     }
 
-    protected function buildBaseCollectionClass($schema)
+    public function generateBaseCollectionClass($schema)
     {
         $baseCollectionClass = $schema->getBaseCollectionClass();
         $cTemplate = new ClassTemplate( $baseCollectionClass, array(
@@ -173,9 +173,9 @@ class SchemaGenerator
         $cTemplate->addConst( 'table',  $schema->getTable() );
         $cTemplate->extendClass( 'LazyRecord\\BaseCollection' );
 
-
+        // we should overwrite the base collection class.
         $sourceCode = $cTemplate->render();
-        $classFile = $this->writeClassFile($schema->getDir(), $cTemplate->class->getName(),$sourceCode);
+        $classFile = $this->writeClassFile($schema->getDir(), $cTemplate->class->getName(),$sourceCode,true);
         return array( $cTemplate->class->getFullName(), $classFile );
     }
 
@@ -196,21 +196,15 @@ class SchemaGenerator
     public function writeClassFile($directory,$className,$sourceCode, $overwrite = false)
     {
         // get schema dir
-        $sourcePath = $directory 
-            . DIRECTORY_SEPARATOR 
-            . $className . '.php';
-        $this->preventFileDir( $sourcePath );
-        if( $overwrite || ! file_exists( $sourcePath ) ) {
-            if( file_put_contents( $sourcePath , $source ) === false ) {
-                throw new Exception("$sourcePath write failed.");
+        $filePath = $directory . DIRECTORY_SEPARATOR . $className . '.php';
+        $this->preventFileDir( $filePath );
+        if( $overwrite || ! file_exists( $filePath ) ) {
+            if( file_put_contents( $filePath , $sourceCode ) === false ) {
+                throw new Exception("$filePath write failed.");
             }
         }
-        return $sourcePath;
+        return $filePath;
     }
-
-
-
-
 
 
     public function generate($classes)
@@ -242,7 +236,7 @@ class SchemaGenerator
             $classMap[ $modelClass ] = $modelFile;
 
             $this->logger->debug( 'Building base collection class: ' . $class );
-            list( $c, $f ) = $this->buildBaseCollectionClass( $schema );
+            list( $c, $f ) = $this->generateBaseCollectionClass( $schema );
             $classMap[ $c ] = $f;
 
             $this->logger->debug( 'Generating collection class: ' . $class );
