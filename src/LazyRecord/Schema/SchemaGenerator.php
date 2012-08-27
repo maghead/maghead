@@ -62,23 +62,6 @@ class SchemaGenerator
     }
 
 
-    protected function generateClass($targetDir,$templateFile,$cTemplate,$extra = array(), $overwrite = false)
-    {
-        $source = $this->renderCode( $templateFile , array_merge( array( 'class' => $cTemplate ), $extra ) );
-
-        $sourceFile = $targetDir 
-            . DIRECTORY_SEPARATOR 
-            . $cTemplate->class->getName() . '.php';
-        $this->preventFileDir( $sourceFile );
-        if( $overwrite || ! file_exists( $sourceFile ) ) {
-            if( file_put_contents( $sourceFile , $source ) === false ) {
-                throw new Exception("$sourceFile write failed.");
-            }
-        }
-        return array( $class, $sourceFile );
-    }
-
-
     private function preventFileDir($path,$mode = 0755)
     {
         $dir = dirname($path);
@@ -89,8 +72,19 @@ class SchemaGenerator
     protected function buildSchemaProxyClass($schema)
     {
         $schemaArray = $schema->export();
-        $source = $this->renderCode( 'Schema.php.twig', array(
-            // XXX: take off schema_data
+        $schemaClass = $schema->getClass();
+        $modelClass  = $schema->getModelClass();
+        $schemaProxyClass = $schema->getSchemaProxyClass();
+
+        $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
+            'template_dirs' => $this->getTemplateDirs(),
+            'template' => 'Schema.php.twig',
+        ));
+        $cTemplate->addConst( 'schema_class' , '\\' . ltrim($schemaClass,'\\') );
+        $cTemplate->addConst( 'model_class' , '\\' . ltrim($modelClass,'\\') );
+        $cTemplate->addConst( 'table',  $schema->getTable() );
+        $cTemplate->addConst( 'label',  $schema->getLabel() );
+        $source = $cTemplate->render(array(
             'schema_data' => $schemaArray,
             'schema' => $schema,
         ));
@@ -98,43 +92,7 @@ class SchemaGenerator
         $schemaClass = $schema->getClass();
         $modelClass  = $schema->getModelClass();
         $schemaProxyClass = $schema->getSchemaProxyClass();
-
-        $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
-            'template_dirs' => $this->getTemplateDirs(),
-            'template' => 'Class.php.twig',
-        ));
-        $cTemplate->addConst( 'schema_class' , '\\' . ltrim($schemaClass,'\\') );
-        $cTemplate->addConst( 'model_class' , '\\' . ltrim($modelClass,'\\') );
-        $cTemplate->addConst( 'table',  $schema->getTable() );
-        $cTemplate->addConst( 'label',  $schema->getLabel() );
-
-        /*
-            return $this->generateClass( 'Class.php', $cTemplate );
-         */
-
-
-        /**
-         * classname with namespace 
-         */
-        $schemaClass = $schema->getClass();
-        $modelClass  = $schema->getModelClass();
-        $schemaProxyClass = $schema->getSchemaProxyClass();
-
-
-        $filename = explode( '\\' , $schemaProxyClass );
-        $filename = (string) end($filename);
-        $sourceFile = $schema->getDir() 
-            . DIRECTORY_SEPARATOR . $filename . '.php';
-
-        $this->preventFileDir( $sourceFile );
-
-        if( file_exists($sourceFile) ) {
-            $this->logger->info("$sourceFile found, overwriting.");
-        }
-
-        $this->logger->info( "Generating schema proxy $schemaProxyClass => $sourceFile" );
-        file_put_contents( $sourceFile , $source );
-        return array( $schemaProxyClass , $sourceFile );
+        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate, true);
     }
 
 
