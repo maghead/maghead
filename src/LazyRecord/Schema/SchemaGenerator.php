@@ -45,16 +45,17 @@ class SchemaGenerator
     /**
      * Returns code template directory
      */
-    protected function getTemplatePath()
+    protected function getTemplateDirs()
     {
         $refl = new \ReflectionObject($this);
         $path = $refl->getFilename();
         return dirname($refl->getFilename()) . DIRECTORY_SEPARATOR . 'Templates';
     }
 
+
     protected function renderCode($file, $args)
     {
-        $codegen = new TemplateView( $this->getTemplatePath() );
+        $codegen = new TemplateView( $this->getTemplateDirs() );
         $codegen->stash = $args;
         return $codegen->renderFile($file);
     }
@@ -62,26 +63,20 @@ class SchemaGenerator
 
     protected function generateClass($targetDir,$templateFile,$cTemplate,$extra = array(), $overwrite = false)
     {
-        $source = $this->renderCode( $templateFile , array_merge( array(
-            'class'   => $cTemplate,
-        ), $extra ) );
+        $source = $this->renderCode( $templateFile , array_merge( array( 'class' => $cTemplate ), $extra ) );
 
         $sourceFile = $targetDir 
             . DIRECTORY_SEPARATOR 
             . $cTemplate->class->getName() . '.php';
-
-        $class = ltrim($cTemplate->class->getFullName(),'\\');
-        $this->logger->info( "Generating model class: $class => $sourceFile" );
         $this->preventFileDir( $sourceFile );
-
         if( $overwrite || ! file_exists( $sourceFile ) ) {
             if( file_put_contents( $sourceFile , $source ) === false ) {
                 throw new Exception("$sourceFile write failed.");
             }
         }
-
         return array( $class, $sourceFile );
     }
+
 
     private function preventFileDir($path,$mode = 0755)
     {
@@ -144,14 +139,16 @@ class SchemaGenerator
         $baseClass = $schema->getBaseModelClass();
 
         // XXX: should export more information, so we don't need to get from schema. 
-        $cTemplate = new ClassTemplate( $baseClass );
+        $cTemplate = new ClassTemplate( $baseClass, array( 
+            'template_dirs' => $this->getTemplateDirs(),
+            'template' => 'Class.php.twig',
+        ));
         $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
         $cTemplate->addConst( 'collection_class' , '\\' . ltrim($schema->getCollectionClass(),'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
-        $cTemplate->extendClass( 
-            $this->getBaseModelClass()
-        );
+        $cTemplate->extendClass( $this->getBaseModelClass() );
+        $cTemplate->render(array(  ));
         return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true );
     }
 
@@ -177,23 +174,38 @@ class SchemaGenerator
         return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true ); // overwrite
     }
 
-    protected function buildCollectionClass($schema)
+    public function generateCollectionClass($schema)
     {
         $collectionClass = $schema->getCollectionClass();
         $baseCollectionClass = $schema->getBaseCollectionClass();
-
-        $cTemplate = new ClassTemplate( $collectionClass );
+        $cTemplate = new ClassTemplate( $collectionClass, array(
+            'template_dirs' => $this->getTemplateDirs(),
+            'template' => 'Class.php.twig',
+        ));
         $cTemplate->extendClass( $baseCollectionClass );
-        return $this->generateClass( $schema->getDir() , 'Class.php.twig', $cTemplate );
+        $source = $cTemplate->render();
+        $classFile = $this->writeClassFile($schema->getDir(), $cTemplate->class->getName(),$source);
+        return array( $cTemplate->class->getFullName() => $classFile );
     }
 
-
-    /*
-    public function generateClass(\LazyRecord\Schema\SchemaDeclare $class) 
+    public function writeClassFile($directory,$className,$source)
     {
-        $schema = new $class; // it's a SchemaDeclare class.
+        // get schema dir
+        $sourcePath = $directory 
+            . DIRECTORY_SEPARATOR 
+            . $className . '.php';
+        $this->preventFileDir( $sourcePath );
+        if( ! file_exists( $sourcePath ) ) {
+            if( file_put_contents( $sourcePath , $source ) === false ) {
+                throw new Exception("$sourcePath write failed.");
+            }
+        }
+        return $sourcePath;
     }
-    */
+
+
+
+
 
 
     public function generate($classes)
@@ -228,8 +240,8 @@ class SchemaGenerator
             list( $c, $f ) = $this->buildBaseCollectionClass( $schema );
             $classMap[ $c ] = $f;
 
-            $this->logger->debug( 'Building collection class: ' . $class );
-            list( $c, $f ) = $this->buildCollectionClass( $schema );
+            $this->logger->debug( 'Generating collection class: ' . $class );
+            list( $c, $f ) = $this->generateCollectionClass( $schema );
             $classMap[ $c ] = $f;
         }
 
