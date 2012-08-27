@@ -1,5 +1,7 @@
 <?php
 
+
+/* test helpers */
 function result_ok( $result )
 {
     $stacks = debug_backtrace( DEBUG_BACKTRACE_PROVIDE_OBJECT ); 

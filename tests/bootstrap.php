@@ -1,7 +1,7 @@
 <?php
 require 'PHPUnit/TestMore.php';
 require 'vendor/pear/Universal/ClassLoader/BasePathClassLoader.php';
-require 'tests/helpers.php';
+require 'tests/model_helpers.php';
 mb_internal_encoding('UTF-8');
 error_reporting( E_ALL );
 use Universal\ClassLoader\BasePathClassLoader;
