@@ -50,6 +50,9 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 
         $schemaProxy = new \tests\UserSchemaProxy;
         ok($schemaProxy);
+
+        $baseClass = new \tests\UserBase;
+        ok($baseClass);
     }
 }
 
