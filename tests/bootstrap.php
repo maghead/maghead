@@ -14,3 +14,7 @@ $loader = new BasePathClassLoader(array(
 ));
 $loader->useIncludePath(true);
 $loader->register();
+
+
+// TODO: we can initialize schema files here.
+

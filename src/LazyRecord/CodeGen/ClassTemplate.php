@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord\CodeGen;
+use Exception;
 
 class ClassTemplate
 {
@@ -11,10 +12,22 @@ class ClassTemplate
     public $consts  = array();
     public $members = array();
 
-    public function __construct($className,$namespace = null)
+    public $templateFile;
+    public $templateDirs;
+    public $options = array();
+
+    public function __construct($className,$options = array())
     {
-        if( $namespace )
-            $className = $namespace . '\\' . $className;
+        if( !isset($options['template_dirs']) ) {
+            throw new Exception('template_dirs option is required.');
+        }
+        if( !isset($options['template']) ) {
+            throw new Exception('template option is required.');
+        }
+
+        $this->options = $options;
+        $this->templateFile = $options['template'];
+        $this->templateDirs = $options['template_dirs'];
         $this->setClass($className);
     }
 
@@ -56,15 +69,15 @@ class ClassTemplate
         $this->members[] = new ClassMember($name,$value,$scope);
     }
 
-    public function render($file) 
+    public function render($args = array())
     {
-#          $view = new TemplateView( $this->getTemplatePath() );
-#          $codegen = new \LazyRecord\CodeGen( $this->getTemplatePath() );
-#          $codegen->stash = $args;
-#          return $codegen->renderFile($file);
+        $view = new TemplateView($this->templateDirs);
+        $view->class = $this;
+        foreach( $args as $n => $v ) {
+            $view->__set($n,$v);
+        }
+        return $view->renderFile($this->templateFile);
     }
-
-
 
 }
 
