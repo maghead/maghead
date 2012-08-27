@@ -152,13 +152,18 @@ class SchemaGenerator
         return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true );
     }
 
-    protected function buildModelClass($schema)
+    public function generateModelClass($schema)
     {
-        $baseClass = $schema->getBaseModelClass();
-        $modelClass = $schema->getModelClass();
-        $cTemplate = new ClassTemplate( $schema->getModelClass() );
-        $cTemplate->extendClass( $baseClass );
-        return $this->generateClass( $schema->getDir() , 'Class.php.twig', $cTemplate );
+        $class = $schema->getModelClass();
+        $cTemplate = new ClassTemplate( $schema->getModelClass() , array(
+            'template_dirs' => $this->getTemplateDirs(),
+            'template' => 'Class.php.twig',
+        ));
+        $cTemplate->extendClass( $schema->getBaseModelClass() );
+
+        $sourceCode = $cTemplate->render();
+        $classFile = $this->writeClassToDirectory($schema->getDir(), $cTemplate->class->getName(),$sourceCode);
+        return array( $cTemplate->class->getFullName(), $classFile );
     }
 
     public function generateBaseCollectionClass($schema)
@@ -175,7 +180,7 @@ class SchemaGenerator
 
         // we should overwrite the base collection class.
         $sourceCode = $cTemplate->render();
-        $classFile = $this->writeClassFile($schema->getDir(), $cTemplate->class->getName(),$sourceCode,true);
+        $classFile = $this->writeClassToDirectory($schema->getDir(), $cTemplate->class->getName(),$sourceCode,true);
         return array( $cTemplate->class->getFullName(), $classFile );
     }
 
@@ -189,11 +194,21 @@ class SchemaGenerator
         ));
         $cTemplate->extendClass( $baseCollectionClass );
         $sourceCode = $cTemplate->render();
-        $classFile = $this->writeClassFile($schema->getDir(), $cTemplate->class->getName(),$sourceCode);
+        $classFile = $this->writeClassToDirectory($schema->getDir(), $cTemplate->class->getName(),$sourceCode);
         return array( $cTemplate->class->getFullName(), $classFile );
     }
 
-    public function writeClassFile($directory,$className,$sourceCode, $overwrite = false)
+
+
+    /**
+     * Write class code to a directory with class name
+     *
+     * @param path $directory
+     * @param string $className
+     * @param string $sourceCode
+     * @param boolean $overwrite
+     */
+    public function writeClassToDirectory($directory,$className,$sourceCode, $overwrite = false)
     {
         // get schema dir
         $filePath = $directory . DIRECTORY_SEPARATOR . $className . '.php';
@@ -232,7 +247,7 @@ class SchemaGenerator
             $classMap[ $baseModelClass ] = $baseModelFile;
 
             $this->logger->debug( 'Building model class: ' . $class );
-            list( $modelClass, $modelFile ) = $this->buildModelClass( $schema );
+            list( $modelClass, $modelFile ) = $this->generateModelClass( $schema );
             $classMap[ $modelClass ] = $modelFile;
 
             $this->logger->debug( 'Building base collection class: ' . $class );
