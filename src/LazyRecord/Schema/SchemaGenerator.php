@@ -69,12 +69,14 @@ class SchemaGenerator
             mkdir( $dir , $mode, true );
     }
 
-    protected function buildSchemaProxyClass($schema)
+    public function generateSchemaProxyClass($schema)
     {
         $schemaArray = $schema->export();
         $schemaClass = $schema->getClass();
         $modelClass  = $schema->getModelClass();
         $schemaProxyClass = $schema->getSchemaProxyClass();
+
+        var_dump( $schemaProxyClass ); 
 
         $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
             'template_dirs' => $this->getTemplateDirs(),
@@ -164,7 +166,7 @@ class SchemaGenerator
     {
         $sourceCode = $cTemplate->render();
         $classFile = $this->writeClassToDirectory($directory, $cTemplate->class->getName(),$sourceCode, $overwrite);
-        return array( $cTemplate->class->getFullName(), $classFile );
+        return array( $cTemplate->class->getFullName() => $classFile );
     }
 
 
@@ -207,7 +209,7 @@ class SchemaGenerator
             $schema = new $class;
 
             $this->logger->debug( 'Building schema proxy class: ' . $class );
-            list( $schemaProxyClass, $schemaProxyFile ) = $this->buildSchemaProxyClass( $schema );
+            list( $schemaProxyClass, $schemaProxyFile ) = $this->generateSchemaProxyClass( $schema );
             $classMap[ $schemaProxyClass ] = $schemaProxyFile;
 
             $this->logger->debug( 'Building base model class: ' . $class );
