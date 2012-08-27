@@ -10,9 +10,7 @@ class BasicCRUDTest extends PHPUnit_Framework_ModelTestCase
             'tests\AuthorSchema',
             'tests\BookSchema',
             'tests\AuthorBookSchema',
-            'tests\NameSchema',
             'tests\AddressSchema',
-            'tests\UserSchema',
         );
     }
 
@@ -515,27 +513,6 @@ class BasicCRUDTest extends PHPUnit_Framework_ModelTestCase
     }
 
 
-
-    public function testDateTimeInflator()
-    {
-        $n = new \tests\Name;
-        $date = new DateTime('2011-01-01 00:00:00');
-        $ret = $n->create(array( 
-            'name' => 'Deflator Test' , 
-            'country' => 'Tokyo', 
-            'confirmed' => false,
-            'date' => $date,
-        ));
-        ok( $ret->success , $ret );
-
-        $array = $n->toArray();
-        ok( is_string( $array['date'] ) );
-
-        $d = $n->date; // inflated
-        isa_ok( 'DateTime' , $d );
-        is( '20110101' , $d->format( 'Ymd' ) );
-        ok( $n->delete()->success );
-    }
 
     public function testZeroInflator()
     {
