@@ -1,6 +1,6 @@
 <?php
 
-class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
+class SchemaGeneratorTest_old extends PHPUnit_Framework_TestCase
 {
 
 	function getLogger()

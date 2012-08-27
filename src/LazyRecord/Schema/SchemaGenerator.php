@@ -99,7 +99,10 @@ class SchemaGenerator
         $modelClass  = $schema->getModelClass();
         $schemaProxyClass = $schema->getSchemaProxyClass();
 
-        $cTemplate = new ClassTemplate( $schemaProxyClass );
+        $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
+            'template_dirs' => $this->getTemplateDirs(),
+            'template' => 'Class.php.twig',
+        ));
         $cTemplate->addConst( 'schema_class' , '\\' . ltrim($schemaClass,'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($modelClass,'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
@@ -135,11 +138,9 @@ class SchemaGenerator
     }
 
 
-    protected function buildBaseModelClass($schema)
+    public function generateBaseModelClass($schema)
     {
         $baseClass = $schema->getBaseModelClass();
-
-        // XXX: should export more information, so we don't need to get from schema. 
         $cTemplate = new ClassTemplate( $baseClass, array( 
             'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
@@ -149,8 +150,7 @@ class SchemaGenerator
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
         $cTemplate->extendClass( $this->getBaseModelClass() );
-        $cTemplate->render(array(  ));
-        return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true );
+        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate, true);
     }
 
     public function generateModelClass($schema)
@@ -161,10 +161,7 @@ class SchemaGenerator
             'template' => 'Class.php.twig',
         ));
         $cTemplate->extendClass( $schema->getBaseModelClass() );
-
-        $sourceCode = $cTemplate->render();
-        $classFile = $this->writeClassToDirectory($schema->getDir(), $cTemplate->class->getName(),$sourceCode);
-        return array( $cTemplate->class->getFullName(), $classFile );
+        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate);
     }
 
 
@@ -256,7 +253,7 @@ class SchemaGenerator
             $classMap[ $schemaProxyClass ] = $schemaProxyFile;
 
             $this->logger->debug( 'Building base model class: ' . $class );
-            list( $baseModelClass, $baseModelFile ) = $this->buildBaseModelClass( $schema );
+            list( $baseModelClass, $baseModelFile ) = $this->generateBaseModelClass( $schema );
             $classMap[ $baseModelClass ] = $baseModelFile;
 
             $this->logger->debug( 'Building model class: ' . $class );
