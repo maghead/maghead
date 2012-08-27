@@ -173,7 +173,10 @@ class SchemaGenerator
         $cTemplate->addConst( 'table',  $schema->getTable() );
         $cTemplate->extendClass( 'LazyRecord\\BaseCollection' );
 
-        return $this->generateClass( $schema->getDir(), 'Class.php.twig', $cTemplate , array() , true ); // overwrite
+
+        $sourceCode = $cTemplate->render();
+        $classFile = $this->writeClassFile($schema->getDir(), $cTemplate->class->getName(),$sourceCode);
+        return array( $cTemplate->class->getFullName(), $classFile );
     }
 
     public function generateCollectionClass($schema)
@@ -190,14 +193,14 @@ class SchemaGenerator
         return array( $cTemplate->class->getFullName(), $classFile );
     }
 
-    public function writeClassFile($directory,$className,$sourceCode)
+    public function writeClassFile($directory,$className,$sourceCode, $overwrite = false)
     {
         // get schema dir
         $sourcePath = $directory 
             . DIRECTORY_SEPARATOR 
             . $className . '.php';
         $this->preventFileDir( $sourcePath );
-        if( ! file_exists( $sourcePath ) ) {
+        if( $overwrite || ! file_exists( $sourcePath ) ) {
             if( file_put_contents( $sourcePath , $source ) === false ) {
                 throw new Exception("$sourcePath write failed.");
             }
