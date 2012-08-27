@@ -50,31 +50,5 @@ class TemplateView
         return $template->render( $this->stash );
     }
 
-    public function generateFile($targetFile,$sourceFile)
-    {
-
-        $this->mkdir($targetFile);
-
-        if( ! $this->overwrite && file_exists($targetFile) ) {
-            // skip
-            return;
-        }
-
-        $content = $this->renderFile( $sourceFile );
-        if( file_put_contents( $targetFile, $content ) !== false ) {
-            return $targetFile;
-        }
-
-        throw new Exception("CodeGen failed. $targetFile");
-    }
-
-    private function mkdir($path,$mode = 0755)
-    {
-        $dir = dirname($path);
-        if( ! file_exists($dir) )
-            mkdir( $dir , $mode, true );
-    }
-
-
 }
 

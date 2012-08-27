@@ -39,6 +39,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
             ok($class);
             ok($file);
             path_ok($file);
+            require $file;
         }
 
         ok( isset($classMap['\tests\UserSchemaProxy']) );
@@ -46,6 +47,9 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
         ok( isset($classMap['\tests\UserBase']) );
         ok( isset($classMap['\tests\UserCollection']) );
         ok( isset($classMap['\tests\UserCollectionBase']) );
+
+        $schemaProxy = new \tests\UserSchemaProxy;
+        ok($schemaProxy);
     }
 }
 

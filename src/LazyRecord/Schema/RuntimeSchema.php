@@ -22,7 +22,7 @@ class RuntimeSchema extends SchemaBase
     /**
      * Inject schema array data into runtime schema object
      *
-     * @param array
+     * @param array $schemaArray
      */
     public function import($schemaArray)
     {
@@ -31,7 +31,6 @@ class RuntimeSchema extends SchemaBase
         $this->primaryKey = $schemaArray['primary_key'];
         $this->table = $schemaArray['table'];
         $this->modelClass = $schemaArray['model_class'];
-
     }
 
     public function hasColumn($name)
@@ -62,8 +61,9 @@ class RuntimeSchema extends SchemaBase
 
     public function getColumns($includeVirtual = false) 
     {
-        if( $includeVirtual )
+        if( $includeVirtual ) {
             return $this->columnObjects;
+        }
 
         $columns = array();
         foreach( $this->columnObjects as $name => $column ) {
