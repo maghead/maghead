@@ -24,7 +24,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
             path_ok($file);
         }
 
-        $classMap = $g->generateBaseCollectionClass($schema);
+        $classMap = $g->generateSchemaProxyClass($schema);
         foreach( $classMap as $class => $file ) {
             ok($class);
             ok($file);
