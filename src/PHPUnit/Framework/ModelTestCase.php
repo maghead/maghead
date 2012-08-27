@@ -8,9 +8,11 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 {
     public $driver = 'sqlite';
 
+    public $schemaHasBeenBuilt = false;
+
     public $schemaPath = 'tests/schema';
 
-    public $inIsolation = true;
+    public $inIsolation = false;
 
     public $schemaClasses = array( );
 

@@ -4,7 +4,6 @@
          colors="true"
          stopOnFailure="true"
          stopOnError="true"
-         strict="true"
          verbose="true">
   <php>
 
