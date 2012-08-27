@@ -75,9 +75,6 @@ class SchemaGenerator
         $schemaClass = $schema->getClass();
         $modelClass  = $schema->getModelClass();
         $schemaProxyClass = $schema->getSchemaProxyClass();
-
-        var_dump( $schemaProxyClass ); 
-
         $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
             'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Schema.php.twig',
