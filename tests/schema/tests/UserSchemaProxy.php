@@ -1,54 +1,23 @@
 <?php
-namespace tests;
 
 use LazyRecord\Schema\RuntimeSchema;
 
-class UserSchemaProxy extends RuntimeSchema
+class SchemaProxy extends RuntimeSchema
 {
 
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns         = array( 
-  'account' => array( 
-      'name' => 'account',
-      'attributes' => array( 
-          'type' => 'varchar(128)',
-          'isa' => 'str',
-          'unique' => true,
-        ),
-    ),
-  'password' => array( 
-      'name' => 'password',
-      'attributes' => array( 
-          'type' => 'varchar(256)',
-          'isa' => 'str',
-        ),
-    ),
-  'id' => array( 
-      'name' => 'id',
-      'attributes' => array( 
-          'type' => 'integer',
-          'isa' => 'int',
-          'primary' => true,
-          'autoIncrement' => true,
-        ),
-    ),
-);
-        $this->columnNames     = array( 
-  'account',
-  'password',
-  'id',
-);
-        $this->primaryKey      = 'id';
-        $this->table           = 'users';
-        $this->modelClass      = 'tests\\User';
-        $this->collectionClass = 'tests\\UserCollection';
-        $this->label           = 'User';
-        $this->relations       = array( 
-);
-        $this->readSourceId    = 'default';
-        $this->writeSourceId    = 'default';
+        $this->columns         = NULL;
+        $this->columnNames     = NULL;
+        $this->primaryKey      = NULL;
+        $this->table           = NULL;
+        $this->modelClass      = NULL;
+        $this->collectionClass = NULL;
+        $this->label           = NULL;
+        $this->relations       = NULL;
+        $this->readSourceId    = NULL;
+        $this->writeSourceId    = NULL;
 
         parent::__construct();
     }
