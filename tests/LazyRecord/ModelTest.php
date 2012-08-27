@@ -1,5 +1,4 @@
 <?php
-use LazyRecord\Schema\SqlBuilder;
 
 class ModelTest extends PHPUnit_Framework_ModelTestCase
 {
@@ -13,7 +12,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             '\tests\AuthorBookSchema',
             '\tests\NameSchema',
             '\tests\AddressSchema',
-            '\tests\UserSchema',
         );
     }
 
@@ -379,30 +377,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             is( false , $vld->success );
             is( 'Please don\'t',  $vld->message );
         }
-    }
-
-
-    public function testRefer()
-    {
-        $user = new \tests\User;
-        ok( $user );
-        $ret = $user->create(array( 'account' => 'c9s' ));
-        result_ok($ret);
-        ok( $user->id );
-
-        $book = new \tests\Book;
-        $ret = $book->create(array( 
-            'title' => 'Programming Perl',
-            'subtitle' => 'Way Way to Roman',
-            'publisher_id' => '""',  /* cast this to null or empty */
-            'created_by' => $user->id,
-        ));
-        ok( $ret );
-
-        // XXX: broken
-#          ok( $book->created_by );
-#          is( $user->id, $book->created_by->id );
-#          ok( $user->id , $book->getValue('created_by') );
     }
 
     public function testTypeConstraint()

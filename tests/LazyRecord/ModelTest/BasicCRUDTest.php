@@ -1,5 +1,12 @@
 <?php
 
+
+/**
+ * Testing models:
+ *   1. Author
+ *   2. Book
+ *   3. Address
+ */
 class BasicCRUDTest extends PHPUnit_Framework_ModelTestCase
 {
     public $driver = 'sqlite';
