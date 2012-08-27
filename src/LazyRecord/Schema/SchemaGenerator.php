@@ -77,20 +77,12 @@ class SchemaGenerator
         $schemaProxyClass = $schema->getSchemaProxyClass();
         $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
             'template_dirs' => $this->getTemplateDirs(),
-            'template' => 'Schema.php.twig',
+            'template'      => 'Schema.php.twig',
         ));
         $cTemplate->addConst( 'schema_class' , '\\' . ltrim($schemaClass,'\\') );
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($modelClass,'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
         $cTemplate->addConst( 'label',  $schema->getLabel() );
-        $source = $cTemplate->render(array(
-            'schema_data' => $schemaArray,
-            'schema' => $schema,
-        ));
-
-        $schemaClass = $schema->getClass();
-        $modelClass  = $schema->getModelClass();
-        $schemaProxyClass = $schema->getSchemaProxyClass();
         return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate, true);
     }
 
@@ -159,13 +151,20 @@ class SchemaGenerator
     }
 
 
+    /**
+     * Write class template to the schema directory.
+     *
+     * @param string $directory The schema class directory.
+     * @param LazyRecord\CodeGen\ClassTemplate class template object.
+     * @param boolean $overwrite Overwrite class file. 
+     * @return array
+     */
     public function writeClassTemplateToDirectory($directory,$cTemplate,$overwrite = false)
     {
         $sourceCode = $cTemplate->render();
         $classFile = $this->writeClassToDirectory($directory, $cTemplate->class->getName(),$sourceCode, $overwrite);
         return array( $cTemplate->class->getFullName() => $classFile );
     }
-
 
     /**
      * Write class code to a directory with class name
@@ -189,6 +188,12 @@ class SchemaGenerator
     }
 
 
+
+    /**
+     * Given a schema class list, generate schema files.
+     *
+     * @param array $classes
+     */
     public function generate($classes)
     {
         // for generated class source code.
@@ -200,30 +205,22 @@ class SchemaGenerator
          * schema class mapping 
          */
         $classMap = array();
+        foreach( (array) $classes as $class ) {
+            $schema = is_object($class) ? $class : new $class;
+            $map = $this->generateSchemaProxyClass( $schema );
+            $classMap = $classMap + $map;
 
-        $this->logger->info( 'Found schema classes: ' . join(', ', $classes ) );
-        foreach( $classes as $class ) {
-            $schema = new $class;
+            $map = $this->generateBaseModelClass( $schema );
+            $classMap = $classMap + $map;
 
-            $this->logger->debug( 'Building schema proxy class: ' . $class );
-            list( $schemaProxyClass, $schemaProxyFile ) = $this->generateSchemaProxyClass( $schema );
-            $classMap[ $schemaProxyClass ] = $schemaProxyFile;
+            $map = $this->generateModelClass( $schema );
+            $classMap = $classMap + $map;
 
-            $this->logger->debug( 'Building base model class: ' . $class );
-            list( $baseModelClass, $baseModelFile ) = $this->generateBaseModelClass( $schema );
-            $classMap[ $baseModelClass ] = $baseModelFile;
+            $map = $this->generateBaseCollectionClass( $schema );
+            $classMap = $classMap + $map;
 
-            $this->logger->debug( 'Building model class: ' . $class );
-            list( $modelClass, $modelFile ) = $this->generateModelClass( $schema );
-            $classMap[ $modelClass ] = $modelFile;
-
-            $this->logger->debug( 'Building base collection class: ' . $class );
-            list( $c, $f ) = $this->generateBaseCollectionClass( $schema );
-            $classMap[ $c ] = $f;
-
-            $this->logger->debug( 'Generating collection class: ' . $class );
-            list( $c, $f ) = $this->generateCollectionClass( $schema );
-            $classMap[ $c ] = $f;
+            $map = $this->generateCollectionClass( $schema );
+            $classMap = $classMap + $map;
         }
 
         restore_error_handler();
