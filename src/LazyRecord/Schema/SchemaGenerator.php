@@ -195,9 +195,7 @@ class SchemaGenerator
             printf( "ERROR %s:%s  [%s] %s\n" , $errfile, $errline, $errno, $errstr );
         }, E_ERROR );
 
-        /**
-         * Schema class mapping 
-         */
+        // class map [ class => class file path ]
         $classMap = array();
         foreach( (array) $classes as $class ) {
             $schema = is_object($class) ? $class : new $class;
