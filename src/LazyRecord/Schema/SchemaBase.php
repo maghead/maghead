@@ -42,11 +42,6 @@ abstract class SchemaBase
         return $this->writeSourceId;
     }
 
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-
     public function getTable()
     {
         return $this->table;
@@ -57,8 +52,6 @@ abstract class SchemaBase
         return $this->label;
     }
 
-    // Class name related methods
-
 
     public function getModelName()
     {
@@ -66,6 +59,7 @@ abstract class SchemaBase
         return end($p);
     }
 
+    // Class name related methods
     public function getBaseModelClass()
     {
         return $this->getModelClass() . 'Base';

@@ -40,11 +40,22 @@ class SchemaDeclare extends SchemaBase
 
     }
 
+
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
     public function getColumn($name)
     {
         if( isset($this->columns[ $name ]) ) {
             return $this->columns[ $name ];
         }
+    }
+
+    public function hasColumn($name)
+    {
+        return isset($this->columns[ $name ]);
     }
 
 

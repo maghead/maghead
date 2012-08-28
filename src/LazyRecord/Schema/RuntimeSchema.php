@@ -40,6 +40,7 @@ class RuntimeSchema extends SchemaBase
         }
     }
 
+
     public function getColumn($name)
     {
         if( isset($this->columnObjects[ $name ]) ) {
