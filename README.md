@@ -6,11 +6,10 @@ LazyRecord
 Features
 --------
 
-* PDO.
-* MySQL, Pgsql, SQLite support.
+* Fast.
+* PDO, MySQL, Pgsql, SQLite support.
 * Multiple Data source
 * Schema/Database diff
-* Fast.
 
 Synopsis
 --------
