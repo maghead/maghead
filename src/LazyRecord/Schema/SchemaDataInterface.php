@@ -10,9 +10,12 @@ interface SchemaDataInterface
 
     public function getReferenceSchemas($recursive = true);
 
-    public function getColumns();
+    public function getColumns($includeVirtual = false);
+
+    public function getColumnNames($includeVirtual = false);
 
     public function getColumn($name);
+
 
     public function hasColumn($name);
 
