@@ -89,8 +89,8 @@ Install manually
 ----------------
 Install required extensions:
 
-    sudo pecl install apc
-    sudo pecl install yaml
+    pecl install apc
+    pecl install yaml
 
 get php source code and install these extensions:
 
@@ -124,7 +124,7 @@ And update your php.ini:
     date.timezone = Asia/Taipei
     phar.readonly = Off
 
-Install LazyRecord:
+Install LazyRecord from git-core:
 
     git clone git://github.com/c9s/LazyRecord.git
     cd LazyRecord
