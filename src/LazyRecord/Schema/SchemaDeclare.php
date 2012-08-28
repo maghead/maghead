@@ -6,6 +6,7 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 
 class SchemaDeclare extends SchemaBase
+    implements SchemaDataInterface
 {
     public function __construct()
     {

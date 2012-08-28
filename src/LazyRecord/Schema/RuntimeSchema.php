@@ -4,6 +4,7 @@ use LazyRecord\Schema\RuntimeColumn;
 use Exception;
 
 class RuntimeSchema extends SchemaBase
+    implements SchemaDataInterface
 {
     public $modelClass;
 
