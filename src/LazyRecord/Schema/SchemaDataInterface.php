@@ -4,8 +4,15 @@ namespace LazyRecord\Schema;
 interface SchemaDataInterface 
 {
 
+    /**
+     * Returns table name
+     */
     public function getTable();
 
+
+    /**
+     * Returns label name
+     */
     public function getLabel();
 
     public function getReferenceSchemas($recursive = true);
