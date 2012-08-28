@@ -21,6 +21,8 @@ Requirement
 Installation
 ------------
 
+    pear channel-discover pear.corneltek.com
+    pear install -a corneltek/LazyRecord
 
 Synopsis
 --------
