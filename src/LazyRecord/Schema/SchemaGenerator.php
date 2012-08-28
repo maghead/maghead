@@ -53,15 +53,6 @@ class SchemaGenerator
         return dirname($refl->getFilename()) . DIRECTORY_SEPARATOR . 'Templates';
     }
 
-
-    protected function renderCode($file, $args)
-    {
-        $codegen = new TemplateView( $this->getTemplateDirs() );
-        $codegen->stash = $args;
-        return $codegen->renderFile($file);
-    }
-
-
     public function preventFileDir($path,$mode = 0755)
     {
         $dir = dirname($path);
