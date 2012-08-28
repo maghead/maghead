@@ -1,6 +1,8 @@
 <?php
 namespace LazyRecord;
+use Exception;
 use ReflectionClass;
+use LazyRecord\Inflector;
 
 class ClassUtils
 {
@@ -52,6 +54,26 @@ class ClassUtils
         return $list;
     }
 
+    static public function convert_class_to_table($class)
+    {
+        if( preg_match( '/(\w+?)(?:Model)?$/', $class ,$reg) ) 
+        {
+            $table = @$reg[1];
+            if( ! $table )
+                throw new Exception( "Table name error: $class" );
+
+            /* convert BlahBlah to blah_blah */
+            $table =  strtolower( preg_replace( 
+                '/(\B[A-Z])/e' , 
+                "'_'.strtolower('$1')" , 
+                $table ) );
+            return Inflector::getInstance()->pluralize($table);
+        } 
+        else 
+        {
+            throw new Exception('Table name convert error');
+        }
+    }
 
 }
 

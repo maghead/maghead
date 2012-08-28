@@ -1,9 +1,9 @@
 <?php
 namespace LazyRecord\Schema;
-use LazyRecord\Inflector;
-use LazyRecord\ConfigLoader;
 use Exception;
 use ReflectionObject;
+use LazyRecord\ConfigLoader;
+use LazyRecord\ClassUtils;
 
 class SchemaDeclare extends SchemaBase
 {
@@ -215,27 +215,7 @@ class SchemaDeclare extends SchemaBase
 
     protected function _classnameToTable() 
     {
-        $name = $this->getModelName();
-
-        if( preg_match( '/(\w+?)(?:Model)?$/', $name ,$reg) ) 
-        {
-            $table = @$reg[1];
-            if( ! $table )
-                throw new Exception( "Table name error: $name" );
-
-            /* convert BlahBlah to blah_blah */
-            $table =  strtolower( preg_replace( 
-                '/(\B[A-Z])/e' , 
-                "'_'.strtolower('$1')" , 
-                $table ) );
-
-            $inf = Inflector::getInstance();
-            return $inf->pluralize( $table );
-        } 
-        else 
-        {
-            throw new Exception('Table name convert error');
-        }
+        return ClassUtils::convert_class_to_table( $this->getModelName() );
     }
 
     public function column($name)
