@@ -31,6 +31,7 @@ abstract class SchemaBase
 
     public $writeSourceId = 'default';
 
+    public $mixins = array();
 
     public function getReadSourceId()
     {
@@ -43,6 +44,12 @@ abstract class SchemaBase
     }
 
 
+
+    /**
+     * Get a relationship data by a relation identity.
+     *
+     * @param string $relationId
+     */
     public function getRelation($relationId)
     {
         if( isset($this->relations[ $relationId ]) ) {
@@ -50,6 +57,10 @@ abstract class SchemaBase
         }
     }
 
+
+    /**
+     * Get relationship data
+     */
     public function getRelations() 
     {
         return $this->relations;

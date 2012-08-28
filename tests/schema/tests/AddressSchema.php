@@ -19,6 +19,6 @@ class AddressSchema extends SchemaDeclare
         /**
          * $address->author 
          */
-        $this->belongsTo( 'author', '\tests\AuthorSchema', 'id' , 'author_id' );
+        $this->belongsTo( 'author', '\\tests\\AuthorSchema', 'id' , 'author_id' );
     }
 }
