@@ -11,7 +11,7 @@ class RuntimeSchema extends SchemaBase
     public $collectionClass;
 
     // columns array
-    public $columns = array();
+    public $columnData = array();
 
     public function __construct() {
         // build RuntimeColumn objects
