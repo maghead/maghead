@@ -9,7 +9,7 @@ class UserSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns         = array( 
+        $this->columnData      = array( 
   'account' => array( 
       'name' => 'account',
       'attributes' => array( 

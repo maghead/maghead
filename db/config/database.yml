@@ -2,13 +2,14 @@
 bootstrap:
   - tests/bootstrap.php
 schema:
+  auto_id: 1
 #  Customize your schema class loader
 #
 #  loader: custom_schema_loader.php
 
 #  Customize your schema paths
-#  paths:
-#    - tests/schema
+  paths:
+    - tests/schema
 data_sources:
   default:
     dsn: 'sqlite::memory:'

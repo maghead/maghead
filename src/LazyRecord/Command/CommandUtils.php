@@ -10,7 +10,7 @@ class CommandUtils
 
     static function init_config_loader() {
         $loader = ConfigLoader::getInstance();
-        $loader->load();
+        $loader->loadFromSymbol();
         $loader->initForBuild();
         return static::$loader = $loader;
     }
@@ -67,7 +67,7 @@ class CommandUtils
     static function print_schema_classes($classes) {
         static::log('Found schema classes');
         foreach( $classes as $class ) {
-            static::$logger->info( static::$logger->formatter->format($class,'green') , 1 );
+            static::$logger->info( static::$logger->formatter->format( is_object($class) ? get_class($class) : $class, 'green') , 1 );
         }
     }
 

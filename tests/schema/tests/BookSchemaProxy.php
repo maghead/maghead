@@ -9,7 +9,7 @@ class BookSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns         = array( 
+        $this->columnData      = array( 
   'title' => array( 
       'name' => 'title',
       'attributes' => array( 
