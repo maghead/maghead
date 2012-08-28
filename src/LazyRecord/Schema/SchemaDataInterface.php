@@ -16,7 +16,6 @@ interface SchemaDataInterface
 
     public function getColumn($name);
 
-
     public function hasColumn($name);
 
     public function getModelClass();

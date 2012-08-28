@@ -1,6 +1,5 @@
 <?php
 namespace LazyRecord\Command;
-use LazyRecord\ConfigLoader;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Command\CommandUtils;
 
