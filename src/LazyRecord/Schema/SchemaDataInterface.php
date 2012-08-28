@@ -12,6 +12,8 @@ interface SchemaDataInterface
     public function getColumns();
     public function getColumn($name);
     public function hasColumn($name);
+    public function getReadSourceId();
+    public function getWriteSourceId();
 }
 
 
