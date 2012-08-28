@@ -141,6 +141,7 @@ class SchemaDeclare extends SchemaBase
         if( $class )
             return $class;
 
+        // if self class name is endded with 'Schema', remove it and return.
         if( ( $p = strrpos( $class = get_class($this) , 'Schema' ) ) !== false ) {
             return $class = substr( $class , 0 , $p );
         }
@@ -178,6 +179,13 @@ class SchemaDeclare extends SchemaBase
         return $this->getModelClass() . 'SchemaProxy';
     }
 
+    /**
+     * Get full class name
+     */
+    public function getClass()
+    {
+        return get_class($this);
+    }
 
     /**
      * Get class namespace
@@ -188,16 +196,6 @@ class SchemaDeclare extends SchemaBase
         return $refl->getNamespaceName();
     }
 
-
-    /**
-     * Get full class name
-     */
-    public function getClass()
-    {
-        return get_class($this);
-    }
-
-
     /**
      * Get short class name
      */
@@ -207,6 +205,12 @@ class SchemaDeclare extends SchemaBase
         return $refl->getShortName();
     }
 
+
+    /**
+     * Get directory from current schema object.
+     *
+     * @return string path
+     */
     public function getDir()
     {
         $refl = new \ReflectionObject($this);
@@ -218,6 +222,12 @@ class SchemaDeclare extends SchemaBase
         return ClassUtils::convert_class_to_table( $this->getModelName() );
     }
 
+    /**
+     * Define new column object
+     *
+     * @param string $name column name
+     * @return SchemaDeclare\Column
+     */
     public function column($name)
     {
         if( isset($this->columns[$name]) ) {
@@ -350,10 +360,6 @@ class SchemaDeclare extends SchemaBase
         }
     }
 
-    public function getColumns()
-    {
-        return $this->columns;
-    }
 
 }
 
