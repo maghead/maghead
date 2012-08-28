@@ -3,12 +3,10 @@ namespace LazyRecord\Schema;
 use LazyRecord\Inflector;
 use LazyRecord\ConfigLoader;
 use Exception;
+use ReflectionObject;
 
 class SchemaDeclare extends SchemaBase
 {
-
-    public $mixins = array();
-
     public function __construct()
     {
         $this->build();
@@ -134,9 +132,6 @@ class SchemaDeclare extends SchemaBase
         return $this->table ?: $this->_classnameToTable();
     }
 
-
-
-
     /**
      * classname methods
      */
@@ -183,20 +178,32 @@ class SchemaDeclare extends SchemaBase
         return $this->getModelClass() . 'SchemaProxy';
     }
 
+
+    /**
+     * Get class namespace
+     */
     public function getNamespace()
     {
-        $refl = new \ReflectionObject($this);
+        $refl = new ReflectionObject($this);
         return $refl->getNamespaceName();
     }
 
+
+    /**
+     * Get full class name
+     */
     public function getClass()
     {
         return get_class($this);
     }
 
+
+    /**
+     * Get short class name
+     */
     public function getShortName()
     {
-        $refl = new \ReflectionObject($this);
+        $refl = new ReflectionObject($this);
         return $refl->getShortName();
     }
 
@@ -204,16 +211,6 @@ class SchemaDeclare extends SchemaBase
     {
         $refl = new \ReflectionObject($this);
         return dirname($refl->getFilename());
-    }
-
-    public function setWriteSource($sourceId)
-    {
-        $this->writeSourceId = $sourceId;
-    }
-
-    public function setReadSource($sourceId)
-    {
-        $this->readSourceId = $sourceId;
     }
 
     protected function _classnameToTable() 
