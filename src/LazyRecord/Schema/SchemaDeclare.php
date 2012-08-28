@@ -156,16 +156,6 @@ class SchemaDeclare extends SchemaBase
 
 
     /**
-     * Get short class name
-     */
-    public function getShortName()
-    {
-        $refl = new ReflectionObject($this);
-        return $refl->getShortName();
-    }
-
-
-    /**
      * Get directory from current schema object.
      *
      * @return string path
