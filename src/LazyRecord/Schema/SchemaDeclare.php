@@ -127,7 +127,7 @@ class SchemaDeclare extends SchemaBase
         return array(
             'label'             => $this->getLabel(),
             'table'             => $this->getTable(),
-            'columns'           => $columnArray,
+            'column_data'       => $columnArray,
             'column_names'      => $this->columnNames,
             'primary_key'       => $this->primaryKey,
             'model_class'       => $this->getModelClass(),
