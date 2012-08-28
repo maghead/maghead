@@ -62,7 +62,7 @@ class SchemaGenerator
     }
 
 
-    private function preventFileDir($path,$mode = 0755)
+    public function preventFileDir($path,$mode = 0755)
     {
         $dir = dirname($path);
         if( ! file_exists($dir) )
@@ -204,7 +204,7 @@ class SchemaGenerator
         }, E_ERROR );
 
         /**
-         * schema class mapping 
+         * Schema class mapping 
          */
         $classMap = array();
         foreach( (array) $classes as $class ) {
