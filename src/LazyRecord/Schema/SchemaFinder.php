@@ -9,7 +9,6 @@ use RuntimeException;
 use LazyRecord\ClassUtils;
 use IteratorAggregate;
 
-
 /**
  * Find schema classes from files (or from current runtime)
  *
@@ -35,7 +34,7 @@ class SchemaFinder
     public function _loadSchemaFile($file) 
     {
         $code = file_get_contents($file);
-        if( preg_match( '#' . preg_quote('SchemaDeclare') . '#xsm' , $code ) ) {
+        if( preg_match( '#SchemaDeclare#xsm' , $code ) ) {
             require_once $file;
         }
     }

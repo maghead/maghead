@@ -3,6 +3,7 @@ namespace LazyRecord\Schema;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Exception;
+use ReflectionObject;
 use RecursiveRegexIterator;
 use RegexIterator;
 use LazyRecord\ConfigLoader;
@@ -47,7 +48,7 @@ class SchemaGenerator
      */
     protected function getTemplateDirs()
     {
-        $refl = new \ReflectionObject($this);
+        $refl = new ReflectionObject($this);
         $path = $refl->getFilename();
         return dirname($refl->getFilename()) . DIRECTORY_SEPARATOR . 'Templates';
     }
