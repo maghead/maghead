@@ -136,11 +136,13 @@ class SchemaDeclare extends SchemaBase
      */
     public function getModelClass()
     {
-        // if self class name is endded with 'Schema', remove it and return.
-        if( ( $p = strrpos( $class = get_class($this) , 'Schema' ) ) !== false ) {
-            return $class = substr( $class , 0 , $p );
+        // If self class name is endded with 'Schema', remove it and return.
+        $class = get_class($this);
+        if( ( $p = strrpos($class, 'Schema' ) ) !== false ) {
+            return substr($class , 0 , $p);
         }
-        throw new Exception('Can not get model class from ' . $class );
+        // throw new Exception('Can not get model class from ' . $class );
+        return $class;
     }
 
     public function getModelName()
