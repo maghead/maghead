@@ -6,7 +6,6 @@ use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Command\CommandUtils;
 
 /**
- *
  * $ lazy build-schema path/to/Schema path/to/SchemaDir
  *
  */
