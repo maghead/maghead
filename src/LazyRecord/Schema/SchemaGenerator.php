@@ -2,11 +2,10 @@
 namespace LazyRecord\Schema;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Exception;
 use RecursiveRegexIterator;
 use RegexIterator;
 use LazyRecord\ConfigLoader;
-use Exception;
-use LazyRecord\CodeGen\TemplateView;
 use LazyRecord\CodeGen\ClassTemplate;
 use LazyRecord\Schema\SchemaDeclare;
 
