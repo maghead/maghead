@@ -11,11 +11,22 @@ Features
 * Multiple Data source
 * Schema/Database diff
 
+
+Requirement
+-----------
+
+* pdo and pdo_mysql, pdo_sqlite or pdo_pgsql extensions.
+* yaml extension
+
+Installation
+------------
+
+
 Synopsis
 --------
 
 ```sh
-    $ lazy build-conf
+    $ lazy init
 
     $ lazy build-schema
 
