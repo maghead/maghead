@@ -25,12 +25,22 @@ class UserSchemaProxy extends RuntimeSchema
           'isa' => 'str',
         ),
     ),
+  'id' => array( 
+      'name' => 'id',
+      'attributes' => array( 
+          'type' => 'integer',
+          'isa' => 'int',
+          'primary' => true,
+          'autoIncrement' => true,
+        ),
+    ),
 );
         $this->columnNames     = array( 
   'account',
   'password',
+  'id',
 );
-        $this->primaryKey      = NULL;
+        $this->primaryKey      = 'id';
         $this->table           = 'users';
         $this->modelClass      = 'tests\\User';
         $this->collectionClass = 'tests\\UserCollection';
