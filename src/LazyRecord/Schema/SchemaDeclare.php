@@ -17,7 +17,6 @@ class SchemaDeclare extends SchemaBase
 
     }
 
-
     public function writeTo( $id ) 
     {
         $this->writeSourceId = $id;
@@ -137,10 +136,6 @@ class SchemaDeclare extends SchemaBase
      */
     public function getModelClass()
     {
-        static $class;
-        if( $class )
-            return $class;
-
         // if self class name is endded with 'Schema', remove it and return.
         if( ( $p = strrpos( $class = get_class($this) , 'Schema' ) ) !== false ) {
             return $class = substr( $class , 0 , $p );
@@ -217,6 +212,12 @@ class SchemaDeclare extends SchemaBase
         return dirname($refl->getFilename());
     }
 
+
+    /**
+     * Convert current model name to a class name.
+     *
+     * @return string table name
+     */
     protected function _classnameToTable() 
     {
         return ClassUtils::convert_class_to_table( $this->getModelName() );
@@ -359,7 +360,5 @@ class SchemaDeclare extends SchemaBase
             return ucfirst(preg_replace( '/[_]/' , ' ' , $label ));
         }
     }
-
-
 }
 
