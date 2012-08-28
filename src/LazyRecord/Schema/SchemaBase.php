@@ -32,8 +32,6 @@ abstract class SchemaBase
 
     public $mixins = array();
 
-
-
     public function getModelName()
     {
         $p = explode('\\',$this->getModelClass());
