@@ -40,6 +40,13 @@ class SchemaDeclare extends SchemaBase
 
     }
 
+    public function getColumn($name)
+    {
+        if( isset($this->columns[ $name ]) ) {
+            return $this->columns[ $name ];
+        }
+    }
+
 
     /**
      * Build schema
