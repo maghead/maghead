@@ -49,6 +49,42 @@ abstract class SchemaBase
 
 
 
+    // Class name related methods
+
+
+    public function getModelName()
+    {
+        $p = explode('\\',$this->getModelClass());
+        return end($p);
+    }
+
+    public function getBaseModelClass()
+    {
+        return $this->getModelClass() . 'Base';
+    }
+
+    public function getBaseModelName()
+    {
+        return $this->getModelName() . 'Base';
+    }
+
+    public function getCollectionClass()
+    {
+        return $this->getModelClass() . 'Collection';
+    }
+
+    public function getBaseCollectionClass()
+    {
+        return $this->getModelClass() . 'CollectionBase';
+    }
+
+    public function getSchemaProxyClass()
+    {
+        return $this->getModelClass() . 'SchemaProxy';
+    }
+
+
+
     /**
      * Get a relationship data by a relation identity.
      *

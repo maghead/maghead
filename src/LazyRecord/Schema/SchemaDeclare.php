@@ -40,11 +40,12 @@ class SchemaDeclare extends SchemaBase
     }
 
 
+    /**
+     * Build schema
+     */
     public function build()
     {
-
         $this->schema();
-
 
         /* find primary key */
         foreach( $this->columns as $name => $column ) {
@@ -72,17 +73,16 @@ class SchemaDeclare extends SchemaBase
         foreach( $this->columns as $name => $column ) {
             $columnArray[ $name ] = $column->export();
         }
-
         return array(
-            'label'            => $this->getLabel(), // model label
-            'table'            => $this->getTable(),
-            'columns'          => $columnArray,
-            'column_names'     => $this->columnNames,
-            'primary_key'      => $this->primaryKey,
-            'model_class'      => $this->getModelClass(),
-            'collection_class' => $this->getCollectionClass(),
-            'relations'      => $this->relations,
-            'read_data_source' => $this->readSourceId,
+            'label'             => $this->getLabel(),
+            'table'             => $this->getTable(),
+            'columns'           => $columnArray,
+            'column_names'      => $this->columnNames,
+            'primary_key'       => $this->primaryKey,
+            'model_class'       => $this->getModelClass(),
+            'collection_class'  => $this->getCollectionClass(),
+            'relations'         => $this->relations,
+            'read_data_source'  => $this->readSourceId,
             'write_data_source' => $this->writeSourceId,
         );
     }
@@ -145,36 +145,7 @@ class SchemaDeclare extends SchemaBase
         return $class;
     }
 
-    public function getModelName()
-    {
-        $p = explode('\\',$this->getModelClass());
-        return end($p);
-    }
 
-    public function getBaseModelClass()
-    {
-        return $this->getModelClass() . 'Base';
-    }
-
-    public function getBaseModelName()
-    {
-        return $this->getModelName() . 'Base';
-    }
-
-    public function getCollectionClass()
-    {
-        return $this->getModelClass() . 'Collection';
-    }
-
-    public function getBaseCollectionClass()
-    {
-        return $this->getModelClass() . 'CollectionBase';
-    }
-
-    public function getSchemaProxyClass()
-    {
-        return $this->getModelClass() . 'SchemaProxy';
-    }
 
     /**
      * Get full class name
