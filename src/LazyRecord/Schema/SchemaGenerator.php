@@ -185,7 +185,8 @@ class SchemaGenerator
     /**
      * Given a schema class list, generate schema files.
      *
-     * @param array $classes
+     * @param array $classes class list or schema object list.
+     * @return array class map array of schema class and file path.
      */
     public function generate($classes)
     {

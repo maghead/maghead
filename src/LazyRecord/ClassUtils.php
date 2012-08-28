@@ -22,11 +22,14 @@ class ClassUtils
         foreach( $classes as $class ) {
             $schema = new $class; // declare schema
             $refs = $schema->getReferenceSchemas();
-            foreach( $refs as $ref => $v )
-                $schemas[] = $ref;
+            foreach( $refs as $refClass => $v )
+                $schemas[] = $refClass;
             $schemas[] = $class;
         }
-        return array_unique($schemas);
+        $schemaClasses = array_unique($schemas);
+        return array_map(function($class) { 
+            return new $class; }, 
+                $schemaClasses);
     }
 
     static public function filter_schema_classes($classes)
