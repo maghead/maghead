@@ -11,6 +11,7 @@ interface SchemaDataInterface
     public function getReferenceSchemas($recursive = true);
     public function getColumns();
     public function getColumn($name);
+    public function hasColumn($name);
 }
 
 
