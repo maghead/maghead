@@ -32,25 +32,6 @@ abstract class SchemaBase
 
     public $mixins = array();
 
-    public function getReadSourceId()
-    {
-        return $this->readSourceId;
-    }
-
-    public function getWriteSourceId()
-    {
-        return $this->writeSourceId;
-    }
-
-    public function getTable()
-    {
-        return $this->table;
-    }
-
-    public function getLabel()
-    {
-        return $this->label;
-    }
 
 
     public function getModelName()

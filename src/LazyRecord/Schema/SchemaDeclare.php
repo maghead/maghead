@@ -18,6 +18,17 @@ class SchemaDeclare extends SchemaBase
 
     }
 
+
+    public function getWriteSourceId()
+    {
+        return $this->writeSourceId ?: 'default';
+    }
+
+    public function getReadSourceId()
+    {
+        return $this->readSourceId ?: 'default';
+    }
+
     public function writeTo( $id ) 
     {
         $this->writeSourceId = $id;
@@ -39,7 +50,6 @@ class SchemaDeclare extends SchemaBase
     {
 
     }
-
 
     public function getColumns()
     {
