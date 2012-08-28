@@ -74,6 +74,11 @@ class RuntimeSchema extends SchemaBase
         return $columns;
     }
 
+    public function getModelClass()
+    {
+        return $this->modelClass;
+    }
+
     public function newModel()
     {
         return new $this->modelClass;
