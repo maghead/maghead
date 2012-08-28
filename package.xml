@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-08-28</date>
-  <time>17:39:49</time>
+  <time>18:02:51</time>
   <version>
     <release>1.6.2</release>
     <api>1.6.2</api>
@@ -138,16 +138,17 @@
       <file name="src/LazyRecord/CollectionPager.php" role="php" md5sum="f17355028e8d9f52834c289ed07b6665"/>
       <file name="src/LazyRecord/Command/BuildBaseDataCommand.php" role="php" md5sum="0318e048d0eda1c142918e47558ed821"/>
       <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="93b107f7477070f9a3b916e652b910e7"/>
-      <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="b13a4abd48d3e772857618bba393790f"/>
+      <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="3589beca02b91dedded596e1afedeeb7"/>
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="5aaafbb1103a593e0c352d19e2b8b9fd"/>
       <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="648e339ec2c5777e46705df5f81a1c7d"/>
       <file name="src/LazyRecord/Command/CreateDBCommand.php" role="php" md5sum="75d7247e71e57d40ee43f6873843cfc5"/>
       <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="e7922e87f5633f39c801372868f5c170"/>
-      <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="11fd7b72748c614c94a425ca1971965f"/>
+      <file name="src/LazyRecord/Command/InitCommand.php" role="php" md5sum="31a955a44a4ceda208cf44ef7cf9294b"/>
+      <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="4071e977c5306f67362fed5ddb64651f"/>
       <file name="src/LazyRecord/Command/ListSchemaCommand.php" role="php" md5sum="08751425815227745bed0d3528d7e520"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="77d2b50933ed2752af3def4919e13518"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="e4da082d92825d40dbe3fa322c7bf74a"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="cf2f119915f8d84a85f206b0bbf4cb61"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="ffd5c60e0baa9609eb63bc78e35e5b7a"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c750d9b25dd6509c2831197ce7e3da3a"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
@@ -246,6 +247,14 @@
         <channel>pear.twig-project.org</channel>
         <min>0.0.0</min>
       </package>
+      <extension>
+        <name>pdo</name>
+        <min>0.0.0</min>
+      </extension>
+      <extension>
+        <name>yaml</name>
+        <min>0.0.0</min>
+      </extension>
     </required>
   </dependencies>
   <phprelease>
@@ -369,6 +378,7 @@
       <install name="src/LazyRecord/Command/CommandUtils.php" as="LazyRecord/Command/CommandUtils.php"/>
       <install name="src/LazyRecord/Command/CreateDBCommand.php" as="LazyRecord/Command/CreateDBCommand.php"/>
       <install name="src/LazyRecord/Command/DiffCommand.php" as="LazyRecord/Command/DiffCommand.php"/>
+      <install name="src/LazyRecord/Command/InitCommand.php" as="LazyRecord/Command/InitCommand.php"/>
       <install name="src/LazyRecord/Command/InitConfCommand.php" as="LazyRecord/Command/InitConfCommand.php"/>
       <install name="src/LazyRecord/Command/ListSchemaCommand.php" as="LazyRecord/Command/ListSchemaCommand.php"/>
       <install name="src/LazyRecord/ConfigLoader.php" as="LazyRecord/ConfigLoader.php"/>
