@@ -116,7 +116,6 @@ abstract class SchemaBase
             if( ! class_exists($class,true) ) {
                 throw new RuntimeException("Foreign schema class $class not found." );
             }
-
             if( ! is_subclass_of( $class, 'LazyRecord\Schema\SchemaDeclare' ) ) {
                 throw new InvalidArgumentException("Foreign schema class $class is not a SchemaDeclare class");
             }
