@@ -18,7 +18,6 @@ abstract class SchemaBase
 
     public $label;
 
-
     public $columns = array();
 
     public $columnNames = array();
@@ -41,6 +40,11 @@ abstract class SchemaBase
     public function getWriteSourceId()
     {
         return $this->writeSourceId;
+    }
+
+    public function getColumns()
+    {
+        return $this->columns;
     }
 
 
