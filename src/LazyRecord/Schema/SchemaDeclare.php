@@ -127,7 +127,7 @@ class SchemaDeclare extends SchemaBase
         $this->relations = array_merge( $mixin->relations, $this->relations );
     }
 
-    public function getTable() 
+    public function getTable()
     {
         return $this->table ?: $this->_classnameToTable();
     }
@@ -295,7 +295,6 @@ class SchemaDeclare extends SchemaBase
         }
         throw new Exception("Relation $relationId is not defined.");
     }
-
 
     public function getLabel()
     {

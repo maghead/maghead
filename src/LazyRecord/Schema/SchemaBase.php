@@ -47,7 +47,15 @@ abstract class SchemaBase
         return $this->columns;
     }
 
+    public function getTable()
+    {
+        return $this->table;
+    }
 
+    public function getLabel()
+    {
+        return $this->label;
+    }
 
     // Class name related methods
 
