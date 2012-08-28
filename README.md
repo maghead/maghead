@@ -21,8 +21,20 @@ Requirement
 Installation
 ------------
 
+### Install from PEAR
+
     pear channel-discover pear.corneltek.com
     pear install -a corneltek/LazyRecord
+
+### Install from Installer
+
+Install LazyRecord to system:
+
+    sudo bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
+
+If you're using phpbrew:
+
+    bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
 
 Synopsis
 --------
@@ -70,26 +82,6 @@ Synopsis
 
 Please check `doc/` directory for more details.
 
-
-Requirement
------------
-- PHP 5.3.0 (MIN) 
-- YAML extension
-- PDO
-- PDO-mysql (optional)
-- PDO-pgsql (optional)
-- PDO-sqlite (optional)
-
-Install from Installer
-----------------------
-
-Install LazyRecord to system:
-
-    sudo bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
-
-If you're using phpbrew:
-
-    bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
 
 
 
