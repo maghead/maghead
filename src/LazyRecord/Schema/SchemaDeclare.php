@@ -146,7 +146,6 @@ class SchemaDeclare extends SchemaBase
     }
 
 
-
     /**
      * Get full class name
      */
@@ -155,14 +154,6 @@ class SchemaDeclare extends SchemaBase
         return get_class($this);
     }
 
-    /**
-     * Get class namespace
-     */
-    public function getNamespace()
-    {
-        $refl = new ReflectionObject($this);
-        return $refl->getNamespaceName();
-    }
 
     /**
      * Get short class name

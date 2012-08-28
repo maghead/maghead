@@ -83,7 +83,19 @@ abstract class SchemaBase
         return $this->getModelClass() . 'SchemaProxy';
     }
 
-
+    /**
+     * Get class namespace
+     */
+    public function getNamespace()
+    {
+        $class = $this->getModelClass();
+        $parts = explode('\\',$class);
+        if(count($parts) > 1 ) {
+            array_pop($parts);
+            return join('\\',$parts);
+        }
+        return $class;
+    }
 
     /**
      * Get a relationship data by a relation identity.
