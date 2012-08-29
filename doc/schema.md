@@ -57,6 +57,32 @@ class AddressSchema extends SchemaDeclare
 }
 ?>
 
+Schema Column
+-------------
+
+To define a column:
+
+    $this->column('name');
+
+The column method returns a `Column` object, the default 
+type is text.
+
+To specify columm type, simply call `type` method
+
+    $this->column('name')
+        ->type('integer');
+
+Currently our column provides many short-hand methods for types, 
+e.g.
+
+    $this->column('foo')->integer();
+    $this->column('foo')->float();
+    $this->column('foo')->varchar(24);
+    $this->column('foo')->text();
+    $this->column('foo')->binary();
+
+
+
 Columns Types
 -------------
 
@@ -130,10 +156,12 @@ Valid values
         ));
 ?>
 
-Relationships
--------------
+Relationship
+------------
 
-Belongs To: `(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name = 'id')`
+### Belongs to
+
+`belongsTo(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name = 'id')`
 
 <?php
     $this->belongsTo( 'author' , '\tests\AuthorSchema', 'id' , 'author_id' );
@@ -141,41 +169,85 @@ Belongs To: `(accessor_name, foreign_schema_class_name, foreign_schema_column_na
 ?>
 
 
-Has One: `(accessor_name, self_column_name, foreign_schema_class_name, foreign_schema_column_name)`
+### Has One
+
+`one(accessor_name, self_column_name, foreign_schema_class_name, foreign_schema_column_name)`
 
 <?php 
     $this->one( 'author', 'author_id', '\tests\AuthorSchema' , 'id' );
 ?>
 
-Has Many: `(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name )`
+### Has Many
+
+`many(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name )`
 
 <?php
     $this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
     $this->many( 'author_books', '\tests\AuthorBookSchema', 'author_id', 'id');
 ?>
 
-Many to many
+To define many to many relationship:
 
 <?php
     $this->manyToMany( 'books', 'author_books' , 'book' );
 ?>
 
-### Usage
+### Relationship Usage
 
-to append:
+To append:
 
     $author->address[] = array(  );
-
     $record = $author->createAddress(array( ... ));  // return false on failure.
 
-to fetch:
+To fetch:
 
     foreach( $author->addresses as $address ) {
 
     }
 
-to search/find:
+To search/find:
 
     $address = $author->addresses->find(k);
+
+## RuntimeSchema API
+
+To get schema object in model:
+
+    $schema = $this->getSchema();   // RuntimeSchema
+
+To check if a schema contains column:
+
+    $exists = $schema->hasColumn('name');
+
+To get RuntimeColumn object from RuntimeSchema:
+
+    $column = $schema->getColumn('name'); // RuntimeColumn
+
+To get column names (excluding virtual columns):
+
+    $columnNames = $schema->getColumnNames();  // array('id','name')
+
+To get column names (including virtual columns):
+
+    $columnNames = $schema->getColumnNames(true);
+
+To get RuntimeColumn objects (excluding virtual columns)
+
+    $columns = $schema->getColumns( false );
+
+To get RuntimeColumn objects (including virtual columns)
+
+    $columns = $schema->getColumns( true );
+
+To create a model object from schema object:
+
+    $model = $schema->newModel();
+
+To create a collection object from schema object:
+
+    $collection = $schema->newCollection();
+
+
+
 
 
