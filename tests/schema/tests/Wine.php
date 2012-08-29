@@ -4,7 +4,6 @@ use LazyRecord\BaseModel;
 
 class Wine extends BaseModel
 {
-
     function schema($schema)
     {
         $schema->column('name')
@@ -13,6 +12,5 @@ class Wine extends BaseModel
         $schema->column('years')
             ->integer();
     }
-
 }
 
