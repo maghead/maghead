@@ -63,7 +63,7 @@ class SchemaGenerator
     public function generateSchemaProxyClass($schema)
     {
         $schemaArray = $schema->export();
-        $schemaClass = $schema->getClass();
+        $schemaClass = get_class($schema);
         $modelClass  = $schema->getModelClass();
         $schemaProxyClass = $schema->getSchemaProxyClass();
         $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
