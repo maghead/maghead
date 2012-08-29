@@ -106,6 +106,7 @@
     <include name="**/*.php" />
     <modified />
    </fileset>
+
   </apply>
  </target>
 

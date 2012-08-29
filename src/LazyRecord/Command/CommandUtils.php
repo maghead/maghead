@@ -37,9 +37,21 @@ class CommandUtils
         foreach( $schemas as $schema ) {
             $class = get_class($schema);
             $modelClass = $schema->getModelClass();
-
-            static::log("Creating base data for $modelClass",'green');
+            static::log("Creating base data of $modelClass",'green');
             $schema->bootstrap( new $modelClass );
+        }
+
+        $loader = ConfigLoader::getInstance();
+        if( $seeds = $loader->getSeedScripts() ) {
+            foreach( $seeds as $seed ) {
+                static::log("Running seed script: $seed",'green');
+                if( file_exists($seed) ) {
+                    require $seed;
+                } 
+                elseif( class_exists($seed,true) ) {
+                    $seed::seed();
+                }
+            }
         }
     }
 

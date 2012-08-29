@@ -768,6 +768,9 @@ class BaseCollection
         return $data;
     }
 
+    public function toPairs($key,$valueKey) {
+        return $this->asPairs($key,$valueKey);
+    }
 
 
     /**

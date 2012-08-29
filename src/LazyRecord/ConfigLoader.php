@@ -9,6 +9,7 @@ use ArrayAccess;
  * schema
  * schema.paths = [ dirpath , path, ... ]
  *
+ * seeds = [ script path ]
  * data_sources
  * data_sources{ ds id } = { 
  *      dsn => ..., 
@@ -181,6 +182,11 @@ class ConfigLoader
         return $this->config['data_sources'];
     }
 
+    public function getSeedScripts() {
+        if( isset($this->config['seeds']) ) {
+            return $this->config['seeds'];
+        }
+    }
 
     /**
      * get data source by data source id
