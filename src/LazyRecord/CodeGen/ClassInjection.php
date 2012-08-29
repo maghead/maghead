@@ -78,6 +78,9 @@ class ClassInjection
     }
 
 
+    /**
+     * Returns new inner content
+     */
     public function buildContent()
     {
         $contents = $this->contents;
@@ -103,11 +106,7 @@ class ClassInjection
 
     public function __toString()
     {
-        return join("\n",$this->lines);
+        return join("\n",$this->lines) . "\n";
     }
-
-
 }
-
-
 
