@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-08-29</date>
-  <time>23:47:06</time>
+  <time>23:50:13</time>
   <version>
     <release>1.7.0</release>
     <api>1.7.0</api>
@@ -174,7 +174,7 @@
       <file name="src/LazyRecord/Schema/Mixin/I18nSchema.php" role="php" md5sum="ef6514fa4f5e71e2b9f88b3e9e065bff"/>
       <file name="src/LazyRecord/Schema/Mixin/MetadataSchema.php" role="php" md5sum="a977af9330a0538126cfa137bf942b28"/>
       <file name="src/LazyRecord/Schema/MixinSchemaDeclare.php" role="php" md5sum="13f1fe6fde2fbab515b8092ce16a3b54"/>
-      <file name="src/LazyRecord/Schema/MixinSchemaProxy.php" role="php" md5sum="5ad4e9b177bf1c30dec0e0c009aa95db"/>
+      <file name="src/LazyRecord/Schema/MixinSchemaProxy.php" role="php" md5sum="f971cc52fd9003b038e446377d67404c"/>
       <file name="src/LazyRecord/Schema/RuntimeColumn.php" role="php" md5sum="276cb36e6875d8c23b69022505490278"/>
       <file name="src/LazyRecord/Schema/RuntimeSchema.php" role="php" md5sum="3d2224a42445fe0a5f9309b47eaf46de"/>
       <file name="src/LazyRecord/Schema/SchemaBase.php" role="php" md5sum="c360a762c7e15f2cea342d1085aa4a41"/>
