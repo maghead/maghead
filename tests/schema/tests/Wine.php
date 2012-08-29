@@ -13,4 +13,3 @@ class Wine extends BaseModel
             ->integer();
     }
 }
-

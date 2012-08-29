@@ -8,7 +8,10 @@ use RecursiveRegexIterator;
 use RegexIterator;
 use LazyRecord\ConfigLoader;
 use LazyRecord\CodeGen\ClassTemplate;
+use LazyRecord\CodeGen\ClassConst;
+use LazyRecord\CodeGen\ClassInjection;
 use LazyRecord\Schema\SchemaDeclare;
+
 
 /**
  * Builder for building static schema class file
@@ -181,9 +184,20 @@ class SchemaGenerator
     }
 
 
-    public function injectModelSchema($schema) 
+    public function injectModelSchema($schema)
     {
+        $model = $schema->getModel();
 
+        $injection = new ClassInjection($model);
+        $injection->read();
+        $injection->removeContent();
+        $injection->appendContent( new ClassConst('schema_proxy_class', ltrim($schema->getSchemaProxyClass() ,'\\') ) );
+        $injection->appendContent( new ClassConst('collection_class',   ltrim($schema->getCollectionClass() ,'\\') ) );
+        $injection->appendContent( new ClassConst('model_class',        ltrim($schema->getModelClass() ,'\\') ) );
+        $injection->appendContent( new ClassConst('table',              ltrim($schema->getTable() ,'\\') ) );
+        $injection->write();
+        $refl = new ReflectionObject($model);
+        return array( $schema->getModelClass() => $refl->getFilename() );
     }
 
     /**
@@ -203,27 +217,28 @@ class SchemaGenerator
         $classMap = array();
         foreach( (array) $schemas as $schema ) {
 
+            // support old-style schema declare
+            $map = $this->generateSchemaProxyClass( $schema );
+            $classMap = $classMap + $map;
+
+            // collection classes
+            $map = $this->generateBaseCollectionClass( $schema );
+            $classMap = $classMap + $map;
+            $map = $this->generateCollectionClass( $schema );
+            $classMap = $classMap + $map;
+
             // in new schema declare, we can describe a schema in a model class.
-            if( $schema instanceof LazyRecord\Schema\DynamicSchemaDeclare ) {
-
-
-
-            } else {
-                // support old-style schema declare
-                $map = $this->generateSchemaProxyClass( $schema );
+            if( $schema instanceof \LazyRecord\Schema\DynamicSchemaDeclare ) {
+                $map  = $this->injectModelSchema($schema);
                 $classMap = $classMap + $map;
 
+            } else {
                 $map = $this->generateBaseModelClass( $schema );
                 $classMap = $classMap + $map;
 
                 $map = $this->generateModelClass( $schema );
                 $classMap = $classMap + $map;
 
-                $map = $this->generateBaseCollectionClass( $schema );
-                $classMap = $classMap + $map;
-
-                $map = $this->generateCollectionClass( $schema );
-                $classMap = $classMap + $map;
             }
         }
 

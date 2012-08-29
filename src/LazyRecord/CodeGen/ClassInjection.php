@@ -7,22 +7,53 @@ class ClassInjection
     public $lines = array();
 
     /**
-     * contents for injection
+     * @var array Contents for injection
      */
     public $contents = array();
 
-    public $contentLength;
 
+    /**
+     * @var integer Original content line length inside the boundary.
+     */
+    public $contentLength = 0;
+
+
+    /**
+     * @var string Boundary string
+     */
     public $boundary;
 
+
+    /**
+     * @var integer boundary start line
+     */
     public $boundaryStartLine;
 
+
+    /**
+     * @var integer boundary end line
+     */
     public $boundaryEndLine;
 
+
+    /**
+     * @var mixed target class object.
+     */
     public $targetClass;
 
+
+    /**
+     * @var string targe class file name
+     */
     public $filename;
 
+
+
+    /**
+     *
+     * @param mixed target object
+     *
+     */
     public function __construct($class)
     {
         $this->targetClass = $class;
@@ -55,7 +86,9 @@ class ClassInjection
     {
         $filename = $this->reflection->getFilename();
 
-        $this->lines = explode("\n",file_get_contents($filename));
+        $this->lines    = array();
+        $this->contents = array();
+        $this->lines    = explode("\n",file_get_contents($filename));
         $this->contentLength = 0;
         $inBoundary = false;
         for ( $i = 0; $i < count($this->lines); $i++ ) {
@@ -70,7 +103,7 @@ class ClassInjection
                 $inBoundary = false;
                 $this->boundaryEndLine = $i + 1;
             }
-            if( $inBoundary ) {
+            elseif( $inBoundary ) {
                 $this->contentLength++;
                 $this->contents[] = $line;
             }
@@ -89,15 +122,20 @@ class ClassInjection
         return $contents;
     }
 
+    public function removeContent()
+    {
+        $this->contents = array();
+    }
+
     public function write() {
         if($this->boundaryStartLine && $this->boundaryEndLine ) {
-            array_splice($this->lines, $this->boundaryStartLine - 1, $this->contentLength + 1, $this->buildContent() );
-            file_put_contents($this->filename, join("\n",$this->lines) . "\n");
+            array_splice($this->lines, $this->boundaryStartLine - 1, $this->contentLength + 2, $this->buildContent() );
+            file_put_contents($this->filename, join("\n",$this->lines) );
         }
         else {
             $endline = $this->reflection->getEndLine();
             array_splice($this->lines,$endline - 1,0, $this->buildContent() );
-            file_put_contents( $this->filename, join("\n",$this->lines) . "\n");
+            file_put_contents( $this->filename, join("\n",$this->lines) );
         }
 
         // re-read content to update boundary information
@@ -106,7 +144,7 @@ class ClassInjection
 
     public function __toString()
     {
-        return join("\n",$this->lines) . "\n";
+        return join("\n",$this->lines);
     }
 }
 

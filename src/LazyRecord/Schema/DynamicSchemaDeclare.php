@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord\Schema;
+use ReflectionClass;
 
 class DynamicSchemaDeclare extends SchemaDeclare
 {
@@ -19,6 +20,11 @@ class DynamicSchemaDeclare extends SchemaDeclare
         parent::build();
     }
 
+    public function getModel()
+    {
+        return $this->model;
+    }
+
     public function getModelClass()
     {
         return $this->modelClass;
@@ -26,7 +32,7 @@ class DynamicSchemaDeclare extends SchemaDeclare
 
     public function getDirectory()
     {
-        $ref = new \ReflectionClass($this->modelClass);
+        $ref = new ReflectionClass($this->modelClass);
         return dirname($ref->getFilename());
     }
 
