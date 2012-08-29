@@ -29,6 +29,11 @@ class DynamicSchemaDeclare extends SchemaDeclare
         $ref = new \ReflectionClass($this->modelClass);
         return dirname($ref->getFilename());
     }
+
+    public function __toString()
+    {
+        return $this->modelClass;
+    }
 }
 
 
