@@ -354,7 +354,6 @@ class SchemaDeclare extends SchemaBase
         throw new Exception("Relation $relationId is not defined.");
     }
 
-
     protected function _modelClassToLabel() 
     {
         /* Get the latest token. */
@@ -368,5 +367,6 @@ class SchemaDeclare extends SchemaBase
             return ucfirst(preg_replace( '/[_]/' , ' ' , $label ));
         }
     }
+
 }
 
