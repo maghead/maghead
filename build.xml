@@ -50,7 +50,6 @@
   <exec executable="php">
    <arg value="bin/lazy"/>
    <arg value="build-conf"/>
-   <arg value="db/config/database.yml"/>
   </exec>
 
   <exec executable="php">
