@@ -89,11 +89,6 @@ abstract class BaseModel
         // }
     }
 
-    public function schema($schema)
-    {
-        // do nothing
-    }
-
 
     /**
      * Provide a basic access controll for model
