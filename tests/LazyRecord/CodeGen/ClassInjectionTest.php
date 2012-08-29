@@ -34,10 +34,16 @@ CODE
 
         $inject->write();
 
+        // file_put_contents('tests/data/injected', $inject);
         is( file_get_contents('tests/data/injected'), $inject->__toString() );
+
 
         $inject->replaceContent('');
         $inject->write();
+
+        // file_put_contents('tests/data/replaced',$inject);
+        is( file_get_contents('tests/data/replaced'), $inject->__toString() );
+
 
         // TODO test the content
         unlink('tests/tmp_class');
