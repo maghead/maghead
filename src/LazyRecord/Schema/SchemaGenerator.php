@@ -181,6 +181,10 @@ class SchemaGenerator
     }
 
 
+    public function injectModelSchema($schema) 
+    {
+
+    }
 
     /**
      * Given a schema class list, generate schema files.
@@ -198,20 +202,29 @@ class SchemaGenerator
         // class map [ class => class file path ]
         $classMap = array();
         foreach( (array) $schemas as $schema ) {
-            $map = $this->generateSchemaProxyClass( $schema );
-            $classMap = $classMap + $map;
 
-            $map = $this->generateBaseModelClass( $schema );
-            $classMap = $classMap + $map;
+            // in new schema declare, we can describe a schema in a model class.
+            if( $schema instanceof LazyRecord\Schema\DynamicSchemaDeclare ) {
 
-            $map = $this->generateModelClass( $schema );
-            $classMap = $classMap + $map;
 
-            $map = $this->generateBaseCollectionClass( $schema );
-            $classMap = $classMap + $map;
 
-            $map = $this->generateCollectionClass( $schema );
-            $classMap = $classMap + $map;
+            } else {
+                // support old-style schema declare
+                $map = $this->generateSchemaProxyClass( $schema );
+                $classMap = $classMap + $map;
+
+                $map = $this->generateBaseModelClass( $schema );
+                $classMap = $classMap + $map;
+
+                $map = $this->generateModelClass( $schema );
+                $classMap = $classMap + $map;
+
+                $map = $this->generateBaseCollectionClass( $schema );
+                $classMap = $classMap + $map;
+
+                $map = $this->generateCollectionClass( $schema );
+                $classMap = $classMap + $map;
+            }
         }
 
         restore_error_handler();
