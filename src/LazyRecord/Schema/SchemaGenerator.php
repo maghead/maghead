@@ -76,7 +76,7 @@ class SchemaGenerator
         $cTemplate->addConst( 'label',  $schema->getLabel() );
         $cTemplate->schema = $schema;
         $cTemplate->schema_data = $schemaArray;
-        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate, true);
+        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
     }
 
 
@@ -92,7 +92,7 @@ class SchemaGenerator
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
         $cTemplate->extendClass( $this->getBaseModelClass() );
-        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate, true);
+        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
     }
 
     public function generateModelClass($schema)
@@ -103,7 +103,7 @@ class SchemaGenerator
             'template' => 'Class.php.twig',
         ));
         $cTemplate->extendClass( $schema->getBaseModelClass() );
-        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate);
+        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate);
     }
 
     public function generateBaseCollectionClass($schema)
@@ -119,7 +119,7 @@ class SchemaGenerator
         $cTemplate->extendClass( 'LazyRecord\BaseCollection' );
 
         // we should overwrite the base collection class.
-        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate, true);
+        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
     }
 
 
@@ -139,7 +139,7 @@ class SchemaGenerator
         ));
         $cTemplate->extendClass( $baseCollectionClass );
 
-        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate);
+        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate);
     }
 
 

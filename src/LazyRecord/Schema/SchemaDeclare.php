@@ -219,7 +219,7 @@ class SchemaDeclare extends SchemaBase
      *
      * @return string path
      */
-    public function getDir()
+    public function getDirectory()
     {
         $refl = new ReflectionObject($this);
         return dirname($refl->getFilename());
