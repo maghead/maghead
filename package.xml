@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-08-29</date>
-  <time>23:50:18</time>
+  <date>2012-08-30</date>
+  <time>01:20:22</time>
   <version>
     <release>1.7.0</release>
     <api>1.7.0</api>
@@ -180,7 +180,7 @@
       <file name="src/LazyRecord/Schema/SchemaBase.php" role="php" md5sum="c360a762c7e15f2cea342d1085aa4a41"/>
       <file name="src/LazyRecord/Schema/SchemaDataInterface.php" role="php" md5sum="d43ab250745f006eac684c369f5d8d43"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare/Column.php" role="php" md5sum="257c545620d61e401d7c446aee0154d6"/>
-      <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="c3db548eb648151e4a545f9e0daf1a3b"/>
+      <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="f2248158019171010d502c961559cafd"/>
       <file name="src/LazyRecord/Schema/SchemaFinder.php" role="php" md5sum="c29275565adab150edad5623fc2c965c"/>
       <file name="src/LazyRecord/Schema/SchemaGenerator.php" role="php" md5sum="0849ae6524112b61d20df17b8c401a91"/>
       <file name="src/LazyRecord/Schema/SchemaLoader.php" role="php" md5sum="3db3c2f7266be755692fcc0c04639ba5"/>
