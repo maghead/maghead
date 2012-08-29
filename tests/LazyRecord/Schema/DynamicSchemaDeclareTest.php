@@ -28,6 +28,23 @@ class DynamicSchemaDeclareTest extends PHPUnit_Framework_TestCase
         is('tests\Wine',$schema->getModelClass());
     }
 
+
+    /**
+     * @depends testSchema
+     */
+    function testModelName($schema)
+    {
+        is('Wine',$schema->getModelName());
+    }
+
+    /**
+     * @depends testSchema
+     */
+    function testGetBaseModelClass($schema) 
+    {
+        is('tests\WineBase',$schema->getBaseModelClass() );
+    }
+
     /**
      * @depends testSchema
      */
