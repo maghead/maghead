@@ -196,16 +196,6 @@ class SchemaDeclare extends SchemaBase
         return $class;
     }
 
-
-    /**
-     * Get full class name
-     */
-    public function getClass()
-    {
-        return get_class($this);
-    }
-
-
     /**
      * Get directory from current schema object.
      *
