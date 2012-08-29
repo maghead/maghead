@@ -106,7 +106,6 @@ class SchemaGenerator
         return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate);
     }
 
-
     public function generateBaseCollectionClass($schema)
     {
         $baseCollectionClass = $schema->getBaseCollectionClass();
