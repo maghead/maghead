@@ -7,6 +7,19 @@ use LazyRecord\Inflector;
 class ClassUtils
 {
 
+    static public function get_declared_dynamic_schema_classes_from_models()
+    {
+        $classes = get_declared_classes();
+        $classes = array_filter($classes, function($class) {
+            return is_a($class,'LazyRecord\BaseModel',true) && method_exists($class,'schema');
+        });
+        return array_map(function($class) {
+            $model = new $class;
+            $schema = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
+            return $schema;
+        },$classes);
+    }
+
     static public function get_declared_schema_classes() 
     {
         $classes = get_declared_classes();

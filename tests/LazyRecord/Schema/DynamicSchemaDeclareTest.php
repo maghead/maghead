@@ -62,5 +62,15 @@ class DynamicSchemaDeclareTest extends PHPUnit_Framework_TestCase
         ok( $schema->getColumn('years') );
     }
 
+
+    function testSchemaFinder()
+    {
+        $schemas = LazyRecord\ClassUtils::get_declared_dynamic_schema_classes_from_models();
+        ok($schemas);
+        foreach($schemas as $schema ) {
+            isa_ok( 'LazyRecord\Schema\DynamicSchemaDeclare', $schema );
+            ok($schema->getModelClass() );
+        }
+    }
 }
 

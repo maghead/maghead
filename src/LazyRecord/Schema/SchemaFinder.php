@@ -36,7 +36,10 @@ class SchemaFinder
     public function _loadSchemaFile($file) 
     {
         $code = file_get_contents($file);
-        if( preg_match( '#SchemaDeclare#xsm' , $code ) ) {
+        if( preg_match( '#LazyRecord\\Schema\\SchemaDeclare#xsm' , $code ) ) {
+            require_once $file;
+        }
+        elseif( preg_match( '#LazyRecord\\BaseModel#xsm' , $code ) ) {
             require_once $file;
         }
     }
