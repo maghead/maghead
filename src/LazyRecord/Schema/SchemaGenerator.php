@@ -188,7 +188,7 @@ class SchemaGenerator
      * @param array $classes class list or schema object list.
      * @return array class map array of schema class and file path.
      */
-    public function generate($classes)
+    public function generate($schemas)
     {
         // for generated class source code.
         set_error_handler(function($errno, $errstr, $errfile, $errline) {
@@ -197,8 +197,7 @@ class SchemaGenerator
 
         // class map [ class => class file path ]
         $classMap = array();
-        foreach( (array) $classes as $class ) {
-            $schema = is_object($class) ? $class : new $class;
+        foreach( (array) $schemas as $schema ) {
             $map = $this->generateSchemaProxyClass( $schema );
             $classMap = $classMap + $map;
 
