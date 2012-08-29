@@ -18,8 +18,7 @@ Changes
 
 - Move config files into db/config/
 - Provide db/migration
-
-
+- Support dynamic schema in model class.
 
 ## v1.5.0 
 
