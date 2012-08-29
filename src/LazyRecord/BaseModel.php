@@ -89,7 +89,7 @@ abstract class BaseModel
         // }
     }
 
-    public function schema() 
+    public function schema($schema)
     {
         // do nothing
     }
