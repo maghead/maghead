@@ -47,6 +47,12 @@ class ClassUtils
                 $schemaClasses);
     }
 
+
+    /**
+     * Filter non-dynamic schema declare classes.
+     *
+     * @param array $classes class list.
+     */
     static public function filter_schema_classes($classes)
     {
         $list = array();
@@ -55,7 +61,7 @@ class ClassUtils
             if ( 
               ! is_subclass_of($class, 'LazyRecord\Schema\SchemaDeclare',true)
               || is_a($class, 'LazyRecord\Schema\DynamicSchemaDeclare',true)
-              || is_a($class, 'LazyRecord\Schema\MixinSchemaDeclare',true) 
+              || is_a($class, 'LazyRecord\Schema\MixinSchemaDeclare',true)
               || is_subclass_of($class, 'LazyRecord\Schema\MixinSchemaDeclare',true)
             ) { 
                 continue; 
