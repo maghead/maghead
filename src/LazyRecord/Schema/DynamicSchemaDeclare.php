@@ -3,18 +3,19 @@ namespace LazyRecord\Schema;
 
 class DynamicSchemaDeclare extends SchemaDeclare
 {
+    public $model;
     public $modelClass;
 
-    public function __construct($modelClass) 
+    public function __construct($model) 
     {
-        $this->modelClass = $modelClass;
+        $this->model = $model;
+        $this->modelClass = get_class($model);
         $this->build();
     }
 
     public function build() 
     {
-        $model = new $this->modelClass;
-        $model->schema($this);
+        $this->model->schema($this);
         parent::build();
     }
 
