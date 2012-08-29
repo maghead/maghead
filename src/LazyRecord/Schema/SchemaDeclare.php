@@ -97,24 +97,35 @@ class SchemaDeclare extends SchemaBase
     public function build()
     {
         $this->schema();
-
-        /* find primary key */
-        foreach( $this->columns as $name => $column ) {
-            if( $column->primary )
-                $this->primaryKey = $name;
-        }
+        $this->primaryKey = $this->findPrimaryKey();
 
         if( null === $this->primaryKey && $config = ConfigLoader::getInstance() )
         {
-            // XXX: can we prepend ?
             if( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
-                $this->column('id')
-                    ->isa('int')
-                    ->integer()
-                    ->primary()
-                    ->autoIncrement();
-                $this->primaryKey = 'id';
+                $this->insertAutoIdColumn();
             }
+        }
+    }
+
+    public function insertAutoIdColumn()
+    {
+        // XXX: can we prepend ?
+        $this->column('id')
+            ->isa('int')
+            ->integer()
+            ->primary()
+            ->autoIncrement();
+        $this->primaryKey = 'id';
+    }
+
+    /**
+     * Find primary keys from columns
+     */
+    public function findPrimaryKey()
+    {
+        foreach( $this->columns as $name => $column ) {
+            if( $column->primary )
+                return $name;
         }
     }
 
@@ -175,6 +186,11 @@ class SchemaDeclare extends SchemaBase
         /* merge columns into self */
         $this->columns = array_merge( $mixin->columns, $this->columns );
         $this->relations = array_merge( $mixin->relations, $this->relations );
+    }
+
+    public function getLabel()
+    {
+        return $this->label ?: $this->_modelClassToLabel();
     }
 
     public function getTable()
@@ -336,10 +352,6 @@ class SchemaDeclare extends SchemaBase
         throw new Exception("Relation $relationId is not defined.");
     }
 
-    public function getLabel()
-    {
-        return $this->label ?: $this->_modelClassToLabel();
-    }
 
     protected function _modelClassToLabel() 
     {
