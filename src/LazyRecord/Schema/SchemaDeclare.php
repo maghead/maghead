@@ -368,5 +368,10 @@ class SchemaDeclare extends SchemaBase
         }
     }
 
+    public function __toString() 
+    {
+        return get_class($this);
+    }
+
 }
 
