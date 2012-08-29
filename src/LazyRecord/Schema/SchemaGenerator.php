@@ -191,10 +191,10 @@ class SchemaGenerator
         $injection = new ClassInjection($model);
         $injection->read();
         $injection->removeContent();
-        $injection->appendContent( new ClassConst('schema_proxy_class', ltrim($schema->getSchemaProxyClass() ,'\\') ) );
-        $injection->appendContent( new ClassConst('collection_class',   ltrim($schema->getCollectionClass() ,'\\') ) );
-        $injection->appendContent( new ClassConst('model_class',        ltrim($schema->getModelClass() ,'\\') ) );
-        $injection->appendContent( new ClassConst('table',              ltrim($schema->getTable() ,'\\') ) );
+        $injection->appendContent( "\t" . new ClassConst('schema_proxy_class', ltrim($schema->getSchemaProxyClass() ,'\\') ) );
+        $injection->appendContent( "\t" . new ClassConst('collection_class',   ltrim($schema->getCollectionClass() ,'\\') ) );
+        $injection->appendContent( "\t" . new ClassConst('model_class',        ltrim($schema->getModelClass() ,'\\') ) );
+        $injection->appendContent( "\t" . new ClassConst('table',              ltrim($schema->getTable() ,'\\') ) );
         $injection->write();
         $refl = new ReflectionObject($model);
         return array( $schema->getModelClass() => $refl->getFilename() );
