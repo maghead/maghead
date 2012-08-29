@@ -10,35 +10,6 @@ class AuthorSchemaProxy extends RuntimeSchema
     {
         /** columns might have closure, so it can not be const */
         $this->columnData      = array( 
-  'updated_on' => array( 
-      'name' => 'updated_on',
-      'attributes' => array( 
-          'type' => 'timestamp',
-          'isa' => 'DateTime',
-          'default' => function() { 
-                return date('c'); 
-            },
-        ),
-    ),
-  'created_on' => array( 
-      'name' => 'created_on',
-      'attributes' => array( 
-          'type' => 'timestamp',
-          'isa' => 'DateTime',
-          'default' => function() { 
-                return date('c'); 
-            },
-        ),
-    ),
-  'id' => array( 
-      'name' => 'id',
-      'attributes' => array( 
-          'type' => 'integer',
-          'isa' => 'int',
-          'primary' => true,
-          'autoIncrement' => true,
-        ),
-    ),
   'name' => array( 
       'name' => 'name',
       'attributes' => array( 
@@ -81,6 +52,35 @@ class AuthorSchemaProxy extends RuntimeSchema
           'type' => 'boolean',
           'isa' => 'bool',
           'default' => false,
+        ),
+    ),
+  'updated_on' => array( 
+      'name' => 'updated_on',
+      'attributes' => array( 
+          'type' => 'timestamp',
+          'isa' => 'DateTime',
+          'default' => function() { 
+                return date('c'); 
+            },
+        ),
+    ),
+  'created_on' => array( 
+      'name' => 'created_on',
+      'attributes' => array( 
+          'type' => 'timestamp',
+          'isa' => 'DateTime',
+          'default' => function() { 
+                return date('c'); 
+            },
+        ),
+    ),
+  'id' => array( 
+      'name' => 'id',
+      'attributes' => array( 
+          'type' => 'integer',
+          'isa' => 'int',
+          'primary' => true,
+          'autoIncrement' => true,
         ),
     ),
 );
