@@ -1,8 +1,8 @@
 <?php
-use LazyRecord\Schema\SqlBuilder;
 
 class ModelTest extends PHPUnit_Framework_ModelTestCase
 {
+    public $driver = 'sqlite';
 
     public function getModels()
     {
@@ -12,7 +12,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             '\tests\AuthorBookSchema',
             '\tests\NameSchema',
             '\tests\AddressSchema',
-            '\tests\UserSchema',
         );
     }
 
@@ -34,6 +33,42 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $n->delete()->success );
     }
 
+    public function testBooleanCondition() 
+    {
+        $a = new \tests\Author;
+        $ret = $a->create(array(
+            'name' => 'a',
+            'email' => 'a@a',
+            'identity' => 'a',
+            'confirmed' => false,
+        ));
+        $this->resultOK(true,$ret);
+
+        $ret = $a->create(array(
+            'name' => 'b',
+            'email' => 'b@b',
+            'identity' => 'b',
+            'confirmed' => true,
+        ));
+        $this->resultOK(true,$ret);
+
+        $authors = new \tests\AuthorCollection;
+        $authors->where()
+                ->equal( 'confirmed', false);
+        $ret = $authors->fetch();
+        ok($ret);
+        is(1,$authors->size());
+
+        $authors = new \tests\AuthorCollection;
+        $authors->where()
+                ->equal( 'confirmed', true);
+        $ret = $authors->fetch();
+        ok($ret);
+        is(1,$authors->size());
+
+        $authors->delete();
+    }
+
     public function testClone()
     {
         $test1 = new \tests\Name;
@@ -41,11 +76,9 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $test1 !== $test2 );
     }
 
-
     public function testSchemaInterface()
     {
         $author = new \tests\Author;
-
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');
         foreach( $author->getColumnNames() as $n ) {
             ok( in_array( $n , $names ));
@@ -178,9 +211,9 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         }
     }
 
-    /****************************
+    /**
      * Basic CRUD Test 
-     ***************************/
+     */
     public function testModel()
     {
         $author = new \tests\Author;
@@ -342,30 +375,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
             is( false , $vld->success );
             is( 'Please don\'t',  $vld->message );
         }
-    }
-
-
-    public function testRefer()
-    {
-        $user = new \tests\User;
-        ok( $user );
-        $ret = $user->create(array( 'account' => 'c9s' ));
-        result_ok($ret);
-        ok( $user->id );
-
-        $book = new \tests\Book;
-        $ret = $book->create(array( 
-            'title' => 'Programming Perl',
-            'subtitle' => 'Way Way to Roman',
-            'publisher_id' => '""',  /* cast this to null or empty */
-            'created_by' => $user->id,
-        ));
-        ok( $ret );
-
-        // XXX: broken
-#          ok( $book->created_by );
-#          is( $user->id, $book->created_by->id );
-#          ok( $user->id , $book->getValue('created_by') );
     }
 
     public function testTypeConstraint()
@@ -849,11 +858,11 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
         is( 0 , $b->view );
 
         // test incremental
-        $ret = $b->update(array( 'view'  => array('"view" + 1') ), array('reload' => true));
+        $ret = $b->update(array( 'view'  => array('view + 1') ), array('reload' => true));
         result_ok($ret);
         is( 1,  $b->view );
 
-        $ret = $b->update(array( 'view'  => array('"view" + 1') ), array('reload' => true));
+        $ret = $b->update(array( 'view'  => array('view + 1') ), array('reload' => true));
         result_ok($ret);
         is( 2,  $b->view );
 

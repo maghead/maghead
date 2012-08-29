@@ -2,6 +2,9 @@
 namespace LazyRecord;
 use Exception;
 use SerializerKit\PhpSerializer;
+use Twig_Loader_Filesystem;
+use Twig_Environment;
+use Twig_Filter_Function;
 
 function twig_var_export($obj)
 {
@@ -50,7 +53,7 @@ class CodeGen
     public function generateFile($targetFile,$sourceFile)
     {
 
-        $this->preventFileDir($targetFile);
+        $this->mkdir($targetFile);
 
         if( ! $this->overwrite && file_exists($targetFile) ) {
             // skip
@@ -65,12 +68,11 @@ class CodeGen
         throw new Exception("CodeGen failed. $targetFile");
     }
 
-    private function preventFileDir($path,$mode = 0755)
+    private function mkdir($path,$mode = 0755)
     {
         $dir = dirname($path);
         if( ! file_exists($dir) )
             mkdir( $dir , $mode, true );
     }
-
 }
 

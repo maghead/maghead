@@ -1,5 +1,4 @@
 Todo
 =====
-* relationship.
-* relationship data builder.
-* validation support.
+* validation improvement.
+* migration

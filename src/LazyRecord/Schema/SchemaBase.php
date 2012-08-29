@@ -18,7 +18,6 @@ abstract class SchemaBase
 
     public $label;
 
-
     public $columns = array();
 
     public $columnNames = array();
@@ -31,18 +30,59 @@ abstract class SchemaBase
 
     public $writeSourceId = 'default';
 
+    public $mixins = array();
 
-    public function getReadSourceId()
+    public function getModelName()
     {
-        return $this->readSourceId;
+        $p = explode('\\',$this->getModelClass());
+        return end($p);
     }
 
-    public function getWriteSourceId()
+    // Class name related methods
+    public function getBaseModelClass()
     {
-        return $this->writeSourceId;
+        return $this->getModelClass() . 'Base';
     }
 
+    public function getBaseModelName()
+    {
+        return $this->getModelName() . 'Base';
+    }
 
+    public function getCollectionClass()
+    {
+        return $this->getModelClass() . 'Collection';
+    }
+
+    public function getBaseCollectionClass()
+    {
+        return $this->getModelClass() . 'CollectionBase';
+    }
+
+    public function getSchemaProxyClass()
+    {
+        return $this->getModelClass() . 'SchemaProxy';
+    }
+
+    /**
+     * Get class namespace
+     */
+    public function getNamespace()
+    {
+        $class = $this->getModelClass();
+        $parts = explode('\\',$class);
+        if(count($parts) > 1 ) {
+            array_pop($parts);
+            return join('\\',$parts);
+        }
+        return $class;
+    }
+
+    /**
+     * Get a relationship data by a relation identity.
+     *
+     * @param string $relationId
+     */
     public function getRelation($relationId)
     {
         if( isset($this->relations[ $relationId ]) ) {
@@ -50,11 +90,21 @@ abstract class SchemaBase
         }
     }
 
+
+    /**
+     * Get relationship data
+     */
     public function getRelations() 
     {
         return $this->relations;
     }
 
+
+    /**
+     * For schema class, get its reference schema classes recursively.
+     *
+     * @param boolean $recursive
+     */
     public function getReferenceSchemas($recursive = true)
     {
         $schemas = array();
@@ -66,16 +116,15 @@ abstract class SchemaBase
             if( ! class_exists($class,true) ) {
                 throw new RuntimeException("Foreign schema class $class not found." );
             }
-
             if( ! is_subclass_of( $class, 'LazyRecord\Schema\SchemaDeclare' ) ) {
                 throw new InvalidArgumentException("Foreign schema class $class is not a SchemaDeclare class");
             }
-
-            $fs = new $class;
-            if( isset($schemas[$class]) )
+            if( isset($schemas[$class]) ) {
                 continue;
+            }
 
             $schemas[ $class ] = 1;
+            $fs = new $class;
             if( $recursive ) {
                 $schemas = array_merge($schemas, $fs->getReferenceSchemas(false));
             }

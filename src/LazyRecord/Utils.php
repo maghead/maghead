@@ -41,7 +41,7 @@ class Utils
                         require $file;
                 }
             }
-            return $finder->getSchemaClasses();
+            return $finder->getSchemas();
         }
     }
 

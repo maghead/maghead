@@ -6,17 +6,41 @@ LazyRecord
 Features
 --------
 
-* PDO.
-* MySQL, Pgsql, SQLite support.
+* Fast.
+* PDO, MySQL, Pgsql, SQLite support.
 * Multiple Data source
 * Schema/Database diff
-* Fast.
+
+
+Requirement
+-----------
+
+* pdo and pdo_mysql, pdo_sqlite or pdo_pgsql extensions.
+* yaml extension
+
+Installation
+------------
+
+### Install from PEAR
+
+    pear channel-discover pear.corneltek.com
+    pear install -a corneltek/LazyRecord
+
+### Install from Installer
+
+Install LazyRecord to system:
+
+    sudo bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
+
+If you're using phpbrew:
+
+    bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
 
 Synopsis
 --------
 
 ```sh
-    $ lazy build-conf
+    $ lazy init
 
     $ lazy build-schema
 
@@ -59,34 +83,14 @@ Synopsis
 Please check `doc/` directory for more details.
 
 
-Requirement
------------
-- PHP 5.3.0 (MIN) 
-- YAML extension
-- PDO
-- PDO-mysql (optional)
-- PDO-pgsql (optional)
-- PDO-sqlite (optional)
-
-Install from Installer
-----------------------
-
-Install LazyRecord to system:
-
-    sudo bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
-
-If you're using phpbrew:
-
-    bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
-
 
 
 Install manually
 ----------------
 Install required extensions:
 
-    sudo pecl install apc
-    sudo pecl install yaml
+    pecl install apc
+    pecl install yaml
 
 get php source code and install these extensions:
 
@@ -120,7 +124,7 @@ And update your php.ini:
     date.timezone = Asia/Taipei
     phar.readonly = Off
 
-Install LazyRecord:
+Install LazyRecord from git-core:
 
     git clone git://github.com/c9s/LazyRecord.git
     cd LazyRecord
