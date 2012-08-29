@@ -98,7 +98,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
         $generator = new \LazyRecord\Schema\SchemaGenerator;
         $generator->setLogger( $this->getLogger() );
-        $classMap = $generator->generate( $finder->getSchemaClasses() );
+        $classMap = $generator->generate( $finder->getSchemas() );
         ok( $classMap );
 
         $schemaClasses = $this->getModels();

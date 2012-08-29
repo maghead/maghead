@@ -18,7 +18,7 @@ class SchemaGeneratorTest_old extends PHPUnit_Framework_TestCase
 
 		$generator = new LazyRecord\Schema\SchemaGenerator;
 		$generator->setLogger( $this->getLogger() );
-		$classMap = $generator->generate( $finder->getSchemaClasses() );
+		$classMap = $generator->generate( $finder->getSchemas() );
 
 		foreach( $classMap as $class => $file ) {
 			path_ok( $file , $class );

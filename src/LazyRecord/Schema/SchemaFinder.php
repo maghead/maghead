@@ -65,14 +65,14 @@ class SchemaFinder
         }
     }
 
-    public function getSchemaClasses()
+    public function getSchemas()
     {
         $classes = ClassUtils::get_declared_schema_classes();
         return ClassUtils::expand_schema_classes($classes);
     }
 
     public function getIterator() {
-        return $this->getSchemaClasses();
+        return $this->getSchemas();
     }
 }
 

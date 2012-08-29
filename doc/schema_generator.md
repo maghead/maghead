@@ -5,7 +5,7 @@ Current API:
 
     $generator = new \LazyRecord\Schema\SchemaGenerator;
     $generator->setLogger( $logger );
-    $classMap = $generator->generate( $finder->getSchemaClasses() );
+    $classMap = $generator->generate( $finder->getSchemas() );
 
 New schema generator API:
 

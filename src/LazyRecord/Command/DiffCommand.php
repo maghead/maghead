@@ -45,7 +45,7 @@ class DiffCommand extends Command
             $finder->paths = $paths;
         }
         $finder->loadFiles();
-        $classes = $finder->getSchemaClasses();
+        $classes = $finder->getSchemas();
 
 
         // XXX: currently only mysql support
