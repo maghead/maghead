@@ -94,12 +94,12 @@ class ClassInjection
         for ( $i = 0; $i < count($this->lines); $i++ ) {
             $line = $this->lines[$i];
             // parse for start boundary
-            if( preg_match('/^#boundary start (\w+)/',$line,$regs) ) {
+            if( preg_match('/^\s*#boundary start (\w+)/',$line,$regs) ) {
                 $inBoundary = true;
                 $this->boundary = $regs[1];
                 $this->boundaryStartLine = $i + 1;
             }
-            elseif( preg_match('/^#boundary end (\w+)/',$line,$regs) ) {
+            elseif( preg_match('/^\s*#boundary end (\w+)/',$line,$regs) ) {
                 $inBoundary = false;
                 $this->boundaryEndLine = $i + 1;
             }
