@@ -6,14 +6,21 @@ use RecursiveRegexIterator;
 use RegexIterator;
 use ReflectionClass;
 use RuntimeException;
-
+use LazyRecord\ClassUtils;
+use IteratorAggregate;
 
 /**
- * find schema classes from files (or from current runtime)
+ * Find schema classes from files (or from current runtime)
+ *
+ * 1. Find SchemaDeclare-based schema class files.
+ * 2. Find model-based schema, pass dynamic schema class 
  */
 class SchemaFinder
+    implements IteratorAggregate
 {
     public $paths = array();
+
+    public $classes = array();
 
     public function in($path)
     {
@@ -29,7 +36,10 @@ class SchemaFinder
     public function _loadSchemaFile($file) 
     {
         $code = file_get_contents($file);
-        if( preg_match( '#' . preg_quote('SchemaDeclare') . '#xsm' , $code ) ) {
+        if( preg_match( '#LazyRecord\\\\Schema\\\\SchemaDeclare#ixsm' , $code ) ) {
+            require_once $file;
+        }
+        elseif( preg_match( '/LazyRecord\\\\BaseModel/ixsm' , $code ) ) {
             require_once $file;
         }
     }
@@ -55,44 +65,16 @@ class SchemaFinder
         }
     }
 
-    public function getSchemaClasses()
+    public function getSchemas()
     {
-        $list = array();
-        $classes = get_declared_classes();
-        foreach( $classes as $class ) {
-            $rf = new ReflectionClass( $class );
-
-            // skip abstract classes.
-            if( $rf->isAbstract() ) {
-                continue;
-            }
-
-            if( is_a( $class, 'LazyRecord\Schema\MixinSchemaDeclare' ) 
-                || $class == 'LazyRecord\Schema\MixinSchemaDeclare' 
-                || is_subclass_of( $class, 'LazyRecord\Schema\MixinSchemaDeclare' ) ) 
-            {
-                continue;
-            }
-
-            if( is_subclass_of( $class, 'LazyRecord\Schema\SchemaDeclare' ) ) {
-                $list[] = $class;
-            }
-        }
-
-        $schemas = array();
-        foreach( $list as $class ) {
-            if( ! class_exists($class,true) ) {
-                throw new RuntimeException("Schema class $class not found.");
-            }
-
-            $schema = new $class; // declare schema
-            $refs = $schema->getReferenceSchemas();
-            foreach( $refs as $ref => $v )
-                $schemas[] = $ref;
-            $schemas[] = $class;
-        }
-        return array_unique($schemas);
+        $classes = ClassUtils::get_declared_schema_classes();
+        $schemas = ClassUtils::expand_schema_classes($classes);
+        $dyschemas = ClassUtils::get_declared_dynamic_schema_classes_from_models();
+        return array_merge($schemas, $dyschemas);
     }
 
+    public function getIterator() {
+        return $this->getSchemas();
+    }
 }
 

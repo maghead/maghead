@@ -9,7 +9,7 @@ class AuthorSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns         = array( 
+        $this->columnData      = array( 
   'updated_on' => array( 
       'name' => 'updated_on',
       'attributes' => array( 
@@ -129,7 +129,6 @@ class AuthorSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
-
         parent::__construct();
     }
 

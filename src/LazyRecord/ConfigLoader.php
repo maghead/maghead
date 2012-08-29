@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord;
+use ConfigKit\ConfigCompiler;
 use Exception;
 use ArrayAccess;
 
@@ -34,7 +35,7 @@ class ConfigLoader
 {
     public $config;
 
-    public $symbolFilename = '.lazy.php';
+    public $symbolFilename = '.lazy.yml';
 
     public $classMap;
 
@@ -44,21 +45,29 @@ class ConfigLoader
     {
     }
 
+
+    public function loadFromSymbol($force = false)
+    {
+        return $this->load( $this->symbolFilename, $force );
+    }
+
     /**
      * load configuration file
      *
      * @param string $file config file.
      */
-    public function load($file = null)
+    public function load($file, $force = false)
     {
-        if( $file !== true && $this->loaded === true )
+        // should we load config file force ?
+        if( $force !== true && $this->loaded === true ) {
             throw new Exception("Can not load $file. Config is already loaded.");
+        }
 
         if( $file === null || is_bool($file) )
             $file = $this->symbolFilename;
 
         if( (is_string($file) && file_exists($file)) || $file === true ) {
-            $this->config = require $file;
+            $this->config = ConfigCompiler::load($file);
         }
         elseif( is_array($file) ) {
             $this->config = $file;
@@ -68,7 +77,6 @@ class ConfigLoader
         }
         $this->loaded = true;
     }
-
 
     /**
      * unload config and stash

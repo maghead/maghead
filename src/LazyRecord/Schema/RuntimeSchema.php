@@ -4,34 +4,34 @@ use LazyRecord\Schema\RuntimeColumn;
 use Exception;
 
 class RuntimeSchema extends SchemaBase
+    implements SchemaDataInterface
 {
     public $modelClass;
 
     public $collectionClass;
 
-    public $columnObjects = array();
-
+    // columns array
+    public $columnData = array();
 
     public function __construct() {
         // build RuntimeColumn objects
-        foreach( $this->columns as $name => $columnMeta ) {
-            $this->columnObjects[ $name ] = new RuntimeColumn( $name , $columnMeta['attributes'] );
+        foreach( $this->columnData as $name => $columnMeta ) {
+            $this->columns[ $name ] = new RuntimeColumn( $name , $columnMeta['attributes'] );
         }
     }
 
     /**
      * Inject schema array data into runtime schema object
      *
-     * @param array
+     * @param array $schemaArray
      */
     public function import($schemaArray)
     {
-        $this->columns = $schemaArray['columns']; /* contains column names => column attribute array */
+        $this->columnData  = $schemaArray['column_data']; /* contains column names => column attribute array */
         $this->columnNames = $schemaArray['column_names']; /* column names array */
         $this->primaryKey = $schemaArray['primary_key'];
         $this->table = $schemaArray['table'];
         $this->modelClass = $schemaArray['model_class'];
-
     }
 
     public function hasColumn($name)
@@ -41,10 +41,11 @@ class RuntimeSchema extends SchemaBase
         }
     }
 
+
     public function getColumn($name)
     {
-        if( isset($this->columnObjects[ $name ]) ) {
-            return $this->columnObjects[ $name ];
+        if( isset($this->columns[ $name ]) ) {
+            return $this->columns[ $name ];
         }
         return null;
     }
@@ -52,7 +53,7 @@ class RuntimeSchema extends SchemaBase
     public function getColumnNames($includeVirtual = false)
     {
         $names = array();
-        foreach( $this->columnObjects as $name => $column ) {
+        foreach( $this->columns as $name => $column ) {
             if( ! $includeVirtual && $column->virtual )
                 continue;
             $names[] = $name;
@@ -62,17 +63,45 @@ class RuntimeSchema extends SchemaBase
 
     public function getColumns($includeVirtual = false) 
     {
-        if( $includeVirtual )
-            return $this->columnObjects;
+        if( $includeVirtual ) {
+            return $this->columns;
+        }
 
         $columns = array();
-        foreach( $this->columnObjects as $name => $column ) {
+        foreach( $this->columns as $name => $column ) {
             // skip virtal columns
             if( $column->virtual )
                 continue;
             $columns[ $name ] = $column;
         }
         return $columns;
+    }
+
+    public function getReadSourceId()
+    {
+        return $this->readSourceId;
+    }
+
+    public function getWriteSourceId()
+    {
+        return $this->writeSourceId;
+    }
+
+
+
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    public function getModelClass()
+    {
+        return $this->modelClass;
     }
 
     public function newModel()

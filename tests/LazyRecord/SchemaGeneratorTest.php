@@ -1,6 +1,6 @@
 <?php
 
-class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
+class SchemaGeneratorTest_old extends PHPUnit_Framework_TestCase
 {
 
 	function getLogger()
@@ -11,13 +11,14 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 
 	function test()
 	{
+        return;
         $finder = new LazyRecord\Schema\SchemaFinder;
         $finder->addPath( 'tests/schema' );
         $finder->loadFiles();
 
 		$generator = new LazyRecord\Schema\SchemaGenerator;
 		$generator->setLogger( $this->getLogger() );
-		$classMap = $generator->generate( $finder->getSchemaClasses() );
+		$classMap = $generator->generate( $finder->getSchemas() );
 
 		foreach( $classMap as $class => $file ) {
 			path_ok( $file , $class );
