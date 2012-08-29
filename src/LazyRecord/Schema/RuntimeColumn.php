@@ -208,7 +208,7 @@ class RuntimeColumn
                 return _( $value );
             } 
             // quick inflator for DateTime object.
-            elseif( is_a($value,'DateTime') ) {
+            elseif( is_a($value,'DateTime',true) ) {
                 return $value->format( DateTime::ATOM );
             }
         }
