@@ -36,10 +36,10 @@ class SchemaFinder
     public function _loadSchemaFile($file) 
     {
         $code = file_get_contents($file);
-        if( preg_match( '#LazyRecord\\Schema\\SchemaDeclare#xsm' , $code ) ) {
+        if( preg_match( '#LazyRecord\\\\Schema\\\\SchemaDeclare#ixsm' , $code ) ) {
             require_once $file;
         }
-        elseif( preg_match( '#LazyRecord\\BaseModel#xsm' , $code ) ) {
+        elseif( preg_match( '/LazyRecord\\\\BaseModel/ixsm' , $code ) ) {
             require_once $file;
         }
     }
@@ -68,7 +68,9 @@ class SchemaFinder
     public function getSchemas()
     {
         $classes = ClassUtils::get_declared_schema_classes();
-        return ClassUtils::expand_schema_classes($classes);
+        $schemas = ClassUtils::expand_schema_classes($classes);
+        $dyschemas = ClassUtils::get_declared_dynamic_schema_classes_from_models();
+        return array_merge($schemas, $dyschemas);
     }
 
     public function getIterator() {
