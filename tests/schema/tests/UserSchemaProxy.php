@@ -36,9 +36,9 @@ class UserSchemaProxy extends RuntimeSchema
     ),
 );
         $this->columnNames     = array( 
+  'id',
   'account',
   'password',
-  'id',
 );
         $this->primaryKey      = 'id';
         $this->table           = 'users';
@@ -49,7 +49,6 @@ class UserSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
-
         parent::__construct();
     }
 

@@ -28,8 +28,8 @@ class PublisherSchemaProxy extends RuntimeSchema
     ),
 );
         $this->columnNames     = array( 
-  'name',
   'id',
+  'name',
 );
         $this->primaryKey      = 'id';
         $this->table           = 'publishers';
@@ -40,7 +40,6 @@ class PublisherSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
-
         parent::__construct();
     }
 

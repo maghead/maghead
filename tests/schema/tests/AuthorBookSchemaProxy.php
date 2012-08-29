@@ -44,10 +44,10 @@ class AuthorBookSchemaProxy extends RuntimeSchema
     ),
 );
         $this->columnNames     = array( 
+  'id',
   'author_id',
   'created_on',
   'book_id',
-  'id',
 );
         $this->primaryKey      = 'id';
         $this->table           = 'author_books';
@@ -80,7 +80,6 @@ class AuthorBookSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
-
         parent::__construct();
     }
 

@@ -109,9 +109,11 @@ class SchemaDeclare extends SchemaBase
 
     public function insertAutoIdColumn()
     {
-        // XXX: can we prepend ?
-        $this->column('id')
-            ->isa('int')
+        $column = new SchemaDeclare\Column('id');
+        $this->columns[ 'id' ] = $column;
+        array_unshift($this->columnNames,'id');
+
+        $column->isa('int')
             ->integer()
             ->primary()
             ->autoIncrement();
