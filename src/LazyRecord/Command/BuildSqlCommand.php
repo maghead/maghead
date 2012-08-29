@@ -56,13 +56,8 @@ DOC;
 
         $logger->info("Finding schema classes...");
 
-        $classes = CommandUtils::find_schemas_with_arguments( func_get_args() );
-
-        CommandUtils::print_schema_classes($classes);
-
-        $schemas = CommandUtils::schema_classes_to_objects( $classes );
-
         $logger->info("Connecting to data soruce $id...");
+        $schemas = CommandUtils::find_schemas_with_arguments( func_get_args() );
 
         $logger->info("Initialize schema builder...");
         $sqlOutput = CommandUtils::build_schemas_with_options($id, $options, $schemas);
