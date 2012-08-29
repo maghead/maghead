@@ -19,7 +19,7 @@ class InitCommand extends Command
     public function execute()
     {
         $this->mkpath('db/config');
-        $this->mkpath('db/migrations');
+        $this->mkpath('db/migration');
 
         $command = new InitConfCommand;
         $command->application = $this->application;
