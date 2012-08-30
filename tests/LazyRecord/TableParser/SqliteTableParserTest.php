@@ -26,6 +26,10 @@ class SqliteTableParserTest extends PHPUnit_Framework_TestCase
         ok($columns);
 
         $schema = $parser->getTableSchema('bar');
+        ok($schema);
+
+        $column = $schema->getColumn('id');
+        ok($column);
     }
 }
 
