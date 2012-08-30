@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-08-30</date>
-  <time>14:19:45</time>
+  <time>14:35:31</time>
   <version>
     <release>1.7.0</release>
     <api>1.7.0</api>
@@ -72,7 +72,7 @@
       <file name="tests/LazyRecord/SchemaGeneratorTest.php" role="test" md5sum="b5b2108aaa63512c535835db13803190"/>
       <file name="tests/LazyRecord/SchemaSqlBuilderTest.php" role="test" md5sum="f4041b7812dc3049bf0a28d9e1c6eace"/>
       <file name="tests/LazyRecord/SchemaTest.php" role="test" md5sum="da856c03f176c325c14576e9ccc7a697"/>
-      <file name="tests/LazyRecord/TableParser/SqliteTableParserTest.php" role="test" md5sum="28e6e5cfbe9b62f9651ac661d000878e"/>
+      <file name="tests/LazyRecord/TableParser/SqliteTableParserTest.php" role="test" md5sum="de17e16eb2f614548a83d955325e4b6b"/>
       <file name="tests/LazyRecord/TableParserTest.php" role="test" md5sum="8130098bc1427cced72d38a7243818b8"/>
       <file name="tests/LazyRecord/TypesTest.php" role="test" md5sum="628788de6ab98b0b7de9bae79d4102e1"/>
       <file name="tests/LazyRecord/UtilsTest.php" role="test" md5sum="972fcdf291f4f322db2f1480bf5907b1"/>
@@ -197,7 +197,7 @@
       <file name="src/LazyRecord/TableParser/BaseTableParser.php" role="php" md5sum="c7fb552fc8acc7bf2d3885a1d2966209"/>
       <file name="src/LazyRecord/TableParser/MysqlTableParser.php" role="php" md5sum="5bccce2f03ee4dffabbdd79009f44cf4"/>
       <file name="src/LazyRecord/TableParser/PgsqlTableParser.php" role="php" md5sum="46341d7ca77248e18ef35131596b4e96"/>
-      <file name="src/LazyRecord/TableParser/SqliteTableParser.php" role="php" md5sum="4398c7fff0515bc4bc4e425235ff95f9"/>
+      <file name="src/LazyRecord/TableParser/SqliteTableParser.php" role="php" md5sum="4ca982736b62de8101342547bc58d3b3"/>
       <file name="src/LazyRecord/TableParser.php" role="php" md5sum="8178bbd4b1141559ac14df6be6395658"/>
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
