@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Migration;
 use SQLBuilder\MigrationBuilder;
+use LazyRecord\ConnectionManager;
 use LazyRecord\Console;
 
 class BaseMigration
