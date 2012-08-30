@@ -22,7 +22,7 @@ use SerializerKit\YamlSerializer;
  * every model class extends from this class.
  *
  */
-class BaseModel
+abstract class BaseModel
     implements ExporterInterface
 {
     protected $_data = array();
@@ -73,11 +73,17 @@ class BaseModel
 
     // static $schemaCache;
 
+
+    /**
+     * This constructor simply does nothing if no argument is passed.
+     *
+     * @param mixed $args arguments for finding
+     */
     public function __construct($args = null) 
     {
-        if( $args )
+        if( $args ) {
             $this->_load( $args );
-
+        }
         // if( ! static::$schemaCache ) {
         //     static::$schemaCache = SchemaLoader::load( static::schema_proxy_class );
         // }
@@ -245,7 +251,6 @@ class BaseModel
     {
 
     }
-
 
     public function __call($m,$a)
     {

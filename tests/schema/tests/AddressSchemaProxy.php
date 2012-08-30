@@ -9,7 +9,7 @@ class AddressSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns         = array( 
+        $this->columnData      = array( 
   'author_id' => array( 
       'name' => 'author_id',
       'attributes' => array( 
@@ -42,10 +42,10 @@ class AddressSchemaProxy extends RuntimeSchema
     ),
 );
         $this->columnNames     = array( 
+  'id',
   'author_id',
   'address',
   'foo',
-  'id',
 );
         $this->primaryKey      = 'id';
         $this->table           = 'addresses';
@@ -67,7 +67,6 @@ class AddressSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
-
         parent::__construct();
     }
 

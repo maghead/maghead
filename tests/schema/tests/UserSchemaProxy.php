@@ -9,7 +9,7 @@ class UserSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns         = array( 
+        $this->columnData      = array( 
   'account' => array( 
       'name' => 'account',
       'attributes' => array( 
@@ -36,9 +36,9 @@ class UserSchemaProxy extends RuntimeSchema
     ),
 );
         $this->columnNames     = array( 
+  'id',
   'account',
   'password',
-  'id',
 );
         $this->primaryKey      = 'id';
         $this->table           = 'users';
@@ -49,7 +49,6 @@ class UserSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
-
         parent::__construct();
     }
 

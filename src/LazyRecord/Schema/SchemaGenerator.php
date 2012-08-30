@@ -3,11 +3,15 @@ namespace LazyRecord\Schema;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Exception;
+use ReflectionObject;
 use RecursiveRegexIterator;
 use RegexIterator;
 use LazyRecord\ConfigLoader;
 use LazyRecord\CodeGen\ClassTemplate;
+use LazyRecord\CodeGen\ClassConst;
+use LazyRecord\CodeGen\ClassInjection;
 use LazyRecord\Schema\SchemaDeclare;
+
 
 /**
  * Builder for building static schema class file
@@ -23,7 +27,8 @@ class SchemaGenerator
         $this->config = ConfigLoader::getInstance();
     }
 
-    public function getBaseModelClass() {
+    public function getBaseModelClass() 
+    {
         if( $this->config && $this->config->loaded )
             return ltrim($this->config->getBaseModelClass(),'\\');
         return 'LazyRecord\BaseModel';
@@ -47,7 +52,7 @@ class SchemaGenerator
      */
     protected function getTemplateDirs()
     {
-        $refl = new \ReflectionObject($this);
+        $refl = new ReflectionObject($this);
         $path = $refl->getFilename();
         return dirname($refl->getFilename()) . DIRECTORY_SEPARATOR . 'Templates';
     }
@@ -62,7 +67,7 @@ class SchemaGenerator
     public function generateSchemaProxyClass($schema)
     {
         $schemaArray = $schema->export();
-        $schemaClass = $schema->getClass();
+        $schemaClass = get_class($schema);
         $modelClass  = $schema->getModelClass();
         $schemaProxyClass = $schema->getSchemaProxyClass();
         $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
@@ -75,7 +80,7 @@ class SchemaGenerator
         $cTemplate->addConst( 'label',  $schema->getLabel() );
         $cTemplate->schema = $schema;
         $cTemplate->schema_data = $schemaArray;
-        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate, true);
+        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
     }
 
 
@@ -91,7 +96,7 @@ class SchemaGenerator
         $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
         $cTemplate->extendClass( $this->getBaseModelClass() );
-        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate, true);
+        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
     }
 
     public function generateModelClass($schema)
@@ -102,9 +107,8 @@ class SchemaGenerator
             'template' => 'Class.php.twig',
         ));
         $cTemplate->extendClass( $schema->getBaseModelClass() );
-        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate);
+        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate);
     }
-
 
     public function generateBaseCollectionClass($schema)
     {
@@ -119,7 +123,7 @@ class SchemaGenerator
         $cTemplate->extendClass( 'LazyRecord\BaseCollection' );
 
         // we should overwrite the base collection class.
-        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate, true);
+        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
     }
 
 
@@ -139,7 +143,7 @@ class SchemaGenerator
         ));
         $cTemplate->extendClass( $baseCollectionClass );
 
-        return $this->writeClassTemplateToDirectory($schema->getDir(), $cTemplate);
+        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate);
     }
 
 
@@ -180,39 +184,62 @@ class SchemaGenerator
     }
 
 
+    public function injectModelSchema($schema)
+    {
+        $model = $schema->getModel();
+
+        $injection = new ClassInjection($model);
+        $injection->read();
+        $injection->removeContent();
+        $injection->appendContent( "\t" . new ClassConst('schema_proxy_class', ltrim($schema->getSchemaProxyClass() ,'\\') ) );
+        $injection->appendContent( "\t" . new ClassConst('collection_class',   ltrim($schema->getCollectionClass() ,'\\') ) );
+        $injection->appendContent( "\t" . new ClassConst('model_class',        ltrim($schema->getModelClass() ,'\\') ) );
+        $injection->appendContent( "\t" . new ClassConst('table',              ltrim($schema->getTable() ,'\\') ) );
+        $injection->write();
+        $refl = new ReflectionObject($model);
+        return array( $schema->getModelClass() => $refl->getFilename() );
+    }
 
     /**
      * Given a schema class list, generate schema files.
      *
-     * @param array $classes
+     * @param array $classes class list or schema object list.
+     * @return array class map array of schema class and file path.
      */
-    public function generate($classes)
+    public function generate($schemas)
     {
         // for generated class source code.
         set_error_handler(function($errno, $errstr, $errfile, $errline) {
             printf( "ERROR %s:%s  [%s] %s\n" , $errfile, $errline, $errno, $errstr );
         }, E_ERROR );
 
-        /**
-         * Schema class mapping 
-         */
+        // class map [ class => class file path ]
         $classMap = array();
-        foreach( (array) $classes as $class ) {
-            $schema = is_object($class) ? $class : new $class;
+        foreach( (array) $schemas as $schema ) {
+
+            // support old-style schema declare
             $map = $this->generateSchemaProxyClass( $schema );
             $classMap = $classMap + $map;
 
-            $map = $this->generateBaseModelClass( $schema );
-            $classMap = $classMap + $map;
-
-            $map = $this->generateModelClass( $schema );
-            $classMap = $classMap + $map;
-
+            // collection classes
             $map = $this->generateBaseCollectionClass( $schema );
             $classMap = $classMap + $map;
-
             $map = $this->generateCollectionClass( $schema );
             $classMap = $classMap + $map;
+
+            // in new schema declare, we can describe a schema in a model class.
+            if( $schema instanceof \LazyRecord\Schema\DynamicSchemaDeclare ) {
+                $map  = $this->injectModelSchema($schema);
+                $classMap = $classMap + $map;
+
+            } else {
+                $map = $this->generateBaseModelClass( $schema );
+                $classMap = $classMap + $map;
+
+                $map = $this->generateModelClass( $schema );
+                $classMap = $classMap + $map;
+
+            }
         }
 
         restore_error_handler();
