@@ -55,6 +55,10 @@ class SqliteTableParser extends BaseTableParser
                     $column['default'] = $parts[$p+1];
                 }
 
+                if( preg_match('#auto\s*increment#i',$columnsql) ) {
+                    $column['autoIncrement'] = true;
+                }
+
                 if( preg_match('#not\s+null#i',$columnsql) ) {
                     $column['notNull'] = true;
                 } elseif( preg_match('#null#i',$columnsql) ) {
@@ -94,6 +98,10 @@ class SqliteTableParser extends BaseTableParser
             }
             elseif(isset($column->unique)) {
                 $column->unique(true);
+            }
+
+            if( isset($columnAttr->autoIncrement) ) {
+                $column->autoIncrement(true);
             }
 
             if( isset($columnAttr->default) ) {

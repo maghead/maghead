@@ -30,6 +30,11 @@ class SqliteTableParserTest extends PHPUnit_Framework_TestCase
 
         $column = $schema->getColumn('id');
         ok($column);
+
+        ok($column->autoIncrement);
+        is('integer',$column->type);
+        is('int',$column->isa);
+        is(true,$column->primary);
     }
 }
 
