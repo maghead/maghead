@@ -2,10 +2,10 @@
 namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
+use LazyRecord\Schema\SchemaDeclare;
 
-class MysqlTableParser extends BaseTablePaser
+class MysqlTableParser extends BaseTableParser
 {
-
     public function getTables()
     {
         $stm = $this->connection->query('show tables;');
@@ -16,12 +16,12 @@ class MysqlTableParser extends BaseTablePaser
     public function getTableSchema($table)
     {
         $stm = $this->connection->query("show columns from $table;");
-        $schema = new Schema\SchemaDeclare;
+        $schema = new SchemaDeclare;
         $schema->columnNames = $schema->columns = array();
         $rows = $stm->fetchAll();
         foreach( $rows as $row ) {
             $type = $row['Type'];
-            $isa = $this->_parserType($type);
+            $isa = $this->typenameToIsa($type);
 
             // reverse type for mysql
             if ( 'int(11)' === $type ) {
@@ -56,29 +56,4 @@ class MysqlTableParser extends BaseTablePaser
     }
 
 
-    public function _parserType($type)
-    {
-        $type = strtolower($type);
-        if( preg_match( '/^(char|varchar|text)/' , $type ) ) {
-            return 'str';
-        }
-        elseif( preg_match('/^(int|tinyint|smallint|mediumint|bigint)/', $type ) ) {
-            return 'int';
-        }
-        elseif( 'double' === $type ) {
-            return 'double';
-        }
-        elseif( 'float' === $type ) {
-            return 'float';
-        }
-        elseif( 'datetime' === $type || 'date' === $type ) {
-            return 'DateTime';
-        }
-        elseif( preg_match('/timestamp/', $type ) ) {
-            return 'DateTime';
-        }
-        else {
-            throw new Exception("Unknown type $type");
-        }
-    }
 }
