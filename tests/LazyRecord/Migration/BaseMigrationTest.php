@@ -5,7 +5,6 @@ class FooMigration extends LazyRecord\BaseMigration
 
     public function upgrade() 
     {
-        $this->createTable();
     }
 
 

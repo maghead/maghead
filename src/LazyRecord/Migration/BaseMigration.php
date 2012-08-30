@@ -19,10 +19,32 @@ class BaseMigration
         $this->logger  = Console::getInstance()->getLogger();
     }
 
-    public function executeCommand($m,$a) {
-        $sql = call_user_func_array( array($this->builder,$m) , $a );
+
+
+
+    /**
+     * Execute sql for migration
+     *
+     * @param string $sql
+     */
+    public function executeSql($sql) 
+    {
         $stm = $this->connection->query($sql);
         $this->logger->info('QueryOK: ' . $sql);
+    }
+
+
+    /**
+     * Execute migration sql builder commands
+     *
+     * @param string $m method name
+     * @param array $a method arguments
+     */
+    public function executeCommand($m,$a) 
+    {
+        $this->logger->info($m);
+        $sql = call_user_func_array( array($this->builder,$m) , $a );
+        $this->executeSql($sql);
     }
 
     public function upgrade() { }
