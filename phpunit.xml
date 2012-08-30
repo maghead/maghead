@@ -19,6 +19,13 @@
 
     <env name="DB_SQLITE_DSN" value="sqlite::memory:"/>
   </php>
+
+  <filter>
+    <whitelist>
+        <directory suffix=".php">src/</directory>
+    </whitelist>
+  </filter>
+
   <testsuites>
     <testsuite name="PHPUnit">
       <directory suffix="Test.php">tests</directory>

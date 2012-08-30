@@ -9,36 +9,7 @@ class AuthorSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns         = array( 
-  'updated_on' => array( 
-      'name' => 'updated_on',
-      'attributes' => array( 
-          'type' => 'timestamp',
-          'isa' => 'DateTime',
-          'default' => function() { 
-                return date('c'); 
-            },
-        ),
-    ),
-  'created_on' => array( 
-      'name' => 'created_on',
-      'attributes' => array( 
-          'type' => 'timestamp',
-          'isa' => 'DateTime',
-          'default' => function() { 
-                return date('c'); 
-            },
-        ),
-    ),
-  'id' => array( 
-      'name' => 'id',
-      'attributes' => array( 
-          'type' => 'integer',
-          'isa' => 'int',
-          'primary' => true,
-          'autoIncrement' => true,
-        ),
-    ),
+        $this->columnData      = array( 
   'name' => array( 
       'name' => 'name',
       'attributes' => array( 
@@ -81,6 +52,35 @@ class AuthorSchemaProxy extends RuntimeSchema
           'type' => 'boolean',
           'isa' => 'bool',
           'default' => false,
+        ),
+    ),
+  'updated_on' => array( 
+      'name' => 'updated_on',
+      'attributes' => array( 
+          'type' => 'timestamp',
+          'isa' => 'DateTime',
+          'default' => function() { 
+                return date('c'); 
+            },
+        ),
+    ),
+  'created_on' => array( 
+      'name' => 'created_on',
+      'attributes' => array( 
+          'type' => 'timestamp',
+          'isa' => 'DateTime',
+          'default' => function() { 
+                return date('c'); 
+            },
+        ),
+    ),
+  'id' => array( 
+      'name' => 'id',
+      'attributes' => array( 
+          'type' => 'integer',
+          'isa' => 'int',
+          'primary' => true,
+          'autoIncrement' => true,
         ),
     ),
 );
@@ -129,7 +129,6 @@ class AuthorSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
-
         parent::__construct();
     }
 

@@ -1,7 +1,5 @@
 <?php
 namespace LazyRecord\Command;
-
-use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Schema\SchemaGenerator;
 use CLIFramework\Command;

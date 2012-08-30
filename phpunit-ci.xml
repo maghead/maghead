@@ -4,9 +4,17 @@
          verbose="true">
   <php>
 
-    <!-- Unit Testing Variables -->
-    <var name="VAR" value="Values" />
+    <!-- configuration for mysql -->
+    <env name="DB_MYSQL_DSN" value="mysql:dbname=testing"/>
+    <env name="DB_MYSQL_USER" value="testing"/>
+    <env name="DB_MYSQL_PASS" value="testing"/>
 
+    <!-- configuration for pgsql -->
+    <env name="DB_PGSQL_DSN" value="pgsql:dbname=testing"/>
+    <env name="DB_PGSQL_USER" value="testing"/>
+    <env name="DB_PGSQL_PASS" value="testing"/>
+
+    <env name="DB_SQLITE_DSN" value="sqlite::memory:"/>
   </php>
 
   <filter>

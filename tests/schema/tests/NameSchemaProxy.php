@@ -9,7 +9,7 @@ class NameSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns         = array( 
+        $this->columnData      = array( 
   'id' => array( 
       'name' => 'id',
       'attributes' => array( 
@@ -134,7 +134,6 @@ class NameSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
-
         parent::__construct();
     }
 
