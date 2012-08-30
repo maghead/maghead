@@ -2,6 +2,7 @@
 namespace LazyRecord\Command;
 use Exception;
 use ReflectionClass;
+use ReflectionObject;
 use CLIFramework\Command;
 use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaFinder;
@@ -23,16 +24,15 @@ class DiffCommand extends Command
 
     public function execute()
     {
+        $formatter = new \CLIFramework\Formatter;
         $options = $this->options;
         $logger = $this->logger;
 
         $loader = ConfigLoader::getInstance();
-        $loader->load();
+        $loader->loadFromSymbol();
         $loader->initForBuild();
 
-
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
-        $logger->info("Initialize connection manager...");
 
         // XXX: from config files
         $id = $options->{'data-source'} ?: 'default';
@@ -45,7 +45,7 @@ class DiffCommand extends Command
             $finder->paths = $paths;
         }
         $finder->loadFiles();
-        $classes = $finder->getSchemas();
+        $schemas = $finder->getSchemas();
 
 
         // XXX: currently only mysql support
@@ -58,9 +58,14 @@ class DiffCommand extends Command
 
         $found = false;
         $comparator = new \LazyRecord\Schema\Comparator;
-        foreach( $classes as $class ) {
-            $b = new $class;
+        foreach( $schemas as $b ) {
+            $class = $b->getModelClass();
             $ref = new ReflectionClass($class);
+
+
+            $filepath = $ref->getFilename();
+            $filepath = substr($filepath,strlen(getcwd()) + 1);
+
             $t = $b->getTable();
             if( isset( $tableSchemas[ $t ] ) ) {
                 $a = $tableSchemas[ $t ];
@@ -69,11 +74,12 @@ class DiffCommand extends Command
                     $found = true;
                 $printer = new \LazyRecord\Schema\Comparator\ConsolePrinter($diff);
                 $printer->beforeName = $t;
-                $printer->afterName = $class . ':' . $ref->getFilename() ;
+                $printer->afterName = $t . ':' . $filepath ;
                 $printer->output();
             }
             else {
-                echo "New table: " , $class , ':' , $ref->getFilename() , "\n";
+                $msg = sprintf("+ table %-20s %s", "'" . $t . "'" ,$filepath);
+                echo $formatter->format( $msg,'green') , "\n";
                 $found = true;
             }
         }

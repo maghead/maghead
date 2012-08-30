@@ -7,4 +7,3 @@ SQLite
 
     ATTACH some_file.db AS my_db;
 
-
