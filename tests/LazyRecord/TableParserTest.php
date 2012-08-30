@@ -2,12 +2,6 @@
 
 class TableParserTest extends PHPUnit_Framework_TestCase
 {
-
-    function setUp()
-    {
-        skip('Skip Table Parser Tests until test code refactored.');
-    }
-
     function testDrivers()
     {
         $types = array();
