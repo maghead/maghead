@@ -125,7 +125,7 @@ class SchemaDeclare extends SchemaBase
         $this->mixins[] = $class;
 
         /* merge columns into self */
-        $this->columns = array_merge( $mixin->columns, $this->columns );
+        $this->columns = array_merge( $this->columns, $mixin->columns );
         $this->relations = array_merge( $mixin->relations, $this->relations );
     }
 

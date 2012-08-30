@@ -1672,6 +1672,10 @@ class BaseModel
         return $this->schema->table;
     }
 
+    public function getSchema() 
+    {
+        return SchemaLoader::load( static::schema_proxy_class );
+    }
 
     public function flushCache() 
     {
