@@ -67,8 +67,8 @@ class SchemaFinder
 
     public function getSchemas()
     {
-        $classes = ClassUtils::get_declared_schema_classes();
-        $schemas = ClassUtils::expand_schema_classes($classes);
+        $classes   = ClassUtils::get_declared_schema_classes();
+        $schemas   = ClassUtils::expand_schema_classes($classes);
         $dyschemas = ClassUtils::get_declared_dynamic_schema_classes_from_models();
         return array_merge($schemas, $dyschemas);
     }

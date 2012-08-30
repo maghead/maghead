@@ -98,7 +98,6 @@ class ConnectionManager
         return isset($this->datasources[ $id ] );
     }
 
-
     public function removeDataSource($id) 
     {
         unset( $this->datasource[$id] );
@@ -137,7 +136,7 @@ class ConnectionManager
         $driver = QueryDriver::getInstance($id);
 
         // configure query driver type
-        if( $driverType = $this->getDataSourceDriver($id) ) {
+        if( $driverType = $this->getDriverType($id) ) {
             $conn = $this->getConnection($id);
             $driver->configure('driver',$driverType);
             $driver->quoter = function($string) use ($conn,$id) {
@@ -160,7 +159,7 @@ class ConnectionManager
         return $driver;
     }
 
-    public function getDataSourceDriver($id)
+    public function getDriverType($id)
     {
         $config = $this->getDataSource($id);
         if( isset($config['driver']) ) {
@@ -217,7 +216,7 @@ class ConnectionManager
             $connectionOptions = isset($config['connection_options'])
                                      ? $config['connection_options'] : array();
 
-            if( 'mysql' === $this->getDataSourceDriver($sourceId) ) {
+            if( 'mysql' === $this->getDriverType($sourceId) ) {
                 $connectionOptions[ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
             }
 
