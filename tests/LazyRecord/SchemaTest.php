@@ -6,7 +6,7 @@ class SchemaTest extends PHPUnit_Framework_TestCase
     {
         $finder = new LazyRecord\Schema\SchemaFinder;
         $finder->addPath( 'tests/schema' );
-        $finder->loadFiles();
+        $finder->find();
     }
 }
 

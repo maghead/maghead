@@ -44,7 +44,7 @@ class DiffCommand extends Command
         if( $paths = $loader->getSchemaPaths() ) {
             $finder->paths = $paths;
         }
-        $finder->loadFiles();
+        $finder->find();
         $schemas = $finder->getSchemas();
 
 

@@ -99,6 +99,11 @@ class ConnectionManager
     }
 
 
+    public function removeDataSource($id) 
+    {
+        unset( $this->datasource[$id] );
+    }
+
     /**
      * Return datasource id(s)
      *
