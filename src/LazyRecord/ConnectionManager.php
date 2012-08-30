@@ -125,6 +125,13 @@ class ConnectionManager
             return $this->datasources[ $id ];
     }
 
+
+    /**
+     * Get SQLBuilder\QueryDriver by data source id.
+     *
+     * @param string $id datasource name
+     * @return LazyRecord\QueryDriver
+     */
     public function getQueryDriver($id = 'default')
     {
         $self = $this;
