@@ -18,7 +18,6 @@ class ConsolePrinter
         if( empty($this->diff) )
             return;
         $formatter = new \CLIFramework\Formatter;
-
         echo $formatter->format('--- ' . $this->beforeName,"strong_white") , "\n";
         echo $formatter->format('+++ ' . $this->afterName, "strong_white") , "\n";
         echo "@@ columns @@\n";
