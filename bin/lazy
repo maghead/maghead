@@ -7,7 +7,7 @@ $loader = new \Universal\ClassLoader\BasePathClassLoader(array(
 ));
 $loader->useIncludePath(true);
 $loader->register();
-$console = new LazyRecord\Console;
+$console = LazyRecord\Console::getInstance();
 if( isset($argv[1]) && $argv[1] == '-d' ) {
     $console->run($argv);
 } else {

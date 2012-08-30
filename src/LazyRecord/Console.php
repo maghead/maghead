@@ -32,4 +32,13 @@ class Console extends Application
 
         $this->registerCommand('create-db',         'LazyRecord\Command\CreateDBCommand');
     }
+
+    public static function getInstance() 
+    {
+        static $self;
+        if( $self )
+            return $self;
+        return $self = new self;
+    }
+
 }
