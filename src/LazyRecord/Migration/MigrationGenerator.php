@@ -18,8 +18,8 @@ class MigrationGenerator
     function __construct($dataSourceId,$migrationDir) 
     {
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
-        $this->connection  = $connectionManager->getConnection($id);
-        $this->driver      = $connectionManager->getQueryDriver($id);
+        $this->connection  = $connectionManager->getConnection($dataSourceId);
+        $this->driver      = $connectionManager->getQueryDriver($dataSourceId);
         $this->migrationDir = $migrationDir;
     }
 
@@ -34,7 +34,7 @@ class MigrationGenerator
         }
 
         $finder = new SchemaFinder;
-        $finder->loadFiles();
+        $finder->find();
         $schemas = $finder->getSchemas();
     }
 }

@@ -44,7 +44,7 @@ class SchemaFinder
         }
     }
 
-    public function loadFiles()
+    public function find()
     {
         foreach( $this->paths as $path ) {
             if( is_file($path) ) {
@@ -73,7 +73,8 @@ class SchemaFinder
         return array_merge($schemas, $dyschemas);
     }
 
-    public function getIterator() {
+    public function getIterator() 
+    {
         return $this->getSchemas();
     }
 }
