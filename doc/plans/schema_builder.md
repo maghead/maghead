@@ -11,4 +11,3 @@ Issue: <http://redmine.corneltek.com/issues/3>
 
     // insert query
     $pdo->query( $sql );
-

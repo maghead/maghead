@@ -67,7 +67,7 @@ class CommandUtils
     static function print_schema_classes($classes) {
         static::log('Found schema classes');
         foreach( $classes as $class ) {
-            static::$logger->info( static::$logger->formatter->format($class,'green') , 1 );
+            static::$logger->info( static::$logger->formatter->format($class, 'green') , 1 );
         }
     }
 

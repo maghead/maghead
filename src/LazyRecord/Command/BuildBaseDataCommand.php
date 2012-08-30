@@ -2,7 +2,6 @@
 namespace LazyRecord\Command;
 use CLIFramework\Command;
 use LazyRecord\Schema;
-use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use Exception;
 

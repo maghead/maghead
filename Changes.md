@@ -14,6 +14,11 @@ Changes
 - Add closure support to validValues schema column
 
 
+## v1.6.3
+
+- Move config files into db/config/
+- Provide db/migration
+- Support dynamic schema in model class.
 
 ## v1.5.0 
 

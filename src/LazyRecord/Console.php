@@ -15,7 +15,7 @@ class Console extends Application
     public function init()
     {
         parent::init();
-        $this->registerCommand('init-conf',    'LazyRecord\Command\InitConfCommand');
+        $this->registerCommand('init',    'LazyRecord\Command\InitCommand');
         $this->registerCommand('build-conf',   'LazyRecord\Command\BuildConfCommand');
 
         $this->registerCOmmand('schema',  'LazyRecord\Command\SchemaCommand');
