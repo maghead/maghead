@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-08-30</date>
-  <time>01:23:10</time>
+  <time>14:35:31</time>
   <version>
     <release>1.7.0</release>
     <api>1.7.0</api>
@@ -33,7 +33,6 @@
       <file name="doc/install.md" role="doc" md5sum="8c2975ab1997933fb52331d4da32e075"/>
       <file name="doc/model.md" role="doc" md5sum="42f2c020924891983da74d6b259cdd5d"/>
       <file name="doc/plan.md" role="doc" md5sum="e4407419222fb1c73c5c602ee9bfc7fb"/>
-      <file name="doc/plans/model_schema.md" role="doc" md5sum="59949838061f83bc327e577510c558db"/>
       <file name="doc/plans/schema_builder.md" role="doc" md5sum="4956d7065e9071e32812cc0233a42b25"/>
       <file name="doc/query_driver.md" role="doc" md5sum="bb11a3186c726a1cc7157a1b15efe720"/>
       <file name="doc/schema.md" role="doc" md5sum="3b8baf019642d9ab46a4943996800c9d"/>
@@ -41,9 +40,9 @@
       <file name="doc/schema_finder.md" role="doc" md5sum="13db905837050cdb21cea30346b45a6c"/>
       <file name="doc/schema_generator.md" role="doc" md5sum="09f171163f8163992b8f07338c85a887"/>
       <file name="doc/setup.md" role="doc" md5sum="636d1f52ac693ebde78866646b4bbb8b"/>
-      <file name="doc/table_parser.md" role="doc" md5sum="f004950aba2709d8d4b123cfad171b15"/>
+      <file name="doc/table_parser.md" role="doc" md5sum="1227452cf65a856188112c44385a8c0d"/>
       <file name="doc/testing.md" role="doc" md5sum="63934396cacda7bdd9fae2d02a8f8c67"/>
-      <file name="tests/bootstrap.php" role="test" md5sum="677ad0da8022644318de084998710d46"/>
+      <file name="tests/bootstrap.php" role="test" md5sum="88163abc494c01cbd58d5a47d987ee3a"/>
       <file name="tests/config.php" role="test" md5sum="e18463ef3e30c8ea10dc6e39d8f90e1f"/>
       <file name="tests/data/injected" role="test" md5sum="a5e889ff46ea77181814f33f06facfd8"/>
       <file name="tests/data/replaced" role="test" md5sum="707fb1625fd781412d2e50b2d3133f40"/>
@@ -73,6 +72,7 @@
       <file name="tests/LazyRecord/SchemaGeneratorTest.php" role="test" md5sum="b5b2108aaa63512c535835db13803190"/>
       <file name="tests/LazyRecord/SchemaSqlBuilderTest.php" role="test" md5sum="f4041b7812dc3049bf0a28d9e1c6eace"/>
       <file name="tests/LazyRecord/SchemaTest.php" role="test" md5sum="da856c03f176c325c14576e9ccc7a697"/>
+      <file name="tests/LazyRecord/TableParser/SqliteTableParserTest.php" role="test" md5sum="de17e16eb2f614548a83d955325e4b6b"/>
       <file name="tests/LazyRecord/TableParserTest.php" role="test" md5sum="8130098bc1427cced72d38a7243818b8"/>
       <file name="tests/LazyRecord/TypesTest.php" role="test" md5sum="628788de6ab98b0b7de9bae79d4102e1"/>
       <file name="tests/LazyRecord/UtilsTest.php" role="test" md5sum="972fcdf291f4f322db2f1480bf5907b1"/>
@@ -156,9 +156,10 @@
       <file name="src/LazyRecord/Command/InitCommand.php" role="php" md5sum="968f444a1d7a49bf4558e77dcc5c8d2e"/>
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="4071e977c5306f67362fed5ddb64651f"/>
       <file name="src/LazyRecord/Command/ListSchemaCommand.php" role="php" md5sum="d29c14b335f2f6ca402761349de1ef1b"/>
-      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="77d2b50933ed2752af3def4919e13518"/>
+      <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="da06865dc5d98ff337f22dd40b09c803"/>
+      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="559ff666c9699f62709342a3c370eb27"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="e4da082d92825d40dbe3fa322c7bf74a"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="ffd5c60e0baa9609eb63bc78e35e5b7a"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="8a75a846405ac7a71ed48098120f2d74"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c750d9b25dd6509c2831197ce7e3da3a"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
@@ -187,14 +188,17 @@
       <file name="src/LazyRecord/Schema/Templates/Class.php.twig" role="php" md5sum="5900776f96901cc66fbc3ab6924ef2a0"/>
       <file name="src/LazyRecord/Schema/Templates/Model.php.twig" role="php" md5sum="2b23467dad36aed3630b57ad12c44bc6"/>
       <file name="src/LazyRecord/Schema/Templates/Schema.php.twig" role="php" md5sum="1eea1a4df423594ef193a1822b9ed1ce"/>
-      <file name="src/LazyRecord/Schema/WineSchemaProxy.php" role="php" md5sum="efee30a5956b479b463381aa636f7e2b"/>
       <file name="src/LazyRecord/SqlBuilder/BaseBuilder.php" role="php" md5sum="1af61013cb6f878b0f692d9fd83e89ad"/>
       <file name="src/LazyRecord/SqlBuilder/BuilderInterface.php" role="php" md5sum="0e282e5c3f6256d59e1a747a938b17ea"/>
       <file name="src/LazyRecord/SqlBuilder/MysqlBuilder.php" role="php" md5sum="1eacc88225c9bc3c1a358bdbf9bfe5ad"/>
       <file name="src/LazyRecord/SqlBuilder/PgsqlBuilder.php" role="php" md5sum="1fc00beaaa41bc781877e21be56ad30c"/>
       <file name="src/LazyRecord/SqlBuilder/SqlBuilderFactory.php" role="php" md5sum="750058fa7998d87c747a1aae0ace4916"/>
       <file name="src/LazyRecord/SqlBuilder/SqliteBuilder.php" role="php" md5sum="b5b192715d2aa7af65baf7fd354a59cd"/>
-      <file name="src/LazyRecord/TableParser.php" role="php" md5sum="9338eb427bd00a241b64784c3dc6366c"/>
+      <file name="src/LazyRecord/TableParser/BaseTableParser.php" role="php" md5sum="c7fb552fc8acc7bf2d3885a1d2966209"/>
+      <file name="src/LazyRecord/TableParser/MysqlTableParser.php" role="php" md5sum="5bccce2f03ee4dffabbdd79009f44cf4"/>
+      <file name="src/LazyRecord/TableParser/PgsqlTableParser.php" role="php" md5sum="46341d7ca77248e18ef35131596b4e96"/>
+      <file name="src/LazyRecord/TableParser/SqliteTableParser.php" role="php" md5sum="4ca982736b62de8101342547bc58d3b3"/>
+      <file name="src/LazyRecord/TableParser.php" role="php" md5sum="8178bbd4b1141559ac14df6be6395658"/>
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="67625835f36af42ab83e24d83d97d280"/>
@@ -248,7 +252,7 @@
       <package>
         <name>ConfigKit</name>
         <channel>pear.corneltek.com</channel>
-        <min>0.0.0</min>
+        <min>1.0.1</min>
       </package>
       <package>
         <name>Twig</name>
@@ -276,7 +280,6 @@
       <install name="doc/install.md" as="install.md"/>
       <install name="doc/model.md" as="model.md"/>
       <install name="doc/plan.md" as="plan.md"/>
-      <install name="doc/plans/model_schema.md" as="plans/model_schema.md"/>
       <install name="doc/plans/schema_builder.md" as="plans/schema_builder.md"/>
       <install name="doc/query_driver.md" as="query_driver.md"/>
       <install name="doc/schema.md" as="schema.md"/>
@@ -316,6 +319,7 @@
       <install name="tests/LazyRecord/SchemaGeneratorTest.php" as="LazyRecord/SchemaGeneratorTest.php"/>
       <install name="tests/LazyRecord/SchemaSqlBuilderTest.php" as="LazyRecord/SchemaSqlBuilderTest.php"/>
       <install name="tests/LazyRecord/SchemaTest.php" as="LazyRecord/SchemaTest.php"/>
+      <install name="tests/LazyRecord/TableParser/SqliteTableParserTest.php" as="LazyRecord/TableParser/SqliteTableParserTest.php"/>
       <install name="tests/LazyRecord/TableParserTest.php" as="LazyRecord/TableParserTest.php"/>
       <install name="tests/LazyRecord/TypesTest.php" as="LazyRecord/TypesTest.php"/>
       <install name="tests/LazyRecord/UtilsTest.php" as="LazyRecord/UtilsTest.php"/>
@@ -399,6 +403,7 @@
       <install name="src/LazyRecord/Command/InitCommand.php" as="LazyRecord/Command/InitCommand.php"/>
       <install name="src/LazyRecord/Command/InitConfCommand.php" as="LazyRecord/Command/InitConfCommand.php"/>
       <install name="src/LazyRecord/Command/ListSchemaCommand.php" as="LazyRecord/Command/ListSchemaCommand.php"/>
+      <install name="src/LazyRecord/Command/SchemaCommand.php" as="LazyRecord/Command/SchemaCommand.php"/>
       <install name="src/LazyRecord/ConfigLoader.php" as="LazyRecord/ConfigLoader.php"/>
       <install name="src/LazyRecord/ConnectionManager.php" as="LazyRecord/ConnectionManager.php"/>
       <install name="src/LazyRecord/Console.php" as="LazyRecord/Console.php"/>
@@ -430,13 +435,16 @@
       <install name="src/LazyRecord/Schema/Templates/Class.php.twig" as="LazyRecord/Schema/Templates/Class.php.twig"/>
       <install name="src/LazyRecord/Schema/Templates/Model.php.twig" as="LazyRecord/Schema/Templates/Model.php.twig"/>
       <install name="src/LazyRecord/Schema/Templates/Schema.php.twig" as="LazyRecord/Schema/Templates/Schema.php.twig"/>
-      <install name="src/LazyRecord/Schema/WineSchemaProxy.php" as="LazyRecord/Schema/WineSchemaProxy.php"/>
       <install name="src/LazyRecord/SqlBuilder/BaseBuilder.php" as="LazyRecord/SqlBuilder/BaseBuilder.php"/>
       <install name="src/LazyRecord/SqlBuilder/BuilderInterface.php" as="LazyRecord/SqlBuilder/BuilderInterface.php"/>
       <install name="src/LazyRecord/SqlBuilder/MysqlBuilder.php" as="LazyRecord/SqlBuilder/MysqlBuilder.php"/>
       <install name="src/LazyRecord/SqlBuilder/PgsqlBuilder.php" as="LazyRecord/SqlBuilder/PgsqlBuilder.php"/>
       <install name="src/LazyRecord/SqlBuilder/SqlBuilderFactory.php" as="LazyRecord/SqlBuilder/SqlBuilderFactory.php"/>
       <install name="src/LazyRecord/SqlBuilder/SqliteBuilder.php" as="LazyRecord/SqlBuilder/SqliteBuilder.php"/>
+      <install name="src/LazyRecord/TableParser/BaseTableParser.php" as="LazyRecord/TableParser/BaseTableParser.php"/>
+      <install name="src/LazyRecord/TableParser/MysqlTableParser.php" as="LazyRecord/TableParser/MysqlTableParser.php"/>
+      <install name="src/LazyRecord/TableParser/PgsqlTableParser.php" as="LazyRecord/TableParser/PgsqlTableParser.php"/>
+      <install name="src/LazyRecord/TableParser/SqliteTableParser.php" as="LazyRecord/TableParser/SqliteTableParser.php"/>
       <install name="src/LazyRecord/TableParser.php" as="LazyRecord/TableParser.php"/>
       <install name="src/LazyRecord/Types/DateTime.php" as="LazyRecord/Types/DateTime.php"/>
       <install name="src/LazyRecord/Types.php" as="LazyRecord/Types.php"/>
