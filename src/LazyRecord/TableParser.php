@@ -10,7 +10,7 @@ class TableParser
 {
     static function create($driver,$connection) 
     {
-        $class = ucfirst($driver->type) . 'TableParser';
+        $class = 'LazyRecord\\TableParser\\' . ucfirst($driver->type) . 'TableParser';
         if( class_exists($class,true) ) {
             $parser = new $class($driver,$connection);
             return $parser;
