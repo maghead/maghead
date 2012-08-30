@@ -24,7 +24,9 @@ class Console extends Application
 
         $this->registerCommand('build-basedata', 'LazyRecord\Command\BuildBaseDataCommand');
         $this->registerCommand('build-sql',    'LazyRecord\Command\BuildSqlCommand');
+
         $this->registerCommand('diff',         'LazyRecord\Command\DiffCommand');
+        $this->registerCommand('migration',         'LazyRecord\Command\MigrationCommand');
 
         $this->registerCommand('create-db',         'LazyRecord\Command\CreateDBCommand');
     }
