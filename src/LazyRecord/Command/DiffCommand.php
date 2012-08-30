@@ -24,6 +24,7 @@ class DiffCommand extends Command
 
     public function execute()
     {
+        $formatter = new \CLIFramework\Formatter;
         $options = $this->options;
         $logger = $this->logger;
 
@@ -77,7 +78,8 @@ class DiffCommand extends Command
                 $printer->output();
             }
             else {
-                printf("New table %-20s %s\n", "'" . $t . "'" ,$filepath);
+                $msg = sprintf("+ table %-20s %s", "'" . $t . "'" ,$filepath);
+                echo $formatter->format( $msg,'green') , "\n";
                 $found = true;
             }
         }
