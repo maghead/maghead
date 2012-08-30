@@ -12,7 +12,10 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         $generator = new LazyRecord\Migration\MigrationGenerator('default','tests/migration');
         ok($generator);
 
-        $generator->generate();
+        $finder = new LazyRecord\Schema\SchemaFinder;
+        $finder->find();
+        $generator->generate( $finder->getSchemas() );
+
         $connectionManager->removeDataSource('default');
     }
 }
