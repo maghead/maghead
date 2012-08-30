@@ -5,6 +5,8 @@ use CLIFramework\Command;
 class SchemaCommand extends Command
 {
 
+    function brief() { return 'schema command.'; }
+
     function init()
     {
         parent::init();
@@ -14,7 +16,7 @@ class SchemaCommand extends Command
     }
 
     function execute() { 
-   
+        $this->logger->info('Usage: schema [build|sql|list]');
     }
 }
 
