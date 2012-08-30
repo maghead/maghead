@@ -32,8 +32,12 @@ class MethodCall
 
         $strs = array();
         foreach( $this->arguments as $arg ) {
-            $str = var_export($arg,true);
-            $strs[] = $str;
+            if( is_string($arg) && $arg[0] == '$' ) {
+                $strs[] = $arg;
+            } else {
+                $str = var_export($arg,true);
+                $strs[] = $str;
+            }
         }
         $code .= join(',',$strs);
         $code .= ')';
