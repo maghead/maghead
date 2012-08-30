@@ -1,12 +1,9 @@
 <?php
 namespace LazyRecord\Command;
-use LazyRecord\Schema\SchemaFinder;
-use LazyRecord\ConfigLoader;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Command\CommandUtils;
 
 /**
- *
  * $ lazy build-schema path/to/Schema path/to/SchemaDir
  *
  */
@@ -37,6 +34,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
         CommandUtils::print_schema_classes($classes);
 
         $this->logger->info("Initializing schema generator...");
+
         $generator = new SchemaGenerator;
         $generator->setLogger( $logger );
         $classMap = $generator->generate($classes);

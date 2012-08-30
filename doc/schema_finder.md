@@ -6,7 +6,7 @@ API:
     $finder = new LazyRecord\Schema\SchemaFinder;
     $finder->addPath( 'tests/schema/' );
     $finder->loadFiles();
-    $classes = $finder->getSchemaClasses();
+    $classes = $finder->getSchemas();
 
     foreach( $finder as $class ) {
         $class; // schema class.

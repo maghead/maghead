@@ -9,7 +9,7 @@ class BookSchemaProxy extends RuntimeSchema
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
-        $this->columns         = array( 
+        $this->columnData      = array( 
   'title' => array( 
       'name' => 'title',
       'attributes' => array( 
@@ -73,6 +73,7 @@ class BookSchemaProxy extends RuntimeSchema
     ),
 );
         $this->columnNames     = array( 
+  'id',
   'title',
   'subtitle',
   'description',
@@ -80,7 +81,6 @@ class BookSchemaProxy extends RuntimeSchema
   'publisher_id',
   'published_at',
   'created_by',
-  'id',
 );
         $this->primaryKey      = 'id';
         $this->table           = 'books';
@@ -131,7 +131,6 @@ class BookSchemaProxy extends RuntimeSchema
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
-
         parent::__construct();
     }
 

@@ -9,10 +9,11 @@ use RuntimeException;
 use LazyRecord\ClassUtils;
 use IteratorAggregate;
 
-
 /**
  * Find schema classes from files (or from current runtime)
  *
+ * 1. Find SchemaDeclare-based schema class files.
+ * 2. Find model-based schema, pass dynamic schema class 
  */
 class SchemaFinder
     implements IteratorAggregate
@@ -35,7 +36,10 @@ class SchemaFinder
     public function _loadSchemaFile($file) 
     {
         $code = file_get_contents($file);
-        if( preg_match( '#' . preg_quote('SchemaDeclare') . '#xsm' , $code ) ) {
+        if( preg_match( '#LazyRecord\\\\Schema\\\\SchemaDeclare#ixsm' , $code ) ) {
+            require_once $file;
+        }
+        elseif( preg_match( '/LazyRecord\\\\BaseModel/ixsm' , $code ) ) {
             require_once $file;
         }
     }
@@ -61,14 +65,16 @@ class SchemaFinder
         }
     }
 
-    public function getSchemaClasses()
+    public function getSchemas()
     {
         $classes = ClassUtils::get_declared_schema_classes();
-        return ClassUtils::expand_schema_classes($classes);
+        $schemas = ClassUtils::expand_schema_classes($classes);
+        $dyschemas = ClassUtils::get_declared_dynamic_schema_classes_from_models();
+        return array_merge($schemas, $dyschemas);
     }
 
     public function getIterator() {
-        return $this->getSchemaClasses();
+        return $this->getSchemas();
     }
 }
 
