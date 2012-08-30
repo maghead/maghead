@@ -9,5 +9,3 @@ class MigrationCommand extends Command
     }
 }
 
-
-

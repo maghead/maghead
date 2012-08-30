@@ -48,18 +48,19 @@ DOC;
         $logger  = $this->logger;
 
         CommandUtils::set_logger($this->logger);
+
+        $logger->debug("Loading config...");
         CommandUtils::init_config_loader();
 
 
         // XXX: from config files
         $id = $options->{'data-source'} ?: 'default';
 
-        $logger->info("Finding schema classes...");
+        $logger->debug("Finding schema classes...");
 
-        $logger->info("Connecting to data soruce $id...");
         $schemas = CommandUtils::find_schemas_with_arguments( func_get_args() );
 
-        $logger->info("Initialize schema builder...");
+        $logger->debug("Initialize schema builder...");
         $sqlOutput = CommandUtils::build_schemas_with_options($id, $options, $schemas);
         if( $file = $this->options->file ) {
             $fp = fopen($file,'w');

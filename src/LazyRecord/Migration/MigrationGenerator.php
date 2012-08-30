@@ -15,7 +15,7 @@ class MigrationGenerator
     public $connection;
     public $migrationDir;
 
-    function __construct($dataSourceId,$migrationDir) 
+    function __construct($dataSourceId,$migrationDir)
     {
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $this->connection  = $connectionManager->getConnection($dataSourceId);
@@ -24,18 +24,34 @@ class MigrationGenerator
     }
 
 
-    function generate()
+    function generate($schemas)
     {
         $parser = TableParser::create( $this->driver, $this->connection );
         $tableSchemas = array();
+
+        // database schemas
         $tables = $parser->getTables();
         foreach(  $tables as $table ) {
             $tableSchemas[ $table ] = $parser->getTableSchema( $table );
         }
 
-        $finder = new SchemaFinder;
-        $finder->find();
-        $schemas = $finder->getSchemas();
+        $comparator = new \LazyRecord\Schema\Comparator;
+        // schema from runtime
+        foreach( $schemas as $b ) {
+            $foundTable = isset( $tableSchemas[ $t ] );
+            if( $foundTable ) {
+                $a = $tableSchemas[ $t ];
+                $diff = $comparator->compare( $a , $b );
+                // generate alter table statement.
+
+                print_r($diff);
+
+            } else {
+                // generate create table statement.
+                // use sqlbuilder to build schema sql
+
+            }
+        }
     }
 }
 
