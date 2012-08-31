@@ -51,6 +51,7 @@ class BaseMigration
     public function upgrade() { }
     public function downgrade() { }
 
+    /*
     public function runUpgrade()
     {
         $this->upgrade();
@@ -60,6 +61,7 @@ class BaseMigration
     {
         $this->downgrade();
     }
+    */
 
     public function __call($m,$a) {
         $this->executeCommand($m,$a);
