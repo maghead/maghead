@@ -1,6 +1,6 @@
 <?php
 
-class FooMigration extends LazyRecord\BaseMigration 
+class FooMigration extends LazyRecord\Migration\BaseMigration 
 {
 
     public function upgrade() 
