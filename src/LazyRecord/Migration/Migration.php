@@ -3,6 +3,7 @@ namespace LazyRecord\Migration;
 use SQLBuilder\MigrationBuilder;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Console;
+use PDOException;
 
 class Migration
 {
@@ -27,10 +28,13 @@ class Migration
      */
     public function executeSql($sql) 
     {
-        $stm = $this->connection->query($sql);
-        $this->logger->info('QueryOK: ' . $sql);
+        try { 
+            $stm = $this->connection->query($sql);
+            $this->logger->info('QueryOK: ' . $sql);
+        } catch(PDOException $e) {
+            $this->logger->error($e->getMessage());
+        }
     }
-
 
     /**
      * Execute migration sql builder commands
