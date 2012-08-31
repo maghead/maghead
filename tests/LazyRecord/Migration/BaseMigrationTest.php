@@ -16,6 +16,9 @@ class FooMigration extends LazyRecord\Migration\BaseMigration
 
 class BaseMigrationTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @outputBuffering enabled
+     */
     function test()
     {
         $connm = LazyRecord\ConnectionManager::getInstance();
