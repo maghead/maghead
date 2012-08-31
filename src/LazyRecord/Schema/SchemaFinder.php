@@ -65,6 +65,15 @@ class SchemaFinder
         }
     }
 
+
+    /**
+     * This method is deprecated.
+     */
+    public function getSchemaClasses() 
+    {
+        return $this->getSchemas();
+    }
+
     public function getSchemas()
     {
         $classes   = ClassUtils::get_declared_schema_classes();
