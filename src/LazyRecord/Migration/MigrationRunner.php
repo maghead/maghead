@@ -15,7 +15,7 @@ class MigrationRunner
     public function __construct($dsIds)
     {
         $this->logger = Console::getInstance()->getLogger();
-        $this->dataSourceIds = $dsIds;
+        $this->dataSourceIds = (array) $dsIds;
     }
 
     public function addDataSource( $dsId ) 
@@ -43,9 +43,21 @@ class MigrationRunner
 
     public function getMigrationScripts() {
         $classes = get_declared_classes();
-        return array_filter($classes, function($class) { 
-            return is_a($class,'LazyRecord\\Migration\\Migration',true);
+        $classes = array_filter($classes, function($class) { 
+            return is_a($class,'LazyRecord\\Migration\\Migration',true) 
+                && $class != 'LazyRecord\\Migration\\Migration';
         });
+        // sort class with timestamp suffix
+        usort($classes,function($a,$b) { 
+            if( preg_match('#_(\d+)$#',$a,$regsA) && preg_match('#_(\d+)$#',$b,$regsB) ) {
+                list($aId,$bId) = array($regsA[1],$regsB[1]);
+                if( $aId == $bId )
+                    return 0;
+                return $aId < $bId ? -1 : 1;
+            }
+            return 0;
+        });
+        return $classes;
     }
 
     public function runDowngrade()
@@ -70,7 +82,5 @@ class MigrationRunner
             }
         }
     }
-
 }
-
 
