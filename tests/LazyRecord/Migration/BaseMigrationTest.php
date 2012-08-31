@@ -16,11 +16,9 @@ class FooMigration extends LazyRecord\Migration\BaseMigration
 
 class BaseMigrationTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @outputBuffering enabled
-     */
     function test()
     {
+        ob_start();
         $connm = LazyRecord\ConnectionManager::getInstance();
         $connm->addDataSource('default',array(
             'dsn' => 'sqlite::memory:'
@@ -33,10 +31,10 @@ class BaseMigrationTest extends PHPUnit_Framework_TestCase
 
         $migration = new FooMigration('default');
         ok($migration);
-
         $migration->upgrade();
 
         $connm->removeDataSource('default');
+        ob_end_clean();
     }
 }
 
