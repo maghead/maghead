@@ -2,13 +2,19 @@
 namespace LazyRecord\Migration;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use LazyRecord\Console;
 
 class MigrationRunner
 {
+
+
+    public $logger;
+
     public $dataSourceIds = array();
 
     public function __construct($dsIds)
     {
+        $this->logger = Console::getInstance()->getLogger();
         $this->dataSourceIds = $dsIds;
     }
 
@@ -45,13 +51,25 @@ class MigrationRunner
     public function runDowngrade()
     {
         $scripts = $this->getMigrationScripts();
+        foreach( $scripts as $script ) {
+            foreach( $this->dataSourceIds as $dsId ) {
+                $migration = new $script( $dsId );
+                $migration->downgrade();
+            }
+        }
     }
 
     public function runUpgrade()
     {
         $scripts = $this->getMigrationScripts();
+        foreach( $scripts as $script ) {
+            foreach( $this->dataSourceIds as $dsId ) {
+                $this->logger->info("Running migration script $script on $dsId");
+                $migration = new $script( $dsId );
+                $migration->upgrade();
+            }
+        }
     }
-
 
 }
 
