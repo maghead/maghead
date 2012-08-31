@@ -38,6 +38,7 @@ class MigrationGenerator
         $comparator = new \LazyRecord\Schema\Comparator;
         // schema from runtime
         foreach( $schemas as $b ) {
+            $t = $b->getTable();
             $foundTable = isset( $tableSchemas[ $t ] );
             if( $foundTable ) {
                 $a = $tableSchemas[ $t ];
