@@ -1,7 +1,7 @@
 <?php
 use SQLBuilder\Column;
 
-class FooMigration extends LazyRecord\Migration\BaseMigration 
+class FooMigration extends LazyRecord\Migration\Migration 
 {
     public function upgrade() 
     {
@@ -14,7 +14,7 @@ class FooMigration extends LazyRecord\Migration\BaseMigration
     }
 }
 
-class BaseMigrationTest extends PHPUnit_Framework_TestCase
+class MigrationTest extends PHPUnit_Framework_TestCase
 {
     function test()
     {

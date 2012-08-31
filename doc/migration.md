@@ -1,8 +1,8 @@
 Migration
 ==========
 
-    use LazyRecord\Migration\BaseMigration;
-    class YourMigration extends BaseMigration
+    use LazyRecord\Migration\Migration;
+    class YourMigration extends Migration
     {
         function up() {
 
@@ -26,4 +26,21 @@ Migration
 
         }
     }
+
+## Migration Runner
+
+Find migration classes and run them all.
+
+    $runner = new MigrationRunner(array('default','master','slave') );
+    $files = $runner->load('db/migrations');
+
+    $migrationClasses = $runner->find();
+
+    foreach( $this->dsIds as $dsId ) {
+        foreach( $migrationClasses as $class ) {
+            $migration = new $class( $dsId );
+            $migration->upgrade();
+        }
+    }
+
 
