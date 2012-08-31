@@ -4,7 +4,7 @@ use SQLBuilder\MigrationBuilder;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Console;
 
-class BaseMigration
+class Migration
 {
     public $driver;
     public $builder;
@@ -19,9 +19,6 @@ class BaseMigration
         $this->builder = new MigrationBuilder($this->driver);
         $this->logger  = Console::getInstance()->getLogger();
     }
-
-
-
 
     /**
      * Execute sql for migration
