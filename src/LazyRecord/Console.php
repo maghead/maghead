@@ -15,9 +15,20 @@ class Console extends Application
     public function init()
     {
         parent::init();
+
+        /**
+         * command for initialize related file structure
+         */
         $this->registerCommand('init',    'LazyRecord\Command\InitCommand');
+
+        /**
+         * command for building config file.
+         */
         $this->registerCommand('build-conf',   'LazyRecord\Command\BuildConfCommand');
 
+        /**
+         * schema command.
+         */
         $this->registerCOmmand('schema',  'LazyRecord\Command\SchemaCommand');
         $this->registerCOmmand('list-schema',  'LazyRecord\Command\ListSchemaCommand');
         $this->registerCommand('build-schema', 'LazyRecord\Command\BuildSchemaCommand');
