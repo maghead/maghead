@@ -48,20 +48,11 @@ class BaseMigration
         $this->executeSql($sql);
     }
 
-    public function upgrade() { }
-    public function downgrade() { }
-
-    /*
-    public function runUpgrade()
-    {
-        $this->upgrade();
+    public function upgrade() {
     }
 
-    public function runDowngrade() 
-    {
-        $this->downgrade();
+    public function downgrade() { 
     }
-    */
 
     public function __call($m,$a) {
         $this->executeCommand($m,$a);
