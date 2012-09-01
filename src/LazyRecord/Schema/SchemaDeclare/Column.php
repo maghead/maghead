@@ -52,6 +52,7 @@ class Column
         $this->supportedAttributes = array(
 
             'primary'       => self::ATTR_FLAG,
+            'size'          => self::ATTR_INTEGER,
             'autoIncrement' => self::ATTR_FLAG,
             'immutable'     => self::ATTR_FLAG,
             'unique'        => self::ATTR_FLAG, /* unique, should support by SQL syntax */
@@ -123,6 +124,7 @@ class Column
     {
         $this->attributes[ 'type' ] = 'varchar(' . $size . ')';
         $this->attributes[ 'isa' ]  = 'str';
+        $this->attributes[ 'size' ]  = $size;
         return $this;
     }
 
@@ -130,6 +132,7 @@ class Column
     {
         $this->attributes[ 'type' ] = 'char(' . $limit . ')';
         $this->attributes[ 'isa'  ] = 'str';
+        $this->attributes[ 'size' ]  = $limit;
         return $this;
     }
 
