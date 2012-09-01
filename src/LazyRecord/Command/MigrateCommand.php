@@ -10,6 +10,8 @@ class MigrateCommand extends Command
         $opts->add('new:','create new migration script.');
         $opts->add('diff:','use schema diff to generate script automatically.');
         $opts->add('status','show current migration status.');
+        $opts->add('up','upgrade');
+        $opts->add('down','downgrade');
         $opts->add('D|data-source:','data source id.');
     }
 
@@ -17,6 +19,8 @@ class MigrateCommand extends Command
     {
         $optNew = $this->options->new;
         $optDiff = $this->options->diff;
+        $optUp = $this->options->up;
+        $optDown = $this->options->down;
         $optStatus = $this->options->status;
         $dsId = $this->options->{'data-source'} ?: 'default';
 
@@ -29,6 +33,18 @@ class MigrateCommand extends Command
             list($class,$path) = $generator->generate($optNew);
             $this->logger->info( "Migration script is generated: $path" );
         }
+        elseif( $optDiff ) {
+            $generator = new \LazyRecord\Migration\MigrationGenerator('db/migrations');
+
+            $this->logger->info( "Loading schema objects..." );
+            $finder = new \LazyRecord\Schema\SchemaFinder;
+            $finder->find();
+
+            $this->logger->info( "Creating migration script from diff" );
+            list($class,$path) = $generator->generateWithDiff('DiffMigration',$dsId,$finder->getSchemas());
+            $this->logger->info( "Migration script is generated: $path" );
+
+        }
         elseif( $optStatus ) {
             $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
             $runner->load('db/migrations');
@@ -38,10 +54,7 @@ class MigrateCommand extends Command
                 $this->logger->info( '- ' . $script , 1 );
             }
         }
-        elseif( $optDiff ) {
-
-        }
-        else {
+        elseif( $optUp ) {
             // XXX: record the latest ran migration id,
             $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
             $runner->load('db/migrations');
