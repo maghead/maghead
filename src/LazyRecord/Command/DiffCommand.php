@@ -49,7 +49,7 @@ class DiffCommand extends Command
 
 
         // XXX: currently only mysql support
-        $parser = \LazyRecord\TableParser::create( $driver, $conn );
+        $parser = \LazyRecord\TableParser\TableParser::create( $driver, $conn );
         $tableSchemas = array();
         $tables = $parser->getTables();
         foreach(  $tables as $table ) {

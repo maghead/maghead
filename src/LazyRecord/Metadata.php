@@ -25,7 +25,7 @@ class Metadata
 
     public function init()
     {
-        $parser = TableParser::create( $this->driver, $this->connection );
+        $parser = TableParser\TableParser::create( $this->driver, $this->connection );
         $tables = $parser->getTables();
         if( ! in_array('__meta__',$tables) ) {
             $schema = new DynamicSchemaDeclare(new Model\Metadata);

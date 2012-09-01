@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord;
+namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
 use LazyRecord\TableParser\MysqlTableParser;
