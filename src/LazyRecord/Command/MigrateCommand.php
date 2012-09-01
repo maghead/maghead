@@ -7,14 +7,17 @@ class MigrateCommand extends Command
 
     public function options($opts) 
     {
-        $opts->add('new:');
-        $opts->add('diff:');
+        $opts->add('new:','create new migration script.');
+        $opts->add('diff:','use schema diff to generate script automatically.');
+        $opts->add('status','show current migration status.');
+        $opts->add('D|data-source:','data source id.');
     }
 
     public function execute() 
     {
         $optNew = $this->options->new;
         $optDiff = $this->options->diff;
+        $dsId = $this->options->{'data-source'} ?: 'default';
 
         CommandUtils::set_logger($this->logger);
         CommandUtils::init_config_loader();
@@ -32,7 +35,7 @@ class MigrateCommand extends Command
         else {
             // XXX: record the latest ran migration id,
             $this->logger->info('Running Migration scripts...');
-            $runner = new \LazyRecord\Migration\MigrationRunner('default');
+            $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
             $runner->load('db/migrations');
             $runner->runUpgrade();
             $this->logger->info('Done.');
