@@ -19,6 +19,9 @@ class MigrationGenerator
     function __construct($migrationDir)
     {
         $this->migrationDir = $migrationDir;
+        if( ! file_exists($this->migrationDir) ) {
+            mkdir($this->migrationDir,0755,true);
+        }
     }
 
     public function generateFilename($taskName, $time = null)
