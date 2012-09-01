@@ -75,7 +75,7 @@ class CommandUtils
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $conn = $connectionManager->getConnection($id);
         $driver = $connectionManager->getQueryDriver($id);
-        $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($driver, array( 
+        $builder = \LazyRecord\SqlBuilder\SqlBuilder::create($driver, array( 
             'rebuild' => $options->rebuild,
             'clean' => $options->clean,
         )); // driver

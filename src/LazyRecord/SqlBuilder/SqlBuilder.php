@@ -2,7 +2,7 @@
 namespace LazyRecord\SqlBuilder;
 use Exception;
 
-class SqlBuilderFactory
+class SqlBuilder
 {
     static function create($driver,$options = array() ) 
     {
@@ -15,6 +15,4 @@ class SqlBuilderFactory
         return new $class($driver,$options);
     }
 }
-
-
 

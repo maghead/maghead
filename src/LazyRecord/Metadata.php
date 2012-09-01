@@ -29,7 +29,7 @@ class Metadata
         $tables = $parser->getTables();
         if( ! in_array('__meta__',$tables) ) {
             $schema = new DynamicSchemaDeclare(new Model\Metadata);
-            $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($this->driver);
+            $builder = \LazyRecord\SqlBuilder\SqlBuilder::create($this->driver);
             $sqls = $builder->build($schema);
             foreach($sqls as $sql) {
                 $this->connection->query($sql);

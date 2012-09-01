@@ -3,16 +3,16 @@
 
 To build table sql from schema, you need a query driver object:
 
-    use LazyRecord\Schema\SqlBuilderFactory;
+    use LazyRecord\Schema\SqlBuilder;
 
     $connectionManager = \LazyRecord\ConnectionManager::getInstance();
     $driver = $connectionManager->getQueryDriver($id);
 
-Then use SqlBuilderFactory to create a Sql builder object:
+Then use SqlBuilder to create a Sql builder object:
 
-    $builder = SqlBuilderFactory::create($driver);
+    $builder = SqlBuilder::create($driver);
 
-    $builder = SqlBuilderFactory::create($driver, array( 
+    $builder = SqlBuilder::create($driver, array( 
         'rebuild' => true,  // drop table if table exists, then create.
         'clean' => true, // drop table, do not create
     ));

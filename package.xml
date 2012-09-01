@@ -205,7 +205,7 @@
       <file name="src/LazyRecord/SqlBuilder/BuilderInterface.php" role="php" md5sum="0e282e5c3f6256d59e1a747a938b17ea"/>
       <file name="src/LazyRecord/SqlBuilder/MysqlBuilder.php" role="php" md5sum="1eacc88225c9bc3c1a358bdbf9bfe5ad"/>
       <file name="src/LazyRecord/SqlBuilder/PgsqlBuilder.php" role="php" md5sum="1fc00beaaa41bc781877e21be56ad30c"/>
-      <file name="src/LazyRecord/SqlBuilder/SqlBuilderFactory.php" role="php" md5sum="750058fa7998d87c747a1aae0ace4916"/>
+      <file name="src/LazyRecord/SqlBuilder/SqlBuilder.php" role="php" md5sum="750058fa7998d87c747a1aae0ace4916"/>
       <file name="src/LazyRecord/SqlBuilder/SqliteBuilder.php" role="php" md5sum="b5b192715d2aa7af65baf7fd354a59cd"/>
       <file name="src/LazyRecord/TableParser/BaseTableParser.php" role="php" md5sum="c7fb552fc8acc7bf2d3885a1d2966209"/>
       <file name="src/LazyRecord/TableParser/MysqlTableParser.php" role="php" md5sum="5bccce2f03ee4dffabbdd79009f44cf4"/>
@@ -465,7 +465,7 @@
       <install name="src/LazyRecord/SqlBuilder/BuilderInterface.php" as="LazyRecord/SqlBuilder/BuilderInterface.php"/>
       <install name="src/LazyRecord/SqlBuilder/MysqlBuilder.php" as="LazyRecord/SqlBuilder/MysqlBuilder.php"/>
       <install name="src/LazyRecord/SqlBuilder/PgsqlBuilder.php" as="LazyRecord/SqlBuilder/PgsqlBuilder.php"/>
-      <install name="src/LazyRecord/SqlBuilder/SqlBuilderFactory.php" as="LazyRecord/SqlBuilder/SqlBuilderFactory.php"/>
+      <install name="src/LazyRecord/SqlBuilder/SqlBuilder.php" as="LazyRecord/SqlBuilder/SqlBuilder.php"/>
       <install name="src/LazyRecord/SqlBuilder/SqliteBuilder.php" as="LazyRecord/SqlBuilder/SqliteBuilder.php"/>
       <install name="src/LazyRecord/TableParser/BaseTableParser.php" as="LazyRecord/TableParser/BaseTableParser.php"/>
       <install name="src/LazyRecord/TableParser/MysqlTableParser.php" as="LazyRecord/TableParser/MysqlTableParser.php"/>
