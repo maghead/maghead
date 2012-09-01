@@ -1,10 +1,26 @@
 Migration
 ==========
 
+## Command 
+
+To generate a migration script: 
+
+    lazy migrate --new CreateUser
+
+To generate a migration script from schema diff:
+
+    lazy migrate --diff UserChanges
+
+To run migration scripts:
+
+    lazy migrate
+
+## Migration Class
+
     use LazyRecord\Migration\Migration;
     class YourMigration extends Migration
     {
-        function up() {
+        function upgrade() {
 
             // import schema from static schema class
             $this->importSchema(new AuthorSchema);
@@ -21,11 +37,12 @@ Migration
             $this->removeColumn('table','old_column');
         }
 
-        function down()
+        function downgrade()
         {
 
         }
     }
+
 
 ## Migration Runner
 
