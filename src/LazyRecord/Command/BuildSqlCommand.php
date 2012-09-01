@@ -48,10 +48,7 @@ DOC;
         $logger  = $this->logger;
 
         CommandUtils::set_logger($this->logger);
-
-        $logger->debug("Loading config...");
         CommandUtils::init_config_loader();
-
 
         // XXX: from config files
         $id = $options->{'data-source'} ?: 'default';
