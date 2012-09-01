@@ -30,7 +30,13 @@ class MigrateCommand extends Command
             $this->logger->info( "Migration script is generated: $path" );
         }
         elseif( $optStatus ) {
-
+            $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
+            $runner->load('db/migrations');
+            $scripts = $runner->getMigrationScripts($dsId);
+            $this->logger->info("Found " . count($scripts) . " migrations to be executed.");
+            foreach( $scripts as $script ) {
+                $this->logger->info( '- ' . $script , 1 );
+            }
         }
         elseif( $optDiff ) {
 
