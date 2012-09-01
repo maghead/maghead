@@ -30,7 +30,10 @@ class MigrateCommand extends Command
 
         }
         else {
-            $this->logger->info('Migrating...');
+            $this->logger->info('Running Migration scripts...');
+            $runner = new \LazyRecord\Migration\MigrationRunner('default');
+            $runner->load('db/migrations');
+            $runner->runUpgrade();
             $this->logger->info('Done.');
         }
 
