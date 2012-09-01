@@ -50,6 +50,7 @@ class MigrationGenerator
     public function generate($taskName)
     {
         $template = $this->createClassTemplate($taskName);
+        $method = $template->addMethod('public','upgrade');
     }
 
     public function generateWithDiff($taskName,$schemas)
