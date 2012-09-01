@@ -33,16 +33,23 @@ class MigrationGenerator
         return sprintf('%s_%s.php', $date, $taskName);
     }
 
-    public function generate($taskName)
+    public function createClassTemplate($taskName,$time = null) 
     {
-        $unixtime = time();
-        $className = $taskName . '_' . $unixtime;
+        if( !$time)
+            $time = time();
+        $className = $taskName . '_' . $time;
         // $filename
         $template = new LazyRecord\CodeGen\ClassTemplate($className,array(
             'template' => 'Class.php.twig',
             'template_dirs' => array('src/LazyRecord/Schema/Templates'),
         ));
         $template->extends('LazyRecord\Migration\Migration');
+        return $template;
+    }
+
+    public function generate($taskName)
+    {
+        $template = $this->createClassTemplate($taskName);
     }
 
     public function generateWithDiff($taskName,$schemas)
