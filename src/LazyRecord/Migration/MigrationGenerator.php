@@ -5,6 +5,7 @@ use ReflectionClass;
 use ReflectionObject;
 use CLIFramework\Command;
 use LazyRecord\Schema;
+use LazyRecord\CodeGen\ClassTemplate;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser;
@@ -24,10 +25,15 @@ class MigrationGenerator
         $this->migrationDir = $migrationDir;
     }
 
-    public function generateFilename($taskName, $date = null)
+    public function generateFilename($taskName, $time = null)
     {
-        if(!$date)
-            $date = date('Ymd');
+        $date = date('Ymd');
+        if(is_integer($time)) {
+            $date = date('Ymd',$time);
+        }
+        elseif( is_string($time) ) {
+            $date = $time;
+        }
         $inflector = Inflector::getInstance();
         $name = $inflector->underscore($taskName);
         return sprintf('%s_%s.php', $date, $taskName);
@@ -35,22 +41,31 @@ class MigrationGenerator
 
     public function createClassTemplate($taskName,$time = null) 
     {
-        if( !$time)
+        if(!$time) {
             $time = time();
+        } elseif( is_string($time) ) {
+            $time = strtotime($time);
+        }
         $className = $taskName . '_' . $time;
         // $filename
-        $template = new LazyRecord\CodeGen\ClassTemplate($className,array(
+        $template = new ClassTemplate($className,array(
             'template' => 'Class.php.twig',
             'template_dirs' => array('src/LazyRecord/Schema/Templates'),
         ));
-        $template->extends('LazyRecord\Migration\Migration');
+        $template->extendClass('LazyRecord\Migration\Migration');
         return $template;
     }
 
-    public function generate($taskName)
+    public function generate($taskName,$time = null)
     {
-        $template = $this->createClassTemplate($taskName);
-        $method = $template->addMethod('public','upgrade');
+        $template = $this->createClassTemplate($taskName,$time);
+        $method = $template->addMethod('public','upgrade',array());
+        $code = '';
+        $method->code = $code;
+        $filename = $this->generateFilename($taskName,$time);
+        $path = $this->migrationDir . DIRECTORY_SEPARATOR . $filename;
+        file_put_contents($path , $template->render() );
+        return array( $template->class->name,$path );
     }
 
     public function generateWithDiff($taskName,$schemas)
