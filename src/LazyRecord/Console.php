@@ -41,6 +41,8 @@ class Console extends Application
 
         $this->registerCommand('migrate',         'LazyRecord\Command\MigrateCommand');
 
+        $this->registerCommand('metadata',         'LazyRecord\Command\MetadataCommand');
+
         $this->registerCommand('create-db',         'LazyRecord\Command\CreateDBCommand');
     }
 
