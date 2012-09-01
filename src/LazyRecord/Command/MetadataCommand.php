@@ -5,6 +5,16 @@ use LazyRecord\Metadata;
 
 class MetadataCommand extends Command
 {
+
+    public function brief() { return 'set, get or list metadata.'; }
+
+    public function usage() { 
+        return 
+              "\tlazy metadata\n"
+            . "\tlazy metadata [key] [value]\n"
+            . "\tlazy metadata [key]\n";
+    }
+
     public function execute() 
     {
         CommandUtils::init_config_loader();
