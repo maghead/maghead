@@ -5,29 +5,6 @@ use IteratorAggregate;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use PDO;
 
-class MetadataModel extends BaseModel 
-{
-    public function schema($schema) 
-    {
-        $schema->table('__meta__');
-        $schema->column('id')
-            ->integer()
-            ->primary()
-            ->autoIncrement()
-            ;
-        $schema->column('name')
-            ->varchar(128);
-        $schema->column('value')
-            ->varchar(256);
-    }
-#boundary start 9ad333f20bc76786c74e9d1d15be87ce
-	const schema_proxy_class = 'LazyRecord\\MetadataModelSchemaProxy';
-	const collection_class = 'LazyRecord\\MetadataModelCollection';
-	const model_class = 'LazyRecord\\MetadataModel';
-	const table = '__meta__';
-#boundary end 9ad333f20bc76786c74e9d1d15be87ce
-}
-
 class Metadata
     implements ArrayAccess, IteratorAggregate
 {
@@ -50,7 +27,7 @@ class Metadata
         $parser = TableParser::create( $this->driver, $this->connection );
         $tables = $parser->getTables();
         if( ! in_array('__meta__',$tables) ) {
-            $schema = new DynamicSchemaDeclare(new MetadataModel);
+            $schema = new DynamicSchemaDeclare(new Model\Metadata);
             $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($this->driver);
             $sqls = $builder->build($schema);
             foreach($sqls as $sql) {
