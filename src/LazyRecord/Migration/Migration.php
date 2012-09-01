@@ -42,10 +42,15 @@ class Migration
 
     public function addColumn($table,$cb)
     {
-        $c = new \LazyRecord\Schema\SchemaDeclare\Column;
-        call_user_func($cb,$c);
-        $sql = $this->builder->addColumn($table,$c);
-        $this->executeSql($sql);
+        if( is_callable($cb) ) {
+            $c = new \LazyRecord\Schema\SchemaDeclare\Column;
+            call_user_func($cb,$c);
+            $sql = $this->builder->addColumn($table,$c);
+            $this->executeSql($sql);
+        } else {
+            $sql = $this->builder->addColumn($table,$cb);
+            $this->executeSql($sql);
+        }
     }
 
     /**
