@@ -17,6 +17,7 @@ class MigrateCommand extends Command
     {
         $optNew = $this->options->new;
         $optDiff = $this->options->diff;
+        $optStatus = $this->options->status;
         $dsId = $this->options->{'data-source'} ?: 'default';
 
         CommandUtils::set_logger($this->logger);
@@ -28,8 +29,10 @@ class MigrateCommand extends Command
             list($class,$path) = $generator->generate($optNew);
             $this->logger->info( "Migration script is generated: $path" );
         }
-        elseif( $optDiff ) {
+        elseif( $optStatus ) {
 
+        }
+        elseif( $optDiff ) {
 
         }
         else {
