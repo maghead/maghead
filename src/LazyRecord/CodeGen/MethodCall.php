@@ -40,7 +40,7 @@ class MethodCall
             }
         }
         $code .= join(',',$strs);
-        $code .= ')';
+        $code .= ');';
         return $code;
     }
 

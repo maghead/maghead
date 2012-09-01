@@ -326,6 +326,13 @@ class Column
         );
     }
 
+    public function toArray()
+    {
+        $attrs = $this->attributes;
+        $attrs['name'] = $this->name;
+        return $attrs;
+    }
+
     public function dump()
     {
         return var_export( $this->export() , true );

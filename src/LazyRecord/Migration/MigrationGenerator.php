@@ -6,6 +6,7 @@ use ReflectionObject;
 use CLIFramework\Command;
 use LazyRecord\Schema;
 use LazyRecord\CodeGen\ClassTemplate;
+use LazyRecord\CodeGen\MethodCall;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser;
@@ -13,15 +14,10 @@ use LazyRecord\Inflector;
 
 class MigrationGenerator
 {
-    public $driver;
-    public $connection;
     public $migrationDir;
 
-    function __construct($dataSourceId,$migrationDir)
+    function __construct($migrationDir)
     {
-        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
-        $this->connection  = $connectionManager->getConnection($dataSourceId);
-        $this->driver      = $connectionManager->getQueryDriver($dataSourceId);
         $this->migrationDir = $migrationDir;
     }
 
@@ -67,9 +63,19 @@ class MigrationGenerator
         return array( $template->class->name,$path );
     }
 
-    public function generateWithDiff($taskName,$schemas)
+    public function generateWithDiff($taskName,$dataSourceId,$schemas,$time = null)
     {
-        $parser = TableParser::create( $this->driver, $this->connection );
+        $template = $this->createClassTemplate($taskName,$time);
+        $upgradeMethod = $template->addMethod('public','upgrade',array(),'');
+        $downgradeMethod = $template->addMethod('public','downgrade',array(),'');
+
+
+        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
+        $connection  = $connectionManager->getConnection($dataSourceId);
+        $driver      = $connectionManager->getQueryDriver($dataSourceId);
+
+
+        $parser = TableParser::create( $driver, $connection );
         $tableSchemas = array();
 
         // database schemas
@@ -89,9 +95,22 @@ class MigrationGenerator
                 $diffs = $comparator->compare( $a , $b );
 
                 // generate alter table statement.
-                foreach( $diffs as $column ) {
-                    print_r($column);
-                    print_r($column);
+                foreach( $diffs as $diff ) {
+                    $call = new MethodCall;
+                    if( $diff->flag == '+' ) {
+                        $call->method('addColumn');
+                        $call->addArgument($t); // table
+                        $call->addArgument($diff->column->toArray());
+                    }
+                    elseif( $diff->flag == '-' ) {
+                        $call->method('dropColumn');
+                        $call->addArgument($t); // table
+                        $call->addArgument($diff->name);
+                    }
+                    $upgradeMethod->code .= $call->render() . "\n";
+#                      print_r($diff->name);
+#                      print_r($diff->flag);
+#                      print_r($diff->column);
                 }
 
             } else {
@@ -99,6 +118,11 @@ class MigrationGenerator
                 // use sqlbuilder to build schema sql
             }
         }
+
+        $filename = $this->generateFilename($taskName,$time);
+        $path = $this->migrationDir . DIRECTORY_SEPARATOR . $filename;
+        file_put_contents($path , $template->render());
+        return array( $template->class->name,$path );
     }
 }
 
