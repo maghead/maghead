@@ -17,5 +17,11 @@ class CreateUser_1346436136 extends LazyRecord\Migration\Migration
             $c->text();
         });
     }
+
+    public function downgrade() {
+        $this->executeSql('drop table foo');
+        $this->executeSql('drop table test');
+        $this->executeSql('drop table users');
+    }
 }
 
