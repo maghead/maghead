@@ -3,6 +3,7 @@ namespace LazyRecord;
 use ArrayAccess;
 use IteratorAggregate;
 use LazyRecord\Schema\DynamicSchemaDeclare;
+use ArrayIterator;
 use PDO;
 
 class Metadata
@@ -82,7 +83,7 @@ class Metadata
     {
         $stm = $this->connection->prepare('select * from __meta__');
         $rows = $stm->fetchAll(PDO::FETCH_OBJ);
-        return $rows;
+        return new ArrayIterator($rows);
     }
 }
 
