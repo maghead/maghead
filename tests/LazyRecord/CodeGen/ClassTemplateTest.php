@@ -10,7 +10,7 @@ class ClassTemplateTest extends PHPUnit_Framework_TestCase
 
     function testClassTemplate() 
     {
-        $class1 = new LazyRecord\CodeGen\ClassTemplate('Foo\Bar',array(
+        $class1 = new LazyRecord\CodeGen\ClassTemplate('Foo\Bar22',array(
             'template' => 'Class.php.twig',
             'template_dirs' => array('src/LazyRecord/Schema/Templates'),
         ));
@@ -21,6 +21,8 @@ class ClassTemplateTest extends PHPUnit_Framework_TestCase
         $tmpname = tempnam('/tmp','FOO');
         file_put_contents($tmpname, $code);
         require $tmpname;
+
+        ok(class_exists('Foo\Bar22'));
 
         unlink($tmpname);
     }
