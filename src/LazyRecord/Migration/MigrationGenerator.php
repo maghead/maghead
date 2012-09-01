@@ -26,10 +26,11 @@ class MigrationGenerator
 
     public function generateFilename($taskName, $date = null)
     {
-        if(!$date) {
+        if(!$date)
             $date = date('Ymd');
-        }
-        // {date}_{task_name}.php
+        $inflector = Inflector::getInstance();
+        $name = $inflector->underscore($taskName);
+        return sprintf('%s_%s.php', $date, $taskName);
     }
 
     public function generate($taskName)

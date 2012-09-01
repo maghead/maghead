@@ -15,11 +15,13 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         $generator = new \LazyRecord\Migration\MigrationGenerator('default','tests/migration');
         ok($generator);
 
+        is('20120901_CreateUser.php',$generator->generateFilename('CreateUser'),'20120901');
+
         spl_autoload_call('tests\UserSchema');
 
         $finder = new \LazyRecord\Schema\SchemaFinder;
         $finder->find();
-        $generator->generateWithDiff('TaskName',$finder->getSchemas() );
+        # $generator->generateWithDiff('TaskName',$finder->getSchemas() );
 
         $connectionManager->removeDataSource('default');
     }
