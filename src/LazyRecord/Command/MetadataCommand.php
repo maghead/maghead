@@ -12,10 +12,17 @@ class MetadataCommand extends Command
         $args = func_get_args();
         if(empty($args)) {
             $meta = new Metadata('default');
-            $meta->init();
+            printf("%26s|%-20s\n",'Key','Value');
             foreach( $meta as $key => $value ) {
-                printf("%-20s %-20s\n", $key, $value);
+                printf("%26s %-20s\n", $key, $value);
             }
+        }
+        elseif( count($args) == 2 ) {
+            list($key,$value) = $args;
+            $this->logger->info("Setting metadata $key to $value.");
+            $meta = new Metadata('default');
+            $meta[$key] = $value;
+
         }
     }
 }

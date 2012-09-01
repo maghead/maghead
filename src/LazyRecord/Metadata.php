@@ -22,6 +22,7 @@ class Metadata
         $connm = ConnectionManager::getInstance();
         $this->connection = $connm->getConnection($this->dsId);
         $this->driver = $connm->getQueryDriver($this->dsId);
+        $this->init();
     }
 
     public function init()
@@ -86,8 +87,13 @@ class Metadata
     public function getIterator()
     {
         $stm = $this->connection->prepare('select * from __meta__');
+        $stm->execute();
         $rows = $stm->fetchAll(PDO::FETCH_OBJ);
-        return new ArrayIterator($rows);
+        $data = array();
+        foreach( $rows as $row ) {
+            $data[$row->name] = $row->value;
+        }
+        return new ArrayIterator($data);
     }
 }
 

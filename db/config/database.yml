@@ -12,7 +12,7 @@ schema:
     - tests/schema
 data_sources:
   default:
-    dsn: 'sqlite::memory:'
+    dsn: 'sqlite:tests.db'
     user: 
     pass: 
 #    slave:
