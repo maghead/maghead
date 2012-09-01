@@ -40,7 +40,8 @@ class MigrationRunner
         return $loaded;
     }
 
-    public function getMigrationScripts($dsId) {
+    public function getMigrationScripts($dsId) 
+    {
         $metadata = new Metadata( $dsId );
         $classes = get_declared_classes();
         $classes = array_filter($classes, function($class) { 
