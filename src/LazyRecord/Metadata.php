@@ -40,7 +40,10 @@ class Metadata
 
     public function getVersion()
     {
-        return $this['version'];
+        if( isset( $this['version'] ) ) {
+            return $this['version'];
+        }
+        return $this['version'] = 0;
     }
 
     public function offsetSet($name,$value)
