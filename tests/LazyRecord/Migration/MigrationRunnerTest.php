@@ -4,6 +4,7 @@ class MigrationRunnerTest extends PHPUnit_Framework_TestCase
 {
     function testRunner()
     {
+        LazyRecord\QueryDriver::free();
         $connm = LazyRecord\ConnectionManager::getInstance();
         $connm->addDataSource('default',array( 'dsn' => 'sqlite::memory:' ));
 
