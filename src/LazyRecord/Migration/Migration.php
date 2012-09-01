@@ -22,9 +22,9 @@ class Migration
         $this->logger  = Console::getInstance()->getLogger();
     }
 
-    public function getId()
+    public static function getId()
     {
-        $name = get_class($this);
+        $name = get_called_class() ?: get_class($this);
         if( preg_match('#_(\d+)$#',$name,$regs) ) {
             return $regs[1];
         }

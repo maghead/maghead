@@ -40,14 +40,33 @@ class MigrationRunner
         return $loaded;
     }
 
-    public function getMigrationScripts($dsId) 
+    public function getLastMigrationId($dsId)
     {
-        $metadata = new Metadata( $dsId );
+        $meta = new Metadata($dsId);
+        return $meta['migration'] ?: 0;
+    }
+
+    public function resetMigrationId($dsId) 
+    {
+        $metadata = new Metadata($dsId);
+        $metadata['migration'] = 0;
+    }
+
+    public function updateLastMigrationId($dsId,$id) 
+    {
+        $metadata = new Metadata($dsId);
+        $lastId = $metadata['migration'];
+        $metadata['migration'] = $id;
+    }
+
+    public function getMigrationScripts() 
+    {
         $classes = get_declared_classes();
         $classes = array_filter($classes, function($class) { 
             return is_a($class,'LazyRecord\\Migration\\Migration',true) 
                 && $class != 'LazyRecord\\Migration\\Migration';
         });
+
 
         // sort class with timestamp suffix
         usort($classes,function($a,$b) { 
@@ -59,16 +78,26 @@ class MigrationRunner
             }
             return 0;
         });
+
         return $classes;
     }
+
 
     public function runDowngrade()
     {
         foreach( $this->dataSourceIds as $dsId ) {
-            $scripts = $this->getMigrationScripts($dsId);
-            foreach( $scripts as $script ) {
+            $scripts = $this->getMigrationScripts();
+            $lastMigrationId = $this->getLastMigrationId($dsId);
+            $scripts = array_filter($scripts,function($class) use ($lastMigrationId) {
+                $id = $class::getId();
+                return $id <= $lastMigrationId;
+            });
+
+            // downgrade a migration one at one time.
+            if( $script = end($scripts) ) {
                 $migration = new $script( $dsId );
                 $migration->downgrade();
+                $this->updateLastMigrationId($dsId,$script::getId());
             }
         }
     }
@@ -76,11 +105,18 @@ class MigrationRunner
     public function runUpgrade()
     {
         foreach( $this->dataSourceIds as $dsId ) {
-            $scripts = $this->getMigrationScripts($dsId);
+            $lastMigrationId = $this->getLastMigrationId($dsId);
+            $scripts = $this->getMigrationScripts();
+            $scripts = array_filter($scripts,function($class) use ($lastMigrationId) {
+                $id = $class::getId();
+                return $id > $lastMigrationId;
+            });
+
             foreach( $scripts as $script ) {
                 $this->logger->info("Running migration script $script on $dsId");
                 $migration = new $script( $dsId );
                 $migration->upgrade();
+                $this->updateLastMigrationId($dsId,$script::getId());
             }
         }
     }

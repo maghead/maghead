@@ -15,7 +15,7 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         $generator = new \LazyRecord\Migration\MigrationGenerator('tests/migrations');
         ok($generator);
 
-        is('20120901_CreateUser.php',$generator->generateFilename('CreateUser'),'20120901');
+        is('20120901_CreateUser.php',$generator->generateFilename('CreateUser','20120901'));
 
         list($class,$path) = $generator->generate('UpdateUser','20120902');
         is('UpdateUser_1346515200', $class);
@@ -31,7 +31,6 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
     function testDiffMigration() 
     {
         LazyRecord\QueryDriver::free();
-        $this->expectOutputRegex('#DiffMigration_1325347200#');
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $connectionManager->addDataSource('default',array( 
             'driver' => 'mysql',
@@ -61,10 +60,18 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         path_ok($path);
         class_ok($class);
 
+        ok($class::getId());
+
         // run migration
         $runner = new LazyRecord\Migration\MigrationRunner('default');
         ok($runner);
+        $runner->resetMigrationId('default');
         $runner->load('tests/migrations_testing');
+
+        $scripts = $runner->getMigrationScripts();
+        ok($scripts);
+
+        $this->expectOutputRegex('#DiffMigration_1325347200#');
         $runner->runUpgrade();
 
         # echo file_get_contents($path);
