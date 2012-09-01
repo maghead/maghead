@@ -103,7 +103,9 @@ class Column
 
             'deflator' => self::ATTR_CALLABLE,
 
+            // renderAs widget
             'renderAs' => self::ATTR_STRING,
+
             'widgetAttributes' => self::ATTR_ARRAY,
         );
     }
