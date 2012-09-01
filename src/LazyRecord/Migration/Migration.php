@@ -22,6 +22,14 @@ class Migration
         $this->logger  = Console::getInstance()->getLogger();
     }
 
+    public function getId()
+    {
+        $name = get_class($this);
+        if( preg_match('#_(\d+)$#',$name,$regs) ) {
+            return $regs[1];
+        }
+    }
+
     /**
      * Execute sql for migration
      *
