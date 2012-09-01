@@ -4,7 +4,8 @@ class MigrationRunnerTest extends PHPUnit_Framework_TestCase
 {
     function test()
     {
-        ob_start();
+        $this->expectOutputRegex('#CreateUser_1346436136#');
+        $this->expectOutputRegex('#QueryOK#');
         $connm = LazyRecord\ConnectionManager::getInstance();
         $connm->addDataSource('default',array( 'dsn' => 'sqlite::memory:' ));
 
@@ -13,8 +14,6 @@ class MigrationRunnerTest extends PHPUnit_Framework_TestCase
 
         $runner->load('tests/migrations');
         $runner->runUpgrade();
-
-        ob_end_clean();
     }
 }
 
