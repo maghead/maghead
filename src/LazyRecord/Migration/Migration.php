@@ -73,13 +73,13 @@ class Migration
         call_user_func($cb,$ds);
         $ds->build();
 
-        $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($this->driver);
+        $builder = \LazyRecord\SqlBuilder\SqlBuilder::create($this->driver);
         $sqls = $builder->build($ds);
         $this->executeSql($sqls);
     }
 
     public function importSchema($schema) {
-        $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($this->driver);
+        $builder = \LazyRecord\SqlBuilder\SqlBuilder::create($this->driver);
         if( is_a($schema,'LazyRecord\Schema\SchemaDeclare') ) {
             $sqls = $builder->build($schema);
             $this->executeSql($sqls);
