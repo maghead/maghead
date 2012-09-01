@@ -60,12 +60,13 @@ class ClassTemplate
         $this->interfaces[] = new ClassName($className);
     }
 
-    public function addMethod($scope,$methodName,$code)
+    public function addMethod($scope,$methodName,$arguments,$code)
     {
-        $method = new ClassMethod( $methodName );
+        $method = new ClassMethod( $methodName, $arguments);
         $method->scope = $scope;
         $method->code = $code;
         $this->methods[] = $method;
+        return $method;
     }
 
     public function addConst($name,$value)

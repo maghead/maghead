@@ -17,12 +17,16 @@ class ClassMethod
     public function __toString()
     {
         $argStrings = array();
-        foreach( $this->arguments as $name => $default ) {
-            $argStrings[] = " \$$name = " . var_export( $default,true);
+        foreach( $this->arguments as $name ) {
+            $argStrings[] = "\$$name";
         }
+        $lines = explode("\n",$this->code);
 
+        $lines = array_map(function($line) {
+            return "\t" . $line;
+        },$lines);
         return $this->scope . ' function ' . $this->name . '(' . join(', ', $argStrings) . ')' . " { " . "\n"
-            . $this->code
+            . join("\n",$lines)
             . "\n"
             . "}"
             . "\n"
