@@ -23,12 +23,12 @@ class ClassMethod
         $lines = explode("\n",$this->code);
 
         $lines = array_map(function($line) {
-            return "\t\t" . $line;
+            return str_repeat(' ',8) . $line;
         },$lines);
-        return "\t" . $this->scope . ' function ' . $this->name . '(' . join(', ', $argStrings) . ')' . " { " . "\n"
+        return str_repeat(' ',4) . $this->scope . ' function ' . $this->name . '(' . join(', ', $argStrings) . ')' . " { " . "\n"
             . join("\n",$lines)
             . "\n"
-            . "\t}"
+            . str_repeat(' ',4) . "}"
             . "\n"
             ;
     }

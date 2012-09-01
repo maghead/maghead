@@ -29,13 +29,14 @@ class Migration
      */
     public function executeSql($sql) 
     {
+        $sql = (array) $sql;
         try { 
             foreach( (array) $sql as $q ) {
                 $stm = $this->connection->query($q);
                 $this->logger->info('QueryOK: ' . $q);
             }
         } catch(PDOException $e) {
-            $this->logger->error($e->getMessage());
+            $this->logger->error($e->getMessage()  . ', SQL: '. join("\n",$sql));
         }
     }
 
