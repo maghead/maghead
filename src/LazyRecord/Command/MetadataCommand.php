@@ -17,12 +17,17 @@ class MetadataCommand extends Command
                 printf("%26s %-20s\n", $key, $value);
             }
         }
+        elseif( count($args) == 1 ) {
+            $key = $args[0];
+            $meta = new Metadata('default');
+            $value = $meta[$key];
+            $this->logger->info("$key = $value");
+        }
         elseif( count($args) == 2 ) {
             list($key,$value) = $args;
             $this->logger->info("Setting metadata $key to $value.");
             $meta = new Metadata('default');
             $meta[$key] = $value;
-
         }
     }
 }
