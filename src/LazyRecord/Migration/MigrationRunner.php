@@ -41,14 +41,6 @@ class MigrationRunner
         return $loaded;
     }
 
-    public function initMigrationTable() 
-    {
-        $schema = new DynamicSchemaDeclare;
-        $schema->column('version')
-            ->integer();
-    }
-
-
     public function getMigrationScripts() {
         $classes = get_declared_classes();
         $classes = array_filter($classes, function($class) { 
