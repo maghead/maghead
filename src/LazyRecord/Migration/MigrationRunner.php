@@ -3,11 +3,10 @@ namespace LazyRecord\Migration;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use LazyRecord\Console;
+use LazyRecord\Metadata;
 
 class MigrationRunner
 {
-
-
     public $logger;
 
     public $dataSourceIds = array();
@@ -41,12 +40,14 @@ class MigrationRunner
         return $loaded;
     }
 
-    public function getMigrationScripts() {
+    public function getMigrationScripts($dsId) {
+        $metadata = new Metadata( $dsId );
         $classes = get_declared_classes();
         $classes = array_filter($classes, function($class) { 
             return is_a($class,'LazyRecord\\Migration\\Migration',true) 
                 && $class != 'LazyRecord\\Migration\\Migration';
         });
+
         // sort class with timestamp suffix
         usort($classes,function($a,$b) { 
             if( preg_match('#_(\d+)$#',$a,$regsA) && preg_match('#_(\d+)$#',$b,$regsB) ) {
@@ -62,9 +63,9 @@ class MigrationRunner
 
     public function runDowngrade()
     {
-        $scripts = $this->getMigrationScripts();
-        foreach( $scripts as $script ) {
-            foreach( $this->dataSourceIds as $dsId ) {
+        foreach( $this->dataSourceIds as $dsId ) {
+            $scripts = $this->getMigrationScripts($dsId);
+            foreach( $scripts as $script ) {
                 $migration = new $script( $dsId );
                 $migration->downgrade();
             }
@@ -73,9 +74,9 @@ class MigrationRunner
 
     public function runUpgrade()
     {
-        $scripts = $this->getMigrationScripts();
-        foreach( $scripts as $script ) {
-            foreach( $this->dataSourceIds as $dsId ) {
+        foreach( $this->dataSourceIds as $dsId ) {
+            $scripts = $this->getMigrationScripts($dsId);
+            foreach( $scripts as $script ) {
                 $this->logger->info("Running migration script $script on $dsId");
                 $migration = new $script( $dsId );
                 $migration->upgrade();
