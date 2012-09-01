@@ -30,9 +30,8 @@ class SqliteTableParser extends BaseTableParser
     public function parseTableSql($table)
     {
         $sql = $this->getTableSql($table);
-        if( preg_match('#(\w+)\s*\((.*)\)#',$sql,$regs) ) {
+        if( preg_match('#(\w+)\s*\((.*)\)#ism',$sql,$regs) ) {
             $columns = array();
-
             $name = $regs[1];
             $columnstr = $regs[2];
             $columnsqls = explode(',',$columnstr);
@@ -40,7 +39,6 @@ class SqliteTableParser extends BaseTableParser
             foreach( $columnsqls as $columnsql ) {
                 $column = array();
                 $parts = preg_split('#\s+#',$columnsql,0,PREG_SPLIT_NO_EMPTY);
-
                 $column['name'] = $parts[0];
                 $column['type'] = $parts[1];
 
