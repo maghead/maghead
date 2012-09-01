@@ -156,7 +156,7 @@ class SchemaDeclare extends SchemaBase
         return var_export( $this->export() , true );
     }
 
-    protected function table($table)
+    public function table($table)
     {
         $this->table = $table;
         return $this;
@@ -266,7 +266,7 @@ class SchemaDeclare extends SchemaBase
      * @param string $foreignColumn foreign reference schema column.
      * @param string $selfColumn self column name
      */
-    protected function belongsTo($accessor, $foreignClass, $foreignColumn = null,  $selfColumn = 'id')
+    public function belongsTo($accessor, $foreignClass, $foreignColumn = null,  $selfColumn = 'id')
     {
         if( null === $foreignColumn ) {
             $s = new $foreignClass;
@@ -295,7 +295,7 @@ class SchemaDeclare extends SchemaBase
      *      post_id => post
      *   )
      */
-    protected function one($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
+    public function one($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
     {
         // foreignColumn is default to foreignClass.primary key
 
@@ -318,7 +318,7 @@ class SchemaDeclare extends SchemaBase
     /**
      * Add has-many relation
      */
-    protected function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
+    public function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
         $this->relations[ $accessor ] = array(
             'type' => self::has_many,
@@ -339,7 +339,7 @@ class SchemaDeclare extends SchemaBase
      * @param string $accessor   accessor name
      * @param string $relationId a hasMany relationship 
      */
-    protected function manyToMany($accessor, $relationId, $foreignRelationId )
+    public function manyToMany($accessor, $relationId, $foreignRelationId )
     {
         if( $r = $this->getRelation($relationId) ) {
             $this->relations[ $accessor ] = array(

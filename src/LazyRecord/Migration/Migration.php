@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Migration;
 use SQLBuilder\MigrationBuilder;
+use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Console;
 use PDOException;
@@ -38,6 +39,23 @@ class Migration
         }
     }
 
+
+    /**
+     * $this->createTable(function($s) {
+     *      $s->column('title')->varchar(120);
+     * });
+     */
+    public function createTable($cb) 
+    {
+        $ds =  new DynamicSchemaDeclare;
+        call_user_func($cb,$ds);
+        $ds->build();
+
+        $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($this->driver);
+        $sqls = $builder->build($ds);
+        $this->executeSql($sqls);
+    }
+
     public function importSchema($schema) {
         $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($this->driver);
         if( is_a($schema,'LazyRecord\Schema\SchemaDeclare') ) {
@@ -46,8 +64,7 @@ class Migration
         } 
         elseif( is_a($schema,'LazyRecord\BaseModel') && method_exists($schema,'schema') ) {
             $model = $schema;
-            $schema = new DynamicSchemaDeclare;
-            $model->schema($schema);
+            $schema = new DynamicSchemaDeclare($model);
 
             $sqls = $builder->build($schema);
             $this->executeSql($sqls);
