@@ -9,7 +9,7 @@ use LazyRecord\CodeGen\ClassTemplate;
 use LazyRecord\CodeGen\MethodCall;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
-use LazyRecord\TableParser;
+use LazyRecord\TableParser\TableParser;
 use LazyRecord\Inflector;
 
 class MigrationGenerator
