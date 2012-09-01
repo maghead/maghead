@@ -15,6 +15,7 @@ class PublisherSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'varchar(128)',
           'isa' => 'str',
+          'size' => 128,
         ),
     ),
   'id' => array( 
