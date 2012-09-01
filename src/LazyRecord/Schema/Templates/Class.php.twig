@@ -22,4 +22,14 @@ extends {{ class.extends }}
 {% endfor %}
 {% endif %}
 
+
+{% if class.methods %}
+
+{% for method in class.methods %}
+{{method|raw}}
+{% endfor %}
+
+{% endif %}
+
+
 }
