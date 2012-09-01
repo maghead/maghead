@@ -78,20 +78,33 @@ class MigrationRunner
             }
             return 0;
         });
-
         return $classes;
     }
 
+    public function getUpgradeScripts($dsId) 
+    {
+        $lastMigrationId = $this->getLastMigrationId($dsId);
+        $scripts = $this->getMigrationScripts();
+        return array_filter($scripts,function($class) use ($lastMigrationId) {
+            $id = $class::getId();
+            return $id > $lastMigrationId;
+        });
+    }
+
+    public function getDowngradeScripts($dsId)
+    {
+        $scripts = $this->getMigrationScripts();
+        $lastMigrationId = $this->getLastMigrationId($dsId);
+        return array_filter($scripts,function($class) use ($lastMigrationId) {
+            $id = $class::getId();
+            return $id <= $lastMigrationId;
+        });
+    }
 
     public function runDowngrade()
     {
         foreach( $this->dataSourceIds as $dsId ) {
-            $scripts = $this->getMigrationScripts();
-            $lastMigrationId = $this->getLastMigrationId($dsId);
-            $scripts = array_filter($scripts,function($class) use ($lastMigrationId) {
-                $id = $class::getId();
-                return $id <= $lastMigrationId;
-            });
+            $scripts = $this->getDowngradeScripts($dsId);
 
             // downgrade a migration one at one time.
             if( $script = end($scripts) ) {
@@ -105,13 +118,7 @@ class MigrationRunner
     public function runUpgrade()
     {
         foreach( $this->dataSourceIds as $dsId ) {
-            $lastMigrationId = $this->getLastMigrationId($dsId);
-            $scripts = $this->getMigrationScripts();
-            $scripts = array_filter($scripts,function($class) use ($lastMigrationId) {
-                $id = $class::getId();
-                return $id > $lastMigrationId;
-            });
-
+            $scripts = $this->getUpgradeScripts($dsId);
             foreach( $scripts as $script ) {
                 $this->logger->info("Running migration script $script on $dsId");
                 $migration = new $script( $dsId );
