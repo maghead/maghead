@@ -19,7 +19,7 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
 
         $finder = new \LazyRecord\Schema\SchemaFinder;
         $finder->find();
-        $generator->generate( $finder->getSchemas() );
+        $generator->generateWithDiff('TaskName',$finder->getSchemas() );
 
         $connectionManager->removeDataSource('default');
     }

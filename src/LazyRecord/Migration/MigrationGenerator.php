@@ -8,6 +8,7 @@ use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser;
+use LazyRecord\Inflector;
 
 class MigrationGenerator
 {
@@ -23,8 +24,27 @@ class MigrationGenerator
         $this->migrationDir = $migrationDir;
     }
 
+    public function generateFilename($taskName, $date = null)
+    {
+        if(!$date) {
+            $date = date('Ymd');
+        }
+        // {date}_{task_name}.php
+    }
 
-    function generate($schemas)
+    public function generate($taskName)
+    {
+        $unixtime = time();
+        $className = $taskName . '_' . $unixtime;
+        // $filename
+        $template = new LazyRecord\CodeGen\ClassTemplate($className,array(
+            'template' => 'Class.php.twig',
+            'template_dirs' => array('src/LazyRecord/Schema/Templates'),
+        ));
+        $template->extends('LazyRecord\Migration\Migration');
+    }
+
+    public function generateWithDiff($taskName,$schemas)
     {
         $parser = TableParser::create( $this->driver, $this->connection );
         $tableSchemas = array();
@@ -47,7 +67,6 @@ class MigrationGenerator
                 // generate alter table statement.
 
                 print_r($diff);
-
             } else {
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
