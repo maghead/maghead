@@ -446,7 +446,6 @@ class BaseCollection
 
 
     /** array access interface */
-
     public function offsetSet($name,$value)
     {
         if( null === $name ) {

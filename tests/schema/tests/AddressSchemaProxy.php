@@ -22,6 +22,7 @@ class AddressSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'varchar(128)',
           'isa' => 'str',
+          'size' => 128,
         ),
     ),
   'foo' => array( 
@@ -29,6 +30,7 @@ class AddressSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'varchar(128)',
           'isa' => 'str',
+          'size' => 128,
         ),
     ),
   'id' => array( 

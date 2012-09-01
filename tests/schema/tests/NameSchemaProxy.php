@@ -26,6 +26,7 @@ class NameSchemaProxy extends RuntimeSchema
           'isa' => 'str',
           'typeConstraint' => true,
           'required' => true,
+          'size' => 128,
         ),
     ),
   'description' => array( 
@@ -33,6 +34,7 @@ class NameSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'varchar(128)',
           'isa' => 'str',
+          'size' => 128,
         ),
     ),
   'category_id' => array( 
@@ -58,6 +60,7 @@ class NameSchemaProxy extends RuntimeSchema
           'default' => function() { 
                     return 'Default Address';
                 },
+          'size' => 256,
         ),
     ),
   'country' => array( 

@@ -16,6 +16,7 @@ class UserSchemaProxy extends RuntimeSchema
           'type' => 'varchar(128)',
           'isa' => 'str',
           'unique' => true,
+          'size' => 128,
         ),
     ),
   'password' => array( 
@@ -23,6 +24,7 @@ class UserSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'varchar(256)',
           'isa' => 'str',
+          'size' => 256,
         ),
     ),
   'id' => array( 

@@ -15,6 +15,7 @@ class AuthorSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'varchar(128)',
           'isa' => 'str',
+          'size' => 128,
         ),
     ),
   'email' => array( 
@@ -23,6 +24,7 @@ class AuthorSchemaProxy extends RuntimeSchema
           'type' => 'varchar(128)',
           'isa' => 'str',
           'required' => true,
+          'size' => 128,
         ),
     ),
   'v' => array( 
@@ -44,6 +46,7 @@ class AuthorSchemaProxy extends RuntimeSchema
           'isa' => 'str',
           'unique' => true,
           'required' => true,
+          'size' => 128,
         ),
     ),
   'confirmed' => array( 

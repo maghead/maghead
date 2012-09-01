@@ -25,6 +25,10 @@ use SerializerKit\YamlSerializer;
 abstract class BaseModel
     implements ExporterInterface
 {
+
+    const schema_proxy_class = '';
+
+
     protected $_data = array();
 
     protected $_cache = array();
@@ -1313,7 +1317,10 @@ abstract class BaseModel
     {
         // lazy schema loader, xxx: make this static.
         if( 'schema' === $key ) {
-            return SchemaLoader::load( static::schema_proxy_class );
+            if( constant( get_class($this) . '::schema_proxy_class') )
+                return SchemaLoader::load( static::schema_proxy_class );
+            $dschema = new Schema\DynamicSchemaDeclare($this);
+            return $dschema;
         }
         elseif( '_connection' === $key ) {
             return ConnectionManager::getInstance();

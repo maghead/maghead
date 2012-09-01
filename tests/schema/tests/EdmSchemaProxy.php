@@ -24,6 +24,7 @@ class EdmSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'varchar(256)',
           'isa' => 'str',
+          'size' => 256,
         ),
     ),
   'edmStart' => array( 
