@@ -33,6 +33,11 @@ class MetadataTest extends PHPUnit_Framework_TestCase
         is(2, $metadata['version']);
 
         is(2,$metadata->getVersion());
+
+        foreach( $metadata as $key => $value ) {
+            ok($key);
+            ok($value);
+        }
     }
 }
 
