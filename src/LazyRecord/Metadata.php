@@ -38,7 +38,7 @@ class Metadata
 
     public function getVersion()
     {
-
+        return $this['version'];
     }
 
     public function offsetSet($name,$value)
@@ -84,7 +84,6 @@ class Metadata
         $rows = $stm->fetchAll(PDO::FETCH_OBJ);
         return $rows;
     }
-
 }
 
 
