@@ -9,10 +9,15 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
             'dsn' => 'sqlite::memory:'
         ));
 
-        $generator = new LazyRecord\Migration\MigrationGenerator('default','tests/migration');
+        $pdo = $connectionManager->getConnection('default');
+        $pdo->query('create table users (id integer not null primary key);');
+
+        $generator = new \LazyRecord\Migration\MigrationGenerator('default','tests/migration');
         ok($generator);
 
-        $finder = new LazyRecord\Schema\SchemaFinder;
+        spl_autoload_call('tests\UserSchema');
+
+        $finder = new \LazyRecord\Schema\SchemaFinder;
         $finder->find();
         $generator->generate( $finder->getSchemas() );
 
