@@ -32,7 +32,7 @@ class MigrateCommand extends Command
         elseif( $optStatus ) {
             $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
             $runner->load('db/migrations');
-            $scripts = $runner->getMigrationScripts($dsId);
+            $scripts = $runner->getMigrationScripts();
             $this->logger->info("Found " . count($scripts) . " migrations to be executed.");
             foreach( $scripts as $script ) {
                 $this->logger->info( '- ' . $script , 1 );
@@ -43,9 +43,9 @@ class MigrateCommand extends Command
         }
         else {
             // XXX: record the latest ran migration id,
-            $this->logger->info('Running Migration scripts...');
             $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
             $runner->load('db/migrations');
+            $this->logger->info('Running migration scripts to upgrade...');
             $runner->runUpgrade();
             $this->logger->info('Done.');
         }
