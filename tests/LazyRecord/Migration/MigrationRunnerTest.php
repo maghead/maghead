@@ -14,6 +14,7 @@ class MigrationRunnerTest extends PHPUnit_Framework_TestCase
 
         $runner->load('tests/migrations');
         $runner->runUpgrade();
+        $runner->runDowngrade();
     }
 }
 
