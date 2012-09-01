@@ -60,7 +60,7 @@ class ClassTemplate
         $this->interfaces[] = new ClassName($className);
     }
 
-    public function addMethod($scope,$methodName,$arguments,$code = null)
+    public function addMethod($scope,$methodName,$arguments = array(),$code = null)
     {
         $method = new ClassMethod( $methodName, $arguments);
         $method->scope = $scope;
