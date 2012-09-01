@@ -101,6 +101,10 @@ class MigrationRunner
         });
     }
 
+
+    /**
+     * Run downgrade scripts
+     */
     public function runDowngrade()
     {
         foreach( $this->dataSourceIds as $dsId ) {
@@ -115,6 +119,9 @@ class MigrationRunner
         }
     }
 
+    /**
+     * Run upgrade scripts
+     */
     public function runUpgrade()
     {
         foreach( $this->dataSourceIds as $dsId ) {
