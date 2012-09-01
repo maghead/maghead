@@ -39,7 +39,7 @@ class Console extends Application
 
         $this->registerCommand('diff',         'LazyRecord\Command\DiffCommand');
 
-        $this->registerCommand('migration',         'LazyRecord\Command\MigrationCommand');
+        $this->registerCommand('migrate',         'LazyRecord\Command\MigrateCommand');
 
         $this->registerCommand('create-db',         'LazyRecord\Command\CreateDBCommand');
     }
