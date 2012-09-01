@@ -30,6 +30,7 @@ class MigrateCommand extends Command
 
         }
         else {
+            // XXX: record the latest ran migration id,
             $this->logger->info('Running Migration scripts...');
             $runner = new \LazyRecord\Migration\MigrationRunner('default');
             $runner->load('db/migrations');
