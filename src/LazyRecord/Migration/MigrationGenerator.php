@@ -36,6 +36,7 @@ class MigrationGenerator
         }
 
         $comparator = new \LazyRecord\Schema\Comparator;
+
         // schema from runtime
         foreach( $schemas as $b ) {
             $t = $b->getTable();
@@ -50,7 +51,6 @@ class MigrationGenerator
             } else {
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
-
             }
         }
     }
