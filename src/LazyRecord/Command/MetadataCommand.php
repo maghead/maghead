@@ -12,9 +12,10 @@ class MetadataCommand extends Command
         $args = func_get_args();
         if(empty($args)) {
             $meta = new Metadata('default');
-            printf("%26s|%-20s\n",'Key','Value');
+            printf("%26s | %-20s\n",'Key','Value');
+            printf("%s\n", str_repeat('=',50));
             foreach( $meta as $key => $value ) {
-                printf("%26s %-20s\n", $key, $value);
+                printf("%26s   %-20s\n", $key, $value);
             }
         }
         elseif( count($args) == 1 ) {
