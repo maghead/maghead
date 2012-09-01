@@ -29,10 +29,28 @@ class Migration
     public function executeSql($sql) 
     {
         try { 
-            $stm = $this->connection->query($sql);
-            $this->logger->info('QueryOK: ' . $sql);
+            foreach( (array) $sql as $q ) {
+                $stm = $this->connection->query($q);
+                $this->logger->info('QueryOK: ' . $q);
+            }
         } catch(PDOException $e) {
             $this->logger->error($e->getMessage());
+        }
+    }
+
+    public function importSchema($schema) {
+        $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($this->driver);
+        if( is_a($schema,'LazyRecord\Schema\SchemaDeclare') ) {
+            $sqls = $builder->build($schema);
+            $this->executeSql($sqls);
+        } 
+        elseif( is_a($schema,'LazyRecord\BaseModel') && method_exists($schema,'schema') ) {
+            $model = $schema;
+            $schema = new DynamicSchemaDeclare;
+            $model->schema($schema);
+
+            $sqls = $builder->build($schema);
+            $this->executeSql($sqls);
         }
     }
 
