@@ -40,6 +40,14 @@ class Migration
     }
 
 
+    public function addColumn($table,$cb)
+    {
+        $c = new \LazyRecord\Schema\SchemaDeclare\Column;
+        call_user_func($cb,$c);
+        $sql = $this->builder->addColumn($table,$c);
+        $this->executeSql($sql);
+    }
+
     /**
      * $this->createTable(function($s) {
      *      $s->column('title')->varchar(120);

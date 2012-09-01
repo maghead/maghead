@@ -47,9 +47,8 @@ class Column
     /**
      * @var string $name column name (id)
      */
-    public function __construct( $name )
+    public function __construct( $name = null )
     {
-        $this->name = $name;
         $this->supportedAttributes = array(
 
             'primary'       => self::ATTR_FLAG,
@@ -108,6 +107,16 @@ class Column
 
             'widgetAttributes' => self::ATTR_ARRAY,
         );
+
+        if( $name ) {
+            $this->name = $name;
+        }
+    }
+
+    public function name($name) 
+    {
+        $this->name = $name;
+        return $this;
     }
 
     public function varchar($size)
@@ -320,6 +329,11 @@ class Column
     public function dump()
     {
         return var_export( $this->export() , true );
+    }
+
+    public function __isset($name)
+    {
+        return isset( $this->attributes[ $name ] );
     }
 
     public function __get($name)
