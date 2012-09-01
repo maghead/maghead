@@ -59,9 +59,8 @@ class MigrationGenerator
     public function generate($taskName,$time = null)
     {
         $template = $this->createClassTemplate($taskName,$time);
-        $method = $template->addMethod('public','upgrade',array());
-        $code = '';
-        $method->code = $code;
+        $template->addMethod('public','upgrade',array(),'');
+        $template->addMethod('public','downgrade',array(),'');
         $filename = $this->generateFilename($taskName,$time);
         $path = $this->migrationDir . DIRECTORY_SEPARATOR . $filename;
         file_put_contents($path , $template->render() );
