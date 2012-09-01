@@ -15,6 +15,14 @@ class ClassTemplateTest extends PHPUnit_Framework_TestCase
             'template_dirs' => array('src/LazyRecord/Schema/Templates'),
         ));
         ok($class1);
+
+        $code = $class1->render();
+
+        $tmpname = tempnam('/tmp','FOO');
+        file_put_contents($tmpname, $code);
+        require $tmpname;
+
+        unlink($tmpname);
     }
 
 }
