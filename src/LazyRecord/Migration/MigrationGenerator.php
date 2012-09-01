@@ -86,10 +86,14 @@ class MigrationGenerator
             $foundTable = isset( $tableSchemas[ $t ] );
             if( $foundTable ) {
                 $a = $tableSchemas[ $t ];
-                $diff = $comparator->compare( $a , $b );
-                // generate alter table statement.
+                $diffs = $comparator->compare( $a , $b );
 
-                print_r($diff);
+                // generate alter table statement.
+                foreach( $diffs as $column ) {
+                    print_r($column);
+                    print_r($column);
+                }
+
             } else {
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
