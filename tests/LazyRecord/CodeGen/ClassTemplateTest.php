@@ -28,10 +28,12 @@ class ClassTemplateTest extends PHPUnit_Framework_TestCase
         $bar22 = new Foo\Bar22;
         ok($bar22);
 
+        ok(method_exists($bar22,'getTwo'));
+        ok(method_exists($bar22,'getFoo'));
+
         is(2,$bar22->getTwo());
 
         is(3,$bar22->getFoo(3));
-
         unlink($tmpname);
     }
 
