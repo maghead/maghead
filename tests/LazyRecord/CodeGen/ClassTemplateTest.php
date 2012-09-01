@@ -36,6 +36,5 @@ class ClassTemplateTest extends PHPUnit_Framework_TestCase
         is(3,$bar22->getFoo(3));
         unlink($tmpname);
     }
-
 }
 
