@@ -11,7 +11,11 @@ class CreateUser_1346436136 extends LazyRecord\Migration\Migration
                 ->notNull()
                 ->varchar(128);
         });
-        $this->addColumn('test','bar');
+
+        $this->addColumn('test',function($c) {
+            $c->name('address');
+            $c->text();
+        });
     }
 }
 
