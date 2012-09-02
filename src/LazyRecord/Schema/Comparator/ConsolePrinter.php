@@ -43,7 +43,7 @@ class ConsolePrinter
                             $line .= ", $property = " . var_export($value,true);
                         }
                     }
-                    else {
+                    elseif(is_string($value)) {
                         $line .= ", $property = $value";
                     }
                 }
