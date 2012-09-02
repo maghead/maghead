@@ -32,7 +32,7 @@ class ListSchemaCommand extends Command
         $options = $this->getOptions();
 
         $loader = ConfigLoader::getInstance();
-        $loader->load();
+        $loader->loadFromSymbol();
         $loader->initForBuild();
 
         $this->logger->info("Initializing schema generator...");
