@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-09-02</date>
-  <time>17:26:12</time>
+  <time>17:31:27</time>
   <version>
     <release>1.7.4</release>
     <api>1.7.4</api>
@@ -166,7 +166,7 @@
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="4071e977c5306f67362fed5ddb64651f"/>
       <file name="src/LazyRecord/Command/ListSchemaCommand.php" role="php" md5sum="5d5fe9b8fd91e537ebd08a2a871aa2f1"/>
       <file name="src/LazyRecord/Command/MetadataCommand.php" role="php" md5sum="e349528b51634d371faec7dd5871266c"/>
-      <file name="src/LazyRecord/Command/MigrateCommand.php" role="php" md5sum="1e680c206aec6e2a4f2bf62819b5ed50"/>
+      <file name="src/LazyRecord/Command/MigrateCommand.php" role="php" md5sum="a062d2b721d2cbd30441e6c91e4adbf0"/>
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="2030e3e3954fe25c655146758fd2708b"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="8460503e3663eea4672c35e4f63a8d5e"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="0d6b646d41fe7147c78434a4bd761cda"/>
@@ -179,7 +179,7 @@
       <file name="src/LazyRecord/Metadata.php" role="php" md5sum="3058216f52dc63ed2eb16c4122be787a"/>
       <file name="src/LazyRecord/Migration/Migration.php" role="php" md5sum="b1c7564e1b8d1cd67b155797d609c516"/>
       <file name="src/LazyRecord/Migration/MigrationGenerator.php" role="php" md5sum="6542d101a6b9c66fd3370c12d493bce0"/>
-      <file name="src/LazyRecord/Migration/MigrationRunner.php" role="php" md5sum="3980d822b1bcda896a4d881dd2be9325"/>
+      <file name="src/LazyRecord/Migration/MigrationRunner.php" role="php" md5sum="77ac5e73cf6ff81592101246e4dd17b2"/>
       <file name="src/LazyRecord/Model/Metadata.php" role="php" md5sum="d5b30bdcbfe2994134080612c42e9c41"/>
       <file name="src/LazyRecord/Model/MetadataCollection.php" role="php" md5sum="81df200a596e0be6b64c537fd90a7bb8"/>
       <file name="src/LazyRecord/Model/MetadataCollectionBase.php" role="php" md5sum="9ade406502e16e786b218daa946724e3"/>
