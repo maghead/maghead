@@ -33,9 +33,19 @@ class ConsolePrinter
                 }
             }
             else {
-                $line = sprintf('%s %s',$d->flag , $d->name );
+                $line = sprintf('    %s %s',$d->flag , $d->name );
                 foreach( $d->column->attributes as $property => $value ) {
-                    $line .= ", $property = $value";
+                    if( is_object($value) ) {
+                        if( $value instanceof \Closure ) {
+                            $line .= ", $property = {Closure}";
+                        }
+                        else {
+                            $line .= ", $property = " . var_export($value,true);
+                        }
+                    }
+                    else {
+                        $line .= ", $property = $value";
+                    }
                 }
                 echo $formatter->format($line . "\n", $d->flag === '+' ? 'green' : 'red' );
             }
