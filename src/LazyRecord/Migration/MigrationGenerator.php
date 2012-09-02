@@ -113,6 +113,18 @@ class MigrationGenerator
                     if( $diff->flag == '+' ) {
                         $call->method('addColumn');
                         $call->addArgument($t); // table
+
+                        // filter out useless columns
+                        $data = array();
+                        foreach( $diff->column->toArray() as $key => $value ) {
+                            if( in_array($key,array(
+                                'type','primary','name','default','notNull','null','autoIncrement',
+                                )) && ! is_object($value) ) 
+                            {
+                                $data[ $key ] = $value;
+                            }
+                        }
+
                         $call->addArgument($diff->column->toArray());
                     }
                     elseif( $diff->flag == '-' ) {
