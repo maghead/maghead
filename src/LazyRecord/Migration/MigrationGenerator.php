@@ -123,7 +123,7 @@ class MigrationGenerator
                                 continue;
 
                             if( in_array($key,array(
-                                'type','primary','name','default','notNull','null','autoIncrement',)
+                                'type','primary','name','unique','default','notNull','null','autoIncrement',)
                             )) {
                                 $data[ $key ] = $value;
                             }
