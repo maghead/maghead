@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-09-02</date>
-  <time>13:37:49</time>
+  <time>16:58:41</time>
   <version>
     <release>1.7.3</release>
     <api>1.7.3</api>
@@ -188,7 +188,7 @@
       <file name="src/LazyRecord/OperationResult/OperationResult.php" role="php" md5sum="ed5662ef1b336f753e05efec1aaf00c4"/>
       <file name="src/LazyRecord/OperationResult/OperationSuccess.php" role="php" md5sum="0223f9434a0f344b6ac24a2e11ca7822"/>
       <file name="src/LazyRecord/QueryDriver.php" role="php" md5sum="7f2b8fae8b6ab267717d4316250d5fe2"/>
-      <file name="src/LazyRecord/Schema/Comparator/ConsolePrinter.php" role="php" md5sum="1c0566f020ca0739587800c83b134ebe"/>
+      <file name="src/LazyRecord/Schema/Comparator/ConsolePrinter.php" role="php" md5sum="8de200d98f9fe5b50bc4a328d11a6f0e"/>
       <file name="src/LazyRecord/Schema/Comparator.php" role="php" md5sum="1bcd6dd1de4080debf66d1366b8c7359"/>
       <file name="src/LazyRecord/Schema/DynamicSchemaDeclare.php" role="php" md5sum="757cccdaf97a5219d312fbf60d196535"/>
       <file name="src/LazyRecord/Schema/Mixin/I18nSchema.php" role="php" md5sum="ef6514fa4f5e71e2b9f88b3e9e065bff"/>
@@ -207,7 +207,6 @@
       <file name="src/LazyRecord/Schema/Templates/Class.php.twig" role="php" md5sum="7b21088266722babfc27ca8321e9dbfd"/>
       <file name="src/LazyRecord/Schema/Templates/Model.php.twig" role="php" md5sum="2b23467dad36aed3630b57ad12c44bc6"/>
       <file name="src/LazyRecord/Schema/Templates/Schema.php.twig" role="php" md5sum="1eea1a4df423594ef193a1822b9ed1ce"/>
-      <file name="src/LazyRecord/Schema/WineSchemaProxy.php" role="php" md5sum="efee30a5956b479b463381aa636f7e2b"/>
       <file name="src/LazyRecord/SqlBuilder/BaseBuilder.php" role="php" md5sum="1af61013cb6f878b0f692d9fd83e89ad"/>
       <file name="src/LazyRecord/SqlBuilder/BuilderInterface.php" role="php" md5sum="0e282e5c3f6256d59e1a747a938b17ea"/>
       <file name="src/LazyRecord/SqlBuilder/MysqlBuilder.php" role="php" md5sum="1eacc88225c9bc3c1a358bdbf9bfe5ad"/>
@@ -469,7 +468,6 @@
       <install name="src/LazyRecord/Schema/Templates/Class.php.twig" as="LazyRecord/Schema/Templates/Class.php.twig"/>
       <install name="src/LazyRecord/Schema/Templates/Model.php.twig" as="LazyRecord/Schema/Templates/Model.php.twig"/>
       <install name="src/LazyRecord/Schema/Templates/Schema.php.twig" as="LazyRecord/Schema/Templates/Schema.php.twig"/>
-      <install name="src/LazyRecord/Schema/WineSchemaProxy.php" as="LazyRecord/Schema/WineSchemaProxy.php"/>
       <install name="src/LazyRecord/SqlBuilder/BaseBuilder.php" as="LazyRecord/SqlBuilder/BaseBuilder.php"/>
       <install name="src/LazyRecord/SqlBuilder/BuilderInterface.php" as="LazyRecord/SqlBuilder/BuilderInterface.php"/>
       <install name="src/LazyRecord/SqlBuilder/MysqlBuilder.php" as="LazyRecord/SqlBuilder/MysqlBuilder.php"/>

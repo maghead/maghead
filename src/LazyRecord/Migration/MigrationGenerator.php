@@ -24,6 +24,16 @@ class MigrationGenerator
         }
     }
 
+    /**
+     * Returns code template directory
+     */
+    protected function getTemplateDirs()
+    {
+        $refl = new ReflectionClass('LazyRecord\Schema\SchemaGenerator');
+        $path = $refl->getFilename();
+        return dirname($path) . DIRECTORY_SEPARATOR . 'Templates';
+    }
+
     public function generateFilename($taskName, $time = null)
     {
         $date = date('Ymd');
@@ -49,7 +59,7 @@ class MigrationGenerator
         // $filename
         $template = new ClassTemplate($className,array(
             'template' => 'Class.php.twig',
-            'template_dirs' => array('src/LazyRecord/Schema/Templates'),
+            'template_dirs' => $this->getTemplateDirs(),
         ));
         $template->extendClass('LazyRecord\Migration\Migration');
         return $template;
