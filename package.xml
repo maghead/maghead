@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-09-02</date>
-  <time>17:31:27</time>
+  <time>23:09:33</time>
   <version>
-    <release>1.7.4</release>
-    <api>1.7.4</api>
+    <release>1.7.5</release>
+    <api>1.7.5</api>
   </version>
   <stability>
     <release>stable</release>
@@ -170,7 +170,7 @@
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="2030e3e3954fe25c655146758fd2708b"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="8460503e3663eea4672c35e4f63a8d5e"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="0d6b646d41fe7147c78434a4bd761cda"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="6a2b14db451792fa95fb1faf3fc755a6"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="bcc8cfd715a487b66e060e7bfeb91fc4"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c750d9b25dd6509c2831197ce7e3da3a"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
@@ -201,7 +201,7 @@
       <file name="src/LazyRecord/Schema/SchemaDataInterface.php" role="php" md5sum="d43ab250745f006eac684c369f5d8d43"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare/Column.php" role="php" md5sum="1a82ea9dc47569478b0745887d7a54ce"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="cef0254f126c62e02c93c0a042062a60"/>
-      <file name="src/LazyRecord/Schema/SchemaFinder.php" role="php" md5sum="f06b92f73082178d53fd72a01ebf7c49"/>
+      <file name="src/LazyRecord/Schema/SchemaFinder.php" role="php" md5sum="c72f7ce5f67ada062bbb31c7870e6334"/>
       <file name="src/LazyRecord/Schema/SchemaGenerator.php" role="php" md5sum="0849ae6524112b61d20df17b8c401a91"/>
       <file name="src/LazyRecord/Schema/SchemaLoader.php" role="php" md5sum="3db3c2f7266be755692fcc0c04639ba5"/>
       <file name="src/LazyRecord/Schema/Templates/Class.php.twig" role="php" md5sum="7b21088266722babfc27ca8321e9dbfd"/>
