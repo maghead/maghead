@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Command;
 use CLIFramework\Command;
+use LazyRecord\Metadata;
 use LazyRecord\Schema;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
@@ -68,6 +69,11 @@ DOC;
         if( $this->options->basedata ) {
             CommandUtils::build_basedata($schemas);
         }
+
+        $time = time();
+        $logger->info("Setting migration timestamp to $time");
+        $metadata = new Metadata($id);
+        $metadata['migration'] = $time;
 
         $logger->info(
             $logger->formatter->format(
