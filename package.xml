@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-09-02</date>
-  <time>01:52:46</time>
+  <time>12:41:27</time>
   <version>
     <release>1.6.2</release>
     <api>1.6.2</api>
@@ -138,16 +138,16 @@
       <file name="src/LazyRecord/CodeGen.php" role="php" md5sum="6cd6b349debb5ca4e5661786116d67c1"/>
       <file name="src/LazyRecord/CollectionPager.php" role="php" md5sum="f17355028e8d9f52834c289ed07b6665"/>
       <file name="src/LazyRecord/Command/BuildBaseDataCommand.php" role="php" md5sum="0318e048d0eda1c142918e47558ed821"/>
-      <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="93b107f7477070f9a3b916e652b910e7"/>
+      <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="e1dcd1b1367a4b2a2de375f849b96899"/>
       <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="b13a4abd48d3e772857618bba393790f"/>
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="5aaafbb1103a593e0c352d19e2b8b9fd"/>
       <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="21014336a2b85cd00bbc18b549793414"/>
       <file name="src/LazyRecord/Command/CreateDBCommand.php" role="php" md5sum="75d7247e71e57d40ee43f6873843cfc5"/>
-      <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="e7922e87f5633f39c801372868f5c170"/>
+      <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="6a5370e014848735c9a57a0ffde26779"/>
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="11fd7b72748c614c94a425ca1971965f"/>
       <file name="src/LazyRecord/Command/ListSchemaCommand.php" role="php" md5sum="08751425815227745bed0d3528d7e520"/>
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="da06865dc5d98ff337f22dd40b09c803"/>
-      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="77d2b50933ed2752af3def4919e13518"/>
+      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="9ce4342f8a7966de108a739dd8e27205"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="e4da082d92825d40dbe3fa322c7bf74a"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="e6647bf886e36a51a312d5cc89da2035"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c750d9b25dd6509c2831197ce7e3da3a"/>
@@ -211,11 +211,6 @@
       </package>
       <package>
         <name>SQLBuilder</name>
-        <channel>pear.corneltek.com</channel>
-        <min>0.0.0</min>
-      </package>
-      <package>
-        <name>PHPUnit_TestMore</name>
         <channel>pear.corneltek.com</channel>
         <min>0.0.0</min>
       </package>
