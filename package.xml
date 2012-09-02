@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-09-02</date>
-  <time>17:09:07</time>
+  <time>17:11:12</time>
   <version>
-    <release>1.7.3</release>
-    <api>1.7.3</api>
+    <release>1.7.4</release>
+    <api>1.7.4</api>
   </version>
   <stability>
     <release>stable</release>
@@ -166,11 +166,11 @@
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="4071e977c5306f67362fed5ddb64651f"/>
       <file name="src/LazyRecord/Command/ListSchemaCommand.php" role="php" md5sum="5d5fe9b8fd91e537ebd08a2a871aa2f1"/>
       <file name="src/LazyRecord/Command/MetadataCommand.php" role="php" md5sum="e349528b51634d371faec7dd5871266c"/>
-      <file name="src/LazyRecord/Command/MigrateCommand.php" role="php" md5sum="7d4726e80aba490564fc0c862ff8bfeb"/>
+      <file name="src/LazyRecord/Command/MigrateCommand.php" role="php" md5sum="86c492c13275c9986cea6a193663a3cf"/>
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="2030e3e3954fe25c655146758fd2708b"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="8460503e3663eea4672c35e4f63a8d5e"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="0d6b646d41fe7147c78434a4bd761cda"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="8190ecffde74d6170583fe052abe7c11"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="6a2b14db451792fa95fb1faf3fc755a6"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c750d9b25dd6509c2831197ce7e3da3a"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
