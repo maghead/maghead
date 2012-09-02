@@ -6,8 +6,9 @@ use RecursiveRegexIterator;
 use RegexIterator;
 use ReflectionClass;
 use RuntimeException;
-use LazyRecord\ClassUtils;
 use IteratorAggregate;
+use LazyRecord\ClassUtils;
+use LazyRecord\ConfigLoader;
 
 /**
  * Find schema classes from files (or from current runtime)
@@ -21,6 +22,13 @@ class SchemaFinder
     public $paths = array();
 
     public $classes = array();
+
+    public $config;
+
+    public function __construct()
+    {
+        $this->config = ConfigLoader::getInstance();
+    }
 
     public function in($path)
     {
@@ -36,10 +44,14 @@ class SchemaFinder
     public function _loadSchemaFile($file) 
     {
         $code = file_get_contents($file);
+        $modelPattern = '#' . preg_quote( ltrim($this->config->getBaseModelClass(),'\\') ) . '#';
         if( preg_match( '#LazyRecord\\\\Schema\\\\SchemaDeclare#ixsm' , $code ) ) {
             require_once $file;
         }
         elseif( preg_match( '/LazyRecord\\\\BaseModel/ixsm' , $code ) ) {
+            require_once $file;
+        }
+        elseif( preg_match( $modelPattern, $code ) ) {
             require_once $file;
         }
     }
