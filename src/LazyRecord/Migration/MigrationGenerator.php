@@ -117,10 +117,14 @@ class MigrationGenerator
                         // filter out useless columns
                         $data = array();
                         foreach( $diff->column->toArray() as $key => $value ) {
+                            if( is_object($value) )
+                                continue;
+                            if( is_array($value) )
+                                continue;
+
                             if( in_array($key,array(
-                                'type','primary','name','default','notNull','null','autoIncrement',
-                                )) && ! is_object($value) ) 
-                            {
+                                'type','primary','name','default','notNull','null','autoIncrement',)
+                            )) {
                                 $data[ $key ] = $value;
                             }
                         }
