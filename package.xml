@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-09-02</date>
-  <time>01:10:14</time>
+  <time>12:44:19</time>
   <version>
     <release>1.7.1</release>
     <api>1.7.1</api>
@@ -156,21 +156,21 @@
       <file name="src/LazyRecord/CodeGen.php" role="php" md5sum="6cd6b349debb5ca4e5661786116d67c1"/>
       <file name="src/LazyRecord/CollectionPager.php" role="php" md5sum="f17355028e8d9f52834c289ed07b6665"/>
       <file name="src/LazyRecord/Command/BuildBaseDataCommand.php" role="php" md5sum="2de0bc6fba8517a15f35a5e2ec62895a"/>
-      <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="5d211ddd22614fbf987244affae58544"/>
+      <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="9cc659c92826d26c11c70bd5fbfebd24"/>
       <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="57e2a684c075b77ed7e69b69cfca6973"/>
-      <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="73a048a72a0ce04d0a81c84c2d620c86"/>
+      <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="513bc6320c9d57632ad3c4095680ef4f"/>
       <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="9c5e2b32f732db52cf6afade4935dbfd"/>
       <file name="src/LazyRecord/Command/CreateDBCommand.php" role="php" md5sum="a929cd6df7f0bd09d053b8b0115fb35e"/>
-      <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="8043004f4b1fa4f3e7cbfd17dd3724d2"/>
+      <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="ca577681dcf8b7e78b87dd3bb74a488e"/>
       <file name="src/LazyRecord/Command/InitCommand.php" role="php" md5sum="968f444a1d7a49bf4558e77dcc5c8d2e"/>
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="4071e977c5306f67362fed5ddb64651f"/>
       <file name="src/LazyRecord/Command/ListSchemaCommand.php" role="php" md5sum="d29c14b335f2f6ca402761349de1ef1b"/>
       <file name="src/LazyRecord/Command/MetadataCommand.php" role="php" md5sum="e349528b51634d371faec7dd5871266c"/>
-      <file name="src/LazyRecord/Command/MigrateCommand.php" role="php" md5sum="7b60c6cda236d2ccd5b0191b381dcd2c"/>
+      <file name="src/LazyRecord/Command/MigrateCommand.php" role="php" md5sum="7d4726e80aba490564fc0c862ff8bfeb"/>
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="2030e3e3954fe25c655146758fd2708b"/>
-      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="559ff666c9699f62709342a3c370eb27"/>
+      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="8460503e3663eea4672c35e4f63a8d5e"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="0d6b646d41fe7147c78434a4bd761cda"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="3c073e98494cbc3340a8bf3f3f2f5f86"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="d90e6264d646a1fe97e5c9005bae903e"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c750d9b25dd6509c2831197ce7e3da3a"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
@@ -179,7 +179,7 @@
       <file name="src/LazyRecord/Metadata.php" role="php" md5sum="3058216f52dc63ed2eb16c4122be787a"/>
       <file name="src/LazyRecord/Migration/Migration.php" role="php" md5sum="b1c7564e1b8d1cd67b155797d609c516"/>
       <file name="src/LazyRecord/Migration/MigrationGenerator.php" role="php" md5sum="500b837aa79dcb35e4660e8625bd476c"/>
-      <file name="src/LazyRecord/Migration/MigrationRunner.php" role="php" md5sum="1df312734c11d96b1f34fa3b531459b5"/>
+      <file name="src/LazyRecord/Migration/MigrationRunner.php" role="php" md5sum="1533b7dd940e6d71b27ef223fa0a46b1"/>
       <file name="src/LazyRecord/Model/Metadata.php" role="php" md5sum="d5b30bdcbfe2994134080612c42e9c41"/>
       <file name="src/LazyRecord/Model/MetadataCollection.php" role="php" md5sum="81df200a596e0be6b64c537fd90a7bb8"/>
       <file name="src/LazyRecord/Model/MetadataCollectionBase.php" role="php" md5sum="9ade406502e16e786b218daa946724e3"/>
@@ -188,7 +188,7 @@
       <file name="src/LazyRecord/OperationResult/OperationResult.php" role="php" md5sum="ed5662ef1b336f753e05efec1aaf00c4"/>
       <file name="src/LazyRecord/OperationResult/OperationSuccess.php" role="php" md5sum="0223f9434a0f344b6ac24a2e11ca7822"/>
       <file name="src/LazyRecord/QueryDriver.php" role="php" md5sum="7f2b8fae8b6ab267717d4316250d5fe2"/>
-      <file name="src/LazyRecord/Schema/Comparator/ConsolePrinter.php" role="php" md5sum="33d13fd6660cca4ed5600bbfd0eca927"/>
+      <file name="src/LazyRecord/Schema/Comparator/ConsolePrinter.php" role="php" md5sum="1c0566f020ca0739587800c83b134ebe"/>
       <file name="src/LazyRecord/Schema/Comparator.php" role="php" md5sum="1bcd6dd1de4080debf66d1366b8c7359"/>
       <file name="src/LazyRecord/Schema/DynamicSchemaDeclare.php" role="php" md5sum="757cccdaf97a5219d312fbf60d196535"/>
       <file name="src/LazyRecord/Schema/Mixin/I18nSchema.php" role="php" md5sum="ef6514fa4f5e71e2b9f88b3e9e065bff"/>
@@ -217,7 +217,7 @@
       <file name="src/LazyRecord/TableParser/BaseTableParser.php" role="php" md5sum="c7fb552fc8acc7bf2d3885a1d2966209"/>
       <file name="src/LazyRecord/TableParser/MysqlTableParser.php" role="php" md5sum="5bccce2f03ee4dffabbdd79009f44cf4"/>
       <file name="src/LazyRecord/TableParser/PgsqlTableParser.php" role="php" md5sum="46341d7ca77248e18ef35131596b4e96"/>
-      <file name="src/LazyRecord/TableParser/SqliteTableParser.php" role="php" md5sum="4ca982736b62de8101342547bc58d3b3"/>
+      <file name="src/LazyRecord/TableParser/SqliteTableParser.php" role="php" md5sum="9ca4f370dbe4f0dda9401207dc890cb0"/>
       <file name="src/LazyRecord/TableParser/TableParser.php" role="php" md5sum="f6f683fded8fbf96b0e24b1ced6eab86"/>
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
@@ -245,11 +245,6 @@
         <min>1.3.6</min>
       </package>
       <package>
-        <name>PHPUnit_TestMore</name>
-        <channel>pear.corneltek.com</channel>
-        <min>0.0.0</min>
-      </package>
-      <package>
         <name>CLIFramework</name>
         <channel>pear.corneltek.com</channel>
         <min>0.0.0</min>
@@ -272,7 +267,7 @@
       <package>
         <name>ConfigKit</name>
         <channel>pear.corneltek.com</channel>
-        <min>1.0.1</min>
+        <min>1.2.2</min>
       </package>
       <package>
         <name>Twig</name>
