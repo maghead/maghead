@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-09-02</date>
-  <time>12:56:30</time>
+  <time>13:16:46</time>
   <version>
     <release>1.7.3</release>
     <api>1.7.3</api>
@@ -159,7 +159,7 @@
       <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="9cc659c92826d26c11c70bd5fbfebd24"/>
       <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="57e2a684c075b77ed7e69b69cfca6973"/>
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="513bc6320c9d57632ad3c4095680ef4f"/>
-      <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="9c5e2b32f732db52cf6afade4935dbfd"/>
+      <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="17c50c1c612ebe06ced387adab2d1402"/>
       <file name="src/LazyRecord/Command/CreateDBCommand.php" role="php" md5sum="a929cd6df7f0bd09d053b8b0115fb35e"/>
       <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="ca577681dcf8b7e78b87dd3bb74a488e"/>
       <file name="src/LazyRecord/Command/InitCommand.php" role="php" md5sum="968f444a1d7a49bf4558e77dcc5c8d2e"/>
