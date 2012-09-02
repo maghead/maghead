@@ -44,10 +44,11 @@ class CommandUtils
         $loader = ConfigLoader::getInstance();
         if( $seeds = $loader->getSeedScripts() ) {
             foreach( $seeds as $seed ) {
+                $seed = str_replace('::','\\',$seed);
                 static::log("Running seed script: $seed",'green');
                 if( file_exists($seed) ) {
                     require $seed;
-                } 
+                }
                 elseif( class_exists($seed,true) ) {
                     $seed::seed();
                 }
