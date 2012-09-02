@@ -41,7 +41,7 @@ class MigrateCommand extends Command
             $finder->find();
 
             $this->logger->info( "Creating migration script from diff" );
-            list($class,$path) = $generator->generateWithDiff('DiffMigration',$dsId,$finder->getSchemas());
+            list($class,$path) = $generator->generateWithDiff( $optDiff ,$dsId,$finder->getSchemas());
             $this->logger->info( "Migration script is generated: $path" );
 
         }
