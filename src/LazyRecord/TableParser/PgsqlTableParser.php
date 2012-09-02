@@ -2,6 +2,7 @@
 namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
+use LazyRecord\Schema\SchemaDeclare;
 
 class PgsqlTableParser extends BaseTableParser
 {
@@ -22,7 +23,7 @@ class PgsqlTableParser extends BaseTableParser
          */
         $sql = "SELECT * FROM information_schema.columns WHERE table_name = '$table';";
         $stm = $this->connection->query($sql);
-        $schema = new Schema\SchemaDeclare;
+        $schema = new SchemaDeclare;
         $schema->columnNames = $schema->columns = array();
         $rows = $stm->fetchAll( PDO::FETCH_OBJ );
 
