@@ -124,8 +124,7 @@ class MigrationGenerator
                                 $data[ $key ] = $value;
                             }
                         }
-
-                        $call->addArgument($diff->column->toArray());
+                        $call->addArgument($data);
                     }
                     elseif( $diff->flag == '-' ) {
                         $call->method('dropColumn');
