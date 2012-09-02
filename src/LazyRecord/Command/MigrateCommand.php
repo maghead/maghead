@@ -56,14 +56,19 @@ class MigrateCommand extends Command
             }
         }
         elseif( $optUp ) {
-            // XXX: record the latest ran migration id,
             $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
             $runner->load('db/migrations');
             $this->logger->info('Running migration scripts to upgrade...');
             $runner->runUpgrade();
             $this->logger->info('Done.');
         }
-
+        elseif( $optDown ) {
+            $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
+            $runner->load('db/migrations');
+            $this->logger->info('Running migration scripts to downgrade...');
+            $runner->runDowngrade();
+            $this->logger->info('Done.');
+        }
     }
 }
 

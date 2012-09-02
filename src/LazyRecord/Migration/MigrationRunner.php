@@ -98,7 +98,7 @@ class MigrationRunner
         $lastMigrationId = $this->getLastMigrationId($dsId);
         return array_filter($scripts,function($class) use ($lastMigrationId) {
             $id = $class::getId();
-            return $id <= $lastMigrationId;
+            return $id < $lastMigrationId;
         });
     }
 
@@ -113,6 +113,7 @@ class MigrationRunner
 
             // downgrade a migration one at one time.
             if( $script = end($scripts) ) {
+                $this->logger->info("Running downgrade migration script $script on data source $dsId");
                 $migration = new $script( $dsId );
                 $migration->downgrade();
                 $this->updateLastMigrationId($dsId,$script::getId());
@@ -128,7 +129,7 @@ class MigrationRunner
         foreach( $this->dataSourceIds as $dsId ) {
             $scripts = $this->getUpgradeScripts($dsId);
             foreach( $scripts as $script ) {
-                $this->logger->info("Running migration script $script on $dsId");
+                $this->logger->info("Running upgrade migration script $script on data source $dsId");
                 $migration = new $script( $dsId );
                 $migration->upgrade();
                 $this->updateLastMigrationId($dsId,$script::getId());
