@@ -29,11 +29,12 @@ class ListSchemaCommand extends Command
         $logger = $this->getLogger();
         $options = $this->getOptions();
 
+        $this->logger->debug("Loading config");
         $loader = ConfigLoader::getInstance();
-        $loader->load();
+        $loader->loadFromSymbol();
         $loader->initForBuild();
 
-        $this->logger->info("Initializing schema generator...");
+        $this->logger->debug("Initializing schema generator...");
         $generator = new SchemaGenerator;
         $generator->setLogger( $logger );
 
@@ -46,7 +47,7 @@ class ListSchemaCommand extends Command
         foreach( $classes as $class ) {
             $rfc = new ReflectionClass($class);
             $this->logger->info( 
-                sprintf("  %-25s %s", $class, $rfc->getFilename() ));
+                sprintf("  %-50s %s", $class, $rfc->getFilename() ));
         }
         $logger->info('Done');
     }
