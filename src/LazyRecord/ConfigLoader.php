@@ -52,7 +52,10 @@ class ConfigLoader
             return $this->load( $this->symbolFilename, $force );
         }
         elseif( file_exists('.lazy.php') ) {
-            return $this->load( '.lazy.php', $force );
+            return $this->load('.lazy.php', $force );
+        }
+        else {
+            throw new Exception("lazyrecord config symbol .lazy.php or .lazy.yml is not found.");
         }
     }
 
@@ -78,7 +81,7 @@ class ConfigLoader
             $this->config = $file;
         }
         else {
-            throw new Exception("LazyRecord config error.");
+            throw new Exception("unknown config format.");
         }
         $this->loaded = true;
     }

@@ -11,31 +11,6 @@ Features
 * Multiple Data source
 * Schema/Database diff
 
-
-Requirement
------------
-
-* pdo and pdo_mysql, pdo_sqlite or pdo_pgsql extensions.
-* yaml extension
-
-Installation
-------------
-
-### Install from PEAR
-
-    pear channel-discover pear.corneltek.com
-    pear install -a corneltek/LazyRecord
-
-### Install from Installer
-
-Install LazyRecord to system:
-
-    sudo bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
-
-If you're using phpbrew:
-
-    bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
-
 Synopsis
 --------
 

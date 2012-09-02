@@ -21,10 +21,24 @@ class BuildConfCommand extends \CLIFramework\Command
          */
         $options = $this->options;
         if( ! $configFile ) {
-            if( file_exists( 'db/config/site_database.yml' ) )
+            if( file_exists( 'db/config/site_database.yml' ) ) {
                 $configFile = 'db/config/site_database.yml';
-            if( file_exists( 'db/config/database.yml' ) )
+                ConfigCompiler::compile($configFile);
+            }
+            if( file_exists( 'db/config/database.yml' ) ) {
                 $configFile = 'db/config/database.yml';
+                ConfigCompiler::compile($configFile);
+            }
+
+            // old config file path.
+            if( file_exists( 'config/database.yml' ) ) {
+                $configFile = 'config/database.yml';
+                ConfigCompiler::compile($configFile);
+            }
+            if( file_exists( 'config/site_database.yml' ) ) {
+                $configFile = 'config/site_database.yml';
+                ConfigCompiler::compile($configFile);
+            }
         }
         if( ! $configFile ) {
             throw new Exception("config file path is required.");
