@@ -48,8 +48,9 @@ class MigrateCommand extends Command
         elseif( $optStatus ) {
             $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
             $runner->load('db/migrations');
-            $scripts = $runner->getMigrationScripts();
-            $this->logger->info("Found " . count($scripts) . " migrations to be executed.");
+            $scripts = $runner->getUpgradeScripts($dsId);
+            $count = count($scripts);
+            $this->logger->info("Found " . $count . ($count > 1 ? ' migration scripts' : ' migration script') . ' to be executed.');
             foreach( $scripts as $script ) {
                 $this->logger->info( '- ' . $script , 1 );
             }
