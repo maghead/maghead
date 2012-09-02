@@ -57,6 +57,7 @@ class MigrationRunner
         $metadata = new Metadata($dsId);
         $lastId = $metadata['migration'];
         $metadata['migration'] = $id;
+        $this->logger->info("Updating migration version to $id.");
     }
 
     public function getMigrationScripts() 

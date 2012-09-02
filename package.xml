@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-09-02</date>
-  <time>16:58:41</time>
+  <time>17:09:07</time>
   <version>
     <release>1.7.3</release>
     <api>1.7.3</api>
@@ -178,8 +178,8 @@
       <file name="src/LazyRecord/Inflector.php" role="php" md5sum="f8bea1b8f18c3331cb734b3af534c1e9"/>
       <file name="src/LazyRecord/Metadata.php" role="php" md5sum="3058216f52dc63ed2eb16c4122be787a"/>
       <file name="src/LazyRecord/Migration/Migration.php" role="php" md5sum="b1c7564e1b8d1cd67b155797d609c516"/>
-      <file name="src/LazyRecord/Migration/MigrationGenerator.php" role="php" md5sum="500b837aa79dcb35e4660e8625bd476c"/>
-      <file name="src/LazyRecord/Migration/MigrationRunner.php" role="php" md5sum="1533b7dd940e6d71b27ef223fa0a46b1"/>
+      <file name="src/LazyRecord/Migration/MigrationGenerator.php" role="php" md5sum="b1563d700a145697c2330ea351d54984"/>
+      <file name="src/LazyRecord/Migration/MigrationRunner.php" role="php" md5sum="3980d822b1bcda896a4d881dd2be9325"/>
       <file name="src/LazyRecord/Model/Metadata.php" role="php" md5sum="d5b30bdcbfe2994134080612c42e9c41"/>
       <file name="src/LazyRecord/Model/MetadataCollection.php" role="php" md5sum="81df200a596e0be6b64c537fd90a7bb8"/>
       <file name="src/LazyRecord/Model/MetadataCollectionBase.php" role="php" md5sum="9ade406502e16e786b218daa946724e3"/>
