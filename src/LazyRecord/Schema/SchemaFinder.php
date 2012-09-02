@@ -44,6 +44,9 @@ class SchemaFinder
         }
     }
 
+    // DEPRECATED
+    public function loadFiles() { return $this->find(); }
+
     public function find()
     {
         foreach( $this->paths as $path ) {
