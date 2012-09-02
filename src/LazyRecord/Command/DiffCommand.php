@@ -73,7 +73,7 @@ class DiffCommand extends Command
                 if( count($diff) ) 
                     $found = true;
                 $printer = new \LazyRecord\Schema\Comparator\ConsolePrinter($diff);
-                $printer->beforeName = $t;
+                $printer->beforeName = $t . ":data source [$id]";
                 $printer->afterName = $t . ':' . $filepath ;
                 $printer->output();
             }
