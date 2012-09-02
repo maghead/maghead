@@ -48,7 +48,12 @@ class ConfigLoader
 
     public function loadFromSymbol($force = false)
     {
-        return $this->load( $this->symbolFilename, $force );
+        if( file_exists($this->symbolFilename) ) {
+            return $this->load( $this->symbolFilename, $force );
+        }
+        elseif( file_exists('.lazy.php') ) {
+            return $this->load('.lazy.php', $force );
+        }
     }
 
     /**
@@ -73,7 +78,7 @@ class ConfigLoader
             $this->config = $file;
         }
         else {
-            throw new Exception("LazyRecord config error.");
+            throw new Exception("unknown config format.");
         }
         $this->loaded = true;
     }
