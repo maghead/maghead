@@ -27,7 +27,7 @@ class DiffCommand extends Command
         $logger = $this->logger;
 
         $loader = ConfigLoader::getInstance();
-        $loader->load();
+        $loader->loadFromSymbol();
         $loader->initForBuild();
 
 
