@@ -5,4 +5,5 @@ Todo
 * memcache support.
 * mixin method integration.
 * schema checksum cache.
+* improve validation
 
