@@ -1031,24 +1031,24 @@ abstract class BaseModel
 
 
     /**
+     * Get PDO connection for writing data.
      *
      * @return PDO
      */
     public function getWriteConnection()
     {
-        $id = $this->getWriteSourceId();
-        return $this->_connection->getConnection( $id );
+        return $this->_connection->getConnection( $this->getWriteSourceId() );
     }
 
 
     /**
+     * Get PDO connection for reading data.
      *
      * @return PDO
      */
     public function getReadConnection()
     {
-        $id = $this->getReadSourceId();
-        return $this->_connection->getConnection( $id );
+        return $this->_connection->getConnection( $this->getReadSourceId() );
     }
 
 
