@@ -620,6 +620,12 @@ abstract class BaseModel
         return $this->reportSuccess('Created', $ret );
     }
 
+
+    /**
+     * Find record
+     *
+     * @param array condition array
+     */
     public function find($args)
     {
         return $this->_load($args);
@@ -745,7 +751,7 @@ abstract class BaseModel
 
 
     /**
-     * update current record
+     * Update current record
      *
      * @param array $args
      *
