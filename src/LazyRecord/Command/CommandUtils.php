@@ -35,10 +35,10 @@ class CommandUtils
 
     static function build_basedata($schemas) {
         foreach( $schemas as $schema ) {
-            $class = get_class($schema);
-            $modelClass = $schema->getModelClass();
-            static::log("Creating base data of $modelClass",'green');
-            $schema->bootstrap( new $modelClass );
+            if( $modelClass = $schema->getModelClass() ) {
+                static::log("Creating base data of $modelClass",'green');
+                $schema->bootstrap( new $modelClass );
+            }
         }
 
         $loader = ConfigLoader::getInstance();
