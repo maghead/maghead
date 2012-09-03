@@ -38,7 +38,7 @@ class MigrateCommand extends Command
 
             $this->logger->info( "Loading schema objects..." );
             $finder = new \LazyRecord\Schema\SchemaFinder;
-            $finder->paths = $config->getSchemaPaths();
+            $finder->paths = $config->getSchemaPaths() ?: array();
             $finder->find();
 
             $this->logger->info( "Creating migration script from diff" );
