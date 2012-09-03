@@ -105,20 +105,22 @@ class MigrationRunner
 
     /**
      * Run downgrade scripts
+     *
      */
-    public function runDowngrade()
+    public function runDowngrade($steps = 1)
     {
         foreach( $this->dataSourceIds as $dsId ) {
             $scripts = $this->getDowngradeScripts($dsId);
+            while($steps--) {
+                // downgrade a migration one at one time.
+                if( $script = array_pop($scripts) ) {
+                    $this->logger->info("Running downgrade migration script $script on data source $dsId");
+                    $migration = new $script( $dsId );
+                    $migration->downgrade();
 
-            // downgrade a migration one at one time.
-            if( $script = array_pop($scripts) ) {
-                $this->logger->info("Running downgrade migration script $script on data source $dsId");
-                $migration = new $script( $dsId );
-                $migration->downgrade();
-
-                $nextScript = end($scripts);
-                $this->updateLastMigrationId($dsId,$nextScript::getId());
+                    $nextScript = end($scripts);
+                    $this->updateLastMigrationId($dsId,$nextScript::getId());
+                }
             }
         }
     }
