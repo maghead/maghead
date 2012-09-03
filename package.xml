@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-09-03</date>
-  <time>11:22:46</time>
+  <date>2012-09-04</date>
+  <time>00:39:32</time>
   <version>
     <release>1.7.6</release>
     <api>1.7.6</api>
@@ -32,6 +32,7 @@
       <file name="doc/inflator.md" role="doc" md5sum="ea824bf17ff5a82ddfd17dcd6a8684b6"/>
       <file name="doc/install.md" role="doc" md5sum="8c2975ab1997933fb52331d4da32e075"/>
       <file name="doc/migration.md" role="doc" md5sum="95cb21f0af7300c05e7c066a2ed1906d"/>
+      <file name="doc/mixin.md" role="doc" md5sum="0c5af8276b9c3aac68b7170b72c00067"/>
       <file name="doc/model.md" role="doc" md5sum="42f2c020924891983da74d6b259cdd5d"/>
       <file name="doc/plan.md" role="doc" md5sum="e4407419222fb1c73c5c602ee9bfc7fb"/>
       <file name="doc/plans/model_schema.md" role="doc" md5sum="59949838061f83bc327e577510c558db"/>
@@ -138,10 +139,11 @@
       <file name="tests/schema/tests/WineCollectionBase.php" role="test" md5sum="64e403c1c33b68147e84ed248dcc1367"/>
       <file name="tests/schema/tests/WineSchemaProxy.php" role="test" md5sum="06c919a1ca9e72d645092b3abb65cf3c"/>
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
+      <file name="src/documents/pages/synopsis.html.md" role="php" md5sum="dd881ac91e1d5b4cf9e1669e7bea75da"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
       <file name="src/LazyRecord/ArrayUtils.php" role="php" md5sum="e4050887e137de2f7f7fd18fcbdd09c2"/>
       <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="26f38bde5b0b134d8636a39b4e83dabb"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="938f0e61b2082a9e5e600d8efdb5cdb6"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="62b92259df278b7858a43187eef49b63"/>
       <file name="src/LazyRecord/BaseSeed.php" role="php" md5sum="884fadea8ad5b2c3e86645b70554f955"/>
       <file name="src/LazyRecord/ClassUtils.php" role="php" md5sum="a784d51fadca0712a9e65174c43a8847"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
@@ -168,8 +170,8 @@
       <file name="src/LazyRecord/Command/MetadataCommand.php" role="php" md5sum="e349528b51634d371faec7dd5871266c"/>
       <file name="src/LazyRecord/Command/MigrateCommand.php" role="php" md5sum="b4c332329901d1b08dd313dd4e67f68d"/>
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="2030e3e3954fe25c655146758fd2708b"/>
-      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="8460503e3663eea4672c35e4f63a8d5e"/>
-      <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="0d6b646d41fe7147c78434a4bd761cda"/>
+      <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="0805487d74ddfa56ed44af208fef5b4a"/>
+      <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="cc552defaa9aafb4b44df01ef7bda9f8"/>
       <file name="src/LazyRecord/Console.php" role="php" md5sum="50636fbe1360cc3a42b6fc6ac55d157f"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c750d9b25dd6509c2831197ce7e3da3a"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
@@ -293,6 +295,7 @@
       <install name="doc/inflator.md" as="inflator.md"/>
       <install name="doc/install.md" as="install.md"/>
       <install name="doc/migration.md" as="migration.md"/>
+      <install name="doc/mixin.md" as="mixin.md"/>
       <install name="doc/model.md" as="model.md"/>
       <install name="doc/plan.md" as="plan.md"/>
       <install name="doc/plans/model_schema.md" as="plans/model_schema.md"/>
@@ -399,6 +402,7 @@
       <install name="tests/schema/tests/WineCollectionBase.php" as="schema/tests/WineCollectionBase.php"/>
       <install name="tests/schema/tests/WineSchemaProxy.php" as="schema/tests/WineSchemaProxy.php"/>
       <install name="tests/src/TestLogger.php" as="src/TestLogger.php"/>
+      <install name="src/documents/pages/synopsis.html.md" as="documents/pages/synopsis.html.md"/>
       <install name="src/LazyRecord/Adapter/PdoAdapter.php" as="LazyRecord/Adapter/PdoAdapter.php"/>
       <install name="src/LazyRecord/ArrayUtils.php" as="LazyRecord/ArrayUtils.php"/>
       <install name="src/LazyRecord/BaseCollection.php" as="LazyRecord/BaseCollection.php"/>
