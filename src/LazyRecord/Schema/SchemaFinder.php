@@ -57,10 +57,15 @@ class SchemaFinder
     }
 
     // DEPRECATED
-    public function loadFiles() { return $this->find(); }
+    public function loadFiles() { 
+        return $this->find(); 
+    }
 
     public function find()
     {
+        if( empty($this->paths))
+            return;
+
         foreach( $this->paths as $path ) {
             if( is_file($path) ) {
                 require_once $path;
