@@ -11,6 +11,12 @@ Features
 * Multiple Data source
 * Schema/Database diff
 
+Installation
+------------
+
+    pear channel-discover pear.corneltek.com
+    pear install -a -f corneltek/LazyRecord
+
 Synopsis
 --------
 
