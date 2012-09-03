@@ -228,9 +228,10 @@ class ConnectionManager
             }
 
             $conn = new PDO( $dsn,
-                isset($config['user']) ? $config['user'] : null, 
-                isset($config['pass']) ? $config['pass'] : null, 
-                $connectionOptions );
+                (isset($config['user']) ? $config['user'] : isset($config['username']) ? $config['username'] : null),
+                (isset($config['pass']) ? $config['pass'] : isset($config['password']) ? $config['password'] : null),
+                $connectionOptions
+            );
 
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
