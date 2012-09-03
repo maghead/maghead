@@ -35,7 +35,7 @@ class CommandUtils
 
     static function build_basedata($schemas) {
         foreach( $schemas as $schema ) {
-            if( $modelClass = $schema->getModelClass() ) {
+            if( $modelClass = $schema->getModelClass() && method_exists($schema,'bootstrap') ) {
                 static::log("Creating base data of $modelClass",'green');
                 $schema->bootstrap( new $modelClass );
             }
