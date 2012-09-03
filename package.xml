@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-09-04</date>
-  <time>01:32:37</time>
+  <time>02:11:57</time>
   <version>
     <release>1.7.6</release>
     <api>1.7.6</api>
@@ -139,7 +139,6 @@
       <file name="tests/schema/tests/WineCollectionBase.php" role="test" md5sum="64e403c1c33b68147e84ed248dcc1367"/>
       <file name="tests/schema/tests/WineSchemaProxy.php" role="test" md5sum="06c919a1ca9e72d645092b3abb65cf3c"/>
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
-      <file name="src/documents/pages/synopsis.html.md" role="php" md5sum="dd881ac91e1d5b4cf9e1669e7bea75da"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
       <file name="src/LazyRecord/ArrayUtils.php" role="php" md5sum="e4050887e137de2f7f7fd18fcbdd09c2"/>
       <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="26f38bde5b0b134d8636a39b4e83dabb"/>
@@ -168,7 +167,7 @@
       <file name="src/LazyRecord/Command/InitConfCommand.php" role="php" md5sum="4071e977c5306f67362fed5ddb64651f"/>
       <file name="src/LazyRecord/Command/ListSchemaCommand.php" role="php" md5sum="5d5fe9b8fd91e537ebd08a2a871aa2f1"/>
       <file name="src/LazyRecord/Command/MetadataCommand.php" role="php" md5sum="e349528b51634d371faec7dd5871266c"/>
-      <file name="src/LazyRecord/Command/MigrateCommand.php" role="php" md5sum="b4c332329901d1b08dd313dd4e67f68d"/>
+      <file name="src/LazyRecord/Command/MigrateCommand.php" role="php" md5sum="3de30f91691965d486895ea43bb8a67b"/>
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="2030e3e3954fe25c655146758fd2708b"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="0805487d74ddfa56ed44af208fef5b4a"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="69efc7fefb57344d0693586416a6b8d2"/>
@@ -203,7 +202,7 @@
       <file name="src/LazyRecord/Schema/SchemaDataInterface.php" role="php" md5sum="d43ab250745f006eac684c369f5d8d43"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare/Column.php" role="php" md5sum="1a82ea9dc47569478b0745887d7a54ce"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="cef0254f126c62e02c93c0a042062a60"/>
-      <file name="src/LazyRecord/Schema/SchemaFinder.php" role="php" md5sum="c72f7ce5f67ada062bbb31c7870e6334"/>
+      <file name="src/LazyRecord/Schema/SchemaFinder.php" role="php" md5sum="02b964fa7ba83c2d834a0eabe712a6e9"/>
       <file name="src/LazyRecord/Schema/SchemaGenerator.php" role="php" md5sum="0849ae6524112b61d20df17b8c401a91"/>
       <file name="src/LazyRecord/Schema/SchemaLoader.php" role="php" md5sum="3db3c2f7266be755692fcc0c04639ba5"/>
       <file name="src/LazyRecord/Schema/Templates/Class.php.twig" role="php" md5sum="7b21088266722babfc27ca8321e9dbfd"/>
@@ -402,7 +401,6 @@
       <install name="tests/schema/tests/WineCollectionBase.php" as="schema/tests/WineCollectionBase.php"/>
       <install name="tests/schema/tests/WineSchemaProxy.php" as="schema/tests/WineSchemaProxy.php"/>
       <install name="tests/src/TestLogger.php" as="src/TestLogger.php"/>
-      <install name="src/documents/pages/synopsis.html.md" as="documents/pages/synopsis.html.md"/>
       <install name="src/LazyRecord/Adapter/PdoAdapter.php" as="LazyRecord/Adapter/PdoAdapter.php"/>
       <install name="src/LazyRecord/ArrayUtils.php" as="LazyRecord/ArrayUtils.php"/>
       <install name="src/LazyRecord/BaseCollection.php" as="LazyRecord/BaseCollection.php"/>
