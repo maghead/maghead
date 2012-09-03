@@ -39,7 +39,7 @@ class Comparator
             if( isset($aColumns[$key]) && isset($bColumns[ $key ] ) ) {
                 
                 // have the same column, compare attributes
-                $attributes = array('type','isa','default','label');
+                $attributes = array('type','default','primary','label');
                 $ac = $aColumns[$key];
                 $bc = $bColumns[$key];
                 $d = new ColumnDiff( $key, '=', $bc );
