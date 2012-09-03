@@ -6,7 +6,7 @@
  <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
  <target name="build"
-   depends="bundle,prepare,lint,phploc,pdepend,phpmd-ci,doxygen,phpcs-ci,phpcpd,phpdox,phpwiki,phpunit,phpcb,package"/>
+   depends="bundle,prepare,phpunit,lint,phploc,pdepend,phpmd-ci,doxygen,phpcs-ci,phpcpd,phpdox,phpwiki,phpcb,package"/>
 
  <target name="build-parallel"
    depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
