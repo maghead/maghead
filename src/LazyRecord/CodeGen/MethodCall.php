@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord\CodeGen;
+use Exception;
 
 class MethodCall
 {
@@ -34,9 +35,16 @@ class MethodCall
         foreach( $this->arguments as $arg ) {
             if( is_string($arg) && $arg[0] == '$' ) {
                 $strs[] = $arg;
-            } else {
+            } 
+            elseif( is_string($arg) ) {
+                $strs[] = $arg;
+            }
+            elseif( is_array($arg) ) {
                 $str = var_export($arg,true);
                 $strs[] = $str;
+            }
+            else {
+                throw new Exception("MethodCall template: Unsupported argument type.");
             }
         }
         $code .= join(',',$strs);

@@ -112,7 +112,7 @@ class MigrationGenerator
                     $call = new MethodCall;
                     if( $diff->flag == '+' ) {
                         $call->method('addColumn');
-                        $call->addArgument($t); // table
+                        $call->addArgument('"'. $t . '"'); // table
 
                         // filter out useless columns
                         $data = array();
@@ -135,15 +135,19 @@ class MigrationGenerator
                         $call->addArgument($t); // table
                         $call->addArgument($diff->name);
                     }
+                    elseif( $diff->flag == '=' ) {
+                        echo "** column flag = is not supported yet.\n";
+                    }
                     $upgradeMethod->code .= $call->render() . "\n";
-#                      print_r($diff->name);
-#                      print_r($diff->flag);
-#                      print_r($diff->column);
                 }
 
             } else {
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
+                $call = new MethodCall;
+                $call->method('importSchema');
+                $call->addArgument( 'new ' . $b ); // for dynamic schema declare, it casts to the model class name.
+                $upgradeMethod->code .= $call->render() . "\n";
             }
         }
 

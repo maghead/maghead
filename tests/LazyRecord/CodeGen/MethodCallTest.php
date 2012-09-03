@@ -6,8 +6,8 @@ class MethodCallTest extends PHPUnit_Framework_TestCase
     {
         $call = new LazyRecord\CodeGen\MethodCall;
         $call->method('doSomething');
-        $call->addArgument('123');
-        $call->addArgument('foo');
+        $call->addArgument('\'123\'');
+        $call->addArgument('\'foo\'');
         $call->addArgument(array( 'name' => 'hack' ));
         $str = $call->render();
         ok($str);
