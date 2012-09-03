@@ -60,7 +60,7 @@ class ConfigLoader
     }
 
     /**
-     * load configuration file
+     * Load configuration file
      *
      * @param string $file config file.
      */
