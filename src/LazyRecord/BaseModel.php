@@ -77,6 +77,7 @@ abstract class BaseModel
 
     // static $schemaCache;
 
+    public $usingDataSource;
 
     /**
      * This constructor simply does nothing if no argument is passed.
@@ -91,6 +92,12 @@ abstract class BaseModel
         // if( ! static::$schemaCache ) {
         //     static::$schemaCache = SchemaLoader::load( static::schema_proxy_class );
         // }
+    }
+
+    public function using($dsId)
+    {
+        $this->usingDataSource = $dsId;
+        return $this;
     }
 
 
@@ -148,9 +155,7 @@ abstract class BaseModel
      */
     public function getWriteQueryDriver()
     {
-        return $this->getQueryDriver( 
-            $this->schema->getWriteSourceId()
-        );
+        return $this->getQueryDriver($this->getWriteSourceId());
     }
 
 
@@ -161,9 +166,7 @@ abstract class BaseModel
      */
     public function getReadQueryDriver()
     {
-        return $this->getQueryDriver( 
-            $this->schema->getReadSourceId()
-        );
+        return $this->getQueryDriver( $this->getReadSourceId() );
     }
 
 
@@ -512,7 +515,7 @@ abstract class BaseModel
             $stm = null;
 
 
-            $dsId = $this->schema->getWriteSourceId();
+            $dsId = $this->getWriteSourceId();
             $conn = $this->getConnection( $dsId );
 
             foreach( $this->schema->getColumns() as $n => $c ) {
@@ -630,7 +633,7 @@ abstract class BaseModel
             ));
         }
 
-        $dsId  = $this->schema->getReadSourceId();
+        $dsId  = $this->getReadSourceId();
         $pk    = $this->schema->primaryKey;
         $query = $this->createQuery( $dsId );
         $conn  = $this->getConnection( $dsId );
@@ -710,7 +713,7 @@ abstract class BaseModel
             return $this->reportError( _('Permission denied. Can not delete record.') , array( ));
         }
 
-        $dsId = $this->schema->getWriteSourceId();
+        $dsId = $this->getWriteSourceId();
         $conn = $this->getConnection( $dsId );
 
         $this->beforeDelete( $this->_data );
@@ -783,7 +786,7 @@ abstract class BaseModel
             $sql  = null;
             $vars = null;
 
-            $dsId = $this->schema->getWriteSourceId();
+            $dsId = $this->getWriteSourceId();
             $conn = $this->getConnection( $dsId );
 
             foreach( $this->schema->getColumns() as $n => $c ) {
@@ -1033,7 +1036,7 @@ abstract class BaseModel
      */
     public function getWriteConnection()
     {
-        $id = $this->schema->getWriteSourceId();
+        $id = $this->getWriteSourceId();
         return $this->_connection->getConnection( $id );
     }
 
@@ -1044,7 +1047,7 @@ abstract class BaseModel
      */
     public function getReadConnection()
     {
-        $id = $this->schema->getReadSourceId();
+        $id = $this->getReadSourceId();
         return $this->_connection->getConnection( $id );
     }
 
@@ -1477,7 +1480,7 @@ abstract class BaseModel
     public static function __static_update($args) 
     {
         $model = new static;
-        $dsId  = $model->schema->getWriteSourceId();
+        $dsId  = $model->getWriteSourceId();
         $conn  = $model->getConnection($dsId);
         $query = $model->createExecutiveQuery($dsId);
         $query->update($args);
@@ -1509,7 +1512,7 @@ abstract class BaseModel
     public static function __static_delete()
     {
         $model = new static;
-        $dsId  = $model->schema->getWriteSourceId();
+        $dsId  = $model->getWriteSourceId();
         $conn  = $model->getConnection($dsId);
         $query = $model->createExecutiveQuery($dsId);
         $query->delete();
@@ -1529,7 +1532,7 @@ abstract class BaseModel
     public static function __static_load($args)
     {
         $model = new static;
-        $dsId  = $model->schema->getReadSourceId();
+        $dsId  = $model->getReadSourceId();
         $conn  = $model->getConnection( $dsId );
 
         if( is_array($args) ) {
@@ -1693,6 +1696,21 @@ abstract class BaseModel
     {
         $this->_cache = array();
     }
+
+    public function getWriteSourceId()
+    {
+        if( $this->usingDataSource )
+            return $this->usingDataSource;
+        return $this->schema->getWriteSourceId();
+    }
+
+    public function getReadSourceId()
+    {
+        if( $this->usingDataSource )
+            return $this->usingDataSource;
+        return $this->schema->getReadSourceId();
+    }
+    
 
     public function __clone() 
     {
