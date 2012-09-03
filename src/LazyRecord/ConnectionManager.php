@@ -228,8 +228,8 @@ class ConnectionManager
             }
 
             $conn = new PDO( $dsn,
-                (isset($config['user']) ? $config['user'] : isset($config['username']) ? $config['username'] : null),
-                (isset($config['pass']) ? $config['pass'] : isset($config['password']) ? $config['password'] : null),
+                ((isset($config['user']) ? $config['user'] : isset($config['username'])) ? $config['username'] : null),
+                ((isset($config['pass']) ? $config['pass'] : isset($config['password'])) ? $config['password'] : null),
                 $connectionOptions
             );
 
