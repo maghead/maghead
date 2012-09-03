@@ -11,9 +11,14 @@ use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Inflector;
+use LazyRecord\Schema\Comparator;
+use LazyRecord\Console;
+
 
 class MigrationGenerator
 {
+    public $logger;
+
     public $migrationDir;
 
     function __construct($migrationDir)
@@ -22,6 +27,7 @@ class MigrationGenerator
         if( ! file_exists($this->migrationDir) ) {
             mkdir($this->migrationDir,0755,true);
         }
+        $this->logger = Console::getInstance()->getLogger();
     }
 
     /**
@@ -97,22 +103,32 @@ class MigrationGenerator
             $tableSchemas[ $table ] = $parser->getTableSchema( $table );
         }
 
-        $comparator = new \LazyRecord\Schema\Comparator;
+        $comparator = new Comparator;
+
+        $this->logger->info( 'Found ' . count($schemas) . ' schemas to compare.' );
 
         // schema from runtime
         foreach( $schemas as $b ) {
             $t = $b->getTable();
             $foundTable = isset( $tableSchemas[ $t ] );
             if( $foundTable ) {
-                $a = $tableSchemas[ $t ];
+                $a = $tableSchemas[ $t ]; // schema object, extracted from database.
                 $diffs = $comparator->compare( $a , $b );
 
                 // generate alter table statement.
                 foreach( $diffs as $diff ) {
                     $call = new MethodCall;
+                    $dcall = new MethodCall; // downgrade method call
+
                     if( $diff->flag == '+' ) {
+                        $this->logger->info(sprintf("- Found column %s to be added to '%s'",$diff->name,$t) , 1);
+
                         $call->method('addColumn');
                         $call->addArgument('"'. $t . '"'); // table
+
+                        $dcall->method('dropColumn');
+                        $dcall->addArgument('"'. $t . '"'); // table
+                        $dcall->addArgument('"'. $diff->name . '"'); // table
 
                         // filter out useless columns
                         $data = array();
@@ -136,18 +152,28 @@ class MigrationGenerator
                         $call->addArgument($diff->name);
                     }
                     elseif( $diff->flag == '=' ) {
-                        echo "** column flag = is not supported yet.\n";
+                        $this->logger->warn("** column flag = is not supported yet.");
+                    }
+                    else {
+                        $this->logger->warn("** unsupported flag.");
                     }
                     $upgradeMethod->code .= $call->render() . "\n";
+                    $downgradeMethod->code .= $dcall->render() . "\n";
                 }
-
-            } else {
+            } 
+            else {
+                $this->logger->info(sprintf("Found schema '%s' to be imported to '%s'",$b,$t),1);
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
                 $call = new MethodCall;
                 $call->method('importSchema');
                 $call->addArgument( 'new ' . $b ); // for dynamic schema declare, it casts to the model class name.
+
+                $dcall = new MethodCall;
+                $dcall->method('dropTable');
+                $dcall->addArgument("'$t'");
                 $upgradeMethod->code .= $call->render() . "\n";
+                $downgradeMethod->code .= $dcall->render() . "\n";
             }
         }
 

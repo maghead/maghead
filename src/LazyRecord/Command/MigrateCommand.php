@@ -25,7 +25,7 @@ class MigrateCommand extends Command
         $dsId = $this->options->{'data-source'} ?: 'default';
 
         CommandUtils::set_logger($this->logger);
-        CommandUtils::init_config_loader();
+        $config = CommandUtils::init_config_loader();
 
         if( $optNew ) {
             $generator = new \LazyRecord\Migration\MigrationGenerator('db/migrations');
@@ -38,12 +38,12 @@ class MigrateCommand extends Command
 
             $this->logger->info( "Loading schema objects..." );
             $finder = new \LazyRecord\Schema\SchemaFinder;
+            $finder->paths = $config->getSchemaPaths();
             $finder->find();
 
             $this->logger->info( "Creating migration script from diff" );
             list($class,$path) = $generator->generateWithDiff( $optDiff ,$dsId,$finder->getSchemas());
             $this->logger->info( "Migration script is generated: $path" );
-
         }
         elseif( $optStatus ) {
             $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
