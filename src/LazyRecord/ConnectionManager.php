@@ -263,9 +263,13 @@ class ConnectionManager
     static function getInstance()
     {
         static $instance;
-        return $instance ?: $instance = new static;
+        return $instance ? $instance : $instance = new static;
     }
 
+
+    /**
+     * Close connection
+     */
     public function close($sourceId)
     {
         if( isset($this->conns[ $sourceId ]) ) {
@@ -274,6 +278,10 @@ class ConnectionManager
         }
     }
 
+
+    /**
+     * Close all connections
+     */
     public function closeAll()
     {
         foreach( $this->conns as $id => $conn ) {
@@ -296,25 +304,43 @@ class ConnectionManager
 
     /**
      * ArrayAccess interface
+     *
+     * @param string $name
+     * @param mixed $value
      */
     public function offsetSet($name,$value)
     {
         $this->conns[ $name ] = $value;
     }
     
+
+    /**
+     * Check if a connection exists.
+     *
+     * @param string $name
+     */
     public function offsetExists($name)
     {
         return isset($this->conns[ $name ]);
     }
     
+
+    /**
+     * Get connection by data source id.
+     *
+     * @param string $name
+     */
     public function offsetGet($name)
     {
         return $this->conns[ $name ];
     }
-    
+
+    /**
+     *
+     */
     public function offsetUnset($name)
     {
-        unset($this->conns[$name]);
+        $this->close($name);
     }
 
 
