@@ -9,8 +9,10 @@ class Console extends Application
 
     public function brief()
     {
-        return 'lazy [command]';
+        return 'LazyRecord ORM';
     }
+
+
 
     public function init()
     {
