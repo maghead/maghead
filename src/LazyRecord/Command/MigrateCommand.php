@@ -4,6 +4,10 @@ use CLIFramework\Command;
 
 class MigrateCommand extends Command
 {
+    public function brief()
+    {
+        return 'migrate database schema.';
+    }
 
     public function options($opts) 
     {
