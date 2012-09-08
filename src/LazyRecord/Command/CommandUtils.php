@@ -43,6 +43,15 @@ class CommandUtils
             }
         }
 
+        foreach( $schemas as $schema ) {
+            $seeds = $schema->getSeeds();
+            foreach ($seeds as $seedClass ){
+                if( class_exists($seedClass,true) ) {
+                    $seedClass::seed();
+                }
+            }
+        }
+
         $loader = ConfigLoader::getInstance();
         if( $seeds = $loader->getSeedScripts() ) {
             foreach( $seeds as $seed ) {
@@ -64,7 +73,17 @@ class CommandUtils
     }
 
     static function schema_classes_to_objects($classes) {
-        return array_map(function($class) { return new $class; },$classes);
+        $schemas = array();
+        foreach( $classes as $class ) {
+            if( is_a($class,'LazyRecord\BaseModel',true) ) {
+                $model = new $class;
+                $schemas[] = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
+            }
+            elseif( is_a($class,'LazyRecord\Schema\SchemaDeclare',true) ) {
+                $schemas[] = new $class; 
+            }
+        }
+        return $schemas;
     }
 
     static function print_schema_classes($classes) {

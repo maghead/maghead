@@ -32,10 +32,17 @@ abstract class SchemaBase
 
     public $mixins = array();
 
+    public $seeds = array();
+
     public function getModelName()
     {
         $p = explode('\\',$this->getModelClass());
         return end($p);
+    }
+
+    public function getSeeds()
+    {
+        return $this->seeds;
     }
 
     // Class name related methods

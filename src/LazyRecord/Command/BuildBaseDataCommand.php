@@ -23,7 +23,6 @@ class BuildBaseDataCommand extends Command
         CommandUtils::print_schema_classes($classes);
 
         $schemas = CommandUtils::schema_classes_to_objects( $classes );
-
         CommandUtils::build_basedata($schemas);
 
         $this->logger->info('Done');

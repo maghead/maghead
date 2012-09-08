@@ -49,6 +49,7 @@ class NameSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'varchar(256)',
           'isa' => 'str',
+          'size' => 256,
           'validator' => function($val,$args,$record) { 
                     if( preg_match( '/fuck/', $val ) )
                         return array( false , "Please don't" );
@@ -60,14 +61,14 @@ class NameSchemaProxy extends RuntimeSchema
           'default' => function() { 
                     return 'Default Address';
                 },
-          'size' => 256,
         ),
     ),
   'country' => array( 
       'name' => 'country',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'varchar(12)',
           'isa' => 'str',
+          'size' => 12,
           'required' => true,
           'validValues' => array( 
               'Taiwan',
@@ -79,8 +80,9 @@ class NameSchemaProxy extends RuntimeSchema
   'type' => array( 
       'name' => 'type',
       'attributes' => array( 
-          'type' => 'text',
+          'type' => 'varchar(24)',
           'isa' => 'str',
+          'size' => 24,
           'validValues' => function() { 
                     return array(
                         /* description => value */

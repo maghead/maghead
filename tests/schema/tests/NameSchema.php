@@ -10,7 +10,7 @@ namespace tests {
         {
 
             $this->column('id')
-                ->type('integer')
+                ->integer()
                 ->primary()
                 ->autoIncrement();
 
@@ -20,15 +20,13 @@ namespace tests {
                 ->varchar(128);
 
             $this->column('description')
-                ->isa('str')
                 ->varchar(128);
 
             $this->column('category_id')
-                ->isa('int')
                 ->integer();
 
             $this->column('address')
-                ->isa('str')
+                ->varchar(64)
                 ->validator( function($val,$args,$record) { 
                     if( preg_match( '/fuck/', $val ) )
                         return array( false , "Please don't" );
@@ -43,12 +41,12 @@ namespace tests {
                 ->varchar(256);
 
             $this->column('country')
-                ->isa('str')
+                ->varchar(12)
                 ->required()
                 ->validValues( array( 'Taiwan' , 'Taipei' , 'Tokyo' ));
 
             $this->column('type')
-                ->isa('str')
+                ->varchar(24)
                 ->validValues(function() { 
                     return array(
                         /* description => value */
@@ -76,6 +74,8 @@ namespace tests {
                 ->inflator( function($val) { 
                     return new \DateTime( $val );
                 });
+
+            $this->seeds('TestSeed');
         }
     }
 
