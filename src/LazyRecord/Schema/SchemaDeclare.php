@@ -8,6 +8,7 @@ use LazyRecord\ClassUtils;
 class SchemaDeclare extends SchemaBase
     implements SchemaDataInterface
 {
+
     public function __construct()
     {
         $this->build();
@@ -38,6 +39,27 @@ class SchemaDeclare extends SchemaBase
     public function readFrom( $id ) 
     {
         $this->readSourceId = $id;
+        return $this;
+    }
+
+
+    /**
+     * Define seed class
+     *
+     * $this->seeds('User\Seed','Data\Seed');
+     */
+    public function seeds() 
+    {
+        $seeds = func_get_args();
+        $this->seeds = array_map(function($class){ 
+            return str_replace('::','\\',$class);
+        }, $seeds);
+        return $this;
+    }
+
+    public function addSeed($seed)
+    {
+        $this->seeds[] = $seed;
         return $this;
     }
 
