@@ -333,6 +333,8 @@ class Column
             $arg = $args[0];
             if( is_a($arg,'ValidationKit\Validator',true) ) {
                 $this->attributes['validator'] = $args[0];
+                if(isset($args[1]))
+                    $this->attributes['validatorArgs'] = $args[1];
                 return $this;
             }
 
@@ -340,12 +342,16 @@ class Column
             $c = 'ValidationKit\\' . $arg;
             if( is_a($c, 'ValidationKit\\Validator',true) ) {
                 $this->attributes['validator'] = $c;
+                if(isset($args[1]))
+                    $this->attributes['validatorArgs'] = $args[1];
                 return $this;
             }
 
             $c = 'ValidationKit\\' . $arg . 'Validator';
             if( is_a($c, 'ValidationKit\\Validator',true) ) {
                 $this->attributes['validator'] = $c;
+                if(isset($args[1]))
+                    $this->attributes['validatorArgs'] = $args[1];
                 return $this;
             }
         }

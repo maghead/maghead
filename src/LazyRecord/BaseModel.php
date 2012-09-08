@@ -390,7 +390,17 @@ abstract class BaseModel
      */
     protected function _validate_validator($c, $val, $args, & $validateFail )
     {
-        $v = call_user_func( $c->validator, $val, $args, $this );
+        $v = array();
+        if( is_callable($c->validator) ) {
+            $v = call_user_func($c->validator, $val, $args, $this );
+        } elseif( is_string($c->validator) && is_a($c->validator,'ValidationKit\\Validator',true) ) {
+            // it's a ValidationKit\Validator
+            $validator = new $c->validator;
+            $ret = $validator->validate($val);
+            $msgs = $validator->getMessages();
+            $v[0] = $ret;
+            $v[1] = $msgs[0];
+        }
         if( ! $v[0] )
             $validateFail[] = $c->name;
         return (object) array(
