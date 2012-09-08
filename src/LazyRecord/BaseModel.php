@@ -395,7 +395,7 @@ abstract class BaseModel
             $v = call_user_func($c->validator, $val, $args, $this );
         } elseif( is_string($c->validator) && is_a($c->validator,'ValidationKit\\Validator',true) ) {
             // it's a ValidationKit\Validator
-            $validator = new $c->validator;
+            $validator = $c->validatorArgs ? new $c->validator($c->validatorArgs) : new $c->validator;
             $ret = $validator->validate($val);
             $msgs = $validator->getMessages();
             $v[0] = $ret;
