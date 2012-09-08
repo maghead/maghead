@@ -10,6 +10,7 @@ class IDNumber extends BaseModel
             ->varchar(10)
             ->validator('TW\\IDNumberValidator');
     }
+
 #boundary start 639323d309ee1eb78e47abd816e15519
 	const schema_proxy_class = 'tests\\IDNumberSchemaProxy';
 	const collection_class = 'tests\\IDNumberCollection';

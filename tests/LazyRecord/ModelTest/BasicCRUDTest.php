@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Testing models:
  *   1. Author
