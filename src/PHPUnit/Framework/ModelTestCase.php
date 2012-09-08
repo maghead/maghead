@@ -93,9 +93,11 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
         /* this will generate schema files */
         // sqlite :memory: require this */
+        /*
         $finder = new LazyRecord\Schema\SchemaFinder;
         $finder->addPath( 'tests/schema' );
         $finder->find();
+        */
 
         $generator = new \LazyRecord\Schema\SchemaGenerator;
         $generator->setLogger( $this->getLogger() );
