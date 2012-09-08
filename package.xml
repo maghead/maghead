@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-09-08</date>
-  <time>16:53:09</time>
+  <time>17:41:46</time>
   <version>
-    <release>1.8.0</release>
-    <api>1.8.0</api>
+    <release>1.8.1</release>
+    <api>1.8.1</api>
   </version>
   <stability>
     <release>stable</release>
@@ -147,7 +147,7 @@
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
       <file name="src/LazyRecord/ArrayUtils.php" role="php" md5sum="e4050887e137de2f7f7fd18fcbdd09c2"/>
       <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="26f38bde5b0b134d8636a39b4e83dabb"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="a23f11857013ede8c6a1ecccbfc1b13d"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="d6544195cf737ccaa5dc87d42f9d7683"/>
       <file name="src/LazyRecord/BaseSeed.php" role="php" md5sum="884fadea8ad5b2c3e86645b70554f955"/>
       <file name="src/LazyRecord/ClassUtils.php" role="php" md5sum="a784d51fadca0712a9e65174c43a8847"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
@@ -176,7 +176,7 @@
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="2030e3e3954fe25c655146758fd2708b"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="0805487d74ddfa56ed44af208fef5b4a"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="69efc7fefb57344d0693586416a6b8d2"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="9d72854473ff8063939353a3165e9c74"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="bd624d10cd07821afec99d8d1413346c"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c750d9b25dd6509c2831197ce7e3da3a"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
