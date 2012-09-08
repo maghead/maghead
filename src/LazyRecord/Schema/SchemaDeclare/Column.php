@@ -80,7 +80,9 @@ class Column
 
             'default' => self::ATTR_ANY,
 
-            'validator'  => self::ATTR_CALLABLE,
+            'validator'  => self::ATTR_ANY,
+
+            'validatorArgs'  => self::ATTR_ANY,
 
             'validValues' => self::ATTR_ANY,
 
@@ -319,6 +321,35 @@ class Column
         $this->type = 'integer';
         $this->isa = 'int';
         return $this;
+    }
+
+    public function validator() {
+        $args = func_get_args();
+        if( count($args) == 1 && is_callable($args[0]) ) {
+            $this->attributes['validator'] = $args[0];
+            return $this;
+        }
+        elseif( is_string($args[0]) ) {
+            $arg = $args[0];
+            if( is_a($arg,'ValidationKit\Validator',true) ) {
+                $this->attributes['validator'] = $args[0];
+                return $this;
+            }
+
+            // guess class name
+            $c = 'ValidationKit\\' . $arg;
+            if( is_a($c, 'ValidationKit\\Validator',true) ) {
+                $this->attributes['validator'] = $c;
+                return $this;
+            }
+
+            $c = 'ValidationKit\\' . $arg . 'Validator';
+            if( is_a($c, 'ValidationKit\\Validator',true) ) {
+                $this->attributes['validator'] = $c;
+                return $this;
+            }
+        }
+        $this->attributes['validator'] = $args[0];
     }
 
     public function export()
