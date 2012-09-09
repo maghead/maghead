@@ -27,7 +27,7 @@ class TableParserTest extends PHPUnit_Framework_TestCase
         $conns = LazyRecord\ConnectionManager::getInstance();
         $conn   = $conns->getConnection($driverType);
         $driver = $conns->getQueryDriver($driverType);
-        $parser = LazyRecord\TableParser::create($driver,$conn);
+        $parser = LazyRecord\TableParser\TableParser::create($driver,$conn);
         ok( $parser );
 
         $tables = $parser->getTables();
