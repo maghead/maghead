@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-09-09</date>
-  <time>14:22:17</time>
+  <time>14:35:15</time>
   <version>
-    <release>1.8.3</release>
-    <api>1.8.3</api>
+    <release>1.8.4</release>
+    <api>1.8.4</api>
   </version>
   <stability>
     <release>stable</release>
@@ -164,9 +164,9 @@
       <file name="src/LazyRecord/CollectionPager.php" role="php" md5sum="f17355028e8d9f52834c289ed07b6665"/>
       <file name="src/LazyRecord/Command/BuildBaseDataCommand.php" role="php" md5sum="b13b0e115381131edfa3b6851529e5ee"/>
       <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="b253b239170ca964eaff60245f41c650"/>
-      <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="57e2a684c075b77ed7e69b69cfca6973"/>
+      <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="3f19a267a31b6ba33f6689d5410eeb87"/>
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="56387198c42ff624a01d164b2e941e55"/>
-      <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="1c095f206063e315c9fa9a3a26f607e8"/>
+      <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="8c9cbaf7e3f4c698477150bfc00d54e5"/>
       <file name="src/LazyRecord/Command/CreateDBCommand.php" role="php" md5sum="a929cd6df7f0bd09d053b8b0115fb35e"/>
       <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="ca577681dcf8b7e78b87dd3bb74a488e"/>
       <file name="src/LazyRecord/Command/InitCommand.php" role="php" md5sum="968f444a1d7a49bf4558e77dcc5c8d2e"/>
@@ -177,7 +177,7 @@
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="2030e3e3954fe25c655146758fd2708b"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="0805487d74ddfa56ed44af208fef5b4a"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="69efc7fefb57344d0693586416a6b8d2"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="4ced4e24048d8a3f3fc47e7bbabf2366"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="870bd9a3810b144068f4642ecd8cc141"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="c750d9b25dd6509c2831197ce7e3da3a"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
