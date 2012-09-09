@@ -121,7 +121,7 @@ class MigrationGenerator
                     $dcall = new MethodCall; // downgrade method call
 
                     if( $diff->flag == '+' ) {
-                        $this->logger->info(sprintf("- Found column %s to be added to '%s'",$diff->name,$t) , 1);
+                        $this->logger->info(sprintf("'%s': add column %s",$t,$diff->name) , 1);
 
                         $call->method('addColumn');
                         $call->addArgument('"'. $t . '"'); // table
@@ -148,8 +148,8 @@ class MigrationGenerator
                     }
                     elseif( $diff->flag == '-' ) {
                         $call->method('dropColumn');
-                        $call->addArgument($t); // table
-                        $call->addArgument($diff->name);
+                        $call->addArgument('"'. $t . '"'); // table
+                        $call->addArgument('"'. $diff->name . '"');
                     }
                     elseif( $diff->flag == '=' ) {
                         $this->logger->warn("** column flag = is not supported yet.");
