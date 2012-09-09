@@ -55,7 +55,6 @@ DOC;
         $id = $options->{'data-source'} ?: 'default';
 
         $logger->debug("Finding schema classes...");
-
         $schemas = CommandUtils::find_schemas_with_arguments( func_get_args() );
 
         $logger->debug("Initialize schema builder...");

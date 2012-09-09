@@ -47,7 +47,10 @@ class CommandUtils
             $seeds = $schema->getSeeds();
             foreach ($seeds as $seedClass ){
                 if( class_exists($seedClass,true) ) {
+                    static::log("Running seed script: $seedClass",'green');
                     $seedClass::seed();
+                } else {
+                    static::log("ERROR: Seed script $seedClass not found.",'red');
                 }
             }
         }
@@ -62,6 +65,9 @@ class CommandUtils
                 }
                 elseif( class_exists($seed,true) ) {
                     $seed::seed();
+                }
+                else {
+                    static::log("ERROR: Can not run $seed",'red');
                 }
             }
         }
@@ -104,19 +110,18 @@ class CommandUtils
 
         $sqls = array();
         foreach( $schemas as $schema ) {
-            $sqls[] = CommandUtils::build_schema_sql($builder,$schema,$conn);
+            $sqls[] = static::build_schema_sql($builder,$schema,$conn);
         }
         return join("\n", $sqls );
     }
 
     static function build_schema_sql($builder,$schema,$conn) {
         $class = get_class($schema);
-        static::log("Building SQL for " . $class,'green');
+        static::log("Building SQL for " . $schema,'green');
 
         $sqls = $builder->build($schema);
         foreach( $sqls as $sql ) {
             static::log( $sql );
-
             $conn->query( $sql );
             $error = $conn->errorInfo();
             if( $error[1] ) {
