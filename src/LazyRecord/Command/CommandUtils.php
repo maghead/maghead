@@ -95,7 +95,7 @@ class CommandUtils
     static function print_schema_classes($classes) {
         static::log('Found schema classes');
         foreach( $classes as $class ) {
-            static::$logger->info( static::$logger->formatter->format($class, 'green') , 1 );
+            static::$logger->debug( static::$logger->formatter->format($class, 'green') , 1 );
         }
     }
 
@@ -117,11 +117,11 @@ class CommandUtils
 
     static function build_schema_sql($builder,$schema,$conn) {
         $class = get_class($schema);
-        static::log("Building SQL for " . $schema,'green');
+        static::$logger->info('Building SQL for ' . $schema);
 
         $sqls = $builder->build($schema);
         foreach( $sqls as $sql ) {
-            static::log( $sql );
+            static::$logger->debug($sql);
             $conn->query( $sql );
             $error = $conn->errorInfo();
             if( $error[1] ) {
