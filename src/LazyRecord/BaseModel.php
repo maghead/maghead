@@ -410,6 +410,16 @@ abstract class BaseModel
      */ 
     protected function _validateColumn($column,$val,$args)
     {
+        if( $column->required && 
+            ( $val === '' || $val === null ))
+        {
+            return array( 
+                'valid' => false, 
+                'message' => sprintf(_('Field %s is required.'), $column->getLabel() ), 
+                'field' => $column->name 
+            );
+        }
+
         if( $column->validator ) {
             if( is_callable($column->validator) ) {
                 $ret = call_user_func($column->validator, $val, $args, $this );
@@ -554,19 +564,15 @@ abstract class BaseModel
 
             $dsId = $this->getWriteSourceId();
             $conn = $this->getConnection( $dsId );
-
             foreach( $this->schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
-                if( ! isset($args[$n]) && ! $c->primary )
+                if( !$c->primary && (!isset($args[$n]) || !$args[$n] ))
                 {
                     if( $val = $c->getDefaultValue($this ,$args) ) {
                         $args[$n] = $val;
-                    } elseif( $c->requried ) {
-                        throw new Exception(sprintf(_("%s is required."), $n ));
-                    }
+                    } 
                 }
-
 
                 // if type constraint is on, check type,
                 // if not, we should try to cast the type of value, 
@@ -839,15 +845,11 @@ abstract class BaseModel
                 // if column is required (can not be empty)
                 //   and default is defined.
                 if( isset($args[$n]) 
-                    && $c->required
                     && ! $args[$n]
                     && ! $c->primary )
                 {
                     if( $val = $c->getDefaultValue($this ,$args) ) {
                         $args[$n] = $val;
-                    }
-                    elseif( $c->requried ) {
-                        throw new Exception( __("%1 is required.", $n) );
                     }
                 }
 
@@ -860,7 +862,7 @@ abstract class BaseModel
                     }
 
                     // xxx: make this optional.
-                    if( $args[$n] !== null && ! is_array($args[$n]) && $c->required && $msg = $c->checkTypeConstraint( $args[$n] ) ) {
+                    if( $args[$n] !== null && ! is_array($args[$n]) && $msg = $c->checkTypeConstraint( $args[$n] ) ) {
                         throw new Exception($msg);
                     }
 
