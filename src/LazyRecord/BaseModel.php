@@ -451,44 +451,94 @@ abstract class BaseModel
     }
 
 
+
+
     /**
      * Run validator to validate column
-     */
-    protected function _validateColumn($column,$value,$args)
+     *
+     * A validator could be:
+     *   1. a ValidationKit validator,
+     *   2. a closure
+     *   3. a function name
+     *
+     * The validation result must be returned as in following format:
+     *
+     *   boolean (valid or invalid, true or false)
+     *
+     *   array( boolean valid , string message )
+     *
+     *   ValidationKit\ValidationMessage object.
+     *
+     * This method returns
+     *
+     *   (object) {
+     *       valid: boolean valid or invalid
+     *       field: string field name
+     *       message: 
+     *   }
+     */ 
+    protected function _validateColumn($column,$val,$args)
     {
-        $result = null;
-
-        // Run column validator
-        //
-        // A validator could be:
-        //   1. a ValidationKit validator,
-        //   2. a closure
-        //   3. a function name
-        //
-        // The validation result must returns an array in following format:
-        //
-        //   array( boolean valid , string message )
         if( $column->validator ) {
-            if( is_callable($c->validator) ) {
-                $v = call_user_func($c->validator, $val, $args, $this );
-            } elseif( is_string($c->validator) && is_a($c->validator,'ValidationKit\\Validator',true) ) {
+            if( is_callable($column->validator) ) {
+                $ret = call_user_func($column->validator, $val, $args, $this );
+                if( is_bool($ret) ) {
+                    return array( 'valid' => $ret, 'message' => 'Validation failed.' , 'field' => $column->name );
+                } elseif( is_array($ret) ) {
+                    return array( 'valid' => $ret[0], 'message' => $ret[1], 'field' => $column->name );
+                } else {
+                    throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
+                }
+            } 
+            elseif( is_string($column->validator) && is_a($column->validator,'ValidationKit\\Validator',true) ) {
                 // it's a ValidationKit\Validator
-                $validator = $c->validatorArgs ? new $c->validator($c->validatorArgs) : new $c->validator;
+                $validator = $column->validatorArgs ? new $column->validator($column->validatorArgs) : new $column->validator;
                 $ret = $validator->validate($val);
                 $msgs = $validator->getMessages();
-                $v[0] = $ret;
-                $v[1] = $msgs[0];
+                $msg = isset($msgs[0]) ? $msgs[0] : 'Validation failed.';
+                return array('valid' => $ret , 'message' => $msg , 'field' => $column->name );
             }
-            $result = (object) array(
-                'success' => $v[0],
-                'message' => $v[1],
-                'field' => $c->name,
-            );
+            else {
+                throw new Exception("Unsupported validator");
+            }
         }
         if( $val && ($column->validValues || $column->validValueBuilder) ) {
-            $result = $this->_validate_validvalues( $column, $val ,$args, $validateFail );
+            if( $validValues = $column->getValidValues( $this, $args ) ) {
+                // sort by index
+                if( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
+                    return array(
+                        'valid' => false,
+                        'message' => sprintf("%s is not a valid value for %s", $val , $c->name ),
+                        'field' => $c->name,
+                    );
+                }
+
+                /*
+                 * Validate for Options
+                 * "Label" => "Value",
+                 * "Group" => array( "Label" => "Value" )
+                
+                 * Order with key => value
+                 *    value => label
+                 */
+                else {
+                    $values = array_values( $validValues );
+                    foreach( $values as & $v ) {
+                        if( is_array($v) ) {
+                            $v = array_values($v);
+                        }
+                    }
+
+                    if( ! in_array( $val , $values ) ) {
+                        return array(
+                            'valid' => false,
+                            'message' => sprintf(_("%s is not a valid value for %s"), $val , $c->name ),
+                            'field' => $column->name,
+                        );
+                    }
+                }
+            }
         }
-        return $result;
     }
 
 
@@ -516,7 +566,7 @@ abstract class BaseModel
     }
 
     /**
-     * Method for creating new records, which is called from 
+     * Method for creating new record, which is called from 
      * static::create and $record->create.
      *
      * 1. _create method calls beforeCreate to 
@@ -564,10 +614,11 @@ abstract class BaseModel
 
             $k = $this->schema->primaryKey;
             $sql = $vars     = null;
-            $validateFail    = array();
             $this->_data     = array();
-            $validateResults = array();
             $stm = null;
+
+            $validationResults = array();
+            $validationFailed = false;
 
 
             $dsId = $this->getWriteSourceId();
@@ -607,25 +658,19 @@ abstract class BaseModel
                 }
 
 
-                // do validate
-                if( $c->validator ) {
-                    $validateResults[$n] = 
-                        $this->_validate_validator( $c, $val, $args, $validateFail );
-                }
-                if( $val && ($c->validValues || $c->validValueBuilder) ) {
-                    if( $r = $this->_validate_validvalues( $c, $val ,$args, $validateFail ) ) {
-                        $validateResults[$n] = $r;
+                if( $validationResult = $this->_validateColumn($c,$val,$args) ) {
+                    $validationResults[$n] = (object) $validationResult;
+                    if( ! $validationResult['valid'] ) {
+                        $validationFailed = true;
                     }
                 }
-
                 if( $val !== null ) {
                     $args[ $n ] = is_array($val) ? $val : $c->deflate( $val );
                 }
             }
 
-            if( $validateFail ) {
-                // XXX: use reportError method to report validation errors.
-                throw new Exception( 'Validation Fail, Columns: ' . implode(', ', $validateFail ) . ' Args: ' . print_r($args, true) );
+            if( $validationFailed ) {
+                throw new Exception( "Validation failed." );
             }
 
             $q = $this->createQuery( $dsId );
@@ -647,7 +692,7 @@ abstract class BaseModel
                 'args'        => $args,
                 'sql'         => $sql,
                 'exception'   => $e,
-                'validations' => $validateResults,
+                'validations' => $validationResults,
             ));
         }
 
@@ -668,9 +713,9 @@ abstract class BaseModel
 
         $ret = array( 
             'sql' => $sql,
-            'validations' => $validateResults,
             'args' => $args,
             'vars' => $vars,
+            'validations' => $validationResults,
         );
         if( isset($this->_data[ $k ]) ) {
             $ret['id'] = $this->_data[ $k ];
@@ -721,7 +766,7 @@ abstract class BaseModel
 
         $sql = $query->build();
 
-        $validateResults = array();
+        $validationResults = array();
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         $stm = null;
@@ -741,14 +786,14 @@ abstract class BaseModel
                 'args' => $args,
                 'vars' => $query->vars,
                 'exception' => $e,
-                'validations' => $validateResults,
+                'validations' => $validationResults,
             ));
         }
 
         return $this->reportSuccess( 'Data loaded', array( 
             'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
             'sql' => $sql,
-            'validations' => $validateResults,
+            'validations' => $validationResults,
         ));
     }
 
@@ -789,7 +834,7 @@ abstract class BaseModel
             ->equal( $k , $kVal );
         $sql = $query->build();
 
-        $validateResults = array();
+        $validationResults = array();
         try {
             $this->dbPrepareAndExecute($conn,$sql, $query->vars );
         } catch( PDOException $e ) {
@@ -797,7 +842,7 @@ abstract class BaseModel
             return $this->reportError( ($msg ? $msg : _('Delete failed.')) , array(
                 'sql'         => $sql,
                 'exception'   => $e,
-                'validations' => $validateResults,
+                'validations' => $validationResults,
             ));
         }
 
@@ -839,9 +884,13 @@ abstract class BaseModel
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
 
+
         if( ! $kVal ) {
             return $this->reportError("The value of primary key is undefined.");
         }
+
+        $validationFailed = false;
+        $validationResults = array();
 
         try 
         {
@@ -888,22 +937,19 @@ abstract class BaseModel
                         $c->canonicalizeValue( $args[$n], $this, $args );
                     }
 
-
-                    // do validate
-                    if( $c->validator ) {
-                        $validateResults[$n] = 
-                            $this->_validate_validator( $c, $args[$n], $args, $validateFail );
-                    }
-
-                    if( $c->validValues || $c->validValueBuilder ) {
-                        if( $r = $this->_validate_validvalues( $c, $args[$n] ,$args, $validateFail ) ) {
-                            $validateResults[$n] = $r;
+                    if( $validationResult = $this->_validateColumn($c,$args[$n],$args) ) {
+                        $validationResults[$n] = (object) $validationResult;
+                        if( ! $validationResult['valid'] ) {
+                            $validationFailed = true;
                         }
                     }
 
                     // deflate
                     $args[ $n ] = is_array($args[$n]) ? $args[$n] : $c->deflate( $args[$n] );
                 }
+
+                if( $validationFailed )
+                    throw new Exception( "Validation failed." );
             }
 
             $query = $this->createQuery( $dsId );
@@ -934,7 +980,8 @@ abstract class BaseModel
                 'vars' => $vars,
                 'args' => $args,
                 'sql' => $sql,
-                'exception' => $e,
+                'exception'   => $e,
+                'validations' => $validationResults,
             ));
         }
 

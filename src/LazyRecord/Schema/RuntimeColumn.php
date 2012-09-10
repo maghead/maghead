@@ -80,7 +80,6 @@ class RuntimeColumn
     }
 
 
-
     /**
      * Column value type casting
      *

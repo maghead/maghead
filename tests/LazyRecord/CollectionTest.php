@@ -41,9 +41,9 @@ class CollectionTest extends PHPUnit_Framework_ModelTestCase
     public function testAsPairs()
     {
         $address = new \tests\Address;
-        ok( $address->create(array( 'address' => 'Hack' ))->success );
-        ok( $address->create(array( 'address' => 'Hack I' ))->success );
-        ok( $address->create(array( 'address' => 'Hack II' ))->success );
+        result_ok( $address->create(array( 'address' => 'Hack' )) );
+        result_ok( $address->create(array( 'address' => 'Hack I' )) );
+        result_ok( $address->create(array( 'address' => 'Hack II' )) );
 
         $addresses = new \tests\AddressCollection;
         $pairs = $addresses->asPairs( 'id' , 'address' );
