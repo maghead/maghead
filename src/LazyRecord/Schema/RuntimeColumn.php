@@ -219,6 +219,7 @@ class RuntimeColumn
         if( $this->label ) {
             return _( $this->label );
         }
+        return ucfirst($this->name);
     }
 
 }
