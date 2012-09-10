@@ -519,9 +519,10 @@ abstract class BaseModel
             }
 
             $k = $this->schema->primaryKey;
-            $sql = $vars = null;
+            $sql = $vars     = null;
             $validateFail    = array();
-            $this->_data = $validateResults = array();
+            $this->_data     = array();
+            $validateResults = array();
             $stm = null;
 
 
@@ -560,6 +561,7 @@ abstract class BaseModel
                 if( $c->filter || $c->canonicalizer ) {
                     $c->canonicalizeValue( $val , $this, $args );
                 }
+
 
                 // do validate
                 if( $c->validator ) {
