@@ -26,13 +26,7 @@ class OperationError extends OperationResult
         if( $this->validations ) {
             $str .= "\nValidations: ";
             foreach( $this->validations as $v ) {
-                $str .= "\n" . (
-                    is_array($v) 
-                        ? print_r($v,true) 
-                        : (is_object($v) 
-                            ? $v->__toString() 
-                            : $v)
-                );
+                $str .= sprintf("\n\t%s) %s: %s", $v->valid ? 'Valid' : 'Invalid', $v->field, $v->message);
             }
         }
         return $str;
