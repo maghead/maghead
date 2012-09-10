@@ -17,6 +17,9 @@ use SerializerKit\XmlSerializer;
 use SerializerKit\JsonSerializer;
 use SerializerKit\YamlSerializer;
 
+use ValidationKit\ValidationMessage;
+
+
 /**
  * Base Model class,
  * every model class extends from this class.
@@ -449,6 +452,47 @@ abstract class BaseModel
 
 
     /**
+     * Run validator to validate column
+     */
+    protected function _validateColumn($column,$value,$args)
+    {
+        $result = null;
+
+        // Run column validator
+        //
+        // A validator could be:
+        //   1. a ValidationKit validator,
+        //   2. a closure
+        //   3. a function name
+        //
+        // The validation result must returns an array in following format:
+        //
+        //   array( boolean valid , string message )
+        if( $column->validator ) {
+            if( is_callable($c->validator) ) {
+                $v = call_user_func($c->validator, $val, $args, $this );
+            } elseif( is_string($c->validator) && is_a($c->validator,'ValidationKit\\Validator',true) ) {
+                // it's a ValidationKit\Validator
+                $validator = $c->validatorArgs ? new $c->validator($c->validatorArgs) : new $c->validator;
+                $ret = $validator->validate($val);
+                $msgs = $validator->getMessages();
+                $v[0] = $ret;
+                $v[1] = $msgs[0];
+            }
+            $result = (object) array(
+                'success' => $v[0],
+                'message' => $v[1],
+                'field' => $c->name,
+            );
+        }
+        if( $val && ($column->validValues || $column->validValueBuilder) ) {
+            $result = $this->_validate_validvalues( $column, $val ,$args, $validateFail );
+        }
+        return $result;
+    }
+
+
+    /**
      * Get the RuntimeColumn objects from RuntimeSchema object.
      */
     public function columns()
@@ -580,6 +624,7 @@ abstract class BaseModel
             }
 
             if( $validateFail ) {
+                // XXX: use reportError method to report validation errors.
                 throw new Exception( 'Validation Fail, Columns: ' . implode(', ', $validateFail ) . ' Args: ' . print_r($args, true) );
             }
 
