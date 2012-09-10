@@ -10,10 +10,22 @@ use PDO;
 class Metadata
     implements ArrayAccess, IteratorAggregate
 {
+
+    /**
+     * @var string data source id
+     */
     public $dsId;
 
+
+    /**
+     * @var PDO PDO connection object
+     */
     public $connection;
 
+
+    /**
+     * @var SQLBuilder\QueryDriver QueryDriver from SQLBuilder
+     */
     public $driver;
 
     public function __construct($dsId) 
