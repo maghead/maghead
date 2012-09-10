@@ -418,7 +418,7 @@ abstract class BaseModel
                 $validateFail[] = $c->name;
                 return (object) array(
                     'success' => false,
-                    'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
+                    'message' => sprintf("%s is not a valid value for %s", $val , $c->name ),
                     'field' => $c->name,
                 );
             }
@@ -439,7 +439,7 @@ abstract class BaseModel
                     $validateFail[] = $c->name;
                     return (object) array(
                         'success' => false,
-                        'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
+                        'message' => sprintf(_("%s is not a valid value for %s"), $val , $c->name ),
                         'field' => $c->name,
                     );
                 }
@@ -596,7 +596,8 @@ abstract class BaseModel
         }
         catch ( Exception $e )
         {
-            return $this->reportError( _("Create failed") , array( 
+            $msg = $e->getMessage();
+            return $this->reportError( ($msg ? $msg : _("Create failed")) , array( 
                 'vars'        => $vars,
                 'args'        => $args,
                 'sql'         => $sql,
@@ -689,7 +690,8 @@ abstract class BaseModel
         }
         catch ( Exception $e ) 
         {
-            return $this->reportError( 'Data load failed' , array(
+            $msg = $e->getMessage();
+            return $this->reportError( ($msg ? $msg : _('Data load failed')) , array(
                 'sql' => $sql,
                 'args' => $args,
                 'vars' => $query->vars,
@@ -746,7 +748,8 @@ abstract class BaseModel
         try {
             $this->dbPrepareAndExecute($conn,$sql, $query->vars );
         } catch( PDOException $e ) {
-            return $this->reportError( _('Delete failed.') , array(
+            $msg = $e->getMessage();
+            return $this->reportError( ($msg ? $msg : _('Delete failed.')) , array(
                 'sql'         => $sql,
                 'exception'   => $e,
                 'validations' => $validateResults,
@@ -881,7 +884,8 @@ abstract class BaseModel
         } 
         catch( Exception $e ) 
         {
-            return $this->reportError( 'Update failed', array(
+            $msg = $e->getMessage();
+            return $this->reportError( ($msg ? $msg : 'Update failed') , array(
                 'vars' => $vars,
                 'args' => $args,
                 'sql' => $sql,
@@ -889,7 +893,7 @@ abstract class BaseModel
             ));
         }
 
-        return $this->reportSuccess( _('Deleted') , array( 
+        return $this->reportSuccess( 'Deleted' , array( 
             'id'  => $kVal,
             'sql' => $sql,
             'args' => $args,
