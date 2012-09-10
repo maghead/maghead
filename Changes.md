@@ -1,6 +1,11 @@
 Changes
 =======
 
+## v1.8.7
+
+- Fix required column validation
+- Improve validation
+
 ## v1.8.5
 
 Important changes
