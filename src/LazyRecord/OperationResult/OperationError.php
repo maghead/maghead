@@ -15,9 +15,12 @@ class OperationError extends OperationResult
             $str .= '[' . $this->code . ']';
 
         $str .= ' ' . $this->message;
-
         if( $this->exception ) 
-            $str .= ' E: ' . $this->exception->getMessage();
+            $str .= "\nException: " . $this->exception->__toString();
+        if( $this->sql )
+            $str .= "\nSQL: " . $this->sql;
+        if( $this->vars )
+            $str .= "\nVars: " . print_r($this->vars,true);
         return $str;
     }
 
