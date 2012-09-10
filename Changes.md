@@ -1,18 +1,16 @@
 Changes
 =======
 
-## develop branch
+## v1.8.5
 
-### Important changes
-
+Important changes
 - Fixed MySQL connection init command (set names utf8)
 - Improve Collection join method (detects relationship from model schema, and build the join query)
+- Improve Validations, Add support of ValidationKit.
 
-### Minor changes
-
+Minor changes
 - Add closure support to default value schema column
 - Add closure support to validValues schema column
-
 
 ## v1.6.3
 
