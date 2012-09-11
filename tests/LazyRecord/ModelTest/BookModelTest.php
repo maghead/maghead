@@ -122,4 +122,18 @@ class BookModelTest extends PHPUnit_Framework_ModelTestCase
         $ret = $b->delete();
         result_ok($ret);
     }
+
+    public function testGeneralInterface() 
+    {
+        $a = new \tests\Book;
+        ok($a);
+
+        ok( $a->getQueryDriver('default') );
+        ok( $a->getWriteQueryDriver() );
+        ok( $a->getReadQueryDriver() );
+
+        $query = $a->createQuery();
+        ok($query);
+        isa_ok('SQLBuilder\\QueryBuilder', $query );
+    }
 }
