@@ -1,5 +1,5 @@
 <?php
-class PgsqlBookModelTest extends BookModelTest 
+class BookModelPgsqlTest extends BookModelTest 
 {
     public $driver = 'pgsql';
     public function setUp() {
