@@ -1,4 +1,6 @@
 <?php
+require_once 'BookModelTest.php';
+
 class BookModelPgsqlTest extends BookModelTest 
 {
     public $driver = 'pgsql';

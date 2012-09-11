@@ -1,6 +1,8 @@
 <?php
+require_once 'BookModelTest.php';
 
-class BookModelMysqlTest extends BookModelTest {
+class BookModelMysqlTest extends BookModelTest 
+{
 
     public $driver = 'mysql';
 
