@@ -84,29 +84,20 @@ class MigrationGenerator
 
     public function generateWithDiff($taskName,$dataSourceId,$schemas,$time = null)
     {
-        $template = $this->createClassTemplate($taskName,$time);
-        $upgradeMethod = $template->addMethod('public','upgrade',array(),'');
-        $downgradeMethod = $template->addMethod('public','downgrade',array(),'');
-
-
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $connection  = $connectionManager->getConnection($dataSourceId);
         $driver      = $connectionManager->getQueryDriver($dataSourceId);
 
-
         $parser = TableParser::create( $driver, $connection );
-        $tableSchemas = array();
-
-        // database schemas
-        $tables = $parser->getTables();
-        foreach(  $tables as $table ) {
-            $tableSchemas[ $table ] = $parser->getTableSchema( $table );
-        }
-
-        $comparator = new Comparator;
+        $tableSchemas = $parser->getTableSchemas();
 
         $this->logger->info( 'Found ' . count($schemas) . ' schemas to compare.' );
 
+        $template = $this->createClassTemplate($taskName,$time);
+        $upgradeMethod = $template->addMethod('public','upgrade',array(),'');
+        $downgradeMethod = $template->addMethod('public','downgrade',array(),'');
+
+        $comparator = new Comparator;
         // schema from runtime
         foreach( $schemas as $b ) {
             $t = $b->getTable();

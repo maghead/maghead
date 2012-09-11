@@ -16,6 +16,16 @@ abstract class BaseTableParser
     abstract function getTables();
     abstract function getTableSchema($table);
 
+    public function getTableSchemas()
+    {
+        $tableSchemas = array();
+        $tables = $this->getTables();
+        foreach(  $tables as $table ) {
+            $tableSchemas[ $table ] = $this->getTableSchema( $table );
+        }
+        return $tableSchemas;
+    }
+
     public function typenameToIsa($type)
     {
         $type = strtolower($type);

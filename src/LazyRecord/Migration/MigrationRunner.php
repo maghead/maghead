@@ -4,6 +4,8 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use LazyRecord\Console;
 use LazyRecord\Metadata;
+use LazyRecord\Schema\Comparator;
+use LazyRecord\TableParser\TableParser;
 
 class MigrationRunner
 {
@@ -14,6 +16,8 @@ class MigrationRunner
     public function __construct($dsIds)
     {
         $this->logger = Console::getInstance()->getLogger();
+
+        // XXX: get data source id list from config loader
         $this->dataSourceIds = (array) $dsIds;
     }
 
@@ -82,7 +86,7 @@ class MigrationRunner
         return $classes;
     }
 
-    public function getUpgradeScripts($dsId) 
+    public function getUpgradeScripts($dsId)
     {
         $lastMigrationId = $this->getLastMigrationId($dsId);
         $scripts = $this->getMigrationScripts();
@@ -140,5 +144,59 @@ class MigrationRunner
             }
         }
     }
+
+    public function runUpgradeFromSchemaDiff($schemas)
+    {
+        foreach( $this->dataSourceIds as $dsId ) {
+            $script = new Migration($dsId);
+            $parser       = TableParser::create($script->driver, $script->connection);
+            $tableSchemas = $parser->getTableSchemas();
+            $comparator = new Comparator;
+            // schema from runtime
+            foreach( $schemas as $b ) {
+                $t = $b->getTable();
+                $foundTable = isset( $tableSchemas[ $t ] );
+                if( $foundTable ) {
+                    $a = $tableSchemas[ $t ]; // schema object, extracted from database.
+                    $diffs = $comparator->compare( $a , $b );
+
+                    // generate alter table statement.
+                    foreach( $diffs as $diff ) {
+                        if( $diff->flag == '+' ) {
+
+                            // filter out useless columns
+                            $columnArgs = array();
+                            foreach( $diff->column->toArray() as $key => $value ) 
+                            {
+                                if( is_object($value) )
+                                    continue;
+                                if( is_array($value) )
+                                    continue;
+                                if( in_array($key,array(
+                                    'type','primary','name','unique','default','notNull','null','autoIncrement')))
+                                    $columnArgs[ $key ] = $value;
+                            }
+                            $script->addColumn( $t , $columnArgs );
+                        }
+                        elseif( $diff->flag == '-' ) {
+                            $script->dropColumn($t, $diff->name);
+                        }
+                        elseif( $diff->flag == '=' ) {
+                            $this->logger->warn("** column flag = is not supported yet.");
+                        }
+                        else {
+                            $this->logger->warn("** unsupported flag.");
+                        }
+                    }
+                } 
+                else {
+                    // generate create table statement.
+                    // use sqlbuilder to build schema sql
+                    $script->importSchema( $b );
+                }
+            }
+        }
+    }
+
 }
 
