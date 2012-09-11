@@ -1,4 +1,6 @@
 <?php
+
+
 class BookModelTest extends PHPUnit_Framework_ModelTestCase
 {
     public $driver = 'sqlite';
@@ -137,3 +139,4 @@ class BookModelTest extends PHPUnit_Framework_ModelTestCase
         isa_ok('SQLBuilder\\QueryBuilder', $query );
     }
 }
+
