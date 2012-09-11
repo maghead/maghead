@@ -1,5 +1,6 @@
 <?php
-class MysqlBookModelTest extends BookModelTest {
+
+class BookModelMysqlTest extends BookModelTest {
 
     public $driver = 'mysql';
 
