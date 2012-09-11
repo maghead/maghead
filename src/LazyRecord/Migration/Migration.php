@@ -80,11 +80,11 @@ class Migration
 
     public function importSchema($schema) {
         $builder = \LazyRecord\SqlBuilder\SqlBuilder::create($this->driver);
-        if( is_a($schema,'LazyRecord\Schema\SchemaDeclare') ) {
+        if( is_a($schema,'LazyRecord\Schema\SchemaDeclare',true) ) {
             $sqls = $builder->build($schema);
             $this->executeSql($sqls);
         } 
-        elseif( is_a($schema,'LazyRecord\BaseModel') && method_exists($schema,'schema') ) {
+        elseif( is_a($schema,'LazyRecord\BaseModel',true) && method_exists($schema,'schema') ) {
             $model = $schema;
             $schema = new DynamicSchemaDeclare($model);
 
