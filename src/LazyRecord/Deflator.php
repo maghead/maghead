@@ -23,7 +23,7 @@ class Deflator
             return (float) $value;
         }
         elseif( $isa == 'DateTime' ) {
-            if( is_a($value, 'DateTime') ) {
+            if( is_a($value, 'DateTime',true) ) {
                 return $value->format( DateTime::ATOM );
             }
             if( $value === '' ) {

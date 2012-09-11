@@ -64,7 +64,7 @@ namespace tests {
                 ->date()
                 ->isa('DateTime')
                 ->deflator( function($val) {
-                    if( is_a( $val, 'DateTime' ) )
+                    if( is_a( $val, 'DateTime',true ) )
                         return $val->format('Y-m-d');
                     elseif( is_integer($val) ) {
                         return strftime( '%Y-%m-%d' , $val );
