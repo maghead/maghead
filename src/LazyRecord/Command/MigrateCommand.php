@@ -1,6 +1,8 @@
 <?php
 namespace LazyRecord\Command;
 use CLIFramework\Command;
+use LazyRecord\Migration\MigrationGenerator;
+use LazyRecord\TableParser\TableParser;
 
 class MigrateCommand extends Command
 {
@@ -14,8 +16,9 @@ class MigrateCommand extends Command
         $opts->add('new:','create new migration script.');
         $opts->add('diff:','use schema diff to generate script automatically.');
         $opts->add('status','show current migration status.');
-        $opts->add('up','upgrade');
-        $opts->add('down','downgrade');
+        $opts->add('u|up','run upgrade migration scripts.');
+        $opts->add('d|down','run downgrade migration scripts.');
+        $opts->add('U|upgrade-diff','run upgrade from schema diff');
         $opts->add('D|data-source:','data source id.');
     }
 
@@ -24,6 +27,7 @@ class MigrateCommand extends Command
         $optNew = $this->options->new;
         $optDiff = $this->options->diff;
         $optUp = $this->options->up;
+        $optUpgradeDiff = $this->options->{'upgrade-diff'};
         $optDown = $this->options->down;
         $optStatus = $this->options->status;
         $dsId = $this->options->{'data-source'} ?: 'default';
@@ -32,22 +36,31 @@ class MigrateCommand extends Command
         $config = CommandUtils::init_config_loader();
 
         if( $optNew ) {
-            $generator = new \LazyRecord\Migration\MigrationGenerator('db/migrations');
+            $generator = new MigrationGenerator('db/migrations');
             $this->logger->info( "Creating migration script for '" . $optNew . "'" );
             list($class,$path) = $generator->generate($optNew);
             $this->logger->info( "Migration script is generated: $path" );
         }
         elseif( $optDiff ) {
-            $generator = new \LazyRecord\Migration\MigrationGenerator('db/migrations');
-
             $this->logger->info( "Loading schema objects..." );
             $finder = new \LazyRecord\Schema\SchemaFinder;
             $finder->paths = $config->getSchemaPaths() ?: array();
             $finder->find();
+            $schemas = $finder->getSchemas();
 
+            $generator = new MigrationGenerator('db/migrations');
             $this->logger->info( "Creating migration script from diff" );
-            list($class,$path) = $generator->generateWithDiff( $optDiff ,$dsId,$finder->getSchemas());
+            list($class,$path) = $generator->generateWithDiff( $optDiff ,$dsId,$schemas);
             $this->logger->info( "Migration script is generated: $path" );
+        }
+        elseif( $optUpgradeDiff ) {
+            $this->logger->info( "Loading schema objects..." );
+            $finder = new \LazyRecord\Schema\SchemaFinder;
+            $finder->paths = $config->getSchemaPaths() ?: array();
+            $finder->find();
+            $schemas = $finder->getSchemas();
+            $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
+            $runner->runUpgradeFromSchemaDiff($schemas);
         }
         elseif( $optStatus ) {
             $runner = new \LazyRecord\Migration\MigrationRunner($dsId);
