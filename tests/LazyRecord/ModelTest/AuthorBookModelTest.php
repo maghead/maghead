@@ -1,19 +1,17 @@
 <?php
 
-class ModelTest extends PHPUnit_Framework_ModelTestCase
+class AuthorBookModelTest extends PHPUnit_Framework_ModelTestCase
 {
     public $driver = 'sqlite';
 
     public function getModels()
     {
         return array( 
-            '\tests\AuthorSchema', 
-            '\tests\BookSchema',
-            '\tests\AuthorBookSchema',
+            'tests\AuthorSchema', 
+            'tests\AuthorBookSchema',
+            'tests\BookSchema',
         );
     }
-
-
 
     public function testBooleanCondition() 
     {
@@ -387,7 +385,6 @@ class ModelTest extends PHPUnit_Framework_ModelTestCase
 
         $author->delete();
     }
-
 
 }
 
