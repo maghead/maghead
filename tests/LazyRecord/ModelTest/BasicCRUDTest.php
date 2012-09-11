@@ -88,7 +88,7 @@ class BasicCRUDTest extends PHPUnit_Framework_ModelTestCase
 
     public function testGeneralInterface() 
     {
-        $a = new \tests\Address;
+        $a = new \tests\Book;
         ok($a);
 
         ok( $a->getQueryDriver('default') );
