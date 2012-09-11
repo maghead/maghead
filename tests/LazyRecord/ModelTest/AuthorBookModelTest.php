@@ -7,9 +7,9 @@ class AuthorBookModelTest extends PHPUnit_Framework_ModelTestCase
     public function getModels()
     {
         return array( 
-            'tests\AuthorSchema', 
-            'tests\AuthorBookSchema',
-            'tests\BookSchema',
+            'tests\\AuthorSchema', 
+            'tests\\AuthorBookSchema',
+            'tests\\BookSchema',
         );
     }
 
