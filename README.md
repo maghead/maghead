@@ -187,7 +187,8 @@ Please check `doc/` directory for more details.
 ## Migration Support
 
 If you need to modify schema code, like adding new columns to a table, you 
-can use the amazing migration feature to migrate your database to the latest version.
+can use the amazing migration feature to migrate your database to the latest
+change without pain.
 
 Once you modified the schema code, you can execute `lazy diff` command to compare
 current exisiting database table:
@@ -204,8 +205,13 @@ current exisiting database table:
     + table 'i_d_numbers'        tests/schema/tests/IDNumber.php
     + table 'wines'              tests/schema/tests/Wine.php
 
-which shows the diff from database. and now you can generate the migration script 
-or upgrade database schema directly.
+As you can see, we added a lot of new tables (schemas), and LazyRecord parses
+the database tables to show you the difference to let you know current
+status.
+
+> Currently LazyRecord supports SQLite, PostgreSQL, MySQL table parsing.
+
+now you can generate the migration script or upgrade database schema directly.
 
 to upgrade database schema directly, you can simply run:
 
