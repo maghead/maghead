@@ -10,7 +10,7 @@ class CommandUtils
 
     static function init_config_loader() {
         $loader = ConfigLoader::getInstance();
-        $loader->loadFromSymbol();
+        $loader->loadFromSymbol(true); // force loading
         $loader->initForBuild();
         return static::$loader = $loader;
     }
