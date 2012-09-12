@@ -6,8 +6,8 @@ LazyRecord is an open-source Object-Relational Mapping (ORM) for PHP5.
 It allows you to access your database very easily by using ActiveRecord
 pattern API.
 
-LazyRecord uses code generation to generate static code, to reduce the runtime 
-costs, so it's fast. 
+LazyRecord uses code generator to generate static code, which reduces runtime 
+costs, therefore it's pretty lightweight and fast. 
 
 LazyRecord is not like PropelORM, it doesn't use ugly XML as its schema or
 config file, LazyRecord uses simpler YAML format config file and it compiles
