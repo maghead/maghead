@@ -206,7 +206,7 @@
          <available file="package.ini"/>
         <then>
             <exec executable="onion" failonerror="true">
-                <arg value="-d"/>
+                <arg value="-q"/>
                 <arg value="build"/>
             </exec>
         </then>
