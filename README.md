@@ -31,7 +31,6 @@ Installation
 
 ```sh
 pear channel-discover pear.corneltek.com
-pear channel-discover pear.twig-project.org
 pear install -a -f corneltek/LazyRecord
 ```
 
