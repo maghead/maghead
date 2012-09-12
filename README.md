@@ -201,9 +201,7 @@ current exisiting database table:
     + table 'books'              tests/schema/tests/Book.php
     + table 'users'              tests/schema/tests/User.php
     + table 'publishers'         tests/schema/tests/Publisher.php
-    + table 'Edm'                tests/schema/tests/Edm.php
     + table 'names'              tests/schema/tests/Name.php
-    + table 'i_d_numbers'        tests/schema/tests/IDNumber.php
     + table 'wines'              tests/schema/tests/Wine.php
 
 As you can see, we added a lot of new tables (schemas), and LazyRecord parses
@@ -231,9 +229,7 @@ generate a new migration script like:
         Found schema 'tests\BookSchema' to be imported to 'books'
         Found schema 'tests\UserSchema' to be imported to 'users'
         Found schema 'tests\PublisherSchema' to be imported to 'publishers'
-        Found schema 'tests\EdmSchema' to be imported to 'Edm'
         Found schema 'tests\NameSchema' to be imported to 'names'
-        Found schema 'tests\IDNumber' to be imported to 'i_d_numbers'
         Found schema 'tests\Wine' to be imported to 'wines'
     Migration script is generated: db/migrations/20120912_AddUserRoleColumn.php
 
