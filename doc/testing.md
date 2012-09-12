@@ -1,12 +1,11 @@
-Testing
-=======
+Unit Testing
+============
 
 ## Config
 
 To test LazyRecord ORM, first you need to copy the config for test:
 
-    cp -v config/database.testing.yml config/database.yml
-
+    cp -v db/config/database.testing.yml db/config/database.yml
 
 ## Test with MySQL database
 
