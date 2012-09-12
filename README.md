@@ -1,6 +1,21 @@
 LazyRecord
 ==========
 
+LazyRecord is an open-source Object-Relational Mapping (ORM) for PHP5. 
+
+It allows you to access your database very easily by using ActiveRecord
+pattern API.
+
+LazyRecord uses code generation to generate static code, to reduce the runtime 
+costs, so it's fast. 
+
+LazyRecord is not like PropelORM, it doesn't use ugly XML as its schema or
+config file, LazyRecord uses simpler YAML format config file and it compiles
+YAML to pure PHP code to improve the performance of config loading.
+
+LazyRecord also has a simpler schema design, you can define your model schema 
+very easily and you can even embed closure in your schema classes.
+
 <div style="width:425px" id="__ss_12638921"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/lazyrecord-the-fast-orm-for-php" title="LazyRecord: The Fast ORM for PHP" target="_blank">LazyRecord: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
 
 Features
@@ -10,6 +25,7 @@ Features
 * Simple, Lightweight Pure PHP Model Schema (No XML)
 * PDO, MySQL, Pgsql, SQLite support.
 * Multiple Data source support.
+* Mix-in Model
 * Migration support. upgrade, downgrade, upgrade from schema diff.
 * Schema/Database diff
 
@@ -297,6 +313,14 @@ If you regret, you can run downgrade migrations through the command:
 But please note that SQLite doesn't support column renaming and column dropping.
 
 To see what migration script could do, please check the documentation of SQLBuilder package.
+
+## Mix-In Schema
+
+...
+
+## Basedata Seed
+
+...
 
 ## Setting up QueryDriver for SQL syntax
  
