@@ -30,11 +30,9 @@ Installation
 ------------
 
 ```sh
-$ pear channel-discover pear.corneltek.com
-$ pear channel-discover pear.twig-project.org
-$ pear install -a -f corneltek/Universal
-$ pear install -a -f corneltek/LazyRecord
-$ pear install -a -f twig/Twig
+pear channel-discover pear.corneltek.com
+pear channel-discover pear.twig-project.org
+pear install -a -f corneltek/LazyRecord
 ```
 
 Getting Started
