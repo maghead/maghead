@@ -20,4 +20,3 @@ class SchemaCommand extends Command
     }
 }
 
-
