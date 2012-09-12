@@ -6,10 +6,22 @@ LazyRecord
 Features
 --------
 
-* Fast.
+* Fast
+* Simple, Lightweight Pure PHP Model Schema (No XML)
 * PDO, MySQL, Pgsql, SQLite support.
-* Multiple Data source
+* Multiple Data source support.
+* Migration support. upgrade, downgrade, upgrade from schema diff.
 * Schema/Database diff
+
+Requirement
+-----------
+
+PHP Extensions:
+
+- yaml extension
+- pdo
+- mysql, pgsql or sqlite
+
 
 Installation
 ------------
