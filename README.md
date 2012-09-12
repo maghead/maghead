@@ -24,8 +24,8 @@ Features
 * Fast
 * Simple, Lightweight Pure PHP Model Schema (No XML)
 * PDO, MySQL, Pgsql, SQLite support.
-* Multiple Data source support.
-* Mix-in Model
+* Multiple data source support.
+* Mix-in model support.
 * Migration support. upgrade, downgrade, upgrade from schema diff.
 * Schema/Database diff
 
