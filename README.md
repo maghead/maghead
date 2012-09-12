@@ -73,6 +73,7 @@ then you should provide your schema path in following format:
 bootstrap:
   - db/bootstrap.php
 schema:
+  auto_id: 1
   paths:
     - src/
 data_sources:
