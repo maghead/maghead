@@ -461,8 +461,7 @@ foreach( $author->addresses as $address ) {
         function schema()
         {
             $this->column('id')
-                ->type('integer')
-                ->isa('int')
+                ->integer()
                 ->primary()
                 ->autoIncrement();
 
@@ -471,6 +470,12 @@ foreach( $author->addresses as $address ) {
                 ->validator(function($val) { .... })
                 ->filter( function($val) {  
                             return preg_replace('#word#','zz',$val);  
+                })
+                ->inflator(function($val) {
+                    return unserialize($val);
+                })
+                ->deflator(function($val) {
+                    return serialize($val);
                 })
                 ->validValues( 1,2,3,4,5 )
                 ->default(function() { 
@@ -500,6 +505,20 @@ as much as possible.
 
 Unit Testing
 ------------
+To deploy a testing environment, you need to install dependent packages.
+
+Get Onion:
+
+    https://raw.github.com/c9s/Onion/master/onion
+
+Install dependencies:
+
+    php onion install
+
+Run script and make sure everything is fine:
+
+    php bin/lazy
+
 
 Database configuration is written in `phpunit.xml` file, the 
 following steps are based on the default configuration.
