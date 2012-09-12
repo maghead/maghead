@@ -16,12 +16,15 @@ Features
 Requirement
 -----------
 
-PHP Extensions:
+PHP:
+
+- PHP 5.3 or upper.
+
+PHP Extensions
 
 - yaml extension
 - pdo
 - mysql, pgsql or sqlite
-
 
 Installation
 ------------
@@ -33,17 +36,17 @@ Synopsis
 --------
 
 ```sh
-    $ lazy init
+lazy init
 
-    $ lazy build-schema
+lazy build-schema
 
-    $ lazy build-sql --data-source=mysql
+lazy build-sql --data-source=mysql
 
-    $ lazy diff
+lazy diff
 
-    $ lazy diff --data-source=mysql
+lazy diff --data-source=mysql
 
-    $ lazy diff --data-source=pgsql
+lazy diff --data-source=pgsql
 ```
 
 
