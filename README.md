@@ -29,11 +29,13 @@ PHP Extensions
 Installation
 ------------
 
-    pear channel-discover pear.corneltek.com
-    pear channel-discover pear.twig-project.org
-    pear install -a -f corneltek/Universal
-    pear install -a -f corneltek/LazyRecord
-    pear install -a -f twig/Twig
+```sh
+$ pear channel-discover pear.corneltek.com
+$ pear channel-discover pear.twig-project.org
+$ pear install -a -f corneltek/Universal
+$ pear install -a -f corneltek/LazyRecord
+$ pear install -a -f twig/Twig
+```
 
 Getting Started
 ---------------
@@ -42,66 +44,65 @@ Change directory to your project, run `init` command to initialize
 your database settings.
 
 ```sh
-
-    $ mkdir proj1
-    $ cd proj1
-    $ lazy init 
-    db/config
-    db/migration
-    Database driver [sqlite] [sqlite/pgsql/mysql/] sqlite
-    Database name [:memory:] test
-    Using sqlite driver
-    Using database test
-    Using DSN: sqlite:test
-    Creating config file skeleton...
-    Config file is generated: db/config/database.yml
-    Please run build-conf to compile php format config file.
-    Building config from db/config/database.yml
-    Making link => .lazy.yml
-    Done.
+$ mkdir proj1
+$ cd proj1
+$ lazy init 
+db/config
+db/migration
+Database driver [sqlite] [sqlite/pgsql/mysql/] sqlite
+Database name [:memory:] test
+Using sqlite driver
+Using database test
+Using DSN: sqlite:test
+Creating config file skeleton...
+Config file is generated: db/config/database.yml
+Please run build-conf to compile php format config file.
+Building config from db/config/database.yml
+Making link => .lazy.yml
+Done.
 ```
 
 To edit your config file:
 
 ```sh
-    $ vim db/config/database.yml
+$ vim db/config/database.yml
 ```
 
 Suppose your application code is located in `src/` directory, 
 then you should provide your schema path in following format:
 
 ```yaml
-    ---
-    schema:
-      paths:
-        - src/
-    data_sources:
-      default:
-        dsn: 'sqlite:test'
+---
+schema:
+  paths:
+    - src/
+data_sources:
+  default:
+    dsn: 'sqlite:test'
 ```
 
 Next, write your model schema file:
 
 ```sh
-    $ vim src/YourApp/Model/UserSchema.php
+$ vim src/YourApp/Model/UserSchema.php
 ```
 
 Put the content into your file:
 
 ```php
-    <?php
-    namespace YourApp\Model;
-    use LazyRecord\Schema\SchemaDeclare;
+<?php
+namespace YourApp\Model;
+use LazyRecord\Schema\SchemaDeclare;
 
-    class UserSchema extends SchemaDeclare {
-        function schema() {
-            $this->column('account')
-                ->varchar(16);
-            $this->column('password')
-                ->varchar(40)
-                ->filter('sha1');
-        }
+class UserSchema extends SchemaDeclare {
+    function schema() {
+        $this->column('account')
+            ->varchar(16);
+        $this->column('password')
+            ->varchar(40)
+            ->filter('sha1');
     }
+}
 ```
 
 Then run `build-schema` command to build static schema files:
@@ -172,39 +173,14 @@ Append your application code to the end of `app.php` file:
 
 ```php
 <?php
-    $user = new User;
-    $ret = $user->create(array('account' => 'guest', 'password' => '123123' ));
-    if( ! $ret->success ) {
-        echo $ret;
-    }
-```
-
-
-```php
-<?php
-
-    // has many
-    $address = $author->addresses->create(array( 
-        'address' => 'farfaraway'
-    ));
-
-    $address->delete();
-
-    // create related address
-    $author->addresses[] = array( 'address' => 'Harvard' );
-
-    $addresses = $author->addresses->items();
-    is( 'Harvard' , $addresses[0]->address );
-
-    foreach( $author->addresses as $address ) {
-        echo $address->address , "\n";
-    }
+$user = new User;
+$ret = $user->create(array('account' => 'guest', 'password' => '123123' ));
+if( ! $ret->success ) {
+    echo $ret;
+}
 ```
 
 Please check `doc/` directory for more details.
-
-
-
 
 
 To generate SQL schema:
@@ -220,7 +196,6 @@ Then you should have these files:
     src/App/Model/AuthorCollection.php
 
 Now edit your src/App/Model/Author.php file to extend.
-
 
 To import SQL schema into database:
 
@@ -247,16 +222,14 @@ LazyRecord will generate schema in pure-php array, in-place
     path/datasource.php      // export datasource config
 
 
-
 ## Setting up QueryDriver for SQL syntax
  
 ```php
 <?php
-    $driver = LazyRecord\QueryDriver::getInstance('data_source_id');
-    $driver->configure('driver','pgsql');
-    $driver->configure('quote_column',true);
-    $driver->configure('quote_table',true);
-?>
+$driver = LazyRecord\QueryDriver::getInstance('data_source_id');
+$driver->configure('driver','pgsql');
+$driver->configure('quote_column',true);
+$driver->configure('quote_table',true);
 ```
 
 
@@ -266,59 +239,58 @@ To create a model record:
 
 ```php
 <?php
-    $author = new Author;
-    $author->create(array(
-        'name' => 'Foo'
-    ));
+$author = new Author;
+$author->create(array(
+    'name' => 'Foo'
+));
 ```
 
 To find record:
     
 ```php
 <?php
-    $author->find(123);
-    $author->find(array( 'foo' => 'Name' ));
+$author->find(123);
+$author->find(array( 'foo' => 'Name' ));
 ```
 
 To find record with (static):
 
 ```php
 <?php
-    $record = Author::load(array( 'name' => 'Foo' ));
+$record = Author::load(array( 'name' => 'Foo' ));
 ```
 
 To find record with primary key:
 
 ```php
 <?php
-    $record = Author::load( 1 );
-?>
+$record = Author::load( 1 );
 ```
 
 To update record:
 
 ```php
 <?php
-    $author->update(array(  
-        'name' => 'Author',
-    ));
+$author->update(array(  
+    'name' => 'Author',
+));
 ```
 
 To update record (static):
 
 ```php
 <?php
-    $ret = Author::update( array( 'name' => 'Author' ) )
-        ->where()
-            ->equal('id',3)
-            ->execute();
+$ret = Author::update( array( 'name' => 'Author' ) )
+    ->where()
+        ->equal('id',3)
+        ->execute();
 
-    if( $ret->success ) {
-        echo $ret->message;
-    }
-    else {
-        echo $ret->exception->getMessage();
-    }
+if( $ret->success ) {
+    echo $ret->message;
+}
+else {
+    echo $ret->exception->getMessage();
+}
 ```
 
 ## Collection
@@ -327,22 +299,45 @@ To create a collection object:
 
 ```php
 <?php
-    $authors = new AuthorCollection;
-    $authors->where()
-        ->equal( 'id' , 'foo' );
+$authors = new AuthorCollection;
+$authors->where()
+    ->equal( 'id' , 'foo' );
 
-    $authors = new AuthorCollection;
-    $items = $authors->items();
-    foreach( $items as $item ) {
-        echo $item->id;
-    }
+$authors = new AuthorCollection;
+$items = $authors->items();
+foreach( $items as $item ) {
+    echo $item->id;
+}
 
-    $authors = new AuthorCollection;
-    foreach( $authors as $author ) {
-        echo $author->name;
-    }
-?>
+$authors = new AuthorCollection;
+foreach( $authors as $author ) {
+    echo $author->name;
+}
 ```
+
+## Relationships
+
+
+```php
+<?php
+// has many
+$address = $author->addresses->create(array( 
+    'address' => 'farfaraway'
+));
+
+$address->delete();
+
+// create related address
+$author->addresses[] = array( 'address' => 'Harvard' );
+
+$addresses = $author->addresses->items();
+is( 'Harvard' , $addresses[0]->address );
+
+foreach( $author->addresses as $address ) {
+    echo $address->address , "\n";
+}
+```
+
 
 ## A more advanced schema code
 
