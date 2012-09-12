@@ -183,45 +183,6 @@ if( ! $ret->success ) {
 Please check `doc/` directory for more details.
 
 
-To generate SQL schema:
-
-    lazy build-schema path/to/AuthorSchema.php
-
-Then you should have these files:
-
-    src/App/Model/AuthorSchema.php
-    src/App/Model/AuthorBase.php
-    src/App/Model/Author.php
-    src/App/Model/AuthorBaseCollection.php
-    src/App/Model/AuthorCollection.php
-
-Now edit your src/App/Model/Author.php file to extend.
-
-To import SQL schema into database:
-
-    lazy build-sql path/to/AuthorSchema.php
-
-    lazy build-sql path/to/schema/
-
-LazyRecord will generate schema in pure-php array, in-place
-
-    path/schema/AuthorSchemaProxy.php
-    path/schema/AuthorBase.php           // auto-generated AuthoBase 
-    path/schema/Author.php               // customizeable
-
-    path/schema/AuthorCollectionBase.php // auto-generated AuthorCollection extends AuthorCollectionBase {  }
-    path/schema/AuthorCollection.php     // customizable
-
-    path/schema/foo/bar/BookBase.php
-    path/schema/foo/bar/Book.php
-
-    path/schema/foo/bar/BookCollection.php
-    path/schema/foo/bar/BookSchemaProxy.php
-
-    path/classmap.php        // application can load Model, Schema class from this mapping file
-    path/datasource.php      // export datasource config
-
-
 ## Setting up QueryDriver for SQL syntax
  
 ```php
