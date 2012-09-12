@@ -555,3 +555,7 @@ now you can insert schema sqls into these data sources:
 
     $ phpunit
 
+
+LICENSE
+===============
+BSD License
