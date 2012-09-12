@@ -87,8 +87,8 @@ Then write your bootstrap script `db/bootstrap.php`, which is a simple SPL class
 require 'Universal/ClassLoader/BasePathClassLoader.php';
 use Universal\ClassLoader\BasePathClassLoader;
 $loader = new BasePathClassLoader(array(
-    dirname(dirname(__DIR__)) . '/src', 
-    dirname(dirname(__DIR__)) . '/vendor/pear',
+    dirname(__DIR__) . '/src', 
+    dirname(__DIR__) . '/vendor/pear',
 ));
 $loader->useIncludePath(true);
 $loader->register();
@@ -107,8 +107,10 @@ Put the content into your file:
 namespace YourApp\Model;
 use LazyRecord\Schema\SchemaDeclare;
 
-class UserSchema extends SchemaDeclare {
-    function schema() {
+class UserSchema extends SchemaDeclare 
+{
+    public function schema()
+    {
         $this->column('account')
             ->varchar(16);
         $this->column('password')
@@ -181,6 +183,117 @@ if( ! $ret->success ) {
 ```
 
 Please check `doc/` directory for more details.
+
+## Migration Support
+
+If you need to modify schema code, like adding new columns to a table, you 
+can use the amazing migration feature to migrate your database to the latest version.
+
+Once you modified the schema code, you can execute `lazy diff` command to compare
+current exisiting database table:
+
+    $ lazy diff
+    + table 'authors'            tests/schema/tests/Author.php
+    + table 'addresses'          tests/schema/tests/Address.php
+    + table 'author_books'       tests/schema/tests/AuthorBook.php
+    + table 'books'              tests/schema/tests/Book.php
+    + table 'users'              tests/schema/tests/User.php
+    + table 'publishers'         tests/schema/tests/Publisher.php
+    + table 'Edm'                tests/schema/tests/Edm.php
+    + table 'names'              tests/schema/tests/Name.php
+    + table 'i_d_numbers'        tests/schema/tests/IDNumber.php
+    + table 'wines'              tests/schema/tests/Wine.php
+
+which shows the diff from database. and now you can generate the migration script 
+or upgrade database schema directly.
+
+to upgrade database schema directly, you can simply run:
+
+    $ lazy migrate -U
+
+to upgrade database schema through a customizable migration script, you can 
+generate a new migration script like:
+
+    $ lazy migrate --diff AddUserRoleColumn
+    Loading schema objects...
+    Creating migration script from diff
+    Found 10 schemas to compare.
+        Found schema 'tests\AuthorSchema' to be imported to 'authors'
+        Found schema 'tests\AddressSchema' to be imported to 'addresses'
+        Found schema 'tests\AuthorBookSchema' to be imported to 'author_books'
+        Found schema 'tests\BookSchema' to be imported to 'books'
+        Found schema 'tests\UserSchema' to be imported to 'users'
+        Found schema 'tests\PublisherSchema' to be imported to 'publishers'
+        Found schema 'tests\EdmSchema' to be imported to 'Edm'
+        Found schema 'tests\NameSchema' to be imported to 'names'
+        Found schema 'tests\IDNumber' to be imported to 'i_d_numbers'
+        Found schema 'tests\Wine' to be imported to 'wines'
+    Migration script is generated: db/migrations/20120912_AddUserRoleColumn.php
+
+now you can edit your migration script, which is auto-generated:
+
+    vim db/migrations/20120912_AddUserRoleColumn.php
+
+the migration script looks like:
+
+```php
+<?php
+
+class AddUserColumn_1347451491  extends \LazyRecord\Migration\Migration {
+
+    public function upgrade() { 
+        $this->importSchema(new tests\AuthorSchema);
+        $this->importSchema(new tests\AddressSchema);
+        $this->importSchema(new tests\AuthorBookSchema);
+        $this->importSchema(new tests\BookSchema);
+        $this->importSchema(new tests\UserSchema);
+        $this->importSchema(new tests\PublisherSchema);
+        $this->importSchema(new tests\EdmSchema);
+        $this->importSchema(new tests\NameSchema);
+        $this->importSchema(new tests\IDNumber);
+        $this->importSchema(new tests\Wine);
+        
+    }
+
+    public function downgrade() { 
+        $this->dropTable('authors');
+        $this->dropTable('addresses');
+        $this->dropTable('author_books');
+        $this->dropTable('books');
+        $this->dropTable('users');
+        $this->dropTable('publishers');
+        $this->dropTable('Edm');
+        $this->dropTable('names');
+        $this->dropTable('i_d_numbers');
+        $this->dropTable('wines');
+        
+    }
+}
+```
+
+The built-in migration generator not only generates the upgrade script,
+but also generates the downgrade script, you can modify it to anything as you
+want.
+
+After the migration script is generated, you can check the status of 
+current database and waiting migration scripts:
+
+    $ lazy migrate --status
+    Found 1 migration script to be executed.
+    - AddUserColumn_1347451491
+
+now you can run upgrade command to 
+upgrade database schema through the migration script:
+
+    $ lazy migrate --up
+
+If you regret, you can run downgrade migrations through the command:
+
+    $ lazy migrate --down
+
+But please note that SQLite doesn't support column renaming and column dropping.
+
+To see what migration script could do, please check the documentation of SQLBuilder package.
 
 ## Setting up QueryDriver for SQL syntax
  
