@@ -30,33 +30,158 @@ Installation
 ------------
 
     pear channel-discover pear.corneltek.com
+    pear channel-discover pear.twig-project.org
+    pear install -a -f corneltek/Universal
     pear install -a -f corneltek/LazyRecord
+    pear install -a -f twig/Twig
 
-Synopsis
---------
+Getting Started
+---------------
+
+Change directory to your project, run `init` command to initialize 
+your database settings.
 
 ```sh
-lazy init
 
-lazy build-schema
+    $ mkdir proj1
+    $ cd proj1
+    $ lazy init 
+    db/config
+    db/migration
+    Database driver [sqlite] [sqlite/pgsql/mysql/] sqlite
+    Database name [:memory:] test
+    Using sqlite driver
+    Using database test
+    Using DSN: sqlite:test
+    Creating config file skeleton...
+    Config file is generated: db/config/database.yml
+    Please run build-conf to compile php format config file.
+    Building config from db/config/database.yml
+    Making link => .lazy.yml
+    Done.
+```
 
-lazy build-sql --data-source=mysql
+To edit your config file:
 
-lazy diff
+```sh
+    $ vim db/config/database.yml
+```
 
-lazy diff --data-source=mysql
+Suppose your application code is located in `src/` directory, 
+then you should provide your schema path in following format:
 
-lazy diff --data-source=pgsql
+```yaml
+    ---
+    schema:
+      paths:
+        - src/
+    data_sources:
+      default:
+        dsn: 'sqlite:test'
+```
+
+Next, write your model schema file:
+
+```sh
+    $ vim src/YourApp/Model/UserSchema.php
+```
+
+Put the content into your file:
+
+```php
+    <?php
+    namespace YourApp\Model;
+    use LazyRecord\Schema\SchemaDeclare;
+
+    class UserSchema extends SchemaDeclare {
+        function schema() {
+            $this->column('account')
+                ->varchar(16);
+            $this->column('password')
+                ->varchar(40)
+                ->filter('sha1');
+        }
+    }
+```
+
+Then run `build-schema` command to build static schema files:
+
+```sh
+$ lazy build-schema
+Finding schemas...
+Found schema classes
+Initializing schema generator...
+    YourApp\Model\UserSchemaProxy    => src/YourApp/Model/UserSchemaProxy.php
+    YourApp\Model\UserCollectionBase => src/YourApp/Model/UserCollectionBase.php
+    YourApp\Model\UserCollection     => src/YourApp/Model/UserCollection.php
+    YourApp\Model\UserBase           => src/YourApp/Model/UserBase.php
+    YourApp\Model\User               => src/YourApp/Model/User.php
+Done
+```
+
+Now you need to build SQL schema into your database, simply run `build-sql`,
+`-d` is for debug mode:
+
+```sh
+$ lazy -d build-sql
+Finding schema classes...
+Initialize schema builder...
+Building SQL for YourApp\Model\UserSchema
+DROP TABLE IF EXISTS users;
+CREATE TABLE users ( 
+  account varchar(16),
+  password varchar(40)
+);
+
+Setting migration timestamp to 1347439779
+Done. 1 schema tables were generated into data source 'default'.
+```
+
+Now you can write your application code. but first, you need a SPL classloader
+for library code:
+
+```
+$ vim app.php
+```
+
+```php
+<?php
+require 'Universal/ClassLoader/BasePathClassLoader.php';
+use Universal\ClassLoader\BasePathClassLoader;
+$loader = new BasePathClassLoader(array(
+    dirname(__DIR__) . '/src', 
+    dirname(__DIR__) . '/vendor/pear',
+));
+$loader->useIncludePath(true);
+$loader->register();
+```
+
+Then append your lazyrecord config loader:
+
+```php
+<?php
+$config = new LazyRecord\ConfigLoader;
+$config->load('.lazy.yml');
+$config->init();
+```
+
+The `init` method initializes data sources to ConnectionManager, but it won't
+create connection unless you need to operate your models.
+
+Append your application code to the end of `app.php` file:
+
+```php
+<?php
+    $user = new User;
+    $ret = $user->create(array('account' => 'guest', 'password' => '123123' ));
+    if( ! $ret->success ) {
+        echo $ret;
+    }
 ```
 
 
 ```php
-<?
-    $author = new Author;
-    $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-
-    // PHP5.4
-    $author->create([ 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ]);
+<?php
 
     // has many
     $address = $author->addresses->create(array( 
@@ -81,104 +206,6 @@ Please check `doc/` directory for more details.
 
 
 
-Install manually
-----------------
-Install required extensions:
-
-    pecl install apc
-    pecl install yaml
-
-get php source code and install these extensions:
-
-* `pdo_mysql` (optional)
-* `pdo_pgsql` (optional)
-* `pdo_sqlite` (optional)
-
-
-To build a PHP with MySQL + PDO support:
-
-    phpbrew install php-5.4.4 +mysql
-
-To build a PHP with PostgreSQL + PDO support:
-
-    phpbrew install php-5.4.4 +pgsql
-
-To build a PHP with SQLite + PDO support:
-
-    phpbrew install php-5.4.4 +sqlite
-
-Or to build PHP with custom postgresql base dir:
-
-    phpbrew install php-5.4.4 +pgsql=/opt/local/lib/postgresql91
-
-To build a PHP for LazyRecord with all database driver support, you can use +dbs variant set:
-
-    phpbrew install php-5.4.4 +default+dbs
-
-And update your php.ini:
-
-    date.timezone = Asia/Taipei
-    phar.readonly = Off
-
-Install LazyRecord from git-core:
-
-    git clone git://github.com/c9s/LazyRecord.git
-    cd LazyRecord
-    sudo pear channel-discover pear.corneltek.com
-    sudo pear channel-discover pear.twig-project.org
-    sudo pear install -f package.xml
-
-
-Command-line Usage
-------------------
-Create a config skeleton:
-
-    $ lazy init-conf
-
-Then build config:
-
-    $ lazy build-conf path/to/config.yml
-
-Define your model schema:
-
-    $ vim src/App/Model/AuthorSchema.php
-
-```php
-<?php
-    use LazyRecord\Schema\SchemaDeclare;
-
-    class AuthorSchema extends SchemaDeclare
-    {
-        function schema()
-        {
-            $this->column('id')
-                ->type('integer')
-                ->isa('int')
-                ->primary()
-                ->autoIncrement();
-
-            $this->column('name')
-                ->varchar(128)
-                ->validator(function($val) { .... })
-                ->filter( function($val) {  
-                            return preg_replace('#word#','zz',$val);  
-                })
-                ->validValues( 1,2,3,4,5 )
-                ->default(function() { 
-                    return date('c');
-                })
-                ;
-
-            $this->column('email')
-                ->required()
-                ->varchar(128);
-
-            $this->column('confirmed')
-                ->default(false)
-                ->boolean();
-        }
-    }
-```
 
 To generate SQL schema:
 
@@ -219,19 +246,9 @@ LazyRecord will generate schema in pure-php array, in-place
     path/classmap.php        // application can load Model, Schema class from this mapping file
     path/datasource.php      // export datasource config
 
-### Connecting the dots
-
-Initialize loader:
 
 
-```php
-<?php
-    $lazyLoader = new ConfigLoader;
-    $lazyLoader->load( 'path/to/config.php' );   // this initialize data source into connection manager.
-    $lazyLoader->init();
-```
-
-To setup QueryDriver:
+## Setting up QueryDriver for SQL syntax
  
 ```php
 <?php
@@ -241,6 +258,9 @@ To setup QueryDriver:
     $driver->configure('quote_table',true);
 ?>
 ```
+
+
+## Model Operations
 
 To create a model record:
 
@@ -301,6 +321,8 @@ To update record (static):
     }
 ```
 
+## Collection
+
 To create a collection object:
 
 ```php
@@ -320,5 +342,44 @@ To create a collection object:
         echo $author->name;
     }
 ?>
+```
+
+## A more advanced schema code
+
+```php
+<?php
+    use LazyRecord\Schema\SchemaDeclare;
+
+    class AuthorSchema extends SchemaDeclare
+    {
+        function schema()
+        {
+            $this->column('id')
+                ->type('integer')
+                ->isa('int')
+                ->primary()
+                ->autoIncrement();
+
+            $this->column('name')
+                ->varchar(128)
+                ->validator(function($val) { .... })
+                ->filter( function($val) {  
+                            return preg_replace('#word#','zz',$val);  
+                })
+                ->validValues( 1,2,3,4,5 )
+                ->default(function() { 
+                    return date('c');
+                })
+                ;
+
+            $this->column('email')
+                ->required()
+                ->varchar(128);
+
+            $this->column('confirmed')
+                ->default(false)
+                ->boolean();
+        }
+    }
 ```
 
