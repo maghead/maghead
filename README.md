@@ -97,7 +97,11 @@ data_sources:
     dsn: 'sqlite:test'
 ```
 
-Then write your bootstrap script `db/bootstrap.php`, which is a simple SPL classloader:
+In the above config file, the `auto_id` means an id column with auto-increment
+integer primary key is automatically inserted into every schema class, so you
+don't need to declare an primary key id column in your every schema file.
+
+then write your bootstrap script `db/bootstrap.php`, which is a simple SPL classloader:
 
 ```php
 <?php
@@ -152,8 +156,15 @@ Initializing schema generator...
 Done
 ```
 
+If you are using postgresql or mysql, you can create your database with
+`create-db` command:
+
+```sh
+$ lazy create-db
+```
+
 Now you need to build SQL schema into your database, simply run `build-sql`,
-`-d` is for debug mode:
+`-d` is for debug mode, which prints all generated SQL statements:
 
 ```sh
 $ lazy -d build-sql
@@ -477,4 +488,51 @@ foreach( $author->addresses as $address ) {
         }
     }
 ```
+
+Contribution
+------------
+
+Everybody can contribute to LazyRecord. You can just fork it, and send Pull
+Requests. 
+
+You have to follow PSR Coding Standards and provides unit tests
+as much as possible.
+
+Unit Testing
+------------
+
+Database configuration is written in `phpunit.xml` file, the 
+following steps are based on the default configuration.
+
+### Unit Testing with MySQL database
+
+To test with mysql database:
+
+    $ mysql -uroot -p
+    > create database testing charset utf8;
+    > grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing';
+
+### Unit Testing with PostgreSQL database
+
+To test with pgsql database:
+
+    $ sudo -u postgres createuser --no-createrole --no-superuser --pwprompt testing
+    $ sudo -u postgres createdb -E=utf8 --owner=testing testing
+
+### Build Schema files
+
+    $ php bin/lazy build-schema
+
+### Build SQL 
+
+We've already defined 3 data sources, they were named as 'mysql', 'pgsql', 'sqlite' , 
+now you can insert schema sqls into these data sources:
+
+    $ php bin/lazy build-sql --rebuild -D=mysql
+    $ php bin/lazy build-sql --rebuild -D=pgsql
+    $ php bin/lazy build-sql --rebuild -D=sqlite
+
+### Run PHPUnit
+
+    $ phpunit
 
