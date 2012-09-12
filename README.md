@@ -170,7 +170,7 @@ Append your application code to the end of `app.php` file:
 
 ```php
 <?php
-$user = new User;
+$user = new YourApp\Model\User;
 $ret = $user->create(array('account' => 'guest', 'password' => '123123' ));
 if( ! $ret->success ) {
     echo $ret;
