@@ -70,12 +70,28 @@ then you should provide your schema path in following format:
 
 ```yaml
 ---
+bootstrap:
+  - db/bootstrap.php
 schema:
   paths:
     - src/
 data_sources:
   default:
     dsn: 'sqlite:test'
+```
+
+Then write your bootstrap script `db/bootstrap.php`, which is a simple SPL classloader:
+
+```php
+<?php
+require 'Universal/ClassLoader/BasePathClassLoader.php';
+use Universal\ClassLoader\BasePathClassLoader;
+$loader = new BasePathClassLoader(array(
+    dirname(dirname(__DIR__)) . '/src', 
+    dirname(dirname(__DIR__)) . '/vendor/pear',
+));
+$loader->useIncludePath(true);
+$loader->register();
 ```
 
 Next, write your model schema file:
@@ -135,8 +151,8 @@ Setting migration timestamp to 1347439779
 Done. 1 schema tables were generated into data source 'default'.
 ```
 
-Now you can write your application code. but first, you need a SPL classloader
-for library code:
+Now you can write your application code,
+But first you need to write your lazyrecord config loader code:
 
 ```
 $ vim app.php
@@ -144,20 +160,7 @@ $ vim app.php
 
 ```php
 <?php
-require 'Universal/ClassLoader/BasePathClassLoader.php';
-use Universal\ClassLoader\BasePathClassLoader;
-$loader = new BasePathClassLoader(array(
-    dirname(__DIR__) . '/src', 
-    dirname(__DIR__) . '/vendor/pear',
-));
-$loader->useIncludePath(true);
-$loader->register();
-```
-
-Then append your lazyrecord config loader:
-
-```php
-<?php
+require 'db/bootstrap.php';
 $config = new LazyRecord\ConfigLoader;
 $config->load('.lazy.yml');
 $config->init();
@@ -178,7 +181,6 @@ if( ! $ret->success ) {
 ```
 
 Please check `doc/` directory for more details.
-
 
 ## Setting up QueryDriver for SQL syntax
  
