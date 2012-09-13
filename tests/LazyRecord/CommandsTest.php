@@ -46,6 +46,5 @@ class CommandsTest extends PHPUnit_Framework_TestCase
         $app->run(array('lazy','build-sql','--rebuild'));
     }
 
-
 }
 
