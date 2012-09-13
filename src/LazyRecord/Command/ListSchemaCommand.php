@@ -31,7 +31,7 @@ class ListSchemaCommand extends Command
 
         $this->logger->debug("Loading config");
         $loader = ConfigLoader::getInstance();
-        $loader->loadFromSymbol();
+        $loader->loadFromSymbol(true);
         $loader->initForBuild();
 
         $this->logger->debug("Initializing schema generator...");
