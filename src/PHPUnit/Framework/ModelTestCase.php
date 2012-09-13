@@ -48,6 +48,8 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
             return;
         }
 
+        ob_start();
+
         // free and override default connection
         ConnectionManager::getInstance()->free();
         QueryDriver::free();
@@ -110,6 +112,8 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
             }
         }
         CommandUtils::build_basedata( $schemas );
+
+        ob_end_clean();
     }
 
     public function getLogger()
