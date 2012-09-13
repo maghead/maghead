@@ -17,11 +17,35 @@ class CommandsTest extends PHPUnit_Framework_TestCase
         ok( $app->createCommand('LazyRecord\Command\DiffCommand') );
     }
 
-    function testconf()
+    function testConfCommand()
     {
         $this->expectOutputRegex('/Making link/');
         $app = new LazyRecord\Console;
         $app->run(array('lazy','build-conf'));
     }
+
+
+    /**
+     * @depends testConfCommand
+     */
+    function testSchemaCommand()
+    {
+        $this->expectOutputRegex('/Done/');
+        $app = new LazyRecord\Console;
+        $app->run(array('lazy','build-schema'));
+    }
+
+
+    /**
+     * @depends testSchemaCommand
+     */
+    function testSqlCommand()
+    {
+        $this->expectOutputRegex('/Done/');
+        $app = new LazyRecord\Console;
+        $app->run(array('lazy','build-sql','--rebuild'));
+    }
+
+
 }
 
