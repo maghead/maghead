@@ -29,7 +29,7 @@ class DiffCommand extends Command
         $logger = $this->logger;
 
         $loader = ConfigLoader::getInstance();
-        $loader->loadFromSymbol();
+        $loader->loadFromSymbol(true);
         $loader->initForBuild();
 
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();

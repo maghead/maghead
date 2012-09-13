@@ -46,5 +46,29 @@ class CommandsTest extends PHPUnit_Framework_TestCase
         $app->run(array('lazy','build-sql','--rebuild'));
     }
 
+    /**
+     * @depends testSqlCommand
+     */
+    function testDiffCommand()
+    {
+        $this->expectOutputRegex('//');
+        $app = new LazyRecord\Console;
+        $app->run(array('lazy','diff'));
+    }
+
+    /**
+     * @depends testSqlCommand
+     */
+    function testMigrateCommand()
+    {
+        $this->expectOutputRegex('/Found/');
+        $app = new LazyRecord\Console;
+        $app->run(array('lazy','migrate','--status'));
+
+        $app->run(array('lazy','migrate','--up'));
+        $app->run(array('lazy','migrate','--down'));
+    }
+
+
 }
 

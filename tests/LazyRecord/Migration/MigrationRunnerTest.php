@@ -32,7 +32,7 @@ class MigrationRunnerTest extends PHPUnit_Framework_TestCase
      */
     function testDowngrade($runner)
     {
-        $this->expectOutputRegex('#QueryOK#');
+        $this->expectOutputRegex('#Running downgrade migration script#');
         $runner->runDowngrade();
     }
 }
