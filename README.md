@@ -538,11 +538,23 @@ To test with pgsql database:
     $ sudo -u postgres createuser --no-createrole --no-superuser --pwprompt testing
     $ sudo -u postgres createdb -E=utf8 --owner=testing testing
 
-### Build Schema files
+### Run PHPUnit
+
+    $ phpunit
+
+### Command-line testing
+
+To test sql builder from command-line, please copy the default testing config
+
+    $ cp db/config/database.testing.yml db/config/database.yml
+
+Build config
+
+    $ php bin/lazy build-conf db/config/database.yml
+
+Build Schema files
 
     $ php bin/lazy build-schema
-
-### Build SQL 
 
 We've already defined 3 data sources, they were named as 'mysql', 'pgsql', 'sqlite' , 
 now you can insert schema sqls into these data sources:
@@ -551,9 +563,6 @@ now you can insert schema sqls into these data sources:
     $ php bin/lazy build-sql --rebuild -D=pgsql
     $ php bin/lazy build-sql --rebuild -D=sqlite
 
-### Run PHPUnit
-
-    $ phpunit
 
 
 LICENSE
