@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord;
+use DateTime;
 
 /**
  * deflate object value into database
@@ -68,17 +69,17 @@ class Deflator
                 return $value ? 1 : 0;
             }
             elseif( is_string($value) ) {
-                if( $value === '0' || strncasecmp($value,'false',5) == 0 ) {
-                    return $value = 0;
+                if( $value === '' || $value === '0' || strncasecmp($value,'false',5) == 0 ) {
+                    return 0;
                 }
                 elseif( $value === '1' ||  strncasecmp($value,'true',4 ) == 0  ) {
-                    return $value = 1;
+                    return 1;
                 }
             }
             elseif( is_null($value) ) {
-                return $value = null;
+                return null;
             }
-            return $value = (boolean) $value ? 1 : 0;
+            return (boolean) $value ? 1 : 0;
         }
         elseif( $isa == 'float' ) {
             return (float) $value;
