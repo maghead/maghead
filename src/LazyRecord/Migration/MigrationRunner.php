@@ -28,6 +28,10 @@ class MigrationRunner
 
     public function load($directory) 
     {
+        if( ! file_exists($directory) ) {
+            mkdir( $directory , 0755, true );
+            return;
+        }
         $loaded = array();
         $iterator = new RecursiveIteratorIterator( 
             new RecursiveDirectoryIterator($directory) , RecursiveIteratorIterator::CHILD_FIRST
