@@ -12,8 +12,6 @@ class Console extends Application
         return 'LazyRecord ORM';
     }
 
-
-
     public function init()
     {
         parent::init();
