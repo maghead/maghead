@@ -39,6 +39,16 @@ class CommandsTest extends PHPUnit_Framework_TestCase
     /**
      * @depends testSchemaCommand
      */
+    function testListSchemaCommand()
+    {
+        $this->expectOutputRegex('/tests\\\\AuthorSchema/');
+        $app = new LazyRecord\Console;
+        $app->run(array('lazy','list-schema'));
+    }
+
+    /**
+     * @depends testSchemaCommand
+     */
     function testSqlCommand()
     {
         $this->expectOutputRegex('/Done/');
