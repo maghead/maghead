@@ -331,7 +331,12 @@ To see what migration script could do, please check the documentation of SQLBuil
 
 ## Basedata Seed
 
-...
+    namespace User;
+    class Seed { 
+        public static function seed() {
+
+        }
+    }
 
 ## Setting up QueryDriver for SQL syntax
  
@@ -351,9 +356,11 @@ To create a model record:
 ```php
 <?php
 $author = new Author;
-$author->create(array(
+$ret = $author->create(array(
     'name' => 'Foo'
 ));
+if( $ret->success )
+    echo 'created';
 ```
 
 To find record:
@@ -400,7 +407,11 @@ if( $ret->success ) {
     echo $ret->message;
 }
 else {
-    echo $ret->exception->getMessage();
+    // pretty print error message, exception and validation errors for console
+    echo $ret;
+
+    $e = $ret->exception; // get exception
+    $validations = $ret->validations; // get validation results
 }
 ```
 
@@ -490,6 +501,8 @@ foreach( $author->addresses as $address ) {
             $this->column('confirmed')
                 ->default(false)
                 ->boolean();
+
+            $this->seeds('User\\Seed')
         }
     }
 ```
