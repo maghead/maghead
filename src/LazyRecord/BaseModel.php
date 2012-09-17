@@ -314,7 +314,7 @@ abstract class BaseModel
         }
 
         if( $ret && $ret->success 
-            || ( $pk && $this->_data[ $pk ] ) ) 
+            || ( $pk && isset($this->_data[ $pk ] )) ) 
         {
             return $this->update($args);
         } else {
