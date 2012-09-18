@@ -473,7 +473,7 @@ abstract class BaseModel
                     if( ! in_array( $val , $values ) ) {
                         return array(
                             'valid' => false,
-                            'message' => sprintf(_("%s is not a valid value for %s"), $val , $c->name ),
+                            'message' => sprintf(_("%s is not a valid value for %s"), $val , $column->name ),
                             'field' => $column->name,
                         );
                     }
