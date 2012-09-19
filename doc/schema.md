@@ -4,6 +4,7 @@ Schema
 Schema Example
 --------------
 
+```php
 <?php
 use LazyRecord\Schema\SchemaDeclare;
 
@@ -55,32 +56,37 @@ class AddressSchema extends SchemaDeclare
         $this->readFrom('slave');   // data source for reading
     }
 }
-?>
+```
 
 Schema Column
 -------------
 
 To define a column:
 
-    $this->column('name');
+```php
+$this->column('name');
+```
 
 The column method returns a `Column` object, the default 
 type is text.
 
 To specify columm type, simply call `type` method
 
-    $this->column('name')
-        ->type('integer');
+```
+$this->column('name')
+    ->type('integer');
+```
 
 Currently our column provides many short-hand methods for types, 
 e.g.
 
-    $this->column('foo')->integer();
-    $this->column('foo')->float();
-    $this->column('foo')->varchar(24);
-    $this->column('foo')->text();
-    $this->column('foo')->binary();
-
+```php
+$this->column('foo')->integer();
+$this->column('foo')->float();
+$this->column('foo')->varchar(24);
+$this->column('foo')->text();
+$this->column('foo')->binary();
+```
 
 
 Columns Types
@@ -88,38 +94,50 @@ Columns Types
 
 Varchar:
 
+```php
     $this->column('name')
             ->varchar(64);
+```
 
 Text:
 
+```php
     $this->column('name')
             ->text();
+```
 
 Boolean:
 
+```php
     $this->column('name')
             ->boolean();
+```
 
 Integer:
 
+```php
     $this->column('name')
             ->integer();
+```
 
 Timestamp:
 
+```php
     $this->column('name')
             ->timestamp();
+```
 
 Datetime:
 
+```php
     $this->column('name')
             ->datetime();
-
+```
 
 Default Value
 -------------
 
+```php
     $this->column('name')
         ->varchar(13)
         ->default('default value');
@@ -127,12 +145,15 @@ Default Value
     $this->column('name')
         ->boolean()
         ->default(false);
+```
 
 Default value builder:
 
+```php
     $this->column('name')
         ->boolean()
         ->default(function($record,$args) { return 'New name'; });
+```
 
 The callback function's prototype: ($record, $args)
 
@@ -141,20 +162,20 @@ The `$args` is the arguments of create action.
 Valid values
 ------------
 
-<?php
-    $this->column('type')
-        ...
-        ->validValues( 1,2,3,4,5 )
+```php
+$this->column('type')
+    ...
+    ->validValues( 1,2,3,4,5 )
 
-    $this->column('type')
-        ...
-        ->validValues(array(
-            'label' => 'value1',
-            'label' => 'value2',
-            'label' => 'value3',
-            'label' => 'value4',
-        ));
-?>
+$this->column('type')
+    ...
+    ->validValues(array(
+        'label' => 'value1',
+        'label' => 'value2',
+        'label' => 'value3',
+        'label' => 'value4',
+    ));
+```
 
 Relationship
 ------------
@@ -163,89 +184,113 @@ Relationship
 
 `belongsTo(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name = 'id')`
 
-<?php
-    $this->belongsTo( 'author' , '\tests\AuthorSchema', 'id' , 'author_id' );
-    $this->belongsTo( 'address' , '\tests\AddressSchema', 'address_id' );
-?>
+```php
+$this->belongsTo( 'author' , '\tests\AuthorSchema', 'id' , 'author_id' );
+$this->belongsTo( 'address' , '\tests\AddressSchema', 'address_id' );
+```
 
 
 ### Has One
 
 `one(accessor_name, self_column_name, foreign_schema_class_name, foreign_schema_column_name)`
 
-<?php 
-    $this->one( 'author', 'author_id', '\tests\AuthorSchema' , 'id' );
-?>
+```php
+$this->one( 'author', 'author_id', '\tests\AuthorSchema' , 'id' );
+```
 
 ### Has Many
 
 `many(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name )`
 
-<?php
-    $this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
-    $this->many( 'author_books', '\tests\AuthorBookSchema', 'author_id', 'id');
-?>
+```php
+$this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
+$this->many( 'author_books', '\tests\AuthorBookSchema', 'author_id', 'id');
+```
 
 To define many to many relationship:
 
-<?php
-    $this->manyToMany( 'books', 'author_books' , 'book' );
-?>
+```php
+$this->manyToMany( 'books', 'author_books' , 'book' );
+```
 
 ### Relationship Usage
 
 To append:
 
-    $author->address[] = array(  );
-    $record = $author->createAddress(array( ... ));  // return false on failure.
+```php
+$author->address[] = array(  );
+$record = $author->address->create(array( ... ));  // return false on failure.
+```
 
 To fetch:
 
-    foreach( $author->addresses as $address ) {
+```php
+foreach( $author->addresses as $address ) {
 
-    }
+}
+```
 
 To search/find:
 
-    $address = $author->addresses->find(k);
+```php
+$address = $author->addresses->find(k);
+```
 
 ## RuntimeSchema API
 
 To get schema object in model:
 
-    $schema = $this->getSchema();   // RuntimeSchema
+```php
+$schema = $this->getSchema();   // RuntimeSchema
+```
 
 To check if a schema contains column:
 
-    $exists = $schema->hasColumn('name');
+```php
+$exists = $schema->hasColumn('name');
+```
 
 To get RuntimeColumn object from RuntimeSchema:
 
-    $column = $schema->getColumn('name'); // RuntimeColumn
+```php
+$column = $schema->getColumn('name'); // RuntimeColumn
+```
 
 To get column names (excluding virtual columns):
 
-    $columnNames = $schema->getColumnNames();  // array('id','name')
+```php
+$columnNames = $schema->getColumnNames();  // array('id','name')
+```
 
 To get column names (including virtual columns):
 
-    $columnNames = $schema->getColumnNames(true);
+```php
+$columnNames = $schema->getColumnNames(true);
+```
 
 To get RuntimeColumn objects (excluding virtual columns)
 
-    $columns = $schema->getColumns( false );
+```php
+$columns = $schema->getColumns( false );
+```
 
 To get RuntimeColumn objects (including virtual columns)
 
-    $columns = $schema->getColumns( true );
+```php
+$columns = $schema->getColumns( true );
+```
 
 To create a model object from schema object:
 
-    $model = $schema->newModel();
+```php
+$model = $schema->newModel();
+```
 
-To create a collection object from schema object:
+To create a new collection object from schema object:
 
-    $collection = $schema->newCollection();
+```php
+$collection = $schema->newCollection();
+```
 
 
 
