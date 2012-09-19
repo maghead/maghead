@@ -50,7 +50,7 @@ class CommandUtils
                     static::log("Running seed script: $seedClass",'green');
                     $seedClass::seed();
                 } else {
-                    static::log("ERROR: Seed script $seedClass not found.",'red');
+                    static::get_logger()->error("ERROR: Seed script $seedClass not found.");
                 }
             }
         }
