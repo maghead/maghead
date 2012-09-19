@@ -1,0 +1,17 @@
+---
+bootstrap:
+  - bootstrap.php
+schema:
+#  Customize your schema paths
+  paths:
+    - src/
+data_sources:
+  default:
+    driver: mysql
+    database: todos
+    user: root
+    pass: 123123
+#    slave:
+#      dsn: 'mysql:host=localhost;dbname=test'
+#      user: root
+#      pass: 123123
