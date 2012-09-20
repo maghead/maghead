@@ -943,13 +943,17 @@ abstract class BaseModel
                 ;
     }
 
-    /* pass a value to a column for displaying */
+    /**
+     * Render readable column value
+     *
+     * @param string $name column name
+     */
     public function display( $name )
     {
         if( $c = $this->schema->getColumn( $name ) ) {
-            if( $c->virtual ) {
+            // get raw value
+            if( $c->virtual )
                 return $this->get($name);
-            }
             return $c->display( $this->getValue( $name ) );
         }
         elseif( isset($this->_data[$name]) ) {
@@ -958,8 +962,11 @@ abstract class BaseModel
 #          elseif( method_exists($this, $name) ) {
 #              return call_user_func_array($this,array($name));
 #          }
-        else {
-            // return "Undefined column $name";
+        
+        // for relationship record
+        $val = $this->__get($name);
+        if( $val && $val instanceof \LazyRecord\BaseModel ) {
+            return $val->dataLabel();
         }
     }
 
