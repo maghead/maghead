@@ -12,7 +12,7 @@ class SchemaLoader
 
 
     /**
-     * Load or create schema object.
+     * Load or create schema object and cache it.
      *
      * @param string $class Schema class naem
      *
@@ -20,9 +20,12 @@ class SchemaLoader
      */
     static function load($class)
     {
-        return ( isset($schemas[ $class ] ) ) 
-                ? $schemas[ $class ] 
-                : $schemas[ $class ] = new $class;
+        if( isset( self::$schemas[ $class ] ) ) {
+            return self::$schemas[ $class ];
+        }
+        if( class_exists($class,true) ) {
+            return self::$schemas[ $class ] = new $class;
+        }
     }
 }
 
