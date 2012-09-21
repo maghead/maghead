@@ -92,9 +92,6 @@ abstract class BaseModel
         if( $args ) {
             $this->_load( $args );
         }
-        // if( ! static::$schemaCache ) {
-        //     static::$schemaCache = SchemaLoader::load( static::schema_proxy_class );
-        // }
     }
 
     public function using($dsId)
@@ -1372,6 +1369,8 @@ abstract class BaseModel
      */
     public function __get( $key )
     {
+
+        // todo: fix this
         // lazy schema loader, xxx: make this static.
         if( 'schema' === $key ) {
             if( constant( get_class($this) . '::schema_proxy_class') )

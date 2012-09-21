@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Command;
 use LazyRecord\ConfigLoader;
+use LazyRecord\Utils;
 
 class CommandUtils
 {
@@ -73,8 +74,9 @@ class CommandUtils
         }
     }
 
-    static function find_schemas_with_arguments($arguments) {
-        return \LazyRecord\Utils::getSchemaClassFromPathsOrClassNames( 
+    static function find_schemas_with_arguments($arguments) 
+    {
+        return Utils::getSchemaClassFromPathsOrClassNames( 
             static::$loader, $arguments , static::get_logger() );
     }
 
