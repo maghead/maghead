@@ -45,7 +45,8 @@ schema:
 #    - tests/schema
 data_sources:
   default:
-    dsn: '$driver:$dbName'
+    driver: $driver
+    database: $dbName
     user: $user
     pass: $password
 #    slave:
