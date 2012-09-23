@@ -35,6 +35,9 @@ class MysqlBuilder
             }
         }
 
+        if( $column->comment )
+            $sql .= ' comment ' . $this->driver->inflate($column->comment);
+
         if( $column->primary )
             $sql .= ' primary key';
 
