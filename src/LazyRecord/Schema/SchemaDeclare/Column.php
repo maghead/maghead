@@ -60,6 +60,7 @@ class Column
             'notNull'       => self::ATTR_FLAG,
             'required'      => self::ATTR_FLAG,
             'typeConstraint' => self::ATTR_FLAG,
+            'enum'          => self::ATTR_ARRAY,
 
             /* column label */
             'label' => self::ATTR_ANY,
@@ -261,6 +262,13 @@ class Column
         return $this;
     }
 
+    public function enum()
+    {
+        $this->attributes['type'] = 'enum';
+        $this->attributes['isa'] = 'enum';
+        $this->attributes['enum'] = func_get_args();
+        return $this;
+    }
 
     /**
      * serial type
