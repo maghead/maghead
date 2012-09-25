@@ -134,6 +134,15 @@ abstract class BaseModel
         return $this->get($pk);
     }
 
+
+    /**
+     * Alias method of $this->dataKeyValue()
+     */
+    public function dataValue()
+    {
+        return $this->dataKeyValue();
+    }
+
     /**
      * Get SQL Query Driver by data source id.
      *
