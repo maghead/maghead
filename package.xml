@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-09-22</date>
-  <time>15:53:28</time>
+  <date>2012-09-29</date>
+  <time>01:10:01</time>
   <version>
-    <release>1.8.9</release>
-    <api>1.8.9</api>
+    <release>1.8.10</release>
+    <api>1.8.10</api>
   </version>
   <stability>
     <release>stable</release>
@@ -161,13 +161,12 @@
       <file name="tests/schema/tests/Wine.php" role="test" md5sum="a4aa1daa61edb0ceea05af8e3efb8eea"/>
       <file name="tests/schema/tests/WineCollection.php" role="test" md5sum="6c76f6b5ca228e035efc925e4700275b"/>
       <file name="tests/schema/tests/WineCollectionBase.php" role="test" md5sum="64e403c1c33b68147e84ed248dcc1367"/>
-      <file name="tests/schema/tests/WineSchemaProxy.php" role="test" md5sum="06c919a1ca9e72d645092b3abb65cf3c"/>
       <file name="tests/src/TestLogger.php" role="test" md5sum="45f74416d159acf1366e9db466c74714"/>
       <file name="tests/src/TestSeed.php" role="test" md5sum="0fb126cd276a2af7b882eb0ff079af3c"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
       <file name="src/LazyRecord/ArrayUtils.php" role="php" md5sum="e4050887e137de2f7f7fd18fcbdd09c2"/>
       <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="26f38bde5b0b134d8636a39b4e83dabb"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="afb770deea7d1c078f3226079d465878"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="fcc5399cecaf05748fe8a591b202d361"/>
       <file name="src/LazyRecord/BaseSeed.php" role="php" md5sum="884fadea8ad5b2c3e86645b70554f955"/>
       <file name="src/LazyRecord/ClassUtils.php" role="php" md5sum="a784d51fadca0712a9e65174c43a8847"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
@@ -196,7 +195,7 @@
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="286f665637c029961affab18ece317df"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="06f312284937403ac8dd141089aa448f"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="69efc7fefb57344d0693586416a6b8d2"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="e0af8d2958ec5f315a411553c1b29491"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="86cf67cb5b8607fefc079da9ebefd31e"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="db7bffe3be80aab0b8eb4d82024d2e42"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
@@ -235,7 +234,7 @@
       <file name="src/LazyRecord/Schema/Templates/Schema.php.twig" role="php" md5sum="1eea1a4df423594ef193a1822b9ed1ce"/>
       <file name="src/LazyRecord/SqlBuilder/BaseBuilder.php" role="php" md5sum="d741f4652551ecb612539c9a2397b774"/>
       <file name="src/LazyRecord/SqlBuilder/BuilderInterface.php" role="php" md5sum="0e282e5c3f6256d59e1a747a938b17ea"/>
-      <file name="src/LazyRecord/SqlBuilder/MysqlBuilder.php" role="php" md5sum="1eacc88225c9bc3c1a358bdbf9bfe5ad"/>
+      <file name="src/LazyRecord/SqlBuilder/MysqlBuilder.php" role="php" md5sum="89d5c324213cfdf756bf5188c65c0f47"/>
       <file name="src/LazyRecord/SqlBuilder/PgsqlBuilder.php" role="php" md5sum="1fc00beaaa41bc781877e21be56ad30c"/>
       <file name="src/LazyRecord/SqlBuilder/SqlBuilder.php" role="php" md5sum="cc3f3002404f585ef03cad92bec570ba"/>
       <file name="src/LazyRecord/SqlBuilder/SqliteBuilder.php" role="php" md5sum="b5b192715d2aa7af65baf7fd354a59cd"/>
@@ -458,7 +457,6 @@
       <install name="tests/schema/tests/Wine.php" as="schema/tests/Wine.php"/>
       <install name="tests/schema/tests/WineCollection.php" as="schema/tests/WineCollection.php"/>
       <install name="tests/schema/tests/WineCollectionBase.php" as="schema/tests/WineCollectionBase.php"/>
-      <install name="tests/schema/tests/WineSchemaProxy.php" as="schema/tests/WineSchemaProxy.php"/>
       <install name="tests/src/TestLogger.php" as="src/TestLogger.php"/>
       <install name="tests/src/TestSeed.php" as="src/TestSeed.php"/>
       <install name="src/LazyRecord/Adapter/PdoAdapter.php" as="LazyRecord/Adapter/PdoAdapter.php"/>
