@@ -84,6 +84,7 @@ class CommandUtils
         $schemas = array();
         foreach( $classes as $class ) {
             if( is_a($class,'LazyRecord\BaseModel',true) ) {
+                // TODO: refactor this to a factory method
                 $model = new $class;
                 $schemas[] = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
             }
