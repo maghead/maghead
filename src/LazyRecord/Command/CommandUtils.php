@@ -80,21 +80,6 @@ class CommandUtils
             static::$loader, $arguments , static::get_logger() );
     }
 
-    static function schema_classes_to_objects($classes) {
-        $schemas = array();
-        foreach( $classes as $class ) {
-            if( is_a($class,'LazyRecord\BaseModel',true) ) {
-                // TODO: refactor this to a factory method
-                $model = new $class;
-                $schemas[] = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
-            }
-            elseif( is_a($class,'LazyRecord\Schema\SchemaDeclare',true) ) {
-                $schemas[] = new $class; 
-            }
-        }
-        return $schemas;
-    }
-
     static function print_schema_classes($classes) {
         static::log('Found schema classes');
         foreach( $classes as $class ) {
