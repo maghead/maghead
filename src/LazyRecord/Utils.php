@@ -27,6 +27,9 @@ class Utils
             $finder = new SchemaFinder;
             if( count($args) && file_exists($args[0]) ) {
                 $finder->paths = $args;
+                foreach( $args as $file ) {
+                    require_once $file;
+                }
             } 
             // load schema paths from config
             elseif( $paths = $loader->getSchemaPaths() ) {
