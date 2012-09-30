@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-09-30</date>
-  <time>09:41:03</time>
+  <time>09:43:52</time>
   <version>
-    <release>1.8.10</release>
-    <api>1.8.10</api>
+    <release>1.8.11</release>
+    <api>1.8.11</api>
   </version>
   <stability>
     <release>stable</release>
@@ -184,7 +184,7 @@
       <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="b253b239170ca964eaff60245f41c650"/>
       <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="3f19a267a31b6ba33f6689d5410eeb87"/>
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="56387198c42ff624a01d164b2e941e55"/>
-      <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="289f1594a9cc8b03655b729a8bb85761"/>
+      <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="1a62c4d7c0e76f6e74ce5d613c79bfd9"/>
       <file name="src/LazyRecord/Command/CreateDBCommand.php" role="php" md5sum="a929cd6df7f0bd09d053b8b0115fb35e"/>
       <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="46e0c4d6059d76f72ad8495d92bad995"/>
       <file name="src/LazyRecord/Command/InitCommand.php" role="php" md5sum="968f444a1d7a49bf4558e77dcc5c8d2e"/>
@@ -196,7 +196,7 @@
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="286f665637c029961affab18ece317df"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="06f312284937403ac8dd141089aa448f"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="69efc7fefb57344d0693586416a6b8d2"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="86cf67cb5b8607fefc079da9ebefd31e"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="bbce533ab2e3c0f93d1f3324d2aa45d4"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="db7bffe3be80aab0b8eb4d82024d2e42"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
