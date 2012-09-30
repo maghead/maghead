@@ -4,6 +4,7 @@ use LazyRecord\ConnectionManager;
 use LazyRecord\SqlBuilder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
+use LazyRecord\ClassUtils;
 
 abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
 {
@@ -101,7 +102,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
         $generator = new \LazyRecord\Schema\SchemaGenerator;
         $generator->setLogger( $this->getLogger() );
-        $schemas = CommandUtils::schema_classes_to_objects( $this->getModels() );
+        $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
         $classMap = $generator->generate( $schemas );
         ok( $classMap );
         foreach( $schemas as $schema ) {

@@ -1,11 +1,19 @@
 <?php
 namespace LazyRecord;
 use Exception;
+use RuntimeException;
 use ReflectionClass;
 use LazyRecord\Inflector;
 
 class ClassUtils
 {
+    static public function create_dschema_from_model_class($class)
+    {
+        $model = new $class;
+        if( ! method_exists($model,'schema') )
+            throw new RuntimeException("Model $class requires schema method");
+        return new \LazyRecord\Schema\DynamicSchemaDeclare($model);
+    }
 
     static public function get_declared_dynamic_schema_classes_from_models()
     {
@@ -13,11 +21,7 @@ class ClassUtils
         $classes = array_filter($classes, function($class) {
             return is_a($class,'LazyRecord\BaseModel',true) && method_exists($class,'schema');
         });
-        return array_map(function($class) {
-            $model = new $class;
-            $schema = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
-            return $schema;
-        },$classes);
+        return array_map(array('LazyRecord\ClassUtils','create_dschema_from_model_class'),$classes);
     }
 
     static public function get_declared_schema_classes() 
@@ -29,7 +33,7 @@ class ClassUtils
     /**
      * Get referenced schema classes and put them in order.
      *
-     * @param classes[]
+     * @param array schema objects
      */
     static public function expand_schema_classes($classes)
     {
@@ -42,11 +46,24 @@ class ClassUtils
             $schemas[] = $class;
         }
         $schemaClasses = array_unique($schemas);
-        return array_map(function($class) { 
-            return new $class; }, 
-                $schemaClasses);
+        return self::schema_classes_to_objects($schemaClasses);
     }
 
+
+    public static function schema_classes_to_objects($classes) {
+        $schemas = array();
+        foreach( $classes as $class ) {
+            if( is_a($class,'LazyRecord\BaseModel',true) ) {
+                // TODO: refactor this to a factory method
+                $model = new $class;
+                $schemas[] = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
+            }
+            elseif( is_a($class,'LazyRecord\Schema\SchemaDeclare',true) ) {
+                $schemas[] = new $class; 
+            }
+        }
+        return $schemas;
+    }
 
     /**
      * Filter non-dynamic schema declare classes.
