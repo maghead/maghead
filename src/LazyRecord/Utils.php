@@ -4,7 +4,12 @@ use LazyRecord\Schema\SchemaFinder;
 
 class Utils
 {
-    static function getSchemaClassFromPathsOrClassNames($loader, $args,$logger = null)
+    /**
+     * Returns schema objects
+     *
+     * @return array schema objects
+     */
+    public static function getSchemaClassFromPathsOrClassNames($loader, $args,$logger = null)
     {
         if( count($args) && ! file_exists($args[0]) ) {
             $classes = array();
@@ -21,7 +26,7 @@ class Utils
                         echo ">>> $class not found.\n";
                 }
             }
-            return $classes;
+            return ClassUtils::schema_classes_to_objects( $classes );
         }
         else {
             $finder = new SchemaFinder;
