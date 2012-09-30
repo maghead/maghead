@@ -94,6 +94,12 @@ class SchemaFinder
         return $this->getSchemas();
     }
 
+
+    /**
+     * Returns schema objects
+     *
+     * @return array Schema objects
+     */
     public function getSchemas()
     {
         $classes   = ClassUtils::get_declared_schema_classes();
