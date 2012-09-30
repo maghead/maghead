@@ -1,6 +1,11 @@
 Changes
 =======
 
+## v1.8.11, v1.8.12
+
+- Fix bugs for schema/class/model
+- Add enum support for mysql
+
 ## v1.8.7
 
 - Fix required column validation
