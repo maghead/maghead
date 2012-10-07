@@ -120,21 +120,34 @@ abstract class SchemaBase
                 continue;
 
             $class = ltrim($rel['foreign']['schema'],'\\');
+
+            if( isset($schemas[$class]) )
+                continue;
+
             if( ! class_exists($class,true) ) {
                 throw new RuntimeException("Foreign schema class $class not found." );
             }
-            if( ! is_subclass_of( $class, 'LazyRecord\Schema\SchemaDeclare' ) ) {
+
+            if( is_a($class,'LazyRecord\\BaseModel',true) ) {
+                // bless model class to schema object.
+                $schemas[ $class ] = 1;
+                $model = new $class;
+                $schema = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
+                if( $recursive ) {
+                    $schemas = array_merge($schemas, $schema->getReferenceSchemas(false));
+                }
+            }
+            elseif( is_subclass_of( $class, 'LazyRecord\\Schema\\SchemaDeclare',true ) ) {
+                $schemas[ $class ] = 1;
+                $fs = new $class;
+                if( $recursive ) {
+                    $schemas = array_merge($schemas, $fs->getReferenceSchemas(false));
+                }
+            }
+            else {
                 throw new InvalidArgumentException("Foreign schema class $class is not a SchemaDeclare class");
             }
-            if( isset($schemas[$class]) ) {
-                continue;
-            }
 
-            $schemas[ $class ] = 1;
-            $fs = new $class;
-            if( $recursive ) {
-                $schemas = array_merge($schemas, $fs->getReferenceSchemas(false));
-            }
         }
         return $schemas;
     }
