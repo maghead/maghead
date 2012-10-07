@@ -198,7 +198,7 @@ class SchemaDeclare extends SchemaBase
     public function mixin($class)
     {
         if( ! class_exists($class,true) ) {
-            $class = 'LazyRecord\Schema\Mixin\\' . $class;
+            $class = 'LazyRecord\\Schema\\Mixin\\' . $class;
             if( ! class_exists($class,true) ) {
                 throw new Exception("Mixin class $class not found.");
             }
