@@ -262,15 +262,16 @@ class SchemaDeclare extends SchemaBase
      * Define new column object
      *
      * @param string $name column name
+     * @param string $class column class name
      * @return SchemaDeclare\Column
      */
-    public function column($name)
+    public function column($name,$class = 'LazyRecord\\Schema\\SchemaDeclare\\Column')
     {
         if( isset($this->columns[$name]) ) {
             throw new Exception("column $name of ". get_class($this) . " is already defined.");
         }
         $this->columnNames[] = $name;
-        return $this->columns[ $name ] = new SchemaDeclare\Column( $name );
+        return $this->columns[ $name ] = new $class( $name );
     }
 
 
