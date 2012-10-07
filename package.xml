@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-09-30</date>
-  <time>10:00:02</time>
+  <date>2012-10-07</date>
+  <time>20:26:26</time>
   <version>
-    <release>1.8.12</release>
-    <api>1.8.12</api>
+    <release>1.8.13</release>
+    <api>1.8.13</api>
   </version>
   <stability>
     <release>stable</release>
@@ -196,7 +196,7 @@
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="286f665637c029961affab18ece317df"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="06f312284937403ac8dd141089aa448f"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="69efc7fefb57344d0693586416a6b8d2"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="4515cff8e82630083dbb38a1d09fc341"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="6dc69fe6b669878c59a1a9ac982c2a72"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="db7bffe3be80aab0b8eb4d82024d2e42"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
@@ -223,7 +223,7 @@
       <file name="src/LazyRecord/Schema/MixinSchemaProxy.php" role="php" md5sum="f971cc52fd9003b038e446377d67404c"/>
       <file name="src/LazyRecord/Schema/RuntimeColumn.php" role="php" md5sum="c9dc53492a9f1b697c4877097548533d"/>
       <file name="src/LazyRecord/Schema/RuntimeSchema.php" role="php" md5sum="3d2224a42445fe0a5f9309b47eaf46de"/>
-      <file name="src/LazyRecord/Schema/SchemaBase.php" role="php" md5sum="96e21c6e39a58b38deee9b22b380bf11"/>
+      <file name="src/LazyRecord/Schema/SchemaBase.php" role="php" md5sum="6c998a76d690ccf280b6f48201a5c7f0"/>
       <file name="src/LazyRecord/Schema/SchemaDataInterface.php" role="php" md5sum="d43ab250745f006eac684c369f5d8d43"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare/Column.php" role="php" md5sum="8f85ab1ce4f5742ac9bcb34b73b0c784"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="28f84262f4e75743a1010f26a82e8fdb"/>
