@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-10-07</date>
-  <time>20:26:26</time>
+  <time>20:33:57</time>
   <version>
     <release>1.8.13</release>
     <api>1.8.13</api>
@@ -226,7 +226,7 @@
       <file name="src/LazyRecord/Schema/SchemaBase.php" role="php" md5sum="6c998a76d690ccf280b6f48201a5c7f0"/>
       <file name="src/LazyRecord/Schema/SchemaDataInterface.php" role="php" md5sum="d43ab250745f006eac684c369f5d8d43"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare/Column.php" role="php" md5sum="8f85ab1ce4f5742ac9bcb34b73b0c784"/>
-      <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="28f84262f4e75743a1010f26a82e8fdb"/>
+      <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="9e1c644d89339ed65ca839518831a5f8"/>
       <file name="src/LazyRecord/Schema/SchemaFinder.php" role="php" md5sum="2c246afa421402544714cb4520a47efd"/>
       <file name="src/LazyRecord/Schema/SchemaGenerator.php" role="php" md5sum="0849ae6524112b61d20df17b8c401a91"/>
       <file name="src/LazyRecord/Schema/SchemaLoader.php" role="php" md5sum="939f39c21b20b38f5292a75c2caefffc"/>
