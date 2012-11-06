@@ -90,11 +90,15 @@ abstract class BaseModel
      */
     public function __construct($args = null) 
     {
-        if( $args ) {
+        if ( $args )
             $this->_load( $args );
-        }
     }
 
+    /**
+     * Use specific data source for data operations.
+     *
+     * @param string $dsId data source id.
+     */
     public function using($dsId)
     {
         $this->usingDataSource = $dsId;
@@ -1679,7 +1683,6 @@ abstract class BaseModel
     }
 
 
-
     /***************************************
      * Schema related methods
      ***************************************/
@@ -1756,16 +1759,36 @@ abstract class BaseModel
     /***************************************
      * Cache related methods
      ***************************************/
+
+
+    /**
+     * flush internal cache, in php memory.
+     */
     public function flushCache() 
     {
         $this->_cache = array();
     }
 
+
+    /**
+     * set internal cache, in php memory.
+     *
+     * @param string $key cache key
+     * @param mixed $val cache value
+     * @return mixed cached value
+     */
     public function setInternalCache($key,$val)
     {
         return $this->_cache[ $key ] = $val;
     }
 
+
+    /**
+     * get internal cache from php memory.
+     *
+     * @param string $key cache key
+     * @return mixed cached value
+     */
     public function getInternalCache($key)
     {
         if( isset( $this->_cache[ $key ] ) )
@@ -1776,6 +1799,22 @@ abstract class BaseModel
     {
         return isset( $this->_cache[ $key ] );
     }
+
+    private function getCache($key)
+    {
+        if( $cache = ConfigLoader::getInstance()->getCacheInstance() ) {
+            return $cache->get($key);
+        }
+    }
+
+    private function setCache($key,$val,$ttl = 0)
+    {
+        if( $cache = ConfigLoader::getInstance()->getCacheInstance() ) {
+            $cache->set($key, $val, $ttl );
+        }
+        return $val;
+    }
+
 
     public function getWriteSourceId()
     {
@@ -1790,9 +1829,8 @@ abstract class BaseModel
             return $this->usingDataSource;
         return $this->schema->getReadSourceId();
     }
-    
 
-    public function __clone() 
+    public function __clone()
     {
         $this->_data = $this->_data;
         $this->autoReload = $this->autoReload;
