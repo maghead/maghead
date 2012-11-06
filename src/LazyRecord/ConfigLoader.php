@@ -205,6 +205,19 @@ class ConfigLoader
             return $this->config['cache'];
     }
 
+    public function getCacheInstance()
+    {
+        static $instance;
+        if ( $instance )
+            return $instance;
+        $config = ConfigLoader::getInstance()->getCacheConfig();
+        if( isset($class['class']) ) {
+            $class = $config['class'];
+            $instance = new $class( $config );
+            return $instance;
+        }
+    }
+
     /**
      * get data source by data source id
      *
