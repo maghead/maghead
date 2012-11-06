@@ -696,15 +696,16 @@ abstract class BaseModel
         $query = $this->createQuery( $dsId );
         $conn  = $this->getConnection( $dsId );
         $kVal  = null;
+
+        // build query from array.
         if( is_array($args) ) {
             $query->select('*')
                 ->whereFromArgs($args);
-        } 
-        else 
+        }
+        else
         {
             $kVal = $args;
             $column = $this->schema->getColumn( $pk );
-            
             if ( ! $column )
                 throw new Exception("Primary key $pk is not defined in " . get_class($this->schema) );
 
@@ -718,14 +719,13 @@ abstract class BaseModel
         $validationResults = array();
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
-        $stm = null;
         try {
             $stm = $this->dbPrepareAndExecute($conn,$sql,$query->vars);
-
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             if( false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
                 throw new Exception('Data load failed.');
             }
+            // $this->setCache($sql,$this->_data);
         }
         catch ( Exception $e ) 
         {
@@ -1686,7 +1686,6 @@ abstract class BaseModel
     /***************************************
      * Schema related methods
      ***************************************/
-
     public function loadSchema()
     {
         return SchemaLoader::load( static::schema_proxy_class );
