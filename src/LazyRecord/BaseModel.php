@@ -1220,9 +1220,12 @@ abstract class BaseModel
 
     public function getRelationalRecords($key,$relation = null)
     {
-        if( ! $relation ) {
+        $cacheKey = 'relationship::' . $key;
+        if( $this->hasCache($cacheKey) )
+            return $this->_cache[ $cacheKey ];
+
+        if( ! $relation )
             $relation = $this->schema->getRelation( $key );
-        }
 
         /*
         switch($relation['type']) {
@@ -1234,7 +1237,6 @@ abstract class BaseModel
         if( SchemaDeclare::has_one === $relation['type'] ) 
         {
             $sColumn = $relation['self']['column'];
-
 
             $fSchema = new $relation['foreign']['schema'];
             $fColumn = $relation['foreign']['column'];
@@ -1248,8 +1250,7 @@ abstract class BaseModel
             $model->load(array( 
                 $fColumn => $sValue,
             ));
-
-            return $model;
+            return $this->setCache($cacheKey,$model);
         }
         elseif( SchemaDeclare::has_many === $relation['type'] )
         {
@@ -1274,7 +1275,7 @@ abstract class BaseModel
             $collection->setPresetVars(array( 
                 $fColumn => $sValue,
             ));
-            return $collection;
+            return $this->setCache($cacheKey,$collection);
         }
         // belongs to one record
         elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
@@ -1289,7 +1290,7 @@ abstract class BaseModel
             $sValue = $this->getValue( $sColumn );
             $model = $fpSchema->newModel();
             $ret = $model->load(array( $fColumn => $sValue ));
-            return $model;
+            return $this->setCache($cacheKey,$model);
         }
         elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
             $rId = $relation['relation']['id'];  // use relationId to get middle relation. (author_books)
@@ -1305,11 +1306,11 @@ abstract class BaseModel
             $spSchema = SchemaLoader::load( $sSchema->getSchemaProxyClass() );
 
             $foreignRelation = $spSchema->getRelation( $rId2 );
-            if( ! $foreignRelation )
+            if ( ! $foreignRelation )
                 throw new InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
 
             $c = $foreignRelation['foreign']['schema'];
-            if( ! $c ) 
+            if ( ! $c )
                 throw new InvalidArgumentException('foreign schema class is not defined.');
 
             $fSchema = new $c;
@@ -1363,11 +1364,10 @@ abstract class BaseModel
                 }
                 return $middleRecord;
             });
-            return $collection;
+            return $this->setCache($cacheKey,$collection);
         }
-        else {
-            throw new Exception("The relationship type of $key is not supported.");
-        }
+
+        throw new Exception("The relationship type of $key is not supported.");
     }
 
 
@@ -1754,14 +1754,32 @@ abstract class BaseModel
     }
 
 
-
-
-
+    /***************************************
+     * Cache related methods
+     ***************************************/
 
     public function flushCache() 
     {
         $this->_cache = array();
     }
+
+    public function setCache($key,$val)
+    {
+        return $this->_cache[ $key ] = $val;
+    }
+
+    public function getCache($key) 
+    {
+        if( isset( $this->_cache[ $key ] ) )
+            return $this->_cache[ $key ];
+    }
+
+    public function hasCache($key) 
+    {
+        return isset( $this->_cache[ $key ] );
+    }
+
+
 
     public function getWriteSourceId()
     {
