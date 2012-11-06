@@ -11,18 +11,6 @@
       0 => 'tests/schema',
     ),
   ),
-  'cache' => 
-  array (
-    'class' => 'LazyRecord\\Cache\\Memcache',
-    'servers' => 
-    array (
-      0 => 
-      array (
-        'host' => 'localhost',
-        'port' => 11211,
-      ),
-    ),
-  ),
   'data_sources' => 
   array (
     'default' => 
