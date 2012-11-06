@@ -282,6 +282,7 @@ abstract class BaseModel
             break;
         }
 
+        // dispatch to schema object method
         if( method_exists($this->schema,$m) ) {
             return call_user_func_array($this->schema,$a);
         }
@@ -1384,8 +1385,7 @@ abstract class BaseModel
         if( 'schema' === $key ) {
             if( constant( get_class($this) . '::schema_proxy_class') )
                 return SchemaLoader::load( static::schema_proxy_class );
-            $dschema = new Schema\DynamicSchemaDeclare($this);
-            return $dschema;
+            return new Schema\DynamicSchemaDeclare($this);
         }
         elseif( '_connection' === $key ) {
             return ConnectionManager::getInstance();
@@ -1394,12 +1394,6 @@ abstract class BaseModel
         if( $relation = $this->schema->getRelation( $key ) ) {
             return $this->getRelationalRecords($key, $relation);
         }
-
-# XXX: turn off cache to prevent logical/runtime bug.
-#          if( isset($this->_cache[$key]) ) {
-#              return $this->_cache[$key];
-#          }
-
         return $this->get($key);
     }
 
@@ -1439,12 +1433,13 @@ abstract class BaseModel
 
 
     /**
-     * return xml format data
+     * Return xml format data
      *
      * @return string XML string
      */
     public function toXml()
     {
+        // TODO: improve element attributes
         $ser = new XmlSerializer;
         return $ser->encode( $this->_data );
     }
@@ -1685,18 +1680,27 @@ abstract class BaseModel
     }
 
 
+
+    /***************************************
+     * Schema related methods
+     ***************************************/
+
     public function loadSchema()
     {
         return SchemaLoader::load( static::schema_proxy_class );
     }
 
+    public function getSchema() 
+    {
+        return SchemaLoader::load( static::schema_proxy_class );
+    }
 
     /**
      * Duplicated with asCollection() method
      */
     public function newCollection() 
     {
-        return $this->loadSchema()->newCollection();
+        return $this->schema->newCollection();
     }
 
     // schema methods
@@ -1749,10 +1753,10 @@ abstract class BaseModel
         return $this->schema->table;
     }
 
-    public function getSchema() 
-    {
-        return SchemaLoader::load( static::schema_proxy_class );
-    }
+
+
+
+
 
     public function flushCache() 
     {
