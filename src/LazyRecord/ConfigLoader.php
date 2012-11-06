@@ -210,8 +210,8 @@ class ConfigLoader
         static $instance;
         if ( $instance )
             return $instance;
-        $config = ConfigLoader::getInstance()->getCacheConfig();
-        if( isset($class['class']) ) {
+        $config = $this->getCacheConfig();
+        if( isset($config['class']) ) {
             $class = $config['class'];
             $instance = new $class( $config );
             return $instance;

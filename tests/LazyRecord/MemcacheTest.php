@@ -8,6 +8,15 @@ class MemcacheTest extends PHPUnit_Framework_TestCase
             skip('memcache extension is required.');
         }
     }
+
+
+    public function testCacheInstanceFromConfigLoader()
+    {
+        $config = LazyRecord\ConfigLoader::getInstance();
+        $cache = $config->getCacheInstance();
+        ok($cache);
+    }
+
     public function test()
     {
         $memcache = new LazyRecord\Memcache(array(
