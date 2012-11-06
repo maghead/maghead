@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Command;
 use LazyRecord\ConfigLoader;
+use LazyRecord\Utils;
 
 class CommandUtils
 {
@@ -10,7 +11,7 @@ class CommandUtils
 
     static function init_config_loader() {
         $loader = ConfigLoader::getInstance();
-        $loader->load();
+        $loader->loadFromSymbol(true); // force loading
         $loader->initForBuild();
         return static::$loader = $loader;
     }
@@ -35,27 +36,54 @@ class CommandUtils
 
     static function build_basedata($schemas) {
         foreach( $schemas as $schema ) {
-            $class = get_class($schema);
-            $modelClass = $schema->getModelClass();
+            if( method_exists($schema,'bootstrap') ) {
+                if( $modelClass = $schema->getModelClass() ) {
+                    static::log("Creating base data of $modelClass",'green');
+                    $schema->bootstrap( new $modelClass );
+                }
+            }
+        }
 
-            static::log("Creating base data for $modelClass",'green');
-            $schema->bootstrap( new $modelClass );
+        foreach( $schemas as $schema ) {
+            $seeds = $schema->getSeeds();
+            foreach ($seeds as $seedClass ){
+                if( class_exists($seedClass,true) ) {
+                    static::log("Running seed script: $seedClass",'green');
+                    $seedClass::seed();
+                } else {
+                    static::get_logger()->error("ERROR: Seed script $seedClass not found.");
+                }
+            }
+        }
+
+        $loader = ConfigLoader::getInstance();
+        if( $seeds = $loader->getSeedScripts() ) {
+            foreach( $seeds as $seed ) {
+                $seed = str_replace('::','\\',$seed);
+                static::log("Running seed script: $seed",'green');
+                if( file_exists($seed) ) {
+                    require $seed;
+                }
+                elseif( class_exists($seed,true) ) {
+                    $seed::seed();
+                }
+                else {
+                    static::log("ERROR: Can not run $seed",'red');
+                }
+            }
         }
     }
 
-    static function find_schemas_with_arguments($arguments) {
-        return \LazyRecord\Utils::getSchemaClassFromPathsOrClassNames( 
+    static function find_schemas_with_arguments($arguments) 
+    {
+        return Utils::getSchemaClassFromPathsOrClassNames( 
             static::$loader, $arguments , static::get_logger() );
-    }
-
-    static function schema_classes_to_objects($classes) {
-        return array_map(function($class) { return new $class; },$classes);
     }
 
     static function print_schema_classes($classes) {
         static::log('Found schema classes');
         foreach( $classes as $class ) {
-            static::$logger->info( static::$logger->formatter->format($class,'green') , 1 );
+            static::$logger->debug( static::$logger->formatter->format($class, 'green') , 1 );
         }
     }
 
@@ -63,26 +91,25 @@ class CommandUtils
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $conn = $connectionManager->getConnection($id);
         $driver = $connectionManager->getQueryDriver($id);
-        $builder = \LazyRecord\SqlBuilder\SqlBuilderFactory::create($driver, array( 
+        $builder = \LazyRecord\SqlBuilder\SqlBuilder::create($driver, array( 
             'rebuild' => $options->rebuild,
             'clean' => $options->clean,
         )); // driver
 
         $sqls = array();
         foreach( $schemas as $schema ) {
-            $sqls[] = CommandUtils::build_schema_sql($builder,$schema,$conn);
+            $sqls[] = static::build_schema_sql($builder,$schema,$conn);
         }
         return join("\n", $sqls );
     }
 
     static function build_schema_sql($builder,$schema,$conn) {
         $class = get_class($schema);
-        static::log("Building SQL for " . $class,'green');
+        static::$logger->info('Building SQL for ' . $schema);
 
         $sqls = $builder->build($schema);
         foreach( $sqls as $sql ) {
-            static::log( $sql );
-
+            static::$logger->debug($sql);
             $conn->query( $sql );
             $error = $conn->errorInfo();
             if( $error[1] ) {

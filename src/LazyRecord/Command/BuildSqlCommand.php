@@ -1,8 +1,8 @@
 <?php
 namespace LazyRecord\Command;
 use CLIFramework\Command;
+use LazyRecord\Metadata;
 use LazyRecord\Schema;
-use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
 use Exception;
@@ -51,21 +51,13 @@ DOC;
         CommandUtils::set_logger($this->logger);
         CommandUtils::init_config_loader();
 
-
         // XXX: from config files
         $id = $options->{'data-source'} ?: 'default';
 
-        $logger->info("Finding schema classes...");
+        $logger->debug("Finding schema classes...");
+        $schemas = CommandUtils::find_schemas_with_arguments( func_get_args() );
 
-        $classes = CommandUtils::find_schemas_with_arguments( func_get_args() );
-
-        CommandUtils::print_schema_classes($classes);
-
-        $schemas = CommandUtils::schema_classes_to_objects( $classes );
-
-        $logger->info("Connecting to data soruce $id...");
-
-        $logger->info("Initialize schema builder...");
+        $logger->debug("Initialize schema builder...");
         $sqlOutput = CommandUtils::build_schemas_with_options($id, $options, $schemas);
         if( $file = $this->options->file ) {
             $fp = fopen($file,'w');
@@ -76,6 +68,11 @@ DOC;
         if( $this->options->basedata ) {
             CommandUtils::build_basedata($schemas);
         }
+
+        $time = time();
+        $logger->info("Setting migration timestamp to $time");
+        $metadata = new Metadata($id);
+        $metadata['migration'] = $time;
 
         $logger->info(
             $logger->formatter->format(

@@ -17,14 +17,21 @@ use SerializerKit\XmlSerializer;
 use SerializerKit\JsonSerializer;
 use SerializerKit\YamlSerializer;
 
+use ValidationKit\ValidationMessage;
+
+
 /**
  * Base Model class,
  * every model class extends from this class.
  *
  */
-class BaseModel
+abstract class BaseModel
     implements ExporterInterface
 {
+
+    const schema_proxy_class = '';
+
+
     protected $_data = array();
 
     protected $_cache = array();
@@ -73,14 +80,24 @@ class BaseModel
 
     // static $schemaCache;
 
+    public $usingDataSource;
+
+    /**
+     * This constructor simply does nothing if no argument is passed.
+     *
+     * @param mixed $args arguments for finding
+     */
     public function __construct($args = null) 
     {
-        if( $args )
+        if( $args ) {
             $this->_load( $args );
+        }
+    }
 
-        // if( ! static::$schemaCache ) {
-        //     static::$schemaCache = SchemaLoader::load( static::schema_proxy_class );
-        // }
+    public function using($dsId)
+    {
+        $this->usingDataSource = $dsId;
+        return $this;
     }
 
 
@@ -97,11 +114,33 @@ class BaseModel
         return true;
     }
 
-
+    /**
+     * This is for select widget,
+     * returns label value from specific column.
+     */
     public function dataLabel() 
     {
         $pk = $this->schema->primaryKey;
         return $this->get($pk);
+    }
+
+    /**
+     * This is for select widget,
+     * returns data key from specific column.
+     */
+    public function dataKeyValue()
+    {
+        $pk = $this->schema->primaryKey;
+        return $this->get($pk);
+    }
+
+
+    /**
+     * Alias method of $this->dataKeyValue()
+     */
+    public function dataValue()
+    {
+        return $this->dataKeyValue();
     }
 
     /**
@@ -125,9 +164,7 @@ class BaseModel
      */
     public function getWriteQueryDriver()
     {
-        return $this->getQueryDriver( 
-            $this->schema->getWriteSourceId()
-        );
+        return $this->getQueryDriver($this->getWriteSourceId());
     }
 
 
@@ -138,9 +175,7 @@ class BaseModel
      */
     public function getReadQueryDriver()
     {
-        return $this->getQueryDriver( 
-            $this->schema->getReadSourceId()
-        );
+        return $this->getQueryDriver( $this->getReadSourceId() );
     }
 
 
@@ -233,7 +268,6 @@ class BaseModel
 
     }
 
-
     public function __call($m,$a)
     {
         switch($m) {
@@ -286,7 +320,7 @@ class BaseModel
         }
 
         if( $ret && $ret->success 
-            || ( $pk && $this->_data[ $pk ] ) ) 
+            || ( $pk && isset($this->_data[ $pk ] )) ) 
         {
             return $this->update($args);
         } else {
@@ -342,9 +376,9 @@ class BaseModel
         }
 
         if( $ret && $ret->success 
-            || ( $pk && $this->_data[ $pk ] ) ) 
+            || ( $pk && isset($this->_data[$pk]) && $this->_data[ $pk ] ) ) 
         {
-            // just load
+            // is loaded
             return $ret;
         } else {
             // record not found, create
@@ -355,58 +389,100 @@ class BaseModel
 
 
 
-    /**
-     * validate validator 
-     *
-     * @param $c  column object.
-     * @param $val value object.
-     * @param $args arguments
-     * @param $validateFail array of failed field names.
-     */
-    protected function _validate_validator($c, $val, $args, & $validateFail )
-    {
-        $v = call_user_func( $c->validator, $val, $args, $this );
-        if( ! $v[0] )
-            $validateFail[] = $c->name;
-        return (object) array(
-            'success' => $v[0],
-            'message' => $v[1],
-            'field' => $c->name,
-        );
-    }
 
-    protected function _validate_validvalues($c, $val, $args, & $validateFail )
+    /**
+     * Run validator to validate column
+     *
+     * A validator could be:
+     *   1. a ValidationKit validator,
+     *   2. a closure
+     *   3. a function name
+     *
+     * The validation result must be returned as in following format:
+     *
+     *   boolean (valid or invalid, true or false)
+     *
+     *   array( boolean valid , string message )
+     *
+     *   ValidationKit\ValidationMessage object.
+     *
+     * This method returns
+     *
+     *   (object) {
+     *       valid: boolean valid or invalid
+     *       field: string field name
+     *       message: 
+     *   }
+     */ 
+    protected function _validateColumn($column,$val,$args)
     {
-        if( $validValues = $c->getValidValues( $this, $args ) ) {
-            // sort by index
-            if( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
-                $validateFail[] = $c->name;
-                return (object) array(
-                    'success' => false,
-                    'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
-                    'field' => $c->name,
-                );
+        if( $column->required && 
+            ( $val === '' || $val === null ))
+        {
+            return array( 
+                'valid' => false, 
+                'message' => sprintf(_('Field %s is required.'), $column->getLabel() ), 
+                'field' => $column->name 
+            );
+        }
+
+        if( $column->validator ) {
+            if( is_callable($column->validator) ) {
+                $ret = call_user_func($column->validator, $val, $args, $this );
+                if( is_bool($ret) ) {
+                    return array( 'valid' => $ret, 'message' => 'Validation failed.' , 'field' => $column->name );
+                } elseif( is_array($ret) ) {
+                    return array( 'valid' => $ret[0], 'message' => $ret[1], 'field' => $column->name );
+                } else {
+                    throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
+                }
+            } 
+            elseif( is_string($column->validator) && is_a($column->validator,'ValidationKit\\Validator',true) ) {
+                // it's a ValidationKit\Validator
+                $validator = $column->validatorArgs ? new $column->validator($column->validatorArgs) : new $column->validator;
+                $ret = $validator->validate($val);
+                $msgs = $validator->getMessages();
+                $msg = isset($msgs[0]) ? $msgs[0] : 'Validation failed.';
+                return array('valid' => $ret , 'message' => $msg , 'field' => $column->name );
             }
-            // "Label" => "Value",
-            // "Group" => array( "Label" => "Value" )
-            //
-            // Order with key => value
-            //    value => label
             else {
-                $values = array_values( $validValues );
-                foreach( $values as & $v ) {
-                    if( is_array($v) ) {
-                        $v = array_values($v);
-                    }
+                throw new Exception("Unsupported validator");
+            }
+        }
+        if( $val && ($column->validValues || $column->validValueBuilder) ) {
+            if( $validValues = $column->getValidValues( $this, $args ) ) {
+                // sort by index
+                if( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
+                    return array(
+                        'valid' => false,
+                        'message' => sprintf("%s is not a valid value for %s", $val , $column->name ),
+                        'field' => $column->name,
+                    );
                 }
 
-                if( ! in_array( $val , $values ) ) {
-                    $validateFail[] = $c->name;
-                    return (object) array(
-                        'success' => false,
-                        'message' => _( sprintf("%s is not a valid value for %s", $val , $c->name )),
-                        'field' => $c->name,
-                    );
+                /*
+                 * Validate for Options
+                 * "Label" => "Value",
+                 * "Group" => array( "Label" => "Value" )
+                
+                 * Order with key => value
+                 *    value => label
+                 */
+                else {
+                    $values = array_values( $validValues );
+                    foreach( $values as & $v ) {
+                        if( is_array($v) ) {
+                            $v = array_values($v);
+                        }
+                    }
+
+                    if( ! in_array( $val , $values ) ) {
+                        return array(
+                            'valid' => false,
+                            'message' => sprintf(_("%s is not a valid value for %s"), $val , $column->name ),
+                            'field' => $column->name,
+                        );
+                    }
                 }
             }
         }
@@ -437,7 +513,7 @@ class BaseModel
     }
 
     /**
-     * Method for creating new records, which is called from 
+     * Method for creating new record, which is called from 
      * static::create and $record->create.
      *
      * 1. _create method calls beforeCreate to 
@@ -463,7 +539,7 @@ class BaseModel
      *
      * @return OperationResult operation result (success or error)
      */
-    public function _create($args)
+    public function _create($args, $options = array() )
     {
         if( empty($args) || $args === null )
             return $this->reportError( _('Empty arguments') );
@@ -471,7 +547,10 @@ class BaseModel
         try {
             $args = $this->beforeCreate( $args );
 
-            // first, filter the array
+            // save $args for afterCreate trigger method
+            $origArgs = $args;
+
+            // first, filter the array, arguments for inserting data.
             $args = $this->filterArrayWithColumns($args);
 
             if( ! $this->currentUserCan( $this->getCurrentUser(), 'create', $args ) ) {
@@ -481,27 +560,25 @@ class BaseModel
             }
 
             $k = $this->schema->primaryKey;
-            $sql = $vars = null;
-            $validateFail    = array();
-            $this->_data = $validateResults = array();
+            $sql = $vars     = null;
+            $this->_data     = array();
             $stm = null;
 
+            $validationResults = array();
+            $validationFailed = false;
 
-            $dsId = $this->schema->getWriteSourceId();
+
+            $dsId = $this->getWriteSourceId();
             $conn = $this->getConnection( $dsId );
-
             foreach( $this->schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
-                if( ! isset($args[$n]) && ! $c->primary )
+                if( !$c->primary && (!isset($args[$n]) || !$args[$n] ))
                 {
                     if( $val = $c->getDefaultValue($this ,$args) ) {
                         $args[$n] = $val;
-                    } elseif( $c->requried ) {
-                        throw new Exception(sprintf(_("%s is required."), $n ));
-                    }
+                    } 
                 }
-
 
                 // if type constraint is on, check type,
                 // if not, we should try to cast the type of value, 
@@ -523,24 +600,20 @@ class BaseModel
                     $c->canonicalizeValue( $val , $this, $args );
                 }
 
-                // do validate
-                if( $c->validator ) {
-                    $validateResults[$n] = 
-                        $this->_validate_validator( $c, $val, $args, $validateFail );
-                }
-                if( $val && ($c->validValues || $c->validValueBuilder) ) {
-                    if( $r = $this->_validate_validvalues( $c, $val ,$args, $validateFail ) ) {
-                        $validateResults[$n] = $r;
+
+                if( $validationResult = $this->_validateColumn($c,$val,$args) ) {
+                    $validationResults[$n] = (object) $validationResult;
+                    if( ! $validationResult['valid'] ) {
+                        $validationFailed = true;
                     }
                 }
-
                 if( $val !== null ) {
                     $args[ $n ] = is_array($val) ? $val : $c->deflate( $val );
                 }
             }
 
-            if( $validateFail ) {
-                throw new Exception( 'Validation Fail, Columns: ' . implode(', ', $validateFail ));
+            if( $validationFailed ) {
+                throw new Exception( "Validation failed." );
             }
 
             $q = $this->createQuery( $dsId );
@@ -553,16 +626,16 @@ class BaseModel
 
             /* get connection, do query */
             $stm = $this->dbPrepareAndExecute($conn, $sql, $vars); // returns $stm
-            $this->afterCreate($args);
         }
         catch ( Exception $e )
         {
-            return $this->reportError( _("Create failed") , array( 
+            $msg = $e->getMessage();
+            return $this->reportError( ($msg ? $msg : _("Create failed")) , array( 
                 'vars'        => $vars,
                 'args'        => $args,
                 'sql'         => $sql,
                 'exception'   => $e,
-                'validations' => $validateResults,
+                'validations' => $validationResults,
             ));
         }
 
@@ -575,16 +648,17 @@ class BaseModel
             $pkId = $conn->lastInsertId();
         }
 
-        if( $this->autoReload ) {
+        if( $this->autoReload || isset($options['reload']) ) {
             // if possible, we should reload the data.
             $pkId ? $this->load($pkId) : $this->_data = $args;
         }
+        $this->afterCreate($origArgs);
 
         $ret = array( 
             'sql' => $sql,
-            'validations' => $validateResults,
             'args' => $args,
             'vars' => $vars,
+            'validations' => $validationResults,
         );
         if( isset($this->_data[ $k ]) ) {
             $ret['id'] = $this->_data[ $k ];
@@ -592,6 +666,12 @@ class BaseModel
         return $this->reportSuccess('Created', $ret );
     }
 
+
+    /**
+     * Find record
+     *
+     * @param array condition array
+     */
     public function find($args)
     {
         return $this->_load($args);
@@ -605,7 +685,7 @@ class BaseModel
             ));
         }
 
-        $dsId  = $this->schema->getReadSourceId();
+        $dsId  = $this->getReadSourceId();
         $pk    = $this->schema->primaryKey;
         $query = $this->createQuery( $dsId );
         $conn  = $this->getConnection( $dsId );
@@ -629,7 +709,7 @@ class BaseModel
 
         $sql = $query->build();
 
-        $validateResults = array();
+        $validationResults = array();
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         $stm = null;
@@ -643,19 +723,20 @@ class BaseModel
         }
         catch ( Exception $e ) 
         {
-            return $this->reportError( 'Data load failed' , array(
+            $msg = $e->getMessage();
+            return $this->reportError( ($msg ? $msg : _('Data load failed')) , array(
                 'sql' => $sql,
                 'args' => $args,
                 'vars' => $query->vars,
                 'exception' => $e,
-                'validations' => $validateResults,
+                'validations' => $validationResults,
             ));
         }
 
         return $this->reportSuccess( 'Data loaded', array( 
             'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
             'sql' => $sql,
-            'validations' => $validateResults,
+            'validations' => $validationResults,
         ));
     }
 
@@ -685,7 +766,7 @@ class BaseModel
             return $this->reportError( _('Permission denied. Can not delete record.') , array( ));
         }
 
-        $dsId = $this->schema->getWriteSourceId();
+        $dsId = $this->getWriteSourceId();
         $conn = $this->getConnection( $dsId );
 
         $this->beforeDelete( $this->_data );
@@ -696,14 +777,15 @@ class BaseModel
             ->equal( $k , $kVal );
         $sql = $query->build();
 
-        $validateResults = array();
+        $validationResults = array();
         try {
             $this->dbPrepareAndExecute($conn,$sql, $query->vars );
         } catch( PDOException $e ) {
-            return $this->reportError( _('Delete failed.') , array(
+            $msg = $e->getMessage();
+            return $this->reportError( ($msg ? $msg : _('Delete failed.')) , array(
                 'sql'         => $sql,
                 'exception'   => $e,
-                'validations' => $validateResults,
+                'validations' => $validationResults,
             ));
         }
 
@@ -717,13 +799,13 @@ class BaseModel
 
 
     /**
-     * update current record
+     * Update current record
      *
      * @param array $args
      *
      * @return OperationResult operation result (success or error)
      */
-    public function _update( $args ) 
+    public function _update( $args , $options = array() ) 
     {
         // check if the record is loaded.
         $k = $this->schema->primaryKey;
@@ -745,33 +827,35 @@ class BaseModel
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
 
+
         if( ! $kVal ) {
             return $this->reportError("The value of primary key is undefined.");
         }
 
+        $validationFailed = false;
+        $validationResults = array();
+
         try 
         {
             $args = $this->beforeUpdate($args);
+            $origArgs = $args;
+
             $args = $this->filterArrayWithColumns($args);
             $sql  = null;
             $vars = null;
 
-            $dsId = $this->schema->getWriteSourceId();
+            $dsId = $this->getWriteSourceId();
             $conn = $this->getConnection( $dsId );
 
             foreach( $this->schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
                 if( isset($args[$n]) 
-                    && $c->required
                     && ! $args[$n]
                     && ! $c->primary )
                 {
                     if( $val = $c->getDefaultValue($this ,$args) ) {
                         $args[$n] = $val;
-                    }
-                    elseif( $c->requried ) {
-                        throw new Exception( __("%1 is required.", $n) );
                     }
                 }
 
@@ -784,7 +868,7 @@ class BaseModel
                     }
 
                     // xxx: make this optional.
-                    if( $args[$n] !== null && ! is_array($args[$n]) && $c->required && $msg = $c->checkTypeConstraint( $args[$n] ) ) {
+                    if( $args[$n] !== null && ! is_array($args[$n]) && $msg = $c->checkTypeConstraint( $args[$n] ) ) {
                         throw new Exception($msg);
                     }
 
@@ -792,22 +876,19 @@ class BaseModel
                         $c->canonicalizeValue( $args[$n], $this, $args );
                     }
 
-
-                    // do validate
-                    if( $c->validator ) {
-                        $validateResults[$n] = 
-                            $this->_validate_validator( $c, $args[$n], $args, $validateFail );
-                    }
-
-                    if( $c->validValues || $c->validValueBuilder ) {
-                        if( $r = $this->_validate_validvalues( $c, $args[$n] ,$args, $validateFail ) ) {
-                            $validateResults[$n] = $r;
+                    if( $validationResult = $this->_validateColumn($c,$args[$n],$args) ) {
+                        $validationResults[$n] = (object) $validationResult;
+                        if( ! $validationResult['valid'] ) {
+                            $validationFailed = true;
                         }
                     }
 
                     // deflate
                     $args[ $n ] = is_array($args[$n]) ? $args[$n] : $c->deflate( $args[$n] );
                 }
+
+                if( $validationFailed )
+                    throw new Exception( "Validation failed." );
             }
 
             $query = $this->createQuery( $dsId );
@@ -815,25 +896,35 @@ class BaseModel
             $query->update($args)->where()
                 ->equal( $k , $kVal );
 
-            $sql = $query->build();
+            $sql  = $query->build();
             $vars = $query->vars;
-            $stm = $this->dbPrepareAndExecute($conn, $sql, $vars);
+            $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
 
-            // merge updated data
-            $this->_data = array_merge($this->_data,$args);
-            $this->afterUpdate($args);
+            // Merge updated data.
+            //
+            // if $args contains a raw SQL string, 
+            // we should reload data from database
+            if( isset($options['reload']) ) {
+                $this->reload();
+            } else {
+                $this->_data = array_merge($this->_data,$args);
+            }
+
+            $this->afterUpdate($origArgs);
         } 
         catch( Exception $e ) 
         {
-            return $this->reportError( 'Update failed', array(
+            $msg = $e->getMessage();
+            return $this->reportError( ($msg ? $msg : 'Update failed') , array(
                 'vars' => $vars,
                 'args' => $args,
                 'sql' => $sql,
-                'exception' => $e,
+                'exception'   => $e,
+                'validations' => $validationResults,
             ));
         }
 
-        return $this->reportSuccess( _('Deleted') , array( 
+        return $this->reportSuccess( 'Deleted' , array( 
             'id'  => $kVal,
             'sql' => $sql,
             'args' => $args,
@@ -858,13 +949,17 @@ class BaseModel
                 ;
     }
 
-    /* pass a value to a column for displaying */
+    /**
+     * Render readable column value
+     *
+     * @param string $name column name
+     */
     public function display( $name )
     {
         if( $c = $this->schema->getColumn( $name ) ) {
-            if( $c->virtual ) {
+            // get raw value
+            if( $c->virtual )
                 return $this->get($name);
-            }
             return $c->display( $this->getValue( $name ) );
         }
         elseif( isset($this->_data[$name]) ) {
@@ -873,8 +968,11 @@ class BaseModel
 #          elseif( method_exists($this, $name) ) {
 #              return call_user_func_array($this,array($name));
 #          }
-        else {
-            // return "Undefined column $name";
+        
+        // for relationship record
+        $val = $this->__get($name);
+        if( $val && $val instanceof \LazyRecord\BaseModel ) {
+            return $val->dataLabel();
         }
     }
 
@@ -993,24 +1091,24 @@ class BaseModel
 
 
     /**
+     * Get PDO connection for writing data.
      *
      * @return PDO
      */
     public function getWriteConnection()
     {
-        $id = $this->schema->getWriteSourceId();
-        return $this->_connection->getConnection( $id );
+        return $this->_connection->getConnection( $this->getWriteSourceId() );
     }
 
 
     /**
+     * Get PDO connection for reading data.
      *
      * @return PDO
      */
     public function getReadConnection()
     {
-        $id = $this->schema->getReadSourceId();
-        return $this->_connection->getConnection( $id );
+        return $this->_connection->getConnection( $this->getReadSourceId() );
     }
 
 
@@ -1023,7 +1121,6 @@ class BaseModel
     /*******************
      * Data Manipulators 
      *********************/
-
 
     /**
      * Set column value
@@ -1281,9 +1378,14 @@ class BaseModel
      */
     public function __get( $key )
     {
+
+        // todo: fix this
         // lazy schema loader, xxx: make this static.
         if( 'schema' === $key ) {
-            return SchemaLoader::load( static::schema_proxy_class );
+            if( constant( get_class($this) . '::schema_proxy_class') )
+                return SchemaLoader::load( static::schema_proxy_class );
+            $dschema = new Schema\DynamicSchemaDeclare($this);
+            return $dschema;
         }
         elseif( '_connection' === $key ) {
             return ConnectionManager::getInstance();
@@ -1440,7 +1542,7 @@ class BaseModel
     public static function __static_update($args) 
     {
         $model = new static;
-        $dsId  = $model->schema->getWriteSourceId();
+        $dsId  = $model->getWriteSourceId();
         $conn  = $model->getConnection($dsId);
         $query = $model->createExecutiveQuery($dsId);
         $query->update($args);
@@ -1472,7 +1574,7 @@ class BaseModel
     public static function __static_delete()
     {
         $model = new static;
-        $dsId  = $model->schema->getWriteSourceId();
+        $dsId  = $model->getWriteSourceId();
         $conn  = $model->getConnection($dsId);
         $query = $model->createExecutiveQuery($dsId);
         $query->delete();
@@ -1492,7 +1594,7 @@ class BaseModel
     public static function __static_load($args)
     {
         $model = new static;
-        $dsId  = $model->schema->getReadSourceId();
+        $dsId  = $model->getReadSourceId();
         $conn  = $model->getConnection( $dsId );
 
         if( is_array($args) ) {
@@ -1647,11 +1749,30 @@ class BaseModel
         return $this->schema->table;
     }
 
+    public function getSchema() 
+    {
+        return SchemaLoader::load( static::schema_proxy_class );
+    }
 
     public function flushCache() 
     {
         $this->_cache = array();
     }
+
+    public function getWriteSourceId()
+    {
+        if( $this->usingDataSource )
+            return $this->usingDataSource;
+        return $this->schema->getWriteSourceId();
+    }
+
+    public function getReadSourceId()
+    {
+        if( $this->usingDataSource )
+            return $this->usingDataSource;
+        return $this->schema->getReadSourceId();
+    }
+    
 
     public function __clone() 
     {

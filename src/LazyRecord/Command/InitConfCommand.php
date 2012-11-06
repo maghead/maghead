@@ -6,33 +6,22 @@ use CLIFramework\Command;
 class InitConfCommand extends Command
 {
 
-    public function brief()
+    public function execute()
     {
-        return 'init configuration file.';
-    }
+        $logger = $this->getLogger();
 
-    public function execute($configFile = 'config/database.yml')
-    {
-        /**
-         * $ lazy bulid-conf config/lazy.yml phifty/config/lazy.yml
-         * 
-         * build/lazy/config.php   # is generated
-         */
-        $options = $this->options;
-        $logger = $this->logger;
-
+        $configFile = 'db/config/database.yml';
         if( file_exists($configFile) ) {
             $logger->info("Config file $configFile already exists.");
             return;
         }
 
         $driver = $this->ask('Database driver [sqlite]',array('sqlite','pgsql','mysql',null)) ?: 'sqlite';
-
         $dbName = $this->ask('Database name [:memory:]') ?: ':memory:';
 
-        $logger->info("Use $driver driver");
-        $logger->info("Use database $dbName");
-        $logger->info("DSN: $driver:$dbName");
+        $logger->info("Using $driver driver");
+        $logger->info("Using database $dbName");
+        $logger->info("Using DSN: $driver:$dbName");
 
         $user = '';
         $password = '';
@@ -47,12 +36,17 @@ class InitConfCommand extends Command
 bootstrap:
   - tests/bootstrap.php
 schema:
-  loader: custom_schema_loader.php
-  paths:
-    - tests/schema
+#  Customize your schema class loader
+#
+#  loader: custom_schema_loader.php
+
+#  Customize your schema paths
+#  paths:
+#    - tests/schema
 data_sources:
   default:
-    dsn: '$driver:$dbName'
+    driver: $driver
+    database: $dbName
     user: $user
     pass: $password
 #    slave:
@@ -64,6 +58,5 @@ EOS;
             $logger->info("Config file is generated: $configFile");
             $logger->info("Please run build-conf to compile php format config file.");
         }
-
     }
 }

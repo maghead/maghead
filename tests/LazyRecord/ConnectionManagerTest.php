@@ -11,6 +11,8 @@ class ConnectionManagerTest extends PHPUnit_Framework_TestCase
         $manager = LazyRecord\ConnectionManager::getInstance();
         ok( $manager );
 
+        $manager->free();
+
         $manager->add($conn, 'default');
 
         $conn = $manager->getDefault();

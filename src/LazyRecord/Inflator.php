@@ -51,7 +51,7 @@ class Inflator
         }
         elseif( $isa == 'DateTime' ) {
             // already a DateTime object
-            if( is_a( $value , 'DateTime' ) ) {
+            if( is_a( $value , 'DateTime',true) ) {
                 return $value;
             }
             if( $value ) {

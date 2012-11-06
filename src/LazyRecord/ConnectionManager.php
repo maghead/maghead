@@ -98,6 +98,10 @@ class ConnectionManager
         return isset($this->datasources[ $id ] );
     }
 
+    public function removeDataSource($id) 
+    {
+        unset( $this->datasource[$id] );
+    }
 
     /**
      * Return datasource id(s)
@@ -121,6 +125,13 @@ class ConnectionManager
             return $this->datasources[ $id ];
     }
 
+
+    /**
+     * Get SQLBuilder\QueryDriver by data source id.
+     *
+     * @param string $id datasource name
+     * @return LazyRecord\QueryDriver
+     */
     public function getQueryDriver($id = 'default')
     {
         $self = $this;
@@ -132,7 +143,7 @@ class ConnectionManager
         $driver = QueryDriver::getInstance($id);
 
         // configure query driver type
-        if( $driverType = $this->getDataSourceDriver($id) ) {
+        if( $driverType = $this->getDriverType($id) ) {
             $conn = $this->getConnection($id);
             $driver->configure('driver',$driverType);
             $driver->quoter = function($string) use ($conn,$id) {
@@ -155,7 +166,7 @@ class ConnectionManager
         return $driver;
     }
 
-    public function getDataSourceDriver($id)
+    public function getDriverType($id)
     {
         $config = $this->getDataSource($id);
         if( isset($config['driver']) ) {
@@ -212,14 +223,15 @@ class ConnectionManager
             $connectionOptions = isset($config['connection_options'])
                                      ? $config['connection_options'] : array();
 
-            if( 'mysql' === $this->getDataSourceDriver($sourceId) ) {
+            if( 'mysql' === $this->getDriverType($sourceId) ) {
                 $connectionOptions[ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
             }
 
             $conn = new PDO( $dsn,
-                isset($config['user']) ? $config['user'] : null, 
-                isset($config['pass']) ? $config['pass'] : null, 
-                $connectionOptions );
+                (isset($config['user']) ? $config['user'] : (isset($config['username']) ? $config['username'] : null)),
+                (isset($config['pass']) ? $config['pass'] : (isset($config['password']) ? $config['password'] : null)),
+                $connectionOptions
+            );
 
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -251,9 +263,13 @@ class ConnectionManager
     static function getInstance()
     {
         static $instance;
-        return $instance ?: $instance = new static;
+        return $instance ? $instance : $instance = new static;
     }
 
+
+    /**
+     * Close connection
+     */
     public function close($sourceId)
     {
         if( isset($this->conns[ $sourceId ]) ) {
@@ -262,6 +278,10 @@ class ConnectionManager
         }
     }
 
+
+    /**
+     * Close all connections
+     */
     public function closeAll()
     {
         foreach( $this->conns as $id => $conn ) {
@@ -284,25 +304,43 @@ class ConnectionManager
 
     /**
      * ArrayAccess interface
+     *
+     * @param string $name
+     * @param mixed $value
      */
     public function offsetSet($name,$value)
     {
         $this->conns[ $name ] = $value;
     }
     
+
+    /**
+     * Check if a connection exists.
+     *
+     * @param string $name
+     */
     public function offsetExists($name)
     {
         return isset($this->conns[ $name ]);
     }
     
+
+    /**
+     * Get connection by data source id.
+     *
+     * @param string $name
+     */
     public function offsetGet($name)
     {
         return $this->conns[ $name ];
     }
-    
+
+    /**
+     *
+     */
     public function offsetUnset($name)
     {
-        unset($this->conns[$name]);
+        $this->close($name);
     }
 
 

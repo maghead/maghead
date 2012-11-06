@@ -80,7 +80,6 @@ class RuntimeColumn
     }
 
 
-
     /**
      * Column value type casting
      *
@@ -208,7 +207,7 @@ class RuntimeColumn
                 return _( $value );
             } 
             // quick inflator for DateTime object.
-            elseif( is_a($value,'DateTime') ) {
+            elseif( is_a($value,'DateTime',true) ) {
                 return $value->format( DateTime::ATOM );
             }
         }
@@ -220,6 +219,7 @@ class RuntimeColumn
         if( $this->label ) {
             return _( $this->label );
         }
+        return ucfirst($this->name);
     }
 
 }

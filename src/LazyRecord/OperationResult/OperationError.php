@@ -4,7 +4,9 @@ namespace LazyRecord\OperationResult;
 class OperationError extends OperationResult
 {
     public $success = false;
+
     public $exception;
+
     public $code;
 
     public function __toString()
@@ -15,9 +17,18 @@ class OperationError extends OperationResult
             $str .= '[' . $this->code . ']';
 
         $str .= ' ' . $this->message;
-
         if( $this->exception ) 
-            $str .= ' E: ' . $this->exception->getMessage();
+            $str .= "\nException: " . $this->exception->__toString();
+        if( $this->sql )
+            $str .= "\nSQL: " . $this->sql;
+        if( $this->vars )
+            $str .= "\nVars: " . print_r($this->vars,true);
+        if( $this->validations ) {
+            $str .= "\nValidations: ";
+            foreach( $this->validations as $v ) {
+                $str .= sprintf("\n\t%s) %s: %s", $v->valid ? 'Valid' : 'Invalid', $v->field, $v->message);
+            }
+        }
         return $str;
     }
 

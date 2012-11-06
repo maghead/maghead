@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord;
+use ConfigKit\ConfigCompiler;
 use Exception;
 use ArrayAccess;
 
@@ -9,6 +10,7 @@ use ArrayAccess;
  * schema
  * schema.paths = [ dirpath , path, ... ]
  *
+ * seeds = [ script path ]
  * data_sources
  * data_sources{ ds id } = { 
  *      dsn => ..., 
@@ -33,7 +35,7 @@ class ConfigLoader
 {
     public $config;
 
-    public $symbolFilename = '.lazy.php';
+    public $symbolFilename = '.lazy.yml';
 
     public $classMap;
 
@@ -41,33 +43,49 @@ class ConfigLoader
 
     public function __construct()
     {
+
+    }
+
+
+    public function loadFromSymbol($force = false)
+    {
+        if( file_exists($this->symbolFilename) ) {
+            return $this->load( $this->symbolFilename, $force );
+        }
+        elseif( file_exists('.lazy.php') ) {
+            return $this->load('.lazy.php', $force );
+        }
+        else {
+            throw new Exception("lazyrecord config symbol .lazy.php or .lazy.yml is not found.");
+        }
     }
 
     /**
-     * load configuration file
+     * Load configuration file
      *
      * @param string $file config file.
      */
-    public function load($file = null)
+    public function load($file, $force = false)
     {
-        if( $file !== true && $this->loaded === true )
+        // should we load config file force ?
+        if( $force !== true && $this->loaded === true ) {
             throw new Exception("Can not load $file. Config is already loaded.");
+        }
 
         if( $file === null || is_bool($file) )
             $file = $this->symbolFilename;
 
         if( (is_string($file) && file_exists($file)) || $file === true ) {
-            $this->config = require $file;
+            $this->config = ConfigCompiler::load($file);
         }
         elseif( is_array($file) ) {
             $this->config = $file;
         }
         else {
-            throw new Exception("LazyRecord config error.");
+            throw new Exception("unknown config format.");
         }
         $this->loaded = true;
     }
-
 
     /**
      * unload config and stash
@@ -181,6 +199,11 @@ class ConfigLoader
         return $this->config['data_sources'];
     }
 
+    public function getSeedScripts() {
+        if( isset($this->config['seeds']) ) {
+            return $this->config['seeds'];
+        }
+    }
 
     /**
      * get data source by data source id

@@ -22,8 +22,6 @@ if [[ $os == "Darwin" ]] ; then
     brew=$(which brew)
     if [[ -e $port ]] ; then
         sudo $port -q install php5-yaml
-        sudo $port -q install php5-apc
-
         if [[ $install_mysql != 'n' ]]  ; then sudo $port -q install php5-mysql      ; fi
         if [[ $install_sqlite != 'n' ]] ; then sudo $port -q install php5-sqlite     ; fi
         if [[ $install_pgsql != 'n' ]]  ; then sudo $port -q install php5-postgresql ; fi
@@ -37,7 +35,7 @@ elif [[ $os == "Linux" ]] ; then
     if [[ -e $apt ]] ; then
         sudo $apt -qq install -y php5-dev
         sudo $apt -qq install -y php5-cli
-        sudo $apt -qq install -y php-apc
+        sudo $apt -qq install -y php5-yaml
         if [[ $install_mysql != 'n' ]]  ; then sudo $apt -qq install -y php5-mysql      ; fi
         if [[ $install_sqlite != 'n' ]] ; then sudo $apt -qq install -y php5-sqlite     ; fi
         if [[ $install_pgsql != 'n' ]]  ; then sudo $apt -qq install -y php5-pgsql      ; fi

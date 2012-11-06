@@ -18,6 +18,14 @@ class MysqlBuilder
         $sql = $this->driver->getQuoteColumn( $name );
         $sql .= ' ' . $type;
 
+        if ( $isa === 'enum' && !empty($column->enum) ) {
+            $enum = array();
+            foreach ($column->enum as $val) {
+                $enum[] = $this->driver->inflate($val);
+            }
+            $sql .= '(' . implode(', ', $enum) . ')';
+        }
+
         if( $column->required || $column->notNull )
             $sql .= ' NOT NULL';
         elseif( $column->null )
@@ -34,6 +42,9 @@ class MysqlBuilder
                 $sql .= ' default ' . $this->driver->inflate($default);
             }
         }
+
+        if( $column->comment )
+            $sql .= ' comment ' . $this->driver->inflate($column->comment);
 
         if( $column->primary )
             $sql .= ' primary key';

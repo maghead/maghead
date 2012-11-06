@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord\CodeGen;
+use Exception;
 
 class ClassTemplate
 {
@@ -11,11 +12,32 @@ class ClassTemplate
     public $consts  = array();
     public $members = array();
 
-    public function __construct($className,$namespace = null)
+
+    /**
+     * @var TemplateView object.
+     */
+    public $view;
+
+    public $templateFile;
+    public $templateDirs;
+    public $options = array();
+
+    public function __construct($className,$options = array())
     {
-        if( $namespace )
-            $className = $namespace . '\\' . $className;
+        if( !isset($options['template_dirs']) ) {
+            throw new Exception('template_dirs option is required.');
+        }
+        if( !isset($options['template']) ) {
+            throw new Exception('template option is required.');
+        }
+
+        $this->options = $options;
+        $this->templateFile = $options['template'];
+        $this->templateDirs = $options['template_dirs'];
         $this->setClass($className);
+
+        $this->view = new TemplateView($this->templateDirs);
+        $this->view->class = $this;
     }
 
     public function setClass($className)
@@ -38,12 +60,14 @@ class ClassTemplate
         $this->interfaces[] = new ClassName($className);
     }
 
-    public function addMethod($scope,$methodName,$code)
+    public function addMethod($scope,$methodName,$arguments = array(),$code = null)
     {
-        $method = new ClassMethod( $methodName );
+        $method = new ClassMethod( $methodName, $arguments);
         $method->scope = $scope;
-        $method->code = $code;
+        if($code)
+            $method->code = $code;
         $this->methods[] = $method;
+        return $method;
     }
 
     public function addConst($name,$value)
@@ -56,6 +80,17 @@ class ClassTemplate
         $this->members[] = new ClassMember($name,$value,$scope);
     }
 
+    public function __set($n,$v) {
+        $this->view->__set($n,$v);
+    }
+
+    public function render($args = array())
+    {
+        foreach( $args as $n => $v ) {
+            $this->view->__set($n,$v);
+        }
+        return $this->view->renderFile($this->templateFile);
+    }
 
 }
 
