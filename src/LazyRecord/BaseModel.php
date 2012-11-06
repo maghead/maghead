@@ -1755,18 +1755,6 @@ abstract class BaseModel
     /***************************************
      * Cache related methods
      ***************************************/
-    public function getCacheInstance()
-    {
-        static $instance;
-        if ( $instance )
-            return $instance;
-        $config = ConfigLoader::getInstance()->getCacheConfig();
-        if( isset($class['class']) ) {
-            $class = $config['class'];
-            $instance = new $class( $config );
-            return $instance;
-        }
-    }
 
     public function flushCache() 
     {
