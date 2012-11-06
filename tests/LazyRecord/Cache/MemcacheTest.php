@@ -9,7 +9,6 @@ class MemcacheTest extends PHPUnit_Framework_TestCase
         }
     }
 
-
     public function testCacheInstanceFromConfigLoader()
     {
         $config = new LazyRecord\ConfigLoader;
