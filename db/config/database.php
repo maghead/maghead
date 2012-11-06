@@ -13,7 +13,7 @@
   ),
   'cache' => 
   array (
-    'class' => 'LazyRecord\\Memcache',
+    'class' => 'LazyRecord\\Cache\\Memcache',
     'servers' => 
     array (
       0 => 

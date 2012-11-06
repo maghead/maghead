@@ -11,7 +11,7 @@ schema:
   paths:
     - tests/schema
 cache:
-  class: LazyRecord\Memcache
+  class: LazyRecord\Cache\Memcache
   servers:
     - { host: localhost, port: 11211 }
 data_sources:
