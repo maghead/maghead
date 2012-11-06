@@ -1211,9 +1211,9 @@ abstract class BaseModel
     public function __isset( $name )
     {
         return isset($this->_data[ $name ]) 
-            || array_key_exists($name, ($this->_data ?: array()) )
+            || array_key_exists($name, ($this->_data ? $this->_data : array()) )
             || isset($this->schema->columns[ $name ]) 
-            || 'schema' == $name
+            || 'schema' === $name
             || $this->schema->getRelation( $name )
             ;
     }
