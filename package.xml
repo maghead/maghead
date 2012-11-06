@@ -46,8 +46,6 @@
       <file name="doc/setup.md" role="doc" md5sum="636d1f52ac693ebde78866646b4bbb8b"/>
       <file name="doc/table_parser.md" role="doc" md5sum="1227452cf65a856188112c44385a8c0d"/>
       <file name="doc/testing.md" role="doc" md5sum="1e70d4559730823e5909312b04df98b9"/>
-      <file name="examples/todos/.lazy.php" role="doc" md5sum="bb2f999576dcc09231c413d5002aa40d"/>
-      <file name="examples/todos/.lazy.yml" role="doc" md5sum="48883a58ee1a7225e9318a1d80083421"/>
       <file name="examples/todos/app.php" role="doc" md5sum="01dcc97f1d8b6d60a9092457c2574592"/>
       <file name="examples/todos/bootstrap.php" role="doc" md5sum="2ad4f7cef2201b1f5f3a1d4921499160"/>
       <file name="examples/todos/db/config/database.php" role="doc" md5sum="bb2f999576dcc09231c413d5002aa40d"/>
@@ -348,8 +346,6 @@
       <install name="doc/setup.md" as="setup.md"/>
       <install name="doc/table_parser.md" as="table_parser.md"/>
       <install name="doc/testing.md" as="testing.md"/>
-      <install name="examples/todos/.lazy.php" as="todos/.lazy.php"/>
-      <install name="examples/todos/.lazy.yml" as="todos/.lazy.yml"/>
       <install name="examples/todos/app.php" as="todos/app.php"/>
       <install name="examples/todos/bootstrap.php" as="todos/bootstrap.php"/>
       <install name="examples/todos/db/config/database.php" as="todos/db/config/database.php"/>
