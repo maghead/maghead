@@ -13,8 +13,10 @@ class MemcacheTest extends PHPUnit_Framework_TestCase
     {
         $config = new LazyRecord\ConfigLoader;
         $config->load('db/config/database.yml');
-        $cache = $config->getCacheInstance();
-        ok($cache);
+        if( isset($config->config['cache']) ) {
+            $cache = $config->getCacheInstance();
+            ok($cache);
+        }
     }
 
     public function test()
