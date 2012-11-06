@@ -12,6 +12,7 @@ use LazyRecord\OperationResult\OperationSuccess;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaLoader;
+use LazyRecord\ConfigLoader;
 
 use SerializerKit\XmlSerializer;
 use SerializerKit\JsonSerializer;
@@ -1221,7 +1222,7 @@ abstract class BaseModel
     public function getRelationalRecords($key,$relation = null)
     {
         $cacheKey = 'relationship::' . $key;
-        if ( $this->hasCache($cacheKey) )
+        if ( $this->hasInternalCache($cacheKey) )
             return $this->_cache[ $cacheKey ];
 
         if ( ! $relation )
@@ -1248,7 +1249,7 @@ abstract class BaseModel
             $sValue = $this->getValue( $sColumn );
             $model = $fpSchema->newModel();
             $model->load(array( $fColumn => $sValue ));
-            return $this->setCache($cacheKey,$model);
+            return $this->setInternalCache($cacheKey,$model);
         }
         elseif( SchemaDeclare::has_many === $relation['type'] )
         {
@@ -1273,7 +1274,7 @@ abstract class BaseModel
             $collection->setPresetVars(array( 
                 $fColumn => $sValue,
             ));
-            return $this->setCache($cacheKey,$collection);
+            return $this->setInternalCache($cacheKey,$collection);
         }
         // belongs to one record
         elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
@@ -1288,7 +1289,7 @@ abstract class BaseModel
             $sValue = $this->getValue( $sColumn );
             $model = $fpSchema->newModel();
             $ret = $model->load(array( $fColumn => $sValue ));
-            return $this->setCache($cacheKey,$model);
+            return $this->setInternalCache($cacheKey,$model);
         }
         elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
             $rId = $relation['relation']['id'];  // use relationId to get middle relation. (author_books)
@@ -1362,7 +1363,7 @@ abstract class BaseModel
                 }
                 return $middleRecord;
             });
-            return $this->setCache($cacheKey,$collection);
+            return $this->setInternalCache($cacheKey,$collection);
         }
 
         throw new Exception("The relationship type of $key is not supported.");
@@ -1755,30 +1756,26 @@ abstract class BaseModel
     /***************************************
      * Cache related methods
      ***************************************/
-
     public function flushCache() 
     {
         $this->_cache = array();
     }
 
-    public function setCache($key,$val)
+    public function setInternalCache($key,$val)
     {
         return $this->_cache[ $key ] = $val;
     }
 
-
-    public function getCache($key) 
+    public function getInternalCache($key)
     {
         if( isset( $this->_cache[ $key ] ) )
             return $this->_cache[ $key ];
     }
 
-    public function hasCache($key) 
+    public function hasInternalCache($key)
     {
         return isset( $this->_cache[ $key ] );
     }
-
-
 
     public function getWriteSourceId()
     {

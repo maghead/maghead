@@ -12,14 +12,15 @@ class MemcacheTest extends PHPUnit_Framework_TestCase
 
     public function testCacheInstanceFromConfigLoader()
     {
-        $config = LazyRecord\ConfigLoader::getInstance();
+        $config = new LazyRecord\ConfigLoader;
+        $config->load('db/config/database.yml');
         $cache = $config->getCacheInstance();
         ok($cache);
     }
 
     public function test()
     {
-        $memcache = new LazyRecord\Memcache(array(
+        $memcache = new LazyRecord\Cache\Memcache(array(
             'servers' => array(
                 array( 'host' => 'localhost', 'port' => 11211)
             )

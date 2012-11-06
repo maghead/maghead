@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord;
+namespace LazyRecord\Cache;
 use LazyRecord\ConfigLoader;
 
 class Memcache extends \Memcache
@@ -19,6 +19,4 @@ class Memcache extends \Memcache
         }
     }
 }
-
-
 
