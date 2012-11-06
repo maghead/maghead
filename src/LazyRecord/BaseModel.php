@@ -83,15 +83,20 @@ abstract class BaseModel
 
     public $usingDataSource;
 
+
+    private $_cachePrefix;
+
     /**
      * This constructor simply does nothing if no argument is passed.
      *
      * @param mixed $args arguments for finding
      */
-    public function __construct($args = null) 
+    public function __construct($args = null)
     {
         if ( $args )
             $this->_load( $args );
+
+        $this->_cachePrefix = get_class($this);
     }
 
     /**
@@ -683,6 +688,23 @@ abstract class BaseModel
         return $this->_load($args);
     }
 
+    public function loadFromCache($args, $ttl = 3600)
+    {
+        $key = serialize($args);
+        if( $cacheData = $this->getCache($key) ) {
+            $this->_data = $cacheData;
+            $pk = $this->schema->primaryKey;
+            return $this->reportSuccess( 'Data loaded', array(
+                'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null)
+            ));
+        }
+        else {
+            $ret = $this->_load($args);
+            $this->setCache($key,$this->_data,$ttl);
+            return $ret;
+        }
+    }
+
     public function _load($args)
     {
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'load', $args ) ) {
@@ -716,7 +738,6 @@ abstract class BaseModel
         }
 
         $sql = $query->build();
-        $validationResults = array();
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         try {
@@ -725,7 +746,6 @@ abstract class BaseModel
             if( false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
                 throw new Exception('Data load failed.');
             }
-            // $this->setCache($sql,$this->_data);
         }
         catch ( Exception $e ) 
         {
@@ -735,14 +755,12 @@ abstract class BaseModel
                 'args' => $args,
                 'vars' => $query->vars,
                 'exception' => $e,
-                'validations' => $validationResults,
             ));
         }
 
         return $this->reportSuccess( 'Data loaded', array( 
             'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
             'sql' => $sql,
-            'validations' => $validationResults,
         ));
     }
 
@@ -1802,14 +1820,14 @@ abstract class BaseModel
     private function getCache($key)
     {
         if( $cache = ConfigLoader::getInstance()->getCacheInstance() ) {
-            return $cache->get($key);
+            return $cache->get( $this->_cachePrefix . $key);
         }
     }
 
     private function setCache($key,$val,$ttl = 0)
     {
         if( $cache = ConfigLoader::getInstance()->getCacheInstance() ) {
-            $cache->set($key, $val, $ttl );
+            $cache->set( $this->_cachePrefix . $key, $val, $ttl );
         }
         return $val;
     }
