@@ -1,13 +1,13 @@
 <?php
 namespace LazyRecord\Schema;
-use LazyRecord\Inflector;
-use LazyRecord\ConfigLoader;
 use Exception;
+use ReflectionObject;
+use LazyRecord\ConfigLoader;
+use LazyRecord\ClassUtils;
 
 class SchemaDeclare extends SchemaBase
+    implements SchemaDataInterface
 {
-
-    public $mixins = array();
 
     public function __construct()
     {
@@ -19,6 +19,16 @@ class SchemaDeclare extends SchemaBase
 
     }
 
+
+    public function getWriteSourceId()
+    {
+        return $this->writeSourceId ?: 'default';
+    }
+
+    public function getReadSourceId()
+    {
+        return $this->readSourceId ?: 'default';
+    }
 
     public function writeTo( $id ) 
     {
@@ -32,6 +42,27 @@ class SchemaDeclare extends SchemaBase
         return $this;
     }
 
+
+    /**
+     * Define seed class
+     *
+     * $this->seeds('User\Seed','Data\Seed');
+     */
+    public function seeds() 
+    {
+        $seeds = func_get_args();
+        $this->seeds = array_map(function($class){ 
+            return str_replace('::','\\',$class);
+        }, $seeds);
+        return $this;
+    }
+
+    public function addSeed($seed)
+    {
+        $this->seeds[] = $seed;
+        return $this;
+    }
+
     /**
      * bootstrap script (to create basedata)
      *
@@ -42,30 +73,83 @@ class SchemaDeclare extends SchemaBase
 
     }
 
+    public function getColumns($includeVirtual = false) 
+    {
+        if( $includeVirtual ) {
+            return $this->columns;
+        }
 
+        $columns = array();
+        foreach( $this->columns as $name => $column ) {
+            // skip virtal columns
+            if( $column->virtual )
+                continue;
+            $columns[ $name ] = $column;
+        }
+        return $columns;
+    }
+
+    public function getColumnNames($includeVirtual = false)
+    {
+        $names = array();
+        foreach( $this->columns as $name => $column ) {
+            if( ! $includeVirtual && $column->virtual )
+                continue;
+            $names[] = $name;
+        }
+        return $names;
+    }
+
+    public function getColumn($name)
+    {
+        if( isset($this->columns[ $name ]) ) {
+            return $this->columns[ $name ];
+        }
+    }
+
+    public function hasColumn($name)
+    {
+        return isset($this->columns[ $name ]);
+    }
+
+
+    /**
+     * Build schema
+     */
     public function build()
     {
-
         $this->schema();
-
-
-        /* find primary key */
-        foreach( $this->columns as $name => $column ) {
-            if( $column->primary )
-                $this->primaryKey = $name;
-        }
+        $this->primaryKey = $this->findPrimaryKey();
 
         if( null === $this->primaryKey && $config = ConfigLoader::getInstance() )
         {
-            // XXX: can we prepend ?
             if( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
-                $this->column('id')
-                    ->isa('int')
-                    ->integer()
-                    ->primary()
-                    ->autoIncrement();
-                $this->primaryKey = 'id';
+                $this->insertAutoIdColumn();
             }
+        }
+    }
+
+    public function insertAutoIdColumn()
+    {
+        $column = new SchemaDeclare\Column('id');
+        $this->columns[ 'id' ] = $column;
+        array_unshift($this->columnNames,'id');
+
+        $column->isa('int')
+            ->integer()
+            ->primary()
+            ->autoIncrement();
+        $this->primaryKey = 'id';
+    }
+
+    /**
+     * Find primary keys from columns
+     */
+    public function findPrimaryKey()
+    {
+        foreach( $this->columns as $name => $column ) {
+            if( $column->primary )
+                return $name;
         }
     }
 
@@ -75,17 +159,16 @@ class SchemaDeclare extends SchemaBase
         foreach( $this->columns as $name => $column ) {
             $columnArray[ $name ] = $column->export();
         }
-
         return array(
-            'label'            => $this->getLabel(), // model label
-            'table'            => $this->getTable(),
-            'columns'          => $columnArray,
-            'column_names'     => $this->columnNames,
-            'primary_key'      => $this->primaryKey,
-            'model_class'      => $this->getModelClass(),
-            'collection_class' => $this->getCollectionClass(),
-            'relations'      => $this->relations,
-            'read_data_source' => $this->readSourceId,
+            'label'             => $this->getLabel(),
+            'table'             => $this->getTable(),
+            'column_data'       => $columnArray,
+            'column_names'      => $this->columnNames,
+            'primary_key'       => $this->primaryKey,
+            'model_class'       => $this->getModelClass(),
+            'collection_class'  => $this->getCollectionClass(),
+            'relations'         => $this->relations,
+            'read_data_source'  => $this->readSourceId,
             'write_data_source' => $this->writeSourceId,
         );
     }
@@ -95,7 +178,7 @@ class SchemaDeclare extends SchemaBase
         return var_export( $this->export() , true );
     }
 
-    protected function table($table)
+    public function table($table)
     {
         $this->table = $table;
         return $this;
@@ -115,7 +198,7 @@ class SchemaDeclare extends SchemaBase
     public function mixin($class)
     {
         if( ! class_exists($class,true) ) {
-            $class = 'LazyRecord\Schema\Mixin\\' . $class;
+            $class = 'LazyRecord\\Schema\\Mixin\\' . $class;
             if( ! class_exists($class,true) ) {
                 throw new Exception("Mixin class $class not found.");
             }
@@ -125,129 +208,70 @@ class SchemaDeclare extends SchemaBase
         $this->mixins[] = $class;
 
         /* merge columns into self */
-        $this->columns = array_merge( $mixin->columns, $this->columns );
+        $this->columns = array_merge( $this->columns, $mixin->columns );
         $this->relations = array_merge( $mixin->relations, $this->relations );
     }
 
-    public function getTable() 
+    public function getLabel()
+    {
+        return $this->label ?: $this->_modelClassToLabel();
+    }
+
+    public function getTable()
     {
         return $this->table ?: $this->_classnameToTable();
     }
-
-
-
 
     /**
      * classname methods
      */
     public function getModelClass()
     {
-        static $class;
-        if( $class )
-            return $class;
-
-        if( ( $p = strrpos( $class = get_class($this) , 'Schema' ) ) !== false ) {
-            return $class = substr( $class , 0 , $p );
+        // If self class name is endded with 'Schema', remove it and return.
+        $class = get_class($this);
+        if( ( $p = strrpos($class, 'Schema' ) ) !== false ) {
+            return substr($class , 0 , $p);
         }
-        throw new Exception('Can not get model class from ' . $class );
+        // throw new Exception('Can not get model class from ' . $class );
+        return $class;
     }
 
-    public function getModelName()
+    /**
+     * Get directory from current schema object.
+     *
+     * @return string path
+     */
+    public function getDirectory()
     {
-        $p = explode('\\',$this->getModelClass());
-        return end($p);
-    }
-
-    public function getBaseModelClass()
-    {
-        return $this->getModelClass() . 'Base';
-    }
-
-    public function getBaseModelName()
-    {
-        return $this->getModelName() . 'Base';
-    }
-
-    public function getCollectionClass()
-    {
-        return $this->getModelClass() . 'Collection';
-    }
-
-    public function getBaseCollectionClass()
-    {
-        return $this->getModelClass() . 'CollectionBase';
-    }
-
-    public function getSchemaProxyClass()
-    {
-        return $this->getModelClass() . 'SchemaProxy';
-    }
-
-    public function getNamespace()
-    {
-        $refl = new \ReflectionObject($this);
-        return $refl->getNamespaceName();
-    }
-
-    public function getClass()
-    {
-        return get_class($this);
-    }
-
-    public function getShortName()
-    {
-        $refl = new \ReflectionObject($this);
-        return $refl->getShortName();
-    }
-
-    public function getDir()
-    {
-        $refl = new \ReflectionObject($this);
+        $refl = new ReflectionObject($this);
         return dirname($refl->getFilename());
     }
 
-    public function setWriteSource($sourceId)
-    {
-        $this->writeSourceId = $sourceId;
-    }
 
-    public function setReadSource($sourceId)
-    {
-        $this->readSourceId = $sourceId;
-    }
-
+    /**
+     * Convert current model name to a class name.
+     *
+     * @return string table name
+     */
     protected function _classnameToTable() 
     {
-        $name = $this->getModelName();
-
-        if( preg_match( '/(\w+?)(?:Model)?$/', $name ,$reg) ) 
-        {
-            $table = @$reg[1];
-            if( ! $table )
-                throw new Exception( "Table name error: $name" );
-
-            /* convert BlahBlah to blah_blah */
-            $table =  strtolower( preg_replace( 
-                '/(\B[A-Z])/e' , 
-                "'_'.strtolower('$1')" , 
-                $table ) );
-
-            $inf = Inflector::getInstance();
-            return $inf->pluralize( $table );
-        } 
-        else 
-        {
-            throw new Exception('Table name convert error');
-        }
+        return ClassUtils::convert_class_to_table( $this->getModelName() );
     }
 
-    public function column($name)
+    /**
+     * Define new column object
+     *
+     * @param string $name column name
+     * @param string $class column class name
+     * @return SchemaDeclare\Column
+     */
+    public function column($name,$class = 'LazyRecord\\Schema\\SchemaDeclare\\Column')
     {
         if( isset($this->columns[$name]) ) {
             throw new Exception("column $name of ". get_class($this) . " is already defined.");
         }
         $this->columnNames[] = $name;
-        return $this->columns[ $name ] = new SchemaDeclare\Column( $name );
+        return $this->columns[ $name ] = new $class( $name );
     }
 
 
@@ -265,7 +289,7 @@ class SchemaDeclare extends SchemaBase
      * @param string $foreignColumn foreign reference schema column.
      * @param string $selfColumn self column name
      */
-    protected function belongsTo($accessor, $foreignClass, $foreignColumn = null,  $selfColumn = 'id')
+    public function belongsTo($accessor, $foreignClass, $foreignColumn = null,  $selfColumn = 'id')
     {
         if( null === $foreignColumn ) {
             $s = new $foreignClass;
@@ -294,7 +318,7 @@ class SchemaDeclare extends SchemaBase
      *      post_id => post
      *   )
      */
-    protected function one($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
+    public function one($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
     {
         // foreignColumn is default to foreignClass.primary key
 
@@ -317,7 +341,7 @@ class SchemaDeclare extends SchemaBase
     /**
      * Add has-many relation
      */
-    protected function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
+    public function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
         $this->relations[ $accessor ] = array(
             'type' => self::has_many,
@@ -338,7 +362,7 @@ class SchemaDeclare extends SchemaBase
      * @param string $accessor   accessor name
      * @param string $relationId a hasMany relationship 
      */
-    protected function manyToMany($accessor, $relationId, $foreignRelationId )
+    public function manyToMany($accessor, $relationId, $foreignRelationId )
     {
         if( $r = $this->getRelation($relationId) ) {
             $this->relations[ $accessor ] = array(
@@ -351,12 +375,6 @@ class SchemaDeclare extends SchemaBase
             return;
         }
         throw new Exception("Relation $relationId is not defined.");
-    }
-
-
-    public function getLabel()
-    {
-        return $this->label ?: $this->_modelClassToLabel();
     }
 
     protected function _modelClassToLabel() 
@@ -373,9 +391,9 @@ class SchemaDeclare extends SchemaBase
         }
     }
 
-    public function getColumns()
+    public function __toString() 
     {
-        return $this->columns;
+        return get_class($this);
     }
 
 }

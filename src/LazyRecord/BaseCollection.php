@@ -268,14 +268,14 @@ class BaseCollection
     public function queryCount()
     {
         $dsId = $this->schema->getReadSourceId();
-
         $q = clone $this->_query;
         $q->select( 'count(*)' ); // override current select.
 
         // when selecting count(*), we dont' use groupBys or order by
         $q->orders = array();
+        $sql = $q->build();
         return (int) ConnectionManager::getInstance()
-                    ->prepareAndExecute($dsId,$q->build(),$q->vars)
+                    ->prepareAndExecute($dsId,$sql,$q->vars)
                     ->fetchColumn();
     }
 
@@ -446,7 +446,6 @@ class BaseCollection
 
 
     /** array access interface */
-
     public function offsetSet($name,$value)
     {
         if( null === $name ) {
@@ -768,6 +767,9 @@ class BaseCollection
         return $data;
     }
 
+    public function toPairs($key,$valueKey) {
+        return $this->asPairs($key,$valueKey);
+    }
 
 
     /**

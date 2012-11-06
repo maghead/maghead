@@ -6,14 +6,29 @@ use RecursiveRegexIterator;
 use RegexIterator;
 use ReflectionClass;
 use RuntimeException;
-
+use IteratorAggregate;
+use LazyRecord\ClassUtils;
+use LazyRecord\ConfigLoader;
 
 /**
- * find schema classes from files (or from current runtime)
+ * Find schema classes from files (or from current runtime)
+ *
+ * 1. Find SchemaDeclare-based schema class files.
+ * 2. Find model-based schema, pass dynamic schema class 
  */
 class SchemaFinder
+    implements IteratorAggregate
 {
     public $paths = array();
+
+    public $classes = array();
+
+    public $config;
+
+    public function __construct()
+    {
+        $this->config = ConfigLoader::getInstance();
+    }
 
     public function in($path)
     {
@@ -29,13 +44,28 @@ class SchemaFinder
     public function _loadSchemaFile($file) 
     {
         $code = file_get_contents($file);
-        if( preg_match( '#' . preg_quote('SchemaDeclare') . '#xsm' , $code ) ) {
+        $modelPattern = '#' . preg_quote( ltrim($this->config->getBaseModelClass(),'\\') ) . '#';
+        if( preg_match( '#LazyRecord\\\\Schema\\\\SchemaDeclare#ixsm' , $code ) ) {
+            require_once $file;
+        }
+        elseif( preg_match( '/LazyRecord\\\\BaseModel/ixsm' , $code ) ) {
+            require_once $file;
+        }
+        elseif( preg_match( $modelPattern, $code ) ) {
             require_once $file;
         }
     }
 
-    public function loadFiles()
+    // DEPRECATED
+    public function loadFiles() { 
+        return $this->find(); 
+    }
+
+    public function find()
     {
+        if( empty($this->paths))
+            return;
+
         foreach( $this->paths as $path ) {
             if( is_file($path) ) {
                 require_once $path;
@@ -55,44 +85,32 @@ class SchemaFinder
         }
     }
 
-    public function getSchemaClasses()
+
+    /**
+     * This method is deprecated.
+     */
+    public function getSchemaClasses() 
     {
-        $list = array();
-        $classes = get_declared_classes();
-        foreach( $classes as $class ) {
-            $rf = new ReflectionClass( $class );
-
-            // skip abstract classes.
-            if( $rf->isAbstract() ) {
-                continue;
-            }
-
-            if( is_a( $class, 'LazyRecord\Schema\MixinSchemaDeclare' ) 
-                || $class == 'LazyRecord\Schema\MixinSchemaDeclare' 
-                || is_subclass_of( $class, 'LazyRecord\Schema\MixinSchemaDeclare' ) ) 
-            {
-                continue;
-            }
-
-            if( is_subclass_of( $class, 'LazyRecord\Schema\SchemaDeclare' ) ) {
-                $list[] = $class;
-            }
-        }
-
-        $schemas = array();
-        foreach( $list as $class ) {
-            if( ! class_exists($class,true) ) {
-                throw new RuntimeException("Schema class $class not found.");
-            }
-
-            $schema = new $class; // declare schema
-            $refs = $schema->getReferenceSchemas();
-            foreach( $refs as $ref => $v )
-                $schemas[] = $ref;
-            $schemas[] = $class;
-        }
-        return array_unique($schemas);
+        return $this->getSchemas();
     }
 
+
+    /**
+     * Returns schema objects
+     *
+     * @return array Schema objects
+     */
+    public function getSchemas()
+    {
+        $classes   = ClassUtils::get_declared_schema_classes();
+        $schemas   = ClassUtils::expand_schema_classes($classes);
+        $dyschemas = ClassUtils::get_declared_dynamic_schema_classes_from_models();
+        return array_merge($schemas, $dyschemas);
+    }
+
+    public function getIterator() 
+    {
+        return $this->getSchemas();
+    }
 }
 

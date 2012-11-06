@@ -2,7 +2,6 @@
 namespace LazyRecord\Command;
 use CLIFramework\Command;
 use LazyRecord\Schema;
-use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Utils;
 
@@ -56,13 +55,10 @@ class CreateDBCommand extends Command
         $logger  = $this->logger;
 
         $loader = ConfigLoader::getInstance();
-        $loader->load();
+        $loader->loadFromSymbol();
         $loader->initForBuild();
 
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
-        $logger->info("Initialize connection manager...");
-
-
         $dsIds = $connectionManager->getDataSourceIdList();
         if( $dataSource ) {
             $this->createDB( $connectionManager->getDataSource($dataSource));
@@ -75,8 +71,5 @@ class CreateDBCommand extends Command
         $this->logger->info('Done');
     }
 }
-
-
-
 
 

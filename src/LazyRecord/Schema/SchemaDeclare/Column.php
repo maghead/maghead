@@ -47,12 +47,12 @@ class Column
     /**
      * @var string $name column name (id)
      */
-    public function __construct( $name )
+    public function __construct( $name = null )
     {
-        $this->name = $name;
         $this->supportedAttributes = array(
 
             'primary'       => self::ATTR_FLAG,
+            'size'          => self::ATTR_INTEGER,
             'autoIncrement' => self::ATTR_FLAG,
             'immutable'     => self::ATTR_FLAG,
             'unique'        => self::ATTR_FLAG, /* unique, should support by SQL syntax */
@@ -60,6 +60,7 @@ class Column
             'notNull'       => self::ATTR_FLAG,
             'required'      => self::ATTR_FLAG,
             'typeConstraint' => self::ATTR_FLAG,
+            'enum'          => self::ATTR_ARRAY,
 
             /* column label */
             'label' => self::ATTR_ANY,
@@ -80,7 +81,9 @@ class Column
 
             'default' => self::ATTR_ANY,
 
-            'validator'  => self::ATTR_CALLABLE,
+            'validator'  => self::ATTR_ANY,
+
+            'validatorArgs'  => self::ATTR_ANY,
 
             'validValues' => self::ATTR_ANY,
 
@@ -103,15 +106,28 @@ class Column
 
             'deflator' => self::ATTR_CALLABLE,
 
+            // renderAs widget
             'renderAs' => self::ATTR_STRING,
+
             'widgetAttributes' => self::ATTR_ARRAY,
         );
+
+        if( $name ) {
+            $this->name = $name;
+        }
+    }
+
+    public function name($name) 
+    {
+        $this->name = $name;
+        return $this;
     }
 
     public function varchar($size)
     {
         $this->attributes[ 'type' ] = 'varchar(' . $size . ')';
         $this->attributes[ 'isa' ]  = 'str';
+        $this->attributes[ 'size' ]  = $size;
         return $this;
     }
 
@@ -119,6 +135,7 @@ class Column
     {
         $this->attributes[ 'type' ] = 'char(' . $limit . ')';
         $this->attributes[ 'isa'  ] = 'str';
+        $this->attributes[ 'size' ]  = $limit;
         return $this;
     }
 
@@ -247,6 +264,13 @@ class Column
         return $this;
     }
 
+    public function enum()
+    {
+        $this->attributes['type'] = 'enum';
+        $this->attributes['isa'] = 'enum';
+        $this->attributes['enum'] = func_get_args();
+        return $this;
+    }
 
     /**
      * serial type
@@ -295,8 +319,6 @@ class Column
      */
     public function refer($relationship)
     {
-        $this->attributes['isa'] = 'int';
-        $this->attributes['type'] = 'integer';
         $this->attributes['refer'] = $relationship;
         return $this;
     }
@@ -309,6 +331,41 @@ class Column
         return $this;
     }
 
+    public function validator() {
+        $args = func_get_args();
+        if( count($args) == 1 && is_callable($args[0]) ) {
+            $this->attributes['validator'] = $args[0];
+            return $this;
+        }
+        elseif( is_string($args[0]) ) {
+            $arg = $args[0];
+            if( is_a($arg,'ValidationKit\Validator',true) ) {
+                $this->attributes['validator'] = $args[0];
+                if(isset($args[1]))
+                    $this->attributes['validatorArgs'] = $args[1];
+                return $this;
+            }
+
+            // guess class name
+            $c = 'ValidationKit\\' . $arg;
+            if( is_a($c, 'ValidationKit\\Validator',true) ) {
+                $this->attributes['validator'] = $c;
+                if(isset($args[1]))
+                    $this->attributes['validatorArgs'] = $args[1];
+                return $this;
+            }
+
+            $c = 'ValidationKit\\' . $arg . 'Validator';
+            if( is_a($c, 'ValidationKit\\Validator',true) ) {
+                $this->attributes['validator'] = $c;
+                if(isset($args[1]))
+                    $this->attributes['validatorArgs'] = $args[1];
+                return $this;
+            }
+        }
+        $this->attributes['validator'] = $args[0];
+    }
+
     public function export()
     {
         return array(
@@ -317,9 +374,21 @@ class Column
         );
     }
 
+    public function toArray()
+    {
+        $attrs = $this->attributes;
+        $attrs['name'] = $this->name;
+        return $attrs;
+    }
+
     public function dump()
     {
         return var_export( $this->export() , true );
+    }
+
+    public function __isset($name)
+    {
+        return isset( $this->attributes[ $name ] );
     }
 
     public function __get($name)

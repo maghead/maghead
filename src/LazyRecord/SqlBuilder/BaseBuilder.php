@@ -39,7 +39,15 @@ class BaseBuilder
         return $this->driver->$name;
     }
 
-    public function build($schema) {
+    public function build($schema) 
+    {
+        if( $schema instanceof \LazyRecord\BaseModel ) {
+            $model = $schema;
+            $schema = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
+        }
+        elseif( ! $schema instanceof \LazyRecord\Schema\SchemaDeclare ) {
+            throw new Exception("Unknown schema instance:" . get_class($schema) );
+        }
         $sqls = $this->buildTable($schema);
         $indexSqls = $this->buildIndex($schema);
         return array_merge( $sqls , $indexSqls );

@@ -2,16 +2,16 @@
 namespace LazyRecord\Command;
 use CLIFramework\Command;
 use LazyRecord\Schema;
-use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
+use LazyRecord\ClassUtils;
 use Exception;
 
 class BuildBaseDataCommand extends Command
 {
 
-    function brief() { return 'insert basedata into datasource.'; }
+    public function brief() { return 'insert basedata into datasource.'; }
 
-    function execute()
+    public function execute()
     {
         $options = $this->options;
         $logger  = $this->logger;
@@ -23,8 +23,7 @@ class BuildBaseDataCommand extends Command
 
         CommandUtils::print_schema_classes($classes);
 
-        $schemas = CommandUtils::schema_classes_to_objects( $classes );
-
+        $schemas = ClassUtils::schema_classes_to_objects( $classes );
         CommandUtils::build_basedata($schemas);
 
         $this->logger->info('Done');

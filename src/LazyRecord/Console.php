@@ -5,27 +5,55 @@ use CLIFramework\Application;
 class Console extends Application
 {
     const name = 'LazyRecord';
-    const version = '1.4.0';
+    const version = '1.8.13';
 
     public function brief()
     {
-        return 'lazy [command]';
+        return 'LazyRecord ORM';
     }
 
     public function init()
     {
         parent::init();
-        $this->registerCommand('init-conf',    'LazyRecord\Command\InitConfCommand');
+
+        /**
+         * command for initialize related file structure
+         */
+        $this->registerCommand('init',    'LazyRecord\Command\InitCommand');
+
+        /**
+         * command for building config file.
+         */
         $this->registerCommand('build-conf',   'LazyRecord\Command\BuildConfCommand');
 
-        $this->registerCommand('build-schema', 'LazyRecord\Command\BuildSchemaCommand');
+        /**
+         * schema command.
+         */
+        $this->registerCOmmand('schema',  'LazyRecord\Command\SchemaCommand');
         $this->registerCOmmand('list-schema',  'LazyRecord\Command\ListSchemaCommand');
+        $this->registerCommand('build-schema', 'LazyRecord\Command\BuildSchemaCommand');
 
         $this->registerCommand('build-basedata', 'LazyRecord\Command\BuildBaseDataCommand');
 
         $this->registerCommand('build-sql',    'LazyRecord\Command\BuildSqlCommand');
+
         $this->registerCommand('diff',         'LazyRecord\Command\DiffCommand');
+
+        $this->registerCommand('migrate',         'LazyRecord\Command\MigrateCommand');
+
+        $this->registerCommand('prepare',         'LazyRecord\Command\PrepareCommand');
+
+        $this->registerCommand('metadata',         'LazyRecord\Command\MetadataCommand');
 
         $this->registerCommand('create-db',         'LazyRecord\Command\CreateDBCommand');
     }
+
+    public static function getInstance() 
+    {
+        static $self;
+        if( $self )
+            return $self;
+        return $self = new self;
+    }
+
 }

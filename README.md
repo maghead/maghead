@@ -1,147 +1,467 @@
 LazyRecord
 ==========
 
+LazyRecord is an open-source Object-Relational Mapping (ORM) for PHP5. 
+
+It allows you to access your database very easily by using ActiveRecord
+pattern API.
+
+LazyRecord uses code generator to generate static code, which reduces runtime 
+costs, therefore it's pretty lightweight and fast. 
+
+LazyRecord is not like PropelORM, it doesn't use ugly XML as its schema or
+config file, LazyRecord uses simpler YAML format config file and it compiles
+YAML to pure PHP code to improve the performance of config loading.
+
+LazyRecord also has a simpler schema design, you can define your model schema 
+very easily and you can even embed closure in your schema classes.
+
 <div style="width:425px" id="__ss_12638921"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/lazyrecord-the-fast-orm-for-php" title="LazyRecord: The Fast ORM for PHP" target="_blank">LazyRecord: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
 
 Features
 --------
 
-* PDO.
-* MySQL, Pgsql, SQLite support.
-* Multiple Data source
+* Fast
+* Simple, Lightweight Pure PHP Model Schema (No XML)
+* PDO, MySQL, Pgsql, SQLite support.
+* Multiple data source support.
+* Mix-in model support.
+* Migration support. upgrade, downgrade, upgrade from schema diff.
 * Schema/Database diff
-* Fast.
 
-Synopsis
---------
+Requirement
+-----------
+
+PHP:
+
+- PHP 5.3 or upper.
+
+PHP Extensions
+
+- yaml extension
+- pdo
+- mysql, pgsql or sqlite
+
+Installation
+------------
 
 ```sh
-    $ lazy build-conf
-
-    $ lazy build-schema
-
-    $ lazy build-sql --data-source=mysql
-
-    $ lazy diff
-
-    $ lazy diff --data-source=mysql
-
-    $ lazy diff --data-source=pgsql
+pear channel-discover pear.corneltek.com
+pear install -a -f corneltek/LazyRecord
 ```
 
+Getting Started
+---------------
+
+Change directory to your project, run `init` command to initialize 
+your database settings.
+
+```sh
+$ mkdir proj1
+$ cd proj1
+$ lazy init 
+db/config
+db/migration
+Database driver [sqlite] [sqlite/pgsql/mysql/] sqlite
+Database name [:memory:] test
+Using sqlite driver
+Using database test
+Using DSN: sqlite:test
+Creating config file skeleton...
+Config file is generated: db/config/database.yml
+Please run build-conf to compile php format config file.
+Building config from db/config/database.yml
+Making link => .lazy.yml
+Done.
+```
+
+To edit your config file:
+
+```sh
+$ vim db/config/database.yml
+```
+
+Suppose your application code is located in `src/` directory, 
+then you should provide your schema path in following format:
+
+```yaml
+---
+bootstrap:
+  - db/bootstrap.php
+schema:
+  auto_id: 1
+  paths:
+    - src/
+data_sources:
+  default:
+    dsn: 'sqlite:test'
+```
+
+In the above config file, the `auto_id` means an id column with auto-increment
+integer primary key is automatically inserted into every schema class, so you
+don't need to declare an primary key id column in your every schema file.
+
+then write your bootstrap script `db/bootstrap.php`, which is a simple SPL classloader:
 
 ```php
-<?
-    $author = new Author;
-    $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+<?php
+require 'Universal/ClassLoader/BasePathClassLoader.php';
+use Universal\ClassLoader\BasePathClassLoader;
+$loader = new BasePathClassLoader(array(
+    dirname(__DIR__) . '/src', 
+    dirname(__DIR__) . '/vendor/pear',
+));
+$loader->useIncludePath(true);
+$loader->register();
+```
 
-    // PHP5.4
-    $author->create([ 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ]);
+Next, write your model schema file:
 
-    // has many
-    $address = $author->addresses->create(array( 
-        'address' => 'farfaraway'
-    ));
+```sh
+$ vim src/YourApp/Model/UserSchema.php
+```
 
-    $address->delete();
+Put the content into your file:
 
-    // create related address
-    $author->addresses[] = array( 'address' => 'Harvard' );
+```php
+<?php
+namespace YourApp\Model;
+use LazyRecord\Schema\SchemaDeclare;
 
-    $addresses = $author->addresses->items();
-    is( 'Harvard' , $addresses[0]->address );
-
-    foreach( $author->addresses as $address ) {
-        echo $address->address , "\n";
+class UserSchema extends SchemaDeclare 
+{
+    public function schema()
+    {
+        $this->column('account')
+            ->varchar(16);
+        $this->column('password')
+            ->varchar(40)
+            ->filter('sha1');
     }
+}
+```
+
+Then run `build-schema` command to build static schema files:
+
+```sh
+$ lazy build-schema
+Finding schemas...
+Found schema classes
+Initializing schema generator...
+    YourApp\Model\UserSchemaProxy    => src/YourApp/Model/UserSchemaProxy.php
+    YourApp\Model\UserCollectionBase => src/YourApp/Model/UserCollectionBase.php
+    YourApp\Model\UserCollection     => src/YourApp/Model/UserCollection.php
+    YourApp\Model\UserBase           => src/YourApp/Model/UserBase.php
+    YourApp\Model\User               => src/YourApp/Model/User.php
+Done
+```
+
+If you are using postgresql or mysql, you can create your database with
+`create-db` command:
+
+```sh
+$ lazy create-db
+```
+
+Now you need to build SQL schema into your database, simply run `build-sql`,
+`-d` is for debug mode, which prints all generated SQL statements:
+
+```sh
+$ lazy -d build-sql
+Finding schema classes...
+Initialize schema builder...
+Building SQL for YourApp\Model\UserSchema
+DROP TABLE IF EXISTS users;
+CREATE TABLE users ( 
+  account varchar(16),
+  password varchar(40)
+);
+
+Setting migration timestamp to 1347439779
+Done. 1 schema tables were generated into data source 'default'.
+```
+
+Now you can write your application code,
+But first you need to write your lazyrecord config loader code:
+
+```
+$ vim app.php
+```
+
+```php
+<?php
+require 'db/bootstrap.php';
+$config = new LazyRecord\ConfigLoader;
+$config->load('.lazy.yml');
+$config->init();
+```
+
+The `init` method initializes data sources to ConnectionManager, but it won't
+create connection unless you need to operate your models.
+
+Append your application code to the end of `app.php` file:
+
+```php
+<?php
+$user = new YourApp\Model\User;
+$ret = $user->create(array('account' => 'guest', 'password' => '123123' ));
+if( ! $ret->success ) {
+    echo $ret;
+}
 ```
 
 Please check `doc/` directory for more details.
 
+## Migration Support
 
-Requirement
------------
-- PHP 5.3.0 (MIN) 
-- YAML extension
-- PDO
-- PDO-mysql (optional)
-- PDO-pgsql (optional)
-- PDO-sqlite (optional)
+If you need to modify schema code, like adding new columns to a table, you 
+can use the amazing migration feature to migrate your database to the latest
+change without pain.
 
-Install from Installer
-----------------------
+Once you modified the schema code, you can execute `lazy diff` command to compare
+current exisiting database table:
 
-Install LazyRecord to system:
+    $ lazy diff
+    + table 'authors'            tests/schema/tests/Author.php
+    + table 'addresses'          tests/schema/tests/Address.php
+    + table 'author_books'       tests/schema/tests/AuthorBook.php
+    + table 'books'              tests/schema/tests/Book.php
+    + table 'users'              tests/schema/tests/User.php
+    + table 'publishers'         tests/schema/tests/Publisher.php
+    + table 'names'              tests/schema/tests/Name.php
+    + table 'wines'              tests/schema/tests/Wine.php
 
-    sudo bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
+As you can see, we added a lot of new tables (schemas), and LazyRecord parses
+the database tables to show you the difference to let you know current
+status.
 
-If you're using phpbrew:
+> Currently LazyRecord supports SQLite, PostgreSQL, MySQL table parsing.
 
-    bash -c "$(curl -s -L https://raw.github.com/c9s/LazyRecord/master/install.sh)"
+now you can generate the migration script or upgrade database schema directly.
+
+to upgrade database schema directly, you can simply run:
+
+    $ lazy migrate -U
+
+to upgrade database schema through a customizable migration script, you can 
+generate a new migration script like:
+
+    $ lazy migrate --diff AddUserRoleColumn
+    Loading schema objects...
+    Creating migration script from diff
+    Found 10 schemas to compare.
+        Found schema 'tests\AuthorSchema' to be imported to 'authors'
+        Found schema 'tests\AddressSchema' to be imported to 'addresses'
+        Found schema 'tests\AuthorBookSchema' to be imported to 'author_books'
+        Found schema 'tests\BookSchema' to be imported to 'books'
+        Found schema 'tests\UserSchema' to be imported to 'users'
+        Found schema 'tests\PublisherSchema' to be imported to 'publishers'
+        Found schema 'tests\NameSchema' to be imported to 'names'
+        Found schema 'tests\Wine' to be imported to 'wines'
+    Migration script is generated: db/migrations/20120912_AddUserRoleColumn.php
+
+now you can edit your migration script, which is auto-generated:
+
+    vim db/migrations/20120912_AddUserRoleColumn.php
+
+the migration script looks like:
+
+```php
+<?php
+
+class AddUserColumn_1347451491  extends \LazyRecord\Migration\Migration {
+
+    public function upgrade() { 
+        $this->importSchema(new tests\AuthorSchema);
+        $this->importSchema(new tests\AddressSchema);
+        $this->importSchema(new tests\AuthorBookSchema);
+        $this->importSchema(new tests\BookSchema);
+        $this->importSchema(new tests\UserSchema);
+        $this->importSchema(new tests\PublisherSchema);
+        $this->importSchema(new tests\EdmSchema);
+        $this->importSchema(new tests\NameSchema);
+        $this->importSchema(new tests\IDNumber);
+        $this->importSchema(new tests\Wine);
+        
+    }
+
+    public function downgrade() { 
+        $this->dropTable('authors');
+        $this->dropTable('addresses');
+        $this->dropTable('author_books');
+        $this->dropTable('books');
+        $this->dropTable('users');
+        $this->dropTable('publishers');
+        $this->dropTable('Edm');
+        $this->dropTable('names');
+        $this->dropTable('i_d_numbers');
+        $this->dropTable('wines');
+        
+    }
+}
+```
+
+The built-in migration generator not only generates the upgrade script,
+but also generates the downgrade script, you can modify it to anything as you
+want.
+
+After the migration script is generated, you can check the status of 
+current database and waiting migration scripts:
+
+    $ lazy migrate --status
+    Found 1 migration script to be executed.
+    - AddUserColumn_1347451491
+
+now you can run upgrade command to 
+upgrade database schema through the migration script:
+
+    $ lazy migrate --up
+
+If you regret, you can run downgrade migrations through the command:
+
+    $ lazy migrate --down
+
+But please note that SQLite doesn't support column renaming and column dropping.
+
+To see what migration script could do, please check the documentation of SQLBuilder package.
+
+## Mix-In Schema
+
+...
+
+## Basedata Seed
+
+    namespace User;
+    class Seed { 
+        public static function seed() {
+
+        }
+    }
+
+## Setting up QueryDriver for SQL syntax
+ 
+```php
+<?php
+$driver = LazyRecord\QueryDriver::getInstance('data_source_id');
+$driver->configure('driver','pgsql');
+$driver->configure('quote_column',true);
+$driver->configure('quote_table',true);
+```
 
 
+## Model Operations
 
-Install manually
-----------------
-Install required extensions:
+To create a model record:
 
-    sudo pecl install apc
-    sudo pecl install yaml
+```php
+<?php
+$author = new Author;
+$ret = $author->create(array(
+    'name' => 'Foo'
+));
+if( $ret->success )
+    echo 'created';
+```
 
-get php source code and install these extensions:
+To find record:
+    
+```php
+<?php
+$author->find(123);
+$author->find(array( 'foo' => 'Name' ));
+```
 
-* `pdo_mysql` (optional)
-* `pdo_pgsql` (optional)
-* `pdo_sqlite` (optional)
+To find record with (static):
+
+```php
+<?php
+$record = Author::load(array( 'name' => 'Foo' ));
+```
+
+To find record with primary key:
+
+```php
+<?php
+$record = Author::load( 1 );
+```
+
+To update record:
+
+```php
+<?php
+$author->update(array(  
+    'name' => 'Author',
+));
+```
+
+To update record (static):
+
+```php
+<?php
+$ret = Author::update( array( 'name' => 'Author' ) )
+    ->where()
+        ->equal('id',3)
+        ->execute();
+
+if( $ret->success ) {
+    echo $ret->message;
+}
+else {
+    // pretty print error message, exception and validation errors for console
+    echo $ret;
+
+    $e = $ret->exception; // get exception
+    $validations = $ret->validations; // get validation results
+}
+```
+
+## Collection
+
+To create a collection object:
+
+```php
+<?php
+$authors = new AuthorCollection;
+$authors->where()
+    ->equal( 'id' , 'foo' );
+
+$authors = new AuthorCollection;
+$items = $authors->items();
+foreach( $items as $item ) {
+    echo $item->id;
+}
+
+$authors = new AuthorCollection;
+foreach( $authors as $author ) {
+    echo $author->name;
+}
+```
+
+## Relationships
 
 
-To build a PHP with MySQL + PDO support:
+```php
+<?php
+// has many
+$address = $author->addresses->create(array( 
+    'address' => 'farfaraway'
+));
 
-    phpbrew install php-5.4.4 +mysql
+$address->delete();
 
-To build a PHP with PostgreSQL + PDO support:
+// create related address
+$author->addresses[] = array( 'address' => 'Harvard' );
 
-    phpbrew install php-5.4.4 +pgsql
+$addresses = $author->addresses->items();
+is( 'Harvard' , $addresses[0]->address );
 
-To build a PHP with SQLite + PDO support:
-
-    phpbrew install php-5.4.4 +sqlite
-
-Or to build PHP with custom postgresql base dir:
-
-    phpbrew install php-5.4.4 +pgsql=/opt/local/lib/postgresql91
-
-To build a PHP for LazyRecord with all database driver support, you can use +dbs variant set:
-
-    phpbrew install php-5.4.4 +default+dbs
-
-And update your php.ini:
-
-    date.timezone = Asia/Taipei
-    phar.readonly = Off
-
-Install LazyRecord:
-
-    git clone git://github.com/c9s/LazyRecord.git
-    cd LazyRecord
-    sudo pear channel-discover pear.corneltek.com
-    sudo pear channel-discover pear.twig-project.org
-    sudo pear install -f package.xml
+foreach( $author->addresses as $address ) {
+    echo $address->address , "\n";
+}
+```
 
 
-Command-line Usage
-------------------
-Create a config skeleton:
-
-    $ lazy init-conf
-
-Then build config:
-
-    $ lazy build-conf path/to/config.yml
-
-Define your model schema:
-
-    $ vim src/App/Model/AuthorSchema.php
+## A more advanced schema code
 
 ```php
 <?php
@@ -152,8 +472,7 @@ Define your model schema:
         function schema()
         {
             $this->column('id')
-                ->type('integer')
-                ->isa('int')
+                ->integer()
                 ->primary()
                 ->autoIncrement();
 
@@ -162,6 +481,12 @@ Define your model schema:
                 ->validator(function($val) { .... })
                 ->filter( function($val) {  
                             return preg_replace('#word#','zz',$val);  
+                })
+                ->inflator(function($val) {
+                    return unserialize($val);
+                })
+                ->deflator(function($val) {
+                    return serialize($val);
                 })
                 ->validValues( 1,2,3,4,5 )
                 ->default(function() { 
@@ -176,149 +501,86 @@ Define your model schema:
             $this->column('confirmed')
                 ->default(false)
                 ->boolean();
+
+            $this->seeds('User\\Seed')
         }
     }
 ```
 
-To generate SQL schema:
+Contribution
+------------
 
-    lazy build-schema path/to/AuthorSchema.php
+Everybody can contribute to LazyRecord. You can just fork it, and send Pull
+Requests. 
 
-Then you should have these files:
+You have to follow PSR Coding Standards and provides unit tests
+as much as possible.
 
-    src/App/Model/AuthorSchema.php
-    src/App/Model/AuthorBase.php
-    src/App/Model/Author.php
-    src/App/Model/AuthorBaseCollection.php
-    src/App/Model/AuthorCollection.php
+Unit Testing
+------------
+To deploy a testing environment, you need to install dependent packages.
 
-Now edit your src/App/Model/Author.php file to extend.
+Get Onion:
 
+    https://raw.github.com/c9s/Onion/master/onion
 
-To import SQL schema into database:
+Install dependencies:
 
-    lazy build-sql path/to/AuthorSchema.php
+    php onion install
 
-    lazy build-sql path/to/schema/
+Run script and make sure everything is fine:
 
-LazyRecord will generate schema in pure-php array, in-place
-
-    path/schema/AuthorSchemaProxy.php
-    path/schema/AuthorBase.php           // auto-generated AuthoBase 
-    path/schema/Author.php               // customizeable
-
-    path/schema/AuthorCollectionBase.php // auto-generated AuthorCollection extends AuthorCollectionBase {  }
-    path/schema/AuthorCollection.php     // customizable
-
-    path/schema/foo/bar/BookBase.php
-    path/schema/foo/bar/Book.php
-
-    path/schema/foo/bar/BookCollection.php
-    path/schema/foo/bar/BookSchemaProxy.php
-
-    path/classmap.php        // application can load Model, Schema class from this mapping file
-    path/datasource.php      // export datasource config
-
-### Connecting the dots
-
-Initialize loader:
+    php bin/lazy
 
 
-```php
-<?php
-    $lazyLoader = new ConfigLoader;
-    $lazyLoader->load( 'path/to/config.php' );   // this initialize data source into connection manager.
-    $lazyLoader->init();
-```
+Database configuration is written in `phpunit.xml` file, the 
+following steps are based on the default configuration.
 
-To setup QueryDriver:
- 
-```php
-<?php
-    $driver = LazyRecord\QueryDriver::getInstance('data_source_id');
-    $driver->configure('driver','pgsql');
-    $driver->configure('quote_column',true);
-    $driver->configure('quote_table',true);
-?>
-```
+### Unit Testing with MySQL database
 
-To create a model record:
+To test with mysql database:
 
-```php
-<?php
-    $author = new Author;
-    $author->create(array(
-        'name' => 'Foo'
-    ));
-```
+    $ mysql -uroot -p
+    > create database testing charset utf8;
+    > grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing';
 
-To find record:
-    
-```php
-<?php
-    $author->find(123);
-    $author->find(array( 'foo' => 'Name' ));
-```
+### Unit Testing with PostgreSQL database
 
-To find record with (static):
+To test with pgsql database:
 
-```php
-<?php
-    $record = Author::load(array( 'name' => 'Foo' ));
-```
+    $ sudo -u postgres createuser --no-createrole --no-superuser --pwprompt testing
+    $ sudo -u postgres createdb -E=utf8 --owner=testing testing
 
-To find record with primary key:
+### Run PHPUnit
 
-```php
-<?php
-    $record = Author::load( 1 );
-?>
-```
+    $ phpunit
 
-To update record:
+### Command-line testing
 
-```php
-<?php
-    $author->update(array(  
-        'name' => 'Author',
-    ));
-```
+To test sql builder from command-line, please copy the default testing config
 
-To update record (static):
+    $ cp db/config/database.testing.yml db/config/database.yml
 
-```php
-<?php
-    $ret = Author::update( array( 'name' => 'Author' ) )
-        ->where()
-            ->equal('id',3)
-            ->execute();
+Build config
 
-    if( $ret->success ) {
-        echo $ret->message;
-    }
-    else {
-        echo $ret->exception->getMessage();
-    }
-```
+    $ php bin/lazy build-conf db/config/database.yml
 
-To create a collection object:
+Build Schema files
 
-```php
-<?php
-    $authors = new AuthorCollection;
-    $authors->where()
-        ->equal( 'id' , 'foo' );
+    $ php bin/lazy build-schema
 
-    $authors = new AuthorCollection;
-    $items = $authors->items();
-    foreach( $items as $item ) {
-        echo $item->id;
-    }
+We've already defined 3 data sources, they were named as 'mysql', 'pgsql', 'sqlite' , 
+now you can insert schema sqls into these data sources:
 
-    $authors = new AuthorCollection;
-    foreach( $authors as $author ) {
-        echo $author->name;
-    }
-?>
-```
+    $ php bin/lazy build-sql --rebuild -D=mysql
+    $ php bin/lazy build-sql --rebuild -D=pgsql
+    $ php bin/lazy build-sql --rebuild -D=sqlite
+
+
+
+LICENSE
+===============
+BSD License
+
+
 

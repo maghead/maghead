@@ -18,7 +18,6 @@ class ConsolePrinter
         if( empty($this->diff) )
             return;
         $formatter = new \CLIFramework\Formatter;
-
         echo $formatter->format('--- ' . $this->beforeName,"strong_white") , "\n";
         echo $formatter->format('+++ ' . $this->afterName, "strong_white") , "\n";
         echo "@@ columns @@\n";
@@ -34,9 +33,19 @@ class ConsolePrinter
                 }
             }
             else {
-                $line = sprintf('%s %s',$d->flag , $d->name );
+                $line = sprintf('    %s %s',$d->flag , $d->name );
                 foreach( $d->column->attributes as $property => $value ) {
-                    $line .= ", $property = $value";
+                    if( is_object($value) ) {
+                        if( $value instanceof \Closure ) {
+                            $line .= ", $property = {Closure}";
+                        }
+                        else {
+                            $line .= ", $property = " . var_export($value,true);
+                        }
+                    }
+                    elseif(is_string($value)) {
+                        $line .= ", $property = $value";
+                    }
                 }
                 echo $formatter->format($line . "\n", $d->flag === '+' ? 'green' : 'red' );
             }
