@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-10-07</date>
-  <time>20:33:57</time>
+  <date>2012-11-06</date>
+  <time>19:12:34</time>
   <version>
     <release>1.8.13</release>
     <api>1.8.13</api>
@@ -24,6 +24,7 @@
   <notes>-</notes>
   <contents>
     <dir name="/">
+      <file name="doc/cache.md" role="doc" md5sum="3a54917e3ffaf06dfe27fd37f929300c"/>
       <file name="doc/collection.md" role="doc" md5sum="2d9d1c20b31a5062439a8c6673fc888d"/>
       <file name="doc/config_loader.md" role="doc" md5sum="8bb3bca7c997f898081adfff3fdb5f1e"/>
       <file name="doc/connections.md" role="doc" md5sum="fcd136475eefd739b708e52f7b32cf06"/>
@@ -55,7 +56,6 @@
       <file name="examples/todos/src/Todos/Model/Todo.php" role="doc" md5sum="123c17524d156f3accb73222ac0afe00"/>
       <file name="examples/todos/src/Todos/Model/TodoCollection.php" role="doc" md5sum="9015b1045f1c0641ad4ef09ffb0c981e"/>
       <file name="examples/todos/src/Todos/Model/TodoCollectionBase.php" role="doc" md5sum="b2050d3354dd899212e155f6aa8c03c0"/>
-      <file name="examples/todos/src/Todos/Model/TodoSchemaProxy.php" role="doc" md5sum="47803dbf50f99bc93c9fe531b8daf353"/>
       <file name="examples/todos/src/Todos/Seed.php" role="doc" md5sum="208733814ada89c5e9a21eed214cc3a7"/>
       <file name="tests/bootstrap.php" role="test" md5sum="88163abc494c01cbd58d5a47d987ee3a"/>
       <file name="tests/config.php" role="test" md5sum="e18463ef3e30c8ea10dc6e39d8f90e1f"/>
@@ -63,6 +63,7 @@
       <file name="tests/data/replaced" role="test" md5sum="707fb1625fd781412d2e50b2d3133f40"/>
       <file name="tests/database.yml" role="test" md5sum="a35e7db349dea65da593546c4db8ce19"/>
       <file name="tests/LazyRecord/ArrayUtilsTest.php" role="test" md5sum="fba160de505d05d9b12b96b6441e7439"/>
+      <file name="tests/LazyRecord/CacheManagerTest.php" role="test" md5sum="b9848e5d00510323ad4d383c89e21aef"/>
       <file name="tests/LazyRecord/CodeGen/ClassInjectionTest.php" role="test" md5sum="f7a4fe2cc82891f25b59db8939df7157"/>
       <file name="tests/LazyRecord/CodeGen/ClassTemplateTest.php" role="test" md5sum="23eb7e11a994df2f64efbb0a3257630d"/>
       <file name="tests/LazyRecord/CodeGen/MethodCallTest.php" role="test" md5sum="452df636b208b0641c6216215150d9c7"/>
@@ -167,8 +168,9 @@
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
       <file name="src/LazyRecord/ArrayUtils.php" role="php" md5sum="e4050887e137de2f7f7fd18fcbdd09c2"/>
       <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="26f38bde5b0b134d8636a39b4e83dabb"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="fcc5399cecaf05748fe8a591b202d361"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="1ef2b113334d591c6bcdf5114131712c"/>
       <file name="src/LazyRecord/BaseSeed.php" role="php" md5sum="884fadea8ad5b2c3e86645b70554f955"/>
+      <file name="src/LazyRecord/CacheManager.php" role="php" md5sum="d38657e3a4da6144bebdb49c3a5e55f6"/>
       <file name="src/LazyRecord/ClassUtils.php" role="php" md5sum="4ac1ed6270ee8068a13a936a635d2f76"/>
       <file name="src/LazyRecord/CodeGen/ClassConst.php" role="php" md5sum="4f13a9f68026fffb0fec0e6154108323"/>
       <file name="src/LazyRecord/CodeGen/ClassInjection.php" role="php" md5sum="68495bb494dcdc00837b18c8798018b8"/>
@@ -209,7 +211,6 @@
       <file name="src/LazyRecord/Model/Metadata.php" role="php" md5sum="d5b30bdcbfe2994134080612c42e9c41"/>
       <file name="src/LazyRecord/Model/MetadataCollection.php" role="php" md5sum="81df200a596e0be6b64c537fd90a7bb8"/>
       <file name="src/LazyRecord/Model/MetadataCollectionBase.php" role="php" md5sum="9ade406502e16e786b218daa946724e3"/>
-      <file name="src/LazyRecord/Model/MetadataSchemaProxy.php" role="php" md5sum="8c513350ac9045336c9688d128574db9"/>
       <file name="src/LazyRecord/OperationResult/OperationError.php" role="php" md5sum="2e62a787b6042778f8eda30f040a048d"/>
       <file name="src/LazyRecord/OperationResult/OperationResult.php" role="php" md5sum="3b9e79aeb1c48e2f49319f680ec07fe3"/>
       <file name="src/LazyRecord/OperationResult/OperationSuccess.php" role="php" md5sum="0223f9434a0f344b6ac24a2e11ca7822"/>
@@ -220,13 +221,12 @@
       <file name="src/LazyRecord/Schema/Mixin/I18nSchema.php" role="php" md5sum="ef6514fa4f5e71e2b9f88b3e9e065bff"/>
       <file name="src/LazyRecord/Schema/Mixin/MetadataSchema.php" role="php" md5sum="a977af9330a0538126cfa137bf942b28"/>
       <file name="src/LazyRecord/Schema/MixinSchemaDeclare.php" role="php" md5sum="13f1fe6fde2fbab515b8092ce16a3b54"/>
-      <file name="src/LazyRecord/Schema/MixinSchemaProxy.php" role="php" md5sum="f971cc52fd9003b038e446377d67404c"/>
       <file name="src/LazyRecord/Schema/RuntimeColumn.php" role="php" md5sum="c9dc53492a9f1b697c4877097548533d"/>
       <file name="src/LazyRecord/Schema/RuntimeSchema.php" role="php" md5sum="3d2224a42445fe0a5f9309b47eaf46de"/>
       <file name="src/LazyRecord/Schema/SchemaBase.php" role="php" md5sum="6c998a76d690ccf280b6f48201a5c7f0"/>
       <file name="src/LazyRecord/Schema/SchemaDataInterface.php" role="php" md5sum="d43ab250745f006eac684c369f5d8d43"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare/Column.php" role="php" md5sum="8f85ab1ce4f5742ac9bcb34b73b0c784"/>
-      <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="9e1c644d89339ed65ca839518831a5f8"/>
+      <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="159ff81cae085116e93e5f539bd6d41e"/>
       <file name="src/LazyRecord/Schema/SchemaFinder.php" role="php" md5sum="2c246afa421402544714cb4520a47efd"/>
       <file name="src/LazyRecord/Schema/SchemaGenerator.php" role="php" md5sum="0849ae6524112b61d20df17b8c401a91"/>
       <file name="src/LazyRecord/Schema/SchemaLoader.php" role="php" md5sum="939f39c21b20b38f5292a75c2caefffc"/>
@@ -285,6 +285,11 @@
         <min>1.2.1</min>
       </package>
       <package>
+        <name>CacheKit</name>
+        <channel>pear.corneltek.com</channel>
+        <min>0.0.0</min>
+      </package>
+      <package>
         <name>SerializerKit</name>
         <channel>pear.corneltek.com</channel>
         <min>0.0.0</min>
@@ -321,6 +326,7 @@
   </dependencies>
   <phprelease>
     <filelist>
+      <install name="doc/cache.md" as="cache.md"/>
       <install name="doc/collection.md" as="collection.md"/>
       <install name="doc/config_loader.md" as="config_loader.md"/>
       <install name="doc/connections.md" as="connections.md"/>
@@ -352,7 +358,6 @@
       <install name="examples/todos/src/Todos/Model/Todo.php" as="todos/src/Todos/Model/Todo.php"/>
       <install name="examples/todos/src/Todos/Model/TodoCollection.php" as="todos/src/Todos/Model/TodoCollection.php"/>
       <install name="examples/todos/src/Todos/Model/TodoCollectionBase.php" as="todos/src/Todos/Model/TodoCollectionBase.php"/>
-      <install name="examples/todos/src/Todos/Model/TodoSchemaProxy.php" as="todos/src/Todos/Model/TodoSchemaProxy.php"/>
       <install name="examples/todos/src/Todos/Seed.php" as="todos/src/Todos/Seed.php"/>
       <install name="tests/bootstrap.php" as="bootstrap.php"/>
       <install name="tests/config.php" as="config.php"/>
@@ -360,6 +365,7 @@
       <install name="tests/data/replaced" as="data/replaced"/>
       <install name="tests/database.yml" as="database.yml"/>
       <install name="tests/LazyRecord/ArrayUtilsTest.php" as="LazyRecord/ArrayUtilsTest.php"/>
+      <install name="tests/LazyRecord/CacheManagerTest.php" as="LazyRecord/CacheManagerTest.php"/>
       <install name="tests/LazyRecord/CodeGen/ClassInjectionTest.php" as="LazyRecord/CodeGen/ClassInjectionTest.php"/>
       <install name="tests/LazyRecord/CodeGen/ClassTemplateTest.php" as="LazyRecord/CodeGen/ClassTemplateTest.php"/>
       <install name="tests/LazyRecord/CodeGen/MethodCallTest.php" as="LazyRecord/CodeGen/MethodCallTest.php"/>
@@ -466,6 +472,7 @@
       <install name="src/LazyRecord/BaseCollection.php" as="LazyRecord/BaseCollection.php"/>
       <install name="src/LazyRecord/BaseModel.php" as="LazyRecord/BaseModel.php"/>
       <install name="src/LazyRecord/BaseSeed.php" as="LazyRecord/BaseSeed.php"/>
+      <install name="src/LazyRecord/CacheManager.php" as="LazyRecord/CacheManager.php"/>
       <install name="src/LazyRecord/ClassUtils.php" as="LazyRecord/ClassUtils.php"/>
       <install name="src/LazyRecord/CodeGen/ClassConst.php" as="LazyRecord/CodeGen/ClassConst.php"/>
       <install name="src/LazyRecord/CodeGen/ClassInjection.php" as="LazyRecord/CodeGen/ClassInjection.php"/>
@@ -506,7 +513,6 @@
       <install name="src/LazyRecord/Model/Metadata.php" as="LazyRecord/Model/Metadata.php"/>
       <install name="src/LazyRecord/Model/MetadataCollection.php" as="LazyRecord/Model/MetadataCollection.php"/>
       <install name="src/LazyRecord/Model/MetadataCollectionBase.php" as="LazyRecord/Model/MetadataCollectionBase.php"/>
-      <install name="src/LazyRecord/Model/MetadataSchemaProxy.php" as="LazyRecord/Model/MetadataSchemaProxy.php"/>
       <install name="src/LazyRecord/OperationResult/OperationError.php" as="LazyRecord/OperationResult/OperationError.php"/>
       <install name="src/LazyRecord/OperationResult/OperationResult.php" as="LazyRecord/OperationResult/OperationResult.php"/>
       <install name="src/LazyRecord/OperationResult/OperationSuccess.php" as="LazyRecord/OperationResult/OperationSuccess.php"/>
@@ -517,7 +523,6 @@
       <install name="src/LazyRecord/Schema/Mixin/I18nSchema.php" as="LazyRecord/Schema/Mixin/I18nSchema.php"/>
       <install name="src/LazyRecord/Schema/Mixin/MetadataSchema.php" as="LazyRecord/Schema/Mixin/MetadataSchema.php"/>
       <install name="src/LazyRecord/Schema/MixinSchemaDeclare.php" as="LazyRecord/Schema/MixinSchemaDeclare.php"/>
-      <install name="src/LazyRecord/Schema/MixinSchemaProxy.php" as="LazyRecord/Schema/MixinSchemaProxy.php"/>
       <install name="src/LazyRecord/Schema/RuntimeColumn.php" as="LazyRecord/Schema/RuntimeColumn.php"/>
       <install name="src/LazyRecord/Schema/RuntimeSchema.php" as="LazyRecord/Schema/RuntimeSchema.php"/>
       <install name="src/LazyRecord/Schema/SchemaBase.php" as="LazyRecord/Schema/SchemaBase.php"/>
