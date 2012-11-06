@@ -10,6 +10,10 @@ schema:
 #  Customize your schema paths
   paths:
     - tests/schema
+cache:
+  class: LazyRecord\Memcache
+  servers:
+    - { host: localhost, port: 11211 }
 data_sources:
   default:
     dsn: 'sqlite:tests.db'

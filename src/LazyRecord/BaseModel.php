@@ -694,14 +694,15 @@ abstract class BaseModel
         if( is_array($args) ) {
             $query->select('*')
                 ->whereFromArgs($args);
-        }
-        else {
+        } 
+        else 
+        {
             $kVal = $args;
             $column = $this->schema->getColumn( $pk );
             
-            if( ! $column ) {
+            if ( ! $column )
                 throw new Exception("Primary key $pk is not defined in " . get_class($this->schema) );
-            }
+
             $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
             $query->select('*')
@@ -709,7 +710,6 @@ abstract class BaseModel
         }
 
         $sql = $query->build();
-
         $validationResults = array();
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
@@ -1221,10 +1221,10 @@ abstract class BaseModel
     public function getRelationalRecords($key,$relation = null)
     {
         $cacheKey = 'relationship::' . $key;
-        if( $this->hasCache($cacheKey) )
+        if ( $this->hasCache($cacheKey) )
             return $this->_cache[ $cacheKey ];
 
-        if( ! $relation )
+        if ( ! $relation )
             $relation = $this->schema->getRelation( $key );
 
         /*
@@ -1234,7 +1234,7 @@ abstract class BaseModel
             break;
         }
         */
-        if( SchemaDeclare::has_one === $relation['type'] ) 
+        if ( SchemaDeclare::has_one === $relation['type'] ) 
         {
             $sColumn = $relation['self']['column'];
 
@@ -1247,9 +1247,7 @@ abstract class BaseModel
 
             $sValue = $this->getValue( $sColumn );
             $model = $fpSchema->newModel();
-            $model->load(array( 
-                $fColumn => $sValue,
-            ));
+            $model->load(array( $fColumn => $sValue ));
             return $this->setCache($cacheKey,$model);
         }
         elseif( SchemaDeclare::has_many === $relation['type'] )
@@ -1592,7 +1590,7 @@ abstract class BaseModel
         $dsId  = $model->getReadSourceId();
         $conn  = $model->getConnection( $dsId );
 
-        if( is_array($args) ) {
+        if ( is_array( $args ) ) {
             $q = $model->createExecutiveQuery($dsId);
             $q->callback = function($b,$sql) use ($model,$conn) {
                 $stm = $model->dbPrepareAndExecute($conn,$sql,$b->vars);
@@ -1757,6 +1755,18 @@ abstract class BaseModel
     /***************************************
      * Cache related methods
      ***************************************/
+    public function getCacheInstance()
+    {
+        static $instance;
+        if ( $instance )
+            return $instance;
+        $config = ConfigLoader::getInstance()->getCacheConfig();
+        if( isset($class['class']) ) {
+            $class = $config['class'];
+            $instance = new $class( $config );
+            return $instance;
+        }
+    }
 
     public function flushCache() 
     {
@@ -1767,6 +1777,7 @@ abstract class BaseModel
     {
         return $this->_cache[ $key ] = $val;
     }
+
 
     public function getCache($key) 
     {

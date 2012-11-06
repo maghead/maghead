@@ -41,12 +41,6 @@ class ConfigLoader
 
     public $loaded = false;
 
-    public function __construct()
-    {
-
-    }
-
-
     public function loadFromSymbol($force = false)
     {
         if( file_exists($this->symbolFilename) ) {
@@ -203,6 +197,12 @@ class ConfigLoader
         if( isset($this->config['seeds']) ) {
             return $this->config['seeds'];
         }
+    }
+
+    public function getCacheConfig()
+    {
+        if( isset($this->config['cache']) )
+            return $this->config['cache'];
     }
 
     /**
