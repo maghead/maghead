@@ -205,6 +205,9 @@ class ConfigLoader
             return $this->config['cache'];
     }
 
+
+    // XXX: provide a simpler config interface and 
+    // we should use injection container
     public function getCacheInstance()
     {
         static $instance;
