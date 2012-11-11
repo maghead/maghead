@@ -1245,7 +1245,7 @@ abstract class BaseModel
     {
         $cacheKey = 'relationship::' . $key;
         if ( $this->hasInternalCache($cacheKey) )
-            return $this->_cache[ $cacheKey ];
+            return clone $this->_cache[ $cacheKey ];
 
         if ( ! $relation )
             $relation = $this->schema->getRelation( $key );
