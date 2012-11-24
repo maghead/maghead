@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-11-20</date>
-  <time>01:27:27</time>
+  <date>2012-11-24</date>
+  <time>18:32:20</time>
   <version>
     <release>1.9.0</release>
     <api>1.9.0</api>
@@ -121,7 +121,7 @@
       <file name="tests/schema/tests/AuthorCollection.php" role="test" md5sum="95a7ef60275823bfde873a008b3061ed"/>
       <file name="tests/schema/tests/AuthorCollectionBase.php" role="test" md5sum="62e880487e5ddd3533880e20f7c58e70"/>
       <file name="tests/schema/tests/AuthorSchema.php" role="test" md5sum="7e663c4d6c5e2b10115dffc19a2296f1"/>
-      <file name="tests/schema/tests/AuthorSchemaProxy.php" role="test" md5sum="82dd21aaa5c424d59224476701966fdf"/>
+      <file name="tests/schema/tests/AuthorSchemaProxy.php" role="test" md5sum="c0e779bff9a5c506b2b77f527fa8bded"/>
       <file name="tests/schema/tests/Book.php" role="test" md5sum="1073d4979c339dde0fb08a30abc7fb56"/>
       <file name="tests/schema/tests/BookBase.php" role="test" md5sum="dbac3af3c391f89f35179e775ed5512c"/>
       <file name="tests/schema/tests/BookCollection.php" role="test" md5sum="0a5e7b5a626ffddcd33706b4fd42a2b1"/>
@@ -165,7 +165,7 @@
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
       <file name="src/LazyRecord/ArrayUtils.php" role="php" md5sum="e4050887e137de2f7f7fd18fcbdd09c2"/>
       <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="26f38bde5b0b134d8636a39b4e83dabb"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="6f5045fac43c37b5c315ade87d37367d"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="dd12c06d97d45acc4bb2502c3085963b"/>
       <file name="src/LazyRecord/BaseSeed.php" role="php" md5sum="884fadea8ad5b2c3e86645b70554f955"/>
       <file name="src/LazyRecord/Cache/Memcache.php" role="php" md5sum="9aefa9c794f7e62ae670927c00487233"/>
       <file name="src/LazyRecord/ClassUtils.php" role="php" md5sum="4ac1ed6270ee8068a13a936a635d2f76"/>
@@ -309,7 +309,7 @@
       <package>
         <name>Twig</name>
         <channel>pear.twig-project.org</channel>
-        <min>0.0.0</min>
+        <max>1.11.0</max>
       </package>
       <extension>
         <name>pdo</name>
