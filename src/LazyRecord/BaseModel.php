@@ -294,7 +294,7 @@ abstract class BaseModel
 
         // dispatch to schema object method
         if( method_exists($this->schema,$m) ) {
-            return call_user_func_array($this->schema,$a);
+            return call_user_func_array(array($this->schema,$m),$a);
         }
 
         // XXX: special case for twig template
