@@ -190,7 +190,7 @@ class BaseCollection
         $q->select(
             $this->explictSelect 
                 ? $this->getExplicitColumnSelect($q->driver)
-                : '*'
+                : $this->getAlias() . '.*'
         );
         $q->alias( $this->getAlias() ); // main table alias
         return $q;
