@@ -535,8 +535,7 @@ class BaseCollection
     public function toJson()
     {
         $list = $this->toArray();
-        $json = new JsonSerializer;
-        return $json->encode( $list );
+        return json_encode($list, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
     }
 
     public function toYaml()
