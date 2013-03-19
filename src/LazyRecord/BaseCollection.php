@@ -190,7 +190,7 @@ class BaseCollection
         $q->select(
             $this->explictSelect 
                 ? $this->getExplicitColumnSelect($q->driver)
-                : '*'
+                : $this->getAlias() . '.*'
         );
         $q->alias( $this->getAlias() ); // main table alias
         return $q;
@@ -535,8 +535,7 @@ class BaseCollection
     public function toJson()
     {
         $list = $this->toArray();
-        $json = new JsonSerializer;
-        return $json->encode( $list );
+        return json_encode($list, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
     }
 
     public function toYaml()

@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2013-03-19</date>
-  <time>13:57:26</time>
+  <time>13:58:11</time>
   <version>
     <release>1.9.0</release>
     <api>1.9.0</api>
@@ -59,7 +59,7 @@
       <file name="examples/todos/src/Todos/Seed.php" role="doc" md5sum="208733814ada89c5e9a21eed214cc3a7"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
       <file name="src/LazyRecord/ArrayUtils.php" role="php" md5sum="e4050887e137de2f7f7fd18fcbdd09c2"/>
-      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="26f38bde5b0b134d8636a39b4e83dabb"/>
+      <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="7e66aa2bde73c26119d883a484e11006"/>
       <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="dd12c06d97d45acc4bb2502c3085963b"/>
       <file name="src/LazyRecord/BaseSeed.php" role="php" md5sum="884fadea8ad5b2c3e86645b70554f955"/>
       <file name="src/LazyRecord/Cache/Memcache.php" role="php" md5sum="9aefa9c794f7e62ae670927c00487233"/>

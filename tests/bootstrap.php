@@ -5,16 +5,18 @@ require_once 'tests/model_helpers.php';
 mb_internal_encoding('UTF-8');
 error_reporting( E_ALL );
 use Universal\ClassLoader\BasePathClassLoader;
+
+define('ROOT',dirname(__DIR__));
+
 $loader = new BasePathClassLoader(array(
-    dirname(__DIR__) . '/src', 
-    dirname(__DIR__) . '/vendor/pear',
-    dirname(__DIR__) . '/tests',
-    dirname(__DIR__) . '/tests/schema',
-    dirname(__DIR__) . '/tests/src',
+    ROOT . '/src', 
+    ROOT . '/vendor/pear',
+    ROOT . '/tests',
+    ROOT . '/tests/schema',
+    ROOT . '/tests/src',
 ));
 $loader->useIncludePath(true);
 $loader->register();
-
 
 // TODO: we can initialize schema files here.
 
