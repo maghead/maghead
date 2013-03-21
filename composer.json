@@ -11,6 +11,7 @@
         "corneltek/cliframework": "dev-master",
         "corneltek/serializerkit": "dev-master",
         "corneltek/getoptionkit": "dev-master",
+        "corneltek/validationkit": "1.1.*",
         "corneltek/configkit":    "dev-master",
         "corneltek/universal-cache": "@dev"
     },
