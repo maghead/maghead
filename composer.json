@@ -1,5 +1,5 @@
 {
-    "name": "c9s/LazyRecord",
+    "name": "corneltek/lazyrecord",
     "homepage": "http://github.com/c9s/LazyRecord",
     "description": "The Fast PHP ORM",
     "require-dev": {
