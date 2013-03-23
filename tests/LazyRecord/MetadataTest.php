@@ -40,18 +40,20 @@ class MetadataTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    function testMetadata() {
+    public function testMetadata() {
         $metadata = new LazyRecord\Metadata('default');
         ok($metadata);
         $metadata->init();
 
-        $metadata = new LazyRecord\Model\Metadata;
-        ok($metadata);
-        $ret = $metadata->create(array('name' => 'version', 'value' => '0.1' ));
+        $metaItem = new LazyRecord\Model\Metadata;
+        ok($metaItem);
+        ok($metaItem->schema,"Get schema");
+
+        $ret = $metaItem->create(array('name' => 'version', 'value' => '0.1' ));
         ok($ret->success);
     }
 
-    function testCollection() {
+    public function testCollection() {
         $metadata = new LazyRecord\Metadata('default');
         ok($metadata);
         $metadata->init();

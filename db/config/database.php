@@ -15,7 +15,7 @@
   array (
     'default' => 
     array (
-      'dsn' => 'sqlite:tests.db',
+      'dsn' => 'sqlite::memory:',
       'user' => NULL,
       'pass' => NULL,
     ),

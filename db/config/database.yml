@@ -16,7 +16,8 @@ schema:
 #      - { host: localhost, port: 11211 }
 data_sources:
   default:
-    dsn: 'sqlite:tests.db'
+    dsn: 'sqlite::memory:'
+#     dsn: 'sqlite:tests.db'
     user: 
     pass: 
 #    slave:
