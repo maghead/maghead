@@ -10,7 +10,6 @@
         "corneltek/sqlbuilder": "dev-master",
         "corneltek/cliframework": "1.5.*",
         "corneltek/serializerkit": "dev-master",
-        "corneltek/getoptionkit": "dev-master",
         "corneltek/validationkit": "1.1.*",
         "corneltek/configkit":    "1.3.*",
         "corneltek/universal-cache": "@dev"
