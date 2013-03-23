@@ -12,6 +12,7 @@
         "corneltek/configkit"           : "1.3.*",
         "corneltek/cascading-attribute" : "1.2.*",
         "corneltek/universal-cache"     : "@dev",
+        "corneltek/dbutil"              : "1.*",
         "twig/twig"                     : "1.12.*"
     },
     "require-dev": {
