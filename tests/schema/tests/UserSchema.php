@@ -5,7 +5,7 @@ use LazyRecord\Schema;
 
 class UserSchema extends SchemaDeclare
 {
-    function schema()
+    public function schema()
     {
         $this->column('account')
             ->isa('str')
