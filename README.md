@@ -45,10 +45,24 @@ PHP Extensions
 Installation
 ------------
 
-```sh
-pear channel-discover pear.corneltek.com
-pear install -a -f corneltek/LazyRecord
+Install from composer:
+
+
+```json
+{
+    "require": {
+        "corneltek/lazyrecord": "1.9.*"
+    }
+}
 ```
+
+Download the lazyrecord command-line binary:
+
+
+    $ curl -O http://raw.github.com/c9s/LazyRecord/master/lazy
+    $ chmod +x lazy
+    $ mv lazy /usr/bin
+
 
 Getting Started
 ---------------
