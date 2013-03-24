@@ -1,7 +1,16 @@
 #!/bin/bash
 onion compile \
     --lib src \
-    --lib vendor/pear \
+    --lib vendor/corneltek/cascading-attribute/src \
+    --lib vendor/corneltek/cliframework/src \
+    --lib vendor/corneltek/configkit/src \
+    --lib vendor/corneltek/dbutil/src \
+    --lib vendor/corneltek/getoptionkit/src \
+    --lib vendor/corneltek/serializerkit/src \
+    --lib vendor/corneltek/sqlbuilder/src \
+    --lib vendor/corneltek/universal/src \
+    --lib vendor/corneltek/universal-cache/src \
+    --lib vendor/corneltek/validationkit/src \
     --classloader \
     --bootstrap scripts/lazy.emb.php \
     --executable \
