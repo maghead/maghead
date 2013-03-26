@@ -43,7 +43,7 @@ class NameModelTest extends PHPUnit_Framework_ModelTestCase
     /**
      * @dataProvider booleanFalseTestDataProvider
      */
-    public function testBooleanFalse($args)
+    public function testCreateWithBooleanFalse($args)
     {
         $n = new \tests\Name;
         $ret = $n->create($args);
@@ -71,7 +71,7 @@ class NameModelTest extends PHPUnit_Framework_ModelTestCase
     /**
      * @dataProvider booleanTrueTestDataProvider
      */
-    public function testBooleanTrue($args)
+    public function testCreateWithBooleanTrue($args)
     {
         $n = new \tests\Name;
         $ret = $n->create($args);
@@ -84,14 +84,14 @@ class NameModelTest extends PHPUnit_Framework_ModelTestCase
         ok( $n->delete()->success );
     }
 
-    public function testClone()
+    public function testModelClone()
     {
         $test1 = new \tests\Name;
         $test2 = clone $test1;
         ok( $test1 !== $test2 );
     }
 
-    public function testFilter()
+    public function testModelColumnFilter()
     {
         $name = new \tests\Name;
         $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John' ));
@@ -124,7 +124,7 @@ class NameModelTest extends PHPUnit_Framework_ModelTestCase
         ok( ! $n->id );
     }
 
-    public function testDefaultBuilder()
+    public function testModelColumnDefaultValueBuilder()
     {
         $name = new \tests\Name;
         $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' ));

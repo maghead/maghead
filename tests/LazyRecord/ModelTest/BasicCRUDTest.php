@@ -19,7 +19,7 @@ class BasicCRUDTest extends PHPUnit_Framework_ModelTestCase
         );
     }
 
-    public function testLoadOrCreate() 
+    public function testLoadOrCreateModel() 
     {
         $b = new \tests\Book;
         $ret = $b->find( array( 'name' => 'LoadOrCreateTest' ) );
@@ -90,7 +90,7 @@ class BasicCRUDTest extends PHPUnit_Framework_ModelTestCase
         );
     }
 
-    public function testUpdateRaw() 
+    public function testModelUpdateRawValue() 
     {
         $author = new \tests\Author;
         $ret = $author->create(array( 
@@ -103,7 +103,7 @@ class BasicCRUDTest extends PHPUnit_Framework_ModelTestCase
         result_ok($ret);
     }
 
-    public function testManyToManyRelationCreate()
+    public function testManyToManyRelationRecordCreate()
     {
         $author = new \tests\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
