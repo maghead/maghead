@@ -2,7 +2,7 @@
 
 class InflectorTest extends PHPUnit_Framework_TestCase
 {
-    function test()
+    public function testBasicInflector()
     {
         $inflector = \LazyRecord\Inflector::getInstance();
         is( 'posts' , $inflector->pluralize('post') );
