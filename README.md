@@ -530,6 +530,9 @@ Requests.
 You have to follow PSR Coding Standards and provides unit tests
 as much as possible.
 
+
+
+
 Unit Testing
 ------------
 To deploy a testing environment, you need to install dependent packages.
@@ -590,6 +593,18 @@ now you can insert schema sqls into these data sources:
     $ php bin/lazy build-sql --rebuild -D=pgsql
     $ php bin/lazy build-sql --rebuild -D=sqlite
 
+
+PROFILING
+==============
+
+
+    $ scripts/run-xhprof
+
+OR
+
+    $ phpunit -c phpunit-xhprof.xml
+    $ cd xhprof_html
+    $ php -S localhost:8888
 
 
 LICENSE
