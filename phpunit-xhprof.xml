@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap.php"
+    backupGlobals="false"
+    verbose="true"
+    syntaxCheck="true"
+    colors="true"
+    stopOnFailure="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true">
+
+    <php>
+
+        <!-- configuration for mysql -->
+        <env name="DB_MYSQL_DSN" value="mysql:dbname=testing"/>
+        <env name="DB_MYSQL_USER" value="testing"/>
+        <env name="DB_MYSQL_PASS" value="testing"/>
+
+        <!-- configuration for pgsql -->
+        <env name="DB_PGSQL_DSN" value="pgsql:dbname=testing"/>
+        <env name="DB_PGSQL_USER" value="testing"/>
+        <env name="DB_PGSQL_PASS" value="testing"/>
+
+        <env name="DB_SQLITE_DSN" value="sqlite::memory:"/>
+    </php>
+
+
+    <testsuites>
+        <testsuite name="PHPUnit">
+            <directory suffix="Test.php">tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <listeners>
+        <listener class="PHPUnit_Util_Log_XHProf" file="PHPUnit/Util/Log/XHProf.php">
+            <arguments>
+                <array>
+                    <!--
+                    <element key="xhprofLibFile">
+                        <string>/Users/c9s/src/php/xhprof/xhprof_lib/utils/xhprof_lib.php</string>
+                    </element>
+                    <element key="xhprofRunsFile">
+                        <string>/Users/c9s/src/php/xhprof/xhprof_lib/utils/xhprof_runs.php</string>
+                    </element>
+                    -->
+
+                    <element key="xhprofLibFile">
+                        <string>xhprof_lib/utils/xhprof_lib.php</string>
+                    </element>
+                    <element key="xhprofRunsFile">
+                        <string>xhprof_lib/utils/xhprof_runs.php</string>
+                    </element>
+
+
+                    <element key="xhprofWeb">
+                        <string>http://xhprof.dev/index.php</string>
+                    </element>
+                    <element key="appNamespace">
+                        <string>AssetToolkit</string>
+                    </element>
+                    <element key="xhprofFlags">
+                        <string>XHPROF_FLAGS_CPU,XHPROF_FLAGS_MEMORY</string>
+                    </element>
+                </array>
+            </arguments>
+        </listener>
+    </listeners>
+
+</phpunit>

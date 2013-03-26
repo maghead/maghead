@@ -5,14 +5,10 @@ require "src/PHPUnit/Framework/ModelTestCase.php";
 mb_internal_encoding('UTF-8');
 error_reporting( E_ALL );
 
-use Universal\ClassLoader\BasePathClassLoader;
-define('ROOT',dirname(__DIR__));
-$loader = new BasePathClassLoader(array(
-    ROOT . '/vendor/pear',
-    ROOT . '/tests',
-    ROOT . '/tests/schema',
-    ROOT . '/tests/src',
-));
-$loader->useIncludePath(false);
-$loader->register(true);
-// TODO: we can initialize schema files here.
+if (extension_loaded('xhprof') ) {
+    ini_set('xhprof.output_dir','/tmp');
+}
+
+$loader->add(null,'tests');
+$loader->add(null,'tests/schema');
+$loader->add(null,'tests/src');
