@@ -118,7 +118,6 @@ don't need to declare an primary key id column in your every schema file.
 then write your bootstrap script `db/bootstrap.php`, which is a simple SPL classloader:
 
 ```php
-<?php
 require 'Universal/ClassLoader/BasePathClassLoader.php';
 use Universal\ClassLoader\BasePathClassLoader;
 $loader = new BasePathClassLoader(array(
@@ -127,6 +126,12 @@ $loader = new BasePathClassLoader(array(
 ));
 $loader->useIncludePath(true);
 $loader->register();
+```
+
+Or you can require the autoloader from composer:
+
+```php
+require 'vendor/autoload.php';
 ```
 
 Next, write your model schema file:
@@ -138,7 +143,7 @@ $ vim src/YourApp/Model/UserSchema.php
 Put the content into your file:
 
 ```php
-<?php
+
 namespace YourApp\Model;
 use LazyRecord\Schema\SchemaDeclare;
 
@@ -203,7 +208,7 @@ $ vim app.php
 ```
 
 ```php
-<?php
+
 require 'db/bootstrap.php';
 $config = new LazyRecord\ConfigLoader;
 $config->load('.lazy.yml');
@@ -216,7 +221,7 @@ create connection unless you need to operate your models.
 Append your application code to the end of `app.php` file:
 
 ```php
-<?php
+
 $user = new YourApp\Model\User;
 $ret = $user->create(array('account' => 'guest', 'password' => '123123' ));
 if( ! $ret->success ) {
@@ -281,7 +286,7 @@ now you can edit your migration script, which is auto-generated:
 the migration script looks like:
 
 ```php
-<?php
+
 
 class AddUserColumn_1347451491  extends \LazyRecord\Migration\Migration {
 
@@ -355,7 +360,7 @@ To see what migration script could do, please check the documentation of SQLBuil
 ## Setting up QueryDriver for SQL syntax
  
 ```php
-<?php
+
 $driver = LazyRecord\QueryDriver::getInstance('data_source_id');
 $driver->configure('driver','pgsql');
 $driver->configure('quote_column',true);
@@ -368,7 +373,7 @@ $driver->configure('quote_table',true);
 To create a model record:
 
 ```php
-<?php
+
 $author = new Author;
 $ret = $author->create(array(
     'name' => 'Foo'
@@ -380,7 +385,7 @@ if( $ret->success )
 To find record:
     
 ```php
-<?php
+
 $author->find(123);
 $author->find(array( 'foo' => 'Name' ));
 ```
@@ -388,21 +393,21 @@ $author->find(array( 'foo' => 'Name' ));
 To find record with (static):
 
 ```php
-<?php
+
 $record = Author::load(array( 'name' => 'Foo' ));
 ```
 
 To find record with primary key:
 
 ```php
-<?php
+
 $record = Author::load( 1 );
 ```
 
 To update record:
 
 ```php
-<?php
+
 $author->update(array(  
     'name' => 'Author',
 ));
@@ -411,7 +416,7 @@ $author->update(array(
 To update record (static):
 
 ```php
-<?php
+
 $ret = Author::update( array( 'name' => 'Author' ) )
     ->where()
         ->equal('id',3)
@@ -434,7 +439,7 @@ else {
 To create a collection object:
 
 ```php
-<?php
+
 $authors = new AuthorCollection;
 $authors->where()
     ->equal( 'id' , 'foo' );
@@ -455,7 +460,7 @@ foreach( $authors as $author ) {
 
 
 ```php
-<?php
+
 // has many
 $address = $author->addresses->create(array( 
     'address' => 'farfaraway'
@@ -478,47 +483,46 @@ foreach( $author->addresses as $address ) {
 ## A more advanced schema code
 
 ```php
-<?php
-    use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\SchemaDeclare;
 
-    class AuthorSchema extends SchemaDeclare
+class AuthorSchema extends SchemaDeclare
+{
+    function schema()
     {
-        function schema()
-        {
-            $this->column('id')
-                ->integer()
-                ->primary()
-                ->autoIncrement();
+        $this->column('id')
+            ->integer()
+            ->primary()
+            ->autoIncrement();
 
-            $this->column('name')
-                ->varchar(128)
-                ->validator(function($val) { .... })
-                ->filter( function($val) {  
-                            return preg_replace('#word#','zz',$val);  
-                })
-                ->inflator(function($val) {
-                    return unserialize($val);
-                })
-                ->deflator(function($val) {
-                    return serialize($val);
-                })
-                ->validValues( 1,2,3,4,5 )
-                ->default(function() { 
-                    return date('c');
-                })
-                ;
+        $this->column('name')
+            ->varchar(128)
+            ->validator(function($val) { .... })
+            ->filter( function($val) {  
+                        return preg_replace('#word#','zz',$val);  
+            })
+            ->inflator(function($val) {
+                return unserialize($val);
+            })
+            ->deflator(function($val) {
+                return serialize($val);
+            })
+            ->validValues( 1,2,3,4,5 )
+            ->default(function() { 
+                return date('c');
+            })
+            ;
 
-            $this->column('email')
-                ->required()
-                ->varchar(128);
+        $this->column('email')
+            ->required()
+            ->varchar(128);
 
-            $this->column('confirmed')
-                ->default(false)
-                ->boolean();
+        $this->column('confirmed')
+            ->default(false)
+            ->boolean();
 
-            $this->seeds('User\\Seed')
-        }
+        $this->seeds('User\\Seed')
     }
+}
 ```
 
 Contribution
