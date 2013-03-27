@@ -208,7 +208,6 @@ $ vim app.php
 ```
 
 ```php
-
 require 'db/bootstrap.php';
 $config = new LazyRecord\ConfigLoader;
 $config->load('.lazy.yml');
@@ -286,8 +285,6 @@ now you can edit your migration script, which is auto-generated:
 the migration script looks like:
 
 ```php
-
-
 class AddUserColumn_1347451491  extends \LazyRecord\Migration\Migration {
 
     public function upgrade() { 
@@ -350,17 +347,18 @@ To see what migration script could do, please check the documentation of SQLBuil
 
 ## Basedata Seed
 
-    namespace User;
-    class Seed { 
-        public static function seed() {
+```php
+namespace User;
+class Seed { 
+    public static function seed() {
 
-        }
     }
+}
+```
 
 ## Setting up QueryDriver for SQL syntax
  
 ```php
-
 $driver = LazyRecord\QueryDriver::getInstance('data_source_id');
 $driver->configure('driver','pgsql');
 $driver->configure('quote_column',true);
@@ -373,41 +371,42 @@ $driver->configure('quote_table',true);
 To create a model record:
 
 ```php
-
 $author = new Author;
 $ret = $author->create(array(
     'name' => 'Foo'
 ));
-if( $ret->success )
+if ( $ret->success ) {
     echo 'created';
+}
 ```
 
 To find record:
     
 ```php
+$ret = $author->find(123);
+$ret = $author->find(array( 'foo' => 'Name' ));
+if ( $ret->success ) {
 
-$author->find(123);
-$author->find(array( 'foo' => 'Name' ));
+} else {
+    // handle $ret->exception or $ret->message
+}
 ```
 
 To find record with (static):
 
 ```php
-
 $record = Author::load(array( 'name' => 'Foo' ));
 ```
 
 To find record with primary key:
 
 ```php
-
 $record = Author::load( 1 );
 ```
 
 To update record:
 
 ```php
-
 $author->update(array(  
     'name' => 'Author',
 ));
