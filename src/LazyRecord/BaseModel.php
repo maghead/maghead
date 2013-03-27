@@ -1403,9 +1403,14 @@ abstract class BaseModel
 
         // todo: fix this
         // lazy schema loader, xxx: make this static.
-        if( 'schema' === $key ) {
-            if( constant( get_class($this) . '::schema_proxy_class') )
-                return SchemaLoader::load( static::schema_proxy_class );
+        if ( 'schema' === $key ) {
+            if ( constant( get_class($this) . '::schema_proxy_class') ) {
+                $schema = SchemaLoader::load( static::schema_proxy_class );
+                if ( ! $schema ) {
+                    throw new Exception("Can not load schema proxy class: " . static::schema_proxy_class);
+                }
+                return $schema;
+            }
             return new Schema\DynamicSchemaDeclare($this);
         }
         elseif( '_connection' === $key ) {
