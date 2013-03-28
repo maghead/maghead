@@ -455,6 +455,14 @@ foreach( $authors as $author ) {
 }
 ```
 
+## Validation
+
+```php
+$this->column('id_number')
+    ->varchar(10)
+    ->validator('TW\\IDNumberValidator');
+```
+
 ## Relationships
 
 
