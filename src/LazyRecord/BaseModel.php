@@ -298,7 +298,7 @@ abstract class BaseModel
         }
 
         // XXX: special case for twig template
-        throw new Exception("BaseModel: $m method not found.");
+        throw new Exception( get_class($this) . ": $m method not found.");
     }
 
 
