@@ -601,24 +601,24 @@ abstract class BaseModel
 
                 if( $c->typeConstraint && ( $val !== null && ! is_array($val) ) ) {
                     $c->checkTypeConstraint( $val );
-                } 
+                }
                 // try to cast value 
                 else if( $val !== null && ! is_array($val) ) {
                     $c->typeCasting( $val );
                 }
 
-                if( $c->filter || $c->canonicalizer ) {
+                if ( $c->filter || $c->canonicalizer ) {
                     $c->canonicalizeValue( $val , $this, $args );
                 }
 
 
-                if( $validationResult = $this->_validateColumn($c,$val,$args) ) {
+                if ( $validationResult = $this->_validateColumn($c,$val,$args) ) {
                     $validationResults[$n] = (object) $validationResult;
-                    if( ! $validationResult['valid'] ) {
+                    if ( ! $validationResult['valid'] ) {
                         $validationFailed = true;
                     }
                 }
-                if( $val !== null ) {
+                if ( $val !== null ) {
                     $args[ $n ] = is_array($val) ? $val : $c->deflate( $val );
                 }
             }
