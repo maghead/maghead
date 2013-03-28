@@ -15,6 +15,12 @@ class BookSchema extends SchemaDeclare
         $this->column('subtitle')
             ->varchar(256);
 
+
+        $this->column('isbn')
+            ->varchar(128)
+            ->immutable()
+            ;
+
         $this->column('description')
             ->text();
 

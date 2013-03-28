@@ -859,6 +859,9 @@ abstract class BaseModel
         $validationFailed = false;
         $validationResults = array();
 
+
+
+
         try 
         {
             $args = $this->beforeUpdate($args);
@@ -891,6 +894,8 @@ abstract class BaseModel
                         $c->typeCasting( $args[$n] );
                     }
 
+
+
                     // xxx: make this optional.
                     if( $args[$n] !== null && ! is_array($args[$n]) && $msg = $c->checkTypeConstraint( $args[$n] ) ) {
                         throw new Exception($msg);
@@ -911,8 +916,9 @@ abstract class BaseModel
                     $args[ $n ] = is_array($args[$n]) ? $args[$n] : $c->deflate( $args[$n] );
                 }
 
-                if( $validationFailed )
-                    throw new Exception( "Validation failed." );
+                if ( $validationFailed ) {
+                    throw new Exception( "Column $n: Validation failed." );
+                }
             }
 
             $query = $this->createQuery( $dsId );
