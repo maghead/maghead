@@ -458,6 +458,8 @@ foreach( $authors as $author ) {
 ## Relationships
 
 
+Has Many:
+
 ```php
 
 // has many
@@ -477,6 +479,13 @@ foreach( $author->addresses as $address ) {
     echo $address->address , "\n";
 }
 ```
+
+BelongsTo:
+
+```php
+$this->belongsTo('book','\tests\BookSchema','id','book_id');
+```
+
 
 
 ## A more advanced schema code
