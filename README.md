@@ -619,17 +619,6 @@ OR
     $ php -S localhost:8888
 
 
-TODOS
-===============
-
-- [ ] Try to add namespace prefix to class name when class not found.
-
-        namespace FooBar;
-        class ... {
-            $this->mixin('MetaDataMixinSchema');  // try to load FooBar\MetaDataMixinSchema and FooBar\Mixin\MetaDataMixinSchema
-            $this->refer(...); // same here.
-        }
-
 LICENSE
 ===============
 BSD License
