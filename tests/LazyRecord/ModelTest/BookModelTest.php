@@ -9,6 +9,19 @@ class BookModelTest extends PHPUnit_Framework_ModelTestCase
         return array( 'tests\BookSchema' );
     }
 
+    public function testImmutableColumn()
+    {
+        $b = new \tests\Book;
+
+        result_ok( $b->create(array( 'isbn' => '123123123' )) );
+
+        $ret = $b->update(array('isbn'  => '456456' ));
+        ok( ! $ret->success , 'should not update immutable column' ); // should be failed.
+
+
+        $b->delete();
+    }
+
     public function testLoadOrCreate() 
     {
         $b = new \tests\Book;

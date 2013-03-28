@@ -886,12 +886,17 @@ abstract class BaseModel
                     }
                 }
 
-
                 // column validate (value is set.)
                 if( isset($args[$n]) )
                 {
                     if( $args[$n] !== null && ! is_array($args[$n]) ) {
                         $c->typeCasting( $args[$n] );
+                    }
+
+                    if ( $c->immutable ) {
+                        return $this->reportError( _("You can not update $n column, which is immutable.") , array( 
+                            'args' => $args,
+                        ));
                     }
 
 
