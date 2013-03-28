@@ -337,9 +337,21 @@ class SchemaDeclare extends SchemaBase
     }
 
 
+    public function hasMany()
+    {
+        // forward call
+        return call_user_func_array(array($this,'many'), func_get_args());
+    }
 
     /**
      * Add has-many relation
+     *
+     *
+     * TODO: provide a relationship object to handle sush operation, that will be:
+     *
+     *    $this->hasMany('books','id')
+     *         ->from('App_Model_Book','author_id')
+     *
      */
     public function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
