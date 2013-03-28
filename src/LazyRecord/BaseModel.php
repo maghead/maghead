@@ -980,18 +980,16 @@ abstract class BaseModel
      */
     public function display( $name )
     {
-        if( $c = $this->schema->getColumn( $name ) ) {
+        if ( $c = $this->schema->getColumn( $name ) ) {
             // get raw value
-            if( $c->virtual )
+            if ( $c->virtual ) {
                 return $this->get($name);
+            }
             return $c->display( $this->getValue( $name ) );
         }
         elseif( isset($this->_data[$name]) ) {
             return $this->_data[$name];
         }
-#          elseif( method_exists($this, $name) ) {
-#              return call_user_func_array($this,array($name));
-#          }
         
         // for relationship record
         $val = $this->__get($name);
@@ -999,7 +997,6 @@ abstract class BaseModel
             return $val->dataLabel();
         }
     }
-
 
 
     /**
@@ -1412,12 +1409,10 @@ abstract class BaseModel
                 return $schema;
             }
             return new Schema\DynamicSchemaDeclare($this);
-        }
-        elseif( '_connection' === $key ) {
+        } elseif ( '_connection' === $key ) {
             return ConnectionManager::getInstance();
         }
-
-        if( $relation = $this->schema->getRelation( $key ) ) {
+        if ( $relation = $this->schema->getRelation( $key ) ) {
             return $this->getRelationalRecords($key, $relation);
         }
         return $this->get($key);
