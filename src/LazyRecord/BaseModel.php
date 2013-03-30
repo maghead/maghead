@@ -19,7 +19,7 @@ use SerializerKit\JsonSerializer;
 use SerializerKit\YamlSerializer;
 
 use ValidationKit\ValidationMessage;
-
+use ActionKit;
 
 /**
  * Base Model class,
@@ -1879,6 +1879,37 @@ abstract class BaseModel
         $r = $this->results;
         $this->results = array();
         return $r;
+    }
+
+
+
+    public function asCreateAction($args = array())
+    {
+        return $this->_newAction('Create',$args);
+    }
+
+    public function asUpdateAction($args = array())
+    {
+        return $this->_newAction('Update',$args);
+    }
+
+    public function asDeleteAction($args = array())
+    {
+        return $this->_newAction('Delete',$args);
+    }
+
+    /**
+     * Create an action from existing record object
+     *
+     * @param string $type 'create','update','delete'
+     *
+     * TODO: Move to ActionKit
+     */
+    private function _newAction($type, $args = array() )
+    {
+        $class = get_class($this);
+        $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class,$type);
+        return new $actionClass( $args , $this );
     }
 }
 
