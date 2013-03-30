@@ -1,12 +1,14 @@
 <?php
+namespace LazyRecord;
 use LazyRecord\QueryDriver;
 use LazyRecord\ConnectionManager;
 use LazyRecord\SqlBuilder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
 use LazyRecord\ClassUtils;
+use PHPUnit_Framework_TestCase;
 
-abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCase
+abstract class ModelTestCase extends PHPUnit_Framework_TestCase
 {
     public $driver = 'sqlite';
 
@@ -88,7 +90,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
         $driver = ConnectionManager::getInstance()->getQueryDriver('default');
         ok( $driver );
 
-        $builder = LazyRecord\SqlBuilder\SqlBuilder::create( $driver , array( 'rebuild' => true ));
+        $builder = \LazyRecord\SqlBuilder\SqlBuilder::create( $driver , array( 'rebuild' => true ));
         ok( $builder );
 
 
@@ -119,7 +121,7 @@ abstract class PHPUnit_Framework_ModelTestCase extends PHPUnit_Framework_TestCas
 
     public function getLogger()
     {
-        return new TestLogger;
+        return new \CLIFramework\Logger;
     }
 
     public function testClass()

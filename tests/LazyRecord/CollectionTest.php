@@ -16,7 +16,7 @@ class AuthorFactory {
 
 }
 
-class CollectionTest extends PHPUnit_Framework_ModelTestCase
+class CollectionTest extends \LazyRecord\ModelTestCase
 {
     public $driver = 'sqlite';
 

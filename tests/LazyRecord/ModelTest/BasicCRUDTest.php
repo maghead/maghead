@@ -5,7 +5,7 @@
  *   2. Book
  *   3. Address
  */
-class BasicCRUDTest extends PHPUnit_Framework_ModelTestCase
+class BasicCRUDTest extends \LazyRecord\ModelTestCase
 {
     public $driver = 'sqlite';
 

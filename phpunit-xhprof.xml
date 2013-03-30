@@ -62,7 +62,7 @@
                         <string>XHPROF_FLAGS_CPU,XHPROF_FLAGS_MEMORY</string>
                     </element>
                     <element key="xhprofIgnore">
-                        <string>PHPUnit_Framework_ModelTestCase::setUp,debug_backtrace,get_testcase_object,PHPUnit_Framework_Assert</string>
+                        <string>\LazyRecord\ModelTestCase::setUp,debug_backtrace,get_testcase_object,PHPUnit_Framework_Assert</string>
                     </element>
                 </array>
             </arguments>
