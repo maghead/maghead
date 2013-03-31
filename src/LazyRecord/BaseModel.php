@@ -1267,10 +1267,10 @@ abstract class BaseModel
         */
         if ( SchemaDeclare::has_one === $relation['type'] ) 
         {
-            $sColumn = $relation['self']['column'];
+            $sColumn = $relation['self_column'];
 
-            $fSchema = new $relation['foreign']['schema'];
-            $fColumn = $relation['foreign']['column'];
+            $fSchema = new $relation['foreign_schema'];
+            $fColumn = $relation['foreign_column'];
             $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
             if( ! $this->hasValue($sColumn) )
                 return;
@@ -1283,9 +1283,9 @@ abstract class BaseModel
         }
         elseif( SchemaDeclare::has_many === $relation['type'] )
         {
-            $sColumn = $relation['self']['column'];
-            $fSchema = new $relation['foreign']['schema'];
-            $fColumn = $relation['foreign']['column'];
+            $sColumn = $relation['self_column'];
+            $fSchema = new $relation['foreign_schema'];
+            $fColumn = $relation['foreign_column'];
             $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
             if( ! $this->hasValue($sColumn) )
@@ -1308,9 +1308,9 @@ abstract class BaseModel
         }
         // belongs to one record
         elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
-            $sColumn = $relation['self']['column'];
-            $fSchema = new $relation['foreign']['schema'];
-            $fColumn = $relation['foreign']['column'];
+            $sColumn = $relation['self_column'];
+            $fSchema = new $relation['foreign_schema'];
+            $fColumn = $relation['foreign_column'];
             $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
             if( ! $this->hasValue($sColumn) )
@@ -1322,28 +1322,28 @@ abstract class BaseModel
             return $this->setInternalCache($cacheKey,$model);
         }
         elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
-            $rId = $relation['relation']['id'];  // use relationId to get middle relation. (author_books)
-            $rId2 = $relation['relation']['id2'];  // get external relationId from the middle relation. (book from author_books)
+            $rId = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
+            $rId2 = $relation['relation_foreign'];  // get external relationId from the middle relation. (book from author_books)
 
             $middleRelation = $this->schema->getRelation( $rId );
             if( ! $middleRelation )
                 throw new InvalidArgumentException("first level relationship of many-to-many $rId is empty");
 
             // eg. author_books
-            $sColumn = $middleRelation['foreign']['column'];
-            $sSchema = new $middleRelation['foreign']['schema'];
+            $sColumn = $middleRelation['foreign_column'];
+            $sSchema = new $middleRelation['foreign_schema'];
             $spSchema = SchemaLoader::load( $sSchema->getSchemaProxyClass() );
 
             $foreignRelation = $spSchema->getRelation( $rId2 );
             if ( ! $foreignRelation )
                 throw new InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
 
-            $c = $foreignRelation['foreign']['schema'];
+            $c = $foreignRelation['foreign_schema'];
             if ( ! $c )
                 throw new InvalidArgumentException('foreign schema class is not defined.');
 
             $fSchema = new $c;
-            $fColumn = $foreignRelation['foreign']['column'];
+            $fColumn = $foreignRelation['foreign_column'];
             $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
             $collection = $fpSchema->newCollection();
@@ -1356,12 +1356,12 @@ abstract class BaseModel
                 */
             $collection->join( $sSchema->getTable() )->alias('b')
                             ->on()
-                            ->equal( 'b.' . $foreignRelation['self']['column'] , array( 'm.' . $fColumn ) );
+                            ->equal( 'b.' . $foreignRelation['self_column'] , array( 'm.' . $fColumn ) );
 
-            $value = $this->getValue( $middleRelation['self']['column'] );
+            $value = $this->getValue( $middleRelation['self_column'] );
             $collection->where()
                 ->equal( 
-                    'b.' . $middleRelation['foreign']['column'],
+                    'b.' . $middleRelation['foreign_column'],
                     $value
                 );
 
@@ -1377,8 +1377,8 @@ abstract class BaseModel
             $collection->setPostCreate(function($record,$args) use ($spSchema,$rId,$middleRelation,$foreignRelation,$value) {
                 // arguments for creating middle-relationship record
                 $a = array( 
-                    $foreignRelation['self']['column']   => $record->getValue( $foreignRelation['foreign']['column'] ),  // 2nd relation model id
-                    $middleRelation['foreign']['column'] => $value,  // self id
+                    $foreignRelation['self_column']   => $record->getValue( $foreignRelation['foreign_column'] ),  // 2nd relation model id
+                    $middleRelation['foreign_column'] => $value,  // self id
                 );
 
                 if( isset($args[':' . $rId ] ) ) {

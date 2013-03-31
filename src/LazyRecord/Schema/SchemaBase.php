@@ -127,10 +127,10 @@ abstract class SchemaBase
     {
         $schemas = array();
         foreach( $this->relations as $rel ) {
-            if( ! isset($rel['foreign']['schema']) )
+            if( ! isset($rel['foreign_schema']) )
                 continue;
 
-            $class = ltrim($rel['foreign']['schema'],'\\');
+            $class = ltrim($rel['foreign_schema'],'\\');
 
             if( isset($schemas[$class]) )
                 continue;
