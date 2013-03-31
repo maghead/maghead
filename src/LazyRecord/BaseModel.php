@@ -1285,6 +1285,7 @@ abstract class BaseModel
         }
         elseif( SchemaDeclare::has_many == $relation['type'] )
         {
+            // TODO: migrate this code to Relationship class.
             $sColumn = $relation['self_column'];
             $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];
@@ -1303,9 +1304,7 @@ abstract class BaseModel
             // For if we need to create relational records 
             // though collection object, we need to pre-set 
             // the relational record id.
-            $collection->setPresetVars(array( 
-                $fColumn => $sValue,
-            ));
+            $collection->setPresetVars(array( $fColumn => $sValue ));
             return $this->setInternalCache($cacheKey,$collection);
         }
         // belongs to one record
