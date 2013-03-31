@@ -37,6 +37,8 @@ class Relationship
     public function getForeignCollection()
     {
         $collection = $this->newForeignCollection();
+
+
         if ( isset($this->data['filter']) ) {
             call_user_func_array( $this->data['filter'] , $collection );
         }
