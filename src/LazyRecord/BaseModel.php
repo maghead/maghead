@@ -1311,12 +1311,13 @@ abstract class BaseModel
         // belongs to one record
         elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
             $sColumn = $relation['self_column'];
-            $fSchema = new $relation['foreign_schema'];
+            $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];
             $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
-            if( ! $this->hasValue($sColumn) )
+            if ( ! $this->hasValue($sColumn) ) {
                 return;
+            }
 
             $sValue = $this->getValue( $sColumn );
             $model = $fpSchema->newModel();
