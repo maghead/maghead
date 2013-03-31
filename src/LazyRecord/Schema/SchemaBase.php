@@ -71,6 +71,17 @@ abstract class SchemaBase
         return $this->getModelClass() . 'SchemaProxy';
     }
 
+    public function newModel()
+    {
+        return new $this->getModelClass();
+    }
+
+    public function newCollection() 
+    {
+        return new $this->getCollectionClass();
+    }
+
+
     /**
      * Get class namespace
      */
