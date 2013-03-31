@@ -45,6 +45,43 @@ class Relationship
     }
 
 
+    /**
+     * Define filter for collection
+     */
+    public function filter($filter)
+    {
+        $this->data['filter'] = $filter;
+        return $this;
+    }
+
+
+
+    /**
+     * @param string $column
+     * @param string $ordering
+     */
+    public function order($column, $ordering)
+    {
+        if ( ! isset($this->data['order']) ) {
+            $this->data['order'] = array();
+        }
+        $this->data['order'][] = array($column ,$ordering);
+        return $this;
+    }
+
+
+    /**
+     * Save where condition arguments for collection selection.
+     *
+     * @param array $args
+     */
+    public function where($args)
+    {
+        $this->data['where'] = $args;
+        return $this;
+    }
+
+
 
     /**
      * To support foreach operation.
