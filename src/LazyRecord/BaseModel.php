@@ -427,8 +427,8 @@ abstract class BaseModel
      */ 
     protected function _validateColumn($column,$val,$args)
     {
-        if( $column->required && 
-            ( $val === '' || $val === null ))
+        // check for requried columns
+        if( $column->required && ( $val === '' || $val === null ))
         {
             return array( 
                 'valid' => false, 
@@ -437,8 +437,8 @@ abstract class BaseModel
             );
         }
 
-        if( $column->validator ) {
-            if( is_callable($column->validator) ) {
+        if ( $column->validator ) {
+            if ( is_callable($column->validator) ) {
                 $ret = call_user_func($column->validator, $val, $args, $this );
                 if( is_bool($ret) ) {
                     return array( 'valid' => $ret, 'message' => 'Validation failed.' , 'field' => $column->name );
@@ -447,23 +447,21 @@ abstract class BaseModel
                 } else {
                     throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
                 }
-            } 
-            elseif( is_string($column->validator) && is_a($column->validator,'ValidationKit\\Validator',true) ) {
+            } elseif ( is_string($column->validator) && is_a($column->validator,'ValidationKit\\Validator',true) ) {
                 // it's a ValidationKit\Validator
                 $validator = $column->validatorArgs ? new $column->validator($column->validatorArgs) : new $column->validator;
                 $ret = $validator->validate($val);
                 $msgs = $validator->getMessages();
                 $msg = isset($msgs[0]) ? $msgs[0] : 'Validation failed.';
                 return array('valid' => $ret , 'message' => $msg , 'field' => $column->name );
-            }
-            else {
+            } else {
                 throw new Exception("Unsupported validator");
             }
         }
-        if( $val && ($column->validValues || $column->validValueBuilder) ) {
-            if( $validValues = $column->getValidValues( $this, $args ) ) {
+        if ( $val && ($column->validValues || $column->validValueBuilder) ) {
+            if ( $validValues = $column->getValidValues( $this, $args ) ) {
                 // sort by index
-                if( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
+                if ( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
                     return array(
                         'valid' => false,
                         'message' => sprintf("%s is not a valid value for %s", $val , $column->name ),
