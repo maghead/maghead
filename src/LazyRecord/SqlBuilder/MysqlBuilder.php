@@ -90,10 +90,10 @@ class MysqlBuilder
             case SchemaDeclare::belongs_to:
             case SchemaDeclare::has_many:
             case SchemaDeclare::has_one:
-                if( $name != 'id' && $rel['self']['column'] == $name ) 
+                if( $name != 'id' && $rel['self_column'] == $name ) 
                 {
-                    $fSchema = new $rel['foreign']['schema'];
-                    $fColumn = $rel['foreign']['column'];
+                    $fSchema = new $rel['foreign_schema'];
+                    $fColumn = $rel['foreign_column'];
                     $fc = $fSchema->columns[$fColumn];
                     $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
                 }

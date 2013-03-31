@@ -298,14 +298,10 @@ class SchemaDeclare extends SchemaBase
 
         $this->relations[ $accessor ] = array(
             'type' => self::belongs_to,
-            'self' => array(
-                'schema' => get_class($this),
-                'column' => $selfColumn,
-            ),
-            'foreign' => array(
-                'schema' => $foreignClass,
-                'column' => $foreignColumn,
-            )
+            'self_schema' => get_class($this),
+            'self_column' => $selfColumn,
+            'foreign_schema' => $foreignClass,
+            'foreign_column' => $foreignColumn,
         );
     }
 
@@ -357,14 +353,10 @@ class SchemaDeclare extends SchemaBase
     {
         $this->relations[ $accessor ] = array(
             'type' => self::has_many,
-            'self' => array(
-                'column'           => $selfColumn,
-                'schema'           => get_class($this),
-            ),
-            'foreign'  => array( 
-                'column' => $foreignColumn,
-                'schema' => $foreignClass,
-            )
+            'self_column' => $selfColumn,
+            'self_schema' => get_class($this),
+            'foreign_column' => $foreignColumn,
+            'foreign_schema' => $foreignClass,
         );
     }
 
@@ -378,11 +370,9 @@ class SchemaDeclare extends SchemaBase
     {
         if( $r = $this->getRelation($relationId) ) {
             $this->relations[ $accessor ] = array(
-                'type'           => self::many_to_many,
-                'relation'        => array( 
-                    'id'             => $relationId,
-                    'id2'            => $foreignRelationId,
-                ),
+                'type'     => self::many_to_many,
+                'relation_junction' => $relationId,
+                'relation_foreign'  => $foreignRelationId,
             );
             return;
         }

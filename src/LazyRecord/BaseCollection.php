@@ -668,21 +668,21 @@ class BaseCollection
             if( $relationId ) {
                 $relation = $this->schema->getRelation( $relationId );
                 $expr->on()
-                    ->equal( $this->getAlias() . '.' . $relation['self']['column'] , 
-                    array(  ($alias ?: $table) . '.' . $relation['foreign']['column'] ));
+                    ->equal( $this->getAlias() . '.' . $relation['self_column'] , 
+                    array(  ($alias ?: $table) . '.' . $relation['foreign_column'] ));
             } else {
                 $relations = $this->schema->relations;
                 foreach( $relations as $relation ) {
-                    if( ! isset($relation['foreign']) )
+                    if( ! isset($relation['foreign_schema']) )
                         continue;
 
-                    $fschema = new $relation['foreign']['schema'];
+                    $fschema = new $relation['foreign_schema'];
                     $modelClass = $fschema->getModelClass();
 
                     if( is_a($target, $fschema->getModelClass() ) ) {
                         $expr->on()
-                            ->equal( $this->getAlias() . '.' . $relation['self']['column'] , 
-                            array(  ($alias ?: $table) . '.' . $relation['foreign']['column'] ));
+                            ->equal( $this->getAlias() . '.' . $relation['self_column'] , 
+                            array(  ($alias ?: $table) . '.' . $relation['foreign_column'] ));
                         break;
                     }
                 }
