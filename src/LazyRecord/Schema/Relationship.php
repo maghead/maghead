@@ -34,6 +34,23 @@ class Relationship
         return new $collectionClass;
     }
 
+    public function getForeignCollection()
+    {
+        $collection = $this->newForeignCollection();
+        if ( isset($this->data['filter']) ) {
+            call_user_func_array( $this->data['filter'] , $collection );
+        }
+        if ( isset($this->data['where']) ) {
+            $collection->where($this->data['where']);
+        }
+        if ( isset($this->data['order']) ) {
+            foreach( $this->data['order'] as $o ) {
+                $collection->order($o[0] , $o[1]);
+            }
+        }
+        return $collection;
+    }
+
     /**
      * Provide dynamic cascading accessors
      *
