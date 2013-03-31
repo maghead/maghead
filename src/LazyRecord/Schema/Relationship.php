@@ -1,8 +1,10 @@
 <?php
 namespace LazyRecord\Schema;
+use ArrayAccess;
+use IteratorAggregate;
 
 class Relationship
-    implements IteratorAggregate
+    implements IteratorAggregate, ArrayAccess
 {
 
     public $data = array();
@@ -92,12 +94,32 @@ class Relationship
     }
 
 
+    public function offsetSet($name,$value)
+    {
+        $this->data[$name] = $value;
+    }
+
+    public function offsetExists($name)
+    {
+        return isset($this->data[$name]);
+    }
+
+    public function offsetGet($name)
+    {
+        return $this->data[$name];
+    }
+
+    public function offsetUnset($name)
+    {
+        unset($this->data[$name]);
+    }
+
     /**
      * To support var_export
      */
     public static function __set_state($data)
     {
-        return new self($data);
+        return new self($data['data']);
     }
 
 }

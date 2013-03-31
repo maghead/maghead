@@ -1252,11 +1252,13 @@ abstract class BaseModel
     public function getRelationalRecords($key,$relation = null)
     {
         $cacheKey = 'relationship::' . $key;
-        if ( $this->hasInternalCache($cacheKey) )
+        if ( $this->hasInternalCache($cacheKey) ) {
             return clone $this->_cache[ $cacheKey ];
+        }
 
-        if ( ! $relation )
+        if ( ! $relation ) {
             $relation = $this->schema->getRelation( $key );
+        }
 
         /*
         switch($relation['type']) {
@@ -1265,7 +1267,7 @@ abstract class BaseModel
             break;
         }
         */
-        if ( SchemaDeclare::has_one === $relation['type'] ) 
+        if ( SchemaDeclare::has_one == $relation['type'] ) 
         {
             $sColumn = $relation['self_column'];
 
@@ -1281,7 +1283,7 @@ abstract class BaseModel
             $model->load(array( $fColumn => $sValue ));
             return $this->setInternalCache($cacheKey,$model);
         }
-        elseif( SchemaDeclare::has_many === $relation['type'] )
+        elseif( SchemaDeclare::has_many == $relation['type'] )
         {
             $sColumn = $relation['self_column'];
             $fSchema = new $relation['foreign_schema'];
