@@ -74,8 +74,8 @@ class SchemaGenerator
             'template_dirs' => $this->getTemplateDirs(),
             'template'      => 'Schema.php.twig',
         ));
-        $cTemplate->addConst( 'schema_class' , '\\' . ltrim($schemaClass,'\\') );
-        $cTemplate->addConst( 'model_class' , '\\' . ltrim($modelClass,'\\') );
+        $cTemplate->addConst( 'schema_class' , ltrim($schemaClass,'\\') );
+        $cTemplate->addConst( 'model_class' , ltrim($modelClass,'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
         $cTemplate->addConst( 'label',  $schema->getLabel() );
         $cTemplate->schema = $schema;
@@ -91,9 +91,9 @@ class SchemaGenerator
             'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
         ));
-        $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
-        $cTemplate->addConst( 'collection_class' , '\\' . ltrim($schema->getCollectionClass(),'\\') );
-        $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
+        $cTemplate->addConst( 'schema_proxy_class' , ltrim($schema->getSchemaProxyClass(),'\\') );
+        $cTemplate->addConst( 'collection_class' , ltrim($schema->getCollectionClass(),'\\') );
+        $cTemplate->addConst( 'model_class' , ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
         $cTemplate->extendClass( $this->getBaseModelClass() );
         return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
