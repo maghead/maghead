@@ -4,7 +4,9 @@
 namespace {{ ns }};
 {% endif %}
 
+use LazyRecord;
 use LazyRecord\Schema\RuntimeSchema;
+use LazyRecord\Schema\Relationship;
 
 class {{ schema.getModelName }}SchemaProxy extends RuntimeSchema
 {

@@ -4,6 +4,7 @@ use Exception;
 use ReflectionObject;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
+use LazyRecord\Schema\Relationship;
 
 class SchemaDeclare extends SchemaBase
     implements SchemaDataInterface
@@ -296,13 +297,13 @@ class SchemaDeclare extends SchemaBase
             $foreignColumn = $s->primaryKey;
         }
 
-        $this->relations[ $accessor ] = array(
+        return $this->relations[ $accessor ] = new Relationship(array(
             'type' => self::belongs_to,
             'self_schema' => get_class($this),
             'self_column' => $selfColumn,
             'foreign_schema' => $foreignClass,
             'foreign_column' => $foreignColumn,
-        );
+        ));
     }
 
 
@@ -317,19 +318,13 @@ class SchemaDeclare extends SchemaBase
     public function one($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
     {
         // foreignColumn is default to foreignClass.primary key
-
-        // $this->accessors[ $accessor ] = array( );
-        $this->relations[ $accessor ] = array(
+        return $this->relations[ $accessor ] = new Relationship(array(
             'type'           => self::has_one,
-            'self'           => array(
-                'column'  => $selfColumn,
-                'schema' => $this->getSchemaProxyClass(),
-            ),
-            'foreign' => array(
-                'column' => $foreignColumn,
-                'schema' => $foreignClass,
-            ),
-        );
+            'self_column'  => $selfColumn,
+            'self_schema' => $this->getSchemaProxyClass(),
+            'foreign_column' => $foreignColumn,
+            'foreign_schema' => $foreignClass,
+        ));
     }
 
 
@@ -351,13 +346,13 @@ class SchemaDeclare extends SchemaBase
      */
     public function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
-        $this->relations[ $accessor ] = array(
+        return $this->relations[ $accessor ] = new Relationship(array(
             'type' => self::has_many,
             'self_column' => $selfColumn,
             'self_schema' => get_class($this),
             'foreign_column' => $foreignColumn,
             'foreign_schema' => $foreignClass,
-        );
+        ));
     }
 
 
@@ -369,12 +364,11 @@ class SchemaDeclare extends SchemaBase
     public function manyToMany($accessor, $relationId, $foreignRelationId )
     {
         if( $r = $this->getRelation($relationId) ) {
-            $this->relations[ $accessor ] = array(
+            return $this->relations[ $accessor ] = new Relationship(array(
                 'type'     => self::many_to_many,
                 'relation_junction' => $relationId,
                 'relation_foreign'  => $foreignRelationId,
-            );
-            return;
+            ));
         }
         throw new Exception("Relation $relationId is not defined.");
     }
@@ -382,11 +376,12 @@ class SchemaDeclare extends SchemaBase
     protected function _modelClassToLabel() 
     {
         /* Get the latest token. */
-        if( preg_match( '/(\w+)(?:Model)?$/', $this->getModelClass() , $reg) ) 
+        if ( preg_match( '/(\w+)(?:Model)?$/', $this->getModelClass() , $reg) ) 
         {
             $label = @$reg[1];
-            if( ! $label )
+            if ( ! $label ) {
                 throw new Exception( "Table name error" );
+            }
 
             /* convert blah_blah to BlahBlah */
             return ucfirst(preg_replace( '/[_]/' , ' ' , $label ));
