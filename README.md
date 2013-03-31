@@ -553,25 +553,25 @@ as much as possible.
 
 
 
-Unit Testing
+Hacking
+=======
+
+
+Environemtn
 ------------
+
+Use Composer to install the dependency:
+
+    composer install --dev
+
 To deploy a testing environment, you need to install dependent packages.
-
-Get Onion:
-
-    https://raw.github.com/c9s/Onion/master/onion
-
-Install dependencies:
-
-    php onion install
 
 Run script and make sure everything is fine:
 
     php bin/lazy
 
-
 Database configuration is written in `phpunit.xml` file, the 
-following steps are based on the default configuration.
+following steps are based on the default configuration. you may also take a look at `.travis.yml` for example.
 
 ### Unit Testing with MySQL database
 
