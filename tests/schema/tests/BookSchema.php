@@ -62,7 +62,8 @@ class BookSchema extends SchemaDeclare
         /**
          * get BookAuthor.author 
          */
-        $this->manyToMany( 'authors', 'book_authors', 'author' );
+        $this->manyToMany( 'authors', 'book_authors', 'author' )
+            ->filter(function($collection) { return $collection; });
     }
 
 }
