@@ -33,6 +33,17 @@ class DynamicSchemaDeclare extends SchemaDeclare
         return $this->modelClass;
     }
 
+    public function newModel()
+    {
+        return new $this->getModelClass();
+    }
+
+
+    public function newCollection() 
+    {
+        return new $this->getCollectionClass();
+    }
+
     public function getDirectory()
     {
         $ref = new ReflectionClass($this->modelClass);
