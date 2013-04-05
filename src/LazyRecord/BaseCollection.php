@@ -55,6 +55,17 @@ class BaseCollection
     protected $_presetVars = array();
 
 
+
+
+    /**
+     * @var array save joined alias and table names
+     *
+     *  Relationship Id => Joined Alias
+     *
+     */
+    protected $_joinedRelationships = array();
+
+
     /**
      * postCreate hook
      */
@@ -659,20 +670,27 @@ class BaseCollection
             $columns = $target->getColumnNames();
             $select = array();
             $alias = $alias ?: $table;
+
             foreach( $columns as $name ) {
+                // Select alias.column as alias_column
                 $select[ $alias . '.' . $name ] = $alias . '_' . $name;
             }
             $query->addSelect($select);
             $expr = $query->join($table, $type); // it returns JoinExpression object
 
+            // here the relationship is defined, join the it.
             if( $relationId ) {
                 $relation = $this->schema->getRelation( $relationId );
                 $expr->on()
                     ->equal( $this->getAlias() . '.' . $relation['self_column'] , 
-                    array(  ($alias ?: $table) . '.' . $relation['foreign_column'] ));
+                    array( $alias . '.' . $relation['foreign_column'] ));
+
+                $this->_joinedRelationships[ $relationId ] = $alias;
+
             } else {
+                // find the related relatinship from defined relatinpships
                 $relations = $this->schema->relations;
-                foreach( $relations as $relation ) {
+                foreach( $relations as $relationId => $relation ) {
                     if( ! isset($relation['foreign_schema']) )
                         continue;
 
@@ -682,7 +700,9 @@ class BaseCollection
                     if( is_a($target, $fschema->getModelClass() ) ) {
                         $expr->on()
                             ->equal( $this->getAlias() . '.' . $relation['self_column'] , 
-                            array(  ($alias ?: $table) . '.' . $relation['foreign_column'] ));
+                            array( $alias. '.' . $relation['foreign_column'] ));
+
+                        $this->_joinedRelationships[ $relationId ] = $alias;
                         break;
                     }
                 }
