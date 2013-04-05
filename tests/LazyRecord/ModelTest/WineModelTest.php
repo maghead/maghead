@@ -36,6 +36,8 @@ class WineModelTest extends \LazyRecord\ModelTestCase
 
         ok($record->category->id, 'the belongsTo should be generated from refer attribute');
         ok($record->category_id,'the original column');
+
+        is('Wine Category',$record->display('category'));
     }
 
 }
