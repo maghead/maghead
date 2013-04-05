@@ -161,11 +161,16 @@ class SchemaDeclare extends SchemaBase
             // if the refer attribute is defined,
             // we should 
             if ( $refer = $column->refer ) {
-                $schemaClass = $refer . 'Schema';
+                // remove _id suffix if possible
+                $accessorName = preg_replace('#_id$#','',$name);
+                $schemaClass = $refer;
+                if ( substr($schemaClass, -strlen('Schema')) != 'Schema') {
+                    $schemaClass = $refer . 'Schema';
+                }
                 if ( class_exists($schemaClass,true) ) {
-                    // remove _id suffix if possible
-                    $accessorName = preg_replace('#_id$#','',$name);
                     $this->belongsTo($accessorName, $schemaClass, 'id', $name);
+                } else {
+                    throw new Exception("refer schema: $schemaClass not found.");
                 }
                 /*
                 if ( substr($refer, - strlen('Schema') ) === 'Schema' ) {
