@@ -4,13 +4,16 @@ use LazyRecord\BaseModel;
 
 class Wine extends BaseModel
 {
-    function schema($schema)
+    public function schema($schema)
     {
         $schema->column('name')
             ->varchar(128);
 
         $schema->column('years')
             ->integer();
+
+        $schema->column('category_id')
+            ->refer('tests\\WineCategory');
     }
 #boundary start 7c7b528eb73d02172dcec82d792e1699
 	const schema_proxy_class = 'tests\\WineSchemaProxy';

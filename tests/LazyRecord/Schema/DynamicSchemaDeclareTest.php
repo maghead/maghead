@@ -2,10 +2,14 @@
 
 class DynamicSchemaDeclareTest extends PHPUnit_Framework_TestCase
 {
-    function testSchema()
+
+    public function testWineSchemaFromDynamicSchemaDeclare()
     {
         $wine = new \tests\Wine;
         ok($wine);
+
+
+        // create schema object from the schema method
         $schema = new LazyRecord\Schema\DynamicSchemaDeclare( $wine );
         ok($schema);
         return $schema;
@@ -13,32 +17,32 @@ class DynamicSchemaDeclareTest extends PHPUnit_Framework_TestCase
 
 
     /**
-     * @depends testSchema
+     * @depends testWineSchemaFromDynamicSchemaDeclare
      */
-    function testTable($schema)
+    public function testTableMethod($schema)
     {
         is('wines',$schema->getTable());
     }
 
     /**
-     * @depends testSchema
+     * @depends testWineSchemaFromDynamicSchemaDeclare
      */
-    function testModelClass($schema)
+    public function testModelClassMethod($schema)
     {
         is('tests\Wine',$schema->getModelClass());
     }
 
 
     /**
-     * @depends testSchema
+     * @depends testWineSchemaFromDynamicSchemaDeclare
      */
-    function testModelName($schema)
+    public function testModelNameMethod($schema)
     {
         is('Wine',$schema->getModelName());
     }
 
     /**
-     * @depends testSchema
+     * @depends testWineSchemaFromDynamicSchemaDeclare
      */
     function testGetBaseModelClass($schema) 
     {
@@ -46,7 +50,7 @@ class DynamicSchemaDeclareTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testSchema
+     * @depends testWineSchemaFromDynamicSchemaDeclare
      */
     function testGetNamespace($schema)
     {
@@ -54,7 +58,7 @@ class DynamicSchemaDeclareTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testSchema
+     * @depends testWineSchemaFromDynamicSchemaDeclare
      */
     function testColumns($schema)
     {
@@ -68,7 +72,7 @@ class DynamicSchemaDeclareTest extends PHPUnit_Framework_TestCase
         $schemas = LazyRecord\ClassUtils::get_declared_dynamic_schema_classes_from_models();
         ok($schemas);
         foreach($schemas as $schema ) {
-            isa_ok( 'LazyRecord\Schema\DynamicSchemaDeclare', $schema );
+            ok( $schema instanceof \LazyRecord\Schema\DynamicSchemaDeclare );
             ok($schema->getModelClass() );
         }
     }

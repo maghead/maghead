@@ -168,15 +168,30 @@ class SchemaDeclare extends SchemaBase
             if ( $refer = $column->refer ) {
                 // remove _id suffix if possible
                 $accessorName = preg_replace('#_id$#','',$name);
-                $schemaClass = $refer;
-                if ( substr($schemaClass, -strlen('Schema')) != 'Schema') {
-                    $schemaClass = $refer . 'Schema';
+                $schema = null;
+                $schemaClass = null;
+                if ( ! class_exists($refer,true) ) {
+                    if ( substr($refer, -strlen('Schema')) != 'Schema') {
+                        if ( class_exists($refer. 'Schema') ) {
+                            $refer = $refer . 'Schema';
+                        }
+                    }
                 }
-                if ( class_exists($schemaClass,true) ) {
-                    $this->belongsTo($accessorName, $schemaClass, 'id', $name);
-                } else {
-                    throw new Exception("refer schema: $schemaClass not found.");
+
+                if ( ! class_exists($refer) ) {
+                    throw new Exception("refer schema from '$refer' not found.");
                 }
+
+                $o = new $refer;
+                // schema is defined in model
+                if ( $o instanceof \LazyRecord\BaseModel && method_exists($o,'schema') ) {
+                    $schema = new \LazyRecord\Schema\DynamicSchemaDeclare( $o );
+                    $schemaClass = $refer;
+                } elseif ( $o instanceof \LazyRecord\Schema\SchemaDeclare ) {
+                    $schemaClass = $refer;
+                }
+
+                $this->belongsTo($accessorName, $schemaClass, 'id', $name);
             }
             $columnArray[ $name ] = $column->export();
         }
