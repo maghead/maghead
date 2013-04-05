@@ -158,8 +158,13 @@ class SchemaDeclare extends SchemaBase
     {
         $columnArray = array();
         foreach( $this->columns as $name => $column ) {
-            // if the refer attribute is defined,
-            // we should 
+
+            // This idea is from:
+            // http://search.cpan.org/~tsibley/Jifty-DBI-0.75/lib/Jifty/DBI/Schema.pm
+            //
+            // if the refer attribute is defined, we should create the belongsTo relationship
+            //
+            // TODO: support for collection reference (has-many)
             if ( $refer = $column->refer ) {
                 // remove _id suffix if possible
                 $accessorName = preg_replace('#_id$#','',$name);
@@ -172,15 +177,6 @@ class SchemaDeclare extends SchemaBase
                 } else {
                     throw new Exception("refer schema: $schemaClass not found.");
                 }
-                /*
-                if ( substr($refer, - strlen('Schema') ) === 'Schema' ) {
-                    $schema = new $refer;
-                } elseif ( substr($refer, - strlen('Collection')) == 'Collection' ) {
-                    $collection = $refer;
-                } else {
-                    $model = new $refer;
-                }
-                */
             }
             $columnArray[ $name ] = $column->export();
         }
