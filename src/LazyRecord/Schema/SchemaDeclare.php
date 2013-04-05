@@ -158,6 +158,25 @@ class SchemaDeclare extends SchemaBase
     {
         $columnArray = array();
         foreach( $this->columns as $name => $column ) {
+            // if the refer attribute is defined,
+            // we should 
+            if ( $refer = $column->refer ) {
+                $schemaClass = $refer . 'Schema';
+                if ( class_exists($schemaClass,true) ) {
+                    // remove _id suffix if possible
+                    $accessorName = preg_replace('#_id$#','',$name);
+                    $this->belongsTo($accessorName, $schemaClass, 'id', $name);
+                }
+                /*
+                if ( substr($refer, - strlen('Schema') ) === 'Schema' ) {
+                    $schema = new $refer;
+                } elseif ( substr($refer, - strlen('Collection')) == 'Collection' ) {
+                    $collection = $refer;
+                } else {
+                    $model = new $refer;
+                }
+                */
+            }
             $columnArray[ $name ] = $column->export();
         }
         return array(
