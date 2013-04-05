@@ -5,7 +5,7 @@ use LazyRecord;
 use LazyRecord\Schema\RuntimeSchema;
 use LazyRecord\Schema\Relationship;
 
-class WineSchemaProxy extends RuntimeSchema
+class WineCategorySchemaProxy extends RuntimeSchema
 {
 
     public function __construct()
@@ -18,21 +18,6 @@ class WineSchemaProxy extends RuntimeSchema
           'type' => 'varchar(128)',
           'isa' => 'str',
           'size' => 128,
-        ),
-    ),
-  'years' => array( 
-      'name' => 'years',
-      'attributes' => array( 
-          'type' => 'integer',
-          'isa' => 'int',
-        ),
-    ),
-  'category_id' => array( 
-      'name' => 'category_id',
-      'attributes' => array( 
-          'type' => 'text',
-          'isa' => 'str',
-          'refer' => 'tests\\WineCategory',
         ),
     ),
   'id' => array( 
@@ -48,24 +33,13 @@ class WineSchemaProxy extends RuntimeSchema
         $this->columnNames     = array( 
   'id',
   'name',
-  'years',
-  'category_id',
 );
         $this->primaryKey      = 'id';
-        $this->table           = 'wines';
-        $this->modelClass      = 'tests\\Wine';
-        $this->collectionClass = 'tests\\WineCollection';
-        $this->label           = 'Wine';
+        $this->table           = 'wine_categories';
+        $this->modelClass      = 'tests\\WineCategory';
+        $this->collectionClass = 'tests\\WineCategoryCollection';
+        $this->label           = 'WineCategory';
         $this->relations       = array( 
-  'category' => \LazyRecord\Schema\Relationship::__set_state(array( 
-  'data' => array( 
-      'type' => 4,
-      'self_schema' => 'LazyRecord\\Schema\\DynamicSchemaDeclare',
-      'self_column' => 'category_id',
-      'foreign_schema' => 'tests\\WineCategory',
-      'foreign_column' => 'id',
-    ),
-)),
 );
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
