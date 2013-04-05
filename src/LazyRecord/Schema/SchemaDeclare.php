@@ -169,7 +169,7 @@ class SchemaDeclare extends SchemaBase
                 // remove _id suffix if possible
                 $accessorName = preg_replace('#_id$#','',$name);
                 $schema = null;
-                $schemaClass = null;
+                $schemaClass = $refer;
                 if ( ! class_exists($refer,true) ) {
                     if ( substr($refer, -strlen('Schema')) != 'Schema') {
                         if ( class_exists($refer. 'Schema') ) {
@@ -189,8 +189,9 @@ class SchemaDeclare extends SchemaBase
                     $schemaClass = $refer;
                 } elseif ( $o instanceof \LazyRecord\Schema\SchemaDeclare ) {
                     $schemaClass = $refer;
+                } else {
+                    throw new Exception("refer $refer: schema class not found");
                 }
-
                 $this->belongsTo($accessorName, $schemaClass, 'id', $name);
             }
             $columnArray[ $name ] = $column->export();
