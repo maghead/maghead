@@ -84,7 +84,9 @@ abstract class BaseModel
     public $usingDataSource;
 
 
-    private $_cachePrefix;
+    protected $_cachePrefix;
+
+    protected $_joinedRelationships = array();
 
     /**
      * This constructor simply does nothing if no argument is passed.
@@ -93,10 +95,22 @@ abstract class BaseModel
      */
     public function __construct($args = null)
     {
-        if ( $args )
+        if ( $args ) {
             $this->_load( $args );
+        }
+    }
 
-        $this->_cachePrefix = get_class($this);
+    public function setJoinedRelationships($map)
+    {
+        $this->_joinedRelationships = $map;
+    }
+
+    public function getCachePrefix()
+    {
+        if ( $this->_cachePrefix ) {
+            return $this->_cachePrefix;
+        }
+        return $this->_cachePrefix = get_class($this);
     }
 
     /**
@@ -1426,14 +1440,30 @@ abstract class BaseModel
             return ConnectionManager::getInstance();
         }
 
+
         // relationship id can override value column.
         if ( $relation = $this->schema->getRelation( $key ) ) {
-
+            // cache object cache
             if ( isset($this->_data[ $key ]) ) {
                 if ( $this->_data[$key] instanceof \LazyRecord\BaseModel ) {
                     return $this->_data[$key];
                 }
             }
+
+            if ( isset($this->_joinedRelationships[ $key ] ) ) {
+                $alias = $this->_joinedRelationships[ $key ];
+                $prefix = $alias . '_';
+                $stash = array();
+                foreach( $this->_data as $k => $v ) {
+                    if ( strpos($k,$prefix) === 0 ) {
+                        $stash[ substr($k,strlen($prefix)) ] = $v;
+                    }
+                }
+                $model = $relation->newForeignModel();
+                $model->setData($stash);
+                return $this->_data[ $key ] = $model;
+            }
+
             return $this->getRelationalRecords($key, $relation);
         }
         return $this->get($key);
@@ -1839,14 +1869,14 @@ abstract class BaseModel
     private function getCache($key)
     {
         if( $cache = ConfigLoader::getInstance()->getCacheInstance() ) {
-            return $cache->get( $this->_cachePrefix . $key);
+            return $cache->get( $this->getCachePrefix() . $key);
         }
     }
 
     private function setCache($key,$val,$ttl = 0)
     {
         if( $cache = ConfigLoader::getInstance()->getCacheInstance() ) {
-            $cache->set( $this->_cachePrefix . $key, $val, $ttl );
+            $cache->set( $this->getCachePrefix() . $key, $val, $ttl );
         }
         return $val;
     }

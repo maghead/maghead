@@ -51,7 +51,7 @@ class WineModelTest extends \LazyRecord\ModelTestCase
         $ret = $c->create(array( 'name' => 'Wine Category' ));
         result_ok($ret);
 
-        foreach(  range(1,200) as $i ) {
+        foreach(  range(1,1000) as $i ) {
             $ret = $record->create(array( 'name' => "Wine Name $i" , 'category_id' => $c->id ));
             result_ok($ret);
         }
@@ -64,21 +64,25 @@ class WineModelTest extends \LazyRecord\ModelTestCase
         // test query
         foreach( $collection as $item ) {
             ok($item->id);
-            $data = $item->getData();
             // print_r($data);
-            ok( isset($data['category']) );
-            $category = $data['category'];
-            ok($category->id);
             ok($item->category,'get category object');
             ok($item->category->id, 'get category id');
             ok($item->category->name, 'get category name');
+
+            $data = $item->getData();
+            ok( isset($data['category']) );
+            $category = $data['category'];
+            ok($category->id);
             same_ok($item->category, $category );
         }
-        $this->runIteration($collection);
+        return $collection;
     }
 
 
-    public function runIteration($collection) {
+    /**
+     * @depends testJoinedColumnExtractionFromCollection
+     */
+    public function testIteration($collection) {
         foreach( $collection as $item ) {
             ok($item->category->name, 'get category name');
         }

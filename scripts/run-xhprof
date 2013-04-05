@@ -1,3 +1,3 @@
 #!/bin/bash
-phpunit -c phpunit-xhprof.xml
+phpunit -c phpunit-xhprof.xml $*
 php -S localhost:8888 -t xhprof_html
