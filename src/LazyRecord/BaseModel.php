@@ -1444,10 +1444,10 @@ abstract class BaseModel
         // relationship id can override value column.
         if ( $relation = $this->schema->getRelation( $key ) ) {
             // cache object cache
-            if ( isset($this->_data[ $key ]) ) {
-                if ( $this->_data[$key] instanceof \LazyRecord\BaseModel ) {
-                    return $this->_data[$key];
-                }
+            if ( isset($this->_data[ $key ]) 
+                && $this->_data[$key] instanceof \LazyRecord\BaseModel ) 
+            {
+                return $this->_data[$key];
             }
 
             if ( isset($this->_joinedRelationships[ $key ] ) ) {
@@ -1464,6 +1464,7 @@ abstract class BaseModel
                 return $this->_data[ $key ] = $model;
             }
 
+            // use model query to load relational record.
             return $this->getRelationalRecords($key, $relation);
         }
         return $this->get($key);
