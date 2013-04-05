@@ -691,13 +691,12 @@ class BaseCollection
                 // find the related relatinship from defined relatinpships
                 $relations = $this->schema->relations;
                 foreach( $relations as $relationId => $relation ) {
-                    if( ! isset($relation['foreign_schema']) )
+                    if ( ! isset($relation['foreign_schema']) ) {
                         continue;
+                    }
 
                     $fschema = new $relation['foreign_schema'];
-                    $modelClass = $fschema->getModelClass();
-
-                    if( is_a($target, $fschema->getModelClass() ) ) {
+                    if ( is_a($target, $fschema->getModelClass() ) ) {
                         $expr->on()
                             ->equal( $this->getAlias() . '.' . $relation['self_column'] , 
                             array( $alias. '.' . $relation['foreign_column'] ));
