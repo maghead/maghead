@@ -24,7 +24,7 @@ class Relationship
     {
         $schema = $this->newForeignSchema();
         $modelClass = $schema->getModelClass();
-        return new $modelClass;
+        return new $modelClass();
     }
 
     public function newForeignCollection()
