@@ -172,7 +172,7 @@ class SchemaDeclare extends SchemaBase
                 $schemaClass = $refer;
                 if ( ! class_exists($refer,true) ) {
                     if ( substr($refer, -strlen('Schema')) != 'Schema') {
-                        if ( class_exists($refer. 'Schema') ) {
+                        if ( class_exists($refer. 'Schema', true) ) {
                             $refer = $refer . 'Schema';
                         }
                     }
@@ -190,7 +190,7 @@ class SchemaDeclare extends SchemaBase
                 } elseif ( $o instanceof \LazyRecord\Schema\SchemaDeclare ) {
                     $schemaClass = $refer;
                 } else {
-                    throw new Exception("refer $refer: schema class not found");
+                    $schemaClass = $refer;
                 }
                 $this->belongsTo($accessorName, $schemaClass, 'id', $name);
             }
