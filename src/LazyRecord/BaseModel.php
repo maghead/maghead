@@ -1249,10 +1249,12 @@ abstract class BaseModel
 
     public function getRelationalRecords($key,$relation = null)
     {
+        // check for the object cache
         $cacheKey = 'relationship::' . $key;
         if ( $this->hasInternalCache($cacheKey) ) {
             return clone $this->_cache[ $cacheKey ];
         }
+
 
         if ( ! $relation ) {
             $relation = $this->schema->getRelation( $key );
@@ -1423,7 +1425,15 @@ abstract class BaseModel
         } elseif ( '_connection' === $key ) {
             return ConnectionManager::getInstance();
         }
+
+        // relationship id can override value column.
         if ( $relation = $this->schema->getRelation( $key ) ) {
+
+            if ( isset($this->_data[ $key ]) ) {
+                if ( $this->_data[$key] instanceof \LazyRecord\BaseModel ) {
+                    return $this->_data[$key];
+                }
+            }
             return $this->getRelationalRecords($key, $relation);
         }
         return $this->get($key);
@@ -1664,9 +1674,7 @@ abstract class BaseModel
      */
     public function inflateColumnValue( $n ) 
     {
-        $value = isset($this->_data[ $n ])
-                    ?  $this->_data[ $n ]
-                    : null;
+        $value = isset($this->_data[ $n ]) ? $this->_data[$n] : null;
         if( $c = $this->schema->getColumn( $n ) ) {
             return $c->inflate( $value, $this );
         }
