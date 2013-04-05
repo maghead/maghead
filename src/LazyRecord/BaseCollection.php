@@ -3,6 +3,7 @@ namespace LazyRecord;
 use PDO;
 use PDOException;
 use RuntimeException;
+use InvalidArgumentException;
 use Exception;
 use Iterator;
 use ArrayAccess;
@@ -382,27 +383,13 @@ class BaseCollection
     protected function _readRowsWithJoinedRelationships()
     {
         // XXX: should be lazy
-        $this->_itemData = array();
+        $schema = $this->schema;
         while ( $o = $this->_fetchRow() ) {
             // check if we've already joined the model/table, we can translate 
             // the column values to the model object with the alias prefix.
-            $data = $o->getData();
-            foreach( $this->_joinedRelationships as $rId => $alias ) {
-                $relation = $this->schema->getRelation( $rId );
-                $prefix = $alias . '_';
-                $stash = array();
-                foreach( $data as $k => $v ) {
-                    if ( strpos($k,$prefix) === 0 ) {
-                        $stash[ substr($k,strlen($prefix)) ] = $v;
-                    }
-                }
-                $model = $relation->newForeignModel();
-                $model->setData($stash);
-                $o->__set($rId, $model);
-            }
+            $o->setJoinedRelationships($this->_joinedRelationships);
             $this->_itemData[] = $o;
         }
-        return $this->_itemData;
     }
 
 
@@ -425,12 +412,12 @@ class BaseCollection
         }
 
 
+        $this->_itemData = array();
         if ( ! empty($this->_joinedRelationships) ) {
-            return $this->_readRowsWithJoinedRelationships();
+            $this->_readRowsWithJoinedRelationships();
+            return $this->_itemData;
         }
 
-        // XXX: should be lazy
-        $this->_itemData = array();
         while ( $o = $this->_fetchRow() ) {
             $this->_itemData[] = $o;
         }
