@@ -41,7 +41,7 @@ class WineModelTest extends \LazyRecord\ModelTestCase
     }
 
 
-    public function testJoinedColumnExtraction() {
+    public function testJoinedColumnExtractionFromCollection() {
         $c = new \tests\WineCategory;
         ok($c,'category');
 
@@ -60,27 +60,29 @@ class WineModelTest extends \LazyRecord\ModelTestCase
         ok( $collection = new \tests\WineCollection );
         $collection->join( new \tests\WineCategory ); // join the WineCategory
 
+
         // test query
         foreach( $collection as $item ) {
             ok($item->id);
-
             $data = $item->getData();
             // print_r($data);
             ok( isset($data['category']) );
-
             $category = $data['category'];
             ok($category->id);
-
-
             ok($item->category,'get category object');
             ok($item->category->id, 'get category id');
             ok($item->category->name, 'get category name');
-
             same_ok($item->category, $category );
         }
-
+        $this->runIteration($collection);
     }
 
+
+    public function runIteration($collection) {
+        foreach( $collection as $item ) {
+            ok($item->category->name, 'get category name');
+        }
+    }
 
 
 }
