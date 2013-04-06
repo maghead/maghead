@@ -116,6 +116,16 @@ class RuntimeSchema extends SchemaBase
         return static::label;
     }
 
+
+
+    // Class related methods
+
+
+    public function getModelName()
+    {
+        return static::model_name;
+    }
+
     public function getModelClass()
     {
         return static::model_class;
