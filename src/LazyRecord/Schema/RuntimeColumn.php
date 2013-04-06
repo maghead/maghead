@@ -165,7 +165,7 @@ class RuntimeColumn
             return call_user_func( $f , $value , $record );
         }
         // use global inflator
-        return Inflator::inflate( $value , $this->isa );
+        return Inflator::inflate( $value , $this->get('isa') );
     }
 
 
