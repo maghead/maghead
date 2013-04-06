@@ -20,14 +20,15 @@ use SerializerKit\YamlSerializer;
 
 use ValidationKit\ValidationMessage;
 use ActionKit;
+use IteratorAggregate;
+use ArrayIterator;
 
 /**
  * Base Model class,
  * every model class extends from this class.
  *
  */
-abstract class BaseModel
-    implements ExporterInterface
+abstract class BaseModel implements ExporterInterface, IteratorAggregate
 {
 
     const schema_proxy_class = '';
@@ -104,6 +105,17 @@ abstract class BaseModel
             $this->_load( $args );
         }
     }
+
+
+
+    /**
+     * For iterating attributes
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->columns);
+    }
+
 
     public function setJoinedRelationships($map)
     {
@@ -1225,9 +1237,35 @@ abstract class BaseModel
      *
      * @param string $name Column name
      */
-    public function get($name)
+    public function get($key)
     {
-        return $this->inflateColumnValue( $name );
+        // relationship id can override value column.
+        if ( $relation = $this->getSchema()->getRelation( $key ) ) {
+            // cache object cache
+            if ( isset($this->_data[ $key ]) 
+                && $this->_data[$key] instanceof \LazyRecord\BaseModel ) 
+            {
+                return $this->_data[$key];
+            }
+
+            if ( isset($this->_joinedRelationships[ $key ] ) ) {
+                $alias = $this->_joinedRelationships[ $key ];
+                $prefix = $alias . '_';
+                $stash = array();
+                foreach( $this->_data as $k => $v ) {
+                    if ( strpos($k,$prefix) === 0 ) {
+                        $stash[ substr($k,strlen($prefix)) ] = $v;
+                    }
+                }
+                $model = $relation->newForeignModel();
+                $model->setData($stash);
+                return $this->_data[ $key ] = $model;
+            }
+
+            // use model query to load relational record.
+            return $this->getRelationalRecords($key, $relation);
+        }
+        return $this->inflateColumnValue( $key );
     }
 
 
@@ -1465,33 +1503,6 @@ abstract class BaseModel
      */
     public function __get( $key )
     {
-        // relationship id can override value column.
-        if ( $relation = $this->getSchema()->getRelation( $key ) ) {
-            // cache object cache
-            if ( isset($this->_data[ $key ]) 
-                && $this->_data[$key] instanceof \LazyRecord\BaseModel ) 
-            {
-                return $this->_data[$key];
-            }
-
-            if ( isset($this->_joinedRelationships[ $key ] ) ) {
-                $alias = $this->_joinedRelationships[ $key ];
-                $prefix = $alias . '_';
-                $stash = array();
-                foreach( $this->_data as $k => $v ) {
-                    if ( strpos($k,$prefix) === 0 ) {
-                        $stash[ substr($k,strlen($prefix)) ] = $v;
-                    }
-                }
-                $model = $relation->newForeignModel();
-                $model->setData($stash);
-                return $this->_data[ $key ] = $model;
-            }
-
-            // use model query to load relational record.
-            return $this->getRelationalRecords($key, $relation);
-        }
-
         // fallback
         if ( 'schema' === $key ) {
             return $this->getSchema();
