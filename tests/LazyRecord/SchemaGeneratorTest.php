@@ -3,13 +3,13 @@
 class SchemaGeneratorTest_old extends PHPUnit_Framework_TestCase
 {
 
-	function getLogger()
+	public function getLogger()
 	{
 		return new TestLogger;
 	}
 
 
-	function test()
+	public function test()
 	{
         return;
         $finder = new LazyRecord\Schema\SchemaFinder;

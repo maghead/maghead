@@ -31,14 +31,14 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         );
     }
 
-    public function testLazyAttributes()
+    public function testCollectionLazyAttributes()
     {
         $authors = new \tests\AuthorCollection;
         ok( $authors->_query , 'has lazy attribute' );
     }
 
 
-    public function testAsPairs()
+    public function testCollectionAsPairs()
     {
         $address = new \tests\Address;
         result_ok( $address->create(array( 'address' => 'Hack' )) );
@@ -58,7 +58,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         }
     }
 
-    public function testLimit()
+    public function testCollectionLimit()
     {
         // XXX: this should be tested in pgsql or mysql, sqlite does not support limit/offset syntax
         return; 
@@ -365,7 +365,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
     }
 
 
-    function test()
+    function testCollectionPagerAndSelection()
     {
         $author = new \tests\Author;
         foreach( range(1,10) as $i ) {

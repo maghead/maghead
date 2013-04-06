@@ -2,7 +2,7 @@
 
 class ConnectionManagerTest extends PHPUnit_Framework_TestCase
 {
-    function test()
+    public function testConnectionManager()
     {
         // $pdo = new PDO( 'sqlite3::memory:', null, null, array(PDO::ATTR_PERSISTENT => true) );
         $conn = new PDO( 'sqlite::memory:' );

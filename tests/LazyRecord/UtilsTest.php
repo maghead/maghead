@@ -2,7 +2,7 @@
 
 class UtilsTest extends PHPUnit_Framework_TestCase
 {
-    function test()
+    public function testBreakDSN()
     {
         $params = LazyRecord\Utils::breakDSN('pgsql:host=localhost;dbname=lazy_test');
         is( 'pgsql' , $params['driver'] );
@@ -10,20 +10,20 @@ class UtilsTest extends PHPUnit_Framework_TestCase
         is( 'lazy_test' , $params['dbname'] );
     }
 
-    function testSqliteMem()
+    public function testSqliteMemDSN()
     {
         $params = LazyRecord\Utils::breakDSN('sqlite::memory:');
         is( 'sqlite' , $params['driver'] );
         ok( $params[':memory:'] );
     }
 
-    function testEvaluate()
+    public function testEvaluateFunction()
     {
         is( 1, LazyRecord\Utils::evaluate(1) );
         is( 2, LazyRecord\Utils::evaluate( function() { return 2; }) );
     }
 
-    function testSchemaUtil() 
+    public function testGetSchemaClassFromPathsOrClassNames() 
     {
         $loader = new LazyRecord\ConfigLoader;
         ok($loader);

@@ -16,7 +16,7 @@ class FooMigration extends LazyRecord\Migration\Migration
 
 class MigrationTest extends PHPUnit_Framework_TestCase
 {
-    function test()
+    public function testMigrationUpgrade()
     {
         ob_start();
         $connm = LazyRecord\ConnectionManager::getInstance();
