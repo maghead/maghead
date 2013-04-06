@@ -312,8 +312,9 @@ abstract class BaseModel
         }
 
         // dispatch to schema object method
-        if( method_exists($this->getSchema(),$m) ) {
-            return call_user_func_array(array($this->getSchema(),$m),$a);
+        $schema = $this->getSchema();
+        if( method_exists($schema,$m) ) {
+            return call_user_func_array(array($schema,$m),$a);
         }
 
         // XXX: special case for twig template
@@ -1215,8 +1216,9 @@ abstract class BaseModel
      */
     public function getValue( $name )
     {
-        if( isset($this->_data[$name]) )
+        if ( isset($this->_data[$name]) ) {
             return $this->_data[$name];
+        }
     }
 
     /**
@@ -1286,7 +1288,7 @@ abstract class BaseModel
             break;
         }
         */
-        if ( SchemaDeclare::has_one == $relation['type'] ) 
+        if ( SchemaDeclare::has_one === $relation['type'] ) 
         {
             $sColumn = $relation['self_column'];
 
@@ -1302,7 +1304,7 @@ abstract class BaseModel
             $model->load(array( $fColumn => $sValue ));
             return $this->setInternalCache($cacheKey,$model);
         }
-        elseif( SchemaDeclare::has_many == $relation['type'] )
+        elseif( SchemaDeclare::has_many === $relation['type'] )
         {
             // TODO: migrate this code to Relationship class.
             $sColumn = $relation['self_column'];
