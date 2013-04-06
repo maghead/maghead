@@ -178,7 +178,7 @@ abstract class BaseModel
      */
     public function getQueryDriver( $dsId )
     {
-        return $this->_connection->getQueryDriver( $dsId );
+        return ConnectionManager::getInstance()->getQueryDriver( $dsId );
     }
 
 
@@ -1080,8 +1080,6 @@ abstract class BaseModel
         return $conn->query( $sql );
     }
 
-
-
     /**
      * Load record from an sql query
      *
@@ -1145,7 +1143,7 @@ abstract class BaseModel
      */
     public function getWriteConnection()
     {
-        return $this->_connection->getConnection( $this->getWriteSourceId() );
+        return ConnectionManager::getInstance()->getConnection( $this->getWriteSourceId() );
     }
 
 
@@ -1156,7 +1154,7 @@ abstract class BaseModel
      */
     public function getReadConnection()
     {
-        return $this->_connection->getConnection( $this->getReadSourceId() );
+        return ConnectionManager::getInstance()->getConnection( $this->getReadSourceId() );
     }
 
 
@@ -1430,14 +1428,6 @@ abstract class BaseModel
     public function __get( $key )
     {
 
-        // todo: fix this
-        // lazy schema loader, xxx: make this static.
-        if ( 'schema' === $key ) {
-            return $this->getSchema();
-        } elseif ( '_connection' === $key ) {
-            return ConnectionManager::getInstance();
-        }
-
 
         // relationship id can override value column.
         if ( $relation = $this->getSchema()->getRelation( $key ) ) {
@@ -1464,6 +1454,13 @@ abstract class BaseModel
 
             // use model query to load relational record.
             return $this->getRelationalRecords($key, $relation);
+        }
+
+        // fallback
+        if ( 'schema' === $key ) {
+            return $this->getSchema();
+        } elseif ( '_connection' === $key ) {
+            return ConnectionManager::getInstance();
         }
         return $this->get($key);
     }
