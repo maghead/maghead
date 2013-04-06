@@ -691,12 +691,16 @@ abstract class BaseModel
             $pkId = $conn->lastInsertId();
         }
 
-        if( $this->autoReload || isset($options['reload']) ) {
-            // if possible, we should reload the data.
-            $pkId ? $this->load($pkId) : $this->_data = $args;
+        if ( $pkId && isset($options['reload']) ) {
+            if ( $options['reload'] ) {
+                $this->load($pkId);
+            }
+        } elseif ( $pkId && $this->autoReload ) {
+            $this->load($pkId);
+        } else {
+            $this->_data = $args;
         }
         $this->afterCreate($origArgs);
-
         $ret = array( 
             'sql' => $sql,
             'args' => $args,
@@ -708,6 +712,25 @@ abstract class BaseModel
         }
         return $this->reportSuccess('Created', $ret );
     }
+
+
+
+
+    /**
+     * The fast create method does not reload record from created the primary 
+     * key.
+     *
+     * TODO: refactor _create code to call fastCreate.
+     * TODO: provide rawCreate to create data without validation.
+     *
+     * @param array $args
+     */
+    public function fastCreate($args)
+    {
+        return $this->_create($args, array( 'reload' => false));
+    }
+
+
 
 
     /**
