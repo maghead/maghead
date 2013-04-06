@@ -79,6 +79,7 @@ class SchemaGenerator
         $cTemplate->addConst( 'schema_class' , ltrim($schemaClass,'\\') );
         $cTemplate->addConst( 'collection_class' , $schemaArray['collection_class'] );
         $cTemplate->addConst( 'model_class' , $schemaArray['model_class'] );
+        $cTemplate->addConst( 'model_name' , $schema->getModelName() );
         $cTemplate->addConst( 'primary_key' , $schemaArray['primary_key'] );
         $cTemplate->addConst( 'table',  $schema->getTable() );
         $cTemplate->addConst( 'label',  $schema->getLabel() );

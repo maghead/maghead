@@ -45,6 +45,7 @@ class NameSchemaProxy extends RuntimeSchema
     const schema_class = 'tests\\NameSchema';
     const collection_class = 'tests\\NameCollection';
     const model_class = 'tests\\Name';
+    const model_name = 'Name';
     const primary_key = 'id';
     const table = 'names';
     const label = 'Name';

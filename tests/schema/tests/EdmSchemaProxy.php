@@ -36,6 +36,7 @@ class EdmSchemaProxy extends RuntimeSchema
     const schema_class = 'tests\\EdmSchema';
     const collection_class = 'tests\\EdmCollection';
     const model_class = 'tests\\Edm';
+    const model_name = 'Edm';
     const primary_key = 'edmNo';
     const table = 'Edm';
     const label = 'Edm';
