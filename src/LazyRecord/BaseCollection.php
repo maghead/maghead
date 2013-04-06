@@ -237,7 +237,7 @@ class BaseCollection
 
 
     /**
-     * Fetch Build sql from current query and make a query to database.
+     * Build sql and Fetch from current query, make a query to database.
      *
      * @return OperationResult
      */
@@ -375,18 +375,17 @@ class BaseCollection
         return $this->_items;
     }
 
-    protected function _fetchRow()
+    public function fetchRow()
     {
         return $this->_handle->fetchObject( static::model_class );
     }
-
-
 
     protected function _readRowsWithJoinedRelationships()
     {
         // XXX: should be lazy
         $schema = $this->getSchema();
-        while ( $o = $this->_fetchRow() ) {
+        $handle = $this->_handle;
+        while ( $o = $handle->fetchObject( static::model_class ) ) {
             // check if we've already joined the model/table, we can translate 
             // the column values to the model object with the alias prefix.
             $o->setJoinedRelationships($this->_joinedRelationships);
@@ -420,10 +419,8 @@ class BaseCollection
             return $this->_itemData;
         }
 
-        while ( $o = $this->_fetchRow() ) {
-            $this->_itemData[] = $o;
-        }
-        return $this->_itemData;
+        // use fetch all
+        return $this->_itemData = $h->fetchAll(PDO::FETCH_CLASS, static::model_class );
     }
 
 
