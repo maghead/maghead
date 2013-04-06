@@ -1312,7 +1312,6 @@ abstract class BaseModel
             return clone $this->_cache[ $cacheKey ];
         }
 
-
         if ( ! $relation ) {
             $relation = $this->getSchema()->getRelation( $key );
         }
@@ -1331,8 +1330,9 @@ abstract class BaseModel
             $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];
             $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
-            if( ! $this->hasValue($sColumn) )
+            if ( ! $this->hasValue($sColumn) ) {
                 return;
+            }
                 // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
 
             $sValue = $this->getValue( $sColumn );
@@ -1348,8 +1348,9 @@ abstract class BaseModel
             $fColumn = $relation['foreign_column'];
             $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
-            if( ! $this->hasValue($sColumn) )
+            if ( ! $this->hasValue($sColumn) ) {
                 return;
+            }
                 // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
 
             $sValue = $this->getValue( $sColumn );
@@ -1378,7 +1379,7 @@ abstract class BaseModel
             $sValue = $this->getValue( $sColumn );
             $model = $fpSchema->newModel();
             $ret = $model->load(array( $fColumn => $sValue ));
-            return $this->setInternalCache($cacheKey,$model);
+            return $this->setInternalCache($cacheKey, $model);
         }
         elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
             $rId = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
@@ -1391,18 +1392,14 @@ abstract class BaseModel
 
             // eg. author_books
             $sColumn = $middleRelation['foreign_column'];
-            $sSchema = new $middleRelation['foreign_schema'];
+            $sSchema = $middleRelation->newForeignSchema();
             $spSchema = SchemaLoader::load( $sSchema->getSchemaProxyClass() );
 
             $foreignRelation = $spSchema->getRelation( $rId2 );
             if ( ! $foreignRelation )
                 throw new InvalidArgumentException( "second level relationship of many-to-many $rId2 is empty." );
 
-            $c = $foreignRelation['foreign_schema'];
-            if ( ! $c )
-                throw new InvalidArgumentException('foreign schema class is not defined.');
-
-            $fSchema = new $c;
+            $fSchema = $foreignRelation->newForeignSchema();
             $fColumn = $foreignRelation['foreign_column'];
             $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
@@ -1468,8 +1465,6 @@ abstract class BaseModel
      */
     public function __get( $key )
     {
-
-
         // relationship id can override value column.
         if ( $relation = $this->getSchema()->getRelation( $key ) ) {
             // cache object cache
