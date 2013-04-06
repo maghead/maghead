@@ -90,16 +90,8 @@ class RuntimeSchema extends SchemaBase
         if( $includeVirtual ) {
             return $this->columns;
         }
-
-        $columns = array();
-        foreach( $this->columns as $name => $column ) {
-            // skip virtal columns
-            if ( $column->virtual ) {
-                continue;
-            }
-            $columns[ $name ] = $column;
-        }
-        return $columns;
+        $names = array_fill_keys(static::$column_names,1);
+        return array_intersect_key($this->columns, $names);
     }
 
     public function getReadSourceId()
