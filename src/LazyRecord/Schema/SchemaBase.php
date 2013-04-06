@@ -49,7 +49,7 @@ abstract class SchemaBase
         if ( $p === false ) {
             return $class;
         }
-        return $this->_modelName = substr($class,$p);
+        return $this->_modelName = substr($class,$p + 1);
     }
 
     public function getSeeds()
