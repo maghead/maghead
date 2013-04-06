@@ -29,5 +29,22 @@ class RuntimeSchemaTest extends PHPUnit_Framework_TestCase
         ok($schema->getTable());
         ok($schema->getLabel());
     }
+
+
+    /**
+     * @dataProvider schemaProxyProvider
+     */
+    public function testSchemaIteration($proxyClass)
+    {
+        $schema = new $proxyClass;
+        ok($schema);
+        foreach( $schema as $name => $column ) {
+            ok(is_string($name));
+            ok($column);
+        }
+    }
+
+
+
 }
 
