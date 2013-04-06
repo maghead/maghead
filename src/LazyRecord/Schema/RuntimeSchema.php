@@ -87,6 +87,7 @@ class RuntimeSchema extends SchemaBase
 
     public function getColumns($includeVirtual = false) 
     {
+        // returns all columns
         if( $includeVirtual ) {
             return $this->columns;
         }
