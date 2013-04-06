@@ -27,6 +27,8 @@ class WineModelTest extends \LazyRecord\ModelTestCase
         $record = new \tests\Wine;
         ok($record);
 
+        is('wines',$record->getSchema()->getTable() );
+
         $ret = $c->create(array( 'name' => 'Wine Category' ));
         result_ok($ret);
 
