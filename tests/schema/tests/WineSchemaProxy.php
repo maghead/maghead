@@ -8,6 +8,32 @@ use LazyRecord\Schema\Relationship;
 class WineSchemaProxy extends RuntimeSchema
 {
 
+    public static $column_names = array (
+  0 => 'name',
+  1 => 'years',
+  2 => 'category_id',
+  3 => 'id',
+);
+    public static $column_hash = array (
+  'name' => 1,
+  'years' => 1,
+  'category_id' => 1,
+  'id' => 1,
+);
+    public static $column_names_include_virtual = array (
+  0 => 'name',
+  1 => 'years',
+  2 => 'category_id',
+  3 => 'id',
+);
+
+    const schema_class = 'LazyRecord\\Schema\\DynamicSchemaDeclare';
+    const collection_class = 'tests\\WineCollection';
+    const model_class = 'tests\\Wine';
+    const primary_key = 'id';
+    const table = 'wines';
+    const label = 'Wine';
+
     public function __construct()
     {
         /** columns might have closure, so it can not be const */

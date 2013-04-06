@@ -11,7 +11,7 @@ class ClassTemplate
     public $methods = array();
     public $consts  = array();
     public $members = array();
-
+    public $staticVars = array();
 
     /**
      * @var TemplateView object.
@@ -78,6 +78,11 @@ class ClassTemplate
     public function addMember($name,$value,$scope = 'public')
     {
         $this->members[] = new ClassMember($name,$value,$scope);
+    }
+
+    public function addStaticVar($name, $value, $scope = 'public') 
+    {
+        $this->staticVars[] = new ClassStaticVariable($name,$value, $scope);
     }
 
     public function __set($n,$v) {

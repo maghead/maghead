@@ -8,6 +8,38 @@ use LazyRecord\Schema\Relationship;
 class EdmSchemaProxy extends RuntimeSchema
 {
 
+    public static $column_names = array (
+  0 => 'edmNo',
+  1 => 'edmTitle',
+  2 => 'edmStart',
+  3 => 'edmEnd',
+  4 => 'edmContent',
+  5 => 'edmUpdatedOn',
+);
+    public static $column_hash = array (
+  'edmNo' => 1,
+  'edmTitle' => 1,
+  'edmStart' => 1,
+  'edmEnd' => 1,
+  'edmContent' => 1,
+  'edmUpdatedOn' => 1,
+);
+    public static $column_names_include_virtual = array (
+  0 => 'edmNo',
+  1 => 'edmTitle',
+  2 => 'edmStart',
+  3 => 'edmEnd',
+  4 => 'edmContent',
+  5 => 'edmUpdatedOn',
+);
+
+    const schema_class = 'tests\\EdmSchema';
+    const collection_class = 'tests\\EdmCollection';
+    const model_class = 'tests\\Edm';
+    const primary_key = 'edmNo';
+    const table = 'Edm';
+    const label = 'Edm';
+
     public function __construct()
     {
         /** columns might have closure, so it can not be const */

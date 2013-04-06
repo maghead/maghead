@@ -8,6 +8,26 @@ use LazyRecord\Schema\Relationship;
 class IDNumberSchemaProxy extends RuntimeSchema
 {
 
+    public static $column_names = array (
+  0 => 'id_number',
+  1 => 'id',
+);
+    public static $column_hash = array (
+  'id_number' => 1,
+  'id' => 1,
+);
+    public static $column_names_include_virtual = array (
+  0 => 'id_number',
+  1 => 'id',
+);
+
+    const schema_class = 'LazyRecord\\Schema\\DynamicSchemaDeclare';
+    const collection_class = 'tests\\IDNumberCollection';
+    const model_class = 'tests\\IDNumber';
+    const primary_key = 'id';
+    const table = 'i_d_numbers';
+    const label = 'IDNumber';
+
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
