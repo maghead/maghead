@@ -684,6 +684,7 @@ abstract class BaseModel
 
         $driver = $this->getQueryDriver($dsId);
 
+
         $pkId = null;
         if( 'pgsql' === $driver->type ) {
             $pkId = $stm->fetchColumn();
