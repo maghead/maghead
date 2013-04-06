@@ -8,6 +8,8 @@ use Exception;
 use Iterator;
 use ArrayAccess;
 use Countable;
+use IteratorAggregate;
+use ArrayIterator;
 
 use SQLBuilder\QueryBuilder;
 use LazyRecord\OperationResult\OperationSuccess;
@@ -22,7 +24,12 @@ use SerializerKit\JsonSerializer;
  * base collection class
  */
 class BaseCollection
-    implements Iterator, ArrayAccess, Countable, ExporterInterface
+    implements 
+    // Iterator, 
+    ArrayAccess, 
+    Countable, 
+    IteratorAggregate, 
+    ExporterInterface
 {
     protected $_lastSql;
 
@@ -91,6 +98,14 @@ class BaseCollection
 
     protected $explictSelect = false;
 
+
+    public function getIterator()
+    {
+        if ( ! $this->_itemData ) {
+            $this->_readRows();
+        }
+        return new ArrayIterator($this->_itemData);
+    }
 
     public function getSchema() 
     {
