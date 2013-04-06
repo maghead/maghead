@@ -126,6 +126,11 @@ class RuntimeSchema extends SchemaBase
         return static::model_name;
     }
 
+    public function getNamespace()
+    {
+        return static::model_namespace;
+    }
+
     public function getModelClass()
     {
         return static::model_class;
@@ -138,12 +143,12 @@ class RuntimeSchema extends SchemaBase
 
     public function newModel()
     {
-        return new static::model_class;
+        return new $this->modelClass;
     }
 
     public function newCollection()
     {
-        return new static::collection_class;
+        return new $this->collectionClass;
     }
 
 

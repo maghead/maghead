@@ -31,6 +31,7 @@ class WineSchemaProxy extends RuntimeSchema
     const collection_class = 'tests\\WineCollection';
     const model_class = 'tests\\Wine';
     const model_name = 'Wine';
+    const model_namespace = 'tests';
     const primary_key = 'id';
     const table = 'wines';
     const label = 'Wine';

@@ -25,6 +25,7 @@ class IDNumberSchemaProxy extends RuntimeSchema
     const collection_class = 'tests\\IDNumberCollection';
     const model_class = 'tests\\IDNumber';
     const model_name = 'IDNumber';
+    const model_namespace = 'tests';
     const primary_key = 'id';
     const table = 'i_d_numbers';
     const label = 'IDNumber';
