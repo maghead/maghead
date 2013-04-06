@@ -97,18 +97,21 @@ class ClassUtils
         if( preg_match( '/(\w+?)(?:Model)?$/', $class ,$reg) ) 
         {
             $table = @$reg[1];
-            if( ! $table )
-                throw new Exception( "Table name error: $class" );
+            if ( ! $table ) {
+                throw new Exception( "Can not parse model name: $class" );
+            }
 
             /* convert BlahBlah to blah_blah */
+            /*
             $table =  strtolower( preg_replace( 
                 '/(\B[A-Z])/e' , 
                 "'_'.strtolower('$1')" , 
                 $table ) );
-            return Inflector::getInstance()->pluralize($table);
-        } 
-        else 
-        {
+            */
+            $inflector = Inflector::getInstance();
+            $table = $inflector->underscore($table);
+            return $inflector->pluralize($table);
+        } else {
             throw new Exception('Table name convert error');
         }
     }
