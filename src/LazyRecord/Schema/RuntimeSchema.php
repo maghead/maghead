@@ -18,7 +18,7 @@ class RuntimeSchema extends SchemaBase
     /**
      * @var array cached columns including virutal columns
      */
-    protected $_columnNamesWithVirutal;
+    protected $_columnNamesExcludeVirutal;
 
 
     public function __construct() {
@@ -39,7 +39,8 @@ class RuntimeSchema extends SchemaBase
 
 
     /**
-     * Inject schema array data into runtime schema object
+     * Inject schema array data into runtime schema object,
+     * This is much like __set_state method
      *
      * @param array $schemaArray
      */
@@ -48,9 +49,19 @@ class RuntimeSchema extends SchemaBase
         $this->columnData  = $schemaArray['column_data']; /* contains column names => column attribute array */
         $this->columnNames = $schemaArray['column_names']; /* column names array */
         $this->primaryKey = $schemaArray['primary_key'];
-        $this->table = $schemaArray['table'];
+        $this->table      = $schemaArray['table'];
+        $this->label      = $schemaArray['label'];
         $this->modelClass = $schemaArray['model_class'];
     }
+
+    public static function __set_state($array) 
+    {
+        $schema = new self;
+        $schema->import($array);
+        return $schema;
+    }
+
+
 
     public function hasColumn($name)
     {
@@ -68,23 +79,10 @@ class RuntimeSchema extends SchemaBase
     public function getColumnNames($includeVirtual = false)
     {
         if ( $includeVirtual ) {
-            return array_keys($this->columns);
+            return static::$column_names_include_virtual;
+        } else {
+            return static::$column_names;
         }
-
-        // We can build cached virutal column data from schema proxy
-        // do filtering
-        if ( $this->_columnNamesWithVirutal ) {
-            return $this->_columnNamesWithVirutal;
-        }
-
-        foreach( $this->columns as $name => $column ) {
-            // skip virtual columns
-            if ( $column->virtual ) {
-                continue;
-            }
-            $names[] = $name;
-        }
-        return $this->_columnNamesWithVirutal = $names;
     }
 
     public function getColumns($includeVirtual = false) 
