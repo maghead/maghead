@@ -2,9 +2,11 @@
 namespace LazyRecord\Schema;
 use LazyRecord\Schema\RuntimeColumn;
 use Exception;
+use IteratorAggregate;
+use ArrayIterator;
 
 class RuntimeSchema extends SchemaBase
-    implements SchemaDataInterface
+    implements SchemaDataInterface, IteratorAggregate
 {
     public $modelClass;
 
@@ -13,12 +15,28 @@ class RuntimeSchema extends SchemaBase
     // columns array
     public $columnData = array();
 
+    /**
+     * @var array cached columns including virutal columns
+     */
+    protected $_columnNamesWithVirutal;
+
+
     public function __construct() {
         // build RuntimeColumn objects
-        foreach( $this->columnData as $name => $columnMeta ) {
+        foreach( $this->columnData as $name => $columnMeta ) 
+        {
             $this->columns[ $name ] = new RuntimeColumn( $name , $columnMeta['attributes'] );
         }
     }
+
+    /**
+     * For iterating attributes
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->columns);
+    }
+
 
     /**
      * Inject schema array data into runtime schema object
@@ -36,9 +54,7 @@ class RuntimeSchema extends SchemaBase
 
     public function hasColumn($name)
     {
-        if( isset($this->columns[$name]) ) {
-            return true;
-        }
+        return isset($this->columns[$name]);
     }
 
 
@@ -47,18 +63,28 @@ class RuntimeSchema extends SchemaBase
         if( isset($this->columns[ $name ]) ) {
             return $this->columns[ $name ];
         }
-        return null;
     }
 
     public function getColumnNames($includeVirtual = false)
     {
-        $names = array();
+        if ( $includeVirtual ) {
+            return array_keys($this->columns);
+        }
+
+        // We can build cached virutal column data from schema proxy
+        // do filtering
+        if ( $this->_columnNamesWithVirutal ) {
+            return $this->_columnNamesWithVirutal;
+        }
+
         foreach( $this->columns as $name => $column ) {
-            if( ! $includeVirtual && $column->virtual )
+            // skip virtual columns
+            if ( $column->virtual ) {
                 continue;
+            }
             $names[] = $name;
         }
-        return $names;
+        return $this->_columnNamesWithVirutal = $names;
     }
 
     public function getColumns($includeVirtual = false) 
@@ -70,8 +96,9 @@ class RuntimeSchema extends SchemaBase
         $columns = array();
         foreach( $this->columns as $name => $column ) {
             // skip virtal columns
-            if( $column->virtual )
+            if ( $column->virtual ) {
                 continue;
+            }
             $columns[ $name ] = $column;
         }
         return $columns;
@@ -113,5 +140,6 @@ class RuntimeSchema extends SchemaBase
     {
         return new $this->collectionClass;
     }
+
 
 }

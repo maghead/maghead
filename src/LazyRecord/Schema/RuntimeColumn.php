@@ -6,8 +6,10 @@ use LazyRecord\Inflator;
 use LazyRecord\ArrayUtils;
 use LazyRecord\Utils;
 use Exception;
+use ArrayIterator;
+use IteratorAggregate;
 
-class RuntimeColumn
+class RuntimeColumn implements IteratorAggregate
 {
     public $name;
 
@@ -18,6 +20,22 @@ class RuntimeColumn
         $this->name = $name;
         $this->attributes = $attributes;
     }
+
+
+    /**
+     * For iterating attributes
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->attributes);
+    }
+
+    public static function __set_state($hash) 
+    {
+        return new self($hash['name'], $hash['attributes']);
+    }
+
+
 
     public function __isset($name)
     {
