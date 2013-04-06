@@ -457,9 +457,10 @@ abstract class BaseModel
             );
         }
 
-        if ( $column->validator ) {
-            if ( is_callable($column->validator) ) {
-                $ret = call_user_func($column->validator, $val, $args, $this );
+        // XXX: migrate this method to runtime column
+        if ( $validator = $column->get('validator') ) {
+            if ( is_callable($validator) ) {
+                $ret = call_user_func($validator, $val, $args, $this );
                 if( is_bool($ret) ) {
                     return array( 'valid' => $ret, 'message' => 'Validation failed.' , 'field' => $column->name );
                 } elseif( is_array($ret) ) {
@@ -467,9 +468,9 @@ abstract class BaseModel
                 } else {
                     throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
                 }
-            } elseif ( is_string($column->validator) && is_a($column->validator,'ValidationKit\\Validator',true) ) {
+            } elseif ( is_string($validator) && is_a($validator,'ValidationKit\\Validator',true) ) {
                 // it's a ValidationKit\Validator
-                $validator = $column->validatorArgs ? new $column->validator($column->validatorArgs) : new $column->validator;
+                $validator = $column->validatorArgs ? new $validator($column->get('validatorArgs')) : new $validator;
                 $ret = $validator->validate($val);
                 $msgs = $validator->getMessages();
                 $msg = isset($msgs[0]) ? $msgs[0] : 'Validation failed.';
@@ -478,7 +479,7 @@ abstract class BaseModel
                 throw new Exception("Unsupported validator");
             }
         }
-        if ( $val && ($column->validValues || $column->validValueBuilder) ) {
+        if ( $val && ($column->validValues || $column->validValueBuilder ) ) {
             if ( $validValues = $column->getValidValues( $this, $args ) ) {
                 // sort by index
                 if ( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
