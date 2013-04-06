@@ -22,17 +22,17 @@ use ValidationKit\ValidationMessage;
 use ActionKit;
 use IteratorAggregate;
 use ArrayIterator;
+use Serializable;
 
 /**
  * Base Model class,
  * every model class extends from this class.
  *
  */
-abstract class BaseModel implements ExporterInterface, IteratorAggregate
+abstract class BaseModel implements Serializable, IteratorAggregate, ExporterInterface
 {
 
     const schema_proxy_class = '';
-
 
     protected $_data = array();
 
@@ -108,13 +108,6 @@ abstract class BaseModel implements ExporterInterface, IteratorAggregate
 
 
 
-    /**
-     * For iterating attributes
-     */
-    public function getIterator()
-    {
-        return new ArrayIterator($this->columns);
-    }
 
 
     public function setJoinedRelationships($map)
@@ -2014,5 +2007,32 @@ abstract class BaseModel implements ExporterInterface, IteratorAggregate
         $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class,$type);
         return new $actionClass( $args , $this );
     }
+
+
+
+
+
+    // IteratorAggregate interface method
+    // =====================================
+    public function getIterator()
+    {
+        return new ArrayIterator($this->columns);
+    }
+
+
+    // Serializable interface methods
+    // ===============================
+
+    public function serialize() 
+    {
+        return serialize($this->_data);
+    }
+
+    public function unserialize($data) 
+    {
+        $this->_data = unserialize($data);
+    }
+
+
 }
 
