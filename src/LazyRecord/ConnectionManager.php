@@ -245,6 +245,11 @@ class ConnectionManager
         throw new ConnectionException("data source $sourceId not found.");
     }
 
+    public function get($dsId)
+    {
+        return $this->getConnection($dsId);
+    }
+
 
     /**
      * Get default data source id
