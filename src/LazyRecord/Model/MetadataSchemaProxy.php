@@ -27,6 +27,8 @@ class MetadataSchemaProxy extends RuntimeSchema
     const schema_class = 'LazyRecord\\Schema\\DynamicSchemaDeclare';
     const collection_class = 'LazyRecord\\Model\\MetadataCollection';
     const model_class = 'LazyRecord\\Model\\Metadata';
+    const model_name = 'Metadata';
+    const model_namespace = 'LazyRecord\\Model';
     const primary_key = 'id';
     const table = '__meta__';
     const label = 'Metadata';

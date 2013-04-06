@@ -46,6 +46,7 @@ class BookSchemaProxy extends RuntimeSchema
     const collection_class = 'tests\\BookCollection';
     const model_class = 'tests\\Book';
     const model_name = 'Book';
+    const model_namespace = 'tests';
     const primary_key = 'id';
     const table = 'books';
     const label = 'Book';

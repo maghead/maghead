@@ -31,6 +31,7 @@ class AddressSchemaProxy extends RuntimeSchema
     const collection_class = 'tests\\AddressCollection';
     const model_class = 'tests\\Address';
     const model_name = 'Address';
+    const model_namespace = 'tests';
     const primary_key = 'id';
     const table = 'addresses';
     const label = 'Address';

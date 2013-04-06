@@ -25,6 +25,7 @@ class PublisherSchemaProxy extends RuntimeSchema
     const collection_class = 'tests\\PublisherCollection';
     const model_class = 'tests\\Publisher';
     const model_name = 'Publisher';
+    const model_namespace = 'tests';
     const primary_key = 'id';
     const table = 'publishers';
     const label = 'Publisher';
