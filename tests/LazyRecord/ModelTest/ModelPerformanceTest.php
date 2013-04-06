@@ -16,7 +16,11 @@ class ModelPerformanceTest extends \LazyRecord\ModelTestCase
     public function setUp()
     {
         parent::setUp();
+        $this->createRecords();
+    }
 
+    public function createRecords() 
+    {
         $c = new \tests\WineCategory;
         ok($c,'category');
 
@@ -27,11 +31,10 @@ class ModelPerformanceTest extends \LazyRecord\ModelTestCase
         result_ok($ret);
 
         foreach( range(1,1000) as $i ) {
-            $ret = $record->create(array( 'name' => "Wine Name $i" , 'category_id' => $c->id ));
+            $ret = $record->_create(array( 'name' => "Wine Name $i" , 'category_id' => $c->id ));
             result_ok($ret);
         }
     }
-
 
     public function testPDOQuerySample()
     {

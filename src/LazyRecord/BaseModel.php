@@ -297,6 +297,17 @@ abstract class BaseModel
 
     }
 
+
+
+    /**
+     * To support static operation methods like ::create, ::update, we 
+     * can not define methods with the same name, so that 
+     * we dispatch these methods from the magic method __call.
+     *
+     * __call method is slower than normal method, because there are
+     * one more method table to look up. you should call `_create` method
+     * if you need a better performance.
+     */
     public function __call($m,$a)
     {
         switch($m) {
