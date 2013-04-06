@@ -4,6 +4,10 @@ use Exception;
 use PDOException;
 use InvalidArgumentException;
 use PDO;
+use ArrayIterator;
+use IteratorAggregate;
+use Serializable;
+use ArrayAccess;
 
 use SQLBuilder\QueryBuilder;
 use LazyRecord\QueryDriver;
@@ -20,16 +24,13 @@ use SerializerKit\YamlSerializer;
 
 use ValidationKit\ValidationMessage;
 use ActionKit;
-use IteratorAggregate;
-use ArrayIterator;
-use Serializable;
 
 /**
  * Base Model class,
  * every model class extends from this class.
  *
  */
-abstract class BaseModel implements Serializable, IteratorAggregate, ExporterInterface
+abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate, ExporterInterface
 {
 
     const schema_proxy_class = '';
@@ -1224,6 +1225,11 @@ abstract class BaseModel implements Serializable, IteratorAggregate, ExporterInt
         $this->_data[ $name ] = $value; 
     }
 
+    public function set($name, $value)
+    {
+        $this->_data[ $name ] = $value; 
+    }
+
 
     /**
      * Get inflate value
@@ -2019,6 +2025,26 @@ abstract class BaseModel implements Serializable, IteratorAggregate, ExporterInt
         return new ArrayIterator($this->columns);
     }
 
+
+    public function offsetExists($name) 
+    {
+        return $this->__isset($name);
+    }
+
+    public function offsetGet($name)
+    {
+        return $this->get($name);
+    }
+
+    public function offsetSet ( $name , $value )
+    {
+        $this->set($name,$value);
+    }
+
+    public function offsetUnset ( $name )
+    {
+        unset($this->_data[$name]);
+    }
 
     // Serializable interface methods
     // ===============================
