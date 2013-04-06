@@ -90,6 +90,9 @@ abstract class BaseModel
 
     protected $_joinedRelationships = array();
 
+
+    static $_cacheInstance;
+
     /**
      * This constructor simply does nothing if no argument is passed.
      *
@@ -1873,16 +1876,27 @@ abstract class BaseModel
         return isset( $this->_cache[ $key ] );
     }
 
+
+
+    static public function getCacheInstance()
+    {
+        if ( self::$_cacheInstance )  {
+            return self::$_cacheInstance;
+        }
+        return self::$_cacheInstance = ConfigLoader::getInstance()->getCacheInstance();
+    }
+
+
     private function getCache($key)
     {
-        if( $cache = ConfigLoader::getInstance()->getCacheInstance() ) {
+        if( $cache = self::getCacheInstance() ) {
             return $cache->get( $this->getCachePrefix() . $key);
         }
     }
 
     private function setCache($key,$val,$ttl = 0)
     {
-        if( $cache = ConfigLoader::getInstance()->getCacheInstance() ) {
+        if( $cache = self::getCacheInstance() ) {
             $cache->set( $this->getCachePrefix() . $key, $val, $ttl );
         }
         return $val;
