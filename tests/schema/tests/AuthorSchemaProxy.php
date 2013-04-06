@@ -8,6 +8,42 @@ use LazyRecord\Schema\Relationship;
 class AuthorSchemaProxy extends RuntimeSchema
 {
 
+    public static $column_names = array (
+  0 => 'name',
+  1 => 'email',
+  2 => 'identity',
+  3 => 'confirmed',
+  4 => 'updated_on',
+  5 => 'created_on',
+  6 => 'id',
+);
+    public static $column_hash = array (
+  'name' => 1,
+  'email' => 1,
+  'identity' => 1,
+  'confirmed' => 1,
+  'updated_on' => 1,
+  'created_on' => 1,
+  'id' => 1,
+);
+    public static $column_names_include_virtual = array (
+  0 => 'name',
+  1 => 'email',
+  2 => 'v',
+  3 => 'identity',
+  4 => 'confirmed',
+  5 => 'updated_on',
+  6 => 'created_on',
+  7 => 'id',
+);
+
+    const schema_class = 'tests\\AuthorSchema';
+    const collection_class = 'tests\\AuthorCollection';
+    const model_class = 'tests\\Author';
+    const primary_key = 'id';
+    const table = 'authors';
+    const label = 'Author';
+
     public function __construct()
     {
         /** columns might have closure, so it can not be const */

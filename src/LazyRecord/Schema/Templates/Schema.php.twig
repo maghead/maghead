@@ -11,6 +11,14 @@ use LazyRecord\Schema\Relationship;
 class {{ schema.getModelName }}SchemaProxy extends RuntimeSchema
 {
 
+{% for con in class.staticVars %}
+    {{con|raw}}
+{% endfor %}
+
+{% for con in class.consts %}
+    {{con|raw}}
+{% endfor %}
+
     public function __construct()
     {
         /** columns might have closure, so it can not be const */

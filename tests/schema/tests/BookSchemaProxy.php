@@ -8,6 +8,47 @@ use LazyRecord\Schema\Relationship;
 class BookSchemaProxy extends RuntimeSchema
 {
 
+    public static $column_names = array (
+  0 => 'title',
+  1 => 'subtitle',
+  2 => 'isbn',
+  3 => 'description',
+  4 => 'view',
+  5 => 'publisher_id',
+  6 => 'published_at',
+  7 => 'created_by',
+  8 => 'id',
+);
+    public static $column_hash = array (
+  'title' => 1,
+  'subtitle' => 1,
+  'isbn' => 1,
+  'description' => 1,
+  'view' => 1,
+  'publisher_id' => 1,
+  'published_at' => 1,
+  'created_by' => 1,
+  'id' => 1,
+);
+    public static $column_names_include_virtual = array (
+  0 => 'title',
+  1 => 'subtitle',
+  2 => 'isbn',
+  3 => 'description',
+  4 => 'view',
+  5 => 'publisher_id',
+  6 => 'published_at',
+  7 => 'created_by',
+  8 => 'id',
+);
+
+    const schema_class = 'tests\\BookSchema';
+    const collection_class = 'tests\\BookCollection';
+    const model_class = 'tests\\Book';
+    const primary_key = 'id';
+    const table = 'books';
+    const label = 'Book';
+
     public function __construct()
     {
         /** columns might have closure, so it can not be const */

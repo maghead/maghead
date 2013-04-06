@@ -92,15 +92,20 @@ class SchemaDeclare extends SchemaBase
 
     public function getColumnNames($includeVirtual = false)
     {
+        if ( $includeVirtual ) {
+            return array_keys($this->columns);
+        }
+
         $names = array();
         foreach( $this->columns as $name => $column ) {
-            if ( ! $includeVirtual && $column->virtual ) {
+            if ( $column->virtual ) {
                 continue;
             }
             $names[] = $name;
         }
         return $names;
     }
+
 
     public function getColumn($name)
     {

@@ -75,10 +75,21 @@ class SchemaGenerator
             'template_dirs' => $this->getTemplateDirs(),
             'template'      => 'Schema.php.twig',
         ));
+
         $cTemplate->addConst( 'schema_class' , ltrim($schemaClass,'\\') );
-        $cTemplate->addConst( 'model_class' , ltrim($modelClass,'\\') );
+        $cTemplate->addConst( 'collection_class' , $schemaArray['collection_class'] );
+        $cTemplate->addConst( 'model_class' , $schemaArray['model_class'] );
+        $cTemplate->addConst( 'primary_key' , $schemaArray['primary_key'] );
         $cTemplate->addConst( 'table',  $schema->getTable() );
         $cTemplate->addConst( 'label',  $schema->getLabel() );
+
+        // export column names excluding virtual columns
+        $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
+        $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
+
+        // export column names including virutal columns
+        $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
+
         $cTemplate->schema = $schema;
         $cTemplate->schema_data = $schemaArray;
         return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);

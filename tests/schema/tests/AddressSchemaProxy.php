@@ -8,6 +8,32 @@ use LazyRecord\Schema\Relationship;
 class AddressSchemaProxy extends RuntimeSchema
 {
 
+    public static $column_names = array (
+  0 => 'author_id',
+  1 => 'address',
+  2 => 'foo',
+  3 => 'id',
+);
+    public static $column_hash = array (
+  'author_id' => 1,
+  'address' => 1,
+  'foo' => 1,
+  'id' => 1,
+);
+    public static $column_names_include_virtual = array (
+  0 => 'author_id',
+  1 => 'address',
+  2 => 'foo',
+  3 => 'id',
+);
+
+    const schema_class = 'tests\\AddressSchema';
+    const collection_class = 'tests\\AddressCollection';
+    const model_class = 'tests\\Address';
+    const primary_key = 'id';
+    const table = 'addresses';
+    const label = 'Address';
+
     public function __construct()
     {
         /** columns might have closure, so it can not be const */

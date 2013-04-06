@@ -8,6 +8,47 @@ use LazyRecord\Schema\Relationship;
 class NameSchemaProxy extends RuntimeSchema
 {
 
+    public static $column_names = array (
+  0 => 'id',
+  1 => 'name',
+  2 => 'description',
+  3 => 'category_id',
+  4 => 'address',
+  5 => 'country',
+  6 => 'type',
+  7 => 'confirmed',
+  8 => 'date',
+);
+    public static $column_hash = array (
+  'id' => 1,
+  'name' => 1,
+  'description' => 1,
+  'category_id' => 1,
+  'address' => 1,
+  'country' => 1,
+  'type' => 1,
+  'confirmed' => 1,
+  'date' => 1,
+);
+    public static $column_names_include_virtual = array (
+  0 => 'id',
+  1 => 'name',
+  2 => 'description',
+  3 => 'category_id',
+  4 => 'address',
+  5 => 'country',
+  6 => 'type',
+  7 => 'confirmed',
+  8 => 'date',
+);
+
+    const schema_class = 'tests\\NameSchema';
+    const collection_class = 'tests\\NameCollection';
+    const model_class = 'tests\\Name';
+    const primary_key = 'id';
+    const table = 'names';
+    const label = 'Name';
+
     public function __construct()
     {
         /** columns might have closure, so it can not be const */
