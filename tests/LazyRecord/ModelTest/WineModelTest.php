@@ -24,19 +24,17 @@ class WineModelTest extends \LazyRecord\ModelTestCase
     {
         $c = new \tests\WineCategory;
         ok($c,'category');
-
         $record = new \tests\Wine;
         ok($record);
 
         $ret = $c->create(array( 'name' => 'Wine Category' ));
         result_ok($ret);
 
-        $ret = $record->create(array( 'name' => 'Wine Name' , 'category_id' => $c->id ));
+        $ret = $record->create(array( 'name' => "Wine Item" , 'category_id' => $c->id ));
         result_ok($ret);
-
+        
         ok($record->category->id, 'the belongsTo should be generated from refer attribute');
         ok($record->category_id,'the original column');
-
         is('Wine Category',$record->display('category'));
     }
 
@@ -75,18 +73,5 @@ class WineModelTest extends \LazyRecord\ModelTestCase
             ok($category->id);
             same_ok($item->category, $category );
         }
-        return $collection;
     }
-
-
-    /**
-     * @depends testJoinedColumnExtractionFromCollection
-     */
-    public function testIteration($collection) {
-        foreach( $collection as $item ) {
-            ok($item->category->name, 'get category name');
-        }
-    }
-
-
 }
