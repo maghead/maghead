@@ -1930,17 +1930,17 @@ abstract class BaseModel
 
     public function asCreateAction($args = array())
     {
-        return $this->_newAction('Create',$args);
+        return $this->newAction('Create',$args);
     }
 
     public function asUpdateAction($args = array())
     {
-        return $this->_newAction('Update',$args);
+        return $this->newAction('Update',$args);
     }
 
     public function asDeleteAction($args = array())
     {
-        return $this->_newAction('Delete',$args);
+        return $this->newAction('Delete',$args);
     }
 
     /**
@@ -1950,7 +1950,7 @@ abstract class BaseModel
      *
      * TODO: Move to ActionKit
      */
-    private function _newAction($type, $args = array() )
+    private function newAction($type, $args = array() )
     {
         $class = get_class($this);
         $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class,$type);
