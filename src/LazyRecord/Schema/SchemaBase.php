@@ -34,10 +34,22 @@ abstract class SchemaBase
 
     public $seeds = array();
 
+    protected $_namespace;
+
+    protected $_modelName;
+
     public function getModelName()
     {
-        $p = explode('\\',$this->getModelClass());
-        return end($p);
+        if ( $this->_modelName ) {
+            return $this->_modelName;
+        }
+
+        $class = $this->getModelClass();
+        $p = strpos($class,'\\');
+        if ( $p === false ) {
+            return $class;
+        }
+        return $this->_modelName = substr($class,$p);
     }
 
     public function getSeeds()
@@ -87,13 +99,16 @@ abstract class SchemaBase
      */
     public function getNamespace()
     {
-        $class = $this->getModelClass();
-        $parts = explode('\\',$class);
-        if(count($parts) > 1 ) {
-            array_pop($parts);
-            return join('\\',$parts);
+        if ( $this->_namespace ) {
+            return $this->_namespace;
         }
-        return $class;
+
+        $class = $this->getModelClass();
+        $p = strrpos($class, '\\'); 
+        if ( $p === false ) {
+            return $class;
+        }
+        return $this->_namespace = substr($class, 0, $p);
     }
 
     /**
