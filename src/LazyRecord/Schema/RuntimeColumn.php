@@ -132,18 +132,13 @@ class RuntimeColumn
 
     public function checkTypeConstraint($value)
     {
-        if( $isa = $this->get('isa') )
-        {
-            if( $isa === 'str' ) {
-                if( ! is_string( $value ) ) {
-                    throw new Exception('Value is not a string value. ' . "($value)");
-                }
-            } elseif( $isa === 'int' ) {
-                if( ! is_integer( $value ) )
-                    throw new Exception( 'Value is not a integer value.' );
-            } elseif( $isa === 'bool' || $isa === 'boolean' ) {
-                if( ! is_bool( $value ) )
-                    throw new Exception( 'Value is not a boolean value.' );
+        if( $isa = $this->get('isa') ) {
+            if ( $isa === 'str' && ! is_string($value) ) {
+                throw new Exception('Value is not a string value. ' . "($value)");
+            } elseif( $isa === 'int' && ! is_integer($value) ) {
+                throw new Exception( 'Value is not a integer value.' );
+            } elseif( ($isa === 'bool' || $isa === 'boolean') && ! is_bool($value) ) {
+                throw new Exception( 'Value is not a boolean value.' );
             }
         }
     }
@@ -176,11 +171,11 @@ class RuntimeColumn
 
     public function display( $value )
     {
-        if( $this->has('validPairs') && isset( $this->validPairs[ $value ] ) ) {
+        if( $this->validPairs && isset( $this->validPairs[ $value ] ) ) {
             return $this->validPairs[ $value ];
         }
 
-        if( $this->has('validValues') && $validValues = Utils::evaluate($this->validValues) ) {
+        if( $this->validValues && $validValues = Utils::evaluate($this->validValues) ) {
             // search value in validValues array
             // because we store the validValues in an (label => value) array.
             if( ArrayUtils::is_assoc_array( $validValues ) ) {
@@ -193,7 +188,7 @@ class RuntimeColumn
             }
         }
 
-        if( $this->has('validValueBuilder') && $values = call_user_func($this->validValueBuilder) ) {
+        if( $this->validValueBuilder && $values = call_user_func($this->validValueBuilder) ) {
             if( ArrayUtils::is_assoc_array( $values ) ) {
                 if( false !== ($label = array_search($value,$values) ) ) {
                     return $label;
