@@ -35,23 +35,6 @@
         <listener class="PHPUnit_Util_Log_XHProf" file="PHPUnit/Util/Log/XHProf.php">
             <arguments>
                 <array>
-                    <!--
-                    <element key="xhprofLibFile">
-                        <string>/Users/c9s/src/php/xhprof/xhprof_lib/utils/xhprof_lib.php</string>
-                    </element>
-                    <element key="xhprofRunsFile">
-                        <string>/Users/c9s/src/php/xhprof/xhprof_lib/utils/xhprof_runs.php</string>
-                    </element>
-                    -->
-
-                    <element key="xhprofLibFile">
-                        <string>xhprof_lib/utils/xhprof_lib.php</string>
-                    </element>
-                    <element key="xhprofRunsFile">
-                        <string>xhprof_lib/utils/xhprof_runs.php</string>
-                    </element>
-
-
                     <element key="xhprofWeb">
                         <string>http://localhost:8888/index.php</string>
                     </element>
