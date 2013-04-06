@@ -24,6 +24,7 @@ class IDNumberSchemaProxy extends RuntimeSchema
     const schema_class = 'LazyRecord\\Schema\\DynamicSchemaDeclare';
     const collection_class = 'tests\\IDNumberCollection';
     const model_class = 'tests\\IDNumber';
+    const model_name = 'IDNumber';
     const primary_key = 'id';
     const table = 'i_d_numbers';
     const label = 'IDNumber';

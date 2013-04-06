@@ -30,6 +30,7 @@ class AuthorBookSchemaProxy extends RuntimeSchema
     const schema_class = 'tests\\AuthorBookSchema';
     const collection_class = 'tests\\AuthorBookCollection';
     const model_class = 'tests\\AuthorBook';
+    const model_name = 'AuthorBook';
     const primary_key = 'id';
     const table = 'author_books';
     const label = 'AuthorBook';

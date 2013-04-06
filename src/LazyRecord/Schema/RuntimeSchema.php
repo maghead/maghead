@@ -106,30 +106,34 @@ class RuntimeSchema extends SchemaBase
     }
 
 
-
     public function getTable()
     {
-        return $this->table;
+        return static::table;
     }
 
     public function getLabel()
     {
-        return $this->label;
+        return static::label;
     }
 
     public function getModelClass()
     {
-        return $this->modelClass;
+        return static::model_class;
+    }
+
+    public function getCollectionClass()
+    {
+        return static::collection_class;
     }
 
     public function newModel()
     {
-        return new $this->modelClass;
+        return new static::model_class;
     }
 
     public function newCollection()
     {
-        return new $this->collectionClass;
+        return new static::collection_class;
     }
 
 

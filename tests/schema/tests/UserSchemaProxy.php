@@ -27,6 +27,7 @@ class UserSchemaProxy extends RuntimeSchema
     const schema_class = 'tests\\UserSchema';
     const collection_class = 'tests\\UserCollection';
     const model_class = 'tests\\User';
+    const model_name = 'User';
     const primary_key = 'id';
     const table = 'users';
     const label = 'User';
