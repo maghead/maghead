@@ -566,10 +566,12 @@ abstract class BaseModel
      */
     public function _create($args, $options = array() )
     {
-        if( empty($args) || $args === null )
+        if ( empty($args) || $args === null ) {
             return $this->reportError( _('Empty arguments') );
+        }
 
         try {
+            $schema = $this->getSchema();
             $args = $this->beforeCreate( $args );
 
             // save $args for afterCreate trigger method
@@ -584,7 +586,7 @@ abstract class BaseModel
                 ));
             }
 
-            $k = $this->getSchema()->primaryKey;
+            $k = $schema->primaryKey;
             $sql = $vars     = null;
             $this->_data     = array();
             $stm = null;
@@ -595,7 +597,7 @@ abstract class BaseModel
 
             $dsId = $this->getWriteSourceId();
             $conn = $this->getConnection( $dsId );
-            foreach( $this->getSchema()->getColumns() as $n => $c ) {
+            foreach( $schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
                 if( !$c->primary && (!isset($args[$n]) || !$args[$n] ))
@@ -1760,12 +1762,15 @@ abstract class BaseModel
     {
         if ( $this->_schema ) {
             return $this->_schema;
+        } elseif ( @constant('static::schema_proxy_class') ) {
+            return $this->_schema = SchemaLoader::load( static::schema_proxy_class );
         } elseif ( method_exists($this,'schema') ) {
+            // create dynamic schema declare
+            // XXX: note that DynamicSchemaDeclare is using SchemaDeclare/Column
+            // not the RuntimeColumn object, so that we can not do deflate or value related operations.
             return $this->_schema = new Schema\DynamicSchemaDeclare($this);
-        } elseif ( $s = SchemaLoader::load( static::schema_proxy_class ) ) {
-            return $this->_schema = $s;
         }
-        throw new RuntimeException("schema is not defined.");
+        throw new RuntimeException("schema is not defined in " . get_class($this) );
     }
 
     /**
