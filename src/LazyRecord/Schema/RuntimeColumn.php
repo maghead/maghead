@@ -26,8 +26,21 @@ class RuntimeColumn
 
     public function __get($name)
     {
-        if( isset($this->attributes[$name]) )
+        if ( isset($this->attributes[$name]) ) {
             return $this->attributes[$name];
+        }
+    }
+
+    public function get($name) 
+    {
+        if ( isset($this->attributes[$name]) ) {
+            return $this->attributes[$name];
+        }
+    }
+
+    public function has($name)
+    {
+        return isset( $this->attributes[ $name ] );
     }
 
     public function __set($n,$v) 
@@ -51,7 +64,7 @@ class RuntimeColumn
      */
     public function canonicalizeValue( & $value , $record = null , $args = null )
     {
-        $cb = $this->filter ?: $this->canonicalizer ?: null;
+        $cb = $this->get('filter') ?: $this->get('canonicalizer') ?: null;
         if( $cb ) {
             return $value = call_user_func( $cb , $value,$record,$args);
         }
@@ -63,19 +76,18 @@ class RuntimeColumn
      */
     public function getValidValues( $record = null , $args = null )
     {
-        if( $this->validValues ) {
-            return Utils::evaluate( $this->validValues , array($record, $args) );
-        } 
-        elseif( $this->validValueBuilder ) {
-            return Utils::evaluate( $this->validValueBuilder , array($record, $args) );
+        if( $validValues = $this->get('validValues') ) {
+            return Utils::evaluate( $validValues , array($record, $args) );
+        } elseif( $builder = $this->get('validValueBuilder') ) {
+            return Utils::evaluate( $builder , array($record, $args) );
         }
     }
 
     public function getDefaultValue( $record = null, $args = null )
     {
         // XXX: might contains array() which is a raw sql statement.
-        if( $this->default ) {
-            return Utils::evaluate( $this->default , array($record, $args));
+        if( $val = $this->get('default') ) {
+            return Utils::evaluate( $val , array($record, $args));
         }
     }
 
@@ -88,34 +100,29 @@ class RuntimeColumn
      */
     public function typeCasting( & $value)
     {
-        if( $this->isa ) {
-            if( $this->isa === 'int' ) {
+        if( $isa = $this->get('isa') ) {
+            if( $isa === 'int' ) {
                 return $value = (int) $value;
             }
-            elseif( $this->isa === 'str' ) {
+            elseif( $isa === 'str' ) {
                 return $value = (string) $value;
             }
-            elseif( $this->isa === 'bool' || $this->isa === 'boolean' ) {
+            elseif( $isa === 'bool' || $isa === 'boolean' ) {
 
                 if( is_string($value) ) 
                 {
                     if( $value == null || $value === '' ) {
                         return $value = false;
-                    }
-                    elseif( $value === '1' ) {
+                    } elseif( $value === '1' ) {
                         return $value = true;
-                    }
-                    elseif( $value === '0' ) {
+                    } elseif( $value === '0' ) {
                         return $value = false;
-                    }
-                    elseif( strncasecmp($value,'false',5) == 0 ) {
+                    } elseif( strncasecmp($value,'false',5) == 0 ) {
                         return $value = false;
-                    } 
-                    elseif( strncasecmp($value,'true',4 ) == 0 ) {
+                    } elseif( strncasecmp($value,'true',4 ) == 0 ) {
                         return $value = true;
                     }
                 }
-
                 $value = (boolean) $value;
                 return $value;
             }
@@ -125,18 +132,16 @@ class RuntimeColumn
 
     public function checkTypeConstraint($value)
     {
-        if( $this->isa )
+        if( $isa = $this->get('isa') )
         {
-            if( $this->isa === 'str' ) {
+            if( $isa === 'str' ) {
                 if( ! is_string( $value ) ) {
                     throw new Exception('Value is not a string value. ' . "($value)");
                 }
-            }
-            elseif( $this->isa === 'int' ) {
+            } elseif( $isa === 'int' ) {
                 if( ! is_integer( $value ) )
                     throw new Exception( 'Value is not a integer value.' );
-            }
-            elseif( $this->isa === 'bool' || $this->isa === 'boolean' ) {
+            } elseif( $isa === 'bool' || $isa === 'boolean' ) {
                 if( ! is_bool( $value ) )
                     throw new Exception( 'Value is not a boolean value.' );
             }
@@ -151,18 +156,18 @@ class RuntimeColumn
     public function deflate( $value )
     {
         // run column specified deflator
-        if( $this->deflator ) {
-            return call_user_func( $this->deflator, $value );
+        if( $f = $this->get('deflator') ) {
+            return call_user_func( $f, $value );
         }
 
         // use global deflator, check self type, and do type casting
-        return Deflator::deflate( $value , $this->isa );
+        return Deflator::deflate( $value , $this->get('isa') );
     }
 
     public function inflate( $value, $record )
     {
-        if( $this->inflator ) {
-            return call_user_func( $this->inflator , $value , $record );
+        if( $f = $this->get('inflator') ) {
+            return call_user_func( $f , $value , $record );
         }
         // use global inflator
         return Inflator::inflate( $value , $this->isa );
@@ -171,11 +176,11 @@ class RuntimeColumn
 
     public function display( $value )
     {
-        if( $this->validPairs && isset( $this->validPairs[ $value ] ) ) {
+        if( $this->has('validPairs') && isset( $this->validPairs[ $value ] ) ) {
             return $this->validPairs[ $value ];
         }
 
-        if( $this->validValues && $validValues = Utils::evaluate($this->validValues) ) {
+        if( $this->has('validValues') && $validValues = Utils::evaluate($this->validValues) ) {
             // search value in validValues array
             // because we store the validValues in an (label => value) array.
             if( ArrayUtils::is_assoc_array( $validValues ) ) {
@@ -188,7 +193,7 @@ class RuntimeColumn
             }
         }
 
-        if( $this->validValueBuilder && $values = call_user_func($this->validValueBuilder) ) {
+        if( $this->has('validValueBuilder') && $values = call_user_func($this->validValueBuilder) ) {
             if( ArrayUtils::is_assoc_array( $values ) ) {
                 if( false !== ($label = array_search($value,$values) ) ) {
                     return $label;
@@ -199,8 +204,9 @@ class RuntimeColumn
             }
         }
 
-        if( $this->isa == 'bool' )
+        if ( $this->get('isa') == 'bool' ) {
             return $value ? _('Yes') : _('No');
+        }
 
         if( $value ) {
             if( is_string($value) ) {
@@ -216,8 +222,8 @@ class RuntimeColumn
 
     public function getLabel()
     {
-        if( $this->label ) {
-            return _( $this->label );
+        if( $label = $this->get('label') ) {
+            return _( $label );
         }
         return ucfirst($this->name);
     }
