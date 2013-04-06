@@ -84,6 +84,8 @@ abstract class BaseModel
     public $usingDataSource;
 
 
+    protected $_schema;
+
     protected $_cachePrefix;
 
     protected $_joinedRelationships = array();
@@ -144,7 +146,7 @@ abstract class BaseModel
      */
     public function dataLabel() 
     {
-        $pk = $this->schema->primaryKey;
+        $pk = $this->getSchema()->primaryKey;
         return $this->get($pk);
     }
 
@@ -154,7 +156,7 @@ abstract class BaseModel
      */
     public function dataKeyValue()
     {
-        $pk = $this->schema->primaryKey;
+        $pk = $this->getSchema()->primaryKey;
         return $this->get($pk);
     }
 
@@ -214,7 +216,7 @@ abstract class BaseModel
     {
         $q = new QueryBuilder;
         $q->driver = $this->getQueryDriver($dsId);
-        $q->table( $this->schema->table );
+        $q->table( $this->getSchema()->table );
         $q->limit(1);
         return $q;
     }
@@ -234,7 +236,7 @@ abstract class BaseModel
     {
         $q = new ExecutiveQueryBuilder;
         $q->driver = $this->getQueryDriver( $dsId );
-        $q->table( $this->schema->table );
+        $q->table( $this->getSchema()->table );
         return $q;
     }
 
@@ -307,8 +309,8 @@ abstract class BaseModel
         }
 
         // dispatch to schema object method
-        if( method_exists($this->schema,$m) ) {
-            return call_user_func_array(array($this->schema,$m),$a);
+        if( method_exists($this->getSchema(),$m) ) {
+            return call_user_func_array(array($this->getSchema(),$m),$a);
         }
 
         // XXX: special case for twig template
@@ -330,7 +332,7 @@ abstract class BaseModel
      */
     public function createOrUpdate($args, $byKeys = null )
     {
-        $pk = $this->schema->primaryKey;
+        $pk = $this->getSchema()->primaryKey;
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
@@ -368,7 +370,7 @@ abstract class BaseModel
         if( $pkId ) {
             return $this->load( $pkId );
         }
-        elseif( null === $pkId && $pk = $this->schema->primaryKey ) {
+        elseif( null === $pkId && $pk = $this->getSchema()->primaryKey ) {
             $pkId = $this->_data[ $pk ];
             return $this->load( $pkId );
         }
@@ -387,7 +389,7 @@ abstract class BaseModel
      */
     public function loadOrCreate($args, $byKeys = null)
     {
-        $pk = $this->schema->primaryKey;
+        $pk = $this->getSchema()->primaryKey;
 
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
@@ -517,7 +519,7 @@ abstract class BaseModel
      */
     public function columns()
     {
-        return $this->schema->columns;
+        return $this->getSchema()->columns;
     }
 
 
@@ -582,7 +584,7 @@ abstract class BaseModel
                 ));
             }
 
-            $k = $this->schema->primaryKey;
+            $k = $this->getSchema()->primaryKey;
             $sql = $vars     = null;
             $this->_data     = array();
             $stm = null;
@@ -593,7 +595,7 @@ abstract class BaseModel
 
             $dsId = $this->getWriteSourceId();
             $conn = $this->getConnection( $dsId );
-            foreach( $this->schema->getColumns() as $n => $c ) {
+            foreach( $this->getSchema()->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
                 if( !$c->primary && (!isset($args[$n]) || !$args[$n] ))
@@ -705,7 +707,7 @@ abstract class BaseModel
         $key = serialize($args);
         if( $cacheData = $this->getCache($key) ) {
             $this->_data = $cacheData;
-            $pk = $this->schema->primaryKey;
+            $pk = $this->getSchema()->primaryKey;
             return $this->reportSuccess( 'Data loaded', array(
                 'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null)
             ));
@@ -726,7 +728,7 @@ abstract class BaseModel
         }
 
         $dsId  = $this->getReadSourceId();
-        $pk    = $this->schema->primaryKey;
+        $pk    = $this->getSchema()->primaryKey;
         $query = $this->createQuery( $dsId );
         $conn  = $this->getConnection( $dsId );
         $kVal  = null;
@@ -739,9 +741,9 @@ abstract class BaseModel
         else
         {
             $kVal = $args;
-            $column = $this->schema->getColumn( $pk );
+            $column = $this->getSchema()->getColumn( $pk );
             if ( ! $column )
-                throw new Exception("Primary key $pk is not defined in " . get_class($this->schema) );
+                throw new Exception("Primary key $pk is not defined in " . get_class($this->getSchema()) );
 
             $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
@@ -791,7 +793,7 @@ abstract class BaseModel
      */
     public function _delete()
     {
-        $k = $this->schema->primaryKey;
+        $k = $this->getSchema()->primaryKey;
 
         if( $k && ! isset($this->_data[$k]) ) {
             return new OperationError('Record is not loaded, Record delete failed.');
@@ -844,7 +846,7 @@ abstract class BaseModel
     public function _update( $args , $options = array() ) 
     {
         // check if the record is loaded.
-        $k = $this->schema->primaryKey;
+        $k = $this->getSchema()->primaryKey;
         if( $k && ! isset($args[ $k ]) 
                && ! isset($this->_data[$k]) ) 
         {
@@ -886,7 +888,7 @@ abstract class BaseModel
             $dsId = $this->getWriteSourceId();
             $conn = $this->getConnection( $dsId );
 
-            foreach( $this->schema->getColumns() as $n => $c ) {
+            foreach( $this->getSchema()->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
                 if( isset($args[$n]) 
@@ -989,7 +991,7 @@ abstract class BaseModel
      */
     public function save()
     {
-        $k = $this->schema->primaryKey;
+        $k = $this->getSchema()->primaryKey;
         return ( $k && ! isset($this->_data[$k]) )
                 ? $this->create( $this->_data )
                 : $this->update( $this->_data )
@@ -1003,7 +1005,7 @@ abstract class BaseModel
      */
     public function display( $name )
     {
-        if ( $c = $this->schema->getColumn( $name ) ) {
+        if ( $c = $this->getSchema()->getColumn( $name ) ) {
             // get raw value
             if ( $c->virtual ) {
                 return $this->get($name);
@@ -1034,7 +1036,7 @@ abstract class BaseModel
      */
     public function deflateData(& $args) {
         foreach( $args as $k => $v ) {
-            $c = $this->schema->getColumn($k);
+            $c = $this->getSchema()->getColumn($k);
             if( $c )
                 $args[ $k ] = $this->_data[ $k ] = $c->deflate( $v );
         }
@@ -1255,9 +1257,9 @@ abstract class BaseModel
     {
         return isset($this->_data[ $name ]) 
             || array_key_exists($name, ($this->_data ? $this->_data : array()) )
-            || isset($this->schema->columns[ $name ]) 
+            || isset($this->getSchema()->columns[ $name ]) 
             || 'schema' === $name
-            || $this->schema->getRelation( $name )
+            || $this->getSchema()->getRelation( $name )
             ;
     }
 
@@ -1271,7 +1273,7 @@ abstract class BaseModel
 
 
         if ( ! $relation ) {
-            $relation = $this->schema->getRelation( $key );
+            $relation = $this->getSchema()->getRelation( $key );
         }
 
         /*
@@ -1341,9 +1343,10 @@ abstract class BaseModel
             $rId = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
             $rId2 = $relation['relation_foreign'];  // get external relationId from the middle relation. (book from author_books)
 
-            $middleRelation = $this->schema->getRelation( $rId );
-            if( ! $middleRelation )
+            $middleRelation = $this->getSchema()->getRelation( $rId );
+            if ( ! $middleRelation ) {
                 throw new InvalidArgumentException("first level relationship of many-to-many $rId is empty");
+            }
 
             // eg. author_books
             $sColumn = $middleRelation['foreign_column'];
@@ -1428,21 +1431,14 @@ abstract class BaseModel
         // todo: fix this
         // lazy schema loader, xxx: make this static.
         if ( 'schema' === $key ) {
-            if ( constant( get_class($this) . '::schema_proxy_class') ) {
-                $schema = SchemaLoader::load( static::schema_proxy_class );
-                if ( ! $schema ) {
-                    throw new Exception("Can not load schema proxy class: " . static::schema_proxy_class);
-                }
-                return $schema;
-            }
-            return new Schema\DynamicSchemaDeclare($this);
+            return $this->getSchema();
         } elseif ( '_connection' === $key ) {
             return ConnectionManager::getInstance();
         }
 
 
         // relationship id can override value column.
-        if ( $relation = $this->schema->getRelation( $key ) ) {
+        if ( $relation = $this->getSchema()->getRelation( $key ) ) {
             // cache object cache
             if ( isset($this->_data[ $key ]) 
                 && $this->_data[$key] instanceof \LazyRecord\BaseModel ) 
@@ -1537,9 +1533,10 @@ abstract class BaseModel
     public function toInflatedArray()
     {
         $data = array();
+        $schema = $this->getSchema();
         foreach( $this->_data as $k => $v ) {
-            $col = $this->schema->getColumn( $k );
-            if( $col->isa ) {
+            $col = $schema->getColumn( $k );
+            if ( $col->isa ) {
                 $data[ $k ] = $col->inflate( $v );
             } else {
                 $data[ $k ] = $v;
@@ -1691,7 +1688,7 @@ abstract class BaseModel
      */
     public function filterArrayWithColumns( $args , $withVirtual = false )
     {
-        return array_intersect_key( $args , $this->schema->getColumns( $withVirtual ) );
+        return array_intersect_key( $args , $this->getSchema()->getColumns( $withVirtual ) );
     }
 
 
@@ -1706,7 +1703,7 @@ abstract class BaseModel
     public function inflateColumnValue( $n ) 
     {
         $value = isset($this->_data[ $n ]) ? $this->_data[$n] : null;
-        if( $c = $this->schema->getColumn( $n ) ) {
+        if( $c = $this->getSchema()->getColumn( $n ) ) {
             return $c->inflate( $value, $this );
         }
         return $value;
@@ -1761,7 +1758,14 @@ abstract class BaseModel
 
     public function getSchema() 
     {
-        return SchemaLoader::load( static::schema_proxy_class );
+        if ( $this->_schema ) {
+            return $this->_schema;
+        } elseif ( method_exists($this,'schema') ) {
+            return $this->_schema = new Schema\DynamicSchemaDeclare($this);
+        } elseif ( $s = SchemaLoader::load( static::schema_proxy_class ) ) {
+            return $this->_schema = $s;
+        }
+        throw new RuntimeException("schema is not defined.");
     }
 
     /**
@@ -1769,13 +1773,13 @@ abstract class BaseModel
      */
     public function newCollection() 
     {
-        return $this->schema->newCollection();
+        return $this->getSchema()->newCollection();
     }
 
     // schema methods
     public function getColumn($n)
     {
-        return $this->schema->getColumn($n);
+        return $this->getSchema()->getColumn($n);
     }
 
 
@@ -1786,7 +1790,7 @@ abstract class BaseModel
      */
     public function getColumnNames()
     {
-        return $this->schema->getColumnNames();
+        return $this->getSchema()->getColumnNames();
     }
 
 
@@ -1797,7 +1801,7 @@ abstract class BaseModel
      */
     public function getColumns($withVirtual = false)
     {
-        return $this->schema->getColumns( $withVirtual );
+        return $this->getSchema()->getColumns( $withVirtual );
     }
 
 
@@ -1808,7 +1812,7 @@ abstract class BaseModel
      */
     public function getLabel()
     {
-        return $this->schema->label;
+        return $this->getSchema()->getLabel();
     }
 
 
@@ -1819,7 +1823,7 @@ abstract class BaseModel
      */
     public function getTable()
     {
-        return $this->schema->table;
+        return $this->getSchema()->getTable();
     }
 
 
@@ -1887,14 +1891,14 @@ abstract class BaseModel
     {
         if( $this->usingDataSource )
             return $this->usingDataSource;
-        return $this->schema->getWriteSourceId();
+        return $this->getSchema()->getWriteSourceId();
     }
 
     public function getReadSourceId()
     {
         if( $this->usingDataSource )
             return $this->usingDataSource;
-        return $this->schema->getReadSourceId();
+        return $this->getSchema()->getReadSourceId();
     }
 
     public function __clone()
