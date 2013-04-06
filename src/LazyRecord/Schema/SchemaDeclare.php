@@ -76,7 +76,7 @@ class SchemaDeclare extends SchemaBase
 
     public function getColumns($includeVirtual = false) 
     {
-        if( $includeVirtual ) {
+        if ( $includeVirtual ) {
             return $this->columns;
         }
 
@@ -94,8 +94,9 @@ class SchemaDeclare extends SchemaBase
     {
         $names = array();
         foreach( $this->columns as $name => $column ) {
-            if( ! $includeVirtual && $column->virtual )
+            if ( ! $includeVirtual && $column->virtual ) {
                 continue;
+            }
             $names[] = $name;
         }
         return $names;
@@ -103,7 +104,7 @@ class SchemaDeclare extends SchemaBase
 
     public function getColumn($name)
     {
-        if( isset($this->columns[ $name ]) ) {
+        if ( isset($this->columns[ $name ]) ) {
             return $this->columns[ $name ];
         }
     }
@@ -149,7 +150,7 @@ class SchemaDeclare extends SchemaBase
     public function findPrimaryKey()
     {
         foreach( $this->columns as $name => $column ) {
-            if( $column->primary )
+            if ( $column->primary )
                 return $name;
         }
     }

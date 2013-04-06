@@ -29,8 +29,9 @@ class SchemaGenerator
 
     public function getBaseModelClass() 
     {
-        if( $this->config && $this->config->loaded )
+        if ( $this->config && $this->config->loaded ) {
             return ltrim($this->config->getBaseModelClass(),'\\');
+        }
         return 'LazyRecord\BaseModel';
     }
 

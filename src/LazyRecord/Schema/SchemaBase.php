@@ -45,7 +45,7 @@ abstract class SchemaBase
         }
 
         $class = $this->getModelClass();
-        $p = strpos($class,'\\');
+        $p = strrpos($class,'\\');
         if ( $p === false ) {
             return $class;
         }
