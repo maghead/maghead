@@ -31,7 +31,7 @@ class ModelPerformanceTest extends \LazyRecord\ModelTestCase
         result_ok($ret);
 
         foreach( range(1,1000) as $i ) {
-            $ret = $record->_create(array( 'name' => "Wine Name $i" , 'category_id' => $c->id ));
+            $ret = $record->fastCreate(array( 'name' => "Wine Name $i" , 'category_id' => $c->id ));
             result_ok($ret);
         }
     }
