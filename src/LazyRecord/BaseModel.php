@@ -1950,7 +1950,7 @@ abstract class BaseModel
      *
      * TODO: Move to ActionKit
      */
-    private function newAction($type, $args = array() )
+    public function newAction($type, $args = array() )
     {
         $class = get_class($this);
         $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class,$type);
