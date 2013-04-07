@@ -597,12 +597,21 @@ abstract class BaseModel implements
             return $this->reportError( _('Empty arguments') );
         }
 
+        $validationResults = array();
+        $validationFailed = false;
+        $schema = $this->getSchema();
+
+        // save $args for afterCreate trigger method
+        $origArgs = $args;
+
+        $k = $schema->primaryKey;
+        $sql = $vars     = null;
+        $this->_data     = array();
+        $stm = null;
+
         try {
-            $schema = $this->getSchema();
             $args = $this->beforeCreate( $args );
 
-            // save $args for afterCreate trigger method
-            $origArgs = $args;
 
             // first, filter the array, arguments for inserting data.
             $args = $this->filterArrayWithColumns($args);
@@ -613,13 +622,7 @@ abstract class BaseModel implements
                 ));
             }
 
-            $k = $schema->primaryKey;
-            $sql = $vars     = null;
-            $this->_data     = array();
-            $stm = null;
 
-            $validationResults = array();
-            $validationFailed = false;
 
 
             $dsId = $this->getWriteSourceId();
@@ -923,23 +926,22 @@ abstract class BaseModel implements
             return $this->reportError("The value of primary key is undefined.");
         }
 
+
+        $origArgs = $args;
+        $dsId = $this->getWriteSourceId();
+        $conn = $this->getConnection( $dsId );
+        $sql  = null;
+        $vars = null;
+
         $validationFailed = false;
         $validationResults = array();
-
-
-
 
         try 
         {
             $args = $this->beforeUpdate($args);
-            $origArgs = $args;
 
             $args = $this->filterArrayWithColumns($args);
-            $sql  = null;
-            $vars = null;
 
-            $dsId = $this->getWriteSourceId();
-            $conn = $this->getConnection( $dsId );
 
             foreach( $this->getSchema()->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
@@ -994,7 +996,6 @@ abstract class BaseModel implements
             }
 
             $query = $this->createQuery( $dsId );
-
             $query->update($args)->where()
                 ->equal( $k , $kVal );
 
@@ -1033,6 +1034,72 @@ abstract class BaseModel implements
             'vars' => $vars,
         ));
     }
+
+
+
+    /**
+     * Simply update record without validation and triggers.
+     *
+     * @param array $args
+     */
+    public function rawUpdate($args) 
+    {
+        $dsId  = $this->getWriteSourceId();
+        $conn  = $this->getConnection( $dsId );
+        $k     = $this->getSchema()->primaryKey;
+        $kVal = isset($args[$k]) 
+            ? $args[$k] : isset($this->_data[$k]) 
+            ? $this->_data[$k] : null;
+
+        $query = $this->createQuery( $dsId );
+        $query->update($args)->where()
+            ->equal( $k , $kVal );
+
+        $sql  = $query->build();
+        $vars = $query->vars;
+        $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
+
+        // update current data stash
+        $this->_data = array_merge($this->_data,$args);
+    }
+
+
+
+    /**
+     * Simply create record without validation and triggers.
+     *
+     * @param array $args
+     */
+    public function rawCreate($args) 
+    {
+        $dsId  = $this->getWriteSourceId();
+        $conn  = $this->getConnection( $dsId );
+        $k     = $this->getSchema()->primaryKey;
+        $query = $this->createQuery( $dsId );
+        $query->insert($args);
+        $query->returning( $k );
+        $sql  = $query->build();
+        $vars = $query->vars;
+        $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
+
+
+        $driver = $this->getQueryDriver($dsId);
+        $pkId = null;
+        if( 'pgsql' === $driver->type ) {
+            $pkId = $stm->fetchColumn();
+        } else {
+            $pkId = $conn->lastInsertId();
+        }
+
+
+        // update current data stash
+        $this->_data = array_merge($this->_data,$args);
+        // update primary key value
+        $this->_data[ $k ] = $pkId;
+    }
+
+
+
 
 
     /**
