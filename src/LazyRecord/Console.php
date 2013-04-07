@@ -5,7 +5,7 @@ use CLIFramework\Application;
 class Console extends Application
 {
     const name = 'LazyRecord';
-    const VERSION = "1.9.21";
+    const VERSION = "1.9.22";
 
     public function brief()
     {
