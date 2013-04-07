@@ -592,12 +592,14 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
             return $this->reportError( _('Empty arguments') );
         }
 
+        $schema = $this->getSchema();
+
+        // save $args for afterCreate trigger method
+        $origArgs = $args;
+
         try {
-            $schema = $this->getSchema();
             $args = $this->beforeCreate( $args );
 
-            // save $args for afterCreate trigger method
-            $origArgs = $args;
 
             // first, filter the array, arguments for inserting data.
             $args = $this->filterArrayWithColumns($args);
@@ -919,8 +921,9 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
         }
 
 
-        $conn = $this->getConnection( $dsId );
+        $origArgs = $args;
         $dsId = $this->getWriteSourceId();
+        $conn = $this->getConnection( $dsId );
         $sql  = null;
         $vars = null;
 
@@ -930,7 +933,6 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
         try 
         {
             $args = $this->beforeUpdate($args);
-            $origArgs = $args;
 
             $args = $this->filterArrayWithColumns($args);
 
@@ -1030,14 +1032,14 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
 
 
     /**
-     * Simply run update without validation 
+     * Simply update record without validation and triggers.
      *
      * @param array $args
      */
     public function rawUpdate($args) 
     {
-        $conn  = $this->getConnection( $dsId );
         $dsId  = $this->getWriteSourceId();
+        $conn  = $this->getConnection( $dsId );
         $k     = $this->getSchema()->primaryKey;
         $kVal = isset($args[$k]) 
             ? $args[$k] : isset($this->_data[$k]) 
@@ -1050,8 +1052,47 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
         $sql  = $query->build();
         $vars = $query->vars;
         $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
+
+        // update current data stash
         $this->_data = array_merge($this->_data,$args);
     }
+
+
+
+    /**
+     * Simply create record without validation and triggers.
+     *
+     * @param array $args
+     */
+    public function rawCreate($args) 
+    {
+        $dsId  = $this->getWriteSourceId();
+        $conn  = $this->getConnection( $dsId );
+        $k     = $this->getSchema()->primaryKey;
+        $query = $this->createQuery( $dsId );
+        $query->insert($args);
+        $query->returning( $k );
+        $sql  = $query->build();
+        $vars = $query->vars;
+        $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
+
+
+        $driver = $this->getQueryDriver($dsId);
+        $pkId = null;
+        if( 'pgsql' === $driver->type ) {
+            $pkId = $stm->fetchColumn();
+        } else {
+            $pkId = $conn->lastInsertId();
+        }
+
+
+        // update current data stash
+        $this->_data = array_merge($this->_data,$args);
+        // update primary key value
+        $this->_data[ $k ] = $pkId;
+    }
+
+
 
 
 
