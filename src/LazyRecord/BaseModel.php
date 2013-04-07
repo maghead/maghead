@@ -918,11 +918,14 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
             return $this->reportError("The value of primary key is undefined.");
         }
 
+
+        $conn = $this->getConnection( $dsId );
+        $dsId = $this->getWriteSourceId();
+        $sql  = null;
+        $vars = null;
+
         $validationFailed = false;
         $validationResults = array();
-
-
-
 
         try 
         {
@@ -930,11 +933,7 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
             $origArgs = $args;
 
             $args = $this->filterArrayWithColumns($args);
-            $sql  = null;
-            $vars = null;
 
-            $dsId = $this->getWriteSourceId();
-            $conn = $this->getConnection( $dsId );
 
             foreach( $this->getSchema()->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
@@ -989,7 +988,6 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
             }
 
             $query = $this->createQuery( $dsId );
-
             $query->update($args)->where()
                 ->equal( $k , $kVal );
 
@@ -1028,6 +1026,33 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
             'vars' => $vars,
         ));
     }
+
+
+
+    /**
+     * Simply run update without validation 
+     *
+     * @param array $args
+     */
+    public function rawUpdate($args) 
+    {
+        $conn  = $this->getConnection( $dsId );
+        $dsId  = $this->getWriteSourceId();
+        $k     = $this->getSchema()->primaryKey;
+        $kVal = isset($args[$k]) 
+            ? $args[$k] : isset($this->_data[$k]) 
+            ? $this->_data[$k] : null;
+
+        $query = $this->createQuery( $dsId );
+        $query->update($args)->where()
+            ->equal( $k , $kVal );
+
+        $sql  = $query->build();
+        $vars = $query->vars;
+        $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
+        $this->_data = array_merge($this->_data,$args);
+    }
+
 
 
     /**
