@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord\OperationResult;
+use Exception;
 
 class OperationResult
 {
@@ -69,6 +70,16 @@ class OperationResult
                 $vlds[$k] = $vld;
         }
         return $vlds;
+    }
+
+    public function throwExceptionIfFailed()
+    {
+        if ( ! $this->success ) {
+            if ( $this->exception ) {
+                throw $this->exception;
+            }
+            throw new Exception($this->message);
+        }
     }
 
     public function __toString() {
