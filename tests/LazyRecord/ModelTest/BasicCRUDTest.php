@@ -28,6 +28,27 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
     }
 
 
+    public function testRecordRawCreateBook()
+    {
+        $b = new \tests\Book;
+        ok($b);
+        $b->rawCreate(array( 'title' => 'Go Programming' ));
+        ok($b->id);
+        result_ok( $b->delete() );
+    }
+
+    public function testRecordRawUpdateBook()
+    {
+        $b = new \tests\Book;
+        ok($b);
+        $b->rawCreate(array( 'title' => 'Go Programming' ));
+        ok($b->id);
+        $b->rawUpdate(array( 'title' => 'Perl Programming' ));
+        ok($b->id);
+        result_ok( $b->delete() );
+    }
+
+
     public function testLoadOrCreateModel() 
     {
         $b = new \tests\Book;
