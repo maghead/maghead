@@ -1502,12 +1502,6 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
      */
     public function __get( $key )
     {
-        // fallback
-        if ( 'schema' === $key ) {
-            return $this->getSchema();
-        } elseif ( '_connection' === $key ) {
-            return ConnectionManager::getInstance();
-        }
         return $this->get($key);
     }
 
