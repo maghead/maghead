@@ -94,7 +94,7 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
         ok( $v = $author->getColumn('v') ); // virtual colun
         ok( $v->virtual );
 
-        $columns = $author->schema->getColumns();
+        $columns = $author->getSchema()->getColumns();
 
         ok( ! isset($columns['v']) );
 
@@ -109,9 +109,9 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
     public function testSchema()
     {
         $author = new \tests\Author;
-        ok( $author->schema );
+        ok( $author->getSchema() );
 
-        $columnMap = $author->schema->getColumns();
+        $columnMap = $author->getSchema()->getColumns();
 
         ok( isset($columnMap['confirmed']) );
         ok( isset($columnMap['identity']) );

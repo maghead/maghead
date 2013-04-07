@@ -39,7 +39,7 @@ class ModelPerformanceTest extends \LazyRecord\ModelTestCase
     public function testPDOQuerySample()
     {
         $record = new \tests\Wine;
-        $table = $record->schema->getTable();
+        $table = $record->getSchema()->getTable();
         $connManager = LazyRecord\ConnectionManager::getInstance();
         $pdo = $connManager->get('default');
         foreach( range(1,1000) as $i ) {
