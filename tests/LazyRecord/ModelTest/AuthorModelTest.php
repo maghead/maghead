@@ -124,7 +124,7 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
         ok( $v = $author->getColumn('v') ); // virtual colun
         ok( $v->virtual );
 
-        $columns = $author->schema->getColumns();
+        $columns = $author->getSchema()->getColumns();
         ok( ! isset($columns['v']) );
 
         is('pedro@gmail.compedro@gmail.com',$author->get('v'));
