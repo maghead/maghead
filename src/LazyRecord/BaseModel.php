@@ -592,6 +592,9 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
             return $this->reportError( _('Empty arguments') );
         }
 
+        $validationResults = array();
+        $validationFailed = false;
+
         try {
             $schema = $this->getSchema();
             $args = $this->beforeCreate( $args );
@@ -613,8 +616,6 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
             $this->_data     = array();
             $stm = null;
 
-            $validationResults = array();
-            $validationFailed = false;
 
 
             $dsId = $this->getWriteSourceId();
