@@ -30,7 +30,12 @@ use ActionKit;
  * every model class extends from this class.
  *
  */
-abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate, ExporterInterface
+abstract class BaseModel implements 
+    Serializable, 
+    ArrayAccess, 
+    IteratorAggregate, 
+    Countable,
+    ExporterInterface
 {
 
     const schema_proxy_class = '';
@@ -1268,6 +1273,10 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
     }
 
 
+
+
+
+
     /**
      * Check if the value exist
      *
@@ -1293,6 +1302,7 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
             return $this->_data[$name];
         }
     }
+
 
     /**
      * Clear current data stash
@@ -1742,7 +1752,7 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
     public function inflateColumnValue( $n ) 
     {
         $value = isset($this->_data[ $n ]) ? $this->_data[$n] : null;
-        if( $c = $this->getSchema()->getColumn( $n ) ) {
+        if ( $c = $this->getSchema()->getColumn( $n ) ) {
             return $c->inflate( $value, $this );
         }
         return $value;
@@ -1942,15 +1952,17 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
 
     public function getWriteSourceId()
     {
-        if( $this->usingDataSource )
+        if ( $this->usingDataSource ) {
             return $this->usingDataSource;
+        }
         return $this->getSchema()->getWriteSourceId();
     }
 
     public function getReadSourceId()
     {
-        if( $this->usingDataSource )
+        if ( $this->usingDataSource ) {
             return $this->usingDataSource;
+        }
         return $this->getSchema()->getReadSourceId();
     }
 
@@ -2051,6 +2063,14 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
     public function unserialize($data) 
     {
         $this->_data = unserialize($data);
+    }
+
+
+    // Countable interface
+
+    public function count()
+    {
+        return count($this->_data);
     }
 
 

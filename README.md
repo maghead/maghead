@@ -71,8 +71,8 @@ Change directory to your project, run `init` command to initialize
 your database settings.
 
 ```sh
-$ mkdir proj1
-$ cd proj1
+$ mkdir myapp
+$ cd myapp
 $ lazy init 
 db/config
 db/migration
@@ -101,11 +101,11 @@ then you should provide your schema path in following format:
 ```yaml
 ---
 bootstrap:
-  - db/bootstrap.php
+  - vendor/autoload.php   # load the classloader from composer.
 schema:
   auto_id: 1
   paths:
-    - src/
+    - src/    # where you store the schema class files.
 data_sources:
   default:
     dsn: 'sqlite:test'
@@ -114,25 +114,6 @@ data_sources:
 In the above config file, the `auto_id` means an id column with auto-increment
 integer primary key is automatically inserted into every schema class, so you
 don't need to declare an primary key id column in your every schema file.
-
-then write your bootstrap script `db/bootstrap.php`, which is a simple SPL classloader:
-
-```php
-require 'Universal/ClassLoader/BasePathClassLoader.php';
-use Universal\ClassLoader\BasePathClassLoader;
-$loader = new BasePathClassLoader(array(
-    dirname(__DIR__) . '/src', 
-    dirname(__DIR__) . '/vendor/pear',
-));
-$loader->useIncludePath(true);
-$loader->register();
-```
-
-Or you can require the autoloader from composer:
-
-```php
-require 'vendor/autoload.php';
-```
 
 Next, write your model schema file:
 
@@ -143,7 +124,6 @@ $ vim src/YourApp/Model/UserSchema.php
 Put the content into your file:
 
 ```php
-
 namespace YourApp\Model;
 use LazyRecord\Schema\SchemaDeclare;
 
@@ -208,9 +188,9 @@ $ vim app.php
 ```
 
 ```php
-require 'db/bootstrap.php';
+require 'vendor/autoload.php';
 $config = new LazyRecord\ConfigLoader;
-$config->load('.lazy.yml');
+$config->load( __DIR__ . '/db/config/database.yml');
 $config->init();
 ```
 
@@ -230,7 +210,47 @@ if( ! $ret->success ) {
 
 Please check `doc/` directory for more details.
 
-## Migration Support
+
+
+## Model Accessors
+
+LazyRecord's BaseModel class provides a simple way to retrieve result data from the `__get` magic method,
+by using the magic method, you can retrieve the column value and objects from relationship.
+
+```php
+$record = new MyApp\Model\User( 1 );   // select * from users where id = 1;
+$record->name;    // get "users.name" and inflate it.
+```
+
+The `__get` method is dispatching to `get` method, if you don't want to use the magic method,
+
+```php
+$record->get('name');
+```
+
+
+The magic method calls value inflator, which can help you inflate values like
+DateTime objects, it might be slower, if you want performance, you can simply
+do:
+
+```php
+$record->getValue('name');
+```
+
+BaseModel also supports iterating, so you can iterate the data values with foreach:
+
+```
+foreach( $record as $column => $rawValue ) {
+
+}
+```
+
+
+
+
+
+
+## Migration
 
 If you need to modify schema code, like adding new columns to a table, you 
 can use the amazing migration feature to migrate your database to the latest
