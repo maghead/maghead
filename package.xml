@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2013-04-07</date>
-  <time>16:03:25</time>
+  <time>20:08:31</time>
   <version>
     <release>1.9.5</release>
     <api>1.9.5</api>
@@ -24,10 +24,41 @@
   <notes>-</notes>
   <contents>
     <dir name="/">
+      <file name="doc/cache.md" role="doc" md5sum="3a54917e3ffaf06dfe27fd37f929300c"/>
+      <file name="doc/collection.md" role="doc" md5sum="2d9d1c20b31a5062439a8c6673fc888d"/>
+      <file name="doc/config_loader.md" role="doc" md5sum="8bb3bca7c997f898081adfff3fdb5f1e"/>
+      <file name="doc/connections.md" role="doc" md5sum="fcd136475eefd739b708e52f7b32cf06"/>
+      <file name="doc/development.md" role="doc" md5sum="e8568de1b33653db27fe41bf94728ce9"/>
+      <file name="doc/index.md" role="doc" md5sum="b40db30a10f21ee9c1411d1ad33a9ed6"/>
+      <file name="doc/inflator.md" role="doc" md5sum="ea824bf17ff5a82ddfd17dcd6a8684b6"/>
+      <file name="doc/install.md" role="doc" md5sum="8c2975ab1997933fb52331d4da32e075"/>
+      <file name="doc/migration.md" role="doc" md5sum="95cb21f0af7300c05e7c066a2ed1906d"/>
+      <file name="doc/mixin.md" role="doc" md5sum="5e199aece87efc121a2ee0a3b8c3f02d"/>
+      <file name="doc/model.md" role="doc" md5sum="42f2c020924891983da74d6b259cdd5d"/>
+      <file name="doc/plan.md" role="doc" md5sum="e4407419222fb1c73c5c602ee9bfc7fb"/>
+      <file name="doc/plans/model_schema.md" role="doc" md5sum="59949838061f83bc327e577510c558db"/>
+      <file name="doc/plans/schema_builder.md" role="doc" md5sum="4956d7065e9071e32812cc0233a42b25"/>
+      <file name="doc/query_driver.md" role="doc" md5sum="bb11a3186c726a1cc7157a1b15efe720"/>
+      <file name="doc/schema.md" role="doc" md5sum="1c6b308598cf05350267652de0fd8329"/>
+      <file name="doc/schema_finder.md" role="doc" md5sum="ef41aca02d5263d1ad61400a5b1e281b"/>
+      <file name="doc/schema_generator.md" role="doc" md5sum="09f171163f8163992b8f07338c85a887"/>
+      <file name="doc/schema_sql_builder.md" role="doc" md5sum="6322d6523e1188b6c41d788d3e2cc73b"/>
+      <file name="doc/setup.md" role="doc" md5sum="636d1f52ac693ebde78866646b4bbb8b"/>
+      <file name="doc/table_parser.md" role="doc" md5sum="1227452cf65a856188112c44385a8c0d"/>
+      <file name="doc/testing.md" role="doc" md5sum="1e70d4559730823e5909312b04df98b9"/>
+      <file name="examples/todos/app.php" role="doc" md5sum="01dcc97f1d8b6d60a9092457c2574592"/>
+      <file name="examples/todos/bootstrap.php" role="doc" md5sum="2ad4f7cef2201b1f5f3a1d4921499160"/>
+      <file name="examples/todos/db/config/database.yml" role="doc" md5sum="48883a58ee1a7225e9318a1d80083421"/>
+      <file name="examples/todos/README.md" role="doc" md5sum="ff9ca809d6ddc772caa4245036be131e"/>
+      <file name="examples/todos/src/Todos/Model/Todo.php" role="doc" md5sum="123c17524d156f3accb73222ac0afe00"/>
+      <file name="examples/todos/src/Todos/Model/TodoCollection.php" role="doc" md5sum="9015b1045f1c0641ad4ef09ffb0c981e"/>
+      <file name="examples/todos/src/Todos/Model/TodoCollectionBase.php" role="doc" md5sum="b2050d3354dd899212e155f6aa8c03c0"/>
+      <file name="examples/todos/src/Todos/Seed.php" role="doc" md5sum="208733814ada89c5e9a21eed214cc3a7"/>
+      <file name="examples/todos/test.php" role="doc" md5sum="cb1ec1cb9b264b66044ae47281842034"/>
       <file name="src/LazyRecord/Adapter/PdoAdapter.php" role="php" md5sum="273e5ea0a1effcc02475ed9bc524ad3c"/>
       <file name="src/LazyRecord/ArrayUtils.php" role="php" md5sum="e4050887e137de2f7f7fd18fcbdd09c2"/>
       <file name="src/LazyRecord/BaseCollection.php" role="php" md5sum="a18125ec26c246f235652e8a9bf3d733"/>
-      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="4c195989d99b5bf54b4da7d552fa61ec"/>
+      <file name="src/LazyRecord/BaseModel.php" role="php" md5sum="cd868a989234cd1ecd786736421aa9f9"/>
       <file name="src/LazyRecord/BaseSeed.php" role="php" md5sum="884fadea8ad5b2c3e86645b70554f955"/>
       <file name="src/LazyRecord/Cache/Memcache.php" role="php" md5sum="9aefa9c794f7e62ae670927c00487233"/>
       <file name="src/LazyRecord/ClassUtils.php" role="php" md5sum="298bd7db3b00ffd97581e600ea7e4edc"/>
@@ -58,7 +89,7 @@
       <file name="src/LazyRecord/Command/SchemaCommand.php" role="php" md5sum="286f665637c029961affab18ece317df"/>
       <file name="src/LazyRecord/ConfigLoader.php" role="php" md5sum="79a95adea5acce54c5c49180aa0470ef"/>
       <file name="src/LazyRecord/ConnectionManager.php" role="php" md5sum="d5ce4c86b6a61085cc528a6d30cbb6fc"/>
-      <file name="src/LazyRecord/Console.php" role="php" md5sum="fe63f3624b39d5c5a5bb2314e6c9d8f1"/>
+      <file name="src/LazyRecord/Console.php" role="php" md5sum="7b8cf68c8d17ce0768b7906b865b4799"/>
       <file name="src/LazyRecord/Deflator.php" role="php" md5sum="db7bffe3be80aab0b8eb4d82024d2e42"/>
       <file name="src/LazyRecord/ExecutiveQueryBuilder.php" role="php" md5sum="c21ff042a59b2350473a172b2dad3161"/>
       <file name="src/LazyRecord/ExporterInterface.php" role="php" md5sum="a31fd1719a019017cc044b823fbdac8d"/>
@@ -74,7 +105,7 @@
       <file name="src/LazyRecord/Model/MetadataSchemaProxy.php" role="php" md5sum="f678fa417f176a9773eddbb71cdaeea3"/>
       <file name="src/LazyRecord/ModelTestCase.php" role="php" md5sum="8a228f16e6b6e9ad3ec21223851d13b5"/>
       <file name="src/LazyRecord/OperationResult/OperationError.php" role="php" md5sum="2e62a787b6042778f8eda30f040a048d"/>
-      <file name="src/LazyRecord/OperationResult/OperationResult.php" role="php" md5sum="3b9e79aeb1c48e2f49319f680ec07fe3"/>
+      <file name="src/LazyRecord/OperationResult/OperationResult.php" role="php" md5sum="c34bbb1d4e6037ee446a19e084beb3b7"/>
       <file name="src/LazyRecord/OperationResult/OperationSuccess.php" role="php" md5sum="0223f9434a0f344b6ac24a2e11ca7822"/>
       <file name="src/LazyRecord/QueryDriver.php" role="php" md5sum="7f2b8fae8b6ab267717d4316250d5fe2"/>
       <file name="src/LazyRecord/Schema/Comparator/ConsolePrinter.php" role="php" md5sum="8de200d98f9fe5b50bc4a328d11a6f0e"/>
@@ -110,6 +141,7 @@
       <file name="src/LazyRecord/Types/DateTime.php" role="php" md5sum="5fe7e8d51baeece217cd5907ddaa6a26"/>
       <file name="src/LazyRecord/Types.php" role="php" md5sum="9eae65a3cbbf6efb48c8a8a1bfcbd45f"/>
       <file name="src/LazyRecord/Utils.php" role="php" md5sum="1bbd2f83bbb761f3e67b41710a8a6bc5"/>
+      <file name="bin/lazy" role="script" md5sum="1dc5cb894f0bef02d468b232de60470c"/>
     </dir>
   </contents>
   <dependencies>
@@ -187,6 +219,37 @@
   </dependencies>
   <phprelease>
     <filelist>
+      <install name="doc/cache.md" as="cache.md"/>
+      <install name="doc/collection.md" as="collection.md"/>
+      <install name="doc/config_loader.md" as="config_loader.md"/>
+      <install name="doc/connections.md" as="connections.md"/>
+      <install name="doc/development.md" as="development.md"/>
+      <install name="doc/index.md" as="index.md"/>
+      <install name="doc/inflator.md" as="inflator.md"/>
+      <install name="doc/install.md" as="install.md"/>
+      <install name="doc/migration.md" as="migration.md"/>
+      <install name="doc/mixin.md" as="mixin.md"/>
+      <install name="doc/model.md" as="model.md"/>
+      <install name="doc/plan.md" as="plan.md"/>
+      <install name="doc/plans/model_schema.md" as="plans/model_schema.md"/>
+      <install name="doc/plans/schema_builder.md" as="plans/schema_builder.md"/>
+      <install name="doc/query_driver.md" as="query_driver.md"/>
+      <install name="doc/schema.md" as="schema.md"/>
+      <install name="doc/schema_finder.md" as="schema_finder.md"/>
+      <install name="doc/schema_generator.md" as="schema_generator.md"/>
+      <install name="doc/schema_sql_builder.md" as="schema_sql_builder.md"/>
+      <install name="doc/setup.md" as="setup.md"/>
+      <install name="doc/table_parser.md" as="table_parser.md"/>
+      <install name="doc/testing.md" as="testing.md"/>
+      <install name="examples/todos/app.php" as="todos/app.php"/>
+      <install name="examples/todos/bootstrap.php" as="todos/bootstrap.php"/>
+      <install name="examples/todos/db/config/database.yml" as="todos/db/config/database.yml"/>
+      <install name="examples/todos/README.md" as="todos/README.md"/>
+      <install name="examples/todos/src/Todos/Model/Todo.php" as="todos/src/Todos/Model/Todo.php"/>
+      <install name="examples/todos/src/Todos/Model/TodoCollection.php" as="todos/src/Todos/Model/TodoCollection.php"/>
+      <install name="examples/todos/src/Todos/Model/TodoCollectionBase.php" as="todos/src/Todos/Model/TodoCollectionBase.php"/>
+      <install name="examples/todos/src/Todos/Seed.php" as="todos/src/Todos/Seed.php"/>
+      <install name="examples/todos/test.php" as="todos/test.php"/>
       <install name="src/LazyRecord/Adapter/PdoAdapter.php" as="LazyRecord/Adapter/PdoAdapter.php"/>
       <install name="src/LazyRecord/ArrayUtils.php" as="LazyRecord/ArrayUtils.php"/>
       <install name="src/LazyRecord/BaseCollection.php" as="LazyRecord/BaseCollection.php"/>
@@ -273,6 +336,7 @@
       <install name="src/LazyRecord/Types/DateTime.php" as="LazyRecord/Types/DateTime.php"/>
       <install name="src/LazyRecord/Types.php" as="LazyRecord/Types.php"/>
       <install name="src/LazyRecord/Utils.php" as="LazyRecord/Utils.php"/>
+      <install name="bin/lazy" as="lazy"/>
     </filelist>
   </phprelease>
 </package>
