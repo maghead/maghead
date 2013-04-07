@@ -599,6 +599,11 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
         // save $args for afterCreate trigger method
         $origArgs = $args;
 
+        $k = $schema->primaryKey;
+        $sql = $vars     = null;
+        $this->_data     = array();
+        $stm = null;
+
         try {
             $args = $this->beforeCreate( $args );
 
@@ -612,10 +617,6 @@ abstract class BaseModel implements Serializable, ArrayAccess, IteratorAggregate
                 ));
             }
 
-            $k = $schema->primaryKey;
-            $sql = $vars     = null;
-            $this->_data     = array();
-            $stm = null;
 
 
 
