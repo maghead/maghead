@@ -8,6 +8,7 @@ use ArrayIterator;
 use IteratorAggregate;
 use Serializable;
 use ArrayAccess;
+use Countable;
 
 use SQLBuilder\QueryBuilder;
 use LazyRecord\QueryDriver;
