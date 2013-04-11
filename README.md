@@ -18,6 +18,19 @@ very easily and you can even embed closure in your schema classes.
 
 <div style="width:425px" id="__ss_12638921"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/lazyrecord-the-fast-orm-for-php" title="LazyRecord: The Fast ORM for PHP" target="_blank">LazyRecord: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
 
+
+Concept
+-------
+
+- To support validation, default value, sql builder, we bulid the model schema data statically, this keeps 
+  the model class very lightweight and simple. In runtime, all the same model objects use the same 
+  schema object, and we can reuse the prebuild data from the static schema class.
+
+- We keeps base model class constructor empty, so that when querying data from
+  database, these model objects can be created very quickly without extra
+  costs.
+
+
 Features
 --------
 
