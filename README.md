@@ -451,10 +451,18 @@ trying to update/create the record object.
 
 ## Defining Required Column
 
-```
+```php
 $this->column('email')
     ->required()
     ->varchar(128);
+```
+
+## Defining ValidValues
+
+```php
+$this->column('role')
+    ->required()
+    ->validValues(array('user','admin','guest'));
 ```
 
 ## Defining Relationship
