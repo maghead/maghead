@@ -22,11 +22,15 @@ very easily and you can even embed closure in your schema classes.
 Concept
 -------
 
-- To support validation, default value, sql builder, we bulid the model schema data statically, this keeps 
-  the model class very lightweight and simple. In runtime, all the same model objects use the same 
+- Function calls in PHP are very slow, so we bulid the model schema data
+  statically, convert all definitions (default value, validator, filter, valid
+  value builder) into classes and static PHP array, this keeps these model
+  classes very lightweight and fast.
+  
+- In the runtime, all the same model objects use the same 
   schema object, and we can reuse the prebuild data from the static schema class.
 
-- We keeps base model class constructor empty, so that when querying data from
+- We keep base model class constructor empty, so when you are querying data from
   database, these model objects can be created very quickly without extra
   costs.
 
