@@ -31,6 +31,13 @@ class SchemaDeclare extends SchemaBase
         return $this->readSourceId ?: 'default';
     }
 
+    public function using( $id ) 
+    {
+        $this->writeSourceId = $id;
+        $this->readSourceId = $id;
+        return $this;
+    }
+
     public function writeTo( $id ) 
     {
         $this->writeSourceId = $id;
