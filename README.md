@@ -84,6 +84,8 @@ Download the lazyrecord command-line binary:
 Getting Started
 ---------------
 
+## Configuring Database
+
 Change directory to your project, run `init` command to initialize 
 your database settings.
 
@@ -132,6 +134,9 @@ In the above config file, the `auto_id` means an id column with auto-increment
 integer primary key is automatically inserted into every schema class, so you
 don't need to declare an primary key id column in your every schema file.
 
+
+## Writing Model Schema
+
 Next, write your model schema file:
 
 ```sh
@@ -157,6 +162,8 @@ class UserSchema extends Schema
 }
 ```
 
+## Building Static Schema Files
+
 Then run `build-schema` command to build static schema files:
 
 ```sh
@@ -172,12 +179,18 @@ Initializing schema generator...
 Done
 ```
 
+
+## Creating Database
+
 If you are using postgresql or mysql, you can create your database with
 `create-db` command:
 
 ```sh
 $ lazy create-db
 ```
+
+
+## Building SQL From Model Schemas
 
 Now you need to build SQL schema into your database, simply run `build-sql`,
 `-d` is for debug mode, which prints all generated SQL statements:
@@ -197,6 +210,8 @@ Setting migration timestamp to 1347439779
 Done. 1 schema tables were generated into data source 'default'.
 ```
 
+## Writing Application Code
+
 Now you can write your application code,
 But first you need to write your lazyrecord config loader code:
 
@@ -214,20 +229,27 @@ $config->init();
 The `init` method initializes data sources to ConnectionManager, but it won't
 create connection unless you need to operate your models.
 
-Append your application code to the end of `app.php` file:
+
+## Sample Code Of Operating The User Model Object
+
+Now append your application code to the end of `app.php` file:
 
 ```php
-
 $user = new YourApp\Model\User;
 $ret = $user->create(array('account' => 'guest', 'password' => '123123' ));
 if( ! $ret->success ) {
-    echo $ret;
+    echo $ret->message;  // get the error message
+    if ($ret->exception) {
+        echo $ret->exception;  // get the exception object
+    }
+    echo $ret; // __toString() is supported
 }
 ```
 
 Please check `doc/` directory for more details.
 
-
+Basic Usage
+-----------
 
 ## Model Accessors
 
@@ -261,6 +283,203 @@ foreach( $record as $column => $rawValue ) {
 
 }
 ```
+
+
+
+
+
+## Model Operations
+
+To create a model record:
+
+```php
+$author = new Author;
+$ret = $author->create(array(
+    'name' => 'Foo'
+));
+if ( $ret->success ) {
+    echo 'created';
+}
+```
+
+To find record:
+    
+```php
+$ret = $author->find(123);
+$ret = $author->find(array( 'foo' => 'Name' ));
+if ( $ret->success ) {
+
+} else {
+    // handle $ret->exception or $ret->message
+}
+```
+
+To find record with (static):
+
+```php
+$record = Author::load(array( 'name' => 'Foo' ));
+```
+
+To find record with primary key:
+
+```php
+$record = Author::load( 1 );
+```
+
+To update record:
+
+```php
+$author->update(array(  
+    'name' => 'Author',
+));
+```
+
+To update record (static):
+
+```php
+
+$ret = Author::update( array( 'name' => 'Author' ) )
+    ->where()
+        ->equal('id',3)
+        ->execute();
+
+if( $ret->success ) {
+    echo $ret->message;
+}
+else {
+    // pretty print error message, exception and validation errors for console
+    echo $ret;
+
+    $e = $ret->exception; // get exception
+    $validations = $ret->validations; // get validation results
+}
+```
+
+
+## Collection
+
+To create a collection object:
+
+```php
+
+$authors = new AuthorCollection;
+$authors->where()
+    ->equal( 'id' , 'foo' );
+
+$authors = new AuthorCollection;
+$items = $authors->items();
+foreach( $items as $item ) {
+    echo $item->id;
+}
+
+$authors = new AuthorCollection;
+foreach( $authors as $author ) {
+    echo $author->name;
+}
+```
+
+Advanced Usage
+--------------
+
+## Using Column Validator
+
+Write your validator as a closure, here comes the simplest sample code:
+
+```
+$this->column('name')
+    ->varchar(128)
+    ->validator(function($val) {
+        if ( in_array($val,'foo','bar')) {
+            return array(true, "OK");
+        }
+        return array(false,"Not a valid value.");
+    });
+```
+
+If you need, you may also get the arguments and the current record object:
+
+```
+$this->column('name')
+    ->varchar(128)
+    ->validator(function($val, $args, $record) {
+        if ( in_array($val,'foo','bar')) {
+            return array(true, "OK");
+        }
+        return array(false,"Not a valid value.");
+    });
+```
+
+If you are using ValidationKit, we can pass the validator class name:
+
+```php
+$this->column('id_number')
+    ->varchar(10)
+    ->validator('TW\\IDNumberValidator');
+```
+
+## Defining Inflator And Deflator
+
+Inflator and Deflator are used in some situation like 
+"read a timestamp and construct a DateTime object with the raw value", 
+Or "convert a DateTime object into a string that is acceptable for database"
+
+LazyRecord provides some built-in inflators and deflators, e.g., timestamp columns:
+
+```
+$this->column('created_on')
+    ->timestamp();
+```
+
+So that when you are retrieving "created\_on" from record object, you get a `DateTime` object.
+
+You can also define your own deflator or inflator, for example:
+
+```
+$this->column('serialized_content')
+    ->varchar(128)
+    ->inflator(function($val) {
+        return unserialize($val);
+    })
+    ->deflator(function($val) {
+        return serialize($val);
+    });
+```
+
+The above code does unserialize/serialize automatically when you're 
+trying to update/create the record object.
+
+## Defining Relationship
+
+Has Many:
+
+```php
+
+// has many
+$address = $author->addresses->create(array( 
+    'address' => 'farfaraway'
+));
+
+$address->delete();
+
+// create related address
+$author->addresses[] = array( 'address' => 'Harvard' );
+
+$addresses = $author->addresses->items();
+is( 'Harvard' , $addresses[0]->address );
+
+foreach( $author->addresses as $address ) {
+    echo $address->address , "\n";
+}
+```
+
+BelongsTo:
+
+```php
+$this->belongsTo('book','\tests\BookSchema','id','book_id');
+```
+
+
+
 
 
 ## Using Multiple Data Source
@@ -423,138 +642,7 @@ $driver->configure('quote_column',true);
 $driver->configure('quote_table',true);
 ```
 
-
-## Model Operations
-
-To create a model record:
-
-```php
-$author = new Author;
-$ret = $author->create(array(
-    'name' => 'Foo'
-));
-if ( $ret->success ) {
-    echo 'created';
-}
-```
-
-To find record:
-    
-```php
-$ret = $author->find(123);
-$ret = $author->find(array( 'foo' => 'Name' ));
-if ( $ret->success ) {
-
-} else {
-    // handle $ret->exception or $ret->message
-}
-```
-
-To find record with (static):
-
-```php
-$record = Author::load(array( 'name' => 'Foo' ));
-```
-
-To find record with primary key:
-
-```php
-$record = Author::load( 1 );
-```
-
-To update record:
-
-```php
-$author->update(array(  
-    'name' => 'Author',
-));
-```
-
-To update record (static):
-
-```php
-
-$ret = Author::update( array( 'name' => 'Author' ) )
-    ->where()
-        ->equal('id',3)
-        ->execute();
-
-if( $ret->success ) {
-    echo $ret->message;
-}
-else {
-    // pretty print error message, exception and validation errors for console
-    echo $ret;
-
-    $e = $ret->exception; // get exception
-    $validations = $ret->validations; // get validation results
-}
-```
-
-## Collection
-
-To create a collection object:
-
-```php
-
-$authors = new AuthorCollection;
-$authors->where()
-    ->equal( 'id' , 'foo' );
-
-$authors = new AuthorCollection;
-$items = $authors->items();
-foreach( $items as $item ) {
-    echo $item->id;
-}
-
-$authors = new AuthorCollection;
-foreach( $authors as $author ) {
-    echo $author->name;
-}
-```
-
-## Validation
-
-```php
-$this->column('id_number')
-    ->varchar(10)
-    ->validator('TW\\IDNumberValidator');
-```
-
-## Relationships
-
-
-Has Many:
-
-```php
-
-// has many
-$address = $author->addresses->create(array( 
-    'address' => 'farfaraway'
-));
-
-$address->delete();
-
-// create related address
-$author->addresses[] = array( 'address' => 'Harvard' );
-
-$addresses = $author->addresses->items();
-is( 'Harvard' , $addresses[0]->address );
-
-foreach( $author->addresses as $address ) {
-    echo $address->address , "\n";
-}
-```
-
-BelongsTo:
-
-```php
-$this->belongsTo('book','\tests\BookSchema','id','book_id');
-```
-
-
-
-## A more advanced schema code
+## A More Advanced Model Schema
 
 ```php
 use LazyRecord\Schema;
