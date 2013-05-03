@@ -448,6 +448,15 @@ $this->column('serialized_content')
 The above code does unserialize/serialize automatically when you're 
 trying to update/create the record object.
 
+
+## Defining Required Column
+
+```
+$this->column('email')
+    ->required()
+    ->varchar(128);
+```
+
 ## Defining Relationship
 
 Has Many:
