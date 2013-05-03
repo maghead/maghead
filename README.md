@@ -495,9 +495,26 @@ BelongsTo:
 $this->belongsTo('book','\tests\BookSchema','id','book_id');
 ```
 
+## Do Some Preparation When Model Is Ready
 
+If you want to do something after the schmea is created into a database, you can define a
+`bootstrap` method in your schema class:
 
+```php
+namespace User;
+class UserSchema extends LazyRecord\Schema { 
+    public function schema() {
+        // ...
+    }
+    public function bootstrap($model) {
+        // do something you want
+    }
+}
+```
 
+The bootstrap method is triggerd when you run:
+
+`lazy build-sql`
 
 ## Using Multiple Data Source
 
@@ -515,7 +532,7 @@ class UserSchema extends Schema {
 
 Or you can specify for both (read and write):
 
-```
+```php
 use LazyRecord\Schema;
 class UserSchema extends Schema {
     public function schema() {
