@@ -142,9 +142,9 @@ Put the content into your file:
 
 ```php
 namespace YourApp\Model;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema;
 
-class UserSchema extends SchemaDeclare 
+class UserSchema extends Schema
 {
     public function schema()
     {
@@ -263,9 +263,30 @@ foreach( $record as $column => $rawValue ) {
 ```
 
 
+## Using Multiple Data Source
 
+You can define specific data source for different model in the model schema:
 
+```php
+use LazyRecord\Schema;
+class UserSchema extends Schema {
+    public function schema() {
+        $this->writeTo('master');
+        $this->readFrom('slave');
+    }
+}
+```
 
+Or you can specify for both (read and write):
+
+```
+use LazyRecord\Schema;
+class UserSchema extends Schema {
+    public function schema() {
+        $this->using('master');
+    }
+}
+```
 
 ## Migration
 
@@ -536,9 +557,9 @@ $this->belongsTo('book','\tests\BookSchema','id','book_id');
 ## A more advanced schema code
 
 ```php
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema;
 
-class AuthorSchema extends SchemaDeclare
+class AuthorSchema extends Schema
 {
     function schema()
     {
