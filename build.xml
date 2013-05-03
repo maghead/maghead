@@ -6,7 +6,7 @@
  <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
  <target name="build"
-   depends="bundle,prepare,phpunit,lint,phploc,pdepend,phpmd-ci,doxygen,phpcs-ci,phpcpd,phpdox,phpwiki,phpcb,package"/>
+   depends="prepare,composer,phpunit,lint,phploc,pdepend,phpmd-ci,doxygen,phpcs-ci,phpcpd,phpdox,phpwiki,phpcb,package"/>
 
  <target name="build-parallel"
    depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -181,7 +181,19 @@
     </exec>
  </target>
 
- <target name="bundle">
+ <target name="composer">
+     <if>
+        <available file="composer.json"/>
+        <then>
+            <exec executable="composer" failonerror="true">
+                <arg value="install"/>
+                <arg value="--dev"/>
+            </exec>
+        </then>
+     </if>
+ </target>
+
+ <target name="onion">
      <if>
         <available file="package.ini"/>
         <then>
