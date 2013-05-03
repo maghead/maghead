@@ -4,6 +4,7 @@ use Exception;
 use RuntimeException;
 use ReflectionClass;
 use LazyRecord\Inflector;
+use LazyRecord\Schema\DynamicSchemaDeclare;
 
 class ClassUtils
 {
@@ -12,7 +13,7 @@ class ClassUtils
         $model = new $class;
         if( ! method_exists($model,'schema') )
             throw new RuntimeException("Model $class requires schema method");
-        return new \LazyRecord\Schema\DynamicSchemaDeclare($model);
+        return new DynamicSchemaDeclare($model);
     }
 
     static public function get_declared_dynamic_schema_classes_from_models()
@@ -58,7 +59,7 @@ class ClassUtils
                 $model = new $class;
                 $schemas[] = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
             }
-            elseif( is_a($class,'LazyRecord\Schema\SchemaDeclare',true) ) {
+            elseif( is_subclass_of($class,'LazyRecord\Schema\SchemaDeclare',true) ) {
                 $schemas[] = new $class; 
             }
         }
@@ -75,7 +76,7 @@ class ClassUtils
         $list = array();
         foreach( $classes as $class ) {
             // skip abstract classes.
-            if ( 
+            if (
               ! is_subclass_of($class, 'LazyRecord\Schema\SchemaDeclare',true)
               || is_a($class, 'LazyRecord\Schema\DynamicSchemaDeclare',true)
               || is_a($class, 'LazyRecord\Schema\MixinSchemaDeclare',true)
