@@ -530,6 +530,32 @@ class UserSchema extends Schema {
 }
 ```
 
+### Defining BaseData Seed
+
+The basedata seed script is executed after you run `build-sql`, which means
+all of your tables are ready in the database.
+
+To define a basedata seed script:
+
+```php
+namespace User;
+class Seed { 
+    public static function seed() {
+
+    }
+}
+```
+
+Then update your config file by adding the class name of the data
+seed class:
+
+```yaml
+seeds:
+  - User\Seed
+  - System\Seed
+  - System\TestingSeed
+```
+
 Migration
 ---------
 
@@ -648,14 +674,6 @@ To see what migration script could do, please check the documentation of SQLBuil
 
 ## Basedata Seed
 
-```php
-namespace User;
-class Seed { 
-    public static function seed() {
-
-    }
-}
-```
 
 ## Setting up QueryDriver for SQL syntax
  
