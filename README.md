@@ -93,22 +93,11 @@ your database settings.
 $ mkdir myapp
 $ cd myapp
 $ lazy init 
-db/config
-db/migration
 Database driver [sqlite] [sqlite/pgsql/mysql/] sqlite
 Database name [:memory:] test
-Using sqlite driver
-Using database test
-Using DSN: sqlite:test
-Creating config file skeleton...
-Config file is generated: db/config/database.yml
-Please run build-conf to compile php format config file.
-Building config from db/config/database.yml
-Making link => .lazy.yml
-Done.
 ```
 
-To edit your config file:
+Then edit your config file:
 
 ```sh
 $ vim db/config/database.yml
@@ -278,7 +267,7 @@ $record->getValue('name');
 
 BaseModel also supports iterating, so you can iterate the data values with foreach:
 
-```
+```php
 foreach( $record as $column => $rawValue ) {
 
 }
@@ -385,7 +374,7 @@ Advanced Usage
 
 Write your validator as a closure, here comes the simplest sample code:
 
-```
+```php
 $this->column('name')
     ->varchar(128)
     ->validator(function($val) {
@@ -398,7 +387,7 @@ $this->column('name')
 
 If you need, you may also get the arguments and the current record object:
 
-```
+```php
 $this->column('name')
     ->varchar(128)
     ->validator(function($val, $args, $record) {
@@ -425,7 +414,7 @@ Or "convert a DateTime object into a string that is acceptable for database"
 
 LazyRecord provides some built-in inflators and deflators, e.g., timestamp columns:
 
-```
+```php
 $this->column('created_on')
     ->timestamp();
 ```
@@ -434,7 +423,7 @@ So that when you are retrieving "created\_on" from record object, you get a `Dat
 
 You can also define your own deflator or inflator, for example:
 
-```
+```php
 $this->column('serialized_content')
     ->varchar(128)
     ->inflator(function($val) {
