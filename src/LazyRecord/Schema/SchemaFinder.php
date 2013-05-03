@@ -48,6 +48,9 @@ class SchemaFinder
         if( preg_match( '#LazyRecord\\\\Schema\\\\SchemaDeclare#ixsm' , $code ) ) {
             require_once $file;
         }
+        elseif( preg_match( '#use\s+LazyRecord\\\\Schema#ixsm' , $code ) ) {
+            require_once $file;
+        }
         elseif( preg_match( '/LazyRecord\\\\BaseModel/ixsm' , $code ) ) {
             require_once $file;
         }
