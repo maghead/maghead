@@ -251,7 +251,7 @@ Please check `doc/` directory for more details.
 Basic Usage
 -----------
 
-## Model Accessors
+## Model Accessor
 
 LazyRecord's BaseModel class provides a simple way to retrieve result data from the `__get` magic method,
 by using the magic method, you can retrieve the column value and objects from relationship.
@@ -288,7 +288,7 @@ foreach( $record as $column => $rawValue ) {
 
 
 
-## Model Operations
+## Model Operation
 
 To create a model record:
 
