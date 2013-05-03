@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord\SqlBuilder;
+use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\QueryBuilder;
 
