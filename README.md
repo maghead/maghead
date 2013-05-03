@@ -84,7 +84,7 @@ Download the lazyrecord command-line binary:
 Getting Started
 ---------------
 
-## Configuring Database
+### Configuring Database
 
 Change directory to your project, run `init` command to initialize 
 your database settings.
@@ -124,7 +124,7 @@ integer primary key is automatically inserted into every schema class, so you
 don't need to declare an primary key id column in your every schema file.
 
 
-## Writing Model Schema
+### Writing Model Schema
 
 Next, write your model schema file:
 
@@ -151,7 +151,7 @@ class UserSchema extends Schema
 }
 ```
 
-## Building Static Schema Files
+### Building Static Schema Files
 
 Then run `build-schema` command to build static schema files:
 
@@ -169,7 +169,7 @@ Done
 ```
 
 
-## Creating Database
+### Creating Database
 
 If you are using postgresql or mysql, you can create your database with
 `create-db` command:
@@ -179,7 +179,7 @@ $ lazy create-db
 ```
 
 
-## Building SQL From Model Schemas
+### Building SQL From Model Schemas
 
 Now you need to build SQL schema into your database, simply run `build-sql`,
 `-d` is for debug mode, which prints all generated SQL statements:
@@ -199,7 +199,7 @@ Setting migration timestamp to 1347439779
 Done. 1 schema tables were generated into data source 'default'.
 ```
 
-## Writing Application Code
+### Writing Application Code
 
 Now you can write your application code,
 But first you need to write your lazyrecord config loader code:
@@ -219,7 +219,7 @@ The `init` method initializes data sources to ConnectionManager, but it won't
 create connection unless you need to operate your models.
 
 
-## Sample Code Of Operating The User Model Object
+### Sample Code Of Operating The User Model Object
 
 Now append your application code to the end of `app.php` file:
 
@@ -240,7 +240,7 @@ Please check `doc/` directory for more details.
 Basic Usage
 -----------
 
-## Model Accessor
+### Model Accessor
 
 LazyRecord's BaseModel class provides a simple way to retrieve result data from the `__get` magic method,
 by using the magic method, you can retrieve the column value and objects from relationship.
@@ -277,7 +277,7 @@ foreach( $record as $column => $rawValue ) {
 
 
 
-## Model Operation
+### Model Operation
 
 To create a model record:
 
@@ -345,7 +345,7 @@ else {
 ```
 
 
-## Collection
+### Collection
 
 To create a collection object:
 
@@ -370,7 +370,7 @@ foreach( $authors as $author ) {
 Advanced Usage
 --------------
 
-## Using Column Validator
+### Using Column Validator
 
 Write your validator as a closure, here comes the simplest sample code:
 
@@ -406,7 +406,7 @@ $this->column('id_number')
     ->validator('TW\\IDNumberValidator');
 ```
 
-## Defining Inflator And Deflator
+### Defining Inflator And Deflator
 
 Inflator and Deflator are used in some situation like 
 "read a timestamp and construct a DateTime object with the raw value", 
@@ -438,7 +438,7 @@ The above code does unserialize/serialize automatically when you're
 trying to update/create the record object.
 
 
-## Defining Required Column
+### Defining Required Column
 
 ```php
 $this->column('email')
@@ -446,7 +446,7 @@ $this->column('email')
     ->varchar(128);
 ```
 
-## Defining ValidValues
+### Defining ValidValues
 
 ```php
 $this->column('role')
@@ -454,7 +454,7 @@ $this->column('role')
     ->validValues(array('user','admin','guest'));
 ```
 
-## Defining Relationship
+### Defining Relationship
 
 Has Many:
 
@@ -484,7 +484,7 @@ BelongsTo:
 $this->belongsTo('book','\tests\BookSchema','id','book_id');
 ```
 
-## Do Some Preparation When Model Is Ready
+### Do Some Preparation When Model Is Ready
 
 If you want to do something after the schmea is created into a database, you can define a
 `bootstrap` method in your schema class:
@@ -505,7 +505,7 @@ The bootstrap method is triggerd when you run:
 
 `lazy build-sql`
 
-## Using Multiple Data Source
+### Using Multiple Data Source
 
 You can define specific data source for different model in the model schema:
 
@@ -530,7 +530,8 @@ class UserSchema extends Schema {
 }
 ```
 
-## Migration
+Migration
+---------
 
 If you need to modify schema code, like adding new columns to a table, you 
 can use the amazing migration feature to migrate your database to the latest
