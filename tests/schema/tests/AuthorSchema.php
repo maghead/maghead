@@ -1,9 +1,8 @@
 <?php
 namespace tests;
-use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema;
 
-class AuthorSchema extends SchemaDeclare
+class AuthorSchema extends Schema
 {
     function schema()
     {

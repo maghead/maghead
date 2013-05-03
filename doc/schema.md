@@ -6,9 +6,9 @@ Schema Example
 
 ```php
 <?php
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema;
 
-class AddressSchema extends SchemaDeclare
+class AddressSchema extends Schema
 {
     function schema()
     {

@@ -10,7 +10,7 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\CodeGen\ClassTemplate;
 use LazyRecord\CodeGen\ClassConst;
 use LazyRecord\CodeGen\ClassInjection;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema;
 
 
 /**
