@@ -544,7 +544,7 @@ $this->mixin('tests\MetadataMixinSchema');
 
 The Mixin Schema Class, e.g., MetadataSchema:
 
-```
+```php
 <?php
 namespace LazyRecord\Schema\Mixin;
 use LazyRecord\Schema\MixinSchemaDeclare;
