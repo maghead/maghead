@@ -14,8 +14,8 @@
 
     <!-- configuration for pgsql -->
     <env name="DB_PGSQL_DSN" value="pgsql:dbname=testing"/>
-    <env name="DB_PGSQL_USER" value="testing"/>
-    <env name="DB_PGSQL_PASS" value="testing"/>
+    <env name="DB_PGSQL_USER" value="postgres"/>
+    <env name="DB_PGSQL_PASS" value="postgres"/>
 
     <env name="DB_SQLITE_DSN" value="sqlite::memory:"/>
   </php>

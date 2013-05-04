@@ -39,7 +39,7 @@ class BaseBuilder
         return $this->driver->$name;
     }
 
-    public function build($schema) 
+    public function build($schema)
     {
         if( $schema instanceof \LazyRecord\BaseModel ) {
             $model = $schema;
