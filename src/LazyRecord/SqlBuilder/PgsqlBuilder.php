@@ -14,7 +14,7 @@ class PgsqlBuilder
     implements BuilderInterface
 {
 
-    function buildColumnSql($schema, $column) {      
+    public function buildColumnSql($schema, $column) {      
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         $type = $column->type;
@@ -26,10 +26,11 @@ class PgsqlBuilder
         if( ! $column->autoIncrement )
             $sql .= ' ' . $type;
 
-        if( $column->required || $column->notNull )
+        if ( $column->required || $column->notNull ) {
             $sql .= ' NOT NULL';
-        elseif( $column->null )
+        } elseif ( $column->null ) {
             $sql .= ' NULL';
+        }
 
 
         /* if it's callable, we should not write the result into sql schema */
