@@ -116,6 +116,8 @@ class SchemaGenerator
         $cTemplate->addStaticVar( 'mixin_classes', $schema->getMixinSchemaClasses() );
 
         $cTemplate->extendClass( $this->getBaseModelClass() );
+
+        // overwrite
         return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
     }
 
