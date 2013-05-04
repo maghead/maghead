@@ -20,6 +20,9 @@ data_sources:
 #     dsn: 'sqlite:tests.db'
     user: 
     pass: 
+  pgsql:
+    dsn: 'pgsql:host=localhost;dbname=testing'
+    user: postgres
 #    slave:
 #      dsn: 'mysql:host=localhost;dbname=test'
 #      user: root

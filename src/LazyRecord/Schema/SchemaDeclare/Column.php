@@ -286,12 +286,6 @@ class Column
     }
 
 
-    public function index($indexName = null) {
-        $this->attributes['index'] = $indexName ?: true;
-        return $this;
-    }
-
-
     /************************************************
      * DateTime related types
      *************************************************/
@@ -336,6 +330,12 @@ class Column
         $this->isa = 'int';
         return $this;
     }
+
+    public function index($indexName = null) {
+        $this->attributes['index'] = $indexName ?: true;
+        return $this;
+    }
+
 
     public function validator() {
         $args = func_get_args();
