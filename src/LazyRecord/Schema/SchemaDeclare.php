@@ -228,6 +228,12 @@ class SchemaDeclare extends SchemaBase
         return var_export( $this->export() , true );
     }
 
+    public function label($label)
+    {
+        $this->label = $label;
+        return $this;
+    }
+
     public function table($table)
     {
         $this->table = $table;
