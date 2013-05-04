@@ -110,6 +110,11 @@ class SchemaGenerator
         $cTemplate->addConst( 'collection_class' , ltrim($schema->getCollectionClass(),'\\') );
         $cTemplate->addConst( 'model_class' , ltrim($schema->getModelClass(),'\\') );
         $cTemplate->addConst( 'table',  $schema->getTable() );
+
+        $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
+        $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
+        $cTemplate->addStaticVar( 'mixin_classes', $schema->getMixinSchemaClasses() );
+
         $cTemplate->extendClass( $this->getBaseModelClass() );
         return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
     }
