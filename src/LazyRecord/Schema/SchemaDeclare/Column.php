@@ -117,6 +117,7 @@ class Column
         }
     }
 
+
     public function name($name) 
     {
         $this->name = $name;
@@ -284,6 +285,11 @@ class Column
         return $this;
     }
 
+
+    public function index($indexName = null) {
+        $this->attributes['index'] = $indexName ?: true;
+        return $this;
+    }
 
 
     /************************************************
