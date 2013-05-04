@@ -204,10 +204,10 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         ok( $book->create(array( 'title' => 'Book I Ex' ))->success );
 
         ok( $book->create(array( 'title' => 'Book I' ))->success );
-        ok( $ab->create(array( 
+        result_ok( $ab->create(array( 
             'author_id' => $author->id,
             'book_id' => $book->id,
-        ))->success );
+        )) );
 
         ok( $book->create(array( 'title' => 'Book II' ))->success );
         $ab->create(array( 

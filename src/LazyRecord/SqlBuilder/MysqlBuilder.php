@@ -2,6 +2,7 @@
 namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\QueryBuilder;
+use SQLBuilder\IndexBuilder;
 
 class MysqlBuilder
     extends BaseBuilder

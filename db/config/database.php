@@ -19,5 +19,10 @@
       'user' => NULL,
       'pass' => NULL,
     ),
+    'pgsql' => 
+    array (
+      'dsn' => 'pgsql:host=localhost;dbname=testing',
+      'user' => 'postgres',
+    ),
   ),
 );

@@ -98,16 +98,38 @@ class CommandUtils
 
         $sqls = array();
         foreach( $schemas as $schema ) {
-            $sqls[] = static::build_schema_sql($builder,$schema,$conn);
+            $sqls[] = static::build_table_sql($builder,$schema,$conn);
         }
+
+        foreach( $schemas as $schema ) {
+            $sqls[] = static::build_index_sql($builder,$schema,$conn);
+        }
+
         return join("\n", $sqls );
     }
 
-    static function build_schema_sql($builder,$schema,$conn) {
+    static function build_index_sql($builder,$schema,$conn) {
         $class = get_class($schema);
-        static::$logger->info('Building SQL for ' . $schema);
+        static::$logger->info('Building Index SQL for ' . $schema);
 
-        $sqls = $builder->build($schema);
+        $sqls = $builder->buildIndex($schema);
+        foreach( $sqls as $sql ) {
+            static::$logger->debug($sql);
+            $conn->query( $sql );
+            $error = $conn->errorInfo();
+            if( $error[1] ) {
+                $msg =  $class . ': ' . var_export( $error , true );
+                static::$logger->error($msg);
+            }
+        }
+        return "--- Index For $class \n" . join("\n",$sqls);
+    }
+
+    static function build_table_sql($builder,$schema,$conn) {
+        $class = get_class($schema);
+        static::$logger->info('Building Table SQL for ' . $schema);
+
+        $sqls = $builder->buildTable($schema);
         foreach( $sqls as $sql ) {
             static::$logger->debug($sql);
             $conn->query( $sql );
