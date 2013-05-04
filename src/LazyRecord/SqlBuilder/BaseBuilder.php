@@ -1,5 +1,7 @@
 <?php
 namespace LazyRecord\SqlBuilder;
+use SQLBuilder\IndexBuilder;
+use SQLBuilder\QueryBuilder;
 
 class BaseBuilder
 {
