@@ -1,6 +1,16 @@
 Changes
 =======
 
+## v1.20
+
+- Added index support, you can now add index attribute on your column.
+- Added foreign key (references) generator for the `build-sql` command.
+- Upgraded SQLBuilder to use the index builder.
+- Added option parameters to mixin schema, now you can call mixin with options to 
+  customize your mixin schema.
+- Support mixin schema methods to BaseModel object, you can now define your mixin methods
+  for the mixed models.
+
 ## v1.8.11, v1.8.12
 
 - Fix bugs for schema/class/model
