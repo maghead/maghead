@@ -334,13 +334,14 @@ abstract class BaseModel implements
             break;
         }
 
-        /*
-        if ( static::$mixin_classes ) { 
+        if ( isset(static::$mixin_classes) ) { 
             foreach( static::$mixin_classes as $mixinClass ) {
-
+                // if we found it, just call it and return the result. 
+                if ( method_exists( $mixinClass , $m ) ) {
+                    return call_user_func_array( array($mixinClass, $m) , $a );
+                }
             }
         }
-         */
 
         // dispatch to schema object method
         $schema = $this->getSchema();
