@@ -117,6 +117,7 @@ class NameSchemaProxy extends RuntimeSchema
           'isa' => 'str',
           'size' => 12,
           'required' => true,
+          'index' => true,
           'validValues' => array( 
               'Taiwan',
               'Taipei',
