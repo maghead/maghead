@@ -112,25 +112,5 @@ class MysqlBuilder
             . $this->driver->getQuoteTableName( $schema->getTable() )
             . ';';
     }
-
-
-    public function buildIndex($schema) 
-    {
-        $sqls = array();
-        foreach( $schema->columns as $name => $column ) {
-            if ( $column->index ) {
-                $indexName = is_string($column->index) ? $column->index 
-                    : "idx_" . $name;
-                $builder = new IndexBuilder($this->driver);
-                $builder->create( $indexName )
-                    ->on( $schema->getTable() )
-                    ->columns($name)
-                    ;
-                $sqls[] = $builder->build();
-            }
-        }
-        return $sqls;
-    }
-
 }
 

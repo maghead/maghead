@@ -28,15 +28,15 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         $connectionManager->close('default');
     }
 
-    function testDiffMigration() 
+    public function testDiffMigration() 
     {
         LazyRecord\QueryDriver::free();
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $connectionManager->addDataSource('default',array( 
             'driver' => 'mysql',
-            'database' => 'testing',
-            'user' => 'testing',
-            'pass' => 'testing',
+            'dsn' =>  @$_ENV['DB_MYSQL_DSN'],
+            'user' => @$_ENV['DB_MYSQL_USER'],
+            'pass' => @$_ENV['DB_MYSQL_PASS'],
         ));
 
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();

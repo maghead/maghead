@@ -3,6 +3,7 @@ namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
 use LazyRecord\Schema;
+use LazyRecord\Schema\SchemaDeclare;
 
 class PgsqlTableParser extends BaseTableParser
 {
