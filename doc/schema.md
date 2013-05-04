@@ -189,7 +189,6 @@ $this->belongsTo( 'author' , '\tests\AuthorSchema', 'id' , 'author_id' );
 $this->belongsTo( 'address' , '\tests\AddressSchema', 'address_id' );
 ```
 
-
 ### Has One
 
 `one(accessor_name, self_column_name, foreign_schema_class_name, foreign_schema_column_name)`

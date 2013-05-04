@@ -326,7 +326,6 @@ $author->update(array(
 To update record (static):
 
 ```php
-
 $ret = Author::update( array( 'name' => 'Author' ) )
     ->where()
         ->equal('id',3)
@@ -350,27 +349,82 @@ else {
 To create a collection object:
 
 ```php
-
 $authors = new AuthorCollection;
+```
+
+To make a query (the Query syntax is powered by SQLBuilder):
+
+```php
 $authors->where()
-    ->equal( 'id' , 'foo' );
+    ->equal( 'id' , 'foo' )
+    ->like( 'content' , '%foo%' )
+    ;
+```
 
-$authors = new AuthorCollection;
-$items = $authors->items();
-foreach( $items as $item ) {
-    echo $item->id;
-}
+Or you can do:
 
+```php
+$authors->where(array( 
+    'name' => 'foo'
+));
+```
+
+
+#### Iterating a Collection
+
+```php
 $authors = new AuthorCollection;
 foreach( $authors as $author ) {
     echo $author->name;
 }
 ```
 
-Advanced Usage
---------------
+Model Schema
+------------
 
-### Using Column Validator
+### Defining Column Types
+
+```php
+$this->column('foo')->integer();
+$this->column('foo')->float();
+$this->column('foo')->varchar(24);
+$this->column('foo')->text();
+$this->column('foo')->binary();
+```
+
+Text:
+
+```php
+$this->column('name')->text();
+```
+
+Boolean:
+
+```php
+$this->column('name') ->boolean();
+```
+
+Integer:
+
+```php
+$this->column('name')->integer();
+```
+
+Timestamp:
+
+```php
+$this->column('name')->timestamp();
+```
+
+Datetime:
+
+```php
+$this->column('name')->datetime();
+```
+
+
+
+### Using Validator
 
 Write your validator as a closure, here comes the simplest sample code:
 
@@ -437,6 +491,16 @@ $this->column('serialized_content')
 The above code does unserialize/serialize automatically when you're 
 trying to update/create the record object.
 
+### Defining Default Value
+
+```php
+$this->column('foo')
+    ->default('Default')
+    ->default( array('current_timestamp') ) // raw sql string
+    ->default(function() { 
+            return date('c');
+    });
+```
 
 ### Defining Required Column
 
@@ -454,12 +518,96 @@ $this->column('role')
     ->validValues(array('user','admin','guest'));
 ```
 
-### Defining Relationship
-
-Has Many:
+Defining ValidValues with label
 
 ```php
+$this->column('bar')
+    ->required()
+    ->validValues( array( 'label' => 'value'  ) );
+```
 
+### Defining Filter
+
+```php
+$this->column('content')
+    ->required()
+    ->filter( function($val) {  
+        return preg_replace('#word#','zz',$val);  
+    });
+```
+
+### Using Mixin Schemas
+
+```php
+$this->mixin('tests\MetadataMixinSchema');
+```
+
+The Mixin Schema Class, e.g., MetadataSchema:
+
+```
+<?php
+namespace LazyRecord\Schema\Mixin;
+use LazyRecord\Schema\MixinSchemaDeclare;
+
+class MetadataSchema extends MixinSchemaDeclare
+{
+    function schema()
+    {
+        $this->column('updated_on')
+            ->isa('DateTime')
+            ->default(function() { 
+                return date('c'); 
+            })
+            ->timestamp();
+
+        $this->column('created_on')
+            ->isa('DateTime')
+            ->default(function() { 
+                return date('c'); 
+            })
+            ->timestamp();
+    }
+}
+```
+
+### Defining Model Relationship
+
+#### Belongs to
+
+`belongsTo(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name = 'id')`
+
+```php
+$this->belongsTo( 'author' , '\tests\AuthorSchema', 'id' , 'author_id' );
+$this->belongsTo( 'address' , '\tests\AddressSchema', 'address_id' );
+```
+
+#### Has One
+
+`one(accessor_name, self_column_name, foreign_schema_class_name, foreign_schema_column_name)`
+
+```php
+$this->one( 'author', 'author_id', '\tests\AuthorSchema' , 'id' );
+```
+
+#### Has Many
+
+`many(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name )`
+
+```php
+$this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
+$this->many( 'author_books', '\tests\AuthorBookSchema', 'author_id', 'id');
+```
+
+To define many to many relationship:
+
+```php
+$this->manyToMany( 'books', 'author_books' , 'book' );
+```
+
+
+Usage:
+
+```php
 // has many
 $address = $author->addresses->create(array( 
     'address' => 'farfaraway'
@@ -478,11 +626,6 @@ foreach( $author->addresses as $address ) {
 }
 ```
 
-BelongsTo:
-
-```php
-$this->belongsTo('book','\tests\BookSchema','id','book_id');
-```
 
 ### Do Some Preparation When Model Is Ready
 
@@ -729,8 +872,14 @@ class AuthorSchema extends Schema
 }
 ```
 
+Documentation
+=============
+
+For the detailed content,  please take a look at the `doc/` directory.
+
+
 Contribution
-------------
+============
 
 Everybody can contribute to LazyRecord. You can just fork it, and send Pull
 Requests. 
@@ -739,14 +888,12 @@ You have to follow PSR Coding Standards and provides unit tests
 as much as possible.
 
 
-
-
 Hacking
 =======
 
 
-Environemtn
-------------
+Setting Up Environment
+----------------------
 
 Use Composer to install the dependency:
 
