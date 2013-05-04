@@ -6,4 +6,5 @@ const schema_proxy_class = '\\tests\\EdmSchemaProxy';
 const model_class = '\\tests\\Edm';
 const table = 'Edm';
 
+
 }
