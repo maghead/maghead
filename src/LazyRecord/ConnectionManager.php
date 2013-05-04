@@ -42,7 +42,7 @@ class ConnectionException extends Exception
 class ConnectionManager
     implements ArrayAccess
 {
-
+    const DEFAULT_DS = 'default';
 
     /**
      * @var array contains data source configurations
@@ -258,7 +258,7 @@ class ConnectionManager
      */
     public function getDefault()
     {
-        return $this->getConnection('default');
+        return $this->getConnection(self::DEFAULT_DS);
     }
 
 
