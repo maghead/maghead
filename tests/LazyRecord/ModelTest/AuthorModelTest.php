@@ -196,6 +196,20 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
         ok( empty($data), 'should be empty');
     }
 
+    public function testMixinMethods() 
+    {
+        $author = new \tests\Author;
+        $ret = $author->create(array( 
+            'name' => 'Mary III',
+            'email' => 'zz3@zz3',
+            'identity' => 'zz3',
+        ));
+        result_ok($ret);
+        $age = $author->getAge();
+        ok($age, "Got Age");
+        ok($age->format('%s seconds'));
+    }
+
     public function testUpdateNull()
     {
         $author = new \tests\Author;

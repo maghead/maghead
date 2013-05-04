@@ -338,7 +338,7 @@ abstract class BaseModel implements
             foreach( static::$mixin_classes as $mixinClass ) {
                 // if we found it, just call it and return the result. 
                 if ( method_exists( $mixinClass , $m ) ) {
-                    return call_user_func_array( array($mixinClass, $m) , $a );
+                    return call_user_func_array( array($mixinClass, $m) , array($this) + $a );
                 }
             }
         }
@@ -346,7 +346,6 @@ abstract class BaseModel implements
         // dispatch to schema object method
         $schema = $this->getSchema();
         if( method_exists($schema,$m) ) {
-            echo $m;
             return call_user_func_array(array($schema,$m),$a);
         }
 

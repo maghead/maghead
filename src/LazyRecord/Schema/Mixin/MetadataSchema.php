@@ -2,6 +2,7 @@
 namespace LazyRecord\Schema\Mixin;
 use LazyRecord\Schema\MixinSchemaDeclare;
 use LazyRecord\Schema;
+use DateTime;
 
 class MetadataSchema extends MixinSchemaDeclare
 {
@@ -21,4 +22,12 @@ class MetadataSchema extends MixinSchemaDeclare
             })
             ->timestamp();
     }
+
+    // Mixin methods
+    public static function getAge($record) {
+        $createdOn = $record->created_on;
+        $currentDate = new DateTime;
+        return $currentDate->diff($createdOn);
+    }
+
 }
