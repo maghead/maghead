@@ -2,6 +2,7 @@
 namespace LazyRecord\SqlBuilder;
 use SQLBuilder\IndexBuilder;
 use SQLBuilder\QueryBuilder;
+use LazyRecord\Schema\SchemaDeclare;
 
 class BaseBuilder
 {
@@ -108,7 +109,11 @@ class BaseBuilder
                         $schema->getTable(),
                         $rel['self_column'],
                         $fSchema->getTable(),
-                        $rel['foreign_column']
+                        $rel['foreign_column'],
+
+                        // use cascade by default
+                        // TODO: extract this as an option.
+                        'CASCADE'
                     );
                 }
             }
