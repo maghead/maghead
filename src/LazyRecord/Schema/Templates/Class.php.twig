@@ -12,6 +12,10 @@ class {{ class.class.name }} {% if class.extends %} extends {{ class.extends }} 
 {{con|raw}}
 {% endfor %}
 
+{% for con in class.staticVars %}
+{{con|raw}}
+{% endfor %}
+
 {% for method in class.methods %}
 {{method|raw}}
 {% endfor %}

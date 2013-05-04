@@ -6,4 +6,5 @@ const schema_proxy_class = '\\tests\\PublisherSchemaProxy';
 const model_class = '\\tests\\Publisher';
 const table = 'publishers';
 
+
 }

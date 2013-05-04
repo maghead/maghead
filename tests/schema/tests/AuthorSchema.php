@@ -4,9 +4,8 @@ use LazyRecord\Schema;
 
 class AuthorSchema extends Schema
 {
-    function schema()
+    public function schema()
     {
-
         $this->column('name')
             ->varchar(128);
 
@@ -30,7 +29,7 @@ class AuthorSchema extends Schema
             ->boolean()
             ->default(false);
 
-        $this->mixin('LazyRecord\Schema\Mixin\MetadataSchema');
+        $this->mixin('LazyRecord\\Schema\\Mixin\\MetadataSchema');
 
 
         
