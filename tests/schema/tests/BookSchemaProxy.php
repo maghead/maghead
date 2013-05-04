@@ -30,6 +30,8 @@ class BookSchemaProxy extends RuntimeSchema
   'created_by' => 1,
   'id' => 1,
 );
+    public static $mixin_classes = array (
+);
     public static $column_names_include_virtual = array (
   0 => 'title',
   1 => 'subtitle',

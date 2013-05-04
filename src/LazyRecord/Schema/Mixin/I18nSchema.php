@@ -4,10 +4,12 @@ use LazyRecord\Schema\MixinSchemaDeclare;
 
 class I18nSchema extends MixinSchemaDeclare
 {
-    function schema()
+    public function schema()
     {
         $this->column('lang')
             ->varchar(12)
             ->default('en');
     }
+
+
 }
