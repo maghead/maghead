@@ -5,17 +5,17 @@ use LazyRecord\Schema;
 
 class MetadataSchema extends MixinSchemaDeclare
 {
-    function schema()
+    public function schema()
     {
         $this->column('updated_on')
-            ->isa('DateTime')
+            ->timestamp()
             ->default(function() { 
                 return date('c'); 
             })
             ->timestamp();
 
         $this->column('created_on')
-            ->isa('DateTime')
+            ->timestamp()
             ->default(function() { 
                 return date('c'); 
             })
