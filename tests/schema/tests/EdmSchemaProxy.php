@@ -24,6 +24,8 @@ class EdmSchemaProxy extends RuntimeSchema
   'edmContent' => 1,
   'edmUpdatedOn' => 1,
 );
+    public static $mixin_classes = array (
+);
     public static $column_names_include_virtual = array (
   0 => 'edmNo',
   1 => 'edmTitle',

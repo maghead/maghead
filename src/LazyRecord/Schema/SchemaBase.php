@@ -30,7 +30,7 @@ abstract class SchemaBase
 
     public $writeSourceId = 'default';
 
-    public $mixins = array();
+    public $mixinSchemas = array();
 
     public $seeds = array();
 
@@ -51,6 +51,18 @@ abstract class SchemaBase
         }
         return $this->_modelName = substr($class,$p + 1);
     }
+
+    public function addMixinSchemaClass($class) 
+    {
+        $this->mixinSchemas[] = $class;
+    }
+
+    public function getMixinSchemaClasses() 
+    {
+        return $this->mixinSchemas;
+    }
+
+
 
     public function getSeeds()
     {

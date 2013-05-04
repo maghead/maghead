@@ -16,6 +16,8 @@ class PublisherSchemaProxy extends RuntimeSchema
   'name' => 1,
   'id' => 1,
 );
+    public static $mixin_classes = array (
+);
     public static $column_names_include_virtual = array (
   0 => 'name',
   1 => 'id',
