@@ -30,6 +30,8 @@ class NameSchemaProxy extends RuntimeSchema
   'confirmed' => 1,
   'date' => 1,
 );
+    public static $mixin_classes = array (
+);
     public static $column_names_include_virtual = array (
   0 => 'id',
   1 => 'name',

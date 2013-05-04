@@ -261,7 +261,9 @@ class SchemaDeclare extends SchemaBase
         }
 
         $mixin = new $class;
-        $this->mixins[] = $class;
+
+        // append mixin class names
+        $this->addMixinSchemaClass($class);
 
         /* merge columns into self */
         $this->columns = array_merge( $this->columns, $mixin->columns );

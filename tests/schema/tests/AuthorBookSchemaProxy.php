@@ -20,6 +20,8 @@ class AuthorBookSchemaProxy extends RuntimeSchema
   'book_id' => 1,
   'id' => 1,
 );
+    public static $mixin_classes = array (
+);
     public static $column_names_include_virtual = array (
   0 => 'author_id',
   1 => 'created_on',
