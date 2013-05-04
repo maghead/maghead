@@ -1,5 +1,7 @@
 <?php
 namespace LazyRecord\Schema\Comparator;
+use Closure;
+use CLIFramework\Formatter;
 
 class ConsolePrinter
 {
@@ -17,7 +19,7 @@ class ConsolePrinter
     {
         if( empty($this->diff) )
             return;
-        $formatter = new \CLIFramework\Formatter;
+        $formatter = new Formatter;
         echo $formatter->format('--- ' . $this->beforeName,"strong_white") , "\n";
         echo $formatter->format('+++ ' . $this->afterName, "strong_white") , "\n";
         echo "@@ columns @@\n";
@@ -36,7 +38,7 @@ class ConsolePrinter
                 $line = sprintf('    %s %s',$d->flag , $d->name );
                 foreach( $d->column->attributes as $property => $value ) {
                     if( is_object($value) ) {
-                        if( $value instanceof \Closure ) {
+                        if( $value instanceof Closure ) {
                             $line .= ", $property = {Closure}";
                         }
                         else {
