@@ -78,42 +78,4 @@ class PgsqlBuilder
                 . ' CASCADE';
     }
 
-
-    public function buildIndex($schema) 
-    {
-        $sqls = array();
-        foreach( $schema->columns as $name => $column ) {
-            if ( $column->index ) {
-                $indexName = is_string($column->index) ? $column->index 
-                    : "idx_" . $name;
-                $builder = new IndexBuilder($this->driver);
-                $builder->create( $indexName )
-                    ->on( $schema->getTable() )
-                    ->columns($name)
-                    ;
-                $sqls[] = $builder->build();
-            }
-        }
-
-        foreach( $schema->relations as $rel ) {
-            switch( $rel['type'] ) {
-            case SchemaDeclare::belongs_to:
-            case SchemaDeclare::has_many:
-            case SchemaDeclare::has_one:
-                if( isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
-                {
-                    $fSchema = new $rel['foreign_schema'];
-                    $builder = new IndexBuilder($this->driver);
-                    $sqls[] = $builder->addForeignKey(
-                        $schema->getTable(),
-                        $rel['self_column'],
-                        $fSchema->getTable(),
-                        $rel['foreign_column']
-                    );
-                }
-                break;
-            }
-        }
-        return $sqls;
-    }
 }

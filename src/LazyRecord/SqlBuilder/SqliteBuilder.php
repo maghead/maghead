@@ -99,8 +99,12 @@ class SqliteBuilder
             . ';';
     }
 
-    public function buildIndex($schema) 
+    public function buildIndex($schema)
     {
+        return array();
+    }
+
+    public function buildForeignKeys($schema) {
         return array();
     }
 
