@@ -41,6 +41,7 @@ namespace tests {
             $this->column('country')
                 ->varchar(12)
                 ->required()
+                ->index()
                 ->validValues( array( 'Taiwan' , 'Taipei' , 'Tokyo' ));
 
             $this->column('type')

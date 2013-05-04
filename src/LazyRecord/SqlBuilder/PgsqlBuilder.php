@@ -84,8 +84,10 @@ class PgsqlBuilder
         $sqls = array();
         foreach( $schema->columns as $name => $column ) {
             if ( $column->index ) {
+                $indexName = is_string($column->index) ? $column->index 
+                    : "idx_" . $name;
                 $builder = new IndexBuilder($this->driver);
-                $builder->name("idx_" . $name)
+                $builder->create( $indexName )
                     ->on( $schema->getTable() )
                     ->columns($name)
                     ;

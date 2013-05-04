@@ -8,7 +8,7 @@ class MysqlBuilder
     implements BuilderInterface
 {
 
-    function buildColumnSql($schema, $column) {      
+    public function buildColumnSql($schema, $column) {      
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         $type = $column->type;
@@ -115,7 +115,20 @@ class MysqlBuilder
 
     public function buildIndex($schema) 
     {
-        return array();
+        $sqls = array();
+        foreach( $schema->columns as $name => $column ) {
+            if ( $column->index ) {
+                $indexName = is_string($column->index) ? $column->index 
+                    : "idx_" . $name;
+                $builder = new IndexBuilder($this->driver);
+                $builder->create( $indexName )
+                    ->on( $schema->getTable() )
+                    ->columns($name)
+                    ;
+                $sqls[] = $builder->build();
+            }
+        }
+        return $sqls;
     }
 
 }
