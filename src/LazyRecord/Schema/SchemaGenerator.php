@@ -88,7 +88,7 @@ class SchemaGenerator
         // export column names excluding virtual columns
         $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
         $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
-        $cTemplate->addStaticVar( 'mixin_classes',      $schema->getMixinSchemaClasses() );
+        $cTemplate->addStaticVar( 'mixin_classes',  array_reverse($schema->getMixinSchemaClasses()) );
 
         // export column names including virutal columns
         $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
@@ -113,7 +113,7 @@ class SchemaGenerator
 
         $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
         $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
-        $cTemplate->addStaticVar( 'mixin_classes', $schema->getMixinSchemaClasses() );
+        $cTemplate->addStaticVar( 'mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
 
         $cTemplate->extendClass( $this->getBaseModelClass() );
 
