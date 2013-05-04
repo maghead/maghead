@@ -3,6 +3,7 @@ namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\QueryBuilder;
+use SQLBuilder\IndexBuilder;
 
 /**
  * Schema SQL builder
@@ -80,22 +81,37 @@ class PgsqlBuilder
 
     public function buildIndex($schema) 
     {
-        return array();
-        // build reference
-#          foreach( $schema->relations as $rel ) {
-#              switch( $rel['type'] ) {
-#              case SchemaDeclare::belongs_to:
-#              case SchemaDeclare::has_many:
-#              case SchemaDeclare::has_one:
-#                  if( $name != 'id' && $rel['self']['column'] == $name ) 
-#                  {
-#                      $fSchema = new $rel['foreign']['schema'];
-#                      $fColumn = $rel['foreign']['column'];
-#                      $fc = $fSchema->columns[$fColumn];
-#                      $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
-#                  }
-#                  break;
-#              }
-#          }
+        $sqls = array();
+        foreach( $schema->columns as $name => $column ) {
+            if ( $column->index ) {
+                $builder = new IndexBuilder($this->driver);
+                $builder->name("idx_" . $name)
+                    ->on( $schema->getTable() )
+                    ->columns($name)
+                    ;
+                $sqls[] = $builder->build();
+            }
+        }
+
+        foreach( $schema->relations as $rel ) {
+            switch( $rel['type'] ) {
+            case SchemaDeclare::belongs_to:
+            case SchemaDeclare::has_many:
+            case SchemaDeclare::has_one:
+                if( isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
+                {
+                    $fSchema = new $rel['foreign_schema'];
+                    $builder = new IndexBuilder($this->driver);
+                    $sqls[] = $builder->addForeignKey(
+                        $schema->getTable(),
+                        $rel['self_column'],
+                        $fSchema->getTable(),
+                        $rel['foreign_column']
+                    );
+                }
+                break;
+            }
+        }
+        return $sqls;
     }
 }
