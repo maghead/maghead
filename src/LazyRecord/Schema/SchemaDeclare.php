@@ -6,7 +6,7 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\Schema\Relationship;
 
-class SchemaDeclare extends SchemaBase
+abstract class SchemaDeclare extends SchemaBase
     implements SchemaDataInterface
 {
 
