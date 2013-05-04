@@ -10,9 +10,25 @@ class SchemaDeclare extends SchemaBase
     implements SchemaDataInterface
 {
 
-    public function __construct()
+    public function __construct( $options = array() )
     {
-        $this->build();
+        $this->build( $options );
+    }
+
+    /**
+     * Build schema
+     */
+    public function build( $options = array() )
+    {
+        $this->schema( $options );
+        $this->primaryKey = $this->findPrimaryKey();
+
+        if( null === $this->primaryKey && $config = ConfigLoader::getInstance() )
+        {
+            if( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
+                $this->insertAutoIdColumn();
+            }
+        }
     }
 
     public function schema() 
@@ -127,22 +143,6 @@ class SchemaDeclare extends SchemaBase
     }
 
 
-    /**
-     * Build schema
-     */
-    public function build()
-    {
-        $this->schema();
-        $this->primaryKey = $this->findPrimaryKey();
-
-        if( null === $this->primaryKey && $config = ConfigLoader::getInstance() )
-        {
-            if( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
-                $this->insertAutoIdColumn();
-            }
-        }
-    }
-
     public function insertAutoIdColumn()
     {
         $column = new SchemaDeclare\Column('id');
@@ -246,12 +246,12 @@ class SchemaDeclare extends SchemaBase
      *
      * Availabel mixins
      *
-     *     $this->mixin('Metadata');
+     *     $this->mixin('Metadata' , array( options ) );
      *     $this->mixin('I18n');
      *
      * @param string $class mixin class name
      */
-    public function mixin($class)
+    public function mixin($class, $options = array())
     {
         if( ! class_exists($class,true) ) {
             $class = 'LazyRecord\\Schema\\Mixin\\' . $class;
