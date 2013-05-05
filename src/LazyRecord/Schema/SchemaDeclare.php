@@ -260,9 +260,7 @@ class SchemaDeclare extends SchemaBase
             }
         }
 
-        $mixin = new $class;
-
-        // append mixin class names
+        $mixin = new $class($options);
         $this->addMixinSchemaClass($class);
 
         /* merge columns into self */
