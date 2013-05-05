@@ -103,6 +103,13 @@ class BaseBuilder
             case SchemaDeclare::has_one:
                 if( isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
                 {
+                    $n = $rel['self_column'];
+                    $column = $schema->getColumn($n);
+                    if ( $column->isa == "str" ) {
+                        continue;
+                    }
+
+                    
                     $fSchema = new $rel['foreign_schema'];
                     $builder = new IndexBuilder($this->driver);
                     $sqls[] = $builder->addForeignKey(
