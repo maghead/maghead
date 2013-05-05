@@ -83,7 +83,6 @@ class SqliteBuilder
                 {
                     $fSchema = new $rel['foreign_schema'];
                     $fColumn = $rel['foreign_column'];
-                    $fc = $fSchema->columns[$fColumn];
                     $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
                 }
                 break;
