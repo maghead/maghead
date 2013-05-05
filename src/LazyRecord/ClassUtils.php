@@ -42,8 +42,9 @@ class ClassUtils
         foreach( $classes as $class ) {
             $schema = new $class; // declare schema
             $refs = $schema->getReferenceSchemas();
-            foreach( $refs as $refClass => $v )
+            foreach ( $refs as $refClass => $v ) {
                 $schemas[] = $refClass;
+            }
             $schemas[] = $class;
         }
         $schemaClasses = array_unique($schemas);

@@ -2,6 +2,7 @@
 namespace LazyRecord\Schema;
 use RuntimeException;
 use InvalidArgumentException;
+use Exception;
 
 abstract class SchemaBase
 {
@@ -168,6 +169,9 @@ abstract class SchemaBase
 
             if( is_a($class,'LazyRecord\\BaseModel',true) ) {
                 // bless model class to schema object.
+                if ( ! method_exists($class, 'schema') ) {
+                    throw new Exception( get_class($this) . ": You need to define schema method in $class class.");
+                }
                 $schemas[ $class ] = 1;
                 $model = new $class;
                 $schema = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
