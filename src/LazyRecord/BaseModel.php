@@ -334,6 +334,13 @@ abstract class BaseModel implements
             break;
         }
 
+        // dispatch to schema object method first
+        $schema = $this->getSchema();
+        if( method_exists($schema,$m) ) {
+            return call_user_func_array(array($schema,$m),$a);
+        }
+
+        // then it's the mixin methods
         if ( isset(static::$mixin_classes) ) { 
             foreach( static::$mixin_classes as $mixinClass ) {
                 // if we found it, just call it and return the result. 
@@ -341,12 +348,6 @@ abstract class BaseModel implements
                     return call_user_func_array( array($mixinClass, $m) , array($this) + $a );
                 }
             }
-        }
-
-        // dispatch to schema object method
-        $schema = $this->getSchema();
-        if( method_exists($schema,$m) ) {
-            return call_user_func_array(array($schema,$m),$a);
         }
 
         // XXX: special case for twig template
