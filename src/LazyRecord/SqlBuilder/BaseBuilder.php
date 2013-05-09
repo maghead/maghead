@@ -91,6 +91,8 @@ class BaseBuilder
 
     public function buildForeignKeys($schema)
     {
+        return array(); // FIXME
+
         $sqls = array();
         if ($this->driver->type == 'sqlite') {
             return $sqls;
