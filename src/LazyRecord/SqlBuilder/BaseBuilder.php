@@ -76,7 +76,7 @@ class BaseBuilder
         foreach( $schema->columns as $name => $column ) {
             if ( $column->index ) {
                 $indexName = is_string($column->index) ? $column->index 
-                    : "idx_" . $name;
+                    : "idx_" . $schema->getTable() . "_" . $name;
                 $builder = new IndexBuilder($this->driver);
                 $builder->create( $indexName )
                     ->on( $schema->getTable() )
