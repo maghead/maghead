@@ -60,6 +60,7 @@ class Column
             'notNull'       => self::ATTR_FLAG,
             'required'      => self::ATTR_FLAG,
             'typeConstraint' => self::ATTR_FLAG,
+            'timezone'      => self::ATTR_FLAG,
             'enum'          => self::ATTR_ARRAY,
 
             /* column label */
@@ -294,7 +295,7 @@ class Column
     {
         $this->attributes['type'] = 'time';
         $this->attributes['isa'] = 'str';
-        $this->attributes['timestamp'] = true;
+        $this->attributes['timezone'] = true;
         return $this;
     }
 
@@ -307,7 +308,7 @@ class Column
     {
         $this->attributes['type'] = 'datetime';
         $this->attributes['isa'] = 'DateTime';
-        $this->attributes['timestamp'] = true;
+        $this->attributes['timezone'] = true;
         return $this;
     }
 
@@ -315,7 +316,7 @@ class Column
     {
         $this->attributes['type'] = 'timestamp';
         $this->attributes['isa'] = 'DateTime';
-        $this->attributes['timestamp'] = true;
+        $this->attributes['timezone'] = true;
         return $this;
     }
 
