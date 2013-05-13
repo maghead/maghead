@@ -204,13 +204,6 @@ class Column
         return $this;
     }
 
-    public function timestamp()
-    {
-        $this->attributes['type'] = 'timestamp';
-        $this->attributes['isa'] = 'DateTime';
-        return $this;
-    }
-
     public function text()
     {
         $this->attributes['type'] = 'text';
@@ -301,11 +294,12 @@ class Column
     {
         $this->attributes['type'] = 'time';
         $this->attributes['isa'] = 'str';
+        $this->attributes['timestamp'] = true;
         return $this;
     }
 
-    public function timezone() {
-        $this->attributes['timezone'] = true;
+    public function timezone($bool = true) {
+        $this->attributes['timezone'] = $bool;
         return $this;
     }
 
@@ -313,6 +307,15 @@ class Column
     {
         $this->attributes['type'] = 'datetime';
         $this->attributes['isa'] = 'DateTime';
+        $this->attributes['timestamp'] = true;
+        return $this;
+    }
+
+    public function timestamp()
+    {
+        $this->attributes['type'] = 'timestamp';
+        $this->attributes['isa'] = 'DateTime';
+        $this->attributes['timestamp'] = true;
         return $this;
     }
 

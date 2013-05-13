@@ -24,8 +24,12 @@ class PgsqlBuilder
 
         $sql = $this->driver->getQuoteColumn( $name );
 
-        if( ! $column->autoIncrement )
+        if ( ! $column->autoIncrement ) {
             $sql .= ' ' . $type;
+        }
+        if ( $column->timezone ) {
+            $sql .= ' with time zone';
+        }
 
         if ( $column->required || $column->notNull ) {
             $sql .= ' NOT NULL';
