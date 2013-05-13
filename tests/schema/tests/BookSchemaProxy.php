@@ -109,6 +109,7 @@ class BookSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'timestamp',
           'isa' => 'DateTime',
+          'timestamp' => true,
         ),
     ),
   'created_by' => array( 
