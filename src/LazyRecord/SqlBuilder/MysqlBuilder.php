@@ -13,8 +13,9 @@ class MysqlBuilder
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         $type = $column->type;
-        if( ! $type && $isa == 'str' )
+        if ( ! $type && $isa == 'str' ) {
             $type = 'text';
+        }
 
         $sql = $this->driver->getQuoteColumn( $name );
         $sql .= ' ' . $type;
