@@ -55,6 +55,7 @@ class AuthorBookSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'timestamp',
           'isa' => 'DateTime',
+          'timestamp' => true,
         ),
     ),
   'book_id' => array( 
