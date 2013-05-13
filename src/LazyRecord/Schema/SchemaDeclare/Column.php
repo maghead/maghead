@@ -297,6 +297,18 @@ class Column
         return $this;
     }
 
+    public function time() 
+    {
+        $this->attributes['type'] = 'time';
+        $this->attributes['isa'] = 'str';
+        return $this;
+    }
+
+    public function timezone() {
+        $this->attributes['timezone'] = true;
+        return $this;
+    }
+
     public function datetime()
     {
         $this->attributes['type'] = 'datetime';
