@@ -105,7 +105,7 @@ class AuthorSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'timestamp',
           'isa' => 'DateTime',
-          'timestamp' => true,
+          'timezone' => true,
           'default' => function() { 
                 return date('c'); 
             },
@@ -116,7 +116,7 @@ class AuthorSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'timestamp',
           'isa' => 'DateTime',
-          'timestamp' => true,
+          'timezone' => true,
           'default' => function() { 
                 return date('c'); 
             },

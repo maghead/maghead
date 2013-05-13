@@ -91,7 +91,7 @@ class EdmSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'timestamp',
           'isa' => 'DateTime',
-          'timestamp' => true,
+          'timezone' => true,
           'default' => array( 
               'current_timestamp',
             ),
