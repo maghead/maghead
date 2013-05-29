@@ -54,7 +54,7 @@ class Inflator
             if( is_a( $value , 'DateTime',true) ) {
                 return $value;
             }
-            if( $value ) {
+            if ( $value && date_parse($value) !== false ) {
                 return new DateTime( $value );
             }
             return null;
