@@ -23,13 +23,13 @@ class TransactionManager
 
     public function rollback() {
         if ( --$this->transactionCounter >= 0 ) {
-            $this->conn->rollback();
+            return $this->conn->rollback();
         }
     }
 
     public function commit() {
         if ( --$this->transactionCounter >= 0 ) {
-            $this->conn->commit();
+            return $this->conn->commit();
         }
     }
 
