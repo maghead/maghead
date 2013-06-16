@@ -3,6 +3,7 @@ namespace LazyRecord;
 use Exception;
 use PDOException;
 use PDO;
+use LazyRecord\Adapter\PdoAdapter;
 use ArrayAccess;
 
 class SQLQueryException extends Exception 
@@ -227,7 +228,7 @@ class ConnectionManager
                 $connectionOptions[ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
             }
 
-            $conn = new PDO( $dsn,
+            $conn = new PDO($dsn,
                 (isset($config['user']) ? $config['user'] : (isset($config['username']) ? $config['username'] : null)),
                 (isset($config['pass']) ? $config['pass'] : (isset($config['password']) ? $config['password'] : null)),
                 $connectionOptions
