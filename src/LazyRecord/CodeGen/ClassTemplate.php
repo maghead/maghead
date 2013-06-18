@@ -85,6 +85,18 @@ class ClassTemplate
         $this->staticVars[] = new ClassStaticVariable($name,$value, $scope);
     }
 
+
+
+    /**
+     * Returns the short class name
+     *
+     * @return string short class name
+     */
+    public function getClassShortName() 
+    {
+        return $this->class->getName();
+    }
+
     public function __set($n,$v) {
         $this->view->__set($n,$v);
     }

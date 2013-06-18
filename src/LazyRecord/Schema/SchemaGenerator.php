@@ -70,6 +70,11 @@ class SchemaGenerator
         }
     }
 
+    public function buildClassFilePath($directory, $className) 
+    {
+        return $directory . DIRECTORY_SEPARATOR . $className . '.php';
+    }
+
     public function generateSchemaProxyClass($schema)
     {
         $schemaArray = $schema->export();
@@ -169,7 +174,6 @@ class SchemaGenerator
             'template' => 'Class.php.twig',
         ));
         $cTemplate->extendClass( $baseCollectionClass );
-
         return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate);
     }
 
@@ -200,7 +204,7 @@ class SchemaGenerator
     public function writeClassToDirectory($directory,$className,$sourceCode, $overwrite = false)
     {
         // get schema dir
-        $filePath = $directory . DIRECTORY_SEPARATOR . $className . '.php';
+        $filePath = $this->buildClassFilePath($directory, $className);
         $this->preventFileDir( $filePath );
         if( $overwrite || ! file_exists( $filePath ) ) {
             if( file_put_contents( $filePath , $sourceCode ) === false ) {
