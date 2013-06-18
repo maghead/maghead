@@ -153,13 +153,16 @@ class SchemaGenerator
             'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
         ));
-        $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
-        $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
-        $cTemplate->addConst( 'table',  $schema->getTable() );
-        $cTemplate->extendClass( 'LazyRecord\BaseCollection' );
-
-        // we should overwrite the base collection class.
-        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
+        $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
+        if ($schema->isNewerThanFile($classFilePath) ) {
+            $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
+            $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
+            $cTemplate->addConst( 'table',  $schema->getTable() );
+            $cTemplate->extendClass( 'LazyRecord\BaseCollection' );
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath) ) {
+                return array( $cTemplate->getClassName() => $classFilePath );
+            }
+        }
     }
 
 
@@ -196,6 +199,19 @@ class SchemaGenerator
         $classFile = $this->writeClassToDirectory($directory, $cTemplate->getShortClassName(),$sourceCode, $overwrite);
         return array( $cTemplate->class->getFullName() => $classFile );
     }
+
+
+    public function writeClassTemplateToPath($cTemplate, $filepath, $overwrite = false) {
+        if ( $overwrite ) {
+            file_put_contents( $filepath, $cTemplate->render() );
+            return true;
+        } elseif ( file_exists($filepath) ) {
+            return false;
+        }
+        return false;
+    }
+
+
 
     /**
      * Write class code to a directory with class name
@@ -257,10 +273,12 @@ class SchemaGenerator
             $classMap = $classMap + $map;
 
             // collection classes
-            $map = $this->generateBaseCollectionClass( $schema );
-            $classMap = $classMap + $map;
-            $map = $this->generateCollectionClass( $schema );
-            $classMap = $classMap + $map;
+            if ( $map = $this->generateBaseCollectionClass( $schema ) ) {
+                $classMap = $classMap + $map;
+            }
+            if ( $map = $this->generateCollectionClass( $schema ) ) {
+                $classMap = $classMap + $map;
+            }
 
             // in new schema declare, we can describe a schema in a model class.
             if( $schema instanceof \LazyRecord\Schema\DynamicSchemaDeclare ) {

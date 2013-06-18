@@ -103,6 +103,11 @@ class ClassTemplate
         return $this->class->getName();
     }
 
+    public function getClassName()
+    {
+        return $this->class->getFullName();
+    }
+
     public function __set($n,$v) {
         $this->view->__set($n,$v);
     }
