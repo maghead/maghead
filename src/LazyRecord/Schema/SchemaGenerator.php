@@ -53,16 +53,21 @@ class SchemaGenerator
      */
     protected function getTemplateDirs()
     {
+        static $templateDir;
+        if ( $templateDir ) {
+            return $templateDir;
+        }
         $refl = new ReflectionObject($this);
         $path = $refl->getFilename();
-        return dirname($refl->getFilename()) . DIRECTORY_SEPARATOR . 'Templates';
+        return $templateDir = dirname($refl->getFilename()) . DIRECTORY_SEPARATOR . 'Templates';
     }
 
     public function preventFileDir($path,$mode = 0755)
     {
         $dir = dirname($path);
-        if( ! file_exists($dir) )
+        if ( ! file_exists($dir) ) {
             mkdir( $dir , $mode, true );
+        }
     }
 
     public function generateSchemaProxyClass($schema)
