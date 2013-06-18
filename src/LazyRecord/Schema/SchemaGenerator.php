@@ -77,35 +77,36 @@ class SchemaGenerator
 
     public function generateSchemaProxyClass($schema)
     {
-        $schemaArray = $schema->export();
-        $schemaClass = get_class($schema);
-        $modelClass  = $schema->getModelClass();
         $schemaProxyClass = $schema->getSchemaProxyClass();
         $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
             'template_dirs' => $this->getTemplateDirs(),
             'template'      => 'Schema.php.twig',
         ));
 
-        $cTemplate->addConst( 'schema_class'     , ltrim($schemaClass,'\\') );
-        $cTemplate->addConst( 'collection_class' , $schemaArray['collection_class'] );
-        $cTemplate->addConst( 'model_class'      , $schemaArray['model_class'] );
-        $cTemplate->addConst( 'model_name'       , $schema->getModelName() );
-        $cTemplate->addConst( 'model_namespace'  , $schema->getNamespace() );
-        $cTemplate->addConst( 'primary_key'      , $schemaArray['primary_key'] );
-        $cTemplate->addConst( 'table',  $schema->getTable() );
-        $cTemplate->addConst( 'label',  $schema->getLabel() );
+        $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
+        if ( $schema->isNewerThanFile($classFilePath) ) {
+            $schemaClass = get_class($schema);
+            $schemaArray = $schema->export();
+            $cTemplate->addConst( 'schema_class'     , ltrim($schemaClass,'\\') );
+            $cTemplate->addConst( 'collection_class' , $schemaArray['collection_class'] );
+            $cTemplate->addConst( 'model_class'      , $schemaArray['model_class'] );
+            $cTemplate->addConst( 'model_name'       , $schema->getModelName() );
+            $cTemplate->addConst( 'model_namespace'  , $schema->getNamespace() );
+            $cTemplate->addConst( 'primary_key'      , $schemaArray['primary_key'] );
+            $cTemplate->addConst( 'table',  $schema->getTable() );
+            $cTemplate->addConst( 'label',  $schema->getLabel() );
 
-        // export column names excluding virtual columns
-        $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
-        $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
-        $cTemplate->addStaticVar( 'mixin_classes',  array_reverse($schema->getMixinSchemaClasses()) );
+            // export column names excluding virtual columns
+            $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
+            $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
+            $cTemplate->addStaticVar( 'mixin_classes',  array_reverse($schema->getMixinSchemaClasses()) );
 
-        // export column names including virutal columns
-        $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
-
-        $cTemplate->schema = $schema;
-        $cTemplate->schema_data = $schemaArray;
-        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
+            // export column names including virutal columns
+            $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
+            $cTemplate->schema = $schema;
+            $cTemplate->schema_data = $schemaArray;
+            return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
+        }
     }
 
 
@@ -276,8 +277,9 @@ class SchemaGenerator
         foreach( (array) $schemas as $schema ) {
 
             // support old-style schema declare
-            $map = $this->generateSchemaProxyClass( $schema );
-            $classMap = $classMap + $map;
+            if ( $map = $this->generateSchemaProxyClass( $schema ) ) {
+                $classMap = $classMap + $map;
+            }
 
             // collection classes
             if ( $map = $this->generateBaseCollectionClass( $schema ) ) {
