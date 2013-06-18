@@ -188,8 +188,14 @@ class SchemaGenerator
             'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
         ));
-        $cTemplate->extendClass( $baseCollectionClass );
-        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate);
+        $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
+
+        if ( $schema->isNewerThanFile( $classFilePath ) ) {
+            $cTemplate->extendClass( $baseCollectionClass );
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath) ) {
+                return array( $cTemplate->getClassName() => $classFilePath );
+            }
+        }
     }
 
 
