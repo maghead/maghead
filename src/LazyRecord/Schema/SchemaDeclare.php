@@ -309,6 +309,13 @@ class SchemaDeclare extends SchemaBase
         return filemtime($refl->getFilename());
     }
 
+    public function isNewerThanFile($path) 
+    {
+        $mtime1 = $this->getModificationTime();
+        $mtime2 = filemtime($path);
+        return $mtime1 > $mtime2;
+    }
+
     /**
      * Convert current model name to a class name.
      *
