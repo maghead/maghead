@@ -105,8 +105,10 @@ abstract class ModelTestCase extends PHPUnit_Framework_TestCase
         $generator = new \LazyRecord\Schema\SchemaGenerator;
         $generator->setLogger( $this->getLogger() );
         $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
+
+        // XXX: provide a force flag to test generation
         $classMap = $generator->generate( $schemas );
-        ok( $classMap );
+
         foreach( $schemas as $schema ) {
             $sqls = $builder->build($schema);
             ok( $sqls );
