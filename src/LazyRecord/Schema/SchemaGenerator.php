@@ -130,8 +130,9 @@ class SchemaGenerator
             $cTemplate->addStaticVar( 'mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
             $cTemplate->extendClass( $this->getBaseModelClass() );
 
-            // overwrite
-            return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
+                return array( $cTemplate->getClassName() => $classFilePath );
+            }
         }
     }
 
@@ -146,7 +147,7 @@ class SchemaGenerator
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
         if ($schema->isNewerThanFile($classFilePath) ) {
             $cTemplate->extendClass( $schema->getBaseModelClass() );
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath) ) {
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
         }
