@@ -75,6 +75,12 @@ class ClassTemplate
         $this->consts[] = new ClassConst($name,$value);
     }
 
+    public function addConsts($array) {
+        foreach( $array as $name => $value ) {
+            $this->consts[] = new ClassConst($name,$value);
+        }
+    }
+
     public function addMember($name,$value,$scope = 'public')
     {
         $this->members[] = new ClassMember($name,$value,$scope);
