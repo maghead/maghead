@@ -1,11 +1,7 @@
 <?php
 namespace tests;
 
+class Author  extends \tests\AuthorBase {
 
 
-class Author 
-extends \tests\AuthorBase
-{
-
-    
 }

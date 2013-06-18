@@ -1,11 +1,7 @@
 <?php
 namespace tests;
 
+class Name  extends \tests\NameBase {
 
 
-class Name 
-extends \tests\NameBase
-{
-
-    
 }
