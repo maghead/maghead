@@ -303,8 +303,8 @@ class SchemaGenerator
             } else {
                 if ( $map = $this->generateBaseModelClass( $schema ) ) {
                     $classMap = $classMap + $map;
-
-                    $map = $this->generateModelClass( $schema );
+                }
+                if ( $map = $this->generateModelClass( $schema ) ) {
                     $classMap = $classMap + $map;
                 }
             }
