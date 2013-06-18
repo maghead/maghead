@@ -116,10 +116,13 @@ class SchemaGenerator
             'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
         ));
-        $cTemplate->addConst( 'schema_proxy_class' , ltrim($schema->getSchemaProxyClass(),'\\') );
-        $cTemplate->addConst( 'collection_class' , ltrim($schema->getCollectionClass(),'\\') );
-        $cTemplate->addConst( 'model_class' , ltrim($schema->getModelClass(),'\\') );
-        $cTemplate->addConst( 'table',  $schema->getTable() );
+
+        $cTemplate->addConsts(array(
+            'schema_proxy_class' => ltrim($schema->getSchemaProxyClass(),'\\'),
+            'collection_class' => ltrim($schema->getCollectionClass(),'\\'),
+            'model_class' => ltrim($schema->getModelClass(),'\\'),
+            'table' => $schema->getTable(),
+        ));
 
         $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
         $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
