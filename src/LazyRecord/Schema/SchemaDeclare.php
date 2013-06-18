@@ -303,6 +303,11 @@ class SchemaDeclare extends SchemaBase
         return dirname($refl->getFilename());
     }
 
+    public function getModificationTime()
+    {
+        $refl = new ReflectionObject($this);
+        return filemtime($refl->getFilename());
+    }
 
     /**
      * Convert current model name to a class name.
