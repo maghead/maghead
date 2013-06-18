@@ -75,7 +75,7 @@ class SchemaGenerator
         return $directory . DIRECTORY_SEPARATOR . $className . '.php';
     }
 
-    public function generateSchemaProxyClass($schema)
+    public function generateSchemaProxyClass($schema, $force = false)
     {
         $schemaProxyClass = $schema->getSchemaProxyClass();
         $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
@@ -84,7 +84,7 @@ class SchemaGenerator
         ));
 
         $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
-        if ( $schema->isNewerThanFile($classFilePath) ) {
+        if ( $schema->isNewerThanFile($classFilePath) || $force ) {
             $schemaClass = get_class($schema);
             $schemaArray = $schema->export();
             $cTemplate->addConst( 'schema_class'     , ltrim($schemaClass,'\\') );
@@ -110,7 +110,7 @@ class SchemaGenerator
     }
 
 
-    public function generateBaseModelClass($schema)
+    public function generateBaseModelClass($schema, $force = false)
     {
         $baseClass = $schema->getBaseModelClass();
         $cTemplate = new ClassTemplate( $baseClass, array( 
@@ -118,7 +118,7 @@ class SchemaGenerator
             'template' => 'Class.php.twig',
         ));
         $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
-        if ( $schema->isNewerThanFile($classFilePath) ) {
+        if ( $schema->isNewerThanFile($classFilePath) || $force ) {
             $cTemplate->addConsts(array(
                 'schema_proxy_class' => ltrim($schema->getSchemaProxyClass(),'\\'),
                 'collection_class' => ltrim($schema->getCollectionClass(),'\\'),
@@ -137,7 +137,15 @@ class SchemaGenerator
         }
     }
 
-    public function generateModelClass($schema)
+
+
+    /**
+     * Generate modal class file, overwrite by default.
+     *
+     * @param Schema $schema
+     * @param bool $force = true
+     */
+    public function generateModelClass($schema, $force = false)
     {
         $class = $schema->getModelClass();
         $cTemplate = new ClassTemplate( $schema->getModelClass() , array(
@@ -146,7 +154,7 @@ class SchemaGenerator
         ));
 
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
-        if ($schema->isNewerThanFile($classFilePath) ) {
+        if ($schema->isNewerThanFile($classFilePath) || $force ) {
             $cTemplate->extendClass( $schema->getBaseModelClass() );
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
