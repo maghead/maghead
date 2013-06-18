@@ -116,21 +116,23 @@ class SchemaGenerator
             'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
         ));
+        $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
+        if ( $schema->isNewerThanFile($classFilePath) ) {
+            $cTemplate->addConsts(array(
+                'schema_proxy_class' => ltrim($schema->getSchemaProxyClass(),'\\'),
+                'collection_class' => ltrim($schema->getCollectionClass(),'\\'),
+                'model_class' => ltrim($schema->getModelClass(),'\\'),
+                'table' => $schema->getTable(),
+            ));
 
-        $cTemplate->addConsts(array(
-            'schema_proxy_class' => ltrim($schema->getSchemaProxyClass(),'\\'),
-            'collection_class' => ltrim($schema->getCollectionClass(),'\\'),
-            'model_class' => ltrim($schema->getModelClass(),'\\'),
-            'table' => $schema->getTable(),
-        ));
+            $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
+            $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
+            $cTemplate->addStaticVar( 'mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
+            $cTemplate->extendClass( $this->getBaseModelClass() );
 
-        $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
-        $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
-        $cTemplate->addStaticVar( 'mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
-        $cTemplate->extendClass( $this->getBaseModelClass() );
-
-        // overwrite
-        return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
+            // overwrite
+            return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
+        }
     }
 
     public function generateModelClass($schema)
@@ -191,7 +193,7 @@ class SchemaGenerator
     public function writeClassTemplateToDirectory($directory,$cTemplate,$overwrite = false)
     {
         $sourceCode = $cTemplate->render();
-        $classFile = $this->writeClassToDirectory($directory, $cTemplate->class->getName(),$sourceCode, $overwrite);
+        $classFile = $this->writeClassToDirectory($directory, $cTemplate->getShortClassName(),$sourceCode, $overwrite);
         return array( $cTemplate->class->getFullName() => $classFile );
     }
 
@@ -262,16 +264,16 @@ class SchemaGenerator
 
             // in new schema declare, we can describe a schema in a model class.
             if( $schema instanceof \LazyRecord\Schema\DynamicSchemaDeclare ) {
-                $map  = $this->injectModelSchema($schema);
-                $classMap = $classMap + $map;
-
+                if ( $map = $this->injectModelSchema($schema) ) {
+                    $classMap = $classMap + $map;
+                }
             } else {
-                $map = $this->generateBaseModelClass( $schema );
-                $classMap = $classMap + $map;
+                if ( $map = $this->generateBaseModelClass( $schema ) ) {
+                    $classMap = $classMap + $map;
 
-                $map = $this->generateModelClass( $schema );
-                $classMap = $classMap + $map;
-
+                    $map = $this->generateModelClass( $schema );
+                    $classMap = $classMap + $map;
+                }
             }
         }
 

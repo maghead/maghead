@@ -98,7 +98,7 @@ class ClassTemplate
      *
      * @return string short class name
      */
-    public function getClassShortName() 
+    public function getShortClassName() 
     {
         return $this->class->getName();
     }
