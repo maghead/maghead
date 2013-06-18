@@ -1,11 +1,7 @@
 <?php
 namespace tests;
 
+class Edm  extends \tests\EdmBase {
 
 
-class Edm 
-extends \tests\EdmBase
-{
-
-    
 }
