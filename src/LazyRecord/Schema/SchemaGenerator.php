@@ -105,7 +105,10 @@ class SchemaGenerator
             $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
             $cTemplate->schema = $schema;
             $cTemplate->schema_data = $schemaArray;
-            return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
+
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
+                return array( $cTemplate->getClassName() => $classFilePath );
+            }
         }
     }
 
@@ -156,7 +159,7 @@ class SchemaGenerator
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
         if ($schema->isNewerThanFile($classFilePath) || $force ) {
             $cTemplate->extendClass( $schema->getBaseModelClass() );
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, false) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
         }
@@ -175,7 +178,7 @@ class SchemaGenerator
             $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
             $cTemplate->addConst( 'table',  $schema->getTable() );
             $cTemplate->extendClass( 'LazyRecord\BaseCollection' );
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath) ) {
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
         }
