@@ -45,18 +45,10 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
                 require_once $file;
             }
 
-            ok( isset($classMap['\tests\UserSchemaProxy']) );
-            ok( isset($classMap['\tests\User']) );
-            ok( isset($classMap['\tests\UserBase']) );
-            ok( isset($classMap['\tests\UserCollection']) );
-            ok( isset($classMap['\tests\UserCollectionBase']) );
-
             $schemaProxy = new \tests\UserSchemaProxy;
             ok($schemaProxy);
-
             $baseClass = new \tests\UserBase;
             ok($baseClass);
-
             $class = \tests\UserBase::collection_class;
             $o = new $class;
             ok($o);
