@@ -1,7 +1,7 @@
 Changes
 =======
 
-## v1.20
+## v1.10
 
 - Added index support, you can now add index attribute on your column.
 - Added foreign key (references) generator for the `build-sql` command.
