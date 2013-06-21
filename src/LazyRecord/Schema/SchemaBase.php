@@ -132,7 +132,7 @@ abstract class SchemaBase
     public function getRelation($relationId)
     {
         if( isset($this->relations[ $relationId ]) ) {
-            return new Relationship($this->relations[ $relationId ]);
+            return $this->relations[ $relationId ];
         }
     }
 
