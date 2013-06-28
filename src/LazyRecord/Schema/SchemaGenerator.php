@@ -105,7 +105,10 @@ class SchemaGenerator
             $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
             $cTemplate->schema = $schema;
             $cTemplate->schema_data = $schemaArray;
-            return $this->writeClassTemplateToDirectory($schema->getDirectory(), $cTemplate, true);
+
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
+                return array( $cTemplate->getClassName() => $classFilePath );
+            }
         }
     }
 
@@ -147,7 +150,6 @@ class SchemaGenerator
      */
     public function generateModelClass($schema, $force = false)
     {
-        $class = $schema->getModelClass();
         $cTemplate = new ClassTemplate( $schema->getModelClass() , array(
             'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
@@ -156,7 +158,7 @@ class SchemaGenerator
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
         if ($schema->isNewerThanFile($classFilePath) || $force ) {
             $cTemplate->extendClass( $schema->getBaseModelClass() );
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, false) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
         }
@@ -175,7 +177,7 @@ class SchemaGenerator
             $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
             $cTemplate->addConst( 'table',  $schema->getTable() );
             $cTemplate->extendClass( 'LazyRecord\BaseCollection' );
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath) ) {
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
         }
@@ -215,45 +217,15 @@ class SchemaGenerator
      * @param boolean $overwrite Overwrite class file. 
      * @return array
      */
-    public function writeClassTemplateToDirectory($directory,$cTemplate,$overwrite = false)
+    public function writeClassTemplateToPath($cTemplate, $filepath, $overwrite = false) 
     {
-        $sourceCode = $cTemplate->render();
-        $classFile = $this->writeClassToDirectory($directory, $cTemplate->getShortClassName(),$sourceCode, $overwrite);
-        return array( $cTemplate->class->getFullName() => $classFile );
-    }
-
-
-    public function writeClassTemplateToPath($cTemplate, $filepath, $overwrite = false) {
         if ( $overwrite ) {
             file_put_contents( $filepath, $cTemplate->render() );
             return true;
         } elseif ( file_exists($filepath) ) {
-            return false;
+            return true;
         }
         return false;
-    }
-
-
-
-    /**
-     * Write class code to a directory with class name
-     *
-     * @param path $directory
-     * @param string $className
-     * @param string $sourceCode
-     * @param boolean $overwrite
-     */
-    public function writeClassToDirectory($directory,$className,$sourceCode, $overwrite = false)
-    {
-        // get schema dir
-        $filePath = $this->buildClassFilePath($directory, $className);
-        $this->preventFileDir( $filePath );
-        if( $overwrite || ! file_exists( $filePath ) ) {
-            if( file_put_contents( $filePath , $sourceCode ) === false ) {
-                throw new Exception("$filePath write failed.");
-            }
-        }
-        return $filePath;
     }
 
 

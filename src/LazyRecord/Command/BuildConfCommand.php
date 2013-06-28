@@ -4,6 +4,14 @@ use Exception;
 use LazyRecord\ConfigLoader;
 use ConfigKit\ConfigCompiler;
 
+function cross_symlink($sourcePath, $targetPath) {
+    if ( PHP_OS == "WINNT" ) {
+        return link( $sourcePath, $targetPath );
+    } else {
+        return symlink( $sourcePath, $targetPath );
+    }
+}
+
 class BuildConfCommand extends \CLIFramework\Command
 {
 
@@ -51,13 +59,17 @@ class BuildConfCommand extends \CLIFramework\Command
         // make master config link
         $loader = ConfigLoader::getInstance();
 
-        if( file_exists( $loader->symbolFilename ) )
+        if ( file_exists( $loader->symbolFilename ) ) {
             unlink( $loader->symbolFilename );
-        if( file_exists('.lazy.php') )
+        }
+        if ( file_exists('.lazy.php') ) {
             unlink( '.lazy.php' );
+        }
 
         $this->logger->info("Making link => " . $loader->symbolFilename );
-        symlink( $configFile , $loader->symbolFilename );
+        if ( cross_symlink( $configFile , $loader->symbolFilename ) === false ) {
+            $this->logger->error("Config linking failed.");
+        }
         $this->logger->info("Done.");
     }
 
