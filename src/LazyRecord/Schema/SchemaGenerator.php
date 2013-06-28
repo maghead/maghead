@@ -22,9 +22,17 @@ class SchemaGenerator
 
     public $config;
 
+    public $forceUpdate = false;
+
     public function __construct() 
     {
         $this->config = ConfigLoader::getInstance();
+    }
+
+
+    public function setForceUpdate($force) 
+    {
+        $this->forceUpdate = $force;
     }
 
     public function getBaseModelClass() 
@@ -75,7 +83,7 @@ class SchemaGenerator
         return $directory . DIRECTORY_SEPARATOR . $className . '.php';
     }
 
-    public function generateSchemaProxyClass($schema, $force = false)
+    public function generateSchemaProxyClass($schema)
     {
         $schemaProxyClass = $schema->getSchemaProxyClass();
         $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
@@ -84,7 +92,7 @@ class SchemaGenerator
         ));
 
         $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
-        if ( $schema->isNewerThanFile($classFilePath) || $force ) {
+        if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
             $schemaClass = get_class($schema);
             $schemaArray = $schema->export();
             $cTemplate->addConst( 'schema_class'     , ltrim($schemaClass,'\\') );
@@ -113,7 +121,7 @@ class SchemaGenerator
     }
 
 
-    public function generateBaseModelClass($schema, $force = false)
+    public function generateBaseModelClass($schema)
     {
         $baseClass = $schema->getBaseModelClass();
         $cTemplate = new ClassTemplate( $baseClass, array( 
@@ -121,7 +129,7 @@ class SchemaGenerator
             'template' => 'Class.php.twig',
         ));
         $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
-        if ( $schema->isNewerThanFile($classFilePath) || $force ) {
+        if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
             $cTemplate->addConsts(array(
                 'schema_proxy_class' => ltrim($schema->getSchemaProxyClass(),'\\'),
                 'collection_class' => ltrim($schema->getCollectionClass(),'\\'),
@@ -172,7 +180,7 @@ class SchemaGenerator
             'template' => 'Class.php.twig',
         ));
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
-        if ($schema->isNewerThanFile($classFilePath) ) {
+        if ($schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
             $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
             $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
             $cTemplate->addConst( 'table',  $schema->getTable() );
@@ -202,7 +210,7 @@ class SchemaGenerator
 
         if ( $schema->isNewerThanFile( $classFilePath ) ) {
             $cTemplate->extendClass( $baseCollectionClass );
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath) ) {
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, false) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
         }
@@ -263,7 +271,7 @@ class SchemaGenerator
         foreach( (array) $schemas as $schema ) {
 
             // support old-style schema declare
-            if ( $map = $this->generateSchemaProxyClass( $schema ) ) {
+            if ( $map = $this->generateSchemaProxyClass( $schema) ) {
                 $classMap = $classMap + $map;
             }
 
@@ -281,7 +289,7 @@ class SchemaGenerator
                     $classMap = $classMap + $map;
                 }
             } else {
-                if ( $map = $this->generateBaseModelClass( $schema ) ) {
+                if ( $map = $this->generateBaseModelClass($schema) ) {
                     $classMap = $classMap + $map;
                 }
                 if ( $map = $this->generateModelClass( $schema ) ) {
