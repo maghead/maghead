@@ -20,6 +20,11 @@ class BuildSchemaCommand extends \CLIFramework\Command
         return 'build configuration file.';
     }
 
+    public function options($opts) 
+    {
+        $opts->add('f|force','force generate all schema files.');
+        parent::options($opts);
+    }
 
     public function execute()
     {
