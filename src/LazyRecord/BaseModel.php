@@ -341,22 +341,28 @@ abstract class BaseModel implements
         }
 
         // then it's the mixin methods
-        if ( isset(static::$mixin_classes) ) { 
-            $this->invokeMixinMethod($m, $a);
+        if ( isset(static::$mixin_classes) ) {
+            $mClass = $this->findMixinMethodClass($m);
+            return $this->invokeMixinMethod($mClass, $m, $a);
         }
 
         // XXX: special case for twig template
         throw new Exception( get_class($this) . ": $m method not found.");
     }
 
-    public function invokeMixinMethod($m,$a) 
-    {
+    public function findMixinMethodClass($m) {
         foreach( static::$mixin_classes as $mixinClass ) {
             // if we found it, just call it and return the result. 
-            if ( method_exists( $mixinClass , $m ) ) {
-                return call_user_func_array( array($mixinClass, $m) , array($this) + $a );
+            if ( method_exists($mixinClass , $m) ) {
+                return $mixinClass;
             }
         }
+        return false;
+    }
+
+    public function invokeMixinMethod($mixinClass, $m,$a) 
+    {
+        return call_user_func_array( array($mixinClass, $m) , array($this) + $a );
     }
 
 
