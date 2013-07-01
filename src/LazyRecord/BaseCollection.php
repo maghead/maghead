@@ -267,17 +267,16 @@ class BaseCollection
         // XXX: here we use SQLBuilder\QueryBuilder to build our variables,
         //   but PDO doesnt accept boolean type value, we need to transform it.
         foreach( $vars as $k => & $v ) {
-            if( $v === false )
+            if ( $v === false ) {
                 $v = 'FALSE';
-            elseif( $v === true )
+            } elseif( $v === true ) {
                 $v = 'TRUE';
+            }
         }
 
         try {
             $this->handle = ConnectionManager::getInstance()->prepareAndExecute($dsId,$sql, $vars );
-        }
-        catch ( Exception $e )
-        {
+        } catch ( Exception $e ) {
             return new OperationError( 'Collection fetch failed: ' . $e->getMessage() , array( 
                 'vars' => $vars,
                 'sql' => $sql,
@@ -439,7 +438,24 @@ class BaseCollection
     }
 
 
+    public function update($data) 
+    {
+        $query = $this->_query->update($data);
+        $sql = $query->build();
+        $vars = $query->vars;
+        $dsId = $this->getSchema()->getWriteSourceId();
 
+        try {
+            $this->handle = ConnectionManager::getInstance()->prepareAndExecute($dsId, $sql, $vars);
+        } catch ( Exception $e ) {
+            return new OperationError( 'Collection update failed: ' . $e->getMessage() , array( 
+                'vars' => $vars,
+                'sql' => $sql,
+                'exception' => $e,
+            ));
+        }
+        return new OperationSuccess('Updated', array( 'sql' => $sql ));
+    }
 
 
     /******************** Implements Iterator methods ********************/

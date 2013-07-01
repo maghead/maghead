@@ -63,6 +63,7 @@ class BookSchemaProxy extends RuntimeSchema
           'type' => 'varchar(128)',
           'isa' => 'str',
           'unique' => true,
+          'size' => 128,
         ),
     ),
   'subtitle' => array( 
