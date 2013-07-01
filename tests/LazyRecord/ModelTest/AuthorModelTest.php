@@ -12,9 +12,20 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
     public function testCollection()
     {
         $author = new \tests\Author;
+
+        $this->resultOK( true,  $author->create(array( 
+            'name' => 'FooBar',
+            'email' => 'a@a',
+            'identity' => 'a',
+            'confirmed' => false,
+        )) );
+
         $collection = $author->asCollection();
         ok($collection);
-        isa_ok('\tests\AuthorCollection',$collection);
+        isa_ok('tests\\AuthorCollection',$collection);
+
+        // delete it
+        $this->resultOK(true, $author->delete());
     }
 
     public function testSchemaInterface()
