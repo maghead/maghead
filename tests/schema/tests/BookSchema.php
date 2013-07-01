@@ -5,15 +5,14 @@ use LazyRecord\Schema;
 class BookSchema extends Schema
 {
 
-    function schema()
+    public function schema()
     {
         $this->column('title')
             ->unique()
-            ->type('varchar(128)');
+            ->varchar(128);
 
         $this->column('subtitle')
             ->varchar(256);
-
 
         $this->column('isbn')
             ->varchar(128)

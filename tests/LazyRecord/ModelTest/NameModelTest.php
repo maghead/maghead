@@ -1,12 +1,14 @@
 <?php
 
-class NameModelTest extends \LazyRecord\ModelTestCase
+use LazyRecord\ModelTestCase;
+
+class NameModelTest extends ModelTestCase
 {
     public $driver = 'sqlite';
 
     public function getModels()
     {
-        return array('tests\NameSchema');
+        return array('tests\\NameSchema');
     }
 
     public function nameDataProvider()

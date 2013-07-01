@@ -349,7 +349,8 @@ abstract class BaseModel implements
         throw new Exception( get_class($this) . ": $m method not found.");
     }
 
-    public function invokeMixinMethod($m,$a) {
+    public function invokeMixinMethod($m,$a) 
+    {
         foreach( static::$mixin_classes as $mixinClass ) {
             // if we found it, just call it and return the result. 
             if ( method_exists( $mixinClass , $m ) ) {
