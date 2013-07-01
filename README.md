@@ -613,20 +613,21 @@ $this->column('content')
 
 ### Using Mixin Schemas
 
+Simply define mixin in your model schema method:
+
 ```php
-$this->mixin('tests\MetadataMixinSchema');
+$this->mixin('tests\\MetadataMixinSchema');
 ```
 
 The Mixin Schema Class, e.g., MetadataSchema:
 
 ```php
-<?php
 namespace LazyRecord\Schema\Mixin;
 use LazyRecord\Schema\MixinSchemaDeclare;
 
 class MetadataSchema extends MixinSchemaDeclare
 {
-    function schema()
+    public function schema()
     {
         $this->column('updated_on')
             ->isa('DateTime')
@@ -644,6 +645,36 @@ class MetadataSchema extends MixinSchemaDeclare
     }
 }
 ```
+
+#### Defining Mixin Method
+
+```php
+namespace LazyRecord\Schema\Mixin;
+use LazyRecord\Schema\MixinSchemaDeclare;
+
+class MetadataSchema extends MixinSchemaDeclare
+{
+    public function schema()
+    {
+        // ... define your schema here
+    }
+
+    public function fooMethod($record, $arg1, $arg2, $arg3, $arg4)
+    {
+        // ...
+        return ...;
+    }
+}
+```
+
+Then you can use the `fooMethod` on your model object:
+
+```php
+$record = new FooModal;
+$result = $record->fooMethod(1,2,3,4);
+```
+
+
 
 ### Defining Model Relationship
 
