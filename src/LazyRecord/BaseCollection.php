@@ -109,13 +109,6 @@ class BaseCollection
 
     public function __construct() 
     {
-        // Setup Default Ordering.
-        if ( ! empty($this->defaultOrdering) ) {
-            $q = $this->_query;
-            foreach( $this->defaultOrdering as $ordering ) {
-                $q->order( $ordering[0], $ordering[1] );
-            }
-        }
     }
     
 
@@ -153,7 +146,7 @@ class BaseCollection
         elseif( $key === '_query' ) {
             return $this->_readQuery 
                     ? $this->_readQuery
-                    : $this->_readQuery = $this->createQuery( 
+                    : $this->_readQuery = $this->createReadQuery( 
                         $this->getSchema()->getReadSourceId() 
                     );
         } elseif( $key === '_items' ) {
@@ -231,8 +224,9 @@ class BaseCollection
     }
 
 
-    public function createQuery( $dsId )
+    public function createReadQuery()
     {
+        $dsId = $this->getSchema()->getReadSourceId();
         $q = new QueryBuilder;
         $q->driver = $this->getQueryDriver( $dsId );
         $q->table( $this->getSchema()->table );
@@ -242,6 +236,15 @@ class BaseCollection
                 : $this->getAlias() . '.*'
         );
         $q->alias( $this->getAlias() ); // main table alias
+
+        // Setup Default Ordering.
+        if ( ! empty($this->defaultOrdering) ) {
+            $q = $this->_query;
+            foreach( $this->defaultOrdering as $ordering ) {
+                $q->order( $ordering[0], $ordering[1] );
+            }
+        }
+
         return $q;
     }
 
