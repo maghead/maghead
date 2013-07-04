@@ -593,12 +593,23 @@ class BaseCollection
     }
 
 
+
+
+    /**
+     * Create model object.
+     *
+     * @return object BaseModel
+     */
     public function newModel()
     {
         return $this->getSchema()->newModel();
     }
 
 
+
+    /**
+     * Create a collection object from an data array.
+     */
     static function fromArray($list)
     {
         $collection = new static;
