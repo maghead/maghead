@@ -575,10 +575,20 @@ class BaseCollection
         return $collection;
     }
 
+
+
+    /**
+     * Load Collection from a SQL query statement.
+     *
+     * @param string $sql
+     * @param array $args
+     * @param string $dsId
+     */
     public function loadQuery( $sql, $args = array() , $dsId = null )
     {
-        if( ! $dsId )
+        if ( ! $dsId ) {
             $dsId = $this->getSchema()->getReadSourceId();
+        }
         $this->handle = ConnectionManager::getInstance()->prepareAndExecute( $dsId, $sql , $args );
     }
 
