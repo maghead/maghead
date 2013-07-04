@@ -99,6 +99,26 @@ class BaseCollection
     protected $explictSelect = false;
 
 
+    /**
+     * $this->defaultOrdering = array( 
+     *    array( 'id', 'desc' ),
+     *    array( 'name', 'desc' ),
+     * );
+     */
+    protected $defaultOrdering = array();
+
+    public function __construct() 
+    {
+        // Setup Default Ordering.
+        if ( ! empty($this->defaultOrdering) ) {
+            $q = $this->_query;
+            foreach( $this->defaultOrdering as $ordering ) {
+                $q->order( $ordering[0], $ordering[1] );
+            }
+        }
+    }
+    
+
     public function getIterator()
     {
         if ( ! $this->_itemData ) {
