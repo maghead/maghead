@@ -468,6 +468,7 @@ class BaseCollection
      */
     public function update($data) 
     {
+        // get current query object and set it to update.
         $query = $this->_query->update($data);
         $sql = $query->build();
         $vars = $query->vars;

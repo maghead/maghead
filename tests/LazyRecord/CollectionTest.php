@@ -49,6 +49,11 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         $pairs = $addresses->asPairs( 'id' , 'address' );
         ok( $pairs );
 
+        // Run update
+        $addresses->where(array( 'address' => 'Hack' ));
+        $ret = $addresses->update(array( 'address' => 'BooBoo' ));
+        result_ok($ret);
+
         foreach( $address->flushResults() as $result ) {
             $id = $result->id;
             ok($id);
