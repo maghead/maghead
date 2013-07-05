@@ -461,6 +461,11 @@ class BaseCollection
     }
 
 
+
+
+    /**
+     * Update collection
+     */
     public function update($data) 
     {
         $query = $this->_query->update($data);
@@ -884,10 +889,10 @@ class BaseCollection
         return $data;
     }
 
-    public function toPairs($key,$valueKey) {
+    public function toPairs($key,$valueKey) 
+    {
         return $this->asPairs($key,$valueKey);
     }
-
 
     /**
      * When cloning collection object,
@@ -898,6 +903,9 @@ class BaseCollection
     public function __clone() 
     {
         $this->free();
+
+        // if we have readQuery object, we should clone the query object 
+        // for the new collection object.
         if( $this->_readQuery ) {
             $this->_readQuery = clone $this->_readQuery;
         }
