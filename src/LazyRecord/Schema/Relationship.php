@@ -78,6 +78,8 @@ class Relationship
 
 
     /**
+     * Save order on the relationship.
+     *
      * @param string $column
      * @param string $ordering
      */

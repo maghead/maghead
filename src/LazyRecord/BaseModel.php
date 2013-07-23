@@ -1463,14 +1463,14 @@ abstract class BaseModel implements
 
             $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];
-            $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
             if ( ! $this->hasValue($sColumn) ) {
                 return;
             }
                 // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
 
             $sValue = $this->getValue( $sColumn );
-            $model = $fpSchema->newModel();
+
+            $model = $relation->newForeignModel();
             $model->load(array( $fColumn => $sValue ));
             return $this->setInternalCache($cacheKey,$model);
         }
@@ -1480,7 +1480,6 @@ abstract class BaseModel implements
             $sColumn = $relation['self_column'];
             $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];
-            $fpSchema = SchemaLoader::load( $fSchema->getSchemaProxyClass() );
 
             if ( ! $this->hasValue($sColumn) ) {
                 return;
@@ -1489,7 +1488,7 @@ abstract class BaseModel implements
 
             $sValue = $this->getValue( $sColumn );
 
-            $collection = $fpSchema->newCollection();
+            $collection = $relation->getForeignCollection();
             $collection->where()
                 ->equal( 'm.' . $fColumn, $sValue ); // 'm' is the default alias.
 
