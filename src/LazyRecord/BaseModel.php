@@ -60,6 +60,10 @@ abstract class BaseModel implements
      */
     public $saveResults = true;
 
+    public $dataLabelField;
+
+    public $dataKeyValueField;
+
 
     /**
      * @var OperationResult[] OperationResult pool
@@ -161,6 +165,9 @@ abstract class BaseModel implements
      */
     public function dataLabel() 
     {
+        if ( $this->dataLabelField ) {
+            return $this->get($this->dataLabelField);
+        }
         $pk = $this->getSchema()->primaryKey;
         return $this->get($pk);
     }
@@ -171,6 +178,9 @@ abstract class BaseModel implements
      */
     public function dataKeyValue()
     {
+        if ( $this->dataKeyValueField ) {
+            return $this->get($this->dataKeyValueField);
+        }
         $pk = $this->getSchema()->primaryKey;
         return $this->get($pk);
     }
