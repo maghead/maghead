@@ -62,7 +62,7 @@ abstract class BaseModel implements
 
     public $dataLabelField;
 
-    public $dataKeyValueField;
+    public $dataValueField;
 
 
     /**
@@ -159,18 +159,37 @@ abstract class BaseModel implements
         return true;
     }
 
+
+    public function getDataLabelField()
+    {
+        if ( $this->dataLabelField ) {
+            return $this->dataLabelField;
+        }
+        return $this->getSchema()->primaryKey;
+    }
+
+    public function getDataValueField()
+    {
+        if ( $this->dataValueField ) {
+            return $this->dataValueField;
+        }
+        return $this->getSchema()->primaryKey;
+    }
+
+
     /**
      * This is for select widget,
      * returns label value from specific column.
      */
     public function dataLabel() 
     {
-        if ( $this->dataLabelField ) {
-            return $this->get($this->dataLabelField);
-        }
-        $pk = $this->getSchema()->primaryKey;
-        return $this->get($pk);
+        return $this->get( $this->getDataLabelField() );
     }
+
+
+
+
+
 
     /**
      * This is for select widget,
@@ -178,16 +197,12 @@ abstract class BaseModel implements
      */
     public function dataKeyValue()
     {
-        if ( $this->dataKeyValueField ) {
-            return $this->get($this->dataKeyValueField);
-        }
-        $pk = $this->getSchema()->primaryKey;
-        return $this->get($pk);
+        return $this->get( $this->getDataValueField() );
     }
 
 
     /**
-     * Alias method of $this->dataKeyValue()
+     * Alias method of $this->dataValue()
      */
     public function dataValue()
     {
