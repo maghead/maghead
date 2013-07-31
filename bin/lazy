@@ -1,12 +1,6 @@
 #!/usr/bin/env php
 <?php
-require 'Universal/ClassLoader/BasePathClassLoader.php';
-$loader = new \Universal\ClassLoader\BasePathClassLoader(array(
-    dirname(__DIR__) . '/src', 
-    dirname(__DIR__) . '/vendor/pear', 
-));
-$loader->useIncludePath(true);
-$loader->register();
+$loader = require 'vendor/autoload.php';
 $console = LazyRecord\Console::getInstance();
 if( isset($argv[1]) && $argv[1] == '-d' ) {
     $console->run($argv);
