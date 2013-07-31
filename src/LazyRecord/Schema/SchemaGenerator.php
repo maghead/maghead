@@ -92,7 +92,9 @@ class SchemaGenerator
         ));
 
         $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
-        if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
+
+        // always update the proxy schema file
+        if ( true || $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
             $schemaClass = get_class($schema);
             $schemaArray = $schema->export();
             $cTemplate->addConst( 'schema_class'     , ltrim($schemaClass,'\\') );
