@@ -17,7 +17,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
 
     public function brief()
     {
-        return 'build configuration file.';
+        return 'build schema files.';
     }
 
     public function options($opts) 

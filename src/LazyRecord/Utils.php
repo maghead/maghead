@@ -9,7 +9,7 @@ class Utils
      *
      * @return array schema objects
      */
-    public static function getSchemaClassFromPathsOrClassNames($loader, $args,$logger = null)
+    public static function getSchemaClassFromPathsOrClassNames($loader, $args, $logger = null)
     {
         if( count($args) && ! file_exists($args[0]) ) {
             $classes = array();
@@ -20,16 +20,22 @@ class Utils
                     $classes[] = $class;
                 }
                 else {
-                    if( $logger )
+                    if ( $logger ) {
                         $logger->warn( "$class not found." );
-                    else
+                    } else {
                         echo ">>> $class not found.\n";
+                    }
                 }
             }
             return ClassUtils::schema_classes_to_objects( $classes );
         }
         else {
             $finder = new SchemaFinder;
+            if ( $logger ) {
+                $finder->setLogger( $logger );
+            }
+
+
             if( count($args) && file_exists($args[0]) ) {
                 $finder->paths = $args;
                 foreach( $args as $file ) {

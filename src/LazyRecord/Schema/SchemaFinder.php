@@ -19,15 +19,23 @@ use LazyRecord\ConfigLoader;
 class SchemaFinder
     implements IteratorAggregate
 {
+
     public $paths = array();
 
     public $classes = array();
 
     public $config;
 
+    public $logger;
+
     public function __construct()
     {
         $this->config = ConfigLoader::getInstance();
+    }
+
+    public function setLogger($logger) 
+    {
+        $this->logger = $logger;
     }
 
     public function in($path)
@@ -45,16 +53,14 @@ class SchemaFinder
     {
         $code = file_get_contents($file);
         $modelPattern = '#' . preg_quote( ltrim($this->config->getBaseModelClass(),'\\') ) . '#';
-        if( preg_match( '#LazyRecord\\\\Schema\\\\SchemaDeclare#ixsm' , $code ) ) {
-            require_once $file;
-        }
-        elseif( preg_match( '#use\s+LazyRecord\\\\Schema#ixsm' , $code ) ) {
-            require_once $file;
-        }
-        elseif( preg_match( '/LazyRecord\\\\BaseModel/ixsm' , $code ) ) {
-            require_once $file;
-        }
-        elseif( preg_match( $modelPattern, $code ) ) {
+        if (   preg_match( '#LazyRecord\\\\Schema\\\\SchemaDeclare#ixsm' , $code )
+            || preg_match( '#use\s+LazyRecord\\\\Schema#ixsm' , $code ) 
+            || preg_match( '/LazyRecord\\\\BaseModel/ixsm' , $code ) 
+            || preg_match( $modelPattern, $code ) 
+        ) {
+            if ( $this->logger ) {
+                $this->logger->info("Loading schema $file");
+            }
             require_once $file;
         }
     }
@@ -71,6 +77,9 @@ class SchemaFinder
 
         foreach( $this->paths as $path ) {
             if( is_file($path) ) {
+                if ( $this->logger ) {
+                    $this->logger->info("Loading schema $file");
+                }
                 require_once $path;
             }
             else {
