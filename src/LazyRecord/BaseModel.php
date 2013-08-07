@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord;
 use Exception;
+use RuntimeException;
 use PDOException;
 use InvalidArgumentException;
 use PDO;
