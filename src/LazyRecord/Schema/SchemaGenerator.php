@@ -166,7 +166,7 @@ class SchemaGenerator
         ));
 
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
-        if ($schema->isNewerThanFile($classFilePath) || $force ) {
+        if ( ! file_exists($classFilePath) || $schema->isNewerThanFile($classFilePath) || $force ) {
             $cTemplate->extendClass( $schema->getBaseModelClass() );
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, false) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
@@ -210,7 +210,7 @@ class SchemaGenerator
         ));
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
 
-        if ( $schema->isNewerThanFile( $classFilePath ) ) {
+        if ( ! file_exists($classFilePath) ||  $schema->isNewerThanFile( $classFilePath ) ) {
             $cTemplate->extendClass( $baseCollectionClass );
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, false) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );

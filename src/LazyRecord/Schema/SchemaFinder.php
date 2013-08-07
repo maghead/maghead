@@ -82,7 +82,7 @@ class SchemaFinder
 
     public function find()
     {
-        if ( empty($this->paths)) {
+        if ( empty($this->paths) ) {
             return;
         }
 
@@ -92,9 +92,7 @@ class SchemaFinder
                     $this->logger->info("Loading schema $file");
                 }
                 require_once $path;
-            }
-            else {
-                // directory iterator
+            } else {
                 $rdi   = new RecursiveDirectoryIterator($path);
                 $rii   = new RecursiveIteratorIterator($rdi);
                 $regex = new RegexIterator($rii, '/^.*Schema\.php$/i', RecursiveRegexIterator::GET_MATCH);
