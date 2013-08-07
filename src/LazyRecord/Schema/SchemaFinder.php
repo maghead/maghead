@@ -108,6 +108,14 @@ class SchemaFinder
         }
     }
 
+    public function requireFile($file) 
+    {
+        if ( $this->logger ) {
+            $this->logger->info("Loading schema $file");
+        }
+        return require_once $file;
+    }
+
 
     /**
      * This method is deprecated.
