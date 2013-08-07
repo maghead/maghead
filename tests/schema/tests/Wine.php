@@ -2,7 +2,7 @@
 namespace tests;
 use LazyRecord\BaseModel;
 
-class Wine extends BaseModel
+class Wine extends WineBase
 {
 
 }

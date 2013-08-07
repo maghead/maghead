@@ -1,8 +1,7 @@
 <?php
 namespace tests;
-use LazyRecord\BaseModel;
 
-class WineCategory extends BaseModel
+class WineCategory extends WineCategoryBase
 {
     public function dataLabel()
     {

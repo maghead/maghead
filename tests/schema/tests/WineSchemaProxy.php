@@ -62,7 +62,7 @@ class WineSchemaProxy extends RuntimeSchema
       'attributes' => array( 
           'type' => 'text',
           'isa' => 'str',
-          'refer' => 'tests\\WineCategory',
+          'refer' => 'tests\\WineCategorySchema',
         ),
     ),
   'id' => array( 
@@ -92,7 +92,7 @@ class WineSchemaProxy extends RuntimeSchema
       'type' => 4,
       'self_schema' => 'tests\\WineSchema',
       'self_column' => 'category_id',
-      'foreign_schema' => 'tests\\WineCategory',
+      'foreign_schema' => 'tests\\WineCategorySchema',
       'foreign_column' => 'id',
     ),
 )),

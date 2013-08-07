@@ -7,8 +7,8 @@ class WineModelTest extends \LazyRecord\ModelTestCase
     public function getModels()
     {
         return array(
-            'tests\\Wine',
-            'tests\\WineCategory',
+            'tests\\WineSchema',
+            'tests\\WineCategorySchema',
         );
     }
 
