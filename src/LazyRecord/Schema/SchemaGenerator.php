@@ -229,7 +229,7 @@ class SchemaGenerator
      */
     public function writeClassTemplateToPath($cTemplate, $filepath, $overwrite = false) 
     {
-        if ( $overwrite ) {
+        if ( ! file_exists($filepath) || $overwrite ) {
             file_put_contents( $filepath, $cTemplate->render() );
             return true;
         } elseif ( file_exists($filepath) ) {
