@@ -51,6 +51,16 @@ class SchemaFinder
 
     public function _loadSchemaFile($file) 
     {
+        if ( preg_match( '#Schema.php$#', $file ) ) {
+            if ( $this->logger ) {
+                $this->logger->info("Loading schema $file");
+            }
+            require_once $file;
+            return;
+        }
+        return;
+
+        // detect schema by content
         $code = file_get_contents($file);
         $modelPattern = '#' . preg_quote( ltrim($this->config->getBaseModelClass(),'\\') ) . '#';
         if (   preg_match( '#LazyRecord\\\\Schema\\\\SchemaDeclare#ixsm' , $code )
@@ -72,8 +82,9 @@ class SchemaFinder
 
     public function find()
     {
-        if( empty($this->paths))
+        if ( empty($this->paths)) {
             return;
+        }
 
         foreach( $this->paths as $path ) {
             if( is_file($path) ) {
