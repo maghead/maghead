@@ -1922,12 +1922,11 @@ abstract class BaseModel implements
         if ( $this->_schema ) {
             return $this->_schema;
         } elseif ( @constant('static::schema_proxy_class') ) {
-            return $this->_schema = SchemaLoader::load( static::schema_proxy_class );
-        } elseif ( method_exists($this,'schema') ) {
-            // create dynamic schema declare
-            // XXX: note that DynamicSchemaDeclare is using SchemaDeclare/Column
-            // not the RuntimeColumn object, so that we can not do deflate or value related operations.
-            return $this->_schema = new Schema\DynamicSchemaDeclare($this);
+            // the schema_proxy_class is from the *Base.php file.
+            if ( $this->_schema = SchemaLoader::load( static::schema_proxy_class ) ) {
+                return $this->_schema;
+            }
+            throw new Exception("Can not load " . static::schema_proxy_class);
         }
         throw new RuntimeException("schema is not defined in " . get_class($this) );
     }
