@@ -97,11 +97,12 @@ class SchemaFinder
                 // directory iterator
                 $rdi   = new RecursiveDirectoryIterator($path);
                 $rii   = new RecursiveIteratorIterator($rdi);
-                $regex = new RegexIterator($rii, '/^.*\.php$/i', RecursiveRegexIterator::GET_MATCH);
+                $regex = new RegexIterator($rii, '/^.*Schema\.php$/i', RecursiveRegexIterator::GET_MATCH);
                 foreach( $regex as $k => $files ) {
                     foreach( $files as $file ) {
                         // make sure there schema class.
-                        $this->_loadSchemaFile($file);
+                        // $this->_loadSchemaFile($file);
+                        $this->requireFile($file);
                     }
                 }
             }
