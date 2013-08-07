@@ -23,7 +23,7 @@ class WineCategorySchemaProxy extends RuntimeSchema
   1 => 'id',
 );
 
-    const schema_class = 'LazyRecord\\Schema\\DynamicSchemaDeclare';
+    const schema_class = 'tests\\WineCategorySchema';
     const collection_class = 'tests\\WineCategoryCollection';
     const model_class = 'tests\\WineCategory';
     const model_name = 'WineCategory';

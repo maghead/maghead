@@ -29,7 +29,7 @@ class WineSchemaProxy extends RuntimeSchema
   3 => 'id',
 );
 
-    const schema_class = 'LazyRecord\\Schema\\DynamicSchemaDeclare';
+    const schema_class = 'tests\\WineSchema';
     const collection_class = 'tests\\WineCollection';
     const model_class = 'tests\\Wine';
     const model_name = 'Wine';
@@ -90,7 +90,7 @@ class WineSchemaProxy extends RuntimeSchema
   'category' => \LazyRecord\Schema\Relationship::__set_state(array( 
   'data' => array( 
       'type' => 4,
-      'self_schema' => 'LazyRecord\\Schema\\DynamicSchemaDeclare',
+      'self_schema' => 'tests\\WineSchema',
       'self_column' => 'category_id',
       'foreign_schema' => 'tests\\WineCategory',
       'foreign_column' => 'id',
