@@ -11,7 +11,7 @@
         "corneltek\/validationkit": "~1.1",
         "corneltek\/configkit": "~1.4",
         "corneltek\/cascading-attribute": "~1.2",
-        "corneltek\/universal-cache": "@dev",
+        "corneltek\/universal-cache": "~1",
         "corneltek\/dbutil": "~1",
         "twig\/twig": "~1.12"
     },
