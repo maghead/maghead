@@ -368,8 +368,9 @@ abstract class BaseModel implements
 
         // then it's the mixin methods
         if ( isset(static::$mixin_classes) ) {
-            $mClass = $this->findMixinMethodClass($m);
-            return $this->invokeMixinMethod($mClass, $m, $a);
+            if ( $mClass = $this->findMixinMethodClass($m) ) {
+                return $this->invokeMixinMethod($mClass, $m, $a);
+            }
         }
 
         // XXX: special case for twig template
