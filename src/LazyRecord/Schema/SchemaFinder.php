@@ -22,8 +22,6 @@ class SchemaFinder
 
     public $paths = array();
 
-    public $classes = array();
-
     public function in($path)
     {
         $this->paths[] = $path;
@@ -82,8 +80,9 @@ class SchemaFinder
      */
     public function getSchemas()
     {
-        $classes = ClassUtils::get_declared_schema_classes();
-        return ClassUtils::expand_schema_classes($classes);
+        return ClassUtils::expand_schema_classes(
+            ClassUtils::get_declared_schema_classes()
+        );
     }
 
     public function getIterator()
