@@ -24,13 +24,6 @@ class SchemaFinder
 
     public $classes = array();
 
-    public $config;
-
-    public function __construct()
-    {
-        $this->config = ConfigLoader::getInstance();
-    }
-
     public function in($path)
     {
         $this->paths[] = $path;
