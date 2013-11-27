@@ -10,7 +10,6 @@ class SchemaLoader
 {
     static $schemas = array();
 
-
     /**
      * Load or create schema object and cache it.
      *

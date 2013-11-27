@@ -49,32 +49,6 @@ class SchemaFinder
     }
 
 
-    public function _loadSchemaFile($file) 
-    {
-        if ( preg_match( '#Schema.php$#', $file ) ) {
-            if ( $this->logger ) {
-                $this->logger->info("Loading schema $file");
-            }
-            require_once $file;
-            return;
-        }
-        return;
-
-        // detect schema by content
-        $code = file_get_contents($file);
-        $modelPattern = '#' . preg_quote( ltrim($this->config->getBaseModelClass(),'\\') ) . '#';
-        if (   preg_match( '#LazyRecord\\\\Schema\\\\SchemaDeclare#ixsm' , $code )
-            || preg_match( '#use\s+LazyRecord\\\\Schema#ixsm' , $code ) 
-            || preg_match( '/LazyRecord\\\\BaseModel/ixsm' , $code ) 
-            || preg_match( $modelPattern, $code ) 
-        ) {
-            if ( $this->logger ) {
-                $this->logger->info("Loading schema $file");
-            }
-            require_once $file;
-        }
-    }
-
     // DEPRECATED
     public function loadFiles() { 
         return $this->find(); 
@@ -98,8 +72,6 @@ class SchemaFinder
                 $regex = new RegexIterator($rii, '/^.*Schema\.php$/i', RecursiveRegexIterator::GET_MATCH);
                 foreach( $regex as $k => $files ) {
                     foreach( $files as $file ) {
-                        // make sure there schema class.
-                        // $this->_loadSchemaFile($file);
                         $this->requireFile($file);
                     }
                 }
@@ -107,7 +79,7 @@ class SchemaFinder
         }
     }
 
-    public function requireFile($file) 
+    public function requireFile($file)
     {
         if ( $this->logger ) {
             $this->logger->info("Loading schema $file");
