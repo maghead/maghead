@@ -1,3 +1,5 @@
 vendor
 .onion/
 .lazy.*
+*Base.php
+*SchemaProxy.php
