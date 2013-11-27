@@ -16,15 +16,6 @@ class ClassUtils
         return new DynamicSchemaDeclare($model);
     }
 
-    static public function get_declared_dynamic_schema_classes_from_models()
-    {
-        $classes = get_declared_classes();
-        $classes = array_filter($classes, function($class) {
-            return is_a($class,'LazyRecord\BaseModel',true) && method_exists($class,'schema');
-        });
-        return array_map(array('LazyRecord\ClassUtils','create_dschema_from_model_class'),$classes);
-    }
-
     static public function get_declared_schema_classes() 
     {
         $classes = get_declared_classes();
