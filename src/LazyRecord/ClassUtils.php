@@ -17,7 +17,7 @@ class ClassUtils
     /**
      * Get referenced schema classes and put them in order.
      *
-     * @param array schema objects
+     * @param string[] schema objects
      */
     static public function expand_schema_classes($classes)
     {
@@ -53,7 +53,7 @@ class ClassUtils
     /**
      * Filter non-dynamic schema declare classes.
      *
-     * @param array $classes class list.
+     * @param string[] $classes class list.
      */
     static public function filter_schema_classes($classes)
     {
