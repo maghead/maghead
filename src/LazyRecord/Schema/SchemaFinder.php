@@ -33,7 +33,7 @@ class SchemaFinder
         $this->config = ConfigLoader::getInstance();
     }
 
-    public function setLogger($logger) 
+    public function setLogger($logger)
     {
         $this->logger = $logger;
     }
@@ -100,7 +100,7 @@ class SchemaFinder
         return ClassUtils::expand_schema_classes($classes);
     }
 
-    public function getIterator() 
+    public function getIterator()
     {
         return $this->getSchemas();
     }
