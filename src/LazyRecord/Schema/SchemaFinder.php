@@ -62,17 +62,17 @@ class SchemaFinder
 
         foreach( $this->paths as $path ) {
             if( is_file($path) ) {
-                if ( $this->logger ) {
-                    $this->logger->info("Loading schema $file");
-                }
                 require_once $path;
             } else {
-                $rdi   = new RecursiveDirectoryIterator($path);
-                $rii   = new RecursiveIteratorIterator($rdi);
-                $regex = new RegexIterator($rii, '/^.*Schema\.php$/i', RecursiveRegexIterator::GET_MATCH);
-                foreach( $regex as $k => $files ) {
-                    foreach( $files as $file ) {
-                        $this->requireFile($file);
+                $rii   = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($path,
+                        RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::FOLLOW_SYMLINKS
+                    ),
+                    RecursiveIteratorIterator::SELF_FIRST
+                );
+                foreach ( $rii as $fi ) {
+                    if ( substr($fi->getFilename(), -10) == "Schema.php" ) {
+                        $this->requireFile($fi);
                     }
                 }
             }
