@@ -65,15 +65,6 @@ class SchemaFinder
 
 
     /**
-     * This method is deprecated.
-     */
-    public function getSchemaClasses() 
-    {
-        return $this->getSchemas();
-    }
-
-
-    /**
      * Returns schema objects
      *
      * @return array Schema objects
