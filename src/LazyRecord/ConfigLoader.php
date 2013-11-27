@@ -228,9 +228,9 @@ class ConfigLoader
      */
     public function getDataSource($sourceId)
     {
-        if( isset( $this->config['data_sources'][$sourceId] ) )
+        if ( isset( $this->config['data_sources'][$sourceId] ) ) {
             return $this->config['data_sources'][$sourceId];
-
+        }
         throw new Exception("data source $sourceId is not defined.");
     }
 
