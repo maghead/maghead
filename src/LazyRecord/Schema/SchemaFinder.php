@@ -72,16 +72,11 @@ class SchemaFinder
                 );
                 foreach ( $rii as $fi ) {
                     if ( substr($fi->getFilename(), -10) == "Schema.php" ) {
-                        $this->requireFile($fi);
+                        require_once $fi->getPathname();
                     }
                 }
             }
         }
-    }
-
-    public function requireFile($file)
-    {
-        return require_once $file;
     }
 
 
