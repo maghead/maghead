@@ -31,11 +31,6 @@ class Utils
         }
         else {
             $finder = new SchemaFinder;
-            if ( $logger ) {
-                $finder->setLogger( $logger );
-            }
-
-
             if( count($args) && file_exists($args[0]) ) {
                 $finder->paths = $args;
                 foreach( $args as $file ) {
