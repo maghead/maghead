@@ -27,11 +27,6 @@ class SchemaFinder
         $this->paths[] = $path;
     }
 
-    public function addPath($path)
-    {
-        $this->paths[] = $path;
-    }
-
 
     // DEPRECATED
     public function loadFiles() { 
