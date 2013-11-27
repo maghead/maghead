@@ -81,9 +81,6 @@ class SchemaFinder
 
     public function requireFile($file)
     {
-        if ( $this->logger ) {
-            $this->logger->info("Loading schema $file");
-        }
         return require_once $file;
     }
 
@@ -104,11 +101,8 @@ class SchemaFinder
      */
     public function getSchemas()
     {
-        $classes   = ClassUtils::get_declared_schema_classes();
-        $schemas   = ClassUtils::expand_schema_classes($classes);
-        return $schemas;
-        // $dyschemas = ClassUtils::get_declared_dynamic_schema_classes_from_models();
-        // return array_merge($schemas, $dyschemas);
+        $classes = ClassUtils::get_declared_schema_classes();
+        return ClassUtils::expand_schema_classes($classes);
     }
 
     public function getIterator() 
