@@ -26,16 +26,9 @@ class SchemaFinder
 
     public $config;
 
-    public $logger;
-
     public function __construct()
     {
         $this->config = ConfigLoader::getInstance();
-    }
-
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
     }
 
     public function in($path)
