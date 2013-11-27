@@ -79,10 +79,8 @@ class ClassUtils
 
     static public function convert_class_to_table($class)
     {
-        if( preg_match( '/(\w+?)(?:Model)?$/', $class ,$reg) ) 
-        {
-            $table = @$reg[1];
-            if ( ! $table ) {
+        if( preg_match( '/(\w+?)(?:Model)?$/', $class ,$reg) ) {
+            if ( count($reg) < 2 ) {
                 throw new Exception( "Can not parse model name: $class" );
             }
 
@@ -93,6 +91,7 @@ class ClassUtils
                 "'_'.strtolower('$1')" , 
                 $table ) );
             */
+            $table = $reg[1];
             $inflector = Inflector::getInstance();
             $table = $inflector->underscore($table);
             return $inflector->pluralize($table);
