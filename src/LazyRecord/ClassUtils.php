@@ -69,8 +69,9 @@ class ClassUtils
                 continue; 
             }
             $rf = new ReflectionClass( $class );
-            if ( $rf->isAbstract() )
+            if ( $rf->isAbstract() ) {
                 continue;
+            }
 
             $list[] = $class;
         }
