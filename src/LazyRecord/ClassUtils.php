@@ -8,14 +8,6 @@ use LazyRecord\Schema\DynamicSchemaDeclare;
 
 class ClassUtils
 {
-    static public function create_dschema_from_model_class($class)
-    {
-        $model = new $class;
-        if( ! method_exists($model,'schema') )
-            throw new RuntimeException("Model $class requires schema method");
-        return new DynamicSchemaDeclare($model);
-    }
-
     static public function get_declared_schema_classes() 
     {
         $classes = get_declared_classes();
