@@ -3,3 +3,4 @@ vendor
 .lazy.*
 *Base.php
 *SchemaProxy.php
+build/
