@@ -8,7 +8,6 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
         ok($schema);
 
         $g = new LazyRecord\Schema\SchemaGenerator;
-        $g->setLogger( new TestLogger );
         ok($g);
 
         if ( $classMap = $g->generateCollectionClass($schema) ) {
