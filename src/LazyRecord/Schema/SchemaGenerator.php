@@ -18,8 +18,6 @@ use LazyRecord\Schema;
  */
 class SchemaGenerator
 {
-    public $logger;
-
     public $config;
 
     public $forceUpdate = false;
@@ -48,12 +46,6 @@ class SchemaGenerator
             return ltrim($this->config->getBaseCollectionClass(),'\\');
         return 'LazyRecord\BaseCollection';
     }
-
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
-    }
-
 
 
     /**
