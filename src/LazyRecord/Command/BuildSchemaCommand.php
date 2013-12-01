@@ -46,9 +46,11 @@ class BuildSchemaCommand extends \CLIFramework\Command
 
         foreach( $classMap as $class => $file ) {
             $path = $file;
-            if( strpos( $path , getcwd() ) === 0 )
+            if ( strpos( $path , getcwd() ) === 0 ) {
                 $path = substr( $path , strlen(getcwd()) + 1 );
-            $logger->info(sprintf("%-32s",ltrim($class,'\\')) . " => $path",1);
+            }
+            $logger->info($path);
+            // $logger->info(sprintf("%-32s",ltrim($class,'\\')) . " => $path",1);
         }
         $logger->info('Done');
     }

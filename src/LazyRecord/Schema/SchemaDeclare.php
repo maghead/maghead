@@ -176,18 +176,16 @@ class SchemaDeclare extends SchemaBase
             // http://search.cpan.org/~tsibley/Jifty-DBI-0.75/lib/Jifty/DBI/Schema.pm
             //
             // if the refer attribute is defined, we should create the belongsTo relationship
-            //
-            // TODO: support for collection reference (has-many)
             if ( $refer = $column->refer ) {
                 // remove _id suffix if possible
                 $accessorName = preg_replace('#_id$#','',$name);
                 $schema = null;
                 $schemaClass = $refer;
-                if ( ! class_exists($refer,true) ) {
-                    if ( substr($refer, -strlen('Schema')) != 'Schema') {
-                        if ( class_exists($refer. 'Schema', true) ) {
-                            $refer = $refer . 'Schema';
-                        }
+
+                // convert class name "Post" to "PostSchema"
+                if ( substr($refer, -strlen('Schema')) != 'Schema') {
+                    if ( class_exists($refer. 'Schema', true) ) {
+                        $refer = $refer . 'Schema';
                     }
                 }
 
