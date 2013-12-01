@@ -36,7 +36,6 @@ class ListSchemaCommand extends Command
 
         $this->logger->debug("Initializing schema generator...");
         $generator = new SchemaGenerator;
-        $generator->setLogger( $logger );
 
         $args = func_get_args();
         $classes = \LazyRecord\Utils::getSchemaClassFromPathsOrClassNames( 
