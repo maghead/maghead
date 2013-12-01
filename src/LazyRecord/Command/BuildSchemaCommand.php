@@ -41,7 +41,6 @@ class BuildSchemaCommand extends \CLIFramework\Command
         $this->logger->info("Initializing schema generator...");
 
         $generator = new SchemaGenerator;
-        $generator->setLogger( $logger );
         $classMap = $generator->generate($classes);
 
         foreach( $classMap as $class => $file ) {
