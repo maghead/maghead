@@ -271,6 +271,7 @@ class SchemaGenerator
         // class map [ class => class file path ]
         $classMap = array();
         foreach( (array) $schemas as $schema ) {
+            echo "Building classes: ", get_class($schema) , "\n";
 
             // support old-style schema declare
             if ( $map = $this->generateSchemaProxyClass( $schema) ) {
