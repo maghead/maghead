@@ -62,6 +62,7 @@ class Column
             'typeConstraint' => self::ATTR_FLAG,
             'timezone'      => self::ATTR_FLAG,
             'enum'          => self::ATTR_ARRAY,
+            'renderable'    => self::ATTR_FLAG,
 
             /* column label */
             'label' => self::ATTR_ANY,
