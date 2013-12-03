@@ -2084,6 +2084,23 @@ abstract class BaseModel implements
 
 
 
+    public function fetchOneToManyRelationCollection($relationId) {
+        if ( $this->id && isset($this->{ $relationId }) ) {
+            return $this->{$relationId};
+        }
+    }
+
+    public function fetchManyToManyRelationCollection($relationId) {
+        $schema = $this->getSchema();
+        $relation = $schema->getRelation($relationId);
+        return $relation->newForeignForeignCollection(
+            $schema->getRelation($relation['relation_junction'])
+        );
+    }
+
+
+
+
     public function __clone()
     {
         $this->_data = $this->_data;
