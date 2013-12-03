@@ -56,19 +56,22 @@ class Relationship
     }
 
 
-    public function applyFilter(& $collection) {
+    public function applyFilter(& $collection) 
+    {
         if ( isset($this->data['filter']) ) {
             $collection = call_user_func_array( $this->data['filter'] , $collection );
         }
     }
 
-    public function applyWhere(& $collection) {
+    public function applyWhere(& $collection) 
+    {
         if ( isset($this->data['where']) ) {
             return $collection->where($this->data['where']);
         }
     }
 
-    public function applyOrder(& $collection) {
+    public function applyOrder(& $collection) 
+    {
         if ( isset($this->data['order']) ) {
             foreach( $this->data['order'] as $o ) {
                 $collection->order($o[0] , $o[1]);
