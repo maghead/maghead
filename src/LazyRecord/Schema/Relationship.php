@@ -35,6 +35,22 @@ class Relationship
     }
 
 
+    /**
+     * Resolve the junction relationship to retrieve foreign collection of the foreign collection.
+     *
+     */
+    public function newForeignForeignCollection($junctionRelation)
+    {
+        $junctionSchema  = new $junctionRelation['foreign_schema'];
+        $foreignRelation = $junctionSchema->getRelation( $this['relation_foreign'] );
+        $collection = $foreignRelation->newForeignCollection();
+        $this->applyFilter($collection); // apply this filter to the foreign collection.
+        return $collection;
+    }
+
+
+
+
     public function isType($type) 
     {
         return $this->data['type'] === $type;
@@ -59,7 +75,7 @@ class Relationship
     public function applyFilter(& $collection) 
     {
         if ( isset($this->data['filter']) ) {
-            $collection = call_user_func_array( $this->data['filter'] , $collection );
+            $collection = call_user_func_array( $this->data['filter'] , array($collection) );
         }
     }
 
