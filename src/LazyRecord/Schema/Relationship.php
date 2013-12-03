@@ -38,6 +38,9 @@ class Relationship
     /**
      * Resolve the junction relationship to retrieve foreign collection of the foreign collection.
      *
+     * This method is only for many-to-many relationship object.
+     *
+     * @return LazyRecord\BaseCollection The foreign foreign collection.
      */
     public function newForeignForeignCollection($junctionRelation)
     {
