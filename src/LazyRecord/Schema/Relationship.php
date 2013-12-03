@@ -34,22 +34,33 @@ class Relationship
         return new $collectionClass;
     }
 
-    public function getForeignCollection()
-    {
-        $collection = $this->newForeignCollection();
 
-
+    public function applyFilter($collection) {
         if ( isset($this->data['filter']) ) {
-            call_user_func_array( $this->data['filter'] , $collection );
+            return call_user_func_array( $this->data['filter'] , $collection );
         }
+    }
+
+    public function applyWhere($collection) {
         if ( isset($this->data['where']) ) {
             $collection->where($this->data['where']);
         }
+    }
+
+    public function applyOrder($collection) {
         if ( isset($this->data['order']) ) {
             foreach( $this->data['order'] as $o ) {
                 $collection->order($o[0] , $o[1]);
             }
         }
+    }
+
+    public function getForeignCollection()
+    {
+        $collection = $this->newForeignCollection();
+        $this->applyFilter($collection);
+        $this->applyWhere($collection);
+        $this->applyOrder($collection);
         return $collection;
     }
 
@@ -68,6 +79,8 @@ class Relationship
 
     /**
      * Define filter for collection
+     *
+     * @param callback $filter filter callback.
      */
     public function filter($filter)
     {
