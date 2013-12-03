@@ -35,6 +35,27 @@ class Relationship
     }
 
 
+    public function isType($type) 
+    {
+        return $this->data['type'] === $type;
+    }
+
+    public function isManyToMany() 
+    {
+        return $this->data['type'] === SchemaDeclare::many_to_many;
+    }
+
+    public function isOneToMany() 
+    {
+        return $this->data['type'] === SchemaDeclare::has_many;
+    }
+
+    public function isHasMany() 
+    {
+        return $this->data['type'] === SchemaDeclare::has_many;
+    }
+
+
     public function applyFilter(& $collection) {
         if ( isset($this->data['filter']) ) {
             $collection = call_user_func_array( $this->data['filter'] , $collection );
