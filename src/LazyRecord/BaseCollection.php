@@ -239,7 +239,6 @@ class BaseCollection
 
         // Setup Default Ordering.
         if ( ! empty($this->defaultOrdering) ) {
-            $q = $this->_query;
             foreach( $this->defaultOrdering as $ordering ) {
                 $q->order( $ordering[0], $ordering[1] );
             }
