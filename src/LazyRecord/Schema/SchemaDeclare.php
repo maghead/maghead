@@ -22,7 +22,6 @@ class SchemaDeclare extends SchemaBase
     {
         $this->schema( $options );
         $this->primaryKey = $this->findPrimaryKey();
-
         if( null === $this->primaryKey && $config = ConfigLoader::getInstance() )
         {
             if( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
