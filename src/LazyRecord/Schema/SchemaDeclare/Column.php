@@ -500,8 +500,23 @@ class Column
         }
 
         // save unknown attribute by default
-        $this->attributes[ $method ] = $args[0];
+        $this->attributes[ $method ] = ! empty($args) ? $args[0] : null;
         return $this;
+    }
+
+    public function get($name) 
+    {
+        if ( isset($this->attributes[$name]) ) {
+            return $this->attributes[$name];
+        }
+    }
+
+    public function getDefaultValue( $record = null, $args = null )
+    {
+        // XXX: might contains array() which is a raw sql statement.
+        if( $val = $this->get('default') ) {
+            return Utils::evaluate( $val , array($record, $args));
+        }
     }
 
 }
