@@ -1,0 +1,18 @@
+language: php
+php:
+  - 5.3
+  - 5.4
+  - hhvm
+
+before_script:
+  - phpenv rehash
+  - psql -c "create database testing;" -U postgres
+  - mysql -e "create database testing charset utf8;"
+  - mysql -e "grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing'"
+  - curl http://install.onionphp.org/ | bash
+  - curl -O https://raw.github.com/c9s/Onion/master/onion
+  - composer install --dev
+script:
+  - phpunit --debug
+# notifications:
+#  webbooks: http://wireroom.extremedev.org/=/travis-ci/Hall
