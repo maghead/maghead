@@ -125,5 +125,9 @@ class ClassTemplate
         $this->msgIds[] = $msgId;
     }
 
+    public function setMsgIds($msgIds) {
+        $this->msgIds = $msgIds;
+    }
+
 }
 
