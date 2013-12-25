@@ -103,6 +103,12 @@ class SchemaGenerator
             $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
             $cTemplate->addStaticVar( 'mixin_classes',  array_reverse($schema->getMixinSchemaClasses()) );
 
+            // Aggregate basic translations...
+            $cTemplate->addMsgId($schema->getLabel());
+            foreach( $schema->getColumnLabels() as $label ) {
+                $cTemplate->addMsgId($label);
+            }
+
             // export column names including virutal columns
             $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
             $cTemplate->schema = $schema;

@@ -19,4 +19,14 @@ class {{ class.class.name }} {% if class.extends %} extends {{ class.extends }} 
 {% for method in class.methods %}
 {{method|raw}}
 {% endfor %}
+
+
+    /**
+     * Code block for message id parser.
+     */
+    private function __() {
+        {% for msgId in class.msgIds %}
+        _('{{msgId}}');
+        {% endfor %}
+    }
 }
