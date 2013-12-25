@@ -112,6 +112,21 @@ class SchemaDeclare extends SchemaBase
         return $columns;
     }
 
+    public function getColumnLabels($includeVirtual = false) 
+    {
+        $labels = array();
+        foreach( $this->columns as $column ) {
+            if ( ! $includeVirtual && $column->virtual ) {
+                continue;
+            }
+            if ( $column->label ) {
+                $labels[] = $column->label;
+            }
+        }
+        return $labels;
+    }
+
+
     public function getColumnNames($includeVirtual = false)
     {
         if ( $includeVirtual ) {

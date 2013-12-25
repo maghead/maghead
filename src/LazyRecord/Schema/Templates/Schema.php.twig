@@ -35,4 +35,15 @@ class {{ schema.getModelName }}SchemaProxy extends RuntimeSchema
         parent::__construct();
     }
 
+    /**
+     * Code block for message id parser.
+     */
+    private function __() {
+{% for msgId in class.msgIds %}
+{% if msgId %}
+        _('{{msgId}}');
+{% endif %}
+{% endfor %}
+    }
+
 }

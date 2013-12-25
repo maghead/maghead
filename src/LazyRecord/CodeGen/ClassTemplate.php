@@ -21,6 +21,7 @@ class ClassTemplate
     public $templateFile;
     public $templateDirs;
     public $options = array();
+    public $msgIds = array();
 
     public function __construct($className,$options = array())
     {
@@ -88,7 +89,7 @@ class ClassTemplate
 
     public function addStaticVar($name, $value, $scope = 'public') 
     {
-        $this->staticVars[] = new ClassStaticVariable($name,$value, $scope);
+        $this->staticVars[] = new ClassStaticVariable($name, $value, $scope);
     }
 
 
@@ -118,6 +119,10 @@ class ClassTemplate
             $this->view->__set($n,$v);
         }
         return $this->view->renderFile($this->templateFile);
+    }
+
+    public function addMsgId($msgId) {
+        $this->msgIds[] = $msgId;
     }
 
 }

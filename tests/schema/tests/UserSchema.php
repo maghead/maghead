@@ -9,10 +9,12 @@ class UserSchema extends Schema
         $this->column('account')
             ->isa('str')
             ->unique()
+            ->label('Account')
             ->varchar(128);
 
         $this->column('password')
             ->isa('str')
+            ->label('Password')
             ->varchar(256);
     }
 }
