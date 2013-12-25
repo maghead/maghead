@@ -480,5 +480,14 @@ class SchemaDeclare extends SchemaBase
         return get_class($this);
     }
 
+    public function getMsgIds() {
+        $ids = [];
+        $ids[] = $this->getLabel();
+        foreach( $this->getColumnLabels() as $label ) {
+            $ids[] = $label;
+        }
+        return $ids;
+    }
+
 }
 

@@ -104,10 +104,8 @@ class SchemaGenerator
             $cTemplate->addStaticVar( 'mixin_classes',  array_reverse($schema->getMixinSchemaClasses()) );
 
             // Aggregate basic translations...
-            $cTemplate->addMsgId($schema->getLabel());
-            foreach( $schema->getColumnLabels() as $label ) {
-                $cTemplate->addMsgId($label);
-            }
+            $msgIds = $schema->getMsgIds();
+            $cTemplate->setMsgIds($msgIds);
 
             // export column names including virutal columns
             $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
