@@ -511,6 +511,14 @@ class Column
         }
     }
 
+    public function getLabel() {
+        return _($this->get('label'));
+    }
+
+    public function getName() {
+        return $this->name;
+    }
+
     public function getDefaultValue( $record = null, $args = null )
     {
         // XXX: might contains array() which is a raw sql statement.
