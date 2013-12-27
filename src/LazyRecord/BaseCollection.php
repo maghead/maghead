@@ -192,6 +192,9 @@ class BaseCollection
     public function setAlias($alias)
     {
         $this->_alias = $alias;
+        if ( $q = $this->_query ) {
+            $q->alias($alias);
+        }
         return $this;
     }
 

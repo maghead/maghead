@@ -96,6 +96,7 @@ abstract class BaseModel implements
 
     public $usingDataSource;
 
+    public $alias = 'm';
 
     protected $_schema;
 
@@ -258,6 +259,7 @@ abstract class BaseModel implements
         $q = new QueryBuilder;
         $q->driver = $this->getQueryDriver($dsId);
         $q->table( $this->getSchema()->table );
+        $q->alias( $this->alias );
         $q->limit(1);
         return $q;
     }
@@ -277,8 +279,14 @@ abstract class BaseModel implements
     {
         $q = new ExecutiveQueryBuilder;
         $q->driver = $this->getQueryDriver( $dsId );
+        $q->alias( $this->alias );
         $q->table( $this->getSchema()->table );
         return $q;
+    }
+
+    public function setAlias($alias) {
+        $this->alias = $alias;
+        return $this;
     }
 
 
@@ -1517,7 +1525,7 @@ abstract class BaseModel implements
 
             $collection = $relation->getForeignCollection();
             $collection->where()
-                ->equal( 'm.' . $fColumn, $sValue ); // 'm' is the default alias.
+                ->equal( $collection->getAlias() . '.' . $fColumn, $sValue ); // where 'm' is the default alias.
 
             // For if we need to create relational records 
             // though collection object, we need to pre-set 
@@ -1573,7 +1581,7 @@ abstract class BaseModel implements
                 */
             $collection->join( $sSchema->getTable() )->alias('b')
                             ->on()
-                            ->equal( 'b.' . $foreignRelation['self_column'] , array( 'm.' . $fColumn ) );
+                            ->equal( 'b.' . $foreignRelation['self_column'] , array( $collection->getAlias() . '.' . $fColumn ) );
 
             $value = $this->getValue( $middleRelation['self_column'] );
             $collection->where()
