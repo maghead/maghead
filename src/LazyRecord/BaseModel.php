@@ -2216,6 +2216,30 @@ abstract class BaseModel implements
         return count($this->_data);
     }
 
+    public function lockWrite()
+    {
+        $this->getConnection($this->getWriteSourceId())
+            ->query("LOCK TABLES " . self::table . " AS " . $this->getAlias() . " WRITE");
+    }
+
+    public function lockRead()
+    {
+        $this->getConnection($this->getReadSourceId())
+            ->query("LOCK TABLES " . self::table . " AS " . $this->getAlias() . " WRITE");
+    }
+
+    public function unlock()
+    {
+        $readDsId  = $this->getReadSourceId();
+        $writeDsId  = $this->getWriteSourceId();
+        if ( $readDsId === $writeDsId ) {
+            $this->getConnection($readDsId)->query("UNLOCK TABLES;");
+        } else {
+            $this->getConnection($readDsId)->query("UNLOCK TABLES;");
+            $this->getConnection($writeDsId)->query("UNLOCK TABLES;");
+        }
+    }
+
 
 }
 
