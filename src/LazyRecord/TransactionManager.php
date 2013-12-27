@@ -23,8 +23,13 @@ class TransactionManager
 
     public function rollback() {
         if ( --$this->transactionCounter >= 0 ) {
-            return $this->conn->rollback();
+            return $this->conn->rollBack();
         }
+    }
+
+    public function inTransaction() {
+        // before php 5.4, this returns integer.
+        return (bool) $this->conn->inTransaction();
     }
 
     public function commit() {
@@ -35,6 +40,20 @@ class TransactionManager
 
     public function hasActive() {
         return $this->transactionCounter > 0;
+    }
+
+    public function setAutoCommit($on = true) {
+        return $this->conn->query("SET autocommit=" . ($on ? "1" : "0") . ";");
+    }
+
+    public function lockTables($table, $type) {
+        /* XXX: Currently only supports for mysql */
+        return $this->conn->query("LOCK TABLES $table $type");
+    }
+
+    public function unlockTables() {
+        /* XXX: Currently only supports for mysql */
+        return $this->conn->query("UNLOCK TABLES;");
     }
 }
 
