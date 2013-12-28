@@ -2045,6 +2045,10 @@ abstract class BaseModel implements
         return isset( $this->_cache[ $key ] );
     }
 
+    public function clearInternalCache() {
+        $this->_cache = array();
+    }
+
 
 
     static public function getCacheInstance()
