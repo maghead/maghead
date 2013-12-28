@@ -264,6 +264,8 @@ abstract class BaseModel implements
         return $q;
     }
 
+    
+
 
     /**
      * Create executive query builder object, the difference is that
@@ -2216,16 +2218,22 @@ abstract class BaseModel implements
         return count($this->_data);
     }
 
+    public function getAlias() {
+        return $this->alias;
+    }
+
     public function lockWrite()
     {
+        // the ::table consts is in the child class.
         $this->getConnection($this->getWriteSourceId())
-            ->query("LOCK TABLES " . self::table . " AS " . $this->getAlias() . " WRITE");
+            ->query("LOCK TABLES " . static::table . " AS " . $this->getAlias() . " WRITE");
     }
 
     public function lockRead()
     {
+        // the ::table consts is in the child class.
         $this->getConnection($this->getReadSourceId())
-            ->query("LOCK TABLES " . self::table . " AS " . $this->getAlias() . " WRITE");
+            ->query("LOCK TABLES " . static::table . " AS " . $this->getAlias() . " WRITE");
     }
 
     public function unlock()
