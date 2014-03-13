@@ -1015,14 +1015,17 @@ abstract class BaseModel implements
                 // column validate (value is set.)
                 if( isset($args[$n]) )
                 {
-                    if( $args[$n] !== null && ! is_array($args[$n]) ) {
-                        $c->typeCasting( $args[$n] );
-                    }
-
                     if ( $c->immutable ) {
+                        unset($args[$n]);
+                        continue;
+                        // TODO: provide an option to skip immutable warning
                         return $this->reportError( _("You can not update $n column, which is immutable.") , array( 
                             'args' => $args,
                         ));
+                    }
+
+                    if( $args[$n] !== null && ! is_array($args[$n]) ) {
+                        $c->typeCasting( $args[$n] );
                     }
 
 
