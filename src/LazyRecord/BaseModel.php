@@ -1151,11 +1151,9 @@ abstract class BaseModel implements
             $pkId = $conn->lastInsertId();
         }
 
-
-        // update current data stash
-        $this->_data = array_merge($this->_data,$args);
-        // update primary key value
+        $this->_data = $args;
         $this->_data[ $k ] = $pkId;
+        return $this->reload($pkId);
     }
 
 
