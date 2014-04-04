@@ -45,7 +45,7 @@ class ColumnDiff {
                 }
             }
             elseif(is_string($value)) {
-                $attrStrs[] = "$property:\"$value\"";
+                $attrStrs[] = "$property:$value";
             }
         }
         return $line . join(', ', $attrStrs);
