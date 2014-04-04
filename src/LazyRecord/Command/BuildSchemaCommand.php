@@ -33,16 +33,16 @@ class BuildSchemaCommand extends \CLIFramework\Command
         CommandUtils::set_logger($this->logger);
         CommandUtils::init_config_loader();
 
-        $this->logger->info('Finding schemas...');
+        $this->logger->debug('Finding schemas...');
         $classes = CommandUtils::find_schemas_with_arguments( func_get_args() );
 
         CommandUtils::print_schema_classes($classes);
 
-        $this->logger->info("Initializing schema generator...");
+        $this->logger->debug("Initializing schema generator...");
 
         $generator = new SchemaGenerator;
         $classMap = $generator->generate($classes);
-
+        /*
         foreach( $classMap as $class => $file ) {
             $path = $file;
             if ( strpos( $path , getcwd() ) === 0 ) {
@@ -51,6 +51,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
             $logger->info($path);
             // $logger->info(sprintf("%-32s",ltrim($class,'\\')) . " => $path",1);
         }
+        */
         $logger->info('Done');
     }
 
