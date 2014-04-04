@@ -70,8 +70,9 @@ class DiffCommand extends Command
             if( isset( $tableSchemas[ $t ] ) ) {
                 $a = $tableSchemas[ $t ];
                 $diff = $comparator->compare( $a , $b );
-                if( count($diff) ) 
+                if ( count($diff) ) {
                     $found = true;
+                }
                 $printer = new \LazyRecord\Schema\Comparator\ConsolePrinter($diff);
                 $printer->beforeName = $t . ":data source [$id]";
                 $printer->afterName = $t . ':' . $filepath ;
@@ -80,6 +81,16 @@ class DiffCommand extends Command
             else {
                 $msg = sprintf("+ table %-20s %s", "'" . $t . "'" ,$filepath);
                 echo $formatter->format( $msg,'green') , "\n";
+
+
+                $a = isset($tableSchemas[ $t ]) ? $tableSchemas[ $t ] : null;
+                $diff = $comparator->compare( null , $b );
+                foreach( $diff as $diffItem ) {
+                    echo "  ", $diffItem->toColumnAttrsString() , "\n";
+                }
+
+
+
                 $found = true;
             }
         }

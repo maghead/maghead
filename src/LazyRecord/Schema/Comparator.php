@@ -1,10 +1,24 @@
 <?php
 namespace LazyRecord\Schema;
+use Closure;
 
 class ColumnDiff {
+
+    /**
+     * @var string Column Name
+     */
     public $name;
+
+    /**
+     * @var string Diff type (added or removed)
+     */
     public $flag;
+
+    /**
+     * @var Schema Column Object
+     */
     public $column;
+
     public $attrDiffs = array();
 
     public function __construct($name,$flag,$column)
@@ -12,6 +26,31 @@ class ColumnDiff {
         $this->name = $name;
         $this->flag = $flag;
         $this->column = $column;
+    }
+
+    public function toColumnAttrsString() {
+        $line = sprintf('%s %-13s %-15s',$this->flag , $this->name, $this->column->type );
+
+        $attrStrs = array();
+
+        foreach( $this->column->attributes as $property => $value ) {
+            if ( $property == "type" ) {
+                continue;
+            }
+
+            if( is_object($value) ) {
+                if( $value instanceof Closure ) {
+                    $attrStrs[] = "$property:{Closure}";
+                }
+                else {
+                    $attrStrs[] = "$property:" . str_replace("\n","",var_export($value,true));
+                }
+            }
+            elseif(is_string($value)) {
+                $attrStrs[] = "$property:$value";
+            }
+        }
+        return $line . join(', ', $attrStrs);
     }
 }
 
@@ -25,12 +64,12 @@ class Comparator
      * @param Schema $a old schema 
      * @param Schema $b new schema
      */
-    function compare( $a, $b ) 
+    public function compare( $a, $b ) 
     {
         $diff = array();
 
-        $aColumns = $a->getColumns();
-        $bColumns = $b->getColumns();
+        $aColumns = $a ? $a->getColumns() : array();
+        $bColumns = $b ? $b->getColumns() : array();
 
         $columnKeys = array_unique(
             array_merge(array_keys($aColumns), array_keys($bColumns) )
