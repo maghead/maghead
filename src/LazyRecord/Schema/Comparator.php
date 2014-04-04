@@ -29,10 +29,8 @@ class ColumnDiff {
     }
 
     public function toColumnAttrsString() {
-        $line = sprintf('%s %-13s %-15s',$this->flag , $this->name, $this->column->type );
-
+        $line = sprintf('%s %-16s %-16s',$this->flag , $this->name, $this->column->type );
         $attrStrs = array();
-
         foreach( $this->column->attributes as $property => $value ) {
             if ( $property == "type" ) {
                 continue;
