@@ -38,12 +38,7 @@ class ClassUtils
     public static function schema_classes_to_objects($classes) {
         $schemas = array();
         foreach( $classes as $class ) {
-            if( is_a($class,'LazyRecord\BaseModel',true) ) {
-                // TODO: refactor this to a factory method
-                $model = new $class;
-                $schemas[] = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
-            }
-            elseif( is_subclass_of($class,'LazyRecord\Schema\SchemaDeclare',true) ) {
+            if( is_subclass_of($class,'LazyRecord\Schema\SchemaDeclare',true) ) {
                 $schemas[] = new $class; 
             }
         }

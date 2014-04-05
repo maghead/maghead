@@ -29,7 +29,7 @@ class ConsolePrinter
 
         foreach( $this->diff as $d ) {
             // for each diff items, show attribute diff
-            if( $d->flag == '=' ) {
+            if ( $d->flag == '=' ) {
                 echo '=' , ' ' , $d->name , "\n";
                 foreach( $d->attrDiffs as $attrDiff ) {
                     echo $formatter->format(sprintf("\t- %s %s\n", $attrDiff->name, $attrDiff->before ),'red');
