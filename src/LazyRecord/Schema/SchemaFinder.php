@@ -40,9 +40,9 @@ class SchemaFinder
         }
 
         foreach( $this->paths as $path ) {
-            if( is_file($path) ) {
+            if ( is_file($path) ) {
                 require_once $path;
-            } else {
+            } elseif ( is_dir($path) ) {
                 $rii   = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($path,
                         RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::FOLLOW_SYMLINKS

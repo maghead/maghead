@@ -156,19 +156,21 @@ abstract class SchemaBase
     {
         $schemas = array();
         foreach( $this->relations as $rel ) {
-            if( ! isset($rel['foreign_schema']) )
+            if ( ! isset($rel['foreign_schema']) ) {
                 continue;
+            }
 
             $class = ltrim($rel['foreign_schema'],'\\');
 
-            if( isset($schemas[$class]) )
+            if ( isset($schemas[$class]) ) {
                 continue;
+            }
 
-            if( ! class_exists($class,true) ) {
+            if ( ! class_exists($class,true) ) {
                 throw new RuntimeException("Foreign schema class $class not found." );
             }
 
-            if( is_a($class,'LazyRecord\\BaseModel',true) ) {
+            if ( is_a($class,'LazyRecord\\BaseModel',true) ) {
                 // bless model class to schema object.
                 if ( ! method_exists($class, 'schema') ) {
                     throw new Exception( get_class($this) . ": You need to define schema method in $class class.");
@@ -180,7 +182,7 @@ abstract class SchemaBase
                     $schemas = array_merge($schemas, $schema->getReferenceSchemas(false));
                 }
             }
-            elseif( is_subclass_of( $class, 'LazyRecord\\Schema\\SchemaDeclare',true ) ) {
+            elseif ( is_subclass_of( $class, 'LazyRecord\\Schema\\SchemaDeclare',true ) ) {
                 $schemas[ $class ] = 1;
                 $fs = new $class;
                 if( $recursive ) {
