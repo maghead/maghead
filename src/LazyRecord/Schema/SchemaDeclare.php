@@ -209,14 +209,7 @@ class SchemaDeclare extends SchemaBase
 
                 $o = new $refer;
                 // schema is defined in model
-                if ( $o instanceof \LazyRecord\BaseModel && method_exists($o,'schema') ) {
-                    $schema = new \LazyRecord\Schema\DynamicSchemaDeclare( $o );
-                    $schemaClass = $refer;
-                } elseif ( $o instanceof \LazyRecord\Schema\SchemaDeclare ) {
-                    $schemaClass = $refer;
-                } else {
-                    $schemaClass = $refer;
-                }
+                $schemaClass = $refer;
                 $this->belongsTo($accessorName, $schemaClass, 'id', $name);
             }
             $columnArray[ $name ] = $column->export();
@@ -240,12 +233,23 @@ class SchemaDeclare extends SchemaBase
         return var_export( $this->export() , true );
     }
 
+    /**
+     * Define schema label.
+     *
+     * @param string $label label name
+     */
     public function label($label)
     {
         $this->label = $label;
         return $this;
     }
 
+
+    /**
+     * Define table name
+     *
+     * @param string $table table name
+     */
     public function table($table)
     {
         $this->table = $table;
