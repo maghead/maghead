@@ -21,10 +21,13 @@ class SchemaDeclare extends SchemaBase
     public function build( $options = array() )
     {
         $this->schema( $options );
+
         $this->primaryKey = $this->findPrimaryKey();
-        if( null === $this->primaryKey && $config = ConfigLoader::getInstance() )
-        {
-            if( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
+
+        // if the primary key is not define, we should append the default primary key => id
+        if ( null === $this->primaryKey ) {
+            $config = ConfigLoader::getInstance();
+            if ( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
                 $this->insertAutoIdColumn();
             }
         }
@@ -160,14 +163,13 @@ class SchemaDeclare extends SchemaBase
     public function insertAutoIdColumn()
     {
         $column = new SchemaDeclare\Column('id');
-        $this->columns[ 'id' ] = $column;
-        array_unshift($this->columnNames,'id');
-
         $column->isa('int')
             ->integer()
             ->primary()
             ->autoIncrement();
         $this->primaryKey = 'id';
+        $this->columns[ 'id' ] = $column;
+        array_unshift($this->columnNames,'id');
     }
 
     /**
@@ -176,8 +178,9 @@ class SchemaDeclare extends SchemaBase
     public function findPrimaryKey()
     {
         foreach( $this->columns as $name => $column ) {
-            if ( $column->primary )
+            if ( $column->primary ) {
                 return $name;
+            }
         }
     }
 
