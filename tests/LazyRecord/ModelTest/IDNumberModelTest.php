@@ -5,20 +5,20 @@ class IDNumberModelTest extends \LazyRecord\ModelTestCase
 
     public function getModels()
     {
-        return array('tests\\IDNumber');
+        return array('tests\\IDNumberSchema');
     }
 
     public function testValidation() 
     {
         $record = new tests\IDNumber;
         $ret = $record->create(array( 'id_number' => 'A186679004' ));
-        ok($ret->success);
+        ok($ret->success, $ret->message);
 
         $ret = $record->create(array( 'id_number' => 'A222222222' ));
-        not_ok($ret->success);
+        not_ok($ret->success, $ret->message);
 
         $ret = $record->create(array( 'id_number' => 'A222' ));
-        not_ok($ret->success);
+        not_ok($ret->success, $ret->message);
     }
 }
 

@@ -6,4 +6,12 @@ const schema_proxy_class = '\\LazyRecord\\Model\\MetadataSchemaProxy';
 const model_class = '\\LazyRecord\\Model\\Metadata';
 const table = '__meta__';
 
+
+
+
+    /**
+     * Code block for message id parser.
+     */
+    private function __() {
+            }
 }

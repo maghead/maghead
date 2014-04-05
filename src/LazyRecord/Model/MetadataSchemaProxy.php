@@ -18,13 +18,15 @@ class MetadataSchemaProxy extends RuntimeSchema
   'name' => 1,
   'value' => 1,
 );
+    public static $mixin_classes = array (
+);
     public static $column_names_include_virtual = array (
   0 => 'id',
   1 => 'name',
   2 => 'value',
 );
 
-    const schema_class = 'LazyRecord\\Schema\\DynamicSchemaDeclare';
+    const schema_class = 'LazyRecord\\Model\\MetadataSchema';
     const collection_class = 'LazyRecord\\Model\\MetadataCollection';
     const model_class = 'LazyRecord\\Model\\Metadata';
     const model_name = 'Metadata';
@@ -78,6 +80,13 @@ class MetadataSchemaProxy extends RuntimeSchema
         $this->readSourceId    = 'default';
         $this->writeSourceId    = 'default';
         parent::__construct();
+    }
+
+    /**
+     * Code block for message id parser.
+     */
+    private function __() {
+        _('Metadata');
     }
 
 }

@@ -2,7 +2,6 @@
 namespace LazyRecord;
 use ArrayAccess;
 use IteratorAggregate;
-use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\TableParser\TableParser;
 use ArrayIterator;
 use PDO;
@@ -42,7 +41,7 @@ class Metadata
         $parser = TableParser::create( $this->driver, $this->connection );
         $tables = $parser->getTables();
         if( ! in_array('__meta__',$tables) ) {
-            $schema = new DynamicSchemaDeclare(new Model\Metadata);
+            $schema = new \LazyRecord\Model\MetadataSchema;
             $builder = \LazyRecord\SqlBuilder\SqlBuilder::create($this->driver);
             $sqls = $builder->build($schema);
             foreach($sqls as $sql) {

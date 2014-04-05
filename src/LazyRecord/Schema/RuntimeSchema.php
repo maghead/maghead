@@ -42,6 +42,8 @@ class RuntimeSchema extends SchemaBase
      * Inject schema array data into runtime schema object,
      * This is much like __set_state method
      *
+     * XXX: should use __set_state instead of using `import` method.
+     *
      * @param array $schemaArray
      */
     public function import($schemaArray)
