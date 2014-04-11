@@ -108,7 +108,7 @@ abstract class BaseModel implements
     static $_cacheInstance;
 
     /**
-     * @var array Mixin classes are emtpy.
+     * @var array Mixin classes are emtpy. (MixinSchemaDeclare)
      * */
     static $mixin_classes = array();
 
@@ -383,13 +383,20 @@ abstract class BaseModel implements
 
         // then it's the mixin methods
         if ( $mClass = $this->findMixinMethodClass($m) ) {
-            return $this->invokeMixinMethod($mClass, $m, $a);
+            return $this->invokeMixinClassMethod($mClass, $m, $a);
         }
 
         // XXX: special case for twig template
         throw new Exception( get_class($this) . ": $m method not found.");
     }
 
+    /**
+     * Find methods in mixin schema classes, methods will be called statically.
+     *
+     * @param string $m method name
+     *
+     * @return string the mixin class name.
+     */
     public function findMixinMethodClass($m) {
         foreach( static::$mixin_classes as $mixinClass ) {
             // if we found it, just call it and return the result. 
@@ -400,7 +407,31 @@ abstract class BaseModel implements
         return false;
     }
 
-    public function invokeMixinMethod($mixinClass, $m,$a) 
+
+    /**
+     * Invoke method on all mixin classes statically. this method does not return anything.
+     *
+     * @param string $m method name.
+     * @param array $a method arguments.
+     */
+    public function invokeAllMixinMethods($m , $a) {
+        foreach( static::$mixin_classes as $mixinClass ) {
+            // if we found it, just call it and return the result. 
+            if ( method_exists($mixinClass , $m) ) {
+                call_user_func_array( array($mixinClass, $m) , array($this) + $a );
+            }
+        }
+    }
+
+    /**
+     * Invoke single mixin class method statically,
+     *
+     * @param string $mixinClass mixin class name.
+     * @param string $m method name.
+     * @parma array  $a method arguments.
+     * @return mixed execution result
+     */
+    public function invokeMixinClassMethod($mixinClass, $m,$a) 
     {
         return call_user_func_array( array($mixinClass, $m) , array($this) + $a );
     }
