@@ -108,6 +108,11 @@ abstract class BaseModel implements
     static $_cacheInstance;
 
     /**
+     * @var array Mixin classes are emtpy.
+     * */
+    static $mixin_classes = array();
+
+    /**
      * This constructor simply does nothing if no argument is passed.
      *
      * @param mixed $args arguments for finding
@@ -377,10 +382,8 @@ abstract class BaseModel implements
         }
 
         // then it's the mixin methods
-        if ( isset(static::$mixin_classes) ) {
-            if ( $mClass = $this->findMixinMethodClass($m) ) {
-                return $this->invokeMixinMethod($mClass, $m, $a);
-            }
+        if ( $mClass = $this->findMixinMethodClass($m) ) {
+            return $this->invokeMixinMethod($mClass, $m, $a);
         }
 
         // XXX: special case for twig template
@@ -996,6 +999,7 @@ abstract class BaseModel implements
         try 
         {
             $args = $this->beforeUpdate($args);
+            // foreach mixin schema, run their beforeUpdate method,
 
             $args = $this->filterArrayWithColumns($args);
 
