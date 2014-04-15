@@ -87,6 +87,12 @@ class RuntimeSchema extends SchemaBase
         }
     }
 
+    public function getRenderableColumnNames() {
+        return array_map(function($column){ return $column->name; },array_filter($this->columns, function($column) { 
+            return $column->renderable !== false;
+        }));
+    }
+
     public function getColumns($includeVirtual = false) 
     {
         // returns all columns
