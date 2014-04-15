@@ -101,6 +101,13 @@ class RuntimeColumn implements IteratorAggregate
         }
     }
 
+    public function getOptionValues( $record = null, $args = null )
+    {
+        if( $optionValues = $this->get('optionValues') ) {
+            return Utils::evaluate( $optionValues , array($record, $args) );
+        } 
+    }
+
     public function getDefaultValue( $record = null, $args = null )
     {
         // XXX: might contains array() which is a raw sql statement.
@@ -206,6 +213,22 @@ class RuntimeColumn implements IteratorAggregate
             }
         }
 
+        // Optional Values
+        if( $this->optionValues && $optionValues = Utils::evaluate($this->optionValues) ) {
+            // search value in validValues array
+            // because we store the validValues in an (label => value) array.
+            if( ArrayUtils::is_assoc_array( $optionValues ) ) {
+                if( false !== ($label = array_search( $value , $optionValues)) ) {
+                    return $label;
+                }
+                return $value;
+            } elseif( in_array($value,$optionValues) ) {
+                return $value;
+            }
+            return $value;
+        }
+
+        // backward compatible method
         if( $this->validValueBuilder && $values = call_user_func($this->validValueBuilder) ) {
             if( ArrayUtils::is_assoc_array( $values ) ) {
                 if( false !== ($label = array_search($value,$values) ) ) {
@@ -226,7 +249,7 @@ class RuntimeColumn implements IteratorAggregate
                 return _( $value );
             } 
             // quick inflator for DateTime object.
-            elseif( is_a($value,'DateTime',true) ) {
+            elseif ( $value instanceof DateTime) {
                 return $value->format( DateTime::ATOM );
             }
         }
