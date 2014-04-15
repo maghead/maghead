@@ -39,6 +39,8 @@ class DiffCommand extends Command
         $conn = $connectionManager->getConnection($id);
         $driver = $connectionManager->getQueryDriver($id);
 
+        $this->logger->info('Comparing...');
+
 
         $finder = new SchemaFinder;
         if( $paths = $loader->getSchemaPaths() ) {
