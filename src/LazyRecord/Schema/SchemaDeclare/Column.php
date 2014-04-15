@@ -91,6 +91,7 @@ class Column
 
             'validValueBuilder' => self::ATTR_CALLABLE,
 
+            'optionValues' => self::ATTR_ANY,
 
             /* contains an associative array */
             'validPairs' => self::ATTR_ANY,
