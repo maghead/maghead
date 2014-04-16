@@ -53,6 +53,10 @@ abstract class BaseTableParser
         elseif( preg_match('/timestamp/', $type ) ) {
             return 'DateTime';
         }
+        elseif( 'time' == $type ) {
+            // DateTime::createFromFormat('H:s','10:00')
+            return 'DateTime';
+        }
         else {
             throw new Exception("Unknown type $type");
         }
