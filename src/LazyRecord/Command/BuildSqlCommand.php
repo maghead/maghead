@@ -72,6 +72,8 @@ DOC;
         $time = time();
         $logger->info("Setting migration timestamp to $time");
         $metadata = new Metadata($id);
+
+        // update migration timestamp
         $metadata['migration'] = $time;
 
         $logger->info(
