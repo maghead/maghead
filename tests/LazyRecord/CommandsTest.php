@@ -53,7 +53,7 @@ class CommandsTest extends PHPUnit_Framework_TestCase
     {
         $this->expectOutputRegex('/Done/');
         $app = new LazyRecord\Console;
-        $app->run(array('lazy','build-sql','--rebuild'));
+        $app->run(array('lazy','sql','--rebuild'));
     }
 
     /**
