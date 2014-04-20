@@ -24,13 +24,18 @@ class Console extends Application
         /**
          * command for building config file.
          */
-        $this->registerCommand('build-conf',   'LazyRecord\Command\BuildConfCommand');
+        $this->registerCommand('build-conf',   'LazyRecord\\Command\\BuildConfCommand');
+        $this->registerCommand('conf',   'LazyRecord\\Command\\BuildConfCommand');
 
         /**
          * schema command.
          */
         $this->registerCommand('schema'); // the schema command builds all schema files and shows a diff after building new schema
 
+        // XXX: move list to the subcommand of schema command, eg:
+        //    $ lazy schema list
+        //    $ lazy schema build
+        //
         $this->registerCommand('list-schema'    , 'LazyRecord\\Command\\ListSchemaCommand');
         $this->registerCommand('build-schema'   , 'LazyRecord\\Command\\BuildSchemaCommand');
 
@@ -42,7 +47,7 @@ class Console extends Application
 
         $this->registerCommand('migrate'        , 'LazyRecord\\Command\\MigrateCommand');
 
-        $this->registerCommand('prepare'        , 'LazyRecord\\Command\PrepareCommand');
+        $this->registerCommand('prepare'        , 'LazyRecord\\Command\\PrepareCommand');
 
         $this->registerCommand('meta'           , 'LazyRecord\\Command\\MetaCommand');
         $this->registerCommand('version'        , 'LazyRecord\\Command\\VersionCommand');
