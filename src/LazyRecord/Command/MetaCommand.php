@@ -3,16 +3,16 @@ namespace LazyRecord\Command;
 use CLIFramework\Command;
 use LazyRecord\Metadata;
 
-class MetadataCommand extends Command
+class MetaCommand extends Command
 {
 
-    public function brief() { return 'set, get or list metadata.'; }
+    public function brief() { return 'set, get or list meta.'; }
 
     public function usage() { 
         return 
-              "\tlazy metadata\n"
-            . "\tlazy metadata [key] [value]\n"
-            . "\tlazy metadata [key]\n";
+              "\tlazy meta\n"
+            . "\tlazy meta [key] [value]\n"
+            . "\tlazy meta [key]\n";
     }
 
     public function options($opts)
@@ -43,7 +43,7 @@ class MetadataCommand extends Command
         }
         elseif( count($args) == 2 ) {
             list($key,$value) = $args;
-            $this->logger->info("Setting metadata $key to $value.");
+            $this->logger->info("Setting meta $key to $value.");
             $meta = new Metadata($dsId);
             $meta[$key] = $value;
         }

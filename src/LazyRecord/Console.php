@@ -30,22 +30,23 @@ class Console extends Application
          * schema command.
          */
         $this->registerCommand('schema');
-        $this->registerCommand('list-schema',  'LazyRecord\Command\ListSchemaCommand');
-        $this->registerCommand('build-schema', 'LazyRecord\Command\BuildSchemaCommand');
+        $this->registerCommand('list-schema'    , 'LazyRecord\\Command\\ListSchemaCommand');
+        $this->registerCommand('build-schema'   , 'LazyRecord\\Command\\BuildSchemaCommand');
 
-        $this->registerCommand('build-basedata', 'LazyRecord\Command\BuildBaseDataCommand');
+        $this->registerCommand('build-basedata' , 'LazyRecord\\Command\\BuildBaseDataCommand');
 
-        $this->registerCommand('build-sql',    'LazyRecord\Command\BuildSqlCommand');
+        $this->registerCommand('build-sql'      , 'LazyRecord\\Command\\BuildSqlCommand');
 
-        $this->registerCommand('diff',         'LazyRecord\Command\DiffCommand');
+        $this->registerCommand('diff'           , 'LazyRecord\\Command\\DiffCommand');
 
-        $this->registerCommand('migrate',         'LazyRecord\Command\MigrateCommand');
+        $this->registerCommand('migrate'        , 'LazyRecord\\Command\\MigrateCommand');
 
-        $this->registerCommand('prepare',         'LazyRecord\Command\PrepareCommand');
+        $this->registerCommand('prepare'        , 'LazyRecord\\Command\PrepareCommand');
 
-        $this->registerCommand('metadata',         'LazyRecord\Command\MetadataCommand');
+        $this->registerCommand('meta'           , 'LazyRecord\\Command\\MetaCommand');
+        $this->registerCommand('version'        , 'LazyRecord\\Command\\VersionCommand');
 
-        $this->registerCommand('create-db',         'LazyRecord\Command\CreateDBCommand');
+        $this->registerCommand('create-db'      , 'LazyRecord\\Command\\CreateDBCommand');
     }
 
     public static function getInstance() 
