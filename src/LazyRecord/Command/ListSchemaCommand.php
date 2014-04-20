@@ -2,6 +2,7 @@
 namespace LazyRecord\Command;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Schema\SchemaGenerator;
+use LazyRecord\Utils;
 use CLIFramework\Command;
 use ReflectionClass;
 
@@ -38,7 +39,7 @@ class ListSchemaCommand extends Command
         $generator = new SchemaGenerator;
 
         $args = func_get_args();
-        $classes = \LazyRecord\Utils::getSchemaClassFromPathsOrClassNames( 
+        $classes = Utils::getSchemaClassFromPathsOrClassNames( 
             $loader,
             $args, 
             $this->logger );
