@@ -29,13 +29,14 @@ class Console extends Application
         /**
          * schema command.
          */
-        $this->registerCommand('schema');
+        $this->registerCommand('schema'); // the schema command builds all schema files and shows a diff after building new schema
+
         $this->registerCommand('list-schema'    , 'LazyRecord\\Command\\ListSchemaCommand');
         $this->registerCommand('build-schema'   , 'LazyRecord\\Command\\BuildSchemaCommand');
 
         $this->registerCommand('build-basedata' , 'LazyRecord\\Command\\BuildBaseDataCommand');
 
-        $this->registerCommand('build-sql'      , 'LazyRecord\\Command\\BuildSqlCommand');
+        $this->registerCommand('sql'            , 'LazyRecord\\Command\\BuildSqlCommand');
 
         $this->registerCommand('diff'           , 'LazyRecord\\Command\\DiffCommand');
 
