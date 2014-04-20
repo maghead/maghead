@@ -1,0 +1,42 @@
+<?php
+{% if class.class.namespace %}
+namespace {{ class.class.namespace }};
+{% endif %}
+
+/**
+ * To upgrade with new schema:
+ *    $this->importSchema(new tests\AuthorBookSchema);
+ *
+ * To rename table column:
+ *    $this->renameColumn($table, $columnName, $newColumnName);
+ *
+ * To create index:
+ *    $this->createIndex($table,$indexName,$columnNames);
+ *
+ * To drop index:
+ *    $this->dropIndex($table,$indexName);
+ *
+ * To add a foreign key:
+ *    $this->addForeignKey($table,$columnName,$referenceTable,$referenceColumn = null) 
+ *
+ * To drop table:
+ *    $this->dropTable('authors');
+ */
+
+{% for u in class.uses %}
+{{u}}
+{% endfor %}
+class {{ class.class.name }} {% if class.extends %} extends {{ class.extends }} {% endif %}
+{
+{% for con in class.consts %}
+{{con|raw}}
+{% endfor %}
+
+{% for con in class.staticVars %}
+{{con|raw}}
+{% endfor %}
+
+{% for method in class.methods %}
+{{method|raw}}
+{% endfor %}
+}
