@@ -866,28 +866,30 @@ class AddUserColumn_1347451491  extends \LazyRecord\Migration\Migration {
     public function upgrade() { 
         $this->importSchema(new tests\AuthorSchema);
         $this->importSchema(new tests\AddressSchema);
+
+        // To upgrade with new schema:
         $this->importSchema(new tests\AuthorBookSchema);
-        $this->importSchema(new tests\BookSchema);
-        $this->importSchema(new tests\UserSchema);
-        $this->importSchema(new tests\PublisherSchema);
-        $this->importSchema(new tests\EdmSchema);
-        $this->importSchema(new tests\NameSchema);
-        $this->importSchema(new tests\IDNumber);
-        $this->importSchema(new tests\Wine);
         
+        // To rename table column:
+        $this->renameColumn($table, $columnName, $newColumnName);
+        
+        // To create index:
+        $this->createIndex($table,$indexName,$columnNames);
+        
+        // To drop index:
+        $this->dropIndex($table,$indexName);
+        
+        // To add a foreign key:
+        $this->addForeignKey($table,$columnName,$referenceTable,$referenceColumn = null) 
+        
+        // To drop table:
+        $this->dropTable('authors');
     }
 
     public function downgrade() { 
+
         $this->dropTable('authors');
         $this->dropTable('addresses');
-        $this->dropTable('author_books');
-        $this->dropTable('books');
-        $this->dropTable('users');
-        $this->dropTable('publishers');
-        $this->dropTable('Edm');
-        $this->dropTable('names');
-        $this->dropTable('i_d_numbers');
-        $this->dropTable('wines');
         
     }
 }
