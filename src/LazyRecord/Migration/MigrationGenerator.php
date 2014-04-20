@@ -64,7 +64,7 @@ class MigrationGenerator
         $className = $taskName . '_' . $time;
         // $filename
         $template = new ClassTemplate($className,array(
-            'template' => 'Class.php.twig',
+            'template' => 'MigrationClass.php.twig',
             'template_dirs' => $this->getTemplateDirs(),
         ));
         $template->extendClass('LazyRecord\Migration\Migration');
