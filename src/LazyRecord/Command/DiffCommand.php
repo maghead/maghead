@@ -7,6 +7,9 @@ use CLIFramework\Command;
 use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
+use LazyRecord\TableParser\TableParser;
+use LazyRecord\Schema\Comparator;
+use LazyRecord\Schema\Comparator\ConsolePrinter as ComparatorConsolePrinter;
 
 class DiffCommand extends Command
 {
@@ -51,7 +54,7 @@ class DiffCommand extends Command
 
 
         // XXX: currently only mysql support
-        $parser = \LazyRecord\TableParser\TableParser::create( $driver, $conn );
+        $parser = TableParser::create( $driver, $conn );
         $tableSchemas = array();
         $tables = $parser->getTables();
         foreach(  $tables as $table ) {
@@ -59,7 +62,7 @@ class DiffCommand extends Command
         }
 
         $found = false;
-        $comparator = new \LazyRecord\Schema\Comparator;
+        $comparator = new Comparator;
         foreach( $schemas as $b ) {
             $class = $b->getModelClass();
             $ref = new ReflectionClass($class);
@@ -75,7 +78,7 @@ class DiffCommand extends Command
                 if ( count($diff) ) {
                     $found = true;
                 }
-                $printer = new \LazyRecord\Schema\Comparator\ConsolePrinter($diff);
+                $printer = new ComparatorConsolePrinter($diff);
                 $printer->beforeName = $t . ":data source [$id]";
                 $printer->afterName = $t . ':' . $filepath ;
                 $printer->output();
