@@ -14,11 +14,18 @@ class MigrateCommand extends Command
     public function options($opts) 
     {
         $opts->add('new:','create new migration script.');
+
         $opts->add('diff:','use schema diff to generate script automatically.');
+
         $opts->add('status','show current migration status.');
+
         $opts->add('u|up','run upgrade migration scripts.');
         $opts->add('d|down','run downgrade migration scripts.');
+
+        // force upgrade from diff
         $opts->add('U|upgrade-diff','run upgrade from schema diff');
+
+        // data source
         $opts->add('D|data-source:','data source id.');
     }
 
