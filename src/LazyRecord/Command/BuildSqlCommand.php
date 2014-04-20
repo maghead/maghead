@@ -13,14 +13,14 @@ class BuildSqlCommand extends \CLIFramework\Command
     public function options($opts)
     {
         // --rebuild
-        $opts->add('rebuild','rebuild SQL schema.');
+        $opts->add('r|rebuild','rebuild SQL schema.');
 
         // --clean
-        $opts->add('clean','clean up SQL schema.');
+        $opts->add('c|clean','clean up SQL schema.');
 
         $opts->add('f|file:', 'write schema sql to file');
 
-        $opts->add('basedata','insert basedata' );
+        $opts->add('b|basedata','insert basedata' );
 
         // --data-source
         $opts->add('D|data-source:', 'specify data source id');
@@ -29,11 +29,11 @@ class BuildSqlCommand extends \CLIFramework\Command
     public function usage()
     {
         return <<<DOC
-lazy build-sql --data-source=mysql
+lazy sql --data-source=mysql
 
-lazy build-sql --data-source=master --rebuild
+lazy sql --data-source=master --rebuild
 
-lazy build-sql --data-source=master --clean
+lazy sql --data-source=master --clean
 
 DOC;
     }
