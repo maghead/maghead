@@ -20,6 +20,9 @@ class PostSchema extends Schema
         $this->column('created_on')
             ->timestamp()
             ;
+
+        $this->column('created_by')
+            ->integer();
     }
 }
 
