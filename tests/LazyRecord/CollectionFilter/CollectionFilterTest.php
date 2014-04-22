@@ -3,10 +3,22 @@ use LazyRecord\CollectionFilter\CollectionFilter;
 use tests\PostCollection;
 use tests\Post;
 
+function dumpExpr($expr, $level = 0) {
+    echo str_repeat(' ', $level) , get_class($expr) , ": " , $expr->op[0], $expr->op[1] , $expr->op[2] , "\n";
+    if ( $expr->childs ) {
+        foreach($expr->childs as $child) {
+            dumpExpr($child, $level + 1);
+        }
+    }
+
+}
+
 /**
  * Generate SQL statement like this:
  *
- * SELECT m.title, m.content, m.status, m.id FROM posts m  WHERE status = published AND status = published1 AND content like %foo% AND content like %foo%1 AND created_on BETWEEN '2011-01-01' AND '2011-12-30'
+ * SELECT m.title, m.content, m.status, m.id FROM posts m  WHERE status = 
+ * published AND status = draft AND content like %foo% AND content like 
+ * %bar% AND created_on BETWEEN '2011-01-01' AND '2011-12-30'
  *
  */
 class CollectionFilterTest extends PHPUnit_Framework_TestCase
@@ -41,6 +53,7 @@ class CollectionFilterTest extends PHPUnit_Framework_TestCase
 
         ok( $collection->toSql());
         // echo $collection->toSql();
+
         /*
         // set up valid status
         $filter->defineContains('content');
