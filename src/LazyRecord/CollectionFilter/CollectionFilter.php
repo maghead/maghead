@@ -157,19 +157,21 @@ class CollectionFilter
             $requestValues = (array) $args[$fieldName];
 
             // Conditions that takes array
-            switch($t) {
-            case self::Range:
+            if ( $t == self::Range ) {
                 if ( count($requestValues) != 2 ) {
                     throw new Exception('require 2 request values for the range filter.');
                 }
-                $c->where()->between($fieldName, $requestValues[0], $requestValues[1]);
+                $c->where()->group()->between($fieldName, $requestValues[0], $requestValues[1])->ungroup();
                 continue;
-            case self::InSet:
+            }
+            if ( $t == self::InSet ) {
                 $c->where()->in($fieldName, $requestValues);
                 continue;
             }
 
 
+            $expr = $c->where();
+            $hasParams = false;
             foreach( $requestValues as $idx => $requestValue ) {
                 if ( isset($this->validValues[$fieldName]) ) {
                     $validValues = $this->validValues[$fieldName];
@@ -178,26 +180,37 @@ class CollectionFilter
                     }
                 }
 
+                if ( $idx == 0 ) {
+                    $expr = $expr->group();
+                } else {
+                    $expr = $expr->or();
+                }
+
+                $hasParams = true;
+
                 switch($t) {
                 case self::Contains:
-                    $c->where()->like($fieldName, '%' . $requestValue . '%');
+                    $expr = $expr->like($fieldName, '%' . $requestValue . '%');
                     break;
                 case self::StartsWith:
-                    $c->where()->like($fieldName, $requestValue . '%');
+                    $expr = $expr->like($fieldName, $requestValue . '%');
                     break;
                 case self::EndsWith:
-                    $c->where()->like($fieldName, '%' . $requestValue);
+                    $expr = $expr->like($fieldName, '%' . $requestValue);
                     break;
                 case self::Greater:
-                    $c->where()->greaterThan($fieldName, $requestValue);
+                    $expr = $expr->greaterThan($fieldName, $requestValue);
                     break;
                 case self::Lesser:
-                    $c->where()->lesserThan($fieldName, $requestValue);
+                    $expr = $expr->lesserThan($fieldName, $requestValue);
                     break;
                 case self::Equal:
-                    $c->where()->equal($fieldName, $requestValue);
+                    $expr = $expr->equal($fieldName, $requestValue);
                     break;
                 }
+            }
+            if ( $hasParams ) {
+                $expr->ungroup();
             }
         }
         return $c;

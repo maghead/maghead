@@ -737,7 +737,7 @@ class BaseCollection
         $sql   = $query->build();
         $vars  = $query->vars;
         foreach( $vars as $name => $value ) {
-            $sql = str_replace( $name, $value, $sql );
+            $sql = preg_replace( "/$name\b/", $value, $sql );
         }
         return $sql;
     }
