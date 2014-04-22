@@ -923,6 +923,36 @@ To see what migration script could do, please check the documentation of SQLBuil
 
 ...
 
+
+## Collection Filter
+
+The Built-in Collection Filter provide a powerful feature that helps you connect the backend collection filtering with your front-end UI by 
+defining filter types, valid values from backend:
+
+
+```php
+$posts = new PostCollection;
+$filter = new CollectionFilter($posts);
+
+$filter->defineEqual('status', [ 'published', 'draft' ]);
+$filter->defineContains('content');
+$filter->defineRange('created_on', CollectionFilter::String );
+$filter->defineInSet('created_by', CollectionFilter::Integer );
+
+$collection = $filter->apply([ 
+    'status'     => ['published','draft'],
+    'content'    => ['foo', 'bar'],
+    'created_on' => [ '2011-01-01', '2011-12-30' ],
+    'created_by' => [1,2,3,4],
+]);
+
+$collection = $filter->applyFromRequest('_filter_prefix_');
+
+// use '_filter_' as the parameter prefix by default.
+$collection = $filter->applyFromRequest();
+```
+
+
 ## Basedata Seed
 
 
