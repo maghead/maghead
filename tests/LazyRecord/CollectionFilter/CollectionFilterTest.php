@@ -40,7 +40,7 @@ class CollectionFilterTest extends PHPUnit_Framework_TestCase
         ok( $collection );
 
         ok( $collection->toSql());
-        echo $collection->toSql();
+        // echo $collection->toSql();
         /*
         // set up valid status
         $filter->defineContains('content');
