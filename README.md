@@ -935,16 +935,16 @@ use LazyRecord\CollectionFilter\CollectionFilter;
 $posts = new PostCollection;
 $filter = new CollectionFilter($posts);
 
-$filter->defineEqual('status', [ 'published', 'draft' ]);
+$filter->defineEqual('status', [ 'published', 'draft' ]); // valid values are 'published', 'draft'
 $filter->defineContains('content');
 $filter->defineRange('created_on', CollectionFilter::String );
 $filter->defineInSet('created_by', CollectionFilter::Integer );
 
 $collection = $filter->apply([ 
-    'status'     => ['published','draft'],
-    'content'    => ['foo', 'bar'],
-    'created_on' => [ '2011-01-01', '2011-12-30' ],
-    'created_by' => [1,2,3,4],
+    'status'     => 'published',   // get published posts
+    'content'    => ['foo', 'bar'],  // posts contains 'foo' and 'bar'
+    'created_on' => [ '2011-01-01', '2011-12-30' ], // posts between '2011-01-01' and '2011-12-30'
+    'created_by' => [1,2,3,4],  // created by member 1, 2, 3, 4
 ]);
 
 $collection = $filter->applyFromRequest('_filter_prefix_');
