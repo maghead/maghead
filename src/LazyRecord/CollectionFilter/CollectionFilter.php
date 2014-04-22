@@ -156,11 +156,16 @@ class CollectionFilter
 
             $requestValues = (array) $args[$fieldName];
 
-            if ( $t == self::Range ) {
+            // Conditions that takes array
+            switch($t) {
+            case self::Range:
                 if ( count($requestValues) != 2 ) {
                     throw new Exception('require 2 request values for the range filter.');
                 }
                 $c->where()->between($fieldName, $requestValues[0], $requestValues[1]);
+                continue;
+            case self::InSet:
+                $c->where()->in($fieldName, $requestValues);
                 continue;
             }
 
