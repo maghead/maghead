@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\CollectionFilter;
+use LazyRecord\CollectionFilter\CollectionFilter;
 use tests\PostCollection;
 use tests\Post;
 
@@ -37,10 +37,7 @@ class CollectionFilterTest extends PHPUnit_Framework_TestCase
         ]);
         ok( $collection );
 
-        echo $collection->toSql();
-
-
-
+        ok( $collection->toSql());
         /*
         // set up valid status
         $filter->defineContains('content');
