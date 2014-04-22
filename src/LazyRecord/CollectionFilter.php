@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord;
 use Closure;
+use Exception;
 
 class CollectionFilter
 {
@@ -8,20 +9,24 @@ class CollectionFilter
     /**
      * constants for valid value type
      */
-    const Integer = 0;
-    const String = 1;
-    const Boolean = 2;
-    const Float = 3;
+    const Integer  = 0;
+    const String   = 1;
+    const Boolean  = 2;
+    const Float    = 3;
+    const DateTime = 4;
 
 
     /**
      * constants for filter condition types
      */
-    const Equal = 0;
-    const Contains = 1;
-    const StartsWith = 2;
-    const EndsWith = 2;
-    const InSet = 3;
+    const Equal      = 0;
+    const Greater    = 1;
+    const Lesser     = 2;
+    const Contains   = 3;
+    const StartsWith = 4;
+    const EndsWith   = 5;
+    const InSet      = 6;
+    const Range      = 7;
 
 
     public $collection;
@@ -63,6 +68,13 @@ class CollectionFilter
         }
     }
 
+    public function defineRange($field, $validValues = null) {
+        $this->validFields[$field] = self::Range;
+        if ( $validValues ) {
+            $this->validValues[$field] = $validValues;
+        }
+    }
+
     public function defineContains($field) {
         $this->validFields[$field] = self::Contains;
         $this->validValues[$field] = self::String;
@@ -86,13 +98,13 @@ class CollectionFilter
     }
 
 
-    public function validateValues($validValues, & $val) {
+    public function validateValue($validValues, & $val) {
         if ( is_array($validValues) ) {
             if ( isset($validValues[0]) ) {
-                return in_array($requestValue, $validValues);
+                return in_array($val, $validValues);
             } else {
                 $values = array_values($validValues);
-                return in_array($requestValue, $values);
+                return in_array($val, $values);
             }
         } elseif ( $validValues instanceof Closure ) {
             $validValues->bindTo($this);
@@ -137,35 +149,70 @@ class CollectionFilter
         return true;
     }
 
-    public function applyFromRequest() {
+    public function apply($args) {
         $c = $this->collection;
         foreach( $this->validFields as $fieldName => $t ) {
-            $requestValue = null; // XXX:
-
-            if ( isset($this->validValues[$fieldName]) ) {
-                $validValues = $validValues[$fieldName];
-            } else {
-                $validValues = null;
+            if ( ! isset($args[$fieldName]) ) {
+                continue;
             }
 
-            if ( $validValues ) {
+            $requestValues = (array) $args[$fieldName];
 
-                // check valid values
+            if ( $t == self::Range ) {
+                if ( count($requestValues) != 2 ) {
+                    throw new Exception('require 2 request values for the range filter.');
+                }
+                $c->where()->between($fieldName, $requestValues[0], $requestValues[1]);
+                continue;
             }
 
 
+            foreach( $requestValues as $idx => $requestValue ) {
+                if ( isset($this->validValues[$fieldName]) ) {
+                    $validValues = $this->validValues[$fieldName];
+                    if ( ! $this->validateValue($validValues, $requestValue) ) {
+                        continue;
+                    }
+                }
 
-            switch($t) {
-            case self::Contains:
-                $c->where()->like($fieldName, '%' . $requestValue . '%');
-                break;
-            case self::Equal:
-                $c->where()->equal($fieldName, $requestValue);
-                break;
+                switch($t) {
+                case self::Contains:
+                    $c->where()->like($fieldName, '%' . $requestValue . '%');
+                    break;
+                case self::StartsWith:
+                    $c->where()->like($fieldName, $requestValue . '%');
+                    break;
+                case self::EndsWith:
+                    $c->where()->like($fieldName, '%' . $requestValue);
+                    break;
+                case self::Greater:
+                    $c->where()->greaterThan($fieldName, $requestValue);
+                    break;
+                case self::Lesser:
+                    $c->where()->lesserThan($fieldName, $requestValue);
+                    break;
+                case self::Equal:
+                    $c->where()->equal($fieldName, $requestValue);
+                    break;
+                }
             }
         }
-        $_REQUEST;
+        return $c;
+    }
 
+    /**
+     * Apply filters from request parameters
+     *
+     * @param string
+     */
+    public function applyFromRequest($requestPrefix = '_filter_') {
+        $args = array();
+        foreach( $this->validFields as $fieldName => $t ) {
+            if ( isset($_REQUEST[ $requestPrefix . $fieldName ] ) ) {
+                $args[ $fieldName ] = $_REQUEST[ $requestPrefix . $fieldName ];
+            }
+        }
+        return $this->apply($args);
     }
 
 }
