@@ -1,6 +1,10 @@
 Changes
 =======
 
+## v1.14
+
+- Added Collection Filter (define filter types, valid values in backend and apply filters from HTTP Request)
+
 ## v1.10
 
 - Added index support, you can now add index attribute on your column.
