@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord;
+namespace LazyRecord\CollectionFilter;
 use Closure;
 use Exception;
 
