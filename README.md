@@ -931,6 +931,7 @@ defining filter types, valid values from backend:
 
 
 ```php
+use LazyRecord\CollectionFilter\CollectionFilter;
 $posts = new PostCollection;
 $filter = new CollectionFilter($posts);
 
