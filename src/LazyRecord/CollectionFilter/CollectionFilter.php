@@ -90,11 +90,9 @@ class CollectionFilter
         $this->validValues[$field] = self::String;
     }
 
-    public function defineInSet($field, $validValues = null) {
+    public function defineInSet($field, $validValues) {
         $this->validFields[$field] = self::InSet;
-        if ( $validValues ) {
-            $this->validValues[$field] = $validValues;
-        }
+        $this->validValues[$field] = $validValues;
     }
 
 
