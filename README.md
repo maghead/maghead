@@ -953,6 +953,12 @@ $collection = $filter->applyFromRequest('_filter_prefix_');
 $collection = $filter->applyFromRequest();
 ```
 
+The generated SQL statement is like below:
+
+```sql
+SELECT m.title, m.content, m.status, m.created_on, m.created_by, m.id FROM posts m  WHERE  (status = published OR status = draft) AND (content like %foo% OR content like %bar%) AND (created_on BETWEEN '2011-01-01' AND '2011-12-30') AND created_by IN (1, 2, 3, 4)
+```
+
 
 ## Basedata Seed
 
