@@ -774,15 +774,23 @@ class BaseCollection
         // for models and schemas join
         if( is_object($target) ) {
             $table = $target->getTable();
-            $columns = $target->getColumnNames();
-            $select = array();
-            $alias = $alias ?: $table;
 
-            foreach( $columns as $name ) {
-                // Select alias.column as alias_column
-                $select[ $alias . '.' . $name ] = $alias . '_' . $name;
+
+            /* XXX: should get selected column names by default, if not get all column names */
+            $columns = $target->selected ?: $target->getColumnNames();
+
+            if ( ! empty($columns) ) {
+                $select = array();
+                $alias = $alias ? $alias : 
+                    $target->getAlias() != 'm' ? $target->getAlias() : 
+                    $table;
+
+                foreach( $columns as $name ) {
+                    // Select alias.column as alias_column
+                    $select[ $alias . '.' . $name ] = $alias . '_' . $name;
+                }
+                $query->addSelect($select);
             }
-            $query->addSelect($select);
             $expr = $query->join($table, $type); // it returns JoinExpression object
 
             // here the relationship is defined, join the it.
