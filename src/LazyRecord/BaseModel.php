@@ -98,6 +98,8 @@ abstract class BaseModel implements
 
     public $alias = 'm';
 
+    public $selected;
+
     protected $_schema;
 
     protected $_cachePrefix;
@@ -124,6 +126,11 @@ abstract class BaseModel implements
         }
     }
 
+
+    public function select($sels) {
+        $this->selected = (array) $sels;
+        return $this;
+    }
 
 
 
@@ -882,7 +889,7 @@ abstract class BaseModel implements
 
         // build query from array.
         if( is_array($args) ) {
-            $query->select('*')
+            $query->select( $this->selected ?: '*' )
                 ->whereFromArgs($args);
         }
         else
@@ -894,8 +901,7 @@ abstract class BaseModel implements
 
             $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
-            $query->select('*')
-                ->whereFromArgs($args);
+            $query->select( $this->selected ?: '*' )->whereFromArgs($args);
         }
 
         $sql = $query->build();
