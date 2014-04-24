@@ -113,6 +113,8 @@ class ColumnDeclare
             'renderAs' => self::ATTR_STRING,
 
             'widgetAttributes' => self::ATTR_ARRAY,
+
+            'contentType' => self::ATTR_STRING,
         );
 
         if( $name ) {
