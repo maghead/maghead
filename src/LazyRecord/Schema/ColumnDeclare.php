@@ -51,6 +51,7 @@ class ColumnDeclare
     {
         $this->supportedAttributes = array(
 
+            /* primary key */
             'primary'       => self::ATTR_FLAG,
             'size'          => self::ATTR_INTEGER,
             'autoIncrement' => self::ATTR_FLAG,
@@ -114,8 +115,10 @@ class ColumnDeclare
 
             'widgetAttributes' => self::ATTR_ARRAY,
 
+            /* content type can be any text like 'ImageFile', 'File' */
             'contentType' => self::ATTR_STRING,
 
+            /* primary field for CMS */
             'primaryField' => self::ATTR_FLAG,
         );
 
