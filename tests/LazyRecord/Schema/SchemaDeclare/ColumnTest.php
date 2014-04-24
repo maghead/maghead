@@ -4,7 +4,7 @@ class ColumnTest extends PHPUnit_Framework_TestCase
 {
     function test()
     {
-        $column = new LazyRecord\Schema\SchemaDeclare\Column('foo');
+        $column = new LazyRecord\Schema\ColumnDeclare('foo');
         ok($column);
 
         $column->primary()

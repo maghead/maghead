@@ -162,7 +162,7 @@ class SchemaDeclare extends SchemaBase
 
     public function insertAutoIdColumn()
     {
-        $column = new SchemaDeclare\Column('id');
+        $column = new ColumnDeclare('id');
         $column->isa('int')
             ->integer()
             ->primary()
@@ -358,9 +358,9 @@ class SchemaDeclare extends SchemaBase
      *
      * @param string $name column name
      * @param string $class column class name
-     * @return SchemaDeclare\Column
+     * @return DeclareColumn
      */
-    public function column($name,$class = 'LazyRecord\\Schema\\SchemaDeclare\\Column')
+    public function column($name,$class = 'LazyRecord\\Schema\\ColumnDeclare')
     {
         if( isset($this->columns[$name]) ) {
             throw new Exception("column $name of ". get_class($this) . " is already defined.");
