@@ -310,7 +310,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         $authors->join( new \tests\Address ,'LEFT','a', 'addresses');
         $authors->fetch();
         $sql = $authors->toSQL();
-        ok($sql);
+        ok($sql, $sql);
 
         $size = $authors->size();
         is(2,$size);

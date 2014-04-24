@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Schema\SchemaDeclare;
+namespace LazyRecord\Schema;
 use Exception;
 
 
@@ -16,7 +16,7 @@ use Exception;
  * @link http://dev.mysql.com/doc/refman/5.0/en/blob.html (MySQL)
  * @link http://www.postgresql.org/docs/9.1/interactive/datatype-binary.html (Postgresql)
  */
-class Column 
+class ColumnDeclare
 {
     const  ATTR_ANY = 0;
     const  ATTR_ARRAY = 1;

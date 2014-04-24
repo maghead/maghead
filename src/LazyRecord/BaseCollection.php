@@ -781,9 +781,11 @@ class BaseCollection
 
             if ( ! empty($columns) ) {
                 $select = array();
-                $alias = $alias ? $alias : 
-                    $target->getAlias() != 'm' ? $target->getAlias() : 
-                    $table;
+
+                if ( $alias ) {
+                    $target->setAlias($alias);
+                }
+                $alias = $target->getAlias() != 'm' ? $target->getAlias() : $table;
 
                 foreach( $columns as $name ) {
                     // Select alias.column as alias_column
