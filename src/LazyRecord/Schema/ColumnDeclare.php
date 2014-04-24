@@ -115,6 +115,8 @@ class ColumnDeclare
             'widgetAttributes' => self::ATTR_ARRAY,
 
             'contentType' => self::ATTR_STRING,
+
+            'primaryField' => self::ATTR_FLAG,
         );
 
         if( $name ) {
