@@ -7,9 +7,9 @@ use ReflectionObject;
 use RecursiveRegexIterator;
 use RegexIterator;
 use LazyRecord\ConfigLoader;
-use LazyRecord\CodeGen\ClassTemplate;
-use LazyRecord\CodeGen\ClassConst;
-use LazyRecord\CodeGen\ClassInjection;
+use ClassTemplate\ClassTemplate;
+use ClassTemplate\ClassConst;
+use ClassTemplate\ClassInjection;
 use LazyRecord\Schema;
 
 
@@ -219,7 +219,7 @@ class SchemaGenerator
      * Write class template to the schema directory.
      *
      * @param string $directory The schema class directory.
-     * @param LazyRecord\CodeGen\ClassTemplate class template object.
+     * @param ClassTemplate\ClassTemplate class template object.
      * @param boolean $overwrite Overwrite class file. 
      * @return array
      */

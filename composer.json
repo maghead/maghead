@@ -30,7 +30,8 @@
     ],
     "autoload": {
         "psr-0": {
-            "LazyRecord": "src"
+            "LazyRecord": "src",
+            "ClassTemplate": "src"
         }
     }
 }
