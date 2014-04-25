@@ -19,7 +19,7 @@ CODE
         $foo = new InjectFoo;
         ok($foo);
 
-        $inject = new LazyRecord\CodeGen\ClassInjection($foo);
+        $inject = new ClassTemplate\ClassInjection($foo);
         ok($inject);
 
         $inject->read();
