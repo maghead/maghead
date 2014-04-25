@@ -148,8 +148,8 @@ class MigrationGenerator
                     else {
                         $this->logger->warn("** unsupported flag.");
                     }
-                    $upgradeMethod->code .= $call->render() . "\n";
-                    $downgradeMethod->code .= $dcall->render() . "\n";
+                    $upgradeMethod->body .= $call->render() . "\n";
+                    $downgradeMethod->body .= $dcall->render() . "\n";
                 }
             } 
             else {
@@ -163,8 +163,8 @@ class MigrationGenerator
                 $dcall = new MethodCall;
                 $dcall->method('dropTable');
                 $dcall->addArgument("'$t'");
-                $upgradeMethod->code .= $call->render() . "\n";
-                $downgradeMethod->code .= $dcall->render() . "\n";
+                $upgradeMethod->body .= $call->render() . "\n";
+                $downgradeMethod->body .= $dcall->render() . "\n";
             }
         }
 
