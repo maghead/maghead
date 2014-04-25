@@ -59,7 +59,7 @@ class SchemaGenerator
         }
         $refl = new ReflectionObject($this);
         $path = $refl->getFilename();
-        return $templateDir = dirname($refl->getFilename()) . DIRECTORY_SEPARATOR . 'Templates';
+        return $templateDir = dirname($refl->getFilename()) . DIRECTORY_SEPARATOR . 'Templates'; // should be LazyRecord/Schema/Templates
     }
 
     public function preventFileDir($path,$mode = 0755)
