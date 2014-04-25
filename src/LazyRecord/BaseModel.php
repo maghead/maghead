@@ -2180,8 +2180,6 @@ abstract class BaseModel implements
         return $r;
     }
 
-
-
     public function asCreateAction($args = array())
     {
         return $this->newAction('Create',$args);
@@ -2194,7 +2192,7 @@ abstract class BaseModel implements
 
     public function asDeleteAction($args = array())
     {
-        return $this->newAction('Delete',$args);
+        return $this->newAction('Delete', array_merge($this->_data , $args ));
     }
 
     /**
