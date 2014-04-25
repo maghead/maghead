@@ -2182,16 +2182,22 @@ abstract class BaseModel implements
 
     public function asCreateAction($args = array())
     {
+        // the create action requires empty args
         return $this->newAction('Create',$args);
     }
 
     public function asUpdateAction($args = array())
     {
+        // should only update the defined fields
         return $this->newAction('Update',$args);
     }
 
     public function asDeleteAction($args = array())
     {
+        $pk = $this->getSchema()->primaryKey;
+        if ( isset($this->_data[$pk]) ) {
+            $args[$pk] = $this->_data[$pk];
+        }
         return $this->newAction('Delete', array_merge($this->_data , $args ));
     }
 
