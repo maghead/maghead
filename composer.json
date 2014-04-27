@@ -2,7 +2,7 @@
     "name": "corneltek\/lazyrecord",
     "homepage": "http:\/\/github.com\/c9s\/LazyRecord",
     "description": "The Fast PHP ORM",
-    "version": "1.14.2",
+    "version": "1.14.3",
     "require": {
         "php": ">=5.3.0",
         "corneltek\/sqlbuilder": "~1.5",
@@ -29,5 +29,9 @@
             "homepage": "http:\/\/c9s.me"
         }
     ],
-    "autoload": { "psr-0": { "LazyRecord": "src" } }
+    "autoload": {
+        "psr-0": {
+            "LazyRecord": "src"
+        }
+    }
 }
