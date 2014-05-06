@@ -90,7 +90,7 @@ class SchemaGenerator
         if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
             $schemaClass = get_class($schema);
             $schemaArray = $schema->export();
-            $cTemplate->addConst( 'schema_class'     , ltrim($schemaClass,'\\') );
+            $cTemplate->addConst( 'schema_class'     , $schemaClass );
             $cTemplate->addConst( 'collection_class' , $schemaArray['collection_class'] );
             $cTemplate->addConst( 'model_class'      , $schemaArray['model_class'] );
             $cTemplate->addConst( 'model_name'       , $schema->getModelName() );
@@ -124,15 +124,15 @@ class SchemaGenerator
     {
         $baseClass = $schema->getBaseModelClass();
         $cTemplate = new ClassTemplate( $baseClass, array( 
-            'template_dirs' => $this->getTemplateDirs(),
+            // 'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
         ));
         $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
         if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
             $cTemplate->addConsts(array(
-                'schema_proxy_class' => ltrim($schema->getSchemaProxyClass(),'\\'),
-                'collection_class' => ltrim($schema->getCollectionClass(),'\\'),
-                'model_class' => ltrim($schema->getModelClass(),'\\'),
+                'schema_proxy_class' => $schema->getSchemaProxyClass(),
+                'collection_class' => $schema->getCollectionClass(),
+                'model_class' => $schema->getModelClass(),
                 'table' => $schema->getTable(),
             ));
 
@@ -158,7 +158,7 @@ class SchemaGenerator
     public function generateModelClass($schema, $force = false)
     {
         $cTemplate = new ClassTemplate( $schema->getModelClass() , array(
-            'template_dirs' => $this->getTemplateDirs(),
+            // 'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
         ));
 
@@ -174,16 +174,16 @@ class SchemaGenerator
     public function generateBaseCollectionClass($schema)
     {
         $baseCollectionClass = $schema->getBaseCollectionClass();
-        $cTemplate = new ClassTemplate( $baseCollectionClass, array(
-            'template_dirs' => $this->getTemplateDirs(),
+        $cTemplate = new ClassTemplate($baseCollectionClass, array(
+            // 'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
         ));
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
-        if ($schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
-            $cTemplate->addConst( 'schema_proxy_class' , '\\' . ltrim($schema->getSchemaProxyClass(),'\\') );
-            $cTemplate->addConst( 'model_class' , '\\' . ltrim($schema->getModelClass(),'\\') );
+        if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
+            $cTemplate->addConst( 'schema_proxy_class' , $schema->getSchemaProxyClass() );
+            $cTemplate->addConst( 'model_class' , $schema->getModelClass() );
             $cTemplate->addConst( 'table',  $schema->getTable() );
-            $cTemplate->extendClass( 'LazyRecord\BaseCollection' );
+            $cTemplate->extendClass( $this->getBaseCollectionClass() );
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
@@ -202,7 +202,7 @@ class SchemaGenerator
         $collectionClass = $schema->getCollectionClass();
         $baseCollectionClass = $schema->getBaseCollectionClass();
         $cTemplate = new ClassTemplate( $collectionClass, array(
-            'template_dirs' => $this->getTemplateDirs(),
+            // 'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
         ));
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
