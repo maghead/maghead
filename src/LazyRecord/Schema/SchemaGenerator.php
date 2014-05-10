@@ -12,6 +12,10 @@ use ClassTemplate\ClassConst;
 use ClassTemplate\ClassInjection;
 use LazyRecord\Schema;
 
+use LazyRecord\Schema\Factory\ModelClassFactory;
+use LazyRecord\Schema\Factory\BaseModelClassFactory;
+use LazyRecord\Schema\Factory\SchemaProxyClassFactory;
+
 
 /**
  * Builder for building static schema class file
@@ -78,41 +82,11 @@ class SchemaGenerator
 
     public function generateSchemaProxyClass($schema)
     {
-        $schemaProxyClass = $schema->getSchemaProxyClass();
-        $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
-            'template_dirs' => $this->getTemplateDirs(),
-            'template'      => 'Schema.php.twig',
-        ));
-
+        $cTemplate = SchemaProxyClassFactory::create($schema);
         $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
 
         // always update the proxy schema file
         if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
-            $schemaClass = get_class($schema);
-            $schemaArray = $schema->export();
-            $cTemplate->addConst( 'schema_class'     , $schemaClass );
-            $cTemplate->addConst( 'collection_class' , $schemaArray['collection_class'] );
-            $cTemplate->addConst( 'model_class'      , $schemaArray['model_class'] );
-            $cTemplate->addConst( 'model_name'       , $schema->getModelName() );
-            $cTemplate->addConst( 'model_namespace'  , $schema->getNamespace() );
-            $cTemplate->addConst( 'primary_key'      , $schemaArray['primary_key'] );
-            $cTemplate->addConst( 'table',  $schema->getTable() );
-            $cTemplate->addConst( 'label',  $schema->getLabel() );
-
-            // export column names excluding virtual columns
-            $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
-            $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
-            $cTemplate->addStaticVar( 'mixin_classes',  array_reverse($schema->getMixinSchemaClasses()) );
-
-            // Aggregate basic translations...
-            $msgIds = $schema->getMsgIds();
-            $cTemplate->setMsgIds($msgIds);
-
-            // export column names including virutal columns
-            $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
-            $cTemplate->schema = $schema;
-            $cTemplate->schema_data = $schemaArray;
-
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
@@ -122,25 +96,10 @@ class SchemaGenerator
 
     public function generateBaseModelClass($schema)
     {
-        $baseClass = $schema->getBaseModelClass();
-        $cTemplate = new ClassTemplate( $baseClass, array( 
-            // 'template_dirs' => $this->getTemplateDirs(),
-            'template' => 'Class.php.twig',
-        ));
+        $cTemplate = BaseModelClassFactory::create($schema, $this->getBaseModelClass() );
+
         $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
         if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
-            $cTemplate->addConsts(array(
-                'schema_proxy_class' => $schema->getSchemaProxyClass(),
-                'collection_class' => $schema->getCollectionClass(),
-                'model_class' => $schema->getModelClass(),
-                'table' => $schema->getTable(),
-            ));
-
-            $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
-            $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
-            $cTemplate->addStaticVar( 'mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
-            $cTemplate->extendClass( '\\' . $this->getBaseModelClass() );
-
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
@@ -157,14 +116,10 @@ class SchemaGenerator
      */
     public function generateModelClass($schema, $force = false)
     {
-        $cTemplate = new ClassTemplate( $schema->getModelClass() , array(
-            // 'template_dirs' => $this->getTemplateDirs(),
-            'template' => 'Class.php.twig',
-        ));
+        $cTemplate = ModelClassFactory::create($schema);
 
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
         if ( ! file_exists($classFilePath) || $schema->isNewerThanFile($classFilePath) || $force ) {
-            $cTemplate->extendClass( '\\' . $schema->getBaseModelClass() );
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, false) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
