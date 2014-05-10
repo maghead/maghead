@@ -1,7 +1,15 @@
 <?php
+/**
+This is an auto-generated file,
+Please DO NOT modify this file directly.
+*/
 namespace tests;
 
-class Name  extends \tests\NameBase {
+use tests\NameBase;
+
+class Name  extends NameBase {
+
 
 
 }
+

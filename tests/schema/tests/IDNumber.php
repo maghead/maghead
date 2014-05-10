@@ -1,14 +1,15 @@
 <?php
+/**
+This is an auto-generated file,
+Please DO NOT modify this file directly.
+*/
 namespace tests;
 
-class IDNumber  extends \tests\IDNumberBase {
+use tests\IDNumberBase;
+
+class IDNumber  extends IDNumberBase {
 
 
 
-
-    /**
-     * Code block for message id parser.
-     */
-    private function __() {
-            }
 }
+

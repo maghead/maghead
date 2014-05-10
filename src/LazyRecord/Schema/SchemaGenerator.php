@@ -82,13 +82,18 @@ class SchemaGenerator
         return $directory . DIRECTORY_SEPARATOR . $className . '.php';
     }
 
-    public function generateSchemaProxyClass($schema)
-    {
-        $cTemplate = SchemaProxyClassFactory::create($schema);
 
-        $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
-
+    /**
+     * This method checks the exising schema file and the generated class file mtime.
+     * If the schema file is newer or the forceUpdate flag is specified, then 
+     * the generated class files should be updated.
+     *
+     * @param ClassTemplate $cTemplate
+     * @param DeclareSchema $schema
+     */
+    public function updateClassFile($cTemplate, $schema) {
         // always update the proxy schema file
+        $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
         if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
@@ -97,16 +102,16 @@ class SchemaGenerator
     }
 
 
+    public function generateSchemaProxyClass($schema)
+    {
+        $cTemplate = SchemaProxyClassFactory::create($schema);
+        return $this->updateClassFile($cTemplate, $schema);
+    }
+
     public function generateBaseModelClass($schema)
     {
         $cTemplate = BaseModelClassFactory::create($schema, $this->getBaseModelClass() );
-
-        $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
-        if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
-                return array( $cTemplate->getClassName() => $classFilePath );
-            }
-        }
+        return $this->updateClassFile($cTemplate, $schema);
     }
 
 
@@ -120,24 +125,13 @@ class SchemaGenerator
     public function generateModelClass($schema, $force = false)
     {
         $cTemplate = ModelClassFactory::create($schema);
-
-        $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
-        if ( ! file_exists($classFilePath) || $schema->isNewerThanFile($classFilePath) || $force ) {
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, false) ) {
-                return array( $cTemplate->getClassName() => $classFilePath );
-            }
-        }
+        return $this->updateClassFile($cTemplate, $schema);
     }
 
     public function generateBaseCollectionClass($schema)
     {
         $cTemplate = BaseCollectionClassFactory::create($schema, $this->getBaseCollectionClass() );
-        $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
-        if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
-                return array( $cTemplate->getClassName() => $classFilePath );
-            }
-        }
+        return $this->updateClassFile($cTemplate, $schema);
     }
 
 
@@ -150,13 +144,7 @@ class SchemaGenerator
     public function generateCollectionClass(SchemaDeclare $schema)
     {
         $cTemplate = CollectionClassFactory::create($schema);
-
-        $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
-        if ( ! file_exists($classFilePath) ||  $schema->isNewerThanFile( $classFilePath ) ) {
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, false) ) {
-                return array( $cTemplate->getClassName() => $classFilePath );
-            }
-        }
+        return $this->updateClassFile($cTemplate, $schema);
     }
 
 

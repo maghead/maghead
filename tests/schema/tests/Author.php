@@ -1,7 +1,15 @@
 <?php
+/**
+This is an auto-generated file,
+Please DO NOT modify this file directly.
+*/
 namespace tests;
 
-class Author  extends \tests\AuthorBase {
+use tests\AuthorBase;
+
+class Author  extends AuthorBase {
+
 
 
 }
+
