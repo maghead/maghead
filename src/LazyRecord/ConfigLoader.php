@@ -62,6 +62,7 @@ class ConfigLoader
     public function loadFromArray(array $config) 
     {
         $this->config = $config;
+        $this->loaded = true;
     }
 
     /**
@@ -72,6 +73,7 @@ class ConfigLoader
     public function loadFromFile($file)
     {
         $this->config = ConfigCompiler::load($file);
+        $this->loaded = true;
     }
 
     /**
