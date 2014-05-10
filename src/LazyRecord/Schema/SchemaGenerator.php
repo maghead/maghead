@@ -17,6 +17,7 @@ use LazyRecord\Schema\Factory\BaseCollectionClassFactory;
 use LazyRecord\Schema\Factory\CollectionClassFactory;
 use LazyRecord\Schema\Factory\ModelClassFactory;
 use LazyRecord\Schema\Factory\SchemaProxyClassFactory;
+use LazyRecord\Console;
 
 
 /**
@@ -28,11 +29,13 @@ class SchemaGenerator
 
     public $forceUpdate = false;
 
+    public $logger;
+
     public function __construct() 
     {
         $this->config = ConfigLoader::getInstance();
+        $this->logger = Console::getInstance()->getLogger();
     }
-
 
     public function setForceUpdate($force) 
     {
@@ -103,8 +106,15 @@ class SchemaGenerator
             ) {
 
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, $overwrite) ) {
-                return array( $cTemplate->getClassName() => $classFilePath );
+                $this->logger->info2(" - $classFilePath updated");
+
+                // return array( $cTemplate->getClassName() => $classFilePath );
+                return array( $cTemplate->getClassName() , $classFilePath );
+            } else {
+                $this->logger->info2(" - $classFilePath skipped");
             }
+        } else {
+            $this->logger->info2(" - $classFilePath skipped");
         }
     }
 
@@ -207,32 +217,38 @@ class SchemaGenerator
         // class map [ class => class file path ]
         $classMap = array();
         foreach( (array) $schemas as $schema ) {
-            echo "Building ", get_class($schema) , "\n";
+            $this->logger->info("Checking " . get_class($schema) . '...');
 
             // support old-style schema declare
-            if ( $map = $this->generateSchemaProxyClass( $schema) ) {
-                $classMap = $classMap + $map;
+            if ( $result = $this->generateSchemaProxyClass( $schema) ) {
+                list($className, $classFile) = $result;
+                $classMap[ $className ] = $classFile;
             }
 
             // collection classes
-            if ( $map = $this->generateBaseCollectionClass( $schema ) ) {
-                $classMap = $classMap + $map;
+            if ( $result = $this->generateBaseCollectionClass( $schema ) ) {
+                list($className, $classFile) = $result;
+                $classMap[ $className ] = $classFile;
             }
-            if ( $map = $this->generateCollectionClass( $schema ) ) {
-                $classMap = $classMap + $map;
+            if ( $result = $this->generateCollectionClass( $schema ) ) {
+                list($className, $classFile) = $result;
+                $classMap[ $className ] = $classFile;
             }
 
             // in new schema declare, we can describe a schema in a model class.
             if( $schema instanceof \LazyRecord\Schema\DynamicSchemaDeclare ) {
-                if ( $map = $this->injectModelSchema($schema) ) {
-                    $classMap = $classMap + $map;
+                if ( $result = $this->injectModelSchema($schema) ) {
+                    list($className, $classFile) = $result;
+                    $classMap[ $className ] = $classFile;
                 }
             } else {
-                if ( $map = $this->generateBaseModelClass($schema) ) {
-                    $classMap = $classMap + $map;
+                if ( $result = $this->generateBaseModelClass($schema) ) {
+                    list($className, $classFile) = $result;
+                    $classMap[ $className ] = $classFile;
                 }
-                if ( $map = $this->generateModelClass( $schema ) ) {
-                    $classMap = $classMap + $map;
+                if ( $result = $this->generateModelClass( $schema ) ) {
+                    list($className, $classFile) = $result;
+                    $classMap[ $className ] = $classFile;
                 }
             }
         }
