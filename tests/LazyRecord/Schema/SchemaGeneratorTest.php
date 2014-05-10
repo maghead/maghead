@@ -51,13 +51,12 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testBaseCollectionClassGeneration($g, $schema)
     {
-        if ( $classMap = $g->generateBaseCollectionClass($schema) ) {
-            foreach( $classMap as $class => $file ) {
-                ok($class);
-                ok($file);
-                path_ok($file);
-                $this->syntaxTest($file);
-            }
+        if ( $result = $g->generateBaseCollectionClass($schema) ) {
+            list($class, $file) = $result;
+            ok($class);
+            ok($file);
+            path_ok($file);
+            $this->syntaxTest($file);
         }
     }
 
@@ -66,13 +65,12 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testCollectionClassGeneration($g, $schema)
     {
-        if ( $classMap = $g->generateCollectionClass($schema) ) {
-            foreach( $classMap as $class => $file ) {
-                ok($class);
-                ok($file);
-                path_ok($file);
-                $this->syntaxTest($file);
-            }
+        if ( $result = $g->generateCollectionClass($schema) ) {
+            list($class, $file) = $result;
+            ok($class);
+            ok($file);
+            path_ok($file);
+            $this->syntaxTest($file);
         }
     }
 
@@ -88,7 +86,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
     public function testGenerateMethod($g, $schema) 
     {
         if ( $classMap = $g->generate(array($schema)) ) {
-            $this->expectOutputRegex('/Building /' );
+            $this->expectOutputRegex('/Checking /' );
             ok($classMap);
             foreach( $classMap as $class => $file ) {
                 ok($class);
@@ -114,13 +112,12 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testSchemaProxyGeneration($g, $schema)
     {
-        if ( $classMap = $g->generateSchemaProxyClass($schema) ) {
-            foreach( $classMap as $class => $file ) {
-                ok($class);
-                ok($file);
-                path_ok($file);
-                $this->syntaxTest($file);
-            }
+        if ( $result = $g->generateSchemaProxyClass($schema) ) {
+            list($class, $file) = $result;
+            ok($class);
+            ok($file);
+            path_ok($file);
+            $this->syntaxTest($file);
         }
     }
 }
