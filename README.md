@@ -49,37 +49,12 @@ Feature
 Requirement
 -----------
 
-PHP:
-
-- PHP 5.3 or upper.
-
-PHP Extensions
-
-- yaml extension
-- pdo
-- mysql, pgsql or sqlite
+Please see the details on [Wiki](https://github.com/c9s/LazyRecord/wiki)
 
 Installation
 ------------
 
-Install from composer:
-
-
-```json
-{
-    "require": {
-        "corneltek/lazyrecord": "1.9.*"
-    }
-}
-```
-
-Download the lazyrecord command-line binary:
-
-
-    $ curl -O http://raw.github.com/c9s/LazyRecord/master/lazy
-    $ chmod +x lazy
-    $ mv lazy /usr/bin
-
+Please see the details on [Wiki](https://github.com/c9s/LazyRecord/wiki)
 
 Getting Started
 ---------------
