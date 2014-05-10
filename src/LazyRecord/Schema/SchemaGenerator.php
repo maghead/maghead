@@ -91,11 +91,18 @@ class SchemaGenerator
      * @param ClassTemplate $cTemplate
      * @param DeclareSchema $schema
      */
-    public function updateClassFile($cTemplate, $schema) {
+    public function updateClassFile(ClassTemplate $cTemplate, SchemaDeclare $schema, $overwrite = false) {
         // always update the proxy schema file
         $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
-        if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
+
+        // classes not Model/Collection class are overwriteable
+        if (
+             ! file_exists($classFilePath) 
+            || $schema->isNewerThanFile($classFilePath) 
+            || $this->forceUpdate 
+            ) {
+
+            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, $overwrite) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
         }
@@ -105,13 +112,13 @@ class SchemaGenerator
     public function generateSchemaProxyClass($schema)
     {
         $cTemplate = SchemaProxyClassFactory::create($schema);
-        return $this->updateClassFile($cTemplate, $schema);
+        return $this->updateClassFile($cTemplate, $schema, true);
     }
 
     public function generateBaseModelClass($schema)
     {
         $cTemplate = BaseModelClassFactory::create($schema, $this->getBaseModelClass() );
-        return $this->updateClassFile($cTemplate, $schema);
+        return $this->updateClassFile($cTemplate, $schema, true);
     }
 
 
@@ -122,16 +129,16 @@ class SchemaGenerator
      * @param Schema $schema
      * @param bool $force = true
      */
-    public function generateModelClass($schema, $force = false)
+    public function generateModelClass(SchemaDeclare $schema)
     {
         $cTemplate = ModelClassFactory::create($schema);
-        return $this->updateClassFile($cTemplate, $schema);
+        return $this->updateClassFile($cTemplate, $schema, false); // do not overwrite
     }
 
-    public function generateBaseCollectionClass($schema)
+    public function generateBaseCollectionClass(SchemaDeclare $schema)
     {
         $cTemplate = BaseCollectionClassFactory::create($schema, $this->getBaseCollectionClass() );
-        return $this->updateClassFile($cTemplate, $schema);
+        return $this->updateClassFile($cTemplate, $schema, true);
     }
 
 
@@ -144,7 +151,7 @@ class SchemaGenerator
     public function generateCollectionClass(SchemaDeclare $schema)
     {
         $cTemplate = CollectionClassFactory::create($schema);
-        return $this->updateClassFile($cTemplate, $schema);
+        return $this->updateClassFile($cTemplate, $schema, false);
     }
 
 
