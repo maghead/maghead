@@ -2,12 +2,27 @@
 
 class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 {
-    function test()
+    public function createSchemaGenerator() {
+        $g = new \LazyRecord\Schema\SchemaGenerator;
+        $g->forceUpdate = true;
+        return $g;
+    }
+
+    public function schemaProvider() {
+        $schemas = array();
+        $schemas[] = [ new \tests\UserSchema ];
+        $schemas[] = [ new \tests\AddressSchema ];
+        return $schemas;
+    }
+
+    /**
+     * @dataProvider schemaProvider
+     */
+    public function test($schema)
     {
-        $schema = new tests\UserSchema;
         ok($schema);
 
-        $g = new LazyRecord\Schema\SchemaGenerator;
+        $g = $this->createSchemaGenerator();
         ok($g);
 
         if ( $classMap = $g->generateCollectionClass($schema) ) {
@@ -15,6 +30,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
                 ok($class);
                 ok($file);
                 path_ok($file);
+                system("php -l $file");
             }
         }
 
@@ -23,6 +39,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
                 ok($class);
                 ok($file);
                 path_ok($file);
+                system("php -l $file");
             }
         }
 
@@ -31,6 +48,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
                 ok($class);
                 ok($file);
                 path_ok($file);
+                system("php -l $file");
             }
         }
 
