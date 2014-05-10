@@ -8,10 +8,21 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
         return $g;
     }
 
+    public function setUp()
+    {
+        $loader = \LazyRecord\ConfigLoader::getInstance();
+        ok($loader);
+        $loader->loadFromSymbol(true); // force loading
+        $loader->initForBuild();
+    }
+
     public function schemaProvider() {
         $schemas = array();
         $schemas[] = [ new \tests\UserSchema ];
         $schemas[] = [ new \tests\AddressSchema ];
+        $schemas[] = [ new \tests\BookSchema ];
+        $schemas[] = [ new \tests\IDNumberSchema ];
+        $schemas[] = [ new \tests\NameSchema ];
         return $schemas;
     }
 
@@ -61,6 +72,9 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
                 require_once $file;
             }
         }
+
+        $pk = $schema->findPrimaryKey();
+        ok($pk, "Find primary key from " . get_class($schema) );
 
         $model = $schema->newModel();
         ok($model);

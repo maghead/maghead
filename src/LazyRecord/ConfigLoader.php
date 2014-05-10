@@ -55,6 +55,26 @@ class ConfigLoader
     }
 
     /**
+     * Load config from array directly.
+     *
+     * @param array $config
+     */
+    public function loadFromArray(array $config) 
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * Load config from the YAML config file.
+     *
+     * @param string $file
+     */
+    public function loadFromFile($file)
+    {
+        $this->config = ConfigCompiler::load($file);
+    }
+
+    /**
      * Load configuration file
      *
      * @param string $file config file.
@@ -80,6 +100,7 @@ class ConfigLoader
         }
         $this->loaded = true;
     }
+
 
     /**
      * unload config and stash
