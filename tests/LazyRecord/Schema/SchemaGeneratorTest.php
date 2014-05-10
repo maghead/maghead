@@ -34,63 +34,69 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
             ),
         )); // force loading
 
+        $g = $this->createSchemaGenerator();
 
         $schemas = array();
-        $schemas[] = [ new \tests\UserSchema ];
-        $schemas[] = [ new \tests\AddressSchema ];
-        $schemas[] = [ new \tests\BookSchema ];
-        $schemas[] = [ new \tests\IDNumberSchema ];
-        $schemas[] = [ new \tests\NameSchema ];
+        $schemas[] = [ $g, new \tests\UserSchema ];
+        $schemas[] = [ $g, new \tests\AddressSchema ];
+        $schemas[] = [ $g, new \tests\BookSchema ];
+        $schemas[] = [ $g, new \tests\IDNumberSchema ];
+        $schemas[] = [ $g, new \tests\NameSchema ];
         return $schemas;
     }
+
 
     /**
      * @dataProvider schemaProvider
      */
-    public function test($schema)
+    public function testBaseCollectionClassGeneration($g, $schema)
     {
-        ok($schema);
-
-        $g = $this->createSchemaGenerator();
-        ok($g);
-
-        if ( $classMap = $g->generateCollectionClass($schema) ) {
-            foreach( $classMap as $class => $file ) {
-                ok($class);
-                ok($file);
-                path_ok($file);
-                system("php -l $file");
-            }
-        }
-
         if ( $classMap = $g->generateBaseCollectionClass($schema) ) {
             foreach( $classMap as $class => $file ) {
                 ok($class);
                 ok($file);
                 path_ok($file);
-                system("php -l $file");
+                $this->syntaxTest($file);
             }
         }
+    }
 
-        if ( $classMap = $g->generateSchemaProxyClass($schema) ) {
+    /**
+     * @dataProvider schemaProvider
+     */
+    public function testCollectionClassGeneration($g, $schema)
+    {
+        if ( $classMap = $g->generateCollectionClass($schema) ) {
             foreach( $classMap as $class => $file ) {
                 ok($class);
                 ok($file);
                 path_ok($file);
-                system("php -l $file");
+                $this->syntaxTest($file);
             }
         }
+    }
 
+    public function syntaxTest($file) {
+        $this->expectOutputRegex('/^No syntax errors detected/' );
+        system("php -l $file");
+    }
+
+
+    /**
+     * @dataProvider schemaProvider
+     */
+    public function testGenerateMethod($g, $schema) 
+    {
         if ( $classMap = $g->generate(array($schema)) ) {
             ok($classMap);
             foreach( $classMap as $class => $file ) {
                 ok($class);
                 ok($file);
                 path_ok($file,$file);
+                // $this->syntaxTest($file);
                 require_once $file;
             }
         }
-
 
         $pk = $schema->findPrimaryKey();
         ok($pk, "Find primary key from " . get_class($schema) );
@@ -100,6 +106,21 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 
         $collection = $schema->newCollection();
         ok($collection);
+    }
+
+    /**
+     * @dataProvider schemaProvider
+     */
+    public function testSchemaProxyGeneration($g, $schema)
+    {
+        if ( $classMap = $g->generateSchemaProxyClass($schema) ) {
+            foreach( $classMap as $class => $file ) {
+                ok($class);
+                ok($file);
+                path_ok($file);
+                $this->syntaxTest($file);
+            }
+        }
     }
 }
 
