@@ -14,6 +14,7 @@ use LazyRecord\Schema;
 
 use LazyRecord\Schema\Factory\ModelClassFactory;
 use LazyRecord\Schema\Factory\BaseModelClassFactory;
+use LazyRecord\Schema\Factory\BaseCollectionClassFactory;
 use LazyRecord\Schema\Factory\SchemaProxyClassFactory;
 
 
@@ -83,6 +84,7 @@ class SchemaGenerator
     public function generateSchemaProxyClass($schema)
     {
         $cTemplate = SchemaProxyClassFactory::create($schema);
+
         $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
 
         // always update the proxy schema file
@@ -128,17 +130,9 @@ class SchemaGenerator
 
     public function generateBaseCollectionClass($schema)
     {
-        $baseCollectionClass = $schema->getBaseCollectionClass();
-        $cTemplate = new ClassTemplate($baseCollectionClass, array(
-            // 'template_dirs' => $this->getTemplateDirs(),
-            'template' => 'Class.php.twig',
-        ));
+        $cTemplate = BaseCollectionClassFactory::create($schema, $this->getBaseCollectionClass() );
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
         if ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
-            $cTemplate->addConst( 'schema_proxy_class' , $schema->getSchemaProxyClass() );
-            $cTemplate->addConst( 'model_class' , $schema->getModelClass() );
-            $cTemplate->addConst( 'table',  $schema->getTable() );
-            $cTemplate->extendClass( '\\' . $this->getBaseCollectionClass() );
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
