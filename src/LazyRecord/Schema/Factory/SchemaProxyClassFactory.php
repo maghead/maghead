@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Schema\Factory;
 use ClassTemplate\ClassTemplate;
+use DateTime;
 
 class SchemaProxyClassFactory
 {
@@ -32,6 +33,7 @@ class SchemaProxyClassFactory
         $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
         $cTemplate->schema = $schema;
         $cTemplate->schema_data = $schemaArray;
+        $cTemplate->now = new DateTime;
 
         // Aggregate basic translations from labels
         $msgIds = $schema->getMsgIds();
