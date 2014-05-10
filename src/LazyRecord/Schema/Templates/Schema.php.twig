@@ -4,6 +4,10 @@
 namespace {{ ns }};
 {% endif %}
 
+{% for u in class.uses %}
+{{u}}
+{% endfor %}
+
 use LazyRecord;
 use LazyRecord\Schema\RuntimeSchema;
 use LazyRecord\Schema\Relationship;
@@ -34,6 +38,10 @@ class {{ schema.getModelName }}SchemaProxy extends RuntimeSchema
         $this->writeSourceId    = {{schema_data.write_data_source|export}};
         parent::__construct();
     }
+
+{% for method in class.methods %}
+{{method|raw}}
+{% endfor %}
 
     /**
      * Code block for message id parser.
