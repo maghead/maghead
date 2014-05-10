@@ -38,14 +38,14 @@ class SchemaGenerator
         if ( $this->config && $this->config->loaded ) {
             return $this->config->getBaseModelClass();
         }
-        return '\LazyRecord\BaseModel';
+        return 'LazyRecord\BaseModel';
     }
 
     public function getBaseCollectionClass() {
         if ( $this->config && $this->config->loaded ) {
             return $this->config->getBaseCollectionClass();
         }
-        return '\LazyRecord\BaseCollection';
+        return 'LazyRecord\BaseCollection';
     }
 
 
@@ -164,7 +164,7 @@ class SchemaGenerator
 
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
         if ( ! file_exists($classFilePath) || $schema->isNewerThanFile($classFilePath) || $force ) {
-            $cTemplate->extendClass( $schema->getBaseModelClass() );
+            $cTemplate->extendClass( '\\' . $schema->getBaseModelClass() );
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, false) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
@@ -183,7 +183,7 @@ class SchemaGenerator
             $cTemplate->addConst( 'schema_proxy_class' , $schema->getSchemaProxyClass() );
             $cTemplate->addConst( 'model_class' , $schema->getModelClass() );
             $cTemplate->addConst( 'table',  $schema->getTable() );
-            $cTemplate->extendClass( $this->getBaseCollectionClass() );
+            $cTemplate->extendClass( '\\' . $this->getBaseCollectionClass() );
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, true) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
@@ -208,7 +208,7 @@ class SchemaGenerator
         $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
 
         if ( ! file_exists($classFilePath) ||  $schema->isNewerThanFile( $classFilePath ) ) {
-            $cTemplate->extendClass( $baseCollectionClass );
+            $cTemplate->extendClass( '\\' . $baseCollectionClass );
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, false) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
