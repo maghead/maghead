@@ -12,9 +12,10 @@ use ClassTemplate\ClassConst;
 use ClassTemplate\ClassInjection;
 use LazyRecord\Schema;
 
-use LazyRecord\Schema\Factory\ModelClassFactory;
 use LazyRecord\Schema\Factory\BaseModelClassFactory;
 use LazyRecord\Schema\Factory\BaseCollectionClassFactory;
+use LazyRecord\Schema\Factory\CollectionClassFactory;
+use LazyRecord\Schema\Factory\ModelClassFactory;
 use LazyRecord\Schema\Factory\SchemaProxyClassFactory;
 
 
@@ -148,16 +149,10 @@ class SchemaGenerator
      */
     public function generateCollectionClass(SchemaDeclare $schema)
     {
-        $collectionClass = $schema->getCollectionClass();
-        $baseCollectionClass = $schema->getBaseCollectionClass();
-        $cTemplate = new ClassTemplate( $collectionClass, array(
-            // 'template_dirs' => $this->getTemplateDirs(),
-            'template' => 'Class.php.twig',
-        ));
-        $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
+        $cTemplate = CollectionClassFactory::create($schema);
 
+        $classFilePath = $this->buildClassFilePath($schema->getDirectory(), $cTemplate->getShortClassName());
         if ( ! file_exists($classFilePath) ||  $schema->isNewerThanFile( $classFilePath ) ) {
-            $cTemplate->extendClass( '\\' . $baseCollectionClass );
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, false) ) {
                 return array( $cTemplate->getClassName() => $classFilePath );
             }
