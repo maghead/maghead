@@ -8,15 +8,33 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
         return $g;
     }
 
-    public function setUp()
-    {
+    public function schemaProvider() {
         $loader = \LazyRecord\ConfigLoader::getInstance();
         ok($loader);
-        $loader->loadFromSymbol(true); // force loading
-        $loader->initForBuild();
-    }
+        $loader->loadFromArray(array( 
+            'bootstrap' =>
+            array ( 0 => 'tests/bootstrap.php',),
+            'schema' => array (
+                'auto_id' => 1,
+                'paths' => array ( 0 => 'tests/schema',),
+            ),
+            'data_sources' =>
+            array (
+                'default' =>
+                    array (
+                        'dsn' => 'sqlite::memory:',
+                        'user' => NULL,
+                        'pass' => NULL,
+                    ),
+                'pgsql' =>
+                    array (
+                        'dsn' => 'pgsql:host=localhost;dbname=testing',
+                        'user' => 'postgres',
+                    ),
+            ),
+        )); // force loading
 
-    public function schemaProvider() {
+
         $schemas = array();
         $schemas[] = [ new \tests\UserSchema ];
         $schemas[] = [ new \tests\AddressSchema ];
@@ -72,6 +90,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
                 require_once $file;
             }
         }
+
 
         $pk = $schema->findPrimaryKey();
         ok($pk, "Find primary key from " . get_class($schema) );

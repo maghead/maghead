@@ -26,9 +26,10 @@ class SchemaDeclare extends SchemaBase
 
         // if the primary key is not define, we should append the default primary key => id
         if ( null === $this->primaryKey ) {
-            $config = ConfigLoader::getInstance();
-            if ( $config->loaded && $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
-                $this->insertAutoIdColumn();
+            if ( $config = ConfigLoader::getInstance() ) {
+                if ( $config->hasAutoId() && ! isset($this->columns['id'] ) ) {
+                    $this->insertAutoIdColumn();
+                }
             }
         }
     }
