@@ -54,22 +54,19 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 
         if ( $classMap = $g->generate(array($schema)) ) {
             ok($classMap);
-
             foreach( $classMap as $class => $file ) {
                 ok($class);
                 ok($file);
                 path_ok($file,$file);
                 require_once $file;
             }
-
-            $schemaProxy = new \tests\UserSchemaProxy;
-            ok($schemaProxy);
-            $baseClass = new \tests\UserBase;
-            ok($baseClass);
-            $class = \tests\UserBase::collection_class;
-            $o = new $class;
-            ok($o);
         }
+
+        $model = $schema->newModel();
+        ok($model);
+
+        $collection = $schema->newCollection();
+        ok($collection);
     }
 }
 

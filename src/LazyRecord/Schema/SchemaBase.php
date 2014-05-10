@@ -98,7 +98,8 @@ abstract class SchemaBase
 
     public function newModel()
     {
-        return new $this->getModelClass();
+        $class = $this->getModelClass();
+        return new $class;
     }
 
     public function newCollection() 
