@@ -80,12 +80,6 @@ class SchemaGenerator
         }
     }
 
-    public function buildClassFilePath($directory, $className) 
-    {
-        return $directory . DIRECTORY_SEPARATOR . $className . '.php';
-    }
-
-
     /**
      * This method checks the exising schema file and the generated class file mtime.
      * If the schema file is newer or the forceUpdate flag is specified, then 
@@ -96,7 +90,7 @@ class SchemaGenerator
      */
     public function updateClassFile(ClassTemplate $cTemplate, SchemaDeclare $schema, $overwrite = false) {
         // always update the proxy schema file
-        $classFilePath = $this->buildClassFilePath( $schema->getDirectory(), $cTemplate->getShortClassName() );
+        $classFilePath = $schema->getRelatedClassPath( $cTemplate->getShortClassName() );
 
         // classes not Model/Collection class are overwriteable
         if (
