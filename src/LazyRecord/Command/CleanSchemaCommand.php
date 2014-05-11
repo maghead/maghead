@@ -34,18 +34,34 @@ class CleanSchemaCommand extends \CLIFramework\Command
         CommandUtils::init_config_loader();
 
         $this->logger->debug('Finding schemas...');
-        $classes = CommandUtils::find_schemas_with_arguments( func_get_args() );
+        $schemas = CommandUtils::find_schemas_with_arguments( func_get_args() );
+        // CommandUtils::print_schema_classes($classes);
 
-        CommandUtils::print_schema_classes($classes);
+        foreach ( $schemas as $schema ) {
 
-        $this->logger->debug("Initializing schema generator...");
+            $this->logger->info('Cleaning schema ' . get_class($schema) );
+            $paths = array();
+            $paths[] = $schema->getRelatedClassPath( $schema->getBaseModelClass() );
+            $paths[] = $schema->getRelatedClassPath( $schema->getBaseCollectionClass() );
+            $paths[] = $schema->getRelatedClassPath( $schema->getSchemaProxyClass() );
+
+            foreach ( $paths as $path ) {
+                $this->logger->info( " - Deleting " . $path );
+                if ( file_exists($path) ) {
+                    unlink($path);
+                }
+            }
+        }
+
+        /*
         $generator = new SchemaGenerator;
-
         if ( $this->options->force ) {
             $generator->setForceUpdate(true);
         }
-
         $classMap = $generator->generate($classes);
+         */
+
+
         /*
         foreach( $classMap as $class => $file ) {
             $path = $file;
