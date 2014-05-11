@@ -2,6 +2,7 @@
 namespace LazyRecord\Schema;
 use Exception;
 use ReflectionObject;
+use ReflectionClass;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\Schema\Relationship;
@@ -497,5 +498,21 @@ class SchemaDeclare extends SchemaBase
         return $ids;
     }
 
+
+    /**
+     * Get the related class file path.
+     *
+     * @param string $class the scheam related class name
+     *
+     * $schema->getRelatedClassPath( $schema->getModelClass() );
+     * $schema->getRelatedClassPath("App\\Model\\Book"); // return {app dir}/App/Model/Book.php
+     *
+     * @return string the class filepath.
+     */
+    public function getRelatedClassPath($class) {
+        $_p = explode('\\',$class);
+        $shortClassName = end($_p);
+        return $this->getDirectory() . DIRECTORY_SEPARATOR . $shortClassName . '.php';
+    }
 }
 
