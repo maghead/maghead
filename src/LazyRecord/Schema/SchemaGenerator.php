@@ -93,16 +93,14 @@ class SchemaGenerator
         $classFilePath = $schema->getRelatedClassPath( $cTemplate->getShortClassName() );
 
         // classes not Model/Collection class are overwriteable
-        if (
-             ! file_exists($classFilePath) 
-            || $schema->isNewerThanFile($classFilePath) 
-            || $this->forceUpdate 
-            ) {
+        if ( ! file_exists($classFilePath) ) {
+            $this->writeClassTemplateToPath($cTemplate, $classFilePath, $overwrite);
+            $this->logger->info2(" - $classFilePath created");
+            return array( $cTemplate->getClassName(), $classFilePath );
 
+        } elseif ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
             if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, $overwrite) ) {
                 $this->logger->info2(" - $classFilePath updated");
-
-                // return array( $cTemplate->getClassName() => $classFilePath );
                 return array( $cTemplate->getClassName() , $classFilePath );
             } else {
                 $this->logger->info2(" - $classFilePath skipped");
