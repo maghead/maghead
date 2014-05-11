@@ -12,13 +12,14 @@ class SchemaCommand extends Command
     public function init()
     {
         parent::init();
-        $this->registerCommand('build',    'LazyRecord\Command\BuildSchemaCommand');
-        $this->registerCommand('sql',    'LazyRecord\Command\BuildSqlCommand');
-        $this->registerCommand('list',    'LazyRecord\Command\ListSchemaCommand');
+        $this->registerCommand('build' , 'LazyRecord\\Command\\BuildSchemaCommand');
+        $this->registerCommand('sql'   , 'LazyRecord\\Command\\BuildSqlCommand');
+        $this->registerCommand('list'  , 'LazyRecord\\Command\\ListSchemaCommand');
+        $this->registerCommand('clean' , 'LazyRecord\\Command\\CleanSchemaCommand');
     }
 
     public function options($opts) {
-        $diff = $this->createCommand('LazyRecord\Command\DiffCommand');
+        $diff = $this->createCommand('LazyRecord\\Command\\DiffCommand');
         $diff->logger = $diff->logger;
         $diff->options($opts);
     }
@@ -30,7 +31,7 @@ class SchemaCommand extends Command
         $buildCommand->options = $this->options;
         $buildCommand->executeWrapper($args);
 
-        $diffCommand = $this->createCommand('LazyRecord\Command\DiffCommand');
+        $diffCommand = $this->createCommand('LazyRecord\\Command\\DiffCommand');
         $diffCommand->options = $this->options;
         $diffCommand->executeWrapper(array());
         // $this->logger->info('Usage: schema [build|sql|list]');
