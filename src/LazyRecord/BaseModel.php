@@ -2286,12 +2286,6 @@ abstract class BaseModel implements
             ->query("LOCK TABLES " . static::table . " AS " . $this->getAlias() . " READ");
     }
 
-    public function lock() 
-    {
-        $this->getConnection($this->getReadSourceId())
-            ->query("LOCK TABLES " . static::table . " AS " . $this->getAlias());
-    }
-
     public function unlock()
     {
         $readDsId  = $this->getReadSourceId();
