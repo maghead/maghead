@@ -1015,8 +1015,8 @@ abstract class BaseModel implements
 
         // check if we get primary key value
         $kVal = isset($args[$k]) 
-            ? $args[$k] : isset($this->_data[$k]) 
-            ? $this->_data[$k] : null;
+            ? intval($args[$k]) : isset($this->_data[$k]) 
+            ? intval($this->_data[$k]) : null;
 
 
         if( ! $kVal ) {
@@ -1033,7 +1033,7 @@ abstract class BaseModel implements
         $validationFailed = false;
         $validationResults = array();
 
-        try 
+        try
         {
             $args = $this->beforeUpdate($args);
             // foreach mixin schema, run their beforeUpdate method,
@@ -2283,7 +2283,13 @@ abstract class BaseModel implements
     {
         // the ::table consts is in the child class.
         $this->getConnection($this->getReadSourceId())
-            ->query("LOCK TABLES " . static::table . " AS " . $this->getAlias() . " WRITE");
+            ->query("LOCK TABLES " . static::table . " AS " . $this->getAlias() . " READ");
+    }
+
+    public function lock() 
+    {
+        $this->getConnection($this->getReadSourceId())
+            ->query("LOCK TABLES " . static::table . " AS " . $this->getAlias());
     }
 
     public function unlock()
