@@ -2214,6 +2214,11 @@ abstract class BaseModel implements
         return new $actionClass( $args , $this );
     }
 
+    public function getRecordActionClass($type) {
+        $class = get_class($this);
+        $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class, $type);
+        return $actionClass;
+    }
 
 
 
