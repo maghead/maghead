@@ -913,14 +913,14 @@ Build config
 
 Build Schema files
 
-    $ php bin/lazy build-schema
+    php bin/lazy build-schema
 
 We've already defined 3 data sources, they were named as 'mysql', 'pgsql', 'sqlite' , 
 now you can insert schema sqls into these data sources:
 
-    $ php bin/lazy build-sql --rebuild -D=mysql
-    $ php bin/lazy build-sql --rebuild -D=pgsql
-    $ php bin/lazy build-sql --rebuild -D=sqlite
+    bin/lazy sql --rebuild -D=mysql
+    bin/lazy sql --rebuild -D=pgsql
+    bin/lazy sql --rebuild -D=sqlite
 
 
 PROFILING
