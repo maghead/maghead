@@ -961,6 +961,30 @@ foreach( $tables as $table ) {
 ```
 
 
+Manipulating Schema Objects
+==============================
+
+To get the model class name from a schema:
+
+```php
+$class = $schema->getModelClass();
+```
+
+To get the table name of a schema:
+
+```php
+$t = $schema->getTable();
+```
+
+To iterate the column objects, you may call `getColumns`, which returns the
+column objects in an associative array:
+
+```php
+foreach( $schema->getColumns() as $n => $c ) {
+    echo $c->name; // column name
+}
+```
+
 
 
 
