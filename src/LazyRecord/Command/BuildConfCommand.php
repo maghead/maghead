@@ -20,6 +20,13 @@ class BuildConfCommand extends \CLIFramework\Command
         return 'build configuration file.';
     }
 
+    public function arguments($args) {
+        $args->add('file')
+            ->isa('file')
+            ->glob('*.yml')
+            ;
+    }
+
     public function execute($configFile = null)
     {
         /**
