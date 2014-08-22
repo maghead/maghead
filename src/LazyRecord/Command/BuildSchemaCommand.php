@@ -20,6 +20,12 @@ class BuildSchemaCommand extends \CLIFramework\Command
         return 'build schema files.';
     }
 
+    public function arguments($args) {
+        $args->add('file')
+            ->isa('file')
+            ;
+    }
+
     public function options($opts) 
     {
         $opts->add('f|force','force generate all schema files.');
