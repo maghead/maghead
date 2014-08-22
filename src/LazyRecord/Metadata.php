@@ -117,6 +117,27 @@ class Metadata
     }
 
 
+    /**
+     * Get an attribute value from the database source.
+     *
+     * @param string $key
+     */
+    public function getAttribute($key) {
+        $stm = $this->connection->prepare('select * from __meta__ where name = :name');
+        $stm->execute(array( ':name' => $key ));
+        $data = $stm->fetch( PDO::FETCH_OBJ );
+        return $data ? $data->value : NULL;
+    }
+
+    /**
+     * Remove an attribute from the database source.
+     *
+     * @param string $key
+     */
+    public function removeAttribute($key) {
+        $stm = $this->connection->prepare('delete from __meta__ where name = :name');
+        $stm->execute(array( ':name' => $key ));
+    }
 
     /**
      * Set a value with a key
@@ -131,25 +152,27 @@ class Metadata
 
     /**
      * Check if a key exists.
+     *
+     * @param string $key
      */
-    public function offsetExists($key)
-    {
+    public function offsetExists($key) {
         return $this->hasAttribute($key);
     }
 
-    public function offsetGet($name)
-    {
-        $stm = $this->connection->prepare('select * from __meta__ where name = :name');
-        $stm->execute(array( ':name' => $name ));
-        $data = $stm->fetch( PDO::FETCH_OBJ );
-        if($data)
-            return $data->value;
+
+    /**
+     * @param string $key
+     */
+    public function offsetGet($key) {
+        return $this->getAttribute($key);
     }
 
-    public function offsetUnset($name)
-    {
-        $stm = $this->connection->prepare('delete from __meta__ where name = :name');
-        $stm->execute(array( ':name' => $name ));
+
+    /**
+     * @param string $key
+     */
+    public function offsetUnset($key) {
+        return $this->removeAttribute($key);
     }
 
     /**
