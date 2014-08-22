@@ -923,6 +923,52 @@ now you can insert schema sqls into these data sources:
     bin/lazy sql --rebuild -D=sqlite
 
 
+Using LazyRecord TableParser
+============================
+
+Every ORM implements a table parser in their own, and generalize the API to
+support different SQL database, but I think this kind of stuff should be
+re-usable.  If you're interested in this, the below part are the API tutorial
+for you to work on:
+
+First you need to define the use statement to use the table parser:
+
+```php
+use LazyRecord\TableParser\TableParser;
+```
+
+Then the second step is to create a parser object.
+
+```php
+$parser = TableParser::create( $this->driver, $this->connection );
+```
+
+Where the first parameter is the `SQLBuilder\Driver`, which defines the SQL generator behaviours. And the 
+second parameter is the `PDO` connection object. you may just pass the PDO the the factory function.
+
+To get the table names, you may call:
+
+```php
+$tables = $parser->getTables();
+```
+
+To parse the table schema, you may call `getTableSchema` method, which retunrs the Schema object:
+
+```php
+foreach( $tables as $table ) {
+    $schema = $parser->getTableSchema( $table );
+}
+```
+
+
+
+
+
+
+
+
+
+
 PROFILING
 ==============
 
