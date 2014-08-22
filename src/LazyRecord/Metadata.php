@@ -175,6 +175,45 @@ class Metadata
         return $this->removeAttribute($key);
     }
 
+    public function getKeys() {
+        $stm = $this->connection->prepare('SELECT name FROM __meta__');
+        $stm->execute();
+        $rows = $stm->fetchAll(PDO::FETCH_OBJ);
+        $keys = array();
+        foreach( $rows as $row ) {
+            $keys[] = $row->name;
+        }
+        return $keys;
+    }
+
+
+    public function getValues() {
+        $stm = $this->connection->prepare('SELECT value FROM __meta__');
+        $stm->execute();
+        $rows = $stm->fetchAll(PDO::FETCH_OBJ);
+        $values = array();
+        foreach( $rows as $row ) {
+            $values[] = $row->values;
+        }
+        return $values;
+    }
+
+
+
+
+    public function getKeyValues() {
+        $stm = $this->connection->prepare('SELECT * FROM __meta__');
+        $stm->execute();
+        $rows = $stm->fetchAll(PDO::FETCH_OBJ);
+        $data = array();
+        foreach( $rows as $row ) {
+            $data[$row->name] = $row->value;
+        }
+        return $data;
+    }
+
+
+
     /**
      * Get iterator for the key-value pair data.
      *
@@ -185,14 +224,7 @@ class Metadata
      */
     public function getIterator()
     {
-        $stm = $this->connection->prepare('SELECT * FROM __meta__');
-        $stm->execute();
-        $rows = $stm->fetchAll(PDO::FETCH_OBJ);
-        $data = array();
-        foreach( $rows as $row ) {
-            $data[$row->name] = $row->value;
-        }
-        return new ArrayIterator($data);
+        return new ArrayIterator($this->getKeyValues());
     }
 }
 
