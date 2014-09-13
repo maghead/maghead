@@ -10,7 +10,7 @@
         "corneltek\/class-template": "*",
         "corneltek\/serializerkit": "~1",
         "corneltek\/validationkit": "~1.1",
-        "corneltek\/configkit": "~1.4",
+        "corneltek\/configkit": "~1.5",
         "corneltek\/cascading-attribute": "~1.2",
         "corneltek\/universal-cache": "~1",
         "corneltek\/dbutil": "~1",
