@@ -13,8 +13,8 @@ use Countable;
 
 use SQLBuilder\QueryBuilder;
 use LazyRecord\QueryDriver;
-use LazyRecord\OperationResult\OperationError;
-use LazyRecord\OperationResult\OperationSuccess;
+use LazyRecord\Result\OperationError;
+use LazyRecord\Result;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaLoader;
@@ -679,7 +679,7 @@ abstract class BaseModel implements
      *
      * @param array $args data
      *
-     * @return OperationResult operation result (success or error)
+     * @return Result operation result (success or error)
      */
     public function _create($args, $options = array() )
     {
@@ -806,6 +806,8 @@ abstract class BaseModel implements
             $this->_data = $args;
         }
         $this->afterCreate($origArgs);
+
+        // collect debug info
         $ret = array( 
             'sql' => $sql,
             'args' => $args,
@@ -934,14 +936,14 @@ abstract class BaseModel implements
     /**
      * Delete current record, the record should be loaded already.
      *
-     * @return OperationResult operation result (success or error)
+     * @return Result operation result (success or error)
      */
     public function _delete()
     {
         $k = $this->getSchema()->primaryKey;
 
         if( $k && ! isset($this->_data[$k]) ) {
-            return new OperationError('Record is not loaded, Record delete failed.');
+            return new Result(false, 'Record is not loaded, Record delete failed.');
         }
         $kVal = isset($this->_data[$k]) ? $this->_data[$k] : null;
 
@@ -986,7 +988,7 @@ abstract class BaseModel implements
      *
      * @param array $args
      *
-     * @return OperationResult operation result (success or error)
+     * @return Result operation result (success or error)
      */
     public function _update( $args , $options = array() ) 
     {
@@ -1198,7 +1200,7 @@ abstract class BaseModel implements
      * if primary key is defined, do update
      * if primary key is not defined, do create
      *
-     * @return OperationResult operation result (success or error)
+     * @return Result operation result (success or error)
      */
     public function save()
     {
@@ -1298,7 +1300,7 @@ abstract class BaseModel implements
      *
      *     $result = $record->loadQuery( 'select * from ....', array( ... ) , 'master' );
      *
-     * @return OperationResult
+     * @return Result
      */
     public function loadQuery($sql , $vars = array() , $dsId = null ) 
     {
@@ -1823,9 +1825,9 @@ abstract class BaseModel implements
             }
             catch ( PDOException $e )
             {
-                return new OperationError( 'Update failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
+                return new Result(false, 'Update failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
             }
-            return new OperationSuccess('Updated', array( 'sql' => $sql ));
+            return new Result(true, 'Updated', array( 'sql' => $sql ));
         };
         return $query;
     }
@@ -1855,9 +1857,9 @@ abstract class BaseModel implements
             }
             catch ( PDOException $e )
             {
-                return new OperationError( 'Delete failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
+                return new Result(false,'Delete failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
             }
-            return new OperationSuccess('Deleted', array( 'sql' => $sql ));
+            return new Result(true, 'Deleted', array( 'sql' => $sql ));
         };
         return $query;
     }
@@ -1925,7 +1927,7 @@ abstract class BaseModel implements
      */
     public function reportError($message,$extra = array() )
     {
-        return $this->lastResult = new OperationError($message,$extra);
+        return $this->lastResult = new Result(false, $message,$extra);
     }
 
 
@@ -1938,11 +1940,11 @@ abstract class BaseModel implements
      *
      * @param string $message Success message.
      * @param array $extra Extra data.
-     * @return OperationSuccess
+     * @return Result
      */
     public function reportSuccess($message,$extra = array() )
     {
-        return $this->lastResult = new OperationSuccess($message,$extra);
+        return $this->lastResult = new Result(true, $message,$extra);
     }
 
     public function getLastResult() {

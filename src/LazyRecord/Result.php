@@ -1,10 +1,10 @@
 <?php
-namespace LazyRecord\OperationResult;
-use Exception;
+namespace LazyRecord;
 
-class OperationResult
+class Result
 {
     public $id;
+
 
     /**
      * @var boolean Success or fail.
@@ -41,12 +41,15 @@ class OperationResult
      */
     public $vars;
 
+
     public $code;
 
     public $exception;
 
-    public function __construct($message = null, $extra = array() )
+    public function __construct($success, $message = null, $extra = array() )
     {
+        $this->success = $success;
+        $this->error = !$success;
         $this->message = $message;
         foreach( $extra as $k => $v ) {
             $this->$k = $v;
@@ -87,30 +90,19 @@ class OperationResult
         }
     }
 
-    public function __toString()
-    {
-        $str = '';
-
-        if( $this->code )
-            $str .= '[' . $this->code . ']';
-
-        $str .= ' ' . $this->message;
-        if( $this->exception ) 
-            $str .= "\nException: " . $this->exception->__toString();
-        if( $this->sql )
-            $str .= "\nSQL: " . $this->sql;
-        if( $this->vars )
-            $str .= "\nVars: " . print_r($this->vars,true);
-        if( $this->validations ) {
-            $str .= "\nValidations: ";
-            foreach( $this->validations as $v ) {
-                $str .= sprintf("\n\t%s) %s: %s", $v->valid ? 'Valid' : 'Invalid', $v->field, $v->message);
+    public function __toString() {
+        $msg = $this->message . "\n";
+        if( $this->exception ) {
+            $msg .= ' Exception:' . $this->exception->getMessage() . "\n";
+            if( $this->sql ) {
+                $msg .= ' SQL:' . $this->sql . "\n";
             }
         }
-        return $str;
+        return $msg;
     }
-
 }
+
+
 
 
 
