@@ -8,7 +8,7 @@ use LazyRecord\ClassUtils;
 use LazyRecord\Schema\Relationship;
 
 class SchemaDeclare extends SchemaBase
-    implements SchemaDataInterface
+    implements SchemaInterface
 {
 
     public function __construct( $options = array() )

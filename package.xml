@@ -118,7 +118,7 @@
       <file name="src/LazyRecord/Schema/RuntimeColumn.php" role="php" md5sum="41e713b3175d2e7ca313582ab3c36b8c"/>
       <file name="src/LazyRecord/Schema/RuntimeSchema.php" role="php" md5sum="f75ccdb370bd3c809c55e0c189cce099"/>
       <file name="src/LazyRecord/Schema/SchemaBase.php" role="php" md5sum="b86868cc74d37966b48b0c531145aafc"/>
-      <file name="src/LazyRecord/Schema/SchemaDataInterface.php" role="php" md5sum="d43ab250745f006eac684c369f5d8d43"/>
+      <file name="src/LazyRecord/Schema/SchemaInterface.php" role="php" md5sum="d43ab250745f006eac684c369f5d8d43"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare/Column.php" role="php" md5sum="8f85ab1ce4f5742ac9bcb34b73b0c784"/>
       <file name="src/LazyRecord/Schema/SchemaDeclare.php" role="php" md5sum="c83bc1d3656e0cbe5873c69849b85dac"/>
       <file name="src/LazyRecord/Schema/SchemaFinder.php" role="php" md5sum="2c246afa421402544714cb4520a47efd"/>
@@ -313,7 +313,7 @@
       <install name="src/LazyRecord/Schema/RuntimeColumn.php" as="LazyRecord/Schema/RuntimeColumn.php"/>
       <install name="src/LazyRecord/Schema/RuntimeSchema.php" as="LazyRecord/Schema/RuntimeSchema.php"/>
       <install name="src/LazyRecord/Schema/SchemaBase.php" as="LazyRecord/Schema/SchemaBase.php"/>
-      <install name="src/LazyRecord/Schema/SchemaDataInterface.php" as="LazyRecord/Schema/SchemaDataInterface.php"/>
+      <install name="src/LazyRecord/Schema/SchemaInterface.php" as="LazyRecord/Schema/SchemaInterface.php"/>
       <install name="src/LazyRecord/Schema/SchemaDeclare/Column.php" as="LazyRecord/Schema/SchemaDeclare/Column.php"/>
       <install name="src/LazyRecord/Schema/SchemaDeclare.php" as="LazyRecord/Schema/SchemaDeclare.php"/>
       <install name="src/LazyRecord/Schema/SchemaFinder.php" as="LazyRecord/Schema/SchemaFinder.php"/>
