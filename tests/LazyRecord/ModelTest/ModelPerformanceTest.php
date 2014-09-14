@@ -43,7 +43,7 @@ class ModelPerformanceTest extends \LazyRecord\ModelTestCase
         $connManager = LazyRecord\ConnectionManager::getInstance();
         $pdo = $connManager->get('default');
         foreach( range(1,1000) as $i ) {
-            $stm = $connManager->prepareAndExecute('default',"select * from $table where id = :id", array('id' => $i));
+            $stm = $connManager->getConnection('default')->prepareAndExecute("select * from $table where id = :id", array('id' => $i));
             $o = $stm->fetchObject();
             ok($o);
         }
