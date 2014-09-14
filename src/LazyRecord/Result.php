@@ -48,15 +48,27 @@ class Result
 
     public $debugInfo = array();
 
-    public function __construct($success, $message = null, $extra = array() )
-    {
-        $this->success = $success;
-        $this->error = !$success;
-        $this->message = $message;
+    public static function success($msg = null, $extra = array()) {
+        $result = new self;
+        $result->setSuccess();
+        $result->message = $msg;
         foreach( $extra as $k => $v ) {
-            $this->$k = $v;
+            $result->$k = $v;
         }
+        return $result;
     }
+
+    public static function failure($msg = null, $extra = array()) {
+        $result = new self;
+        $result->setError();
+        $result->message = $msg;
+        foreach( $extra as $k => $v ) {
+            $result->$k = $v;
+        }
+        return $result;
+    }
+
+
 
     public function setSuccess() {
         $this->success = true;

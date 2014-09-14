@@ -777,7 +777,7 @@ abstract class BaseModel implements
         catch (Exception $e)
         {
             $msg = $e->getMessage();
-            return $this->reportError( ($msg ? $msg : _("Create failed")) , array( 
+            return Result::failure(($msg ?: _("Create failed")), array( 
                 'vars'        => $vars,
                 'args'        => $args,
                 'sql'         => $sql,
@@ -943,7 +943,7 @@ abstract class BaseModel implements
         $k = $this->getSchema()->primaryKey;
 
         if( $k && ! isset($this->_data[$k]) ) {
-            return new Result(false, 'Record is not loaded, Record delete failed.');
+            return Result::failure('Record is not loaded, Record delete failed.');
         }
         $kVal = isset($this->_data[$k]) ? $this->_data[$k] : null;
 
@@ -1825,9 +1825,9 @@ abstract class BaseModel implements
             }
             catch ( PDOException $e )
             {
-                return new Result(false, 'Update failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
+                return Result::failure('Update failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
             }
-            return new Result(true, 'Updated', array( 'sql' => $sql ));
+            return Result::success('Updated', array( 'sql' => $sql ));
         };
         return $query;
     }
@@ -1857,9 +1857,9 @@ abstract class BaseModel implements
             }
             catch ( PDOException $e )
             {
-                return new Result(false,'Delete failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
+                return Result::failure('Delete failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
             }
-            return new Result(true, 'Deleted', array( 'sql' => $sql ));
+            return Result::success('Deleted', array( 'sql' => $sql ));
         };
         return $query;
     }
@@ -1927,7 +1927,7 @@ abstract class BaseModel implements
      */
     public function reportError($message,$extra = array() )
     {
-        return $this->lastResult = new Result(false, $message,$extra);
+        return $this->lastResult = Result::failure($message,$extra);
     }
 
 
@@ -1944,7 +1944,7 @@ abstract class BaseModel implements
      */
     public function reportSuccess($message,$extra = array() )
     {
-        return $this->lastResult = new Result(true, $message,$extra);
+        return $this->lastResult = Result::success($message,$extra);
     }
 
     public function getLastResult() {
