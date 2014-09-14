@@ -12,8 +12,7 @@ use IteratorAggregate;
 use ArrayIterator;
 
 use SQLBuilder\QueryBuilder;
-use LazyRecord\OperationResult\OperationSuccess;
-use LazyRecord\OperationResult\OperationError;
+use LazyRecord\Result;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaLoader;
 use SerializerKit\YamlSerializer;
@@ -302,13 +301,13 @@ class BaseCollection
         try {
             $this->handle = ConnectionManager::getInstance()->prepareAndExecute($dsId,$sql, $vars );
         } catch ( Exception $e ) {
-            return new OperationError( 'Collection fetch failed: ' . $e->getMessage() , array( 
+            return new Result(false, 'Collection fetch failed: ' . $e->getMessage() , array( 
                 'vars' => $vars,
                 'sql' => $sql,
                 'exception' => $e,
             ));
         }
-        return new OperationSuccess('Updated', array( 'sql' => $sql ));
+        return new Result(true, 'Updated', array( 'sql' => $sql ));
     }
 
 
@@ -479,13 +478,13 @@ class BaseCollection
         try {
             $this->handle = ConnectionManager::getInstance()->prepareAndExecute($dsId, $sql, $vars);
         } catch ( Exception $e ) {
-            return new OperationError( 'Collection update failed: ' . $e->getMessage() , array( 
+            return new Result(false, 'Collection update failed: ' . $e->getMessage() , array( 
                 'vars' => $vars,
                 'sql' => $sql,
                 'exception' => $e,
             ));
         }
-        return new OperationSuccess('Updated', array( 'sql' => $sql ));
+        return new Result(true, 'Updated', array( 'sql' => $sql ));
     }
 
 
