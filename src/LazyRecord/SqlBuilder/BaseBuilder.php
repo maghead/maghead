@@ -5,15 +5,17 @@ use SQLBuilder\QueryBuilder;
 use SQLBuilder\Driver;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\DynamicSchemaDeclare;
+use LazyRecord\Schema\SchemaInterface;
+use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\BaseModel;
 
-class BaseBuilder
+abstract class BaseBuilder
 {
     public $rebuild;
     public $clean;
     public $driver;
 
-    public function __construct(Driver $driver,$options = array())
+    public function __construct(Driver $driver, array $options = array())
     {
         $this->driver = $driver;
         if( isset($options['rebuild']) ) {
@@ -24,15 +26,17 @@ class BaseBuilder
         }
     }
 
+    abstract public function buildColumnSql(SchemaInterface $schema, $column);
 
-    public function createTable($schema)
+    public function createTable(SchemaInterface $schema)
     {
         $sql = 'CREATE TABLE ' 
             . $this->driver->getQuoteTableName($schema->getTable()) . " ( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
-            if( $column->virtual )
+            if ($column->virtual) {
                 continue;
+            }
             $columnSql[] = '  ' . $this->buildColumnSql( $schema, $column );
         }
         $sql .= join(",\n",$columnSql);
@@ -45,7 +49,7 @@ class BaseBuilder
         return $this->driver->$name;
     }
 
-    public function build($schema)
+    public function build(SchemaInterface $schema)
     {
         if ($schema instanceof BaseModel) {
             $model = $schema;
@@ -59,7 +63,7 @@ class BaseBuilder
         return array_merge( $sqls , $indexSqls );
     }
 
-    public function buildTable($schema)
+    public function buildTable(SchemaInterface $schema)
     {
         $sqls = array();
 
@@ -73,7 +77,7 @@ class BaseBuilder
         return $sqls;
     }
 
-    public function buildIndex($schema) 
+    public function buildIndex(SchemaInterface $schema) 
     {
         $sqls = array();
         foreach( $schema->columns as $name => $column ) {
@@ -92,7 +96,7 @@ class BaseBuilder
     }
 
 
-    public function buildForeignKeys($schema)
+    public function buildForeignKeys(SchemaInterface $schema)
     {
         return array(); // FIXME
 

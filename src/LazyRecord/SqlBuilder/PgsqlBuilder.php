@@ -2,20 +2,21 @@
 namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\QueryBuilder;
 use SQLBuilder\IndexBuilder;
+use LazyRecord\Schema\RuntimeColumn;
+
 
 /**
  * Schema SQL builder
  *
  * @see http://www.sqlite.org/docs.html
  */
-class PgsqlBuilder
-    extends BaseBuilder
-    implements BuilderInterface
+class PgsqlBuilder extends BaseBuilder
 {
 
-    public function buildColumnSql($schema, $column) {      
+    public function buildColumnSql(SchemaInterface $schema, $column) {      
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         $type = $column->type;
@@ -75,7 +76,7 @@ class PgsqlBuilder
     }
 
 
-    public function dropTable($schema)
+    public function dropTable(SchemaInterface $schema)
     {
         return 'DROP TABLE IF EXISTS ' 
                 . $this->driver->getQuoteTableName( $schema->getTable() )

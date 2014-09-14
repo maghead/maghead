@@ -2,18 +2,17 @@
 namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\QueryBuilder;
+use LazyRecord\Schema\SchemaInterface;
+use LazyRecord\Schema\RuntimeColumn;
 
 /**
  * Schema SQL builder
  *
  * @see http://www.sqlite.org/docs.html
  */
-class SqliteBuilder
-    extends BaseBuilder
-    implements BuilderInterface
+class SqliteBuilder extends BaseBuilder 
 {
-
-    public function buildColumnSql($schema, $column) {
+    public function buildColumnSql(SchemaInterface $schema, $column) {
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         $type = $column->type;
@@ -23,16 +22,17 @@ class SqliteBuilder
         $sql = $this->driver->getQuoteColumn( $name );
         $sql .= ' ' . $type;
 
-        if( $column->required || $column->notNull )
+        if ($column->required || $column->notNull) {
             $sql .= ' NOT NULL';
-        elseif( $column->null )
+        } elseif( $column->null ) {
             $sql .= ' NULL';
+        }
 
         /**
          * if it's callable, we should not write the result into sql schema 
          */
-        if( null !== ($default = $column->default) 
-            && ! is_callable($column->default )  ) 
+        if (null !== ($default = $column->default) 
+            && ! is_callable($column->default )) 
         {
             // for raw sql default value
             if( is_array($default) ) {
@@ -42,13 +42,13 @@ class SqliteBuilder
             }
         }
 
-        if( $column->primary )
+        if ($column->primary)
             $sql .= ' primary key';
 
-        if( $column->autoIncrement )
+        if ($column->autoIncrement)
             $sql .= ' autoincrement';
 
-        if( $column->unique )
+        if ($column->unique)
             $sql .= ' unique';
 
         /**
@@ -91,19 +91,19 @@ class SqliteBuilder
         return $sql;
     }
 
-    public function dropTable($schema)
+    public function dropTable(SchemaInterface $schema)
     {
         return 'DROP TABLE IF EXISTS ' 
             . $this->driver->getQuoteTableName( $schema->getTable() )
             . ';';
     }
 
-    public function buildIndex($schema)
+    public function buildIndex(SchemaInterface $schema)
     {
         return array();
     }
 
-    public function buildForeignKeys($schema) {
+    public function buildForeignKeys(SchemaInterface $schema) {
         return array();
     }
 
