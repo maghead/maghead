@@ -735,31 +735,31 @@ abstract class BaseModel implements
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
-                if( $c->typeConstraint && ( $val !== null && ! is_array($val) ) ) {
+                if ($c->typeConstraint && ( $val !== null && ! is_array($val) )) {
                     $c->checkTypeConstraint( $val );
                 }
                 // try to cast value 
-                else if( $val !== null && ! is_array($val) ) {
+                else if ($val !== null && ! is_array($val)) {
                     $c->typeCasting( $val );
                 }
 
-                if ( $c->filter || $c->canonicalizer ) {
+                if ($c->filter || $c->canonicalizer) {
                     $c->canonicalizeValue( $val , $this, $args );
                 }
 
 
-                if ( $validationResult = $this->_validateColumn($c,$val,$args) ) {
+                if ($validationResult = $this->_validateColumn($c,$val,$args)) {
                     $validationResults[$n] = (object) $validationResult;
                     if ( ! $validationResult['valid'] ) {
                         $validationFailed = true;
                     }
                 }
-                if ( $val !== null ) {
+                if ($val !== null) {
                     $args[ $n ] = is_array($val) ? $val : $c->deflate( $val );
                 }
             }
 
-            if( $validationFailed ) {
+            if ($validationFailed) {
                 throw new Exception( "Validation failed." );
             }
 
@@ -774,7 +774,7 @@ abstract class BaseModel implements
             /* get connection, do query */
             $stm = $this->dbPrepareAndExecute($conn, $sql, $vars); // returns $stm
         }
-        catch ( Exception $e )
+        catch (Exception $e)
         {
             $msg = $e->getMessage();
             return $this->reportError( ($msg ? $msg : _("Create failed")) , array( 
@@ -790,14 +790,14 @@ abstract class BaseModel implements
 
 
         $pkId = null;
-        if( 'pgsql' === $driver->type ) {
+        if ('pgsql' === $driver->type) {
             $pkId = $stm->fetchColumn();
         } else {
             $pkId = $conn->lastInsertId();
         }
 
-        if ( $pkId && isset($options['reload']) ) {
-            if ( $options['reload'] ) {
+        if ($pkId && isset($options['reload'])) {
+            if ($options['reload']) {
                 $this->load($pkId);
             }
         } elseif ( $pkId && $this->autoReload ) {
