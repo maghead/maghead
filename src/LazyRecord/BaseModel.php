@@ -18,6 +18,7 @@ use LazyRecord\Result;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaLoader;
+use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\ConfigLoader;
 
 use SerializerKit\XmlSerializer;
@@ -503,7 +504,7 @@ abstract class BaseModel implements
      * @param array $args
      * @param array $byKeys it's optional if you defined primary key
      */
-    public function loadOrCreate($args, $byKeys = null)
+    public function loadOrCreate(array $args, $byKeys = null)
     {
         $pk = $this->getSchema()->primaryKey;
 
@@ -557,7 +558,7 @@ abstract class BaseModel implements
      *       message: 
      *   }
      */ 
-    protected function _validateColumn($column,$val,$args)
+    protected function _validateColumn(RuntimeColumn $column,$val,$args)
     {
         // check for requried columns
         if( $column->required && ( $val === '' || $val === null ))
@@ -681,7 +682,7 @@ abstract class BaseModel implements
      *
      * @return Result operation result (success or error)
      */
-    public function _create($args, $options = array() )
+    public function _create(array $args, $options = array() )
     {
         if ( empty($args) || $args === null ) {
             return $this->reportError( _('Empty arguments') );
@@ -712,11 +713,7 @@ abstract class BaseModel implements
                 ));
             }
 
-
-
-
-            $dsId = $this->getWriteSourceId();
-            $conn = $this->getConnection( $dsId );
+            $conn = $this->getWriteConnection();
             foreach( $schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
@@ -763,6 +760,7 @@ abstract class BaseModel implements
                 throw new Exception( "Validation failed." );
             }
 
+            $dsId = $this->getWriteSourceId();
             $q = $this->createQuery( $dsId );
 
             $q->insert($args);
@@ -832,7 +830,7 @@ abstract class BaseModel implements
      *
      * @param array $args
      */
-    public function fastCreate($args)
+    public function fastCreate(array $args)
     {
         return $this->_create($args, array( 'reload' => false));
     }
@@ -878,7 +876,7 @@ abstract class BaseModel implements
         $dsId  = $this->getReadSourceId();
         $pk    = $this->getSchema()->primaryKey;
         $query = $this->createQuery( $dsId );
-        $conn  = $this->getConnection( $dsId );
+        $conn  = $this->getReadConnection();
         $kVal  = null;
 
         // build query from array.
@@ -952,7 +950,7 @@ abstract class BaseModel implements
         }
 
         $dsId = $this->getWriteSourceId();
-        $conn = $this->getConnection( $dsId );
+        $conn = $this->getWriteConnection();
 
         $this->beforeDelete( $this->_data );
 
@@ -990,7 +988,7 @@ abstract class BaseModel implements
      *
      * @return Result operation result (success or error)
      */
-    public function _update( $args , $options = array() ) 
+    public function _update(array $args , $options = array() ) 
     {
         // check if the record is loaded.
         $k = $this->getSchema()->primaryKey;
@@ -1020,7 +1018,7 @@ abstract class BaseModel implements
 
         $origArgs = $args;
         $dsId = $this->getWriteSourceId();
-        $conn = $this->getConnection( $dsId );
+        $conn = $this->getWriteConnection();
         $sql  = null;
         $vars = null;
 
@@ -1137,7 +1135,7 @@ abstract class BaseModel implements
      *
      * @param array $args
      */
-    public function rawUpdate($args) 
+    public function rawUpdate(array $args) 
     {
         $dsId  = $this->getWriteSourceId();
         $conn  = $this->getConnection( $dsId );
@@ -1165,7 +1163,7 @@ abstract class BaseModel implements
      *
      * @param array $args
      */
-    public function rawCreate($args) 
+    public function rawCreate(array $args) 
     {
         $dsId  = $this->getWriteSourceId();
         $conn  = $this->getConnection( $dsId );
@@ -1816,7 +1814,7 @@ abstract class BaseModel implements
     {
         $model = new static;
         $dsId  = $model->getWriteSourceId();
-        $conn  = $model->getConnection($dsId);
+        $conn  = $model->getWriteConnection();
         $query = $model->createExecutiveQuery($dsId);
         $query->update($args);
         $query->callback = function($builder,$sql) use ($model,$conn) {

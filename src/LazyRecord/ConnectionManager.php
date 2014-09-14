@@ -72,15 +72,18 @@ class ConnectionManager
     /**
      * Add connection
      *
-     * @param PDO $conn pdo connection
+     * @param Connection $conn pdo connection
      * @param string $id data source id
      */
-    public function add($conn, $id = 'default' )
+    public function add(Connection $conn, $id = 'default' )
     {
-        if( isset( $this->conns[ $id ] ) )
+        if (isset( $this->conns[ $id ] )) {
             throw new Exception( "$id connection is already defined." );
+        }
         $this->conns[ $id ] = $conn;
     }
+
+
 
 
     /**
@@ -317,10 +320,13 @@ class ConnectionManager
      * ArrayAccess interface
      *
      * @param string $name
-     * @param mixed $value
+     * @param Connection $value
      */
-    public function offsetSet($name,$value)
+    public function offsetSet($name, $value)
     {
+        if (! $value instanceof Connection) {
+            throw new InvalidArgumentException('$value is not a Connection object.');
+        }
         $this->conns[ $name ] = $value;
     }
     
@@ -343,7 +349,7 @@ class ConnectionManager
      */
     public function offsetGet($name)
     {
-        return $this->conns[ $name ];
+        return $this->getConnection($name);
     }
 
     /**
