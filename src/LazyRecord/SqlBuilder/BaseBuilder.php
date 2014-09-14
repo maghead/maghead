@@ -2,7 +2,10 @@
 namespace LazyRecord\SqlBuilder;
 use SQLBuilder\IndexBuilder;
 use SQLBuilder\QueryBuilder;
+use SQLBuilder\Driver;
 use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DynamicSchemaDeclare;
+use LazyRecord\BaseModel;
 
 class BaseBuilder
 {
@@ -10,7 +13,7 @@ class BaseBuilder
     public $clean;
     public $driver;
 
-    public function __construct($driver,$options = array())
+    public function __construct(Driver $driver,$options = array())
     {
         $this->driver = $driver;
         if( isset($options['rebuild']) ) {
@@ -44,11 +47,11 @@ class BaseBuilder
 
     public function build($schema)
     {
-        if( $schema instanceof \LazyRecord\BaseModel ) {
+        if ($schema instanceof BaseModel) {
             $model = $schema;
-            $schema = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
+            $schema = new DynamicSchemaDeclare($model);
         }
-        elseif( ! $schema instanceof \LazyRecord\Schema\SchemaDeclare ) {
+        elseif( ! $schema instanceof SchemaDeclare ) {
             throw new Exception("Unknown schema instance:" . get_class($schema) );
         }
         $sqls = $this->buildTable($schema);
