@@ -6,7 +6,7 @@ use IteratorAggregate;
 use ArrayIterator;
 
 class RuntimeSchema extends SchemaBase
-    implements SchemaDataInterface, IteratorAggregate
+    implements SchemaInterface, IteratorAggregate
 {
     public $modelClass;
 
