@@ -41,9 +41,10 @@ class CollectionTest extends \LazyRecord\ModelTestCase
     public function testCollectionAsPairs()
     {
         $address = new \tests\Address;
-        result_ok( $address->create(array( 'address' => 'Hack' )) );
-        result_ok( $address->create(array( 'address' => 'Hack I' )) );
-        result_ok( $address->create(array( 'address' => 'Hack II' )) );
+        $results = array();
+        result_ok( $results[] = $address->create(array( 'address' => 'Hack' )) );
+        result_ok( $results[] = $address->create(array( 'address' => 'Hack I' )) );
+        result_ok( $results[] = $address->create(array( 'address' => 'Hack II' )) );
 
         $addresses = new \tests\AddressCollection;
         $pairs = $addresses->asPairs( 'id' , 'address' );
@@ -54,7 +55,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         $ret = $addresses->update(array( 'address' => 'BooBoo' ));
         result_ok($ret);
 
-        foreach( $address->flushResults() as $result ) {
+        foreach( $results as $result ) {
             $id = $result->id;
             ok($id);
             ok(isset($pairs[$id]));
@@ -63,29 +64,12 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         }
     }
 
-    public function testCollectionLimit()
-    {
-        // XXX: this should be tested in pgsql or mysql, sqlite does not support limit/offset syntax
-        return; 
-        $address = new \tests\Address;
-        ok( $address->create(array( 'address' => 'Hack' ))->success );
-        ok( $address->create(array( 'address' => 'Hack I' ))->success );
-        ok( $address->create(array( 'address' => 'Hack II' ))->success );
-
-        $addresses = new \tests\AddressCollection;
-        $addresses->limit(1);
-        
-        is( 1, $addresses->size() );
-        foreach( $address->flushResults() as $result ) {
-            $address->delete( array('id' => $result->id ) );
-        }
-    }
-
     public function testReset()
     {
+        $results = array();
         $book = new \tests\Book;
-        ok( $book->create(array( 'title' => 'My Book I' ))->success );
-        ok( $book->create(array( 'title' => 'My Book II' ))->success );
+        result_ok( $results[] = $book->create(array( 'title' => 'My Book I' )) );
+        result_ok( $results[] = $book->create(array( 'title' => 'My Book II' )) );
 
         $books = new \tests\BookCollection;
         $books->fetch();
@@ -96,7 +80,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         $books->fetch();
         is(3,$books->size());
 
-        foreach( $book->flushResults() as $result ) {
+        foreach( $results as $result ) {
             ok( $result->id );
             ok( \tests\Book::delete($result->id)->execute()->success );
         }
@@ -341,10 +325,11 @@ class CollectionTest extends \LazyRecord\ModelTestCase
     function testFilter() 
     {
         $book = new \tests\Book;
-        ok( $book->create(array( 'title' => 'My Book I' ))->success );
-        ok( $book->create(array( 'title' => 'My Book II' ))->success );
-        ok( $book->create(array( 'title' => 'Perl Programming' ))->success );
-        ok( $book->create(array( 'title' => 'My Book IV' ))->success );
+        $results = array();
+        result_ok( $results[] = $book->create(array( 'title' => 'My Book I' )) );
+        result_ok( $results[] = $book->create(array( 'title' => 'My Book II' )) );
+        result_ok( $results[] = $book->create(array( 'title' => 'Perl Programming' )) );
+        result_ok( $results[] = $book->create(array( 'title' => 'My Book IV' )) );
 
         $books = new \tests\BookCollection;
         $books->fetch();
@@ -360,7 +345,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         count_ok(1,$perlBooks->_items);
 
  
-        foreach( $book->flushResults() as $result ) {
+        foreach( $results as $result ) {
             ok( $result->id );
             ok( \tests\Book::delete($result->id)->execute()->success );
         }

@@ -73,6 +73,8 @@ abstract class BaseModel implements
      * When saveResult is enabled, operation result object 
      * will be pushed into this array.
      *
+     * Used for bulk-insert bulk-update, you may fetch the item results
+     *
      * @see flushResults method to flush result objects.
      */
     public $results = array();
