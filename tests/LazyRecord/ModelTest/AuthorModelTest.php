@@ -94,9 +94,9 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
             'email' => 'zz@zz',
             'identity' => 'zz',
         ));
-        ok( $record->popResult()->success );
+        ok( $record->getLastResult()->success );
 
-        $record = \tests\Author::load( (int) $record->popResult()->id );
+        $record = \tests\Author::load( (int) $record->getLastResult()->id );
         ok( $record );
         ok( $id = $record->id );
 

@@ -55,12 +55,6 @@ abstract class BaseModel implements
     public $autoReload = true;
 
 
-    /**
-     * @var boolean Save operation results
-     *
-     * Turn off this if you want performance
-     */
-    public $saveResults = true;
 
     public $dataLabelField;
 
@@ -68,16 +62,11 @@ abstract class BaseModel implements
 
 
     /**
-     * @var OperationResult[] OperationResult pool
-     *
-     * When saveResult is enabled, operation result object 
-     * will be pushed into this array.
-     *
-     * Used for bulk-insert bulk-update, you may fetch the item results
-     *
-     * @see flushResults method to flush result objects.
+     * The last result object
      */
-    public $results = array();
+    public $lastResult;
+
+
 
     /**
      * @var mixed Current user object
@@ -1936,11 +1925,7 @@ abstract class BaseModel implements
      */
     public function reportError($message,$extra = array() )
     {
-        $r = new OperationError($message,$extra);
-        if( $this->saveResults ) {
-            return $this->results[] = $r;
-        }
-        return $r;
+        return $this->lastResult = new OperationError($message,$extra);
     }
 
 
@@ -1957,11 +1942,11 @@ abstract class BaseModel implements
      */
     public function reportSuccess($message,$extra = array() )
     {
-        $r = new OperationSuccess($message,$extra);
-        if( $this->saveResults ) {
-            return $this->results[] = $r;
-        }
-        return $r;
+        return $this->lastResult = new OperationSuccess($message,$extra);
+    }
+
+    public function getLastResult() {
+        return $this->lastResult;
     }
 
 
@@ -2164,23 +2149,6 @@ abstract class BaseModel implements
     {
         $this->_data = $this->_data;
         $this->autoReload = $this->autoReload;
-    }
-
-    public function popResult() 
-    {
-        return array_pop($this->results);
-    }
-
-    public function pushResult($result) 
-    {
-        $this->results[] = $result;
-    }
-
-    public function flushResults() 
-    {
-        $r = $this->results;
-        $this->results = array();
-        return $r;
     }
 
     public function asCreateAction($args = array())
