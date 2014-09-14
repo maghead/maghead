@@ -46,6 +46,8 @@ class Result
 
     public $exception;
 
+    public $debugInfo = array();
+
     public function __construct($success, $message = null, $extra = array() )
     {
         $this->success = $success;
@@ -55,6 +57,27 @@ class Result
             $this->$k = $v;
         }
     }
+
+    public function setSuccess() {
+        $this->success = true;
+        $this->error = false;
+    }
+
+    public function setError() {
+        $this->success = false;
+        $this->error = true;
+    }
+
+
+    public function setDebugInfo(array $info) {
+        $this->debugInfo = $info;
+    }
+
+    public function getDebugInfo() {
+        return $this->debugInfo;
+    }
+
+
 
 
     /**
