@@ -12,6 +12,8 @@ class OperationResult
      */
     public $success;
 
+    public $error;
+
 
     /**
      * @var string Message
