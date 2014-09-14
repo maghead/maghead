@@ -24,16 +24,20 @@ class BookModelTest extends \LazyRecord\ModelTestCase
 
     public function testLoadOrCreate() 
     {
+        $results = array();
         $b = new \tests\Book;
         $ret = $b->find( array( 'name' => 'LoadOrCreateTest' ) );
         result_fail( $ret );
         ok( ! $b->id );
+        $results[] = $ret;
 
         $ret = $b->create(array( 'title' => 'Should Not Load This' ));
         result_ok( $ret );
+        $results[] = $ret;
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
         result_ok( $ret );
+        $results[] = $ret;
 
         $id = $b->id;
         ok($id);
@@ -41,30 +45,31 @@ class BookModelTest extends \LazyRecord\ModelTestCase
         $ret = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         result_ok($ret);
         is($id, $b->id, 'is the same ID');
+        $results[] = $ret;
 
 
         $b2 = new \tests\Book;
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         result_ok($ret);
         is($id,$b2->id);
+        $results[] = $ret;
 
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
         result_ok($ret);
         ok($b2);
         ok($id != $b2->id , 'we should create anther one'); 
+        $results[] = $ret;
 
         $b3 = new \tests\Book;
         $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         result_ok($ret);
         ok($b3);
         ok($id != $b3->id , 'we should create anther one'); 
+        $results[] = $ret;
 
         $b3->delete();
 
-        foreach( $b2->flushResults() as $r ) {
-            result_ok( \tests\Book::delete($r->id)->execute() );
-        }
-        foreach( $b->flushResults() as $r ) {
+        foreach( $results as $r ) {
             result_ok( \tests\Book::delete($r->id)->execute() );
         }
     }
