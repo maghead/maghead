@@ -408,7 +408,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
             'email' => 'zz@zz',
             'identity' => 'zz',
         ));
-        ok( $record->popResult()->success );
+        ok( $record->getLastResult()->success );
     }
 
     public function testStaticLoadMethod()
@@ -436,7 +436,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
             'email' => 'zz@zz',
             'identity' => 'zz',
         ));
-        $record = \tests\Author::load( (int) $record->popResult()->id );
+        $record = \tests\Author::load( (int) $record->getLastResult()->id );
 
         /**
          * Which runs:
