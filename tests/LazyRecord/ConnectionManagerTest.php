@@ -15,7 +15,7 @@ class ConnectionManagerTest extends PHPUnit_Framework_TestCase
 
         $manager->add($conn, 'default');
 
-        $conn = $manager->getDefault();
+        $conn = $manager->getDefaultConnection();
         ok( $conn );
 
         $manager->addDataSource( 'master', array( 

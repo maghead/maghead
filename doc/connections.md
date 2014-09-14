@@ -10,7 +10,7 @@ $conn = LazyRecord\ConnectionManager::getInstance();
 To get default connection:
 
 ```php
-$defaultConnection = $conn->getDefault();  // PDO connection object
+$defaultConnection = $conn->getDefaultConnection();  // PDO connection object
 ```
 
 To get connection with data source ID:

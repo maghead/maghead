@@ -299,7 +299,7 @@ class BaseCollection
         }
 
         try {
-            $this->handle = ConnectionManager::getInstance()->prepareAndExecute($dsId,$sql, $vars );
+            $this->handle = ConnectionManager::getInstance()->getConnection($dsId)->prepareAndExecute($sql, $vars );
         } catch ( Exception $e ) {
             return Result::failure('Collection fetch failed: ' . $e->getMessage() , array( 
                 'vars' => $vars,
@@ -327,7 +327,7 @@ class BaseCollection
         $q->orders = array();
         $sql = $q->build();
         return (int) ConnectionManager::getInstance()
-                    ->prepareAndExecute($dsId,$sql,$q->vars)
+                    ->getConnection($dsId)->prepareAndExecute($sql,$q->vars)
                     ->fetchColumn();
     }
 
@@ -476,7 +476,7 @@ class BaseCollection
         $dsId = $this->getSchema()->getWriteSourceId();
 
         try {
-            $this->handle = ConnectionManager::getInstance()->prepareAndExecute($dsId, $sql, $vars);
+            $this->handle = ConnectionManager::getInstance()->getConnection($dsId)->prepareAndExecute($sql, $vars);
         } catch (Exception $e) {
             return Result::failure('Collection update failed: ' . $e->getMessage() , array( 
                 'vars' => $vars,
@@ -596,7 +596,7 @@ class BaseCollection
         if ( ! $dsId ) {
             $dsId = $this->getSchema()->getReadSourceId();
         }
-        $this->handle = ConnectionManager::getInstance()->prepareAndExecute( $dsId, $sql , $args );
+        $this->handle = ConnectionManager::getInstance()->getConnection($dsId)->prepareAndExecute($sql, $args);
     }
 
 
