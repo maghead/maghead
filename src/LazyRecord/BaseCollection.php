@@ -301,13 +301,13 @@ class BaseCollection
         try {
             $this->handle = ConnectionManager::getInstance()->prepareAndExecute($dsId,$sql, $vars );
         } catch ( Exception $e ) {
-            return new Result(false, 'Collection fetch failed: ' . $e->getMessage() , array( 
+            return Result::failure('Collection fetch failed: ' . $e->getMessage() , array( 
                 'vars' => $vars,
                 'sql' => $sql,
                 'exception' => $e,
             ));
         }
-        return new Result(true, 'Updated', array( 'sql' => $sql ));
+        return Result::success('Updated', array( 'sql' => $sql ));
     }
 
 
@@ -477,14 +477,14 @@ class BaseCollection
 
         try {
             $this->handle = ConnectionManager::getInstance()->prepareAndExecute($dsId, $sql, $vars);
-        } catch ( Exception $e ) {
-            return new Result(false, 'Collection update failed: ' . $e->getMessage() , array( 
+        } catch (Exception $e) {
+            return Result::failure('Collection update failed: ' . $e->getMessage() , array( 
                 'vars' => $vars,
                 'sql' => $sql,
                 'exception' => $e,
             ));
         }
-        return new Result(true, 'Updated', array( 'sql' => $sql ));
+        return Result::success('Updated', array( 'sql' => $sql ));
     }
 
 
