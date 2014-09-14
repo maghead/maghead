@@ -4,6 +4,7 @@ namespace LazyRecord\OperationResult;
 class OperationSuccess extends OperationResult
 {
     public $success = true;
+    public $error = false;
 
     public function __toString()
     {

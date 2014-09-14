@@ -5,6 +5,8 @@ class OperationError extends OperationResult
 {
     public $success = false;
 
+    public $error = true;
+
     public $exception;
 
     public $code;
