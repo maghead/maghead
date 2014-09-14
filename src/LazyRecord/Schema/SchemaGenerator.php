@@ -111,13 +111,13 @@ class SchemaGenerator
     }
 
 
-    public function generateSchemaProxyClass($schema)
+    public function generateSchemaProxyClass(SchemaDeclare $schema)
     {
         $cTemplate = SchemaProxyClassFactory::create($schema);
         return $this->updateClassFile($cTemplate, $schema, true);
     }
 
-    public function generateBaseModelClass($schema)
+    public function generateBaseModelClass(SchemaDeclare $schema)
     {
         $cTemplate = BaseModelClassFactory::create($schema, $this->getBaseModelClass() );
         return $this->updateClassFile($cTemplate, $schema, true);
@@ -165,7 +165,7 @@ class SchemaGenerator
      * @param boolean $overwrite Overwrite class file. 
      * @return array
      */
-    public function writeClassTemplateToPath($cTemplate, $filepath, $overwrite = false) 
+    public function writeClassTemplateToPath(ClassTemplate $cTemplate, $filepath, $overwrite = false) 
     {
         if ( ! file_exists($filepath) || $overwrite ) {
             file_put_contents( $filepath, $cTemplate->render() );
@@ -177,7 +177,7 @@ class SchemaGenerator
     }
 
 
-    public function injectModelSchema($schema)
+    public function injectModelSchema(SchemaDeclare $schema)
     {
         $model = $schema->getModel();
 

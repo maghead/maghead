@@ -12,6 +12,7 @@ use IteratorAggregate;
 use ArrayIterator;
 
 use SQLBuilder\QueryBuilder;
+use SQLBuilder\Driver;
 use LazyRecord\Result;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaLoader;
@@ -251,7 +252,7 @@ class BaseCollection
 
 
     // xxx: this might be used in other join statements.
-    public function getExplicitColumnSelect($driver)
+    public function getExplicitColumnSelect(Driver $driver)
     {
         $alias = $this->getAlias();
         return array_map(function($name) use($alias,$driver) { 
@@ -321,7 +322,7 @@ class BaseCollection
     {
         $dsId = $this->getSchema()->getReadSourceId();
         $q = clone $this->_query;
-        $q->select( 'count(*)' ); // override current select.
+        $q->select('count(*)'); // override current select.
 
         // when selecting count(*), we dont' use groupBys or order by
         $q->orders = array();
