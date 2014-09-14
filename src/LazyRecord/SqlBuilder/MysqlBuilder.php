@@ -1,15 +1,16 @@
 <?php
 namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\SchemaInterface;
+use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\QueryBuilder;
 use SQLBuilder\IndexBuilder;
 
-class MysqlBuilder
-    extends BaseBuilder
-    implements BuilderInterface
+
+class MysqlBuilder extends BaseBuilder
 {
 
-    public function buildColumnSql($schema, $column) {      
+    public function buildColumnSql(SchemaInterface $schema, $column) {      
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         $type = $column->type;
@@ -107,7 +108,7 @@ class MysqlBuilder
     }
 
 
-    public function dropTable($schema)
+    public function dropTable(SchemaInterface $schema)
     {
         return 'DROP TABLE IF EXISTS ' 
             . $this->driver->getQuoteTableName( $schema->getTable() )
