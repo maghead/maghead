@@ -21,6 +21,7 @@
         "corneltek\/universal": "dev-master",
         "facebook\/xhprof": "dev-master"
     },
+    "bin": [ "bin/lazy" ],
     "license": "MIT",
     "authors": [
         {
