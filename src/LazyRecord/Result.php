@@ -112,8 +112,9 @@ class Result
     {
         $vlds = array();
         foreach( $this->validations as $k => $vld ) {
-            if( $vld->valid )
+            if ( ! $vld->valid ) {
                 $vlds[$k] = $vld;
+            }
         }
         return $vlds;
     }
@@ -130,10 +131,16 @@ class Result
 
     public function __toString() {
         $msg = $this->message . "\n";
-        if( $this->exception ) {
+        if ( $this->exception ) {
             $msg .= ' Exception:' . $this->exception->getMessage() . "\n";
             if( $this->sql ) {
                 $msg .= ' SQL:' . $this->sql . "\n";
+            }
+        }
+
+        if ($this->validations) {
+            foreach( $this->validations as $k => $vld ) {
+                $msg .= $k . ': ' . ($vld->valid ? 'Valid' : 'Invalid') . "\n";
             }
         }
         return $msg;

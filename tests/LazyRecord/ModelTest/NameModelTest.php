@@ -147,7 +147,7 @@ class NameModelTest extends ModelTestCase
         ok( $ret->validations );
 
         foreach( $ret->getErrorValidations() as $vld ) {
-            is( false , $vld->success );
+            is( false , $vld->valid );
             is( 'Please don\'t',  $vld->message );
         }
     }
