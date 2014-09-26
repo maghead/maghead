@@ -2,7 +2,7 @@
     "name": "corneltek\/lazyrecord",
     "homepage": "http:\/\/github.com\/c9s\/LazyRecord",
     "description": "The Fast PHP ORM",
-    "version": "1.16.2",
+    "version": "1.17.0",
     "require": {
         "php": ">=5.3.0",
         "corneltek\/sqlbuilder": "~1.5",
@@ -21,7 +21,9 @@
         "corneltek\/universal": "dev-master",
         "facebook\/xhprof": "dev-master"
     },
-    "bin": [ "bin/lazy" ],
+    "bin": [
+        "bin\/lazy"
+    ],
     "license": "MIT",
     "authors": [
         {
