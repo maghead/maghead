@@ -1,6 +1,8 @@
 LazyRecord
 ==========
 
+[![Build Status](https://travis-ci.org/c9s/LazyRecord.svg?branch=master)](https://travis-ci.org/c9s/LazyRecord)
+
 LazyRecord is an open-source Object-Relational Mapping (ORM) for PHP5. 
 
 It allows you to access your database very easily by using ActiveRecord
