@@ -689,7 +689,7 @@ abstract class BaseModel implements
         }
 
         $validationResults = array();
-        $validationFailed = false;
+        $validationError = false;
         $schema = $this->getSchema();
 
         // save $args for afterCreate trigger method
@@ -748,7 +748,7 @@ abstract class BaseModel implements
                 if ($validationResult = $this->_validateColumn($c,$val,$args)) {
                     $validationResults[$n] = (object) $validationResult;
                     if ( ! $validationResult['valid'] ) {
-                        $validationFailed = true;
+                        $validationError = true;
                     }
                 }
                 if ($val !== null) {
@@ -756,9 +756,12 @@ abstract class BaseModel implements
                 }
             }
 
-            if ($validationFailed) {
-                throw new Exception( "Validation failed." );
+            if ($validationError) {
+                return Result::failure("Validation failed.", array( 
+                    'validations' => $validationResults,
+                ));
             }
+
 
             $dsId = $this->getWriteSourceId();
             $q = $this->createQuery( $dsId );
@@ -1022,7 +1025,7 @@ abstract class BaseModel implements
         $sql  = null;
         $vars = null;
 
-        $validationFailed = false;
+        $validationError = false;
         $validationResults = array();
 
         try
@@ -1075,17 +1078,19 @@ abstract class BaseModel implements
                     if( $validationResult = $this->_validateColumn($c,$args[$n],$args) ) {
                         $validationResults[$n] = (object) $validationResult;
                         if( ! $validationResult['valid'] ) {
-                            $validationFailed = true;
+                            $validationError = true;
                         }
                     }
 
                     // deflate
                     $args[ $n ] = is_array($args[$n]) ? $args[$n] : $c->deflate( $args[$n] );
                 }
+            }
 
-                if ( $validationFailed ) {
-                    throw new Exception( "Column $n: Validation failed." );
-                }
+            if ( $validationError ) {
+                return Result::failure("Validation failed.", array( 
+                    'validations' => $validationResults,
+                ));
             }
 
             $query = $this->createQuery( $dsId );

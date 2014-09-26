@@ -51,7 +51,7 @@ class Result
     public static function success($msg = null, $extra = array()) {
         $result = new self;
         $result->setSuccess();
-        $result->message = $msg;
+        $result->setMessage($msg);
         foreach( $extra as $k => $v ) {
             $result->$k = $v;
         }
@@ -61,7 +61,7 @@ class Result
     public static function failure($msg = null, $extra = array()) {
         $result = new self;
         $result->setError();
-        $result->message = $msg;
+        $result->setMessage($msg);
         foreach( $extra as $k => $v ) {
             $result->$k = $v;
         }
@@ -89,6 +89,9 @@ class Result
         return $this->debugInfo;
     }
 
+    public function setMessage($msg) {
+        $this->message = $msg;
+    }
 
 
 
