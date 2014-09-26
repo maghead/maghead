@@ -1,18 +1,23 @@
 language: php
 php:
-  - 5.3
+#   - 5.3
   - 5.4
-  - hhvm
-
+#   - hhvm
 before_script:
+  - psql --version
+  - phpenv config-add tests/php.ini
   - phpenv rehash
+  - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - psql -c "create database testing;" -U postgres
-  - mysql -e "create database testing charset utf8;"
-  - mysql -e "grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing'"
-  - curl http://install.onionphp.org/ | bash
-  - curl -O https://raw.github.com/c9s/Onion/master/onion
+  - mysql -uroot -e "create database testing charset utf8;"
   - composer install --dev
+  - php bin/lazy build-conf db/config/database.travis-ci.yml
+  - php bin/lazy schema build
+  - php bin/lazy schema build src # build meta model class
+  - php bin/lazy sql --rebuild -D=mysql
+  - php bin/lazy sql --rebuild -D=pgsql
+  - php bin/lazy sql --rebuild -D=sqlite
 script:
-  - phpunit --debug
-# notifications:
-#  webbooks: http://wireroom.extremedev.org/=/travis-ci/Hall
+  - phpunit -c phpunit-travis-ci.xml
+cache:
+  - vendor
