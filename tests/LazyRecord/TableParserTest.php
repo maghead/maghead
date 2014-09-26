@@ -12,17 +12,19 @@ class TableParserTest extends PHPUnit_Framework_TestCase
 
 
         $conns = LazyRecord\ConnectionManager::getInstance();
-        if( $conns->hasDataSource('mysql') )
-            $this->driverTest('mysql');
-        if( $conns->hasDataSource('pgsql') )
-            $this->driverTest('pgsql');
+        if ( $conns->hasDataSource('mysql') && extension_loaded('pdo_mysql') )
+            $this->runDriverTest('mysql');
+        if ( $conns->hasDataSource('pgsql') && extension_loaded('pdo_pgsql') )
+            $this->runDriverTest('pgsql');
+        if ( $conns->hasDataSource('sqlite') && extension_loaded('pdo_sqlite') )
+            $this->runDriverTest('sqlite');
     }
 
 
     /**
      * @dataProvider getDrivers
      */
-    function driverTest($driverType)
+    public function runDriverTest($driverType)
     {
         $conns = LazyRecord\ConnectionManager::getInstance();
         $conn   = $conns->getConnection($driverType);

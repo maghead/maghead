@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord;
+use ValidationKit\ValidationMessage;
 
 class Result
 {
@@ -25,6 +26,9 @@ class Result
      */
     public $sql;
 
+    /**
+     * column key => ValidationMessage object
+     */
     public $validations;
 
     public $errors;
@@ -108,6 +112,10 @@ class Result
         return $vlds;
     }
 
+
+    /**
+     * Returns an array of ValidationMessage objects
+     */
     public function getErrorValidations() 
     {
         $vlds = array();

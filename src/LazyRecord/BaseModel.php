@@ -685,7 +685,7 @@ abstract class BaseModel implements
     public function _create(array $args, $options = array() )
     {
         if ( empty($args) || $args === null ) {
-            return $this->reportError( _('Empty arguments') );
+            return $this->reportError('Empty arguments');
         }
 
         $validationResults = array();
@@ -968,7 +968,7 @@ abstract class BaseModel implements
             $this->dbPrepareAndExecute($conn,$sql, $query->vars );
         } catch( PDOException $e ) {
             $msg = $e->getMessage();
-            return $this->reportError( ($msg ? $msg : _('Delete failed.')) , array(
+            return $this->reportError( ($msg ? $msg : 'Delete failed.') , array(
                 'sql'         => $sql,
                 'exception'   => $e,
                 'validations' => $validationResults,
@@ -977,7 +977,7 @@ abstract class BaseModel implements
 
         $this->afterDelete( $this->_data );
         $this->clear();
-        return $this->reportSuccess( _('Deleted') , array( 
+        return $this->reportSuccess('Record deleted', array( 
             'sql' => $sql,
             'vars' => $query->vars,
         ));
@@ -1076,7 +1076,7 @@ abstract class BaseModel implements
                     }
 
                     if( $validationResult = $this->_validateColumn($c,$args[$n],$args) ) {
-                        $validationResults[$n] = (object) $validationResult;
+                        $validationResults[$n] = $validationResult;
                         if( ! $validationResult['valid'] ) {
                             $validationError = true;
                         }
