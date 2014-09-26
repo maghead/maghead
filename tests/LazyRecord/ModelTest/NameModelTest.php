@@ -182,14 +182,15 @@ class NameModelTest extends ModelTestCase
         $dom = new DOMDocument;
         $dom->loadXml( $xml );
 
-        $yaml = $name->toYaml();
-        ok( $yaml );
 
-        yaml_parse($yaml);
+        if (extension_loaded('yaml')) {
+            $yaml = $name->toYaml();
+            ok( $yaml );
+            yaml_parse($yaml);
+        }
 
         $json = $name->toJson();
         ok( $json );
-
         json_decode( $json );
 
         ok( $name->delete()->success );
