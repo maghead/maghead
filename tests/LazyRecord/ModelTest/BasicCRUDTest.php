@@ -19,6 +19,10 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         );
     }
 
+
+    /**
+     * @expectedException LazyRecord\DatabaseException
+     */
     public function testTitleIsRequired()
     {
         $b = new \tests\Book;
