@@ -700,6 +700,9 @@ abstract class BaseModel implements
         $this->_data     = array();
         $stm = null;
 
+        // Just a note: Exceptions should be used for exceptional conditions; things you 
+        // don't expect to happen. Validating input isn't very exceptional.
+
         try {
             $args = $this->beforeCreate( $args );
 
@@ -707,7 +710,7 @@ abstract class BaseModel implements
             // first, filter the array, arguments for inserting data.
             $args = $this->filterArrayWithColumns($args);
 
-            if( ! $this->currentUserCan( $this->getCurrentUser(), 'create', $args ) ) {
+            if (! $this->currentUserCan( $this->getCurrentUser(), 'create', $args )) {
                 return $this->reportError( _('Permission denied. Can not create record.') , array( 
                     'args' => $args,
                 ));
@@ -733,7 +736,9 @@ abstract class BaseModel implements
                 $val = isset($args[$n]) ? $args[$n] : null;
 
                 if ($c->typeConstraint && ( $val !== null && ! is_array($val) )) {
-                    $c->checkTypeConstraint( $val );
+                    if ( false === $c->checkTypeConstraint( $val )) {
+                        return Result::failure("{$val} is not " . $c->isa . " type");
+                    }
                 }
                 // try to cast value 
                 else if ($val !== null && ! is_array($val)) {
@@ -1064,11 +1069,10 @@ abstract class BaseModel implements
                         $c->typeCasting( $args[$n] );
                     }
 
-
-
-                    // xxx: make this optional.
-                    if( $args[$n] !== null && ! is_array($args[$n]) && $msg = $c->checkTypeConstraint( $args[$n] ) ) {
-                        throw new Exception($msg);
+                    if( $args[$n] !== null && ! is_array($args[$n])) {
+                        if ( false === $c->checkTypeConstraint($args[$n])) {
+                            return Result::failure($args[$n] . " is not " . $c->isa . " type");
+                        }
                     }
 
                     if( $c->filter || $c->canonicalizer ) {
