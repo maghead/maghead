@@ -60,7 +60,8 @@ class CollectionTest extends \LazyRecord\ModelTestCase
             ok($id);
             ok(isset($pairs[$id]));
             like('/Hack/',$pairs[$id]);
-            $address->delete( array('id' => $result->id ) );
+            $address = new \tests\Address($result->id);
+            $address->delete();
         }
     }
 
