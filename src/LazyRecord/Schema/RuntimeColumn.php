@@ -8,6 +8,9 @@ use LazyRecord\Utils;
 use Exception;
 use ArrayIterator;
 use IteratorAggregate;
+use InvalidArgumentException;
+
+class InvalidValueTypeException extends Exception { }
 
 class RuntimeColumn implements IteratorAggregate
 {
@@ -158,12 +161,24 @@ class RuntimeColumn implements IteratorAggregate
     public function checkTypeConstraint($value)
     {
         if( $isa = $this->get('isa') ) {
-            if ( $isa === 'str' && ! is_string($value) ) {
-                throw new Exception('Value is not a string value. ' . "($value)");
-            } elseif( $isa === 'int' && ! is_integer($value) ) {
-                throw new Exception( 'Value is not a integer value.' );
-            } elseif( ($isa === 'bool' || $isa === 'boolean') && ! is_bool($value) ) {
-                throw new Exception( 'Value is not a boolean value.' );
+            switch($isa) {
+            case 'str':
+                if (! is_string($value)) {
+                    throw new InvalidValueTypeException("{$value} is not a string.");
+                }
+                break;
+            case 'int':
+                if (! is_integer($value)) {
+                    throw new InvalidValueTypeException("{$value} is not a integer.");
+                }
+                break;
+
+            case 'bool':
+            case 'boolean':
+                if (! is_bool($value) ) {
+                    throw new InvalidValueTypeException("{$value} is not a boolean.");
+                }
+                break;
             }
         }
     }
