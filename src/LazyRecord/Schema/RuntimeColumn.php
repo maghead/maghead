@@ -160,27 +160,27 @@ class RuntimeColumn implements IteratorAggregate
 
     public function checkTypeConstraint($value)
     {
-        if( $isa = $this->get('isa') ) {
+        if ($isa = $this->get('isa')) {
             switch($isa) {
             case 'str':
                 if (! is_string($value)) {
-                    throw new InvalidValueTypeException("{$value} is not a string.");
+                    return false;
                 }
                 break;
             case 'int':
                 if (! is_integer($value)) {
-                    throw new InvalidValueTypeException("{$value} is not a integer.");
+                    return false;
                 }
                 break;
-
             case 'bool':
             case 'boolean':
                 if (! is_bool($value) ) {
-                    throw new InvalidValueTypeException("{$value} is not a boolean.");
+                    return false;
                 }
                 break;
             }
         }
+        return true;
     }
 
     /** 
