@@ -760,7 +760,6 @@ abstract class BaseModel implements
                     $c->canonicalizeValue( $val , $this, $args );
                 }
 
-
                 if ($validationResult = $this->_validateColumn($c,$val,$args)) {
                     $validationResults[$n] = (object) $validationResult;
                     if ( ! $validationResult['valid'] ) {
@@ -824,14 +823,13 @@ abstract class BaseModel implements
         $this->afterCreate($origArgs);
 
         // collect debug info
-        $ret = array( 
+        return Result::success('Record created.', array(
             'id'  => $pkId,
             'sql' => $sql,
             'args' => $args,
             'vars' => $vars,
             'validations' => $validationResults,
-        );
-        return $this->reportSuccess('Created', $ret );
+        ));
     }
 
 
