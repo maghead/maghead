@@ -2,9 +2,9 @@
 namespace LazyRecord;
 use Exception;
 use RuntimeException;
-use PDOException;
 use InvalidArgumentException;
 use PDO;
+use PDOException;
 use ArrayIterator;
 use IteratorAggregate;
 use Serializable;
@@ -28,6 +28,17 @@ use SerializerKit\YamlSerializer;
 use ValidationKit\ValidationMessage;
 use ActionKit;
 use ActionKit\RecordAction\BaseRecordAction;
+
+class DatabaseException extends RuntimeException {
+
+    public $debugInfo = array();
+
+    public function __construct($msg, PDOException $previous = NULL, $debugInfo = array()) {
+        parent::__construct($msg, 0, $previous);
+        $this->debugInfo = $debugInfo;
+    }
+}
+
 
 /**
  * Base Model class,
@@ -684,7 +695,7 @@ abstract class BaseModel implements
      */
     public function _create(array $args, $options = array() )
     {
-        if ( empty($args) || $args === null ) {
+        if (empty($args) || $args === null ) {
             return $this->reportError('Empty arguments');
         }
 
@@ -742,7 +753,7 @@ abstract class BaseModel implements
                 }
                 // try to cast value 
                 else if ($val !== null && ! is_array($val)) {
-                    $c->typeCasting( $val );
+                    $val = $c->typeCasting($val);
                 }
 
                 if ($c->filter || $c->canonicalizer) {
@@ -780,14 +791,12 @@ abstract class BaseModel implements
             /* get connection, do query */
             $stm = $this->dbPrepareAndExecute($conn, $sql, $vars); // returns $stm
         }
-        catch (Exception $e)
+        catch (PDOException $e)
         {
-            $msg = $e->getMessage();
-            return Result::failure(($msg ?: _("Create failed")), array( 
-                'vars'        => $vars,
-                'args'        => $args,
-                'sql'         => $sql,
-                'exception'   => $e,
+            throw new DatabaseException('Record create failed', $e, array(
+                'vars' => $vars,
+                'args' => $args,
+                'sql' => $sql,
                 'validations' => $validationResults,
             ));
         }
@@ -797,10 +806,11 @@ abstract class BaseModel implements
 
         $pkId = null;
         if ('pgsql' === $driver->type) {
-            $pkId = $stm->fetchColumn();
+            $pkId = intval($stm->fetchColumn());
         } else {
-            $pkId = $conn->lastInsertId();
+            $pkId = intval($conn->lastInsertId());
         }
+        $this->_data['id'] = $pkId;
 
         if ($pkId && isset($options['reload'])) {
             if ($options['reload']) {
@@ -815,14 +825,12 @@ abstract class BaseModel implements
 
         // collect debug info
         $ret = array( 
+            'id'  => $pkId,
             'sql' => $sql,
             'args' => $args,
             'vars' => $vars,
             'validations' => $validationResults,
         );
-        if( isset($this->_data[ $k ]) ) {
-            $ret['id'] = $this->_data[ $k ];
-        }
         return $this->reportSuccess('Created', $ret );
     }
 
@@ -876,9 +884,7 @@ abstract class BaseModel implements
     public function _load($args)
     {
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'load', $args ) ) {
-            return $this->reportError( _('Permission denied. Can not load record.') , array( 
-                'args' => $args,
-            ));
+            return Result::failure("Permission denied. Can not load record.", array('args' => $args));
         }
 
         $dsId  = $this->getReadSourceId();
@@ -896,9 +902,11 @@ abstract class BaseModel implements
         {
             $kVal = $args;
             $column = $this->getSchema()->getColumn( $pk );
-            if ( ! $column )
+            if ( ! $column ) {
+                // This should not happend, every schema should have it's own primary key
+                // TODO: Create new exception class for this.
                 throw new Exception("Primary key $pk is not defined in " . get_class($this->getSchema()) );
-
+            }
             $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
             $query->select( $this->selected ?: '*' )->whereFromArgs($args);
@@ -910,18 +918,17 @@ abstract class BaseModel implements
         try {
             $stm = $this->dbPrepareAndExecute($conn,$sql,$query->vars);
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
-            if( false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
-                throw new Exception('Data load failed.');
+            if (false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
+                // Record not found is not an exception
+                return Result::failure("Record not found");
             }
         }
-        catch ( Exception $e ) 
+        catch (PDOException $e)
         {
-            $msg = $e->getMessage();
-            return $this->reportError( ($msg ? $msg : _('Data load failed')) , array(
-                'sql' => $sql,
-                'args' => $args,
+            throw new DatabaseException('Record load failed', $e, array(
                 'vars' => $query->vars,
-                'exception' => $e,
+                'args' => $args,
+                'sql' => $sql,
             ));
         }
 
@@ -971,11 +978,11 @@ abstract class BaseModel implements
         $validationResults = array();
         try {
             $this->dbPrepareAndExecute($conn,$sql, $query->vars );
-        } catch( PDOException $e ) {
-            $msg = $e->getMessage();
-            return $this->reportError( ($msg ? $msg : 'Delete failed.') , array(
-                'sql'         => $sql,
-                'exception'   => $e,
+        } catch (PDOException $e) {
+            throw new DatabaseException('Delete failed', $e, array(
+                'vars' => $vars,
+                'args' => $args,
+                'sql' => $sql,
                 'validations' => $validationResults,
             ));
         }
@@ -1000,14 +1007,12 @@ abstract class BaseModel implements
     {
         // check if the record is loaded.
         $k = $this->getSchema()->primaryKey;
-        if( $k && ! isset($args[ $k ]) 
-               && ! isset($this->_data[$k]) ) 
-        {
-            return $this->reportError('Record is not loaded, Can not update record.');
+        if ($k && ! isset($args[ $k ]) && ! isset($this->_data[$k])) {
+            throw new Exception('Record is not loaded, Can not update record.', array('args' => $args));
         }
 
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'update', $args ) ) {
-            return $this->reportError( _('Permission denied. Can not update record.') , array( 
+            return Result::failure('Permission denied. Can not update record.', array( 
                 'args' => $args,
             ));
         }
@@ -1019,8 +1024,8 @@ abstract class BaseModel implements
             ? intval($this->_data[$k]) : null;
 
 
-        if( ! $kVal ) {
-            return $this->reportError("The value of primary key is undefined.");
+        if (! $kVal) {
+            throw new Exception("Primary key value is undefined.");
         }
 
 
@@ -1054,34 +1059,32 @@ abstract class BaseModel implements
                 }
 
                 // column validate (value is set.)
-                if( isset($args[$n]) )
+                if (isset($args[$n]))
                 {
-                    if ( $c->immutable ) {
-                        unset($args[$n]);
-                        continue;
-                        // TODO: provide an option to skip immutable warning
-                        return $this->reportError( _("You can not update $n column, which is immutable.") , array( 
-                            'args' => $args,
-                        ));
+                    // TODO: Do not render immutable field in ActionKit
+                    if ($c->immutable) {
+                        // unset($args[$n]);
+                        // continue;
+                        return Result::failure( "You can not update $n column, which is immutable.", array('args' => $args));
                     }
 
-                    if( $args[$n] !== null && ! is_array($args[$n]) ) {
-                        $c->typeCasting( $args[$n] );
+                    if ($args[$n] !== null && ! is_array($args[$n]) ) {
+                        $args[$n] = $c->typeCasting( $args[$n] );
                     }
 
-                    if( $args[$n] !== null && ! is_array($args[$n])) {
+                    if ($args[$n] !== null && ! is_array($args[$n])) {
                         if ( false === $c->checkTypeConstraint($args[$n])) {
                             return Result::failure($args[$n] . " is not " . $c->isa . " type");
                         }
                     }
 
-                    if( $c->filter || $c->canonicalizer ) {
-                        $c->canonicalizeValue( $args[$n], $this, $args );
+                    if ($c->filter || $c->canonicalizer) {
+                        $c->canonicalizeValue( $args[$n], $this, $args);
                     }
 
-                    if( $validationResult = $this->_validateColumn($c,$args[$n],$args) ) {
+                    if ( $validationResult = $this->_validateColumn($c,$args[$n],$args)) {
                         $validationResults[$n] = $validationResult;
-                        if( ! $validationResult['valid'] ) {
+                        if ( ! $validationResult['valid'] ) {
                             $validationError = true;
                         }
                     }
@@ -1091,7 +1094,7 @@ abstract class BaseModel implements
                 }
             }
 
-            if ( $validationError ) {
+            if ($validationError) {
                 return Result::failure("Validation failed.", array( 
                     'validations' => $validationResults,
                 ));
@@ -1117,14 +1120,12 @@ abstract class BaseModel implements
 
             $this->afterUpdate($origArgs);
         } 
-        catch( Exception $e ) 
+        catch(PDOException $e) 
         {
-            $msg = $e->getMessage();
-            return $this->reportError( ($msg ? $msg : 'Update failed') , array(
+            throw new DatabaseException('Record update failed', $e, array(
                 'vars' => $vars,
                 'args' => $args,
                 'sql' => $sql,
-                'exception'   => $e,
                 'validations' => $validationResults,
             ));
         }
@@ -1293,8 +1294,9 @@ abstract class BaseModel implements
     public function dbQuery($dsId, $sql)
     {
         $conn = $this->getConnection($dsId);
-        if( ! $conn )
-            throw new Exception("data source $dsId is not defined.");
+        if (! $conn) {
+            throw new RuntimeException("data source $dsId is not defined.");
+        }
         return $conn->query( $sql );
     }
 
@@ -1546,7 +1548,8 @@ abstract class BaseModel implements
             if ( ! $this->hasValue($sColumn) ) {
                 return;
             }
-                // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
+
+            // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
 
             $sValue = $this->getValue( $sColumn );
 
@@ -1561,10 +1564,10 @@ abstract class BaseModel implements
             $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];
 
-            if ( ! $this->hasValue($sColumn) ) {
+            if (! $this->hasValue($sColumn)) {
                 return;
             }
-                // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
+            // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
 
             $sValue = $this->getValue( $sColumn );
 
@@ -1826,13 +1829,17 @@ abstract class BaseModel implements
         $conn  = $model->getWriteConnection();
         $query = $model->createExecutiveQuery($dsId);
         $query->update($args);
-        $query->callback = function($builder,$sql) use ($model,$conn) {
+        $query->callback = function($builder,$sql) use ($model,$conn, $args) {
             try {
                 $stm = $model->dbPrepareAndExecute($conn,$sql,$builder->vars);
             }
-            catch ( PDOException $e )
+            catch (PDOException $e)
             {
-                return Result::failure('Update failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
+                throw new DatabaseException('Update failed', $e, array(
+                    'vars' => $builder->vars,
+                    'args' => $args,
+                    'sql' => $sql,
+                ));
             }
             return Result::success('Updated', array( 'sql' => $sql ));
         };
@@ -1862,9 +1869,11 @@ abstract class BaseModel implements
             try {
                 $stm = $model->dbPrepareAndExecute($conn,$sql,$builder->vars);
             }
-            catch ( PDOException $e )
+            catch (PDOException $e)
             {
-                return Result::failure('Delete failed: ' .  $e->getMessage() , array( 'sql' => $sql ) );
+                throw new DatabaseException('Delete Failed', $e, array(
+                    'sql' => $sql,
+                ));
             }
             return Result::success('Deleted', array( 'sql' => $sql ));
         };

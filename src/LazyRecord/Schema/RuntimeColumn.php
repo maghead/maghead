@@ -126,33 +126,30 @@ class RuntimeColumn implements IteratorAggregate
      *
      * @param mixed $value referenced value
      */
-    public function typeCasting( & $value)
+    public function typeCasting($value)
     {
         if( $isa = $this->get('isa') ) {
             if( $isa === 'int' ) {
-                return $value = (int) $value;
+                return intval($value);
             }
             elseif( $isa === 'str' ) {
-                return $value = (string) $value;
+                return (string) $value;
             }
             elseif( $isa === 'bool' || $isa === 'boolean' ) {
-
-                if( is_string($value) ) 
-                {
+                if (is_string($value)) {
                     if( $value == null || $value === '' ) {
-                        return $value = false;
+                        return false;
                     } elseif( $value === '1' ) {
-                        return $value = true;
+                        return true;
                     } elseif( $value === '0' ) {
-                        return $value = false;
+                        return false;
                     } elseif( strncasecmp($value,'false',5) == 0 ) {
-                        return $value = false;
+                        return false;
                     } elseif( strncasecmp($value,'true',4 ) == 0 ) {
-                        return $value = true;
+                        return true;
                     }
                 }
-                $value = (boolean) $value;
-                return $value;
+                return (boolean) $value;
             }
         }
         return $value;
