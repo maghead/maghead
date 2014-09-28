@@ -27,9 +27,7 @@ class BookModelTest extends \LazyRecord\ModelTestCase
     public function testUpdateUnknownColumn() {
         $b = new \tests\Book;
         // Column not found: 1054 Unknown column 'name' in 'where clause'
-        $ret = $b->find(array('name' => 'LoadOrCreateTest'));
-        result_fail($ret);
-        ok(! $b->id );
+        $b->find(array('name' => 'LoadOrCreateTest'));
     }
 
     public function testLoadOrCreate() {
