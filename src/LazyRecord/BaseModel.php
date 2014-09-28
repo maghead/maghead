@@ -748,7 +748,7 @@ abstract class BaseModel implements
 
                 if ($c->typeConstraint && ( $val !== null && ! is_array($val) )) {
                     if ( false === $c->checkTypeConstraint( $val )) {
-                        return Result::failure("{$val} is not " . $c->isa . " type");
+                        return $this->reportError("{$val} is not " . $c->isa . " type");
                     }
                 }
                 // try to cast value 
@@ -772,7 +772,7 @@ abstract class BaseModel implements
             }
 
             if ($validationError) {
-                return Result::failure("Validation failed.", array( 
+                return $this->reportError("Validation failed.", array( 
                     'validations' => $validationResults,
                 ));
             }
@@ -823,7 +823,7 @@ abstract class BaseModel implements
         $this->afterCreate($origArgs);
 
         // collect debug info
-        return Result::success('Record created.', array(
+        return $this->reportSuccess('Record created.', array(
             'id'  => $pkId,
             'sql' => $sql,
             'args' => $args,
@@ -882,7 +882,7 @@ abstract class BaseModel implements
     public function _load($args)
     {
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'load', $args ) ) {
-            return Result::failure("Permission denied. Can not load record.", array('args' => $args));
+            return $this->reportError("Permission denied. Can not load record.", array('args' => $args));
         }
 
         $dsId  = $this->getReadSourceId();
@@ -918,7 +918,7 @@ abstract class BaseModel implements
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             if (false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
                 // Record not found is not an exception
-                return Result::failure("Record not found");
+                return $this->reportError("Record not found");
             }
         }
         catch (PDOException $e)
@@ -953,8 +953,8 @@ abstract class BaseModel implements
     {
         $k = $this->getSchema()->primaryKey;
 
-        if( $k && ! isset($this->_data[$k]) ) {
-            return Result::failure('Record is not loaded, Record delete failed.');
+        if ($k && ! isset($this->_data[$k]) ) {
+            throw new Exception('Record is not loaded, Record delete failed.');
         }
         $kVal = isset($this->_data[$k]) ? $this->_data[$k] : null;
 
@@ -1010,7 +1010,7 @@ abstract class BaseModel implements
         }
 
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'update', $args ) ) {
-            return Result::failure('Permission denied. Can not update record.', array( 
+            return $this->reportError('Permission denied. Can not update record.', array( 
                 'args' => $args,
             ));
         }
@@ -1063,7 +1063,7 @@ abstract class BaseModel implements
                     if ($c->immutable) {
                         // unset($args[$n]);
                         // continue;
-                        return Result::failure( "You can not update $n column, which is immutable.", array('args' => $args));
+                        return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));
                     }
 
                     if ($args[$n] !== null && ! is_array($args[$n]) ) {
@@ -1072,7 +1072,7 @@ abstract class BaseModel implements
 
                     if ($args[$n] !== null && ! is_array($args[$n])) {
                         if ( false === $c->checkTypeConstraint($args[$n])) {
-                            return Result::failure($args[$n] . " is not " . $c->isa . " type");
+                            return $this->reportError($args[$n] . " is not " . $c->isa . " type");
                         }
                     }
 
@@ -1093,7 +1093,7 @@ abstract class BaseModel implements
             }
 
             if ($validationError) {
-                return Result::failure("Validation failed.", array( 
+                return $this->reportError("Validation failed.", array( 
                     'validations' => $validationResults,
                 ));
             }
@@ -1839,7 +1839,7 @@ abstract class BaseModel implements
                     'sql' => $sql,
                 ));
             }
-            return Result::success('Updated', array( 'sql' => $sql ));
+            return $model->reportSuccess('Record updated', array( 'sql' => $sql ));
         };
         return $query;
     }
@@ -1873,7 +1873,7 @@ abstract class BaseModel implements
                     'sql' => $sql,
                 ));
             }
-            return Result::success('Deleted', array( 'sql' => $sql ));
+            return $model->reportSuccess('Deleted', array( 'sql' => $sql ));
         };
         return $query;
     }
