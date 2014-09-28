@@ -12,24 +12,29 @@ class BookModelTest extends \LazyRecord\ModelTestCase
     public function testImmutableColumn()
     {
         $b = new \tests\Book;
-
+        // $b->autoReload = false;
         result_ok( $b->create(array( 'isbn' => '123123123' )) );
-
         $ret = $b->update(array('isbn'  => '456456' ));
-        ok( ! $ret->success , 'should not update immutable column' ); // should be failed.
-
-
+        ok($ret->error , 'should not update immutable column' ); // should be failed.
         $b->delete();
     }
 
-    public function testLoadOrCreate() 
-    {
+
+    /**
+     * TODO: Should we validate the field ? think again.
+     * @expectedException LazyRecord\DatabaseException
+     */
+    public function testUpdateUnknownColumn() {
+        $b = new \tests\Book;
+        // Column not found: 1054 Unknown column 'name' in 'where clause'
+        $ret = $b->find(array('name' => 'LoadOrCreateTest'));
+        result_fail($ret);
+        ok(! $b->id );
+    }
+
+    public function testLoadOrCreate() {
         $results = array();
         $b = new \tests\Book;
-        $ret = $b->find( array( 'name' => 'LoadOrCreateTest' ) );
-        result_fail( $ret );
-        ok( ! $b->id );
-        $results[] = $ret;
 
         $ret = $b->create(array( 'title' => 'Should Not Load This' ));
         result_ok( $ret );
