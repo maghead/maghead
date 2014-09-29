@@ -5,6 +5,7 @@ use LazyRecord\Metadata;
 
 class MetaCommand extends Command
 {
+    public $config;
 
     public function brief() { return 'set, get or list meta.'; }
 
@@ -15,16 +16,25 @@ class MetaCommand extends Command
             . "\tlazy meta [key]\n";
     }
 
+    public function init() 
+    {
+        $this->config = CommandUtils::init_config_loader();
+    }
+
     public function options($opts)
     {
-        $opts->add('D|data-source:', 'specify data source id');
+        $self = $this;
+        $opts->add('D|data-source:', 'specify data source id')
+            ->validValues(function() use($self) {
+                return $self->config->getDataSourceIds();
+            })
+            ;
     }
+
 
     public function execute() 
     {
         $dsId = $this->options->{'data-source'} ?: 'default';
-
-        CommandUtils::init_config_loader();
 
         $args = func_get_args();
         if(empty($args)) {
