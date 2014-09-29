@@ -3,8 +3,9 @@ namespace LazyRecord\Command;
 use CLIFramework\Command;
 use LazyRecord\Migration\MigrationGenerator;
 use LazyRecord\TableParser\TableParser;
+use LazyRecord\Command\BaseCommand;
 
-class MigrateCommand extends Command
+class MigrateCommand extends BaseCommand
 {
     public function brief()
     {
@@ -13,6 +14,8 @@ class MigrateCommand extends Command
 
     public function options($opts) 
     {
+        parent::options($opts);
+
         $opts->add('new:','create new migration script.');
 
         $opts->add('diff:','use schema diff to generate script automatically.');
@@ -24,9 +27,6 @@ class MigrateCommand extends Command
 
         // force upgrade from diff
         $opts->add('U|upgrade-diff','run upgrade from schema diff');
-
-        // data source
-        $opts->add('D|data-source:','data source id.');
     }
 
     public function execute() 
@@ -40,7 +40,6 @@ class MigrateCommand extends Command
         $dsId = $this->options->{'data-source'} ?: 'default';
 
         CommandUtils::set_logger($this->logger);
-        $config = CommandUtils::init_config_loader();
 
         if( $optNew ) {
             $generator = new MigrationGenerator('db/migrations');
@@ -51,7 +50,7 @@ class MigrateCommand extends Command
         elseif( $optDiff ) {
             $this->logger->info( "Loading schema objects..." );
             $finder = new \LazyRecord\Schema\SchemaFinder;
-            $finder->paths = $config->getSchemaPaths() ?: array();
+            $finder->paths = $this->config->getSchemaPaths() ?: array();
             $finder->find();
             $schemas = $finder->getSchemas();
 
@@ -63,7 +62,7 @@ class MigrateCommand extends Command
         elseif( $optUpgradeDiff ) {
             $this->logger->info( "Loading schema objects..." );
             $finder = new \LazyRecord\Schema\SchemaFinder;
-            $finder->paths = $config->getSchemaPaths() ?: array();
+            $finder->paths = $this->config->getSchemaPaths() ?: array();
             $finder->find();
             $schemas = $finder->getSchemas();
             $runner = new \LazyRecord\Migration\MigrationRunner($dsId);

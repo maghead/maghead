@@ -5,13 +5,14 @@ use ReflectionClass;
 use ReflectionObject;
 use CLIFramework\Command;
 use LazyRecord\Schema;
+use LazyRecord\Command\BaseCommand;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\Comparator;
 use LazyRecord\Schema\Comparator\ConsolePrinter as ComparatorConsolePrinter;
 
-class DiffCommand extends Command
+class DiffCommand extends BaseCommand
 {
 
     public function brief()
@@ -19,21 +20,11 @@ class DiffCommand extends Command
         return 'diff database schema.';
     }
 
-    public function options($opts)
-    {
-        // --data-source
-        $opts->add('D|data-source:', 'specify data source id');
-    }
-
     public function execute()
     {
         $formatter = new \CLIFramework\Formatter;
         $options = $this->options;
         $logger = $this->logger;
-
-        $loader = ConfigLoader::getInstance();
-        $loader->loadFromSymbol(true);
-        $loader->initForBuild();
 
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
 
@@ -46,7 +37,7 @@ class DiffCommand extends Command
 
 
         $finder = new SchemaFinder;
-        if( $paths = $loader->getSchemaPaths() ) {
+        if( $paths = $this->config->getSchemaPaths() ) {
             $finder->paths = $paths;
         }
         $finder->find();
