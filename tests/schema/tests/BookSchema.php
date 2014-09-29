@@ -36,7 +36,11 @@ class BookSchema extends Schema
 
         $this->column('created_by')
             ->integer()
-            ->refer('\tests\UserSchema');
+            ->refer('\\tests\\UserSchema');
+
+        // Create a flag column named "is_hot" labeld "Hot Sale", checked by default
+        $this->helper('Flag', ['is_hot','Hot Sale', true]);
+        $this->helper('Flag', ['is_selled','Selled', false]);
 
         // $this->one( 'created_by','created_by','\tests\UserSchema','id');
         $this->belongsTo('created_by', 'tests\UserSchema','id', 'created_by');

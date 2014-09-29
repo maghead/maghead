@@ -30,6 +30,27 @@ class BookModelTest extends \LazyRecord\ModelTestCase
         $b->find(array('name' => 'LoadOrCreateTest'));
     }
 
+    public function testFlagHelper() {
+        $b = new \tests\Book;
+        $b->create([ 'title' => 'Test Book' ]);
+
+        $schema = $b->getSchema();
+        ok($schema);
+
+        $cA = $schema->getColumn('is_hot');
+        $cB = $schema->getColumn('is_selled');
+        ok($cA);
+        ok($cB);
+
+        $ret = $b->update([ 'is_hot' => true ]);
+        result_ok( $ret );
+
+        $ret = $b->update([ 'is_selled' => true ]);
+        result_ok( $ret );
+
+        $b->delete();
+    }
+
     public function testLoadOrCreate() {
         $results = array();
         $b = new \tests\Book;
