@@ -17,12 +17,12 @@ class CollectionPager
     /* data array */
     public $dataArray;
 
-    public function __construct( $dataArray, $page = 1 , $pagenum  = 10 )
+    public function __construct(array $dataArray, $page = 1 , $pagenum  = 10 )
     {
-        if( $page == null )
+        if ($page == null)
             $page = 1;
 
-        if( $pagenum == null ) 
+        if ($pagenum == null)
             $pagenum = 10;
 
         $this->perPage     = $pagenum;
@@ -72,8 +72,9 @@ class CollectionPager
 
     public function getNextPage()
     {
-        if( $this->hasNextPage() ) 
+        if ($this->hasNextPage()) {
             return $this->currentPage + 1;
+        }
     }
 
 

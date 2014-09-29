@@ -193,13 +193,53 @@ class SchemaGenerator
         return array( $schema->getModelClass() => $refl->getFilename() );
     }
 
+
+    public function generateSchema(SchemaInterface $schema)
+    {
+        $classMap = array();
+
+        // support old-style schema declare
+        if ( $result = $this->generateSchemaProxyClass( $schema) ) {
+            list($className, $classFile) = $result;
+            $classMap[ $className ] = $classFile;
+        }
+
+        // collection classes
+        if ( $result = $this->generateBaseCollectionClass( $schema ) ) {
+            list($className, $classFile) = $result;
+            $classMap[ $className ] = $classFile;
+        }
+        if ( $result = $this->generateCollectionClass( $schema ) ) {
+            list($className, $classFile) = $result;
+            $classMap[ $className ] = $classFile;
+        }
+
+        // in new schema declare, we can describe a schema in a model class.
+        if( $schema instanceof \LazyRecord\Schema\DynamicSchemaDeclare ) {
+            if ( $result = $this->injectModelSchema($schema) ) {
+                list($className, $classFile) = $result;
+                $classMap[ $className ] = $classFile;
+            }
+        } else {
+            if ( $result = $this->generateBaseModelClass($schema) ) {
+                list($className, $classFile) = $result;
+                $classMap[ $className ] = $classFile;
+            }
+            if ( $result = $this->generateModelClass( $schema ) ) {
+                list($className, $classFile) = $result;
+                $classMap[ $className ] = $classFile;
+            }
+        }
+        return $classMap;
+    }
+
     /**
      * Given a schema class list, generate schema files.
      *
      * @param array $classes class list or schema object list.
      * @return array class map array of schema class and file path.
      */
-    public function generate($schemas)
+    public function generate(array $schemas)
     {
         // for generated class source code.
         set_error_handler(function($errno, $errstr, $errfile, $errline) {
@@ -208,41 +248,9 @@ class SchemaGenerator
 
         // class map [ class => class file path ]
         $classMap = array();
-        foreach( (array) $schemas as $schema ) {
+        foreach( $schemas as $schema ) {
             $this->logger->info("Checking " . get_class($schema) . '...');
-
-            // support old-style schema declare
-            if ( $result = $this->generateSchemaProxyClass( $schema) ) {
-                list($className, $classFile) = $result;
-                $classMap[ $className ] = $classFile;
-            }
-
-            // collection classes
-            if ( $result = $this->generateBaseCollectionClass( $schema ) ) {
-                list($className, $classFile) = $result;
-                $classMap[ $className ] = $classFile;
-            }
-            if ( $result = $this->generateCollectionClass( $schema ) ) {
-                list($className, $classFile) = $result;
-                $classMap[ $className ] = $classFile;
-            }
-
-            // in new schema declare, we can describe a schema in a model class.
-            if( $schema instanceof \LazyRecord\Schema\DynamicSchemaDeclare ) {
-                if ( $result = $this->injectModelSchema($schema) ) {
-                    list($className, $classFile) = $result;
-                    $classMap[ $className ] = $classFile;
-                }
-            } else {
-                if ( $result = $this->generateBaseModelClass($schema) ) {
-                    list($className, $classFile) = $result;
-                    $classMap[ $className ] = $classFile;
-                }
-                if ( $result = $this->generateModelClass( $schema ) ) {
-                    list($className, $classFile) = $result;
-                    $classMap[ $className ] = $classFile;
-                }
-            }
+            $classMap += $this->generateSchema($schema);
         }
 
         restore_error_handler();
