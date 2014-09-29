@@ -31,13 +31,13 @@ class CollectionPager
         $this->calculate();
     }
 
-    public function setPerPage( $num ) 
+    public function setPerPage(int $num ) 
     {
         $this->perPage = $num; 
         $this->calculate();
     }
 
-    public function setPage( $num )
+    public function setPage(int $num)
     {
         $this->currentPage = $num; 
         $this->calculate();
