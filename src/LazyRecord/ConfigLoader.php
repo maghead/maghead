@@ -216,6 +216,10 @@ class ConfigLoader
         return $this->config['data_sources'];
     }
 
+    public function getDataSourceIds() {
+        return array_keys($this->config['data_sources']);
+    }
+
     public function getSeedScripts() {
         if( isset($this->config['seeds']) ) {
             return $this->config['seeds'];

@@ -1,2 +1,2 @@
 #!/bin/bash
-php bin/lazy _zsh --bind lazy
+php bin/lazy _zsh --bind lazy > completion/zsh/_lazy
