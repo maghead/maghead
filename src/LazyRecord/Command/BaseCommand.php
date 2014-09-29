@@ -32,4 +32,8 @@ class BaseCommand extends Command
             ;
     }
 
+    public function getCurrentDataSourceId() {
+        return $this->options->{'data-source'} ?: 'default';
+    }
+
 }

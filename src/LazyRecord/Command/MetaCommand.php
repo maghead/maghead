@@ -16,7 +16,8 @@ class MetaCommand extends BaseCommand
 
     public function execute() 
     {
-        $dsId = $this->options->{'data-source'} ?: 'default';
+        $dsId = $this->getCurrentDataSourceId();
+        
 
         $args = func_get_args();
         if(empty($args)) {
