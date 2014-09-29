@@ -412,7 +412,7 @@ abstract class BaseModel implements
     public function findMixinMethodClass($m) {
         foreach( static::$mixin_classes as $mixinClass ) {
             // if we found it, just call it and return the result. 
-            if ( method_exists($mixinClass , $m) ) {
+            if (method_exists($mixinClass , $m)) {
                 return $mixinClass;
             }
         }
@@ -429,7 +429,7 @@ abstract class BaseModel implements
     public function invokeAllMixinMethods($m , $a) {
         foreach( static::$mixin_classes as $mixinClass ) {
             // if we found it, just call it and return the result. 
-            if ( method_exists($mixinClass , $m) ) {
+            if (method_exists($mixinClass , $m)) {
                 call_user_func_array( array($mixinClass, $m) , array($this) + $a );
             }
         }
@@ -445,7 +445,7 @@ abstract class BaseModel implements
      */
     public function invokeMixinClassMethod($mixinClass, $m,$a) 
     {
-        return call_user_func_array( array($mixinClass, $m) , array($this) + $a );
+        return call_user_func_array(array($mixinClass, $m) , array($this) + $a );
     }
 
 
@@ -459,7 +459,7 @@ abstract class BaseModel implements
      *
      * @param array $byKeys 
      */
-    public function createOrUpdate($args, $byKeys = null )
+    public function createOrUpdate(array $args, $byKeys = null )
     {
         $pk = $this->getSchema()->primaryKey;
         $ret = null;
@@ -573,8 +573,7 @@ abstract class BaseModel implements
     protected function _validateColumn(RuntimeColumn $column,$val,$args)
     {
         // check for requried columns
-        if( $column->required && ( $val === '' || $val === null ))
-        {
+        if ($column->required && ( $val === '' || $val === null)) {
             return array( 
                 'valid' => false, 
                 'message' => sprintf(_('Field %s is required.'), $column->getLabel() ), 
@@ -2083,13 +2082,14 @@ abstract class BaseModel implements
      */
     public function getInternalCache($key)
     {
-        if( isset( $this->_cache[ $key ] ) )
+        if (isset( $this->_cache[ $key ] )) {
             return $this->_cache[ $key ];
+        }
     }
 
     public function hasInternalCache($key)
     {
-        return isset( $this->_cache[ $key ] );
+        return isset($this->_cache[ $key ]);
     }
 
     public function clearInternalCache() {
@@ -2100,7 +2100,7 @@ abstract class BaseModel implements
 
     static public function getCacheInstance()
     {
-        if ( self::$_cacheInstance )  {
+        if (self::$_cacheInstance) {
             return self::$_cacheInstance;
         }
         return self::$_cacheInstance = ConfigLoader::getInstance()->getCacheInstance();
@@ -2125,7 +2125,7 @@ abstract class BaseModel implements
 
     public function getWriteSourceId()
     {
-        if ( $this->usingDataSource ) {
+        if ($this->usingDataSource) {
             return $this->usingDataSource;
         }
         return $this->getSchema()->getWriteSourceId();
@@ -2133,7 +2133,7 @@ abstract class BaseModel implements
 
     public function getReadSourceId()
     {
-        if ( $this->usingDataSource ) {
+        if ($this->usingDataSource) {
             return $this->usingDataSource;
         }
         return $this->getSchema()->getReadSourceId();
