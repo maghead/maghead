@@ -530,8 +530,20 @@ class ColumnDeclare implements ColumnAccessorInterface
     public function getDefaultValue( $record = null, $args = null )
     {
         // XXX: might contains array() which is a raw sql statement.
-        if( $val = $this->get('default') ) {
+        if ($val = $this->get('default') ) {
             return Utils::evaluate( $val , array($record, $args));
+        }
+    }
+
+    /**
+     * For an existing record, we might need the record data to return specified valid values.
+     */
+    public function getValidValues($record = null, $args = null)
+    {
+        if ($validValues = $this->get('validValues')) {
+            return Utils::evaluate( $validValues , array($record, $args) );
+        } elseif( $builder = $this->get('validValueBuilder') ) {
+            return Utils::evaluate( $builder , array($record, $args) );
         }
     }
 
