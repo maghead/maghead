@@ -38,6 +38,8 @@ class ColumnDeclare implements ColumnAccessorInterface
 
     /**
      * @var array $attributes
+     *
+     * The default attributes for a column.
      */
     public $attributes = array(
         'type' => 'text',
@@ -126,7 +128,6 @@ class ColumnDeclare implements ColumnAccessorInterface
             $this->name = $name;
         }
     }
-
 
     public function name($name) 
     {
@@ -512,6 +513,12 @@ class ColumnDeclare implements ColumnAccessorInterface
         return $this;
     }
 
+
+    /**
+     * Which should be something like getAttribute($name)
+     *
+     * @param string $name attribute name
+     */
     public function get($name) 
     {
         if ( isset($this->attributes[$name]) ) {
@@ -547,6 +554,15 @@ class ColumnDeclare implements ColumnAccessorInterface
         }
     }
 
+
+    /**
+     * Rebless the data into RuntimeColumn object.
+     *
+     * @return RuntimeColumn
+     */
+    public function asRuntimeColumn() {
+        return new RuntimeColumn($this->name, $this->attributes);
+    }
 }
 
 
