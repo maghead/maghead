@@ -3,6 +3,7 @@ namespace LazyRecord\Schema;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Exception;
+use RuntimeException;
 use ReflectionObject;
 use Traversable;
 use RecursiveRegexIterator;
@@ -169,7 +170,9 @@ class SchemaGenerator
     public function writeClassTemplateToPath(ClassTemplate $cTemplate, $filepath, $overwrite = false) 
     {
         if (! file_exists($filepath) || $overwrite) {
-            file_put_contents( $filepath, $cTemplate->render() );
+            if (false === file_put_contents( $filepath, $cTemplate->render() )) {
+                throw RuntimeException("Can not write file $filepath");
+            }
             return true;
         } elseif ( file_exists($filepath) ) {
             return true;
