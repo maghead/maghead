@@ -1,10 +1,12 @@
 <?php
 namespace LazyRecord\Schema\Factory;
 use ClassTemplate\ClassTemplate;
+use LazyRecord\Schema\SchemaInterface;
+use LazyRecord\Schema\SchemaDeclare;
 
 class BaseModelClassFactory
 {
-    public static function create($schema, $baseClass) {
+    public static function create(SchemaDeclare $schema, $baseClass) {
         $cTemplate = new ClassTemplate( $schema->getBaseModelClass() , array(
             'template' => 'Class.php.twig',
         ));
