@@ -4,6 +4,11 @@ php:
   - 5.4
   - 5.5
 #   - hhvm
+# env:
+#   - DB=agnostic                                   # only database agnostic tests
+#   - DB=mysql DB_USER=root                         # only database tests against mysql
+#   - DB=pgsql DB_USER=postgres DB_NAME=postgres    # only database tests against postgresql
+#   - DB=sqlite
 before_script:
   - phpenv config-add tests/php.ini
   - phpenv rehash
@@ -21,3 +26,14 @@ script:
   - phpunit -c phpunit-travis-ci.xml
 cache:
   - vendor
+
+# matrix:
+#   fast_finish: true
+#   allow_failures:
+#     - php: hhvm
+#     - php: 5.6
+#   exclude:
+#     - php: hhvm
+#       env: DB=pgsql DB_USER=postgres DB_NAME=postgres  # driver currently unsupported by HHVM
+#     - php: hhvm
+#       env: DB=sqlite # some issues at the moment
