@@ -1,6 +1,9 @@
 <?php
 namespace LazyRecord;
 use ValidationKit\ValidationMessage;
+use Exception;
+
+class ResultException extends Exception { }
 
 class Result
 {
@@ -129,11 +132,11 @@ class Result
 
     public function throwExceptionIfFailed()
     {
-        if ( ! $this->success ) {
-            if ( $this->exception ) {
+        if ($this->error) {
+            if ($this->exception) {
                 throw $this->exception;
             }
-            throw new Exception($this->message);
+            throw new ResultException($this->message);
         }
     }
 
@@ -153,6 +156,29 @@ class Result
         }
         return $msg;
     }
+
+    /**
+     * Trigger error with errorType, default to E_USER_NOTICE
+     *
+     * @param string $desc error description
+     * @param int $errorType error types defined in http://php.net/manual/en/function.trigger-error.php
+     */
+    public function triggerError($desc = NULL, $errorType = E_USER_NOTICE) {
+        trigger_error(($desc ? "$desc:" : "") . $this->message, $errorType);
+    }
+
+    public function silentError($desc = NULL, int $messageType = 0)
+    {
+        error_log(($desc ? "$desc:" : "") . $this->message , $messageType);
+    }
+
+    /**
+     * @param string $desc
+     */
+    public function notice($desc = NULL) {
+        trigger_error(($desc ? "$desc:" : "") . $this->message, E_USER_NOTICE);
+    }
+
 }
 
 
