@@ -1,7 +1,7 @@
-![Logo](https://c9s.github.io/LazyRecord/assets/images/LazyRecord.svg)
-
 LazyRecord
 ==========
+
+![Logo](https://c9s.github.io/LazyRecord/assets/images/LazyRecord.svg)
 
 [![Build Status](https://travis-ci.org/c9s/LazyRecord.svg?branch=master)](https://travis-ci.org/c9s/LazyRecord)
 
