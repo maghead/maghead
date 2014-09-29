@@ -1,13 +1,14 @@
 <?php
 namespace LazyRecord\Cache;
 use LazyRecord\ConfigLoader;
+use Memcache as ExtMemcache;
 
-class Memcache extends \Memcache
+class Memcache extends ExtMemcache
 {
     public $flag = null;
     public $expire = null;
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
         // parent::__construct();
         if( isset($config['servers']) ) {
