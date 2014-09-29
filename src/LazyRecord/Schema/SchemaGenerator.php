@@ -4,6 +4,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Exception;
 use ReflectionObject;
+use Traversable;
 use RecursiveRegexIterator;
 use RegexIterator;
 use LazyRecord\ConfigLoader;
@@ -167,7 +168,7 @@ class SchemaGenerator
      */
     public function writeClassTemplateToPath(ClassTemplate $cTemplate, $filepath, $overwrite = false) 
     {
-        if ( ! file_exists($filepath) || $overwrite ) {
+        if (! file_exists($filepath) || $overwrite) {
             file_put_contents( $filepath, $cTemplate->render() );
             return true;
         } elseif ( file_exists($filepath) ) {

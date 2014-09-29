@@ -9,6 +9,7 @@ use RuntimeException;
 use IteratorAggregate;
 use LazyRecord\ClassUtils;
 use LazyRecord\ConfigLoader;
+use Traversable;
 
 /**
  * Find schema classes from files (or from current runtime)
