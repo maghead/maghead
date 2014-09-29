@@ -49,8 +49,7 @@ DOC;
         $logger  = $this->logger;
 
         CommandUtils::set_logger($this->logger);
-        // XXX: from config files
-        $id = $options->{'data-source'} ?: 'default';
+        $id = $this->getCurrentDataSourceId();
 
         $logger->debug("Finding schema classes...");
         $schemas = CommandUtils::find_schemas_with_arguments( func_get_args() );
