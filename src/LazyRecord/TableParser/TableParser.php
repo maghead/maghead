@@ -5,10 +5,11 @@ use Exception;
 use LazyRecord\TableParser\MysqlTableParser;
 use LazyRecord\TableParser\PgsqlTableParser;
 use LazyRecord\TableParser\SqliteTableParser;
+use SQLBuilder\Driver;
 
 class TableParser
 {
-    static function create($driver,$connection) 
+    static function create(Driver $driver,PDO $connection) 
     {
         $class = 'LazyRecord\\TableParser\\' . ucfirst($driver->type) . 'TableParser';
         if( class_exists($class,true) ) {
