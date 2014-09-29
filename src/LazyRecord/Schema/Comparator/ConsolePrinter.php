@@ -11,7 +11,7 @@ class ConsolePrinter
 
     public $afterName = 'new';
 
-    public function __construct($diff) 
+    public function __construct(array $diff) 
     {
         $this->diff = $diff;
     }
