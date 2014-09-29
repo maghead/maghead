@@ -6,10 +6,11 @@ use LazyRecord\TableParser\MysqlTableParser;
 use LazyRecord\TableParser\PgsqlTableParser;
 use LazyRecord\TableParser\SqliteTableParser;
 use SQLBuilder\Driver;
+use LazyRecord\QueryDriver;
 
 class TableParser
 {
-    static function create(Driver $driver,PDO $connection) 
+    static function create(QueryDriver $driver,PDO $connection) 
     {
         $class = 'LazyRecord\\TableParser\\' . ucfirst($driver->type) . 'TableParser';
         if( class_exists($class,true) ) {
