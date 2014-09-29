@@ -20,6 +20,7 @@ use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\ConfigLoader;
+use LazyRecord\CurrentUserInterface;
 
 use SerializerKit\XmlSerializer;
 use SerializerKit\JsonSerializer;
@@ -167,9 +168,9 @@ abstract class BaseModel implements
     /**
      * Provide a basic access controll for model
      *
-     * @param mixed  $user  Can be your current user object.
-     * @param string $right Can be 'create', 'update', 'load', 'delete'
-     * @param array  $args  Arguments for operations (update, create, delete.. etc)
+     * @param CurrentUserInterface  $user  Current user object, but be sure to implement CurrentUserInterface
+     * @param string                $right Can be 'create', 'update', 'load', 'delete'
+     * @param array                 $args  Arguments for operations (update, create, delete.. etc)
      *
      */
     public function currentUserCan($user, $right , $args = array())
@@ -652,7 +653,7 @@ abstract class BaseModel implements
     }
 
 
-    public function setCurrentUser($user)
+    public function setCurrentUser(CurrentUserInterface $user)
     {
         $this->_currentUser = $user;
         return $this;
@@ -937,7 +938,7 @@ abstract class BaseModel implements
     }
 
 
-    static function fromArray($array)
+    static public function fromArray(array $array)
     {
         $record = new static;
         $record->setData( $array );
@@ -1001,7 +1002,7 @@ abstract class BaseModel implements
      *
      * @return Result operation result (success or error)
      */
-    public function _update(array $args , $options = array() ) 
+    public function _update(array $args, $options = array() ) 
     {
         // check if the record is loaded.
         $k = $this->getSchema()->primaryKey;
@@ -1802,7 +1803,7 @@ abstract class BaseModel implements
      * @param array $args data array.
      * @return BaseModel $record
      */
-    public static function __static_create($args)
+    public static function __static_create(array $args)
     {
         $model = new static;
         $ret = $model->create($args);
@@ -1820,7 +1821,7 @@ abstract class BaseModel implements
      *       ->back()
      *     ->execute();
      */
-    public static function __static_update($args) 
+    public static function __static_update(array $args) 
     {
         $model = new static;
         $dsId  = $model->getWriteSourceId();
