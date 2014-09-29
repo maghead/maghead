@@ -514,5 +514,20 @@ class SchemaDeclare extends SchemaBase
         $shortClassName = end($_p);
         return $this->getDirectory() . DIRECTORY_SEPARATOR . $shortClassName . '.php';
     }
+
+
+    /**
+     * Invode helper
+     *
+     * @param string $helperName 
+     * @param array $arguments indexed array, passed to the init function of helper class.
+     *
+     * @return Helper\BaseHelper
+     */
+    public function helper($helperName, $arguments = array()) {
+        $helperClass = 'LazyRecord\\Schema\\Helper\\' . $helperName . 'Helper';
+        $helper = new $helperClass($this, $arguments);
+        return $helper;
+    }
 }
 
