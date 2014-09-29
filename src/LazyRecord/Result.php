@@ -167,7 +167,7 @@ class Result
         trigger_error(($desc ? "$desc:" : "") . $this->message, $errorType);
     }
 
-    public function silentError($desc = NULL, int $messageType = 0)
+    public function silentError($desc = NULL, $messageType = 0)
     {
         error_log(($desc ? "$desc:" : "") . $this->message , $messageType);
     }
