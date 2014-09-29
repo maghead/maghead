@@ -5,6 +5,7 @@ use LazyRecord\Deflator;
 use LazyRecord\Inflator;
 use LazyRecord\ArrayUtils;
 use LazyRecord\Utils;
+use LazyRecord\Schema\ColumnAccessorInterface;
 use Exception;
 use ArrayIterator;
 use IteratorAggregate;
@@ -12,7 +13,7 @@ use InvalidArgumentException;
 
 class InvalidValueTypeException extends Exception { }
 
-class RuntimeColumn implements IteratorAggregate
+class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 {
     public $name;
 
@@ -24,6 +25,10 @@ class RuntimeColumn implements IteratorAggregate
         $this->attributes = $attributes;
     }
 
+
+    public function getName() {
+        return $this->name;
+    }
 
     /**
      * For iterating attributes
