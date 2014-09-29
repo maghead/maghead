@@ -1,8 +1,9 @@
 <?php
 namespace LazyRecord\Types;
+use DateTime as PHPDateTime;
 
-class DateTime extends \DateTime
+class DateTime extends PHPDateTime
 {
-    public function __toString() { return $this->format( \DateTime::ATOM ); }
+    public function __toString() { return $this->format( PHPDateTime::ATOM ); }
 }
 

@@ -289,13 +289,13 @@ class ConfigLoader
 
     public function getBaseModelClass() 
     {
-        return @$this->config['schema']['base_model'] ?: '\LazyRecord\BaseModel';
+        return @$this->config['schema']['base_model'] ?: '\\LazyRecord\\BaseModel';
     }
 
 
     public function getBaseCollectionClass() 
     {
-        return @$this->config['schema']['base_collection'] ?: '\LazyRecord\BaseCollection';
+        return @$this->config['schema']['base_collection'] ?: '\\LazyRecord\\BaseCollection';
     }
 
     /******************************
