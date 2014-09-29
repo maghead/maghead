@@ -1,11 +1,13 @@
 <?php
 namespace LazyRecord\Schema\Factory;
 use ClassTemplate\ClassTemplate;
+use LazyRecord\Schema\SchemaInterface;
+use LazyRecord\Schema\SchemaDeclare;
 use DateTime;
 
 class SchemaProxyClassFactory
 {
-    public static function create($schema) {
+    public static function create(SchemaDeclare $schema) {
         $schemaProxyClass = $schema->getSchemaProxyClass();
         $cTemplate = new ClassTemplate( $schemaProxyClass, array( 
             'template_dirs' => dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Templates',
