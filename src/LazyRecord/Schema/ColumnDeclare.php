@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Schema;
 use Exception;
+use InvalidArgumentException;
 
 
 /**
@@ -441,7 +442,7 @@ class ColumnDeclare implements ColumnAccessorInterface
             $t = $this->supportedAttributes[ $method ];
 
             if( $t != self::ATTR_FLAG && $c == 0 ) {
-                throw new Exception( 'Attribute value is required.' );
+                throw new InvalidArgumentException( 'Attribute value is required.' );
             }
 
             switch( $t ) {
@@ -469,7 +470,7 @@ class ColumnDeclare implements ColumnAccessorInterface
                         $this->attributes[ $method ] = $args[0];
                     }
                     else {
-                        throw new Exception("attribute value of $method is not a string.");
+                        throw new InvalidArgumentException("attribute value of $method is not a string.");
                     }
                     break;
 
@@ -478,7 +479,7 @@ class ColumnDeclare implements ColumnAccessorInterface
                         $this->attributes[ $method ] = $args[0];
                     }
                     else {
-                        throw new Exception("attribute value of $method is not a integer.");
+                        throw new InvalidArgumentException("attribute value of $method is not a integer.");
                     }
                     break;
 
@@ -490,7 +491,7 @@ class ColumnDeclare implements ColumnAccessorInterface
                     if( is_callable($args[0]) ) {
                         $this->attributes[ $method ] = $args[0];
                     } else {
-                        throw new Exception("attribute value of $method is not callable type.");
+                        throw new InvalidArgumentException("attribute value of $method is not callable type.");
                     }
                     break;
 
@@ -503,7 +504,7 @@ class ColumnDeclare implements ColumnAccessorInterface
                     break;
 
                 default:
-                    throw new Exception("Unsupported attribute type: $method");
+                    throw new InvalidArgumentException("Unsupported attribute type: $method");
             }
             return $this;
         }
