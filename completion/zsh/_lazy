@@ -240,7 +240,7 @@ local ret=1
         ;;
         (meta)
             _arguments -w -S -s \
-              '(-D --data-source)'{-D,--data-source=}'[specify data source id]' \
+              '(-D --data-source)'{-D,--data-source=}'[specify data source id]::{___bin_lazy_meta "" meta opt data-source valid-values}' \
                && ret=0
         
         ;;
