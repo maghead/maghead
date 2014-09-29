@@ -11,7 +11,7 @@ class SqliteTableParserTest extends PHPUnit_Framework_TestCase
         $pdo->query('CREATE TABLE foo ( id integer primary key autoincrement, name varchar(12), phone varchar(32) unique , address text not null );');
         $pdo->query('CREATE TABLE bar ( id integer primary key autoincrement, confirmed boolean default false, content blob );');
 
-        $parser = new LazyRecord\TableParser\SqliteTableParser('sqlite',$pdo);
+        $parser = new LazyRecord\TableParser\SqliteTableParser(new LazyRecord\QueryDriver('sqlite'),$pdo);
         ok($parser);
         ok($parser->getTables());
         count_ok(2,$parser->getTables());
