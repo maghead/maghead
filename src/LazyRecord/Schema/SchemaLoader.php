@@ -19,10 +19,10 @@ class SchemaLoader
      */
     static function load($class)
     {
-        if( isset( self::$schemas[ $class ] ) ) {
+        if (isset( self::$schemas[ $class ] )) {
             return self::$schemas[ $class ];
         }
-        if( class_exists($class,true) ) {
+        if (class_exists($class,true)) {
             return self::$schemas[ $class ] = new $class;
         }
     }
