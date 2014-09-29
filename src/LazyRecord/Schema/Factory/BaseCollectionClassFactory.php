@@ -1,10 +1,12 @@
 <?php
 namespace LazyRecord\Schema\Factory;
 use ClassTemplate\ClassTemplate;
+use LazyRecord\Schema\SchemaInterface;
+use LazyRecord\Schema\SchemaDeclare;
 
 class BaseCollectionClassFactory
 {
-    public static function create($schema, $baseCollectionClass)
+    public static function create(SchemaDeclare $schema, $baseCollectionClass)
     {
         $cTemplate = new ClassTemplate($schema->getBaseCollectionClass() , array(
             // 'template_dirs' => $this->getTemplateDirs(),
