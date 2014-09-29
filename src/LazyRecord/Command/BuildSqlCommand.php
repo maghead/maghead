@@ -5,13 +5,16 @@ use LazyRecord\Metadata;
 use LazyRecord\Schema;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
+use LazyRecord\Command\BaseCommand;
 use Exception;
 
-class BuildSqlCommand extends \CLIFramework\Command
+class BuildSqlCommand extends BaseCommand
 {
 
     public function options($opts)
     {
+        parent::options($opts);
+
         // --rebuild
         $opts->add('r|rebuild','rebuild SQL schema.');
 
@@ -21,9 +24,6 @@ class BuildSqlCommand extends \CLIFramework\Command
         $opts->add('f|file:', 'write schema sql to file');
 
         $opts->add('b|basedata','insert basedata' );
-
-        // --data-source
-        $opts->add('D|data-source:', 'specify data source id');
     }
 
     public function usage()
@@ -49,8 +49,6 @@ DOC;
         $logger  = $this->logger;
 
         CommandUtils::set_logger($this->logger);
-        CommandUtils::init_config_loader();
-
         // XXX: from config files
         $id = $options->{'data-source'} ?: 'default';
 

@@ -3,11 +3,9 @@ namespace LazyRecord\Command;
 use CLIFramework\Command;
 use LazyRecord\Metadata;
 
-class MetaCommand extends Command
+class MetaCommand extends BaseCommand
 {
-    public $config;
-
-    public function brief() { return 'set, get or list meta.'; }
+    public function brief() { return 'Set, get or list meta.'; }
 
     public function usage() { 
         return 
@@ -15,22 +13,6 @@ class MetaCommand extends Command
             . "\tlazy meta [key] [value]\n"
             . "\tlazy meta [key]\n";
     }
-
-    public function init() 
-    {
-        $this->config = CommandUtils::init_config_loader();
-    }
-
-    public function options($opts)
-    {
-        $self = $this;
-        $opts->add('D|data-source:', 'specify data source id')
-            ->validValues(function() use($self) {
-                return $self->config->getDataSourceIds();
-            })
-            ;
-    }
-
 
     public function execute() 
     {
