@@ -29,9 +29,10 @@ class DiffCommand extends BaseCommand
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
 
         // XXX: from config files
-        $id = $options->{'data-source'} ?: 'default';
-        $conn = $connectionManager->getConnection($id);
-        $driver = $connectionManager->getQueryDriver($id);
+        $dsId = $this->getCurrentDataSourceId();
+        
+        $conn = $connectionManager->getConnection($dsId);
+        $driver = $connectionManager->getQueryDriver($dsId);
 
         $this->logger->info('Comparing...');
 
@@ -70,7 +71,7 @@ class DiffCommand extends BaseCommand
                     $found = true;
                 }
                 $printer = new ComparatorConsolePrinter($diff);
-                $printer->beforeName = $t . ":data source [$id]";
+                $printer->beforeName = $t . ":data source [$dsId]";
                 $printer->afterName = $t . ':' . $filepath ;
                 $printer->output();
             }

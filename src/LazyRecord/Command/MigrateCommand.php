@@ -37,7 +37,8 @@ class MigrateCommand extends BaseCommand
         $optUpgradeDiff = $this->options->{'upgrade-diff'};
         $optDown = $this->options->down;
         $optStatus = $this->options->status;
-        $dsId = $this->options->{'data-source'} ?: 'default';
+        $dsId = $this->getCurrentDataSourceId();
+        
 
         CommandUtils::set_logger($this->logger);
 

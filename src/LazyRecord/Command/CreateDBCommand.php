@@ -6,16 +6,17 @@ use LazyRecord\Schema;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Utils;
 use LazyRecord\Command\CommandUtils;
+use LazyRecord\Command\BaseCommand;
 
 use CornelTek\DBUtil;
 use Exception;
 
-class CreateDBCommand extends Command
+class CreateDBCommand extends BaseCommand
 {
 
     public function brief()
     {
-        return 'create database from config';
+        return 'Create database from config';
     }
 
     public function createDB($ds)
@@ -50,23 +51,14 @@ class CreateDBCommand extends Command
         ));
     }
 
-    public function execute($dataSource = null)
+    public function execute()
     {
         // support for schema file or schema class names
         $options = $this->options;
         $logger  = $this->logger;
-        $loader = CommandUtils::init_config_loader();
-
+        $dataSource = $this->getCurrentDataSourceId();
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
-        $dsIds = $connectionManager->getDataSourceIdList();
-        if( $dataSource ) {
-            $this->createDB( $connectionManager->getDataSource($dataSource));
-        } else {
-            foreach( $dsIds as $id ) {
-                $this->createDB( $connectionManager->getDataSource($id));
-            }
-        }
-
+        $this->createDB( $connectionManager->getDataSource($dataSource));
         $this->logger->info('Done');
     }
 }
