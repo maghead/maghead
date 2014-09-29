@@ -45,11 +45,13 @@ class SqliteBuilder extends BaseBuilder
         if ($column->primary)
             $sql .= ' primary key';
 
-        if ($column->autoIncrement)
+        if ($column->autoIncrement) {
             $sql .= ' autoincrement';
+        }
 
-        if ($column->unique)
+        if ($column->unique) {
             $sql .= ' unique';
+        }
 
         /**
          * build sqlite reference
@@ -79,7 +81,7 @@ class SqliteBuilder extends BaseBuilder
             case SchemaDeclare::belongs_to:
             case SchemaDeclare::has_many:
             case SchemaDeclare::has_one:
-                if( $name != 'id' && $rel['self_column'] == $name ) 
+                if ($name != 'id' && $rel['self_column'] == $name)
                 {
                     $fSchema = new $rel['foreign_schema'];
                     $fColumn = $rel['foreign_column'];

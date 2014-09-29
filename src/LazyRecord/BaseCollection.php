@@ -14,6 +14,7 @@ use ArrayIterator;
 use SQLBuilder\QueryBuilder;
 use SQLBuilder\Driver;
 use LazyRecord\Result;
+use LazyRecord\QueryDriver;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaLoader;
 use SerializerKit\YamlSerializer;
@@ -252,7 +253,7 @@ class BaseCollection
 
 
     // xxx: this might be used in other join statements.
-    public function getExplicitColumnSelect(Driver $driver)
+    public function getExplicitColumnSelect(QueryDriver $driver)
     {
         $alias = $this->getAlias();
         return array_map(function($name) use($alias,$driver) { 
