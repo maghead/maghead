@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Schema;
 use Closure;
+use LazyRecord\Schema\SchemaInterface;
 
 class ColumnDiff {
 
@@ -62,7 +63,7 @@ class Comparator
      * @param Schema $a old schema 
      * @param Schema $b new schema
      */
-    public function compare( $a, $b ) 
+    public function compare(SchemaInterface $a, SchemaInterface $b) 
     {
         $diff = array();
 
