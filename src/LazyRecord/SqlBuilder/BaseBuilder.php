@@ -8,6 +8,7 @@ use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\BaseModel;
+use LazyRecord\QueryDriver;
 
 abstract class BaseBuilder
 {
@@ -15,7 +16,7 @@ abstract class BaseBuilder
     public $clean;
     public $driver;
 
-    public function __construct(Driver $driver, array $options = array())
+    public function __construct(QueryDriver $driver, array $options = array())
     {
         $this->driver = $driver;
         if( isset($options['rebuild']) ) {
