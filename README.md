@@ -1,6 +1,8 @@
 LazyRecord
 ==========
 
+![Logo](https://raw.githubusercontent.com/c9s/LazyRecord/master/assets/images/LazyRecord.svg)
+
 [![Build Status](https://travis-ci.org/c9s/LazyRecord.svg?branch=master)](https://travis-ci.org/c9s/LazyRecord)
 
 LazyRecord is an open-source Object-Relational Mapping (ORM) for PHP5. 
@@ -18,7 +20,7 @@ YAML to pure PHP code to improve the performance of config loading.
 LazyRecord also has a simpler schema design, you can define your model schema 
 very easily and you can even embed closure in your schema classes.
 
-<div style="width:425px" id="__ss_12638921"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/lazyrecord-the-fast-orm-for-php" title="LazyRecord: The Fast ORM for PHP" target="_blank">LazyRecord: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
+<div style="width:425px" id="__ss_12638921"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/lazyrecord-the-fast-orm-for-php" title="LazyRecord: The Fast ORM for PHP" target="_blank">LazyRecord: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
 
 
 Concept
