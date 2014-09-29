@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord;
+use PDO;
 
 class TransactionManager
 {
@@ -10,7 +11,7 @@ class TransactionManager
      */
     public $transactionCounter = 0;
 
-    public function __construct($conn)
+    public function __construct(PDO $conn)
     {
         $this->conn = $conn;
     }
