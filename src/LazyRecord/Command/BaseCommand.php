@@ -3,6 +3,7 @@ namespace LazyRecord\Command;
 use CLIFramework\Command;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Metadata;
+use LazyRecord\Command\CommandUtils;
 
 class BaseCommand extends Command
 {
