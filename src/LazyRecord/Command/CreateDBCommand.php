@@ -1,9 +1,11 @@
 <?php
 namespace LazyRecord\Command;
 use CLIFramework\Command;
+
 use LazyRecord\Schema;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Utils;
+use LazyRecord\Command\CommandUtils;
 
 use CornelTek\DBUtil;
 use Exception;
@@ -18,7 +20,7 @@ class CreateDBCommand extends Command
 
     public function createDB($ds)
     {
-        if( empty($ds) ) 
+        if (empty($ds))
             return;
 
         $dbutil = new DBUtil;
@@ -53,10 +55,7 @@ class CreateDBCommand extends Command
         // support for schema file or schema class names
         $options = $this->options;
         $logger  = $this->logger;
-
-        $loader = ConfigLoader::getInstance();
-        $loader->loadFromSymbol();
-        $loader->initForBuild();
+        $loader = CommandUtils::init_config_loader();
 
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $dsIds = $connectionManager->getDataSourceIdList();
