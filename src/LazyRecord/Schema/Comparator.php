@@ -2,6 +2,7 @@
 namespace LazyRecord\Schema;
 use Closure;
 use LazyRecord\Schema\SchemaInterface;
+use LazyRecord\Schema\ColumnAccessorInterface;
 
 class ColumnDiff {
 
@@ -22,7 +23,7 @@ class ColumnDiff {
 
     public $attrDiffs = array();
 
-    public function __construct($name,$flag,$column)
+    public function __construct($name,$flag,ColumnAccessorInterface $column)
     {
         $this->name = $name;
         $this->flag = $flag;
