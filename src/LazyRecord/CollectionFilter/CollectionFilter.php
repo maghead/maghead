@@ -2,6 +2,7 @@
 namespace LazyRecord\CollectionFilter;
 use Closure;
 use Exception;
+use LazyRecord\BaseCollection;
 
 class CollectionFilter
 {
@@ -48,7 +49,7 @@ class CollectionFilter
 
     public $validFields = array();
 
-    public function __construct($collection) {
+    public function __construct(BaseCollection $collection) {
         $this->collection = $collection;
         $this->schema = $collection->getSchema();
     }
@@ -147,7 +148,7 @@ class CollectionFilter
         return true;
     }
 
-    public function apply($args) {
+    public function apply(array $args) {
         $c = $this->collection;
         foreach( $this->validFields as $fieldName => $t ) {
             if ( ! isset($args[$fieldName]) ) {

@@ -8,7 +8,7 @@ use DateTime;
 class Deflator
 {
 
-    static function deflate($value, $isa)
+    static public function deflate($value, $isa)
     {
         /* respect the data type to inflate value */
         if( $isa === 'int' ) {
