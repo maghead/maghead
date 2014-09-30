@@ -1,7 +1,7 @@
 <?php
 use LazyRecord\CollectionFilter\CollectionFilter;
-use TestApp\PostCollection;
-use TestApp\Post;
+use TestApp\Model\PostCollection;
+use TestApp\Model\Post;
 
 function dumpExpr($expr, $level = 0) {
     echo str_repeat(' ', $level) , get_class($expr) , ": " , $expr->op[0], $expr->op[1] , $expr->op[2] , "\n";

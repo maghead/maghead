@@ -25,13 +25,13 @@ class SchemaGeneratorTest_old extends PHPUnit_Framework_TestCase
 #  			unlink( $file );
 		}
 
-		$author = new \TestApp\Author;
-		$book = new \TestApp\Book;
+		$author = new \TestApp\Model\Author;
+		$book = new \TestApp\Model\Book;
 
         ok( $author );
         ok( $book );
 
-        $schemaProxy = new \TestApp\AuthorSchemaProxy;
+        $schemaProxy = new \TestApp\Model\AuthorSchemaProxy;
         ok( $schemaProxy->table );
         ok( $schemaProxy->columns );
         ok( $schemaProxy->modelClass );

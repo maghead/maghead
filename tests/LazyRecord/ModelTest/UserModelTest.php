@@ -7,20 +7,20 @@ class UserModelTest extends \LazyRecord\ModelTestCase
     public function getModels()
     {
         return array(
-            'TestApp\UserSchema',
-            'TestApp\BookSchema'
+            'TestApp\Model\UserSchema',
+            'TestApp\Model\BookSchema'
         );
     }
 
     public function testRefer()
     {
-        $user = new \TestApp\User;
+        $user = new \TestApp\Model\User;
         ok( $user );
         $ret = $user->create(array( 'account' => 'c9s' ));
         result_ok($ret);
         ok( $user->id );
 
-        $book = new \TestApp\Book;
+        $book = new \TestApp\Model\Book;
         $ret = $book->create(array( 
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',

@@ -7,15 +7,15 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
     public function getModels()
     {
         return array( 
-            'TestApp\\AuthorSchema', 
-            'TestApp\\AuthorBookSchema',
-            'TestApp\\BookSchema',
+            'TestApp\Model\\AuthorSchema', 
+            'TestApp\Model\\AuthorBookSchema',
+            'TestApp\Model\\BookSchema',
         );
     }
 
     public function testBooleanCondition() 
     {
-        $a = new \TestApp\Author;
+        $a = new \TestApp\Model\Author;
         $ret = $a->create(array(
             'name' => 'a',
             'email' => 'a@a',
@@ -32,14 +32,14 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $authors = new \TestApp\AuthorCollection;
+        $authors = new \TestApp\Model\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', false);
         $ret = $authors->fetch();
         ok($ret);
         is(1,$authors->size());
 
-        $authors = new \TestApp\AuthorCollection;
+        $authors = new \TestApp\Model\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', true);
         $ret = $authors->fetch();
@@ -52,7 +52,7 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
 
     public function testSchemaInterface()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');
         foreach( $author->getColumnNames() as $n ) {
             ok( in_array( $n , $names ));
@@ -69,21 +69,21 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
         ok( 'Author' , $author->getLabel() );
 
 
-        isa_ok(  '\TestApp\AuthorCollection' , $author->newCollection() );
+        isa_ok(  '\TestApp\Model\AuthorCollection' , $author->newCollection() );
     }
 
     public function testCollection()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $collection = $author->asCollection();
         ok($collection);
-        isa_ok('\TestApp\AuthorCollection',$collection);
+        isa_ok('\TestApp\Model\AuthorCollection',$collection);
     }
 
 
     public function testVirtualColumn() 
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $ret = $author->create(array( 
             'name' => 'Pedro' , 
             'email' => 'pedro@gmail.com' , 
@@ -102,13 +102,13 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
 
         ok( $display = $author->display( 'v' ) );
 
-        $authors = new TestApp\AuthorCollection;
+        $authors = new TestApp\Model\AuthorCollection;
         ok( $authors );
     }
 
     public function testSchema()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         ok( $author->getSchema() );
 
         $columnMap = $author->getSchema()->getColumns();
@@ -131,10 +131,10 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
      */
     public function testModel()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         ok($author);
 
-        $a2 = new \TestApp\Author;
+        $a2 = new \TestApp\Model\Author;
         $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
         ok( ! $ret->success );
         ok( ! $a2->id );
@@ -192,7 +192,7 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
 
     public function testUpdateRaw() 
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -205,7 +205,7 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
 
     public function testUpdateNull()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -230,15 +230,15 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
 
     public function testJoin()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
 
-        $ab = new \TestApp\AuthorBook;
-        $book = new \TestApp\Book;
+        $ab = new \TestApp\Model\AuthorBook;
+        $book = new \TestApp\Model\Book;
 
         ok( $book->create(array( 'title' => 'Book I' ))->success );
         ok( $ab->create(array( 
@@ -258,7 +258,7 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
             'book_id' => $book->id,
         ));
 
-        $books = new \TestApp\BookCollection;
+        $books = new \TestApp\Model\BookCollection;
         $books->join('author_books')
             ->alias('ab')
             ->on()
@@ -282,7 +282,7 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
 
     public function testManyToManyRelationCreate()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( 
             $book = $author->books->create( array( 
@@ -326,7 +326,7 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
 
     public function testManyToManyRelationFetch()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
         // XXX: in different database engine, it's different.
@@ -341,8 +341,8 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
         $ret = $book->delete();
         ok( $ret->success );
 
-        $ab = new \TestApp\AuthorBook;
-        $book = new \TestApp\Book;
+        $ab = new \TestApp\Model\AuthorBook;
+        $book = new \TestApp\Model\Book;
 
         // should not include this
         ok( $book->create(array( 'title' => 'Book I Ex' ))->success );

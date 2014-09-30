@@ -7,14 +7,14 @@ class WineModelTest extends \LazyRecord\ModelTestCase
     public function getModels()
     {
         return array(
-            'TestApp\\WineSchema',
-            'TestApp\\WineCategorySchema',
+            'TestApp\Model\\WineSchema',
+            'TestApp\Model\\WineCategorySchema',
         );
     }
 
     public function testWineRecordCreate()
     {
-        $record = new \TestApp\Wine;
+        $record = new \TestApp\Model\Wine;
         ok($record);
         $ret = $record->create(array( 'name' => 'Wine Name' ));
         result_ok($ret);
@@ -22,9 +22,9 @@ class WineModelTest extends \LazyRecord\ModelTestCase
 
     public function testWineCategoryAndRefer()
     {
-        $c = new \TestApp\WineCategory;
+        $c = new \TestApp\Model\WineCategory;
         ok($c,'category');
-        $record = new \TestApp\Wine;
+        $record = new \TestApp\Model\Wine;
         ok($record);
 
         is('wines',$record->getSchema()->getTable() );
@@ -42,10 +42,10 @@ class WineModelTest extends \LazyRecord\ModelTestCase
 
 
     public function testJoinedColumnExtractionFromCollection() {
-        $c = new \TestApp\WineCategory;
+        $c = new \TestApp\Model\WineCategory;
         ok($c,'category');
 
-        $record = new \TestApp\Wine;
+        $record = new \TestApp\Model\Wine;
         ok($record);
 
         $ret = $c->create(array( 'name' => 'Wine Category' ));
@@ -57,8 +57,8 @@ class WineModelTest extends \LazyRecord\ModelTestCase
         }
 
 
-        ok( $collection = new \TestApp\WineCollection );
-        $collection->join( new \TestApp\WineCategory ); // join the WineCategory
+        ok( $collection = new \TestApp\Model\WineCollection );
+        $collection->join( new \TestApp\Model\WineCategory ); // join the WineCategory
 
 
         // test query

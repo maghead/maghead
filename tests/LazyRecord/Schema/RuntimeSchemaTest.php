@@ -6,10 +6,10 @@ class RuntimeSchemaTest extends PHPUnit_Framework_TestCase
     public function schemaProxyProvider()
     {
         return array( 
-            array('TestApp\AuthorSchemaProxy'),
-            array('TestApp\BookSchemaProxy'),
-            array('TestApp\AuthorBookSchemaProxy'),
-            array('TestApp\NameSchemaProxy'),
+            array('TestApp\Model\AuthorSchemaProxy'),
+            array('TestApp\Model\BookSchemaProxy'),
+            array('TestApp\Model\AuthorBookSchemaProxy'),
+            array('TestApp\Model\NameSchemaProxy'),
         );
     }
 
