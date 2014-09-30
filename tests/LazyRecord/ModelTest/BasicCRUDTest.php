@@ -12,10 +12,10 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
     public function getModels()
     {
         return array( 
-            'TestApp\\AuthorSchema',
-            'TestApp\\BookSchema',
-            'TestApp\\AuthorBookSchema',
-            'TestApp\\AddressSchema',
+            'TestApp\Model\\AuthorSchema',
+            'TestApp\Model\\BookSchema',
+            'TestApp\Model\\AuthorBookSchema',
+            'TestApp\Model\\AddressSchema',
         );
     }
 
@@ -32,7 +32,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
      */
     public function testTitleIsRequired()
     {
-        $b = new \TestApp\Book;
+        $b = new \TestApp\Model\Book;
         $ret = $b->find( array( 'name' => 'LoadOrCreateTest' ) );
         result_fail( $ret );
         ok( ! $b->id );
@@ -41,7 +41,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testRecordRawCreateBook()
     {
-        $b = new \TestApp\Book;
+        $b = new \TestApp\Model\Book;
         ok($b);
         $b->rawCreate(array( 'title' => 'Go Programming' ));
         ok($b->id);
@@ -50,7 +50,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testRecordRawUpdateBook()
     {
-        $b = new \TestApp\Book;
+        $b = new \TestApp\Model\Book;
         ok($b);
         $b->rawCreate(array( 'title' => 'Go Programming' ));
         ok($b->id);
@@ -63,7 +63,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
     public function testLoadOrCreateModel() 
     {
         $results = array();
-        $b = new \TestApp\Book;
+        $b = new \TestApp\Model\Book;
 
         $ret = $b->create(array( 'title' => 'Should Not Load This' ));
         result_ok( $ret );
@@ -82,7 +82,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         $results[] = $ret;
 
 
-        $b2 = new \TestApp\Book;
+        $b2 = new \TestApp\Model\Book;
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         result_ok($ret);
         is($id,$b2->id);
@@ -94,7 +94,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         ok($id != $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
-        $b3 = new \TestApp\Book;
+        $b3 = new \TestApp\Model\Book;
         $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         result_ok($ret);
         ok($b3);
@@ -104,7 +104,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         $b3->delete();
 
         foreach( $results as $r ) {
-            result_ok( \TestApp\Book::delete($r->id)->execute() );
+            result_ok( \TestApp\Model\Book::delete($r->id)->execute() );
         }
     }
 
@@ -134,7 +134,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testModelUpdateRawValue() 
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -147,7 +147,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testManyToManyRelationRecordCreate()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( 
             $book = $author->books->create( array( 
@@ -190,7 +190,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testPrimaryKeyIdIsInteger()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer
@@ -202,7 +202,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testManyToManyRelationFetchRecord()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
         $book = $author->books->create(array( 'title' => 'Book Test' ));
@@ -212,8 +212,8 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         $ret = $book->delete();
         ok( $ret->success );
 
-        $ab = new \TestApp\AuthorBook;
-        $book = new \TestApp\Book;
+        $ab = new \TestApp\Model\AuthorBook;
+        $book = new \TestApp\Model\Book;
 
         // should not include this
         ok( $book->create(array( 'title' => 'Book I Ex' ))->success );
@@ -259,7 +259,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testHasManyRelationCreate2()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
@@ -284,7 +284,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testHasManyRelationCreate()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
@@ -305,13 +305,13 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testHasManyRelationFetch()
     {
-        $author = new \TestApp\Author;
+        $author = new \TestApp\Model\Author;
         ok( $author );
 
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
-        $address = new \TestApp\Address;
+        $address = new \TestApp\Model\Address;
         ok( $address );
 
         $address->create(array( 
@@ -354,7 +354,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testRecordUpdateWithRawSQL()
     {
-        $n = new \TestApp\Book;
+        $n = new \TestApp\Model\Book;
         $n->create(array(
             'title' => 'book title',
             'view' => 0,
@@ -381,7 +381,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testZeroInflator()
     {
-        $b = new \TestApp\Book;
+        $b = new \TestApp\Model\Book;
         $ret = $b->create(array( 'title' => 'Create X' , 'view' => 0 ));
         result_ok($ret);
         ok( $b->id );
@@ -397,7 +397,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testUpdateWithReloadOption()
     {
-        $b = new \TestApp\Book;
+        $b = new \TestApp\Model\Book;
         $ret = $b->create(array( 'title' => 'Create Y' , 'view' => 0 ));
 
         // test incremental
@@ -414,7 +414,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testStaticCreateMethod()
     {
-        $record = \TestApp\Author::create(array( 
+        $record = \TestApp\Model\Author::create(array( 
             'name' => 'Mary',
             'email' => 'zz@zz',
             'identity' => 'zz',
@@ -424,43 +424,43 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testStaticLoadMethod()
     {
-        $record = \TestApp\Author::create(array( 
+        $record = \TestApp\Model\Author::create(array( 
             'name' => 'Mary',
             'email' => 'zz@zz',
             'identity' => 'zz',
         ));
-        $record2 = \TestApp\Author::load($record->id );
+        $record2 = \TestApp\Model\Author::load($record->id );
         ok($record2->id);
 
-        $record3 = \TestApp\Author::load((int) $record->id);
+        $record3 = \TestApp\Model\Author::load((int) $record->id);
         ok($record3->id);
 
-        $record4 = \TestApp\Author::load( array( 'id' => $record->id ));
+        $record4 = \TestApp\Model\Author::load( array( 'id' => $record->id ));
         ok( $record4 );
         ok( $record4->id );
     }
 
     public function testStaticFunctions()
     {
-        $record = \TestApp\Author::create(array( 
+        $record = \TestApp\Model\Author::create(array( 
             'name' => 'Mary',
             'email' => 'zz@zz',
             'identity' => 'zz',
         ));
-        $record = \TestApp\Author::load( (int) $record->getLastResult()->id );
+        $record = \TestApp\Model\Author::load( (int) $record->getLastResult()->id );
 
         /**
          * Which runs:
          *    UPDATE authors SET name = 'Rename' WHERE name = 'Mary'
          */
-        $ret = \TestApp\Author::update(array( 'name' => 'Rename' ))
+        $ret = \TestApp\Model\Author::update(array( 'name' => 'Rename' ))
             ->where()
             ->equal('name','Mary')
             ->execute();
         ok( $ret->success );
 
 
-        $ret = \TestApp\Author::delete()
+        $ret = \TestApp\Model\Author::delete()
             ->where()
             ->equal('name','Rename')
             ->execute();

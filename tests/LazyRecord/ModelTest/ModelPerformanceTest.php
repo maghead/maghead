@@ -7,8 +7,8 @@ class ModelPerformanceTest extends \LazyRecord\ModelTestCase
     public function getModels()
     {
         return array(
-            'TestApp\\WineSchema',
-            'TestApp\\WineCategorySchema',
+            'TestApp\Model\\WineSchema',
+            'TestApp\Model\\WineCategorySchema',
         );
     }
 
@@ -21,10 +21,10 @@ class ModelPerformanceTest extends \LazyRecord\ModelTestCase
 
     public function createRecords() 
     {
-        $c = new \TestApp\WineCategory;
+        $c = new \TestApp\Model\WineCategory;
         ok($c,'category');
 
-        $record = new \TestApp\Wine;
+        $record = new \TestApp\Model\Wine;
         ok($record);
 
         $ret = $c->create(array( 'name' => 'Wine Category' ));
@@ -38,7 +38,7 @@ class ModelPerformanceTest extends \LazyRecord\ModelTestCase
 
     public function testPDOQuerySample()
     {
-        $record = new \TestApp\Wine;
+        $record = new \TestApp\Model\Wine;
         $table = $record->getSchema()->getTable();
         $connManager = LazyRecord\ConnectionManager::getInstance();
         $pdo = $connManager->get('default');
@@ -51,8 +51,8 @@ class ModelPerformanceTest extends \LazyRecord\ModelTestCase
 
     public function testJoinedColumnExtractionFromCollection() 
     {
-        ok( $collection = new \TestApp\WineCollection );
-        $collection->join( new \TestApp\WineCategory ); // join the WineCategory
+        ok( $collection = new \TestApp\Model\WineCollection );
+        $collection->join( new \TestApp\Model\WineCategory ); // join the WineCategory
 
         // test query
         foreach( $collection as $item ) {

@@ -13,7 +13,6 @@ use ClassTemplate\ClassTrait;
 class SchemaDeclare extends SchemaBase
     implements SchemaInterface
 {
-
     public $modelTraits = array();
 
     public function __construct( $options = array() )
@@ -268,20 +267,26 @@ class SchemaDeclare extends SchemaBase
 
 
     /**
+     * Use trait for the model class.
      *
      * @param string $class...
      * @return ClassTrait object
      */
-    public function modelTrait() {
+    public function useTrait() {
         $classes = func_get_args();
         $trait = new ClassTrait($classes);
         $this->modelTraits[] = $trait;
         return $trait;
     }
 
+
+    /** 
+     * @return ClassTrait[]
+     */
     public function getModelTraits() {
         return $this->modelTraits;
     }
+
 
 
     /**
