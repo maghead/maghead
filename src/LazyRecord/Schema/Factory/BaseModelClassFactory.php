@@ -21,7 +21,7 @@ class BaseModelClassFactory
         $cTemplate->addStaticVar( 'mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
         $cTemplate->extendClass( '\\' . $baseClass );
         foreach($schema->getModelTraits() as $modelTrait) {
-            $cTemplate->traits[] = $modelTrait;
+            $cTemplate->addTrait($modelTrait);
         }
         return $cTemplate;
     }
