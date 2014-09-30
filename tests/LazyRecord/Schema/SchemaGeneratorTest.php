@@ -37,11 +37,11 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
         $g = $this->createSchemaGenerator();
 
         $schemas = array();
-        $schemas[] = [ $g, new \tests\UserSchema ];
-        $schemas[] = [ $g, new \tests\AddressSchema ];
-        $schemas[] = [ $g, new \tests\BookSchema ];
-        $schemas[] = [ $g, new \tests\IDNumberSchema ];
-        $schemas[] = [ $g, new \tests\NameSchema ];
+        $schemas[] = [ $g, new \TestApp\UserSchema ];
+        $schemas[] = [ $g, new \TestApp\AddressSchema ];
+        $schemas[] = [ $g, new \TestApp\BookSchema ];
+        $schemas[] = [ $g, new \TestApp\IDNumberSchema ];
+        $schemas[] = [ $g, new \TestApp\NameSchema ];
         return $schemas;
     }
 

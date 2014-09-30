@@ -50,7 +50,7 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         $generator = new \LazyRecord\Migration\MigrationGenerator('tests/migrations_testing');
         ok($generator);
 
-        ok( class_exists( 'tests\UserSchema', true) );
+        ok( class_exists( 'TestApp\UserSchema', true) );
         $finder = new \LazyRecord\Schema\SchemaFinder;
         $finder->find();
         list($class,$path) = $generator->generateWithDiff('DiffMigration','default',$finder->getSchemas(),'20120101');

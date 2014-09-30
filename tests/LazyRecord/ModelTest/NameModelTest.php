@@ -8,7 +8,7 @@ class NameModelTest extends ModelTestCase
 
     public function getModels()
     {
-        return array('tests\\NameSchema');
+        return array('TestApp\\NameSchema');
     }
 
     public function nameDataProvider()
@@ -47,7 +47,7 @@ class NameModelTest extends ModelTestCase
      */
     public function testCreateWithBooleanFalse($args)
     {
-        $n = new \tests\Name;
+        $n = new \TestApp\Name;
         $ret = $n->create($args);
         ok( $ret->success , $ret  . " SQL: " . $ret->sql . print_r($ret->vars,1) );
         ok( $n->id );
@@ -75,7 +75,7 @@ class NameModelTest extends ModelTestCase
      */
     public function testCreateWithBooleanTrue($args)
     {
-        $n = new \tests\Name;
+        $n = new \TestApp\Name;
         $ret = $n->create($args);
         result_ok($ret);
         ok( $n->id );
@@ -88,14 +88,14 @@ class NameModelTest extends ModelTestCase
 
     public function testModelClone()
     {
-        $test1 = new \tests\Name;
+        $test1 = new \TestApp\Name;
         $test2 = clone $test1;
         ok( $test1 !== $test2 );
     }
 
     public function testModelColumnFilter()
     {
-        $name = new \tests\Name;
+        $name = new \TestApp\Name;
         $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John' ));
         result_ok($ret);
         is( 'XXXX' , $name->address , 'Be canonicalized' );
@@ -103,7 +103,7 @@ class NameModelTest extends ModelTestCase
 
     public function testBooleanFromStringZero()
     {
-        $n = new \tests\Name;
+        $n = new \TestApp\Name;
 
         /** confirmed will be cast to true **/
         $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ));
@@ -116,7 +116,7 @@ class NameModelTest extends ModelTestCase
     public function testValueTypeConstraint()
     {
         // if it's a str type , we should not accept types not str.
-        $n = new \tests\Name;
+        $n = new \TestApp\Name;
         /**
          * name column is required, after type casting, it's NULL, so
          * create should fail.
@@ -128,7 +128,7 @@ class NameModelTest extends ModelTestCase
 
     public function testModelColumnDefaultValueBuilder()
     {
-        $name = new \tests\Name;
+        $name = new \TestApp\Name;
         $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' ));
 
         result_ok( $ret );
@@ -154,20 +154,20 @@ class NameModelTest extends ModelTestCase
 
     public function testLoadFromContstructor()
     {
-        $name = new \tests\Name;
+        $name = new \TestApp\Name;
         $name->create(array( 
             'name' => 'John',
             'country' => 'Taiwan',
             'type' => 'type-a',
         ));
         ok( $name->id );
-        $name2 = new \tests\Name( $name->id );
+        $name2 = new \TestApp\Name( $name->id );
         is( $name2->id , $name->id );
     }
 
     public function testValidValueBuilder()
     {
-        $name = new \tests\Name;
+        $name = new \TestApp\Name;
         $ret = $name->create(array( 
             'name' => 'John',
             'country' => 'Taiwan',
@@ -198,7 +198,7 @@ class NameModelTest extends ModelTestCase
 
     public function testDeflator()
     {
-        $n = new \tests\Name;
+        $n = new \TestApp\Name;
         $ret = $n->create(array( 
             'name' => 'Deflator Test' , 
             'country' => 'Tokyo', 
@@ -217,7 +217,7 @@ class NameModelTest extends ModelTestCase
      */
     public function testCreateName($args)
     {
-        $name = new \tests\Name;
+        $name = new \TestApp\Name;
         $ret = $name->create($args);
         ok( $ret->success );
         $ret = $name->delete();
@@ -229,22 +229,22 @@ class NameModelTest extends ModelTestCase
      */
     public function testFromArray($args)
     {
-        $instance = \tests\Name::fromArray(array( 
+        $instance = \TestApp\Name::fromArray(array( 
             $args
         ));
         ok( $instance );
-        isa_ok( 'tests\Name' ,  $instance );
+        isa_ok( 'TestApp\Name' ,  $instance );
 
-        $collection = \tests\NameCollection::fromArray(array( 
+        $collection = \TestApp\NameCollection::fromArray(array( 
             $args,
             $args,
         ));
-        isa_ok( 'tests\NameCollection' , $collection );
+        isa_ok( 'TestApp\NameCollection' , $collection );
     }
 
     public function testDateTimeInflator()
     {
-        $n = new \tests\Name;
+        $n = new \TestApp\Name;
         $date = new DateTime('2011-01-01 00:00:00');
         $ret = $n->create(array( 
             'name' => 'Deflator Test' , 
@@ -271,7 +271,7 @@ class NameModelTest extends ModelTestCase
         return;
 
         $s = microtime(true);
-        $n = new \tests\Name;
+        $n = new \TestApp\Name;
         $ids = array();
         $cnt = 10;
         foreach( range(1,$cnt) as $i ) {
@@ -294,7 +294,7 @@ class NameModelTest extends ModelTestCase
         }
 
         foreach( $ids as $id ) {
-            \tests\Name::delete($id);
+            \TestApp\Name::delete($id);
         }
     }
      */

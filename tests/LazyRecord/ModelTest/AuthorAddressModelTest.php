@@ -7,20 +7,20 @@ class AuthorAddressModelTest extends \LazyRecord\ModelTestCase
     public function getModels()
     {
         return array(
-            'tests\\AuthorSchema', 
-            'tests\\AddressSchema',
+            'TestApp\\AuthorSchema', 
+            'TestApp\\AddressSchema',
         );
     }
 
     public function testHasManyRelationFetch()
     {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
         ok( $author );
 
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
-        $address = new \tests\Address;
+        $address = new \TestApp\Address;
         ok( $address );
 
         $address->create(array( 
@@ -64,7 +64,7 @@ class AuthorAddressModelTest extends \LazyRecord\ModelTestCase
 
     public function testHasManyRelationCreate()
     {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
@@ -84,7 +84,7 @@ class AuthorAddressModelTest extends \LazyRecord\ModelTestCase
 
     public function testHasManyRelationCreate2()
     {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
@@ -110,7 +110,7 @@ class AuthorAddressModelTest extends \LazyRecord\ModelTestCase
 
     public function testGeneralInterface() 
     {
-        $a = new \tests\Address;
+        $a = new \TestApp\Address;
         ok($a);
 
         ok( $a->getQueryDriver('default') );

@@ -6,12 +6,12 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
 
     public function getModels()
     {
-        return array('tests\\AuthorSchema');
+        return array('TestApp\\AuthorSchema');
     }
 
     public function testCollection()
     {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
 
         $this->resultOK( true,  $author->create(array( 
             'name' => 'FooBar',
@@ -22,7 +22,7 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
 
         $collection = $author->asCollection();
         ok($collection);
-        isa_ok('tests\\AuthorCollection',$collection);
+        isa_ok('TestApp\\AuthorCollection',$collection);
 
         // delete it
         $this->resultOK(true, $author->delete());
@@ -30,7 +30,7 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
 
     public function testSchemaInterface()
     {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
 
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');
         foreach( $author->getColumnNames() as $n ) {
@@ -48,12 +48,12 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
         ok( 'Author' , $author->getLabel() );
 
 
-        isa_ok(  '\tests\AuthorCollection' , $author->newCollection() );
+        isa_ok(  '\TestApp\AuthorCollection' , $author->newCollection() );
     }
 
     public function testBooleanCondition() 
     {
-        $a = new \tests\Author;
+        $a = new \TestApp\Author;
         $ret = $a->create(array(
             'name' => 'a',
             'email' => 'a@a',
@@ -70,14 +70,14 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', false);
         $ret = $authors->fetch();
         ok($ret);
         is(1,$authors->size());
 
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', true);
         $ret = $authors->fetch();
@@ -89,18 +89,18 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
 
     public function testStaticFunctions() 
     {
-        $record = \tests\Author::create(array( 
+        $record = \TestApp\Author::create(array( 
             'name' => 'Mary',
             'email' => 'zz@zz',
             'identity' => 'zz',
         ));
         ok( $record->getLastResult()->success );
 
-        $record = \tests\Author::load( (int) $record->getLastResult()->id );
+        $record = \TestApp\Author::load( (int) $record->getLastResult()->id );
         ok( $record );
         ok( $id = $record->id );
 
-        $record = \tests\Author::load( array( 'id' => $id ));
+        $record = \TestApp\Author::load( array( 'id' => $id ));
         ok( $record );
         ok( $record->id );
 
@@ -108,14 +108,14 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
          * Which runs:
          *    UPDATE authors SET name = 'Rename' WHERE name = 'Mary'
          */
-        $ret = \tests\Author::update(array( 'name' => 'Rename' ))
+        $ret = \TestApp\Author::update(array( 'name' => 'Rename' ))
             ->where()
             ->equal('name','Mary')
             ->execute();
         ok( $ret->success );
 
 
-        $ret = \tests\Author::delete()
+        $ret = \TestApp\Author::delete()
             ->where()
             ->equal('name','Rename')
             ->execute();
@@ -124,7 +124,7 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
 
     public function testVirtualColumn() 
     {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
         $ret = $author->create(array( 
             'name' => 'Pedro' , 
             'email' => 'pedro@gmail.com' , 
@@ -142,7 +142,7 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
 
         ok( $display = $author->display( 'v' ) );
 
-        $authors = new tests\AuthorCollection;
+        $authors = new TestApp\AuthorCollection;
         ok( $authors );
     }
 
@@ -152,10 +152,10 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
      */
     public function testModel()
     {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
         ok($author);
 
-        $a2 = new \tests\Author;
+        $a2 = new \TestApp\Author;
         $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
         ok( ! $ret->success );
         ok( ! $a2->id );
@@ -209,7 +209,7 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
 
     public function testMixinMethods() 
     {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -223,7 +223,7 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
 
     public function testUpdateNull()
     {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',

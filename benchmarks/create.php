@@ -11,7 +11,7 @@ $bench->iterate( 'obj create' , 'object construction time' , function() {
 });
 
 $bench->iterate( 'model create', 'model create', function() {
-    $a = new tests\Author;
+    $a = new TestApp\Author;
 });
 
 $result = $bench->compare();
