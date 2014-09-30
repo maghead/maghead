@@ -53,9 +53,8 @@ class BookModelTest extends \LazyRecord\ModelTestCase
 
     public function testTraitMethods() {
         $b = new \TestApp\Model\Book;
-        $links = $b->getLinks();
-        ok($links);
-        $this->assertSame(['link1', 'link2'],$links);
+        $this->assertSame(['link1', 'link2'], $b->getLinks());
+        $this->assertSame(['store1', 'store2'], $b->getStores());
     }
 
     public function testLoadOrCreate() {
