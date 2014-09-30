@@ -20,11 +20,11 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
     function schemaProvider()
     {
         return array(
-            array( new \tests\AuthorSchema ),
-            array( new \tests\AddressSchema ),
-            array( new \tests\AuthorBookSchema),
-            array( new \tests\BookSchema ),
-            array( new \tests\NameSchema ),
+            array( new \TestApp\AuthorSchema ),
+            array( new \TestApp\AddressSchema ),
+            array( new \TestApp\AuthorBookSchema),
+            array( new \TestApp\BookSchema ),
+            array( new \TestApp\NameSchema ),
         );
     }
 

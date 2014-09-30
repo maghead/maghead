@@ -34,7 +34,7 @@ class UtilsTest extends PHPUnit_Framework_TestCase
         ok($paths);
         ok(is_array($paths));
 
-        $schemas = LazyRecord\Utils::getSchemaClassFromPathsOrClassNames($loader,array('tests\\UserSchema'));
+        $schemas = LazyRecord\Utils::getSchemaClassFromPathsOrClassNames($loader,array('TestApp\\UserSchema'));
         ok($schemas);
 
 

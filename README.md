@@ -370,7 +370,7 @@ in the `schema` method, e.g.,
 
 ```php
 <?php
-namespace tests;
+namespace TestApp;
 use LazyRecord\Schema;
 
 class BookSchema extends Schema
@@ -407,9 +407,9 @@ class BookSchema extends Schema
 
         $this->column('created_by')
             ->integer()
-            ->refer('tests\UserSchema');
+            ->refer('TestApp\UserSchema');
 
-        $this->belongsTo('created_by', 'tests\UserSchema','id', 'created_by');
+        $this->belongsTo('created_by', 'TestApp\UserSchema','id', 'created_by');
 
         /** 
          * column: author => Author class 
@@ -417,14 +417,14 @@ class BookSchema extends Schema
          * $book->publisher->name;
          *
          **/
-        $this->belongsTo('publisher','\tests\PublisherSchema', 'id', 'publisher_id');
+        $this->belongsTo('publisher','\TestApp\PublisherSchema', 'id', 'publisher_id');
 
         /**
          * accessor , mapping self.id => BookAuthors.book_id
          *
          * link book => author_books
          */
-        $this->many('book_authors', '\tests\AuthorBookSchema', 'book_id', 'id');
+        $this->many('book_authors', '\TestApp\AuthorBookSchema', 'book_id', 'id');
 
 
         /**
@@ -516,8 +516,8 @@ $result = $record->fooMethod(1,2,3,4);
 `belongsTo(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name = 'id')`
 
 ```php
-$this->belongsTo( 'author' , '\tests\AuthorSchema', 'id' , 'author_id' );
-$this->belongsTo( 'address' , '\tests\AddressSchema', 'address_id' );
+$this->belongsTo( 'author' , '\TestApp\AuthorSchema', 'id' , 'author_id' );
+$this->belongsTo( 'address' , '\TestApp\AddressSchema', 'address_id' );
 ```
 
 #### Has One
@@ -525,7 +525,7 @@ $this->belongsTo( 'address' , '\tests\AddressSchema', 'address_id' );
 `one(accessor_name, self_column_name, foreign_schema_class_name, foreign_schema_column_name)`
 
 ```php
-$this->one( 'author', 'author_id', '\tests\AuthorSchema' , 'id' );
+$this->one( 'author', 'author_id', '\TestApp\AuthorSchema' , 'id' );
 ```
 
 #### Has Many
@@ -533,8 +533,8 @@ $this->one( 'author', 'author_id', '\tests\AuthorSchema' , 'id' );
 `many(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name )`
 
 ```php
-$this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
-$this->many( 'author_books', '\tests\AuthorBookSchema', 'author_id', 'id');
+$this->many( 'addresses', '\TestApp\AddressSchema', 'author_id', 'id');
+$this->many( 'author_books', '\TestApp\AuthorBookSchema', 'author_id', 'id');
 ```
 
 To define many to many relationship:
@@ -677,14 +677,14 @@ generate a new migration script like:
     Loading schema objects...
     Creating migration script from diff
     Found 10 schemas to compare.
-        Found schema 'tests\AuthorSchema' to be imported to 'authors'
-        Found schema 'tests\AddressSchema' to be imported to 'addresses'
-        Found schema 'tests\AuthorBookSchema' to be imported to 'author_books'
-        Found schema 'tests\BookSchema' to be imported to 'books'
-        Found schema 'tests\UserSchema' to be imported to 'users'
-        Found schema 'tests\PublisherSchema' to be imported to 'publishers'
-        Found schema 'tests\NameSchema' to be imported to 'names'
-        Found schema 'tests\Wine' to be imported to 'wines'
+        Found schema 'TestApp\AuthorSchema' to be imported to 'authors'
+        Found schema 'TestApp\AddressSchema' to be imported to 'addresses'
+        Found schema 'TestApp\AuthorBookSchema' to be imported to 'author_books'
+        Found schema 'TestApp\BookSchema' to be imported to 'books'
+        Found schema 'TestApp\UserSchema' to be imported to 'users'
+        Found schema 'TestApp\PublisherSchema' to be imported to 'publishers'
+        Found schema 'TestApp\NameSchema' to be imported to 'names'
+        Found schema 'TestApp\Wine' to be imported to 'wines'
     Migration script is generated: db/migrations/20120912_AddUserRoleColumn.php
 
 now you can edit your migration script, which is auto-generated:
@@ -697,11 +697,11 @@ the migration script looks like:
 class AddUserColumn_1347451491  extends \LazyRecord\Migration\Migration {
 
     public function upgrade() { 
-        $this->importSchema(new tests\AuthorSchema);
-        $this->importSchema(new tests\AddressSchema);
+        $this->importSchema(new TestApp\AuthorSchema);
+        $this->importSchema(new TestApp\AddressSchema);
 
         // To upgrade with new schema:
-        $this->importSchema(new tests\AuthorBookSchema);
+        $this->importSchema(new TestApp\AuthorBookSchema);
         
         // To rename table column:
         $this->renameColumn($table, $columnName, $newColumnName);

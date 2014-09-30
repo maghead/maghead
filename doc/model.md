@@ -70,7 +70,7 @@ use load method to load record:
 ## Create
 
 <?php
-    $record = \tests\Author::create(array( 
+    $record = \TestApp\Author::create(array( 
         'name' => 'Mary',
         'email' => 'zz@zz',
         'identity' => 'zz',
@@ -80,8 +80,8 @@ use load method to load record:
 ## Load
 
 <?php
-    $record = \tests\Author::load( 1 );
-    $record = \tests\Author::load( array( 'id' => $id ));
+    $record = \TestApp\Author::load( 1 );
+    $record = \TestApp\Author::load( array( 'id' => $id ));
 ?>
 
 ## Update
@@ -92,7 +92,7 @@ The following lines runs:
 
 <?php
 
-    $ret = \tests\Author::update(array( 'name' => 'Rename' ))
+    $ret = \TestApp\Author::update(array( 'name' => 'Rename' ))
         ->where()
         ->equal('name','Mary')
         ->execute();
@@ -102,12 +102,12 @@ The following lines runs:
 
 <?php
 
-    $ret = \tests\Author::delete()
+    $ret = \TestApp\Author::delete()
         ->where()
         ->equal('name','Rename')
         ->execute();
 
-    $ret = \tests\Author::delete()->execute();
+    $ret = \TestApp\Author::delete()->execute();
 
 ?>
 

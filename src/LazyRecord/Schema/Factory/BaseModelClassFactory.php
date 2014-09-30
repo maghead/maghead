@@ -20,6 +20,9 @@ class BaseModelClassFactory
         $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
         $cTemplate->addStaticVar( 'mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
         $cTemplate->extendClass( '\\' . $baseClass );
+        foreach($schema->getModelTraits() as $modelTrait) {
+            $cTemplate->traits[] = $modelTrait;
+        }
         return $cTemplate;
     }
 }

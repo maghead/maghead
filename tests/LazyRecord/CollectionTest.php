@@ -4,7 +4,7 @@ use LazyRecord\SqlBuilder;
 class AuthorFactory {
 
     static function create($name) {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
         $author->create(array(
             'name' => $name,
             'email' => 'temp@temp' . rand(),
@@ -23,30 +23,30 @@ class CollectionTest extends \LazyRecord\ModelTestCase
     public function getModels()
     {
         return array( 
-            'tests\AuthorSchema', 
-            'tests\BookSchema',
-            'tests\AuthorBookSchema',
-            'tests\NameSchema',
-            'tests\AddressSchema',
+            'TestApp\AuthorSchema', 
+            'TestApp\BookSchema',
+            'TestApp\AuthorBookSchema',
+            'TestApp\NameSchema',
+            'TestApp\AddressSchema',
         );
     }
 
     public function testCollectionLazyAttributes()
     {
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         ok( $authors->_query , 'has lazy attribute' );
     }
 
 
     public function testCollectionAsPairs()
     {
-        $address = new \tests\Address;
+        $address = new \TestApp\Address;
         $results = array();
         result_ok( $results[] = $address->create(array( 'address' => 'Hack' )) );
         result_ok( $results[] = $address->create(array( 'address' => 'Hack I' )) );
         result_ok( $results[] = $address->create(array( 'address' => 'Hack II' )) );
 
-        $addresses = new \tests\AddressCollection;
+        $addresses = new \TestApp\AddressCollection;
         $pairs = $addresses->asPairs( 'id' , 'address' );
         ok( $pairs );
 
@@ -60,7 +60,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
             ok($id);
             ok(isset($pairs[$id]));
             like('/Hack/',$pairs[$id]);
-            $address = new \tests\Address($result->id);
+            $address = new \TestApp\Address($result->id);
             $address->delete();
         }
     }
@@ -68,11 +68,11 @@ class CollectionTest extends \LazyRecord\ModelTestCase
     public function testReset()
     {
         $results = array();
-        $book = new \tests\Book;
+        $book = new \TestApp\Book;
         result_ok( $results[] = $book->create(array( 'title' => 'My Book I' )) );
         result_ok( $results[] = $book->create(array( 'title' => 'My Book II' )) );
 
-        $books = new \tests\BookCollection;
+        $books = new \TestApp\BookCollection;
         $books->fetch();
         is(2,$books->size());
 
@@ -83,13 +83,13 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
         foreach( $results as $result ) {
             ok( $result->id );
-            ok( \tests\Book::delete($result->id)->execute()->success );
+            ok( \TestApp\Book::delete($result->id)->execute()->success );
         }
     }
 
     public function testClone()
     {
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         $authors->fetch();
 
         $clone = clone $authors;
@@ -99,14 +99,14 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
     public function testCloneWithQuery() 
     {
-        ok( $ret = \tests\Address::delete()->execute() );
+        ok( $ret = \TestApp\Address::delete()->execute() );
         ok( $ret->success , $ret->message );
 
-        $a = new \tests\Address;
+        $a = new \TestApp\Address;
         ok( $a->create(array('address' => 'Cindy'))->success );
         ok( $a->create(array('address' => 'Hack'))->success );
 
-        $addresses = new \tests\AddressCollection;
+        $addresses = new \TestApp\AddressCollection;
         $addresses->where()
             ->equal('address','Cindy');
         $addresses->fetch();
@@ -128,7 +128,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
     public function testIterator()
     {
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         ok( $authors );
         foreach( $authors as $a ) {
             ok( $a->id );
@@ -137,7 +137,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
     public function testBooleanCondition() 
     {
-        $a = new \tests\Author;
+        $a = new \TestApp\Author;
         $ret = $a->create(array(
             'name' => 'a',
             'email' => 'a@a',
@@ -154,7 +154,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', false);
         $ret = $authors->fetch();
@@ -162,7 +162,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         is(1,$authors->size());
 
 
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', true);
         $ret = $authors->fetch();
@@ -172,7 +172,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
     public function testCollection()
     {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
         ok($author);
         foreach( range(1,3) as $i ) {
             $ret = $author->create(array(
@@ -194,13 +194,13 @@ class CollectionTest extends \LazyRecord\ModelTestCase
             $this->resultOK( true, $ret );
         }
 
-        $authors2 = new \tests\AuthorCollection;
+        $authors2 = new \TestApp\AuthorCollection;
         $authors2->where()
                 ->like('name','Foo%');
         $count = $authors2->queryCount();
         is( 20 , $count );
 
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         $authors->where()
                 ->like('name','Foo%');
         $items = $authors->items();
@@ -212,7 +212,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         ok( is_array( $items ));
         foreach( $items as $item ) {
             ok( $item->id );
-            isa_ok( '\tests\Author', $item );
+            isa_ok( '\TestApp\Author', $item );
             $ret = $item->delete();
             ok( $ret->success );
         }
@@ -220,7 +220,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         is( 0, $size );
 
         {
-            $authors = new \tests\AuthorCollection;
+            $authors = new \TestApp\AuthorCollection;
             foreach( $authors as $a ) {
                 $a->delete();
             }
@@ -230,7 +230,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
     function testBooleanType()
     {
-        $name = new \tests\Name;
+        $name = new \TestApp\Name;
         $ret = $name->create(array( 
             'name' => 'Foo',
             'confirmed' => false,
@@ -257,7 +257,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
         ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
 
-        $names = new \tests\NameCollection;
+        $names = new \TestApp\NameCollection;
         $names->select( 'name' )->where()
             ->equal('name','Foo')
             ->groupBy('name','address');
@@ -272,10 +272,10 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
     function testJoin()
     {
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         ok($authors);
 
-        $authors->join( new \tests\Address );
+        $authors->join( new \TestApp\Address );
 
         $authors->fetch();
         $sql = $authors->toSQL();
@@ -290,9 +290,9 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         $author->addresses[] = array( 'address' => 'Address I' );
         $author->addresses[] = array( 'address' => 'Address II' );
 
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         ok($authors);
-        $authors->join( new \tests\Address ,'LEFT','a', 'addresses');
+        $authors->join( new \TestApp\Address ,'LEFT','a', 'addresses');
         $authors->fetch();
         $sql = $authors->toSQL();
         ok($sql, $sql);
@@ -306,9 +306,9 @@ class CollectionTest extends \LazyRecord\ModelTestCase
     }
 
     function testJoinWithAliasAndWithoutRelationId() {
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         ok($authors);
-        $authors->join( new \tests\Address ,'LEFT','a');
+        $authors->join( new \TestApp\Address ,'LEFT','a');
         $authors->fetch();
         $sql = $authors->toSQL();
         ok($sql);
@@ -317,7 +317,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
     function testMeta()
     {
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         ok( $authors::schema_proxy_class );
         ok( $authors::model_class );
     }
@@ -325,14 +325,14 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
     function testFilter() 
     {
-        $book = new \tests\Book;
+        $book = new \TestApp\Book;
         $results = array();
         result_ok( $results[] = $book->create(array( 'title' => 'My Book I' )) );
         result_ok( $results[] = $book->create(array( 'title' => 'My Book II' )) );
         result_ok( $results[] = $book->create(array( 'title' => 'Perl Programming' )) );
         result_ok( $results[] = $book->create(array( 'title' => 'My Book IV' )) );
 
-        $books = new \tests\BookCollection;
+        $books = new \TestApp\BookCollection;
         $books->fetch();
         count_ok( 4, $books);
         ok($books);
@@ -348,7 +348,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
  
         foreach( $results as $result ) {
             ok( $result->id );
-            ok( \tests\Book::delete($result->id)->execute()->success );
+            ok( \TestApp\Book::delete($result->id)->execute()->success );
         }
 
         $someBooks = $books->splice(0,2);
@@ -358,7 +358,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
     function testCollectionPagerAndSelection()
     {
-        $author = new \tests\Author;
+        $author = new \TestApp\Author;
         foreach( range(1,10) as $i ) {
             $ret = $author->create(array(
                 'name' => 'Foo-' . $i,
@@ -371,7 +371,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         }
 
 
-        $authors = new \tests\AuthorCollection;
+        $authors = new \TestApp\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed' , true );
 
