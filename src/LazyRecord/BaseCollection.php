@@ -26,7 +26,6 @@ use SerializerKit\JsonSerializer;
  */
 class BaseCollection
     implements 
-    // Iterator, 
     ArrayAccess, 
     Countable, 
     IteratorAggregate, 
