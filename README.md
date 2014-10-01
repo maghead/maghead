@@ -376,7 +376,7 @@ use LazyRecord\Schema;
 class BookSchema extends Schema
 {
 
-    function schema()
+    public function schema()
     {
         $this->column('title')
             ->unique()
@@ -408,6 +408,12 @@ class BookSchema extends Schema
         $this->column('created_by')
             ->integer()
             ->refer('TestApp\UserSchema');
+
+
+        // Defining trait for model class
+        $this->useTrait('Uploader');
+        $this->useTrait('Downloader')
+            ->useInsteadOf('Downloader::a', 'Uploader');
 
         $this->belongsTo('created_by', 'TestApp\UserSchema','id', 'created_by');
 
