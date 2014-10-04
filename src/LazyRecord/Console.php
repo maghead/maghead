@@ -19,42 +19,42 @@ class Console extends Application
         /**
          * command for initialize related file structure
          */
-        $this->registerCommand('init',    'LazyRecord\Command\InitCommand');
+        $this->command('init',    'LazyRecord\Command\InitCommand');
 
         /**
          * command for building config file.
          */
-        $this->registerCommand('build-conf',   'LazyRecord\\Command\\BuildConfCommand');
-        $this->registerCommand('conf',   'LazyRecord\\Command\\BuildConfCommand');
+        $this->command('build-conf',   'LazyRecord\\Command\\BuildConfCommand');
+        $this->command('conf',   'LazyRecord\\Command\\BuildConfCommand');
 
         /**
          * schema command.
          */
-        $this->registerCommand('schema'); // the schema command builds all schema files and shows a diff after building new schema
+        $this->command('schema'); // the schema command builds all schema files and shows a diff after building new schema
 
         // XXX: move list to the subcommand of schema command, eg:
         //    $ lazy schema list
         //    $ lazy schema build
         //
-        $this->registerCommand('list-schema'    , 'LazyRecord\\Command\\ListSchemaCommand');
+        $this->command('list-schema'    , 'LazyRecord\\Command\\ListSchemaCommand');
 
-        $this->registerCommand('build-schema'   , 'LazyRecord\\Command\\BuildSchemaCommand');
-        $this->registerCommand('clean-schema'   , 'LazyRecord\\Command\\CleanSchemaCommand');
+        $this->command('build-schema'   , 'LazyRecord\\Command\\BuildSchemaCommand');
+        $this->command('clean-schema'   , 'LazyRecord\\Command\\CleanSchemaCommand');
 
-        $this->registerCommand('build-basedata' , 'LazyRecord\\Command\\BuildBaseDataCommand');
+        $this->command('build-basedata' , 'LazyRecord\\Command\\BuildBaseDataCommand');
 
-        $this->registerCommand('sql'            , 'LazyRecord\\Command\\BuildSqlCommand');
+        $this->command('sql'            , 'LazyRecord\\Command\\BuildSqlCommand');
 
-        $this->registerCommand('diff'           , 'LazyRecord\\Command\\DiffCommand');
+        $this->command('diff'           , 'LazyRecord\\Command\\DiffCommand');
 
-        $this->registerCommand('migrate'        , 'LazyRecord\\Command\\MigrateCommand');
+        $this->command('migrate'        , 'LazyRecord\\Command\\MigrateCommand');
 
-        $this->registerCommand('prepare'        , 'LazyRecord\\Command\\PrepareCommand');
+        $this->command('prepare'        , 'LazyRecord\\Command\\PrepareCommand');
 
-        $this->registerCommand('meta'           , 'LazyRecord\\Command\\MetaCommand');
-        $this->registerCommand('version'        , 'LazyRecord\\Command\\VersionCommand');
+        $this->command('meta'           , 'LazyRecord\\Command\\MetaCommand');
+        $this->command('version'        , 'LazyRecord\\Command\\VersionCommand');
 
-        $this->registerCommand('create-db'      , 'LazyRecord\\Command\\CreateDBCommand');
+        $this->command('create-db'      , 'LazyRecord\\Command\\CreateDBCommand');
     }
 
     public static function getInstance() 
