@@ -37,7 +37,6 @@ class Console extends Application
         //    $ lazy schema build
         //
         $this->command('list-schema'    , 'LazyRecord\\Command\\ListSchemaCommand');
-
         $this->command('build-schema'   , 'LazyRecord\\Command\\BuildSchemaCommand');
         $this->command('clean-schema'   , 'LazyRecord\\Command\\CleanSchemaCommand');
 
@@ -45,15 +44,10 @@ class Console extends Application
 
         $this->command('sql'            , 'LazyRecord\\Command\\BuildSqlCommand');
 
-        $this->command('diff'           , 'LazyRecord\\Command\\DiffCommand');
-
-        $this->command('migrate'        , 'LazyRecord\\Command\\MigrateCommand');
-
-        $this->command('prepare'        , 'LazyRecord\\Command\\PrepareCommand');
-
-        $this->command('meta'           , 'LazyRecord\\Command\\MetaCommand');
-        $this->command('version'        , 'LazyRecord\\Command\\VersionCommand');
-
+        $this->command('diff');
+        $this->command('migrate');
+        $this->command('meta');
+        $this->command('version');
         $this->command('create-db'      , 'LazyRecord\\Command\\CreateDBCommand');
     }
 

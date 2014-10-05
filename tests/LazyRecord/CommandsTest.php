@@ -9,7 +9,6 @@ class CommandsTest extends PHPUnit_Framework_TestCase
         ok( $app->createCommand('LazyRecord\Command\BuildConfCommand') );
         ok( $app->createCommand('LazyRecord\Command\BuildSchemaCommand') );
         ok( $app->createCommand('LazyRecord\Command\BuildBaseDataCommand') );
-        ok( $app->createCommand('LazyRecord\Command\PrepareCommand') );
         ok( $app->createCommand('LazyRecord\Command\InitCommand') );
         ok( $app->createCommand('LazyRecord\Command\CreateDBCommand') );
         ok( $app->createCommand('LazyRecord\Command\MigrateCommand') );
