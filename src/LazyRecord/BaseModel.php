@@ -1061,6 +1061,7 @@ abstract class BaseModel implements
                 {
                     // TODO: Do not render immutable field in ActionKit
                     if ($c->immutable) {
+                        // TODO: render as a validation results?
                         // unset($args[$n]);
                         // continue;
                         return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));

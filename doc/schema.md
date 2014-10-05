@@ -46,7 +46,7 @@ class AddressSchema extends Schema
                 ->validValues( array( 'label' => 'value'  ) );
 
         // mixin
-        $this->mixin('tests\MetadataMixinSchema');
+        $this->mixin('TestApp\MetadataMixinSchema');
 
 
         // optional
@@ -185,8 +185,8 @@ Relationship
 `belongsTo(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name = 'id')`
 
 ```php
-$this->belongsTo( 'author' , '\tests\AuthorSchema', 'id' , 'author_id' );
-$this->belongsTo( 'address' , '\tests\AddressSchema', 'address_id' );
+$this->belongsTo( 'author' , '\TestApp\AuthorSchema', 'id' , 'author_id' );
+$this->belongsTo( 'address' , '\TestApp\AddressSchema', 'address_id' );
 ```
 
 ### Has One
@@ -194,7 +194,7 @@ $this->belongsTo( 'address' , '\tests\AddressSchema', 'address_id' );
 `one(accessor_name, self_column_name, foreign_schema_class_name, foreign_schema_column_name)`
 
 ```php
-$this->one( 'author', 'author_id', '\tests\AuthorSchema' , 'id' );
+$this->one( 'author', 'author_id', '\TestApp\AuthorSchema' , 'id' );
 ```
 
 ### Has Many
@@ -202,8 +202,8 @@ $this->one( 'author', 'author_id', '\tests\AuthorSchema' , 'id' );
 `many(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name )`
 
 ```php
-$this->many( 'addresses', '\tests\AddressSchema', 'author_id', 'id');
-$this->many( 'author_books', '\tests\AuthorBookSchema', 'author_id', 'id');
+$this->many( 'addresses', '\TestApp\AddressSchema', 'author_id', 'id');
+$this->many( 'author_books', '\TestApp\AuthorBookSchema', 'author_id', 'id');
 ```
 
 To define many to many relationship:
