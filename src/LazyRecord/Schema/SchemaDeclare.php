@@ -7,9 +7,13 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\Schema\Relationship;
 
+use ClassTemplate\ClassTemplate;
+use ClassTemplate\ClassTrait;
+
 class SchemaDeclare extends SchemaBase
     implements SchemaInterface
 {
+    public $modelTraits = array();
 
     public function __construct( $options = array() )
     {
@@ -263,6 +267,29 @@ class SchemaDeclare extends SchemaBase
 
 
     /**
+     * Use trait for the model class.
+     *
+     * @param string $class...
+     * @return ClassTrait object
+     */
+    public function useTrait() {
+        $classes = func_get_args();
+        $trait = new ClassTrait($classes);
+        $this->modelTraits[] = $trait;
+        return $trait;
+    }
+
+
+    /** 
+     * @return ClassTrait[]
+     */
+    public function getModelTraits() {
+        return $this->modelTraits;
+    }
+
+
+
+    /**
      * Mixin
      *
      * Availabel mixins
@@ -274,7 +301,7 @@ class SchemaDeclare extends SchemaBase
      */
     public function mixin($class, $options = array())
     {
-        if ( ! class_exists($class,true) ) {
+        if (! class_exists($class,true) ) {
             $class = 'LazyRecord\\Schema\\Mixin\\' . $class;
             if ( ! class_exists($class,true) ) {
                 throw new Exception("Mixin class $class not found.");
@@ -360,9 +387,9 @@ class SchemaDeclare extends SchemaBase
      *
      * @param string $name column name
      * @param string $class column class name
-     * @return DeclareColumn
+     * @return ColumnDeclare
      */
-    public function column($name,$class = 'LazyRecord\\Schema\\ColumnDeclare')
+    public function column($name, $class = 'LazyRecord\\Schema\\ColumnDeclare')
     {
         if( isset($this->columns[$name]) ) {
             throw new Exception("column $name of ". get_class($this) . " is already defined.");
@@ -514,5 +541,21 @@ class SchemaDeclare extends SchemaBase
         $shortClassName = end($_p);
         return $this->getDirectory() . DIRECTORY_SEPARATOR . $shortClassName . '.php';
     }
+
+
+    /**
+     * Invode helper
+     *
+     * @param string $helperName 
+     * @param array $arguments indexed array, passed to the init function of helper class.
+     *
+     * @return Helper\BaseHelper
+     */
+    public function helper($helperName, $arguments = array()) {
+        $helperClass = 'LazyRecord\\Schema\\Helper\\' . $helperName . 'Helper';
+        $helper = new $helperClass($this, $arguments);
+        return $helper;
+    }
+
 }
 

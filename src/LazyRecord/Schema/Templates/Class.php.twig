@@ -12,6 +12,11 @@ namespace {{ class.class.namespace }};
 {% endfor %}
 class {{ class.class.name }} {% if class.extends %} extends {{ class.extends }} {% endif %}
 {
+
+{% for t in class.traits %}
+{{t|raw}}
+{% endfor %}
+
 {% for con in class.consts %}
 {{con|raw}}
 {% endfor %}
