@@ -1,38 +1,38 @@
 {
-    "name": "corneltek\/lazyrecord",
-    "homepage": "http:\/\/github.com\/c9s\/LazyRecord",
+    "name": "corneltek/lazyrecord",
+    "homepage": "http://github.com/c9s/LazyRecord",
     "description": "The Fast PHP ORM",
-    "version": "1.17.0",
+    "version": "1.18.0",
     "require": {
         "php": ">=5.3.0",
-        "corneltek\/sqlbuilder": "~1.5",
-        "corneltek\/cliframework": "~2.0",
-        "corneltek\/class-template": "*",
-        "corneltek\/serializerkit": "~1",
-        "corneltek\/validationkit": "~1.1",
-        "corneltek\/configkit": "~1.5",
-        "corneltek\/cascading-attribute": "~1.2",
-        "corneltek\/universal-cache": "~1",
-        "corneltek\/dbutil": "~1",
-        "twig\/twig": "~1.12"
+        "corneltek/sqlbuilder": "~1.5",
+        "corneltek/cliframework": "~2.0",
+        "corneltek/class-template": "*",
+        "corneltek/serializerkit": "~1",
+        "corneltek/validationkit": "~1.1",
+        "corneltek/configkit": "~1.5",
+        "corneltek/cascading-attribute": "~1.2",
+        "corneltek/universal-cache": "~1",
+        "corneltek/dbutil": "~1",
+        "twig/twig": "~1.12"
     },
     "require-dev": {
-        "corneltek\/phpunit-testmore": "dev-master",
-        "corneltek\/universal": "dev-master",
-        "facebook\/xhprof": "dev-master",
+        "corneltek/phpunit-testmore": "dev-master",
+        "corneltek/universal": "dev-master",
+        "facebook/xhprof": "dev-master",
         "squizlabs/php_codesniffer": "*",
         "wimg/php-compatibility": "dev-master",
-        "simplyadmire/composer-plugins" : "@dev"
+        "simplyadmire/composer-plugins": "@dev"
     },
     "bin": [
-        "bin\/lazy"
+        "bin/lazy"
     ],
     "license": "MIT",
     "authors": [
         {
             "name": "Yo-An Lin",
             "email": "cornelius.howl@gmail.com",
-            "homepage": "http:\/\/c9s.me"
+            "homepage": "http://c9s.me"
         }
     ],
     "autoload": {
