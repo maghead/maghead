@@ -45,8 +45,10 @@ local ret=1
     '(-v --verbose)'{-v,--verbose}'[Print verbose message.]' \
     '(-d --debug)'{-d,--debug}'[Print debug message.]' \
     '(-q --quiet)'{-q,--quiet}'[Be quiet.]' \
-    '(-h --help)'{-h,--help}'[Show help]' \
-    '--version[Show version]' \
+    '(-h --help)'{-h,--help}'[Show help.]' \
+    '--version[Show version.]' \
+    '(-p --profile)'{-p,--profile}'[Display timing and memory usage information.]' \
+    '--no-interact[Do not ask any interactive question.]' \
     ': :->cmds' \
     '*:: :->option-or-argument' \
      && return
