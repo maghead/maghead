@@ -105,6 +105,15 @@ class ConnectionManager
         if (!isset($config['pass'])) {
             $config['pass'] = NULL;
         }
+        if (!isset($config['query_options'])) {
+            $config['query_options'] = array();
+        }
+        if (!isset($config['driver'])) {
+            if (isset($config['dsn']) ) {
+                list($driver) = explode( ':', $config['dsn'], 2);
+                $config['driver'] = $driver;
+            }
+        }
         $this->datasources[ $id ] = $config;
     }
 
@@ -151,14 +160,14 @@ class ConnectionManager
     {
         $self = $this;
 
-        if( QueryDriver::hasInstance($id) ) {
+        if (QueryDriver::hasInstance($id)) {
             return QueryDriver::getInstance($id);
         }
 
         $driver = QueryDriver::getInstance($id);
 
         // configure query driver type
-        if( $driverType = $this->getDriverType($id) ) {
+        if ($driverType = $this->getDriverType($id)) {
             $conn = $this->getConnection($id);
             $driver->configure('driver',$driverType);
             $driver->quoter = function($string) use ($conn,$id) {
@@ -169,9 +178,8 @@ class ConnectionManager
 
         // setup query driver options
         $config = isset($this->datasources[ $id ]) ? $this->datasources[ $id ] : null;
-        if( $config && isset( $config['query_options'] ) ) {
-            $queryOptions = $config['query_options'];
-            foreach( $queryOptions as $option => $value ) {
+        if ($config && $config['query_options']) {
+            foreach($config['query_options'] as $option => $value ) {
                 $driver->configure( $option , $value );
             }
         }
@@ -184,13 +192,7 @@ class ConnectionManager
     public function getDriverType($id)
     {
         $config = $this->getDataSource($id);
-        if( isset($config['driver']) ) {
-            return $config['driver'];
-        }
-        if( isset($config['dsn']) ) {
-            list($driverType) = explode( ':', $config['dsn'] , 2 );
-            return $driverType;
-        }
+        return $config['driver'];
     }
 
     /**
