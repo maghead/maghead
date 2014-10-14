@@ -75,9 +75,6 @@ class ConfigLoader
         $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
         if (ConfigCompiler::test($sourceFile, $compiledFile)) {
             $this->config = ConfigCompiler::parse($sourceFile);
-            // TODO: pre-process config file
-
-
             foreach($this->config['data_sources'] as & $config) {
 
                 if (!isset($config['driver'])) {
@@ -118,7 +115,7 @@ class ConfigLoader
                     $config['connection_options'] = array();
                 }
 
-                if( 'mysql' === $config['driver'] ) {
+                if ('mysql' === $config['driver']) {
                     $config['connection_options'][ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
                 }
             }
