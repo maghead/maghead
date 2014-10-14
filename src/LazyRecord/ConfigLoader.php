@@ -127,27 +127,26 @@ class ConfigLoader
     }
 
     /**
-     * Load configuration file
+     * Load configuration
      *
-     * @param string $file config file.
+     * @param mixed $arg config file.
      */
-    public function load($file, $force = false)
+    public function load($arg, $force = false)
     {
         // should we load config file force ?
-        if( $force !== true && $this->loaded === true ) {
-            throw new Exception("Can not load $file. Config is already loaded.");
+        if ($force !== true && $this->loaded === true) {
+            throw new Exception("Can not load config. Config is already loaded.");
         }
 
-        if( $file === null || is_bool($file) )
-            $file = $this->symbolFilename;
+        if ($arg === null || is_bool($arg)) {
+            $arg = $this->symbolFilename;
+        }
 
-        if( (is_string($file) && file_exists($file)) || $file === true ) {
-            $this->config = ConfigCompiler::load($file);
-        }
-        elseif( is_array($file) ) {
-            $this->config = $file;
-        }
-        else {
+        if ((is_string($arg) && file_exists($arg)) || $arg === true ) {
+            $this->config = ConfigCompiler::load($arg);
+        } elseif( is_array($arg) ) {
+            $this->config = $arg;
+        } else {
             throw new Exception("unknown config format.");
         }
         $this->loaded = true;
