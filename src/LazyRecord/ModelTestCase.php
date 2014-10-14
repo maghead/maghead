@@ -65,8 +65,8 @@ abstract class ModelTestCase extends PHPUnit_Framework_TestCase
             $config = array('dsn' => $dsn);
             $user = $this->getDatabaseUser();
             $pass = $this->getDatabasePassword();
-            if($user) $config['user'] = $user;
-            if($pass) $config['pass'] = $pass;
+            $config['user'] = $user;
+            $config['pass'] = $pass;
             ConnectionManager::getInstance()->addDataSource('default', $config);
         }
         elseif( $this->getDatabaseName() ) {
