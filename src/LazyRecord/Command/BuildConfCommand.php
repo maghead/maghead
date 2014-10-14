@@ -17,7 +17,7 @@ class BuildConfCommand extends \CLIFramework\Command
 
     public function brief()
     {
-        return 'build configuration file.';
+        return 'Build configuration file.';
     }
 
     public function arguments($args) {
@@ -34,25 +34,24 @@ class BuildConfCommand extends \CLIFramework\Command
          * 
          * build/lazy/config.php   # is generated
          */
-        $options = $this->options;
         if( ! $configFile ) {
             if( file_exists( 'db/config/site_database.yml' ) ) {
                 $configFile = 'db/config/site_database.yml';
-                ConfigCompiler::compile($configFile);
+                ConfigLoader::compile($configFile);
             }
             if( file_exists( 'db/config/database.yml' ) ) {
                 $configFile = 'db/config/database.yml';
-                ConfigCompiler::compile($configFile);
+                ConfigLoader::compile($configFile);
             }
 
             // old config file path.
             if( file_exists( 'config/database.yml' ) ) {
                 $configFile = 'config/database.yml';
-                ConfigCompiler::compile($configFile);
+                ConfigLoader::compile($configFile);
             }
             if( file_exists( 'config/site_database.yml' ) ) {
                 $configFile = 'config/site_database.yml';
-                ConfigCompiler::compile($configFile);
+                ConfigLoader::compile($configFile);
             }
         }
         if( ! $configFile ) {
@@ -61,7 +60,7 @@ class BuildConfCommand extends \CLIFramework\Command
 
         $this->logger->info("Building config from $configFile");
         $dir = dirname($configFile);
-        ConfigCompiler::compile($configFile);
+        ConfigLoader::compile($configFile);
 
         // make master config link
         $loader = ConfigLoader::getInstance();

@@ -65,64 +65,77 @@ class ConfigLoader
         $this->loaded = true;
     }
 
+
+    static public function preprocessConfigArray(array $dbconfig)
+    {
+        foreach($dbconfig['data_sources'] as & $config) {
+
+            if (!isset($config['driver'])) {
+                list($driverType) = explode( ':', $config['dsn'] , 2 );
+                $config['driver'] = $driverType;
+            }
+
+            if (isset($config['username']) && $config['username']) {
+                $config['user'] = $config['username'];
+            }
+            if (isset($config['password']) && $config['password']) {
+                $config['pass'] = $config['password'];
+            }
+            if (!isset($config['user'])) {
+                $config['user'] = NULL;
+            }
+            if (!isset($config['pass'])) {
+                $config['pass'] = NULL;
+            }
+
+            if (!isset($config['dsn']) ) {
+                // Build DSN connection string for PDO
+                $params = array();
+                if( isset($config['database']) ) {
+                    $params[] = 'dbname=' . $config['database'];
+                }
+                if( isset($config['host']) ) {
+                    $params[] = 'host=' . $config['host'];
+                }
+                $config['dsn'] = $config['driver'] . ':' . join(';', $params);
+            }
+
+            if (!isset($config['query_options'])) {
+                $config['query_options'] = array();
+            }
+
+            if (!isset($config['connection_options'])) {
+                $config['connection_options'] = array();
+            }
+
+            if ('mysql' === $config['driver']) {
+                $config['connection_options'][ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
+            }
+        }
+        return $dbconfig;
+    }
+
+    static public function compile($sourceFile)
+    {
+        $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
+        if (ConfigCompiler::test($sourceFile, $compiledFile)) {
+            $config = self::preprocessConfigArray(ConfigCompiler::parse($sourceFile));
+            ConfigCompiler::write($compiledFile,$config);
+            return $config;
+        } else {
+            return require $compiledFile;
+        }
+    }
+
+
     /**
-     * Load config from the YAML config file.
+     * Load config from the YAML config file...
      *
      * @param string $file
      */
     public function loadFromFile($sourceFile)
     {
-        $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
-        if (ConfigCompiler::test($sourceFile, $compiledFile)) {
-            $this->config = ConfigCompiler::parse($sourceFile);
-            foreach($this->config['data_sources'] as & $config) {
-
-                if (!isset($config['driver'])) {
-                    list($driverType) = explode( ':', $config['dsn'] , 2 );
-                    $config['driver'] = $driverType;
-                }
-
-                if (isset($config['username']) && $config['username']) {
-                    $config['user'] = $config['username'];
-                }
-                if (isset($config['password']) && $config['password']) {
-                    $config['pass'] = $config['password'];
-                }
-                if (!isset($config['user'])) {
-                    $config['user'] = NULL;
-                }
-                if (!isset($config['pass'])) {
-                    $config['pass'] = NULL;
-                }
-
-                if (!isset($config['dsn']) ) {
-                    // Build DSN connection string for PDO
-                    $params = array();
-                    if( isset($config['database']) ) {
-                        $params[] = 'dbname=' . $config['database'];
-                    }
-                    if( isset($config['host']) ) {
-                        $params[] = 'host=' . $config['host'];
-                    }
-                    $config['dsn'] = $config['driver'] . ':' . join(';', $params);
-                }
-
-                if (!isset($config['query_options'])) {
-                    $config['query_options'] = array();
-                }
-
-                if (!isset($config['connection_options'])) {
-                    $config['connection_options'] = array();
-                }
-
-                if ('mysql' === $config['driver']) {
-                    $config['connection_options'][ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
-                }
-            }
-            ConfigCompiler::write($compiledFile,$this->config);
-        } else {
-            $this->config = require $compiledFile;
-        }
+        $this->config = self::compile($sourceFile);
         $this->loaded = true;
     }
 
@@ -143,9 +156,9 @@ class ConfigLoader
         }
 
         if ((is_string($arg) && file_exists($arg)) || $arg === true ) {
-            $this->config = ConfigCompiler::load($arg);
+            $this->loadFromFile($arg);
         } elseif( is_array($arg) ) {
-            $this->config = $arg;
+            $this->config = self::preprocessConfigArray($arg);
         } else {
             throw new Exception("unknown config format.");
         }
