@@ -109,7 +109,14 @@ class ConfigLoader
                     }
                     $config['dsn'] = $config['driver'] . ':' . join(';', $params);
                 }
-                $config['connection_options'] = array();
+
+                if (!isset($config['query_options'])) {
+                    $config['query_options'] = array();
+                }
+
+                if (!isset($config['connection_options'])) {
+                    $config['connection_options'] = array();
+                }
 
                 if( 'mysql' === $config['driver'] ) {
                     $config['connection_options'][ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
