@@ -3,6 +3,7 @@ namespace LazyRecord;
 use ConfigKit\ConfigCompiler;
 use Exception;
 use ArrayAccess;
+use PDO;
 
 /**
  * Available config key:
