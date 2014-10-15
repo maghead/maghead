@@ -16,13 +16,7 @@ class TableSchema extends Schema
             ;
 
         $this->column('columns')
-            ->text()
-            ->inflator(function($value) {
-                return json_decode($value);
-            })
-            ->deflator(function($value) {
-                return json_encode($value);
-            })
+            ->json();
             ;
 
         $this->column('rows')
