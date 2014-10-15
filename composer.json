@@ -14,7 +14,7 @@
         "corneltek/cascading-attribute": "~1.2",
         "corneltek/universal-cache": "~1",
         "corneltek/dbutil": "~1",
-        "twig/twig": "~1.12"
+        "twig/twig": "~1"
     },
     "require-dev": {
         "corneltek/phpunit-testmore": "dev-master",
