@@ -323,6 +323,13 @@ class ColumnDeclare implements ColumnAccessorInterface
         return $this;
     }
 
+    public function json()
+    {
+        $this->attributes['type'] = 'text';
+        $this->attributes['isa'] = 'json';
+        return $this;
+    }
+
     public function timestamp()
     {
         $this->attributes['type'] = 'timestamp';

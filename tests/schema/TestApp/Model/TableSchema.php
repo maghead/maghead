@@ -1,0 +1,38 @@
+<?php
+namespace TestApp\Model;
+use LazyRecord\Schema;
+
+class TableSchema extends Schema
+{
+    public function schema()
+    {
+        $this->column('id')
+            ->integer()
+            ->primary()
+            ->autoIncrement();
+
+        $this->column('title')
+            ->varchar(512)
+            ;
+
+        $this->column('columns')
+            ->text()
+            ->inflator(function($value) {
+                return json_decode($value);
+            })
+            ->deflator(function($value) {
+                return json_encode($value);
+            })
+            ;
+
+        $this->column('rows')
+            ->text()
+            ->inflator(function($value) {
+                return json_decode($value);
+            })
+            ->deflator(function($value) {
+                return json_encode($value);
+            })
+            ;
+    }
+}

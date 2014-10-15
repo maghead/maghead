@@ -29,7 +29,7 @@ class Inflator
 
         if( isset(self::$inflators[ $isa ]) ) {
             $inflator = self::$inflators[ $isa ];
-            if( is_callable($inflator) ) {
+            if (is_callable($inflator) ) {
                 return call_user_func( $inflator , $value );
             }
             elseif( class_exists($inflator,true) ) {
@@ -38,26 +38,23 @@ class Inflator
             }
         }
 
-        /* respect the data type to inflate value */
-        if( $isa == 'int' ) {
+        switch($isa) {
+        case "int":
             return (int) $value;
-        }
-        elseif( $isa == 'str' ) {
+        case "str":
             return (string) $value;
-        }
-        elseif( $isa == 'bool' ) {
-            if( strcasecmp( 'false', $value ) == 0 || $value == '0' ) {
+        case "bool":
+            if (strcasecmp( 'false', $value ) == 0 || $value == '0') {
                 return false;
-            } 
-            elseif( strcasecmp( 'true', $value ) == 0 || $value == '1' ) {
+            } elseif( strcasecmp( 'true', $value ) == 0 || $value == '1' ) {
                 return true;
             }
             return $value ? true : false;
-        }
-        elseif( $isa == 'float' ) {
-            return (float) $value;
-        }
-        elseif( $isa == 'DateTime' ) {
+        case "float":
+            return floatval($value);
+        case "json":
+            return json_decode($value);
+        case "DateTime":
             // already a DateTime object
             if( is_a( $value , 'DateTime',true) ) {
                 return $value;

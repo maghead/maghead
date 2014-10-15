@@ -3,37 +3,34 @@ namespace LazyRecord;
 use DateTime;
 
 /**
- * deflate object value into database
+ * Deflate object value into database
  */
 class Deflator
 {
 
     static public function deflate($value, $isa)
     {
-        /* respect the data type to inflate value */
-        if( $isa === 'int' ) {
+        switch($isa) {
+
+        case 'int':
             return (int) $value;
-        }
-        elseif( $isa === 'str' ) {
+        case 'str':
             return (string) $value;
-        }
-        elseif( $isa === 'double' ) {
+        case 'double':
             return (double) $value;
-        }
-        elseif( $isa === 'float' ) {
-            return (float) $value;
-        }
-        elseif( $isa == 'DateTime' ) {
-            if( is_a($value, 'DateTime',true) ) {
+        case 'float':
+            return floatval($value);
+        case "json":
+            return json_encode($value);
+        case "DateTime":
+            if (is_a($value, 'DateTime',true)) {
                 return $value->format( DateTime::ATOM );
-            }
-            if( $value === '' ) {
-                return null;
+            } 
+            if (!$value) {
+                return NULL;
             }
             return $value; // might return ""
-        }
-        elseif( $isa == 'bool' ) 
-        {
+        case 'bool':
             /**
              * PDO can't accept false or true boolean value, can only accept string
              * https://bugs.php.net/bug.php?id=33876
@@ -81,9 +78,7 @@ class Deflator
             }
             return (boolean) $value ? 1 : 0;
         }
-        elseif( $isa == 'float' ) {
-            return (float) $value;
-        }
+        /* respect the data type to inflate value */
         return $value;
     }
 

@@ -10,7 +10,7 @@
     <!-- configuration for mysql -->
     <env name="DB_MYSQL_DSN" value="mysql:dbname=testing"/>
     <env name="DB_MYSQL_USER" value="testing"/>
-    <env name="DB_MYSQL_PASS" value="testing"/>
+    <!-- <env name="DB_MYSQL_PASS" value="testing"/> -->
 
     <!-- configuration for pgsql -->
     <env name="DB_PGSQL_DSN" value="pgsql:dbname=testing"/>
