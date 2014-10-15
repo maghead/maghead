@@ -195,13 +195,12 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      *
      * @param mixed $value
      **/
-    public function deflate( $value )
+    public function deflate($value)
     {
         // run column specified deflator
         if( $f = $this->get('deflator') ) {
-            return call_user_func( $f, $value );
+            return call_user_func($f, $value);
         }
-
         // use global deflator, check self type, and do type casting
         return Deflator::deflate( $value , $this->get('isa') );
     }
@@ -209,7 +208,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
     public function inflate($value, $record)
     {
         if( $f = $this->get('inflator') ) {
-            return call_user_func( $f , $value , $record );
+            return call_user_func($f , $value , $record );
         }
         // use global inflator
         return Inflator::inflate( $value , $this->get('isa') );

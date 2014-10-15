@@ -42,6 +42,8 @@ class DatabaseException extends RuntimeException {
     }
 }
 
+class PrimaryKeyNotFoundException extends Exception { }
+
 
 /**
  * Base Model class,
@@ -498,15 +500,13 @@ abstract class BaseModel implements
      */
     public function reload($pkId = null)
     {
-        if( $pkId ) {
+        if ($pkId) {
             return $this->load( $pkId );
-        }
-        elseif( null === $pkId && $pk = $this->getSchema()->primaryKey ) {
+        } elseif( NULL === $pkId && $pk = $this->getSchema()->primaryKey ) {
             $pkId = $this->_data[ $pk ];
             return $this->load( $pkId );
-        }
-        else {
-            throw new Exception("Primary key not found, can not reload record.");
+        } else {
+            throw new PrimaryKeyNotFoundException("Primary key is not found, can not reload " . get_class($this));
         }
     }
 
@@ -1144,7 +1144,7 @@ abstract class BaseModel implements
             ));
         }
 
-        return $this->reportSuccess( 'Deleted' , array( 
+        return $this->reportSuccess( 'Updated' , array( 
             'id'  => $kVal,
             'sql' => $sql,
             'args' => $args,
@@ -1327,11 +1327,13 @@ abstract class BaseModel implements
      */
     public function loadQuery($sql , $vars = array() , $dsId = null ) 
     {
-        if( ! $dsId )
+        if (! $dsId) {
             $dsId = $this->getReadSourceId();
+        }
+
         $conn = $this->getConnection( $dsId );
         $stm = $this->dbPrepareAndExecute($conn, $sql, $vars);
-        if( false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
+        if ( FALSE === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
             return $this->reportError('Data load failed.', array( 
                 'sql' => $sql,
                 'vars' => $vars,
@@ -1942,7 +1944,7 @@ abstract class BaseModel implements
     {
         $value = isset($this->_data[ $n ]) ? $this->_data[$n] : null;
         if ( $c = $this->getSchema()->getColumn( $n ) ) {
-            return $c->inflate($value, $this );
+            return $c->inflate($value, $this);
         }
         return $value;
     }
