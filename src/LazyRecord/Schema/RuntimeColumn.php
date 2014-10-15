@@ -10,6 +10,7 @@ use Exception;
 use ArrayIterator;
 use IteratorAggregate;
 use InvalidArgumentException;
+use SQLBuilder\RawValue;
 
 class InvalidValueTypeException extends Exception { }
 
@@ -91,8 +92,8 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
     public function canonicalizeValue( & $value , $record = null , $args = null )
     {
         $cb = $this->get('filter') ?: $this->get('canonicalizer') ?: null;
-        if( $cb ) {
-            return $value = call_user_func( $cb , $value,$record,$args);
+        if ($cb) {
+            return $value = call_user_func($cb, $value, $record, $args);
         }
         return $value;
     }
@@ -133,7 +134,11 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      */
     public function typeCasting($value)
     {
-        if( $isa = $this->get('isa') ) {
+        if ($value instanceof RawValue) {
+            return $value;
+        }
+
+        if ($isa = $this->get('isa')) {
             if( $isa === 'int' ) {
                 return intval($value);
             }
@@ -201,7 +206,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         return Deflator::deflate( $value , $this->get('isa') );
     }
 
-    public function inflate( $value, $record )
+    public function inflate($value, $record)
     {
         if( $f = $this->get('inflator') ) {
             return call_user_func( $f , $value , $record );

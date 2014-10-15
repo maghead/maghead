@@ -1,4 +1,5 @@
 <?php
+use SQLBuilder\RawValue;
 
 class BookModelTest extends \LazyRecord\ModelTestCase
 {
@@ -132,17 +133,15 @@ class BookModelTest extends \LazyRecord\ModelTestCase
         is( 0 , $n->view );
 
         $ret = $n->update(array( 
-            'view' => array('view + 1')
-        ));
+            'view' => new RawValue('view + 1')
+        ), array('reload' => 1));
 
         ok( $ret->success );
         is( 1 , $n->view );
 
         $n->update(array( 
-            'view' => array('view + 3')
-        ));
-        $ret = $n->reload();
-        ok( $ret->success );
+            'view' => new RawValue('view + 3')
+        ), array('reload' => 1));
         is( 4, $n->view );
     }
 
@@ -160,11 +159,11 @@ class BookModelTest extends \LazyRecord\ModelTestCase
         is( 0 , $b->view );
 
         // test incremental
-        $ret = $b->update(array( 'view'  => array('view + 1') ), array('reload' => true));
+        $ret = $b->update(array( 'view'  => new RawValue('view + 1') ), array('reload' => true));
         result_ok($ret);
         is( 1,  $b->view );
 
-        $ret = $b->update(array( 'view'  => array('view + 1') ), array('reload' => true));
+        $ret = $b->update(array( 'view'  => new RawValue('view + 1') ), array('reload' => true));
         result_ok($ret);
         is( 2,  $b->view );
 
