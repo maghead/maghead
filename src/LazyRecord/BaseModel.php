@@ -26,6 +26,8 @@ use SerializerKit\XmlSerializer;
 use SerializerKit\JsonSerializer;
 use SerializerKit\YamlSerializer;
 
+use SQLBuilder\RawValue;
+
 use ValidationKit\ValidationMessage;
 use ActionKit;
 use ActionKit\RecordAction\BaseRecordAction;
@@ -746,18 +748,16 @@ abstract class BaseModel implements
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
-                if ($c->typeConstraint && ( $val !== null && ! is_array($val) )) {
+                if ($c->typeConstraint && ( $val !== null && ! is_array($val) && ! $val instanceof RawValue )) {
                     if ( false === $c->checkTypeConstraint( $val )) {
                         return $this->reportError("{$val} is not " . $c->isa . " type");
                     }
-                }
-                // try to cast value 
-                else if ($val !== null && ! is_array($val)) {
+                } elseif ($val !== null && ! is_array($val) && ! $val instanceof RawValue) {
                     $val = $c->typeCasting($val);
                 }
 
                 if ($c->filter || $c->canonicalizer) {
-                    $c->canonicalizeValue( $val , $this, $args );
+                    $val = $c->canonicalizeValue($val, $this, $args );
                 }
 
                 if ($validationResult = $this->_validateColumn($c,$val,$args)) {
@@ -766,8 +766,16 @@ abstract class BaseModel implements
                         $validationError = true;
                     }
                 }
-                if ($val !== null) {
-                    $args[ $n ] = is_array($val) ? $val : $c->deflate( $val );
+                if ($val !== NULL) {
+                    if (!is_string($val)) {
+                        if ($val instanceof RawValue) {
+                            $args[$n] = $val;
+                        } else {
+                            $args[$n] = $c->deflate($val);
+                        }
+                    } else {
+                        $args[$n] = $val;
+                    }
                 }
             }
 
@@ -1067,29 +1075,36 @@ abstract class BaseModel implements
                         return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));
                     }
 
-                    if ($args[$n] !== null && ! is_array($args[$n]) ) {
+                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof RawValue ) {
                         $args[$n] = $c->typeCasting( $args[$n] );
                     }
 
-                    if ($args[$n] !== null && ! is_array($args[$n])) {
+                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof RawValue ) {
                         if ( false === $c->checkTypeConstraint($args[$n])) {
                             return $this->reportError($args[$n] . " is not " . $c->isa . " type");
                         }
                     }
 
                     if ($c->filter || $c->canonicalizer) {
-                        $c->canonicalizeValue( $args[$n], $this, $args);
+                        $args[$n] = $c->canonicalizeValue($args[$n], $this, $args);
                     }
 
-                    if ( $validationResult = $this->_validateColumn($c,$args[$n],$args)) {
+                    if ($validationResult = $this->_validateColumn($c, $args[$n], $args)) {
                         $validationResults[$n] = $validationResult;
-                        if ( ! $validationResult['valid'] ) {
+                        if (! $validationResult['valid']) {
                             $validationError = true;
                         }
                     }
 
-                    // deflate
-                    $args[ $n ] = is_array($args[$n]) ? $args[$n] : $c->deflate( $args[$n] );
+                    if (!is_string($args[$n])) {
+                        if ($args[$n] instanceof RawValue) {
+                            $args[$n] = $args[$n];
+                        } else {
+                            $args[$n] = $c->deflate( $args[$n] );
+                        }
+                    } else {
+                        $args[$n] = $args[$n];
+                    }
                 }
             }
 
@@ -1923,11 +1938,11 @@ abstract class BaseModel implements
      *
      * @return mixed
      */
-    public function inflateColumnValue( $n ) 
+    public function inflateColumnValue($n) 
     {
         $value = isset($this->_data[ $n ]) ? $this->_data[$n] : null;
         if ( $c = $this->getSchema()->getColumn( $n ) ) {
-            return $c->inflate( $value, $this );
+            return $c->inflate($value, $this );
         }
         return $value;
     }

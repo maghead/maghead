@@ -96,9 +96,9 @@ class NameModelTest extends ModelTestCase
     public function testModelColumnFilter()
     {
         $name = new \TestApp\Model\Name;
-        $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John' ));
+        $ret = $name->create(array('name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John'));
         result_ok($ret);
-        is( 'XXXX' , $name->address , 'Be canonicalized' );
+        is('XXXX' , $name->address , 'Should be canonicalized' );
     }
 
     public function testBooleanFromStringZero()

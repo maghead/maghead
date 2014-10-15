@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord;
 use LazyRecord\Types\DateTime;
+use SQLBuilder\RawValue;
 
 class Inflator
 {
@@ -16,8 +17,15 @@ class Inflator
 
     static function inflate($value,$isa = null)
     {
-        if( $value === null || $isa === null )
+        if ($value === null || $isa === null) {
             return $value;
+        }
+
+        /*
+        if ($value instanceof RawValue) {
+            return $value->;
+        }
+         */
 
         if( isset(self::$inflators[ $isa ]) ) {
             $inflator = self::$inflators[ $isa ];

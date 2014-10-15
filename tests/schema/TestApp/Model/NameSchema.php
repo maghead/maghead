@@ -30,8 +30,8 @@ class NameSchema extends Schema
                     return array( false , "Please don't" );
                 return array( true , "Good" );
             })
-            ->filter( function($val,$args,$record)  { 
-                return str_replace( 'John' , 'XXXX' , $val );
+            ->filter(function($val, $args, $record) {
+                return str_replace('John', 'XXXX', $val);
             })
             ->default( function() { 
                 return 'Default Address';
