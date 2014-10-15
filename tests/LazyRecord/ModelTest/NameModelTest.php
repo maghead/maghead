@@ -1,5 +1,4 @@
 <?php
-
 use LazyRecord\ModelTestCase;
 
 class NameModelTest extends ModelTestCase
