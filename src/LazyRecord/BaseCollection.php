@@ -98,6 +98,7 @@ class BaseCollection
 
     protected $explictSelect = false;
 
+    public $selected;
 
     /**
      * $this->defaultOrdering = array( 
@@ -204,6 +205,26 @@ class BaseCollection
         return $this;
     }
 
+    public function select($sels) {
+        $this->explictSelect = true;
+        $this->selected = (array) $sels;
+        return $this;
+    }
+
+    public function selectAll() {
+        $dsId = $this->getSchema()->getReadSourceId();
+        $driver = $this->getQueryDriver( $dsId );
+        $this->explictSelect = true;
+        $this->selected = $this->getExplicitColumnSelect($driver);
+        return $this;
+    }
+
+    public function getSelected() {
+        if ($this->selected) {
+            return $this->selected;
+        }
+    }
+
 
     // TODO: maybe we should move this method into RuntimeSchema.
     // Because it's used in BaseModel class too
@@ -233,10 +254,13 @@ class BaseCollection
         $q = new QueryBuilder;
         $q->driver = $this->getQueryDriver( $dsId );
         $q->table( $this->getSchema()->table );
+
+        $selection = $this->getSelected();
         $q->select(
-            $this->explictSelect 
-                ? $this->getExplicitColumnSelect($q->driver)
-                : $this->getAlias() . '.*'
+            $selection ? $selection
+                : $this->explictSelect 
+                    ? $this->getExplicitColumnSelect($q->driver)
+                    : $this->getAlias() . '.*'
         );
         $q->alias( $this->getAlias() ); // main table alias
 
