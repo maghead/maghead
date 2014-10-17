@@ -141,6 +141,10 @@ abstract class BaseModel implements
         return $this;
     }
 
+    public function getSelected() {
+        return $this->selected;
+    }
+
 
 
 
@@ -800,7 +804,7 @@ abstract class BaseModel implements
         }
         catch (PDOException $e)
         {
-            throw new DatabaseException('Record create failed', $e, array(
+            throw new DatabaseException('Record create failed:' . $e->getMessage(), $e, array(
                 'vars' => $vars,
                 'args' => $args,
                 'sql' => $sql,
