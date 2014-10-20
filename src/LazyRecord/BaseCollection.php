@@ -878,7 +878,7 @@ class BaseCollection
 
     public function add($record)
     {
-        if( ! $this->_itemData )
+        if (! $this->_itemData )
             $this->_itemData = array();
         $this->_itemData[] = $record;
     }
