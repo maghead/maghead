@@ -53,9 +53,14 @@ abstract class SchemaBase
         return $this->_modelName = substr($class,$p + 1);
     }
 
-    public function addMixinSchemaClass($class) 
+    public function addMixinSchemaClass($class)
     {
         $this->mixinSchemas[] = $class;
+    }
+
+    public function hasMixinSchemaClass($class)
+    {
+        return in_array($class, $this->mixinSchemas);
     }
 
     public function getMixinSchemaClasses() 
