@@ -130,8 +130,18 @@ abstract class BaseModel implements
      */
     public function __construct($args = null)
     {
-        if ( $args ) {
-            $this->_load( $args );
+        // Load the data only when the ID is defined.
+        if ($args) {
+            if (is_int($args)) {
+                $this->_load( $args );
+            } elseif (is_array($args)) {
+                $pk = $this->getSchema()->primaryKey;
+                if (isset($args[$pk])) {
+                    $this->_load( $args );
+                } else {
+                    $this->setData($args);
+                }
+            }
         }
     }
 
@@ -1518,7 +1528,7 @@ abstract class BaseModel implements
      *
      * @param array $array
      */
-    public function setData($array)
+    public function setData(array $array)
     {
         $this->_data = $array;
     }
