@@ -932,6 +932,18 @@ class BaseCollection
         return $this->asPairs($key,$valueKey);
     }
 
+    public function toLabelValuePairs() {
+        $items = array();
+        foreach( $this as $item ) {
+            $items[] = array(
+                "label" => $item->dataLabel(),
+                "value" => $item->dataValue(),
+            );
+        }
+        return $items;
+    }
+
+
     /**
      * When cloning collection object,
      * The resources will be free, and the 
