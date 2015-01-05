@@ -132,6 +132,8 @@ abstract class BaseModel implements
     {
         // Load the data only when the ID is defined.
         if ($args) {
+            $this->_load( $args );
+            /*
             if (is_int($args)) {
                 $this->_load( $args );
             } elseif (is_array($args)) {
@@ -142,6 +144,7 @@ abstract class BaseModel implements
                     $this->setData($args);
                 }
             }
+             */
         }
     }
 
