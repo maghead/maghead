@@ -17,6 +17,7 @@ class BaseCollectionClassFactory
             'model_class'        => $schema->getModelClass(),
             'table'              => $schema->getTable(),
             'read_source_id'     => $schema->getReadSourceId(),
+            'write_source_id'     => $schema->getWriteSourceId(),
         ));
         $cTemplate->extendClass( '\\' . $baseCollectionClass );
         return $cTemplate;
