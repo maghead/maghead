@@ -12,9 +12,12 @@ class BaseCollectionClassFactory
             // 'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
         ));
-        $cTemplate->addConst( 'schema_proxy_class' , $schema->getSchemaProxyClass() );
-        $cTemplate->addConst( 'model_class' , $schema->getModelClass() );
-        $cTemplate->addConst( 'table',  $schema->getTable() );
+        $cTemplate->addConsts(array(
+            'schema_proxy_class' => $schema->getSchemaProxyClass(),
+            'model_class'        => $schema->getModelClass(),
+            'table'              => $schema->getTable(),
+            'read_source_id'     => $schema->getReadSourceId(),
+        ));
         $cTemplate->extendClass( '\\' . $baseCollectionClass );
         return $cTemplate;
     }
