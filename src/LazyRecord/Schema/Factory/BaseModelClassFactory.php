@@ -12,9 +12,11 @@ class BaseModelClassFactory
         ));
         $cTemplate->addConsts(array(
             'schema_proxy_class' => $schema->getSchemaProxyClass(),
-            'collection_class' => $schema->getCollectionClass(),
-            'model_class' => $schema->getModelClass(),
-            'table' => $schema->getTable(),
+            'collection_class'   => $schema->getCollectionClass(),
+            'model_class'        => $schema->getModelClass(),
+            'table'              => $schema->getTable(),
+            'read_source_id'     => $schema->getReadSourceId(),
+            'write_source_id'    => $schema->getWriteSourceId(),
         ));
         $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
         $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
