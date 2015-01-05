@@ -346,12 +346,15 @@ class BaseCollection
     {
         $dsId = $this->getSchema()->getReadSourceId();
         $q = clone $this->_query;
-        $q->select('count(*)'); // override current select.
+        $q->select('COUNT(distinct m.id)'); // Override current select.
 
         // when selecting count(*), we dont' use groupBys or order by
         $q->orders = array();
         $q->groupBys = array();
         $sql = $q->build();
+
+        // var_dump( $sql );
+        
         return (int) ConnectionManager::getInstance()
                     ->getConnection($dsId)->prepareAndExecute($sql,$q->vars)
                     ->fetchColumn();
