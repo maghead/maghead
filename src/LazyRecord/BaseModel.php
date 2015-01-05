@@ -171,6 +171,14 @@ abstract class BaseModel implements
         return $this->_cachePrefix = get_class($this);
     }
 
+
+    public function unsetPrimaryKey()
+    {
+        if ($pk = $this->getSchema()->primaryKey) {
+            unset($this->data[ $pk ]);
+        }
+    }
+
     /**
      * Use specific data source for data operations.
      *
