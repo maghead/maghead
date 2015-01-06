@@ -69,7 +69,7 @@ abstract class BaseModel implements
      *
      * Turn off this if you want performance.
      */
-    public $autoReload = true;
+    public $autoReload = false;
 
 
 
@@ -742,7 +742,13 @@ abstract class BaseModel implements
         // don't expect to happen. Validating input isn't very exceptional.
 
         try {
-            $args = $this->beforeCreate( $args );
+            $args = $this->beforeCreate($args);
+
+            if ($args === false) {
+                return $this->reportError( _('Create failed') , array( 
+                    'args' => $args,
+                ));
+            }
 
 
             // first, filter the array, arguments for inserting data.
@@ -844,11 +850,8 @@ abstract class BaseModel implements
         }
         $this->_data['id'] = $pkId;
 
-        if ($pkId && isset($options['reload'])) {
-            if ($options['reload']) {
-                $this->load($pkId);
-            }
-        } elseif ( $pkId && $this->autoReload ) {
+        if ($pkId && isset($options['reload']) && $options['reload']) {
+        } elseif ($pkId && $this->autoReload) {
             $this->load($pkId);
         } else {
             $this->_data = $args;
