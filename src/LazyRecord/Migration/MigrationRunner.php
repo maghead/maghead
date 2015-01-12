@@ -58,7 +58,7 @@ class MigrationRunner
         $metadata['migration'] = 0;
     }
 
-    public function updateLastMigrationId($dsId,$id) 
+    public function updateLastMigrationId($dsId, $id) 
     {
         $metadata = new Metadata($dsId);
         $lastId = $metadata['migration'];
@@ -124,8 +124,9 @@ class MigrationRunner
                     $migration = new $script( $dsId );
                     $migration->downgrade();
 
-                    $nextScript = end($scripts);
-                    $this->updateLastMigrationId($dsId,$nextScript::getId());
+                    if ($nextScript = end($scripts)) {
+                        $this->updateLastMigrationId($dsId, $nextScript::getId());
+                    }
                 }
             }
         }
