@@ -9,11 +9,13 @@ class CommandUtils
 
     static $loader;
 
-    static function init_config_loader() {
+    static function init_config_loader($required = false) {
         $loader = ConfigLoader::getInstance();
         $loader->loadFromSymbol(true); // force loading
         if ($loader->isLoaded()) {
             $loader->initForBuild();
+        } elseif ($required) {
+            throw new RuntimeException("ConfigLoader did not loaded any config file. Can't initialize the settings.");
         }
         return static::$loader = $loader;
     }
