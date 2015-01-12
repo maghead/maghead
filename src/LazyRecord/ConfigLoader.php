@@ -50,9 +50,6 @@ class ConfigLoader
         elseif( file_exists('.lazy.php') ) {
             return $this->load('.lazy.php', $force );
         }
-        else {
-            throw new Exception("lazyrecord config symbol .lazy.php or .lazy.yml is not found.");
-        }
     }
 
     /**
@@ -184,16 +181,20 @@ class ConfigLoader
      */
     public function init()
     {
-        if( $this->loaded ) {
+        if ($this->loaded) {
             $this->loadDataSources();
         } else {
             throw new Exception('Can not initialize config: Config is not loaded.');
         }
     }
 
+    public function isLoaded() {
+        return $this->loaded;
+    }
+
     public function initForBuild()
     {
-        if( $this->loaded ) {
+        if ($this->loaded) {
             $this->loadDataSources();
             $this->loadBootstrap();
             $this->loadExternalSchemaLoader();

@@ -24,8 +24,8 @@ class Console extends Application
         /**
          * command for building config file.
          */
-        $this->command('build-conf',   'LazyRecord\\Command\\BuildConfCommand');
-        $this->command('conf',   'LazyRecord\\Command\\BuildConfCommand');
+        $this->command('build-conf', 'LazyRecord\\Command\\BuildConfCommand');
+        $this->command('conf',       'LazyRecord\\Command\\BuildConfCommand');
 
         /**
          * schema command.

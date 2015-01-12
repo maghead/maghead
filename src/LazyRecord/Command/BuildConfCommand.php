@@ -34,27 +34,23 @@ class BuildConfCommand extends \CLIFramework\Command
          * 
          * build/lazy/config.php   # is generated
          */
-        if( ! $configFile ) {
-            if( file_exists( 'db/config/site_database.yml' ) ) {
-                $configFile = 'db/config/site_database.yml';
-                ConfigLoader::compile($configFile);
-            }
-            if( file_exists( 'db/config/database.yml' ) ) {
-                $configFile = 'db/config/database.yml';
-                ConfigLoader::compile($configFile);
-            }
+        if (! $configFile) {
+            $possiblePaths = array(
+                'db/config/site_database.yml',
+                'db/config/database.yml',
+                'config/database.yml',
+                'config/site_database.yml',
+            );
+            foreach($possiblePaths as $path) {
+                if (file_exists($path)) {
+                    $this->logger->info("Found default config file: $path");
 
-            // old config file path.
-            if( file_exists( 'config/database.yml' ) ) {
-                $configFile = 'config/database.yml';
-                ConfigLoader::compile($configFile);
-            }
-            if( file_exists( 'config/site_database.yml' ) ) {
-                $configFile = 'config/site_database.yml';
-                ConfigLoader::compile($configFile);
+                    $configFile = $path;
+                    ConfigLoader::compile($configFile);
+                }
             }
         }
-        if( ! $configFile ) {
+        if (! $configFile) {
             throw new Exception("config file path is required.");
         }
 
@@ -65,17 +61,20 @@ class BuildConfCommand extends \CLIFramework\Command
         // make master config link
         $loader = ConfigLoader::getInstance();
 
-        if ( file_exists( $loader->symbolFilename ) ) {
+        if (file_exists($loader->symbolFilename)) {
+            $this->logger->info('Cleaning up symbol link');
             unlink( $loader->symbolFilename );
         }
-        if ( file_exists('.lazy.php') ) {
+        if (file_exists('.lazy.php')) {
+            $this->logger->info('Cleaning up symbol link');
             unlink( '.lazy.php' );
         }
 
         $this->logger->info("Making link => " . $loader->symbolFilename );
-        if ( cross_symlink( $configFile , $loader->symbolFilename ) === false ) {
+        if (cross_symlink( $configFile , $loader->symbolFilename ) === false ) {
             $this->logger->error("Config linking failed.");
         }
+
         $this->logger->info("Done.");
     }
 
