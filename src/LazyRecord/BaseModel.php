@@ -2214,7 +2214,7 @@ abstract class BaseModel implements
     public function asCreateAction($args = array())
     {
         // the create action requires empty args
-        return $this->newAction('Create',$args);
+        return $this->newAction('Create', $args);
     }
 
     public function asUpdateAction($args = array())
