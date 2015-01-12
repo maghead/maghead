@@ -17,8 +17,8 @@ before_script:
   - mysql -uroot -e "create database testing charset utf8;"
   - composer install --dev
   - php bin/lazy build-conf db/config/database.travis-ci.yml
-  - php bin/lazy schema build
-  - php bin/lazy schema build src # build meta model class
+  - php bin/lazy schema build -f
+  - php bin/lazy schema build -f src # build meta model class
   - php bin/lazy sql --rebuild -D=mysql
   - php bin/lazy sql --rebuild -D=pgsql
   - php bin/lazy sql --rebuild -D=sqlite
