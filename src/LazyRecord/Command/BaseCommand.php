@@ -14,11 +14,6 @@ class BaseCommand extends Command
     public $config;
 
     public function init() {
-        /*
-        $loader = ConfigLoader::getInstance();
-        $loader->loadFromSymbol(true); // force loading
-        $loader->initForBuild();
-        */
         $this->config = CommandUtils::init_config_loader();
     }
 

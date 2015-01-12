@@ -20,8 +20,6 @@
         "corneltek/phpunit-testmore": "dev-master",
         "corneltek/universal": "dev-master",
         "facebook/xhprof": "dev-master",
-        "squizlabs/php_codesniffer": "*",
-        "wimg/php-compatibility": "dev-master",
         "simplyadmire/composer-plugins": "@dev"
     },
     "bin": [
