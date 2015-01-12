@@ -15,7 +15,9 @@ before_script:
   - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - psql -c "create database testing;" -U postgres
   - mysql -uroot -e "create database testing charset utf8;"
-  - composer install --dev
+  - composer self-update
+  - composer require satooshi/php-coveralls:dev-master --no-update --dev
+  - composer install --dev --prefer-source
   - php bin/lazy build-conf db/config/database.travis-ci.yml
   - php bin/lazy schema build -f
   - php bin/lazy schema build -f src # build meta model class
@@ -26,6 +28,8 @@ script:
   - phpunit -c phpunit-travis-ci.xml
 cache:
   - vendor
+after_script:
+  - php vendor/bin/coveralls -v
 
 # matrix:
 #   fast_finish: true
