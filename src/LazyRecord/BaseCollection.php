@@ -14,6 +14,7 @@ use ArrayIterator;
 use SQLBuilder\QueryBuilder;
 use SQLBuilder\Driver;
 use LazyRecord\Result;
+use LazyRecord\BaseModel;
 use LazyRecord\QueryDriver;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaLoader;
@@ -496,7 +497,7 @@ class BaseCollection
     /**
      * Update collection
      */
-    public function update($data) 
+    public function update(array $data)
     {
         // get current query object and set it to update.
         $query = $this->_query->update($data);
@@ -595,7 +596,7 @@ class BaseCollection
         unset($this->_items[$name]);
     }
 
-    public function each($cb)
+    public function each(callable $cb)
     {
         $collection = new static;
         $collection->setRecords(
@@ -604,7 +605,7 @@ class BaseCollection
         return $collection;
     }
 
-    public function filter($cb)
+    public function filter(callable $cb)
     {
         $collection = new static;
         $collection->setRecords(array_filter($this->_items,$cb));
@@ -620,7 +621,7 @@ class BaseCollection
      * @param array $args
      * @param string $dsId
      */
-    public function loadQuery( $sql, $args = array() , $dsId = null )
+    public function loadQuery($sql, array $args = array() , $dsId = null )
     {
         if ( ! $dsId ) {
             $dsId = $this->getSchema()->getReadSourceId();
@@ -646,7 +647,7 @@ class BaseCollection
     /**
      * Create a collection object from an data array.
      */
-    static function fromArray($list)
+    static function fromArray(array $list)
     {
         $collection = new static;
         $schema = $collection->getSchema();
@@ -700,7 +701,7 @@ class BaseCollection
      *
      * @return mixed record object
      */
-    public function create($args)
+    public function create(array $args)
     {
         if( $this->_presetVars ) {
             $args = array_merge( $this->_presetVars , $args );
@@ -724,12 +725,12 @@ class BaseCollection
 
 
 
-    public function setPostCreate($cb) 
+    public function setPostCreate(callable $cb) 
     {
         $this->_postCreate = $cb;
     }
 
-    public function setPresetVars($vars)
+    public function setPresetVars(array $vars)
     {
         $this->_presetVars = $vars;
     }
@@ -880,7 +881,7 @@ class BaseCollection
     }
 
 
-    public function add($record)
+    public function add(BaseModel $record)
     {
         if (! $this->_itemData )
             $this->_itemData = array();
@@ -892,7 +893,7 @@ class BaseCollection
     /**
      * Set record objects
      */
-    public function setRecords($records)
+    public function setRecords(array $records)
     {
         $this->_itemData = $records;
     }
