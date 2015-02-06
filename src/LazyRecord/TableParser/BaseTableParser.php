@@ -37,19 +37,19 @@ abstract class BaseTableParser
         elseif( preg_match('/^(int|tinyint|smallint|mediumint|bigint)/', $type ) ) {
             return 'int';
         }
-        elseif( 'boolean' === $type || 'bool' === $type ) {
+        elseif ('boolean' === $type || 'bool' === $type) {
             return 'bool';
         }
-        elseif( 'blob' === $type || 'binary' === $type ) {
+        elseif ('blob' === $type || 'binary' === $type ) {
             return 'str';
         }
-        elseif( 'double' === $type ) {
+        elseif (strpos($type, 'double') === 0) {
             return 'double';
         }
-        elseif( 'float' === $type ) {
+        elseif (strpos($type, 'float') === 0) {
             return 'float';
         }
-        elseif( 'datetime' === $type || 'date' === $type ) {
+        elseif (strpos($type,'datetime') === 0 || 'date' === $type ) {
             return 'DateTime';
         }
         elseif( preg_match('/timestamp/', $type ) ) {
@@ -60,7 +60,7 @@ abstract class BaseTableParser
             return 'DateTime';
         }
         else {
-            throw new Exception("Unknown type $type");
+            throw new Exception("Unknown type name $type");
         }
     }
 
