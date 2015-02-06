@@ -169,7 +169,6 @@ class BaseCollection
         return $this;
     }
 
-
     /**
      * Dispatch undefined methods to SelectQuery object,
      * To achieve mixin-like feature.
@@ -500,6 +499,33 @@ class BaseCollection
     }
 
 
+    public function delete()
+    {
+        $schema = $this->getSchema();
+        $dsId = $schema->getWriteSourceId();
+
+        $conn = ConnectionManager::getInstance()->getConnection($dsId);
+        $driver = $conn->createQueryDriver();
+
+        $query = new DeleteQuery;
+        $query->from($schema->getTable());
+        $query->setWhere($this->_query->cloneWhere());
+
+        $arguments = new ArgumentArray;
+        $sql = $query->toSql($driver, $arguments);
+
+        try {
+            $this->handle = $conn->prepareAndExecute($sql, $arguments->toArray());
+        } catch (Exception $e) {
+            return Result::failure('Collection delete failed: ' . $e->getMessage() , array( 
+                'vars' => $arguments->toArray(),
+                'sql' => $sql,
+                'exception' => $e,
+            ));
+        }
+        return Result::success('Deleted', array( 'sql' => $sql ));
+
+    }
 
 
     /**
@@ -509,7 +535,6 @@ class BaseCollection
      */
     public function update(array $data)
     {
-
         $schema = $this->getSchema();
         $dsId = $schema->getWriteSourceId();
 
