@@ -359,13 +359,12 @@ abstract class BaseModel implements
      * we dispatch these methods from the magic method __call.
      *
      * __call method is slower than normal method, because there are
-     * one more method table to look up. you should call `_create` method
+     * one more method table to look up. you should call `create` method
      * if you need a better performance.
      */
     public function __call($m,$a)
     {
         switch($m) {
-        case 'create':
         case 'update':
         case 'load':
         case 'delete':
@@ -657,7 +656,7 @@ abstract class BaseModel implements
      * Method for creating new record, which is called from 
      * static::create and $record->create.
      *
-     * 1. _create method calls beforeCreate to 
+     * 1. create method calls beforeCreate to 
      * trigger events or filter arguments.
      *
      * 2. it runs filterArrayWithColumns method to filter 
@@ -680,7 +679,7 @@ abstract class BaseModel implements
      *
      * @return Result operation result (success or error)
      */
-    public function _create(array $args, $options = array() )
+    public function create(array $args, $options = array() )
     {
         if (empty($args) || $args === null ) {
             return $this->reportError('Empty arguments');
@@ -832,14 +831,14 @@ abstract class BaseModel implements
      * The fast create method does not reload record from created the primary 
      * key.
      *
-     * TODO: refactor _create code to call fastCreate.
+     * TODO: refactor create code to call fastCreate.
      * TODO: provide rawCreate to create data without validation.
      *
      * @param array $args
      */
     public function fastCreate(array $args)
     {
-        return $this->_create($args, array( 'reload' => false));
+        return $this->create($args, array( 'reload' => false));
     }
 
 
@@ -1001,7 +1000,7 @@ abstract class BaseModel implements
      *
      * @return Result operation result (success or error)
      */
-    public function _update(array $args, $options = array() ) 
+    public function update(array $args, $options = array() ) 
     {
         $schema = $this->getSchema();
 
