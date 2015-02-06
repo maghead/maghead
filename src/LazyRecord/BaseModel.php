@@ -20,6 +20,7 @@ use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Driver\PDOSQLiteDriver;
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\Raw;
 
 use LazyRecord\Result\OperationError;
 use LazyRecord\Result;
@@ -34,7 +35,6 @@ use SerializerKit\XmlSerializer;
 use SerializerKit\JsonSerializer;
 use SerializerKit\YamlSerializer;
 
-use SQLBuilder\RawValue;
 
 use ValidationKit\ValidationMessage;
 use ActionKit;
@@ -744,11 +744,11 @@ abstract class BaseModel implements
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
 
-                if ($c->typeConstraint && ( $val !== null && ! is_array($val) && ! $val instanceof RawValue )) {
+                if ($c->typeConstraint && ( $val !== null && ! is_array($val) && ! $val instanceof Raw)) {
                     if ( false === $c->checkTypeConstraint( $val )) {
                         return $this->reportError("{$val} is not " . $c->isa . " type");
                     }
-                } elseif ($val !== null && ! is_array($val) && ! $val instanceof RawValue) {
+                } elseif ($val !== null && ! is_array($val) && ! $val instanceof Raw) {
                     $val = $c->typeCasting($val);
                 }
 
@@ -765,7 +765,7 @@ abstract class BaseModel implements
 
                 if ($val !== NULL) {
                     if (!is_string($val)) {
-                        if ($val instanceof RawValue) {
+                        if ($val instanceof Raw) {
                             $args[$n] = new Bind($n, $val);
                         } else {
                             $args[$n] = new Bind($n, $c->deflate($val));
@@ -1069,11 +1069,11 @@ abstract class BaseModel implements
                         return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));
                     }
 
-                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof RawValue ) {
+                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
                         $args[$n] = $c->typeCasting( $args[$n] );
                     }
 
-                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof RawValue ) {
+                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
                         if ( false === $c->checkTypeConstraint($args[$n])) {
                             return $this->reportError($args[$n] . " is not " . $c->isa . " type");
                         }
@@ -1091,7 +1091,7 @@ abstract class BaseModel implements
                     }
 
                     if (!is_string($args[$n])) {
-                        if ($args[$n] instanceof RawValue) {
+                        if ($args[$n] instanceof Raw) {
                             $args[$n] = $args[$n];
                         } else {
                             $args[$n] = $c->deflate( $args[$n] );
