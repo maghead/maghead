@@ -260,9 +260,9 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
 
         $books = new \TestApp\Model\BookCollection;
         $books->join('author_books')
-            ->alias('ab')
-            ->on()
-            ->equal( 'ab.book_id' , array('m.id') );
+            ->as('ab')
+                ->on()
+                    ->equal( 'ab.book_id' , array('m.id') );
         $books->where()
             ->equal( 'ab.author_id' , $author->id );
         $items = $books->items();
