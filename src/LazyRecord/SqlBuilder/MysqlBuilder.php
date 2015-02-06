@@ -41,7 +41,7 @@ class MysqlBuilder extends BaseBuilder
                 $sql .= ' default ' . $default[0];
             }
             else {
-                $sql .= ' default ' . $this->driver->inflate($default);
+                $sql .= ' default ' . $this->driver->deflate($default);
             }
         }
 
