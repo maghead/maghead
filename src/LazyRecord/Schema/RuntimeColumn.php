@@ -10,7 +10,7 @@ use Exception;
 use ArrayIterator;
 use IteratorAggregate;
 use InvalidArgumentException;
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
 
 class InvalidValueTypeException extends Exception { }
 
@@ -134,7 +134,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      */
     public function typeCasting($value)
     {
-        if ($value instanceof RawValue) {
+        if ($value instanceof Raw) {
             return $value;
         }
 
@@ -202,7 +202,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
             return call_user_func($f, $value);
         }
         // use global deflator, check self type, and do type casting
-        return Deflator::deflate( $value , $this->get('isa') );
+        return Deflator::deflate($value , $this->get('isa'));
     }
 
     public function inflate($value, $record)
