@@ -111,15 +111,9 @@ class AuthorAddressModelTest extends \LazyRecord\ModelTestCase
     public function testGeneralInterface() 
     {
         $a = new \TestApp\Model\Address;
-        ok($a);
-
-        ok( $a->getQueryDriver('default') );
-        ok( $a->getWriteQueryDriver() );
-        ok( $a->getReadQueryDriver() );
-
-        $query = $a->createQuery();
-        ok($query);
-        isa_ok('SQLBuilder\QueryBuilder', $query );
+        ok($a->getQueryDriver('default') );
+        ok($a->getWriteQueryDriver() );
+        ok($a->getReadQueryDriver() );
     }
 
 }

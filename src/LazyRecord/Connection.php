@@ -1,5 +1,7 @@
 <?php
 namespace LazyRecord;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PDODriverFactory;
 use PDO;
 
 class Connection extends PDO
@@ -11,6 +13,9 @@ class Connection extends PDO
         return $stm;
     }
 
+    public function createQueryDriver() {
+        return PDODriverFactory::create($this);
+    }
 }
 
 

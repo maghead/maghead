@@ -1,6 +1,5 @@
 <?php
 namespace LazyRecord;
-use LazyRecord\QueryDriver;
 use LazyRecord\ConnectionManager;
 use LazyRecord\SqlBuilder;
 use LazyRecord\ConfigLoader;
@@ -55,7 +54,6 @@ abstract class ModelTestCase extends PHPUnit_Framework_TestCase
 
         // free and override default connection
         ConnectionManager::getInstance()->free();
-        QueryDriver::free();
 
         $config = ConfigLoader::getInstance();
         $config->loaded = true;

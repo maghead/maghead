@@ -1,5 +1,7 @@
 <?php
 use LazyRecord\SqlBuilder;
+use TestApp\Model\Book;
+use TestApp\Model\BookCollection;
 
 class AuthorFactory {
 
@@ -83,7 +85,10 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
         foreach( $results as $result ) {
             ok( $result->id );
-            ok( \TestApp\Model\Book::delete($result->id)->execute()->success );
+
+            $record = new \TestApp\Model\Book();
+            $record->load($result->id);
+            $record->delete();
         }
     }
 
@@ -99,9 +104,6 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
     public function testCloneWithQuery() 
     {
-        ok( $ret = \TestApp\Model\Address::delete()->execute() );
-        ok( $ret->success , $ret->message );
-
         $a = new \TestApp\Model\Address;
         ok( $a->create(array('address' => 'Cindy'))->success );
         ok( $a->create(array('address' => 'Hack'))->success );
@@ -196,13 +198,13 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
         $authors2 = new \TestApp\Model\AuthorCollection;
         $authors2->where()
-                ->like('name','Foo%');
+                ->like('name','Foo');
         $count = $authors2->queryCount();
-        is( 20 , $count );
+        is(20 , $count );
 
         $authors = new \TestApp\Model\AuthorCollection;
         $authors->where()
-                ->like('name','Foo%');
+                ->like('name','Foo');
         $items = $authors->items();
         $size = $authors->size();
 
@@ -259,9 +261,9 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
         $names = new \TestApp\Model\NameCollection;
         $names->select( 'name' )->where()
-            ->equal('name','Foo')
-            ->groupBy('name','address');
-        
+            ->equal('name','Foo');
+
+        $names->groupBy(['name','address']);
 
         ok( $items = $names->items() , 'Test name collection with name,address condition' );
         ok( $size = $names->size() );
@@ -275,7 +277,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         $authors = new \TestApp\Model\AuthorCollection;
         ok($authors);
 
-        $authors->join( new \TestApp\Model\Address );
+        $authors->join(new \TestApp\Model\Address);
 
         $authors->fetch();
         $sql = $authors->toSQL();
@@ -348,7 +350,8 @@ class CollectionTest extends \LazyRecord\ModelTestCase
  
         foreach( $results as $result ) {
             ok( $result->id );
-            ok( \TestApp\Model\Book::delete($result->id)->execute()->success );
+            $record = new Book($result->id);
+            $record->delete();
         }
 
         $someBooks = $books->splice(0,2);

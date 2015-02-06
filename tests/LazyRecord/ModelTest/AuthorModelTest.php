@@ -87,41 +87,6 @@ class AuthorModelTest extends \LazyRecord\ModelTestCase
         $authors->delete();
     }
 
-    public function testStaticFunctions() 
-    {
-        $record = \TestApp\Model\Author::create(array( 
-            'name' => 'Mary',
-            'email' => 'zz@zz',
-            'identity' => 'zz',
-        ));
-        ok( $record->getLastResult()->success );
-
-        $record = \TestApp\Model\Author::load( (int) $record->getLastResult()->id );
-        ok( $record );
-        ok( $id = $record->id );
-
-        $record = \TestApp\Model\Author::load( array( 'id' => $id ));
-        ok( $record );
-        ok( $record->id );
-
-        /**
-         * Which runs:
-         *    UPDATE authors SET name = 'Rename' WHERE name = 'Mary'
-         */
-        $ret = \TestApp\Model\Author::update(array( 'name' => 'Rename' ))
-            ->where()
-            ->equal('name','Mary')
-            ->execute();
-        ok( $ret->success );
-
-
-        $ret = \TestApp\Model\Author::delete()
-            ->where()
-            ->equal('name','Rename')
-            ->execute();
-        ok( $ret->success );
-    }
-
     public function testVirtualColumn() 
     {
         $author = new \TestApp\Model\Author;

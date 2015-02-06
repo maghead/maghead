@@ -1,8 +1,6 @@
 <?php
 namespace LazyRecord\SqlBuilder;
-use SQLBuilder\IndexBuilder;
-use SQLBuilder\QueryBuilder;
-use SQLBuilder\Driver;
+use SQLBuilder\Driver\BaseDriver;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
@@ -16,7 +14,7 @@ abstract class BaseBuilder
     public $clean;
     public $driver;
 
-    public function __construct(QueryDriver $driver, array $options = array())
+    public function __construct(BaseDriver $driver, array $options = array())
     {
         $this->driver = $driver;
         if( isset($options['rebuild']) ) {
@@ -32,7 +30,7 @@ abstract class BaseBuilder
     public function createTable(SchemaInterface $schema)
     {
         $sql = 'CREATE TABLE ' 
-            . $this->driver->getQuoteTableName($schema->getTable()) . " ( \n";
+            . $this->driver->quoteIdentifier($schema->getTable()) . " ( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
             if ($column->virtual) {

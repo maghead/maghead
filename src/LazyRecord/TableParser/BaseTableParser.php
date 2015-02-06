@@ -2,15 +2,14 @@
 namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
-use SQLBuilder\Driver;
-use LazyRecord\QueryDriver;
+use SQLBuilder\Driver\BaseDriver;
 
 abstract class BaseTableParser
 {
     public $driver;
     public $connection;
 
-    public function __construct(QueryDriver $driver, PDO $connection)
+    public function __construct(BaseDriver $driver, PDO $connection)
     {
         $this->driver = $driver;
         $this->connection = $connection;

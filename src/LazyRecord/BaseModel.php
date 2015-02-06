@@ -10,9 +10,17 @@ use IteratorAggregate;
 use Serializable;
 use ArrayAccess;
 use Countable;
+use SQLBuilder\Universal\Query\SelectQuery;
+use SQLBuilder\Universal\Query\UpdateQuery;
+use SQLBuilder\Universal\Query\DeleteQuery;
+use SQLBuilder\Universal\Query\InsertQuery;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\PDOPgSQLDriver;
+use SQLBuilder\Driver\PDOMySQLDriver;
+use SQLBuilder\Driver\PDOSQLiteDriver;
+use SQLBuilder\Bind;
+use SQLBuilder\ArgumentArray;
 
-use SQLBuilder\QueryBuilder;
-use LazyRecord\QueryDriver;
 use LazyRecord\Result\OperationError;
 use LazyRecord\Result;
 use LazyRecord\ConnectionManager;
@@ -261,20 +269,16 @@ abstract class BaseModel implements
      * Get SQL Query Driver by data source id.
      *
      * @param string $dsId Data source id.
-     *
-     * @return SQLBuilder\QueryDriver
      */
-    public function getQueryDriver( $dsId )
+    public function getQueryDriver($dsId)
     {
-        return ConnectionManager::getInstance()->getQueryDriver( $dsId );
+        return ConnectionManager::getInstance()->getQueryDriver($dsId);
     }
 
 
 
     /**
      * Get SQL Query driver object for writing data
-     *
-     * @return SQLBuilder\QueryDriver
      */
     public function getWriteQueryDriver()
     {
@@ -292,54 +296,10 @@ abstract class BaseModel implements
         return $this->getQueryDriver( $this->getReadSourceId() );
     }
 
-
-    /**
-     * Create new QueryBuilder object (inherited from SQLBuilder\QueryBuilder
-     *
-     * @param string $dsId Data source id , default connection id is 'default'
-     *
-     * @return SQLBuilder\QueryBuilder
-     */
-    public function createQuery( $dsId = 'default' )
-    {
-        $q = new QueryBuilder;
-        $q->driver = $this->getQueryDriver($dsId);
-        $q->table( $this->getSchema()->table );
-        $q->alias( $this->alias );
-        $q->limit(1);
-        return $q;
-    }
-
-    
-
-
-    /**
-     * Create executive query builder object, the difference is that
-     * An ExecutiveQueryBuilder has an execute method, that trigger a 
-     * callback function to execute SQL. the callback function takes
-     * a SQL string to insert into database.
-     *
-     * @param string $dsId data source id.
-     *
-     * @return ExecutiveQueryBuilder
-     */
-    public function createExecutiveQuery( $dsId = 'default' )
-    {
-        $q = new ExecutiveQueryBuilder;
-        $q->driver = $this->getQueryDriver( $dsId );
-        $q->alias( $this->alias );
-        $q->table( $this->getSchema()->table );
-        return $q;
-    }
-
     public function setAlias($alias) {
         $this->alias = $alias;
         return $this;
     }
-
-
-
-
 
     /**
      * Trigger method for "before creating new record"
@@ -738,12 +698,18 @@ abstract class BaseModel implements
         $this->_data     = array();
         $stm = null;
 
+        $query = new InsertQuery;
+        $arguments = new ArgumentArray;
+        $conn = $this->getWriteConnection();
+        $driver = $conn->createQueryDriver();
+
+        $query->into($this->getTable());
+
         // Just a note: Exceptions should be used for exceptional conditions; things you 
         // don't expect to happen. Validating input isn't very exceptional.
 
         try {
             $args = $this->beforeCreate($args);
-
             if ($args === false) {
                 return $this->reportError( _('Create failed') , array( 
                     'args' => $args,
@@ -760,7 +726,6 @@ abstract class BaseModel implements
                 ));
             }
 
-            $conn = $this->getWriteConnection();
             foreach( $schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
@@ -797,15 +762,16 @@ abstract class BaseModel implements
                         $validationError = true;
                     }
                 }
+
                 if ($val !== NULL) {
                     if (!is_string($val)) {
                         if ($val instanceof RawValue) {
-                            $args[$n] = $val;
+                            $args[$n] = new Bind($n, $val);
                         } else {
-                            $args[$n] = $c->deflate($val);
+                            $args[$n] = new Bind($n, $c->deflate($val));
                         }
                     } else {
-                        $args[$n] = $val;
+                        $args[$n] = new Bind($n, $val);
                     }
                 }
             }
@@ -816,34 +782,26 @@ abstract class BaseModel implements
                 ));
             }
 
+            $query->insert($args);
+            $query->returning($k);
 
-            $dsId = $this->getWriteSourceId();
-            $q = $this->createQuery( $dsId );
-
-            $q->insert($args);
-            $q->returning( $k );
-
-            $sql  = $q->build();
-            $vars = $q->vars;
+            $sql  = $query->toSql($driver, $arguments);
 
             /* get connection, do query */
-            $stm = $this->dbPrepareAndExecute($conn, $sql, $vars); // returns $stm
+            $stm = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray()); // returns $stm
         }
         catch (PDOException $e)
         {
             throw new DatabaseException('Record create failed:' . $e->getMessage(), $e, array(
-                'vars' => $vars,
-                'args' => $args,
+                // 'args' => $arguments->toArray(),
                 'sql' => $sql,
                 'validations' => $validationResults,
             ));
         }
 
-        $driver = $this->getQueryDriver($dsId);
-
-
         $pkId = null;
-        if ('pgsql' === $driver->type) {
+
+        if ($driver instanceof PDOPgSQLDriver) {
             $pkId = intval($stm->fetchColumn());
         } else {
             $pkId = intval($conn->lastInsertId());
@@ -862,8 +820,7 @@ abstract class BaseModel implements
         return $this->reportSuccess('Record created.', array(
             'id'  => $pkId,
             'sql' => $sql,
-            'args' => $args,
-            'vars' => $vars,
+            // 'args' => $args,
             'validations' => $validationResults,
         ));
     }
@@ -923,19 +880,23 @@ abstract class BaseModel implements
 
         $dsId  = $this->getReadSourceId();
         $pk    = $this->getSchema()->primaryKey;
-        $query = $this->createQuery( $dsId );
+
+        $query = new SelectQuery;
+        $query->from($this->getSchema()->getTable());
+
         $conn  = $this->getReadConnection();
+        $driver = $conn->createQueryDriver();
         $kVal  = null;
 
         // build query from array.
         if( is_array($args) ) {
             $query->select( $this->selected ?: '*' )
-                ->whereFromArgs($args);
+                ->where($args);
         }
         else
         {
             $kVal = $args;
-            $column = $this->getSchema()->getColumn( $pk );
+            $column = $this->getSchema()->getColumn($pk);
             if ( ! $column ) {
                 // This should not happend, every schema should have it's own primary key
                 // TODO: Create new exception class for this.
@@ -943,14 +904,15 @@ abstract class BaseModel implements
             }
             $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
-            $query->select( $this->selected ?: '*' )->whereFromArgs($args);
+            $query->select( $this->selected ?: '*' )->where($args);
         }
 
-        $sql = $query->build();
+        $arguments = new ArgumentArray;
+        $sql = $query->toSql($conn->createQueryDriver(), $arguments);
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         try {
-            $stm = $this->dbPrepareAndExecute($conn,$sql,$query->vars);
+            $stm = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             if (false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
                 // Record not found is not an exception
@@ -960,8 +922,7 @@ abstract class BaseModel implements
         catch (PDOException $e)
         {
             throw new DatabaseException('Record load failed', $e, array(
-                'vars' => $query->vars,
-                'args' => $args,
+                // XXX: 'args' => $args,
                 'sql' => $sql,
             ));
         }
@@ -985,14 +946,14 @@ abstract class BaseModel implements
      *
      * @return Result operation result (success or error)
      */
-    public function _delete()
+    public function delete($pkId = NULL)
     {
         $k = $this->getSchema()->primaryKey;
 
-        if ($k && ! isset($this->_data[$k]) ) {
+        if (!$pkId && $k && ! isset($this->_data[$k]) ) {
             throw new Exception('Record is not loaded, Record delete failed.');
         }
-        $kVal = isset($this->_data[$k]) ? $this->_data[$k] : null;
+        $kVal = $pkId ?: isset($this->_data[$k]) ? $this->_data[$k] : null;
 
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'delete' ) ) {
             return $this->reportError( _('Permission denied. Can not delete record.') , array( ));
@@ -1003,19 +964,22 @@ abstract class BaseModel implements
 
         $this->beforeDelete( $this->_data );
 
-        $query = $this->createQuery( $dsId );
-        $query->delete();
+        $arguments = new ArgumentArray;
+
+        $query = new DeleteQuery;
+        $query->from($this->getSchema()->getTable());
         $query->where()
-            ->equal( $k , $kVal );
-        $sql = $query->build();
+            ->equal($k , $kVal);
+        $sql = $query->toSql($conn->createQueryDriver(), $arguments);
+
+        $vars = $arguments->toArray();
 
         $validationResults = array();
         try {
-            $this->dbPrepareAndExecute($conn,$sql, $query->vars );
+            $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
         } catch (PDOException $e) {
             throw new DatabaseException('Delete failed', $e, array(
-                'vars' => $vars,
-                'args' => $args,
+                // XXX 'args' => $arguments->toArray(),
                 'sql' => $sql,
                 'validations' => $validationResults,
             ));
@@ -1025,7 +989,7 @@ abstract class BaseModel implements
         $this->clear();
         return $this->reportSuccess('Record deleted', array( 
             'sql' => $sql,
-            'vars' => $query->vars,
+            // XXX 'args' => $arguments->toArray(),
         ));
     }
 
@@ -1039,6 +1003,8 @@ abstract class BaseModel implements
      */
     public function _update(array $args, $options = array() ) 
     {
+        $schema = $this->getSchema();
+
         // check if the record is loaded.
         $k = $this->getSchema()->primaryKey;
         if ($k && ! isset($args[ $k ]) && ! isset($this->_data[$k])) {
@@ -1142,13 +1108,20 @@ abstract class BaseModel implements
                 ));
             }
 
-            $query = $this->createQuery( $dsId );
-            $query->update($args)->where()
-                ->equal( $k , $kVal );
+            $arguments = new ArgumentArray;
 
-            $sql  = $query->build();
-            $vars = $query->vars;
-            $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
+
+            $query = new UpdateQuery;
+
+            // TODO: optimized to built cache
+            $query->set($args);
+            $query->update($schema->getTable());
+            $query->where()->equal($k , $kVal);
+
+            $driver = $conn->createQueryDriver();
+
+            $sql  = $query->toSql($driver, $arguments);
+            $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
 
             // Merge updated data.
             //
@@ -1165,7 +1138,6 @@ abstract class BaseModel implements
         catch(PDOException $e) 
         {
             throw new DatabaseException('Record update failed', $e, array(
-                'vars' => $vars,
                 'args' => $args,
                 'sql' => $sql,
                 'validations' => $validationResults,
@@ -1176,7 +1148,6 @@ abstract class BaseModel implements
             'id'  => $kVal,
             'sql' => $sql,
             'args' => $args,
-            'vars' => $vars,
         ));
     }
 
@@ -1196,13 +1167,14 @@ abstract class BaseModel implements
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
 
-        $query = $this->createQuery( $dsId );
-        $query->update($args)->where()
+        $arguments = new ArgumentArray;
+        $query = new UpdateQuery;
+        $query->update($args);
+        $query->where()
             ->equal( $k , $kVal );
 
-        $sql  = $query->build();
-        $vars = $query->vars;
-        $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
+        $sql  = $query->toSql($conn->createQueryDriver(), $arguments);
+        $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
 
         // update current data stash
         $this->_data = array_merge($this->_data,$args);
@@ -1220,19 +1192,22 @@ abstract class BaseModel implements
         $dsId  = $this->getWriteSourceId();
         $conn  = $this->getConnection( $dsId );
         $k     = $this->getSchema()->primaryKey;
-        $query = $this->createQuery( $dsId );
+
+        $driver = $conn->createQueryDriver();
+
+        $query = new InsertQuery;
         $query->insert($args);
-        $query->returning( $k );
-        $sql  = $query->build();
-        $vars = $query->vars;
-        $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
+        $query->into( $this->getSchema()->getTable() );
+        $query->returning($k);
 
+        $sql  = $query->toSql($driver, $arguments);
+        $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
 
-        $driver = $this->getQueryDriver($dsId);
         $pkId = null;
-        if( 'pgsql' === $driver->type ) {
+        if ($driver instanceof PDOPgSQLDriver) {
             $pkId = $stm->fetchColumn();
         } else {
+            // lastInsertId is supported in SQLite and MySQL
             $pkId = $conn->lastInsertId();
         }
 
@@ -1353,18 +1328,18 @@ abstract class BaseModel implements
      *
      * @return Result
      */
-    public function loadQuery($sql , $vars = array() , $dsId = null ) 
+    public function loadQuery($sql , $args = array() , $dsId = null ) 
     {
         if (! $dsId) {
             $dsId = $this->getReadSourceId();
         }
 
         $conn = $this->getConnection( $dsId );
-        $stm = $this->dbPrepareAndExecute($conn, $sql, $vars);
+        $stm = $this->dbPrepareAndExecute($conn, $sql, $args);
         if ( FALSE === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
             return $this->reportError('Data load failed.', array( 
                 'sql' => $sql,
-                'vars' => $vars,
+                'args' => $args,
             ));
         }
         return $this->reportSuccess( 'Data loaded', array( 
@@ -1806,147 +1781,6 @@ abstract class BaseModel implements
         }
         return $data;
     }
-
-
-
-    /**
-     * Handle static calls for model class.
-     *
-     * ModelName::delete()
-     *     ->where()
-     *       ->equal('id', 3)
-     *       ->back()
-     *      ->execute();
-     *
-     * ModelName::update( $hash )
-     *     ->where()
-     *        ->equal( 'id' , 123 )
-     *     ->back()
-     *     ->execute();
-     *
-     * ModelName::load( $id );
-     *
-     */
-    public static function __callStatic($m, $a) 
-    {
-        $called = get_called_class();
-        switch( $m ) {
-        case 'create':
-        case 'update':
-        case 'delete':
-        case 'load':
-            return forward_static_call_array(array( $called , '__static_' . $m), $a);
-            break;
-        }
-        // return call_user_func_array( array($model,$name), $arguments );
-    }
-
-
-    /**
-     * Create new record with data array
-     *
-     * @param array $args data array.
-     * @return BaseModel $record
-     */
-    public static function __static_create(array $args)
-    {
-        $model = new static;
-        $ret = $model->create($args);
-        return $model;
-    }
-
-    /**
-     * Update record with data array
-     *
-     * @return SQLBuilder\Expression expression for building where condition sql.
-     *
-     * Model::update(array( 'name' => 'New name' ))
-     *     ->where()
-     *       ->equal('id', 1)
-     *       ->back()
-     *     ->execute();
-     */
-    public static function __static_update(array $args) 
-    {
-        $model = new static;
-        $dsId  = $model->getWriteSourceId();
-        $conn  = $model->getWriteConnection();
-        $query = $model->createExecutiveQuery($dsId);
-        $query->update($args);
-        $query->callback = function($builder,$sql) use ($model,$conn, $args) {
-            try {
-                $stm = $model->dbPrepareAndExecute($conn,$sql,$builder->vars);
-            }
-            catch (PDOException $e)
-            {
-                throw new DatabaseException('Update failed', $e, array(
-                    'vars' => $builder->vars,
-                    'args' => $args,
-                    'sql' => $sql,
-                ));
-            }
-            return $model->reportSuccess('Record updated', array( 'sql' => $sql ));
-        };
-        return $query;
-    }
-
-
-    /**
-     * static delete action
-     *
-     * @return SQLBuilder\Expression expression for building delete condition.
-     *
-     * Model::delete()
-     *    ->where()
-     *       ->equal( 'id' , 3 )
-     *       ->back()
-     *       ->execute();
-     */
-    public static function __static_delete()
-    {
-        $model = new static;
-        $dsId  = $model->getWriteSourceId();
-        $conn  = $model->getConnection($dsId);
-        $query = $model->createExecutiveQuery($dsId);
-        $query->delete();
-        $query->callback = function($builder,$sql) use ($model,$conn) {
-            try {
-                $stm = $model->dbPrepareAndExecute($conn,$sql,$builder->vars);
-            }
-            catch (PDOException $e)
-            {
-                throw new DatabaseException('Delete Failed', $e, array(
-                    'sql' => $sql,
-                ));
-            }
-            return $model->reportSuccess('Deleted', array( 'sql' => $sql ));
-        };
-        return $query;
-    }
-
-    public static function __static_load($args)
-    {
-        $model = new static;
-        $dsId  = $model->getReadSourceId();
-        $conn  = $model->getConnection( $dsId );
-
-        if ( is_array( $args ) ) {
-            $q = $model->createExecutiveQuery($dsId);
-            $q->callback = function($b,$sql) use ($model,$conn) {
-                $stm = $model->dbPrepareAndExecute($conn,$sql,$b->vars);
-                return $stm->fetchObject( get_class($model) );
-            };
-            $q->limit(1);
-            $q->whereFromArgs($args);
-            return $q->execute();
-        }
-        else {
-            $model->load($args);
-            return $model;
-        }
-    }
-
-
 
     /**
      * use array_intersect_key to filter array with column names

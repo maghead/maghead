@@ -412,61 +412,6 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         $ret = $b->delete();
         result_ok($ret);
     }
-
-    public function testStaticCreateMethod()
-    {
-        $record = \TestApp\Model\Author::create(array( 
-            'name' => 'Mary',
-            'email' => 'zz@zz',
-            'identity' => 'zz',
-        ));
-        ok( $record->getLastResult()->success );
-    }
-
-    public function testStaticLoadMethod()
-    {
-        $record = \TestApp\Model\Author::create(array( 
-            'name' => 'Mary',
-            'email' => 'zz@zz',
-            'identity' => 'zz',
-        ));
-        $record2 = \TestApp\Model\Author::load($record->id );
-        ok($record2->id);
-
-        $record3 = \TestApp\Model\Author::load((int) $record->id);
-        ok($record3->id);
-
-        $record4 = \TestApp\Model\Author::load( array( 'id' => $record->id ));
-        ok( $record4 );
-        ok( $record4->id );
-    }
-
-    public function testStaticFunctions()
-    {
-        $record = \TestApp\Model\Author::create(array( 
-            'name' => 'Mary',
-            'email' => 'zz@zz',
-            'identity' => 'zz',
-        ));
-        $record = \TestApp\Model\Author::load( (int) $record->getLastResult()->id );
-
-        /**
-         * Which runs:
-         *    UPDATE authors SET name = 'Rename' WHERE name = 'Mary'
-         */
-        $ret = \TestApp\Model\Author::update(array( 'name' => 'Rename' ))
-            ->where()
-            ->equal('name','Mary')
-            ->execute();
-        ok( $ret->success );
-
-
-        $ret = \TestApp\Model\Author::delete()
-            ->where()
-            ->equal('name','Rename')
-            ->execute();
-        ok( $ret->success );
-    }
 }
 
 

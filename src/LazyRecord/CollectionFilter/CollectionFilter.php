@@ -171,46 +171,42 @@ class CollectionFilter
             }
 
 
-            $expr = $c->where();
+            $where = $c->where();
             $hasParams = false;
             foreach( $requestValues as $idx => $requestValue ) {
-                if ( isset($this->validValues[$fieldName]) ) {
+                if (isset($this->validValues[$fieldName])) {
                     $validValues = $this->validValues[$fieldName];
                     if ( ! $this->validateValue($validValues, $requestValue) ) {
                         continue;
                     }
                 }
-
-                if ( $idx == 0 ) {
-                    $expr = $expr->group();
-                } else {
-                    $expr = $expr->or();
+                if ($idx == 0) {
+                    $where->group();
                 }
 
                 $hasParams = true;
-
                 switch($t) {
                 case self::Contains:
-                    $expr = $expr->like($fieldName, '%' . $requestValue . '%');
+                    $where->or()->like($fieldName, '%' . $requestValue . '%');
                     break;
                 case self::StartsWith:
-                    $expr = $expr->like($fieldName, $requestValue . '%');
+                    $where->or()->like($fieldName, $requestValue . '%');
                     break;
                 case self::EndsWith:
-                    $expr = $expr->like($fieldName, '%' . $requestValue);
+                    $where->or()->like($fieldName, '%' . $requestValue);
                     break;
                 case self::Greater:
-                    $expr = $expr->greaterThan($fieldName, $requestValue);
+                    $where->or()->greaterThan($fieldName, $requestValue);
                     break;
                 case self::Lesser:
-                    $expr = $expr->lesserThan($fieldName, $requestValue);
+                    $where->or()->lesserThan($fieldName, $requestValue);
                     break;
                 case self::Equal:
-                    $expr = $expr->equal($fieldName, $requestValue);
+                    $where->or()->equal($fieldName, $requestValue);
                     break;
                 }
             }
-            if ( $hasParams ) {
+            if ($hasParams) {
                 $expr->ungroup();
             }
         }

@@ -214,7 +214,7 @@ class NameModelTest extends ModelTestCase
     /**
      * @dataProvider nameDataProvider
      */
-    public function testCreateName($args)
+    public function testCreateWithName($args)
     {
         $name = new \TestApp\Model\Name;
         $ret = $name->create($args);

@@ -3,7 +3,6 @@ namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
-use LazyRecord\QueryBuilder;
 use SQLBuilder\IndexBuilder;
 
 
@@ -18,7 +17,7 @@ class MysqlBuilder extends BaseBuilder
             $type = 'text';
         }
 
-        $sql = $this->driver->getQuoteColumn( $name );
+        $sql = $this->driver->quoteIdentifier( $name );
         $sql .= ' ' . $type;
 
         if ( $isa === 'enum' && !empty($column->enum) ) {
@@ -111,7 +110,7 @@ class MysqlBuilder extends BaseBuilder
     public function dropTable(SchemaInterface $schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-            . $this->driver->getQuoteTableName( $schema->getTable() )
+            . $this->driver->quoteIdentifier( $schema->getTable() )
             . ';';
     }
 }

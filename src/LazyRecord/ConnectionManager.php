@@ -6,6 +6,8 @@ use PDO;
 use LazyRecord\Adapter\PdoAdapter;
 use ArrayAccess;
 use LazyRecord\Connection;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PDODriverFactory;
 
 class SQLQueryException extends Exception 
 {
@@ -159,34 +161,7 @@ class ConnectionManager
     public function getQueryDriver($id = 'default')
     {
         $self = $this;
-
-        if (QueryDriver::hasInstance($id)) {
-            return QueryDriver::getInstance($id);
-        }
-
-        $driver = QueryDriver::getInstance($id);
-
-        // configure query driver type
-        if ($driverType = $this->getDriverType($id)) {
-            $conn = $this->getConnection($id);
-            $driver->configure('driver',$driverType);
-            $driver->quoter = function($string) use ($conn,$id) {
-                // It's PDO quote
-                return $conn->quote($string);
-            };
-        }
-
-        // setup query driver options
-        $config = isset($this->datasources[ $id ]) ? $this->datasources[ $id ] : null;
-        if ($config && $config['query_options']) {
-            foreach($config['query_options'] as $option => $value ) {
-                $driver->configure( $option , $value );
-            }
-        }
-
-        // always use named parameter
-        $driver->configure( 'placeholder', 'named' );
-        return $driver;
+        return $this->getConnection($id)->createQueryDriver();
     }
 
     public function getDriverType($id)

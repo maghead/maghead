@@ -175,14 +175,9 @@ class BookModelTest extends \LazyRecord\ModelTestCase
     {
         $a = new \TestApp\Model\Book;
         ok($a);
-
         ok( $a->getQueryDriver('default') );
         ok( $a->getWriteQueryDriver() );
         ok( $a->getReadQueryDriver() );
-
-        $query = $a->createQuery();
-        ok($query);
-        isa_ok('SQLBuilder\\QueryBuilder', $query );
     }
 }
 

@@ -19,7 +19,7 @@ class SqliteBuilder extends BaseBuilder
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql = $this->driver->getQuoteColumn( $name );
+        $sql = $this->driver->quoteIdentifier( $name );
         $sql .= ' ' . $type;
 
         if ($column->required || $column->notNull) {
@@ -38,7 +38,7 @@ class SqliteBuilder extends BaseBuilder
             if( is_array($default) ) {
                 $sql .= ' default ' . $default[0];
             } else {
-                $sql .= ' default ' . $this->driver->inflate($default);
+                $sql .= ' default ' . $this->driver->deflate($default);
             }
         }
 
@@ -96,7 +96,7 @@ class SqliteBuilder extends BaseBuilder
     public function dropTable(SchemaInterface $schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-            . $this->driver->getQuoteTableName( $schema->getTable() )
+            . $this->driver->quoteIdentifier( $schema->getTable() )
             . ';';
     }
 

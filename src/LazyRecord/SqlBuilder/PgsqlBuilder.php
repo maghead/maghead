@@ -3,7 +3,6 @@ namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\QueryBuilder;
 use SQLBuilder\IndexBuilder;
 use LazyRecord\Schema\RuntimeColumn;
 
@@ -23,7 +22,7 @@ class PgsqlBuilder extends BaseBuilder
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql = $this->driver->getQuoteColumn( $name );
+        $sql = $this->driver->quoteIdentifier( $name );
 
         if ( ! $column->autoIncrement ) {
             $sql .= ' ' . $type;
@@ -79,7 +78,7 @@ class PgsqlBuilder extends BaseBuilder
     public function dropTable(SchemaInterface $schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-                . $this->driver->getQuoteTableName( $schema->getTable() )
+                . $this->driver->quoteIdentifier( $schema->getTable() )
                 . ' CASCADE';
     }
 
