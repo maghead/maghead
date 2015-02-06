@@ -1,7 +1,7 @@
 <?php
 namespace LazyRecord;
 use LazyRecord\Types\DateTime;
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
 
 class Inflator
 {
@@ -22,7 +22,7 @@ class Inflator
         }
 
         /*
-        if ($value instanceof RawValue) {
+        if ($value instanceof Raw) {
             return $value->;
         }
          */
