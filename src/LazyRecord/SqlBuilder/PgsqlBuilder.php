@@ -57,7 +57,7 @@ class PgsqlBuilder extends BaseBuilder
                  * Here we use query driver builder to inflate default value,
                  * But the value,
                  */
-                $sql .= ' default ' . $this->driver->inflate($default);
+                $sql .= ' default ' . $this->driver->deflate($default);
             }
         }
 
