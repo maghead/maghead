@@ -1,5 +1,6 @@
 <?php
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
+use TestApp\Model\Book;
 /**
  * Testing models:
  *   1. Author
@@ -105,7 +106,8 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         $b3->delete();
 
         foreach( $results as $r ) {
-            result_ok( \TestApp\Model\Book::delete($r->id)->execute() );
+            $book = new Book;
+            $book->delete($r->id);
         }
     }
 
@@ -133,7 +135,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         );
     }
 
-    public function testModelUpdateRawValue() 
+    public function testModelUpdateRaw() 
     {
         $author = new \TestApp\Model\Author;
         $ret = $author->create(array( 
@@ -362,14 +364,17 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         ));
         is( 0 , $n->view );
         $ret = $n->update(array( 
-            'view' => new RawValue('view + 1')
+            'view' => new Raw('view + 1')
         ), array('reload' => true));
+
+        var_dump( $ret );
+        
 
         ok($ret->success, $ret->message);
         is(1, $n->view);
 
         $n->update(array( 
-            'view' => new RawValue('view + 3'),
+            'view' => new Raw('view + 3'),
         ), array('reload' => true));
         $ret = $n->reload();
         ok( $ret->success );
@@ -402,11 +407,11 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         $ret = $b->create(array( 'title' => 'Create Y' , 'view' => 0 ));
 
         // test incremental
-        $ret = $b->update(array( 'view'  => new RawValue('view + 1') ), array('reload' => true));
+        $ret = $b->update(array( 'view'  => new Raw('view + 1') ), array('reload' => true));
         result_ok($ret);
         is( 1,  $b->view );
 
-        $ret = $b->update(array('view' => new RawValue('view + 1') ), array('reload' => true));
+        $ret = $b->update(array('view' => new Raw('view + 1') ), array('reload' => true));
         result_ok($ret);
         is( 2,  $b->view );
         $ret = $b->delete();
