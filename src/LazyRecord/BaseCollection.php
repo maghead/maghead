@@ -118,7 +118,7 @@ class BaseCollection
 
     public function getSchema() 
     {
-        if ( $this->_schema ) {
+        if ($this->_schema){
             return $this->_schema;
         } elseif ( @constant('static::schema_proxy_class') ) {
             return $this->_schema = SchemaLoader::load( static::schema_proxy_class );
@@ -135,9 +135,7 @@ class BaseCollection
         /**
          * lazy attributes
          */
-        if( $key === '_schema' || $key === 'schema' ) {
-            return $this->getSchema();
-        } elseif( $key === '_handle' ) {
+        if ($key === '_handle' ) {
             return $this->handle ?: $this->prepareData();
         }
         throw new Exception("No such magic property $key");
