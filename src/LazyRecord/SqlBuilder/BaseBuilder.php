@@ -1,12 +1,15 @@
 <?php
 namespace LazyRecord\SqlBuilder;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Universal\Query\CreateIndexQuery;
+use SQLBuilder\Universal\Syntax\Constraint;
+
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\BaseModel;
-use LazyRecord\QueryDriver;
 
 abstract class BaseBuilder
 {
@@ -83,12 +86,10 @@ abstract class BaseBuilder
             if ( $column->index ) {
                 $indexName = is_string($column->index) ? $column->index 
                     : "idx_" . $schema->getTable() . "_" . $name;
-                $builder = new IndexBuilder($this->driver);
-                $builder->create( $indexName )
-                    ->on( $schema->getTable() )
-                    ->columns($name)
-                    ;
-                $sqls[] = $builder->build();
+
+                $query = new CreateIndexQuery($indexName);
+                $query->on( $schema->getTable(), $name);
+                $sqls[] = $query->toSql($this->driver, new ArgumentArray);
             }
         }
         return $sqls;
@@ -119,17 +120,13 @@ abstract class BaseBuilder
 
                     
                     $fSchema = new $rel['foreign_schema'];
-                    $builder = new IndexBuilder($this->driver);
-                    $sqls[] = $builder->addForeignKey(
-                        $schema->getTable(),
-                        $rel['self_column'],
-                        $fSchema->getTable(),
-                        $rel['foreign_column'],
 
-                        // use cascade by default
-                        // TODO: extract this as an option.
-                        'CASCADE'
-                    );
+                    $constraint = new Constraint();
+                    $constraint->foreignKey($rel['self_column']);
+                    $constraint->reference($fSchema->getTable(), (array) $rel['foreign_column']);
+                    // $constraint->onUpdate('CASCADE');
+                    // $constraint->onDelete('CASCADE');
+                    $sqls[] = $query->toSql($this->driver, new ArgumentArray);
                 }
             }
         }

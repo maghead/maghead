@@ -3,7 +3,6 @@ namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
-use SQLBuilder\IndexBuilder;
 use LazyRecord\Schema\RuntimeColumn;
 
 

@@ -3,8 +3,6 @@ namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
-use SQLBuilder\IndexBuilder;
-
 
 class MysqlBuilder extends BaseBuilder
 {
