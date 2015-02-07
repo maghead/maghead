@@ -949,10 +949,15 @@ abstract class BaseModel implements
     {
         $k = $this->getSchema()->primaryKey;
 
-        if (!$pkId && $k && ! isset($this->_data[$k]) ) {
+        if (!$k) {
+            throw new Exception("primary key is not defined.");
+        }
+
+        if ($pkId == NULL && !isset($this->_data[$k])) {
             throw new Exception('Record is not loaded, Record delete failed.');
         }
-        $kVal = $pkId ?: isset($this->_data[$k]) ? $this->_data[$k] : null;
+
+        $kVal = $pkId ? $pkId : ($this->_data && isset($this->_data[$k]) ? $this->_data[$k] : NULL);
 
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'delete' ) ) {
             return $this->reportError( _('Permission denied. Can not delete record.') , array( ));
