@@ -140,9 +140,6 @@ class BaseCollection
         } elseif( $key === '_handle' ) {
             return $this->handle ?: $this->prepareData();
         }
-        elseif( $key === '_query' ) {
-            return $this->getCurrentReadQuery();
-        }
         throw new Exception("No such magic property $key");
     }
 
