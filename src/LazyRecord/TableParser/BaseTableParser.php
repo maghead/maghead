@@ -52,10 +52,10 @@ abstract class BaseTableParser
         elseif (strpos($type,'datetime') === 0 || 'date' === $type ) {
             return 'DateTime';
         }
-        elseif( preg_match('/timestamp/', $type ) ) {
+        elseif (preg_match('/timestamp/', $type )) {
             return 'DateTime';
         }
-        elseif( 'time' == $type ) {
+        elseif ('time' == $type ) {
             // DateTime::createFromFormat('H:s','10:00')
             return 'DateTime';
         }
