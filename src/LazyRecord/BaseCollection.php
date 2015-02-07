@@ -53,7 +53,7 @@ class BaseCollection
      *
      * @var array
      */ 
-    protected $_itemData = null;
+    protected $_rows = null;
 
 
 
@@ -109,10 +109,10 @@ class BaseCollection
 
     public function getIterator()
     {
-        if ( ! $this->_itemData ) {
-            $this->_readRows();
+        if ( ! $this->_rows ) {
+            $this->readRows();
         }
-        return new ArrayIterator($this->_itemData);
+        return new ArrayIterator($this->_rows);
     }
 
     public function getSchema() 
@@ -142,7 +142,7 @@ class BaseCollection
         elseif( $key === '_query' ) {
             return $this->getCurrentReadQuery();
         } elseif( $key === '_items' ) {
-            return $this->_itemData ?: $this->_readRows();
+            return $this->_rows ?: $this->readRows();
         }
     }
 
@@ -155,7 +155,7 @@ class BaseCollection
      */
     public function free()
     {
-        $this->_itemData = null;
+        $this->_rows = null;
         $this->_result = null;
         $this->handle = null;
         return $this;
@@ -355,6 +355,9 @@ class BaseCollection
      */
     public function size()
     {
+        if ($this->_rows) {
+            return count($this->_rows);
+        }
         return count($this->_items);
     }
 
@@ -440,7 +443,7 @@ class BaseCollection
      *
      * @return model_class[]
      */
-    protected function _readRows()
+    protected function readRows()
     {
         // initialize the connection handle object
         $h = $this->_handle;
@@ -453,7 +456,7 @@ class BaseCollection
         }
 
         // Use fetch all
-        return $this->_itemData = $h->fetchAll(PDO::FETCH_CLASS, static::model_class );
+        return $this->_rows = $h->fetchAll(PDO::FETCH_CLASS, static::model_class );
     }
 
 
@@ -663,7 +666,7 @@ class BaseCollection
 
     /**
      * Create new record or relationship record, 
-     * and append the record into _itemData list
+     * and append the record into _rows list
      *
      * @param array $args Arguments for creating record
      *
@@ -683,7 +686,7 @@ class BaseCollection
                 $middleRecord = call_user_func( $this->_postCreate, $record, $args );
                 // $this->_postCreate($record,$args);
             }
-            $this->_itemData[] = $record;
+            $this->_rows[] = $record;
             return $record;
         }
         $this->_result = $return;
@@ -858,9 +861,7 @@ class BaseCollection
 
     public function add(BaseModel $record)
     {
-        if (! $this->_itemData )
-            $this->_itemData = array();
-        $this->_itemData[] = $record;
+        $this->_rows[] = $record;
     }
 
 
@@ -870,7 +871,7 @@ class BaseCollection
      */
     public function setRecords(array $records)
     {
-        $this->_itemData = $records;
+        $this->_rows = $records;
     }
 
 
