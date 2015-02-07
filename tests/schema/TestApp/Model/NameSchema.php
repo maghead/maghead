@@ -63,14 +63,14 @@ class NameSchema extends Schema
             ->date()
             ->isa('DateTime')
             ->deflator( function($val) {
-                if( is_a( $val, 'DateTime',true ) )
+                if ($val instanceof \DateTime) {
                     return $val->format('Y-m-d');
-                elseif( is_integer($val) ) {
+                } elseif (is_integer($val)) {
                     return strftime( '%Y-%m-%d' , $val );
                 }
                 return $val;
             })
-            ->inflator( function($val) { 
+            ->inflator(function($val) { 
                 return new \DateTime( $val );
             });
 
