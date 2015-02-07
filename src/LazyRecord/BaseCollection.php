@@ -80,14 +80,6 @@ class BaseCollection
     protected $_postCreate;
 
 
-    /**
-     * current data item cursor position
-     *
-     * @var integer
-     */
-    protected $_itemCursor = null;
-
-
     protected $_schema;
 
     /**
@@ -165,7 +157,6 @@ class BaseCollection
     {
         $this->_itemData = null;
         $this->_result = null;
-        $this->_itemCursor = null;
         $this->handle = null;
         return $this;
     }
@@ -544,40 +535,6 @@ class BaseCollection
         }
         return Result::success('Updated', array( 'sql' => $sql ));
     }
-
-
-    /******************** Implements Iterator methods ********************/
-    public function rewind()
-    { 
-        $this->_itemCursor = 0;
-    }
-
-    /* is current row a valid row ? */
-    public function valid()
-    {
-        if ( $this->_itemData == null ) {
-            $this->_readRows();
-        }
-        return isset($this->_itemData[ $this->_itemCursor ] );
-    }
-
-    public function current() 
-    { 
-        return $this->_itemData[ $this->_itemCursor ];
-    }
-
-    public function next() 
-    {
-        return $this->_itemData[ $this->_itemCursor++ ];
-    }
-
-    public function key()
-    {
-        return $this->_itemCursor;
-    }
-
-    /*********************** End of Iterator methods ************************/
-
 
     public function splice($pos,$count = null)
     {
