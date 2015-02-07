@@ -460,10 +460,7 @@ class BaseCollection
         // XXX: should be lazy
         $schema = $this->getSchema();
         $handle = $this->_handle;
-        while ( $o = $handle->fetchObject( static::model_class ) ) {
-            // check if we've already joined the model/table, we can translate 
-            // the column values to the model object with the alias prefix.
-            $o->setJoinedRelationships($this->_joinedRelationships);
+        while ($o = $handle->fetchObject( static::model_class) ) {
             $this->_itemData[] = $o;
         }
     }
