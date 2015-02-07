@@ -44,10 +44,12 @@ class Inflator
         case "str":
             return (string) $value;
         case "bool":
-            if (strcasecmp( 'false', $value ) == 0 || $value == '0') {
-                return false;
-            } elseif( strcasecmp( 'true', $value ) == 0 || $value == '1' ) {
-                return true;
+            if (is_string($value)) {
+                if (strcasecmp('false', $value) == 0 || $value == '0') {
+                    return false;
+                } elseif(strcasecmp('true', $value) == 0 || $value == '1' ) {
+                    return true;
+                }
             }
             return $value ? true : false;
         case "float":

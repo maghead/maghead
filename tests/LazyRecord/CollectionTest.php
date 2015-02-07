@@ -238,8 +238,8 @@ class CollectionTest extends \LazyRecord\ModelTestCase
             'confirmed' => false,
             'country' => 'Tokyo',
         ));
-        ok( $ret->success , $ret );
-        is( false, $name->confirmed );
+        ok($ret->success , $ret);
+        is(false, $name->confirmed);
 
         $ret = $name->load( array( 'name' => 'Foo' ));
         ok( $ret->success , $ret );
