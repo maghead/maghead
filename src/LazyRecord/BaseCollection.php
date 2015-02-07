@@ -433,16 +433,6 @@ class BaseCollection
         return $this->_handle->fetchObject( static::model_class );
     }
 
-    protected function _readRowsWithJoinedRelationships()
-    {
-        // XXX: should be lazy
-        $schema = $this->getSchema();
-        $handle = $this->_handle;
-        while ($o = $handle->fetchObject( static::model_class) ) {
-            $this->_itemData[] = $o;
-        }
-    }
-
 
 
     /**
@@ -462,14 +452,7 @@ class BaseCollection
             throw new RuntimeException( get_class($this) . ':' . $this->_result->message );
         }
 
-
-        $this->_itemData = array();
-        if ( ! empty($this->_joinedRelationships) ) {
-            $this->_readRowsWithJoinedRelationships();
-            return $this->_itemData;
-        }
-
-        // use fetch all
+        // Use fetch all
         return $this->_itemData = $h->fetchAll(PDO::FETCH_CLASS, static::model_class );
     }
 
