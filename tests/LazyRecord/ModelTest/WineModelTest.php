@@ -40,31 +40,4 @@ class WineModelTest extends \LazyRecord\ModelTestCase
         is('Wine Category',$record->display('category'));
     }
 
-
-    public function testJoinedColumnExtractionFromCollection() {
-        $c = new \TestApp\Model\WineCategory;
-        ok($c,'category');
-
-        $record = new \TestApp\Model\Wine;
-        ok($record);
-
-        $ret = $c->create(array( 'name' => 'Wine Category' ));
-        result_ok($ret);
-
-        foreach(  range(1,1000) as $i ) {
-            $ret = $record->create(array( 'name' => "Wine Name $i" , 'category_id' => $c->id ));
-            result_ok($ret);
-        }
-
-
-        ok( $collection = new \TestApp\Model\WineCollection );
-        $collection->join( new \TestApp\Model\WineCategory ); // join the WineCategory
-
-        foreach( $collection as $item ) {
-            ok($item->id);
-            ok($item->category,'get category object');
-            ok($item->category->id, 'get category id');
-            ok($item->category->name, 'get category name');
-        }
-    }
 }
