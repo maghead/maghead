@@ -140,14 +140,14 @@ abstract class BaseModel implements
     {
         // Load the data only when the ID is defined.
         if ($args) {
-            $this->_load( $args );
+            $this->load( $args );
             /*
             if (is_int($args)) {
-                $this->_load( $args );
+                $this->load( $args );
             } elseif (is_array($args)) {
                 $pk = $this->getSchema()->primaryKey;
                 if (isset($args[$pk])) {
-                    $this->_load( $args );
+                    $this->load( $args );
                 } else {
                     $this->setData($args);
                 }
@@ -863,7 +863,7 @@ abstract class BaseModel implements
      */
     public function find($args)
     {
-        return $this->_load($args);
+        return $this->load($args);
     }
 
     public function loadFromCache($args, $ttl = 3600)
@@ -877,13 +877,13 @@ abstract class BaseModel implements
             ));
         }
         else {
-            $ret = $this->_load($args);
+            $ret = $this->load($args);
             $this->setCache($key,$this->_data,$ttl);
             return $ret;
         }
     }
 
-    public function _load($args)
+    public function load($args)
     {
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'load', $args ) ) {
             return $this->reportError("Permission denied. Can not load record.", array('args' => $args));
@@ -1453,14 +1453,13 @@ abstract class BaseModel implements
     {
         // relationship id can override value column.
         if ( $relation = $this->getSchema()->getRelation( $key ) ) {
-            // cache object cache
-            if ( isset($this->_data[ $key ]) 
-                && $this->_data[$key] instanceof \LazyRecord\BaseModel ) 
+            // Cache object cache
+            if (isset($this->_data[$key]) && $this->_data[$key] instanceof BaseModel) 
             {
                 return $this->_data[$key];
             }
 
-            if ( isset($this->_joinedRelationships[ $key ] ) ) {
+            if (isset($this->_joinedRelationships[ $key ]) ) {
                 $alias = $this->_joinedRelationships[ $key ];
                 $prefix = $alias . '_';
                 $stash = array();
