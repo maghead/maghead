@@ -39,3 +39,5 @@ after_script:
 #       env: DB=pgsql DB_USER=postgres DB_NAME=postgres  # driver currently unsupported by HHVM
 #     - php: hhvm
 #       env: DB=sqlite # some issues at the moment
+cache:
+  apt: true
