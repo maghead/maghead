@@ -120,8 +120,8 @@ class BaseCollection
     {
         if ($this->_schema){
             return $this->_schema;
-        } elseif ( @constant('static::schema_proxy_class') ) {
-            return $this->_schema = SchemaLoader::load( static::schema_proxy_class );
+        } elseif (@constant('static::schema_proxy_class')) {
+            return $this->_schema = SchemaLoader::load(static::schema_proxy_class);
         } 
         throw new RuntimeException("schema is not defined in " . get_class($this) );
     }
@@ -129,16 +129,6 @@ class BaseCollection
     public function getCurrentReadQuery()
     {
         return $this->_readQuery ? $this->_readQuery : $this->_readQuery = $this->createReadQuery();
-    }
-
-    public function __get( $key ) {
-        /**
-         * lazy attributes
-         */
-        if ($key === '_handle' ) {
-            return $this->handle ?: $this->prepareData();
-        }
-        throw new Exception("No such magic property $key");
     }
 
     public function getRows()
@@ -281,7 +271,7 @@ class BaseCollection
      *
      * Which calls doFetch() to do a query operation.
      */
-    public function prepareData($force = false)
+    public function prepareHandle($force = false)
     {
         if( ! $this->handle || $force ) {
             $this->_result = $this->fetch();
@@ -449,9 +439,13 @@ class BaseCollection
         return $this->_rows;
     }
 
+
     public function fetchRow()
     {
-        return $this->_handle->fetchObject( static::model_class );
+        if (!$this->handle) {
+            $this->prepareHandle();
+        }
+        return $this->handle->fetchObject( static::model_class );
     }
 
 
@@ -464,17 +458,19 @@ class BaseCollection
     protected function readRows()
     {
         // initialize the connection handle object
-        $h = $this->_handle;
+        if (!$this->handle) {
+            $this->prepareHandle();
+        }
 
-        if ( ! $h ) {
-            if ( $this->_result->exception ) {
+        if (! $this->handle) {
+            if ($this->_result->exception ) {
                 throw $this->_result->exception;
             }
             throw new RuntimeException( get_class($this) . ':' . $this->_result->message );
         }
 
         // Use fetch all
-        return $this->_rows = $h->fetchAll(PDO::FETCH_CLASS, static::model_class );
+        return $this->_rows = $this->handle->fetchAll(PDO::FETCH_CLASS, static::model_class );
     }
 
 
