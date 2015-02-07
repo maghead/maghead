@@ -1199,6 +1199,8 @@ abstract class BaseModel implements
         $query->into( $this->getSchema()->getTable() );
         $query->returning($k);
 
+        $arguments = new ArgumentArray;
+
         $sql  = $query->toSql($driver, $arguments);
         $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
 
@@ -1645,7 +1647,7 @@ abstract class BaseModel implements
                 *    Select * from books b (r2) left join author_books ab on ( ab.book_id = b.id )
                 *       where b.author_id = :author_id
                 */
-            $collection->join( $sSchema->getTable() )->alias('b')
+            $collection->join( $sSchema->getTable() )->as('b')
                             ->on()
                             ->equal( 'b.' . $foreignRelation['self_column'] , array( $collection->getAlias() . '.' . $fColumn ) );
 
