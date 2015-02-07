@@ -33,13 +33,6 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         );
     }
 
-    public function testCollectionLazyAttributes()
-    {
-        $authors = new \TestApp\Model\AuthorCollection;
-        ok( $authors->_query , 'has lazy attribute' );
-    }
-
-
     public function testCollectionAsPairs()
     {
         $address = new \TestApp\Model\Address;
