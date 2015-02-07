@@ -62,8 +62,7 @@ abstract class BaseModel implements
     Serializable, 
     ArrayAccess, 
     IteratorAggregate, 
-    Countable,
-    ExporterInterface
+    Countable
 {
 
     const schema_proxy_class = '';

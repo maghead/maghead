@@ -34,8 +34,7 @@ class BaseCollection
     implements 
     ArrayAccess, 
     Countable, 
-    IteratorAggregate, 
-    ExporterInterface
+    IteratorAggregate
 {
     protected $_lastSql;
 
