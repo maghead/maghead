@@ -133,6 +133,10 @@ class BaseCollection
         throw new RuntimeException("schema is not defined in " . get_class($this) );
     }
 
+    public function getCurrentReadQuery()
+    {
+        return $this->_readQuery ? $this->_readQuery : $this->_readQuery = $this->createReadQuery();
+    }
 
     public function __get( $key ) {
         /**
@@ -144,9 +148,7 @@ class BaseCollection
             return $this->handle ?: $this->prepareData();
         }
         elseif( $key === '_query' ) {
-            return $this->_readQuery 
-                    ? $this->_readQuery
-                    : $this->_readQuery = $this->createReadQuery();
+            return $this->getCurrentReadQuery();
         } elseif( $key === '_items' ) {
             return $this->_itemData ?: $this->_readRows();
         }
@@ -174,7 +176,7 @@ class BaseCollection
      */
     public function __call($m,$a)
     {
-        $q = $this->_query;
+        $q = $this->getCurrentReadQuery();
         if (method_exists($q,$m) ) {
             return call_user_func_array(array($q,$m),$a);
         }
@@ -189,7 +191,7 @@ class BaseCollection
     public function setAlias($alias)
     {
         $this->_alias = $alias;
-        if ( $q = $this->_query ) {
+        if ($q = $this->getCurrentReadQuery()) {
             $q->alias($alias);
         }
         return $this;
@@ -224,23 +226,19 @@ class BaseCollection
 
     // TODO: maybe we should move this method into RuntimeSchema.
     // Because it's used in BaseModel class too
-    public function getQueryDriver( $dsId )
+    public function getQueryDriver($dsId)
     {
         return ConnectionManager::getInstance()->getQueryDriver( $dsId );
     }
 
     public function getWriteQueryDriver()
     {
-        return $this->getQueryDriver( 
-            $this->getSchema()->getWriteSourceId()
-        );
+        return $this->getQueryDriver($this->getSchema()->getWriteSourceId());
     }
 
     public function getReadQueryDriver()
     {
-        return $this->getQueryDriver( 
-            $this->getSchema()->getReadSourceId()
-        );
+        return $this->getQueryDriver($this->getSchema()->getReadSourceId());
     }
 
 
@@ -313,18 +311,8 @@ class BaseCollection
 
         $arguments = new ArgumentArray;
 
-        $this->_lastSql = $sql = $this->_query->toSql($driver, $arguments);
+        $this->_lastSql = $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
         $this->_vars = $vars = $arguments->toArray();
-
-        /* Bad patch
-        foreach($vars as $k => & $v) {
-            if ($v === false) {
-                $v = 'FALSE';
-            } elseif( $v === true ) {
-                $v = 'TRUE';
-            }
-        }
-         */
 
         try {
             $this->handle = $conn->prepareAndExecute($sql, $vars);
@@ -354,7 +342,7 @@ class BaseCollection
 
         $driver = $conn->createQueryDriver();
 
-        $q = clone $this->_query;
+        $q = clone $this->getCurrentReadQuery();
         $q->setSelect('COUNT(distinct m.id)'); // Override current select.
 
         // when selecting count(*), we dont' use groupBys or order by
@@ -392,7 +380,7 @@ class BaseCollection
      */
     public function limit($number)
     {
-        $this->_query->limit($number);
+        $this->getCurrentReadQuery()->limit($number);
         return $this;
     }
 
@@ -403,7 +391,7 @@ class BaseCollection
      */
     public function offset($number)
     {
-        $this->_query->offset($number);
+        $this->getCurrentReadQuery()->offset($number);
         return $this;
     }
 
@@ -505,7 +493,7 @@ class BaseCollection
 
         $query = new DeleteQuery;
         $query->from($schema->getTable());
-        $query->setWhere($this->_query->cloneWhere());
+        $query->setWhere(clone $this->getCurrentReadQuery()->getWhere());
 
         $arguments = new ArgumentArray;
         $sql = $query->toSql($driver, $arguments);
@@ -538,7 +526,7 @@ class BaseCollection
         $driver = $conn->createQueryDriver();
 
         $query = new UpdateQuery;
-        $query->setWhere($this->_query->cloneWhere());
+        $query->setWhere(clone $this->getCurrentReadQuery()->getWhere());
         $query->update($schema->getTable());
         $query->set($data);
 
@@ -802,7 +790,7 @@ class BaseCollection
     public function toSql()
     {
         /* fetch by current query */
-        $query = $this->_query;
+        $query = $this->getCurrentReadQuery();
         $dsId = $this->getSchema()->getReadSourceId();
         $driver = $this->getQueryDriver($dsId);
         $arguments = new ArgumentArray;
@@ -844,10 +832,10 @@ class BaseCollection
     public function join($target, $type = 'LEFT' , $alias = null, $relationId = null )
     {
         $this->explictSelect = true;
-        $query = $this->_query;
+        $query = $this->getCurrentReadQuery();
 
         // for models and schemas join
-        if( is_object($target) ) {
+        if (is_object($target)) {
             $table = $target->getTable();
 
 
@@ -918,15 +906,15 @@ class BaseCollection
      * Override QueryBuilder->where method,
      * to enable explict selection
      */
-    public function where($args = null)
+    public function where(array $args = null)
     {
         $this->setExplictSelect(true);
-        if( $args && is_array($args) ) {
-            return $this->_query->where($args);
+        $query = $this->getCurrentReadQuery();
+        if ($args && is_array($args)) {
+            return $query->where($args);
         }
-        return $this->_query->where();
+        return $query->where();
     }
-
 
     public function add(BaseModel $record)
     {

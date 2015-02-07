@@ -98,8 +98,8 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         $authors->fetch();
 
         $clone = clone $authors;
-        ok( $clone !== $authors );
-        ok( $clone->_readQuery !== $authors->_readQuery );
+        ok($clone !== $authors);
+        $this->assertNotSame($clone->getCurrentReadQuery(), $authors->getCurrentReadQuery());
     }
 
     public function testCloneWithQuery() 
@@ -112,7 +112,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         $addresses->where()
             ->equal('address','Cindy');
         $addresses->fetch();
-        is(1,$addresses->size());
+        is(1, $addresses->size());
 
         $sql1 = $addresses->toSQL();
         
