@@ -30,7 +30,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
     }
 
     /**
-     * @expectedException LazyRecord\DatabaseException
+     * @expectedException LazyRecord\QueryException
      */
     public function testTitleIsRequired()
     {
@@ -366,9 +366,6 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         $ret = $n->update(array( 
             'view' => new Raw('view + 1')
         ), array('reload' => true));
-
-        var_dump( $ret );
-        
 
         ok($ret->success, $ret->message);
         is(1, $n->view);

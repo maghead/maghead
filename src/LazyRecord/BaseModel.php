@@ -40,7 +40,7 @@ use ValidationKit\ValidationMessage;
 use ActionKit;
 use ActionKit\RecordAction\BaseRecordAction;
 
-class DatabaseException extends RuntimeException {
+class QueryException extends RuntimeException {
 
     public $debugInfo = array();
 
@@ -767,7 +767,7 @@ abstract class BaseModel implements
                         if ($val instanceof Raw) {
                             $args[$n] = new Bind($n, $val);
                         } else {
-                            $args[$n] = new Bind($n, $c->deflate($val));
+                            $args[$n] = new Bind($n, $c->deflate($val, $driver));
                         }
                     } else {
                         $args[$n] = new Bind($n, $val);
@@ -791,7 +791,7 @@ abstract class BaseModel implements
         }
         catch (PDOException $e)
         {
-            throw new DatabaseException('Record create failed:' . $e->getMessage(), $e, array(
+            throw new QueryException('Record create failed:' . $e->getMessage(), $e, array(
                 // 'args' => $arguments->toArray(),
                 'sql' => $sql,
                 'validations' => $validationResults,
@@ -920,7 +920,7 @@ abstract class BaseModel implements
         }
         catch (PDOException $e)
         {
-            throw new DatabaseException('Record load failed', $e, array(
+            throw new QueryException('Record load failed', $e, array(
                 // XXX: 'args' => $args,
                 'sql' => $sql,
             ));
@@ -982,7 +982,7 @@ abstract class BaseModel implements
         try {
             $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
         } catch (PDOException $e) {
-            throw new DatabaseException('Delete failed', $e, array(
+            throw new QueryException('Delete failed', $e, array(
                 // XXX 'args' => $arguments->toArray(),
                 'sql' => $sql,
                 'validations' => $validationResults,
@@ -1038,6 +1038,10 @@ abstract class BaseModel implements
         $conn = $this->getWriteConnection();
         $sql  = null;
         $vars = null;
+
+        $arguments = new ArgumentArray;
+        $driver = $conn->createQueryDriver();
+        $query = new UpdateQuery;
 
         $validationError = false;
         $validationResults = array();
@@ -1096,12 +1100,10 @@ abstract class BaseModel implements
 
                     if (!is_string($args[$n])) {
                         if ($args[$n] instanceof Raw) {
-                            $args[$n] = $args[$n];
+
                         } else {
-                            $args[$n] = $c->deflate( $args[$n] );
+                            $args[$n] = $c->deflate( $args[$n], $driver);
                         }
-                    } else {
-                        $args[$n] = $args[$n];
                     }
                 }
             }
@@ -1112,17 +1114,12 @@ abstract class BaseModel implements
                 ));
             }
 
-            $arguments = new ArgumentArray;
-
-
-            $query = new UpdateQuery;
 
             // TODO: optimized to built cache
             $query->set($args);
             $query->update($schema->getTable());
             $query->where()->equal($k , $kVal);
 
-            $driver = $conn->createQueryDriver();
 
             $sql  = $query->toSql($driver, $arguments);
             $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
@@ -1141,7 +1138,8 @@ abstract class BaseModel implements
         } 
         catch(PDOException $e) 
         {
-            throw new DatabaseException('Record update failed', $e, array(
+            throw new QueryException('Record update failed', $e, array(
+                'driver' => get_class($driver),
                 'args' => $args,
                 'sql' => $sql,
                 'validations' => $validationResults,

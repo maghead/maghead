@@ -23,7 +23,7 @@ class BookModelTest extends \LazyRecord\ModelTestCase
 
     /**
      * TODO: Should we validate the field ? think again.
-     * @expectedException LazyRecord\DatabaseException
+     * @expectedException LazyRecord\QueryException
      */
     public function testUpdateUnknownColumn() {
         $b = new \TestApp\Model\Book;

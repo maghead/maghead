@@ -11,6 +11,7 @@ use ArrayIterator;
 use IteratorAggregate;
 use InvalidArgumentException;
 use SQLBuilder\Raw;
+use SQLBuilder\Driver\BaseDriver;
 
 class InvalidValueTypeException extends Exception { }
 
@@ -195,14 +196,14 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      *
      * @param mixed $value
      **/
-    public function deflate($value)
+    public function deflate($value, BaseDriver $driver = NULL)
     {
         // run column specified deflator
         if( $f = $this->get('deflator') ) {
             return call_user_func($f, $value);
         }
         // use global deflator, check self type, and do type casting
-        return Deflator::deflate($value , $this->get('isa'));
+        return Deflator::deflate($value , $this->get('isa'), $driver);
     }
 
     public function inflate($value, $record)
