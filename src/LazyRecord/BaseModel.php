@@ -987,7 +987,7 @@ abstract class BaseModel implements
         $arguments = new ArgumentArray;
 
         $query = new DeleteQuery;
-        $query->from($this->getSchema()->getTable());
+        $query->delete($this->getSchema()->getTable());
         $query->where()
             ->equal($k , $kVal);
         $sql = $query->toSql($conn->createQueryDriver(), $arguments);
