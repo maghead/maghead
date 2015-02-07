@@ -10,6 +10,7 @@ use ArrayAccess;
 use Countable;
 use IteratorAggregate;
 use ArrayIterator;
+use BadMethodCallException;
 
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\Universal\Query\UpdateQuery;
@@ -141,9 +142,8 @@ class BaseCollection
         }
         elseif( $key === '_query' ) {
             return $this->getCurrentReadQuery();
-        } elseif( $key === '_items' ) {
-            return $this->_rows ?: $this->readRows();
         }
+        throw new Exception("No such magic property $key");
     }
 
     public function getRows()
@@ -566,7 +566,7 @@ class BaseCollection
         if (!$this->_rows) {
             $this->readRows();
         }
-        return end($this->_items);
+        return end($this->_rows);
     }
 
 
@@ -610,17 +610,25 @@ class BaseCollection
 
     public function each(callable $cb)
     {
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+
         $collection = new static;
         $collection->setRecords(
-            array_map($cb,$this->_items)
+            array_map($cb,$this->_rows)
         );
         return $collection;
     }
 
     public function filter(callable $cb)
     {
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+
         $collection = new static;
-        $collection->setRecords(array_filter($this->_items,$cb));
+        $collection->setRecords(array_filter($this->_rows,$cb));
         return $collection;
     }
 
