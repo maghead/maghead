@@ -725,6 +725,8 @@ abstract class BaseModel implements
                 ));
             }
 
+            // arguments that are will Bind
+            $insertArgs = array();
             foreach( $schema->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
@@ -763,14 +765,21 @@ abstract class BaseModel implements
                 }
 
                 if ($val !== NULL) {
+                    // update filtered value back to args
+                    if (is_object($val) || is_array($val)) {
+                        $args[$n] = $c->deflate($val, $driver);
+                    } else {
+                        $args[$n] = $val;
+                    }
+
                     if (!is_string($val)) {
                         if ($val instanceof Raw) {
-                            $args[$n] = new Bind($n, $val);
+                            $insertArgs[$n] = new Bind($n, $val);
                         } else {
-                            $args[$n] = new Bind($n, $c->deflate($val, $driver));
+                            $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
                         }
                     } else {
-                        $args[$n] = new Bind($n, $val);
+                        $insertArgs[$n] = new Bind($n, $val);
                     }
                 }
             }
@@ -781,7 +790,7 @@ abstract class BaseModel implements
                 ));
             }
 
-            $query->insert($args);
+            $query->insert($insertArgs);
             $query->returning($k);
 
             $sql  = $query->toSql($driver, $arguments);
@@ -792,7 +801,7 @@ abstract class BaseModel implements
         catch (PDOException $e)
         {
             throw new QueryException('Record create failed:' . $e->getMessage(), $e, array(
-                // 'args' => $arguments->toArray(),
+                'args' => $args,
                 'sql' => $sql,
                 'validations' => $validationResults,
             ));
@@ -805,14 +814,15 @@ abstract class BaseModel implements
         } else {
             $pkId = intval($conn->lastInsertId());
         }
+        $args['id'] = $pkId;
         $this->_data['id'] = $pkId;
 
-        if ($pkId && isset($options['reload']) && $options['reload']) {
-        } elseif ($pkId && $this->autoReload) {
+        if ($pkId && ((isset($options['reload']) && $options['reload']) || $this->autoReload)) {
             $this->load($pkId);
         } else {
             $this->_data = $args;
         }
+
         $this->afterCreate($origArgs);
 
         // collect debug info
@@ -1809,7 +1819,7 @@ abstract class BaseModel implements
      */
     public function inflateColumnValue($n) 
     {
-        $value = isset($this->_data[ $n ]) ? $this->_data[$n] : null;
+        $value = isset($this->_data[$n]) ? $this->_data[$n] : null;
         if ( $c = $this->getSchema()->getColumn( $n ) ) {
             return $c->inflate($value, $this);
         }
