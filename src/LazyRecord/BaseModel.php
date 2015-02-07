@@ -72,6 +72,8 @@ abstract class BaseModel implements
 
     protected $_cache = array();
 
+    protected $_foreignRecordCache = array();
+
     /**
      * @var boolean Auto reload record after creating new record
      *
@@ -1453,26 +1455,6 @@ abstract class BaseModel implements
     {
         // relationship id can override value column.
         if ( $relation = $this->getSchema()->getRelation( $key ) ) {
-            // Cache object cache
-            if (isset($this->_data[$key]) && $this->_data[$key] instanceof BaseModel) 
-            {
-                return $this->_data[$key];
-            }
-
-            if (isset($this->_joinedRelationships[ $key ]) ) {
-                $alias = $this->_joinedRelationships[ $key ];
-                $prefix = $alias . '_';
-                $stash = array();
-                foreach( $this->_data as $k => $v ) {
-                    if ( strpos($k,$prefix) === 0 ) {
-                        $stash[ substr($k,strlen($prefix)) ] = $v;
-                    }
-                }
-                $model = $relation->newForeignModel();
-                $model->setStashedData($stash);
-                return $this->_data[ $key ] = $model;
-            }
-
             // use model query to load relational record.
             return $this->getRelationalRecords($key, $relation);
         }

@@ -60,20 +60,11 @@ class WineModelTest extends \LazyRecord\ModelTestCase
         ok( $collection = new \TestApp\Model\WineCollection );
         $collection->join( new \TestApp\Model\WineCategory ); // join the WineCategory
 
-
-        // test query
         foreach( $collection as $item ) {
             ok($item->id);
-            // print_r($data);
             ok($item->category,'get category object');
             ok($item->category->id, 'get category id');
             ok($item->category->name, 'get category name');
-
-            $data = $item->getStashedData();
-            ok( isset($data['category']) );
-            $category = $data['category'];
-            ok($category->id);
-            same_ok($item->category, $category );
         }
     }
 }
