@@ -85,7 +85,6 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
         foreach( $results as $result ) {
             ok( $result->id );
-
             $record = new \TestApp\Model\Book();
             $record->load($result->id);
             $record->delete();
@@ -200,23 +199,21 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         $authors2->where()
                 ->like('name','Foo');
         $count = $authors2->queryCount();
-        is(20 , $count );
+        is(20 , $count);
 
         $authors = new \TestApp\Model\AuthorCollection;
-        $authors->where()
-                ->like('name','Foo');
-        $items = $authors->items();
-        $size = $authors->size();
+        $authors->where()->like('name','Foo');
 
-        ok( $size );
-        is( 20, $size );
-        ok( $items );
-        ok( is_array( $items ));
-        foreach( $items as $item ) {
+        $items = $authors->items();
+        is(20, $authors->size());
+
+        ok(is_array($items));
+        foreach($items as $item) {
             ok( $item->id );
-            isa_ok( '\TestApp\Model\Author', $item );
+            $this->assertInstanceOf('TestApp\Model\Author', $item);
+
             $ret = $item->delete();
-            ok( $ret->success );
+            ok($ret->success);
         }
         $size = $authors->free()->size();
         is( 0, $size );
@@ -267,7 +264,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         $names->groupBy(['name','address']);
 
         ok( $items = $names->items() , 'Test name collection with name,address condition' );
-        ok( $size = $names->size() );
+        ok( $size = $names->size());
         is( 1 , $size );
         is( 'Foo', $items[0]->name );
     }
@@ -337,8 +334,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
         $books = new \TestApp\Model\BookCollection;
         $books->fetch();
-        count_ok( 4, $books);
-        ok($books);
+        count_ok(4, $books);
 
         $perlBooks = $books->filter(function($item) { 
             return $item->title == 'Perl Programming';
@@ -346,7 +342,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
 
         ok($perlBooks);
         is(1, $perlBooks->size());
-        count_ok(1,$perlBooks->_items);
+        count_ok(1, $perlBooks->items());
 
  
         foreach( $results as $result ) {
@@ -356,7 +352,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         }
 
         $someBooks = $books->splice(0,2);
-        is( 2, count($someBooks) );
+        is(2, count($someBooks));
     }
 
 
