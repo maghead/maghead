@@ -1168,7 +1168,8 @@ abstract class BaseModel implements
 
         $arguments = new ArgumentArray;
         $query = new UpdateQuery;
-        $query->update($args);
+        $query->set($args);
+        $query->update($this->getSchema()->getTable());
         $query->where()
             ->equal( $k , $kVal );
 
