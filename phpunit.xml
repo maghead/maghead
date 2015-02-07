@@ -3,7 +3,7 @@
          backupGlobals="false"
          colors="true"
          stopOnFailure="true"
-         stopOnError="false"
+         stopOnError="true"
          verbose="true">
   <php>
 

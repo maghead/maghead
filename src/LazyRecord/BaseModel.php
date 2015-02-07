@@ -945,10 +945,13 @@ abstract class BaseModel implements
     }
 
 
+    /**
+     * Create from array
+     */
     static public function fromArray(array $array)
     {
         $record = new static;
-        $record->setData( $array );
+        $record->setStashedData($array);
         return $record;
     }
 
@@ -1467,7 +1470,7 @@ abstract class BaseModel implements
                     }
                 }
                 $model = $relation->newForeignModel();
-                $model->setData($stash);
+                $model->setStashedData($stash);
                 return $this->_data[ $key ] = $model;
             }
 
@@ -1524,9 +1527,11 @@ abstract class BaseModel implements
      * DEPRECATED
      *
      * @return array record data stash
+     * @codeCoverageIgnore
      */
     public function getData()
     {
+        trigger_error(__METHOD__ . " is deprecated.", E_USER_DEPRECATED);
         return $this->_data;
     }
 
@@ -1543,9 +1548,11 @@ abstract class BaseModel implements
      * DEPRECATED
      *
      * @param array $array
+     * @codeCoverageIgnore
      */
     public function setData(array $array)
     {
+        trigger_error(__METHOD__ . " is deprecated.", E_USER_DEPRECATED);
         $this->_data = $array;
     }
 

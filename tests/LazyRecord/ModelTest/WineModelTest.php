@@ -69,7 +69,7 @@ class WineModelTest extends \LazyRecord\ModelTestCase
             ok($item->category->id, 'get category id');
             ok($item->category->name, 'get category name');
 
-            $data = $item->getData();
+            $data = $item->getStashedData();
             ok( isset($data['category']) );
             $category = $data['category'];
             ok($category->id);

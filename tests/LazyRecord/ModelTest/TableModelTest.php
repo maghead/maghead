@@ -31,9 +31,6 @@ class TableModelTest extends ModelTestCase
         ok($ret->success);
         result_ok($ret);
 
-        // var_dump( $ret ); 
-        // var_dump( $table->getData() ); 
-
         $ret = $table->reload();
         result_ok($ret);
 
