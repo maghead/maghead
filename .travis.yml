@@ -26,8 +26,6 @@ before_script:
   - php bin/lazy sql --rebuild -D=sqlite
 script:
   - phpunit -c phpunit-travis-ci.xml
-cache:
-  - vendor
 after_script:
   - php vendor/bin/coveralls -v
 
