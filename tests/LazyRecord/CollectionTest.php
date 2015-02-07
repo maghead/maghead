@@ -230,7 +230,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
     }
 
 
-    function testBooleanType()
+    public function testBooleanType()
     {
         $name = new \TestApp\Model\Name;
         $ret = $name->create(array( 
@@ -240,6 +240,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         ));
         ok($ret->success , $ret);
         is(false, $name->confirmed);
+        
 
         $ret = $name->load( array( 'name' => 'Foo' ));
         ok( $ret->success , $ret );
@@ -369,8 +370,8 @@ class CollectionTest extends \LazyRecord\ModelTestCase
                 'identity' => 'foo' . $i,
                 'confirmed' => true,
             ));
-            ok( $author->confirmed , 'is true' );
-            ok( $ret->success );
+            ok($author->confirmed , 'is true');
+            ok($ret->success);
         }
 
 
