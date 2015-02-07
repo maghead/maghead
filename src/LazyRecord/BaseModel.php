@@ -1521,6 +1521,8 @@ abstract class BaseModel implements
     /**
      * get current record data stash
      *
+     * DEPRECATED
+     *
      * @return array record data stash
      */
     public function getData()
@@ -1529,8 +1531,16 @@ abstract class BaseModel implements
     }
 
 
+    public function getStashedData()
+    {
+        return $this->_data;
+    }
+
+
     /**
-     * set raw data
+     * Set raw data
+     *
+     * DEPRECATED
      *
      * @param array $array
      */
@@ -1540,6 +1550,10 @@ abstract class BaseModel implements
     }
 
 
+    public function setStashedData(array $array)
+    {
+        $this->_data = $array;
+    }
 
     /**
      * Do we have this column ?
