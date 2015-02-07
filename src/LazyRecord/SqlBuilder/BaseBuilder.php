@@ -88,7 +88,7 @@ abstract class BaseBuilder
                     : "idx_" . $schema->getTable() . "_" . $name;
 
                 $query = new CreateIndexQuery($indexName);
-                $query->on( $schema->getTable(), $name);
+                $query->on($schema->getTable(), (array) $name);
                 $sqls[] = $query->toSql($this->driver, new ArgumentArray);
             }
         }
