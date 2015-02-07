@@ -765,7 +765,9 @@ abstract class BaseModel implements
                 }
 
                 if ($val !== NULL) {
-                    // update filtered value back to args
+                    // Update filtered value back to args
+                    // Note that we don't deflate a scalar value, this is to prevent the overhead of data reload from database
+                    // We should try to keep all variables just like the row result we query from database.
                     if (is_object($val) || is_array($val)) {
                         $args[$n] = $c->deflate($val, $driver);
                     } else {
