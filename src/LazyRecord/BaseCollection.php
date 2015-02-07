@@ -434,8 +434,11 @@ class BaseCollection
      */
     public function pager($page = 1,$pageSize = 10)
     {
-        // setup limit
-        return new CollectionPager( $this->_items, $page, $pageSize );
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        // Setup limit
+        return new CollectionPager($this->_rows, $page, $pageSize );
     }
 
     /**
@@ -445,7 +448,10 @@ class BaseCollection
      */
     public function items()
     {
-        return $this->_items;
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        return $this->_rows;
     }
 
     public function fetchRow()
@@ -541,47 +547,65 @@ class BaseCollection
 
     public function splice($pos,$count = null)
     {
-        $items = $this->_items ?: array();
-        return array_splice( $items, $pos, $count);
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        return array_splice($this->_rows, $pos, $count);
     }
 
     public function first()
     {
-        return isset($this->_items[0]) ?
-                $this->_items[0] : null;
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        return ! empty($this->_rows) ? $this->_rows[0] : null;
     }
 
     public function last()
     {
-        if( !empty($this->_items) ) {
-            return end($this->_items);
+        if (!$this->_rows) {
+            $this->readRows();
         }
+        return end($this->_items);
     }
 
 
     /** array access interface */
     public function offsetSet($name,$value)
     {
-        if( null === $name ) {
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        if (NULL === $name ) {
             return $this->create($value);
         }
-        $this->_items[ $name ] = $value;
+        $this->_rows[ $name ] = $value;
     }
 
     public function offsetExists($name)
     {
-        return isset($this->_items[ $name ]);
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        return isset($this->_rows[ $name ]);
     }
 
     public function offsetGet($name)
     {
-        if( isset( $this->_items[ $name ] ) )
-            return $this->_items[ $name ];
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        if (isset( $this->_rows[ $name ] ) ) {
+            return $this->_rows[ $name ];
+        }
     }
 
     public function offsetUnset($name)
     {
-        unset($this->_items[$name]);
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        unset($this->_rows[$name]);
     }
 
     public function each(callable $cb)
