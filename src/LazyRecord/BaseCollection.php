@@ -146,6 +146,14 @@ class BaseCollection
         }
     }
 
+    public function getRows()
+    {
+        if ($this->_rows) {
+            return $this->_rows;
+        }
+        $this->readRows();
+        return $this->_rows;
+    }
 
     /**
      * Free cached row data and result handle, 
@@ -358,12 +366,21 @@ class BaseCollection
         if ($this->_rows) {
             return count($this->_rows);
         }
-        return count($this->_items);
+        $this->readRows();
+        return count($this->_rows);
     }
 
+
+    /**
+     * This method implements the Countable interface
+     */
     public function count() 
     {
-        return $this->size();
+        if ($this->_rows) {
+            return count($this->_rows);
+        }
+        $this->readRows();
+        return count($this->_rows);
     }
 
 
