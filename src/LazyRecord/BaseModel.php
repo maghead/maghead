@@ -1803,7 +1803,7 @@ abstract class BaseModel implements
      * @param array $args
      * @return array
      */
-    public function filterArrayWithColumns( $args , $includeVirtualColumns = false )
+    public function filterArrayWithColumns(array $args , $includeVirtualColumns = false )
     {
         return array_intersect_key( $args , $this->getSchema()->getColumns( $includeVirtualColumns ) );
     }
