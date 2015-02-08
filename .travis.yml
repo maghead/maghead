@@ -16,8 +16,8 @@ before_script:
   - psql -c "create database testing;" -U postgres
   - mysql -uroot -e "create database testing charset utf8;"
   - composer self-update
-  - composer require satooshi/php-coveralls:dev-master --no-update --dev
-  - composer install --dev --prefer-source
+  - composer require satooshi/php-coveralls:dev-master --no-update
+  - composer install --prefer-source
   - php bin/lazy build-conf db/config/database.travis-ci.yml
   - php bin/lazy schema build -f
   - php bin/lazy schema build -f src # build meta model class
