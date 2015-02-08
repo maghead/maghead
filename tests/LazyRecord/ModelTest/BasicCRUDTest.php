@@ -144,9 +144,10 @@ class BasicCRUDTest extends ModelTestCase
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
+
         $ret = $author->update(array( 'id' => array('id + 3') ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
     }
 
     public function testManyToManyRelationRecordCreate()
@@ -188,19 +189,24 @@ class BasicCRUDTest extends ModelTestCase
 
         $books = $author->books;
         is( 2, $books->size() , '2 books' );
-        $author->delete();
+        $this->assertDeleteSuccess($author);
     }
 
 
+    /**
+     * @rebuild false
+     */
     public function testPrimaryKeyIdIsInteger()
     {
         $author = new \TestApp\Model\Author;
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertResultSuccess($ret);
+
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer
         // ok( is_string( $author->getValue('id') ) );
-        ok( is_integer( $author->get('id') ) );
-        $author->delete();
+        ok(is_integer($author->get('id')));
+        $this->assertDeleteSuccess($author);
     }
 
 
@@ -356,6 +362,10 @@ class BasicCRUDTest extends ModelTestCase
         $author->delete();
     }
 
+
+    /**
+     * @basedata false
+     */
     public function testRecordUpdateWithRawSQL()
     {
         $n = new \TestApp\Model\Book;
@@ -383,37 +393,45 @@ class BasicCRUDTest extends ModelTestCase
 
 
 
+    /**
+     * @rebuild false
+     */
     public function testZeroInflator()
     {
         $b = new \TestApp\Model\Book;
-        $ret = $b->create(array( 'title' => 'Create X' , 'view' => 0 ));
-        result_ok($ret);
-        ok( $b->id );
+        $ret = $b->create(array( 'title' => 'Zero number inflator' , 'view' => 0 ));
+        $this->assertResultSuccess($ret);
+        ok($b->id);
         is( 0 , $b->view );
 
         $ret = $b->load($ret->id);
-        result_ok($ret);
-        ok( $b->id );
+        $this->assertResultSuccess($ret);
+        ok($b->id);
         is( 0 , $b->view );
-        $b->delete();
+        $this->assertDeleteSuccess($b);
     }
 
 
+    /**
+     * @rebuild false
+     */
     public function testUpdateWithReloadOption()
     {
         $b = new \TestApp\Model\Book;
-        $ret = $b->create(array( 'title' => 'Create Y' , 'view' => 0 ));
+        $ret = $b->create(array( 'title' => 'Create for reload test' , 'view' => 0 ));
+        $this->assertResultSuccess($ret);
 
-        // test incremental
+        // test incremental with Raw statement
         $ret = $b->update(array( 'view'  => new Raw('view + 1') ), array('reload' => true));
-        result_ok($ret);
-        is( 1,  $b->view );
+        $this->assertResultSuccess($ret);
+        is(1,  $b->view);
 
         $ret = $b->update(array('view' => new Raw('view + 1') ), array('reload' => true));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         is( 2,  $b->view );
+
         $ret = $b->delete();
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
     }
 }
 
