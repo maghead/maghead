@@ -703,7 +703,7 @@ abstract class BaseModel implements
         $conn = $this->getWriteConnection();
         $driver = $conn->createQueryDriver();
 
-        $query->into($this->getTable());
+        $query->into(static::table);
 
         // Just a note: Exceptions should be used for exceptional conditions; things you 
         // don't expect to happen. Validating input isn't very exceptional.
@@ -894,7 +894,7 @@ abstract class BaseModel implements
         $pk    = $this->getSchema()->primaryKey;
 
         $query = new SelectQuery;
-        $query->from($this->getSchema()->getTable());
+        $query->from(static::table);
 
         $conn  = $this->getReadConnection();
         $driver = $conn->createQueryDriver();
@@ -987,7 +987,7 @@ abstract class BaseModel implements
         $arguments = new ArgumentArray;
 
         $query = new DeleteQuery;
-        $query->delete($this->getSchema()->getTable());
+        $query->delete(static::table);
         $query->where()
             ->equal($k , $kVal);
         $sql = $query->toSql($conn->createQueryDriver(), $arguments);
@@ -1133,7 +1133,7 @@ abstract class BaseModel implements
 
             // TODO: optimized to built cache
             $query->set($args);
-            $query->update($schema->getTable());
+            $query->update(static::table);
             $query->where()->equal($k , $kVal);
 
 
@@ -1188,7 +1188,7 @@ abstract class BaseModel implements
         $arguments = new ArgumentArray;
         $query = new UpdateQuery;
         $query->set($args);
-        $query->update($this->getSchema()->getTable());
+        $query->update(static::table);
         $query->where()
             ->equal( $k , $kVal );
 
@@ -1216,7 +1216,7 @@ abstract class BaseModel implements
 
         $query = new InsertQuery;
         $query->insert($args);
-        $query->into( $this->getSchema()->getTable() );
+        $query->into(static::table);
         $query->returning($k);
 
         $arguments = new ArgumentArray;

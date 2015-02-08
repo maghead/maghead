@@ -46,14 +46,14 @@ class SchemaGenerator
 
     public function getBaseModelClass() 
     {
-        if ( $this->config && $this->config->loaded ) {
+        if ($this->config && $this->config->loaded) {
             return $this->config->getBaseModelClass();
         }
         return 'LazyRecord\BaseModel';
     }
 
     public function getBaseCollectionClass() {
-        if ( $this->config && $this->config->loaded ) {
+        if ($this->config && $this->config->loaded) {
             return $this->config->getBaseCollectionClass();
         }
         return 'LazyRecord\BaseCollection';
