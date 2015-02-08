@@ -55,9 +55,7 @@ class NameSchema extends Schema
                 );
             });
 
-        $this->column('confirmed')
-            ->isa('bool')
-            ->boolean();
+        $this->column('confirmed')->boolean();
 
         $this->column('date')
             ->date()

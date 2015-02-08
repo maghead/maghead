@@ -31,31 +31,11 @@ class NameModelTest extends ModelTestCase
     public function booleanFalseTestDataProvider()
     {
         return array(
-#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 0 ) ),
-#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ) ),
-#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => false ) ),
-#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'false' ) ),
-            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '' ) ),  // empty string should be (false)
-            // array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'aa' ) ),
-            // array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'bb' ) ),
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 0 ) ),
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ) ),
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => false ) ),
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'false' ) ),
         );
-    }
-
-    /**
-     * @dataProvider booleanFalseTestDataProvider
-     */
-    public function testCreateWithBooleanFalse($args)
-    {
-        $n = new \TestApp\Model\Name;
-        $ret = $n->create($args);
-        ok( $ret->success , $ret  . " SQL: " . $ret->sql . print_r($ret->vars,1) );
-        ok( $n->id );
-        is( false, $n->confirmed );
-
-        // reload
-        ok( $n->load( $n->id )->success );
-        is( false, $n->confirmed );
-        ok( $n->delete()->success );
     }
 
     public function booleanTrueTestDataProvider()
@@ -70,6 +50,34 @@ class NameModelTest extends ModelTestCase
     }
 
     /**
+     * @dataProvider booleanFalseTestDataProvider
+     */
+    public function testCreateWithBooleanFalse($args)
+    {
+        $n = new \TestApp\Model\Name;
+        $ret = $n->create($args);
+        $this->assertResultSuccess($ret);
+        $this->assertFalse($n->confirmed);
+    }
+
+    public function testCreateWithBooleanNull()
+    {
+        $n = new \TestApp\Model\Name;
+        $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '' ));
+        $this->assertResultSuccess($ret);
+
+        ok($n->id);
+        $this->assertNull($n->confirmed);
+
+        $ret = $n->load($n->id);
+        $this->assertResultSuccess($ret);
+        $this->assertNull($n->confirmed);
+        $this->assertDeleteSuccess($n);
+    }
+
+
+    /**
+     * @basedata false
      * @dataProvider booleanTrueTestDataProvider
      */
     public function testCreateWithBooleanTrue($args)
@@ -85,18 +93,25 @@ class NameModelTest extends ModelTestCase
         ok( $n->delete()->success );
     }
 
+    /**
+     * @rebuild false
+     */
     public function testModelClone()
     {
         $test1 = new \TestApp\Model\Name;
         $test2 = clone $test1;
-        ok( $test1 !== $test2 );
+        $this->assertNotSame($test1, $test2);
     }
 
+
+    /**
+     * @basedata false
+     */
     public function testModelColumnFilter()
     {
         $name = new \TestApp\Model\Name;
         $ret = $name->create(array('name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John'));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         is('XXXX' , $name->address , 'Should be canonicalized' );
     }
 
@@ -106,23 +121,29 @@ class NameModelTest extends ModelTestCase
 
         /** confirmed will be cast to true **/
         $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ));
-        result_ok( $ret );
+        $this->assertResultSuccess( $ret );
         ok( $n->id );
-        is( false, $n->confirmed );
-        ok( $n->delete()->success );
+
+        $this->assertFalse($n->confirmed);
+        $this->assertDeleteSuccess($n);
     }
 
+
+    /**
+     * @rebuild false
+     */
     public function testValueTypeConstraint()
     {
         // if it's a str type , we should not accept types not str.
         $n = new \TestApp\Model\Name;
+
         /**
          * name column is required, after type casting, it's NULL, so
          * create should fail.
          */
-        $ret = $n->create(array( 'name' => false , 'country' => 'Tokyo' ));
-        ok( ! $ret->success );
-        ok( ! $n->id );
+        $ret = $n->create(array( 'name' => false , 'country' => 'Type' ));
+        $this->assertResultFail($ret);
+        ok(! $n->id );
     }
 
     public function testModelColumnDefaultValueBuilder()
