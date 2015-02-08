@@ -16,6 +16,8 @@ class MetadataSchema extends SchemaDeclare
             ->varchar(128);
         $this->column('value')
             ->varchar(256);
+
+        $this->disableColumnAccessors();
     }
 }
 

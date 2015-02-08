@@ -10,8 +10,7 @@ use LazyRecord\Schema\Relationship;
 use ClassTemplate\ClassTemplate;
 use ClassTemplate\ClassTrait;
 
-class SchemaDeclare extends SchemaBase
-    implements SchemaInterface
+class SchemaDeclare extends SchemaBase implements SchemaInterface
 {
     public $modelTraits = array();
 
@@ -380,6 +379,13 @@ class SchemaDeclare extends SchemaBase
     protected function _classnameToTable() 
     {
         return ClassUtils::convert_class_to_table( $this->getModelName() );
+    }
+
+    public $enableColumnAccessors = true;
+
+    public function disableColumnAccessors()
+    {
+        $this->enableColumnAccessors = false;
     }
 
     /**
