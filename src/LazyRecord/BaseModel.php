@@ -558,10 +558,10 @@ abstract class BaseModel implements
      *       message: 
      *   }
      */ 
-    protected function _validateColumn(RuntimeColumn $column,$val,$args)
+    protected function _validateColumn(RuntimeColumn $column, $val, array $args)
     {
         // check for requried columns
-        if ($column->required && ( $val === '' || $val === null)) {
+        if ($column->required && ( $val === '' || $val === NULL)) {
             return array( 
                 'valid' => false, 
                 'message' => sprintf(_('Field %s is required.'), $column->getLabel() ), 
@@ -681,7 +681,7 @@ abstract class BaseModel implements
      *
      * @return Result operation result (success or error)
      */
-    public function create(array $args, $options = array() )
+    public function create(array $args, array $options = array() )
     {
         if (empty($args) || $args === null ) {
             return $this->reportError('Empty arguments');
