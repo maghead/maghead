@@ -3,6 +3,7 @@ namespace LazyRecord;
 use Exception;
 use RuntimeException;
 use InvalidArgumentException;
+use BadMethodCallException;
 use PDO;
 use PDOException;
 use ArrayIterator;
@@ -365,19 +366,19 @@ abstract class BaseModel implements
             break;
         }
 
-        // dispatch to schema object method first
+        // Dispatch to schema object method first
         $schema = $this->getSchema();
-        if( method_exists($schema,$m) ) {
+        if (method_exists($schema,$m)) {
             return call_user_func_array(array($schema,$m),$a);
         }
 
         // then it's the mixin methods
-        if ( $mClass = $this->findMixinMethodClass($m) ) {
+        if ($mClass = $this->findMixinMethodClass($m)) {
             return $this->invokeMixinClassMethod($mClass, $m, $a);
         }
 
         // XXX: special case for twig template
-        throw new Exception( get_class($this) . ": $m method not found.");
+        throw new BadMethodCallException( get_class($this) . ": $m method not found.");
     }
 
     /**
@@ -1860,15 +1861,7 @@ abstract class BaseModel implements
     }
 
 
-    /***************************************
-     * Schema related methods
-     ***************************************/
-    public function loadSchema()
-    {
-        return SchemaLoader::load( static::schema_proxy_class );
-    }
-
-    public function getSchema() 
+    public function getSchema()
     {
         if ($this->_schema) {
             return $this->_schema;
@@ -1880,20 +1873,6 @@ abstract class BaseModel implements
             throw new Exception("Can not load " . static::schema_proxy_class);
         }
         throw new RuntimeException("schema is not defined in " . get_class($this) );
-    }
-
-    /**
-     * Duplicated with asCollection() method
-     */
-    public function newCollection() 
-    {
-        return $this->getSchema()->newCollection();
-    }
-
-    // schema methods
-    public function getColumn($n)
-    {
-        return $this->getSchema()->getColumn($n);
     }
 
 
