@@ -1,6 +1,7 @@
 <?php
+use LazyRecord\Testing\ModelTestCase;
 
-class WineModelTest extends \LazyRecord\ModelTestCase
+class WineModelTest extends ModelTestCase
 {
     public $driver = 'sqlite';
 

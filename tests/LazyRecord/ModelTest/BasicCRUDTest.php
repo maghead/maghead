@@ -1,13 +1,14 @@
 <?php
 use SQLBuilder\Raw;
 use TestApp\Model\Book;
+use LazyRecord\Testing\ModelTestCase;
 /**
  * Testing models:
  *   1. Author
  *   2. Book
  *   3. Address
  */
-class BasicCRUDTest extends \LazyRecord\ModelTestCase
+class BasicCRUDTest extends ModelTestCase
 {
     public $driver = 'sqlite';
 

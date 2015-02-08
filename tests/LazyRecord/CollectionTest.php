@@ -2,6 +2,7 @@
 use LazyRecord\SqlBuilder;
 use TestApp\Model\Book;
 use TestApp\Model\BookCollection;
+use LazyRecord\Testing\ModelTestCase;
 
 class AuthorFactory {
 
@@ -18,7 +19,7 @@ class AuthorFactory {
 
 }
 
-class CollectionTest extends \LazyRecord\ModelTestCase
+class CollectionTest extends ModelTestCase
 {
     public $driver = 'sqlite';
 

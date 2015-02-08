@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\ModelTestCase;
+use LazyRecord\Testing\ModelTestCase;
 use TestApp\Model\Table;
 
 class TableModelTest extends ModelTestCase

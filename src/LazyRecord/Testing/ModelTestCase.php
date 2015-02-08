@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord;
+namespace LazyRecord\Testing;
 use LazyRecord\ConnectionManager;
 use LazyRecord\SqlBuilder;
 use LazyRecord\ConfigLoader;

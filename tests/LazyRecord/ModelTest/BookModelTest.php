@@ -1,7 +1,8 @@
 <?php
 use SQLBuilder\Raw;
+use LazyRecord\Testing\ModelTestCase;
 
-class BookModelTest extends \LazyRecord\ModelTestCase
+class BookModelTest extends ModelTestCase
 {
     public $driver = 'sqlite';
 
