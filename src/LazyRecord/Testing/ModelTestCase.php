@@ -1,7 +1,6 @@
 <?php
 namespace LazyRecord\Testing;
 use LazyRecord\ConnectionManager;
-use LazyRecord\SqlBuilder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
 use LazyRecord\Schema\SchemaGenerator;
@@ -52,23 +51,32 @@ abstract class ModelTestCase extends BaseTestCase
         ok($driver,'QueryDriver object OK');
 
 
+        // Rebuild means rebuild the database for new tests
         $rebuild = true;
+        $basedata = true;
         if (isset($annnotations['method']['rebuild'][0]) && $annnotations['method']['rebuild'][0] == 'false') {
             $rebuild = false;
         }
+        if (isset($annnotations['method']['basedata'][0]) && $annnotations['method']['basedata'][0] == 'false') {
+            $basedata = false;
+        }
 
-        $builder = SqlBuilder::create($driver , array('rebuild' => $rebuild));
-        ok($builder, 'SqlBuilder OK');
+        if ($rebuild) {
+            $builder = SqlBuilder::create($driver , array('rebuild' => true));
+            ok($builder, 'SqlBuilder OK');
 
-        $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
-        foreach( $schemas as $schema ) {
-            $sqls = $builder->build($schema);
-            ok( $sqls );
-            foreach( $sqls as $sql ) {
-                $dbh->query( $sql );
+            $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
+            foreach( $schemas as $schema ) {
+                $sqls = $builder->build($schema);
+                ok( $sqls );
+                foreach( $sqls as $sql ) {
+                    $dbh->query( $sql );
+                }
+            }
+            if ($basedata) {
+                CommandUtils::build_basedata( $schemas );
             }
         }
-        CommandUtils::build_basedata( $schemas );
         ob_end_clean();
     }
 

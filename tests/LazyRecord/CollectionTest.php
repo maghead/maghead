@@ -85,6 +85,10 @@ class CollectionTest extends ModelTestCase
         }
     }
 
+
+    /**
+     * @rebuild false
+     */
     public function testClone()
     {
         $authors = new \TestApp\Model\AuthorCollection;
@@ -124,9 +128,9 @@ class CollectionTest extends ModelTestCase
     public function testIterator()
     {
         $authors = new \TestApp\Model\AuthorCollection;
-        ok( $authors );
+        ok($authors);
         foreach( $authors as $a ) {
-            ok( $a->id );
+            ok($a->id);
         }
     }
 
@@ -264,20 +268,17 @@ class CollectionTest extends ModelTestCase
     }
 
 
-    function testJoin()
+    public function testJoin()
     {
         $authors = new \TestApp\Model\AuthorCollection;
         ok($authors);
-
         $authors->join(new \TestApp\Model\Address);
-
         $authors->fetch();
         $sql = $authors->toSQL();
-
         like( '/addresses.address\s+AS\s+addresses_address/', $sql );
     }
 
-    function testJoinWithAliasAndRelationId() {
+    public function testJoinWithAliasAndRelationId() {
         $author = AuthorFactory::create('John');
         ok($author->id);
 
@@ -299,25 +300,30 @@ class CollectionTest extends ModelTestCase
         }
     }
 
-    function testJoinWithAliasAndWithoutRelationId() {
+    /**
+     * @rebuild false
+     */
+    public function testJoinWithAliasAndWithoutRelationId() {
         $authors = new \TestApp\Model\AuthorCollection;
         ok($authors);
-        $authors->join( new \TestApp\Model\Address ,'LEFT','a');
+        $authors->join(new \TestApp\Model\Address ,'LEFT','a');
         $authors->fetch();
         $sql = $authors->toSQL();
         ok($sql);
-        // is('SELECT m.updated_on, m.created_on, m.id, m.name, m.email, m.identity, m.confirmed, addresses.author_id  AS a_author_id, addresses.address  AS a_address, addresses.foo  AS a_foo, addresses.id  AS a_id FROM authors m  LEFT JOIN addresses a ON (m.id = a.author_id)', $sql );
     }
 
-    function testMeta()
+    /**
+     * @rebuild false
+     */
+    public function testMeta()
     {
         $authors = new \TestApp\Model\AuthorCollection;
-        ok( $authors::schema_proxy_class );
-        ok( $authors::model_class );
+        ok($authors::schema_proxy_class);
+        ok($authors::model_class);
     }
 
 
-    function testFilter() 
+    public function testFilter() 
     {
         $book = new \TestApp\Model\Book;
         $results = array();
@@ -350,7 +356,7 @@ class CollectionTest extends ModelTestCase
     }
 
 
-    function testCollectionPagerAndSelection()
+    public function testCollectionPagerAndSelection()
     {
         $author = new \TestApp\Model\Author;
         foreach( range(1,10) as $i ) {
@@ -392,7 +398,6 @@ class CollectionTest extends ModelTestCase
             $ret = $a->delete();
             ok( $ret->success );
         }
-
     }
 }
 
