@@ -7,14 +7,13 @@ use LazyRecord\Command\CommandUtils;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\ClassUtils;
 use LazyRecord\Result;
+use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\Testing\BaseTestCase;
 use PHPUnit_Framework_TestCase;
 
 abstract class ModelTestCase extends BaseTestCase
 {
     public $schemaHasBeenBuilt = false;
-
-    public $schemaPath = 'tests/schema';
 
     public $schemaClasses = array( );
 
@@ -58,7 +57,7 @@ abstract class ModelTestCase extends BaseTestCase
             $rebuild = false;
         }
 
-        $builder = \LazyRecord\SqlBuilder\SqlBuilder::create($driver , array('rebuild' => $rebuild));
+        $builder = SqlBuilder::create($driver , array('rebuild' => $rebuild));
         ok($builder, 'SqlBuilder OK');
 
         $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
@@ -73,37 +72,16 @@ abstract class ModelTestCase extends BaseTestCase
         ob_end_clean();
     }
 
-    public function getLogger()
+    /**
+     * Test cases
+     */
+    public function testClasses()
     {
-        return new \CLIFramework\Logger;
-    }
-
-    public function testClass()
-    {
-        foreach( $this->getModels() as $class ) 
-            class_ok( $class );
-    }
-
-    public function assertResultSuccess(Result $ret) {
-        if ($ret->error === true) {
-            // Pretty printing this
-            var_dump( $ret );
-        }
-        $this->assertFalse($ret->error, $ret->message);
-    }
-
-    public function resultOK($expect, Result$ret)
-    {
-        ok( $ret );
-        if( $ret->success == $expect ) {
-            ok( $ret->success , $ret->message );
-        }
-        else {
-            var_dump( $ret->sql ); 
-            echo $ret->exception;
-            ok( $ret->success );
+        foreach ($this->getModels() as $class ) {
+            class_ok($class);
         }
     }
+
 }
 
 

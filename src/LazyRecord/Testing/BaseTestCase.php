@@ -87,11 +87,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     }
 
 
-    public function testClass()
-    {
-        foreach( $this->getModels() as $class ) 
-            class_ok( $class );
-    }
 
     public function assertResultSuccess(Result $ret) {
         if ($ret->error === true) {
@@ -113,6 +108,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             ok( $ret->success );
         }
     }
+
+
 }
 
 
