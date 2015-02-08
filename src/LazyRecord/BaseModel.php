@@ -1909,17 +1909,6 @@ abstract class BaseModel implements
 
 
     /**
-     * Get column objects from RuntimeSchema object.
-     *
-     * @return RuntimeColumn[name]
-     */
-    public function getColumns($includeVirtualColumns = false)
-    {
-        return $this->getSchema()->getColumns( $includeVirtualColumns );
-    }
-
-
-    /**
      * Get model label from RuntimeSchema.
      *
      * @return string model label name

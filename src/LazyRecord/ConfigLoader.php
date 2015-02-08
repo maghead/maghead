@@ -44,7 +44,7 @@ class ConfigLoader
 
     public function loadFromSymbol($force = false)
     {
-        if( file_exists($this->symbolFilename) ) {
+        if (file_exists($this->symbolFilename) ) {
             return $this->load( $this->symbolFilename, $force );
         }
         elseif( file_exists('.lazy.php') ) {
@@ -62,6 +62,12 @@ class ConfigLoader
         $this->config = $config;
         $this->loaded = true;
     }
+
+    public function setLoaded($loaded = true)
+    {
+        $this->loaded = $loaded;
+    }
+
 
 
     static public function preprocessConfigArray(array $dbconfig)
@@ -171,6 +177,16 @@ class ConfigLoader
     {
         $this->loaded = false;
         $this->config = null;
+    }
+
+    public function setConfigStash(array $stash)
+    {
+        $this->config = $stash;
+    }
+
+    public function getConfigStash()
+    {
+        return $this->config;
     }
 
 
@@ -297,15 +313,18 @@ class ConfigLoader
     }
 
 
-    // XXX: provide a simpler config interface and 
+    // XXX: Provide a simpler config interface and
     // we should use injection container
     public function getCacheInstance()
     {
         static $instance;
-        if ( $instance )
+        if ($instance) {
             return $instance;
+        }
+
+        // XXX:
         $config = $this->getCacheConfig();
-        if( isset($config['class']) ) {
+        if (isset($config['class']) ) {
             $class = $config['class'];
             $instance = new $class( $config );
             return $instance;

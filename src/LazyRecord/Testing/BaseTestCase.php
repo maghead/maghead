@@ -64,7 +64,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
         $config = ConfigLoader::getInstance();
         $config->loaded = true;
-        $config->config = array( 'schema' => array( 'auto_id' => true ) );
+        $config->setConfigStash(array( 'schema' => array( 'auto_id' => true ) ));
         $this->setConfig($config);
 
         $this->logger = new Logger;
