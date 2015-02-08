@@ -107,11 +107,10 @@ class AuthorAddressModelTest extends ModelTestCase
         is( 'Harvard' , $addresses[0]->address );
 
         $a = $addresses[0];
-        ok( $retAuthor = $a->author );
-        ok( $retAuthor->id );
-        ok( $retAuthor->name );
-        is( 'Z', $retAuthor->name );
-
+        ok($retAuthor = $a->author );
+        ok($retAuthor->id );
+        ok($retAuthor->name );
+        is('Z', $retAuthor->name);
         $this->assertResultSuccess($author->delete());
     }
 

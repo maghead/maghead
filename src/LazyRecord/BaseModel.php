@@ -1199,6 +1199,10 @@ abstract class BaseModel implements
 
         // update current data stash
         $this->_data = array_merge($this->_data,$args);
+
+        return $this->reportSuccess( 'Update success', array( 
+            'sql' => $sql
+        ));
     }
 
 
@@ -1236,7 +1240,11 @@ abstract class BaseModel implements
 
         $this->_data = $args;
         $this->_data[ $k ] = $pkId;
-        return $this->reload($pkId);
+
+        return $this->reportSuccess( 'Create success', array( 
+            'sql' => $sql
+        ));
+
     }
 
 

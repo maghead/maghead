@@ -10,25 +10,27 @@ class AuthorModelTest extends ModelTestCase
         return array('TestApp\Model\\AuthorSchema');
     }
 
+    /**
+     * @rebuild false
+     */
     public function testCollection()
     {
         $author = new \TestApp\Model\Author;
-
-        $this->resultOK( true,  $author->create(array( 
+        $this->assertResultSuccess($author->create(array( 
             'name' => 'FooBar',
             'email' => 'a@a',
             'identity' => 'a',
             'confirmed' => false,
-        )) );
-
+        )));
         $collection = $author->asCollection();
         ok($collection);
-        isa_ok('TestApp\Model\\AuthorCollection',$collection);
-
-        // delete it
-        $this->resultOK(true, $author->delete());
+        $this->assertResultSuccess($author->delete());
     }
 
+
+    /**
+     * @rebuild false
+     */
     public function testSchemaInterface()
     {
         $author = new \TestApp\Model\Author;
@@ -44,11 +46,8 @@ class AuthorModelTest extends ModelTestCase
 
         $columns = $author->getColumns(true); // with virtual column 'v'
         count_ok( 8 , $columns );
-
         ok( 'authors' , $author->getTable() );
         ok( 'Author' , $author->getLabel() );
-
-
         isa_ok(  '\TestApp\Model\AuthorCollection' , $author->newCollection() );
     }
 
@@ -123,22 +122,21 @@ class AuthorModelTest extends ModelTestCase
 
         $a2 = new \TestApp\Model\Author;
         $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
-        ok( ! $ret->success );
-        ok( ! $a2->id );
+        $this->assertResultFail($ret);
+        ok(! $a2->id);
 
         $ret = $a2->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
-        ok( $ret->success );
-        ok( $a2->id );
+        $this->assertResultSuccess($ret);
+        ok($a2->id);
 
         $ret = $a2->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
-        ok( $ret->success );
+        $this->assertResultSuccess($ret);
         ok( $a2->id );
 
         $ret = $author->create(array());
-        ok( $ret );
-        ok( ! $ret->success );
-        ok( $ret->message );
-        is( 'Empty arguments' , $ret->message );
+        $this->assertResultFail($ret);
+        ok($ret->message);
+        like('/Empty arguments/' , $ret->message );
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         ok( $ret );
@@ -177,7 +175,7 @@ class AuthorModelTest extends ModelTestCase
     {
         $author = new \TestApp\Model\Author;
         $ret = $author->create(array( 
-            'name' => 'Mary III',
+            'name' => 'testMixinMethods',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
@@ -195,20 +193,20 @@ class AuthorModelTest extends ModelTestCase
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
 
         $id = $author->id;
 
-        ok( $author->update(array( 'name' => 'I' ))->success );
-        is( $id , $author->id );
-        is( 'I', $author->name );
+        $this->assertResultSuccess( $author->update(array( 'name' => 'I' )) );
+        is($id , $author->id );
+        is('I', $author->name );
 
-        ok( $author->update(array( 'name' => null ))->success );
+        $this->assertResultSuccess($author->update(array( 'name' => null )) );
         is( $id , $author->id );
         is( null, $author->name );
 
-        ok( $author->load( $author->id )->success );
-        is( $id , $author->id );
-        is( null, $author->name );
+        $this->assertResultSuccess($author->load( $author->id ));
+        is($id , $author->id );
+        $this->assertNull($author->name);
     }
 }

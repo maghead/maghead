@@ -2,6 +2,7 @@
 namespace LazyRecord\Testing;
 use LazyRecord\ConnectionManager;
 use LazyRecord\SqlBuilder;
+use LazyRecord\BaseModel;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
 use LazyRecord\Schema\SchemaGenerator;
@@ -86,9 +87,18 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         return $this->config;
     }
 
+    public function assertDeleteSuccess(BaseModel $record)
+    {
+        $this->assertResultSuccess($record->delete());
+    }
 
+    public function assertResultFail(Result $ret) 
+    {
+        $this->assertTrue($ret->error, $ret->message);
+    }
 
-    public function assertResultSuccess(Result $ret) {
+    public function assertResultSuccess(Result $ret) 
+    {
         if ($ret->error === true) {
             // Pretty printing this
             var_dump( $ret );

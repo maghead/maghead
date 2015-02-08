@@ -31,35 +31,37 @@ class BasicCRUDTest extends ModelTestCase
     }
 
     /**
+     * @rebuild false
      * @expectedException LazyRecord\QueryException
      */
     public function testTitleIsRequired()
     {
         $b = new \TestApp\Model\Book;
-        $ret = $b->find( array( 'name' => 'LoadOrCreateTest' ) );
-        result_fail( $ret );
-        ok( ! $b->id );
+        $ret = $b->find(array( 'name' => 'LoadOrCreateTest' ));
+        $this->assertResultFail($ret);
+        $this->assertNull($b->id);
     }
-
 
     public function testRecordRawCreateBook()
     {
         $b = new \TestApp\Model\Book;
-        ok($b);
-        $b->rawCreate(array( 'title' => 'Go Programming' ));
+        $ret = $b->rawCreate(array( 'title' => 'Go Programming' ));
+        $this->assertResultSuccess($ret);
         ok($b->id);
-        result_ok( $b->delete() );
+        $this->assertDeleteSuccess($b);
     }
 
     public function testRecordRawUpdateBook()
     {
         $b = new \TestApp\Model\Book;
         ok($b);
-        $b->rawCreate(array( 'title' => 'Go Programming' ));
+        $ret = $b->rawCreate(array( 'title' => 'Go Programming without software validation' ));
+        $this->assertResultSuccess($ret);
         ok($b->id);
-        $b->rawUpdate(array( 'title' => 'Perl Programming' ));
+        $ret = $b->rawUpdate(array( 'title' => 'Perl Programming without filtering' ));
+        $this->assertResultSuccess($ret);
         ok($b->id);
-        result_ok( $b->delete() );
+        $this->assertDeleteSuccess($b);
     }
 
 
@@ -68,43 +70,41 @@ class BasicCRUDTest extends ModelTestCase
         $results = array();
         $b = new \TestApp\Model\Book;
 
-        $ret = $b->create(array( 'title' => 'Should Not Load This' ));
-        result_ok( $ret );
+        $ret = $b->create(array( 'title' => 'Should Create, not load this' ));
+        $this->assertResultSuccess($ret);
         $results[] = $ret;
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
-        result_ok( $ret );
+        $this->assertResultSuccess($ret);
         $results[] = $ret;
 
         $id = $b->id;
         ok($id);
 
         $ret = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         is($id, $b->id, 'is the same ID');
         $results[] = $ret;
 
 
         $b2 = new \TestApp\Model\Book;
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         is($id,$b2->id);
         $results[] = $ret;
 
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
-        result_ok($ret);
-        ok($b2);
+        $this->assertResultSuccess($ret);
         ok($id != $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
         $b3 = new \TestApp\Model\Book;
         $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
-        result_ok($ret);
-        ok($b3);
+        $this->assertResultSuccess($ret);
         ok($id != $b3->id , 'we should create anther one'); 
         $results[] = $ret;
 
-        $b3->delete();
+        $this->assertDeleteSuccess($b3);
 
         foreach( $results as $r ) {
             $book = new Book;
