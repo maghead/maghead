@@ -14,6 +14,10 @@ class AuthorBookModelTest extends ModelTestCase
         );
     }
 
+
+    /**
+     * @basedata false
+     */
     public function testBooleanCondition() 
     {
         $a = new \TestApp\Model\Author;
@@ -51,6 +55,9 @@ class AuthorBookModelTest extends ModelTestCase
     }
 
 
+    /**
+     * @rebuild false
+     */
     public function testSchemaInterface()
     {
         $author = new \TestApp\Model\Author;
@@ -69,10 +76,12 @@ class AuthorBookModelTest extends ModelTestCase
         ok( 'authors' , $author->getTable() );
         ok( 'Author' , $author->getLabel() );
 
-
-        isa_ok(  '\TestApp\Model\AuthorCollection' , $author->newCollection() );
+        $this->assertInstanceOf('TestApp\Model\AuthorCollection' , $author->newCollection());
     }
 
+    /**
+     * @rebuild false
+     */
     public function testCollection()
     {
         $author = new \TestApp\Model\Author;
@@ -82,6 +91,9 @@ class AuthorBookModelTest extends ModelTestCase
     }
 
 
+    /**
+     * @basedata false
+     */
     public function testVirtualColumn() 
     {
         $author = new \TestApp\Model\Author;
@@ -90,7 +102,7 @@ class AuthorBookModelTest extends ModelTestCase
             'email' => 'pedro@gmail.com' , 
             'identity' => 'id',
         ));
-        ok($ret->success);
+        $this->assertResultSuccess($ret);
 
         ok( $v = $author->getColumn('v') ); // virtual colun
         ok( $v->virtual );
@@ -104,9 +116,12 @@ class AuthorBookModelTest extends ModelTestCase
         ok( $display = $author->display( 'v' ) );
 
         $authors = new TestApp\Model\AuthorCollection;
-        ok( $authors );
+        ok($authors);
     }
 
+    /**
+     * @rebuild false
+     */
     public function testSchema()
     {
         $author = new \TestApp\Model\Author;
