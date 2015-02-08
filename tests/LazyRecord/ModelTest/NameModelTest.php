@@ -61,7 +61,7 @@ class NameModelTest extends ModelTestCase
     /**
      * @dataProvider booleanFalseTestDataProvider
      */
-    public function testCreateWithBooleanFalse($args)
+    public function testCreateWithBooleanFalse(array $args)
     {
         $n = new \TestApp\Model\Name;
         $ret = $n->create($args);
@@ -71,9 +71,10 @@ class NameModelTest extends ModelTestCase
 
 
     /**
+     * @basedata false
      * @dataProvider booleanNullTestDataProvider
      */
-    public function testCreateWithBooleanNull($args)
+    public function testCreateWithBooleanNull(array $args)
     {
         $n = new \TestApp\Model\Name;
         $ret = $n->create($args);
@@ -85,7 +86,7 @@ class NameModelTest extends ModelTestCase
         $ret = $n->load($n->id);
         $this->assertResultSuccess($ret);
         $this->assertNull($n->confirmed);
-        $this->assertDeleteSuccess($n);
+        $this->successfulDelete($n);
     }
 
 
@@ -93,17 +94,21 @@ class NameModelTest extends ModelTestCase
      * @basedata false
      * @dataProvider booleanTrueTestDataProvider
      */
-    public function testCreateWithBooleanTrue($args)
+    public function testCreateWithBooleanTrue(array $args)
     {
         $n = new \TestApp\Model\Name;
         $ret = $n->create($args);
-        result_ok($ret);
-        ok( $n->id );
-        is( true, $n->confirmed, 'Confirmed value should be TRUE.' );
-        // reload
-        ok( $n->load( $n->id )->success );
-        is( true, $n->confirmed , 'Confirmed value should be TRUE.' );
-        ok( $n->delete()->success );
+        $this->assertResultSuccess($ret);
+
+        ok($n->id);
+
+        $this->assertTrue($n->confirmed, 'Confirmed value should be TRUE.');
+
+        $this->assertResultSuccess($n->load($n->id));
+
+        $this->assertTrue($n->confirmed, 'Confirmed value should be TRUE.');
+
+        $this->successfulDelete($n);
     }
 
     /**
@@ -138,7 +143,7 @@ class NameModelTest extends ModelTestCase
         ok( $n->id );
 
         $this->assertFalse($n->confirmed);
-        $this->assertDeleteSuccess($n);
+        $this->successfulDelete($n);
     }
 
 
@@ -164,7 +169,8 @@ class NameModelTest extends ModelTestCase
         $name = new \TestApp\Model\Name;
         $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' ));
 
-        result_ok( $ret );
+        $this->assertResultSuccess($ret);
+
         ok( $ret->validations );
 
         ok( $ret->validations['address'] );
@@ -188,12 +194,14 @@ class NameModelTest extends ModelTestCase
     public function testLoadFromContstructor()
     {
         $name = new \TestApp\Model\Name;
-        $name->create(array( 
+        $ret = $name->create(array( 
             'name' => 'John',
             'country' => 'Taiwan',
             'type' => 'type-a',
         ));
+        $this->assertResultSuccess($ret);
         ok( $name->id );
+
         $name2 = new \TestApp\Model\Name( $name->id );
         is( $name2->id , $name->id );
     }
@@ -206,7 +214,7 @@ class NameModelTest extends ModelTestCase
             'country' => 'Taiwan',
             'type' => 'type-a',
         ));
-        ok( $ret->success );
+        $this->assertResultSuccess($ret);
         is( 'Type Name A', $name->display( 'type' ) );
 
         $xml = $name->toXml();
@@ -238,6 +246,8 @@ class NameModelTest extends ModelTestCase
             'confirmed' => '0',
             'date' => '2011-01-01'
         ));
+        $this->assertResultSuccess($ret);
+
         $d = $n->date;
         ok( $d );
         isa_ok( 'DateTime' , $d );
@@ -252,7 +262,8 @@ class NameModelTest extends ModelTestCase
     {
         $name = new \TestApp\Model\Name;
         $ret = $name->create($args);
-        ok( $ret->success );
+        $this->assertResultSuccess($ret);
+
         $ret = $name->delete();
         ok( $ret->success );
     }
@@ -285,7 +296,7 @@ class NameModelTest extends ModelTestCase
             'confirmed' => false,
             'date' => $date,
         ));
-        ok( $ret->success , $ret );
+        $this->assertResultSuccess($ret);
 
         $array = $n->toArray();
         ok( is_string( $array['date'] ) );
@@ -293,42 +304,7 @@ class NameModelTest extends ModelTestCase
         $d = $n->date; // inflated
         isa_ok( 'DateTime' , $d );
         is( '20110101' , $d->format( 'Ymd' ) );
-        ok( $n->delete()->success );
+
+        $this->successfulDelete($n);
     }
-
-
-    /*
-    public function testCreateSpeed()
-    {
-        // FIXME: On build machine,  we got 21185.088157654, that's really slow, fix later.
-        return;
-
-        $s = microtime(true);
-        $n = new \TestApp\Model\Name;
-        $ids = array();
-        $cnt = 10;
-        foreach( range(1,$cnt) as $i ) {
-            // you can use _create to gain 120ms faster
-            $ret = $n->create(array(
-                'name' => "Deflator Test $i", 
-                'country' => 'Tokyo', 
-                'confirmed' => true,
-                'date' => new DateTime('2011-01-01 00:00:00'),
-            ));
-            $ids[] = $n->id;
-        }
-
-        $duration = (microtime(true) - $s) / $cnt * 1000000; // get average microtime.
-
-        // $limit = 1400; before commit: e9c891ee3640f58871eb676df5f8f54756b14354
-        $limit = 3500;
-        if( $duration > $limit ) {
-            ok( false , "performance test: should be less than $limit ms, got $duration ms." );
-        }
-
-        foreach( $ids as $id ) {
-            \TestApp\Model\Name::delete($id);
-        }
-    }
-     */
 }

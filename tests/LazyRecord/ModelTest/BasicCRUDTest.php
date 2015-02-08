@@ -48,7 +48,7 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $b->rawCreate(array( 'title' => 'Go Programming' ));
         $this->assertResultSuccess($ret);
         ok($b->id);
-        $this->assertDeleteSuccess($b);
+        $this->successfulDelete($b);
     }
 
     public function testRecordRawUpdateBook()
@@ -61,7 +61,7 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $b->rawUpdate(array( 'title' => 'Perl Programming without filtering' ));
         $this->assertResultSuccess($ret);
         ok($b->id);
-        $this->assertDeleteSuccess($b);
+        $this->successfulDelete($b);
     }
 
 
@@ -104,7 +104,7 @@ class BasicCRUDTest extends ModelTestCase
         ok($id != $b3->id , 'we should create anther one'); 
         $results[] = $ret;
 
-        $this->assertDeleteSuccess($b3);
+        $this->successfulDelete($b3);
 
         foreach( $results as $r ) {
             $book = new Book;
@@ -189,7 +189,7 @@ class BasicCRUDTest extends ModelTestCase
 
         $books = $author->books;
         is( 2, $books->size() , '2 books' );
-        $this->assertDeleteSuccess($author);
+        $this->successfulDelete($author);
     }
 
 
@@ -206,7 +206,7 @@ class BasicCRUDTest extends ModelTestCase
         // sometimes it's string, sometimes it's integer
         // ok( is_string( $author->getValue('id') ) );
         ok(is_integer($author->get('id')));
-        $this->assertDeleteSuccess($author);
+        $this->successfulDelete($author);
     }
 
 
@@ -408,7 +408,7 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         ok($b->id);
         is( 0 , $b->view );
-        $this->assertDeleteSuccess($b);
+        $this->successfulDelete($b);
     }
 
 

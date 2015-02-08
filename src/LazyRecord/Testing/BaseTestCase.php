@@ -87,7 +87,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         return $this->config;
     }
 
-    public function assertDeleteSuccess(BaseModel $record)
+    public function successfulDelete(BaseModel $record)
     {
         $this->assertResultSuccess($record->delete());
     }
