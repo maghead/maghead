@@ -4,71 +4,34 @@ use LazyRecord\ConnectionManager;
 use LazyRecord\SqlBuilder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
+use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\ClassUtils;
 use LazyRecord\Result;
+use LazyRecord\Testing\BaseTestCase;
 use PHPUnit_Framework_TestCase;
 
-abstract class ModelTestCase extends PHPUnit_Framework_TestCase
+abstract class ModelTestCase extends BaseTestCase
 {
-    public $driver = 'sqlite';
-
     public $schemaHasBeenBuilt = false;
 
     public $schemaPath = 'tests/schema';
 
-    public $inIsolation = false;
-
     public $schemaClasses = array( );
-
-    public function getDSN()
-    {
-        if( $dsn = getenv('DB_' . strtoupper($this->driver) .  '_DSN') )
-            return $dsn;
-    }
-
-    public function getDatabaseName() 
-    {
-        if( $name = getenv('DB_' . strtoupper($this->driver) .  '_NAME') )
-            return $name;
-    }
-
-    public function getDatabaseUser() 
-    {
-        if( $user = getenv('DB_' . strtoupper($this->driver) . '_USER') )
-            return $user;
-    }
-
-    public function getDatabasePassword() 
-    {
-        if( $pass = getenv('DB_' . strtoupper($this->driver) . '_PASS') )
-            return $pass;
-    }
 
     public function setUp()
     {
-        if( ! extension_loaded('pdo') ) {
-            $this->markTestSkipped('pdo extension is required for model testing');
-            return;
-        }
-
+        $annnotations = $this->getAnnotations();
         ob_start();
 
-        // free and override default connection
-        ConnectionManager::getInstance()->free();
-
-        $config = ConfigLoader::getInstance();
-        $config->loaded = true;
-        $config->config = array( 'schema' => array( 'auto_id' => true ) );
-
-        if( $dsn = $this->getDSN() ) {
-            $config = array('dsn' => $dsn);
+        if ($dsn = $this->getDSN()) {
+            $this->config = array('dsn' => $dsn);
             $user = $this->getDatabaseUser();
             $pass = $this->getDatabasePassword();
-            $config['user'] = $user;
-            $config['pass'] = $pass;
-            ConnectionManager::getInstance()->addDataSource('default', $config);
+            $this->config['user'] = $user;
+            $this->config['pass'] = $pass;
+            ConnectionManager::getInstance()->addDataSource('default', $this->config);
         }
-        elseif( $this->getDatabaseName() ) {
+        elseif ( $this->getDatabaseName() ) {
             ConnectionManager::getInstance()->addDataSource('default', array( 
                 'driver' => $this->driver,
                 'database'  => $this->getDatabaseName(),
@@ -76,37 +39,29 @@ abstract class ModelTestCase extends PHPUnit_Framework_TestCase
                 'pass' => $this->getDatabasePassword(),
             ));
         } else {
-            $this->markTestSkipped("{$this->driver} database configuration is required.");
+            $this->markTestSkipped("{$this->driver} database configuration is missing.");
         }
 
         try {
             $dbh = ConnectionManager::getInstance()->getConnection('default');
-        } catch ( PDOException $e ) {
+        } catch (PDOException $e) {
             $this->markTestSkipped('Can not connect to database, test skipped: ' . $e->getMessage() );
             return;
         }
 
         $driver = ConnectionManager::getInstance()->getQueryDriver('default');
-        ok( $driver );
-
-        $builder = \LazyRecord\SqlBuilder\SqlBuilder::create( $driver , array( 'rebuild' => true ));
-        ok( $builder );
+        ok($driver,'QueryDriver object OK');
 
 
-        /* this will generate schema files */
-        // sqlite :memory: require this */
-        /*
-        $finder = new LazyRecord\Schema\SchemaFinder;
-        $finder->addPath( 'tests/schema' );
-        $finder->find();
-        */
+        $rebuild = true;
+        if (isset($annnotations['method']['rebuild'][0]) && $annnotations['method']['rebuild'][0] == 'false') {
+            $rebuild = false;
+        }
 
-        $generator = new \LazyRecord\Schema\SchemaGenerator;
+        $builder = \LazyRecord\SqlBuilder\SqlBuilder::create($driver , array('rebuild' => $rebuild));
+        ok($builder, 'SqlBuilder OK');
+
         $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
-
-        // XXX: provide a force flag to test generation
-        $classMap = $generator->generate( $schemas );
-
         foreach( $schemas as $schema ) {
             $sqls = $builder->build($schema);
             ok( $sqls );
@@ -115,7 +70,6 @@ abstract class ModelTestCase extends PHPUnit_Framework_TestCase
             }
         }
         CommandUtils::build_basedata( $schemas );
-
         ob_end_clean();
     }
 

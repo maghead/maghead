@@ -257,10 +257,10 @@ class CollectionTest extends ModelTestCase
 
         $names->groupBy(['name','address']);
 
-        ok( $items = $names->items() , 'Test name collection with name,address condition' );
-        ok( $size = $names->size());
-        is( 1 , $size );
-        is( 'Foo', $items[0]->name );
+        ok($items = $names->items() , 'Test name collection with name,address condition' );
+        ok($size = $names->size());
+        is(1 , $size);
+        is('Foo', $items[0]->name);
     }
 
 
