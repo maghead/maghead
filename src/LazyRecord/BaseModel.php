@@ -1376,7 +1376,7 @@ abstract class BaseModel implements
      *
      * @return PDOStatement
      */
-    public function dbPrepareAndExecute($conn, $sql, $args = array() )
+    public function dbPrepareAndExecute(PDO $conn, $sql, array $args = array() )
     {
         $stm = $conn->prepare( $sql );
         $stm->execute( $args );
