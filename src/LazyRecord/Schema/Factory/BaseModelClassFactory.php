@@ -19,9 +19,17 @@ class BaseModelClassFactory
             'write_source_id'    => $schema->getWriteSourceId(),
             'primary_key'        => $schema->primaryKey,
         ));
+
+        $cTemplate->addMethod('public', 'getSchema', [], [
+            'if ($this->_schema) {',
+            '   return $this->_schema;',
+            '}',
+            'return $this->_schema = \LazyRecord\Schema\SchemaLoader::load(' . var_export($schema->getSchemaProxyClass(),true) .  ');',
+        ]);
         $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
         $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
         $cTemplate->addStaticVar( 'mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
+
         $cTemplate->extendClass( '\\' . $baseClass );
         foreach($schema->getModelTraits() as $modelTrait) {
             $cTemplate->addTrait($modelTrait);

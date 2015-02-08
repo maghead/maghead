@@ -1883,11 +1883,11 @@ abstract class BaseModel implements
 
     public function getSchema() 
     {
-        if ( $this->_schema ) {
+        if ($this->_schema) {
             return $this->_schema;
         } elseif ( @constant('static::schema_proxy_class') ) {
             // the schema_proxy_class is from the *Base.php file.
-            if ( $this->_schema = SchemaLoader::load( static::schema_proxy_class ) ) {
+            if ($this->_schema = SchemaLoader::load(static::schema_proxy_class)) {
                 return $this->_schema;
             }
             throw new Exception("Can not load " . static::schema_proxy_class);
