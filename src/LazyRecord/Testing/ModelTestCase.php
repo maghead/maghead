@@ -20,7 +20,6 @@ abstract class ModelTestCase extends BaseTestCase
     {
         $annnotations = $this->getAnnotations();
         ob_start();
-
         if ($dsn = $this->getDSN()) {
             $this->config = array('dsn' => $dsn);
             $user = $this->getDatabaseUser();

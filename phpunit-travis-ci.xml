@@ -24,15 +24,15 @@
   </filter>
 
   <testsuites>
-    <testsuite name="All">
+    <testsuite name="all">
       <directory suffix="Test.php">tests</directory>
     </testsuite>
 
-    <testsuite name="ModelTests">
+    <testsuite name="model">
         <directory suffix="Test.php">tests/LazyRecord/ModelTest</directory>
     </testsuite>
 
-    <testsuite name="Schema Related Tests">
+    <testsuite name="schema">
         <directory suffix="Test.php">tests/LazyRecord/Schema</directory>
     </testsuite>
   </testsuites>
