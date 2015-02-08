@@ -1875,44 +1875,9 @@ abstract class BaseModel implements
         throw new RuntimeException("schema is not defined in " . get_class($this) );
     }
 
-
-    /**
-     * Get column name array from RuntimeSchema object.
-     *
-     * @return string[] column names
-     */
-    public function getColumnNames()
-    {
-        return $this->getSchema()->getColumnNames();
-    }
-
-
-    /**
-     * Get model label from RuntimeSchema.
-     *
-     * @return string model label name
-     */
-    public function getLabel()
-    {
-        return $this->getSchema()->getLabel();
-    }
-
-
-    /**
-     * Get model table
-     *
-     * @return string model table name
-     */
-    public function getTable()
-    {
-        return $this->getSchema()->getTable();
-    }
-
-
     /***************************************
      * Cache related methods
      ***************************************/
-
 
     /**
      * flush internal cache, in php memory.
