@@ -1265,20 +1265,19 @@ abstract class BaseModel implements
      */
     public function display( $name )
     {
-        if ( $c = $this->getSchema()->getColumn( $name ) ) {
+        if ($c = $this->getSchema()->getColumn( $name ) ) {
             // get raw value
-            if ( $c->virtual ) {
+            if ($c->virtual) {
                 return $this->get($name);
             }
-            return $c->display( $this->getValue( $name ) );
-        }
-        elseif( isset($this->_data[$name]) ) {
+            return $c->display($this->getValue( $name ));
+        } elseif (isset($this->_data[$name])) {
             return $this->_data[$name];
         }
         
         // for relationship record
         $val = $this->__get($name);
-        if( $val && $val instanceof \LazyRecord\BaseModel ) {
+        if ($val && $val instanceof \LazyRecord\BaseModel) {
             return $val->dataLabel();
         }
     }
@@ -1294,7 +1293,7 @@ abstract class BaseModel implements
      * @param array $args
      * @return array current record data.
      */
-    public function deflateData(& $args) {
+    public function deflateData(array & $args) {
         foreach( $args as $k => $v ) {
             $c = $this->getSchema()->getColumn($k);
             if( $c )
