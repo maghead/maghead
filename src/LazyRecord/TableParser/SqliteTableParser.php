@@ -87,12 +87,13 @@ class SqliteTableParser extends BaseTableParser
 
             $column = $schema->column($name);
             $column->type( $type );
-            if( isset($columnAttr->null) )
-                $column->null(true);
-            elseif( isset($columnAttr->notNull) )
-                $column->notNull(true);
+            if (isset($columnAttr->null)) {
+                $column->null();
+            } elseif (isset($columnAttr->notNull)) {
+                $column->notNull();
+            }
 
-            if( isset($columnAttr->pk) ) {
+            if (isset($columnAttr->pk) ) {
                 $column->primary(true);
                 $schema->primaryKey = $name;
             }

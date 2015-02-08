@@ -22,9 +22,9 @@ class SqliteBuilder extends BaseBuilder
         $sql = $this->driver->quoteIdentifier( $name );
         $sql .= ' ' . $type;
 
-        if ($column->required || $column->notNull) {
+        if ($column->required || $column->null === false) {
             $sql .= ' NOT NULL';
-        } elseif( $column->null ) {
+        } elseif ($column->null === true) {
             $sql .= ' NULL';
         }
 

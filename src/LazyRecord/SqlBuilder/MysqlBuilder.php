@@ -7,16 +7,16 @@ use LazyRecord\Schema\RuntimeColumn;
 class MysqlBuilder extends BaseBuilder
 {
 
-    public function buildColumnSql(SchemaInterface $schema, $column) {      
+    public function buildColumnSql(SchemaInterface $schema, $column) {
+        var_dump( get_class($column) ); 
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
-        $type = $column->type;
-        if ( ! $type && $isa == 'str' ) {
-            $type = 'text';
+        if (! $column->type && $isa == 'str' ) {
+            $column->type = 'text';
         }
 
         $sql = $this->driver->quoteIdentifier( $name );
-        $sql .= ' ' . $type;
+        $sql .= $column->buildTypeSql($this->driver);
 
         if ( $isa === 'enum' && !empty($column->enum) ) {
             $enum = array();
@@ -26,10 +26,11 @@ class MysqlBuilder extends BaseBuilder
             $sql .= '(' . implode(', ', $enum) . ')';
         }
 
-        if( $column->required || $column->notNull )
+        if ($column->required || $column->null === false) {
             $sql .= ' NOT NULL';
-        elseif( $column->null )
+        } elseif ($column->null === true) {
             $sql .= ' NULL';
+        }
 
         /* if it's callable, we should not write the result into sql schema */
         if( ($default = $column->default) !== null && ! is_callable($column->default )  ) { 

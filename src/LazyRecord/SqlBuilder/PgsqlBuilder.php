@@ -15,24 +15,26 @@ class PgsqlBuilder extends BaseBuilder
 {
 
     public function buildColumnSql(SchemaInterface $schema, $column) {      
+        var_dump( get_class($column) ); 
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
-        $type = $column->type;
-        if( ! $type && $isa == 'str' )
-            $type = 'text';
+        if (!$column->type && $isa == 'str') {
+            $column->type = 'text';
+        }
 
         $sql = $this->driver->quoteIdentifier( $name );
 
         if ( ! $column->autoIncrement ) {
-            $sql .= ' ' . $type;
+            $sql .= ' ' . $column->buildTypeSql($this->driver);
         }
-        if ( $column->timezone ) {
+
+        if ($column->timezone) {
             $sql .= ' with time zone';
         }
 
-        if ( $column->required || $column->notNull ) {
+        if ($column->required || $column->null === true) {
             $sql .= ' NOT NULL';
-        } elseif ( $column->null ) {
+        } elseif ( $column->null === true ) {
             $sql .= ' NULL';
         }
 

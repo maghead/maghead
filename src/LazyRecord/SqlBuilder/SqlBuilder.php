@@ -15,7 +15,7 @@ class SqlBuilder
             throw new Exception("Can't create sqlbuilder driver class");
         }
         $class = 'LazyRecord\\SqlBuilder\\' . ucfirst(strtolower($regs[1])) . 'Builder';
-        return new $class($driver,$options);
+        return new $class($driver, $options);
     }
 }
 
