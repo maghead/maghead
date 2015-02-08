@@ -3,6 +3,7 @@ namespace LazyRecord\Schema\Factory;
 use ClassTemplate\ClassTemplate;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Inflector;
 
 class BaseModelClassFactory
 {
@@ -26,14 +27,32 @@ class BaseModelClassFactory
             '}',
             'return $this->_schema = \LazyRecord\Schema\SchemaLoader::load(' . var_export($schema->getSchemaProxyClass(),true) .  ');',
         ]);
-        $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
-        $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
-        $cTemplate->addStaticVar( 'mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
+
+        $cTemplate->addStaticVar('column_names',  $schema->getColumnNames());
+        $cTemplate->addStaticVar('column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
+        $cTemplate->addStaticVar('mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
+
+
+
+
 
         $cTemplate->extendClass( '\\' . $baseClass );
-        foreach($schema->getModelTraits() as $modelTrait) {
+        foreach ($schema->getModelTraits() as $modelTrait) {
             $cTemplate->addTrait($modelTrait);
         }
+
+        // Create column accessor
+        $inflector = Inflector::getInstance();
+        foreach ($schema->getColumnNames() as $columnName) {
+            $accessorMethodName = 'get' . $inflector->camelize($columnName);
+            $cTemplate->addMethod('public', $accessorMethodName, [], [
+                'if (isset($this->_data[' . var_export($columnName, true) . '])) {',
+                '    return $this->_data[' . var_export($columnName, true) . '];',
+                '}',
+            ]);
+        }
+
+
         return $cTemplate;
     }
 }
