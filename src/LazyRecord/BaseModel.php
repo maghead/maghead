@@ -1966,10 +1966,6 @@ abstract class BaseModel implements
         return $this->getSchema()->getReadSourceId();
     }
 
-    public function getModelClass() {
-        return $this->getSchema()->getModelClass();
-    }
-
 
     public function fetchOneToManyRelationCollection($relationId) {
         if ( $this->id && isset($this->{ $relationId }) ) {
