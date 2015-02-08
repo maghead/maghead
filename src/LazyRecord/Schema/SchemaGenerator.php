@@ -13,6 +13,7 @@ use ClassTemplate\ClassTemplate;
 use ClassTemplate\ClassConst;
 use ClassTemplate\ClassInjection;
 use LazyRecord\Schema;
+use CLIFramework\Logger;
 
 use LazyRecord\Schema\Factory\BaseModelClassFactory;
 use LazyRecord\Schema\Factory\BaseCollectionClassFactory;
@@ -33,10 +34,10 @@ class SchemaGenerator
 
     public $logger;
 
-    public function __construct() 
+    public function __construct(ConfigLoader $config, Logger $logger)
     {
-        $this->config = ConfigLoader::getInstance();
-        $this->logger = Console::getInstance()->getLogger();
+        $this->config = $config; // ConfigLoader::getInstance();
+        $this->logger = $logger; // Console::getInstance()->getLogger();
     }
 
     public function setForceUpdate($force) 

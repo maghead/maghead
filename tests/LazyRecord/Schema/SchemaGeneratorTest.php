@@ -1,9 +1,11 @@
 <?php
+use LazyRecord\ConfigLoader;
+use CLIFramework\Logger;
 
 class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 {
     public function createSchemaGenerator() {
-        $g = new \LazyRecord\Schema\SchemaGenerator;
+        $g = new \LazyRecord\Schema\SchemaGenerator(ConfigLoader::getInstance(), Logger::getInstance());
         $g->forceUpdate = true;
         return $g;
     }

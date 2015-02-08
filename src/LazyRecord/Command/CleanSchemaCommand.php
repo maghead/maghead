@@ -31,7 +31,7 @@ class CleanSchemaCommand extends \CLIFramework\Command
         $logger = $this->getLogger();
 
         CommandUtils::set_logger($this->logger);
-        CommandUtils::init_config_loader();
+        $config = CommandUtils::init_config_loader();
 
         $this->logger->debug('Finding schemas...');
         $schemas = CommandUtils::find_schemas_with_arguments( func_get_args() );
@@ -54,7 +54,7 @@ class CleanSchemaCommand extends \CLIFramework\Command
         }
 
         /*
-        $generator = new SchemaGenerator;
+        $generator = new SchemaGenerator($config, $this->logger);
         if ( $this->options->force ) {
             $generator->setForceUpdate(true);
         }
