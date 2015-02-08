@@ -63,6 +63,9 @@ class AuthorAddressModelTest extends ModelTestCase
     }
 
 
+    /**
+     * @basedata false
+     */
     public function testHasManyRelationCreate()
     {
         $author = new \TestApp\Model\Author;
@@ -79,15 +82,19 @@ class AuthorAddressModelTest extends ModelTestCase
 
         is( 'farfaraway' , $address->address );
 
-        $address->delete();
-        $author->delete();
+        $this->assertResultSuccess($address->delete());
+        $this->assertResultSuccess($author->delete());
     }
 
+    /**
+     * @basedata false
+     */
     public function testHasManyRelationCreate2()
     {
         $author = new \TestApp\Model\Author;
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        ok( $author->id );
+        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        ok($author->id);
+        $this->assertResultSuccess($ret);
 
         // append items
         $author->addresses[] = array( 'address' => 'Harvard' );
@@ -105,10 +112,12 @@ class AuthorAddressModelTest extends ModelTestCase
         ok( $retAuthor->name );
         is( 'Z', $retAuthor->name );
 
-        $author->delete();
+        $this->assertResultSuccess($author->delete());
     }
 
-
+    /**
+     * @rebuild false
+     */
     public function testGeneralInterface() 
     {
         $a = new \TestApp\Model\Address;
