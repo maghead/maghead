@@ -70,7 +70,7 @@ abstract class SchemaBase
 
 
 
-    public function getSeeds()
+    public function getSeedClasses()
     {
         return $this->seeds;
     }

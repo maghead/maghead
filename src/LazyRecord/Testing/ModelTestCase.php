@@ -5,6 +5,7 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\ClassUtils;
+use LazyRecord\SeedRunner;
 use LazyRecord\Result;
 use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\Testing\BaseTestCase;
@@ -19,14 +20,13 @@ abstract class ModelTestCase extends BaseTestCase
     public function setUp()
     {
         $annnotations = $this->getAnnotations();
-        ob_start();
         if ($dsn = $this->getDSN()) {
-            $this->config = array('dsn' => $dsn);
+            $config = array('dsn' => $dsn);
             $user = $this->getDatabaseUser();
             $pass = $this->getDatabasePassword();
-            $this->config['user'] = $user;
-            $this->config['pass'] = $pass;
-            ConnectionManager::getInstance()->addDataSource('default', $this->config);
+            $config['user'] = $user;
+            $config['pass'] = $pass;
+            ConnectionManager::getInstance()->addDataSource('default', $config);
         }
         elseif ( $this->getDatabaseName() ) {
             ConnectionManager::getInstance()->addDataSource('default', array( 
@@ -67,16 +67,23 @@ abstract class ModelTestCase extends BaseTestCase
             $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
             foreach( $schemas as $schema ) {
                 $sqls = $builder->build($schema);
-                ok( $sqls );
+                ok($sqls);
                 foreach( $sqls as $sql ) {
                     $dbh->query( $sql );
                 }
             }
             if ($basedata) {
-                CommandUtils::build_basedata( $schemas );
+                $runner = new SeedRunner($this->config, $this->logger);
+                foreach($schemas as $schema) {
+                    $runner->runSchemaSeeds($schema);
+                }
+                if ($scripts = $this->config->getSeedScripts()) {
+                    foreach($scripts as $script) {
+                        $runner->runSeedScript($script);
+                    }
+                }
             }
         }
-        ob_end_clean();
     }
 
     /**

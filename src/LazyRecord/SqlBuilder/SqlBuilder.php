@@ -7,7 +7,7 @@ use SQLBuilder\Driver\BaseDriver;
 
 class SqlBuilder
 {
-    static function create(BaseDriver $driver,$options = array() ) 
+    static function create(BaseDriver $driver, array $options = array() ) 
     {
         $className = get_class($driver);
         preg_match('/PDO(\w+)Driver$/', $className, $regs);

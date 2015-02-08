@@ -6,9 +6,7 @@ use LazyRecord\Schema\RuntimeColumn;
 
 class MysqlBuilder extends BaseBuilder
 {
-
     public function buildColumnSql(SchemaInterface $schema, $column) {
-        var_dump( get_class($column) ); 
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         if (! $column->type && $isa == 'str' ) {

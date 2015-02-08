@@ -68,6 +68,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->setConfig($config);
 
         $this->logger = new Logger;
+        $this->logger->setQuiet();
 
         ob_start();
         $generator = new SchemaGenerator($this->config, $this->logger);
