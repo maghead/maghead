@@ -1,29 +1,46 @@
 <?php
+use LazyRecord\Inflator;
 
 class InflatorTest extends PHPUnit_Framework_TestCase
 {
-    function test()
+
+
+    public function testBooleanFalse()
     {
-        $d = new \DateTime( '2010-01-31' );
-        ok( $d );
+        $this->assertFalse(Inflator::inflate( 'false', 'bool'));
+        $this->assertFalse(Inflator::inflate( 'FALSE', 'bool'));
+        $this->assertFalse(Inflator::inflate( '0', 'bool'));
+    }
 
-        $d = new \DateTime('2010-01-31T00:00:00+08:00');
-        ok( $d );
+    public function testBooleanTrue()
+    {
+        $this->assertTrue(Inflator::inflate( 'true', 'bool' ));
+        $this->assertTrue(Inflator::inflate( 'TRUE', 'bool' ) );
+        $this->assertTrue(Inflator::inflate( '1', 'bool' ) );
+    }
 
-        $d = new \DateTime('2012-01-19 03:10:41');
-        ok( $d );
-        is( '2012-01-19T03:10:41+08:00', $d->format( DateTime::ATOM  ) ); 
+    public function testFloat()
+    {
+        is(1.1 , Inflator::inflate( '1.1', 'float' ));
+    }
 
+    public function dateStringProvider()
+    {
+        return [
+            ['2010-01-31'],
+            ['2010-01-31T00:00:00+08:00'],
+            ['2012-01-19 03:10:41'],
+        ];
+    }
 
-        is( false , LazyRecord\Inflator::inflate( 'false', 'bool' ) );
-        is( false , LazyRecord\Inflator::inflate( 'FALSE', 'bool' ) );
-        is( false , LazyRecord\Inflator::inflate( '0', 'bool' ) );
-
-        is( true , LazyRecord\Inflator::inflate( 'true', 'bool' ) );
-        is( true , LazyRecord\Inflator::inflate( 'TRUE', 'bool' ) );
-        is( true , LazyRecord\Inflator::inflate( '1', 'bool' ) );
-
-        is( 1.1 , LazyRecord\Inflator::inflate( '1.1', 'float' ) );
+    /**
+     * @dataProvider dateStringProvider
+     */
+    public function testDateTime($datestr)
+    {
+        $this->assertInstanceOf('DateTime', Inflator::inflate($datestr, 'DateTime' ) );
+        // is( '2012-01-19T03:10:41+08:00', $d->format( DateTime::ATOM  ) ); 
+        // XXX:
     }
 }
 
