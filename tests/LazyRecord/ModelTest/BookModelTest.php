@@ -11,27 +11,40 @@ class BookModelTest extends ModelTestCase
         return array( 'TestApp\Model\BookSchema' );
     }
 
+    /**
+     * @rebuild false
+     */
     public function testImmutableColumn()
     {
         $b = new \TestApp\Model\Book;
         // $b->autoReload = false;
-        result_ok( $b->create(array( 'isbn' => '123123123' )) );
+        $ret = $b->create(array( 'isbn' => '123123123' ));
+
+        $this->assertResultSuccess($ret);
+
         $ret = $b->update(array('isbn'  => '456456' ));
-        ok($ret->error , 'should not update immutable column' ); // should be failed.
-        $b->delete();
+        $this->assertResultFail($ret, 'Should not update immutable column');
+
+        $this->successfulDelete($b);
     }
 
 
     /**
      * TODO: Should we validate the field ? think again.
+     *
+     * @rebuild false
      * @expectedException LazyRecord\QueryException
      */
-    public function testUpdateUnknownColumn() {
+    public function testUpdateUnknownColumn()
+    {
         $b = new \TestApp\Model\Book;
         // Column not found: 1054 Unknown column 'name' in 'where clause'
         $b->find(array('name' => 'LoadOrCreateTest'));
     }
 
+    /**
+     * @rebuild false
+     */
     public function testFlagHelper() {
         $b = new \TestApp\Model\Book;
         $b->create([ 'title' => 'Test Book' ]);
@@ -53,6 +66,9 @@ class BookModelTest extends ModelTestCase
         $b->delete();
     }
 
+    /**
+     * @rebuild false
+     */
     public function testTraitMethods() {
         $b = new \TestApp\Model\Book;
         $this->assertSame(['link1', 'link2'], $b->getLinks());
@@ -147,32 +163,39 @@ class BookModelTest extends ModelTestCase
         is( 4, $n->view );
     }
 
+    /**
+     * @rebuild false
+     */
     public function testZeroInflator()
     {
         $b = new \TestApp\Model\Book;
         $ret = $b->create(array( 'title' => 'Create X' , 'view' => 0 ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
+
         ok( $b->id );
         is( 0 , $b->view );
 
         $ret = $b->load($ret->id);
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         ok( $b->id );
         is( 0 , $b->view );
 
         // test incremental
         $ret = $b->update(array( 'view'  => new Raw('view + 1') ), array('reload' => true));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         is( 1,  $b->view );
 
         $ret = $b->update(array( 'view'  => new Raw('view + 1') ), array('reload' => true));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         is( 2,  $b->view );
 
         $ret = $b->delete();
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
     }
 
+    /**
+     * @rebuild false
+     */
     public function testGeneralInterface() 
     {
         $a = new \TestApp\Model\Book;

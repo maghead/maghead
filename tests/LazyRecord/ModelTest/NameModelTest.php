@@ -249,14 +249,17 @@ class NameModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
 
         $d = $n->date;
-        ok( $d );
-        isa_ok( 'DateTime' , $d );
+        $this->assertNotNull($d);
+        $this->assertInstanceOf('DateTime', $d);
         is( '20110101' , $d->format( 'Ymd' ) );
-        ok( $n->delete()->success );
+
+        $ret = $n->delete();
+        $this->assertResultSuccess($ret);
     }
 
     /**
      * @dataProvider nameDataProvider
+     * @rebuild false
      */
     public function testCreateWithName($args)
     {
@@ -265,11 +268,12 @@ class NameModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
 
         $ret = $name->delete();
-        ok( $ret->success );
+        $this->assertResultSuccess($ret);
     }
 
     /**
      * @dataProvider nameDataProvider
+     * @rebuild false
      */
     public function testFromArray($args)
     {
@@ -286,6 +290,9 @@ class NameModelTest extends ModelTestCase
         isa_ok( 'TestApp\Model\NameCollection' , $collection );
     }
 
+    /**
+     * @rebuild false
+     */
     public function testDateTimeInflator()
     {
         $n = new \TestApp\Model\Name;

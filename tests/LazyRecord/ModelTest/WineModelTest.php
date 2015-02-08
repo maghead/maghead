@@ -13,28 +13,32 @@ class WineModelTest extends ModelTestCase
         );
     }
 
+
+    /**
+     * @basedata false
+     */
     public function testWineRecordCreate()
     {
         $record = new \TestApp\Model\Wine;
-        ok($record);
         $ret = $record->create(array( 'name' => 'Wine Name' ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
     }
 
+    /**
+     * @basedata false
+     */
     public function testWineCategoryAndRefer()
     {
         $c = new \TestApp\Model\WineCategory;
-        ok($c,'category');
         $record = new \TestApp\Model\Wine;
-        ok($record);
 
         is('wines',$record->getSchema()->getTable() );
 
         $ret = $c->create(array( 'name' => 'Wine Category' ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
 
         $ret = $record->create(array( 'name' => "Wine Item" , 'category_id' => $c->id ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         
         ok($record->category->id, 'the belongsTo should be generated from refer attribute');
         ok($record->category_id,'the original column');

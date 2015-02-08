@@ -87,6 +87,7 @@ class AuthorAddressModelTest extends ModelTestCase
     }
 
     /**
+     * @rebuild false
      * @basedata false
      */
     public function testHasManyRelationCreate2()

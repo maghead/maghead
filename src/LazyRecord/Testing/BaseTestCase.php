@@ -92,21 +92,21 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->assertResultSuccess($record->delete());
     }
 
-    public function assertResultFail(Result $ret) 
+    public function assertResultFail(Result $ret, $message = null) 
     {
-        $this->assertTrue($ret->error, $ret->message);
+        $this->assertTrue($ret->error, $message ?: $ret->message);
     }
 
-    public function assertResultSuccess(Result $ret) 
+    public function assertResultSuccess(Result $ret, $message = null) 
     {
         if ($ret->error === true) {
             // Pretty printing this
             var_dump( $ret );
         }
-        $this->assertFalse($ret->error, $ret->message);
+        $this->assertFalse($ret->error, $message ?: $ret->message);
     }
 
-    public function resultOK($expect, Result$ret)
+    public function resultOK($expect, Result $ret)
     {
         ok( $ret );
         if ($ret->success === $expect) {
