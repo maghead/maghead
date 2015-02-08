@@ -2007,14 +2007,14 @@ abstract class BaseModel implements
 
     private function getCache($key)
     {
-        if( $cache = self::getCacheInstance() ) {
+        if ($cache = self::getCacheInstance()) {
             return $cache->get( $this->getCachePrefix() . $key);
         }
     }
 
     private function setCache($key,$val,$ttl = 0)
     {
-        if( $cache = self::getCacheInstance() ) {
+        if ($cache = self::getCacheInstance()) {
             $cache->set( $this->getCachePrefix() . $key, $val, $ttl );
         }
         return $val;
@@ -2040,7 +2040,6 @@ abstract class BaseModel implements
     public function getModelClass() {
         return $this->getSchema()->getModelClass();
     }
-
 
 
     public function fetchOneToManyRelationCollection($relationId) {

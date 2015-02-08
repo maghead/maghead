@@ -17,6 +17,7 @@ class BaseModelClassFactory
             'table'              => $schema->getTable(),
             'read_source_id'     => $schema->getReadSourceId(),
             'write_source_id'    => $schema->getWriteSourceId(),
+            'primary_key'        => $schema->primaryKey,
         ));
         $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
         $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
