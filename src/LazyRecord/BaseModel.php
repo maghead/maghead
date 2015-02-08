@@ -122,9 +122,6 @@ abstract class BaseModel implements
 
     protected $_cachePrefix;
 
-    protected $_joinedRelationships = array();
-
-
     static $_cacheInstance;
 
     /**
@@ -165,14 +162,6 @@ abstract class BaseModel implements
 
     public function getSelected() {
         return $this->selected;
-    }
-
-
-
-
-    public function setJoinedRelationships($map)
-    {
-        $this->_joinedRelationships = $map;
     }
 
     public function getCachePrefix()
