@@ -20,24 +20,6 @@ use SQLBuilder\Universal\Syntax\Column;
  */
 class ColumnDeclare extends Column implements ColumnAccessorInterface
 {
-    const  ATTR_ANY = 0;
-    const  ATTR_ARRAY = 1;
-    const  ATTR_STRING = 2;
-    const  ATTR_INTEGER = 3;
-    const  ATTR_FLOAT = 4;
-    const  ATTR_CALLABLE = 5;
-    const  ATTR_FLAG = 6;
-
-    /**
-     * @var string column name
-     */
-    public $name;
-
-    /**
-     * @var array $attributeTypes
-     */
-    public $attributeTypes = array();
-
     /**
      * @var array $attributes
      *
