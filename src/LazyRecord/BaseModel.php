@@ -211,7 +211,7 @@ abstract class BaseModel implements
         if ( $this->dataLabelField ) {
             return $this->dataLabelField;
         }
-        return $this->getSchema()->primaryKey;
+        return static::primary_key;
     }
 
     public function getDataValueField()
@@ -219,7 +219,7 @@ abstract class BaseModel implements
         if ( $this->dataValueField ) {
             return $this->dataValueField;
         }
-        return $this->getSchema()->primaryKey;
+        return static::primary_key;
     }
 
 
@@ -439,7 +439,7 @@ abstract class BaseModel implements
      */
     public function createOrUpdate(array $args, $byKeys = null )
     {
-        $pk = $this->getSchema()->primaryKey;
+        $pk = static::primary_key;
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
@@ -476,7 +476,7 @@ abstract class BaseModel implements
     {
         if ($pkId) {
             return $this->load( $pkId );
-        } elseif( NULL === $pkId && $pk = $this->getSchema()->primaryKey ) {
+        } elseif( NULL === $pkId && $pk = static::primary_key ) {
             $pkId = $this->_data[ $pk ];
             return $this->load( $pkId );
         } else {
@@ -494,7 +494,6 @@ abstract class BaseModel implements
      */
     public function loadOrCreate(array $args, $byKeys = null)
     {
-        // $pk = $this->getSchema()->primaryKey;
         $pk = static::primary_key;
 
         $ret = null;
@@ -954,8 +953,7 @@ abstract class BaseModel implements
      */
     public function delete($pkId = NULL)
     {
-        $k = $this->getSchema()->primaryKey;
-
+        $k = static::primary_key;
         if (!$k) {
             throw new Exception("primary key is not defined.");
         }
@@ -1017,7 +1015,7 @@ abstract class BaseModel implements
         $schema = $this->getSchema();
 
         // check if the record is loaded.
-        $k = $this->getSchema()->primaryKey;
+        $k = static::primary_key;
         if ($k && ! isset($args[ $k ]) && ! isset($this->_data[$k])) {
             throw new Exception('Record is not loaded, Can not update record.', array('args' => $args));
         }
@@ -1171,7 +1169,7 @@ abstract class BaseModel implements
     {
         $dsId  = $this->getWriteSourceId();
         $conn  = $this->getConnection( $dsId );
-        $k     = $this->getSchema()->primaryKey;
+        $k = static::primary_key;
         $kVal = isset($args[$k]) 
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
@@ -1205,7 +1203,7 @@ abstract class BaseModel implements
     {
         $dsId  = $this->getWriteSourceId();
         $conn  = $this->getConnection( $dsId );
-        $k     = $this->getSchema()->primaryKey;
+        $k = static::primary_key;
 
         $driver = $conn->createQueryDriver();
 
@@ -1249,7 +1247,7 @@ abstract class BaseModel implements
      */
     public function save()
     {
-        $k = $this->getSchema()->primaryKey;
+        $k = static::primary_key;
         return ( $k && ! isset($this->_data[$k]) )
                 ? $this->create( $this->_data )
                 : $this->update( $this->_data )
@@ -2077,7 +2075,7 @@ abstract class BaseModel implements
 
     public function asDeleteAction(array $args = array())
     {
-        $pk = $this->getSchema()->primaryKey;
+        $pk = static::primary_key;
         if ( isset($this->_data[$pk]) ) {
             $args[$pk] = $this->_data[$pk];
         }
