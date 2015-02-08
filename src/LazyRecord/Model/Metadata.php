@@ -2,13 +2,6 @@
 namespace LazyRecord\Model;
 
 class Metadata  extends \LazyRecord\Model\MetadataBase {
-
-
-
-
-    /**
-     * Code block for message id parser.
-     */
-    private function __() {
-            }
+    const table = '__meta__';
+    const primary_key = 'id';
 }

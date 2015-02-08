@@ -505,7 +505,8 @@ abstract class BaseModel implements
      */
     public function loadOrCreate(array $args, $byKeys = null)
     {
-        $pk = $this->getSchema()->primaryKey;
+        // $pk = $this->getSchema()->primaryKey;
+        $pk = static::primary_key;
 
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
@@ -693,7 +694,7 @@ abstract class BaseModel implements
         // save $args for afterCreate trigger method
         $origArgs = $args;
 
-        $k = $schema->primaryKey;
+        $k = static::primary_key;
         $sql = $vars     = null;
         $this->_data     = array();
         $stm = null;
@@ -872,7 +873,7 @@ abstract class BaseModel implements
         $key = serialize($args);
         if( $cacheData = $this->getCache($key) ) {
             $this->_data = $cacheData;
-            $pk = $this->getSchema()->primaryKey;
+            $pk = static::primary_key;
             return $this->reportSuccess( 'Data loaded', array(
                 'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null)
             ));
@@ -891,7 +892,7 @@ abstract class BaseModel implements
         }
 
         $dsId  = $this->getReadSourceId();
-        $pk    = $this->getSchema()->primaryKey;
+        $pk    = static::primary_key;
 
         $query = new SelectQuery;
         $query->from(static::table);
