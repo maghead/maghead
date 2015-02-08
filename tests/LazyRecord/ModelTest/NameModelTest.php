@@ -28,6 +28,15 @@ class NameModelTest extends ModelTestCase
         );
     }
 
+    public function booleanNullTestDataProvider()
+    {
+        return array(
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => NULL ) ),
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '' ) ),
+        );
+    }
+
+
     public function booleanFalseTestDataProvider()
     {
         return array(
@@ -60,10 +69,14 @@ class NameModelTest extends ModelTestCase
         $this->assertFalse($n->confirmed);
     }
 
-    public function testCreateWithBooleanNull()
+
+    /**
+     * @dataProvider booleanNullTestDataProvider
+     */
+    public function testCreateWithBooleanNull($args)
     {
         $n = new \TestApp\Model\Name;
-        $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '' ));
+        $ret = $n->create($args);
         $this->assertResultSuccess($ret);
 
         ok($n->id);
