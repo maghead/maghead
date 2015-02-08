@@ -8,6 +8,7 @@ use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\ClassUtils;
 use LazyRecord\Result;
 use PHPUnit_Framework_TestCase;
+use CLIFramework\Logger;
 
 abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
@@ -65,8 +66,10 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $config->config = array( 'schema' => array( 'auto_id' => true ) );
         $this->setConfig($config);
 
+        $this->logger = new Logger;
+
         ob_start();
-        $generator = new SchemaGenerator($config, $this->getLogger());
+        $generator = new SchemaGenerator($this->config, $this->logger);
         $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
         $classMap = $generator->generate($schemas);
         ob_end_clean();
@@ -74,8 +77,15 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     public function getLogger()
     {
-        return new \CLIFramework\Logger;
+        return $this->logger;
     }
+
+
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
 
     public function testClass()
     {
@@ -94,7 +104,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     public function resultOK($expect, Result$ret)
     {
         ok( $ret );
-        if( $ret->success == $expect ) {
+        if ($ret->success === $expect) {
             ok( $ret->success , $ret->message );
         }
         else {
