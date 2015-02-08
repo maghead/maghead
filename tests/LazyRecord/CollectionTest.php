@@ -138,7 +138,7 @@ class CollectionTest extends \LazyRecord\ModelTestCase
             'identity' => 'a',
             'confirmed' => false,
         ));
-        $this->resultOK(true,$ret);
+        $this->assertResultSuccess($ret);
 
         $ret = $a->create(array(
             'name' => 'b',
@@ -146,14 +146,14 @@ class CollectionTest extends \LazyRecord\ModelTestCase
             'identity' => 'b',
             'confirmed' => true,
         ));
-        $this->resultOK(true,$ret);
+        $this->assertResultSuccess($ret);
 
         $authors = new \TestApp\Model\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', false);
         $ret = $authors->fetch();
         ok($ret);
-        is(1,$authors->size());
+        is(1, $authors->size());
 
 
         $authors = new \TestApp\Model\AuthorCollection;
@@ -367,9 +367,6 @@ class CollectionTest extends \LazyRecord\ModelTestCase
         $authors = new \TestApp\Model\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed' , true );
-
-#          $authors->items();
-#          var_dump( $authors->getLastSQL() , $authors->getVars() ); 
 
         foreach( $authors as $author ) {
             ok( $author->confirmed );

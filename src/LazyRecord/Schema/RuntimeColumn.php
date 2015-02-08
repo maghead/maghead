@@ -140,27 +140,28 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         }
 
         if ($isa = $this->get('isa')) {
-            if( $isa === 'int' ) {
+            if ($isa === 'int') {
                 return intval($value);
-            }
-            elseif( $isa === 'str' ) {
+            } elseif ($isa === 'str') {
                 return (string) $value;
-            }
-            elseif( $isa === 'bool' || $isa === 'boolean' ) {
+            } elseif ($isa === 'bool' || $isa === 'boolean' ) {
+                if ($value === NULL) {
+                    return NULL;
+                }
                 if (is_string($value)) {
-                    if( $value == null || $value === '' ) {
-                        return false;
+                    if ($value === '' ) {
+                        return NULL;
                     } elseif( $value === '1' ) {
                         return true;
                     } elseif( $value === '0' ) {
                         return false;
-                    } elseif( strncasecmp($value,'false',5) == 0 ) {
+                    } elseif(strncasecmp($value,'false',5) == 0 ) {
                         return false;
-                    } elseif( strncasecmp($value,'true',4 ) == 0 ) {
+                    } elseif(strncasecmp($value,'true',4 ) == 0 ) {
                         return true;
                     }
                 }
-                return (boolean) $value;
+                return $value;
             }
         }
         return $value;

@@ -297,7 +297,7 @@ class AuthorBookModelTest extends \LazyRecord\ModelTestCase
         is( 1, $author->author_books->size() );
         ok( $author->author_books[0] );
         ok( $author->author_books[0]->created_on );
-        is( '2010-01-01', $author->author_books[0]->created_on->format('Y-m-d') );
+        is( '2010-01-01', $author->author_books[0]->created_on->format('Y-m-d'));
 
         $author->books[] = array( 
             'title' => 'Programming Perl II',

@@ -729,12 +729,12 @@ abstract class BaseModel implements
 
             // arguments that are will Bind
             $insertArgs = array();
-            foreach( $schema->getColumns() as $n => $c ) {
+            foreach ($schema->getColumns() as $n => $c) {
                 // if column is required (can not be empty)
                 //   and default is defined.
-                if( !$c->primary && (!isset($args[$n]) || !$args[$n] ))
+                if (!$c->primary && (!isset($args[$n]) || !$args[$n] ))
                 {
-                    if( $val = $c->getDefaultValue($this ,$args) ) {
+                    if ($val = $c->getDefaultValue($this ,$args)) {
                         $args[$n] = $val;
                     } 
                 }
@@ -746,14 +746,15 @@ abstract class BaseModel implements
 
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
-
-                if ($c->typeConstraint && ( $val !== null && ! is_array($val) && ! $val instanceof Raw)) {
-                    if ( false === $c->checkTypeConstraint( $val )) {
+                
+                if ($c->typeConstraint && ($val !== null && ! is_array($val) && ! $val instanceof Raw)) {
+                    if (false === $c->checkTypeConstraint($val)) {
                         return $this->reportError("{$val} is not " . $c->isa . " type");
                     }
-                } elseif ($val !== null && ! is_array($val) && ! $val instanceof Raw) {
+                } elseif ($val !== NULL && !is_array($val) && !$val instanceof Raw) {
                     $val = $c->typeCasting($val);
                 }
+
 
                 if ($c->filter || $c->canonicalizer) {
                     $val = $c->canonicalizeValue($val, $this, $args );
@@ -775,7 +776,6 @@ abstract class BaseModel implements
                     } else {
                         $args[$n] = $val;
                     }
-
                     if (!is_string($val)) {
                         if ($val instanceof Raw) {
                             $insertArgs[$n] = new Bind($n, $val);
@@ -833,7 +833,8 @@ abstract class BaseModel implements
         return $this->reportSuccess('Record created.', array(
             'id'  => $pkId,
             'sql' => $sql,
-            // 'args' => $args,
+            'args' => $args,
+            'binds' => $arguments,
             'validations' => $validationResults,
         ));
     }

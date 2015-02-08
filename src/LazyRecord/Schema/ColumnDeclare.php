@@ -25,10 +25,7 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
      *
      * The default attributes for a column.
      */
-    public $attributes = array(
-        'type' => 'text',
-        'isa' => 'str',
-    );
+    public $attributes = array();
 
     /**
      * @var string $name column name (id)
@@ -59,12 +56,6 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
 
             /* reference to model schema */
             'refer' => self::ATTR_STRING,
-
-
-            /* data type: string, integer, DateTime, classname */
-            'isa' => self::ATTR_STRING,
-
-            'type' => self::ATTR_STRING,
 
             'default' => self::ATTR_ANY,
 
@@ -121,15 +112,15 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
      */
     public function serial()
     {
-        $this->attributes['type'] = 'serial';
-        $this->attributes['isa'] = 'int';
+        $this->type = 'serial';
+        $this->isa = 'int';
         return $this;
     }
 
     public function json()
     {
-        $this->attributes['type'] = 'text';
-        $this->attributes['isa'] = 'json';
+        $this->type = 'text';
+        $this->isa = 'json';
         return $this;
     }
 
@@ -204,7 +195,11 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
     {
         return array(
             'name' => $this->name,
-            'attributes' => $this->attributes,
+            'attributes' => array(
+                'isa' => $this->isa,
+                'type' => $this->type,
+                'primary' => $this->primary,
+            ) + $this->attributes,
         );
     }
 

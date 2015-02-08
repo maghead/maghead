@@ -5,6 +5,7 @@ use LazyRecord\SqlBuilder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
 use LazyRecord\ClassUtils;
+use LazyRecord\Result;
 use PHPUnit_Framework_TestCase;
 
 abstract class ModelTestCase extends PHPUnit_Framework_TestCase
@@ -129,7 +130,15 @@ abstract class ModelTestCase extends PHPUnit_Framework_TestCase
             class_ok( $class );
     }
 
-    public function resultOK($expect,$ret)
+    public function assertResultSuccess(Result $ret) {
+        if ($ret->error === true) {
+            // Pretty printing this
+            var_dump( $ret );
+        }
+        $this->assertFalse($ret->error, $ret->message);
+    }
+
+    public function resultOK($expect, Result$ret)
     {
         ok( $ret );
         if( $ret->success == $expect ) {
