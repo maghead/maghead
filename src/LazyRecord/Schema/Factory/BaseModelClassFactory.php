@@ -3,7 +3,7 @@ namespace LazyRecord\Schema\Factory;
 use ClassTemplate\ClassTemplate;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\SchemaDeclare;
-use LazyRecord\Inflector;
+use Doctrine\Common\Inflector\Inflector;
 
 class BaseModelClassFactory
 {
@@ -42,9 +42,8 @@ class BaseModelClassFactory
         }
 
         // Create column accessor
-        $inflector = Inflector::getInstance();
         foreach ($schema->getColumnNames() as $columnName) {
-            $accessorMethodName = 'get' . $inflector->camelize($columnName);
+            $accessorMethodName = 'get' . Inflector::camelize($columnName);
             $cTemplate->addMethod('public', $accessorMethodName, [], [
                 'if (isset($this->_data[' . var_export($columnName, true) . '])) {',
                 '    return $this->_data[' . var_export($columnName, true) . '];',
