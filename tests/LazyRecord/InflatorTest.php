@@ -3,8 +3,6 @@ use LazyRecord\Inflator;
 
 class InflatorTest extends PHPUnit_Framework_TestCase
 {
-
-
     public function testBooleanFalse()
     {
         $this->assertFalse(Inflator::inflate( 'false', 'bool'));
@@ -24,12 +22,18 @@ class InflatorTest extends PHPUnit_Framework_TestCase
         is(1.1 , Inflator::inflate( '1.1', 'float' ));
     }
 
+    public function testJson()
+    {
+        $this->assertEquals((object) [ 'foo' => 1 ], Inflator::inflate(json_encode([ 'foo' => 1 ]), 'json' ));
+    }
+
     public function dateStringProvider()
     {
         return [
             ['2010-01-31'],
             ['2010-01-31T00:00:00+08:00'],
             ['2012-01-19 03:10:41'],
+            ['2012-01-19T03:10:41+08:00'],
         ];
     }
 
@@ -39,8 +43,6 @@ class InflatorTest extends PHPUnit_Framework_TestCase
     public function testDateTime($datestr)
     {
         $this->assertInstanceOf('DateTime', Inflator::inflate($datestr, 'DateTime' ) );
-        // is( '2012-01-19T03:10:41+08:00', $d->format( DateTime::ATOM  ) ); 
-        // XXX:
     }
 }
 
