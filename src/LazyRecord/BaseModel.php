@@ -1807,9 +1807,9 @@ abstract class BaseModel implements
      * @param array $args
      * @return array
      */
-    public function filterArrayWithColumns( $args , $withVirtual = false )
+    public function filterArrayWithColumns( $args , $includeVirtualColumns = false )
     {
-        return array_intersect_key( $args , $this->getSchema()->getColumns( $withVirtual ) );
+        return array_intersect_key( $args , $this->getSchema()->getColumns( $includeVirtualColumns ) );
     }
 
 
@@ -1918,9 +1918,9 @@ abstract class BaseModel implements
      *
      * @return RuntimeColumn[name]
      */
-    public function getColumns($withVirtual = false)
+    public function getColumns($includeVirtualColumns = false)
     {
-        return $this->getSchema()->getColumns( $withVirtual );
+        return $this->getSchema()->getColumns( $includeVirtualColumns );
     }
 
 
@@ -2066,19 +2066,19 @@ abstract class BaseModel implements
         $this->autoReload = $this->autoReload;
     }
 
-    public function asCreateAction($args = array())
+    public function asCreateAction(array $args = array())
     {
         // the create action requires empty args
         return $this->newAction('Create', $args);
     }
 
-    public function asUpdateAction($args = array())
+    public function asUpdateAction(array $args = array())
     {
         // should only update the defined fields
         return $this->newAction('Update',$args);
     }
 
-    public function asDeleteAction($args = array())
+    public function asDeleteAction(array $args = array())
     {
         $pk = $this->getSchema()->primaryKey;
         if ( isset($this->_data[$pk]) ) {
@@ -2092,7 +2092,7 @@ abstract class BaseModel implements
      *
      * @param string $type 'create','update','delete'
      */
-    public function newAction($type, $args = array() )
+    public function newAction($type, array $args = array() )
     {
         $class = get_class($this);
         $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class,$type);
