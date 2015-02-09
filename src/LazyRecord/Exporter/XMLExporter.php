@@ -33,11 +33,11 @@ class XMLExporter
         $dom = new DOMDocument('1.0', 'utf-8');
         $root = $dom->createElement('export');
         $dom->appendChild($root);
-        $this->appendRecord($dom, $root, $record, NULL, false);
+        $this->appendRecord($dom, $root, $record, NULL, true);
         return $dom;
     }
 
-    protected function appendRecordInplace(DOMDocument $dom, DOMElement $root, BaseModel $record, RuntimeSchema $schema = NULL)
+    protected function appendRecordInplace(DOMDocument $dom, DOMElement $root, BaseModel $record, RuntimeSchema $schema = NULL, $recursive = true)
     {
         if (!$schema) {
             $schema = $record->getSchema();
@@ -55,14 +55,12 @@ class XMLExporter
             }
 
             $value = $record->getValue($column->name);
-            /*
-            if ($value instanceof BaseModel) {
-                $this->appendRecord($dom, $columnElement, $value);
-            } elseif ($value instanceof BaseCollection) {
-            }
-            */
             $columnElement->appendChild(new DOMText($value));
             $root->appendChild($columnElement);
+        }
+
+        if (!$recursive) {
+            return;
         }
 
         foreach ($schema->getRelations() as $rId => $r) {
@@ -82,10 +80,10 @@ class XMLExporter
                 $relationElement->appendChild($collectionElement);
 
                 foreach($foreignRecords as $foreignRecord) {
-                    $this->appendRecord($dom, $collectionElement, $foreignRecord);
+                    $this->appendRecord($dom, $collectionElement, $foreignRecord, NULL, false);
                 }
 
-            } else if ($r['type'] === SchemaDeclare::has_one) {
+            } elseif ($r['type'] === SchemaDeclare::has_one) {
 
                 $foreignRecord = $record->get($rId);
                 if (!$foreignRecord) {
@@ -96,12 +94,29 @@ class XMLExporter
                 $root->appendChild($relationElement);
                 $relationElement->setAttribute('type', 'has-one');
 
-                $this->appendRecord($dom, $relationElement, $foreignRecord);
+                $this->appendRecord($dom, $relationElement, $foreignRecord, NULL, false);
+            } elseif ($r['type'] === SchemaDeclare::many_to_many) {
+
+                $foreignRecords = $record->get($rId);
+                if ($foreignRecords->size() === 0) {
+                    continue;
+                }
+
+                $relationElement = $dom->createElement($rId);
+                // $relationElement->setAttribute('type', 'many-to-many');
+                // $root->ownerDocument->firstChild->appendChild($relationElement);
+                // $relationElement->appendChild($collectionElement);
+
+                $collectionElement = $dom->createElement('collection');
+                $root->ownerDocument->firstChild->appendChild($collectionElement);
+                foreach ($foreignRecords as $foreignRecord) {
+                    $this->appendRecord($dom, $collectionElement, $foreignRecord, NULL, false);
+                }
             }
         }
     }
 
-    protected function appendRecord(DOMDocument $dom, DOMElement $root, BaseModel $record, RuntimeSchema $schema = NULL)
+    protected function appendRecord(DOMDocument $dom, DOMElement $root, BaseModel $record, RuntimeSchema $schema = NULL,  $recursive = true)
     {
         if (!$schema) {
             $schema = $record->getSchema();
@@ -109,7 +124,7 @@ class XMLExporter
         $recordElement = $dom->createElement('record');
         $recordElement->setAttribute('class', get_class($record));
         $root->appendChild($recordElement);
-        $this->appendRecordInplace($dom, $recordElement, $record, $schema);
+        $this->appendRecordInplace($dom, $recordElement, $record, $schema, $recursive);
     }
 
 

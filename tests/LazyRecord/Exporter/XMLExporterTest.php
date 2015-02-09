@@ -47,6 +47,23 @@ class XMLExporterTest extends ModelTestCase
         $author->addresses->create([ 'address' => 'brazil' ]);
         $author->addresses->create([ 'address' => 'san francisco' ]);
 
+
+        $book = new Book;
+        $ret = $book->create([ 
+            'title' => 'Run & Skate',
+        ]);
+        $this->assertResultSuccess($ret);
+        $author->author_books->create([ 'book_id' => $book->id ]);
+
+
+        $book = new Book;
+        $ret = $book->create([ 
+            'title' => 'Run & Skate II',
+        ]);
+        $this->assertResultSuccess($ret);
+        $author->author_books->create([ 'book_id' => $book->id ]);
+
+
         $exporter = new XMLExporter;
         $dom = $exporter->exportRecord($author);
 
@@ -55,7 +72,7 @@ class XMLExporterTest extends ModelTestCase
         $xml = $dom->saveXML();
         $this->assertNotEmpty($xml);
 
-        echo $xml;
+        // echo $xml;
     }
 
 
