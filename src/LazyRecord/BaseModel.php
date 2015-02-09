@@ -1483,7 +1483,7 @@ abstract class BaseModel implements
      */
     public function getValue( $name )
     {
-        if ( isset($this->_data[$name]) ) {
+        if (isset($this->_data[$name])) {
             return $this->_data[$name];
         }
     }

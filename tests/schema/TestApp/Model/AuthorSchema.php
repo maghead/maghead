@@ -32,10 +32,8 @@ class AuthorSchema extends Schema
         $this->mixin('LazyRecord\\Schema\\Mixin\\MetadataSchema');
 
 
-        
-
         /**
-         * for append:
+         * For append:
          *
          *     $author->address[] = array(  );
          *
