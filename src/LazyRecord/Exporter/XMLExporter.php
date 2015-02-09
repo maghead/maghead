@@ -102,13 +102,13 @@ class XMLExporter
                     continue;
                 }
 
-                $relationElement = $dom->createElement($rId);
+                // $relationElement = $dom->createElement($rId);
                 // $relationElement->setAttribute('type', 'many-to-many');
                 // $root->ownerDocument->firstChild->appendChild($relationElement);
                 // $relationElement->appendChild($collectionElement);
 
                 $collectionElement = $dom->createElement('collection');
-                $root->ownerDocument->firstChild->appendChild($collectionElement);
+                $refNode = $root->ownerDocument->firstChild->insertBefore($collectionElement, $root->ownerDocument->firstChild->firstChild);
                 foreach ($foreignRecords as $foreignRecord) {
                     $this->appendRecord($dom, $collectionElement, $foreignRecord, NULL, false);
                 }
