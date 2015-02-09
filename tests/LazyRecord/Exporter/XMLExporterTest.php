@@ -42,6 +42,7 @@ class XMLExporterTest extends ModelTestCase
         $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
 
+        // Has Many Relationship
         $author->addresses->create([ 'address' => 'far far away' ]);
         $author->addresses->create([ 'address' => 'taipei 101' ]);
         $author->addresses->create([ 'address' => 'brazil' ]);
@@ -53,6 +54,8 @@ class XMLExporterTest extends ModelTestCase
             'title' => 'Run & Skate',
         ]);
         $this->assertResultSuccess($ret);
+
+        // ManyToMany
         $author->author_books->create([ 'book_id' => $book->id ]);
 
 
