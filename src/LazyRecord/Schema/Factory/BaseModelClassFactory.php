@@ -33,13 +33,13 @@ class BaseModelClassFactory
         $cTemplate->addStaticVar('mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
 
 
-
-
+        if ($traitClasses = $schema->getModelTraitClasses()) {
+            foreach($traitClasses as $traitClass) {
+                $cTemplate->useTrait($traitClass);
+            }
+        }
 
         $cTemplate->extendClass( '\\' . $baseClass );
-        foreach ($schema->getModelTraits() as $modelTrait) {
-            $cTemplate->addTrait($modelTrait);
-        }
 
         // Create column accessor
         if ($schema->enableColumnAccessors) {

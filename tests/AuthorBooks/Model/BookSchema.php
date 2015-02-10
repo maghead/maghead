@@ -53,7 +53,7 @@ class BookSchema extends Schema
          */
         $this->many('book_authors', 'AuthorBooks\Model\AuthorBookSchema', 'book_id', 'id');
 
-        $this->useTrait('\TestApp\ModelTrait\EBookTrait');
+        $this->useTrait('TestApp\ModelTrait\EBookTrait');
 
         /**
          * get BookAuthor.author 

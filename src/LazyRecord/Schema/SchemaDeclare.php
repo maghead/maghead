@@ -12,19 +12,19 @@ use ClassTemplate\ClassTrait;
 
 class SchemaDeclare extends SchemaBase implements SchemaInterface
 {
-    public $modelTraits = array();
+    public $modelTraitClasses = array();
 
-    public function __construct( $options = array() )
+    public function __construct(array $options = array())
     {
-        $this->build( $options );
+        $this->build($options);
     }
 
     /**
      * Build schema
      */
-    public function build( $options = array() )
+    public function build(array $options = array())
     {
-        $this->schema( $options );
+        $this->schema($options);
 
         $this->primaryKey = $this->findPrimaryKey();
 
@@ -271,19 +271,16 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
      * @param string $class...
      * @return ClassTrait object
      */
-    public function useTrait() {
-        $classes = func_get_args();
-        $trait = new ClassTrait($classes);
-        $this->modelTraits[] = $trait;
-        return $trait;
+    public function useTrait($traitClass) {
+        $this->modelTraitClasses[] = $traitClass;
     }
 
 
     /** 
      * @return ClassTrait[]
      */
-    public function getModelTraits() {
-        return $this->modelTraits;
+    public function getModelTraitClasses() {
+        return $this->modelTraitClasses;
     }
 
 
