@@ -1,5 +1,5 @@
 <?php
-namespace TestApp\Model;
+namespace AuthorBooks\Model;
 use LazyRecord\Schema;
 
 class AuthorSchema extends Schema
@@ -50,13 +50,13 @@ class AuthorSchema extends Schema
          *     $address = $author->addresses->find(k);
          *
          */
-        $this->many( 'addresses', '\TestApp\Model\AddressSchema', 'author_id', 'id');
+        $this->many( 'addresses', '\AuthorBooks\Model\AddressSchema', 'author_id', 'id');
 
-        $this->many( 'unused_addresses', '\TestApp\Model\AddressSchema', 'author_id', 'id')
+        $this->many( 'unused_addresses', '\AuthorBooks\Model\AddressSchema', 'author_id', 'id')
             ->where()
                 ->equal('unused', true);
 
-        $this->many( 'author_books', '\TestApp\Model\AuthorBookSchema', 'author_id', 'id');
+        $this->many( 'author_books', '\AuthorBooks\Model\AuthorBookSchema', 'author_id', 'id');
 
         $this->manyToMany( 'books', 'author_books' , 'book' );
     }

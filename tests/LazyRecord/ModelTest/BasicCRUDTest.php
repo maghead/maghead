@@ -1,6 +1,6 @@
 <?php
 use SQLBuilder\Raw;
-use TestApp\Model\Book;
+use AuthorBooks\Model\Book ;
 use LazyRecord\Testing\ModelTestCase;
 /**
  * Testing models:
@@ -36,7 +36,7 @@ class BasicCRUDTest extends ModelTestCase
      */
     public function testTitleIsRequired()
     {
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
         $ret = $b->find(array( 'name' => 'LoadOrCreateTest' ));
         $this->assertResultFail($ret);
         $this->assertNull($b->id);
@@ -44,7 +44,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testRecordRawCreateBook()
     {
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
         $ret = $b->rawCreate(array( 'title' => 'Go Programming' ));
         $this->assertResultSuccess($ret);
         ok($b->id);
@@ -53,7 +53,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testRecordRawUpdateBook()
     {
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
         ok($b);
         $ret = $b->rawCreate(array( 'title' => 'Go Programming without software validation' ));
         $this->assertResultSuccess($ret);
@@ -68,7 +68,7 @@ class BasicCRUDTest extends ModelTestCase
     public function testLoadOrCreateModel() 
     {
         $results = array();
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
 
         $ret = $b->create(array( 'title' => 'Should Create, not load this' ));
         $this->assertResultSuccess($ret);
@@ -87,7 +87,7 @@ class BasicCRUDTest extends ModelTestCase
         $results[] = $ret;
 
 
-        $b2 = new \TestApp\Model\Book;
+        $b2 = new \AuthorBooks\Model\Book ;
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertResultSuccess($ret);
         is($id,$b2->id);
@@ -98,7 +98,7 @@ class BasicCRUDTest extends ModelTestCase
         ok($id != $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
-        $b3 = new \TestApp\Model\Book;
+        $b3 = new \AuthorBooks\Model\Book ;
         $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         $this->assertResultSuccess($ret);
         ok($id != $b3->id , 'we should create anther one'); 
@@ -223,7 +223,7 @@ class BasicCRUDTest extends ModelTestCase
         ok( $ret->success );
 
         $ab = new \TestApp\Model\AuthorBook;
-        $book = new \TestApp\Model\Book;
+        $book = new \AuthorBooks\Model\Book ;
 
         // should not include this
         ok( $book->create(array( 'title' => 'Book I Ex' ))->success );
@@ -321,7 +321,7 @@ class BasicCRUDTest extends ModelTestCase
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
-        $address = new \TestApp\Model\Address;
+        $address = new \AuthorBooks\Model\Address;
         ok( $address );
 
         $address->create(array( 
@@ -368,7 +368,7 @@ class BasicCRUDTest extends ModelTestCase
      */
     public function testRecordUpdateWithRawSQL()
     {
-        $n = new \TestApp\Model\Book;
+        $n = new \AuthorBooks\Model\Book ;
         $n->create(array(
             'title' => 'book title',
             'view' => 0,
@@ -398,7 +398,7 @@ class BasicCRUDTest extends ModelTestCase
      */
     public function testZeroInflator()
     {
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
         $ret = $b->create(array( 'title' => 'Zero number inflator' , 'view' => 0 ));
         $this->assertResultSuccess($ret);
         ok($b->id);
@@ -417,7 +417,7 @@ class BasicCRUDTest extends ModelTestCase
      */
     public function testUpdateWithReloadOption()
     {
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
         $ret = $b->create(array( 'title' => 'Create for reload test' , 'view' => 0 ));
         $this->assertResultSuccess($ret);
 

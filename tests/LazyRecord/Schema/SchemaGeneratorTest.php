@@ -40,8 +40,8 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 
         $schemas = array();
         $schemas[] = [ $g, new \TestApp\Model\UserSchema ];
-        $schemas[] = [ $g, new \TestApp\Model\AddressSchema ];
-        $schemas[] = [ $g, new \TestApp\Model\BookSchema ];
+        $schemas[] = [ $g, new \AuthorBooks\Model\AddressSchema ];
+        $schemas[] = [ $g, new \AuthorBooks\Model\BookSchema ];
         $schemas[] = [ $g, new \TestApp\Model\IDNumberSchema ];
         $schemas[] = [ $g, new \TestApp\Model\NameSchema ];
         return $schemas;

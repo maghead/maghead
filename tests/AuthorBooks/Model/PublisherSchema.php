@@ -1,5 +1,5 @@
 <?php
-namespace TestApp\Model;
+namespace AuthorBooks\Model;
 use LazyRecord\Schema;
 
 class PublisherSchema extends Schema

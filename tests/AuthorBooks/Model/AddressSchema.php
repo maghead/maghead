@@ -1,5 +1,5 @@
 <?php
-namespace TestApp\Model;
+namespace AuthorBooks\Model;
 use LazyRecord\Schema;
 
 class AddressSchema extends Schema
@@ -19,6 +19,6 @@ class AddressSchema extends Schema
         /**
          * $address->author 
          */
-        $this->belongsTo( 'author', '\\TestApp\Model\\AuthorSchema', 'id' , 'author_id' );
+        $this->belongsTo( 'author', '\\AuthorBooks\Model\\AuthorSchema', 'id' , 'author_id' );
     }
 }

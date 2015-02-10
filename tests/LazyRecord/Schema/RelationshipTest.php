@@ -9,9 +9,9 @@ class RelationshipTest extends PHPUnit_Framework_TestCase
         $r = new LazyRecord\Schema\Relationship(array(
                 'type' => Relationship::HAS_MANY,
                 'self_column' => "id",
-                'self_schema' => "TestApp\Model\AuthorSchema",
+                'self_schema' => "AuthorBooks\Model\AuthorSchema",
                 'foreign_column' => "author_id",
-                'foreign_schema' => "TestApp\Model\AddressSchema",
+                'foreign_schema' => "AuthorBooks\Model\AddressSchema",
         ));
         ok($r);
         ok(isset($r['type']));

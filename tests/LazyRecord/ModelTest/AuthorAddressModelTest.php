@@ -21,7 +21,7 @@ class AuthorAddressModelTest extends ModelTestCase
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
-        $address = new \TestApp\Model\Address;
+        $address = new \AuthorBooks\Model\Address;
         ok( $address );
 
         $ret = $address->create(array( 
@@ -122,7 +122,7 @@ class AuthorAddressModelTest extends ModelTestCase
      */
     public function testGeneralInterface() 
     {
-        $a = new \TestApp\Model\Address;
+        $a = new \AuthorBooks\Model\Address;
         ok($a->getQueryDriver('default') );
         ok($a->getWriteQueryDriver() );
         ok($a->getReadQueryDriver() );

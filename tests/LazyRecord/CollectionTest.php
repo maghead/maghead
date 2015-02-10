@@ -1,7 +1,9 @@
 <?php
 use LazyRecord\SqlBuilder;
-use TestApp\Model\Book;
-use TestApp\Model\BookCollection;
+use AuthorBooks\Model\Book;
+use AuthorBooks\Model\BookCollection;
+use AuthorBooks\Model\Author;
+use AuthorBooks\Model\AuthorCollection;
 use LazyRecord\Testing\ModelTestCase;
 
 class AuthorFactory {
@@ -26,23 +28,25 @@ class CollectionTest extends ModelTestCase
     public function getModels()
     {
         return array( 
-            'TestApp\Model\AuthorSchema', 
-            'TestApp\Model\BookSchema',
-            'TestApp\Model\AuthorBookSchema',
-            'TestApp\Model\NameSchema',
-            'TestApp\Model\AddressSchema',
+            'AuthorBooks\Model\AuthorSchema', 
+            'AuthorBooks\Model\BookSchema',
+            'AuthorBooks\Model\AuthorBookSchema',
+            'AuthorBooks\Model\NameSchema',
+            'AuthorBooks\Model\AddressSchema',
         );
     }
 
     public function testCollectionAsPairs()
     {
-        $address = new \TestApp\Model\Address;
+        $address = new \AuthorBooks\Model\Address;
         $results = array();
-        result_ok( $results[] = $address->create(array( 'address' => 'Hack' )) );
+        $results[] = $ret = $address->create(array( 'address' => 'Hack' ));
+        $this->assertResultSuccess($ret);
+
         result_ok( $results[] = $address->create(array( 'address' => 'Hack I' )) );
         result_ok( $results[] = $address->create(array( 'address' => 'Hack II' )) );
 
-        $addresses = new \TestApp\Model\AddressCollection;
+        $addresses = new \AuthorBooks\Model\AddressCollection;
         $pairs = $addresses->asPairs( 'id' , 'address' );
         ok( $pairs );
 
@@ -56,7 +60,7 @@ class CollectionTest extends ModelTestCase
             ok($id);
             ok(isset($pairs[$id]));
             like('/Hack/',$pairs[$id]);
-            $address = new \TestApp\Model\Address($result->id);
+            $address = new \AuthorBooks\Model\Address($result->id);
             $address->delete();
         }
     }
@@ -64,11 +68,11 @@ class CollectionTest extends ModelTestCase
     public function testReset()
     {
         $results = array();
-        $book = new \TestApp\Model\Book;
+        $book = new \AuthorBooks\Model\Book;
         result_ok( $results[] = $book->create(array( 'title' => 'My Book I' )) );
         result_ok( $results[] = $book->create(array( 'title' => 'My Book II' )) );
 
-        $books = new \TestApp\Model\BookCollection;
+        $books = new \AuthorBooks\Model\BookCollection;
         $books->fetch();
         is(2,$books->size());
 
@@ -79,7 +83,7 @@ class CollectionTest extends ModelTestCase
 
         foreach( $results as $result ) {
             ok( $result->id );
-            $record = new \TestApp\Model\Book();
+            $record = new \AuthorBooks\Model\Book();
             $record->load($result->id);
             $record->delete();
         }
@@ -91,7 +95,7 @@ class CollectionTest extends ModelTestCase
      */
     public function testClone()
     {
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new AuthorCollection;
         $authors->fetch();
 
         $clone = clone $authors;
@@ -101,11 +105,11 @@ class CollectionTest extends ModelTestCase
 
     public function testCloneWithQuery() 
     {
-        $a = new \TestApp\Model\Address;
+        $a = new \AuthorBooks\Model\Address;
         ok( $a->create(array('address' => 'Cindy'))->success );
         ok( $a->create(array('address' => 'Hack'))->success );
 
-        $addresses = new \TestApp\Model\AddressCollection;
+        $addresses = new \AuthorBooks\Model\AddressCollection;
         $addresses->where()
             ->equal('address','Cindy');
         $addresses->fetch();
@@ -127,7 +131,7 @@ class CollectionTest extends ModelTestCase
 
     public function testIterator()
     {
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new \AuthorBooks\Model\AuthorCollection;
         ok($authors);
         foreach( $authors as $a ) {
             ok($a->id);
@@ -272,7 +276,7 @@ class CollectionTest extends ModelTestCase
     {
         $authors = new \TestApp\Model\AuthorCollection;
         ok($authors);
-        $authors->join(new \TestApp\Model\Address);
+        $authors->join(new \AuthorBooks\Model\Address);
         $authors->fetch();
         $sql = $authors->toSQL();
         like( '/addresses.address\s+AS\s+addresses_address/', $sql );
@@ -287,7 +291,7 @@ class CollectionTest extends ModelTestCase
 
         $authors = new \TestApp\Model\AuthorCollection;
         ok($authors);
-        $authors->join( new \TestApp\Model\Address ,'LEFT','a', 'addresses');
+        $authors->join( new \AuthorBooks\Model\Address ,'LEFT','a', 'addresses');
         $authors->fetch();
         $sql = $authors->toSQL();
         ok($sql, $sql);
@@ -306,7 +310,7 @@ class CollectionTest extends ModelTestCase
     public function testJoinWithAliasAndWithoutRelationId() {
         $authors = new \TestApp\Model\AuthorCollection;
         ok($authors);
-        $authors->join(new \TestApp\Model\Address ,'LEFT','a');
+        $authors->join(new \AuthorBooks\Model\Address ,'LEFT','a');
         $authors->fetch();
         $sql = $authors->toSQL();
         ok($sql);
@@ -325,14 +329,14 @@ class CollectionTest extends ModelTestCase
 
     public function testFilter() 
     {
-        $book = new \TestApp\Model\Book;
+        $book = new \AuthorBooks\Model\Book;
         $results = array();
         result_ok( $results[] = $book->create(array( 'title' => 'My Book I' )) );
         result_ok( $results[] = $book->create(array( 'title' => 'My Book II' )) );
         result_ok( $results[] = $book->create(array( 'title' => 'Perl Programming' )) );
         result_ok( $results[] = $book->create(array( 'title' => 'My Book IV' )) );
 
-        $books = new \TestApp\Model\BookCollection;
+        $books = new \AuthorBooks\Model\BookCollection;
         $books->fetch();
         count_ok(4, $books);
 

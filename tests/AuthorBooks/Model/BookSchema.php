@@ -1,5 +1,5 @@
 <?php
-namespace TestApp\Model;
+namespace AuthorBooks\Model;
 use LazyRecord\Schema;
 
 class BookSchema extends Schema
@@ -34,24 +34,16 @@ class BookSchema extends Schema
             ->isa('DateTime')
             ->timestamp();
 
-        $this->column('created_by')
-            ->integer()
-            ->refer('\\TestApp\Model\\UserSchema');
-
         // Create a flag column named "is_hot" labeld "Hot Sale", checked by default
         $this->helper('Flag', ['is_hot','Hot Sale', true]);
         $this->helper('Flag', ['is_selled','Selled', false]);
-
-        // $this->one( 'created_by','created_by','\TestApp\Model\UserSchema','id');
-        $this->belongsTo('created_by', 'TestApp\\Model\\UserSchema','id', 'created_by');
-
         /** 
          * column: author => Author class 
          *
          * $book->publisher->name;
          *
          **/
-        $this->belongsTo('publisher','TestApp\\Model\\PublisherSchema', 'id', 'publisher_id');
+        $this->belongsTo('publisher','AuthorBooks\\Model\\PublisherSchema', 'id', 'publisher_id');
 
         /**
          * accessor , mapping self.id => BookAuthors.book_id

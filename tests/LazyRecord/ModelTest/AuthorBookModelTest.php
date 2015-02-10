@@ -253,8 +253,8 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'zz3',
         ));
 
-        $ab = new \TestApp\Model\AuthorBook;
-        $book = new \TestApp\Model\Book;
+        $ab = new \AuthorBooks\Model\AuthorBook;
+        $book = new \AuthorBooks\Model\Book;
 
         ok( $book->create(array( 'title' => 'Book I' ))->success );
         ok( $ab->create(array( 
@@ -274,7 +274,7 @@ class AuthorBookModelTest extends ModelTestCase
             'book_id' => $book->id,
         ));
 
-        $books = new \TestApp\Model\BookCollection;
+        $books = new \AuthorBooks\Model\BookCollection;
         $books->join('author_books')
             ->as('ab')
                 ->on()
@@ -358,7 +358,7 @@ class AuthorBookModelTest extends ModelTestCase
         ok( $ret->success );
 
         $ab = new \TestApp\Model\AuthorBook;
-        $book = new \TestApp\Model\Book;
+        $book = new \AuthorBooks\Model\Book;
 
         // should not include this
         ok( $book->create(array( 'title' => 'Book I Ex' ))->success );

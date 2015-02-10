@@ -1,6 +1,6 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
-use TestApp\Model\Book;
+use AuthorBooks\Model\Book ;
 use TestApp\Model\Author;
 use LazyRecord\Exporter\XMLExporter;
 
@@ -10,11 +10,11 @@ class XMLExporterTest extends ModelTestCase
     public function getModels()
     {
         return [ 
-            'TestApp\Model\BookSchema',
-            'TestApp\Model\AuthorSchema',
-            'TestApp\Model\AuthorBookSchema',
-            'TestApp\Model\AddressSchema',
-            'TestApp\Model\PublisherSchema',
+            'AuthorBooks\Model\BookSchema',
+            'AuthorBooks\Model\AuthorSchema',
+            'AuthorBooks\Model\AuthorBookSchema',
+            'AuthorBooks\Model\AddressSchema',
+            'AuthorBooks\Model\PublisherSchema',
         ];
     }
 

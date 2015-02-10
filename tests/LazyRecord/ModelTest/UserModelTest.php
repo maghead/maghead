@@ -9,7 +9,7 @@ class UserModelTest extends ModelTestCase
     {
         return array(
             'TestApp\Model\UserSchema',
-            'TestApp\Model\BookSchema'
+            'AuthorBooks\Model\BookSchema'
         );
     }
 
@@ -23,7 +23,7 @@ class UserModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         ok( $user->id );
 
-        $book = new \TestApp\Model\Book;
+        $book = new \AuthorBooks\Model\Book ;
         $ret = $book->create(array( 
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',

@@ -8,7 +8,7 @@ class BookModelTest extends ModelTestCase
 
     public function getModels()
     {
-        return array( 'TestApp\Model\BookSchema' );
+        return array( 'AuthorBooks\Model\BookSchema' );
     }
 
     /**
@@ -16,7 +16,7 @@ class BookModelTest extends ModelTestCase
      */
     public function testImmutableColumn()
     {
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
         // $b->autoReload = false;
         $ret = $b->create(array( 'isbn' => '123123123' ));
 
@@ -37,7 +37,7 @@ class BookModelTest extends ModelTestCase
      */
     public function testUpdateUnknownColumn()
     {
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
         // Column not found: 1054 Unknown column 'name' in 'where clause'
         $b->find(array('name' => 'LoadOrCreateTest'));
     }
@@ -46,7 +46,7 @@ class BookModelTest extends ModelTestCase
      * @rebuild false
      */
     public function testFlagHelper() {
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
         $b->create([ 'title' => 'Test Book' ]);
 
         $schema = $b->getSchema();
@@ -70,14 +70,14 @@ class BookModelTest extends ModelTestCase
      * @rebuild false
      */
     public function testTraitMethods() {
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
         $this->assertSame(['link1', 'link2'], $b->getLinks());
         $this->assertSame(['store1', 'store2'], $b->getStores());
     }
 
     public function testLoadOrCreate() {
         $results = array();
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
 
         $ret = $b->create(array( 'title' => 'Should Not Load This' ));
         result_ok( $ret );
@@ -96,7 +96,7 @@ class BookModelTest extends ModelTestCase
         $results[] = $ret;
 
 
-        $b2 = new \TestApp\Model\Book;
+        $b2 = new \AuthorBooks\Model\Book ;
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         result_ok($ret);
         is($id,$b2->id);
@@ -108,7 +108,7 @@ class BookModelTest extends ModelTestCase
         ok($id != $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
-        $b3 = new \TestApp\Model\Book;
+        $b3 = new \AuthorBooks\Model\Book ;
         $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         result_ok($ret);
         ok($b3);
@@ -118,14 +118,14 @@ class BookModelTest extends ModelTestCase
         $b3->delete();
 
         foreach( $results as $r ) {
-            $book = new \TestApp\Model\Book;
+            $book = new \AuthorBooks\Model\Book ;
             $book->delete($r->id);
         }
     }
 
     public function testTypeConstraint()
     {
-        $book = new \TestApp\Model\Book;
+        $book = new \AuthorBooks\Model\Book ;
         $ret = $book->create(array( 
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',
@@ -143,7 +143,7 @@ class BookModelTest extends ModelTestCase
 
     public function testRawSQL()
     {
-        $n = new \TestApp\Model\Book;
+        $n = new \AuthorBooks\Model\Book ;
         $n->create(array(
             'title' => 'book title',
             'view' => 0,
@@ -168,7 +168,7 @@ class BookModelTest extends ModelTestCase
      */
     public function testZeroInflator()
     {
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
         $ret = $b->create(array( 'title' => 'Create X' , 'view' => 0 ));
         $this->assertResultSuccess($ret);
 
@@ -198,7 +198,7 @@ class BookModelTest extends ModelTestCase
      */
     public function testGeneralInterface() 
     {
-        $a = new \TestApp\Model\Book;
+        $a = new \AuthorBooks\Model\Book ;
         ok($a);
         ok( $a->getQueryDriver('default') );
         ok( $a->getWriteQueryDriver() );

@@ -3,9 +3,9 @@
 This is an auto-generated file,
 Please DO NOT modify this file directly.
 */
-namespace TestApp\Model;
+namespace AuthorBooks\Model;
 
-use TestApp\Model\PublisherCollectionBase;
+use AuthorBooks\Model\PublisherCollectionBase;
 
 class PublisherCollection  extends PublisherCollectionBase {
 

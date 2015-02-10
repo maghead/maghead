@@ -1,5 +1,5 @@
 <?php
-namespace TestApp\Model;
+namespace AuthorBooks\Model;
 use LazyRecord\Schema;
 
 class AuthorBookSchema extends Schema
@@ -19,8 +19,8 @@ class AuthorBookSchema extends Schema
             ->integer()
             ->required();
 
-        $this->belongsTo('book','\TestApp\Model\BookSchema','id','book_id');
-        $this->belongsTo('author', '\TestApp\Model\AuthorSchema' , 'id', 'author_id');
+        $this->belongsTo('book','\AuthorBooks\Model\BookSchema','id','book_id');
+        $this->belongsTo('author', '\AuthorBooks\Model\AuthorSchema' , 'id', 'author_id');
     }
 }
 
