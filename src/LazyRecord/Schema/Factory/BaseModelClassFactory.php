@@ -32,7 +32,6 @@ class BaseModelClassFactory
         $cTemplate->addStaticVar('column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
         $cTemplate->addStaticVar('mixin_classes', array_reverse($schema->getMixinSchemaClasses()) );
 
-
         if ($traitClasses = $schema->getModelTraitClasses()) {
             foreach($traitClasses as $traitClass) {
                 $cTemplate->useTrait($traitClass);

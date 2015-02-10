@@ -413,8 +413,8 @@ class BookSchema extends Schema
 
 
         // Defining trait for model class
-        $this->useTrait('Uploader');
-        $this->useTrait('Downloader')
+        $this->addModelTrait('Uploader');
+        $this->addModelTrait('Downloader')
             ->useInsteadOf('Downloader::a', 'Uploader');
 
         $this->belongsTo('created_by', 'TestApp\UserSchema','id', 'created_by');

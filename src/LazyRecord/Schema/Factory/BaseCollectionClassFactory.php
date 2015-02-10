@@ -19,6 +19,13 @@ class BaseCollectionClassFactory
             'read_source_id'     => $schema->getReadSourceId(),
             'write_source_id'     => $schema->getWriteSourceId(),
         ));
+
+        if ($traitClasses = $schema->getCollectionTraitClasses()) {
+            foreach($traitClasses as $traitClass) {
+                $cTemplate->useTrait($traitClass);
+            }
+        }
+
         $cTemplate->extendClass( '\\' . $baseCollectionClass );
         return $cTemplate;
     }
