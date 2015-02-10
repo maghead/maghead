@@ -63,18 +63,6 @@ class BaseCollection
      */
     protected $_presetVars = array();
 
-
-
-
-    /**
-     * @var array save joined alias and table names
-     *
-     *  Relationship Id => Joined Alias
-     *
-     */
-    protected $_joinedRelationships = array();
-
-
     /**
      * postCreate hook
      */

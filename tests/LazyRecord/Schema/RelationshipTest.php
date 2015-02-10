@@ -6,7 +6,7 @@ class RelationshipTest extends PHPUnit_Framework_TestCase
 {
     public function testRelationshipOperation()
     {
-        $r = new LazyRecord\Schema\Relationship(array(
+        $r = new LazyRecord\Schema\Relationship('books', array(
                 'type' => Relationship::HAS_MANY,
                 'self_column' => "id",
                 'self_schema' => "AuthorBooks\Model\AuthorSchema",

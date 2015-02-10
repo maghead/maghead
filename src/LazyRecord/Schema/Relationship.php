@@ -28,8 +28,9 @@ class Relationship implements IteratorAggregate, ArrayAccess
     public $where;
 
 
-    public function __construct(array $data = array())
+    public function __construct($accessor, array $data = array())
     {
+        $this->accessor = $accessor;
         $this->data = $data;
     }
 
@@ -220,10 +221,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
      */
     public static function __set_state(array $data)
     {
-        $r = new self($data['data']);
-        if (isset($data['accessor'])) {
-            $r->accessor = $data['accessor'];
-        }
+        $r = new self($data['accessor'], $data['data']);
         if (isset($data['where'])) {
             $r->where = $data['where'];
         }

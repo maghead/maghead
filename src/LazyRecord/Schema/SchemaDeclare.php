@@ -443,13 +443,13 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
      * @param string $foreignColumn foreign reference schema column.
      * @param string $selfColumn self column name
      */
-    public function belongsTo($accessorName, $foreignClass = NULL, $foreignColumn = NULL,  $selfColumn = 'id')
+    public function belongsTo($accessor, $foreignClass = NULL, $foreignColumn = NULL,  $selfColumn = 'id')
     {
         if ($foreignClass && NULL === $foreignColumn) {
             $s = new $foreignClass;
             $foreignColumn = $s->primaryKey;
         }
-        return $this->relations[$accessorName] = new Relationship(array(
+        return $this->relations[$accessor] = new Relationship($accessor, array(
             'type' => Relationship::BELONGS_TO,
             'self_schema' => get_class($this),
             'self_column' => $selfColumn,
@@ -470,7 +470,7 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
     public function one($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
     {
         // foreignColumn is default to foreignClass.primary key
-        return $this->relations[ $accessor ] = new Relationship(array(
+        return $this->relations[ $accessor ] = new Relationship($accessor, array(
             'type'           => Relationship::HAS_ONE,
             'self_column'    => $selfColumn,
             'self_schema'    => $this->getSchemaProxyClass(),
@@ -498,7 +498,7 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
      */
     public function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
-        return $this->relations[ $accessor ] = new Relationship(array(
+        return $this->relations[ $accessor ] = new Relationship($accessor, array(
             'type'           => Relationship::HAS_MANY,
             'self_column'    => $selfColumn,
             'self_schema'    => get_class($this),
@@ -516,7 +516,7 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
     public function manyToMany($accessor, $relationId, $foreignRelationId )
     {
         if ($r = $this->getRelation($relationId)) {
-            return $this->relations[ $accessor ] = new Relationship(array(
+            return $this->relations[ $accessor ] = new Relationship($accessor, array(
                 'type'              => Relationship::MANY_TO_MANY,
                 'relation_junction' => $relationId,
                 'relation_foreign'  => $foreignRelationId,

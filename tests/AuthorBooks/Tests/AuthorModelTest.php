@@ -249,6 +249,10 @@ class AuthorModelTest extends ModelTestCase
 
 
 
+    /**
+     * @rebuild false
+     * @basedata false
+     */
     public function testUpdateNull()
     {
         $author = new Author;
