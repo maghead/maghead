@@ -53,6 +53,9 @@ class AuthorModelTest extends ModelTestCase
         $this->assertInstanceOf('AuthorBooks\Model\AuthorCollection', $author->newCollection() );
     }
 
+    /**
+     * @basedata false
+     */
     public function testBooleanCondition() 
     {
         $a = new Author;
@@ -62,7 +65,7 @@ class AuthorModelTest extends ModelTestCase
             'identity' => 'a',
             'confirmed' => false,
         ));
-        $this->resultOK(true,$ret);
+        $this->assertResultSuccess($ret);
 
         $ret = $a->create(array(
             'name' => 'b',
@@ -70,25 +73,29 @@ class AuthorModelTest extends ModelTestCase
             'identity' => 'b',
             'confirmed' => true,
         ));
-        $this->resultOK(true,$ret);
+        $this->assertResultSuccess($ret);
 
         $authors = new AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', false);
         $ret = $authors->fetch();
         ok($ret);
-        is(1,$authors->size());
+
+        $this->assertCollectionSize(1, $authors);
 
         $authors = new AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', true);
         $ret = $authors->fetch();
         ok($ret);
-        is(1,$authors->size());
+        $this->assertCollectionSize(1, $authors);
 
         $authors->delete();
     }
 
+    /**
+     * @basedata false
+     */
     public function testVirtualColumn() 
     {
         $author = new Author;
@@ -113,22 +120,51 @@ class AuthorModelTest extends ModelTestCase
         ok($authors);
     }
 
+    /**
+     * @basedata false
+     */
+    public function testStringContainsQuotes()
+    {
+        $a = new Author;
+        $ret = $a->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
+        $this->assertResultSuccess($ret);
+        ok($a->id);
+    }
+
+    /**
+     * @basedata false
+     */
+    public function testCreateWithAnEmptyArrayShouldFail()
+    {
+        $a = new Author;
+        $ret = $a->create(array());
+        $this->assertResultFail($ret);
+        like('/Empty arguments/' , $ret->message );
+    }
+
+
+    /**
+     * @basedata false
+     */
+    public function testFindAnInexistingRecord()
+    {
+        $a = new Author;
+        $ret = $a->find(array( 'name' => 'A record does not exist.'));
+        $this->assertResultFail($ret);
+        ok(! $a->id);
+    }
 
     /**
      * Basic CRUD Test 
      */
-    public function testModel()
+    public function testBasicCRUDOperations()
     {
         $author = new Author;
 
         $a2 = new Author;
-        $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
+        $ret = $a2->find(array( 'name' => 'A record does not exist.'));
         $this->assertResultFail($ret);
         ok(! $a2->id);
-
-        $ret = $a2->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
-        $this->assertResultSuccess($ret);
-        ok($a2->id);
 
         $ret = $a2->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
         $this->assertResultSuccess($ret);
@@ -140,33 +176,33 @@ class AuthorModelTest extends ModelTestCase
         like('/Empty arguments/' , $ret->message );
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
-        ok( $ret );
+        $this->assertResultSuccess($ret);
         ok( $id = $ret->id );
         ok( $ret->success );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
 
         $ret = $author->load( $id );
-        ok( $ret->success );
-        is( $id , $author->id );
-        is( 'Foo', $author->name );
-        is( 'foo@google.com', $author->email );
-        is( false , $author->confirmed );
+        $this->assertResultSuccess($ret);
+        is($id , $author->id );
+        is('Foo', $author->name );
+        is('foo@google.com', $author->email );
+        is(false , $author->confirmed );
 
         $ret = $author->find(array( 'name' => 'Foo' ));
-        ok( $ret->success );
+        $this->assertResultSuccess($ret);
         is( $id , $author->id );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
         is( false , $author->confirmed );
 
         $ret = $author->update(array( 'name' => 'Bar' ));
-        ok( $ret->success );
+        $this->assertResultSuccess($ret);
 
         is( 'Bar', $author->name );
 
         $ret = $author->delete();
-        ok( $ret->success );
+        $this->assertResultSuccess($ret);
 
         $data = $author->toArray();
         ok( empty($data), 'should be empty');
@@ -180,7 +216,7 @@ class AuthorModelTest extends ModelTestCase
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         $age = $author->getAge();
         ok($age, "Got Age");
         ok($age->format('%s seconds'));
