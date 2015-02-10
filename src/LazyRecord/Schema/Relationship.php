@@ -221,6 +221,12 @@ class Relationship implements IteratorAggregate, ArrayAccess
     public static function __set_state(array $data)
     {
         $r = new self($data['data']);
+        if (isset($data['accessor'])) {
+            $r->accessor = $data['accessor'];
+        }
+        if (isset($data['where'])) {
+            $r->where = $data['where'];
+        }
         return $r;
     }
 
