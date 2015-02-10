@@ -4,7 +4,7 @@ use LazyRecord\Schema;
 
 class AddressSchema extends Schema
 {
-    function schema()
+    public function schema()
     {
         $this->column('author_id')
                 ->integer();
@@ -12,9 +12,14 @@ class AddressSchema extends Schema
         $this->column('address')
                 ->varchar(128);
 
+        // XXX: remove this
         $this->column('foo')
                 ->varchar(128);
 
+        $this->column('unused')
+            ->boolean()
+            ->defaultValue(false)
+            ;
         /**
          * $address->author 
          */
