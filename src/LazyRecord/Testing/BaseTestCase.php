@@ -99,6 +99,16 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->assertTrue($ret->error, $message ?: $ret->message);
     }
 
+    public function assertInstanceOfModel(BaseModel $record)
+    {
+        $this->assertInstanceOf('LazyRecord\BaseModel', $record);
+    }
+
+    public function assertInstanceOfCollection(BaseCollection $collection)
+    {
+        $this->assertInstanceOf('LazyRecord\BaseCollection', $collection);
+    }
+
     public function assertCollectionSize($size, BaseCollection $collection, $message = NULL)
     {
         $this->assertEquals($size, $collection->size(), $message ?: "Colletion size should match");

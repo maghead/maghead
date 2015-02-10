@@ -203,6 +203,9 @@ class AuthorModelTest extends ModelTestCase
 
         $unusedAddresses = $author->unused_addresses;
         $this->assertCollectionSize(1, $unusedAddresses);
+
+        $this->assertInstanceOf('LazyRecord\BaseModel', $unusedAddresses[0]);
+        $this->assertTrue($unusedAddresses[0]->unused);
     }
 
 
