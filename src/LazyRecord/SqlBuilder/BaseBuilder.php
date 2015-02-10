@@ -108,8 +108,8 @@ abstract class BaseBuilder
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
             case SchemaDeclare::belongs_to:
-            case SchemaDeclare::has_many:
-            case SchemaDeclare::has_one:
+            case Relationship::HAS_MANY:
+            case Relationship::HAS_ONE:
                 if( isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
                 {
                     $n = $rel['self_column'];

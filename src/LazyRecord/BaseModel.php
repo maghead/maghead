@@ -1568,12 +1568,12 @@ abstract class BaseModel implements
 
         /*
         switch($relation['type']) {
-            case SchemaDeclare::has_one:
-            case SchemaDeclare::has_many:
+            case Relationship::HAS_ONE:
+            case Relationship::HAS_MANY:
             break;
         }
         */
-        if ( SchemaDeclare::has_one === $relation['type'] ) 
+        if ( Relationship::HAS_ONE === $relation['type'] ) 
         {
             $sColumn = $relation['self_column'];
 
@@ -1591,7 +1591,7 @@ abstract class BaseModel implements
             $model->load(array( $fColumn => $sValue ));
             return $this->setInternalCache($cacheKey,$model);
         }
-        elseif( SchemaDeclare::has_many === $relation['type'] )
+        elseif( Relationship::HAS_MANY === $relation['type'] )
         {
             // TODO: migrate this code to Relationship class.
             $sColumn = $relation['self_column'];
@@ -1631,7 +1631,7 @@ abstract class BaseModel implements
             $ret = $model->load(array( $fColumn => $sValue ));
             return $this->setInternalCache($cacheKey, $model);
         }
-        elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
+        elseif( Relationship::MANY_TO_MANY === $relation['type'] ) {
             $rId = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
             $rId2 = $relation['relation_foreign'];  // get external relationId from the middle relation. (book from author_books)
 

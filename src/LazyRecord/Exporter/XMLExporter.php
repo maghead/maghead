@@ -10,6 +10,16 @@ use DOMDocument;
 use DOMElement;
 use DOMText;
 
+
+/*
+When exporting a collection, we need to collected the foreign records in a Map
+
+That would cause memory usage issue (too many model objects)
+
+We should also consider the object construction in the import process, we 
+should share the same record class in the same collection section.
+
+ */
 class XMLExporter
 {
     public function __construct()
@@ -65,7 +75,7 @@ class XMLExporter
 
         foreach ($schema->getRelations() as $rId => $r) {
 
-            if ($r['type'] === SchemaDeclare::has_many) {
+            if ($r['type'] === Relationship::HAS_MANY) {
                 $foreignRecords = $record->get($rId);
 
                 if ($foreignRecords->size() === 0) {
@@ -83,7 +93,7 @@ class XMLExporter
                     $this->appendRecord($dom, $collectionElement, $foreignRecord, NULL, false);
                 }
 
-            } elseif ($r['type'] === SchemaDeclare::has_one) {
+            } elseif ($r['type'] === Relationship::HAS_ONE) {
 
                 $foreignRecord = $record->get($rId);
                 if (!$foreignRecord) {
@@ -95,7 +105,7 @@ class XMLExporter
                 $relationElement->setAttribute('type', 'has-one');
 
                 $this->appendRecord($dom, $relationElement, $foreignRecord, NULL, false);
-            } elseif ($r['type'] === SchemaDeclare::many_to_many) {
+            } elseif ($r['type'] === Relationship::MANY_TO_MANY) {
 
                 $foreignRecords = $record->get($rId);
                 if ($foreignRecords->size() === 0) {

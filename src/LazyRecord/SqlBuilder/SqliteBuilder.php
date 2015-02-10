@@ -79,8 +79,8 @@ class SqliteBuilder extends BaseBuilder
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
             case SchemaDeclare::belongs_to:
-            case SchemaDeclare::has_many:
-            case SchemaDeclare::has_one:
+            case Relationship::HAS_MANY:
+            case Relationship::HAS_ONE:
                 if ($name != 'id' && $rel['self_column'] == $name)
                 {
                     $fSchema = new $rel['foreign_schema'];

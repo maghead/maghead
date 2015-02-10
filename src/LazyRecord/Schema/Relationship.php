@@ -3,9 +3,12 @@ namespace LazyRecord\Schema;
 use ArrayAccess;
 use IteratorAggregate;
 
-class Relationship
-    implements IteratorAggregate, ArrayAccess
+class Relationship implements IteratorAggregate, ArrayAccess
 {
+    const HAS_MANY = 1;
+    const HAS_ONE = 2;
+    const BELONGS_TO = 3;
+    const MANY_TO_MANY = 4;
 
     public $data = array();
 
@@ -61,17 +64,17 @@ class Relationship
 
     public function isManyToMany() 
     {
-        return $this->data['type'] === SchemaDeclare::many_to_many;
+        return $this->data['type'] === Relationship::MANY_TO_MANY;
     }
 
     public function isOneToMany() 
     {
-        return $this->data['type'] === SchemaDeclare::has_many;
+        return $this->data['type'] === Relationship::HAS_MANY;
     }
 
     public function isHasMany() 
     {
-        return $this->data['type'] === SchemaDeclare::has_many;
+        return $this->data['type'] === Relationship::HAS_MANY;
     }
 
 
@@ -198,7 +201,6 @@ class Relationship
     {
         return new self($data['data']);
     }
-
 }
 
 

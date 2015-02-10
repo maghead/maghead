@@ -6,7 +6,7 @@ class RelationshipTest extends PHPUnit_Framework_TestCase
     public function testRelationshipOperation()
     {
         $r = new LazyRecord\Schema\Relationship(array(
-                'type' => SchemaDeclare::has_many,
+                'type' => Relationship::HAS_MANY,
                 'self_column' => "id",
                 'self_schema' => "TestApp\Model\AuthorSchema",
                 'foreign_column' => "author_id",
@@ -14,7 +14,7 @@ class RelationshipTest extends PHPUnit_Framework_TestCase
         ));
         ok($r);
         ok(isset($r['type']));
-        is( SchemaDeclare::has_many , $r['type'] );
+        is( Relationship::HAS_MANY , $r['type'] );
 
         $schema = $r->newForeignSchema();
         ok($schema);
