@@ -142,9 +142,9 @@ class Relationship implements IteratorAggregate, ArrayAccess
      * @param string $column
      * @param string $ordering
      */
-    public function order($column, $ordering)
+    public function orderBy($column, $ordering)
     {
-        if ( ! isset($this->data['order']) ) {
+        if (!isset($this->data['order']) ) {
             $this->data['order'] = array();
         }
         $this->data['order'][] = array($column ,$ordering);
@@ -201,6 +201,20 @@ class Relationship implements IteratorAggregate, ArrayAccess
     {
         return new self($data['data']);
     }
+
+
+    public function __get($key)
+    {
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
+        }
+    }
+
+    public function __set($key, $val)
+    {
+        $this->data[$key] = $val;
+    }
+
 }
 
 
