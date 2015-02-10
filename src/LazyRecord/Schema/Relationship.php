@@ -2,6 +2,7 @@
 namespace LazyRecord\Schema;
 use ArrayAccess;
 use IteratorAggregate;
+use SQLBuilder\Universal\Syntax\Conditions;
 
 class Relationship implements IteratorAggregate, ArrayAccess
 {
@@ -11,6 +12,8 @@ class Relationship implements IteratorAggregate, ArrayAccess
     const MANY_TO_MANY = 4;
 
     public $data = array();
+
+    public $where;
 
     public function __construct($data = array())
     {
@@ -87,8 +90,8 @@ class Relationship implements IteratorAggregate, ArrayAccess
 
     public function applyWhere(& $collection) 
     {
-        if ( isset($this->data['where']) ) {
-            return $collection->where($this->data['where']);
+        if ($this->where) {
+            $collection->setWhere($this->where);
         }
     }
 
@@ -152,16 +155,24 @@ class Relationship implements IteratorAggregate, ArrayAccess
     }
 
 
-    /**
-     * Save where condition arguments for collection selection.
-     *
-     * @param array $args
-     */
-    public function where($args)
-    {
-        $this->data['where'] = $args;
-        return $this;
+    public function where($expr = NULL , array $args = array()) {
+        if (!$this->where) {
+            $this->where = new Conditions;
+        }
+        if ($expr) {
+            if (is_string($expr)) {
+                $this->where->appendExpr($expr, $args);
+            } else if (is_array($expr)) {
+                foreach($expr as $key => $val) {
+                    $this->where->equal($key, $val);
+                }
+            } else {
+                throw new InvalidArgumentException("Unsupported argument type of 'where' method.");
+            }
+        }
+        return $this->where;
     }
+
 
 
 
