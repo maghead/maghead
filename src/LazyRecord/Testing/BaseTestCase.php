@@ -7,6 +7,7 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\ClassUtils;
+use LazyRecord\BaseCollection;
 use LazyRecord\Result;
 use PHPUnit_Framework_TestCase;
 use CLIFramework\Logger;
@@ -96,6 +97,17 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     public function assertResultFail(Result $ret, $message = null) 
     {
         $this->assertTrue($ret->error, $message ?: $ret->message);
+    }
+
+    public function assertCollectionSize($size, BaseCollection $collection, $message = NULL)
+    {
+        $this->assertEquals($size, $collection->size(), $message ?: "Colletion size should match");
+    }
+
+    public function assertRecordLoaded(BaseModel $record, $message = NULL) 
+    {
+        $data = $record->getStashedData();
+        $this->assertNotEmpty($data, $message ?: 'Record loaded');
     }
 
     public function assertResultSuccess(Result $ret, $message = null) 

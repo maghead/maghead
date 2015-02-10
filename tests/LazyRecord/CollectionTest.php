@@ -61,7 +61,7 @@ class CollectionTest extends ModelTestCase
     public function testCollectionGroupBy()
     {
         $name = new Name;
-        for($i = 0 ; $i < 5 ; $i++ ) {
+        for($i = 0 ; $i < 5 ; $i++) {
             $ret = $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ));
             $this->assertResultSuccess($ret);
         }
@@ -71,9 +71,11 @@ class CollectionTest extends ModelTestCase
             ->equal('name','Foo');
         $names->groupBy(['name','address']);
 
-        ok($items = $names->items() , 'Test name collection with name,address condition' );
-        ok($size = $names->size());
-        is(1 , $size);
+        $this->assertCollectionSize(1, $names);
+        $items = $names->items();
+
+        $this->assertNotEmpty($items);
+
         is('Foo', $items[0]->name);
     }
 
