@@ -842,14 +842,11 @@ class BaseCollection
             $joinExpr = $query->join($table, $type); // it returns JoinExpression object
 
             // here the relationship is defined, join the it.
-            if( $relationId ) {
+            if ($relationId) {
                 $relation = $this->getSchema()->getRelation( $relationId );
                 $joinExpr->on()
                     ->equal( $this->getAlias() . '.' . $relation['self_column'] , 
                     array( $alias . '.' . $relation['foreign_column'] ));
-
-                $this->_joinedRelationships[ $relationId ] = $alias;
-
             } else {
                 // find the related relatinship from defined relatinpships
                 $relations = $this->getSchema()->relations;
@@ -859,12 +856,10 @@ class BaseCollection
                     }
 
                     $fschema = new $relation['foreign_schema'];
-                    if ( is_a($target, $fschema->getModelClass() ) ) {
+                    if (is_a($target, $fschema->getModelClass() ) ) {
                         $joinExpr->on()
                             ->equal( $this->getAlias() . '.' . $relation['self_column'] , 
                             array( $alias. '.' . $relation['foreign_column'] ));
-
-                        $this->_joinedRelationships[ $relationId ] = $alias;
                         break;
                     }
                 }

@@ -3,6 +3,7 @@ namespace LazyRecord\Exporter;
 use LazyRecord\BaseModel;
 use LazyRecord\BaseCollection;
 use LazyRecord\Schema\SchemaBase;
+use LazyRecord\Schema\Relationship;
 use LazyRecord\Schema\RuntimeSchema;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\SchemaDeclare;

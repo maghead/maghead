@@ -4,6 +4,7 @@ use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\QueryBuilder;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
+use LazyRecord\Schema\Relationship;
 
 /**
  * Schema SQL builder
@@ -78,7 +79,7 @@ class SqliteBuilder extends BaseBuilder
          */
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
-            case SchemaDeclare::belongs_to:
+            case Relationship::BELONGS_TO:
             case Relationship::HAS_MANY:
             case Relationship::HAS_ONE:
                 if ($name != 'id' && $rel['self_column'] == $name)
