@@ -120,7 +120,6 @@ class AuthorModelTest extends ModelTestCase
     public function testModel()
     {
         $author = new Author;
-        ok($author);
 
         $a2 = new Author;
         $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
@@ -191,6 +190,19 @@ class AuthorModelTest extends ModelTestCase
     public function testRelationshipWithPredefinedConditions()
     {
         $author = new Author;
+        $ret = $author->create(array( 
+            'name' => 'Address Testing',
+            'email' => 'tom@address',
+            'identity' => 'tom-has-two-addresses',
+        ));
+        $author->addresses[] = array( 'address' => 'Using address', 'unused' => false );
+        $author->addresses[] = array( 'address' => 'Unused address', 'unused' => true );
+
+        $addresses = $author->addresses;
+        $this->assertCollectionSize(2, $addresses);
+
+        $unusedAddresses = $author->unused_addresses;
+        $this->assertCollectionSize(1, $unusedAddresses);
     }
 
 
