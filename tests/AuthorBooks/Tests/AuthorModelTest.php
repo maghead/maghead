@@ -187,6 +187,9 @@ class AuthorModelTest extends ModelTestCase
     }
 
 
+    /**
+     * @basedata false
+     */
     public function testRelationshipWithPredefinedConditions()
     {
         $author = new Author;
