@@ -40,7 +40,7 @@ class CommandsTest extends PHPUnit_Framework_TestCase
      */
     function testListSchemaCommand()
     {
-        $this->expectOutputRegex('/TestApp\\\\Model\\\\AuthorSchema/');
+        $this->expectOutputRegex('/AuthorBooks\\\\Model\\\\AuthorSchema/');
         $app = new LazyRecord\Console;
         $app->run(array('lazy','list-schema'));
     }

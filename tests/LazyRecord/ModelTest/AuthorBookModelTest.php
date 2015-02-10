@@ -8,9 +8,9 @@ class AuthorBookModelTest extends ModelTestCase
     public function getModels()
     {
         return array( 
-            'TestApp\Model\\AuthorSchema', 
-            'TestApp\Model\\AuthorBookSchema',
-            'TestApp\Model\\BookSchema',
+            'AuthorBooks\Model\AuthorSchema', 
+            'AuthorBooks\Model\AuthorBookSchema',
+            'AuthorBooks\Model\BookSchema',
         );
     }
 
@@ -20,7 +20,7 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testBooleanCondition() 
     {
-        $a = new \TestApp\Model\Author;
+        $a = new \AuthorBooks\Model\Author;
         $ret = $a->create(array(
             'name' => 'a',
             'email' => 'a@a',
@@ -37,14 +37,14 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new \AuthorBooks\Model\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', false);
         $ret = $authors->fetch();
         ok($ret);
         is(1,$authors->size());
 
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new \AuthorBooks\Model\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', true);
         $ret = $authors->fetch();
@@ -60,7 +60,7 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testSchemaInterface()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');
         foreach( $author->getColumnNames() as $n ) {
             ok( in_array( $n , $names ));
@@ -76,7 +76,7 @@ class AuthorBookModelTest extends ModelTestCase
         ok( 'authors' , $author->getTable() );
         ok( 'Author' , $author->getLabel() );
 
-        $this->assertInstanceOf('TestApp\Model\AuthorCollection' , $author->newCollection());
+        $this->assertInstanceOf('AuthorBooks\Model\AuthorCollection' , $author->newCollection());
     }
 
     /**
@@ -84,10 +84,10 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testCollection()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $collection = $author->asCollection();
         ok($collection);
-        isa_ok('\TestApp\Model\AuthorCollection',$collection);
+        isa_ok('\AuthorBooks\Model\AuthorCollection',$collection);
     }
 
 
@@ -96,7 +96,7 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testVirtualColumn() 
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $ret = $author->create(array( 
             'name' => 'Pedro' , 
             'email' => 'pedro@gmail.com' , 
@@ -115,7 +115,7 @@ class AuthorBookModelTest extends ModelTestCase
 
         ok( $display = $author->display( 'v' ) );
 
-        $authors = new TestApp\Model\AuthorCollection;
+        $authors = new AuthorBooks\Model\AuthorCollection;
         ok($authors);
     }
 
@@ -124,7 +124,7 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testSchema()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         ok( $author->getSchema() );
 
         $columnMap = $author->getSchema()->getColumns();
@@ -147,10 +147,10 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testModel()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         ok($author);
 
-        $a2 = new \TestApp\Model\Author;
+        $a2 = new \AuthorBooks\Model\Author;
         $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
         ok( ! $ret->success );
         ok( ! $a2->id );
@@ -208,7 +208,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testUpdateRaw() 
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -221,7 +221,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testUpdateNull()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -246,7 +246,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testJoin()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -298,7 +298,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testManyToManyRelationCreate()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( 
             $book = $author->books->create( array( 
@@ -342,7 +342,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testManyToManyRelationFetch()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
         // XXX: in different database engine, it's different.
@@ -357,7 +357,7 @@ class AuthorBookModelTest extends ModelTestCase
         $ret = $book->delete();
         ok( $ret->success );
 
-        $ab = new \TestApp\Model\AuthorBook;
+        $ab = new \AuthorBooks\Model\AuthorBook;
         $book = new \AuthorBooks\Model\Book;
 
         // should not include this

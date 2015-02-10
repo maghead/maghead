@@ -1,7 +1,7 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
 use AuthorBooks\Model\Book ;
-use TestApp\Model\Author;
+use AuthorBooks\Model\Author;
 use LazyRecord\Exporter\XMLExporter;
 
 class XMLExporterTest extends ModelTestCase

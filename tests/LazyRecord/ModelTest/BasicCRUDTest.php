@@ -15,10 +15,10 @@ class BasicCRUDTest extends ModelTestCase
     public function getModels()
     {
         return array( 
-            'TestApp\Model\\AuthorSchema',
-            'TestApp\Model\\BookSchema',
-            'TestApp\Model\\AuthorBookSchema',
-            'TestApp\Model\\AddressSchema',
+            'AuthorBooks\Model\AuthorSchema',
+            'AuthorBooks\Model\BookSchema',
+            'AuthorBooks\Model\AuthorBookSchema',
+            'AuthorBooks\Model\AddressSchema',
         );
     }
 
@@ -138,7 +138,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testModelUpdateRaw() 
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -152,7 +152,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testManyToManyRelationRecordCreate()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( 
             $book = $author->books->create( array( 
@@ -198,7 +198,7 @@ class BasicCRUDTest extends ModelTestCase
      */
     public function testPrimaryKeyIdIsInteger()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
 
@@ -212,7 +212,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testManyToManyRelationFetchRecord()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
         $book = $author->books->create(array( 'title' => 'Book Test' ));
@@ -222,7 +222,7 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $book->delete();
         ok( $ret->success );
 
-        $ab = new \TestApp\Model\AuthorBook;
+        $ab = new \AuthorBooks\Model\AuthorBook;
         $book = new \AuthorBooks\Model\Book ;
 
         // should not include this
@@ -269,7 +269,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testHasManyRelationCreate2()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
@@ -294,7 +294,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testHasManyRelationCreate()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
@@ -315,7 +315,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testHasManyRelationFetch()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         ok( $author );
 
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));

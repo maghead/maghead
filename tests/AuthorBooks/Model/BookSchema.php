@@ -43,16 +43,16 @@ class BookSchema extends Schema
          * $book->publisher->name;
          *
          **/
-        $this->belongsTo('publisher','AuthorBooks\\Model\\PublisherSchema', 'id', 'publisher_id');
+        $this->belongsTo('publisher','AuthorBooks\Model\PublisherSchema', 'id', 'publisher_id');
 
         /**
          * accessor , mapping self.id => BookAuthors.book_id
          *
          * link book => author_books
          */
-        $this->many('book_authors', 'TestApp\\Model\\AuthorBookSchema', 'book_id', 'id');
+        $this->many('book_authors', 'AuthorBooks\Model\AuthorBookSchema', 'book_id', 'id');
 
-        $this->useTrait('\\TestApp\\ModelTrait\\EBookTrait');
+        $this->useTrait('\TestApp\ModelTrait\EBookTrait');
 
         /**
          * get BookAuthor.author 

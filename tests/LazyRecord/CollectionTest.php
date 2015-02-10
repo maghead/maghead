@@ -9,7 +9,7 @@ use LazyRecord\Testing\ModelTestCase;
 class AuthorFactory {
 
     static function create($name) {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array(
             'name' => $name,
             'email' => 'temp@temp' . rand(),
@@ -31,7 +31,7 @@ class CollectionTest extends ModelTestCase
             'AuthorBooks\Model\AuthorSchema', 
             'AuthorBooks\Model\BookSchema',
             'AuthorBooks\Model\AuthorBookSchema',
-            'AuthorBooks\Model\NameSchema',
+            'TestApp\Model\NameSchema',
             'AuthorBooks\Model\AddressSchema',
         );
     }
@@ -140,7 +140,7 @@ class CollectionTest extends ModelTestCase
 
     public function testBooleanCondition() 
     {
-        $a = new \TestApp\Model\Author;
+        $a = new \AuthorBooks\Model\Author;
         $ret = $a->create(array(
             'name' => 'a',
             'email' => 'a@a',
@@ -157,7 +157,7 @@ class CollectionTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new \AuthorBooks\Model\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', false);
         $ret = $authors->fetch();
@@ -165,7 +165,7 @@ class CollectionTest extends ModelTestCase
         is(1, $authors->size());
 
 
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new \AuthorBooks\Model\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', true);
         $ret = $authors->fetch();
@@ -175,7 +175,7 @@ class CollectionTest extends ModelTestCase
 
     public function testCollection()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         ok($author);
         foreach( range(1,3) as $i ) {
             $ret = $author->create(array(
@@ -197,13 +197,13 @@ class CollectionTest extends ModelTestCase
             $this->resultOK( true, $ret );
         }
 
-        $authors2 = new \TestApp\Model\AuthorCollection;
+        $authors2 = new \AuthorBooks\Model\AuthorCollection;
         $authors2->where()
                 ->like('name','Foo');
         $count = $authors2->queryCount();
         is(20 , $count);
 
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new \AuthorBooks\Model\AuthorCollection;
         $authors->where()->like('name','Foo');
 
         $items = $authors->items();
@@ -212,7 +212,7 @@ class CollectionTest extends ModelTestCase
         ok(is_array($items));
         foreach($items as $item) {
             ok( $item->id );
-            $this->assertInstanceOf('TestApp\Model\Author', $item);
+            $this->assertInstanceOf('AuthorBooks\Model\Author', $item);
 
             $ret = $item->delete();
             ok($ret->success);
@@ -221,7 +221,7 @@ class CollectionTest extends ModelTestCase
         is( 0, $size );
 
         {
-            $authors = new \TestApp\Model\AuthorCollection;
+            $authors = new \AuthorBooks\Model\AuthorCollection;
             foreach( $authors as $a ) {
                 $a->delete();
             }
@@ -274,7 +274,7 @@ class CollectionTest extends ModelTestCase
 
     public function testJoin()
     {
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new \AuthorBooks\Model\AuthorCollection;
         ok($authors);
         $authors->join(new \AuthorBooks\Model\Address);
         $authors->fetch();
@@ -289,7 +289,7 @@ class CollectionTest extends ModelTestCase
         $author->addresses[] = array( 'address' => 'Address I' );
         $author->addresses[] = array( 'address' => 'Address II' );
 
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new \AuthorBooks\Model\AuthorCollection;
         ok($authors);
         $authors->join( new \AuthorBooks\Model\Address ,'LEFT','a', 'addresses');
         $authors->fetch();
@@ -308,7 +308,7 @@ class CollectionTest extends ModelTestCase
      * @rebuild false
      */
     public function testJoinWithAliasAndWithoutRelationId() {
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new \AuthorBooks\Model\AuthorCollection;
         ok($authors);
         $authors->join(new \AuthorBooks\Model\Address ,'LEFT','a');
         $authors->fetch();
@@ -321,7 +321,7 @@ class CollectionTest extends ModelTestCase
      */
     public function testMeta()
     {
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new \AuthorBooks\Model\AuthorCollection;
         ok($authors::schema_proxy_class);
         ok($authors::model_class);
     }
@@ -362,7 +362,7 @@ class CollectionTest extends ModelTestCase
 
     public function testCollectionPagerAndSelection()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         foreach( range(1,10) as $i ) {
             $ret = $author->create(array(
                 'name' => 'Foo-' . $i,
@@ -375,7 +375,7 @@ class CollectionTest extends ModelTestCase
         }
 
 
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new \AuthorBooks\Model\AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed' , true );
 

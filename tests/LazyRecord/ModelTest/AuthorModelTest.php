@@ -1,7 +1,7 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
-use TestApp\Model\Author;
-use TestApp\Model\AuthorCollection;
+use AuthorBooks\Model\Author;
+use AuthorBooks\Model\AuthorCollection;
 
 class AuthorModelTest extends ModelTestCase
 {
@@ -9,7 +9,7 @@ class AuthorModelTest extends ModelTestCase
 
     public function getModels()
     {
-        return array('TestApp\Model\\AuthorSchema');
+        return array('AuthorBooks\Model\AuthorSchema');
     }
 
     /**
@@ -50,7 +50,7 @@ class AuthorModelTest extends ModelTestCase
         count_ok( 8 , $columns );
         ok( 'authors' , $author->getTable() );
         ok( 'Author' , $author->getLabel() );
-        $this->assertInstanceOf('TestApp\Model\AuthorCollection', $author->newCollection() );
+        $this->assertInstanceOf('AuthorBooks\Model\AuthorCollection', $author->newCollection() );
     }
 
     public function testBooleanCondition() 
@@ -109,7 +109,7 @@ class AuthorModelTest extends ModelTestCase
 
         ok( $display = $author->display( 'v' ) );
 
-        $authors = new TestApp\Model\AuthorCollection;
+        $authors = new AuthorBooks\Model\AuthorCollection;
         ok( $authors );
     }
 
