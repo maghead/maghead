@@ -298,7 +298,7 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
      *
      * @param string $class mixin class name
      */
-    public function mixin($class, $options = array())
+    public function mixin($class, array $options = array())
     {
         if (! class_exists($class,true) ) {
             $class = 'LazyRecord\\Schema\\Mixin\\' . $class;
