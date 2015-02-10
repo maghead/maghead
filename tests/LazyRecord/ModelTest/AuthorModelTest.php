@@ -1,5 +1,7 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
+use TestApp\Model\Author;
+use TestApp\Model\AuthorCollection;
 
 class AuthorModelTest extends ModelTestCase
 {
@@ -15,7 +17,7 @@ class AuthorModelTest extends ModelTestCase
      */
     public function testCollection()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new Author;
         $this->assertResultSuccess($author->create(array( 
             'name' => 'FooBar',
             'email' => 'a@a',
@@ -33,7 +35,7 @@ class AuthorModelTest extends ModelTestCase
      */
     public function testSchemaInterface()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new Author;
 
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');
         foreach( $author->getColumnNames() as $n ) {
@@ -48,12 +50,12 @@ class AuthorModelTest extends ModelTestCase
         count_ok( 8 , $columns );
         ok( 'authors' , $author->getTable() );
         ok( 'Author' , $author->getLabel() );
-        isa_ok(  '\TestApp\Model\AuthorCollection' , $author->newCollection() );
+        $this->assertInstanceOf('TestApp\Model\AuthorCollection', $author->newCollection() );
     }
 
     public function testBooleanCondition() 
     {
-        $a = new \TestApp\Model\Author;
+        $a = new Author;
         $ret = $a->create(array(
             'name' => 'a',
             'email' => 'a@a',
@@ -70,14 +72,14 @@ class AuthorModelTest extends ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', false);
         $ret = $authors->fetch();
         ok($ret);
         is(1,$authors->size());
 
-        $authors = new \TestApp\Model\AuthorCollection;
+        $authors = new AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', true);
         $ret = $authors->fetch();
@@ -89,7 +91,7 @@ class AuthorModelTest extends ModelTestCase
 
     public function testVirtualColumn() 
     {
-        $author = new \TestApp\Model\Author;
+        $author = new Author;
         $ret = $author->create(array( 
             'name' => 'Pedro' , 
             'email' => 'pedro@gmail.com' , 
@@ -117,10 +119,10 @@ class AuthorModelTest extends ModelTestCase
      */
     public function testModel()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new Author;
         ok($author);
 
-        $a2 = new \TestApp\Model\Author;
+        $a2 = new Author;
         $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
         $this->assertResultFail($ret);
         ok(! $a2->id);
@@ -173,7 +175,7 @@ class AuthorModelTest extends ModelTestCase
 
     public function testMixinMethods() 
     {
-        $author = new \TestApp\Model\Author;
+        $author = new Author;
         $ret = $author->create(array( 
             'name' => 'testMixinMethods',
             'email' => 'zz3@zz3',
@@ -185,9 +187,17 @@ class AuthorModelTest extends ModelTestCase
         ok($age->format('%s seconds'));
     }
 
+
+    public function testRelationshipWithPredefinedConditions()
+    {
+        $author = new Author;
+    }
+
+
+
     public function testUpdateNull()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',

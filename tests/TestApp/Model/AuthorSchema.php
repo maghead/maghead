@@ -52,6 +52,10 @@ class AuthorSchema extends Schema
          */
         $this->many( 'addresses', '\TestApp\Model\AddressSchema', 'author_id', 'id');
 
+        $this->many( 'unused_addresses', '\TestApp\Model\AddressSchema', 'author_id', 'id')
+            ->where()
+                ->equal('unused', true);
+
         $this->many( 'author_books', '\TestApp\Model\AuthorBookSchema', 'author_id', 'id');
 
         $this->manyToMany( 'books', 'author_books' , 'book' );

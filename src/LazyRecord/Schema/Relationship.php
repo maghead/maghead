@@ -57,9 +57,6 @@ class Relationship implements IteratorAggregate, ArrayAccess
         return $collection;
     }
 
-
-
-
     public function isType($type) 
     {
         return $this->data['type'] === $type;
@@ -208,7 +205,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
     /**
      * To support var_export
      */
-    public static function __set_state($data)
+    public static function __set_state(array $data)
     {
         return new self($data['data']);
     }

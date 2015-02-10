@@ -12,10 +12,6 @@ class AddressSchema extends Schema
         $this->column('address')
                 ->varchar(128);
 
-        // XXX: remove this
-        $this->column('foo')
-                ->varchar(128);
-
         $this->column('unused')
             ->boolean()
             ->defaultValue(false)
