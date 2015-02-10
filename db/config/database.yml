@@ -7,7 +7,7 @@ schema:
 # loader: custom_schema_loader.php
 # Customize your schema lookup paths
   paths:
-    - tests/schema
+    - tests
 #  cache:
 #    class: LazyRecord\Cache\Memcache
 #    servers:

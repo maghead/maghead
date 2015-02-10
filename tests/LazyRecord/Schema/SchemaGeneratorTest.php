@@ -18,7 +18,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
             array ( 0 => 'tests/bootstrap.php',),
             'schema' => array (
                 'auto_id' => 1,
-                'paths' => array ( 0 => 'tests/schema',),
+                'paths' => array ( 0 => 'tests/TestApp',),
             ),
             'data_sources' =>
             array (

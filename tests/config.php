@@ -2,7 +2,7 @@
 return array( 
   'schema' => array( 
       'paths' => array( 
-          'tests/schema',
+          'tests',
         ),
     ),
   'data_sources' => array( 

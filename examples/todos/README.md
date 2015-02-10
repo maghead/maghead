@@ -84,6 +84,6 @@ Please checkout
 2. documentation in `doc/`.
 3. model test code in `tests/LazyRecord/ModelTest/`.
 4. collection test code in `tests/LazyRecord/ColllectionTest`.
-5. model schema files in `tests/schema`.
+5. model schema files in `tests`.
 6. #php-tw IRC channel.
 

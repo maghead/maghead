@@ -7,7 +7,6 @@ error_reporting( E_ALL );
 if (extension_loaded('xhprof') ) {
     ini_set('xhprof.output_dir','/tmp');
 }
-
 $loader->add(null,'tests');
-$loader->add(null,'tests/schema');
+$loader->add(null,'tests');
 $loader->add(null,'tests/src');

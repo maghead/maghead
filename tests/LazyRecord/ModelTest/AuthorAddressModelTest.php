@@ -24,30 +24,33 @@ class AuthorAddressModelTest extends ModelTestCase
         $address = new \TestApp\Model\Address;
         ok( $address );
 
-        $address->create(array( 
+        $ret = $address->create(array( 
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei',
         ));
+        $this->assertResultSuccess($ret);
+
         ok( $address->author );
         ok( $address->author->id );
         is( $author->id, $address->author->id );
 
-        $address->create(array( 
+        $ret = $address->create(array( 
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei II',
         ));
+        $this->assertResultSuccess($ret);
 
         // xxx: provide getAddresses() method generator
         $addresses = $author->addresses;
-        ok( $addresses );
+        ok($addresses);
 
         $items = $addresses->items();
-        ok( $items );
+        ok($items);
 
-        ok( $addresses[0] );
-        ok( $addresses[1] );
-        ok( ! isset($addresses[2]) );
-        ok( ! @$addresses[2] );
+        ok($addresses[0]);
+        ok($addresses[1]);
+        ok(! isset($addresses[2]));
+        ok(! @$addresses[2]);
 
         ok( $addresses[0]->id );
         ok( $addresses[1]->id );
@@ -55,10 +58,9 @@ class AuthorAddressModelTest extends ModelTestCase
         ok( $size = $addresses->size() );
         is( 2 , $size );
 
-        foreach( $author->addresses as $ad ) {
+        foreach($author->addresses as $ad) {
             ok( $ad->delete()->success );
         }
-
         $author->delete();
     }
 

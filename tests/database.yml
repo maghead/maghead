@@ -1,7 +1,7 @@
 ---
 schema:
   paths:
-    - tests/schema
+    - tests
 data_sources:
   default:
     dsn: 'sqlite::memory:'
