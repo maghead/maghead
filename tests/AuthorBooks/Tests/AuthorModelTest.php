@@ -109,8 +109,8 @@ class AuthorModelTest extends ModelTestCase
 
         ok( $display = $author->display( 'v' ) );
 
-        $authors = new AuthorBooks\Model\AuthorCollection;
-        ok( $authors );
+        $authors = new AuthorCollection;
+        ok($authors);
     }
 
 

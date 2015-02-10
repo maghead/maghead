@@ -1,5 +1,6 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
+use AuthorBooks\Model\Author;
 
 class AuthorBookModelTest extends ModelTestCase
 {
@@ -20,7 +21,7 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testBooleanCondition() 
     {
-        $a = new \AuthorBooks\Model\Author;
+        $a = new Author;
         $ret = $a->create(array(
             'name' => 'a',
             'email' => 'a@a',
@@ -60,7 +61,7 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testSchemaInterface()
     {
-        $author = new \AuthorBooks\Model\Author;
+        $author = new Author;
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');
         foreach( $author->getColumnNames() as $n ) {
             ok( in_array( $n , $names ));
@@ -84,7 +85,7 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testCollection()
     {
-        $author = new \AuthorBooks\Model\Author;
+        $author = new Author;
         $collection = $author->asCollection();
         ok($collection);
         isa_ok('\AuthorBooks\Model\AuthorCollection',$collection);
@@ -96,7 +97,7 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testVirtualColumn() 
     {
-        $author = new \AuthorBooks\Model\Author;
+        $author = new Author;
         $ret = $author->create(array( 
             'name' => 'Pedro' , 
             'email' => 'pedro@gmail.com' , 
@@ -124,7 +125,7 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testSchema()
     {
-        $author = new \AuthorBooks\Model\Author;
+        $author = new Author;
         ok( $author->getSchema() );
 
         $columnMap = $author->getSchema()->getColumns();
@@ -147,10 +148,10 @@ class AuthorBookModelTest extends ModelTestCase
      */
     public function testModel()
     {
-        $author = new \AuthorBooks\Model\Author;
+        $author = new Author;
         ok($author);
 
-        $a2 = new \AuthorBooks\Model\Author;
+        $a2 = new Author;
         $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
         ok( ! $ret->success );
         ok( ! $a2->id );
@@ -208,7 +209,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testUpdateRaw() 
     {
-        $author = new \AuthorBooks\Model\Author;
+        $author = new Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -221,7 +222,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testUpdateNull()
     {
-        $author = new \AuthorBooks\Model\Author;
+        $author = new Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -246,7 +247,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testJoin()
     {
-        $author = new \AuthorBooks\Model\Author;
+        $author = new Author;
         $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -298,7 +299,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testManyToManyRelationCreate()
     {
-        $author = new \AuthorBooks\Model\Author;
+        $author = new Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( 
             $book = $author->books->create( array( 
@@ -342,7 +343,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testManyToManyRelationFetch()
     {
-        $author = new \AuthorBooks\Model\Author;
+        $author = new Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
         // XXX: in different database engine, it's different.
