@@ -3,6 +3,7 @@ namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
+use LazyRecord\Schema\Relationship;
 
 class MysqlBuilder extends BaseBuilder
 {
@@ -86,7 +87,7 @@ class MysqlBuilder extends BaseBuilder
         */
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
-            case SchemaDeclare::belongs_to:
+            case Relationship::BELONGS_TO:
             case Relationship::HAS_MANY:
             case Relationship::HAS_ONE:
                 if( $name != 'id' && $rel['self_column'] == $name ) 

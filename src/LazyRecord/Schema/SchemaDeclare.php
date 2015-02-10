@@ -421,13 +421,13 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
      */
     public function belongsTo($accessor, $foreignClass, $foreignColumn = null,  $selfColumn = 'id')
     {
-        if( null === $foreignColumn ) {
+        if (null === $foreignColumn) {
             $s = new $foreignClass;
             $foreignColumn = $s->primaryKey;
         }
 
         return $this->relations[ $accessor ] = new Relationship(array(
-            'type' => self::belongs_to,
+            'type' => Relationship::BELONGS_TO,
             'self_schema' => get_class($this),
             'self_column' => $selfColumn,
             'foreign_schema' => $foreignClass,
@@ -448,9 +448,9 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
     {
         // foreignColumn is default to foreignClass.primary key
         return $this->relations[ $accessor ] = new Relationship(array(
-            'type'           => self::has_one,
-            'self_column'  => $selfColumn,
-            'self_schema' => $this->getSchemaProxyClass(),
+            'type'           => Relationship::HAS_ONE,
+            'self_column'    => $selfColumn,
+            'self_schema'    => $this->getSchemaProxyClass(),
             'foreign_column' => $foreignColumn,
             'foreign_schema' => $foreignClass,
         ));
@@ -476,9 +476,9 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
     public function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
         return $this->relations[ $accessor ] = new Relationship(array(
-            'type' => self::has_many,
-            'self_column' => $selfColumn,
-            'self_schema' => get_class($this),
+            'type'           => Relationship::HAS_MANY,
+            'self_column'    => $selfColumn,
+            'self_schema'    => get_class($this),
             'foreign_column' => $foreignColumn,
             'foreign_schema' => $foreignClass,
         ));
@@ -492,9 +492,9 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
      */
     public function manyToMany($accessor, $relationId, $foreignRelationId )
     {
-        if( $r = $this->getRelation($relationId) ) {
+        if ($r = $this->getRelation($relationId)) {
             return $this->relations[ $accessor ] = new Relationship(array(
-                'type'     => self::many_to_many,
+                'type'              => Relationship::MANY_TO_MANY,
                 'relation_junction' => $relationId,
                 'relation_foreign'  => $foreignRelationId,
             ));

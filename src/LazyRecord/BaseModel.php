@@ -29,6 +29,7 @@ use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Schema\RuntimeColumn;
+use LazyRecord\Schema\Relationship;
 use LazyRecord\ConfigLoader;
 use LazyRecord\CurrentUserInterface;
 
@@ -1616,7 +1617,7 @@ abstract class BaseModel implements
             return $this->setInternalCache($cacheKey,$collection);
         }
         // belongs to one record
-        elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
+        elseif (Relationship::BELONGS_TO === $relation['type'] ) {
             $sColumn = $relation['self_column'];
             $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];

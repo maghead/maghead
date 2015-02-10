@@ -9,6 +9,7 @@ use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
+use LazyRecord\Schema\Relationship;
 use LazyRecord\BaseModel;
 
 abstract class BaseBuilder
@@ -82,7 +83,7 @@ abstract class BaseBuilder
     public function buildIndex(SchemaInterface $schema) 
     {
         $sqls = array();
-        foreach( $schema->columns as $name => $column ) {
+        foreach ($schema->columns as $name => $column ) {
             if ( $column->index ) {
                 $indexName = is_string($column->index) ? $column->index 
                     : "idx_" . $schema->getTable() . "_" . $name;
@@ -105,12 +106,12 @@ abstract class BaseBuilder
             return $sqls;
         }
 
-        foreach( $schema->relations as $rel ) {
-            switch( $rel['type'] ) {
-            case SchemaDeclare::belongs_to:
+        foreach ($schema->relations as $rel) {
+            switch ( $rel['type'] ) {
+            case Relationship::BELONGS_TO:
             case Relationship::HAS_MANY:
             case Relationship::HAS_ONE:
-                if( isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
+                if (isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
                 {
                     $n = $rel['self_column'];
                     $column = $schema->getColumn($n);
