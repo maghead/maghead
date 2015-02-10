@@ -5,6 +5,9 @@ use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorCollection;
 use LazyRecord\Testing\ModelTestCase;
+use TestApp\Model\NameSchema;
+use TestApp\Model\Name;
+use TestApp\Model\NameCollection;
 
 class CollectionTest extends ModelTestCase
 {
@@ -15,40 +18,57 @@ class CollectionTest extends ModelTestCase
         return ['TestApp\Model\NameSchema'];
     }
 
-    public function testBooleanType()
+    public function testCreateRecordWithBooleanFalse()
     {
-        $name = new \TestApp\Model\Name;
+        $name = new Name;
         $ret = $name->create(array( 
             'name' => 'Foo',
             'confirmed' => false,
             'country' => 'Tokyo',
         ));
-        ok($ret->success , $ret);
-        is(false, $name->confirmed);
-        
+        $this->assertResultSuccess($ret);
+        $this->assertFalse($name->confirmed);
+    }
+
+    public function testBooleanTypeCRUD()
+    {
+        $name = new Name;
+        $ret = $name->create(array( 
+            'name' => 'Foo',
+            'confirmed' => false,
+            'country' => 'Tokyo',
+        ));
+        $this->assertResultSuccess($ret);
+        $this->assertFalse($name->confirmed);
 
         $ret = $name->load( array( 'name' => 'Foo' ));
-        ok( $ret->success , $ret );
-        is( false, $name->confirmed );
+        $this->assertResultSuccess($ret);
+        $this->assertFalse($name->confirmed);
 
-        $name->update(array( 'confirmed' => true ) );
-        is( true, $name->confirmed );
+        $ret = $name->update(array( 'confirmed' => true ) );
+        $this->assertResultSuccess($ret);
+        $this->assertTrue($name->confirmed);
 
-        $name->update(array( 'confirmed' => false ) );
-        is( false, $name->confirmed );
+        $ret = $name->update(array( 'confirmed' => false ) );
+        $this->assertResultSuccess($ret);
+        $this->assertFalse($name->confirmed);
 
-        $name->delete();
+        $ret = $name->delete();
+        $this->assertResultSuccess($ret);
 
-        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
-        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
-        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
-        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
-        ok( $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ))->success );
+    }
 
-        $names = new \TestApp\Model\NameCollection;
+    public function testCollectionGroupBy()
+    {
+        $name = new Name;
+        for($i = 0 ; $i < 5 ; $i++ ) {
+            $ret = $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ));
+            $this->assertResultSuccess($ret);
+        }
+
+        $names = new NameCollection;
         $names->select( 'name' )->where()
             ->equal('name','Foo');
-
         $names->groupBy(['name','address']);
 
         ok($items = $names->items() , 'Test name collection with name,address condition' );
@@ -56,5 +76,7 @@ class CollectionTest extends ModelTestCase
         is(1 , $size);
         is('Foo', $items[0]->name);
     }
+
+
 }
 

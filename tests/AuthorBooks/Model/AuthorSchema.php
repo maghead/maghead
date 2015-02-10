@@ -31,34 +31,15 @@ class AuthorSchema extends Schema
 
         $this->mixin('LazyRecord\\Schema\\Mixin\\MetadataSchema');
 
+        $this->many('addresses', 'AuthorBooks\Model\AddressSchema', 'author_id', 'id');
 
-        /**
-         * For append:
-         *
-         *     $author->address[] = array(  );
-         *
-         *     $record = $author->createAddress(array( ... ));  // return false on failure.
-         *
-         * for fetch:
-         *
-         *     foreach( $author->addresses as $address ) {
-         *
-         *     }
-         *
-         * for search/find:
-         *
-         *     $address = $author->addresses->find(k);
-         *
-         */
-        $this->many( 'addresses', '\AuthorBooks\Model\AddressSchema', 'author_id', 'id');
-
-        $this->many( 'unused_addresses', '\AuthorBooks\Model\AddressSchema', 'author_id', 'id')
+        $this->many('unused_addresses', 'AuthorBooks\Model\AddressSchema', 'author_id', 'id')
             ->where()
                 ->equal('unused', true);
 
-        $this->many( 'author_books', '\AuthorBooks\Model\AuthorBookSchema', 'author_id', 'id');
+        $this->many('author_books', 'AuthorBooks\Model\AuthorBookSchema', 'author_id', 'id');
 
-        $this->manyToMany( 'books', 'author_books' , 'book' );
+        $this->manyToMany('books', 'author_books' , 'book');
     }
 
 }

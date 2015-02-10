@@ -211,7 +211,7 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
                     }
                 }
 
-                if ( ! class_exists($refer) ) {
+                if (! class_exists($refer)) {
                     throw new Exception("refer schema from '$refer' not found.");
                 }
 
@@ -312,7 +312,7 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
 
         /* merge columns into self */
         $this->columns = array_merge( $this->columns, $mixin->columns );
-        $this->relations = array_merge( $mixin->relations, $this->relations );
+        $this->relations = array_merge($mixin->relations, $this->relations);
     }
 
     public function getLabel()
@@ -419,14 +419,13 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
      * @param string $foreignColumn foreign reference schema column.
      * @param string $selfColumn self column name
      */
-    public function belongsTo($accessor, $foreignClass, $foreignColumn = null,  $selfColumn = 'id')
+    public function belongsTo($accessorName, $foreignClass = NULL, $foreignColumn = NULL,  $selfColumn = 'id')
     {
-        if (null === $foreignColumn) {
+        if ($foreignClass && NULL === $foreignColumn) {
             $s = new $foreignClass;
             $foreignColumn = $s->primaryKey;
         }
-
-        return $this->relations[ $accessor ] = new Relationship(array(
+        return $this->relations[$accessorName] = new Relationship(array(
             'type' => Relationship::BELONGS_TO,
             'self_schema' => get_class($this),
             'self_column' => $selfColumn,

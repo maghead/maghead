@@ -11,11 +11,24 @@ class Relationship implements IteratorAggregate, ArrayAccess
     const BELONGS_TO = 3;
     const MANY_TO_MANY = 4;
 
+    /**
+     * @var array The stashed data
+     */
     public $data = array();
 
+    /**
+     * @var string The accessor name
+     */
+    public $accessor;
+
+
+    /**
+     * @var Conditions The SQLBuilder Condition Syntax Object
+     */
     public $where;
 
-    public function __construct($data = array())
+
+    public function __construct(array $data = array())
     {
         $this->data = $data;
     }
@@ -207,7 +220,8 @@ class Relationship implements IteratorAggregate, ArrayAccess
      */
     public static function __set_state(array $data)
     {
-        return new self($data['data']);
+        $r = new self($data['data']);
+        return $r;
     }
 
 
@@ -222,7 +236,6 @@ class Relationship implements IteratorAggregate, ArrayAccess
     {
         $this->data[$key] = $val;
     }
-
 }
 
 

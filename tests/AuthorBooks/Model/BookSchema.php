@@ -37,11 +37,12 @@ class BookSchema extends Schema
         // Create a flag column named "is_hot" labeld "Hot Sale", checked by default
         $this->helper('Flag', ['is_hot','Hot Sale', true]);
         $this->helper('Flag', ['is_selled','Selled', false]);
+
+
         /** 
-         * column: author => Author class 
+         * Column: author => Author class 
          *
          * $book->publisher->name;
-         *
          **/
         $this->belongsTo('publisher','AuthorBooks\Model\PublisherSchema', 'id', 'publisher_id');
 
@@ -57,8 +58,10 @@ class BookSchema extends Schema
         /**
          * get BookAuthor.author 
          */
-        $this->manyToMany( 'authors', 'book_authors', 'author' )
-            ->filter(function($collection) { return $collection; });
+        $this->manyToMany('authors', 'book_authors', 'author' )
+            ->filter(function($collection) {
+                return $collection; 
+            });
     }
 
 }
