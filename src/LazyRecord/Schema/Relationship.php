@@ -3,6 +3,8 @@ namespace LazyRecord\Schema;
 use ArrayAccess;
 use IteratorAggregate;
 use SQLBuilder\Universal\Syntax\Conditions;
+use LazyRecord\BaseCollection;
+use LazyRecord\BaseModel;
 
 class Relationship implements IteratorAggregate, ArrayAccess
 {
@@ -92,21 +94,21 @@ class Relationship implements IteratorAggregate, ArrayAccess
     }
 
 
-    public function applyFilter(& $collection) 
+    public function applyFilter(BaseCollection & $collection) 
     {
         if ( isset($this->data['filter']) ) {
             $collection = call_user_func_array( $this->data['filter'] , array($collection) );
         }
     }
 
-    public function applyWhere(& $collection) 
+    public function applyWhere(BaseCollection & $collection) 
     {
         if ($this->where) {
             $collection->setWhere($this->where);
         }
     }
 
-    public function applyOrder(& $collection) 
+    public function applyOrder(BaseCollection & $collection) 
     {
         if ( isset($this->data['order']) ) {
             foreach( $this->data['order'] as $o ) {
