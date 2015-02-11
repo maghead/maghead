@@ -1081,10 +1081,11 @@ abstract class BaseModel implements
                 // if column is required (can not be empty)
                 //   and default is defined.
                 if( isset($args[$n]) 
-                    && ! $args[$n]
+                    && $args[$n] === NULL
+                    && $c->required
                     && ! $c->primary )
                 {
-                    if( $val = $c->getDefaultValue($this ,$args) ) {
+                    if ($val = $c->getDefaultValue($this ,$args)) {
                         $args[$n] = $val;
                     }
                 }
