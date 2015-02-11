@@ -1076,14 +1076,11 @@ abstract class BaseModel implements
 
             $args = $this->filterArrayWithColumns($args);
 
-
-            foreach( $this->getSchema()->getColumns() as $n => $c ) {
+            foreach ($this->getSchema()->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
-                if( isset($args[$n]) 
-                    && $args[$n] === NULL
-                    && $c->required
-                    && ! $c->primary )
+                if (isset($args[$n]) && $args[$n] === NULL
+                    && $c->required && ! $c->primary)
                 {
                     if ($val = $c->getDefaultValue($this ,$args)) {
                         $args[$n] = $val;
@@ -1106,7 +1103,7 @@ abstract class BaseModel implements
                     }
 
                     if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof RawValue ) {
-                        if ( false === $c->checkTypeConstraint($args[$n])) {
+                        if (false === $c->checkTypeConstraint($args[$n])) {
                             return $this->reportError($args[$n] . " is not " . $c->isa . " type");
                         }
                     }
@@ -1122,14 +1119,10 @@ abstract class BaseModel implements
                         }
                     }
 
-                    if (!is_string($args[$n])) {
-                        if ($args[$n] instanceof RawValue) {
-                            $args[$n] = $args[$n];
-                        } else {
-                            $args[$n] = $c->deflate( $args[$n] );
-                        }
-                    } else {
+                    if ($args[$n] instanceof RawValue) {
                         $args[$n] = $args[$n];
+                    } else {
+                        $args[$n] = $c->deflate( $args[$n] );
                     }
                 }
             }
@@ -1147,7 +1140,6 @@ abstract class BaseModel implements
             $sql  = $query->build();
             $vars = $query->vars;
             $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
-
             // Merge updated data.
             //
             // if $args contains a raw SQL string, 
@@ -1157,7 +1149,6 @@ abstract class BaseModel implements
             } else {
                 $this->_data = array_merge($this->_data,$args);
             }
-
             $this->afterUpdate($origArgs);
         } 
         catch(PDOException $e) 
