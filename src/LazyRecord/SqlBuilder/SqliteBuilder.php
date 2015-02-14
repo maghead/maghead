@@ -4,6 +4,7 @@ use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\QueryBuilder;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
+use LazyRecord\Schema\Relationship;
 
 /**
  * Schema SQL builder
@@ -19,12 +20,12 @@ class SqliteBuilder extends BaseBuilder
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql = $this->driver->getQuoteColumn( $name );
+        $sql = $this->driver->quoteIdentifier( $name );
         $sql .= ' ' . $type;
 
-        if ($column->required || $column->notNull) {
+        if ($column->required || $column->null === false) {
             $sql .= ' NOT NULL';
-        } elseif( $column->null ) {
+        } elseif ($column->null === true) {
             $sql .= ' NULL';
         }
 
@@ -38,7 +39,7 @@ class SqliteBuilder extends BaseBuilder
             if( is_array($default) ) {
                 $sql .= ' default ' . $default[0];
             } else {
-                $sql .= ' default ' . $this->driver->inflate($default);
+                $sql .= ' default ' . $this->driver->deflate($default);
             }
         }
 
@@ -78,9 +79,9 @@ class SqliteBuilder extends BaseBuilder
          */
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
-            case SchemaDeclare::belongs_to:
-            case SchemaDeclare::has_many:
-            case SchemaDeclare::has_one:
+            case Relationship::BELONGS_TO:
+            case Relationship::HAS_MANY:
+            case Relationship::HAS_ONE:
                 if ($name != 'id' && $rel['self_column'] == $name)
                 {
                     $fSchema = new $rel['foreign_schema'];
@@ -96,7 +97,7 @@ class SqliteBuilder extends BaseBuilder
     public function dropTable(SchemaInterface $schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-            . $this->driver->getQuoteTableName( $schema->getTable() )
+            . $this->driver->quoteIdentifier( $schema->getTable() )
             . ';';
     }
 

@@ -3,7 +3,7 @@ namespace LazyRecord;
 use Exception;
 use RuntimeException;
 use ReflectionClass;
-use LazyRecord\Inflector;
+use Doctrine\Common\Inflector\Inflector;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 
 class ClassUtils
@@ -75,8 +75,8 @@ class ClassUtils
 
     static public function convert_class_to_table($class)
     {
-        if( preg_match( '/(\w+?)(?:Model)?$/', $class ,$reg) ) {
-            if ( count($reg) < 2 ) {
+        if (preg_match( '/(\w+?)(?:Model)?$/', $class ,$reg)) {
+            if (count($reg) < 2) {
                 throw new Exception( "Can not parse model name: $class" );
             }
 
@@ -88,9 +88,8 @@ class ClassUtils
                 $table ) );
             */
             $table = $reg[1];
-            $inflector = Inflector::getInstance();
-            $table = $inflector->underscore($table);
-            return $inflector->pluralize($table);
+            $table = Inflector::tableize($table);
+            return Inflector::pluralize($table);
         } else {
             throw new Exception('Table name convert error');
         }

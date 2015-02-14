@@ -1,5 +1,7 @@
 <?php
-class IDNumberModelTest extends \LazyRecord\ModelTestCase
+use LazyRecord\Testing\ModelTestCase;
+
+class IDNumberModelTest extends ModelTestCase
 {
     public $driver = 'sqlite';
 
@@ -8,17 +10,20 @@ class IDNumberModelTest extends \LazyRecord\ModelTestCase
         return array('TestApp\Model\\IDNumberSchema');
     }
 
+    /**
+     * @basedata false
+     */
     public function testValidation() 
     {
         $record = new TestApp\Model\IDNumber;
         $ret = $record->create(array( 'id_number' => 'A186679004' ));
-        ok($ret->success, $ret->message);
+        $this->assertResultSuccess($ret);
 
         $ret = $record->create(array( 'id_number' => 'A222222222' ));
-        not_ok($ret->success, $ret->message);
+        $this->assertResultFail($ret);
 
         $ret = $record->create(array( 'id_number' => 'A222' ));
-        not_ok($ret->success, $ret->message);
+        $this->assertResultFail($ret);
     }
 }
 

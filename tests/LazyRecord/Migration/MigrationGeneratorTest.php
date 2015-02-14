@@ -4,7 +4,6 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
 {
     function testGenerator()
     {
-        LazyRecord\QueryDriver::free();
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $connectionManager->addDataSource('default',array( 'dsn' => 'sqlite::memory:' ));
 
@@ -30,7 +29,6 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
 
     public function testDiffMigration() 
     {
-        LazyRecord\QueryDriver::free();
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $connectionManager->addDataSource('default',array( 
             'driver' => 'mysql',

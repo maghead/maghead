@@ -11,7 +11,7 @@ class PgsqlTableParser extends BaseTableParser
     public function getTables()
     {
         $stm = $this->connection->query('SELECT table_name FROM information_schema.tables WHERE table_schema = \'public\';');
-        $rows = $stm->fetchAll( PDO::FETCH_NUM);
+        $rows = $stm->fetchAll(PDO::FETCH_NUM);
         return array_map(function($row) { return $row[0]; },$rows);
     }
 

@@ -2,6 +2,7 @@
 namespace LazyRecord\Schema;
 use Exception;
 use InvalidArgumentException;
+use SQLBuilder\Universal\Syntax\Column;
 
 
 /**
@@ -17,43 +18,21 @@ use InvalidArgumentException;
  * @link http://dev.mysql.com/doc/refman/5.0/en/blob.html (MySQL)
  * @link http://www.postgresql.org/docs/9.1/interactive/datatype-binary.html (Postgresql)
  */
-class ColumnDeclare implements ColumnAccessorInterface
+class ColumnDeclare extends Column implements ColumnAccessorInterface
 {
-    const  ATTR_ANY = 0;
-    const  ATTR_ARRAY = 1;
-    const  ATTR_STRING = 2;
-    const  ATTR_INTEGER = 3;
-    const  ATTR_FLOAT = 4;
-    const  ATTR_CALLABLE = 5;
-    const  ATTR_FLAG = 6;
-
-    /**
-     * @var string column name
-     */
-    public $name;
-
-    /**
-     * @var array $supportedAttributes
-     */
-    public $supportedAttributes = array();
-
     /**
      * @var array $attributes
      *
      * The default attributes for a column.
      */
-    public $attributes = array(
-        'type' => 'text',
-        'isa' => 'str',
-    );
+    public $attributes = array();
 
     /**
      * @var string $name column name (id)
      */
-    public function __construct( $name = null )
+    public function __construct($name = NULL, $type = NULL)
     {
-        $this->supportedAttributes = array(
-
+        $this->attributeTypes = $this->attributeTypes + array(
             /* primary key */
             'primary'       => self::ATTR_FLAG,
             'size'          => self::ATTR_INTEGER,
@@ -65,7 +44,6 @@ class ColumnDeclare implements ColumnAccessorInterface
             'required'      => self::ATTR_FLAG,
             'typeConstraint' => self::ATTR_FLAG,
             'timezone'      => self::ATTR_FLAG,
-            'enum'          => self::ATTR_ARRAY,
             'renderable'    => self::ATTR_FLAG,
 
             /* column label */
@@ -78,12 +56,6 @@ class ColumnDeclare implements ColumnAccessorInterface
 
             /* reference to model schema */
             'refer' => self::ATTR_STRING,
-
-
-            /* data type: string, integer, DateTime, classname */
-            'isa' => self::ATTR_STRING,
-
-            'type' => self::ATTR_STRING,
 
             'default' => self::ATTR_ANY,
 
@@ -118,163 +90,18 @@ class ColumnDeclare implements ColumnAccessorInterface
 
             'widgetAttributes' => self::ATTR_ARRAY,
 
-            /* content type can be any text like 'ImageFile', 'File' */
+            /* content type can be any text like 'ImageFile', 'File', 'Binary', 'Text', 'Image' */
             'contentType' => self::ATTR_STRING,
 
             /* primary field for CMS */
             'primaryField' => self::ATTR_FLAG,
         );
-
-        if( $name ) {
-            $this->name = $name;
-        }
+        parent::__construct($name, $type);
     }
 
     public function name($name) 
     {
         $this->name = $name;
-        return $this;
-    }
-
-    public function varchar($size)
-    {
-        $this->attributes[ 'type' ] = 'varchar(' . $size . ')';
-        $this->attributes[ 'isa' ]  = 'str';
-        $this->attributes[ 'size' ]  = $size;
-        return $this;
-    }
-
-    public function char($limit)
-    {
-        $this->attributes[ 'type' ] = 'char(' . $limit . ')';
-        $this->attributes[ 'isa'  ] = 'str';
-        $this->attributes[ 'size' ]  = $limit;
-        return $this;
-    }
-
-
-
-    /**
-     * PgSQL supports double, real.
-     *
-     * XXX: support for 'Infinity' '-Infinity' 'NaN'.
-     *
-     *
-     * MySQL supports float, real, double:
-     *      float(3), float, real, real(10)
-     *
-     * MySQL permits a nonstandard syntax: FLOAT(M,D) or REAL(M,D) or DOUBLE 
-     * PRECISION(M,D). Here, “(M,D)” means than values can be stored with up 
-     * to M digits in total, of which D digits may be after the decimal point. 
-     * For example, a column defined as 
-     *      FLOAT(7,4) will look like -999.9999 when displayed. 
-     *
-     * MySQL performs rounding when storing values, so if you 
-     * insert 999.00009 into a FLOAT(7,4) column, the approximate result is 
-     * 999.0001.
-     *
-     * @link http://dev.mysql.com/doc/refman/5.0/en/floating-point-types.html
-     *
-     * XXX: 
-     * we should handle exceptions when number is out-of-range:
-     * @link http://dev.mysql.com/doc/refman/5.0/en/out-of-range-and-overflow.html
-     */
-    public function double($m = null, $d = null)
-    {
-        if( $m && $d ) {
-            $this->attributes['type'] = "double($m,$d)";
-        }
-        elseif( $m ) {
-            $this->attributes['type'] = "double($m)";
-        }
-        else {
-            $this->attributes['type'] = 'double';
-        }
-        $this->attributes['isa'] = 'double';
-        return $this;
-    }
-
-    public function float($m = null ,$d = null)
-    {
-        if( $m && $d ) {
-            $this->attributes['type'] = "float($m,$d)";
-        }
-        elseif( $m ) {
-            $this->attributes['type'] = "float($m)";
-        }
-        else {
-            $this->attributes['type'] = 'float';
-        }
-        $this->attributes['isa']  = 'float';
-        return $this;
-    }
-
-    public function tinyint() 
-    {
-        $this->attributes['type'] = 'tinyint';
-        $this->attributes['isa'] = 'int';
-        return $this;
-    }
-
-    public function text()
-    {
-        $this->attributes['type'] = 'text';
-        $this->attributes['isa'] = 'str';
-        return $this;
-    }
-
-    public function smallint()
-    {
-        $this->attributes['type'] = 'smallint';
-        $this->attributes['isa'] = 'int';
-        return $this;
-    }
-
-    public function bigint()
-    {
-        $this->attributes['type'] = 'bigint';
-        $this->attributes['isa'] = 'int';
-        return $this;
-    }
-
-    public function integer()
-    {
-        $this->attributes['type'] = 'integer';
-        $this->attributes['isa'] = 'int';
-        return $this;
-    }
-
-    public function bool()
-    {
-        return $this->boolean();
-    }
-
-    public function boolean()
-    {
-        $this->attributes['type'] = 'boolean';
-        $this->attributes['isa'] = 'bool';
-        return $this;
-    }
-
-    public function blob()
-    {
-        $this->attributes['type'] = 'blob';
-        $this->attributes['isa'] = 'str';
-        return $this;
-    }
-
-    public function binary()
-    {
-        $this->attributes['type'] = 'binary';
-        $this->attributes['isa'] = 'str';
-        return $this;
-    }
-
-    public function enum()
-    {
-        $this->attributes['type'] = 'enum';
-        $this->attributes['isa'] = 'enum';
-        $this->attributes['enum'] = func_get_args();
         return $this;
     }
 
@@ -285,59 +112,17 @@ class ColumnDeclare implements ColumnAccessorInterface
      */
     public function serial()
     {
-        $this->attributes['type'] = 'serial';
-        $this->attributes['isa'] = 'int';
-        return $this;
-    }
-
-
-    /************************************************
-     * DateTime related types
-     *************************************************/
-
-    public function date()
-    {
-        $this->attributes['type'] = 'date';
-        $this->attributes['isa'] = 'DateTime';
-        return $this;
-    }
-
-    public function time() 
-    {
-        $this->attributes['type'] = 'time';
-        $this->attributes['isa'] = 'str';
-        $this->attributes['timezone'] = true;
-        return $this;
-    }
-
-    public function timezone($bool = true) {
-        $this->attributes['timezone'] = $bool;
-        return $this;
-    }
-
-    public function datetime()
-    {
-        $this->attributes['type'] = 'datetime';
-        $this->attributes['isa'] = 'DateTime';
-        $this->attributes['timezone'] = true;
+        $this->type = 'serial';
+        $this->isa = 'int';
         return $this;
     }
 
     public function json()
     {
-        $this->attributes['type'] = 'text';
-        $this->attributes['isa'] = 'json';
+        $this->type = 'text';
+        $this->isa = 'json';
         return $this;
     }
-
-    public function timestamp()
-    {
-        $this->attributes['type'] = 'timestamp';
-        $this->attributes['isa'] = 'DateTime';
-        $this->attributes['timezone'] = true;
-        return $this;
-    }
-
 
     public function renderAs($renderAs,$widgetAttributes = array() ) {
         $this->renderAs = $renderAs;
@@ -410,7 +195,11 @@ class ColumnDeclare implements ColumnAccessorInterface
     {
         return array(
             'name' => $this->name,
-            'attributes' => $this->attributes,
+            'attributes' => array(
+                'isa' => $this->isa,
+                'type' => $this->type,
+                'primary' => $this->primary,
+            ) + $this->attributes,
         );
     }
 
@@ -441,86 +230,6 @@ class ColumnDeclare implements ColumnAccessorInterface
     {
         $this->attributes[ $name ] = $value;
     }
-
-    public function __call($method,$args)
-    {
-        if( isset($this->supportedAttributes[ $method ] ) ) {
-            $c = count($args);
-            $t = $this->supportedAttributes[ $method ];
-
-            if( $t != self::ATTR_FLAG && $c == 0 ) {
-                throw new InvalidArgumentException( 'Attribute value is required.' );
-            }
-
-            switch( $t ) {
-
-                case self::ATTR_ANY:
-                    $this->attributes[ $method ] = $args[0];
-                    break;
-
-                case self::ATTR_ARRAY:
-                    if( $c > 1 ) {
-                        $this->attributes[ $method ] = $args;
-                    }
-                    elseif( is_array($args[0]) ) 
-                    {
-                        $this->attributes[ $method ] = $args[0];
-                    } 
-                    else
-                    {
-                        $this->attributes[ $method ] = (array) $args[0];
-                    }
-                    break;
-
-                case self::ATTR_STRING:
-                    if( is_string($args[0]) ) {
-                        $this->attributes[ $method ] = $args[0];
-                    }
-                    else {
-                        throw new InvalidArgumentException("attribute value of $method is not a string.");
-                    }
-                    break;
-
-                case self::ATTR_INTEGER:
-                    if( is_integer($args[0])) {
-                        $this->attributes[ $method ] = $args[0];
-                    }
-                    else {
-                        throw new InvalidArgumentException("attribute value of $method is not a integer.");
-                    }
-                    break;
-
-                case self::ATTR_CALLABLE:
-
-                    /**
-                     * handle for __invoke, array($obj,$method), 'function_name 
-                     */
-                    if( is_callable($args[0]) ) {
-                        $this->attributes[ $method ] = $args[0];
-                    } else {
-                        throw new InvalidArgumentException("attribute value of $method is not callable type.");
-                    }
-                    break;
-
-                case self::ATTR_FLAG:
-                    if( isset($args[0]) ) {
-                        $this->attributes[ $method ] = $args[0];
-                    } else {
-                        $this->attributes[ $method ] = true;
-                    }
-                    break;
-
-                default:
-                    throw new InvalidArgumentException("Unsupported attribute type: $method");
-            }
-            return $this;
-        }
-
-        // save unknown attribute by default
-        $this->attributes[ $method ] = ! empty($args) ? $args[0] : null;
-        return $this;
-    }
-
 
     /**
      * Which should be something like getAttribute($name)

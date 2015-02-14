@@ -1,6 +1,7 @@
 <?php
+use LazyRecord\Testing\ModelTestCase;
 
-class UserModelTest extends \LazyRecord\ModelTestCase
+class UserModelTest extends ModelTestCase
 {
     public $driver = 'sqlite';
 
@@ -8,31 +9,28 @@ class UserModelTest extends \LazyRecord\ModelTestCase
     {
         return array(
             'TestApp\Model\UserSchema',
-            'TestApp\Model\BookSchema'
+            'AuthorBooks\Model\BookSchema'
         );
     }
 
+    /**
+     * @basedata false
+     */
     public function testRefer()
     {
         $user = new \TestApp\Model\User;
-        ok( $user );
         $ret = $user->create(array( 'account' => 'c9s' ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         ok( $user->id );
 
-        $book = new \TestApp\Model\Book;
+        $book = new \AuthorBooks\Model\Book ;
         $ret = $book->create(array( 
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',
             'publisher_id' => '""',  /* cast this to null or empty */
             'created_by' => $user->id,
         ));
-        ok( $ret );
-
-        // XXX: broken
-#          ok( $book->created_by );
-#          is( $user->id, $book->created_by->id );
-#          ok( $user->id , $book->getValue('created_by') );
+        $this->assertResultSuccess($ret);
     }
 
 }

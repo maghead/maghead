@@ -42,7 +42,7 @@ schema:
 
 #  Customize your schema paths
 #  paths:
-#    - tests/schema
+#    - tests
 data_sources:
   default:
     driver: $driver

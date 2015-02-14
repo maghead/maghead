@@ -6,15 +6,6 @@ use Exception;
 
 abstract class SchemaBase
 {
-    const has_one = 1;
-
-    const has_many = 2;
-
-    const many_to_many = 3;
-
-    const belongs_to = 4;
-
-
     public $table;
 
     public $label;
@@ -70,7 +61,7 @@ abstract class SchemaBase
 
 
 
-    public function getSeeds()
+    public function getSeedClasses()
     {
         return $this->seeds;
     }

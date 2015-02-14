@@ -36,7 +36,7 @@ class ListSchemaCommand extends Command
         $loader->initForBuild();
 
         $this->logger->debug("Initializing schema generator...");
-        $generator = new SchemaGenerator;
+        $generator = new SchemaGenerator($loader, $logger);
 
         $args = func_get_args();
         $classes = Utils::getSchemaClassFromPathsOrClassNames( 

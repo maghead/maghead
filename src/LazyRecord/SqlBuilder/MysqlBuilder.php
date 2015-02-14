@@ -3,23 +3,19 @@ namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
-use LazyRecord\QueryBuilder;
-use SQLBuilder\IndexBuilder;
-
+use LazyRecord\Schema\Relationship;
 
 class MysqlBuilder extends BaseBuilder
 {
-
-    public function buildColumnSql(SchemaInterface $schema, $column) {      
+    public function buildColumnSql(SchemaInterface $schema, $column) {
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
-        $type = $column->type;
-        if ( ! $type && $isa == 'str' ) {
-            $type = 'text';
+        if (! $column->type && $isa == 'str' ) {
+            $column->type = 'text';
         }
 
-        $sql = $this->driver->getQuoteColumn( $name );
-        $sql .= ' ' . $type;
+        $sql = $this->driver->quoteIdentifier( $name );
+        $sql .= $column->buildTypeSql($this->driver);
 
         if ( $isa === 'enum' && !empty($column->enum) ) {
             $enum = array();
@@ -29,10 +25,11 @@ class MysqlBuilder extends BaseBuilder
             $sql .= '(' . implode(', ', $enum) . ')';
         }
 
-        if( $column->required || $column->notNull )
+        if ($column->required || $column->null === false) {
             $sql .= ' NOT NULL';
-        elseif( $column->null )
+        } elseif ($column->null === true) {
             $sql .= ' NULL';
+        }
 
         /* if it's callable, we should not write the result into sql schema */
         if( ($default = $column->default) !== null && ! is_callable($column->default )  ) { 
@@ -42,7 +39,7 @@ class MysqlBuilder extends BaseBuilder
                 $sql .= ' default ' . $default[0];
             }
             else {
-                $sql .= ' default ' . $this->driver->inflate($default);
+                $sql .= ' default ' . $this->driver->deflate($default);
             }
         }
 
@@ -90,9 +87,9 @@ class MysqlBuilder extends BaseBuilder
         */
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
-            case SchemaDeclare::belongs_to:
-            case SchemaDeclare::has_many:
-            case SchemaDeclare::has_one:
+            case Relationship::BELONGS_TO:
+            case Relationship::HAS_MANY:
+            case Relationship::HAS_ONE:
                 if( $name != 'id' && $rel['self_column'] == $name ) 
                 {
                     $fSchema = new $rel['foreign_schema'];
@@ -111,7 +108,7 @@ class MysqlBuilder extends BaseBuilder
     public function dropTable(SchemaInterface $schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-            . $this->driver->getQuoteTableName( $schema->getTable() )
+            . $this->driver->quoteIdentifier( $schema->getTable() )
             . ';';
     }
 }

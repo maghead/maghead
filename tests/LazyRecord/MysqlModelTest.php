@@ -2,7 +2,7 @@
 class MysqlModelTest extends BasicCRUDTest
 {
     public $driver = 'mysql';
-    public $schemaPath = 'tests/schema';
+    public $schemaPath = 'tests';
 
     public function setUp() {
         if (! extension_loaded('mysql')) {

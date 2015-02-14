@@ -1,9 +1,11 @@
 <?php
+use LazyRecord\ConfigLoader;
+use CLIFramework\Logger;
 
 class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 {
     public function createSchemaGenerator() {
-        $g = new \LazyRecord\Schema\SchemaGenerator;
+        $g = new \LazyRecord\Schema\SchemaGenerator(ConfigLoader::getInstance(), Logger::getInstance());
         $g->forceUpdate = true;
         return $g;
     }
@@ -16,7 +18,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
             array ( 0 => 'tests/bootstrap.php',),
             'schema' => array (
                 'auto_id' => 1,
-                'paths' => array ( 0 => 'tests/schema',),
+                'paths' => array ( 0 => 'tests/TestApp',),
             ),
             'data_sources' =>
             array (
@@ -38,8 +40,8 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 
         $schemas = array();
         $schemas[] = [ $g, new \TestApp\Model\UserSchema ];
-        $schemas[] = [ $g, new \TestApp\Model\AddressSchema ];
-        $schemas[] = [ $g, new \TestApp\Model\BookSchema ];
+        $schemas[] = [ $g, new \AuthorBooks\Model\AddressSchema ];
+        $schemas[] = [ $g, new \AuthorBooks\Model\BookSchema ];
         $schemas[] = [ $g, new \TestApp\Model\IDNumberSchema ];
         $schemas[] = [ $g, new \TestApp\Model\NameSchema ];
         return $schemas;

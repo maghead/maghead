@@ -1,6 +1,7 @@
 <?php
+use LazyRecord\Testing\ModelTestCase;
 
-class WineModelTest extends \LazyRecord\ModelTestCase
+class WineModelTest extends ModelTestCase
 {
     public $driver = 'sqlite';
 
@@ -12,68 +13,36 @@ class WineModelTest extends \LazyRecord\ModelTestCase
         );
     }
 
+
+    /**
+     * @basedata false
+     */
     public function testWineRecordCreate()
     {
         $record = new \TestApp\Model\Wine;
-        ok($record);
         $ret = $record->create(array( 'name' => 'Wine Name' ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
     }
 
+    /**
+     * @basedata false
+     */
     public function testWineCategoryAndRefer()
     {
         $c = new \TestApp\Model\WineCategory;
-        ok($c,'category');
         $record = new \TestApp\Model\Wine;
-        ok($record);
 
         is('wines',$record->getSchema()->getTable() );
 
         $ret = $c->create(array( 'name' => 'Wine Category' ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
 
         $ret = $record->create(array( 'name' => "Wine Item" , 'category_id' => $c->id ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         
         ok($record->category->id, 'the belongsTo should be generated from refer attribute');
         ok($record->category_id,'the original column');
         is('Wine Category',$record->display('category'));
     }
 
-
-    public function testJoinedColumnExtractionFromCollection() {
-        $c = new \TestApp\Model\WineCategory;
-        ok($c,'category');
-
-        $record = new \TestApp\Model\Wine;
-        ok($record);
-
-        $ret = $c->create(array( 'name' => 'Wine Category' ));
-        result_ok($ret);
-
-        foreach(  range(1,1000) as $i ) {
-            $ret = $record->create(array( 'name' => "Wine Name $i" , 'category_id' => $c->id ));
-            result_ok($ret);
-        }
-
-
-        ok( $collection = new \TestApp\Model\WineCollection );
-        $collection->join( new \TestApp\Model\WineCategory ); // join the WineCategory
-
-
-        // test query
-        foreach( $collection as $item ) {
-            ok($item->id);
-            // print_r($data);
-            ok($item->category,'get category object');
-            ok($item->category->id, 'get category id');
-            ok($item->category->name, 'get category name');
-
-            $data = $item->getData();
-            ok( isset($data['category']) );
-            $category = $data['category'];
-            ok($category->id);
-            same_ok($item->category, $category );
-        }
-    }
 }

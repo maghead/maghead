@@ -37,7 +37,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
         $logger = $this->getLogger();
 
         CommandUtils::set_logger($this->logger);
-        CommandUtils::init_config_loader();
+        $config = CommandUtils::init_config_loader();
 
         $this->logger->debug('Finding schemas...');
         $classes = CommandUtils::find_schemas_with_arguments( func_get_args() );
@@ -46,7 +46,7 @@ class BuildSchemaCommand extends \CLIFramework\Command
 
         $this->logger->debug("Initializing schema generator...");
 
-        $generator = new SchemaGenerator;
+        $generator = new SchemaGenerator($config, $this->logger);
 
         if ( $this->options->force ) {
             $generator->setForceUpdate(true);

@@ -3,6 +3,7 @@ namespace LazyRecord;
 use Exception;
 use RuntimeException;
 use InvalidArgumentException;
+use BadMethodCallException;
 use PDO;
 use PDOException;
 use ArrayIterator;
@@ -10,15 +11,25 @@ use IteratorAggregate;
 use Serializable;
 use ArrayAccess;
 use Countable;
+use SQLBuilder\Universal\Query\SelectQuery;
+use SQLBuilder\Universal\Query\UpdateQuery;
+use SQLBuilder\Universal\Query\DeleteQuery;
+use SQLBuilder\Universal\Query\InsertQuery;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\PDOPgSQLDriver;
+use SQLBuilder\Driver\PDOMySQLDriver;
+use SQLBuilder\Driver\PDOSQLiteDriver;
+use SQLBuilder\Bind;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Raw;
 
-use SQLBuilder\QueryBuilder;
-use LazyRecord\QueryDriver;
 use LazyRecord\Result\OperationError;
 use LazyRecord\Result;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Schema\RuntimeColumn;
+use LazyRecord\Schema\Relationship;
 use LazyRecord\ConfigLoader;
 use LazyRecord\CurrentUserInterface;
 
@@ -26,13 +37,12 @@ use SerializerKit\XmlSerializer;
 use SerializerKit\JsonSerializer;
 use SerializerKit\YamlSerializer;
 
-use SQLBuilder\RawValue;
 
 use ValidationKit\ValidationMessage;
 use ActionKit;
 use ActionKit\RecordAction\BaseRecordAction;
 
-class DatabaseException extends RuntimeException {
+class QueryException extends RuntimeException {
 
     public $debugInfo = array();
 
@@ -54,8 +64,7 @@ abstract class BaseModel implements
     Serializable, 
     ArrayAccess, 
     IteratorAggregate, 
-    Countable,
-    ExporterInterface
+    Countable
 {
 
     const schema_proxy_class = '';
@@ -64,12 +73,14 @@ abstract class BaseModel implements
 
     protected $_cache = array();
 
+    protected $_foreignRecordCache = array();
+
     /**
      * @var boolean Auto reload record after creating new record
      *
      * Turn off this if you want performance.
      */
-    public $autoReload = true;
+    public $autoReload = false;
 
 
 
@@ -113,9 +124,6 @@ abstract class BaseModel implements
 
     protected $_cachePrefix;
 
-    protected $_joinedRelationships = array();
-
-
     static $_cacheInstance;
 
     /**
@@ -132,14 +140,14 @@ abstract class BaseModel implements
     {
         // Load the data only when the ID is defined.
         if ($args) {
-            $this->_load( $args );
+            $this->load( $args );
             /*
             if (is_int($args)) {
-                $this->_load( $args );
+                $this->load( $args );
             } elseif (is_array($args)) {
                 $pk = $this->getSchema()->primaryKey;
                 if (isset($args[$pk])) {
-                    $this->_load( $args );
+                    $this->load( $args );
                 } else {
                     $this->setData($args);
                 }
@@ -156,14 +164,6 @@ abstract class BaseModel implements
 
     public function getSelected() {
         return $this->selected;
-    }
-
-
-
-
-    public function setJoinedRelationships($map)
-    {
-        $this->_joinedRelationships = $map;
     }
 
     public function getCachePrefix()
@@ -213,7 +213,7 @@ abstract class BaseModel implements
         if ( $this->dataLabelField ) {
             return $this->dataLabelField;
         }
-        return $this->getSchema()->primaryKey;
+        return static::primary_key;
     }
 
     public function getDataValueField()
@@ -221,7 +221,7 @@ abstract class BaseModel implements
         if ( $this->dataValueField ) {
             return $this->dataValueField;
         }
-        return $this->getSchema()->primaryKey;
+        return static::primary_key;
     }
 
 
@@ -261,20 +261,16 @@ abstract class BaseModel implements
      * Get SQL Query Driver by data source id.
      *
      * @param string $dsId Data source id.
-     *
-     * @return SQLBuilder\QueryDriver
      */
-    public function getQueryDriver( $dsId )
+    public function getQueryDriver($dsId)
     {
-        return ConnectionManager::getInstance()->getQueryDriver( $dsId );
+        return ConnectionManager::getInstance()->getQueryDriver($dsId);
     }
 
 
 
     /**
      * Get SQL Query driver object for writing data
-     *
-     * @return SQLBuilder\QueryDriver
      */
     public function getWriteQueryDriver()
     {
@@ -292,54 +288,10 @@ abstract class BaseModel implements
         return $this->getQueryDriver( $this->getReadSourceId() );
     }
 
-
-    /**
-     * Create new QueryBuilder object (inherited from SQLBuilder\QueryBuilder
-     *
-     * @param string $dsId Data source id , default connection id is 'default'
-     *
-     * @return SQLBuilder\QueryBuilder
-     */
-    public function createQuery( $dsId = 'default' )
-    {
-        $q = new QueryBuilder;
-        $q->driver = $this->getQueryDriver($dsId);
-        $q->table( $this->getSchema()->table );
-        $q->alias( $this->alias );
-        $q->limit(1);
-        return $q;
-    }
-
-    
-
-
-    /**
-     * Create executive query builder object, the difference is that
-     * An ExecutiveQueryBuilder has an execute method, that trigger a 
-     * callback function to execute SQL. the callback function takes
-     * a SQL string to insert into database.
-     *
-     * @param string $dsId data source id.
-     *
-     * @return ExecutiveQueryBuilder
-     */
-    public function createExecutiveQuery( $dsId = 'default' )
-    {
-        $q = new ExecutiveQueryBuilder;
-        $q->driver = $this->getQueryDriver( $dsId );
-        $q->alias( $this->alias );
-        $q->table( $this->getSchema()->table );
-        return $q;
-    }
-
     public function setAlias($alias) {
         $this->alias = $alias;
         return $this;
     }
-
-
-
-
 
     /**
      * Trigger method for "before creating new record"
@@ -399,13 +351,12 @@ abstract class BaseModel implements
      * we dispatch these methods from the magic method __call.
      *
      * __call method is slower than normal method, because there are
-     * one more method table to look up. you should call `_create` method
+     * one more method table to look up. you should call `create` method
      * if you need a better performance.
      */
     public function __call($m,$a)
     {
         switch($m) {
-        case 'create':
         case 'update':
         case 'load':
         case 'delete':
@@ -416,19 +367,19 @@ abstract class BaseModel implements
             break;
         }
 
-        // dispatch to schema object method first
+        // Dispatch to schema object method first
         $schema = $this->getSchema();
-        if( method_exists($schema,$m) ) {
+        if (method_exists($schema,$m)) {
             return call_user_func_array(array($schema,$m),$a);
         }
 
         // then it's the mixin methods
-        if ( $mClass = $this->findMixinMethodClass($m) ) {
+        if ($mClass = $this->findMixinMethodClass($m)) {
             return $this->invokeMixinClassMethod($mClass, $m, $a);
         }
 
         // XXX: special case for twig template
-        throw new Exception( get_class($this) . ": $m method not found.");
+        throw new BadMethodCallException( get_class($this) . ": $m method not found.");
     }
 
     /**
@@ -490,7 +441,7 @@ abstract class BaseModel implements
      */
     public function createOrUpdate(array $args, $byKeys = null )
     {
-        $pk = $this->getSchema()->primaryKey;
+        $pk = static::primary_key;
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
@@ -527,7 +478,7 @@ abstract class BaseModel implements
     {
         if ($pkId) {
             return $this->load( $pkId );
-        } elseif( NULL === $pkId && $pk = $this->getSchema()->primaryKey ) {
+        } elseif( NULL === $pkId && $pk = static::primary_key ) {
             $pkId = $this->_data[ $pk ];
             return $this->load( $pkId );
         } else {
@@ -545,7 +496,7 @@ abstract class BaseModel implements
      */
     public function loadOrCreate(array $args, $byKeys = null)
     {
-        $pk = $this->getSchema()->primaryKey;
+        $pk = static::primary_key;
 
         $ret = null;
         if( $pk && isset($args[$pk]) ) {
@@ -597,10 +548,10 @@ abstract class BaseModel implements
      *       message: 
      *   }
      */ 
-    protected function _validateColumn(RuntimeColumn $column,$val,$args)
+    protected function _validateColumn(RuntimeColumn $column, $val, array $args)
     {
         // check for requried columns
-        if ($column->required && ( $val === '' || $val === null)) {
+        if ($column->required && ( $val === '' || $val === NULL)) {
             return array( 
                 'valid' => false, 
                 'message' => sprintf(_('Field %s is required.'), $column->getLabel() ), 
@@ -697,7 +648,7 @@ abstract class BaseModel implements
      * Method for creating new record, which is called from 
      * static::create and $record->create.
      *
-     * 1. _create method calls beforeCreate to 
+     * 1. create method calls beforeCreate to 
      * trigger events or filter arguments.
      *
      * 2. it runs filterArrayWithColumns method to filter 
@@ -720,7 +671,7 @@ abstract class BaseModel implements
      *
      * @return Result operation result (success or error)
      */
-    public function _create(array $args, $options = array() )
+    public function create(array $args, array $options = array() )
     {
         if (empty($args) || $args === null ) {
             return $this->reportError('Empty arguments');
@@ -733,16 +684,28 @@ abstract class BaseModel implements
         // save $args for afterCreate trigger method
         $origArgs = $args;
 
-        $k = $schema->primaryKey;
+        $k = static::primary_key;
         $sql = $vars     = null;
         $this->_data     = array();
         $stm = null;
+
+        $query = new InsertQuery;
+        $arguments = new ArgumentArray;
+        $conn = $this->getWriteConnection();
+        $driver = $conn->createQueryDriver();
+
+        $query->into(static::table);
 
         // Just a note: Exceptions should be used for exceptional conditions; things you 
         // don't expect to happen. Validating input isn't very exceptional.
 
         try {
-            $args = $this->beforeCreate( $args );
+            $args = $this->beforeCreate($args);
+            if ($args === false) {
+                return $this->reportError( _('Create failed') , array( 
+                    'args' => $args,
+                ));
+            }
 
 
             // first, filter the array, arguments for inserting data.
@@ -754,13 +717,14 @@ abstract class BaseModel implements
                 ));
             }
 
-            $conn = $this->getWriteConnection();
-            foreach( $schema->getColumns() as $n => $c ) {
+            // arguments that are will Bind
+            $insertArgs = array();
+            foreach ($schema->getColumns() as $n => $c) {
                 // if column is required (can not be empty)
                 //   and default is defined.
-                if( !$c->primary && (!isset($args[$n]) || !$args[$n] ))
+                if (!$c->primary && (!isset($args[$n]) || !$args[$n] ))
                 {
-                    if( $val = $c->getDefaultValue($this ,$args) ) {
+                    if ($val = $c->getDefaultValue($this ,$args)) {
                         $args[$n] = $val;
                     } 
                 }
@@ -772,14 +736,15 @@ abstract class BaseModel implements
 
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
-
-                if ($c->typeConstraint && ( $val !== null && ! is_array($val) && ! $val instanceof RawValue )) {
-                    if ( false === $c->checkTypeConstraint( $val )) {
+                
+                if ($c->typeConstraint && ($val !== null && ! is_array($val) && ! $val instanceof Raw)) {
+                    if (false === $c->checkTypeConstraint($val)) {
                         return $this->reportError("{$val} is not " . $c->isa . " type");
                     }
-                } elseif ($val !== null && ! is_array($val) && ! $val instanceof RawValue) {
+                } elseif ($val !== NULL && !is_array($val) && !$val instanceof Raw) {
                     $val = $c->typeCasting($val);
                 }
+
 
                 if ($c->filter || $c->canonicalizer) {
                     $val = $c->canonicalizeValue($val, $this, $args );
@@ -791,15 +756,24 @@ abstract class BaseModel implements
                         $validationError = true;
                     }
                 }
+
                 if ($val !== NULL) {
-                    if (!is_string($val)) {
-                        if ($val instanceof RawValue) {
-                            $args[$n] = $val;
-                        } else {
-                            $args[$n] = $c->deflate($val);
-                        }
+                    // Update filtered value back to args
+                    // Note that we don't deflate a scalar value, this is to prevent the overhead of data reload from database
+                    // We should try to keep all variables just like the row result we query from database.
+                    if (is_object($val) || is_array($val)) {
+                        $args[$n] = $c->deflate($val, $driver);
                     } else {
                         $args[$n] = $val;
+                    }
+                    if (!is_string($val)) {
+                        if ($val instanceof Raw) {
+                            $insertArgs[$n] = new Bind($n, $val);
+                        } else {
+                            $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
+                        }
+                    } else {
+                        $insertArgs[$n] = new Bind($n, $val);
                     }
                 }
             }
@@ -810,49 +784,39 @@ abstract class BaseModel implements
                 ));
             }
 
+            $query->insert($insertArgs);
+            $query->returning($k);
 
-            $dsId = $this->getWriteSourceId();
-            $q = $this->createQuery( $dsId );
-
-            $q->insert($args);
-            $q->returning( $k );
-
-            $sql  = $q->build();
-            $vars = $q->vars;
+            $sql  = $query->toSql($driver, $arguments);
 
             /* get connection, do query */
-            $stm = $this->dbPrepareAndExecute($conn, $sql, $vars); // returns $stm
+            $stm = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray()); // returns $stm
         }
         catch (PDOException $e)
         {
-            throw new DatabaseException('Record create failed:' . $e->getMessage(), $e, array(
-                'vars' => $vars,
+            throw new QueryException('Record create failed:' . $e->getMessage(), $e, array(
                 'args' => $args,
                 'sql' => $sql,
                 'validations' => $validationResults,
             ));
         }
 
-        $driver = $this->getQueryDriver($dsId);
-
-
         $pkId = null;
-        if ('pgsql' === $driver->type) {
+
+        if ($driver instanceof PDOPgSQLDriver) {
             $pkId = intval($stm->fetchColumn());
         } else {
             $pkId = intval($conn->lastInsertId());
         }
+        $args['id'] = $pkId;
         $this->_data['id'] = $pkId;
 
-        if ($pkId && isset($options['reload'])) {
-            if ($options['reload']) {
-                $this->load($pkId);
-            }
-        } elseif ( $pkId && $this->autoReload ) {
+        if ($pkId && ((isset($options['reload']) && $options['reload']) || $this->autoReload)) {
             $this->load($pkId);
         } else {
             $this->_data = $args;
         }
+
         $this->afterCreate($origArgs);
 
         // collect debug info
@@ -860,7 +824,7 @@ abstract class BaseModel implements
             'id'  => $pkId,
             'sql' => $sql,
             'args' => $args,
-            'vars' => $vars,
+            'binds' => $arguments,
             'validations' => $validationResults,
         ));
     }
@@ -872,14 +836,14 @@ abstract class BaseModel implements
      * The fast create method does not reload record from created the primary 
      * key.
      *
-     * TODO: refactor _create code to call fastCreate.
+     * TODO: refactor create code to call fastCreate.
      * TODO: provide rawCreate to create data without validation.
      *
      * @param array $args
      */
     public function fastCreate(array $args)
     {
-        return $this->_create($args, array( 'reload' => false));
+        return $this->create($args, array( 'reload' => false));
     }
 
 
@@ -892,7 +856,7 @@ abstract class BaseModel implements
      */
     public function find($args)
     {
-        return $this->_load($args);
+        return $this->load($args);
     }
 
     public function loadFromCache($args, $ttl = 3600)
@@ -900,39 +864,43 @@ abstract class BaseModel implements
         $key = serialize($args);
         if( $cacheData = $this->getCache($key) ) {
             $this->_data = $cacheData;
-            $pk = $this->getSchema()->primaryKey;
+            $pk = static::primary_key;
             return $this->reportSuccess( 'Data loaded', array(
                 'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null)
             ));
         }
         else {
-            $ret = $this->_load($args);
+            $ret = $this->load($args);
             $this->setCache($key,$this->_data,$ttl);
             return $ret;
         }
     }
 
-    public function _load($args)
+    public function load($args)
     {
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'load', $args ) ) {
             return $this->reportError("Permission denied. Can not load record.", array('args' => $args));
         }
 
         $dsId  = $this->getReadSourceId();
-        $pk    = $this->getSchema()->primaryKey;
-        $query = $this->createQuery( $dsId );
+        $pk    = static::primary_key;
+
+        $query = new SelectQuery;
+        $query->from(static::table);
+
         $conn  = $this->getReadConnection();
+        $driver = $conn->createQueryDriver();
         $kVal  = null;
 
         // build query from array.
         if( is_array($args) ) {
             $query->select( $this->selected ?: '*' )
-                ->whereFromArgs($args);
+                ->where($args);
         }
         else
         {
             $kVal = $args;
-            $column = $this->getSchema()->getColumn( $pk );
+            $column = $this->getSchema()->getColumn($pk);
             if ( ! $column ) {
                 // This should not happend, every schema should have it's own primary key
                 // TODO: Create new exception class for this.
@@ -940,14 +908,15 @@ abstract class BaseModel implements
             }
             $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
-            $query->select( $this->selected ?: '*' )->whereFromArgs($args);
+            $query->select( $this->selected ?: '*' )->where($args);
         }
 
-        $sql = $query->build();
+        $arguments = new ArgumentArray;
+        $sql = $query->toSql($conn->createQueryDriver(), $arguments);
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         try {
-            $stm = $this->dbPrepareAndExecute($conn,$sql,$query->vars);
+            $stm = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             if (false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
                 // Record not found is not an exception
@@ -956,9 +925,8 @@ abstract class BaseModel implements
         }
         catch (PDOException $e)
         {
-            throw new DatabaseException('Record load failed', $e, array(
-                'vars' => $query->vars,
-                'args' => $args,
+            throw new QueryException('Record load failed', $e, array(
+                // XXX: 'args' => $args,
                 'sql' => $sql,
             ));
         }
@@ -970,10 +938,13 @@ abstract class BaseModel implements
     }
 
 
+    /**
+     * Create from array
+     */
     static public function fromArray(array $array)
     {
         $record = new static;
-        $record->setData( $array );
+        $record->setStashedData($array);
         return $record;
     }
 
@@ -982,14 +953,18 @@ abstract class BaseModel implements
      *
      * @return Result operation result (success or error)
      */
-    public function _delete()
+    public function delete($pkId = NULL)
     {
-        $k = $this->getSchema()->primaryKey;
+        $k = static::primary_key;
+        if (!$k) {
+            throw new Exception("primary key is not defined.");
+        }
 
-        if ($k && ! isset($this->_data[$k]) ) {
+        if ($pkId == NULL && !isset($this->_data[$k])) {
             throw new Exception('Record is not loaded, Record delete failed.');
         }
-        $kVal = isset($this->_data[$k]) ? $this->_data[$k] : null;
+
+        $kVal = $pkId ? $pkId : ($this->_data && isset($this->_data[$k]) ? $this->_data[$k] : NULL);
 
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'delete' ) ) {
             return $this->reportError( _('Permission denied. Can not delete record.') , array( ));
@@ -1000,19 +975,22 @@ abstract class BaseModel implements
 
         $this->beforeDelete( $this->_data );
 
-        $query = $this->createQuery( $dsId );
-        $query->delete();
+        $arguments = new ArgumentArray;
+
+        $query = new DeleteQuery;
+        $query->delete(static::table);
         $query->where()
-            ->equal( $k , $kVal );
-        $sql = $query->build();
+            ->equal($k , $kVal);
+        $sql = $query->toSql($conn->createQueryDriver(), $arguments);
+
+        $vars = $arguments->toArray();
 
         $validationResults = array();
         try {
-            $this->dbPrepareAndExecute($conn,$sql, $query->vars );
+            $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
         } catch (PDOException $e) {
-            throw new DatabaseException('Delete failed', $e, array(
-                'vars' => $vars,
-                'args' => $args,
+            throw new QueryException('Delete failed', $e, array(
+                // XXX 'args' => $arguments->toArray(),
                 'sql' => $sql,
                 'validations' => $validationResults,
             ));
@@ -1022,7 +1000,7 @@ abstract class BaseModel implements
         $this->clear();
         return $this->reportSuccess('Record deleted', array( 
             'sql' => $sql,
-            'vars' => $query->vars,
+            // XXX 'args' => $arguments->toArray(),
         ));
     }
 
@@ -1034,10 +1012,12 @@ abstract class BaseModel implements
      *
      * @return Result operation result (success or error)
      */
-    public function _update(array $args, $options = array() ) 
+    public function update(array $args, $options = array() ) 
     {
+        $schema = $this->getSchema();
+
         // check if the record is loaded.
-        $k = $this->getSchema()->primaryKey;
+        $k = static::primary_key;
         if ($k && ! isset($args[ $k ]) && ! isset($this->_data[$k])) {
             throw new Exception('Record is not loaded, Can not update record.', array('args' => $args));
         }
@@ -1066,6 +1046,10 @@ abstract class BaseModel implements
         $sql  = null;
         $vars = null;
 
+        $arguments = new ArgumentArray;
+        $driver = $conn->createQueryDriver();
+        $query = new UpdateQuery;
+
         $validationError = false;
         $validationResults = array();
 
@@ -1076,13 +1060,15 @@ abstract class BaseModel implements
 
             $args = $this->filterArrayWithColumns($args);
 
-            foreach ($this->getSchema()->getColumns() as $n => $c ) {
+
+            foreach( $this->getSchema()->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
-                if (isset($args[$n]) && $args[$n] === NULL
-                    && $c->required && ! $c->primary)
+                if( isset($args[$n]) 
+                    && ! $args[$n]
+                    && ! $c->primary )
                 {
-                    if ($val = $c->getDefaultValue($this ,$args)) {
+                    if( $val = $c->getDefaultValue($this ,$args) ) {
                         $args[$n] = $val;
                     }
                 }
@@ -1098,12 +1084,12 @@ abstract class BaseModel implements
                         return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));
                     }
 
-                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof RawValue ) {
+                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
                         $args[$n] = $c->typeCasting( $args[$n] );
                     }
 
-                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof RawValue ) {
-                        if (false === $c->checkTypeConstraint($args[$n])) {
+                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
+                        if ( false === $c->checkTypeConstraint($args[$n])) {
                             return $this->reportError($args[$n] . " is not " . $c->isa . " type");
                         }
                     }
@@ -1119,10 +1105,12 @@ abstract class BaseModel implements
                         }
                     }
 
-                    if ($args[$n] instanceof RawValue) {
-                        $args[$n] = $args[$n];
-                    } else {
-                        $args[$n] = $c->deflate( $args[$n] );
+                    if (!is_string($args[$n])) {
+                        if ($args[$n] instanceof Raw) {
+
+                        } else {
+                            $args[$n] = $c->deflate( $args[$n], $driver);
+                        }
                     }
                 }
             }
@@ -1133,13 +1121,16 @@ abstract class BaseModel implements
                 ));
             }
 
-            $query = $this->createQuery( $dsId );
-            $query->update($args)->where()
-                ->equal( $k , $kVal );
 
-            $sql  = $query->build();
-            $vars = $query->vars;
-            $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
+            // TODO: optimized to built cache
+            $query->set($args);
+            $query->update(static::table);
+            $query->where()->equal($k , $kVal);
+
+
+            $sql  = $query->toSql($driver, $arguments);
+            $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
+
             // Merge updated data.
             //
             // if $args contains a raw SQL string, 
@@ -1149,12 +1140,13 @@ abstract class BaseModel implements
             } else {
                 $this->_data = array_merge($this->_data,$args);
             }
+
             $this->afterUpdate($origArgs);
         } 
         catch(PDOException $e) 
         {
-            throw new DatabaseException('Record update failed', $e, array(
-                'vars' => $vars,
+            throw new QueryException('Record update failed', $e, array(
+                'driver' => get_class($driver),
                 'args' => $args,
                 'sql' => $sql,
                 'validations' => $validationResults,
@@ -1165,7 +1157,6 @@ abstract class BaseModel implements
             'id'  => $kVal,
             'sql' => $sql,
             'args' => $args,
-            'vars' => $vars,
         ));
     }
 
@@ -1180,21 +1171,27 @@ abstract class BaseModel implements
     {
         $dsId  = $this->getWriteSourceId();
         $conn  = $this->getConnection( $dsId );
-        $k     = $this->getSchema()->primaryKey;
+        $k = static::primary_key;
         $kVal = isset($args[$k]) 
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
 
-        $query = $this->createQuery( $dsId );
-        $query->update($args)->where()
+        $arguments = new ArgumentArray;
+        $query = new UpdateQuery;
+        $query->set($args);
+        $query->update(static::table);
+        $query->where()
             ->equal( $k , $kVal );
 
-        $sql  = $query->build();
-        $vars = $query->vars;
-        $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
+        $sql  = $query->toSql($conn->createQueryDriver(), $arguments);
+        $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
 
         // update current data stash
         $this->_data = array_merge($this->_data,$args);
+
+        return $this->reportSuccess( 'Update success', array( 
+            'sql' => $sql
+        ));
     }
 
 
@@ -1208,26 +1205,35 @@ abstract class BaseModel implements
     {
         $dsId  = $this->getWriteSourceId();
         $conn  = $this->getConnection( $dsId );
-        $k     = $this->getSchema()->primaryKey;
-        $query = $this->createQuery( $dsId );
+        $k = static::primary_key;
+
+        $driver = $conn->createQueryDriver();
+
+        $query = new InsertQuery;
         $query->insert($args);
-        $query->returning( $k );
-        $sql  = $query->build();
-        $vars = $query->vars;
-        $stm  = $this->dbPrepareAndExecute($conn, $sql, $vars);
+        $query->into(static::table);
+        $query->returning($k);
 
+        $arguments = new ArgumentArray;
 
-        $driver = $this->getQueryDriver($dsId);
+        $sql  = $query->toSql($driver, $arguments);
+        $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
+
         $pkId = null;
-        if( 'pgsql' === $driver->type ) {
+        if ($driver instanceof PDOPgSQLDriver) {
             $pkId = $stm->fetchColumn();
         } else {
+            // lastInsertId is supported in SQLite and MySQL
             $pkId = $conn->lastInsertId();
         }
 
         $this->_data = $args;
         $this->_data[ $k ] = $pkId;
-        return $this->reload($pkId);
+
+        return $this->reportSuccess( 'Create success', array( 
+            'sql' => $sql
+        ));
+
     }
 
 
@@ -1243,7 +1249,7 @@ abstract class BaseModel implements
      */
     public function save()
     {
-        $k = $this->getSchema()->primaryKey;
+        $k = static::primary_key;
         return ( $k && ! isset($this->_data[$k]) )
                 ? $this->create( $this->_data )
                 : $this->update( $this->_data )
@@ -1257,20 +1263,19 @@ abstract class BaseModel implements
      */
     public function display( $name )
     {
-        if ( $c = $this->getSchema()->getColumn( $name ) ) {
+        if ($c = $this->getSchema()->getColumn( $name ) ) {
             // get raw value
-            if ( $c->virtual ) {
+            if ($c->virtual) {
                 return $this->get($name);
             }
-            return $c->display( $this->getValue( $name ) );
-        }
-        elseif( isset($this->_data[$name]) ) {
+            return $c->display($this->getValue( $name ));
+        } elseif (isset($this->_data[$name])) {
             return $this->_data[$name];
         }
         
         // for relationship record
         $val = $this->__get($name);
-        if( $val && $val instanceof \LazyRecord\BaseModel ) {
+        if ($val && $val instanceof \LazyRecord\BaseModel) {
             return $val->dataLabel();
         }
     }
@@ -1286,7 +1291,7 @@ abstract class BaseModel implements
      * @param array $args
      * @return array current record data.
      */
-    public function deflateData(& $args) {
+    public function deflateData(array & $args) {
         foreach( $args as $k => $v ) {
             $c = $this->getSchema()->getColumn($k);
             if( $c )
@@ -1342,18 +1347,18 @@ abstract class BaseModel implements
      *
      * @return Result
      */
-    public function loadQuery($sql , $vars = array() , $dsId = null ) 
+    public function loadQuery($sql , $args = array() , $dsId = null ) 
     {
         if (! $dsId) {
             $dsId = $this->getReadSourceId();
         }
 
         $conn = $this->getConnection( $dsId );
-        $stm = $this->dbPrepareAndExecute($conn, $sql, $vars);
+        $stm = $this->dbPrepareAndExecute($conn, $sql, $args);
         if ( FALSE === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
             return $this->reportError('Data load failed.', array( 
                 'sql' => $sql,
-                'vars' => $vars,
+                'args' => $args,
             ));
         }
         return $this->reportSuccess( 'Data loaded', array( 
@@ -1368,7 +1373,7 @@ abstract class BaseModel implements
      *
      * @return PDOStatement
      */
-    public function dbPrepareAndExecute($conn, $sql, $args = array() )
+    public function dbPrepareAndExecute(PDO $conn, $sql, array $args = array() )
     {
         $stm = $conn->prepare( $sql );
         $stm->execute( $args );
@@ -1447,27 +1452,6 @@ abstract class BaseModel implements
     {
         // relationship id can override value column.
         if ( $relation = $this->getSchema()->getRelation( $key ) ) {
-            // cache object cache
-            if ( isset($this->_data[ $key ]) 
-                && $this->_data[$key] instanceof \LazyRecord\BaseModel ) 
-            {
-                return $this->_data[$key];
-            }
-
-            if ( isset($this->_joinedRelationships[ $key ] ) ) {
-                $alias = $this->_joinedRelationships[ $key ];
-                $prefix = $alias . '_';
-                $stash = array();
-                foreach( $this->_data as $k => $v ) {
-                    if ( strpos($k,$prefix) === 0 ) {
-                        $stash[ substr($k,strlen($prefix)) ] = $v;
-                    }
-                }
-                $model = $relation->newForeignModel();
-                $model->setData($stash);
-                return $this->_data[ $key ] = $model;
-            }
-
             // use model query to load relational record.
             return $this->getRelationalRecords($key, $relation);
         }
@@ -1500,7 +1484,7 @@ abstract class BaseModel implements
      */
     public function getValue( $name )
     {
-        if ( isset($this->_data[$name]) ) {
+        if (isset($this->_data[$name])) {
             return $this->_data[$name];
         }
     }
@@ -1518,25 +1502,43 @@ abstract class BaseModel implements
     /**
      * get current record data stash
      *
+     * DEPRECATED
+     *
      * @return array record data stash
+     * @codeCoverageIgnore
      */
     public function getData()
+    {
+        trigger_error(__METHOD__ . " is deprecated.", E_USER_DEPRECATED);
+        return $this->_data;
+    }
+
+
+    public function getStashedData()
     {
         return $this->_data;
     }
 
 
     /**
-     * set raw data
+     * Set raw data
+     *
+     * DEPRECATED
      *
      * @param array $array
+     * @codeCoverageIgnore
      */
     public function setData(array $array)
     {
+        trigger_error(__METHOD__ . " is deprecated.", E_USER_DEPRECATED);
         $this->_data = $array;
     }
 
 
+    public function setStashedData(array $array)
+    {
+        $this->_data = $array;
+    }
 
     /**
      * Do we have this column ?
@@ -1567,12 +1569,12 @@ abstract class BaseModel implements
 
         /*
         switch($relation['type']) {
-            case SchemaDeclare::has_one:
-            case SchemaDeclare::has_many:
+            case Relationship::HAS_ONE:
+            case Relationship::HAS_MANY:
             break;
         }
         */
-        if ( SchemaDeclare::has_one === $relation['type'] ) 
+        if ( Relationship::HAS_ONE === $relation['type'] ) 
         {
             $sColumn = $relation['self_column'];
 
@@ -1590,7 +1592,7 @@ abstract class BaseModel implements
             $model->load(array( $fColumn => $sValue ));
             return $this->setInternalCache($cacheKey,$model);
         }
-        elseif( SchemaDeclare::has_many === $relation['type'] )
+        elseif( Relationship::HAS_MANY === $relation['type'] )
         {
             // TODO: migrate this code to Relationship class.
             $sColumn = $relation['self_column'];
@@ -1615,7 +1617,7 @@ abstract class BaseModel implements
             return $this->setInternalCache($cacheKey,$collection);
         }
         // belongs to one record
-        elseif( SchemaDeclare::belongs_to === $relation['type'] ) {
+        elseif (Relationship::BELONGS_TO === $relation['type'] ) {
             $sColumn = $relation['self_column'];
             $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];
@@ -1630,7 +1632,7 @@ abstract class BaseModel implements
             $ret = $model->load(array( $fColumn => $sValue ));
             return $this->setInternalCache($cacheKey, $model);
         }
-        elseif( SchemaDeclare::many_to_many === $relation['type'] ) {
+        elseif( Relationship::MANY_TO_MANY === $relation['type'] ) {
             $rId = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
             $rId2 = $relation['relation_foreign'];  // get external relationId from the middle relation. (book from author_books)
 
@@ -1660,7 +1662,7 @@ abstract class BaseModel implements
                 *    Select * from books b (r2) left join author_books ab on ( ab.book_id = b.id )
                 *       where b.author_id = :author_id
                 */
-            $collection->join( $sSchema->getTable() )->alias('b')
+            $collection->join( $sSchema->getTable() )->as('b')
                             ->on()
                             ->equal( 'b.' . $foreignRelation['self_column'] , array( $collection->getAlias() . '.' . $fColumn ) );
 
@@ -1796,156 +1798,15 @@ abstract class BaseModel implements
         return $data;
     }
 
-
-
-    /**
-     * Handle static calls for model class.
-     *
-     * ModelName::delete()
-     *     ->where()
-     *       ->equal('id', 3)
-     *       ->back()
-     *      ->execute();
-     *
-     * ModelName::update( $hash )
-     *     ->where()
-     *        ->equal( 'id' , 123 )
-     *     ->back()
-     *     ->execute();
-     *
-     * ModelName::load( $id );
-     *
-     */
-    public static function __callStatic($m, $a) 
-    {
-        $called = get_called_class();
-        switch( $m ) {
-        case 'create':
-        case 'update':
-        case 'delete':
-        case 'load':
-            return forward_static_call_array(array( $called , '__static_' . $m), $a);
-            break;
-        }
-        // return call_user_func_array( array($model,$name), $arguments );
-    }
-
-
-    /**
-     * Create new record with data array
-     *
-     * @param array $args data array.
-     * @return BaseModel $record
-     */
-    public static function __static_create(array $args)
-    {
-        $model = new static;
-        $ret = $model->create($args);
-        return $model;
-    }
-
-    /**
-     * Update record with data array
-     *
-     * @return SQLBuilder\Expression expression for building where condition sql.
-     *
-     * Model::update(array( 'name' => 'New name' ))
-     *     ->where()
-     *       ->equal('id', 1)
-     *       ->back()
-     *     ->execute();
-     */
-    public static function __static_update(array $args) 
-    {
-        $model = new static;
-        $dsId  = $model->getWriteSourceId();
-        $conn  = $model->getWriteConnection();
-        $query = $model->createExecutiveQuery($dsId);
-        $query->update($args);
-        $query->callback = function($builder,$sql) use ($model,$conn, $args) {
-            try {
-                $stm = $model->dbPrepareAndExecute($conn,$sql,$builder->vars);
-            }
-            catch (PDOException $e)
-            {
-                throw new DatabaseException('Update failed', $e, array(
-                    'vars' => $builder->vars,
-                    'args' => $args,
-                    'sql' => $sql,
-                ));
-            }
-            return $model->reportSuccess('Record updated', array( 'sql' => $sql ));
-        };
-        return $query;
-    }
-
-
-    /**
-     * static delete action
-     *
-     * @return SQLBuilder\Expression expression for building delete condition.
-     *
-     * Model::delete()
-     *    ->where()
-     *       ->equal( 'id' , 3 )
-     *       ->back()
-     *       ->execute();
-     */
-    public static function __static_delete()
-    {
-        $model = new static;
-        $dsId  = $model->getWriteSourceId();
-        $conn  = $model->getConnection($dsId);
-        $query = $model->createExecutiveQuery($dsId);
-        $query->delete();
-        $query->callback = function($builder,$sql) use ($model,$conn) {
-            try {
-                $stm = $model->dbPrepareAndExecute($conn,$sql,$builder->vars);
-            }
-            catch (PDOException $e)
-            {
-                throw new DatabaseException('Delete Failed', $e, array(
-                    'sql' => $sql,
-                ));
-            }
-            return $model->reportSuccess('Deleted', array( 'sql' => $sql ));
-        };
-        return $query;
-    }
-
-    public static function __static_load($args)
-    {
-        $model = new static;
-        $dsId  = $model->getReadSourceId();
-        $conn  = $model->getConnection( $dsId );
-
-        if ( is_array( $args ) ) {
-            $q = $model->createExecutiveQuery($dsId);
-            $q->callback = function($b,$sql) use ($model,$conn) {
-                $stm = $model->dbPrepareAndExecute($conn,$sql,$b->vars);
-                return $stm->fetchObject( get_class($model) );
-            };
-            $q->limit(1);
-            $q->whereFromArgs($args);
-            return $q->execute();
-        }
-        else {
-            $model->load($args);
-            return $model;
-        }
-    }
-
-
-
     /**
      * use array_intersect_key to filter array with column names
      *
      * @param array $args
      * @return array
      */
-    public function filterArrayWithColumns( $args , $withVirtual = false )
+    public function filterArrayWithColumns(array $args , $includeVirtualColumns = false )
     {
-        return array_intersect_key( $args , $this->getSchema()->getColumns( $withVirtual ) );
+        return array_intersect_key( $args , $this->getSchema()->getColumns( $includeVirtualColumns ) );
     }
 
 
@@ -1959,7 +1820,7 @@ abstract class BaseModel implements
      */
     public function inflateColumnValue($n) 
     {
-        $value = isset($this->_data[ $n ]) ? $this->_data[$n] : null;
+        $value = isset($this->_data[$n]) ? $this->_data[$n] : null;
         if ( $c = $this->getSchema()->getColumn( $n ) ) {
             return $c->inflate($value, $this);
         }
@@ -2001,21 +1862,13 @@ abstract class BaseModel implements
     }
 
 
-    /***************************************
-     * Schema related methods
-     ***************************************/
-    public function loadSchema()
+    public function getSchema()
     {
-        return SchemaLoader::load( static::schema_proxy_class );
-    }
-
-    public function getSchema() 
-    {
-        if ( $this->_schema ) {
+        if ($this->_schema) {
             return $this->_schema;
         } elseif ( @constant('static::schema_proxy_class') ) {
             // the schema_proxy_class is from the *Base.php file.
-            if ( $this->_schema = SchemaLoader::load( static::schema_proxy_class ) ) {
+            if ($this->_schema = SchemaLoader::load(static::schema_proxy_class)) {
                 return $this->_schema;
             }
             throw new Exception("Can not load " . static::schema_proxy_class);
@@ -2023,69 +1876,9 @@ abstract class BaseModel implements
         throw new RuntimeException("schema is not defined in " . get_class($this) );
     }
 
-    /**
-     * Duplicated with asCollection() method
-     */
-    public function newCollection() 
-    {
-        return $this->getSchema()->newCollection();
-    }
-
-    // schema methods
-    public function getColumn($n)
-    {
-        return $this->getSchema()->getColumn($n);
-    }
-
-
-    /**
-     * Get column name array from RuntimeSchema object.
-     *
-     * @return string[] column names
-     */
-    public function getColumnNames()
-    {
-        return $this->getSchema()->getColumnNames();
-    }
-
-
-    /**
-     * Get column objects from RuntimeSchema object.
-     *
-     * @return RuntimeColumn[name]
-     */
-    public function getColumns($withVirtual = false)
-    {
-        return $this->getSchema()->getColumns( $withVirtual );
-    }
-
-
-    /**
-     * Get model label from RuntimeSchema.
-     *
-     * @return string model label name
-     */
-    public function getLabel()
-    {
-        return $this->getSchema()->getLabel();
-    }
-
-
-    /**
-     * Get model table
-     *
-     * @return string model table name
-     */
-    public function getTable()
-    {
-        return $this->getSchema()->getTable();
-    }
-
-
     /***************************************
      * Cache related methods
      ***************************************/
-
 
     /**
      * flush internal cache, in php memory.
@@ -2144,14 +1937,14 @@ abstract class BaseModel implements
 
     private function getCache($key)
     {
-        if( $cache = self::getCacheInstance() ) {
+        if ($cache = self::getCacheInstance()) {
             return $cache->get( $this->getCachePrefix() . $key);
         }
     }
 
     private function setCache($key,$val,$ttl = 0)
     {
-        if( $cache = self::getCacheInstance() ) {
+        if ($cache = self::getCacheInstance()) {
             $cache->set( $this->getCachePrefix() . $key, $val, $ttl );
         }
         return $val;
@@ -2173,11 +1966,6 @@ abstract class BaseModel implements
         }
         return $this->getSchema()->getReadSourceId();
     }
-
-    public function getModelClass() {
-        return $this->getSchema()->getModelClass();
-    }
-
 
 
     public function fetchOneToManyRelationCollection($relationId) {
@@ -2203,21 +1991,21 @@ abstract class BaseModel implements
         $this->autoReload = $this->autoReload;
     }
 
-    public function asCreateAction($args = array())
+    public function asCreateAction(array $args = array())
     {
         // the create action requires empty args
         return $this->newAction('Create', $args);
     }
 
-    public function asUpdateAction($args = array())
+    public function asUpdateAction(array $args = array())
     {
         // should only update the defined fields
         return $this->newAction('Update',$args);
     }
 
-    public function asDeleteAction($args = array())
+    public function asDeleteAction(array $args = array())
     {
-        $pk = $this->getSchema()->primaryKey;
+        $pk = static::primary_key;
         if ( isset($this->_data[$pk]) ) {
             $args[$pk] = $this->_data[$pk];
         }
@@ -2229,7 +2017,7 @@ abstract class BaseModel implements
      *
      * @param string $type 'create','update','delete'
      */
-    public function newAction($type, $args = array() )
+    public function newAction($type, array $args = array() )
     {
         $class = get_class($this);
         $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class,$type);

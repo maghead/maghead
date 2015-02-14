@@ -15,8 +15,7 @@ class ColumnTest extends PHPUnit_Framework_TestCase
         is('foo',$column->name);
         ok($column->primary);
         is('integer',$column->type);
-        ok($column->notNull);
-        ok( ! $column->null);
+        $this->assertFalse($column->null);
     }
 }
 

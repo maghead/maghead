@@ -5,12 +5,11 @@ class FooMigration extends LazyRecord\Migration\Migration
 {
     public function upgrade() 
     {
-        $this->addColumn('foo', 
-            Column::create('address')
-                ->type('varchar(128)')
+        $this->addColumn('foo', function($column) {
+            $column->type('varchar(128)')
                 ->default('(none)')
-                ->notNull()
-        );
+                ->notNull();
+        });
     }
 }
 

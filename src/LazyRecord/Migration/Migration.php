@@ -1,6 +1,10 @@
 <?php
 namespace LazyRecord\Migration;
-use SQLBuilder\MigrationBuilder;
+use SQLBuilder\Universal\Query\AlterTableQuery;
+use SQLBuilder\Universal\Syntax\Column;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Bind;
+
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Console;
@@ -8,13 +12,13 @@ use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\ColumnDeclare;
 use LazyRecord\SqlBuilder\SqlBuilder;
+
 use PDOException;
 
 
 class Migration
 {
     public $driver;
-    public $builder;
     public $connection;
     public $logger;
 
@@ -23,7 +27,7 @@ class Migration
         $connectionManager = ConnectionManager::getInstance();
         $this->driver = $connectionManager->getQueryDriver($dsId);
         $this->connection = $connectionManager->getConnection($dsId);
-        $this->builder = new MigrationBuilder($this->driver);
+        // $this->builder = new MigrationBuilder($this->driver);
         $this->logger  = Console::getInstance()->getLogger();
     }
 
@@ -54,17 +58,18 @@ class Migration
     }
 
 
-    public function addColumn($table,$cb)
+    public function addColumn($table, $arg)
     {
-        if( is_callable($cb) ) {
-            $c = new ColumnDeclare;
-            call_user_func($cb,$c);
-            $sql = $this->builder->addColumn($table,$c);
-            $this->executeSql($sql);
+        $query = new AlterTableQuery($table);
+        if (is_callable($arg)) {
+            $c = new Column;
+            call_user_func($arg, $c);
+            $query->addColumn($c);
         } else {
-            $sql = $this->builder->addColumn($table,$cb);
-            $this->executeSql($sql);
+            $query->addColumn($arg);
         }
+        $sql = $query->toSql($this->connection->createQueryDriver(), new ArgumentArray);
+        $this->executeSql($sql);
     }
 
     /**

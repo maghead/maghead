@@ -6,7 +6,7 @@ schema:
   base_model: \LazyRecord\BaseModel
   base_collection: \LazyRecord\BaseCollection
   paths:
-    - tests/schema
+    - tests
 cache:
   class: LazyRecord\Cache\Memcache
   servers:

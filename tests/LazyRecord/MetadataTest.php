@@ -1,17 +1,18 @@
 <?php
 use LazyRecord\ConnectionManager;
+use LazyRecord\Metadata;
 
 class MetadataTest extends PHPUnit_Framework_TestCase
 {
 
 
-    function setUp()
+    public function setUp()
     {
         $connm = ConnectionManager::getInstance();
         $connm->addDataSource('default', array( 'dsn' => 'sqlite::memory:' ));
     }
 
-    function tearDown()
+    public function tearDown()
     {
         $connm = ConnectionManager::getInstance();
         $connm->removeDataSource('default');
@@ -21,8 +22,7 @@ class MetadataTest extends PHPUnit_Framework_TestCase
 
     function test()
     {
-        $metadata = new LazyRecord\Metadata('default');
-        ok($metadata);
+        $metadata = new Metadata('default');
         $metadata->init();
         $metadata->init();
 
@@ -41,11 +41,10 @@ class MetadataTest extends PHPUnit_Framework_TestCase
     }
 
     public function testMetadata() {
-        $metadata = new LazyRecord\Metadata('default');
-        ok($metadata);
+        $metadata = new Metadata('default');
         $metadata->init();
 
-        $metaItem = new LazyRecord\Model\Metadata;
+        $metaItem = new \LazyRecord\Model\Metadata;
         ok($metaItem);
         ok($metaItem->getSchema(),"Get schema");
 
@@ -54,15 +53,13 @@ class MetadataTest extends PHPUnit_Framework_TestCase
     }
 
     public function testCollection() {
-        $metadata = new LazyRecord\Metadata('default');
-        ok($metadata);
+        $metadata = new Metadata('default');
         $metadata->init();
 
         $metadata['version'] = 1;
         $metadata['name'] = 'c9s';
 
         $metas = new LazyRecord\Model\MetadataCollection;
-        ok($metas);
         foreach( $metas as $meta ) {
             ok($meta);
         }

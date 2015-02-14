@@ -17,7 +17,7 @@ configuration file content:
       - tests/bootstrap.php
     schema:
       paths:
-        - tests/schema
+        - tests
     data_sources:
       default:
         dsn: 'sqlite:tests.db'

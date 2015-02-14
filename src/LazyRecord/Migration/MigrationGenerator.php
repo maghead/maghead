@@ -10,7 +10,7 @@ use ClassTemplate\MethodCall;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser\TableParser;
-use LazyRecord\Inflector;
+use Doctrine\Common\Inflector\Inflector;
 use LazyRecord\Schema\Comparator;
 use LazyRecord\Console;
 
@@ -49,8 +49,7 @@ class MigrationGenerator
         elseif( is_string($time) ) {
             $date = $time;
         }
-        $inflector = Inflector::getInstance();
-        $name = $inflector->underscore($taskName);
+        $name = Inflector::tableize($taskName);
         return sprintf('%s_%s.php', $date, $taskName);
     }
 

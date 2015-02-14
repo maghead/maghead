@@ -6,7 +6,7 @@ class MixinSchemaDeclare extends SchemaDeclare
     /**
      * Build schema
      */
-    public function build( $options = array() )
+    public function build(array $options = array())
     {
         $this->schema( $options );
         // we don't need primary field (id) for mixin schema

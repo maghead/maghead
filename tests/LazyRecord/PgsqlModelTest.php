@@ -2,6 +2,6 @@
 class PgsqlModelTest extends BasicCRUDTest
 {
     public $driver = 'pgsql';
-    public $schemaPath = 'tests/schema';
+    public $schemaPath = 'tests';
 }
 

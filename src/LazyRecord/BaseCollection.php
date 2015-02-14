@@ -10,12 +10,18 @@ use ArrayAccess;
 use Countable;
 use IteratorAggregate;
 use ArrayIterator;
+use BadMethodCallException;
 
-use SQLBuilder\QueryBuilder;
-use SQLBuilder\Driver;
+use SQLBuilder\Universal\Query\SelectQuery;
+use SQLBuilder\Universal\Query\UpdateQuery;
+use SQLBuilder\Universal\Query\DeleteQuery;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\PDOPgSQLDriver;
+use SQLBuilder\Driver\PDOMySQLDriver;
+use SQLBuilder\ArgumentArray;
+
 use LazyRecord\Result;
 use LazyRecord\BaseModel;
-use LazyRecord\QueryDriver;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaLoader;
 use SerializerKit\YamlSerializer;
@@ -29,16 +35,12 @@ class BaseCollection
     implements 
     ArrayAccess, 
     Countable, 
-    IteratorAggregate, 
-    ExporterInterface
+    IteratorAggregate
 {
     protected $_lastSql;
 
     protected $_vars;
 
-    /**
-     * @var SQLBuilder\QueryBuilder
-     */
     public $_readQuery;
 
     /**
@@ -52,7 +54,7 @@ class BaseCollection
      *
      * @var array
      */ 
-    protected $_itemData = null;
+    protected $_rows = null;
 
 
 
@@ -61,30 +63,10 @@ class BaseCollection
      */
     protected $_presetVars = array();
 
-
-
-
-    /**
-     * @var array save joined alias and table names
-     *
-     *  Relationship Id => Joined Alias
-     *
-     */
-    protected $_joinedRelationships = array();
-
-
     /**
      * postCreate hook
      */
     protected $_postCreate;
-
-
-    /**
-     * current data item cursor position
-     *
-     * @var integer
-     */
-    protected $_itemCursor = null;
 
 
     protected $_schema;
@@ -116,46 +98,35 @@ class BaseCollection
 
     public function getIterator()
     {
-        if ( ! $this->_itemData ) {
-            $this->_readRows();
+        if ( ! $this->_rows ) {
+            $this->readRows();
         }
-        return new ArrayIterator($this->_itemData);
+        return new ArrayIterator($this->_rows);
     }
 
     public function getSchema() 
     {
-        if ( $this->_schema ) {
+        if ($this->_schema){
             return $this->_schema;
-        } elseif ( @constant('static::schema_proxy_class') ) {
-            return $this->_schema = SchemaLoader::load( static::schema_proxy_class );
+        } elseif (@constant('static::schema_proxy_class')) {
+            return $this->_schema = SchemaLoader::load(static::schema_proxy_class);
         } 
         throw new RuntimeException("schema is not defined in " . get_class($this) );
     }
 
-
-
-
-
-    public function __get( $key ) {
-        /**
-         * lazy attributes
-         */
-        if( $key === '_schema' || $key === 'schema' ) {
-            return $this->getSchema();
-        } elseif( $key === '_handle' ) {
-            return $this->handle ?: $this->prepareData();
-        }
-        elseif( $key === '_query' ) {
-            return $this->_readQuery 
-                    ? $this->_readQuery
-                    : $this->_readQuery = $this->createReadQuery( 
-                        $this->getSchema()->getReadSourceId() 
-                    );
-        } elseif( $key === '_items' ) {
-            return $this->_itemData ?: $this->_readRows();
-        }
+    public function getCurrentReadQuery()
+    {
+        return $this->_readQuery ? $this->_readQuery : $this->_readQuery = $this->createReadQuery();
     }
 
+    public function getRows()
+    {
+        if ($this->_rows) {
+            return $this->_rows;
+        }
+        $this->readRows();
+        return $this->_rows;
+    }
 
     /**
      * Free cached row data and result handle, 
@@ -165,22 +136,20 @@ class BaseCollection
      */
     public function free()
     {
-        $this->_itemData = null;
+        $this->_rows = null;
         $this->_result = null;
-        $this->_itemCursor = null;
         $this->handle = null;
         return $this;
     }
 
-
     /**
-     * Dispatch undefined methods to QueryBuilder object,
+     * Dispatch undefined methods to SelectQuery object,
      * To achieve mixin-like feature.
      */
     public function __call($m,$a)
     {
-        $q = $this->_query;
-        if( method_exists($q,$m) ) {
+        $q = $this->getCurrentReadQuery();
+        if (method_exists($q,$m) ) {
             return call_user_func_array(array($q,$m),$a);
         }
         throw new Exception("Undefined method $m");
@@ -194,7 +163,7 @@ class BaseCollection
     public function setAlias($alias)
     {
         $this->_alias = $alias;
-        if ( $q = $this->_query ) {
+        if ($q = $this->getCurrentReadQuery()) {
             $q->alias($alias);
         }
         return $this;
@@ -214,7 +183,7 @@ class BaseCollection
 
     public function selectAll() {
         $dsId = $this->getSchema()->getReadSourceId();
-        $driver = $this->getQueryDriver( $dsId );
+        $driver = $this->getQueryDriver($dsId);
         $this->explictSelect = true;
         $this->selected = $this->getExplicitColumnSelect($driver);
         return $this;
@@ -229,59 +198,58 @@ class BaseCollection
 
     // TODO: maybe we should move this method into RuntimeSchema.
     // Because it's used in BaseModel class too
-    public function getQueryDriver( $dsId )
+    public function getQueryDriver($dsId)
     {
         return ConnectionManager::getInstance()->getQueryDriver( $dsId );
     }
 
     public function getWriteQueryDriver()
     {
-        return $this->getQueryDriver( 
-            $this->getSchema()->getWriteSourceId()
-        );
+        return $this->getQueryDriver($this->getSchema()->getWriteSourceId());
     }
 
     public function getReadQueryDriver()
     {
-        return $this->getQueryDriver( 
-            $this->getSchema()->getReadSourceId()
-        );
+        return $this->getQueryDriver($this->getSchema()->getReadSourceId());
     }
 
 
     public function createReadQuery()
     {
         $dsId = $this->getSchema()->getReadSourceId();
-        $q = new QueryBuilder;
-        $q->driver = $this->getQueryDriver( $dsId );
-        $q->table( $this->getSchema()->table );
+
+        $conn = ConnectionManager::getInstance()->getConnection($dsId);
+        $driver = $conn->createQueryDriver();
+
+        $q = new SelectQuery;
+
+        // Read from class consts
+        $q->from($this->getSchema()->table, $this->getAlias()); // main table alias
 
         $selection = $this->getSelected();
         $q->select(
             $selection ? $selection
                 : $this->explictSelect 
-                    ? $this->getExplicitColumnSelect($q->driver)
+                    ? $this->getExplicitColumnSelect($driver)
                     : $this->getAlias() . '.*'
         );
-        $q->alias( $this->getAlias() ); // main table alias
 
         // Setup Default Ordering.
-        if ( ! empty($this->defaultOrdering) ) {
+        if (! empty($this->defaultOrdering)) {
             foreach( $this->defaultOrdering as $ordering ) {
-                $q->order( $ordering[0], $ordering[1] );
+                $q->orderBy( $ordering[0], $ordering[1] );
             }
         }
-
         return $q;
     }
 
 
     // xxx: this might be used in other join statements.
-    public function getExplicitColumnSelect(QueryDriver $driver)
+    public function getExplicitColumnSelect(BaseDriver $driver)
     {
         $alias = $this->getAlias();
         return array_map(function($name) use($alias,$driver) { 
-                return $alias . '.' . $driver->getQuoteColumn( $name );
+                return $alias . '.' . $driver->quoteIdentifier( $name );
         }, $this->getSchema()->getColumnNames());
     }
 
@@ -291,7 +259,7 @@ class BaseCollection
      *
      * Which calls doFetch() to do a query operation.
      */
-    public function prepareData($force = false)
+    public function prepareHandle($force = false)
     {
         if( ! $this->handle || $force ) {
             $this->_result = $this->fetch();
@@ -309,24 +277,18 @@ class BaseCollection
     public function fetch()
     {
         /* fetch by current query */
-        $query = $this->_query;
-        $this->_lastSql = $sql = $query->build();
-        $this->_vars = $vars = $query->vars;
         $dsId = $this->getSchema()->getReadSourceId();
+        $conn = ConnectionManager::getInstance()->getConnection($dsId);
+        $driver = $conn->createQueryDriver();
 
-        // XXX: here we use SQLBuilder\QueryBuilder to build our variables,
-        //   but PDO doesnt accept boolean type value, we need to transform it.
-        foreach( $vars as $k => & $v ) {
-            if ( $v === false ) {
-                $v = 'FALSE';
-            } elseif( $v === true ) {
-                $v = 'TRUE';
-            }
-        }
+        $arguments = new ArgumentArray;
+
+        $this->_lastSql = $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
+        $this->_vars = $vars = $arguments->toArray();
 
         try {
-            $this->handle = ConnectionManager::getInstance()->getConnection($dsId)->prepareAndExecute($sql, $vars );
-        } catch ( Exception $e ) {
+            $this->handle = $conn->prepareAndExecute($sql, $vars);
+        } catch (Exception $e) {
             return Result::failure('Collection fetch failed: ' . $e->getMessage() , array( 
                 'vars' => $vars,
                 'sql' => $sql,
@@ -346,18 +308,22 @@ class BaseCollection
     public function queryCount()
     {
         $dsId = $this->getSchema()->getReadSourceId();
-        $q = clone $this->_query;
-        $q->select('COUNT(distinct m.id)'); // Override current select.
+
+        $conn = ConnectionManager::getInstance()
+                    ->getConnection($dsId);
+
+        $driver = $conn->createQueryDriver();
+
+        $q = clone $this->getCurrentReadQuery();
+        $q->setSelect('COUNT(distinct m.id)'); // Override current select.
 
         // when selecting count(*), we dont' use groupBys or order by
-        $q->orders = array();
-        $q->groupBys = array();
-        $sql = $q->build();
+        $q->clearOrderBy();
+        $q->clearGroupBy();
 
-        // var_dump( $sql );
-        
-        return (int) ConnectionManager::getInstance()
-                    ->getConnection($dsId)->prepareAndExecute($sql,$q->vars)
+        $arguments = new ArgumentArray;
+        $sql = $q->toSql($driver, $arguments);
+        return (int) $conn->prepareAndExecute($sql, $arguments->toArray())
                     ->fetchColumn();
     }
 
@@ -370,12 +336,24 @@ class BaseCollection
      */
     public function size()
     {
-        return count($this->_items);
+        if ($this->_rows) {
+            return count($this->_rows);
+        }
+        $this->readRows();
+        return count($this->_rows);
     }
 
+
+    /**
+     * This method implements the Countable interface
+     */
     public function count() 
     {
-        return $this->size();
+        if ($this->_rows) {
+            return count($this->_rows);
+        }
+        $this->readRows();
+        return count($this->_rows);
     }
 
 
@@ -386,7 +364,7 @@ class BaseCollection
      */
     public function limit($number)
     {
-        $this->_query->limit($number);
+        $this->getCurrentReadQuery()->limit($number);
         return $this;
     }
 
@@ -397,7 +375,7 @@ class BaseCollection
      */
     public function offset($number)
     {
-        $this->_query->offset($number);
+        $this->getCurrentReadQuery()->offset($number);
         return $this;
     }
 
@@ -429,8 +407,11 @@ class BaseCollection
      */
     public function pager($page = 1,$pageSize = 10)
     {
-        // setup limit
-        return new CollectionPager( $this->_items, $page, $pageSize );
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        // Setup limit
+        return new CollectionPager($this->_rows, $page, $pageSize );
     }
 
     /**
@@ -440,25 +421,19 @@ class BaseCollection
      */
     public function items()
     {
-        return $this->_items;
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        return $this->_rows;
     }
+
 
     public function fetchRow()
     {
-        return $this->_handle->fetchObject( static::model_class );
-    }
-
-    protected function _readRowsWithJoinedRelationships()
-    {
-        // XXX: should be lazy
-        $schema = $this->getSchema();
-        $handle = $this->_handle;
-        while ( $o = $handle->fetchObject( static::model_class ) ) {
-            // check if we've already joined the model/table, we can translate 
-            // the column values to the model object with the alias prefix.
-            $o->setJoinedRelationships($this->_joinedRelationships);
-            $this->_itemData[] = $o;
+        if (!$this->handle) {
+            $this->prepareHandle();
         }
+        return $this->handle->fetchObject( static::model_class );
     }
 
 
@@ -468,48 +443,80 @@ class BaseCollection
      *
      * @return model_class[]
      */
-    protected function _readRows()
+    protected function readRows()
     {
         // initialize the connection handle object
-        $h = $this->_handle;
+        if (!$this->handle) {
+            $this->prepareHandle();
+        }
 
-        if ( ! $h ) {
-            if ( $this->_result->exception ) {
+        if (! $this->handle) {
+            if ($this->_result->exception ) {
                 throw $this->_result->exception;
             }
             throw new RuntimeException( get_class($this) . ':' . $this->_result->message );
         }
 
-
-        $this->_itemData = array();
-        if ( ! empty($this->_joinedRelationships) ) {
-            $this->_readRowsWithJoinedRelationships();
-            return $this->_itemData;
-        }
-
-        // use fetch all
-        return $this->_itemData = $h->fetchAll(PDO::FETCH_CLASS, static::model_class );
+        // Use fetch all
+        return $this->_rows = $this->handle->fetchAll(PDO::FETCH_CLASS, static::model_class );
     }
 
 
+    public function delete()
+    {
+        $schema = $this->getSchema();
+        $dsId = $schema->getWriteSourceId();
+
+        $conn = ConnectionManager::getInstance()->getConnection($dsId);
+        $driver = $conn->createQueryDriver();
+
+        $query = new DeleteQuery;
+        $query->from($schema->getTable());
+        $query->setWhere(clone $this->getCurrentReadQuery()->getWhere());
+
+        $arguments = new ArgumentArray;
+        $sql = $query->toSql($driver, $arguments);
+
+        try {
+            $this->handle = $conn->prepareAndExecute($sql, $arguments->toArray());
+        } catch (Exception $e) {
+            return Result::failure('Collection delete failed: ' . $e->getMessage() , array( 
+                'vars' => $arguments->toArray(),
+                'sql' => $sql,
+                'exception' => $e,
+            ));
+        }
+        return Result::success('Deleted', array( 'sql' => $sql ));
+
+    }
 
 
     /**
      * Update collection
+     *
+     * FIXME
      */
     public function update(array $data)
     {
-        // get current query object and set it to update.
-        $query = $this->_query->update($data);
-        $sql = $query->build();
-        $vars = $query->vars;
-        $dsId = $this->getSchema()->getWriteSourceId();
+        $schema = $this->getSchema();
+        $dsId = $schema->getWriteSourceId();
+
+        $conn = ConnectionManager::getInstance()->getConnection($dsId);
+        $driver = $conn->createQueryDriver();
+
+        $query = new UpdateQuery;
+        $query->setWhere(clone $this->getCurrentReadQuery()->getWhere());
+        $query->update($schema->getTable());
+        $query->set($data);
+
+        $arguments = new ArgumentArray;
+        $sql = $query->toSql($driver, $arguments);
 
         try {
-            $this->handle = ConnectionManager::getInstance()->getConnection($dsId)->prepareAndExecute($sql, $vars);
+            $this->handle = $conn->prepareAndExecute($sql, $arguments->toArray());
         } catch (Exception $e) {
             return Result::failure('Collection update failed: ' . $e->getMessage() , array( 
-                'vars' => $vars,
+                'vars' => $arguments->toArray(),
                 'sql' => $sql,
                 'exception' => $e,
             ));
@@ -517,98 +524,90 @@ class BaseCollection
         return Result::success('Updated', array( 'sql' => $sql ));
     }
 
-
-    /******************** Implements Iterator methods ********************/
-    public function rewind()
-    { 
-        $this->_itemCursor = 0;
-    }
-
-    /* is current row a valid row ? */
-    public function valid()
-    {
-        if ( $this->_itemData == null ) {
-            $this->_readRows();
-        }
-        return isset($this->_itemData[ $this->_itemCursor ] );
-    }
-
-    public function current() 
-    { 
-        return $this->_itemData[ $this->_itemCursor ];
-    }
-
-    public function next() 
-    {
-        return $this->_itemData[ $this->_itemCursor++ ];
-    }
-
-    public function key()
-    {
-        return $this->_itemCursor;
-    }
-
-    /*********************** End of Iterator methods ************************/
-
-
     public function splice($pos,$count = null)
     {
-        $items = $this->_items ?: array();
-        return array_splice( $items, $pos, $count);
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        return array_splice($this->_rows, $pos, $count);
     }
 
     public function first()
     {
-        return isset($this->_items[0]) ?
-                $this->_items[0] : null;
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        return ! empty($this->_rows) ? $this->_rows[0] : null;
     }
 
     public function last()
     {
-        if( !empty($this->_items) ) {
-            return end($this->_items);
+        if (!$this->_rows) {
+            $this->readRows();
         }
+        return end($this->_rows);
     }
 
 
     /** array access interface */
     public function offsetSet($name,$value)
     {
-        if( null === $name ) {
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        if (NULL === $name ) {
             return $this->create($value);
         }
-        $this->_items[ $name ] = $value;
+        $this->_rows[ $name ] = $value;
     }
 
     public function offsetExists($name)
     {
-        return isset($this->_items[ $name ]);
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        return isset($this->_rows[ $name ]);
     }
 
     public function offsetGet($name)
     {
-        if( isset( $this->_items[ $name ] ) )
-            return $this->_items[ $name ];
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        if (isset( $this->_rows[ $name ] ) ) {
+            return $this->_rows[ $name ];
+        }
     }
 
     public function offsetUnset($name)
     {
-        unset($this->_items[$name]);
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+        unset($this->_rows[$name]);
     }
 
     public function each(callable $cb)
     {
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+
         $collection = new static;
         $collection->setRecords(
-            array_map($cb,$this->_items)
+            array_map($cb,$this->_rows)
         );
         return $collection;
     }
 
     public function filter(callable $cb)
     {
+        if (!$this->_rows) {
+            $this->readRows();
+        }
+
         $collection = new static;
-        $collection->setRecords(array_filter($this->_items,$cb));
+        $collection->setRecords(array_filter($this->_rows,$cb));
         return $collection;
     }
 
@@ -654,7 +653,7 @@ class BaseCollection
         $records = array();
         foreach( $list as $item ) {
             $model = $schema->newModel();
-            $model->setData($item);
+            $model->setStashedData($item);
             $records[] = $model;
         }
         $collection->setRecords( $records );
@@ -695,7 +694,7 @@ class BaseCollection
 
     /**
      * Create new record or relationship record, 
-     * and append the record into _itemData list
+     * and append the record into _rows list
      *
      * @param array $args Arguments for creating record
      *
@@ -715,7 +714,7 @@ class BaseCollection
                 $middleRecord = call_user_func( $this->_postCreate, $record, $args );
                 // $this->_postCreate($record,$args);
             }
-            $this->_itemData[] = $record;
+            $this->_rows[] = $record;
             return $record;
         }
         $this->_result = $return;
@@ -762,12 +761,18 @@ class BaseCollection
     public function toSql()
     {
         /* fetch by current query */
-        $query = $this->_query;
-        $sql   = $query->build();
-        $vars  = $query->vars;
-        foreach( $vars as $name => $value ) {
+        $query = $this->getCurrentReadQuery();
+        $dsId = $this->getSchema()->getReadSourceId();
+        $driver = $this->getQueryDriver($dsId);
+        $arguments = new ArgumentArray;
+        $sql   = $query->toSql($driver, $arguments);
+
+        /*
+         * FIXME:
+        foreach($arguments as $name => $value) {
             $sql = preg_replace( "/$name\b/", $value, $sql );
         }
+         */
         return $sql;
     }
 
@@ -798,10 +803,10 @@ class BaseCollection
     public function join($target, $type = 'LEFT' , $alias = null, $relationId = null )
     {
         $this->explictSelect = true;
-        $query = $this->_query;
+        $query = $this->getCurrentReadQuery();
 
         // for models and schemas join
-        if( is_object($target) ) {
+        if (is_object($target)) {
             $table = $target->getTable();
 
 
@@ -820,19 +825,16 @@ class BaseCollection
                     // Select alias.column as alias_column
                     $select[ $alias . '.' . $name ] = $alias . '_' . $name;
                 }
-                $query->addSelect($select);
+                $query->select($select);
             }
-            $expr = $query->join($table, $type); // it returns JoinExpression object
+            $joinExpr = $query->join($table, $type); // it returns JoinExpression object
 
             // here the relationship is defined, join the it.
-            if( $relationId ) {
+            if ($relationId) {
                 $relation = $this->getSchema()->getRelation( $relationId );
-                $expr->on()
+                $joinExpr->on()
                     ->equal( $this->getAlias() . '.' . $relation['self_column'] , 
                     array( $alias . '.' . $relation['foreign_column'] ));
-
-                $this->_joinedRelationships[ $relationId ] = $alias;
-
             } else {
                 // find the related relatinship from defined relatinpships
                 $relations = $this->getSchema()->relations;
@@ -842,28 +844,27 @@ class BaseCollection
                     }
 
                     $fschema = new $relation['foreign_schema'];
-                    if ( is_a($target, $fschema->getModelClass() ) ) {
-                        $expr->on()
+                    if (is_a($target, $fschema->getModelClass() ) ) {
+                        $joinExpr->on()
                             ->equal( $this->getAlias() . '.' . $relation['self_column'] , 
                             array( $alias. '.' . $relation['foreign_column'] ));
-
-                        $this->_joinedRelationships[ $relationId ] = $alias;
                         break;
                     }
                 }
             }
 
-            if( $alias ) {
-                $expr->alias( $alias );
+            if ($alias) {
+                $joinExpr->as($alias);
             }
-            return $expr;
+            return $joinExpr;
         }
         else {
             // For table name join
-            $expr = $query->join($target, $type);
-            if( $alias )
-                $expr->alias($alias);
-            return $expr;
+            $joinExpr = $query->join($target, $type);
+            if ($alias) {
+                $joinExpr->as($alias);
+            }
+            return $joinExpr;
         }
     }
 
@@ -871,21 +872,19 @@ class BaseCollection
      * Override QueryBuilder->where method,
      * to enable explict selection
      */
-    public function where($args = null)
+    public function where(array $args = null)
     {
         $this->setExplictSelect(true);
-        if( $args && is_array($args) ) {
-            return $this->_query->whereFromArgs($args);
+        $query = $this->getCurrentReadQuery();
+        if ($args && is_array($args)) {
+            return $query->where($args);
         }
-        return $this->_query->where();
+        return $query->where();
     }
-
 
     public function add(BaseModel $record)
     {
-        if (! $this->_itemData )
-            $this->_itemData = array();
-        $this->_itemData[] = $record;
+        $this->_rows[] = $record;
     }
 
 
@@ -895,7 +894,7 @@ class BaseCollection
      */
     public function setRecords(array $records)
     {
-        $this->_itemData = $records;
+        $this->_rows = $records;
     }
 
 

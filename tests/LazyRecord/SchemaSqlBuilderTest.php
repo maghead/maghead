@@ -20,10 +20,10 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
     function schemaProvider()
     {
         return array(
-            array( new \TestApp\Model\AuthorSchema ),
-            array( new \TestApp\Model\AddressSchema ),
-            array( new \TestApp\Model\AuthorBookSchema),
-            array( new \TestApp\Model\BookSchema ),
+            array( new \AuthorBooks\Model\AuthorSchema ),
+            array( new \AuthorBooks\Model\AddressSchema ),
+            array( new \AuthorBooks\Model\AuthorBookSchema),
+            array( new \AuthorBooks\Model\BookSchema ),
             array( new \TestApp\Model\NameSchema ),
         );
     }
@@ -44,10 +44,11 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
             return;
 
         $pdo = $connManager->getConnection($dataSource);
-        ok( $pdo , 'pdo connection' );
+        ok($pdo , 'pdo connection');
+        $this->assertInstanceOf('PDO', $pdo);
 
         $queryDriver = $connManager->getQueryDriver($dataSource);
-        ok( $queryDriver );
+        ok($queryDriver);
 
         $builder = SqlBuilder::create($queryDriver,array( 'rebuild' => true ));
         ok( $builder );

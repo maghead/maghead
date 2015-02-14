@@ -38,10 +38,10 @@ class CommandUtils
         return static::$logger;
     }
 
-    static function build_basedata($schemas) {
-        foreach( $schemas as $schema ) {
-            if( method_exists($schema,'bootstrap') ) {
-                if( $modelClass = $schema->getModelClass() ) {
+    static function build_basedata(array $schemas) {
+        foreach ($schemas as $schema) {
+            if (method_exists($schema,'bootstrap')) {
+                if ($modelClass = $schema->getModelClass()) {
                     static::log("Creating base data of $modelClass",'green');
                     $schema->bootstrap( new $modelClass );
                 }
@@ -49,7 +49,7 @@ class CommandUtils
         }
 
         foreach( $schemas as $schema ) {
-            $seeds = $schema->getSeeds();
+            $seeds = $schema->getSeedClasses();
             foreach ($seeds as $seedClass ){
                 if( class_exists($seedClass,true) ) {
                     static::log("Running seed script: $seedClass",'green');
@@ -61,14 +61,14 @@ class CommandUtils
         }
 
         $loader = ConfigLoader::getInstance();
-        if( $seeds = $loader->getSeedScripts() ) {
+        if ($seeds = $loader->getSeedScripts()) {
             foreach( $seeds as $seed ) {
                 $seed = str_replace('::','\\',$seed);
                 static::log("Running seed script: $seed",'green');
-                if( file_exists($seed) ) {
+                if (file_exists($seed)) {
                     require $seed;
                 }
-                elseif( class_exists($seed,true) ) {
+                elseif (class_exists($seed,true)) {
                     $seed::seed();
                 }
                 else {

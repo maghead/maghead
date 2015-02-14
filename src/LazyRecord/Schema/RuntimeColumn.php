@@ -10,7 +10,8 @@ use Exception;
 use ArrayIterator;
 use IteratorAggregate;
 use InvalidArgumentException;
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
+use SQLBuilder\Driver\BaseDriver;
 
 class InvalidValueTypeException extends Exception { }
 
@@ -134,32 +135,33 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      */
     public function typeCasting($value)
     {
-        if ($value instanceof RawValue) {
+        if ($value instanceof Raw) {
             return $value;
         }
 
         if ($isa = $this->get('isa')) {
-            if( $isa === 'int' ) {
+            if ($isa === 'int') {
                 return intval($value);
-            }
-            elseif( $isa === 'str' ) {
+            } elseif ($isa === 'str') {
                 return (string) $value;
-            }
-            elseif( $isa === 'bool' || $isa === 'boolean' ) {
+            } elseif ($isa === 'bool' || $isa === 'boolean' ) {
+                if ($value === NULL) {
+                    return NULL;
+                }
                 if (is_string($value)) {
-                    if( $value == null || $value === '' ) {
-                        return false;
+                    if ($value === '' ) {
+                        return NULL;
                     } elseif( $value === '1' ) {
                         return true;
                     } elseif( $value === '0' ) {
                         return false;
-                    } elseif( strncasecmp($value,'false',5) == 0 ) {
+                    } elseif(strncasecmp($value,'false',5) == 0 ) {
                         return false;
-                    } elseif( strncasecmp($value,'true',4 ) == 0 ) {
+                    } elseif(strncasecmp($value,'true',4 ) == 0 ) {
                         return true;
                     }
                 }
-                return (boolean) $value;
+                return $value;
             }
         }
         return $value;
@@ -195,14 +197,14 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      *
      * @param mixed $value
      **/
-    public function deflate($value)
+    public function deflate($value, BaseDriver $driver = NULL)
     {
         // run column specified deflator
         if( $f = $this->get('deflator') ) {
             return call_user_func($f, $value);
         }
         // use global deflator, check self type, and do type casting
-        return Deflator::deflate( $value , $this->get('isa') );
+        return Deflator::deflate($value , $this->get('isa'), $driver);
     }
 
     public function inflate($value, $record)

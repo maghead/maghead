@@ -2,15 +2,14 @@
 namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
-use SQLBuilder\Driver;
-use LazyRecord\QueryDriver;
+use SQLBuilder\Driver\BaseDriver;
 
 abstract class BaseTableParser
 {
     public $driver;
     public $connection;
 
-    public function __construct(QueryDriver $driver, PDO $connection)
+    public function __construct(BaseDriver $driver, PDO $connection)
     {
         $this->driver = $driver;
         $this->connection = $connection;
@@ -38,30 +37,30 @@ abstract class BaseTableParser
         elseif( preg_match('/^(int|tinyint|smallint|mediumint|bigint)/', $type ) ) {
             return 'int';
         }
-        elseif( 'boolean' === $type || 'bool' === $type ) {
+        elseif ('boolean' === $type || 'bool' === $type) {
             return 'bool';
         }
-        elseif( 'blob' === $type || 'binary' === $type ) {
+        elseif ('blob' === $type || 'binary' === $type ) {
             return 'str';
         }
-        elseif( 'double' === $type ) {
+        elseif (strpos($type, 'double') === 0) {
             return 'double';
         }
-        elseif( 'float' === $type ) {
+        elseif (strpos($type, 'float') === 0) {
             return 'float';
         }
-        elseif( 'datetime' === $type || 'date' === $type ) {
+        elseif (strpos($type,'datetime') === 0 || 'date' === $type ) {
             return 'DateTime';
         }
-        elseif( preg_match('/timestamp/', $type ) ) {
+        elseif (preg_match('/timestamp/', $type )) {
             return 'DateTime';
         }
-        elseif( 'time' == $type ) {
+        elseif ('time' == $type ) {
             // DateTime::createFromFormat('H:s','10:00')
             return 'DateTime';
         }
         else {
-            throw new Exception("Unknown type $type");
+            throw new Exception("Unknown type name $type");
         }
     }
 

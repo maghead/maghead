@@ -413,8 +413,8 @@ class BookSchema extends Schema
 
 
         // Defining trait for model class
-        $this->useTrait('Uploader');
-        $this->useTrait('Downloader')
+        $this->addModelTrait('Uploader');
+        $this->addModelTrait('Downloader')
             ->useInsteadOf('Downloader::a', 'Uploader');
 
         $this->belongsTo('created_by', 'TestApp\UserSchema','id', 'created_by');
@@ -657,14 +657,14 @@ Once you modified the schema code, you can execute `lazy diff` command to compar
 current exisiting database table:
 
     $ lazy diff
-    + table 'authors'            tests/schema/tests/Author.php
-    + table 'addresses'          tests/schema/tests/Address.php
-    + table 'author_books'       tests/schema/tests/AuthorBook.php
-    + table 'books'              tests/schema/tests/Book.php
-    + table 'users'              tests/schema/tests/User.php
-    + table 'publishers'         tests/schema/tests/Publisher.php
-    + table 'names'              tests/schema/tests/Name.php
-    + table 'wines'              tests/schema/tests/Wine.php
+    + table 'authors'            tests/tests/Author.php
+    + table 'addresses'          tests/tests/Address.php
+    + table 'author_books'       tests/tests/AuthorBook.php
+    + table 'books'              tests/tests/Book.php
+    + table 'users'              tests/tests/User.php
+    + table 'publishers'         tests/tests/Publisher.php
+    + table 'names'              tests/tests/Name.php
+    + table 'wines'              tests/tests/Wine.php
 
 As you can see, we added a lot of new tables (schemas), and LazyRecord parses
 the database tables to show you the difference to let you know current

@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\ModelTestCase;
+use LazyRecord\Testing\ModelTestCase;
 
 class NameModelTest extends ModelTestCase
 {
@@ -28,34 +28,23 @@ class NameModelTest extends ModelTestCase
         );
     }
 
-    public function booleanFalseTestDataProvider()
+    public function booleanNullTestDataProvider()
     {
         return array(
-#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 0 ) ),
-#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ) ),
-#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => false ) ),
-#              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'false' ) ),
-            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '' ) ),  // empty string should be (false)
-            // array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'aa' ) ),
-            // array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'bb' ) ),
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => NULL ) ),
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '' ) ),
         );
     }
 
-    /**
-     * @dataProvider booleanFalseTestDataProvider
-     */
-    public function testCreateWithBooleanFalse($args)
-    {
-        $n = new \TestApp\Model\Name;
-        $ret = $n->create($args);
-        ok( $ret->success , $ret  . " SQL: " . $ret->sql . print_r($ret->vars,1) );
-        ok( $n->id );
-        is( false, $n->confirmed );
 
-        // reload
-        ok( $n->load( $n->id )->success );
-        is( false, $n->confirmed );
-        ok( $n->delete()->success );
+    public function booleanFalseTestDataProvider()
+    {
+        return array(
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 0 ) ),
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ) ),
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => false ) ),
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'false' ) ),
+        );
     }
 
     public function booleanTrueTestDataProvider()
@@ -70,33 +59,77 @@ class NameModelTest extends ModelTestCase
     }
 
     /**
-     * @dataProvider booleanTrueTestDataProvider
+     * @dataProvider booleanFalseTestDataProvider
      */
-    public function testCreateWithBooleanTrue($args)
+    public function testCreateWithBooleanFalse(array $args)
     {
         $n = new \TestApp\Model\Name;
         $ret = $n->create($args);
-        result_ok($ret);
-        ok( $n->id );
-        is( true, $n->confirmed, 'Confirmed value should be TRUE.' );
-        // reload
-        ok( $n->load( $n->id )->success );
-        is( true, $n->confirmed , 'Confirmed value should be TRUE.' );
-        ok( $n->delete()->success );
+        $this->assertResultSuccess($ret);
+        $this->assertFalse($n->confirmed);
     }
 
+
+    /**
+     * @basedata false
+     * @dataProvider booleanNullTestDataProvider
+     */
+    public function testCreateWithBooleanNull(array $args)
+    {
+        $n = new \TestApp\Model\Name;
+        $ret = $n->create($args);
+        $this->assertResultSuccess($ret);
+
+        ok($n->id);
+        $this->assertNull($n->confirmed);
+
+        $ret = $n->load($n->id);
+        $this->assertResultSuccess($ret);
+        $this->assertNull($n->confirmed);
+        $this->successfulDelete($n);
+    }
+
+
+    /**
+     * @basedata false
+     * @dataProvider booleanTrueTestDataProvider
+     */
+    public function testCreateWithBooleanTrue(array $args)
+    {
+        $n = new \TestApp\Model\Name;
+        $ret = $n->create($args);
+        $this->assertResultSuccess($ret);
+
+        ok($n->id);
+
+        $this->assertTrue($n->confirmed, 'Confirmed value should be TRUE.');
+
+        $this->assertResultSuccess($n->load($n->id));
+
+        $this->assertTrue($n->confirmed, 'Confirmed value should be TRUE.');
+
+        $this->successfulDelete($n);
+    }
+
+    /**
+     * @rebuild false
+     */
     public function testModelClone()
     {
         $test1 = new \TestApp\Model\Name;
         $test2 = clone $test1;
-        ok( $test1 !== $test2 );
+        $this->assertNotSame($test1, $test2);
     }
 
+
+    /**
+     * @basedata false
+     */
     public function testModelColumnFilter()
     {
         $name = new \TestApp\Model\Name;
         $ret = $name->create(array('name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John'));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         is('XXXX' , $name->address , 'Should be canonicalized' );
     }
 
@@ -106,23 +139,29 @@ class NameModelTest extends ModelTestCase
 
         /** confirmed will be cast to true **/
         $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ));
-        result_ok( $ret );
+        $this->assertResultSuccess( $ret );
         ok( $n->id );
-        is( false, $n->confirmed );
-        ok( $n->delete()->success );
+
+        $this->assertFalse($n->confirmed);
+        $this->successfulDelete($n);
     }
 
+
+    /**
+     * @rebuild false
+     */
     public function testValueTypeConstraint()
     {
         // if it's a str type , we should not accept types not str.
         $n = new \TestApp\Model\Name;
+
         /**
          * name column is required, after type casting, it's NULL, so
          * create should fail.
          */
-        $ret = $n->create(array( 'name' => false , 'country' => 'Tokyo' ));
-        ok( ! $ret->success );
-        ok( ! $n->id );
+        $ret = $n->create(array( 'name' => false , 'country' => 'Type' ));
+        $this->assertResultFail($ret);
+        ok(! $n->id );
     }
 
     public function testModelColumnDefaultValueBuilder()
@@ -130,7 +169,8 @@ class NameModelTest extends ModelTestCase
         $name = new \TestApp\Model\Name;
         $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' ));
 
-        result_ok( $ret );
+        $this->assertResultSuccess($ret);
+
         ok( $ret->validations );
 
         ok( $ret->validations['address'] );
@@ -154,12 +194,14 @@ class NameModelTest extends ModelTestCase
     public function testLoadFromContstructor()
     {
         $name = new \TestApp\Model\Name;
-        $name->create(array( 
+        $ret = $name->create(array( 
             'name' => 'John',
             'country' => 'Taiwan',
             'type' => 'type-a',
         ));
+        $this->assertResultSuccess($ret);
         ok( $name->id );
+
         $name2 = new \TestApp\Model\Name( $name->id );
         is( $name2->id , $name->id );
     }
@@ -172,7 +214,7 @@ class NameModelTest extends ModelTestCase
             'country' => 'Taiwan',
             'type' => 'type-a',
         ));
-        ok( $ret->success );
+        $this->assertResultSuccess($ret);
         is( 'Type Name A', $name->display( 'type' ) );
 
         $xml = $name->toXml();
@@ -204,27 +246,34 @@ class NameModelTest extends ModelTestCase
             'confirmed' => '0',
             'date' => '2011-01-01'
         ));
+        $this->assertResultSuccess($ret);
+
         $d = $n->date;
-        ok( $d );
-        isa_ok( 'DateTime' , $d );
+        $this->assertNotNull($d);
+        $this->assertInstanceOf('DateTime', $d);
         is( '20110101' , $d->format( 'Ymd' ) );
-        ok( $n->delete()->success );
+
+        $ret = $n->delete();
+        $this->assertResultSuccess($ret);
     }
 
     /**
      * @dataProvider nameDataProvider
+     * @rebuild false
      */
-    public function testCreateName($args)
+    public function testCreateWithName($args)
     {
         $name = new \TestApp\Model\Name;
         $ret = $name->create($args);
-        ok( $ret->success );
+        $this->assertResultSuccess($ret);
+
         $ret = $name->delete();
-        ok( $ret->success );
+        $this->assertResultSuccess($ret);
     }
 
     /**
      * @dataProvider nameDataProvider
+     * @rebuild false
      */
     public function testFromArray($args)
     {
@@ -241,6 +290,9 @@ class NameModelTest extends ModelTestCase
         isa_ok( 'TestApp\Model\NameCollection' , $collection );
     }
 
+    /**
+     * @rebuild false
+     */
     public function testDateTimeInflator()
     {
         $n = new \TestApp\Model\Name;
@@ -251,7 +303,7 @@ class NameModelTest extends ModelTestCase
             'confirmed' => false,
             'date' => $date,
         ));
-        ok( $ret->success , $ret );
+        $this->assertResultSuccess($ret);
 
         $array = $n->toArray();
         ok( is_string( $array['date'] ) );
@@ -259,42 +311,7 @@ class NameModelTest extends ModelTestCase
         $d = $n->date; // inflated
         isa_ok( 'DateTime' , $d );
         is( '20110101' , $d->format( 'Ymd' ) );
-        ok( $n->delete()->success );
+
+        $this->successfulDelete($n);
     }
-
-
-    /*
-    public function testCreateSpeed()
-    {
-        // FIXME: On build machine,  we got 21185.088157654, that's really slow, fix later.
-        return;
-
-        $s = microtime(true);
-        $n = new \TestApp\Model\Name;
-        $ids = array();
-        $cnt = 10;
-        foreach( range(1,$cnt) as $i ) {
-            // you can use _create to gain 120ms faster
-            $ret = $n->create(array(
-                'name' => "Deflator Test $i", 
-                'country' => 'Tokyo', 
-                'confirmed' => true,
-                'date' => new DateTime('2011-01-01 00:00:00'),
-            ));
-            $ids[] = $n->id;
-        }
-
-        $duration = (microtime(true) - $s) / $cnt * 1000000; // get average microtime.
-
-        // $limit = 1400; before commit: e9c891ee3640f58871eb676df5f8f54756b14354
-        $limit = 3500;
-        if( $duration > $limit ) {
-            ok( false , "performance test: should be less than $limit ms, got $duration ms." );
-        }
-
-        foreach( $ids as $id ) {
-            \TestApp\Model\Name::delete($id);
-        }
-    }
-     */
 }

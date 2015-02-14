@@ -1,14 +1,16 @@
 <?php
 namespace LazyRecord\SqlBuilder;
-use SQLBuilder\IndexBuilder;
-use SQLBuilder\QueryBuilder;
-use SQLBuilder\Driver;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Universal\Query\CreateIndexQuery;
+use SQLBuilder\Universal\Syntax\Constraint;
+
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
+use LazyRecord\Schema\Relationship;
 use LazyRecord\BaseModel;
-use LazyRecord\QueryDriver;
 
 abstract class BaseBuilder
 {
@@ -16,7 +18,7 @@ abstract class BaseBuilder
     public $clean;
     public $driver;
 
-    public function __construct(QueryDriver $driver, array $options = array())
+    public function __construct(BaseDriver $driver, array $options = array())
     {
         $this->driver = $driver;
         if( isset($options['rebuild']) ) {
@@ -32,7 +34,7 @@ abstract class BaseBuilder
     public function createTable(SchemaInterface $schema)
     {
         $sql = 'CREATE TABLE ' 
-            . $this->driver->getQuoteTableName($schema->getTable()) . " ( \n";
+            . $this->driver->quoteIdentifier($schema->getTable()) . " ( \n";
         $columnSql = array();
         foreach( $schema->columns as $name => $column ) {
             if ($column->virtual) {
@@ -81,16 +83,14 @@ abstract class BaseBuilder
     public function buildIndex(SchemaInterface $schema) 
     {
         $sqls = array();
-        foreach( $schema->columns as $name => $column ) {
+        foreach ($schema->columns as $name => $column ) {
             if ( $column->index ) {
                 $indexName = is_string($column->index) ? $column->index 
                     : "idx_" . $schema->getTable() . "_" . $name;
-                $builder = new IndexBuilder($this->driver);
-                $builder->create( $indexName )
-                    ->on( $schema->getTable() )
-                    ->columns($name)
-                    ;
-                $sqls[] = $builder->build();
+
+                $query = new CreateIndexQuery($indexName);
+                $query->on($schema->getTable(), (array) $name);
+                $sqls[] = $query->toSql($this->driver, new ArgumentArray);
             }
         }
         return $sqls;
@@ -106,12 +106,12 @@ abstract class BaseBuilder
             return $sqls;
         }
 
-        foreach( $schema->relations as $rel ) {
-            switch( $rel['type'] ) {
-            case SchemaDeclare::belongs_to:
-            case SchemaDeclare::has_many:
-            case SchemaDeclare::has_one:
-                if( isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
+        foreach ($schema->relations as $rel) {
+            switch ( $rel['type'] ) {
+            case Relationship::BELONGS_TO:
+            case Relationship::HAS_MANY:
+            case Relationship::HAS_ONE:
+                if (isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
                 {
                     $n = $rel['self_column'];
                     $column = $schema->getColumn($n);
@@ -121,22 +121,21 @@ abstract class BaseBuilder
 
                     
                     $fSchema = new $rel['foreign_schema'];
-                    $builder = new IndexBuilder($this->driver);
-                    $sqls[] = $builder->addForeignKey(
-                        $schema->getTable(),
-                        $rel['self_column'],
-                        $fSchema->getTable(),
-                        $rel['foreign_column'],
 
-                        // use cascade by default
-                        // TODO: extract this as an option.
-                        'CASCADE'
-                    );
+                    $constraint = new Constraint();
+                    $constraint->foreignKey($rel['self_column']);
+                    $constraint->reference($fSchema->getTable(), (array) $rel['foreign_column']);
+                    // $constraint->onUpdate('CASCADE');
+                    // $constraint->onDelete('CASCADE');
+                    $sqls[] = $query->toSql($this->driver, new ArgumentArray);
                 }
             }
         }
         return $sqls;
     }
+
+
+
 
 
 }

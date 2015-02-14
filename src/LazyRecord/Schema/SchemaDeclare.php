@@ -10,22 +10,30 @@ use LazyRecord\Schema\Relationship;
 use ClassTemplate\ClassTemplate;
 use ClassTemplate\ClassTrait;
 
-class SchemaDeclare extends SchemaBase
-    implements SchemaInterface
+class SchemaDeclare extends SchemaBase implements SchemaInterface
 {
-    public $modelTraits = array();
 
-    public function __construct( $options = array() )
+    /**
+     * @var string[]
+     */
+    public $modelTraitClasses = array();
+
+    /**
+     * @var string[]
+     */
+    public $collectionTraitClasses = array();
+
+    public function __construct(array $options = array())
     {
-        $this->build( $options );
+        $this->build($options);
     }
 
     /**
      * Build schema
      */
-    public function build( $options = array() )
+    public function build(array $options = array())
     {
-        $this->schema( $options );
+        $this->schema($options);
 
         $this->primaryKey = $this->findPrimaryKey();
 
@@ -212,7 +220,7 @@ class SchemaDeclare extends SchemaBase
                     }
                 }
 
-                if ( ! class_exists($refer) ) {
+                if (! class_exists($refer)) {
                     throw new Exception("refer schema from '$refer' not found.");
                 }
 
@@ -272,19 +280,34 @@ class SchemaDeclare extends SchemaBase
      * @param string $class...
      * @return ClassTrait object
      */
-    public function useTrait() {
-        $classes = func_get_args();
-        $trait = new ClassTrait($classes);
-        $this->modelTraits[] = $trait;
-        return $trait;
+    public function addModelTrait($traitClass) {
+        $this->modelTraitClasses[] = $traitClass;
+    }
+
+    /**
+     * Use trait for the model class.
+     *
+     * @param string $class...
+     * @return ClassTrait object
+     */
+    public function addCollectionTrait($traitClass) {
+        $this->collectionTraitClasses[] = $traitClass;
     }
 
 
     /** 
-     * @return ClassTrait[]
+     * @return string[]
      */
-    public function getModelTraits() {
-        return $this->modelTraits;
+    public function getModelTraitClasses() {
+        return $this->modelTraitClasses;
+    }
+
+
+    /** 
+     * @return string[]
+     */
+    public function getCollectionTraitClasses() {
+        return $this->modelTraitClasses;
     }
 
 
@@ -299,7 +322,7 @@ class SchemaDeclare extends SchemaBase
      *
      * @param string $class mixin class name
      */
-    public function mixin($class, $options = array())
+    public function mixin($class, array $options = array())
     {
         if (! class_exists($class,true) ) {
             $class = 'LazyRecord\\Schema\\Mixin\\' . $class;
@@ -313,7 +336,7 @@ class SchemaDeclare extends SchemaBase
 
         /* merge columns into self */
         $this->columns = array_merge( $this->columns, $mixin->columns );
-        $this->relations = array_merge( $mixin->relations, $this->relations );
+        $this->relations = array_merge($mixin->relations, $this->relations);
     }
 
     public function getLabel()
@@ -382,6 +405,13 @@ class SchemaDeclare extends SchemaBase
         return ClassUtils::convert_class_to_table( $this->getModelName() );
     }
 
+    public $enableColumnAccessors = true;
+
+    public function disableColumnAccessors()
+    {
+        $this->enableColumnAccessors = false;
+    }
+
     /**
      * Define new column object
      *
@@ -413,15 +443,14 @@ class SchemaDeclare extends SchemaBase
      * @param string $foreignColumn foreign reference schema column.
      * @param string $selfColumn self column name
      */
-    public function belongsTo($accessor, $foreignClass, $foreignColumn = null,  $selfColumn = 'id')
+    public function belongsTo($accessor, $foreignClass = NULL, $foreignColumn = NULL,  $selfColumn = 'id')
     {
-        if( null === $foreignColumn ) {
+        if ($foreignClass && NULL === $foreignColumn) {
             $s = new $foreignClass;
             $foreignColumn = $s->primaryKey;
         }
-
-        return $this->relations[ $accessor ] = new Relationship(array(
-            'type' => self::belongs_to,
+        return $this->relations[$accessor] = new Relationship($accessor, array(
+            'type' => Relationship::BELONGS_TO,
             'self_schema' => get_class($this),
             'self_column' => $selfColumn,
             'foreign_schema' => $foreignClass,
@@ -441,10 +470,10 @@ class SchemaDeclare extends SchemaBase
     public function one($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
     {
         // foreignColumn is default to foreignClass.primary key
-        return $this->relations[ $accessor ] = new Relationship(array(
-            'type'           => self::has_one,
-            'self_column'  => $selfColumn,
-            'self_schema' => $this->getSchemaProxyClass(),
+        return $this->relations[ $accessor ] = new Relationship($accessor, array(
+            'type'           => Relationship::HAS_ONE,
+            'self_column'    => $selfColumn,
+            'self_schema'    => $this->getSchemaProxyClass(),
             'foreign_column' => $foreignColumn,
             'foreign_schema' => $foreignClass,
         ));
@@ -469,10 +498,10 @@ class SchemaDeclare extends SchemaBase
      */
     public function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
-        return $this->relations[ $accessor ] = new Relationship(array(
-            'type' => self::has_many,
-            'self_column' => $selfColumn,
-            'self_schema' => get_class($this),
+        return $this->relations[ $accessor ] = new Relationship($accessor, array(
+            'type'           => Relationship::HAS_MANY,
+            'self_column'    => $selfColumn,
+            'self_schema'    => get_class($this),
             'foreign_column' => $foreignColumn,
             'foreign_schema' => $foreignClass,
         ));
@@ -486,9 +515,9 @@ class SchemaDeclare extends SchemaBase
      */
     public function manyToMany($accessor, $relationId, $foreignRelationId )
     {
-        if( $r = $this->getRelation($relationId) ) {
-            return $this->relations[ $accessor ] = new Relationship(array(
-                'type'     => self::many_to_many,
+        if ($r = $this->getRelation($relationId)) {
+            return $this->relations[ $accessor ] = new Relationship($accessor, array(
+                'type'              => Relationship::MANY_TO_MANY,
                 'relation_junction' => $relationId,
                 'relation_foreign'  => $foreignRelationId,
             ));

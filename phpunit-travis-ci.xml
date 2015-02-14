@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="tests/bootstrap.php"
          backupGlobals="false"
+         colors="true"
+         stopOnFailure="true"
+         stopOnError="true"
          verbose="true">
   <php>
 
@@ -24,8 +27,20 @@
   </filter>
 
   <testsuites>
-    <testsuite name="PHPUnit">
+    <testsuite name="All">
       <directory suffix="Test.php">tests</directory>
+    </testsuite>
+
+    <testsuite name="Model">
+        <directory suffix="Test.php">tests/LazyRecord/ModelTest</directory>
+    </testsuite>
+
+    <testsuite name="AuthorBooks">
+        <directory suffix="Test.php">tests/AuthorBooks</directory>
+    </testsuite>
+
+    <testsuite name="Schema">
+        <directory suffix="Test.php">tests/LazyRecord/Schema</directory>
     </testsuite>
   </testsuites>
 

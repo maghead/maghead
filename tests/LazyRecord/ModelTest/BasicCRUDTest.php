@@ -1,22 +1,24 @@
 <?php
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
+use AuthorBooks\Model\Book ;
+use LazyRecord\Testing\ModelTestCase;
 /**
  * Testing models:
  *   1. Author
  *   2. Book
  *   3. Address
  */
-class BasicCRUDTest extends \LazyRecord\ModelTestCase
+class BasicCRUDTest extends ModelTestCase
 {
     public $driver = 'sqlite';
 
     public function getModels()
     {
         return array( 
-            'TestApp\Model\\AuthorSchema',
-            'TestApp\Model\\BookSchema',
-            'TestApp\Model\\AuthorBookSchema',
-            'TestApp\Model\\AddressSchema',
+            'AuthorBooks\Model\AuthorSchema',
+            'AuthorBooks\Model\BookSchema',
+            'AuthorBooks\Model\AuthorBookSchema',
+            'AuthorBooks\Model\AddressSchema',
         );
     }
 
@@ -29,83 +31,84 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
     }
 
     /**
-     * @expectedException LazyRecord\DatabaseException
+     * @rebuild false
+     * @expectedException LazyRecord\QueryException
      */
     public function testTitleIsRequired()
     {
-        $b = new \TestApp\Model\Book;
-        $ret = $b->find( array( 'name' => 'LoadOrCreateTest' ) );
-        result_fail( $ret );
-        ok( ! $b->id );
+        $b = new \AuthorBooks\Model\Book ;
+        $ret = $b->find(array( 'name' => 'LoadOrCreateTest' ));
+        $this->assertResultFail($ret);
+        $this->assertNull($b->id);
     }
-
 
     public function testRecordRawCreateBook()
     {
-        $b = new \TestApp\Model\Book;
-        ok($b);
-        $b->rawCreate(array( 'title' => 'Go Programming' ));
+        $b = new \AuthorBooks\Model\Book ;
+        $ret = $b->rawCreate(array( 'title' => 'Go Programming' ));
+        $this->assertResultSuccess($ret);
         ok($b->id);
-        result_ok( $b->delete() );
+        $this->successfulDelete($b);
     }
 
     public function testRecordRawUpdateBook()
     {
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
         ok($b);
-        $b->rawCreate(array( 'title' => 'Go Programming' ));
+        $ret = $b->rawCreate(array( 'title' => 'Go Programming without software validation' ));
+        $this->assertResultSuccess($ret);
         ok($b->id);
-        $b->rawUpdate(array( 'title' => 'Perl Programming' ));
+        $ret = $b->rawUpdate(array( 'title' => 'Perl Programming without filtering' ));
+        $this->assertResultSuccess($ret);
         ok($b->id);
-        result_ok( $b->delete() );
+        $this->successfulDelete($b);
     }
 
 
     public function testLoadOrCreateModel() 
     {
         $results = array();
-        $b = new \TestApp\Model\Book;
+        $b = new \AuthorBooks\Model\Book ;
 
-        $ret = $b->create(array( 'title' => 'Should Not Load This' ));
-        result_ok( $ret );
+        $ret = $b->create(array( 'title' => 'Should Create, not load this' ));
+        $this->assertResultSuccess($ret);
         $results[] = $ret;
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
-        result_ok( $ret );
+        $this->assertResultSuccess($ret);
         $results[] = $ret;
 
         $id = $b->id;
         ok($id);
 
         $ret = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         is($id, $b->id, 'is the same ID');
         $results[] = $ret;
 
 
-        $b2 = new \TestApp\Model\Book;
+        $b2 = new \AuthorBooks\Model\Book ;
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         is($id,$b2->id);
         $results[] = $ret;
 
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
-        result_ok($ret);
-        ok($b2);
+        $this->assertResultSuccess($ret);
         ok($id != $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
-        $b3 = new \TestApp\Model\Book;
+        $b3 = new \AuthorBooks\Model\Book ;
         $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
-        result_ok($ret);
-        ok($b3);
+        $this->assertResultSuccess($ret);
         ok($id != $b3->id , 'we should create anther one'); 
         $results[] = $ret;
 
-        $b3->delete();
+        $this->successfulDelete($b3);
 
         foreach( $results as $r ) {
-            result_ok( \TestApp\Model\Book::delete($r->id)->execute() );
+            $book = new Book;
+            $book->delete($r->id);
         }
     }
 
@@ -133,22 +136,23 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         );
     }
 
-    public function testModelUpdateRawValue() 
+    public function testModelUpdateRaw() 
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $ret = $author->create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
+
         $ret = $author->update(array( 'id' => array('id + 3') ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
     }
 
     public function testManyToManyRelationRecordCreate()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( 
             $book = $author->books->create( array( 
@@ -185,25 +189,30 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
         $books = $author->books;
         is( 2, $books->size() , '2 books' );
-        $author->delete();
+        $this->successfulDelete($author);
     }
 
 
+    /**
+     * @rebuild false
+     */
     public function testPrimaryKeyIdIsInteger()
     {
-        $author = new \TestApp\Model\Author;
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = new \AuthorBooks\Model\Author;
+        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertResultSuccess($ret);
+
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer
         // ok( is_string( $author->getValue('id') ) );
-        ok( is_integer( $author->get('id') ) );
-        $author->delete();
+        ok(is_integer($author->get('id')));
+        $this->successfulDelete($author);
     }
 
 
     public function testManyToManyRelationFetchRecord()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
         $book = $author->books->create(array( 'title' => 'Book Test' ));
@@ -213,8 +222,8 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         $ret = $book->delete();
         ok( $ret->success );
 
-        $ab = new \TestApp\Model\AuthorBook;
-        $book = new \TestApp\Model\Book;
+        $ab = new \AuthorBooks\Model\AuthorBook;
+        $book = new \AuthorBooks\Model\Book ;
 
         // should not include this
         ok( $book->create(array( 'title' => 'Book I Ex' ))->success );
@@ -260,7 +269,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testHasManyRelationCreate2()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
@@ -285,7 +294,7 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testHasManyRelationCreate()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
@@ -306,13 +315,13 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
     public function testHasManyRelationFetch()
     {
-        $author = new \TestApp\Model\Author;
+        $author = new \AuthorBooks\Model\Author;
         ok( $author );
 
         $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         ok( $author->id );
 
-        $address = new \TestApp\Model\Address;
+        $address = new \AuthorBooks\Model\Address;
         ok( $address );
 
         $address->create(array( 
@@ -353,23 +362,27 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
         $author->delete();
     }
 
+
+    /**
+     * @basedata false
+     */
     public function testRecordUpdateWithRawSQL()
     {
-        $n = new \TestApp\Model\Book;
+        $n = new \AuthorBooks\Model\Book ;
         $n->create(array(
             'title' => 'book title',
             'view' => 0,
         ));
         is( 0 , $n->view );
         $ret = $n->update(array( 
-            'view' => new RawValue('view + 1')
+            'view' => new Raw('view + 1')
         ), array('reload' => true));
 
         ok($ret->success, $ret->message);
         is(1, $n->view);
 
         $n->update(array( 
-            'view' => new RawValue('view + 3'),
+            'view' => new Raw('view + 3'),
         ), array('reload' => true));
         $ret = $n->reload();
         ok( $ret->success );
@@ -380,92 +393,45 @@ class BasicCRUDTest extends \LazyRecord\ModelTestCase
 
 
 
+    /**
+     * @rebuild false
+     */
     public function testZeroInflator()
     {
-        $b = new \TestApp\Model\Book;
-        $ret = $b->create(array( 'title' => 'Create X' , 'view' => 0 ));
-        result_ok($ret);
-        ok( $b->id );
+        $b = new \AuthorBooks\Model\Book ;
+        $ret = $b->create(array( 'title' => 'Zero number inflator' , 'view' => 0 ));
+        $this->assertResultSuccess($ret);
+        ok($b->id);
         is( 0 , $b->view );
 
         $ret = $b->load($ret->id);
-        result_ok($ret);
-        ok( $b->id );
+        $this->assertResultSuccess($ret);
+        ok($b->id);
         is( 0 , $b->view );
-        $b->delete();
+        $this->successfulDelete($b);
     }
 
 
+    /**
+     * @rebuild false
+     */
     public function testUpdateWithReloadOption()
     {
-        $b = new \TestApp\Model\Book;
-        $ret = $b->create(array( 'title' => 'Create Y' , 'view' => 0 ));
+        $b = new \AuthorBooks\Model\Book ;
+        $ret = $b->create(array( 'title' => 'Create for reload test' , 'view' => 0 ));
+        $this->assertResultSuccess($ret);
 
-        // test incremental
-        $ret = $b->update(array( 'view'  => new RawValue('view + 1') ), array('reload' => true));
-        result_ok($ret);
-        is( 1,  $b->view );
+        // test incremental with Raw statement
+        $ret = $b->update(array( 'view'  => new Raw('view + 1') ), array('reload' => true));
+        $this->assertResultSuccess($ret);
+        is(1,  $b->view);
 
-        $ret = $b->update(array('view' => new RawValue('view + 1') ), array('reload' => true));
-        result_ok($ret);
+        $ret = $b->update(array('view' => new Raw('view + 1') ), array('reload' => true));
+        $this->assertResultSuccess($ret);
         is( 2,  $b->view );
+
         $ret = $b->delete();
-        result_ok($ret);
-    }
-
-    public function testStaticCreateMethod()
-    {
-        $record = \TestApp\Model\Author::create(array( 
-            'name' => 'Mary',
-            'email' => 'zz@zz',
-            'identity' => 'zz',
-        ));
-        ok( $record->getLastResult()->success );
-    }
-
-    public function testStaticLoadMethod()
-    {
-        $record = \TestApp\Model\Author::create(array( 
-            'name' => 'Mary',
-            'email' => 'zz@zz',
-            'identity' => 'zz',
-        ));
-        $record2 = \TestApp\Model\Author::load($record->id );
-        ok($record2->id);
-
-        $record3 = \TestApp\Model\Author::load((int) $record->id);
-        ok($record3->id);
-
-        $record4 = \TestApp\Model\Author::load( array( 'id' => $record->id ));
-        ok( $record4 );
-        ok( $record4->id );
-    }
-
-    public function testStaticFunctions()
-    {
-        $record = \TestApp\Model\Author::create(array( 
-            'name' => 'Mary',
-            'email' => 'zz@zz',
-            'identity' => 'zz',
-        ));
-        $record = \TestApp\Model\Author::load( (int) $record->getLastResult()->id );
-
-        /**
-         * Which runs:
-         *    UPDATE authors SET name = 'Rename' WHERE name = 'Mary'
-         */
-        $ret = \TestApp\Model\Author::update(array( 'name' => 'Rename' ))
-            ->where()
-            ->equal('name','Mary')
-            ->execute();
-        ok( $ret->success );
-
-
-        $ret = \TestApp\Model\Author::delete()
-            ->where()
-            ->equal('name','Rename')
-            ->execute();
-        ok( $ret->success );
+        $this->assertResultSuccess($ret);
     }
 }
 

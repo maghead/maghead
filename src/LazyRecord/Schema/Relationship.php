@@ -2,15 +2,37 @@
 namespace LazyRecord\Schema;
 use ArrayAccess;
 use IteratorAggregate;
+use SQLBuilder\Universal\Syntax\Conditions;
+use LazyRecord\BaseCollection;
+use LazyRecord\BaseModel;
 
-class Relationship
-    implements IteratorAggregate, ArrayAccess
+class Relationship implements IteratorAggregate, ArrayAccess
 {
+    const HAS_MANY = 1;
+    const HAS_ONE = 2;
+    const BELONGS_TO = 3;
+    const MANY_TO_MANY = 4;
 
+    /**
+     * @var array The stashed data
+     */
     public $data = array();
 
-    public function __construct($data = array())
+    /**
+     * @var string The accessor name
+     */
+    public $accessor;
+
+
+    /**
+     * @var Conditions The SQLBuilder Condition Syntax Object
+     */
+    public $where;
+
+
+    public function __construct($accessor, array $data = array())
     {
+        $this->accessor = $accessor;
         $this->data = $data;
     }
 
@@ -51,9 +73,6 @@ class Relationship
         return $collection;
     }
 
-
-
-
     public function isType($type) 
     {
         return $this->data['type'] === $type;
@@ -61,35 +80,35 @@ class Relationship
 
     public function isManyToMany() 
     {
-        return $this->data['type'] === SchemaDeclare::many_to_many;
+        return $this->data['type'] === Relationship::MANY_TO_MANY;
     }
 
     public function isOneToMany() 
     {
-        return $this->data['type'] === SchemaDeclare::has_many;
+        return $this->data['type'] === Relationship::HAS_MANY;
     }
 
     public function isHasMany() 
     {
-        return $this->data['type'] === SchemaDeclare::has_many;
+        return $this->data['type'] === Relationship::HAS_MANY;
     }
 
 
-    public function applyFilter(& $collection) 
+    public function applyFilter(BaseCollection & $collection) 
     {
         if ( isset($this->data['filter']) ) {
             $collection = call_user_func_array( $this->data['filter'] , array($collection) );
         }
     }
 
-    public function applyWhere(& $collection) 
+    public function applyWhere(BaseCollection & $collection) 
     {
-        if ( isset($this->data['where']) ) {
-            return $collection->where($this->data['where']);
+        if ($this->where) {
+            $collection->setWhere($this->where);
         }
     }
 
-    public function applyOrder(& $collection) 
+    public function applyOrder(BaseCollection & $collection) 
     {
         if ( isset($this->data['order']) ) {
             foreach( $this->data['order'] as $o ) {
@@ -139,9 +158,9 @@ class Relationship
      * @param string $column
      * @param string $ordering
      */
-    public function order($column, $ordering)
+    public function orderBy($column, $ordering)
     {
-        if ( ! isset($this->data['order']) ) {
+        if (!isset($this->data['order']) ) {
             $this->data['order'] = array();
         }
         $this->data['order'][] = array($column ,$ordering);
@@ -149,16 +168,24 @@ class Relationship
     }
 
 
-    /**
-     * Save where condition arguments for collection selection.
-     *
-     * @param array $args
-     */
-    public function where($args)
-    {
-        $this->data['where'] = $args;
-        return $this;
+    public function where($expr = NULL , array $args = array()) {
+        if (!$this->where) {
+            $this->where = new Conditions;
+        }
+        if ($expr) {
+            if (is_string($expr)) {
+                $this->where->appendExpr($expr, $args);
+            } else if (is_array($expr)) {
+                foreach($expr as $key => $val) {
+                    $this->where->equal($key, $val);
+                }
+            } else {
+                throw new InvalidArgumentException("Unsupported argument type of 'where' method.");
+            }
+        }
+        return $this->where;
     }
+
 
 
 
@@ -194,11 +221,27 @@ class Relationship
     /**
      * To support var_export
      */
-    public static function __set_state($data)
+    public static function __set_state(array $data)
     {
-        return new self($data['data']);
+        $r = new self($data['accessor'], $data['data']);
+        if (isset($data['where'])) {
+            $r->where = $data['where'];
+        }
+        return $r;
     }
 
+
+    public function __get($key)
+    {
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
+        }
+    }
+
+    public function __set($key, $val)
+    {
+        $this->data[$key] = $val;
+    }
 }
 
 

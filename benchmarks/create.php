@@ -1,6 +1,6 @@
 <?php
 require( 'tests/bootstrap.php');
-require 'tests/schema/tests/Author.php';
+require 'tests/tests/Author.php';
 
 $bench = new SimpleBench;
 $bench->setN( 500000 );

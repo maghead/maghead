@@ -30,13 +30,15 @@ class SqliteTableParser extends BaseTableParser
     public function parseTableSql($table)
     {
         $sql = $this->getTableSql($table);
-        if( preg_match('#(\w+)\s*\((.*)\)#ism',$sql,$regs) ) {
+        if (preg_match('#`?(\w+)`?\s*\((.*)\)#ism',$sql,$regs) ) {
             $columns = array();
             $name = $regs[1];
             $columnstr = $regs[2];
-            $columnsqls = explode(',',$columnstr);
 
-            foreach( $columnsqls as $columnsql ) {
+            // FIXME: fix the double(3,1) syntax case later
+            $columnsqls = preg_split('/\s*,\s*/is',$columnstr); // split the sql at the end.
+
+            foreach ($columnsqls as $columnsql) {
                 $column = array();
                 $parts = preg_split('#\s+#',$columnsql,0,PREG_SPLIT_NO_EMPTY);
                 $column['name'] = $parts[0];
@@ -85,12 +87,13 @@ class SqliteTableParser extends BaseTableParser
 
             $column = $schema->column($name);
             $column->type( $type );
-            if( isset($columnAttr->null) )
-                $column->null(true);
-            elseif( isset($columnAttr->notNull) )
-                $column->notNull(true);
+            if (isset($columnAttr->null)) {
+                $column->null();
+            } elseif (isset($columnAttr->notNull)) {
+                $column->notNull();
+            }
 
-            if( isset($columnAttr->pk) ) {
+            if (isset($columnAttr->pk) ) {
                 $column->primary(true);
                 $schema->primaryKey = $name;
             }

@@ -3,8 +3,6 @@ namespace LazyRecord\SqlBuilder;
 use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\QueryBuilder;
-use SQLBuilder\IndexBuilder;
 use LazyRecord\Schema\RuntimeColumn;
 
 
@@ -17,24 +15,26 @@ class PgsqlBuilder extends BaseBuilder
 {
 
     public function buildColumnSql(SchemaInterface $schema, $column) {      
+        var_dump( get_class($column) ); 
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
-        $type = $column->type;
-        if( ! $type && $isa == 'str' )
-            $type = 'text';
+        if (!$column->type && $isa == 'str') {
+            $column->type = 'text';
+        }
 
-        $sql = $this->driver->getQuoteColumn( $name );
+        $sql = $this->driver->quoteIdentifier( $name );
 
         if ( ! $column->autoIncrement ) {
-            $sql .= ' ' . $type;
+            $sql .= ' ' . $column->buildTypeSql($this->driver);
         }
-        if ( $column->timezone ) {
+
+        if ($column->timezone) {
             $sql .= ' with time zone';
         }
 
-        if ( $column->required || $column->notNull ) {
+        if ($column->required || $column->null === true) {
             $sql .= ' NOT NULL';
-        } elseif ( $column->null ) {
+        } elseif ( $column->null === true ) {
             $sql .= ' NULL';
         }
 
@@ -58,7 +58,7 @@ class PgsqlBuilder extends BaseBuilder
                  * Here we use query driver builder to inflate default value,
                  * But the value,
                  */
-                $sql .= ' default ' . $this->driver->inflate($default);
+                $sql .= ' default ' . $this->driver->deflate($default);
             }
         }
 
@@ -79,7 +79,7 @@ class PgsqlBuilder extends BaseBuilder
     public function dropTable(SchemaInterface $schema)
     {
         return 'DROP TABLE IF EXISTS ' 
-                . $this->driver->getQuoteTableName( $schema->getTable() )
+                . $this->driver->quoteIdentifier( $schema->getTable() )
                 . ' CASCADE';
     }
 

@@ -3,7 +3,7 @@
          backupGlobals="false"
          colors="true"
          stopOnFailure="true"
-         stopOnError="false"
+         stopOnError="true"
          verbose="true">
   <php>
 
@@ -31,9 +31,16 @@
       <directory suffix="Test.php">tests</directory>
     </testsuite>
 
-    <testsuite name="Schema Related Tests">
-        <directory suffix="Test.php">tests/LazyRecord/Schema</directory>
+    <testsuite name="Model">
+        <directory suffix="Test.php">tests/LazyRecord/ModelTest</directory>
     </testsuite>
 
+    <testsuite name="AuthorBooks">
+        <directory suffix="Test.php">tests/AuthorBooks</directory>
+    </testsuite>
+
+    <testsuite name="Schema">
+        <directory suffix="Test.php">tests/LazyRecord/Schema</directory>
+    </testsuite>
   </testsuites>
 </phpunit>
