@@ -57,6 +57,7 @@ local ret=1
   local commands; commands=(
     help:'Show help message of a command'
     zsh:'This function generate a zsh-completion script automatically'
+    bash:'This command generate a bash completion script automatically'
     meta:'Set, get or list meta.'
     github:build-topics:'Build topic classes from the wiki of a GitHub Project.'
     init:'initialize your lazyrecord structures.'
@@ -85,6 +86,13 @@ local ret=1
         
         ;;
         (zsh)
+            _arguments -w -S -s \
+              '--bind=[bind complete to command]' \
+              '--program=[programe name]' \
+               && ret=0
+        
+        ;;
+        (bash)
             _arguments -w -S -s \
               '--bind=[bind complete to command]' \
               '--program=[programe name]' \
