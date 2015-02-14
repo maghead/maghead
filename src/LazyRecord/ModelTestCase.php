@@ -55,7 +55,6 @@ abstract class ModelTestCase extends PHPUnit_Framework_TestCase
 
         // free and override default connection
         ConnectionManager::getInstance()->free();
-        QueryDriver::free();
 
         $config = ConfigLoader::getInstance();
         $config->loaded = true;
