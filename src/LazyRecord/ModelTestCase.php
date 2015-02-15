@@ -56,11 +56,11 @@ abstract class ModelTestCase extends PHPUnit_Framework_TestCase
         // free and override default connection
         ConnectionManager::getInstance()->free();
 
-        $config = ConfigLoader::getInstance();
-        $config->loaded = true;
-        $config->config = array( 'schema' => array( 'auto_id' => true ) );
+        $loader = ConfigLoader::getInstance();
+        $loader->loaded = true;
+        $loader->config = array( 'schema' => array( 'auto_id' => true ) );
 
-        if( $dsn = $this->getDSN() ) {
+        if ($dsn = $this->getDSN()) {
             $config = array('dsn' => $dsn);
             $user = $this->getDatabaseUser();
             $pass = $this->getDatabasePassword();
@@ -101,7 +101,7 @@ abstract class ModelTestCase extends PHPUnit_Framework_TestCase
         $finder->find();
         */
 
-        $generator = new \LazyRecord\Schema\SchemaGenerator($config, $this->getLogger());
+        $generator = new \LazyRecord\Schema\SchemaGenerator($loader, $this->getLogger());
         $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
 
         // XXX: provide a force flag to test generation
