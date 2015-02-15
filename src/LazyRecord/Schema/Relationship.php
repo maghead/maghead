@@ -112,7 +112,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
     {
         if ( isset($this->data['order']) ) {
             foreach( $this->data['order'] as $o ) {
-                $collection->order($o[0] , $o[1]);
+                $collection->orderBy($o[0] , $o[1]);
             }
         }
     }
