@@ -21,10 +21,10 @@ abstract class BaseBuilder
     public function __construct(BaseDriver $driver, array $options = array())
     {
         $this->driver = $driver;
-        if( isset($options['rebuild']) ) {
+        if (isset($options['rebuild'])) {
             $this->rebuild = $options['rebuild'];
         }
-        if( isset($options['clean']) ) {
+        if (isset($options['clean'])) {
             $this->clean = $options['clean'];
         }
     }
@@ -45,11 +45,6 @@ abstract class BaseBuilder
         $sql .= join(",\n",$columnSql);
         $sql .= "\n);\n";
         return $sql;
-    }
-
-    public function __get($name)
-    {
-        return $this->driver->$name;
     }
 
     public function build(SchemaInterface $schema)

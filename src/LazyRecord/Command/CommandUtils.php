@@ -2,6 +2,12 @@
 namespace LazyRecord\Command;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Utils;
+use LazyRecord\SqlBuilder\BaseBuilder;
+use LazyRecord\SqlBuilder\SqlBuilder;
+use LazyRecord\DatabaseBuilder;
+use LazyRecord\ConnectionManager;
+use CLIFramework\Logger;
+use PDO;
 
 class CommandUtils
 {
@@ -81,81 +87,17 @@ class CommandUtils
     }
 
     static function build_schemas_with_options($id, $options, $schemas) {
-        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
+        $connectionManager = ConnectionManager::getInstance();
         $conn = $connectionManager->getConnection($id);
         $driver = $connectionManager->getQueryDriver($id);
-        $builder = \LazyRecord\SqlBuilder\SqlBuilder::create($driver, array( 
+        $sqlBuilder = SqlBuilder::create($driver, array( 
             'rebuild' => $options->rebuild,
             'clean' => $options->clean,
-        )); // driver
+        ));
 
-        $sqls = array();
-        foreach( $schemas as $schema ) {
-            $sqls[] = static::build_table_sql($builder,$schema,$conn);
-        }
-
-        foreach( $schemas as $schema ) {
-            $sqls[] = static::build_index_sql($builder,$schema,$conn);
-        }
-
-        foreach( $schemas as $schema ) {
-            $sqls[] = static::build_foreign_keys_sql($builder,$schema,$conn);
-        }
-
+        $builder = new DatabaseBuilder($conn, $sqlBuilder, new Logger);
+        $sqls    = $builder->build($schemas);
         return join("\n", $sqls );
-    }
-
-
-    static function build_foreign_keys_sql($builder, $schema, $conn) {
-        $class = get_class($schema);
-        static::$logger->info('Building Foreign Key SQL for ' . $schema);
-
-        $sqls = $builder->buildForeignKeys($schema);
-        foreach( $sqls as $sql ) {
-            static::$logger->debug($sql);
-            $conn->query( $sql );
-            $error = $conn->errorInfo();
-            if( $error[1] ) {
-                $msg =  $class . ': ' . var_export( $error , true );
-                static::$logger->error($msg);
-            }
-        }
-        return "--- Index For $class \n" . join("\n",$sqls);
-
-    }
-
-    static function build_index_sql($builder,$schema,$conn) {
-        $class = get_class($schema);
-        static::$logger->info('Building Index SQL for ' . $schema);
-
-        $sqls = $builder->buildIndex($schema);
-        foreach( $sqls as $sql ) {
-            static::$logger->debug($sql);
-            $conn->query( $sql );
-            $error = $conn->errorInfo();
-            if( $error[1] ) {
-                $msg =  $class . ': ' . var_export( $error , true );
-                static::$logger->error($msg);
-            }
-        }
-        return "--- Index For $class \n" . join("\n",$sqls);
-    }
-
-    static function build_table_sql($builder,$schema,$conn) {
-        $class = get_class($schema);
-        static::$logger->info('Building Table SQL for ' . $schema);
-
-        $sqls = $builder->buildTable($schema);
-        foreach( $sqls as $sql ) {
-            static::$logger->debug($sql);
-            $conn->query( $sql );
-            $error = $conn->errorInfo();
-            if( $error[1] ) {
-                $msg =  $class . ': ' . var_export( $error , true );
-                static::$logger->error($msg);
-            }
-        }
-        return "--- Schema $class \n" . join("\n",$sqls);
     }
 }
 
