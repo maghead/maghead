@@ -12,13 +12,11 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 
     public function schemaProvider() {
         $loader = \LazyRecord\ConfigLoader::getInstance();
-        ok($loader);
         $loader->loadFromArray(array( 
-            'bootstrap' =>
-            array ( 0 => 'tests/bootstrap.php',),
-            'schema' => array (
+            'bootstrap' => array ('tests/bootstrap.php'),
+            'schema' => array(
                 'auto_id' => 1,
-                'paths' => array ( 0 => 'tests/TestApp',),
+                'paths' => array('tests/TestApp'),
             ),
             'data_sources' =>
             array (

@@ -42,7 +42,7 @@ class AuthorAddressModelTest extends ModelTestCase
 
         // xxx: provide getAddresses() method generator
         $addresses = $author->addresses;
-        ok($addresses);
+        $this->assertCollectionSize(2, $addresses);
 
         $items = $addresses->items();
         ok($items);

@@ -19,10 +19,10 @@ class ClassUtils
      *
      * @param string[] schema objects
      */
-    static public function expand_schema_classes($classes)
+    static public function expand_schema_classes(array $classes)
     {
         $schemas = array();
-        foreach( $classes as $class ) {
+        foreach ($classes as $class) {
             $schema = new $class; // declare schema
             $refs = $schema->getReferenceSchemas();
             foreach ( $refs as $refClass => $v ) {
@@ -30,15 +30,15 @@ class ClassUtils
             }
             $schemas[] = $class;
         }
-        $schemaClasses = array_unique($schemas);
-        return self::schema_classes_to_objects($schemaClasses);
+        return self::schema_classes_to_objects(array_unique($schemas));
     }
 
 
-    public static function schema_classes_to_objects($classes) {
+    public static function schema_classes_to_objects(array $classes) 
+    {
         $schemas = array();
-        foreach( $classes as $class ) {
-            if( is_subclass_of($class,'LazyRecord\Schema\SchemaDeclare',true) ) {
+        foreach ($classes as $class) {
+            if (is_subclass_of($class,'LazyRecord\Schema\SchemaDeclare',true)) {
                 $schemas[] = new $class; 
             }
         }

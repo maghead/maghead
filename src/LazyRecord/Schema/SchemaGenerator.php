@@ -20,6 +20,7 @@ use LazyRecord\Schema\Factory\BaseCollectionClassFactory;
 use LazyRecord\Schema\Factory\CollectionClassFactory;
 use LazyRecord\Schema\Factory\ModelClassFactory;
 use LazyRecord\Schema\Factory\SchemaProxyClassFactory;
+use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Console;
 
 
@@ -40,7 +41,7 @@ class SchemaGenerator
         $this->logger = $logger; // Console::getInstance()->getLogger();
     }
 
-    public function setForceUpdate($force) 
+    public function setForceUpdate($force = true) 
     {
         $this->forceUpdate = $force;
     }
@@ -220,7 +221,7 @@ class SchemaGenerator
         }
 
         // in new schema declare, we can describe a schema in a model class.
-        if( $schema instanceof \LazyRecord\Schema\DynamicSchemaDeclare ) {
+        if( $schema instanceof DynamicSchemaDeclare ) {
             if ( $result = $this->injectModelSchema($schema) ) {
                 list($className, $classFile) = $result;
                 $classMap[ $className ] = $classFile;
