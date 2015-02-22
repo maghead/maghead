@@ -84,7 +84,6 @@ DOC;
         }
 
         if ($this->options->basedata) {
-            // CommandUtils::build_basedata($schemas);
             $collection = new SchemaCollection($schemas);
             $collection = $collection->evaluate();
 
