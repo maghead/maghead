@@ -50,7 +50,7 @@ class ClassUtils
      *
      * @param string[] $classes class list.
      */
-    static public function filter_schema_classes($classes)
+    static public function filter_schema_classes(array $classes)
     {
         $list = array();
         foreach( $classes as $class ) {
@@ -64,7 +64,7 @@ class ClassUtils
                 continue; 
             }
             $rf = new ReflectionClass( $class );
-            if ( $rf->isAbstract() ) {
+            if ($rf->isAbstract()) {
                 continue;
             }
 

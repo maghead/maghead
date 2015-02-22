@@ -38,7 +38,7 @@ $config->loadFromArray(array(
 ));
 
 $logger = new Logger;
-$logger->setQuiet();
+$logger->info("Building schema class files...");
 
 // build schema class files
 $schemas = array(
@@ -54,3 +54,4 @@ $schemas = array(
 $g = new \LazyRecord\Schema\SchemaGenerator($config, $logger);
 $g->setForceUpdate(true);
 $g->generate($schemas);
+$logger->info("Starting tests...");
