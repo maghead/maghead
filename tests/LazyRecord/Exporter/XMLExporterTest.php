@@ -1,7 +1,9 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
 use AuthorBooks\Model\Book ;
+use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\Author;
+use AuthorBooks\Model\AuthorCollection;
 use LazyRecord\Exporter\XMLExporter;
 
 class XMLExporterTest extends ModelTestCase
@@ -35,6 +37,26 @@ class XMLExporterTest extends ModelTestCase
         $xml = $dom->saveXML();
         $this->assertNotEmpty($xml);
     }
+
+
+    public function testExportCollection()
+    {
+        $book = new Book;
+        $ret = $book->create([ 'title' => 'Run & Skate' ]);
+        $this->assertResultSuccess($ret);
+
+        $author = new Author;
+        $ret = $author->create(array(
+            'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' 
+        ));
+        $this->assertResultSuccess($ret);
+
+        $exporter = new XMLExporter;
+        $exporter->exportCollection(new BookCollection);
+
+    }
+
+
 
     public function testRecursiveExporting()
     {
