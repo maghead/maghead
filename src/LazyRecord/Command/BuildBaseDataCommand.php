@@ -4,6 +4,7 @@ use CLIFramework\Command;
 use LazyRecord\Schema;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
+use LazyRecord\SeedBuilder;
 use Exception;
 use LazyRecord\Schema\SchemaCollection;
 
@@ -25,7 +26,10 @@ class BuildBaseDataCommand extends BaseCommand
 
         $collection = new SchemaCollection($classes);
         $collection = $collection->evaluate();
-        CommandUtils::build_basedata($collection->getSchemas());
+
+        $seedBuilder = new SeedBuilder($this->getConfigLoader(), $this->logger);
+        $seedBuilder->build($collection);
+
         $this->logger->info('Done');
     }
 }

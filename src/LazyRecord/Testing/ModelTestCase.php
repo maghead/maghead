@@ -5,7 +5,7 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\ClassUtils;
-use LazyRecord\SeedRunner;
+use LazyRecord\SeedBuilder;
 use LazyRecord\Result;
 use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\Testing\BaseTestCase;
@@ -73,13 +73,13 @@ abstract class ModelTestCase extends BaseTestCase
                 }
             }
             if ($basedata) {
-                $runner = new SeedRunner($this->config, $this->logger);
+                $runner = new SeedBuilder($this->config, $this->logger);
                 foreach($schemas as $schema) {
-                    $runner->runSchemaSeeds($schema);
+                    $runner->buildSchemaSeeds($schema);
                 }
                 if ($scripts = $this->config->getSeedScripts()) {
                     foreach($scripts as $script) {
-                        $runner->runSeedScript($script);
+                        $runner->buildScriptSeed($script);
                     }
                 }
             }

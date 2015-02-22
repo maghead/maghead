@@ -3,6 +3,8 @@ namespace LazyRecord\Command;
 use CLIFramework\Command;
 use LazyRecord\Metadata;
 use LazyRecord\Schema;
+use LazyRecord\Schema\SchemaCollection;
+use LazyRecord\SeedBuilder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Command\CommandUtils;
 use LazyRecord\Command\BaseCommand;
@@ -63,7 +65,12 @@ DOC;
         }
 
         if( $this->options->basedata ) {
-            CommandUtils::build_basedata($schemas);
+            // CommandUtils::build_basedata($schemas);
+            $collection = new SchemaCollection($schemas);
+            $collection = $collection->evaluate();
+
+            $seedBuilder = new SeedBuilder($this->getConfigLoader(), $this->logger);
+            $seedBuilder->build($collection);
         }
 
         $time = time();
