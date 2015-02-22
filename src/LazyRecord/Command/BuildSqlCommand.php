@@ -1,11 +1,15 @@
 <?php
 namespace LazyRecord\Command;
 use CLIFramework\Command;
+use CLIFramework\Logger;
 use LazyRecord\Metadata;
 use LazyRecord\Schema;
-use LazyRecord\Schema\SchemaCollection;
+use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\SeedBuilder;
+use LazyRecord\DatabaseBuilder;
+use LazyRecord\Schema\SchemaCollection;
 use LazyRecord\ConfigLoader;
+use LazyRecord\ConnectionManager;
 use LazyRecord\Command\CommandUtils;
 use LazyRecord\Command\BaseCommand;
 use Exception;
@@ -57,14 +61,29 @@ DOC;
         $schemas = $this->findSchemasByArguments(func_get_args());
 
         $logger->debug("Initialize schema builder...");
-        $sqlOutput = CommandUtils::build_schemas_with_options($id, $options, $schemas);
-        if( $file = $this->options->file ) {
+        // $sqlOutput = CommandUtils::build_schemas_with_options($id, $options, $schemas);
+
+
+        $connectionManager = ConnectionManager::getInstance();
+        $conn = $connectionManager->getConnection($id);
+        $driver = $connectionManager->getQueryDriver($id);
+        $sqlBuilder = SqlBuilder::create($driver, array( 
+            'rebuild' => $options->rebuild,
+            'clean' => $options->clean,
+        ));
+
+        $builder = new DatabaseBuilder($conn, $sqlBuilder, new Logger);
+        $sqls    = $builder->build($schemas);
+        $sqlOutput = join("\n", $sqls );
+
+
+        if ($file = $this->options->file) {
             $fp = fopen($file,'w');
             fwrite($fp, $sqlOutput);
             fclose($fp);
         }
 
-        if( $this->options->basedata ) {
+        if ($this->options->basedata) {
             // CommandUtils::build_basedata($schemas);
             $collection = new SchemaCollection($schemas);
             $collection = $collection->evaluate();

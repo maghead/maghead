@@ -85,20 +85,6 @@ class CommandUtils
             static::$logger->debug( static::$logger->formatter->format($class, 'green') , 1 );
         }
     }
-
-    static function build_schemas_with_options($id, $options, $schemas) {
-        $connectionManager = ConnectionManager::getInstance();
-        $conn = $connectionManager->getConnection($id);
-        $driver = $connectionManager->getQueryDriver($id);
-        $sqlBuilder = SqlBuilder::create($driver, array( 
-            'rebuild' => $options->rebuild,
-            'clean' => $options->clean,
-        ));
-
-        $builder = new DatabaseBuilder($conn, $sqlBuilder, new Logger);
-        $sqls    = $builder->build($schemas);
-        return join("\n", $sqls );
-    }
 }
 
 
