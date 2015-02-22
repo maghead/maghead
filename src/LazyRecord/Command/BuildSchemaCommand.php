@@ -7,7 +7,7 @@ use LazyRecord\Command\CommandUtils;
  * $ lazy build-schema path/to/Schema path/to/SchemaDir
  *
  */
-class BuildSchemaCommand extends \CLIFramework\Command
+class BuildSchemaCommand extends BaseCommand
 {
 
     public function usage()
@@ -37,10 +37,11 @@ class BuildSchemaCommand extends \CLIFramework\Command
         $logger = $this->getLogger();
 
         CommandUtils::set_logger($this->logger);
-        $config = CommandUtils::init_config_loader();
+
+        $config = $this->getConfigLoader();
 
         $this->logger->debug('Finding schemas...');
-        $classes = CommandUtils::find_schemas_with_arguments( func_get_args() );
+        $classes = $this->findSchemasByArguments(func_get_args());
 
         CommandUtils::print_schema_classes($classes);
 

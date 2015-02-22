@@ -3,6 +3,7 @@ namespace LazyRecord\Command;
 use CLIFramework\Command;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Metadata;
+use LazyRecord\Utils;
 use LazyRecord\Command\CommandUtils;
 use RuntimeException;
 
@@ -35,6 +36,7 @@ class BaseCommand extends Command
         return $this->config;
     }
 
+
     public function options($opts)
     {
         $self = $this;
@@ -48,5 +50,12 @@ class BaseCommand extends Command
     public function getCurrentDataSourceId() {
         return $this->options->{'data-source'} ?: 'default';
     }
+
+
+    public function findSchemasByArguments(array $arguments) 
+    {
+        return Utils::getSchemaClassFromPathsOrClassNames($this->getConfigLoader(), $arguments , $this->logger);
+    }
+
 
 }

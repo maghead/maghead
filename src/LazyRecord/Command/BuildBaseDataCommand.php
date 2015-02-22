@@ -5,8 +5,9 @@ use LazyRecord\Schema;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use Exception;
+use LazyRecord\Schema\SchemaCollection;
 
-class BuildBaseDataCommand extends Command
+class BuildBaseDataCommand extends BaseCommand
 {
 
     public function brief() { return 'insert basedata into datasource.'; }
@@ -17,15 +18,14 @@ class BuildBaseDataCommand extends Command
         $logger  = $this->logger;
 
         CommandUtils::set_logger($this->logger);
-        CommandUtils::init_config_loader();
 
-        $classes = CommandUtils::find_schemas_with_arguments( func_get_args() );
+        $classes = $this->findSchemasByArguments( func_get_args() );
 
         CommandUtils::print_schema_classes($classes);
 
-        $schemas = ClassUtils::schema_classes_to_objects( $classes );
-        CommandUtils::build_basedata($schemas);
-
+        $collection = new SchemaCollection($classes);
+        $collection = $collection->evaluate();
+        CommandUtils::build_basedata($collection->getSchemas());
         $this->logger->info('Done');
     }
 }

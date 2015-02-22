@@ -34,11 +34,9 @@ class CleanSchemaCommand extends \CLIFramework\Command
         $config = CommandUtils::init_config_loader();
 
         $this->logger->debug('Finding schemas...');
-        $schemas = CommandUtils::find_schemas_with_arguments( func_get_args() );
-        // CommandUtils::print_schema_classes($classes);
+        $schemas = $this->findSchemasByArguments( func_get_args() );
 
-        foreach ( $schemas as $schema ) {
-
+        foreach ($schemas as $schema) {
             $this->logger->info('Cleaning schema ' . get_class($schema) );
             $paths = array();
             $paths[] = $schema->getRelatedClassPath( $schema->getBaseModelClass() );

@@ -52,7 +52,7 @@ DOC;
         $id = $this->getCurrentDataSourceId();
 
         $logger->debug("Finding schema classes...");
-        $schemas = CommandUtils::find_schemas_with_arguments( func_get_args() );
+        $schemas = $this->findSchemasByArguments(func_get_args());
 
         $logger->debug("Initialize schema builder...");
         $sqlOutput = CommandUtils::build_schemas_with_options($id, $options, $schemas);
