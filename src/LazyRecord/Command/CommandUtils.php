@@ -73,12 +73,6 @@ class CommandUtils
         }
     }
 
-    static function find_schemas_with_arguments($arguments) 
-    {
-        return Utils::getSchemaClassFromPathsOrClassNames( 
-            static::$loader, $arguments , static::get_logger() );
-    }
-
     static function print_schema_classes($classes) {
         static::log('Found schema classes');
         foreach( $classes as $class ) {
