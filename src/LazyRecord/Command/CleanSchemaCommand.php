@@ -31,7 +31,7 @@ class CleanSchemaCommand extends \CLIFramework\Command
         $logger = $this->getLogger();
 
         CommandUtils::set_logger($this->logger);
-        $config = CommandUtils::init_config_loader();
+        $config = $this->getConfigLoader();
 
         $this->logger->debug('Finding schemas...');
         $schemas = $this->findSchemasByArguments( func_get_args() );

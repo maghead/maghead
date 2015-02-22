@@ -3,7 +3,7 @@ namespace LazyRecord\Command;
 use CLIFramework\Command;
 use LazyRecord\Metadata;
 
-class VersionCommand extends Command
+class VersionCommand extends BaseCommand
 {
     public function brief() { return 'Show database version'; }
 
@@ -19,7 +19,6 @@ class VersionCommand extends Command
     public function execute() 
     {
         $dsId = $this->options->{'data-source'} ?: 'default';
-        CommandUtils::init_config_loader();
         $meta = new Metadata($dsId);
         $this->logger->info("database version: " . $meta['version']);
     }
