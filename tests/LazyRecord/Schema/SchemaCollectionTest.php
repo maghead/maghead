@@ -63,7 +63,6 @@ class SchemaCollectionTest extends PHPUnit_Framework_TestCase
 
         $expanded = $rc->expandDependency();
         $this->assertInstanceOf('LazyRecord\Schema\SchemaCollection', $expanded);
-
         $this->assertEquals(4, count($expanded));
     }
 }

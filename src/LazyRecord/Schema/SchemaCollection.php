@@ -41,24 +41,24 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
 
     public function expandDependency()
     {
-        $expand = array();
+        $expands = array();
         foreach($this->schemas as $schema) {
-            $expand = array_merge($expand, $this->expandSchemaDependency($schema));
+            $expands = array_merge($expands, $this->expandSchemaDependency($schema));
         }
-        $expand = array_unique($expand);
-        return new self($expand);
+        $expands = array_unique($expands);
+        return new self($expands);
     }
 
     public function expandSchemaDependency(SchemaDeclare $schema) {
-        $expand = array();
+        $expands = array();
         $refs = $schema->getReferenceSchemas();
         foreach($refs as $refClass => $v) {
             // $refSchema = new $refClass;
             // $expand = array_merge($expand, $this->expandSchemaDependency($refSchema), array($refClass));
-            $expand = array_merge($expand, array($refClass));
+            $expands[] = $refClass;
         }
-        $expand[] = get_class($schema);
-        return $expand;
+        $expands[] = get_class($schema);
+        return $expands;
     }
 
 

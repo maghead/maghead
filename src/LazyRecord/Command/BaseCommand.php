@@ -4,6 +4,7 @@ use CLIFramework\Command;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Metadata;
 use LazyRecord\Command\CommandUtils;
+use RuntimeException;
 
 class BaseCommand extends Command
 {
@@ -15,13 +16,21 @@ class BaseCommand extends Command
 
     public function init() {
         // softly load the config file.
-        $this->config = CommandUtils::init_config_loader(false);
+        $this->config = ConfigLoader::getInstance();
+        $this->config->loadFromSymbol(true); // force loading
+        if ($this->config->isLoaded()) {
+            $this->config->initForBuild();
+        }
     }
 
     public function getConfigLoader($required = true) 
     {
         if (!$this->config) {
-            $this->config = CommandUtils::init_config_loader($required);
+            $this->config = ConfigLoader::getInstance();
+            $this->config->loadFromSymbol(true); // force loading
+            if (!$loader->isLoaded() && $required) {
+                throw new RuntimeException("ConfigLoader did not loaded any config file. Can't initialize the settings.");
+            }
         }
         return $this->config;
     }
