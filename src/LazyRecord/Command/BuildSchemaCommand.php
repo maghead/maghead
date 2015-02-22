@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Command;
 use LazyRecord\Schema\SchemaGenerator;
+use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\Command\CommandUtils;
 
 /**
@@ -43,7 +44,7 @@ class BuildSchemaCommand extends BaseCommand
         $this->logger->debug('Finding schemas...');
         $classes = $this->findSchemasByArguments(func_get_args());
 
-        CommandUtils::print_schema_classes($classes);
+        SchemaUtils::printSchemaClasses($this->logger, $classes);
 
         $this->logger->debug("Initializing schema generator...");
 

@@ -5,6 +5,7 @@ use LazyRecord\Schema;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\SeedBuilder;
+use LazyRecord\Schema\SchemaUtils;
 use Exception;
 use LazyRecord\Schema\SchemaCollection;
 
@@ -22,7 +23,7 @@ class BuildBaseDataCommand extends BaseCommand
 
         $classes = $this->findSchemasByArguments( func_get_args() );
 
-        CommandUtils::print_schema_classes($classes);
+        SchemaUtils::printSchemaClasses($this->logger, $classes);
 
         $collection = new SchemaCollection($classes);
         $collection = $collection->evaluate();
