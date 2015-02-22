@@ -1,7 +1,6 @@
 <?php
 namespace LazyRecord\Command;
 use LazyRecord\Schema\SchemaGenerator;
-use LazyRecord\Command\CommandUtils;
 
 /**
  * $ lazy clean-schema path/to/Schema path/to/SchemaDir
@@ -30,7 +29,6 @@ class CleanSchemaCommand extends \CLIFramework\Command
     {
         $logger = $this->getLogger();
 
-        CommandUtils::set_logger($this->logger);
         $config = $this->getConfigLoader();
 
         $this->logger->debug('Finding schemas...');

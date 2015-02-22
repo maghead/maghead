@@ -19,7 +19,6 @@ class BuildBaseDataCommand extends BaseCommand
         $options = $this->options;
         $logger  = $this->logger;
 
-        CommandUtils::set_logger($this->logger);
 
         $classes = $this->findSchemasByArguments( func_get_args() );
 

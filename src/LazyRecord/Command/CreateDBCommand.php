@@ -5,7 +5,6 @@ use CLIFramework\Command;
 use LazyRecord\Schema;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Utils;
-use LazyRecord\Command\CommandUtils;
 use LazyRecord\Command\BaseCommand;
 
 use CornelTek\DBUtil;

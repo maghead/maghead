@@ -10,7 +10,6 @@ use LazyRecord\DatabaseBuilder;
 use LazyRecord\Schema\SchemaCollection;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ConnectionManager;
-use LazyRecord\Command\CommandUtils;
 use LazyRecord\Command\BaseCommand;
 use Exception;
 
@@ -54,14 +53,12 @@ DOC;
         $options = $this->options;
         $logger  = $this->logger;
 
-        CommandUtils::set_logger($this->logger);
         $id = $this->getCurrentDataSourceId();
 
         $logger->debug("Finding schema classes...");
         $schemas = $this->findSchemasByArguments(func_get_args());
 
         $logger->debug("Initialize schema builder...");
-        // $sqlOutput = CommandUtils::build_schemas_with_options($id, $options, $schemas);
 
 
         $connectionManager = ConnectionManager::getInstance();

@@ -4,7 +4,6 @@ use CLIFramework\Command;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Metadata;
 use LazyRecord\Utils;
-use LazyRecord\Command\CommandUtils;
 use LazyRecord\Schema\SchemaUtils;
 use RuntimeException;
 

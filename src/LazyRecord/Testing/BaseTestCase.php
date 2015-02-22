@@ -4,7 +4,6 @@ use LazyRecord\ConnectionManager;
 use LazyRecord\SqlBuilder;
 use LazyRecord\BaseModel;
 use LazyRecord\ConfigLoader;
-use LazyRecord\Command\CommandUtils;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\ClassUtils;
 use LazyRecord\BaseCollection;

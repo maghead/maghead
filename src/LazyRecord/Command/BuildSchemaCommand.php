@@ -2,7 +2,6 @@
 namespace LazyRecord\Command;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\SchemaUtils;
-use LazyRecord\Command\CommandUtils;
 
 /**
  * $ lazy build-schema path/to/Schema path/to/SchemaDir
@@ -37,7 +36,6 @@ class BuildSchemaCommand extends BaseCommand
     {
         $logger = $this->getLogger();
 
-        CommandUtils::set_logger($this->logger);
 
         $config = $this->getConfigLoader();
 

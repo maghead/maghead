@@ -2,7 +2,6 @@
 namespace LazyRecord\Testing;
 use LazyRecord\ConnectionManager;
 use LazyRecord\ConfigLoader;
-use LazyRecord\Command\CommandUtils;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\ClassUtils;
 use LazyRecord\SeedBuilder;

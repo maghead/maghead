@@ -77,7 +77,6 @@
       <file name="src/LazyRecord/Command/BuildConfCommand.php" role="php" md5sum="b253b239170ca964eaff60245f41c650"/>
       <file name="src/LazyRecord/Command/BuildSchemaCommand.php" role="php" md5sum="3f19a267a31b6ba33f6689d5410eeb87"/>
       <file name="src/LazyRecord/Command/BuildSqlCommand.php" role="php" md5sum="56387198c42ff624a01d164b2e941e55"/>
-      <file name="src/LazyRecord/Command/CommandUtils.php" role="php" md5sum="e3737d05d051354c8914f22d4cba20ef"/>
       <file name="src/LazyRecord/Command/CreateDBCommand.php" role="php" md5sum="a929cd6df7f0bd09d053b8b0115fb35e"/>
       <file name="src/LazyRecord/Command/DiffCommand.php" role="php" md5sum="46e0c4d6059d76f72ad8495d92bad995"/>
       <file name="src/LazyRecord/Command/InitCommand.php" role="php" md5sum="968f444a1d7a49bf4558e77dcc5c8d2e"/>
@@ -272,7 +271,6 @@
       <install name="src/LazyRecord/Command/BuildConfCommand.php" as="LazyRecord/Command/BuildConfCommand.php"/>
       <install name="src/LazyRecord/Command/BuildSchemaCommand.php" as="LazyRecord/Command/BuildSchemaCommand.php"/>
       <install name="src/LazyRecord/Command/BuildSqlCommand.php" as="LazyRecord/Command/BuildSqlCommand.php"/>
-      <install name="src/LazyRecord/Command/CommandUtils.php" as="LazyRecord/Command/CommandUtils.php"/>
       <install name="src/LazyRecord/Command/CreateDBCommand.php" as="LazyRecord/Command/CreateDBCommand.php"/>
       <install name="src/LazyRecord/Command/DiffCommand.php" as="LazyRecord/Command/DiffCommand.php"/>
       <install name="src/LazyRecord/Command/InitCommand.php" as="LazyRecord/Command/InitCommand.php"/>

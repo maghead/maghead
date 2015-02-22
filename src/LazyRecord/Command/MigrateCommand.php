@@ -40,7 +40,6 @@ class MigrateCommand extends BaseCommand
         $dsId = $this->getCurrentDataSourceId();
         
 
-        CommandUtils::set_logger($this->logger);
 
         if( $optNew ) {
             $generator = new MigrationGenerator('db/migrations');
