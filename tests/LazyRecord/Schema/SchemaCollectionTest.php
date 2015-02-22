@@ -60,6 +60,11 @@ class SchemaCollectionTest extends PHPUnit_Framework_TestCase
             return $schema instanceof \AuthorBooks\Model\BookSchema;
         });
         $this->assertEquals(1, count($rc));
+
+        $expanded = $rc->expandDependency();
+        $this->assertInstanceOf('LazyRecord\Schema\SchemaCollection', $expanded);
+
+        $this->assertEquals(4, count($expanded));
     }
 }
 

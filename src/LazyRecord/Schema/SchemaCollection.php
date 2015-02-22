@@ -39,6 +39,29 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
         return new self($schemas);
     }
 
+    public function expandDependency()
+    {
+        $expand = array();
+        foreach($this->schemas as $schema) {
+            $expand = array_merge($expand, $this->expandSchemaDependency($schema));
+        }
+        $expand = array_unique($expand);
+        return new self($expand);
+    }
+
+    public function expandSchemaDependency(SchemaDeclare $schema) {
+        $expand = array();
+        $refs = $schema->getReferenceSchemas();
+        foreach($refs as $refClass => $v) {
+            // $refSchema = new $refClass;
+            // $expand = array_merge($expand, $this->expandSchemaDependency($refSchema), array($refClass));
+            $expand = array_merge($expand, array($refClass));
+        }
+        $expand[] = get_class($schema);
+        return $expand;
+    }
+
+
     public function declareable() {
         return $this->filter(function($schema) {
             return is_subclass_of($schema, 'LazyRecord\Schema\SchemaDeclare', true);
