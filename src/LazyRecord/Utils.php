@@ -10,7 +10,7 @@ class Utils
      *
      * @return array schema objects
      */
-    public static function getSchemaClassFromPathsOrClassNames(ConfigLoader $loader, $args, $logger = null)
+    public static function findSchemasByArguments(ConfigLoader $loader, $args, $logger = null)
     {
         if( count($args) && ! file_exists($args[0]) ) {
             $classes = array();

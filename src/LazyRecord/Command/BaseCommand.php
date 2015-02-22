@@ -5,6 +5,7 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\Metadata;
 use LazyRecord\Utils;
 use LazyRecord\Command\CommandUtils;
+use LazyRecord\Schema\SchemaUtils;
 use RuntimeException;
 
 class BaseCommand extends Command
@@ -54,7 +55,7 @@ class BaseCommand extends Command
 
     public function findSchemasByArguments(array $arguments) 
     {
-        return Utils::getSchemaClassFromPathsOrClassNames($this->getConfigLoader(), $arguments , $this->logger);
+        return SchemaUtils::findSchemasByArguments($this->getConfigLoader(), $arguments , $this->logger);
     }
 
 

@@ -4,10 +4,11 @@ use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship;
+use LazyRecord\Schema\ColumnDeclare;
 
 class MysqlBuilder extends BaseBuilder
 {
-    public function buildColumnSql(SchemaInterface $schema, $column) {
+    public function buildColumnSql(SchemaInterface $schema, ColumnDeclare $column) {
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         if (! $column->type && $isa == 'str' ) {

@@ -5,6 +5,7 @@ use LazyRecord\QueryBuilder;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship;
+use LazyRecord\Schema\ColumnDeclare;
 
 /**
  * Schema SQL builder
@@ -13,7 +14,7 @@ use LazyRecord\Schema\Relationship;
  */
 class SqliteBuilder extends BaseBuilder 
 {
-    public function buildColumnSql(SchemaInterface $schema, $column) {
+    public function buildColumnSql(SchemaInterface $schema, ColumnDeclare $column) {
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         $type = $column->type;

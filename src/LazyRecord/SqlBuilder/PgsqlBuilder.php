@@ -4,6 +4,7 @@ use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
+use LazyRecord\Schema\ColumnDeclare;
 
 
 /**
@@ -14,8 +15,7 @@ use LazyRecord\Schema\RuntimeColumn;
 class PgsqlBuilder extends BaseBuilder
 {
 
-    public function buildColumnSql(SchemaInterface $schema, $column) {      
-        var_dump( get_class($column) ); 
+    public function buildColumnSql(SchemaInterface $schema, ColumnDeclare $column) {
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         if (!$column->type && $isa == 'str') {

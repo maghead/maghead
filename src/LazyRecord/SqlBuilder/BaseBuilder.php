@@ -11,6 +11,7 @@ use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship;
 use LazyRecord\BaseModel;
+use LazyRecord\Schema\ColumnDeclare;
 
 abstract class BaseBuilder
 {
@@ -29,7 +30,7 @@ abstract class BaseBuilder
         }
     }
 
-    abstract public function buildColumnSql(SchemaInterface $schema, $column);
+    abstract public function buildColumnSql(SchemaInterface $schema, ColumnDeclare $column);
 
     public function createTable(SchemaInterface $schema)
     {

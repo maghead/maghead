@@ -22,22 +22,5 @@ class UtilsTest extends PHPUnit_Framework_TestCase
         is( 1, LazyRecord\Utils::evaluate(1) );
         is( 2, LazyRecord\Utils::evaluate( function() { return 2; }) );
     }
-
-    public function testGetSchemaClassFromPathsOrClassNames() 
-    {
-        $loader = new LazyRecord\ConfigLoader;
-        ok($loader);
-        $loader->loadFromSymbol(true); // force loading
-        $loader->initForBuild();
-
-        $paths = $loader->getSchemaPaths();
-        ok($paths);
-        ok(is_array($paths));
-
-        $schemas = LazyRecord\Utils::getSchemaClassFromPathsOrClassNames($loader,array('TestApp\Model\\UserSchema'));
-        ok($schemas);
-
-
-    }
 }
 

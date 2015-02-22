@@ -39,7 +39,7 @@ class ListSchemaCommand extends Command
         $generator = new SchemaGenerator($loader, $logger);
 
         $args = func_get_args();
-        $classes = Utils::getSchemaClassFromPathsOrClassNames( 
+        $classes = Utils::findSchemasByArguments( 
             $loader,
             $args, 
             $this->logger );
