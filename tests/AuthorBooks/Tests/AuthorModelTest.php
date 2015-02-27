@@ -178,7 +178,6 @@ class AuthorModelTest extends ModelTestCase
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->assertResultSuccess($ret);
         ok( $id = $ret->id );
-        ok( $ret->success );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
 
@@ -199,13 +198,14 @@ class AuthorModelTest extends ModelTestCase
         $ret = $author->update(array( 'name' => 'Bar' ));
         $this->assertResultSuccess($ret);
 
-        is( 'Bar', $author->name );
+        is('Bar', $author->name);
 
         $ret = $author->delete();
         $this->assertResultSuccess($ret);
 
         $data = $author->toArray();
-        ok( empty($data), 'should be empty');
+
+        $this->assertEmpty($data);
     }
 
     public function testMixinMethods() 
@@ -218,7 +218,7 @@ class AuthorModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
         $age = $author->getAge();
-        ok($age, "Got Age");
+        $this->assertInstanceOf('DateInterval', $age);
         ok($age->format('%s seconds'));
     }
 
