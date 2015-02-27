@@ -222,6 +222,21 @@ class AuthorModelTest extends ModelTestCase
         ok($age->format('%s seconds'));
     }
 
+    public function testToArrayWithFields() 
+    {
+        $author = new Author;
+        $ret = $author->create(array( 
+            'name' => 'testToArray',
+            'email' => 'zz3@zz3',
+            'identity' => 'zz3',
+        ));
+        $this->assertResultSuccess($ret);
+        $array = $author->toArray([ 'name', 'email' ]);
+
+        $this->assertArrayHasKey('name', $array);
+        $this->assertArrayHasKey('email', $array);
+        $this->assertArrayNotHasKey('identity', $array);
+    }
 
     /**
      * @basedata false
