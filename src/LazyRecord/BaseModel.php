@@ -155,10 +155,12 @@ abstract class BaseModel implements
              */
         }
     }
-
-
     public function select($sels) {
-        $this->selected = (array) $sels;
+        if (is_array($sels)) {
+            $this->selected = $sels;
+        } else {
+            $this->selected = func_get_args();
+        }
         return $this;
     }
 
@@ -1736,8 +1738,11 @@ abstract class BaseModel implements
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(array $fields = NULL)
     {
+        if ($fields) {
+            return array_intersect_key($this->_data, array_flip($fields));
+        }
         return $this->_data;
     }
 
@@ -1749,8 +1754,7 @@ abstract class BaseModel implements
      */
     public function toJson()
     {
-        $ser = new JsonSerializer;
-        return $ser->encode( $this->_data );
+        return json_encode($this->_data);
     }
 
 
