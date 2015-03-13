@@ -143,18 +143,22 @@ class MigrationRunner
             $connection = $connectionManager->getConnection($dsId);
             $connection->beginTransaction();
 
-            try {
-                $scripts = $this->getUpgradeScripts($dsId);
-                if (count($scripts)) {
-                    $this->logger->info("Just found " . count($scripts) . ' migration scripts to run!');
-                }
+            $scripts = $this->getUpgradeScripts($dsId);
+            if (count($scripts) == 0) {
+                $this->logger->info("No migration script found.");
+                return;
+            }
 
+            $this->logger->info("I just found " . count($scripts) . ' migration scripts to run!');
+
+            try {
                 foreach ($scripts as $script) {
                     $this->logger->info("Running upgrade migration script $script on data source $dsId");
                     $migration = new $script($dsId);
                     $migration->upgrade();
                     $this->updateLastMigrationId($dsId,$script::getId());
                 }
+
             } catch (Exception $e) {
                 $this->logger->error('Exception was thrown: ' . $e->getMessage());
                 $this->logger->warn('Rolling back ...');
