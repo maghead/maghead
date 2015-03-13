@@ -9,7 +9,11 @@ class MigrateCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'migrate database schema.';
+        return 'Migrate database schema.';
+    }
+
+    public function init() {
+        $this->command('upgrade', 'LazyRecord\Command\MigrationUpgradeCommand');
     }
 
     public function options($opts) 
