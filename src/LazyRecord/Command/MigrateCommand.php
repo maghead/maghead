@@ -13,7 +13,9 @@ class MigrateCommand extends BaseCommand
     }
 
     public function init() {
-        $this->command('upgrade', 'LazyRecord\Command\MigrationUpgradeCommand');
+        $this->command('upgrade', 'LazyRecord\\Command\\MigrateUpgradeCommand');
+        $this->command('downgrade', 'LazyRecord\\Command\\MigrateDowngradeCommand');
+        $this->command('new', 'LazyRecord\\Command\\MigrateNewCommand');
     }
 
     public function options($opts) 
@@ -35,6 +37,7 @@ class MigrateCommand extends BaseCommand
 
     public function execute() 
     {
+        return parent::execute();
         $optNew = $this->options->new;
         $optDiff = $this->options->diff;
         $optUp = $this->options->up;
@@ -42,10 +45,8 @@ class MigrateCommand extends BaseCommand
         $optDown = $this->options->down;
         $optStatus = $this->options->status;
         $dsId = $this->getCurrentDataSourceId();
-        
 
-
-        if( $optNew ) {
+        if ($optNew) {
             $generator = new MigrationGenerator('db/migrations');
             $this->logger->info( "Creating migration script for '" . $optNew . "'" );
             list($class,$path) = $generator->generate($optNew);
