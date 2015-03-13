@@ -16,6 +16,7 @@ class BaseCommand extends Command
     public $config;
 
     public function init() {
+        parent::init();
         // softly load the config file.
         $this->config = ConfigLoader::getInstance();
         $this->config->loadFromSymbol(true); // force loading
@@ -39,6 +40,7 @@ class BaseCommand extends Command
 
     public function options($opts)
     {
+        parent::options($opts);
         $self = $this;
         $opts->add('D|data-source:', 'specify data source id')
             ->validValues(function() use($self) {

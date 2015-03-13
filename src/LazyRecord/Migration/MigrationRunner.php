@@ -6,6 +6,7 @@ use LazyRecord\Console;
 use LazyRecord\Metadata;
 use LazyRecord\Schema\Comparator;
 use LazyRecord\TableParser\TableParser;
+use LazyRecord\ConnectionManager;
 
 class MigrationRunner
 {

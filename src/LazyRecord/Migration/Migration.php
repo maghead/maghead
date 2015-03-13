@@ -39,6 +39,10 @@ class Migration
         }
     }
 
+    public function executeSql($sql)
+    {
+        return $this->query($sql);
+    }
 
 
     /**

@@ -17,12 +17,12 @@ class Console extends Application
         parent::init();
 
         /**
-         * command for initialize related file structure
+         * Command for initialize related file structure
          */
         $this->command('init',    'LazyRecord\Command\InitCommand');
 
         /**
-         * command for building config file.
+         * Command for building config file.
          */
         $this->command('build-conf', 'LazyRecord\\Command\\BuildConfCommand');
         $this->command('conf',       'LazyRecord\\Command\\BuildConfCommand');
@@ -58,5 +58,4 @@ class Console extends Application
             return $self;
         return $self = new self;
     }
-
 }
