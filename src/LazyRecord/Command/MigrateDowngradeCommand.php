@@ -7,6 +7,9 @@ use LazyRecord\Command\BaseCommand;
 
 class MigrateDowngradeCommand extends BaseCommand
 {
+    public function brief() {
+        return 'Run downgrade migration scripts.';
+    }
 
     public function aliases() {
         return array('d', 'down');

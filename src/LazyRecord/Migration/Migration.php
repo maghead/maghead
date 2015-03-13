@@ -39,21 +39,22 @@ class Migration
         }
     }
 
+
+
     /**
      * Execute sql for migration
      *
      * @param string $sql
      */
-    public function executeSql($sql) 
+    public function query($sql, $title = NULL) 
     {
         $sql = (array) $sql;
-        try { 
-            foreach( (array) $sql as $q ) {
-                $stm = $this->connection->query($q);
-                $this->logger->info('QueryOK: ' . $q);
-            }
-        } catch(PDOException $e) {
-            $this->logger->error($e->getMessage()  . ', SQL: '. join("\n",$sql));
+        if ($title) {
+            $this->logger->info('Executing task: '. $title);
+        }
+        foreach( (array) $sql as $q ) {
+            $stm = $this->connection->query($q);
+            $this->logger->info('QueryOK: ' . $q);
         }
     }
 

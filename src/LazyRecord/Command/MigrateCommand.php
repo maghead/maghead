@@ -16,6 +16,8 @@ class MigrateCommand extends BaseCommand
         $this->command('upgrade', 'LazyRecord\\Command\\MigrateUpgradeCommand');
         $this->command('downgrade', 'LazyRecord\\Command\\MigrateDowngradeCommand');
         $this->command('new', 'LazyRecord\\Command\\MigrateNewCommand');
+        $this->command('status', 'LazyRecord\\Command\\MigrateStatusCommand');
+        $this->command('diff', 'LazyRecord\\Command\\MigrateDiffCommand');
     }
 
     public function options($opts) 
@@ -64,7 +66,7 @@ class MigrateCommand extends BaseCommand
             list($class,$path) = $generator->generateWithDiff( $optDiff ,$dsId,$schemas);
             $this->logger->info( "Migration script is generated: $path" );
         }
-        elseif( $optUpgradeDiff ) {
+        elseif ($optUpgradeDiff) {
             $this->logger->info( "Loading schema objects..." );
             $finder = new \LazyRecord\Schema\SchemaFinder;
             $finder->paths = $this->config->getSchemaPaths() ?: array();

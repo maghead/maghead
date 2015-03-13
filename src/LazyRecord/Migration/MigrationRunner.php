@@ -137,14 +137,32 @@ class MigrationRunner
      */
     public function runUpgrade()
     {
-        foreach( $this->dataSourceIds as $dsId ) {
-            $scripts = $this->getUpgradeScripts($dsId);
-            foreach( $scripts as $script ) {
-                $this->logger->info("Running upgrade migration script $script on data source $dsId");
-                $migration = new $script( $dsId );
-                $migration->upgrade();
-                $this->updateLastMigrationId($dsId,$script::getId());
+        foreach ($this->dataSourceIds as $dsId) {
+            $connectionManager = ConnectionManager::getInstance();
+            $driver = $connectionManager->getQueryDriver($dsId);
+            $connection = $connectionManager->getConnection($dsId);
+            $connection->beginTransaction();
+
+            try {
+                $scripts = $this->getUpgradeScripts($dsId);
+                if (count($scripts)) {
+                    $this->logger->info("Just found " . count($scripts) . ' migration scripts to run!');
+                }
+
+                foreach ($scripts as $script) {
+                    $this->logger->info("Running upgrade migration script $script on data source $dsId");
+                    $migration = new $script($dsId);
+                    $migration->upgrade();
+                    $this->updateLastMigrationId($dsId,$script::getId());
+                }
+            } catch (Exception $e) {
+                $this->logger->error('Exception was thrown: ' . $e->getMessage());
+                $this->logger->warn('Rolling back ...');
+                $connection->rollback();
+                $this->logger->warn('Recovered, escaping...');
+                break;
             }
+            $connection->commit();
         }
     }
 
