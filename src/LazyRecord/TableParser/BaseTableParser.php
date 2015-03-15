@@ -31,10 +31,10 @@ abstract class BaseTableParser
     public function typenameToIsa($type)
     {
         $type = strtolower($type);
-        if( preg_match( '/^(char|varchar|text)/' , $type ) ) {
+        if (preg_match( '/^(char|varchar|text)/' , $type ) ) {
             return 'str';
         }
-        elseif( preg_match('/^(int|tinyint|smallint|mediumint|bigint)/', $type ) ) {
+        elseif (preg_match('/^(int|tinyint|smallint|mediumint|bigint)/', $type ) ) {
             return 'int';
         }
         elseif ('boolean' === $type || 'bool' === $type) {
