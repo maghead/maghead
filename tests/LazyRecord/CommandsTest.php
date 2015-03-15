@@ -72,10 +72,10 @@ class CommandsTest extends PHPUnit_Framework_TestCase
     {
         $this->expectOutputRegex('/Found/');
         $app = new LazyRecord\Console;
-        $app->run(array('lazy','migrate','--status'));
+        $app->run(array('lazy','migrate','status'));
 
-        $app->run(array('lazy','migrate','--up'));
-        $app->run(array('lazy','migrate','--down'));
+        $app->run(array('lazy','migrate','up'));
+        $app->run(array('lazy','migrate','down'));
     }
 
 
