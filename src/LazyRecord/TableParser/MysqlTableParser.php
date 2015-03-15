@@ -26,8 +26,7 @@ class MysqlTableParser extends BaseTableParser
             // reverse type for mysql
             if ( 'int(11)' === $type ) {
                 $type = 'integer';
-            }
-            else if( 'tinyint(1)' === $type ) {
+            } else if( 'tinyint(1)' === $type ) {
                 $type = 'boolean';
                 $isa = 'bool';
             }
@@ -36,19 +35,18 @@ class MysqlTableParser extends BaseTableParser
             $column->type( $type );
             $column->null( $row['Null'] === 'YES' );
 
-            if( 'PRI' === $row['Key'] ) {
+            if ('PRI' === $row['Key']) {
                 $column->primary(true);
                 $schema->primaryKey = $row['Field'];
-            }
-            elseif( 'UNI' === $row['Key'] ) {
+            } elseif ('UNI' === $row['Key']) {
                 $column->unique(true);
             }
 
-            if($isa) {
+            if ($isa) {
                 $column->isa($isa);
             }
 
-            if( NULL !== $row['Default'] ) {
+            if (NULL !== $row['Default']) {
                 // $column->default( array($row['Default']) );
             }
         }
