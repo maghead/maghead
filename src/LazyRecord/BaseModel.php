@@ -32,15 +32,16 @@ use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship;
 use LazyRecord\ConfigLoader;
 use LazyRecord\CurrentUserInterface;
+use LazyRecord\Exception\MissingPrimaryKeyException;
 
 use SerializerKit\XmlSerializer;
-use SerializerKit\JsonSerializer;
 use SerializerKit\YamlSerializer;
-
 
 use ValidationKit\ValidationMessage;
 use ActionKit;
 use ActionKit\RecordAction\BaseRecordAction;
+
+
 
 class QueryException extends RuntimeException {
 
@@ -810,8 +811,11 @@ abstract class BaseModel implements
         } else {
             $pkId = intval($conn->lastInsertId());
         }
-        $args['id'] = $pkId;
-        $this->_data['id'] = $pkId;
+
+        if ($pkId) {
+            $args['id'] = $pkId;
+            $this->_data['id'] = $pkId;
+        }
 
         if ($pkId && ((isset($options['reload']) && $options['reload']) || $this->autoReload)) {
             $this->load($pkId);
@@ -895,7 +899,7 @@ abstract class BaseModel implements
         $kVal  = null;
 
         // build query from array.
-        if( is_array($args) ) {
+        if (is_array($args)) {
             $query->select( $this->selected ?: '*' )
                 ->where($args);
         }
@@ -906,7 +910,7 @@ abstract class BaseModel implements
             if ( ! $column ) {
                 // This should not happend, every schema should have it's own primary key
                 // TODO: Create new exception class for this.
-                throw new Exception("Primary key $pk is not defined in " . get_class($this->getSchema()) );
+                throw new MissingPrimaryKeyException("Primary key $pk is not defined" , $this->getSchema());
             }
             $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
