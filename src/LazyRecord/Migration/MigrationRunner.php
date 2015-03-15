@@ -142,7 +142,6 @@ class MigrationRunner
             $connectionManager = ConnectionManager::getInstance();
             $driver = $connectionManager->getQueryDriver($dsId);
             $connection = $connectionManager->getConnection($dsId);
-            $connection->beginTransaction();
 
             $scripts = $this->getUpgradeScripts($dsId);
             if (count($scripts) == 0) {
@@ -153,13 +152,14 @@ class MigrationRunner
             $this->logger->info("I just found " . count($scripts) . ' migration scripts to run!');
 
             try {
+                $connection->beginTransaction();
                 foreach ($scripts as $script) {
                     $this->logger->info("Running upgrade migration script $script on data source $dsId");
                     $migration = new $script($dsId);
                     $migration->upgrade();
                     $this->updateLastMigrationId($dsId,$script::getId());
                 }
-
+                $connection->commit();
             } catch (Exception $e) {
                 $this->logger->error('Exception was thrown: ' . $e->getMessage());
                 $this->logger->warn('Rolling back ...');
@@ -167,7 +167,6 @@ class MigrationRunner
                 $this->logger->warn('Recovered, escaping...');
                 break;
             }
-            $connection->commit();
         }
     }
 
