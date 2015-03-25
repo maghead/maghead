@@ -79,10 +79,10 @@ class MigrationGenerator
         if ( false === file_put_contents($path, $template->render())) {
             throw new RuntimeException("Can't write template to $path");
         }
-        return array( $template->class->name,$path );
+        return array($template->class->name, $path);
     }
 
-    public function generateWithDiff($taskName,$dataSourceId,$schemas,$time = null)
+    public function generateWithDiff($taskName, $dataSourceId, $schemas, $time = null)
     {
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $connection  = $connectionManager->getConnection($dataSourceId);
@@ -95,8 +95,8 @@ class MigrationGenerator
 
         $template = $this->createClassTemplate($taskName,$time);
         $template->useClass('SQLBuilder\Universal\Syntax\Column');
-        $upgradeMethod = $template->addMethod('public','upgrade',array(),'');
-        $downgradeMethod = $template->addMethod('public','downgrade',array(),'');
+        $upgradeMethod = $template->addMethod('public', 'upgrade', array(),'');
+        $downgradeMethod = $template->addMethod('public', 'downgrade', array(),'');
 
         $comparator = new Comparator;
         // schema from runtime
@@ -167,6 +167,7 @@ class MigrationGenerator
                 $downcall = new MethodCall;
                 $downcall->method('dropTable');
                 $downcall->addArgument("'$tableName'");
+
                 $upgradeMethod->getBlock()->appendLine($upcall);
                 $downgradeMethod->getBlock()->appendLine($downcall);
             }

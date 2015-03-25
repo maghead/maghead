@@ -114,13 +114,16 @@ class MigrationRunner
      * Run downgrade scripts
      *
      */
-    public function runDowngrade($steps = 1)
+    public function runDowngrade(array $scripts = NULL, $steps = 1)
     {
         foreach( $this->dataSourceIds as $dsId ) {
-            $scripts = $this->getDowngradeScripts($dsId);
+            if (!$scripts) {
+                $scripts = $this->getDowngradeScripts($dsId);
+            }
+            $this->logger->info("I just found " . count($scripts) . ' migration scripts to run downgrade!');
             while($steps--) {
                 // downgrade a migration one at one time.
-                if( $script = array_pop($scripts) ) {
+                if ($script = array_pop($scripts) ) {
                     $this->logger->info("Running downgrade migration script $script on data source $dsId");
                     $migration = new $script( $dsId );
                     $migration->downgrade();
@@ -136,20 +139,22 @@ class MigrationRunner
     /**
      * Run upgrade scripts
      */
-    public function runUpgrade()
+    public function runUpgrade(array $scripts = NULL)
     {
         foreach ($this->dataSourceIds as $dsId) {
             $connectionManager = ConnectionManager::getInstance();
             $driver = $connectionManager->getQueryDriver($dsId);
             $connection = $connectionManager->getConnection($dsId);
 
-            $scripts = $this->getUpgradeScripts($dsId);
-            if (count($scripts) == 0) {
-                $this->logger->info("No migration script found.");
-                return;
+            if (!$scripts) {
+                $scripts = $this->getUpgradeScripts($dsId);
+                if (count($scripts) == 0) {
+                    $this->logger->info("No migration script found.");
+                    return;
+                }
             }
 
-            $this->logger->info("I just found " . count($scripts) . ' migration scripts to run!');
+            $this->logger->info("I just found " . count($scripts) . ' migration scripts to run upgrade!');
 
             try {
                 $connection->beginTransaction();

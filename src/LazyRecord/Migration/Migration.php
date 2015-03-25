@@ -6,10 +6,10 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 
 use LazyRecord\Schema\DynamicSchemaDeclare;
+use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Console;
 use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\ColumnDeclare;
 use LazyRecord\SqlBuilder\SqlBuilder;
 
@@ -60,6 +60,7 @@ class Migration
         foreach( (array) $sql as $q ) {
             $this->logger->info('Query: ' . $q);
             $stm = $this->connection->query($q);
+            return $stm;
         }
     }
 
@@ -78,7 +79,7 @@ class Migration
         } else {
             if (isset($arg['name'])) {
                 $column = new Column($arg['name']);
-                $query->addColumn($column);
+                $query->dropColumn($column);
             } else {
                 throw new LogicException("Column name undefined.");
             }
@@ -126,16 +127,19 @@ class Migration
     }
 
     public function importSchema($schema) {
+        $this->logger->info("Importing schema: " . get_class($schema));
+
         $builder = SqlBuilder::create($this->driver);
-        if( is_a($schema,'LazyRecord\\Schema\\SchemaDeclare',true) ) {
+        if ($schema instanceof SchemaDeclare) {
             $sqls = $builder->build($schema);
             $this->executeSql($sqls);
-        } 
-        elseif( is_a($schema,'LazyRecord\\BaseModel',true) && method_exists($schema,'schema') ) {
+        } elseif (is_a($schema,'LazyRecord\\BaseModel',true) && method_exists($schema,'schema') ) {
             $model = $schema;
             $schema = new DynamicSchemaDeclare($model);
             $sqls = $builder->build($schema);
             $this->executeSql($sqls);
+        } else {
+            throw new Exception("Unsupported schema type");
         }
     }
 
