@@ -17,7 +17,7 @@ class MigrateNewFromDiffCommand extends BaseCommand
         $dsId = $this->getCurrentDataSourceId();
 
         $this->logger->info( "Loading schema objects..." );
-        $finder = new \LazyRecord\Schema\SchemaFinder;
+        $finder = new SchemaFinder;
         $finder->paths = $this->config->getSchemaPaths() ?: array();
         $finder->find();
         $schemas = $finder->getSchemas();
