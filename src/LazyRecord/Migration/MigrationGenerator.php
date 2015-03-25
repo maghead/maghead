@@ -5,7 +5,7 @@ use ReflectionClass;
 use ReflectionObject;
 use CLIFramework\Command;
 use LazyRecord\Schema;
-use ClassTemplate\ClassTemplate;
+use ClassTemplate\TemplateClassDeclare;
 use ClassTemplate\MethodCall;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
@@ -62,7 +62,7 @@ class MigrationGenerator
         }
         $className = $taskName . '_' . $time;
         // $filename
-        $template = new ClassTemplate($className,array(
+        $template = new TemplateClassDeclare($className,array(
             'template' => 'MigrationClass.php.twig',
             'template_dirs' => $this->getTemplateDirs(),
         ));

@@ -1,6 +1,6 @@
 <?php
 namespace LazyRecord\Schema\Factory;
-use ClassTemplate\ClassTemplate;
+use ClassTemplate\TemplateClassDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\SchemaDeclare;
 use Doctrine\Common\Inflector\Inflector;
@@ -8,7 +8,7 @@ use Doctrine\Common\Inflector\Inflector;
 class BaseModelClassFactory
 {
     public static function create(SchemaDeclare $schema, $baseClass) {
-        $cTemplate = new ClassTemplate( $schema->getBaseModelClass() , array(
+        $cTemplate = new TemplateClassDeclare( $schema->getBaseModelClass() , array(
             'template' => 'Class.php.twig',
         ));
         $cTemplate->addConsts(array(

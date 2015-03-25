@@ -9,7 +9,7 @@ use Traversable;
 use RecursiveRegexIterator;
 use RegexIterator;
 use LazyRecord\ConfigLoader;
-use ClassTemplate\ClassTemplate;
+use ClassTemplate\TemplateClassDeclare;
 use ClassTemplate\ClassConst;
 use ClassTemplate\ClassInjection;
 use LazyRecord\Schema;
@@ -89,10 +89,10 @@ class SchemaGenerator
      * If the schema file is newer or the forceUpdate flag is specified, then 
      * the generated class files should be updated.
      *
-     * @param ClassTemplate $cTemplate
+     * @param TemplateClassDeclare $cTemplate
      * @param DeclareSchema $schema
      */
-    public function updateClassFile(ClassTemplate $cTemplate, SchemaDeclare $schema, $overwrite = false) {
+    public function updateClassFile(TemplateClassDeclare $cTemplate, SchemaDeclare $schema, $overwrite = false) {
         // always update the proxy schema file
         $classFilePath = $schema->getRelatedClassPath( $cTemplate->getShortClassName() );
 
@@ -165,11 +165,11 @@ class SchemaGenerator
      * Write class template to the schema directory.
      *
      * @param string $directory The schema class directory.
-     * @param ClassTemplate\ClassTemplate class template object.
+     * @param ClassTemplate\TemplateClassDeclare class template object.
      * @param boolean $overwrite Overwrite class file. 
      * @return array
      */
-    public function writeClassTemplateToPath(ClassTemplate $cTemplate, $filepath, $overwrite = false) 
+    public function writeClassTemplateToPath(TemplateClassDeclare $cTemplate, $filepath, $overwrite = false) 
     {
         if (! file_exists($filepath) || $overwrite) {
             if (false === file_put_contents( $filepath, $cTemplate->render() )) {

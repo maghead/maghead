@@ -1,6 +1,6 @@
 <?php
 namespace LazyRecord\Schema\Factory;
-use ClassTemplate\ClassTemplate;
+use ClassTemplate\TemplateClassDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\SchemaDeclare;
 
@@ -8,7 +8,7 @@ class BaseCollectionClassFactory
 {
     public static function create(SchemaDeclare $schema, $baseCollectionClass)
     {
-        $cTemplate = new ClassTemplate($schema->getBaseCollectionClass() , array(
+        $cTemplate = new TemplateClassDeclare($schema->getBaseCollectionClass() , array(
             // 'template_dirs' => $this->getTemplateDirs(),
             'template' => 'Class.php.twig',
         ));
