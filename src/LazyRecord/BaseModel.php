@@ -38,6 +38,17 @@ class DatabaseException extends RuntimeException {
         parent::__construct($msg, 0, $previous);
         $this->debugInfo = $debugInfo;
     }
+
+    public function toArray() {
+        return [
+            'message' => $this->getMessage(),
+            'file' => $this->getFile(),
+            'line' => $this->getLine(),
+            'trace' => $this->getTrace(),
+            'previous' => $this->getPrevious(),
+            'debug' => $this->debugInfo,
+        ];
+    }
 }
 
 
