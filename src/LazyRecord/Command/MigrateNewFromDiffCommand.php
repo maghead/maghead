@@ -13,7 +13,7 @@ class MigrateNewFromDiffCommand extends BaseCommand
         return array('nd');
     }
 
-    public function execute() {
+    public function execute($taskName) {
         $dsId = $this->getCurrentDataSourceId();
 
         $this->logger->info( "Loading schema objects..." );
@@ -24,7 +24,7 @@ class MigrateNewFromDiffCommand extends BaseCommand
 
         $generator = new MigrationGenerator('db/migrations');
         $this->logger->info( "Creating migration script from diff" );
-        list($class,$path) = $generator->generateWithDiff( $optDiff ,$dsId,$schemas);
+        list($class,$path) = $generator->generateWithDiff($taskName, $dsId, $schemas);
         $this->logger->info( "Migration script is generated: $path" );
     }
 }

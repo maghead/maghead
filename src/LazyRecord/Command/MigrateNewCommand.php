@@ -11,12 +11,12 @@ class MigrateNewCommand extends BaseCommand
         return array('n', 'new');
     }
 
-    public function execute() {
+    public function execute($taskName) {
         $dsId = $this->getCurrentDataSourceId();
 
         $generator = new MigrationGenerator('db/migrations');
-        $this->logger->info( "Creating migration script for '" . $optNew . "'" );
-        list($class,$path) = $generator->generate($optNew);
+        $this->logger->info( "Creating migration script for '" . $taskName . "'" );
+        list($class, $path) = $generator->generate($taskName);
         $this->logger->info( "Migration script is generated: $path" );
     }
 }

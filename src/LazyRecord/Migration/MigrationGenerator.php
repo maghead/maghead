@@ -1,11 +1,13 @@
 <?php
 namespace LazyRecord\Migration;
 use Exception;
+use RuntimeException;
 use ReflectionClass;
 use ReflectionObject;
 use CLIFramework\Command;
 use LazyRecord\Schema;
 use ClassTemplate\TemplateClassDeclare;
+use ClassTemplate\ClassDeclare;
 use ClassTemplate\MethodCall;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
@@ -21,7 +23,7 @@ class MigrationGenerator
 
     public $migrationDir;
 
-    function __construct($migrationDir)
+    public function __construct($migrationDir)
     {
         $this->migrationDir = $migrationDir;
         if( ! file_exists($this->migrationDir) ) {
@@ -62,10 +64,7 @@ class MigrationGenerator
         }
         $className = $taskName . '_' . $time;
         // $filename
-        $template = new TemplateClassDeclare($className,array(
-            'template' => 'MigrationClass.php.twig',
-            'template_dirs' => $this->getTemplateDirs(),
-        ));
+        $template = new ClassDeclare($className);
         $template->extendClass('LazyRecord\Migration\Migration');
         return $template;
     }
@@ -77,7 +76,9 @@ class MigrationGenerator
         $template->addMethod('public','downgrade',array(),'');
         $filename = $this->generateFilename($taskName,$time);
         $path = $this->migrationDir . DIRECTORY_SEPARATOR . $filename;
-        file_put_contents($path , $template->render() );
+        if ( false === file_put_contents($path, $template->render())) {
+            throw new RuntimeException("Can't write template to $path");
+        }
         return array( $template->class->name,$path );
     }
 
