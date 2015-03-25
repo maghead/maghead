@@ -100,47 +100,43 @@ class MigrationGenerator
         $comparator = new Comparator;
         // schema from runtime
         foreach( $schemas as $b ) {
-            $t = $b->getTable();
-            $foundTable = isset( $tableSchemas[ $t ] );
-            if( $foundTable ) {
-                $a = $tableSchemas[ $t ]; // schema object, extracted from database.
+            $tableName = $b->getTable();
+            $foundTable = isset( $tableSchemas[ $tableName ]);
+            if ($foundTable) {
+                $a = $tableSchemas[ $tableName ]; // schema object, extracted from database.
                 $diffs = $comparator->compare( $a , $b );
 
                 // generate alter table statement.
                 foreach( $diffs as $diff ) {
-                    $call = new MethodCall;
-                    $dcall = new MethodCall; // downgrade method call
+                    $upcall = new MethodCall;
+                    $downcall = new MethodCall; // downgrade method call
 
-                    if( $diff->flag == '+' ) {
-                        $this->logger->info(sprintf("'%s': add column %s",$t,$diff->name) , 1);
+                    if ($diff->flag == '+') {
+                        $this->logger->info(sprintf("'%s': add column %s", $tableName, $diff->name) , 1);
 
-                        $call->method('addColumn');
-                        $call->addArgument('"'. $t . '"'); // table
+                        $upcall->method('addColumn');
+                        $upcall->addArgument('"'. $tableName . '"'); // table
 
-                        $dcall->method('dropColumn');
-                        $dcall->addArgument('"'. $t . '"'); // table
-                        $dcall->addArgument('"'. $diff->name . '"'); // table
+                        $downcall->method('dropColumn');
+                        $downcall->addArgument('"'. $tableName . '"'); // table
+                        $downcall->addArgument('"'. $diff->name . '"'); // table
 
                         // filter out useless columns
                         $data = array();
-                        foreach( $diff->column->toArray() as $key => $value ) {
-                            if( is_object($value) )
+                        foreach ($diff->column->toArray() as $key => $value) {
+                            if (is_object($value) || is_array($value)) {
                                 continue;
-                            if( is_array($value) )
-                                continue;
-
-                            if( in_array($key,array(
-                                'type','primary','name','unique','default','notNull','null','autoIncrement',)
-                            )) {
+                            }
+                            if (in_array($key,array('type','primary','name','unique','default','notNull','null','autoIncrement'))) {
                                 $data[ $key ] = $value;
                             }
                         }
-                        $call->addArgument($data);
+                        $upcall->addArgument($data);
                     }
                     elseif( $diff->flag == '-' ) {
-                        $call->method('dropColumn');
-                        $call->addArgument('"'. $t . '"'); // table
-                        $call->addArgument('"'. $diff->name . '"');
+                        $upcall->method('dropColumn');
+                        $upcall->addArgument('"'. $tableName . '"'); // table
+                        $upcall->addArgument('"'. $diff->name . '"');
                     }
                     elseif( $diff->flag == '=' ) {
                         $this->logger->warn("** column flag = is not supported yet.");
@@ -148,30 +144,32 @@ class MigrationGenerator
                     else {
                         $this->logger->warn("** unsupported flag.");
                     }
-                    $upgradeMethod->body .= $call->render() . "\n";
-                    $downgradeMethod->body .= $dcall->render() . "\n";
+                    $upgradeMethod->getBlock()->appendLine($upcall);
+                    $downgradeMethod->getBlock()->appendLine($downcall);
                 }
             } 
             else {
-                $this->logger->info(sprintf("Found schema '%s' to be imported to '%s'",$b,$t),1);
+                $this->logger->info(sprintf("Found schema '%s' to be imported to '%s'",$b, $tableName),1);
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
-                $call = new MethodCall;
-                $call->method('importSchema');
-                $call->addArgument( 'new ' . $b ); // for dynamic schema declare, it casts to the model class name.
+                $upcall = new MethodCall;
+                $upcall->method('importSchema');
+                $upcall->addArgument( 'new ' . $b ); // for dynamic schema declare, it casts to the model class name.
 
-                $dcall = new MethodCall;
-                $dcall->method('dropTable');
-                $dcall->addArgument("'$t'");
-                $upgradeMethod->body .= $call->render() . "\n";
-                $downgradeMethod->body .= $dcall->render() . "\n";
+                $downcall = new MethodCall;
+                $downcall->method('dropTable');
+                $downcall->addArgument("'$tableName'");
+                $upgradeMethod->getBlock()->appendLine($upcall);
+                $downgradeMethod->getBlock()->appendLine($downcall);
             }
         }
 
         $filename = $this->generateFilename($taskName,$time);
         $path = $this->migrationDir . DIRECTORY_SEPARATOR . $filename;
-        file_put_contents($path , $template->render());
-        return array( $template->class->name,$path );
+        if ( false === file_put_contents($path , $template->render()) ) {
+            throw new RuntimeException("Can't write migration script to $path.");
+        }
+        return array($template->class->name,$path);
     }
 }
 
