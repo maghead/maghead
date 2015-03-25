@@ -5,6 +5,7 @@ use RuntimeException;
 use ReflectionClass;
 use ReflectionObject;
 use CLIFramework\Command;
+use CLIFramework\Logger;
 use LazyRecord\Schema;
 use ClassTemplate\TemplateClassDeclare;
 use ClassTemplate\ClassDeclare;
@@ -12,10 +13,9 @@ use ClassTemplate\MethodCall;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser\TableParser;
-use Doctrine\Common\Inflector\Inflector;
 use LazyRecord\Schema\Comparator;
 use LazyRecord\Console;
-
+use Doctrine\Common\Inflector\Inflector;
 
 class MigrationGenerator
 {
@@ -23,13 +23,13 @@ class MigrationGenerator
 
     public $migrationDir;
 
-    public function __construct($migrationDir)
+    public function __construct(Logger $logger, $migrationDir)
     {
         $this->migrationDir = $migrationDir;
         if( ! file_exists($this->migrationDir) ) {
             mkdir($this->migrationDir,0755,true);
         }
-        $this->logger = Console::getInstance()->getLogger();
+        $this->logger = $logger; 
     }
 
     /**

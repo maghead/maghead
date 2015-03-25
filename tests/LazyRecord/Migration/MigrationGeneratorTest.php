@@ -1,4 +1,6 @@
 <?php
+use LazyRecord\Migration\MigrationGenerator;
+use LazyRecord\Console;
 
 class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
 {
@@ -11,7 +13,7 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         $pdo = $connectionManager->getConnection('default');
         $pdo->query('create table users (id integer not null primary key);');
 
-        $generator = new \LazyRecord\Migration\MigrationGenerator('tests/migrations');
+        $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'tests/migrations');
         ok($generator);
 
         is('20120901_CreateUser.php',$generator->generateFilename('CreateUser','20120901'));
@@ -45,7 +47,7 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
 
         if( ! file_exists('tests/migrations_testing') )
             mkdir('tests/migrations_testing');
-        $generator = new \LazyRecord\Migration\MigrationGenerator('tests/migrations_testing');
+        $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'tests/migrations_testing');
         ok($generator);
 
         ok( class_exists( 'TestApp\Model\UserSchema', true) );

@@ -6,6 +6,8 @@ use LazyRecord\Migration\MigrationRunner;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\Command\BaseCommand;
+use LazyRecord\Console;
+
 
 class MigrateNewFromDiffCommand extends BaseCommand
 {
@@ -24,7 +26,7 @@ class MigrateNewFromDiffCommand extends BaseCommand
 
         $this->logger->info('Found ' . count($schemas) == 0 . ' schemas');
 
-        $generator = new MigrationGenerator('db/migrations');
+        $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'db/migrations');
         $this->logger->info( "Creating migration script from diff" );
         list($class, $path) = $generator->generateWithDiff($taskName, $dsId, $schemas);
         $this->logger->info( "Migration script is generated: $path" );

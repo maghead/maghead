@@ -116,7 +116,8 @@ class Migration
     public function executeCommand($m,$a) 
     {
         $this->logger->info($m);
-        $sql = call_user_func_array( array($this->builder,$m) , $a );
+        $builder = SqlBuilder::create($this->driver);
+        $sql = call_user_func_array(array($builder,$m) , $a );
         $this->executeSql($sql);
     }
 
