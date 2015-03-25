@@ -1,26 +1,37 @@
 <?php
+use LazyRecord\Schema\Comparator;
+use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\Comparator\ConsolePrinter;
+use LazyRecord\Schema\ColumnDiff;
 
 class ComparatorTest extends \PHPUnit_Framework_TestCase
 {
     public function testBasicComparison()
     {
-        $a = new \LazyRecord\Schema\SchemaDeclare;
+        $a = new SchemaDeclare;
         $a->column('same');
         $a->column('changed')
             ->varchar(20);
         $a->column('removed')
             ->boolean();
 
-        $b = new \LazyRecord\Schema\SchemaDeclare;
+        $b = new SchemaDeclare;
         $b->column('same');
         $b->column('changed')
             ->varchar(30);
         $b->column('added')
             ->varchar(10);
 
-        $comparator = new LazyRecord\Schema\Comparator;
-        $diff = $comparator->compare( $a , $b );
-        ok( $diff );
+        $comparator = new Comparator;
+        $diffs = $comparator->compare($a, $b);
+        foreach ($diffs as $diff) {
+            $this->assertInstanceOf('LazyRecord\Schema\ColumnDiff', $diff);
+        }
+        $this->assertEquals('removed',$diffs[0]->name);
+        $this->assertEquals('-',$diffs[0]->flag);
+
+        $this->assertEquals('added',$diffs[1]->name);
+        $this->assertEquals('+',$diffs[1]->flag);
 
         /**
          * this can't work with posix (color output)
@@ -29,7 +40,7 @@ class ComparatorTest extends \PHPUnit_Framework_TestCase
         # $this->expectOutputRegex('/^= changed/sm');
         # $this->expectOutputRegex('/^- removed/sm');
         
-        $printer = new LazyRecord\Schema\Comparator\ConsolePrinter($diff);
+        $printer = new ConsolePrinter($diffs);
         ok($printer);
 
         /*
