@@ -23,7 +23,7 @@ class ColumnDiff {
 
     public $attrDiffs = array();
 
-    public function __construct($name,$flag,ColumnAccessorInterface $column)
+    public function __construct($name, $flag, ColumnAccessorInterface $column)
     {
         $this->name = $name;
         $this->flag = $flag;
@@ -38,15 +38,14 @@ class ColumnDiff {
                 continue;
             }
 
-            if( is_object($value) ) {
-                if( $value instanceof Closure ) {
+            if (is_object($value)) {
+                if ($value instanceof Closure) {
                     $attrStrs[] = "$property:{Closure}";
-                }
-                else {
+                } else {
                     $attrStrs[] = "$property:" . str_replace("\n","",var_export($value,true));
                 }
             }
-            elseif(is_string($value)) {
+            elseif (is_string($value)) {
                 $attrStrs[] = "$property:$value";
             }
         }

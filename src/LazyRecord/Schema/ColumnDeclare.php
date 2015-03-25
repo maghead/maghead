@@ -207,6 +207,10 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
     {
         $attrs = $this->attributes;
         $attrs['name'] = $this->name;
+        $attrs['primary'] = $this->primary;
+        $attrs['unsigned'] = $this->unsigned;
+        $attrs['type'] = $this->type;
+        $attrs['null'] = $this->null;
         return $attrs;
     }
 

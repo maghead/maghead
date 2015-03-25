@@ -94,6 +94,7 @@ class MigrationGenerator
         $this->logger->info( 'Found ' . count($schemas) . ' schemas to compare.' );
 
         $template = $this->createClassTemplate($taskName,$time);
+        $template->useClass('SQLBuilder\Universal\Syntax\Column');
         $upgradeMethod = $template->addMethod('public','upgrade',array(),'');
         $downgradeMethod = $template->addMethod('public','downgrade',array(),'');
 
@@ -122,30 +123,37 @@ class MigrationGenerator
                         $downcall->addArgument('"'. $diff->name . '"'); // table
 
                         // filter out useless columns
-                        $data = array();
+                        $arg = array();
+                        $columnAttributes = $diff->column->toArray();
                         foreach ($diff->column->toArray() as $key => $value) {
                             if (is_object($value) || is_array($value)) {
                                 continue;
                             }
-                            if (in_array($key,array('type','primary','name','unique','default','notNull','null','autoIncrement'))) {
-                                $data[ $key ] = $value;
+                            if (in_array($key,array('type','unique','default','notNull','null','autoIncrement'))) {
+                                $arg[ $key ] = $value;
                             }
                         }
-                        $upcall->addArgument($data);
-                    }
-                    elseif( $diff->flag == '-' ) {
+                        $upcall->addArgument(sprintf('new Column(%s, %s, %s)', 
+                            var_export($diff->column->name,true),
+                            var_export($diff->column->type,true),
+                            var_export($diff->column->toArray(), true)
+                        ));
+
+                        $upgradeMethod->getBlock()->appendLine($upcall);
+                        $downgradeMethod->getBlock()->appendLine($downcall);
+
+                    } elseif ($diff->flag == '-') {
                         $upcall->method('dropColumn');
                         $upcall->addArgument('"'. $tableName . '"'); // table
                         $upcall->addArgument('"'. $diff->name . '"');
-                    }
-                    elseif( $diff->flag == '=' ) {
+                        $upgradeMethod->getBlock()->appendLine($upcall);
+                    } elseif ($diff->flag == '=') {
                         $this->logger->warn("** column flag = is not supported yet.");
-                    }
-                    else {
+                        continue;
+                    } else {
                         $this->logger->warn("** unsupported flag.");
+                        continue;
                     }
-                    $upgradeMethod->getBlock()->appendLine($upcall);
-                    $downgradeMethod->getBlock()->appendLine($downcall);
                 }
             } 
             else {

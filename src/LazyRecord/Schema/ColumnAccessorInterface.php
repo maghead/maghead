@@ -1,8 +1,8 @@
 <?php
 namespace LazyRecord\Schema;
 
-interface ColumnAccessorInterface {
-
+interface ColumnAccessorInterface 
+{
     public function getName();
 
     public function getLabel();
@@ -10,7 +10,6 @@ interface ColumnAccessorInterface {
     public function get($name) ;
 
     public function getDefaultValue($record = null, $args = null);
-
 }
 
 

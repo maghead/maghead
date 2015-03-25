@@ -14,6 +14,7 @@ use LazyRecord\Schema\ColumnDeclare;
 use LazyRecord\SqlBuilder\SqlBuilder;
 
 use PDOException;
+use LogicException;
 
 
 class Migration
@@ -57,11 +58,32 @@ class Migration
             $this->logger->info('Executing task: '. $title);
         }
         foreach( (array) $sql as $q ) {
+            $this->logger->info('Query: ' . $q);
             $stm = $this->connection->query($q);
-            $this->logger->info('QueryOK: ' . $q);
         }
     }
 
+    public function dropColumn($table, $arg)
+    {
+        $query = new AlterTableQuery($table);
+        if (is_callable($arg)) {
+            $c = new Column;
+            call_user_func($arg, $c);
+            $query->dropColumn($c);
+        } else if ($arg instanceof Column) {
+            $query->dropColumn($arg);
+        } else if (is_string($arg)) {
+            $column = new Column($arg);
+            $query->dropColumn($column);
+        } else {
+            if (isset($arg['name'])) {
+                $column = new Column($arg['name']);
+                $query->addColumn($column);
+            } else {
+                throw new LogicException("Column name undefined.");
+            }
+        }
+    }
 
     public function addColumn($table, $arg)
     {
@@ -70,8 +92,18 @@ class Migration
             $c = new Column;
             call_user_func($arg, $c);
             $query->addColumn($c);
-        } else {
+        } else if ($arg instanceof Column) {
             $query->addColumn($arg);
+        } else if (is_string($arg)) {
+            $column = new Column($arg);
+            $query->addColumn($column);
+        } else {
+            if (isset($arg['name'])) {
+                $column = new Column($arg['name']);
+                $query->addColumn($column);
+            } else {
+                throw new LogicException("Column name undefined.");
+            }
         }
         $sql = $query->toSql($this->connection->createQueryDriver(), new ArgumentArray);
         $this->executeSql($sql);
