@@ -1,6 +1,7 @@
 <?php
 use SQLBuilder\Raw;
 use LazyRecord\Testing\ModelTestCase;
+use AuthorBooks\Model\Book;
 
 class BookModelTest extends ModelTestCase
 {
@@ -16,7 +17,7 @@ class BookModelTest extends ModelTestCase
      */
     public function testImmutableColumn()
     {
-        $b = new \AuthorBooks\Model\Book ;
+        $b = new Book ;
         // $b->autoReload = false;
         $ret = $b->create(array( 'isbn' => '123123123' ));
 
@@ -37,7 +38,7 @@ class BookModelTest extends ModelTestCase
      */
     public function testUpdateUnknownColumn()
     {
-        $b = new \AuthorBooks\Model\Book ;
+        $b = new Book ;
         // Column not found: 1054 Unknown column 'name' in 'where clause'
         $b->find(array('name' => 'LoadOrCreateTest'));
     }
@@ -46,7 +47,7 @@ class BookModelTest extends ModelTestCase
      * @rebuild false
      */
     public function testFlagHelper() {
-        $b = new \AuthorBooks\Model\Book ;
+        $b = new Book ;
         $b->create([ 'title' => 'Test Book' ]);
 
         $schema = $b->getSchema();
@@ -70,14 +71,14 @@ class BookModelTest extends ModelTestCase
      * @rebuild false
      */
     public function testTraitMethods() {
-        $b = new \AuthorBooks\Model\Book ;
+        $b = new Book ;
         $this->assertSame(['link1', 'link2'], $b->getLinks());
         $this->assertSame(['store1', 'store2'], $b->getStores());
     }
 
     public function testLoadOrCreate() {
         $results = array();
-        $b = new \AuthorBooks\Model\Book ;
+        $b = new Book ;
 
         $ret = $b->create(array( 'title' => 'Should Not Load This' ));
         result_ok( $ret );
@@ -96,7 +97,7 @@ class BookModelTest extends ModelTestCase
         $results[] = $ret;
 
 
-        $b2 = new \AuthorBooks\Model\Book ;
+        $b2 = new Book ;
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         result_ok($ret);
         is($id,$b2->id);
@@ -108,7 +109,7 @@ class BookModelTest extends ModelTestCase
         ok($id != $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
-        $b3 = new \AuthorBooks\Model\Book ;
+        $b3 = new Book ;
         $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         result_ok($ret);
         ok($b3);
@@ -118,14 +119,14 @@ class BookModelTest extends ModelTestCase
         $b3->delete();
 
         foreach( $results as $r ) {
-            $book = new \AuthorBooks\Model\Book ;
+            $book = new Book ;
             $book->delete($r->id);
         }
     }
 
     public function testTypeConstraint()
     {
-        $book = new \AuthorBooks\Model\Book ;
+        $book = new Book ;
         $ret = $book->create(array( 
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',
@@ -141,9 +142,10 @@ class BookModelTest extends ModelTestCase
 #          echo $ret->exception;
     }
 
+
     public function testRawSQL()
     {
-        $n = new \AuthorBooks\Model\Book ;
+        $n = new Book ;
         $n->create(array(
             'title' => 'book title',
             'view' => 0,
@@ -163,12 +165,33 @@ class BookModelTest extends ModelTestCase
         is( 4, $n->view );
     }
 
+
+    public function testCreateOrUpdateOnTimestampColumn()
+    {
+        $date = new DateTime;
+        $book = new Book;
+
+        $ret = $book->create([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date->format(DateTime::ATOM) ]);
+        $this->assertResultSuccess($ret);
+
+        $id = $book->id;
+        $this->assertNotNull($id);
+
+        $ret = $book->createOrUpdate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date->format(DateTime::ATOM) ], [ 'published_at' ]);
+        $this->assertResultSuccess($ret);
+
+        $this->assertEquals('Update With Time', $book->title);
+        $this->assertEquals($id, $book->id);
+    }
+
+
+
     /**
      * @rebuild false
      */
     public function testZeroInflator()
     {
-        $b = new \AuthorBooks\Model\Book ;
+        $b = new Book ;
         $ret = $b->create(array( 'title' => 'Create X' , 'view' => 0 ));
         $this->assertResultSuccess($ret);
 
@@ -198,7 +221,7 @@ class BookModelTest extends ModelTestCase
      */
     public function testGeneralInterface() 
     {
-        $a = new \AuthorBooks\Model\Book ;
+        $a = new Book;
         ok($a);
         ok( $a->getQueryDriver('default') );
         ok( $a->getWriteQueryDriver() );
