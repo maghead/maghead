@@ -23,7 +23,7 @@ class MigrateCommand extends BaseCommand
         $this->command('downgrade', 'LazyRecord\\Command\\MigrateDowngradeCommand');
         $this->command('new', 'LazyRecord\\Command\\MigrateNewCommand');
         $this->command('status', 'LazyRecord\\Command\\MigrateStatusCommand');
-        $this->command('diff', 'LazyRecord\\Command\\MigrateDiffCommand');
+        $this->command('diff', 'LazyRecord\\Command\\MigrateNewFromDiffCommand');
     }
 }
 

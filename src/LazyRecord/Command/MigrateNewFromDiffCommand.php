@@ -22,6 +22,8 @@ class MigrateNewFromDiffCommand extends BaseCommand
         $finder->find();
         $schemas = $finder->getSchemas();
 
+        $this->logger->info('Found ' . count($schemas) == 0 . ' schemas');
+
         $generator = new MigrationGenerator('db/migrations');
         $this->logger->info( "Creating migration script from diff" );
         list($class,$path) = $generator->generateWithDiff($taskName, $dsId, $schemas);
