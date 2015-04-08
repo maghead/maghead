@@ -15,6 +15,7 @@
         "corneltek/cascading-attribute": "~1.2",
         "corneltek/universal-cache": "~1",
         "corneltek/dbutil": "~1",
+        "cpliakas/git-wrapper": "~1.0",
         "twig/twig": "~1"
     },
     "require-dev": {
