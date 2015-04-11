@@ -38,7 +38,18 @@ abstract class BaseTableParser
         $typeInfo = new TypeInfo($type);
 
         // Type name with precision
-        if (preg_match('/^(double|float|int|tinyint|smallint|mediumint|bigint|varchar) (?: \(  (?:(\d+),(\d+)|(\d+))   \) )?/x', $type, $matches)) {
+        if (preg_match('/^(double
+            |float
+            |int
+            |tinyint
+            |smallint
+            |mediumint
+            |bigint
+            |varchar
+            |character\ varying
+            |character
+            ) (?: \(  (?:(\d+),(\d+)|(\d+))   \) )?/x', $type, $matches)) {
+
             if (isset($matches[1]) && isset($matches[2]) && isset($matches[3])) {
                 $typeInfo->type = $matches[1];
                 $typeInfo->length = intval($matches[2]);
@@ -49,6 +60,11 @@ abstract class BaseTableParser
             } else if (isset($matches[1])) {
                 $typeInfo->type = $matches[1];
             }
+        }
+
+        // Canonicalization for PgSQL
+        if ($typeInfo->type === 'character varying') {
+            $typeInfo->type = 'varchar';
         }
 
         if (in_array($typeInfo->type,[ 'char', 'varchar', 'text' ])) {

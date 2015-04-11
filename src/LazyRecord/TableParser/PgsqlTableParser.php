@@ -58,21 +58,26 @@ class PgsqlTableParser extends BaseTableParser
             $column->null( $row->is_nullable === 'YES' );
 
             $type = $row->data_type;
-            if( $type === 'character varying' )
+
+            $typeInfo = $this->parseTypeInfo($type);
+            if ($typeInfo->type === 'varchar') {
                 $type = 'varchar(' . $row->character_maximum_length . ')' ;
+            }
 
             $isa = null;
-            if( preg_match( '/^(text|varchar|character)/i', $type ) ) 
+            if (preg_match( '/^(text|varchar|character)/i', $type ))  {
                 $isa = 'str';
-            elseif( preg_match( '/^(int|bigint|smallint|integer)/i' , $type ) )
+            } else if (preg_match( '/^(int|bigint|smallint|integer)/i' , $type )) {
                 $isa = 'int';
-            elseif( preg_match( '/^(timestamp|date)/i' , $type ) )
+            } else if (preg_match( '/^(timestamp|date)/i' , $type ) ) {
                 $isa = 'DateTime';
-            elseif( $type === 'boolean' )
+            } else if ($type === 'boolean' ) {
                 $isa = 'bool';
+            }
 
-            if( $isa )
-                $column->isa( $isa );
+            if ($isa) {
+                $column->isa($isa);
+            }
 
             $column->type( $type );
             // $row->ordinal_position
