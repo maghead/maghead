@@ -224,7 +224,7 @@ class BaseCollection
         $q = new SelectQuery;
 
         // Read from class consts
-        $q->from($this->getSchema()->table, $this->getAlias()); // main table alias
+        $q->from($this->getSchema()->getTable(), $this->getAlias()); // main table alias
 
         $selection = $this->getSelected();
         $q->select(
