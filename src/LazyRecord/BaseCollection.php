@@ -214,6 +214,12 @@ class BaseCollection
     }
 
 
+    public function getTable()
+    {
+        return $this->getSchema()->getTable();
+    }
+
+
     public function createReadQuery()
     {
         $dsId = $this->getSchema()->getReadSourceId();
@@ -224,7 +230,7 @@ class BaseCollection
         $q = new SelectQuery;
 
         // Read from class consts
-        $q->from($this->getSchema()->getTable(), $this->getAlias()); // main table alias
+        $q->from($this->getTable(), $this->getAlias()); // main table alias
 
         $selection = $this->getSelected();
         $q->select(
@@ -471,7 +477,7 @@ class BaseCollection
         $driver = $conn->createQueryDriver();
 
         $query = new DeleteQuery;
-        $query->from($schema->getTable());
+        $query->from($this->getTable());
         $query->setWhere(clone $this->getCurrentReadQuery()->getWhere());
 
         $arguments = new ArgumentArray;
@@ -506,7 +512,7 @@ class BaseCollection
 
         $query = new UpdateQuery;
         $query->setWhere(clone $this->getCurrentReadQuery()->getWhere());
-        $query->update($schema->getTable());
+        $query->update($this->getTable());
         $query->set($data);
 
         $arguments = new ArgumentArray;
