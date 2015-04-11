@@ -716,7 +716,7 @@ abstract class BaseModel implements
         $conn = $this->getWriteConnection();
         $driver = $conn->createQueryDriver();
 
-        $query->into(static::table);
+        $query->into( $this->getTable() );
 
         // Just a note: Exceptions should be used for exceptional conditions; things you 
         // don't expect to happen. Validating input isn't very exceptional.
@@ -854,6 +854,10 @@ abstract class BaseModel implements
         ));
     }
 
+    public function getTable()
+    {
+        return static::table;
+    }
 
 
 
@@ -911,7 +915,7 @@ abstract class BaseModel implements
         $pk    = static::primary_key;
 
         $query = new SelectQuery;
-        $query->from(static::table);
+        $query->from( $this->getTable() );
 
         $conn  = $this->getReadConnection();
         $driver = $conn->createQueryDriver();
@@ -1003,7 +1007,7 @@ abstract class BaseModel implements
         $arguments = new ArgumentArray;
 
         $query = new DeleteQuery;
-        $query->delete(static::table);
+        $query->delete( $this->getTable() );
         $query->where()
             ->equal($k , $kVal);
         $sql = $query->toSql($conn->createQueryDriver(), $arguments);
@@ -1149,7 +1153,7 @@ abstract class BaseModel implements
 
             // TODO: optimized to built cache
             $query->set($args);
-            $query->update(static::table);
+            $query->update( $this->getTable() );
             $query->where()->equal($k , $kVal);
 
 
@@ -1204,7 +1208,7 @@ abstract class BaseModel implements
         $arguments = new ArgumentArray;
         $query = new UpdateQuery;
         $query->set($args);
-        $query->update(static::table);
+        $query->update( $this->getTable() );
         $query->where()
             ->equal( $k , $kVal );
 
@@ -1236,7 +1240,7 @@ abstract class BaseModel implements
 
         $query = new InsertQuery;
         $query->insert($args);
-        $query->into(static::table);
+        $query->into( $this->getTable() );
         $query->returning($k);
 
         $arguments = new ArgumentArray;
@@ -2117,14 +2121,14 @@ abstract class BaseModel implements
     {
         // the ::table consts is in the child class.
         $this->getConnection($this->getWriteSourceId())
-            ->query("LOCK TABLES " . static::table . " AS " . $this->getAlias() . " WRITE");
+            ->query("LOCK TABLES " . $this->getTable() . " AS " . $this->getAlias() . " WRITE");
     }
 
     public function lockRead()
     {
         // the ::table consts is in the child class.
         $this->getConnection($this->getReadSourceId())
-            ->query("LOCK TABLES " . static::table . " AS " . $this->getAlias() . " READ");
+            ->query("LOCK TABLES " . $this->getTable() . " AS " . $this->getAlias() . " READ");
     }
 
     public function unlock()
