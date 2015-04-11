@@ -81,6 +81,8 @@ class BaseCollection
 
     protected $explictSelect = false;
 
+    protected $preferredTable;
+
     public $selected;
 
     /**
@@ -213,12 +215,21 @@ class BaseCollection
         return $this->getQueryDriver($this->getSchema()->getReadSourceId());
     }
 
-
     public function getTable()
     {
-        return $this->getSchema()->getTable();
+        if ($this->preferredTable) {
+            return $this->preferredTable;
+        }
+        // return $this->getSchema()->getTable();
+
+        // Use constant, it's faster...
+        return static::table;
     }
 
+    public function setPreferredTable($tableName)
+    {
+        $this->preferredTable = $tableName;
+    }
 
     public function createReadQuery()
     {

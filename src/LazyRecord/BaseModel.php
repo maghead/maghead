@@ -136,6 +136,8 @@ abstract class BaseModel implements
 
     protected $_cachePrefix;
 
+    protected $preferredTable;
+
     static $_cacheInstance;
 
     /**
@@ -854,8 +856,16 @@ abstract class BaseModel implements
         ));
     }
 
+    public function setPreferredTable($tableName)
+    {
+        $this->preferredTable = $tableName;
+    }
+
     public function getTable()
     {
+        if ($this->preferredTable) {
+            return $this->preferredTable;
+        }
         return static::table;
     }
 
