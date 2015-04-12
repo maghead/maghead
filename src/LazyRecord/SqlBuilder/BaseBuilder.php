@@ -57,14 +57,9 @@ abstract class BaseBuilder
             $schema = new DynamicSchemaDeclare($model);
         }
 
-        $sqls = [];
-        $tableSqls = $this->buildTable($schema);
-        $sqls = array_merge($sqls , $tableSqls);
-
-        $indexSqls = $this->buildIndex($schema);
-        $sqls = array_merge($sqls , $indexSqls);
 
         if ($schema instanceof TemplateSchema) {
+            $sqls = [];
             $extraSchemas = $schema->yieldSchemas();
             foreach ($extraSchemas as $es) {
                 $esTableSqls = $this->buildTable($es);
@@ -73,7 +68,15 @@ abstract class BaseBuilder
                 $esIndexSqls = $this->buildIndex($es);
                 $sqls =  array_merge($sqls , $esIndexSqls);
             }
+            return $sqls;
         }
+
+        $sqls = [];
+        $tableSqls = $this->buildTable($schema);
+        $sqls = array_merge($sqls , $tableSqls);
+
+        $indexSqls = $this->buildIndex($schema);
+        $sqls = array_merge($sqls , $indexSqls);
         return $sqls;
     }
 
