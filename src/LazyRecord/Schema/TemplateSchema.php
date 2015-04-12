@@ -3,7 +3,7 @@ namespace LazyRecord\Schema;
 
 abstract class TemplateSchema extends DeclareSchema
 {
-    abstract public function yieldSchemas();
+    abstract public function provideSchemas();
 }
 
 

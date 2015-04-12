@@ -60,7 +60,7 @@ abstract class BaseBuilder
 
         if ($schema instanceof TemplateSchema) {
             $sqls = [];
-            $extraSchemas = $schema->yieldSchemas();
+            $extraSchemas = $schema->provideSchemas();
             foreach ($extraSchemas as $es) {
                 $esTableSqls = $this->buildTable($es);
                 $sqls =  array_merge($sqls , $esTableSqls);
