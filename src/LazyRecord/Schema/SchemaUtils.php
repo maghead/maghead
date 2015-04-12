@@ -2,6 +2,9 @@
 namespace LazyRecord\Schema;
 use CLIFramework\Logger;
 use LazyRecord\Schema\SchemaFinder;
+use LazyRecord\Schema\DeclareSchema;
+use LazyRecord\Schema\DynamicSchemaDeclare;
+use LazyRecord\Schema\MixinSchemaDeclare;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 
@@ -14,6 +17,36 @@ class SchemaUtils
         }
     }
 
+    /**
+     * Filter non-dynamic schema declare classes.
+     *
+     * @param string[] $classes class list.
+     */
+    static public function filterBuildableSchemas(array $schemas)
+    {
+        $list = array();
+        foreach ($schemas as $schema) {
+            // skip abstract classes.
+            if (   $schema instanceof DynamicSchemaDeclare 
+                || $schema instanceof MixinSchemaDeclare 
+                || (! $schema instanceof SchemaDeclare && ! $schema instanceof DeclareSchema)
+            ) { continue; }
+
+            $rf = new ReflectionObject($schema);
+            if ($rf->isAbstract()) {
+                continue;
+            }
+            $list[] = $schema;
+        }
+        return $list;
+    }
+
+
+    /**
+     *
+     * @param ConfigLoader $loader
+     * @param Logger $logger
+     */
     static public function findSchemasByConfigLoader(ConfigLoader $loader, Logger $logger = null)
     {
         $finder = new SchemaFinder;

@@ -57,7 +57,6 @@ abstract class BaseBuilder
             $schema = new DynamicSchemaDeclare($model);
         }
 
-
         if ($schema instanceof TemplateSchema) {
             $sqls = [];
             $extraSchemas = $schema->provideSchemas();

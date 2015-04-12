@@ -37,6 +37,7 @@ abstract class BaseTableParser
 
         // pre-initialize all schema objects and expand template schema
         $this->schemas = SchemaUtils::findSchemasByConfigLoader($this->config, $c['logger']);
+        $this->schemas = SchemaUtils::filterBuildableSchemas($this->schemas);
     }
 
     /**
