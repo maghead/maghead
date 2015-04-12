@@ -58,9 +58,14 @@ class TypeInfoParser
             $typeInfo->isa = 'point';
         } else if ('datetime' === $typeInfo->type || 'date' === $typeInfo->type ) {
             $typeInfo->isa = 'DateTime';
-        } else if (preg_match('/timestamp/', $typeInfo->type)) {
+        } 
+        // For postgresql, the 'timestamp' can be 'timestamp with timezone'
+        else if (preg_match('/timestamp/', $typeInfo->type)) 
+        {
             $typeInfo->isa = 'DateTime';
-        } else if ('time' == $typeInfo->type) {
+        } 
+        else if ('time' == $typeInfo->type) 
+        {
             // DateTime::createFromFormat('H:s','10:00')
             $typeInfo->isa = 'DateTime';
         } else {

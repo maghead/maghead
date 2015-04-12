@@ -6,32 +6,43 @@ use LazyRecord\Schema\ColumnDiff;
 
 class ComparatorTest extends \PHPUnit_Framework_TestCase
 {
+
     public function testBasicComparison()
     {
-        $a = new SchemaDeclare;
-        $a->column('same');
-        $a->column('changed')
+        $before = new SchemaDeclare;
+        $before->column('same');
+        $before->column('changed')
             ->varchar(20);
-        $a->column('removed')
+
+        $before->column('removed')
             ->boolean();
 
-        $b = new SchemaDeclare;
-        $b->column('same');
-        $b->column('changed')
+        $after = new SchemaDeclare;
+        $after->column('same');
+        $after->column('changed')
             ->varchar(30);
-        $b->column('added')
+        $after->column('added')
             ->varchar(10);
 
         $comparator = new Comparator;
-        $diffs = $comparator->compare($a, $b);
+        $diffs = $comparator->compare($before, $after);
         foreach ($diffs as $diff) {
             $this->assertInstanceOf('LazyRecord\Schema\Comparator\ColumnDiff', $diff);
         }
-        $this->assertEquals('removed',$diffs[0]->name);
-        $this->assertEquals('-',$diffs[0]->flag);
 
-        $this->assertEquals('added',$diffs[1]->name);
-        $this->assertEquals('+',$diffs[1]->flag);
+        $firstDiff = $diffs[0];
+        $this->assertEquals('changed', $firstDiff->name);
+        $this->assertEquals('=', $firstDiff->flag);
+
+        $secondDiff = $diffs[1];
+        $this->assertEquals('removed', $secondDiff->name);
+        $this->assertEquals('-', $secondDiff->flag);
+
+        $thirdDiff = $diffs[2];
+        $this->assertEquals('added', $thirdDiff->name);
+        $this->assertEquals('+', $thirdDiff->flag);
+
+
 
         /**
          * this can't work with posix (color output)
@@ -39,10 +50,6 @@ class ComparatorTest extends \PHPUnit_Framework_TestCase
         # $this->expectOutputRegex('/^= same/sm');
         # $this->expectOutputRegex('/^= changed/sm');
         # $this->expectOutputRegex('/^- removed/sm');
-        
-        $printer = new ConsolePrinter($diffs);
-        ok($printer);
-
         /*
         ob_start();
         $printer->output();
@@ -51,6 +58,16 @@ class ComparatorTest extends \PHPUnit_Framework_TestCase
         like('#removed#',$content);
         like('#added#',$content);
         */
+        return $diffs;
+    }
+
+    /**
+     * @depends testBasicComparison
+     */
+    public function testPrinter($diffs)
+    {
+        $printer = new ConsolePrinter($diffs);
+        ok($printer);
     }
 }
 

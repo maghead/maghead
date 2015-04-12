@@ -30,7 +30,7 @@ class MigrateUpgradeCommand extends BaseCommand
             $finder->find();
             $schemas = $finder->getSchemas();
             $runner = new MigrationRunner($dsId);
-            $runner->runUpgradeFromSchemaDiff($schemas);
+            $runner->runUpgradeAutomatically($schemas);
         } else {
             $runner = new MigrationRunner($dsId);
             $runner->load('db/migrations');

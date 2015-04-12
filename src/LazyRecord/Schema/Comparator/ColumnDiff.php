@@ -3,6 +3,7 @@ namespace LazyRecord\Schema\Comparator;
 use Closure;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\ColumnAccessorInterface;
+use LogicException;
 
 class ColumnDiff {
 
@@ -19,15 +20,40 @@ class ColumnDiff {
     /**
      * @var Schema Column Object
      */
-    public $column;
+    public $before;
+
+    /**
+     * @var Schema Column Object
+     */
+    public $after;
 
     public $details = array();
 
-    public function __construct($name, $flag, ColumnAccessorInterface $column)
+    public function __construct($name, $flag, ColumnAccessorInterface $before = NULL, ColumnAccessorInterface $after = NULL)
     {
         $this->name = $name;
         $this->flag = $flag;
-        $this->column = $column;
+        $this->before = $before;
+        $this->after = $after;
+
+        if (!$before && !$after) {
+            throw new LogicException('You must provide either {before} column or {after} column');
+        }
+    }
+
+    public function getAfterColumn() 
+    {
+        return $this->after;
+    }
+
+    public function getBeforeColumn()
+    {
+        return $this->before;
+    }
+
+    public function getAfterOrBeforeColumn()
+    {
+        return $this->after ?: $this->before;
     }
 
     public function appendDetail(AttributeDiff $attributeDiff)
@@ -37,10 +63,11 @@ class ColumnDiff {
 
     public function toColumnAttrsString() 
     {
-        $line = sprintf('% 2s %-16s %-16s',$this->flag, $this->name, $this->column->type );
+        $column = $this->getAfterOrBeforeColumn();
+        $line = sprintf('% 2s %-16s %-16s',$this->flag, $this->name, $column->type );
         $attrStrs = array();
-        foreach( $this->column->attributes as $property => $value ) {
-            if ( $property == "type" ) {
+        foreach ($column->attributes as $property => $value ) {
+            if ($property == "type") {
                 continue;
             }
             if (is_object($value)) {

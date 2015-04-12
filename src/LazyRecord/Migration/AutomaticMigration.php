@@ -34,7 +34,7 @@ class AutomaticMigration extends Migration
             $foundTable = isset($tableSchemas[$t]);
             if ($foundTable) {
                 $a = $tableSchemas[ $t ]; // schema object, extracted from database.
-                $diffs = $comparator->compare( $a , $b );
+                $diffs = $comparator->compare($a , $b);
 
                 // generate alter table statement.
                 foreach ($diffs as $diff) {
@@ -54,13 +54,13 @@ class AutomaticMigration extends Migration
                                 $columnArgs[ $key ] = $value;
                             }
                         }
-                        $this->addColumn( $t , $columnArgs );
+                        $this->addColumn($t , $columnArgs);
                     }
                     else if ($diff->flag == '-') 
                     {
                         $this->dropColumn($t, $diff->name);
                     }
-                    else if ($diff->flag == '=~')
+                    else if ($diff->flag == '=')
                     {
                         throw new LogicException('Unimplemented');
                     }

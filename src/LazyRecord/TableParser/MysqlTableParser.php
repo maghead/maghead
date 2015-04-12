@@ -30,6 +30,13 @@ class MysqlTableParser extends BaseTableParser
             $column->type($type);
             $column->null( $row['Null'] === 'YES' );
 
+            if ($typeInfo->length) {
+                $column->length($typeInfo->length);
+            } 
+            if ($typeInfo->precision) {
+                $column->decimals($typeInfo->precision);
+            }
+
             if ('PRI' === $row['Key']) {
                 $column->primary(true);
                 $schema->primaryKey = $row['Field'];

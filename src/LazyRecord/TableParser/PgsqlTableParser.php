@@ -56,7 +56,7 @@ class PgsqlTableParser extends BaseTableParser
          * @see http://notfaq.wordpress.com/2006/07/29/sql-postgresql-get-tables-and-columns/
          */
         foreach( $rows as $row ) {
-            $column = $schema->column( $row->column_name );
+            $column = $schema->column($row->column_name);
             $column->null( $row->is_nullable === 'YES' );
 
             $type = $row->data_type;

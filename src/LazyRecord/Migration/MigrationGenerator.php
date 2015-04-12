@@ -120,8 +120,9 @@ class MigrationGenerator
 
                         // filter out useless columns
                         $arg = array();
-                        $columnAttributes = $diff->column->toArray();
-                        foreach ($diff->column->toArray() as $key => $value) {
+                        $columnAttributes = $diff->getAfterOrBeforeColumn()->toArray();
+                        $column = $diff->getAfterColumn();
+                        foreach ($column->toArray() as $key => $value) {
                             if (is_object($value) || is_array($value)) {
                                 continue;
                             }
@@ -129,15 +130,15 @@ class MigrationGenerator
                                 $arg[ $key ] = $value;
                             }
                         }
-                        $upcall->addArgument(new NewObjectExpr('Column', [$diff->column->name, $diff->column->type, $diff->column->toArray() ]));
+                        $upcall->addArgument(new NewObjectExpr('Column', [$column->name, $column->type, $column->toArray() ]));
 
                         $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
                         $downgradeMethod->getBlock()->appendLine(new Statement($downcall));
 
-                    } elseif ($diff->flag == '-') {
+                    } else if ($diff->flag == '-') {
                         $upcall = new MethodCallExpr('$this', 'dropColumn', [$tableName, $diff->name]);
                         $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
-                    } elseif ($diff->flag == '=') {
+                    } else if ($diff->flag == '=') {
                         $this->logger->warn("** column flag = is not supported yet.");
                         continue;
                     } else {
