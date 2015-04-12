@@ -178,20 +178,20 @@ class MigrationRunner
     public function runUpgradeFromSchemaDiff($schemas)
     {
         foreach( $this->dataSourceIds as $dsId ) {
-            $script = new Migration($dsId);
+            $script       = new Migration($dsId);
             $parser       = TableParser::create($script->driver, $script->connection);
             $tableSchemas = $parser->getTableSchemas();
             $comparator = new Comparator;
             // schema from runtime
-            foreach( $schemas as $b ) {
+            foreach ($schemas as $b) {
                 $t = $b->getTable();
-                $foundTable = isset( $tableSchemas[ $t ] );
-                if( $foundTable ) {
+                $foundTable = isset($tableSchemas[$t]);
+                if ($foundTable) {
                     $a = $tableSchemas[ $t ]; // schema object, extracted from database.
                     $diffs = $comparator->compare( $a , $b );
 
                     // generate alter table statement.
-                    foreach( $diffs as $diff ) {
+                    foreach ($diffs as $diff) {
                         if ($diff->flag == '+') 
                         {
                             // filter out useless columns
@@ -201,9 +201,10 @@ class MigrationRunner
                                 if (is_object($value) ||  is_array($value) ) {
                                     continue;
                                 }
+
                                 // Supported attribute
-                                if (in_array($key, [
-                                    'type','primary','name','unique','default','notNull','null','autoIncrement'])) {
+                                if (in_array($key, ['type','primary','name','unique','default','notNull','null','autoIncrement'])) 
+                                {
                                     $columnArgs[ $key ] = $value;
                                 }
                             }
@@ -212,6 +213,10 @@ class MigrationRunner
                         else if ($diff->flag == '-') 
                         {
                             $script->dropColumn($t, $diff->name);
+                        }
+                        else if ($diff->flag == '=~')
+                        {
+                            throw new LogicException('Unimplemented');
                         }
                         else if ($diff->flag == '=') 
                         {
