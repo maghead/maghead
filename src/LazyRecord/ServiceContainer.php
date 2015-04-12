@@ -6,6 +6,7 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\RuntimeSchema;
+use CLIFramework\Logger;
 
 class ServiceContainer extends Container
 {
@@ -18,6 +19,10 @@ class ServiceContainer extends Container
                 $config->initForBuild();
             }
             return $config;
+        };
+
+        $this['logger'] = function($c) {
+            return Logger::getInstance();
         };
 
         $this['schema_finder'] = function($c) {
@@ -34,9 +39,5 @@ class ServiceContainer extends Container
         return $instance;
     }
 }
-
-
-
-
 
 
