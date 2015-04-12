@@ -1,11 +1,9 @@
 <?php
 namespace LazyRecord\Schema;
 
-interface TemplateSchema
+abstract class TemplateSchema extends DeclareSchema
 {
-
-    public function yieldSchemas();
-
+    abstract public function yieldSchemas();
 }
 
 
