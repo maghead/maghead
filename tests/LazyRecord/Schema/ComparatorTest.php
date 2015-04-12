@@ -25,7 +25,7 @@ class ComparatorTest extends \PHPUnit_Framework_TestCase
         $comparator = new Comparator;
         $diffs = $comparator->compare($a, $b);
         foreach ($diffs as $diff) {
-            $this->assertInstanceOf('LazyRecord\Schema\ColumnDiff', $diff);
+            $this->assertInstanceOf('LazyRecord\Schema\Comparator\ColumnDiff', $diff);
         }
         $this->assertEquals('removed',$diffs[0]->name);
         $this->assertEquals('-',$diffs[0]->flag);
