@@ -14,6 +14,24 @@ class SchemaUtils
         }
     }
 
+    static public function findSchemasByConfigLoader(ConfigLoader $loader, Logger $logger = null)
+    {
+        $finder = new SchemaFinder;
+        $finder->paths = $loader->getSchemaPaths();
+        $finder->find();
+
+        // load class from class map
+        if ($classMap = $loader->getClassMap()) {
+            foreach ($classMap as $file => $class) {
+                if (! is_integer($file) && is_string($file)) {
+                    require $file;
+                }
+            }
+        }
+        return $finder->getSchemas();
+    }
+
+
     /**
      * Returns schema objects
      *
@@ -39,7 +57,7 @@ class SchemaUtils
             return ClassUtils::schema_classes_to_objects($classes);
         } else {
             $finder = new SchemaFinder;
-            if( count($args) && file_exists($args[0]) ) {
+            if (count($args) && file_exists($args[0])) {
                 $finder->paths = $args;
                 foreach( $args as $file ) {
                     if ( is_file( $file ) ) {
@@ -48,7 +66,7 @@ class SchemaUtils
                 }
             } 
             // load schema paths from config
-            elseif( $paths = $loader->getSchemaPaths() ) {
+            else if( $paths = $loader->getSchemaPaths() ) {
                 $finder->paths = $paths;
             }
             $finder->find();
