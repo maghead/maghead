@@ -10,6 +10,7 @@ use LazyRecord\Schema;
 use ClassTemplate\TemplateClassDeclare;
 use ClassTemplate\ClassDeclare;
 use ClassTemplate\MethodCall;
+use ClassTemplate\Raw;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser\TableParser;
@@ -108,7 +109,7 @@ class MigrationGenerator
                 $diffs = $comparator->compare( $a , $b );
 
                 // generate alter table statement.
-                foreach( $diffs as $diff ) {
+                foreach ($diffs as $diff) {
                     $upcall = new MethodCall;
                     $downcall = new MethodCall; // downgrade method call
 
@@ -116,11 +117,11 @@ class MigrationGenerator
                         $this->logger->info(sprintf("'%s': add column %s", $tableName, $diff->name) , 1);
 
                         $upcall->method('addColumn');
-                        $upcall->addArgument('"'. $tableName . '"'); // table
+                        $upcall->addArgument($tableName); // table
 
                         $downcall->method('dropColumn');
-                        $downcall->addArgument('"'. $tableName . '"'); // table
-                        $downcall->addArgument('"'. $diff->name . '"'); // table
+                        $downcall->addArgument($tableName); // table
+                        $downcall->addArgument($diff->name); // table
 
                         // filter out useless columns
                         $arg = array();
@@ -144,8 +145,8 @@ class MigrationGenerator
 
                     } elseif ($diff->flag == '-') {
                         $upcall->method('dropColumn');
-                        $upcall->addArgument('"'. $tableName . '"'); // table
-                        $upcall->addArgument('"'. $diff->name . '"');
+                        $upcall->addArgument($tableName); // table
+                        $upcall->addArgument($diff->name);
                         $upgradeMethod->getBlock()->appendLine($upcall);
                     } elseif ($diff->flag == '=') {
                         $this->logger->warn("** column flag = is not supported yet.");
@@ -160,13 +161,8 @@ class MigrationGenerator
                 $this->logger->info(sprintf("Found schema '%s' to be imported to '%s'",$b, $tableName),1);
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
-                $upcall = new MethodCall;
-                $upcall->method('importSchema');
-                $upcall->addArgument( 'new ' . $b ); // for dynamic schema declare, it casts to the model class name.
-
-                $downcall = new MethodCall;
-                $downcall->method('dropTable');
-                $downcall->addArgument("'$tableName'");
+                $upcall = new MethodCall('$this','importSchema', [new Raw('new ' . get_class($b))]);
+                $downcall = new MethodCall('$this','dropTable', [$tableName]);
 
                 $upgradeMethod->getBlock()->appendLine($upcall);
                 $downgradeMethod->getBlock()->appendLine($downcall);
