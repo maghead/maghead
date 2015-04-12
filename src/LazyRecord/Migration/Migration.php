@@ -37,7 +37,7 @@ class Migration
     public $logger;
 
     /**
-     * @var BaseSqlBuilder
+     * @var LazyRecord\SqlBuilder\BaseBuilder
      */
     public $builder;
 
@@ -145,8 +145,7 @@ class Migration
         call_user_func($cb,$ds);
         $ds->build();
 
-        $builder = SqlBuilder::create($this->driver);
-        $sqls = $builder->build($ds);
+        $sqls = $this->builder->build($ds);
         $this->query($sqls);
     }
 
@@ -154,14 +153,13 @@ class Migration
     {
         $this->logger->info("Importing schema: " . get_class($schema));
 
-        $builder = SqlBuilder::create($this->driver);
         if ($schema instanceof SchemaDeclare) {
-            $sqls = $builder->build($schema);
+            $sqls = $this->builder->build($schema);
             $this->query($sqls);
         } elseif ($schema instanceof BaseModel && method_exists($schema,'schema')) {
             $model = $schema;
             $schema = new DynamicSchemaDeclare($model);
-            $sqls = $builder->build($schema);
+            $sqls = $this->builder->build($schema);
             $this->query($sqls);
         } else {
             throw new Exception("Unsupported schema type");
