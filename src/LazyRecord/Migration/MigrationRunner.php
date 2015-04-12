@@ -177,7 +177,7 @@ class MigrationRunner
 
     public function runUpgradeFromSchemaDiff($schemas)
     {
-        foreach( $this->dataSourceIds as $dsId ) {
+        foreach ($this->dataSourceIds as $dsId) {
             $script       = new Migration($dsId);
             $parser       = TableParser::create($script->driver, $script->connection);
             $tableSchemas = $parser->getTableSchemas();
