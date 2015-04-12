@@ -21,7 +21,7 @@ class ColumnDiff {
      */
     public $column;
 
-    public $attrDiffs = array();
+    public $details = array();
 
     public function __construct($name, $flag, ColumnAccessorInterface $column)
     {
@@ -30,14 +30,19 @@ class ColumnDiff {
         $this->column = $column;
     }
 
-    public function toColumnAttrsString() {
-        $line = sprintf('%s %-16s %-16s',$this->flag , $this->name, $this->column->type );
+    public function appendDetail(array $attributes)
+    {
+        $this->details[] = $attributes;
+    }
+
+    public function toColumnAttrsString() 
+    {
+        $line = sprintf('% 2s %-16s %-16s',$this->flag, $this->name, $this->column->type );
         $attrStrs = array();
         foreach( $this->column->attributes as $property => $value ) {
             if ( $property == "type" ) {
                 continue;
             }
-
             if (is_object($value)) {
                 if ($value instanceof Closure) {
                     $attrStrs[] = "$property:{Closure}";
@@ -52,6 +57,8 @@ class ColumnDiff {
         return $line . join(', ', $attrStrs);
     }
 }
+
+
 
 class Comparator
 {
@@ -73,30 +80,32 @@ class Comparator
         $columnKeys = array_unique(
             array_merge(array_keys($aColumns), array_keys($bColumns) )
         );
-        foreach( $columnKeys as $key ) {
-            if( isset($aColumns[$key]) && isset($bColumns[ $key ] ) ) {
+
+        foreach ($columnKeys as $key) 
+        {
+            // If schema and db has the same column, we then compare the column definitions
+            if (isset($aColumns[$key]) && isset($bColumns[$key])) {
                 
                 // have the same column, compare attributes
                 $attributes = array('type','default','primary','label');
                 $ac = $aColumns[$key];
                 $bc = $bColumns[$key];
-                $d = new ColumnDiff( $key, '=', $bc );
-                foreach( $attributes as $attributeName ) {
-                    if( $ac->{ $attributeName } === $bc->{ $attributeName } ) {
+                $d = new ColumnDiff($key, '=', $bc );
+                foreach ($attributes as $attributeName) {
+                    if ($ac->{ $attributeName } === $bc->{ $attributeName }) {
                         // is equal
-                    }
-                    else if( $ac->{ $attributeName } != $bc->{ $attributeName } 
+                    } else if ( $ac->{ $attributeName } != $bc->{ $attributeName } 
                         && is_string($bc->{ $attributeName }) 
                         && is_integer($bc->{ $attributeName }) ) 
                     {
-                        $d->attrDiffs[] = (object) array( 
+                        $d->appendDetail(array( 
                             'name' => $attributeName , 
-                            'before' => $ac->{ $attributeName },
-                            'after'  => $bc->{ $attributeName },
-                        );
+                            'before' => $ac->{$attributeName},
+                            'after'  => $bc->{$attributeName},
+                        ));
                     }
                 }
-                if(count($d->attrDiffs) > 0) {
+                if (count($d->details) > 0) {
                     $diff[] = $d;
                 }
             }

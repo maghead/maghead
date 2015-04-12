@@ -151,9 +151,9 @@ class MigrationGenerator
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
                 $upcall = new MethodCallExpr('$this','importSchema', [new Raw('new ' . get_class($b))]);
-                $downcall = new MethodCallExpr('$this','dropTable', [$tableName]);
-
                 $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
+
+                $downcall = new MethodCallExpr('$this','dropTable', [$tableName]);
                 $downgradeMethod->getBlock()->appendLine(new Statement($downcall));
             }
         }
