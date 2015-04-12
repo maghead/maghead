@@ -3,6 +3,9 @@ namespace LazyRecord;
 use Pimple\Container;
 
 use LazyRecord\ConfigLoader;
+use LazyRecord\Schema\SchemaFinder;
+use LazyRecord\Schema\DeclareSchema;
+use LazyRecord\Schema\RuntimeSchema;
 
 class ServiceContainer extends Container
 {
@@ -15,6 +18,12 @@ class ServiceContainer extends Container
                 $config->initForBuild();
             }
             return $config;
+        };
+
+        $this['schema_finder'] = function($c) {
+            $finder = new SchemaFinder;
+            $finder->paths = $c['config_loader']->getSchemaPaths();
+            return $finder;
         };
     }
 

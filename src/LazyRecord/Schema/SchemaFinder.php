@@ -17,17 +17,22 @@ use Traversable;
  * 1. Find SchemaDeclare-based schema class files.
  * 2. Find model-based schema, pass dynamic schema class 
  */
-class SchemaFinder
-    implements IteratorAggregate
+class SchemaFinder implements IteratorAggregate
 {
-
     public $paths = array();
+
+    public function __construct(array $paths = array()) {
+        $this->paths = $paths;
+    }
 
     public function in($path)
     {
         $this->paths[] = $path;
     }
 
+    public function setPaths(array $paths) {
+        $this->paths = $paths;
+    }
 
     // DEPRECATED
     public function loadFiles() { 
@@ -36,14 +41,14 @@ class SchemaFinder
 
     public function find()
     {
-        if ( empty($this->paths) ) {
+        if (empty($this->paths)) {
             return;
         }
 
-        foreach( $this->paths as $path ) {
-            if ( is_file($path) ) {
+        foreach ($this->paths as $path) {
+            if (is_file($path)) {
                 require_once $path;
-            } elseif ( is_dir($path) ) {
+            } else if (is_dir($path)) {
                 $rii   = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($path,
                         RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::FOLLOW_SYMLINKS
