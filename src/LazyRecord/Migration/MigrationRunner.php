@@ -7,6 +7,8 @@ use LazyRecord\Metadata;
 use LazyRecord\Schema\Comparator;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\ConnectionManager;
+use LazyRecord\Migration\AutomaticMigration;
+
 
 class MigrationRunner
 {
@@ -175,64 +177,29 @@ class MigrationRunner
         }
     }
 
-    public function runUpgradeFromSchemaDiff($schemas)
+    public function runUpgradeAutomatically($schemas)
     {
         foreach ($this->dataSourceIds as $dsId) {
-            $script       = new Migration($dsId);
-            $parser       = TableParser::create($script->driver, $script->connection);
-            $tableSchemas = $parser->getTableSchemas();
-            $comparator = new Comparator;
-            // schema from runtime
-            foreach ($schemas as $b) {
-                $t = $b->getTable();
-                $foundTable = isset($tableSchemas[$t]);
-                if ($foundTable) {
-                    $a = $tableSchemas[ $t ]; // schema object, extracted from database.
-                    $diffs = $comparator->compare( $a , $b );
+            $connectionManager = ConnectionManager::getInstance();
+            $driver = $connectionManager->getQueryDriver($dsId);
+            $connection = $connectionManager->getConnection($dsId);
 
-                    // generate alter table statement.
-                    foreach ($diffs as $diff) {
-                        if ($diff->flag == '+') 
-                        {
-                            // filter out useless columns
-                            $columnArgs = array();
-                            foreach( $diff->column->toArray() as $key => $value ) 
-                            {
-                                if (is_object($value) ||  is_array($value) ) {
-                                    continue;
-                                }
-
-                                // Supported attribute
-                                if (in_array($key, ['type','primary','name','unique','default','notNull','null','autoIncrement'])) 
-                                {
-                                    $columnArgs[ $key ] = $value;
-                                }
-                            }
-                            $script->addColumn( $t , $columnArgs );
-                        }
-                        else if ($diff->flag == '-') 
-                        {
-                            $script->dropColumn($t, $diff->name);
-                        }
-                        else if ($diff->flag == '=~')
-                        {
-                            throw new LogicException('Unimplemented');
-                        }
-                        else if ($diff->flag == '=') 
-                        {
-                            $this->logger->warn("** column flag = is not supported yet.");
-                        }
-                        else 
-                        {
-                            $this->logger->warn("** unsupported flag.");
-                        }
-                    }
-                } 
-                else {
-                    // generate create table statement.
-                    // use sqlbuilder to build schema sql
-                    $script->importSchema( $b );
+            $script       = new AutomaticMigration($dsId);
+            try {
+                $connection->beginTransaction();
+                foreach ($scripts as $script) {
+                    $this->logger->info("Running upgrade migration script $script on data source $dsId");
+                    $migration = new $script($dsId);
+                    $migration->upgrade();
+                    $this->updateLastMigrationId($dsId,$script::getId());
                 }
+                $connection->commit();
+            } catch (Exception $e) {
+                $this->logger->error('Exception was thrown: ' . $e->getMessage());
+                $this->logger->warn('Rolling back ...');
+                $connection->rollback();
+                $this->logger->warn('Recovered, escaping...');
+                break;
             }
         }
     }
