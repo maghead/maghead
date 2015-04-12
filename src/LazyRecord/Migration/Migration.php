@@ -10,6 +10,7 @@ use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Console;
 use LazyRecord\Schema\SchemaInterface;
+use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\ColumnDeclare;
 use LazyRecord\SqlBuilder\SqlBuilder;
 
@@ -19,9 +20,26 @@ use LogicException;
 
 class Migration
 {
+    /**
+     * @var QueryDriver
+     */
     public $driver;
+
+
+    /**
+     * @var PDO object
+     */
     public $connection;
+
+    /**
+     * @var CLIFramework\Logger
+     */
     public $logger;
+
+    /**
+     * @var BaseSqlBuilder
+     */
+    public $builder;
 
     public function __construct($dsId)
     {
@@ -30,6 +48,8 @@ class Migration
         $this->connection = $connectionManager->getConnection($dsId);
         // $this->builder = new MigrationBuilder($this->driver);
         $this->logger  = Console::getInstance()->getLogger();
+
+        $this->builder = SqlBuilder::create($this->driver);
     }
 
     public static function getId()
@@ -40,6 +60,10 @@ class Migration
         }
     }
 
+
+    /**
+     * Deprecated, use query method instead.
+     */
     public function executeSql($sql)
     {
         return $this->query($sql);
@@ -107,7 +131,7 @@ class Migration
             }
         }
         $sql = $query->toSql($this->connection->createQueryDriver(), new ArgumentArray);
-        $this->executeSql($sql);
+        $this->query($sql);
     }
 
     /**
@@ -123,48 +147,43 @@ class Migration
 
         $builder = SqlBuilder::create($this->driver);
         $sqls = $builder->build($ds);
-        $this->executeSql($sqls);
+        $this->query($sqls);
     }
 
-    public function importSchema($schema) {
+    public function importSchema($schema)
+    {
         $this->logger->info("Importing schema: " . get_class($schema));
 
         $builder = SqlBuilder::create($this->driver);
         if ($schema instanceof SchemaDeclare) {
             $sqls = $builder->build($schema);
-            $this->executeSql($sqls);
-        } elseif (is_a($schema,'LazyRecord\\BaseModel',true) && method_exists($schema,'schema') ) {
+            $this->query($sqls);
+        } elseif ($schema instanceof BaseModel && method_exists($schema,'schema')) {
             $model = $schema;
             $schema = new DynamicSchemaDeclare($model);
             $sqls = $builder->build($schema);
-            $this->executeSql($sqls);
+            $this->query($sqls);
         } else {
             throw new Exception("Unsupported schema type");
         }
     }
 
-    /**
-     * Execute migration sql builder commands
-     *
-     * @param string $m method name
-     * @param array $a method arguments
-     */
-    public function executeCommand($m,$a) 
+    public function upgrade() 
     {
-        $this->logger->info($m);
-        $builder = SqlBuilder::create($this->driver);
-        $sql = call_user_func_array(array($builder,$m) , $a );
-        $this->executeSql($sql);
+        $this->logger->info('Nothing to do');
     }
 
-    public function upgrade() {
-    }
-
-    public function downgrade() { 
+    public function downgrade() 
+    {
+        $this->logger->info('Nothing to do');
     }
 
     public function __call($m,$a) {
-        $this->executeCommand($m,$a);
+        if (method_exists($this->builder, $m)) {
+            $this->logger->info($m);
+            $sql = call_user_func_array(array($this->builder,$m) , $a );
+            $this->query($sql);
+        }
     }
 }
 

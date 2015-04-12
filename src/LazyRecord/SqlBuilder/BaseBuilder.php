@@ -6,6 +6,8 @@ use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\Universal\Syntax\Constraint;
 
 use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
+use LazyRecord\Schema\TemplateSchema;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
@@ -54,33 +56,47 @@ abstract class BaseBuilder
             $model = $schema;
             $schema = new DynamicSchemaDeclare($model);
         }
-        elseif( ! $schema instanceof SchemaDeclare ) {
-            throw new Exception("Unknown schema instance:" . get_class($schema) );
-        }
-        $sqls = $this->buildTable($schema);
+
+        $sqls = [];
+        $tableSqls = $this->buildTable($schema);
+        $sqls = array_merge($sqls , $tableSqls);
+
         $indexSqls = $this->buildIndex($schema);
-        return array_merge( $sqls , $indexSqls );
+        $sqls = array_merge($sqls , $indexSqls);
+
+        if ($schema instanceof TemplateSchema) {
+            $extraSchemas = $schema->yieldSchemas();
+            foreach ($extraSchemas as $es) {
+                $esTableSqls = $this->buildTable($es);
+                $sqls =  array_merge($sqls , $esTableSqls);
+
+                $esIndexSqls = $this->buildIndex($es);
+                $sqls =  array_merge($sqls , $esIndexSqls);
+            }
+        }
+        return $sqls;
     }
 
     public function buildTable(SchemaInterface $schema)
     {
         $sqls = array();
 
-        if( $this->clean || $this->rebuild ) {
+        if ($this->clean || $this->rebuild) {
             $sqls[] = $this->dropTable($schema);
         }
-        if( $this->clean )
+        if ($this->clean) {
             return $sqls;
-
+        }
         $sqls[] = $this->createTable($schema);
         return $sqls;
     }
 
     public function buildIndex(SchemaInterface $schema) 
     {
+        // Single column index
         $sqls = array();
         foreach ($schema->columns as $name => $column ) {
-            if ( $column->index ) {
+            if ($column->index) {
                 $indexName = is_string($column->index) ? $column->index 
                     : "idx_" . $schema->getTable() . "_" . $name;
 
