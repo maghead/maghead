@@ -80,9 +80,9 @@ class Migration
     {
         $sql = (array) $sql;
         if ($title) {
-            $this->logger->info('Executing task: '. $title);
+            $this->logger->info('Executing query: '. $title);
         }
-        foreach( (array) $sql as $q ) {
+        foreach ($sql as $q) {
             $this->logger->info('Query: ' . $q);
             $stm = $this->connection->query($q);
             return $stm;
