@@ -58,24 +58,25 @@ class SchemaUtils
         } else {
             $finder = new SchemaFinder;
             if (count($args) && file_exists($args[0])) {
-                $finder->paths = $args;
-                foreach( $args as $file ) {
-                    if ( is_file( $file ) ) {
+                $finder->setPaths($args);
+                foreach ($args as $file) {
+                    if (is_file($file) ) {
                         require_once $file;
                     }
                 }
             } 
             // load schema paths from config
             else if( $paths = $loader->getSchemaPaths() ) {
-                $finder->paths = $paths;
+                $finder->setPaths($paths);
             }
             $finder->find();
 
             // load class from class map
-            if( $classMap = $loader->getClassMap() ) {
-                foreach( $classMap as $file => $class ) {
-                    if( ! is_integer($file) && is_string($file) )
+            if ($classMap = $loader->getClassMap()) {
+                foreach ($classMap as $file => $class ) {
+                    if (! is_integer($file) && is_string($file)) {
                         require $file;
+                    }
                 }
             }
             return $finder->getSchemas();
