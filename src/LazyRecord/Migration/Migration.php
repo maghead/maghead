@@ -14,6 +14,7 @@ use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\ColumnDeclare;
 use LazyRecord\SqlBuilder\SqlBuilder;
 
+use PDO;
 use PDOException;
 use LogicException;
 

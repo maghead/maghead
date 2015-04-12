@@ -192,29 +192,33 @@ class MigrationRunner
 
                     // generate alter table statement.
                     foreach( $diffs as $diff ) {
-                        if( $diff->flag == '+' ) {
-
+                        if ($diff->flag == '+') 
+                        {
                             // filter out useless columns
                             $columnArgs = array();
                             foreach( $diff->column->toArray() as $key => $value ) 
                             {
-                                if( is_object($value) )
+                                if (is_object($value) ||  is_array($value) ) {
                                     continue;
-                                if( is_array($value) )
-                                    continue;
-                                if( in_array($key,array(
-                                    'type','primary','name','unique','default','notNull','null','autoIncrement')))
+                                }
+                                // Supported attribute
+                                if (in_array($key, [
+                                    'type','primary','name','unique','default','notNull','null','autoIncrement'])) {
                                     $columnArgs[ $key ] = $value;
+                                }
                             }
                             $script->addColumn( $t , $columnArgs );
                         }
-                        elseif( $diff->flag == '-' ) {
+                        else if ($diff->flag == '-') 
+                        {
                             $script->dropColumn($t, $diff->name);
                         }
-                        elseif( $diff->flag == '=' ) {
+                        else if ($diff->flag == '=') 
+                        {
                             $this->logger->warn("** column flag = is not supported yet.");
                         }
-                        else {
+                        else 
+                        {
                             $this->logger->warn("** unsupported flag.");
                         }
                     }
