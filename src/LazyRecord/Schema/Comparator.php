@@ -8,8 +8,6 @@ use LazyRecord\Schema\Comparator\AttributeDiff;
 
 class Comparator
 {
-
-
     /**
      * compare two schemas
      *

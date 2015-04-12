@@ -4,6 +4,8 @@ use PDO;
 use Exception;
 use LazyRecord\Schema;
 use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\TableParser\TypeInfo;
+use LazyRecord\TableParser\TypeInfoParser;
 
 class PgsqlTableParser extends BaseTableParser
 {
@@ -59,7 +61,7 @@ class PgsqlTableParser extends BaseTableParser
 
             $type = $row->data_type;
 
-            $typeInfo = $this->parseTypeInfo($type);
+            $typeInfo = TypeInfoParser::parseTypeInfo($type);
             if ($typeInfo->type === 'varchar') {
                 $type = 'varchar(' . $row->character_maximum_length . ')' ;
             }

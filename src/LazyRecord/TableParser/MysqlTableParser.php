@@ -3,6 +3,8 @@ namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
 use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\TableParser\TypeInfo;
+use LazyRecord\TableParser\TypeInfoParser;
 
 class MysqlTableParser extends BaseTableParser
 {
@@ -21,7 +23,7 @@ class MysqlTableParser extends BaseTableParser
         $rows = $stm->fetchAll();
         foreach ($rows as $row) {
             $type = $row['Type'];
-            $typeInfo = $this->parseTypeInfo($type);
+            $typeInfo = TypeInfoParser::parseTypeInfo($type);
             $isa = $typeInfo->isa;
 
             $column = $schema->column($row['Field']);
