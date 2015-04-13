@@ -16,11 +16,17 @@ class MigrateDowngradeCommand extends BaseCommand
         return array('d', 'down');
     }
 
+    public function options($opts) 
+    {
+        parent::options($opts);
+        $opts->add('script-dir', 'Migration script directory. (default: db/migrations)');
+    }
+
     public function execute()
     {
         $dsId = $this->getCurrentDataSourceId();
         $runner = new MigrationRunner($dsId);
-        $runner->load('db/migrations');
+        $runner->load( $this->options->{'script-dir'} ?: 'db/migrations');
         $this->logger->info('Running migration scripts to downgrade...');
         $runner->runDowngrade();
         $this->logger->info('Done.');
