@@ -13,7 +13,7 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         $connectionManager->addDataSource('default',array( 'dsn' => 'sqlite::memory:' ));
         $connectionManager = ConnectionManager::getInstance();
         $pdo = $connectionManager->getConnection('default');
-        $pdo->query('CREATE TABLE users (id integer not null primary key);');
+        $pdo->query('CREATE TABLE users (id integer NOT NULL PRIMARY KEY);');
 
         $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'tests/migrations');
         $this->assertEquals('20120901_CreateUser.php',$generator->generateFilename('CreateUser','20120901'));
@@ -54,15 +54,17 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
 
         $finder = new SchemaFinder;
         $finder->find();
-        list($class,$path) = $generator->generateWithDiff('DiffMigration', 'default', $finder->getSchemas(), '20120101');
+        list($class,$path) = $generator->generateWithDiff('DiffMigration', 'default', [ new TestApp\Model\UserSchema ], '20120101');
         require_once $path;
         ok($class::getId());
 
         /*
         $userSchema = new TestApp\Model\UserSchema;
         $column = $userSchema->getColumn('account');
+        */
+
+        /*
          */
-        // echo var_export( $column ); 
 
         // run migration
         $runner = new MigrationRunner('default');
