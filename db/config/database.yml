@@ -24,7 +24,3 @@ data_sources:
   mysql:
     dsn: 'mysql:host=localhost;dbname=testing'
     user: testing
-#    slave:
-#      dsn: 'mysql:host=localhost;dbname=test'
-#      user: root
-#      pass: 123123
