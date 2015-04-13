@@ -4,15 +4,27 @@ use CLIFramework\Logger;
 use LazyRecord\ConfigLoader;
 use LazyRecord\SqlBuilder\BaseBuilder;
 use LazyRecord\Schema\SchemaInterface;
+use LazyRecord\ServiceContainer;
 use PDO;
+use PDOException;
+use LazyRecord\PDOExceptionPrinter;
 
 class DatabaseBuilder
 {
+
+    public $conn;
+
+    public $builder;
+
+    public $logger;
+
     public function __construct(PDO $conn, BaseBuilder $builder, Logger $logger = NULL)
     {
         $this->conn    = $conn;
         $this->builder = $builder;
-        $this->logger  = $logger;
+
+        $c = ServiceContainer::getInstance();
+        $this->logger  = $logger ?: $c['logger'];
     }
 
     public function build(array $schemas)
@@ -34,11 +46,10 @@ class DatabaseBuilder
 
         $sqls = $this->builder->buildTable($schema);
         foreach( $sqls as $sql ) {
-            $this->conn->query( $sql );
-            $error = $this->conn->errorInfo();
-            if ($error[1]) {
-                $msg =  $class . ': ' . var_export( $error , true );
-                // static::$logger->error($msg);
+            try {
+                $this->conn->query($sql);
+            } catch (PDOException $e) {
+                PDOExceptionPrinter::show($e, $sql, [], $this->logger);
             }
         }
         return "--- Schema $class \n" . join("\n",$sqls);
