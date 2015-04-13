@@ -57,7 +57,11 @@ class PgsqlTableParser extends BaseTableParser
          */
         foreach( $rows as $row ) {
             $column = $schema->column($row->column_name);
-            $column->null( $row->is_nullable === 'YES' );
+            if ($row->is_nullable === 'YES') {
+                $column->null();
+            } else {
+                $column->notNull();
+            }
 
             $type = $row->data_type;
 
@@ -65,6 +69,8 @@ class PgsqlTableParser extends BaseTableParser
             if ($typeInfo->type === 'varchar') {
                 $type = 'varchar(' . $row->character_maximum_length . ')' ;
             }
+
+            $column->type( $type );
 
             $isa = null;
             if (preg_match( '/^(text|varchar|character)/i', $type ))  {
@@ -81,7 +87,13 @@ class PgsqlTableParser extends BaseTableParser
                 $column->isa($isa);
             }
 
-            $column->type( $type );
+            if ($typeInfo->length) {
+                $column->length($typeInfo->length);
+            } 
+            if ($typeInfo->precision) {
+                $column->decimals($typeInfo->precision);
+            }
+
             // $row->ordinal_position
             // $row->data_type
             // $row->column_default

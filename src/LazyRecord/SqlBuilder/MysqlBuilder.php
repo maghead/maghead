@@ -5,6 +5,7 @@ use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship;
 use LazyRecord\Schema\ColumnDeclare;
+use SQLBuilder\ArgumentArray;
 
 class MysqlBuilder extends BaseBuilder
 {
@@ -15,49 +16,11 @@ class MysqlBuilder extends BaseBuilder
             $column->type = 'text';
         }
 
-        $sql = $this->driver->quoteIdentifier($name);
-        $sql .= $column->buildTypeName();
-
-        if ( $isa === 'enum' && !empty($column->enum) ) {
-            $enum = array();
-            foreach ($column->enum as $val) {
-                $enum[] = $this->driver->inflate($val);
-            }
-            $sql .= '(' . implode(', ', $enum) . ')';
-        }
-
-        if ($column->required || $column->null === false) {
-            $sql .= ' NOT NULL';
-        } elseif ($column->null === true) {
-            $sql .= ' NULL';
-        }
-
-        /* if it's callable, we should not write the result into sql schema */
-        if( ($default = $column->default) !== null && ! is_callable($column->default )  ) { 
-
-            // raw sql default value
-            if( is_array($default) ) {
-                $sql .= ' default ' . $default[0];
-            }
-            else {
-                $sql .= ' default ' . $this->driver->deflate($default);
-            }
-        }
-
-        if( $column->comment )
-            $sql .= ' comment ' . $this->driver->inflate($column->comment);
-
-        if( $column->primary )
-            $sql .= ' primary key';
-
-        if( $column->autoIncrement )
-            $sql .= ' auto_increment';
-
-        if( $column->unique )
-            $sql .= ' unique';
+        $args = new ArgumentArray;
+        $sql = $column->buildDefinitionSql($this->driver, $args);
 
         /**
-        build reference
+        BUILD COLUMN REFERENCE
 
         track(
         	FOREIGN KEY(trackartist) REFERENCES artist(artistid)
@@ -84,7 +47,6 @@ class MysqlBuilder extends BaseBuilder
         REFERENCES `schema`.`Addresses` (`idAddresses`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-
         */
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
@@ -101,7 +63,6 @@ class MysqlBuilder extends BaseBuilder
                 break;
             }
         }
-
         return $sql;
     }
 

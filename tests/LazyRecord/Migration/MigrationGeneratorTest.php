@@ -42,7 +42,7 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         $pdo = $connectionManager->getConnection('default');
         $pdo->query('DROP TABLE IF EXISTS users');
         $pdo->query('DROP TABLE IF EXISTS test');
-        $pdo->query('CREATE TABLE users (account varchar(128) unique)');
+        $pdo->query('CREATE TABLE users (account VARCHAR(128) UNIQUE)');
 
         if (! file_exists('tests/migrations_testing')) {
             mkdir('tests/migrations_testing');
@@ -57,6 +57,12 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         list($class,$path) = $generator->generateWithDiff('DiffMigration', 'default', $finder->getSchemas(), '20120101');
         require_once $path;
         ok($class::getId());
+
+        /*
+        $userSchema = new TestApp\Model\UserSchema;
+        $column = $userSchema->getColumn('account');
+         */
+        // echo var_export( $column ); 
 
         // run migration
         $runner = new MigrationRunner('default');

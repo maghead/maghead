@@ -27,8 +27,14 @@ class MysqlTableParser extends BaseTableParser
             $isa = $typeInfo->isa;
 
             $column = $schema->column($row['Field']);
-            $column->type($type);
-            $column->null( $row['Null'] === 'YES' );
+            $column->type($typeInfo->type);
+
+            if ($row['Null'] === 'YES') {
+                $column->null();
+            } else {
+                $column->notNull();
+            }
+            print_r( $column ); 
 
             if ($typeInfo->length) {
                 $column->length($typeInfo->length);

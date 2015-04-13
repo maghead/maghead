@@ -5,6 +5,7 @@ use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\ColumnDeclare;
+use SQLBuilder\ArgumentArray;
 
 
 /**
@@ -21,58 +22,8 @@ class PgsqlBuilder extends BaseBuilder
         if (!$column->type && $isa == 'str') {
             $column->type = 'text';
         }
-
-        $sql = $this->driver->quoteIdentifier( $name );
-
-        if (! $column->autoIncrement) {
-            $sql .= ' ' . $column->buildTypeName();
-        }
-
-        if ($column->timezone) {
-            $sql .= ' with time zone';
-        }
-
-        if ($column->required || $column->null === true) {
-            $sql .= ' NOT NULL';
-        } elseif ( $column->null === true ) {
-            $sql .= ' NULL';
-        }
-
-
-        /* if it's callable, we should not write the result into sql schema */
-        if( ($default = $column->default) !== null 
-            && ! is_callable($column->default )  ) 
-        {
-
-            // raw sql default value
-            if( is_array($default) ) {
-                $sql .= ' default ' . $default[0];
-            }
-            else {
-                /* XXX: 
-                 * note that we sometime need the data source id from model schema define.
-                 * $sourceId = $schema->getDataSourceId();
-                 */
-
-                /**
-                 * Here we use query driver builder to inflate default value,
-                 * But the value,
-                 */
-                $sql .= ' DEFAULT ' . $this->driver->deflate($default);
-            }
-        }
-
-        if ($column->autoIncrement) {
-            $sql .= ' SERIAL'; // use pgsql built-in serial for auto increment column
-        }
-
-        if ($column->primary) {
-            $sql .= ' PRIMARY KEY';
-        }
-        if ($column->unique) {
-            $sql .= ' UNIQUE';
-        }
-
+        $args = new ArgumentArray;
+        $sql = $column->buildDefinitionSql($this->driver, $args);
         return $sql;
     }
 

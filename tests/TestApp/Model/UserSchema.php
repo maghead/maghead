@@ -9,6 +9,7 @@ class UserSchema extends Schema
         $this->column('account')
             ->isa('str')
             ->unique()
+            ->notNull()
             ->label('Account')
             ->varchar(128);
 
