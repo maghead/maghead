@@ -8,6 +8,9 @@ use LazyRecord\Schema\MixinSchemaDeclare;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 
+use ReflectionObject;
+use ReflectionMethod;
+
 class SchemaUtils
 {
     static public function printSchemaClasses(Logger $logger, array $classes) {
