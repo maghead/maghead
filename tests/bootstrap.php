@@ -26,6 +26,7 @@ $config->loadFromArray(array(
         'default' =>
             array (
                 'dsn' => 'sqlite::memory:',
+                // 'dsn' => 'sqlite:testing.sqlite3',
                 'user' => NULL,
                 'pass' => NULL,
             ),
