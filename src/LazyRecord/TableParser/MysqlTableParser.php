@@ -34,7 +34,6 @@ class MysqlTableParser extends BaseTableParser
             } else {
                 $column->notNull();
             }
-            print_r( $column ); 
 
             if ($typeInfo->length) {
                 $column->length($typeInfo->length);
