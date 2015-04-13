@@ -1,9 +1,10 @@
 <?php
 use LazyRecord\Sqlbuilder\SqlBuilder;
+use LazyRecord\Testing\BaseTestCase;
 
-class SqlBuilderTest extends PHPUnit_Framework_TestCase
+class SqlBuilderTest extends BaseTestCase
 {
-    function pdoQueryOk($dbh,$sql)
+    public function pdoQueryOk($dbh,$sql)
     {
         $ret = $dbh->query( $sql );
         $error = $dbh->errorInfo();
@@ -17,7 +18,7 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
         return $ret;
     }
 
-    function schemaProvider()
+    public function schemaProvider()
     {
         return array(
             array( new \AuthorBooks\Model\AuthorSchema ),
@@ -31,13 +32,13 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider schemaProvider
      */
-    function testBuilder($schema) {
+    public function testBuilder($schema) {
         $this->insertIntoDataSource('mysql',$schema);
         $this->insertIntoDataSource('sqlite',$schema);
         $this->insertIntoDataSource('pgsql',$schema);
     }
 
-    function insertIntoDataSource($dataSource,$schema)
+    public function insertIntoDataSource($dataSource,$schema)
     {
         $connManager = LazyRecord\ConnectionManager::getInstance();
         if( ! $connManager->hasDataSource($dataSource) )

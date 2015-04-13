@@ -70,11 +70,13 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->logger = new Logger;
         $this->logger->setQuiet();
 
-        ob_start();
-        $generator = new SchemaGenerator($this->config, $this->logger);
-        $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
-        $classMap = $generator->generate($schemas);
-        ob_end_clean();
+        if (method_exists($this, 'getModels')) {
+            ob_start();
+            $generator = new SchemaGenerator($this->config, $this->logger);
+            $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
+            $classMap = $generator->generate($schemas);
+            ob_end_clean();
+        }
     }
 
     public function getLogger()
