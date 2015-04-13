@@ -3,6 +3,7 @@ namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
 use LazyRecord\Schema\SchemaDeclare;
+use SQLBuilder\Raw;
 
 class SqliteTableParser extends BaseTableParser
 {
@@ -23,6 +24,7 @@ class SqliteTableParser extends BaseTableParser
     public function getTableSql($table)
     {
         $stm = $this->connection->query("select sql from sqlite_master where type = 'table' AND name = '$table'");
+        // $stm = $this->connection->query("PRAGMA table_info($table)");
         return $stm->fetch(PDO::FETCH_OBJ)->sql;
     }
 
@@ -35,84 +37,73 @@ class SqliteTableParser extends BaseTableParser
             $name = $regs[1];
             $columnstr = $regs[2];
 
-            // FIXME: fix the double(3,1) syntax case later
-            $columnsqls = preg_split('/\s*,\s*/is',$columnstr); // split the sql at the end.
+            $parser = new SqliteTableDefinitionParser;
 
-            foreach ($columnsqls as $columnsql) {
-                $column = array();
-                $parts = preg_split('#\s+#',$columnsql,0,PREG_SPLIT_NO_EMPTY);
-                $column['name'] = $parts[0];
-                $column['type'] = $parts[1];
 
-                if( in_array('primary',$parts) ) {
-                    $column['pk'] = true;
-                }
-                if( in_array('unique',$parts) ) {
-                    $column['unique'] = true;
-                }
-                $p = array_search('default',$parts);
-                if( $p !== false ) {
-                    $column['default'] = $parts[$p+1];
-                }
+            $tableDef = $parser->parseColumnDefinitions($columnstr);
 
-                if( preg_match('#auto\s*increment#i',$columnsql) ) {
-                    $column['autoIncrement'] = true;
-                }
-
-                if( preg_match('#not\s+null#i',$columnsql) ) {
-                    $column['notNull'] = true;
-                } elseif( preg_match('#null#i',$columnsql) ) {
-                    $column['null'] = true;
-                }
-
-                $columns[] = (object) $column;
-            }
-            return $columns;
-        } else {
-            throw new Exception("Table $table parse error.");
+            print_r($columnstr);
+            print_r($tableDef);
+            return $tableDef;
         }
     }
 
     public function getTableSchema($table) 
     {
-        $columns = $this->parseTableSql($table);
+        $tableDef = $this->parseTableSql($table);
 
         $schema = new SchemaDeclare;
         $schema->columnNames = $schema->columns = array();
 
-        foreach( $columns as $columnAttr ) {
-            $type = $columnAttr->type;
-            $name = $columnAttr->name;
-            $isa = $this->typenameToIsa($type);
 
+        foreach ($tableDef->columns as $columnDef) {
+            $name = $columnDef->name;
             $column = $schema->column($name);
-            $column->type( $type );
-            if (isset($columnAttr->null)) {
-                $column->null();
-            } elseif (isset($columnAttr->notNull)) {
-                $column->notNull();
+
+            if (! isset($columnDef->type) ) {
+                var_dump( $columnDef ); 
             }
 
-            if (isset($columnAttr->pk) ) {
+            $type = $columnDef->type;
+
+            $column->type($type);
+
+            $isa = $this->typenameToIsa($type);
+            $column->isa($isa);
+
+            if (isset($columnDef->notNull) && $columnDef->notNull !== null) {
+                if ($columnDef->notNull) {
+                    $column->notNull();
+                } else {
+                    $column->null();
+                }
+            }
+
+            if (isset($columnDef->primary)) {
                 $column->primary(true);
                 $schema->primaryKey = $name;
-            }
-            elseif(isset($column->unique)) {
+
+                if ($columnDef->autoIncrement) {
+                    $column->autoIncrement(true);
+                }
+
+            } else if (isset($columnDef->unique)) {
                 $column->unique(true);
             }
 
-            if( isset($columnAttr->autoIncrement) ) {
-                $column->autoIncrement(true);
+            if (isset($columnDef->default)) {
+                $default = $columnDef->default;
+                if (is_scalar($default)) {
+                    $column->default($default);
+                } else if ($default instanceof Token && $default->type == 'literal') {
+                    $column->default(new Raw($default->val));
+                } else {
+                    throw new Exception('Incorrect literal token');
+                }
             }
 
-            if( isset($columnAttr->default) ) {
-                $default = $columnAttr->default;
-            }
-            if($isa)
-                $column->isa($isa);
         }
         return $schema;
-
     }
 }
 
