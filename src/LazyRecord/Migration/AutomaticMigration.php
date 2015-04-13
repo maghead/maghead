@@ -8,6 +8,7 @@ use LazyRecord\ConnectionManager;
 use LazyRecord\Connection;
 use LazyRecord\QueryDriver;
 use LazyRecord\Migration\Migratable;
+use GetOptionKit\OptionResult;
 
 class AutomaticMigration extends Migration implements Migratable
 {
@@ -22,6 +23,13 @@ class AutomaticMigration extends Migration implements Migratable
         $this->connection = $connection;
     }
     */
+
+    protected $options = null;
+
+    public function __construct($dsId, OptionResult $options = null) {
+        parent::__construct($dsId);
+        $this->options = $options ?: new OptionResult;
+    }
     
     public function upgrade()
     {
@@ -39,8 +47,9 @@ class AutomaticMigration extends Migration implements Migratable
 
                 // generate alter table statement.
                 foreach ($diffs as $diff) {
-                    if ($diff->flag == '+') 
-                    {
+
+                    switch($diff->flag) {
+                    case '+':
                         // filter out useless columns
                         $columnArgs = array();
                         foreach ($diff->column->toArray() as $key => $value)
@@ -56,22 +65,19 @@ class AutomaticMigration extends Migration implements Migratable
                             }
                         }
                         $this->addColumn($t , $columnArgs);
-                    }
-                    else if ($diff->flag == '-') 
-                    {
+                        break;
+                    case '-':
+                        if ($this->options->{'no-drop-column'}) {
+                            continue;
+                        }
                         $this->dropColumn($t, $diff->name);
-                    }
-                    else if ($diff->flag == '=')
-                    {
-                        throw new LogicException('Unimplemented');
-                    }
-                    else if ($diff->flag == '=') 
-                    {
+                        break;
+                    case '=':
                         $this->logger->warn("** column flag = is not supported yet.");
-                    }
-                    else 
-                    {
-                        $this->logger->warn("** unsupported flag.");
+                        break;
+                    default:
+                        $this->logger->warn("** unsupported flag: " . $diff->flag);
+                        break;
                     }
                 }
             } else {

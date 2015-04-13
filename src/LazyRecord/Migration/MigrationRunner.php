@@ -8,6 +8,7 @@ use LazyRecord\Schema\Comparator;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Migration\AutomaticMigration;
+use GetOptionKit\OptionResult;
 
 
 class MigrationRunner
@@ -177,14 +178,14 @@ class MigrationRunner
         }
     }
 
-    public function runUpgradeAutomatically($schemas)
+    public function runUpgradeAutomatically($schemas, OptionResult $options = NULL)
     {
         foreach ($this->dataSourceIds as $dsId) {
             $connectionManager = ConnectionManager::getInstance();
             $driver = $connectionManager->getQueryDriver($dsId);
             $connection = $connectionManager->getConnection($dsId);
 
-            $script       = new AutomaticMigration($dsId);
+            $script = new AutomaticMigration($dsId, $options);
             try {
                 $connection->beginTransaction();
                 foreach ($scripts as $script) {
