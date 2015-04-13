@@ -6,6 +6,7 @@ use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship;
 use LazyRecord\Schema\ColumnDeclare;
+use SQLBuilder\ArgumentArray;
 
 /**
  * Schema SQL builder
@@ -21,39 +22,8 @@ class SqliteBuilder extends BaseBuilder
         if( ! $type && $isa == 'str' )
             $type = 'text';
 
-        $sql = $this->driver->quoteIdentifier( $name );
-        $sql .= ' ' . $type;
-
-        if ($column->required || $column->null === false) {
-            $sql .= ' NOT NULL';
-        } elseif ($column->null === true) {
-            $sql .= ' NULL';
-        }
-
-        /**
-         * if it's callable, we should not write the result into sql schema 
-         */
-        if (null !== ($default = $column->default) 
-            && ! is_callable($column->default )) 
-        {
-            // for raw sql default value
-            if( is_array($default) ) {
-                $sql .= ' default ' . $default[0];
-            } else {
-                $sql .= ' default ' . $this->driver->deflate($default);
-            }
-        }
-
-        if ($column->primary)
-            $sql .= ' primary key';
-
-        if ($column->autoIncrement) {
-            $sql .= ' autoincrement';
-        }
-
-        if ($column->unique) {
-            $sql .= ' unique';
-        }
+        $args = new ArgumentArray;
+        $sql = $column->buildDefinitionSql($this->driver, $args);
 
         /**
          * build sqlite reference
