@@ -27,16 +27,15 @@ class ConsolePrinter
         echo $formatter->format('+++ ' . $this->afterName, "strong_white") , "\n";
         echo "@@ columns @@\n";
 
-        foreach( $this->diff as $d ) {
+        foreach ($this->diff as $d) {
             // for each diff items, show attribute diff
-            if ( $d->flag == '=' ) {
+            if ($d->flag == '=') {
                 echo '=' , ' ' , $d->name , "\n";
-                foreach( $d->details as $attrDiff ) {
+                foreach ($d->details as $attrDiff) {
                     echo $formatter->format($attrDiff->getBeforeDescription(), 'red');
                     echo $formatter->format($attrDiff->getAfterDescription(), 'green');
                 }
-            }
-            else {
+            } else {
                 $line = $d->toColumnAttrsString();
                 echo $formatter->format("  " . $line . "\n", $d->flag === '+' ? 'green' : 'red' );
             }
