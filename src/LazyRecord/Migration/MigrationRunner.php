@@ -8,6 +8,7 @@ use LazyRecord\Schema\Comparator;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Migration\AutomaticMigration;
+use LazyRecord\ServiceContainer;
 use GetOptionKit\OptionResult;
 
 
@@ -19,7 +20,8 @@ class MigrationRunner
 
     public function __construct($dsIds)
     {
-        $this->logger = Console::getInstance()->getLogger();
+        $c = ServiceContainer::getInstance();
+        $this->logger = $c['logger'];
 
         // XXX: get data source id list from config loader
         $this->dataSourceIds = (array) $dsIds;
@@ -78,7 +80,6 @@ class MigrationRunner
                 && $class != 'LazyRecord\\Migration\\Migration';
         });
 
-
         // sort class with timestamp suffix
         usort($classes,function($a,$b) { 
             if( preg_match('#_(\d+)$#',$a,$regsA) && preg_match('#_(\d+)$#',$b,$regsB) ) {
@@ -95,6 +96,7 @@ class MigrationRunner
     public function getUpgradeScripts($dsId)
     {
         $lastMigrationId = $this->getLastMigrationId($dsId);
+        $this->logger->debug("Found last migration id: $lastMigrationId");
         $scripts = $this->getMigrationScripts();
         return array_filter($scripts,function($class) use ($lastMigrationId) {
             $id = $class::getId();
@@ -120,6 +122,8 @@ class MigrationRunner
     public function runDowngrade(array $scripts = NULL, $steps = 1)
     {
         foreach( $this->dataSourceIds as $dsId ) {
+            $this->logger->info("Running downgrade over data source: $dsId");
+
             if (!$scripts) {
                 $scripts = $this->getDowngradeScripts($dsId);
             }
@@ -145,6 +149,8 @@ class MigrationRunner
     public function runUpgrade(array $scripts = NULL)
     {
         foreach ($this->dataSourceIds as $dsId) {
+            $this->logger->info("Running upgrade over data source: $dsId");
+
             $connectionManager = ConnectionManager::getInstance();
             $driver = $connectionManager->getQueryDriver($dsId);
             $connection = $connectionManager->getConnection($dsId);
@@ -181,6 +187,8 @@ class MigrationRunner
     public function runUpgradeAutomatically($schemas, OptionResult $options = NULL)
     {
         foreach ($this->dataSourceIds as $dsId) {
+            $this->logger->info("Running upgrade over data source: $dsId");
+
             $connectionManager = ConnectionManager::getInstance();
             $driver = $connectionManager->getQueryDriver($dsId);
             $connection = $connectionManager->getConnection($dsId);
