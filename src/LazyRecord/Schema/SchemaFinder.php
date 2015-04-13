@@ -9,6 +9,8 @@ use RuntimeException;
 use IteratorAggregate;
 use LazyRecord\ClassUtils;
 use LazyRecord\ConfigLoader;
+use LazyRecord\ServiceContainer;
+use CLIFramework\Logger;
 use Traversable;
 
 /**
@@ -21,8 +23,12 @@ class SchemaFinder implements IteratorAggregate
 {
     public $paths = array();
 
-    public function __construct(array $paths = array()) {
+    protected $logger;
+
+    public function __construct(array $paths = array(), Logger $logger = null) {
         $this->paths = $paths;
+        $c = ServiceContainer::getInstance();
+        $this->logger = $logger ?: $c['logger'];
     }
 
     public function in($path)
@@ -45,8 +51,11 @@ class SchemaFinder implements IteratorAggregate
             return;
         }
 
+        $this->logger->debug('Finding schemas in (' . join(', ',$this->paths) . ')');
         foreach ($this->paths as $path) {
+            $this->logger->debug('Finding schemas in ' . $path);
             if (is_file($path)) {
+                $this->logger->debug('Loading schema: ' . $path);
                 require_once $path;
             } else if (is_dir($path)) {
                 $rii   = new RecursiveIteratorIterator(
@@ -55,8 +64,9 @@ class SchemaFinder implements IteratorAggregate
                     ),
                     RecursiveIteratorIterator::SELF_FIRST
                 );
-                foreach ( $rii as $fi ) {
-                    if ( substr($fi->getFilename(), -10) == "Schema.php" ) {
+                foreach ($rii as $fi) {
+                    if (substr($fi->getFilename(), -10) == "Schema.php") {
+                        $this->logger->debug('Loading schema: ' . $fi->getPathname());
                         require_once $fi->getPathname();
                     }
                 }
