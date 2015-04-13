@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord\TableParser;
+use Exception;
 
 class TypeInfoParser
 {
