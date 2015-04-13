@@ -27,7 +27,7 @@ class ServiceContainer extends Container
 
         $this['schema_finder'] = function($c) {
             $finder = new SchemaFinder;
-            $finder->paths = $c['config_loader']->getSchemaPaths();
+            $finder->paths = $c['config_loader']->getSchemaPaths() ?: [];
             return $finder;
         };
     }

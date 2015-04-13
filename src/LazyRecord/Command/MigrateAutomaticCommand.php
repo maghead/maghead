@@ -6,6 +6,7 @@ use LazyRecord\Migration\MigrationRunner;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Command\BaseCommand;
 use LazyRecord\Schema\SchemaFinder;
+use LazyRecord\ServiceContainer;
 
 class MigrateAutomaticCommand extends BaseCommand
 {
@@ -22,9 +23,9 @@ class MigrateAutomaticCommand extends BaseCommand
 
     public function execute() {
         $dsId = $this->getCurrentDataSourceId();
-        $this->logger->info( "Loading schema objects..." );
-        $finder = new SchemaFinder;
-        $finder->paths = $this->config->getSchemaPaths() ?: array();
+
+        $container = ServiceContainer::getInstance();
+        $finder = $container['schema_finder'];
         $finder->find();
         $schemas = $finder->getSchemas();
         $runner = new MigrationRunner($dsId);
