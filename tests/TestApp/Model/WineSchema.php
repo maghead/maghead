@@ -14,6 +14,7 @@ class WineSchema extends Schema
             ->integer();
 
         $this->column('category_id')
+            ->integer()
             ->refer('TestApp\\Model\\WineCategorySchema');
     }
 }
