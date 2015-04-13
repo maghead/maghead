@@ -15,8 +15,8 @@ class MysqlBuilder extends BaseBuilder
             $column->type = 'text';
         }
 
-        $sql = $this->driver->quoteIdentifier( $name );
-        $sql .= $column->buildTypeSql($this->driver);
+        $sql = $this->driver->quoteIdentifier($name);
+        $sql .= $column->buildTypeName();
 
         if ( $isa === 'enum' && !empty($column->enum) ) {
             $enum = array();

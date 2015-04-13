@@ -36,15 +36,15 @@ class Comparator
 
                 // compare the type info
                 if ($ac->type != $afterc->type) {
-                    $d->appendDetail(new AttributeDiff('type', $ac->buildTypeSql(), $afterc->buildTypeSql()));
+                    $d->appendDetail(new AttributeDiff('type', $ac->buildTypeName(), $afterc->buildTypeName()));
                 }
 
                 if ($ac->length != $afterc->length) {
-                    $d->appendDetail(new AttributeDiff('length', $ac->buildTypeSql(), $afterc->buildTypeSql()));
+                    $d->appendDetail(new AttributeDiff('length', $ac->buildTypeName(), $afterc->buildTypeName()));
                 }
 
                 if ($ac->decimals != $afterc->decimals) {
-                    $d->appendDetail(new AttributeDiff('decimals', $ac->buildTypeSql(), $afterc->buildTypeSql()));
+                    $d->appendDetail(new AttributeDiff('decimals', $ac->buildTypeName(), $afterc->buildTypeName()));
                 }
 
                 if ($ac->unsigned != $afterc->unsigned) {

@@ -24,8 +24,8 @@ class PgsqlBuilder extends BaseBuilder
 
         $sql = $this->driver->quoteIdentifier( $name );
 
-        if ( ! $column->autoIncrement ) {
-            $sql .= ' ' . $column->buildTypeSql($this->driver);
+        if (! $column->autoIncrement) {
+            $sql .= ' ' . $column->buildTypeName();
         }
 
         if ($column->timezone) {

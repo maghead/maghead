@@ -34,16 +34,18 @@ class MigrationRunner
 
     public function load($directory) 
     {
-        if( ! file_exists($directory) )
+        if (! file_exists($directory)) {
             return array();
+        }
         $loaded = array();
         $iterator = new RecursiveIteratorIterator( 
             new RecursiveDirectoryIterator($directory) , RecursiveIteratorIterator::CHILD_FIRST
         );
-        foreach( $iterator as $path ) {
-            if($path->isFile() && $path->getExtension() === 'php' ) {
+        foreach ($iterator as $path) {
+            if ($path->isFile() && $path->getExtension() === 'php' ) {
                 $code = file_get_contents($path);
-                if( preg_match('#Migration#',$code) ) {
+                if (preg_match('#Migration#',$code) ) {
+                    $this->logger->debug("Loading migration script: $path");
                     require_once($path);
                     $loaded[] = $path;
                 }
