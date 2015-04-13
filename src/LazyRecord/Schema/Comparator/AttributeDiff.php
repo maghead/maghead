@@ -20,4 +20,21 @@ class AttributeDiff
         $this->before = $before;
         $this->after = $after;
     }
+
+    public function getBeforeDescription() {
+        return sprintf("- %s %s\n", $this->name, $this->serializeVar($this->before));
+    }
+
+    public function getAfterDescription() {
+        return sprintf("- %s %s\n", $this->name, $this->serializeVar($this->after));
+    }
+
+    public function serializeVar($var) {
+        if (is_object($var)) {
+            return get_class($var);
+        } else if (is_array($var)) {
+            return join(', ', $var);
+        }
+        return $var;
+    }
 }

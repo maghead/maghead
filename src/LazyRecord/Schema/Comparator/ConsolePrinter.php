@@ -32,8 +32,8 @@ class ConsolePrinter
             if ( $d->flag == '=' ) {
                 echo '=' , ' ' , $d->name , "\n";
                 foreach( $d->details as $attrDiff ) {
-                    echo $formatter->format(sprintf("\t- %s %s\n", $attrDiff->name, $attrDiff->before ),'red');
-                    echo $formatter->format(sprintf("\t+ %s %s\n", $attrDiff->name, $attrDiff->after ),'green');
+                    echo $formatter->format($attrDiff->getBeforeDescription(), 'red');
+                    echo $formatter->format($attrDiff->getAfterDescription(), 'green');
                 }
             }
             else {
