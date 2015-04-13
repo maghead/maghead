@@ -58,19 +58,20 @@ class PgsqlBuilder extends BaseBuilder
                  * Here we use query driver builder to inflate default value,
                  * But the value,
                  */
-                $sql .= ' default ' . $this->driver->deflate($default);
+                $sql .= ' DEFAULT ' . $this->driver->deflate($default);
             }
         }
 
-        if( $column->autoIncrement )
+        if ($column->autoIncrement) {
             $sql .= ' SERIAL'; // use pgsql built-in serial for auto increment column
+        }
 
-        if( $column->primary )
+        if ($column->primary) {
             $sql .= ' PRIMARY KEY';
-
-
-        if( $column->unique )
+        }
+        if ($column->unique) {
             $sql .= ' UNIQUE';
+        }
 
         return $sql;
     }

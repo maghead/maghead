@@ -110,6 +110,20 @@ class Migration implements Migratable
         }
     }
 
+    public function modifyColumn($table, $arg)
+    {
+        $query = new AlterTableQuery($table);
+        if (is_callable($arg)) {
+            $c = new Column;
+            call_user_func($arg, $c);
+            $query->modifyColumn($c);
+        } else if ($arg instanceof Column) {
+            $query->modifyColumn($arg);
+        }
+        $sql = $query->toSql($this->connection->createQueryDriver(), new ArgumentArray);
+        $this->query($sql);
+    }
+
     public function addColumn($table, $arg)
     {
         $query = new AlterTableQuery($table);

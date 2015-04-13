@@ -72,8 +72,11 @@ class AutomaticMigration extends Migration implements Migratable
                         $this->dropColumn($t, $diff->name);
                         break;
                     case '=':
-                        // TODO: Generate alter table statement.
-                        $this->logger->warn("** column flag = is not supported yet.");
+                        if ($afterColumn = $diff->getAfterColumn()) {
+                            $this->modifyColumn($t, $afterColumn);
+                        } else {
+                            throw new \Exception("afterColumn is undefined.");
+                        }
                         break;
                     default:
                         $this->logger->warn("** unsupported flag: " . $diff->flag);

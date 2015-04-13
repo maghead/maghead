@@ -130,7 +130,7 @@ class MigrationGenerator
                                 $arg[ $key ] = $value;
                             }
                         }
-                        $upcall->addArgument(new NewObjectExpr('Column', [$column->name, $column->type, $column->toArray() ]));
+                        $upcall->addArgument($column);
 
                         $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
                         $downgradeMethod->getBlock()->appendLine(new Statement($downcall));
@@ -139,7 +139,15 @@ class MigrationGenerator
                         $upcall = new MethodCallExpr('$this', 'dropColumn', [$tableName, $diff->name]);
                         $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
                     } else if ($diff->flag == '=') {
-                        $this->logger->warn("** column flag = is not supported yet.");
+
+                        if ($afterColumn = $diff->getAfterColumn()) {
+                            $upcall = new MethodCallExpr('$this', 'modifyColumn', [$tableName, $afterColumn]);
+                            $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
+
+                            // $this->modifyColumn($t, $afterColumn);
+                        } else {
+                            throw new \Exception("afterColumn is undefined.");
+                        }
                         continue;
                     } else {
                         $this->logger->warn("** unsupported flag.");
