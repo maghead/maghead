@@ -141,6 +141,9 @@ class MigrationGenerator
                     } else if ($diff->flag == '=') {
 
                         if ($afterColumn = $diff->getAfterColumn()) {
+                            if ($afterColumn->name == 'account') {
+                                var_export($afterColumn);
+                            }
                             $upcall = new MethodCallExpr('$this', 'modifyColumn', [$tableName, $afterColumn]);
                             $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
 

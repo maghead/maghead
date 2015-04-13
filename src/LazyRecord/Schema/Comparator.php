@@ -29,37 +29,33 @@ class Comparator
         {
             // If schema and db has the same column, we then compare the column definitions
             if (isset($beforeColumns[$key]) && isset($afterColumns[$key])) {
-                $ac = $beforeColumns[$key];
+                $bc = $beforeColumns[$key];
+                $ac = $afterColumns[$key];
                 $afterc = $afterColumns[$key];
 
-                $d = new ColumnDiff($key, '=', $afterc, $ac);
+                $d = new ColumnDiff($key, '=', $bc, $ac);
 
                 // compare the type info
-                if ($ac->type != $afterc->type) {
-                    $d->appendDetail(new AttributeDiff('type', $ac->buildTypeName(), $afterc->buildTypeName()));
+                if ($bc->type != $ac->type) {
+                    $d->appendDetail(new AttributeDiff('type', $bc->buildTypeName(), $ac->buildTypeName()));
                 }
 
-                if ($ac->length != $afterc->length) {
-                    $d->appendDetail(new AttributeDiff('length', $ac->buildTypeName(), $afterc->buildTypeName()));
+                if ($bc->length != $ac->length) {
+                    $d->appendDetail(new AttributeDiff('length', $bc->buildTypeName(), $ac->buildTypeName()));
                 }
 
-                if ($ac->decimals != $afterc->decimals) {
-                    $d->appendDetail(new AttributeDiff('decimals', $ac->buildTypeName(), $afterc->buildTypeName()));
+                if ($bc->decimals != $ac->decimals) {
+                    $d->appendDetail(new AttributeDiff('decimals', $bc->buildTypeName(), $ac->buildTypeName()));
                 }
 
-                if ($ac->unsigned != $afterc->unsigned) {
-                    $d->appendDetail(new AttributeDiff('unsigned', $ac->unsigned, $afterc->unsigned));
+                if ($bc->unsigned != $ac->unsigned) {
+                    $d->appendDetail(new AttributeDiff('unsigned', $bc->unsigned, $ac->unsigned));
                 }
 
                 // have the same column, compare attributes
                 $attributes = array('default','primary');
                 foreach ($attributes as $attributeName) {
-                    if ($ac->{ $attributeName } === $afterc->{ $attributeName }) {
-                        // is equal
-                    } else if ( $ac->{ $attributeName } != $afterc->{ $attributeName } 
-                        && is_string($afterc->{ $attributeName })
-                        && is_integer($afterc->{ $attributeName }) ) 
-                    {
+                    if ($ac->{ $attributeName } != $bc->{ $attributeName }) {
                         $d->appendDetail(new AttributeDiff($attributeName , $ac->{$attributeName}, $afterc->{$attributeName}));
                     }
                 }

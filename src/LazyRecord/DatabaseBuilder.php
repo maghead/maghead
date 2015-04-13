@@ -45,15 +45,21 @@ class DatabaseBuilder
         $this->logger->info('Building Table SQL for ' . $schema);
 
         $sqls = $this->builder->buildTable($schema);
-        foreach( $sqls as $sql ) {
-            try {
-                $this->conn->query($sql);
-            } catch (PDOException $e) {
-                PDOExceptionPrinter::show($e, $sql, [], $this->logger);
-            }
+        foreach ($sqls as $sql ) {
+            $this->query($sql);
         }
         return "--- Schema $class \n" . join("\n",$sqls);
     }
+
+    public function query($sql) {
+        try {
+            $this->logger->debug($sql);
+            $this->conn->query( $sql );
+        } catch (PDOException $e) {
+            PDOExceptionPrinter::show($e, $sql, [], $this->logger);
+        }
+    }
+
 
 
     public function buildIndexSql(SchemaInterface $schema)
@@ -63,14 +69,7 @@ class DatabaseBuilder
 
         $sqls = $this->builder->buildIndex($schema);
         foreach ($sqls as $sql) {
-            $this->logger->debug($sql);
-            $this->conn->query( $sql );
-            $error = $this->conn->errorInfo();
-
-            if ($error[1]) {
-                $msg =  $class . ': ' . var_export( $error , true );
-                // static::$logger->error($msg);
-            }
+            $this->query($sql);
         }
         return "--- Index For $class \n" . join("\n",$sqls);
     }
@@ -82,13 +81,7 @@ class DatabaseBuilder
 
         $sqls = $this->builder->buildForeignKeys($schema);
         foreach ($sqls as $sql) {
-            $this->logger->debug($sql);
-            $this->conn->query( $sql );
-            $error = $this->conn->errorInfo();
-            if ($error[1]) {
-                $msg =  $class . ': ' . var_export( $error , true );
-                // static::$logger->error($msg);
-            }
+            $this->query($sql);
         }
         return "--- Index For $class \n" . join("\n",$sqls);
 

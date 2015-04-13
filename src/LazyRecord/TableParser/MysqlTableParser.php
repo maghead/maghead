@@ -17,10 +17,17 @@ class MysqlTableParser extends BaseTableParser
 
     public function getTableSchema($table)
     {
-        $stm = $this->connection->query("show columns from $table;");
+        $stm = $this->connection->query("SHOW COLUMNS FROM $table");
         $schema = new SchemaDeclare;
         $schema->columnNames = $schema->columns = array();
         $rows = $stm->fetchAll();
+
+        /*
+        if ($table == 'users') {
+            var_dump($rows); 
+        }
+         */
+
         foreach ($rows as $row) {
             $type = $row['Type'];
             $typeInfo = TypeInfoParser::parseTypeInfo($type);
@@ -29,7 +36,7 @@ class MysqlTableParser extends BaseTableParser
             $column = $schema->column($row['Field']);
             $column->type($typeInfo->type);
 
-            if ($row['Null'] === 'YES') {
+            if ($row['Null'] == 'YES') {
                 $column->null();
             } else {
                 $column->notNull();

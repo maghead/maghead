@@ -63,13 +63,15 @@ DOC;
 
         $connectionManager = ConnectionManager::getInstance();
         $conn = $connectionManager->getConnection($id);
+
         $driver = $connectionManager->getQueryDriver($id);
+
         $sqlBuilder = SqlBuilder::create($driver, array( 
             'rebuild' => $options->rebuild,
             'clean' => $options->clean,
         ));
 
-        $builder = new DatabaseBuilder($conn, $sqlBuilder, new Logger);
+        $builder = new DatabaseBuilder($conn, $sqlBuilder, $this->logger);
         $sqls    = $builder->build($schemas);
         $sqlOutput = join("\n", $sqls );
 

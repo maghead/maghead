@@ -2,6 +2,7 @@
 namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
+use LogicException;
 use LazyRecord\Schema\SchemaDeclare;
 use SQLBuilder\Raw;
 
@@ -38,12 +39,7 @@ class SqliteTableParser extends BaseTableParser
             $columnstr = $regs[2];
 
             $parser = new SqliteTableDefinitionParser;
-
-
             $tableDef = $parser->parseColumnDefinitions($columnstr);
-
-            print_r($columnstr);
-            print_r($tableDef);
             return $tableDef;
         }
     }
@@ -61,7 +57,7 @@ class SqliteTableParser extends BaseTableParser
             $column = $schema->column($name);
 
             if (! isset($columnDef->type) ) {
-                var_dump( $columnDef ); 
+                throw new LogicException("Missing column type definition.");
             }
 
             $type = $columnDef->type;
