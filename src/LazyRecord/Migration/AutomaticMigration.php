@@ -45,7 +45,6 @@ class AutomaticMigration extends Migration implements Migratable
                 $a = $tableSchemas[ $t ]; // schema object, extracted from database.
                 $diffs = $comparator->compare($a , $b);
 
-                // generate alter table statement.
                 foreach ($diffs as $diff) {
 
                     switch($diff->flag) {
@@ -73,6 +72,7 @@ class AutomaticMigration extends Migration implements Migratable
                         $this->dropColumn($t, $diff->name);
                         break;
                     case '=':
+                        // TODO: Generate alter table statement.
                         $this->logger->warn("** column flag = is not supported yet.");
                         break;
                     default:
