@@ -138,9 +138,21 @@ class SqliteTableDefinitionParser
 
                                 $column->default = $scalarToken->val;
 
-                            } else if ($literal = $this->tryParseKeyword(['NULL', 'CURRENT_TIME', 'CURRENT_DATE', 'CURRENT_TIMESTAMP'], 'literal')) {
+                            } else if ($literal = $this->tryParseKeyword(['CURRENT_TIME', 'CURRENT_DATE', 'CURRENT_TIMESTAMP'], 'literal')) {
 
                                 $column->default = $literal;
+
+                            } else if ($null = $this->tryParseKeyword(['NULL'])) {
+
+                                $column->default = NULL;
+
+                            } else if ($null = $this->tryParseKeyword(['TRUE'])) {
+
+                                $column->default = TRUE;
+
+                            } else if ($null = $this->tryParseKeyword(['FALSE'])) {
+
+                                $column->default = FALSE;
 
                             } else {
                                 throw new Exception("Can't parse literal: " . $this->currentWindow() );
@@ -155,12 +167,8 @@ class SqliteTableDefinitionParser
 
                             $tableNameToken = $this->tryParseIdentifier();
 
-
-                            echo "window " , $this->currentWindow(), "\n";
                             $this->advance('(');
-                            echo "window ", $this->currentWindow(), "\n";
                             $columnNames = $this->parseColumnNames();
-                            echo "window ", $this->currentWindow(), "\n";
                             $this->advance(')');
 
                             $actions = [];
@@ -456,7 +464,6 @@ class SqliteTableDefinitionParser
             // find the quote pair position
             $p2 = strpos($this->str, '`', $this->p);
             if ($p2 === false) {
-                var_dump( $this->str ); 
                 throw new Exception('Expecting identifier quote (`): ' . $this->currentWindow() );
             }
             $token = substr($this->str, $this->p, $p2 - $this->p);
