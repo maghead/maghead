@@ -7,12 +7,12 @@ use LazyRecord\TableParser\TableParser;
 use LazyRecord\Command\BaseCommand;
 use LazyRecord\Schema\SchemaFinder;
 
-class MigrateUpgradeCommand extends BaseCommand
+class MigrateAutomaticCommand extends BaseCommand
 {
-    public function brief() { return 'Run upgrade migration scripts.'; }
+    public function brief() { return 'Run upgrade automatically.'; }
 
     public function aliases() {
-        return array('u', 'up');
+        return array('au', 'auto');
     }
 
     public function options($opts) 
@@ -22,10 +22,13 @@ class MigrateUpgradeCommand extends BaseCommand
 
     public function execute() {
         $dsId = $this->getCurrentDataSourceId();
+        $this->logger->info( "Loading schema objects..." );
+        $finder = new SchemaFinder;
+        $finder->paths = $this->config->getSchemaPaths() ?: array();
+        $finder->find();
+        $schemas = $finder->getSchemas();
         $runner = new MigrationRunner($dsId);
-        $runner->load('db/migrations');
-        $this->logger->info('Running migration scripts to upgrade...');
-        $runner->runUpgrade();
+        $runner->runUpgradeAutomatically($schemas);
         $this->logger->info('Done.');
     }
 

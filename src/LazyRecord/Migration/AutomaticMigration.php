@@ -7,8 +7,9 @@ use LazyRecord\TableParser\TableParser;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Connection;
 use LazyRecord\QueryDriver;
+use LazyRecord\Migration\Migratable;
 
-class AutomaticMigration extends Migration
+class AutomaticMigration extends Migration implements Migratable
 {
     /*
     protected $driver;

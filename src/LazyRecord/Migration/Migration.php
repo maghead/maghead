@@ -4,22 +4,21 @@ use SQLBuilder\Universal\Query\AlterTableQuery;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
-
-use LazyRecord\Schema\DynamicSchemaDeclare;
-use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Console;
-use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\DeclareSchema;
+use LazyRecord\Migration\Migratable;
 use LazyRecord\Schema\ColumnDeclare;
+use LazyRecord\Schema\DeclareSchema;
+use LazyRecord\Schema\DynamicSchemaDeclare;
+use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\SqlBuilder\SqlBuilder;
-
 use PDO;
 use PDOException;
 use LogicException;
 
 
-class Migration
+class Migration implements Migratable
 {
     /**
      * @var QueryDriver
