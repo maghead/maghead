@@ -7,17 +7,17 @@ use ReflectionObject;
 use CLIFramework\Command;
 use CLIFramework\Logger;
 use LazyRecord\Schema;
-use ClassTemplate\TemplateClassFile;
-use ClassTemplate\ClassFile;
-use CodeGen\Expr\MethodCallExpr;
-use CodeGen\Expr\NewObjectExpr;
-use CodeGen\Statement;
-use CodeGen\Raw;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\Comparator;
 use LazyRecord\Console;
+use ClassTemplate\TemplateClassFile;
+use ClassTemplate\ClassFile;
+use CodeGen\Expr\MethodCallExpr;
+use CodeGen\Expr\NewObjectExpr;
+use CodeGen\Statement\Statement;
+use CodeGen\Raw;
 use Doctrine\Common\Inflector\Inflector;
 
 class MigrationGenerator
@@ -132,8 +132,8 @@ class MigrationGenerator
                         }
                         $upcall->addArgument($column);
 
-                        $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
-                        $downgradeMethod->getBlock()->appendLine(new Statement($downcall));
+                        $upgradeMethod[] = new Statement($upcall);
+                        $downgradeMethod[] = new Statement($downcall);
 
                     } else if ($diff->flag == '-') {
                         $upcall = new MethodCallExpr('$this', 'dropColumn', [$tableName, $diff->name]);
@@ -142,7 +142,7 @@ class MigrationGenerator
 
                         if ($afterColumn = $diff->getAfterColumn()) {
                             $upcall = new MethodCallExpr('$this', 'modifyColumn', [$tableName, $afterColumn]);
-                            $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
+                            $upgradeMethod[] = new Statement($upcall);
                             // $this->modifyColumn($t, $afterColumn);
                         } else {
                             throw new \Exception("afterColumn is undefined.");
