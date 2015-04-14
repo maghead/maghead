@@ -29,6 +29,11 @@ class Token
  *
  *  CREATE TABLE {identifier} ( columndef, columndef, ... );
  *
+ *
+ * The syntax follows the official documentation below:
+ *
+ *  http://www.sqlite.org/lang_createtable.html
+ *
  */
 class SqliteTableDefinitionParser
 {
@@ -59,35 +64,31 @@ class SqliteTableDefinitionParser
         return $this->test(['CONSTRAINT','PRIMARY','UNIQUE','FOREIGN','CHECK']);
     }
 
-    protected function tryParseScalar() 
+
+    public function parse() 
     {
+        $tableDef = new stdClass;
+
         $this->skipSpaces();
-
-        if (preg_match('/-?\d+  \. \d+/x', substr($this->str, $this->p), $matches)) {
-            $this->p += strlen($matches[0]);
-            return new Token('double', doubleval($matches[0]));
-        } else if (preg_match('/-?\d+/x', substr($this->str, $this->p), $matches)) {
-            $this->p += strlen($matches[0]);
-            return new Token('int', intval($matches[0]));
-        } else if ($this->cur() == "'") {
-            $this->advance();
-
-            $p = $this->p;
-
-            while (!$this->metEnd()) {
-                if ($this->cur() == '\\') {
-                    $this->advance();
-                    $this->advance(); // skip the char after slash
-                }
-                if ($this->cur() == "'") {
-                    $this->advance();
-                    break;
-                }
-            }
-            $string = substr($this->str, $p, ($this->p - 1) - $p);
-            return new Token('string', $string);
+        $this->tryParseKeyword(['CREATE']);
+        if ($this->tryParseKeyword(['TEMPORARY', 'TEMP'])) {
+            $tableDef->temporary = TRUE;
         }
+        $this->tryParseKeyword(['TABLE']);
+
+        if ($this->tryParseKeyword(['IF']) && $this->tryParseKeyword(['NOT']) && $this->tryParseKeyword(['EXISTS'])) {
+            $tableDef->ifNotExists = true;
+        }
+
+        $tableName = $this->tryParseIdentifier();
+        $tableDef->tableName = $tableName->val;
+
+        $this->advance('(');
+        $tableDef->columns = $this->parseColumnDefinitions();
+        $this->advance(')');
+        return $tableDef;
     }
+
 
     public function parseColumnDefinitions() {
         $this->skipSpaces();
@@ -500,5 +501,35 @@ class SqliteTableDefinitionParser
         }
         return NULL;
         // throw new Exception('Not an identifier: ' . substr($this->str, $this->p));
+    }
+
+    protected function tryParseScalar() 
+    {
+        $this->skipSpaces();
+
+        if (preg_match('/-?\d+  \. \d+/x', substr($this->str, $this->p), $matches)) {
+            $this->p += strlen($matches[0]);
+            return new Token('double', doubleval($matches[0]));
+        } else if (preg_match('/-?\d+/x', substr($this->str, $this->p), $matches)) {
+            $this->p += strlen($matches[0]);
+            return new Token('int', intval($matches[0]));
+        } else if ($this->cur() == "'") {
+            $this->advance();
+
+            $p = $this->p;
+
+            while (!$this->metEnd()) {
+                if ($this->cur() == '\\') {
+                    $this->advance();
+                    $this->advance(); // skip the char after slash
+                }
+                if ($this->cur() == "'") {
+                    $this->advance();
+                    break;
+                }
+            }
+            $string = substr($this->str, $p, ($this->p - 1) - $p);
+            return new Token('string', $string);
+        }
     }
 }
