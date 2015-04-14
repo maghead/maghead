@@ -1,9 +1,60 @@
 <?php
 use LazyRecord\Sqlbuilder\SqlBuilder;
-use LazyRecord\Testing\BaseTestCase;
+use LazyRecord\Connection;
 
-class SqlBuilderTest extends BaseTestCase
+class SqlBuilderTest extends PHPUnit_Framework_TestCase
 {
+
+    public function getDSN($driver)
+    {
+        if ($dsn = getenv('DB_' . strtoupper($driver) .  '_DSN')) {
+            return $dsn;
+        }
+    }
+
+    public function getDatabaseName($driver) 
+    {
+        if ($name = getenv('DB_' . strtoupper($driver) .  '_NAME')) {
+            return $name;
+        }
+    }
+
+    public function getDatabaseUser($driver)
+    {
+        if ($user = getenv('DB_' . strtoupper($driver) . '_USER')) {
+            return $user;
+        }
+    }
+
+    public function getDatabasePassword($driver) 
+    {
+        if ($pass = getenv('DB_' . strtoupper($driver) . '_PASS')) {
+            return $pass;
+        }
+    }
+
+    public function createDataSourceConfig($driver) {
+        if ($dsn = $this->getDSN($driver)) {
+            $config = array('dsn' => $dsn);
+            $user = $this->getDatabaseUser($driver);
+            $pass = $this->getDatabasePassword($driver);
+            $config['user'] = $user;
+            $config['pass'] = $pass;
+            return $config;
+        } else if ( $this->getDatabaseName($driver) ) {
+            return [
+                'driver' => $driver,
+                'database'  => $this->getDatabaseName($driver),
+                'user' => $this->getDatabaseUser($driver),
+                'pass' => $this->getDatabasePassword($driver),
+            ];
+        }
+    }
+
+
+
+
+
     public function pdoQueryOk($dbh,$sql)
     {
         $ret = $dbh->query( $sql );
@@ -29,6 +80,9 @@ class SqlBuilderTest extends BaseTestCase
         );
     }
 
+
+
+
     /**
      * @dataProvider schemaProvider
      */
@@ -38,26 +92,22 @@ class SqlBuilderTest extends BaseTestCase
         $this->insertIntoDataSource('pgsql',$schema);
     }
 
-    public function insertIntoDataSource($dataSource,$schema)
+    public function insertIntoDataSource($driverType,$schema)
     {
         $connManager = LazyRecord\ConnectionManager::getInstance();
-        if( ! $connManager->hasDataSource($dataSource) )
-            return;
+        $dataSource = $this->createDataSourceConfig($driverType);
+        $connManager->addDataSource($driverType, $dataSource);
 
-        $pdo = $connManager->getConnection($dataSource);
-        ok($pdo , 'pdo connection');
+        $pdo = $connManager->getConnection($driverType);
         $this->assertInstanceOf('PDO', $pdo);
 
-        $queryDriver = $connManager->getQueryDriver($dataSource);
-        ok($queryDriver);
-
+        $queryDriver = $connManager->getQueryDriver($driverType);
         $builder = SqlBuilder::create($queryDriver,array( 'rebuild' => true ));
-        ok( $builder );
-
         $builder->build($schema);
 
-        ok( $sqls = $builder->build( $schema ) );
-        foreach( $sqls as $sql ) {
+        $sqls = $builder->build( $schema );
+        $this->assertNotEmpty($sqls);
+        foreach ($sqls as $sql) {
             $this->pdoQueryOk( $pdo, $sql );
         }
     }
