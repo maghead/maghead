@@ -27,28 +27,34 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
 
     public function schemaProvider()
     {
-        return array(
-            array( new \AuthorBooks\Model\AuthorSchema ),
-            array( new \AuthorBooks\Model\AddressSchema ),
-            array( new \AuthorBooks\Model\AuthorBookSchema),
-            array( new \AuthorBooks\Model\BookSchema ),
-            array( new \TestApp\Model\NameSchema ),
-        );
+        return $this->matrixProvider([ 'mysql', 'sqlite', 'pgsql' ], [
+            new \AuthorBooks\Model\AuthorSchema,
+            new \AuthorBooks\Model\AddressSchema,
+            new \AuthorBooks\Model\AuthorBookSchema,
+            new \AuthorBooks\Model\BookSchema,
+            new \TestApp\Model\NameSchema,
+        ]);
     }
 
-
-
+    public function matrixProvider(array $alist, array $blist)
+    {
+        $data = [];
+        foreach($alist as $a) {
+            foreach($blist as $b) {
+                $data[] = [$a, $b];
+            }
+        }
+        return $data;
+    }
 
     /**
      * @dataProvider schemaProvider
      */
-    public function testBuilder($schema) {
-        $this->insertIntoDataSource('mysql',$schema);
-        $this->insertIntoDataSource('sqlite',$schema);
-        $this->insertIntoDataSource('pgsql',$schema);
+    public function testBuilder($dataSource, $schema) {
+        $this->insertIntoDataSource($dataSource,$schema);
     }
 
-    public function insertIntoDataSource($driverType,$schema)
+    public function insertIntoDataSource($driverType, $schema)
     {
         $connManager = LazyRecord\ConnectionManager::getInstance();
         $connManager->free();
