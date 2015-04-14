@@ -20,6 +20,7 @@ class MysqlTableParser extends BaseTableParser
         $stm = $this->connection->query("SHOW COLUMNS FROM $table");
         $schema = new SchemaDeclare;
         $schema->columnNames = $schema->columns = array();
+        $schema->table($table);
         $rows = $stm->fetchAll();
 
         /*

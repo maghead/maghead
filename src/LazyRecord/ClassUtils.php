@@ -5,6 +5,7 @@ use RuntimeException;
 use ReflectionClass;
 use Doctrine\Common\Inflector\Inflector;
 use LazyRecord\Schema\DynamicSchemaDeclare;
+use LazyRecord\Exception\TableNameConversionException;
 
 class ClassUtils
 {
@@ -73,7 +74,7 @@ class ClassUtils
         return $list;
     }
 
-    static public function convert_class_to_table($class)
+    static public function convertClassToTableName($class)
     {
         if (preg_match( '/(\w+?)(?:Model)?$/', $class ,$reg)) {
             if (count($reg) < 2) {
@@ -91,7 +92,7 @@ class ClassUtils
             $table = Inflector::tableize($table);
             return Inflector::pluralize($table);
         } else {
-            throw new Exception('Table name convert error');
+            throw new TableNameConversionException("Table name convert error: $class", $class);
         }
     }
 

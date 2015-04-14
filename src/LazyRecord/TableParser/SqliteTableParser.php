@@ -50,14 +50,14 @@ class SqliteTableParser extends BaseTableParser
 
         $schema = new SchemaDeclare;
         $schema->columnNames = $schema->columns = array();
-
+        $schema->table($table);
 
         foreach ($tableDef->columns as $columnDef) {
             $name = $columnDef->name;
             $column = $schema->column($name);
 
             if (! isset($columnDef->type) ) {
-                throw new LogicException("Missing column type definition.");
+                throw new LogicException("Missing column type definition on column $table.$name.");
             }
 
             $type = $columnDef->type;

@@ -38,7 +38,7 @@ class AutomaticMigration extends Migration implements Migratable
         $comparator = new Comparator;
 
         // schema from runtime
-        foreach ($schemas as $b) {
+        foreach ($tableSchemas as $b) {
             $t = $b->getTable();
             $foundTable = isset($tableSchemas[$t]);
             if ($foundTable) {

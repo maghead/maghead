@@ -402,7 +402,7 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
      */
     protected function _classnameToTable() 
     {
-        return ClassUtils::convert_class_to_table( $this->getModelName() );
+        return ClassUtils::convertClassToTableName($this->getModelName());
     }
 
     public $enableColumnAccessors = true;

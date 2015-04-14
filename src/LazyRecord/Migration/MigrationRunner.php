@@ -198,12 +198,10 @@ class MigrationRunner
             $script = new AutomaticMigration($dsId, $options);
             try {
                 $connection->beginTransaction();
-                foreach ($scripts as $script) {
-                    $this->logger->info("Running upgrade migration script $script on data source $dsId");
-                    $migration = new $script($dsId);
-                    $migration->upgrade();
-                    $this->updateLastMigrationId($dsId,$script::getId());
-                }
+                $this->logger->info("Running automatic migration on data source $dsId");
+                $migration = new $script($dsId);
+                $migration->upgrade();
+                $this->updateLastMigrationId($dsId,$script::getId());
                 $connection->commit();
             } catch (Exception $e) {
                 $this->logger->error('Exception was thrown: ' . $e->getMessage());
