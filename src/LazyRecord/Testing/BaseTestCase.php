@@ -17,33 +17,53 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     public $config;
 
 
-    public function getDSN()
+    public function getDSN($driver)
     {
-        if ($dsn = getenv('DB_' . strtoupper($this->driver) .  '_DSN')) {
+        if ($dsn = getenv('DB_' . strtoupper($driver) .  '_DSN')) {
             return $dsn;
         }
     }
 
-    public function getDatabaseName() 
+    public function getDatabaseName($driver) 
     {
-        if ($name = getenv('DB_' . strtoupper($this->driver) .  '_NAME')) {
+        if ($name = getenv('DB_' . strtoupper($driver) .  '_NAME')) {
             return $name;
         }
     }
 
-    public function getDatabaseUser() 
+    public function getDatabaseUser($driver)
     {
-        if ($user = getenv('DB_' . strtoupper($this->driver) . '_USER')) {
+        if ($user = getenv('DB_' . strtoupper($driver) . '_USER')) {
             return $user;
         }
     }
 
-    public function getDatabasePassword() 
+    public function getDatabasePassword($driver) 
     {
-        if ($pass = getenv('DB_' . strtoupper($this->driver) . '_PASS')) {
+        if ($pass = getenv('DB_' . strtoupper($driver) . '_PASS')) {
             return $pass;
         }
     }
+
+    public function createDataSourceConfig($driver) {
+        if ($dsn = $this->getDSN($driver)) {
+            $config = array('dsn' => $dsn);
+            $user = $this->getDatabaseUser($driver);
+            $pass = $this->getDatabasePassword($driver);
+            $config['user'] = $user;
+            $config['pass'] = $pass;
+            return $config;
+        } else if ( $this->getDatabaseName($driver) ) {
+            return [
+                'driver' => $driver,
+                'database'  => $this->getDatabaseName($driver),
+                'user' => $this->getDatabaseUser($driver),
+                'pass' => $this->getDatabasePassword($driver),
+            ];
+        }
+    }
+
+
 
     public function setConfig(ConfigLoader $config)
     {

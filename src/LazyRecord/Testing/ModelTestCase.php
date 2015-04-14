@@ -18,28 +18,19 @@ abstract class ModelTestCase extends BaseTestCase
 
     public function setUp()
     {
+
         $annnotations = $this->getAnnotations();
-        if ($dsn = $this->getDSN()) {
-            $config = array('dsn' => $dsn);
-            $user = $this->getDatabaseUser();
-            $pass = $this->getDatabasePassword();
-            $config['user'] = $user;
-            $config['pass'] = $pass;
-            ConnectionManager::getInstance()->addDataSource('default', $config);
-        }
-        elseif ( $this->getDatabaseName() ) {
-            ConnectionManager::getInstance()->addDataSource('default', array( 
-                'driver' => $this->driver,
-                'database'  => $this->getDatabaseName(),
-                'user' => $this->getDatabaseUser(),
-                'pass' => $this->getDatabasePassword(),
-            ));
+
+        $connManager = ConnectionManager::getInstance();
+        $dataSourceConfig = $this->createDataSourceConfig($this->driver);
+        if ($dataSourceConfig) {
+            $connManager->addDataSource('default', $dataSourceConfig);
         } else {
             $this->markTestSkipped("{$this->driver} database configuration is missing.");
         }
 
         try {
-            $dbh = ConnectionManager::getInstance()->getConnection('default');
+            $dbh = $connManager->getConnection('default');
         } catch (PDOException $e) {
             $this->markTestSkipped('Can not connect to database, test skipped: ' . $e->getMessage() );
             return;
@@ -47,7 +38,6 @@ abstract class ModelTestCase extends BaseTestCase
 
         $driver = ConnectionManager::getInstance()->getQueryDriver('default');
         ok($driver,'QueryDriver object OK');
-
 
         // Rebuild means rebuild the database for new tests
         $rebuild = true;
