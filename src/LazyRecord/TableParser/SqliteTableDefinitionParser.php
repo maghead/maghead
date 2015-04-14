@@ -5,8 +5,17 @@ use stdClass;
 
 class Token 
 {
+
+    /**
+     * @var string
+     *
+     * Token type
+     */
     public $type;
 
+    /**
+     * @var mixed
+     */
     public $val;
 
     public function __construct($type, $val) {
@@ -15,25 +24,43 @@ class Token
     }
 }
 
+/**
+ * SQLite Parser for parsing table column definitions:
+ *
+ *  CREATE TABLE {identifier} ( columndef, columndef, ... );
+ *
+ */
 class SqliteTableDefinitionParser
 {
+    /**
+     *  @var integer
+     *  
+     *  The default buffer offset
+     */
+    public $p = 0;
 
-    public $p;
 
-    public $str;
+    /**
+     * @var string
+     *
+     * The buffer string for parsing.
+     */
+    public $str = '';
 
-
-    public function __construct() {
+    public function __construct($str, $offset = 0) 
+    {
+        $this->str = $str;
+        $this->strlen = strlen($str);
+        $this->p = $offset;
     }
 
-
-
-    protected function looksLikeTableConstraint() {
+    protected function looksLikeTableConstraint() 
+    {
         return $this->test(['CONSTRAINT','PRIMARY','UNIQUE','FOREIGN','CHECK']);
     }
 
-    protected function tryParseScalar() {
-
+    protected function tryParseScalar() 
+    {
         $this->skipSpaces();
 
         if (preg_match('/-?\d+  \. \d+/x', substr($this->str, $this->p), $matches)) {
@@ -47,7 +74,7 @@ class SqliteTableDefinitionParser
 
             $p = $this->p;
 
-            while(!$this->metEnd()) {
+            while (!$this->metEnd()) {
                 if ($this->cur() == '\\') {
                     $this->advance();
                     $this->advance(); // skip the char after slash
@@ -62,10 +89,7 @@ class SqliteTableDefinitionParser
         }
     }
 
-    public function parseColumnDefinitions($str) {
-        $this->str = $str;
-        $this->strlen = strlen($str);
-        $this->p = 0;
+    public function parseColumnDefinitions() {
         $this->skipSpaces();
 
         $tableDef = new stdClass;
