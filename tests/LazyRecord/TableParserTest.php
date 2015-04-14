@@ -4,6 +4,16 @@ use LazyRecord\TableParser\TableParser;
 
 class TableParserTest extends BaseTestCase
 {
+
+    public function getModels() {
+        return [
+            new \AuthorBooks\Model\AuthorSchema,
+            new \AuthorBooks\Model\AddressSchema,
+            new \AuthorBooks\Model\AuthorBookSchema,
+            new \AuthorBooks\Model\BookSchema,
+            ];
+    }
+
     /**
      * @dataProvider driverTypeDataProvider
      */

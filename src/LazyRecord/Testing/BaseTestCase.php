@@ -104,12 +104,21 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->logger->setQuiet();
 
         if (method_exists($this, 'getModels')) {
-            ob_start();
             $generator = new SchemaGenerator($this->config, $this->logger);
             $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
             $classMap = $generator->generate($schemas);
-            ob_end_clean();
         }
+    }
+
+    public function matrixDataProvider(array $alist, array $blist)
+    {
+        $data = [];
+        foreach($alist as $a) {
+            foreach($blist as $b) {
+                $data[] = [$a, $b];
+            }
+        }
+        return $data;
     }
 
     public function driverTypeDataProvider()

@@ -3,15 +3,9 @@ use LazyRecord\Sqlbuilder\SqlBuilder;
 use LazyRecord\Connection;
 use LazyRecord\Testing\BaseTestCase;
 
-class SqlBuilderTest extends PHPUnit_Framework_TestCase
+class SqlBuilderTest extends BaseTestCase
 {
-
-
-
-
-
-
-    public function pdoQueryOk($dbh,$sql)
+    public function pdoQueryOk($dbh, $sql)
     {
         $ret = $dbh->query( $sql );
         $error = $dbh->errorInfo();
@@ -27,7 +21,7 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
 
     public function schemaProvider()
     {
-        return $this->matrixProvider([ 'mysql', 'sqlite', 'pgsql' ], [
+        return $this->matrixDataProvider([ 'mysql', 'sqlite', 'pgsql' ], [
             new \AuthorBooks\Model\AuthorSchema,
             new \AuthorBooks\Model\AddressSchema,
             new \AuthorBooks\Model\AuthorBookSchema,
@@ -36,16 +30,6 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function matrixProvider(array $alist, array $blist)
-    {
-        $data = [];
-        foreach($alist as $a) {
-            foreach($blist as $b) {
-                $data[] = [$a, $b];
-            }
-        }
-        return $data;
-    }
 
     /**
      * @dataProvider schemaProvider
