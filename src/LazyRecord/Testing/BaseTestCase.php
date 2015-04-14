@@ -8,8 +8,11 @@ use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\ClassUtils;
 use LazyRecord\BaseCollection;
 use LazyRecord\Result;
+use LazyRecord\PDOExceptionPrinter;
 use PHPUnit_Framework_TestCase;
 use CLIFramework\Logger;
+use PDO;
+use PDOException;
 
 abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
@@ -147,6 +150,18 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         return $this->config;
     }
 
+
+    public function assertQueryOK(PDO $conn, $sql, $args = array())
+    {
+        try {
+            $ret = $conn->query($sql);
+            $this->assertNotNull($ret);
+            return $ret;
+        } catch (PDOException $e) {
+            PDOExceptionPrinter::show($e, $sql, $args, new Logger);
+        }
+    }
+
     public function successfulDelete(BaseModel $record)
     {
         $this->assertResultSuccess($record->delete());
@@ -186,6 +201,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         }
         $this->assertFalse($ret->error, $message ?: $ret->message);
     }
+
+
 
     public function resultOK($expect, Result $ret)
     {

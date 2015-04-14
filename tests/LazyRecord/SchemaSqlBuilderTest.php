@@ -5,19 +5,6 @@ use LazyRecord\Testing\BaseTestCase;
 
 class SqlBuilderTest extends BaseTestCase
 {
-    public function pdoQueryOk($dbh, $sql)
-    {
-        $ret = $dbh->query( $sql );
-        $error = $dbh->errorInfo();
-        if($error[1] != null ) {
-            throw new Exception( 
-                var_export( $error, true ) 
-                . ' SQL: ' . $sql 
-            );
-        }
-        // ok( $error[1] != null );
-        return $ret;
-    }
 
     public function schemaProvider()
     {
@@ -44,8 +31,7 @@ class SqlBuilderTest extends BaseTestCase
         $connManager = LazyRecord\ConnectionManager::getInstance();
         $connManager->free();
 
-        $dataSource = BaseTestCase::createDataSourceConfig($driverType);
-        $connManager->addDataSource($driverType, $dataSource);
+        $this->registerDataSource($driverType);
 
         $pdo = $connManager->getConnection($driverType);
         $this->assertInstanceOf('PDO', $pdo);
@@ -57,7 +43,7 @@ class SqlBuilderTest extends BaseTestCase
         $sqls = $builder->build( $schema );
         $this->assertNotEmpty($sqls);
         foreach ($sqls as $sql) {
-            $this->pdoQueryOk( $pdo, $sql );
+            $this->assertQueryOK($pdo, $sql);
         }
     }
 }
