@@ -10,6 +10,7 @@ use IteratorAggregate;
 use LazyRecord\ClassUtils;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ServiceContainer;
+use LazyRecord\Schema\SchemaUtils;
 use CLIFramework\Logger;
 use Traversable;
 
@@ -82,7 +83,7 @@ class SchemaFinder implements IteratorAggregate
      */
     public function getSchemas()
     {
-        return ClassUtils::expand_schema_classes(
+        return SchemaUtils::expandSchemaClasses(
             ClassUtils::get_declared_schema_classes()
         );
     }

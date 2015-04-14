@@ -40,7 +40,7 @@ class ClassUtils
         $schemas = array();
         foreach ($classes as $class) {
             if (is_subclass_of($class,'LazyRecord\Schema\SchemaDeclare',true)) {
-                $schemas[] = new $class; 
+                $schemas[] = new $class;
             }
         }
         return $schemas;

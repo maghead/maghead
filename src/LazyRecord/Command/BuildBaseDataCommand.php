@@ -22,7 +22,7 @@ class BuildBaseDataCommand extends BaseCommand
 
         $classes = $this->findSchemasByArguments( func_get_args() );
 
-        SchemaUtils::printSchemaClasses($this->logger, $classes);
+        SchemaUtils::printSchemaClasses($classes, $this->logger);
 
         $collection = new SchemaCollection($classes);
         $collection = $collection->evaluate();

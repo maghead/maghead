@@ -56,20 +56,6 @@ abstract class BaseBuilder
             $model = $schema;
             $schema = new DynamicSchemaDeclare($model);
         }
-
-        if ($schema instanceof TemplateSchema) {
-            $sqls = [];
-            $extraSchemas = $schema->provideSchemas();
-            foreach ($extraSchemas as $es) {
-                $esTableSqls = $this->buildTable($es);
-                $sqls =  array_merge($sqls , $esTableSqls);
-
-                $esIndexSqls = $this->buildIndex($es);
-                $sqls =  array_merge($sqls , $esIndexSqls);
-            }
-            return $sqls;
-        }
-
         $sqls = [];
         $tableSqls = $this->buildTable($schema);
         $sqls = array_merge($sqls , $tableSqls);

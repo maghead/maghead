@@ -42,7 +42,7 @@ class BuildSchemaCommand extends BaseCommand
         $this->logger->debug('Finding schemas...');
         $classes = $this->findSchemasByArguments(func_get_args());
 
-        SchemaUtils::printSchemaClasses($this->logger, $classes);
+        SchemaUtils::printSchemaClasses($classes, $this->logger);
 
         $this->logger->debug("Initializing schema generator...");
 

@@ -14,12 +14,57 @@ use ReflectionMethod;
 
 class SchemaUtils
 {
-    static public function printSchemaClasses(Logger $logger, array $classes) {
-        $logger->info('Found schema classes:');
+    static public function printSchemaClasses(array $classes, Logger $logger = NULL) 
+    {
+        if (!$logger) {
+            $c = ServiceContainer::getInstance();
+            $logger = $c['logger'];
+        }
+
+        $logger->info('Schema classes:');
         foreach( $classes as $class ) {
             $logger->info($logger->formatter->format($class, 'green') , 1);
         }
     }
+
+
+    /**
+     * Get referenced schema classes and put them in order.
+     *
+     * @param string[] schema objects
+     */
+    static public function expandSchemaClasses(array $classes)
+    {
+        $map = array();
+        $schemas = array();
+        foreach ($classes as $class) {
+            $schema = new $class; // declare schema
+            $map[$class] = TRUE;
+
+            if ($refs = $schema->getReferenceSchemas()) {
+                foreach ($refs as $refClass => $v) {
+                    if (isset($map[$refClass])) {
+                        continue;
+                    }
+                    $schemas[] = new $refClass;
+                    $map[$refClass] = TRUE;
+                }
+            }
+
+            if ($schema instanceof TemplateSchema) {
+                $expandedSchemas = $schema->provideSchemas();
+                foreach ($expandedSchemas as $expandedSchema) {
+                    $schemas[] = $expandedSchema;
+                    $map[get_class($expandedSchema)] = TRUE;
+                }
+            } else {
+                $schemas[] = $schema;
+            }
+        }
+        return $schemas;
+    }
+
+
 
     /**
      * Filter non-dynamic schema declare classes.
@@ -33,7 +78,6 @@ class SchemaUtils
             // skip abstract classes.
             if (   $schema instanceof DynamicSchemaDeclare 
                 || $schema instanceof MixinSchemaDeclare 
-                || $schema instanceof TemplateSchema
                 || (! $schema instanceof SchemaDeclare && ! $schema instanceof DeclareSchema)
             ) { continue; }
 

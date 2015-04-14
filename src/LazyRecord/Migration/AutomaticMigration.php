@@ -37,16 +37,27 @@ class AutomaticMigration extends Migration implements Migratable
         $tableSchemas = $parser->getTableSchemas();
         $comparator = new Comparator;
 
+        $existingTables = $parser->getTables();
+
         // schema from runtime
-        foreach ($tableSchemas as $b) {
-            $t = $b->getTable();
-            $foundTable = isset($tableSchemas[$t]);
+        foreach ($tableSchemas as $t => $schema) {
+            $this->logger->debug("Checking table $t for schema " . get_class($schema));
+
+            $foundTable = in_array($t, $existingTables);
             if ($foundTable) {
+
+                $this->logger->debug("Found existing table $t");
+
                 $a = $tableSchemas[ $t ]; // schema object, extracted from database.
-                $diffs = $comparator->compare($a , $b);
+
+                $this->logger->debug("Comparing table $t with schema");
+                $diffs = $comparator->compare($a , $schema);
+
+                if (count($diffs)) {
+                    $this->logger->debug("Found " . count($diffs) . ' differences');
+                }
 
                 foreach ($diffs as $diff) {
-
                     switch($diff->flag) {
                     case '+':
                         // filter out useless columns
@@ -84,9 +95,10 @@ class AutomaticMigration extends Migration implements Migratable
                     }
                 }
             } else {
+                $this->logger->debug("Table $t not found, importing schema...");
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
-                $this->importSchema($b);
+                $this->importSchema($schema);
             }
         }
     }

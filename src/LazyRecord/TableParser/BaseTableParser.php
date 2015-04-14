@@ -50,7 +50,7 @@ abstract class BaseTableParser
     /**
      * Implements the logic to reverse table definition to DeclareSchema object.
      *
-     * @return DeclareSchema
+     * @return DeclareSchema[string tableName]
      */
     abstract function getTableSchema($table);
 
@@ -59,10 +59,11 @@ abstract class BaseTableParser
         $tableSchemas = array();
 
         foreach($this->schemas as $schema) {
-            $tableSchema[$schema->getTable()] = $schema;
+            // echo $schema->getTable() . ' => ' . get_class($schema), "\n";
+            $tableSchemas[$schema->getTable()] = $schema;
         }
 
-        // Parse table and try to find the schema
+        // Parse existing table and try to find the schema
         $tables = $this->getTables();
         foreach ($tables as $table) {
             if (!isset($tableSchemas[$table])) {

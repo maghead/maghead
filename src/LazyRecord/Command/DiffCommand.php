@@ -67,7 +67,7 @@ class DiffCommand extends BaseCommand
             $filepath = substr($filepath,strlen(getcwd()) + 1);
 
             $t = $b->getTable();
-            if( isset( $tableSchemas[ $t ] ) ) {
+            if (isset( $tableSchemas[$t])) {
                 $a = $tableSchemas[ $t ];
                 $diff = $comparator->compare( $a , $b );
                 if ( count($diff) ) {
