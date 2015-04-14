@@ -45,6 +45,7 @@ class SqlBuilderTest extends BaseTestCase
         foreach ($sqls as $sql) {
             $this->assertQueryOK($pdo, $sql);
         }
+        $this->assertTableExists($pdo, $schema->getTable());
     }
 }
 

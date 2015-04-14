@@ -150,6 +150,26 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         return $this->config;
     }
 
+    public function assertTableExists(PDO $conn, $tableName)
+    {
+        $driverName = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+        switch($driverName) {
+            case "mysql":
+                $stm = $conn->query("SHOW COLUMNS FROM $tableName");
+                break;
+            case "pgsql":
+                $stm = $conn->query("SELECT * FROM information_schema.columns WHERE table_name = '$tableName';");
+                break;
+            case "sqlite":
+                $stm = $conn->query("select sql from sqlite_master where type = 'table' AND name = '$tableName'");
+                break;
+            default:
+                throw new Exception("Unsupported PDO driver");
+                break;
+        }
+        $result = $stm->fetch(PDO::FETCH_ASSOC);
+        $this->assertNotEmpty($result);
+    }
 
     public function assertQueryOK(PDO $conn, $sql, $args = array())
     {
