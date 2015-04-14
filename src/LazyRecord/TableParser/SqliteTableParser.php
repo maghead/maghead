@@ -37,9 +37,8 @@ class SqliteTableParser extends BaseTableParser
             $columns = array();
             $name = $regs[1];
             $columnstr = $regs[2];
-
-            $parser = new SqliteTableDefinitionParser;
-            $tableDef = $parser->parseColumnDefinitions($columnstr);
+            $parser = new SqliteTableDefinitionParser($columnstr);
+            $tableDef = $parser->parseColumnDefinitions();
             return $tableDef;
         }
     }
