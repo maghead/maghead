@@ -1,6 +1,7 @@
 <?php
 namespace TestApp\Model;
 use LazyRecord\Schema;
+use SQLBuilder\Raw;
 
 class EdmSchema extends Schema
 {
@@ -32,7 +33,7 @@ class EdmSchema extends Schema
 
         $this->column('edmUpdatedOn')
             ->timestamp()
-            ->default( array('current_timestamp') );
+            ->default(new Raw('CURRENT_TIMESTAMP'));
     }
 }
 

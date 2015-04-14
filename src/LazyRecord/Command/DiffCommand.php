@@ -8,6 +8,7 @@ use LazyRecord\Schema;
 use LazyRecord\Command\BaseCommand;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\Comparator;
@@ -39,24 +40,25 @@ class DiffCommand extends BaseCommand
 
 
         $finder = new SchemaFinder;
-        if( $paths = $this->config->getSchemaPaths() ) {
-            $finder->paths = $paths;
+        if ($paths = $this->config->getSchemaPaths()) {
+            $finder->setPaths($paths);
         }
         $finder->find();
         $schemas = $finder->getSchemas();
+        $schemas = SchemaUtils::filterBuildableSchemas($schemas);
 
 
         // XXX: currently only mysql support
         $parser = TableParser::create( $driver, $conn );
         $tableSchemas = array();
         $tables = $parser->getTables();
-        foreach(  $tables as $table ) {
-            $tableSchemas[ $table ] = $parser->getTableSchema( $table );
+        foreach ($tables as $table) {
+            $tableSchemas[$table] = $parser->getTableSchema( $table );
         }
 
         $found = false;
         $comparator = new Comparator;
-        foreach( $schemas as $b ) {
+        foreach ($schemas as $b) {
             $class = $b->getModelClass();
             $ref = new ReflectionClass($class);
 

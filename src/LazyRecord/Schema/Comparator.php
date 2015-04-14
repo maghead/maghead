@@ -5,6 +5,7 @@ use LazyRecord\Schema\ColumnAccessorInterface;
 use LazyRecord\Schema\Comparator\ColumnDiff;
 use LazyRecord\Schema\Comparator\AttributeDiff;
 use Closure;
+use SQLBuilder\Raw;
 
 class Comparator
 {
@@ -56,13 +57,22 @@ class Comparator
                 $attributes = array('default','primary');
                 foreach ($attributes as $n) {
                     // Closure are meaningless
-
                     if ($ac->{$n} instanceof Closure || $bc->{$n} instanceof Closure) {
                         continue;
                     }
 
-                    if ($ac->{$n} != $bc->{$n}) {
-                        $d->appendDetail(new AttributeDiff($n , $ac->{$n}, $afterc->{$n}));
+                    $aval = $ac->{$n};
+                    $bval = $bc->{$n};
+
+                    if (is_array($aval)) {
+                        $aval = new Raw($aval[0]);
+                    }
+                    if (is_array($bval)) {
+                        $bval = new Raw($bval[0]);
+                    }
+
+                    if (($aval instanceof Raw && $bval instanceof Raw && $aval->compare($bval) != 0) || $aval != $bval) {
+                        $d->appendDetail(new AttributeDiff($n , $aval, $bval));
                     }
                 }
                 if (count($d->details) > 0) {

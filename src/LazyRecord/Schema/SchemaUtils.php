@@ -5,6 +5,7 @@ use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\MixinSchemaDeclare;
+use LazyRecord\Schema\TemplateSchema;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 
@@ -32,6 +33,7 @@ class SchemaUtils
             // skip abstract classes.
             if (   $schema instanceof DynamicSchemaDeclare 
                 || $schema instanceof MixinSchemaDeclare 
+                || $schema instanceof TemplateSchema
                 || (! $schema instanceof SchemaDeclare && ! $schema instanceof DeclareSchema)
             ) { continue; }
 
