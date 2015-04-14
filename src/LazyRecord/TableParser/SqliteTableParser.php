@@ -63,6 +63,14 @@ class SqliteTableParser extends BaseTableParser
 
             $column->type($type);
 
+            if (isset($columnDef->length)) {
+                $column->length($columnDef->length);
+            }
+            if (isset($columnDef->decimals)) {
+                $column->decimals($columnDef->decimals);
+            }
+
+
             $isa = $this->typenameToIsa($type);
             $column->isa($isa);
 

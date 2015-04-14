@@ -1,10 +1,10 @@
 <?php
 namespace LazyRecord\Schema;
-use Closure;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\ColumnAccessorInterface;
 use LazyRecord\Schema\Comparator\ColumnDiff;
 use LazyRecord\Schema\Comparator\AttributeDiff;
+use Closure;
 
 class Comparator
 {
@@ -36,8 +36,8 @@ class Comparator
                 $d = new ColumnDiff($key, '=', $bc, $ac);
 
                 // compare the type info
-                if ($bc->type != $ac->type) {
-                    $d->appendDetail(new AttributeDiff('type', $bc->buildTypeName(), $ac->buildTypeName()));
+                if (strtolower($bc->type) != strtolower($ac->type)) {
+                    $d->appendDetail(new AttributeDiff('type', strtolower($bc->buildTypeName()), strtolower($ac->buildTypeName())));
                 }
 
                 if ($bc->length != $ac->length) {
@@ -54,9 +54,15 @@ class Comparator
 
                 // have the same column, compare attributes
                 $attributes = array('default','primary');
-                foreach ($attributes as $attributeName) {
-                    if ($ac->{ $attributeName } != $bc->{ $attributeName }) {
-                        $d->appendDetail(new AttributeDiff($attributeName , $ac->{$attributeName}, $afterc->{$attributeName}));
+                foreach ($attributes as $n) {
+                    // Closure are meaningless
+
+                    if ($ac->{$n} instanceof Closure || $bc->{$n} instanceof Closure) {
+                        continue;
+                    }
+
+                    if ($ac->{$n} != $bc->{$n}) {
+                        $d->appendDetail(new AttributeDiff($n , $ac->{$n}, $afterc->{$n}));
                     }
                 }
                 if (count($d->details) > 0) {
