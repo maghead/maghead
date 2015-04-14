@@ -1,48 +1,34 @@
 <?php
+use LazyRecord\Testing\BaseTestCase;
+use LazyRecord\TableParser\TableParser;
 
-class TableParserTest extends PHPUnit_Framework_TestCase
+class TableParserTest extends BaseTestCase
 {
-    function testDrivers()
-    {
-        $types = array();
-
-        $config = LazyRecord\ConfigLoader::getInstance();
-        $config->loadFromSymbol(true); // force load from .lazy.php
-        $config->init();
-
-
-        $conns = LazyRecord\ConnectionManager::getInstance();
-        if ( $conns->hasDataSource('mysql') && extension_loaded('pdo_mysql') ) {
-            $this->runDriverTest('mysql');
-        }
-        if ( $conns->hasDataSource('pgsql') && extension_loaded('pdo_pgsql') ) {
-            $this->runDriverTest('pgsql');
-        }
-        if ( $conns->hasDataSource('sqlite') && extension_loaded('pdo_sqlite') ) {
-            $this->runDriverTest('sqlite');
-        }
-    }
-
-
     /**
-     * @dataProvider getDrivers
+     * @dataProvider driverTypeDataProvider
      */
-    public function runDriverTest($driverType)
+    public function testTableParserFor($driverType)
     {
-        $conns = LazyRecord\ConnectionManager::getInstance();
-        $conn   = $conns->getConnection($driverType);
-        $driver = $conns->getQueryDriver($driverType);
-        $parser = LazyRecord\TableParser\TableParser::create($driver,$conn);
-        ok( $parser );
+        $config = self::createNeutralConfigLoader();
+        $manager = LazyRecord\ConnectionManager::getInstance();
+        $manager->free();
+
+        $this->registerDataSource($driverType);
+
+        $conn   = $manager->getConnection($driverType);
+        $driver = $manager->getQueryDriver($driverType);
+        $parser = TableParser::create($driver,$conn);
 
         $tables = $parser->getTables();
-        ok($tables, "Fetch table by $driverType");
-        foreach(  $tables as $table ) {
-            ok( $table );
-            $schema = $parser->getTableSchema( $table );
+        $this->assertNotNull($tables);
+        foreach ($tables as $table) {
+            $this->assertNotNull($table);
 
-            ok( $schema );
-            ok( $schema->getColumns() );
+            $schema = $parser->getTableSchema( $table );
+            $this->assertNotNull($schema);
+
+            $columns = $schema->getColumns();
+            $this->assertNotEmpty($columns);
         }
     }
 }

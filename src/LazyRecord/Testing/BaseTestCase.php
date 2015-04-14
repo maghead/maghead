@@ -13,9 +13,7 @@ use CLIFramework\Logger;
 
 abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
-    public $driver = 'sqlite';
     public $config;
-
 
     static public function getDSN($driver)
     {
@@ -63,10 +61,29 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         }
     }
 
+    static public function createNeutralConfigLoader()
+    {
+        $config = ConfigLoader::getInstance();
+        $config->loaded = true;
+        $config->setConfigStash(array( 'schema' => array( 'auto_id' => true ) ));
+        return $config;
+    }
+
+    public function registerDataSource($driverType)
+    {
+        $connManager = ConnectionManager::getInstance();
+        if ($dataSource = BaseTestCase::createDataSourceConfig($driverType)) {
+            $connManager->addDataSource($driverType, $dataSource);
+        } else {
+            $this->markTestSkipped("Data source for $driverType is undefined");
+        }
+    }
+
     public function setConfig(ConfigLoader $config)
     {
         $this->config = $config;
     }
+
 
     public function __construct($name = NULL, array $data = array(), $dataName = '')
     {
@@ -80,9 +97,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         // free and override default connection
         ConnectionManager::getInstance()->free();
 
-        $config = ConfigLoader::getInstance();
-        $config->loaded = true;
-        $config->setConfigStash(array( 'schema' => array( 'auto_id' => true ) ));
+        $config = self::createNeutralConfigLoader();
         $this->setConfig($config);
 
         $this->logger = new Logger;
@@ -95,6 +110,21 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             $classMap = $generator->generate($schemas);
             ob_end_clean();
         }
+    }
+
+    public function driverTypeDataProvider()
+    {
+        $data = [];
+        if (extension_loaded('pdo_mysql') ) {
+            $data[] = ['mysql'];
+        }
+        if (extension_loaded('pdo_pgsql') ) {
+            $data[] = ['pgsql'];
+        }
+        if (extension_loaded('pdo_sqlite') ) {
+            $data[] = ['sqlite'];
+        }
+        return $data;
     }
 
     public function getLogger()

@@ -54,6 +54,7 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
         $this->insertIntoDataSource($dataSource,$schema);
     }
 
+
     public function insertIntoDataSource($driverType, $schema)
     {
         $connManager = LazyRecord\ConnectionManager::getInstance();

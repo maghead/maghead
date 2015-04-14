@@ -12,6 +12,8 @@ use PHPUnit_Framework_TestCase;
 
 abstract class ModelTestCase extends BaseTestCase
 {
+    public $driver = 'sqlite';
+
     public $schemaHasBeenBuilt = false;
 
     public $schemaClasses = array( );
