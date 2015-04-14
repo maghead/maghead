@@ -34,7 +34,7 @@ class AutomaticMigration extends Migration implements Migratable
     public function upgrade()
     {
         $parser = TableParser::create($this->driver, $this->connection);
-        $tableSchemas = $parser->getTableSchemas();
+        $tableSchemas = $parser->getTableSchemaMaps();
         $comparator = new Comparator;
 
         $existingTables = $parser->getTables();

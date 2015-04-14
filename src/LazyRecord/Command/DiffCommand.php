@@ -53,7 +53,7 @@ class DiffCommand extends BaseCommand
         $tableSchemas = array();
         $tables = $parser->getTables();
         foreach ($tables as $table) {
-            $tableSchemas[$table] = $parser->getTableSchema( $table );
+            $tableSchemas[$table] = $parser->getTableSchemaMap( $table );
         }
 
         $found = false;

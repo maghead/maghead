@@ -52,9 +52,9 @@ abstract class BaseTableParser
      *
      * @return DeclareSchema[string tableName]
      */
-    abstract function getTableSchema($table);
+    abstract function getTableSchemaMap($table);
 
-    public function getTableSchemas()
+    public function getTableSchemaMaps()
     {
         $tableSchemas = array();
 
@@ -67,7 +67,7 @@ abstract class BaseTableParser
         $tables = $this->getTables();
         foreach ($tables as $table) {
             if (!isset($tableSchemas[$table])) {
-                $tableSchemas[$table] = $this->getTableSchema($table);
+                $tableSchemas[$table] = $this->getTableSchemaMap($table);
             }
         }
         return $tableSchemas;

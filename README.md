@@ -964,11 +964,11 @@ To get the table names, you may call:
 $tables = $parser->getTables();
 ```
 
-To parse the table schema, you may call `getTableSchema` method, which retunrs the Schema object:
+To parse the table schema, you may call `getTableSchemaMap` method, which retunrs the Schema object:
 
 ```php
 foreach( $tables as $table ) {
-    $schema = $parser->getTableSchema( $table );
+    $schema = $parser->getTableSchemaMap( $table );
 }
 ```
 

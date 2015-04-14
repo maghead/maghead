@@ -34,7 +34,7 @@ class TableParserTest extends BaseTestCase
         foreach ($tables as $table) {
             $this->assertNotNull($table);
 
-            $schema = $parser->getTableSchema( $table );
+            $schema = $parser->getTableSchemaMap( $table );
             $this->assertNotNull($schema);
 
             $columns = $schema->getColumns();

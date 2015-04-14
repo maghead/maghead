@@ -15,7 +15,7 @@ class MysqlTableParser extends BaseTableParser
         return array_map(function($row) { return $row[0]; },$rows);
     }
 
-    public function getTableSchema($table)
+    public function getTableSchemaMap($table)
     {
         $stm = $this->connection->query("SHOW COLUMNS FROM $table");
         $schema = new SchemaDeclare;
