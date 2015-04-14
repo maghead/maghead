@@ -6,8 +6,10 @@ use PDO;
 use LazyRecord\Adapter\PdoAdapter;
 use ArrayAccess;
 use LazyRecord\Connection;
+use LazyRecord\ConfigLoader;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PDODriverFactory;
+
 
 class SQLQueryException extends Exception 
 {
@@ -58,6 +60,14 @@ class ConnectionManager
      * @var PDOConnection[] contains PDO connection objects.
      */
     public $conns = array();
+
+
+    public function init(ConfigLoader $config) 
+    {
+        foreach ($config->getDataSources() as $sourceId => $ds ) {
+            $this->addDataSource($sourceId , $ds);
+        }
+    }
 
     /**
      * Check if we have connected already
