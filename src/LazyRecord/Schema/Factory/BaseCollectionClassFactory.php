@@ -1,7 +1,7 @@
 <?php
 namespace LazyRecord\Schema\Factory;
-use ClassTemplate\TemplateClassDeclare;
-use ClassTemplate\ClassDeclare;
+use ClassTemplate\TemplateClassFile;
+use ClassTemplate\ClassFile;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\SchemaDeclare;
 
@@ -9,7 +9,7 @@ class BaseCollectionClassFactory
 {
     public static function create(SchemaDeclare $schema, $baseCollectionClass)
     {
-        $cTemplate = new ClassDeclare($schema->getBaseCollectionClass());
+        $cTemplate = new ClassFile($schema->getBaseCollectionClass());
         $cTemplate->addConsts(array(
             'schema_proxy_class' => $schema->getSchemaProxyClass(),
             'model_class'        => $schema->getModelClass(),

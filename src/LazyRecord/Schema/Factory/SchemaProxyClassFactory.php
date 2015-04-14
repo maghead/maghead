@@ -1,7 +1,7 @@
 <?php
 namespace LazyRecord\Schema\Factory;
-use ClassTemplate\TemplateClassDeclare;
-use ClassTemplate\ClassDeclare;
+use ClassTemplate\TemplateClassFile;
+use ClassTemplate\ClassFile;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\SchemaDeclare;
 use DateTime;
@@ -10,7 +10,7 @@ class SchemaProxyClassFactory
 {
     public static function create(SchemaDeclare $schema) {
         $schemaProxyClass = $schema->getSchemaProxyClass();
-        $cTemplate = new TemplateClassDeclare( $schemaProxyClass, array( 
+        $cTemplate = new TemplateClassFile( $schemaProxyClass, array( 
             'template_dirs' => dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Templates',
             'template'      => 'Schema.php.twig',
         ));

@@ -7,12 +7,12 @@ use ReflectionObject;
 use CLIFramework\Command;
 use CLIFramework\Logger;
 use LazyRecord\Schema;
-use ClassTemplate\TemplateClassDeclare;
-use ClassTemplate\ClassDeclare;
-use ClassTemplate\MethodCallExpr;
-use ClassTemplate\NewObjectExpr;
-use ClassTemplate\Statement;
-use ClassTemplate\Raw;
+use ClassTemplate\TemplateClassFile;
+use ClassTemplate\ClassFile;
+use CodeGen\Expr\MethodCallExpr;
+use CodeGen\Expr\NewObjectExpr;
+use CodeGen\Statement;
+use CodeGen\Raw;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser\TableParser;
@@ -67,7 +67,7 @@ class MigrationGenerator
         }
         $className = $taskName . '_' . $time;
         // $filename
-        $template = new ClassDeclare($className);
+        $template = new ClassFile($className);
         $template->extendClass('LazyRecord\Migration\Migration');
         return $template;
     }

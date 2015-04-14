@@ -9,10 +9,11 @@ use Traversable;
 use RecursiveRegexIterator;
 use RegexIterator;
 use LazyRecord\ConfigLoader;
-use ClassTemplate\TemplateClassDeclare;
-use ClassTemplate\ClassDeclare;
-use ClassTemplate\ClassConst;
+use ClassTemplate\TemplateClassFile;
+use ClassTemplate\ClassFile;
 use ClassTemplate\ClassInjection;
+use CodeGen\ClassConst;
+
 use LazyRecord\Schema;
 use CLIFramework\Logger;
 
@@ -90,10 +91,10 @@ class SchemaGenerator
      * If the schema file is newer or the forceUpdate flag is specified, then 
      * the generated class files should be updated.
      *
-     * @param ClassTemplate\ClassDeclare $cTemplate
+     * @param ClassTemplate\ClassFile $cTemplate
      * @param DeclareSchema $schema
      */
-    public function updateClassFile(ClassDeclare $cTemplate, SchemaDeclare $schema, $overwrite = false) {
+    public function updateClassFile(ClassFile $cTemplate, SchemaDeclare $schema, $overwrite = false) {
         // always update the proxy schema file
         $classFilePath = $schema->getRelatedClassPath( $cTemplate->getShortClassName() );
 
@@ -166,11 +167,11 @@ class SchemaGenerator
      * Write class template to the schema directory.
      *
      * @param string $directory The schema class directory.
-     * @param ClassTemplate\ClassDeclare class template object.
+     * @param ClassTemplate\ClassFile class template object.
      * @param boolean $overwrite Overwrite class file. 
      * @return array
      */
-    public function writeClassTemplateToPath(ClassDeclare $cTemplate, $filepath, $overwrite = false) 
+    public function writeClassTemplateToPath(ClassFile $cTemplate, $filepath, $overwrite = false) 
     {
         if (! file_exists($filepath) || $overwrite) {
             if (false === file_put_contents( $filepath, $cTemplate->render() )) {
