@@ -1,55 +1,11 @@
 <?php
 use LazyRecord\Sqlbuilder\SqlBuilder;
 use LazyRecord\Connection;
+use LazyRecord\Testing\BaseTestCase;
 
 class SqlBuilderTest extends PHPUnit_Framework_TestCase
 {
 
-    public function getDSN($driver)
-    {
-        if ($dsn = getenv('DB_' . strtoupper($driver) .  '_DSN')) {
-            return $dsn;
-        }
-    }
-
-    public function getDatabaseName($driver) 
-    {
-        if ($name = getenv('DB_' . strtoupper($driver) .  '_NAME')) {
-            return $name;
-        }
-    }
-
-    public function getDatabaseUser($driver)
-    {
-        if ($user = getenv('DB_' . strtoupper($driver) . '_USER')) {
-            return $user;
-        }
-    }
-
-    public function getDatabasePassword($driver) 
-    {
-        if ($pass = getenv('DB_' . strtoupper($driver) . '_PASS')) {
-            return $pass;
-        }
-    }
-
-    public function createDataSourceConfig($driver) {
-        if ($dsn = $this->getDSN($driver)) {
-            $config = array('dsn' => $dsn);
-            $user = $this->getDatabaseUser($driver);
-            $pass = $this->getDatabasePassword($driver);
-            $config['user'] = $user;
-            $config['pass'] = $pass;
-            return $config;
-        } else if ( $this->getDatabaseName($driver) ) {
-            return [
-                'driver' => $driver,
-                'database'  => $this->getDatabaseName($driver),
-                'user' => $this->getDatabaseUser($driver),
-                'pass' => $this->getDatabasePassword($driver),
-            ];
-        }
-    }
 
 
 
@@ -95,7 +51,9 @@ class SqlBuilderTest extends PHPUnit_Framework_TestCase
     public function insertIntoDataSource($driverType,$schema)
     {
         $connManager = LazyRecord\ConnectionManager::getInstance();
-        $dataSource = $this->createDataSourceConfig($driverType);
+        $connManager->free();
+
+        $dataSource = BaseTestCase::createDataSourceConfig($driverType);
         $connManager->addDataSource($driverType, $dataSource);
 
         $pdo = $connManager->getConnection($driverType);

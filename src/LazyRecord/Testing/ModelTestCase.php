@@ -18,11 +18,10 @@ abstract class ModelTestCase extends BaseTestCase
 
     public function setUp()
     {
-
         $annnotations = $this->getAnnotations();
 
         $connManager = ConnectionManager::getInstance();
-        $dataSourceConfig = $this->createDataSourceConfig($this->driver);
+        $dataSourceConfig = self::createDataSourceConfig($this->driver);
         if ($dataSourceConfig) {
             $connManager->addDataSource('default', $dataSourceConfig);
         } else {
