@@ -45,3 +45,5 @@ after_script:
 #       env: DB=sqlite # some issues at the moment
 cache:
   apt: true
+  directories:
+    - vendor
