@@ -57,23 +57,11 @@ class AutomaticMigration extends Migration implements Migratable
                 }
 
                 foreach ($diffs as $diff) {
+                    $column = $diff->getAfterColumn();
+
                     switch($diff->flag) {
                     case '+':
-                        // filter out useless columns
-                        $columnArgs = array();
-                        foreach ($diff->column->toArray() as $key => $value)
-                        {
-                            if (is_object($value) ||  is_array($value) ) {
-                                continue;
-                            }
-
-                            // Supported attribute
-                            if (in_array($key, ['type','primary','name','unique','default','notNull','null','autoIncrement','unsigned'])) 
-                            {
-                                $columnArgs[ $key ] = $value;
-                            }
-                        }
-                        $this->addColumn($t , $columnArgs);
+                        $this->addColumn($t , $column);
                         break;
                     case '-':
                         if ($this->options->{'no-drop-column'}) {

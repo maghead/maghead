@@ -118,18 +118,7 @@ class MigrationGenerator
                         $upcall = new MethodCallExpr('$this','addColumn', [$tableName]);
                         $downcall = new MethodCallExpr('$this','dropColumn', [$tableName, $diff->name]);
 
-                        // filter out useless columns
-                        $arg = array();
-                        $columnAttributes = $diff->getAfterOrBeforeColumn()->toArray();
                         $column = $diff->getAfterColumn();
-                        foreach ($column->toArray() as $key => $value) {
-                            if (is_object($value) || is_array($value)) {
-                                continue;
-                            }
-                            if (in_array($key,array('type','unique','default','notNull','null','autoIncrement'))) {
-                                $arg[ $key ] = $value;
-                            }
-                        }
                         $upcall->addArgument($column);
 
                         $upgradeMethod[] = new Statement($upcall);
