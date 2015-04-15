@@ -92,7 +92,7 @@ DOC;
 
         $time = time();
         $logger->info("Setting migration timestamp to $time");
-        $metadata = new Metadata($id);
+        $metadata = new Metadata($driver, $conn);
 
         // update migration timestamp
         $metadata['migration'] = $time;

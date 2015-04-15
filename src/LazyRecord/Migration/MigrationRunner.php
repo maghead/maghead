@@ -59,19 +59,19 @@ class MigrationRunner
 
     public function getLastMigrationId($dsId)
     {
-        $meta = new Metadata($dsId);
+        $meta = Metadata::createWithDataSource($dsId);
         return $meta['migration'] ?: 0;
     }
 
     public function resetMigrationId($dsId) 
     {
-        $metadata = new Metadata($dsId);
+        $metadata = Metadata::createWithDataSource($dsId);
         $metadata['migration'] = 0;
     }
 
     public function updateLastMigrationId($dsId, $id) 
     {
-        $metadata = new Metadata($dsId);
+        $metadata = Metadata::createWithDataSource($dsId);
         $lastId = $metadata['migration'];
         $metadata['migration'] = $id;
         $this->logger->info("Updating migration version to $id.");

@@ -3,6 +3,7 @@ namespace LazyRecord;
 use ArrayAccess;
 use IteratorAggregate;
 use LazyRecord\TableParser\TableParser;
+use SQLBuilder\Driver\BaseDriver;
 use ArrayIterator;
 use PDO;
 
@@ -14,12 +15,6 @@ use PDO;
 class Metadata
     implements ArrayAccess, IteratorAggregate
 {
-
-    /**
-     * @var string data source id
-     */
-    public $dsId;
-
 
     /**
      * @var PDO PDO connection object
@@ -40,13 +35,19 @@ class Metadata
      *
      * @param string $dsId
      */
-    public function __construct($dsId) 
+    public function __construct(BaseDriver $driver, PDO $connection)
     {
-        $this->dsId = $dsId;
-        $connm = ConnectionManager::getInstance();
-        $this->connection = $connm->getConnection($this->dsId);
-        $this->driver = $connm->getQueryDriver($this->dsId);
+        $this->driver = $driver;
+        $this->connection = $connection;
         $this->init();
+    }
+
+    static public function createWithDataSource($dsId)
+    {
+        $connm = ConnectionManager::getInstance();
+        $connection = $connm->getConnection($dsId);
+        $driver = $connm->getQueryDriver($dsId);
+        return new self($driver, $connection);
     }
 
 

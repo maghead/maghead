@@ -22,7 +22,7 @@ class MetadataTest extends PHPUnit_Framework_TestCase
 
     function test()
     {
-        $metadata = new Metadata('default');
+        $metadata = Metadata::createWithDataSource('default');
         $metadata->init();
         $metadata->init();
 
@@ -41,7 +41,7 @@ class MetadataTest extends PHPUnit_Framework_TestCase
     }
 
     public function testMetadata() {
-        $metadata = new Metadata('default');
+        $metadata = Metadata::createWithDataSource('default');
         $metadata->init();
 
         $metaItem = new \LazyRecord\Model\Metadata;
@@ -53,7 +53,7 @@ class MetadataTest extends PHPUnit_Framework_TestCase
     }
 
     public function testCollection() {
-        $metadata = new Metadata('default');
+        $metadata = Metadata::createWithDataSource('default');
         $metadata->init();
 
         $metadata['version'] = 1;
