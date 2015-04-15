@@ -39,38 +39,24 @@ class DiffCommand extends BaseCommand
         $this->logger->info('Comparing...');
 
 
-        $finder = new SchemaFinder;
-        if ($paths = $this->config->getSchemaPaths()) {
-            $finder->setPaths($paths);
-        }
-        $finder->find();
-        $schemas = $finder->getSchemas();
-        $schemas = SchemaUtils::filterBuildableSchemas($schemas);
-
-
         // XXX: currently only mysql support
         $parser = TableParser::create( $driver, $conn );
-        $tableSchemas = array();
         $tables = $parser->getTables();
-        foreach ($tables as $table) {
-            $tableSchemas[$table] = $parser->getTableSchemaMap( $table );
-        }
+        $tableSchemas = $parser->getTableSchemaMap();
 
         $found = false;
         $comparator = new Comparator;
-        foreach ($schemas as $b) {
+        foreach ($tableSchemas as $t => $b) {
             $class = $b->getModelClass();
             $ref = new ReflectionClass($class);
-
 
             $filepath = $ref->getFilename();
             $filepath = substr($filepath,strlen(getcwd()) + 1);
 
-            $t = $b->getTable();
-            if (isset( $tableSchemas[$t])) {
-                $a = $tableSchemas[ $t ];
-                $diff = $comparator->compare( $a , $b );
-                if ( count($diff) ) {
+            if (in_array($t, $tables)) {
+                $before = $parser->reverseTableSchema($t);
+                $diff = $comparator->compare($before, $b );
+                if (count($diff)) {
                     $found = true;
                 }
                 $printer = new ComparatorConsolePrinter($diff);
