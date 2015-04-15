@@ -145,7 +145,7 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
     public function autoIncrement()
     {
         $this->autoIncrement = true;
-        $this->type = 'integer';
+        $this->type = 'int';
         $this->isa = 'int';
         return $this;
     }

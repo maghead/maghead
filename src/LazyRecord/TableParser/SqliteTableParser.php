@@ -5,6 +5,8 @@ use Exception;
 use LogicException;
 use LazyRecord\Schema\SchemaDeclare;
 use SQLBuilder\Raw;
+use LazyRecord\TableParser\TypeInfo;
+use LazyRecord\TableParser\TypeInfoParser;
 
 class SqliteTableParser extends BaseTableParser
 {
@@ -60,6 +62,7 @@ class SqliteTableParser extends BaseTableParser
             }
 
             $type = $columnDef->type;
+            $typeInfo = TypeInfoParser::parseTypeInfo($type, $this->driver);
 
             $column->type($type);
 

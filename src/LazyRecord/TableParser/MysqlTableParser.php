@@ -31,8 +31,11 @@ class MysqlTableParser extends BaseTableParser
 
         foreach ($rows as $row) {
             $type = $row['Type'];
-            $typeInfo = TypeInfoParser::parseTypeInfo($type);
+            $typeInfo = TypeInfoParser::parseTypeInfo($type, $this->driver);
             $isa = $typeInfo->isa;
+
+            var_dump( $row, $typeInfo ); 
+            // var_dump( $row['Field'] , $row['Type'] ); 
 
             $column = $schema->column($row['Field']);
             $column->type($typeInfo->type);
@@ -62,7 +65,14 @@ class MysqlTableParser extends BaseTableParser
             }
 
             if (NULL !== $row['Default']) {
-                // $column->default( array($row['Default']) );
+
+                if ($typeInfo->type == 'boolean') {
+                    if ($row['Default'] == '1') {
+                        $column->default(true);
+                    } else if ($row['Default'] == '0') {
+                        $column->default(false);
+                    }
+                }
             }
         }
         return $schema;

@@ -1,10 +1,14 @@
 <?php
 namespace LazyRecord\TableParser;
 use Exception;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\SqliteDriver;
 
 class TypeInfoParser
 {
-    static public function parseTypeInfo($typeName)
+    static public function parseTypeInfo($typeName, BaseDriver $driver = NULL)
     {
         $type = strtolower($typeName);
 
@@ -18,26 +22,46 @@ class TypeInfoParser
             |smallint
             |mediumint
             |bigint
+            |char
             |varchar
             |character\ varying
             |character
             ) (?: \(  (?:(\d+),(\d+)|(\d+))   \) )?/x', $type, $matches)) {
 
-            if (isset($matches[1]) && isset($matches[2]) && isset($matches[3])) {
+            if (isset($matches[1]) && $matches[1] && isset($matches[2]) && isset($matches[3]) && $matches[2] && $matches[3]) {
                 $typeInfo->type = $matches[1];
                 $typeInfo->length = intval($matches[2]);
                 $typeInfo->precision = intval($matches[3]);
-            } else if (isset($matches[1]) && isset($matches[4])) {
+            } else if (isset($matches[1]) && $matches[1] && isset($matches[4]) && $matches[4]) {
                 $typeInfo->type = $matches[1]; // override the original type
                 $typeInfo->length = intval($matches[4]);
-            } else if (isset($matches[1])) {
+            } else if (isset($matches[1]) && $matches[1]) {
                 $typeInfo->type = $matches[1];
             }
         }
 
         // Canonicalization for PgSQL
-        if ($typeInfo->type === 'character varying') {
-            $typeInfo->type = 'varchar';
+        if ($driver instanceof PgSQLDriver) {
+            if ($typeInfo->type === 'character varying') {
+                $typeInfo->type = 'varchar';
+            }
+        } else if ($driver instanceof MySQLDriver) {
+
+            if ($typeInfo->type === 'tinyint' && $typeInfo->length == 1) {
+                $typeInfo->type = 'boolean';
+                $typeInfo->isa = 'bool';
+                $typeInfo->length = NULL; // reset NULL
+            } else if (($typeInfo->type === 'integer' || $typeInfo->type === 'int') && $typeInfo->length == 11) {
+                $typeInfo->type = 'int';
+                $typeInfo->length = NULL; // reset NULL
+            } else if ($typeInfo->type === 'mediumint' && $typeInfo->length == 8) {
+                $typeInfo->length = NULL; // reset NULL
+            } else if ($typeInfo->type === 'smallint' && $typeInfo->length == 5) {
+                $typeInfo->length = NULL; // reset NULL
+            } else if ($typeInfo->type === 'bigint' && $typeInfo->length == 20) {
+                $typeInfo->length = NULL; // reset NULL
+            }
+
         }
 
         if (in_array($typeInfo->type,[ 'char', 'varchar', 'text' ])) {
@@ -52,9 +76,6 @@ class TypeInfoParser
             $typeInfo->isa = 'double';
         } else if ($typeInfo->type == 'float') {
             $typeInfo->isa = 'float';
-        } else if ($typeInfo->type == 'tinyint' && $typeInfo->length == 1) {
-            $typeInfo->isa = 'bool';
-            $typeInfo->type = 'bool';
         } else if ($typeInfo->type == 'point') {
             $typeInfo->isa = 'point';
         } else if ('datetime' === $typeInfo->type || 'date' === $typeInfo->type ) {

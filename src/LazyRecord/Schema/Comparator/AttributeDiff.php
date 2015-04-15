@@ -26,7 +26,7 @@ class AttributeDiff
     }
 
     public function getAfterDescription() {
-        return sprintf("- %s %s\n", $this->name, $this->serializeVar($this->after));
+        return sprintf("+ %s %s\n", $this->name, $this->serializeVar($this->after));
     }
 
     public function serializeVar($var) {

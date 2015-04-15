@@ -50,7 +50,7 @@ class MetadataSchemaProxy extends RuntimeSchema
       'name' => 'id',
       'attributes' => array( 
           'isa' => 'int',
-          'type' => 'integer',
+          'type' => 'int',
           'primary' => true,
           'autoIncrement' => true,
         ),
