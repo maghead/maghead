@@ -83,11 +83,12 @@ class Migration implements Migratable
             $this->logger->info('Executing query: '. $title);
         }
         foreach ($sql as $q) {
-            if (count(explode("\n",$q)) == 1) {
-                $this->logger->info('Performing Query: ' . $q);
-            } else {
+            if (strpos($q,"\n") !== false) {
                 $this->logger->info('Performing Query:');
                 $this->logger->info($q);
+            }
+            if (count(explode("\n",$q)) == 1) {
+                $this->logger->info('Performing Query: ' . $q);
             }
             return $this->connection->query($q);
         }

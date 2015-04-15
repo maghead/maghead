@@ -4,6 +4,7 @@ use Exception;
 use RuntimeException;
 use ReflectionClass;
 use ReflectionObject;
+
 use CLIFramework\Command;
 use CLIFramework\Logger;
 use LazyRecord\Schema;
@@ -14,10 +15,12 @@ use LazyRecord\Schema\Comparator;
 use LazyRecord\Console;
 use ClassTemplate\TemplateClassFile;
 use ClassTemplate\ClassFile;
+
 use CodeGen\Expr\MethodCallExpr;
 use CodeGen\Expr\NewObjectExpr;
 use CodeGen\Statement\Statement;
 use CodeGen\Raw;
+
 use Doctrine\Common\Inflector\Inflector;
 
 class MigrationGenerator
@@ -47,11 +50,10 @@ class MigrationGenerator
 
     public function generateFilename($taskName, $time = null)
     {
-        $date = date('Ymd');
-        if(is_integer($time)) {
+        $date = date('Y-m-d');
+        if (is_integer($time)) {
             $date = date('Ymd',$time);
-        }
-        elseif( is_string($time) ) {
+        } else if (is_string($time)) {
             $date = $time;
         }
         $name = Inflector::tableize($taskName);
@@ -60,13 +62,12 @@ class MigrationGenerator
 
     public function createClassTemplate($taskName,$time = null) 
     {
-        if(!$time) {
+        if (!$time) {
             $time = time();
         } elseif( is_string($time) ) {
             $time = strtotime($time);
         }
         $className = $taskName . '_' . $time;
-        // $filename
         $template = new ClassFile($className);
         $template->extendClass('LazyRecord\Migration\Migration');
         return $template;
