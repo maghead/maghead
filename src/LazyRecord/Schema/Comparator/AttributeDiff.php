@@ -34,6 +34,8 @@ class AttributeDiff
             return get_class($var);
         } else if (is_array($var)) {
             return join(', ', $var);
+        } else {
+            return var_export($var, true);
         }
         return $var;
     }
