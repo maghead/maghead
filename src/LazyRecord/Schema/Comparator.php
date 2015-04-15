@@ -52,9 +52,12 @@ class Comparator
                 if ($bc->unsigned != $ac->unsigned) {
                     $d->appendDetail(new AttributeDiff('unsigned', $bc->unsigned, $ac->unsigned));
                 }
+                if ($bc->primary != $ac->primary) {
+                    $d->appendDetail(new AttributeDiff('primary', $bc->primary, $ac->primary));
+                }
 
                 // have the same column, compare attributes
-                $attributes = array('default','primary');
+                $attributes = array('default');
                 foreach ($attributes as $n) {
                     // Closure are meaningless
                     if ($ac->{$n} instanceof Closure || $bc->{$n} instanceof Closure) {
