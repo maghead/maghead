@@ -15,6 +15,8 @@ class TypeInfo {
 
     public $fullQualifiedTypeName;
 
+    public $unsigned;
+
     public function __construct($typeName, $length = NULL)
     {
         $this->type = $typeName;

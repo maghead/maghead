@@ -5,6 +5,7 @@ use Exception;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\TableParser\TypeInfo;
 use LazyRecord\TableParser\TypeInfoParser;
+use SQLBuilder\Raw;
 
 class MysqlTableParser extends BaseTableParser
 {
@@ -34,17 +35,8 @@ class MysqlTableParser extends BaseTableParser
             $typeInfo = TypeInfoParser::parseTypeInfo($type, $this->driver);
             $isa = $typeInfo->isa;
 
-            var_dump( $row, $typeInfo ); 
-            // var_dump( $row['Field'] , $row['Type'] ); 
-
             $column = $schema->column($row['Field']);
             $column->type($typeInfo->type);
-
-            if ($row['Null'] == 'YES') {
-                $column->null();
-            } else {
-                $column->notNull();
-            }
 
             if ($typeInfo->length) {
                 $column->length($typeInfo->length);
@@ -52,25 +44,58 @@ class MysqlTableParser extends BaseTableParser
             if ($typeInfo->precision) {
                 $column->decimals($typeInfo->precision);
             }
-
-            if ('PRI' === $row['Key']) {
-                $column->primary(true);
-                $schema->primaryKey = $row['Field'];
-            } else if ('UNI' === $row['Key']) {
-                $column->unique(true);
-            }
-
             if ($typeInfo->isa) {
                 $column->isa($typeInfo->isa);
             }
+            if ($typeInfo->unsigned) {
+                $column->unsigned();
+            }
+
+            if ($row['Null'] == 'YES') {
+                $column->null();
+            } else {
+                $column->notNull();
+            }
+
+            switch($row['Key']) {
+                case 'PRI':
+                    $column->primary(true);
+                    $schema->primaryKey = $row['Field'];
+                    break;
+                case 'MUL':
+                    break;
+                case 'UNI':
+                    $column->unique(true);
+                    break;
+            }
+
+
+            if (strtolower($row['Extra']) === 'auto_increment') {
+                $column->autoIncrement();
+            }
 
             if (NULL !== $row['Default']) {
+                $default = $row['Default'];
 
                 if ($typeInfo->type == 'boolean') {
-                    if ($row['Default'] == '1') {
+                    if ($default == '1') {
                         $column->default(true);
-                    } else if ($row['Default'] == '0') {
+                    } else if ($default == '0') {
                         $column->default(false);
+                    }
+                } else if ($typeInfo->isa == 'int') {
+                    $column->default(intval($default));
+                } else if ($typeInfo->isa == 'double') {
+                    $column->default(doubleval($default));
+                } else if ($typeInfo->isa == 'float') {
+                    $column->default(floatval($default));
+                } else if ($typeInfo->isa == 'str') {
+                    $column->default($default);
+                } else if ($typeInfo->isa == 'DateTime') {
+                    if (strtolower($default) == 'current_timestamp') {
+                        $column->default(new Raw($default));
+                    } else if (is_numeric($default)) {
+                        $column->default(intval($default));
                     }
                 }
             }
