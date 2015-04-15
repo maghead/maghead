@@ -4,7 +4,7 @@ use ArrayAccess;
 use IteratorAggregate;
 use Countable;
 use ArrayIterator;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use InvalidArgumentException;
 
 class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
@@ -49,7 +49,7 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
         return new self($expands);
     }
 
-    public function expandSchemaDependency(SchemaDeclare $schema) {
+    public function expandSchemaDependency(DeclareSchema $schema) {
         $expands = array();
         $refs = $schema->getReferenceSchemas();
         foreach($refs as $refClass => $v) {
@@ -64,7 +64,7 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
 
     public function declareable() {
         return $this->filter(function($schema) {
-            return is_subclass_of($schema, 'LazyRecord\Schema\SchemaDeclare', true);
+            return is_subclass_of($schema, 'LazyRecord\Schema\DeclareSchema', true);
         });
     }
 
@@ -89,7 +89,7 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
         foreach ($this->schemas as $schema) {
             // skip abstract classes.
             if (
-              ! is_subclass_of($schema, 'LazyRecord\Schema\SchemaDeclare',true)
+              ! is_subclass_of($schema, 'LazyRecord\Schema\DeclareSchema',true)
               || is_a($schema, 'LazyRecord\Schema\DynamicSchemaDeclare',true)
               || is_a($schema, 'LazyRecord\Schema\MixinSchemaDeclare',true)
               || is_subclass_of($schema, 'LazyRecord\Schema\MixinSchemaDeclare',true)

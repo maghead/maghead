@@ -5,7 +5,6 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\Universal\Syntax\Constraint;
 
-use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\TemplateSchema;
 use LazyRecord\Schema\DynamicSchemaDeclare;

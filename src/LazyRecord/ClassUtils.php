@@ -39,7 +39,7 @@ class ClassUtils
     {
         $schemas = array();
         foreach ($classes as $class) {
-            if (is_subclass_of($class,'LazyRecord\Schema\SchemaDeclare',true)) {
+            if (is_subclass_of($class,'LazyRecord\Schema\DeclareSchema',true)) {
                 $schemas[] = new $class;
             }
         }
@@ -57,7 +57,7 @@ class ClassUtils
         foreach( $classes as $class ) {
             // skip abstract classes.
             if (
-              ! is_subclass_of($class, 'LazyRecord\Schema\SchemaDeclare',true)
+              ! is_subclass_of($class, 'LazyRecord\Schema\DeclareSchema',true)
               || is_a($class, 'LazyRecord\Schema\DynamicSchemaDeclare',true)
               || is_a($class, 'LazyRecord\Schema\MixinSchemaDeclare',true)
               || is_subclass_of($class, 'LazyRecord\Schema\MixinSchemaDeclare',true)

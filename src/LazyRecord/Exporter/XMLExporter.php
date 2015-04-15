@@ -6,7 +6,7 @@ use LazyRecord\Schema\SchemaBase;
 use LazyRecord\Schema\Relationship;
 use LazyRecord\Schema\RuntimeSchema;
 use LazyRecord\Schema\RuntimeColumn;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\SchemaInterface;
 use DOMDocument;
 use DOMElement;

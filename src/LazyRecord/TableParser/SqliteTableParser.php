@@ -3,7 +3,7 @@ namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
 use LogicException;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use SQLBuilder\Raw;
 use LazyRecord\TableParser\TypeInfo;
 use LazyRecord\TableParser\TypeInfoParser;
@@ -49,7 +49,7 @@ class SqliteTableParser extends BaseTableParser
     {
         $tableDef = $this->parseTableSql($table);
 
-        $schema = new SchemaDeclare;
+        $schema = new DeclareSchema;
         $schema->columnNames = $schema->columns = array();
         $schema->table($table);
 

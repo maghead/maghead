@@ -1,6 +1,7 @@
 <?php
 use LazyRecord\Testing\BaseTestCase;
 use LazyRecord\TableParser\TableParser;
+use LazyRecord\ConnectionManager;
 
 class TableParserTest extends BaseTestCase
 {
@@ -20,9 +21,8 @@ class TableParserTest extends BaseTestCase
     public function testTableParserFor($driverType)
     {
         $config = self::createNeutralConfigLoader();
-        $manager = LazyRecord\ConnectionManager::getInstance();
+        $manager = ConnectionManager::getInstance();
         $manager->free();
-
         $this->registerDataSource($driverType);
 
         $conn   = $manager->getConnection($driverType);

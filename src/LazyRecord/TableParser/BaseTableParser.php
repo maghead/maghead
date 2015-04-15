@@ -5,8 +5,10 @@ use Exception;
 use SQLBuilder\Driver;
 use SQLBuilder\Driver\BaseDriver;
 use LazyRecord\QueryDriver;
+
 use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\Schema\DeclareSchema;
+
 use LazyRecord\ServiceContainer;
 use LazyRecord\TableParser\TypeInfo;
 use LazyRecord\TableParser\TypeInfoParser;
@@ -27,6 +29,8 @@ abstract class BaseTableParser
 
     protected $schemas = array();
 
+    protected $schemaMap = array();
+
     public function __construct(BaseDriver $driver, PDO $connection)
     {
         $this->driver = $driver;
@@ -38,6 +42,11 @@ abstract class BaseTableParser
         // pre-initialize all schema objects and expand template schema
         $this->schemas = SchemaUtils::findSchemasByConfigLoader($this->config, $c['logger']);
         $this->schemas = SchemaUtils::filterBuildableSchemas($this->schemas);
+
+        foreach($this->schemas as $schema) {
+            $this->schemaMap[$schema->getTable()] = $schema;
+        }
+
     }
 
     public function getDefinedSchemas()
@@ -60,10 +69,12 @@ abstract class BaseTableParser
      */
     abstract function reverseTableSchema($table);
 
+    /**
+     * Find all user-defined schema
+     */
     public function getTableSchemaMap()
     {
         $tableSchemas = array();
-
         foreach($this->schemas as $schema) {
             $tableSchemas[$schema->getTable()] = $schema;
         }
@@ -75,10 +86,22 @@ abstract class BaseTableParser
                 $tableSchemas[$table] = $this->reverseTableSchema($table);
             }
         }
-
         return $tableSchemas;
     }
 
+    /**
+     * Lookup schema by table name
+     *
+     * @param string $table table name
+     * @return DeclareSchema
+     */
+    public function reverseLookupSchema($table)
+    {
+        if (isset($this->schemaMap[$table])) {
+            return $this->schemaMap[$table];
+        }
+        return NULL;
+    }
 
     public function typenameToIsa($typeName)
     {

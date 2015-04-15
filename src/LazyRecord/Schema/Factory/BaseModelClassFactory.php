@@ -3,12 +3,12 @@ namespace LazyRecord\Schema\Factory;
 use ClassTemplate\TemplateClassFile;
 use ClassTemplate\ClassFile;
 use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use Doctrine\Common\Inflector\Inflector;
 
 class BaseModelClassFactory
 {
-    public static function create(SchemaDeclare $schema, $baseClass) {
+    public static function create(DeclareSchema $schema, $baseClass) {
         $cTemplate = new ClassFile($schema->getBaseModelClass());
         $cTemplate->addConsts(array(
             'schema_proxy_class' => $schema->getSchemaProxyClass(),

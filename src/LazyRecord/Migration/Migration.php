@@ -10,7 +10,6 @@ use LazyRecord\Migration\Migratable;
 use LazyRecord\Schema\ColumnDeclare;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\DynamicSchemaDeclare;
-use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\ServiceContainer;
@@ -174,7 +173,7 @@ class Migration implements Migratable
     {
         $this->logger->info("Importing schema: " . get_class($schema));
 
-        if ($schema instanceof SchemaDeclare) {
+        if ($schema instanceof DeclareSchema) {
             $sqls = $this->builder->build($schema);
             $this->query($sqls);
         } elseif ($schema instanceof BaseModel && method_exists($schema,'schema')) {

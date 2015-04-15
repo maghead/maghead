@@ -3,7 +3,7 @@ namespace LazyRecord\Schema;
 use Exception;
 use ReflectionClass;
 
-class DynamicSchemaDeclare extends SchemaDeclare
+class DynamicSchemaDeclare extends DeclareSchema
 {
     public $model;
     public $modelClass;

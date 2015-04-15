@@ -94,7 +94,7 @@ class SchemaGenerator
      * @param ClassTemplate\ClassFile $cTemplate
      * @param DeclareSchema $schema
      */
-    public function updateClassFile(ClassFile $cTemplate, SchemaDeclare $schema, $overwrite = false) {
+    public function updateClassFile(ClassFile $cTemplate, DeclareSchema $schema, $overwrite = false) {
         // always update the proxy schema file
         $classFilePath = $schema->getRelatedClassPath( $cTemplate->getShortClassName() );
 
@@ -117,13 +117,13 @@ class SchemaGenerator
     }
 
 
-    public function generateSchemaProxyClass(SchemaDeclare $schema)
+    public function generateSchemaProxyClass(DeclareSchema $schema)
     {
         $cTemplate = SchemaProxyClassFactory::create($schema);
         return $this->updateClassFile($cTemplate, $schema, true);
     }
 
-    public function generateBaseModelClass(SchemaDeclare $schema)
+    public function generateBaseModelClass(DeclareSchema $schema)
     {
         $cTemplate = BaseModelClassFactory::create($schema, $this->getBaseModelClass() );
         return $this->updateClassFile($cTemplate, $schema, true);
@@ -137,13 +137,13 @@ class SchemaGenerator
      * @param Schema $schema
      * @param bool $force = true
      */
-    public function generateModelClass(SchemaDeclare $schema)
+    public function generateModelClass(DeclareSchema $schema)
     {
         $cTemplate = ModelClassFactory::create($schema);
         return $this->updateClassFile($cTemplate, $schema, false); // do not overwrite
     }
 
-    public function generateBaseCollectionClass(SchemaDeclare $schema)
+    public function generateBaseCollectionClass(DeclareSchema $schema)
     {
         $cTemplate = BaseCollectionClassFactory::create($schema, $this->getBaseCollectionClass() );
         return $this->updateClassFile($cTemplate, $schema, true);
@@ -153,10 +153,10 @@ class SchemaGenerator
     /**
      * Generate collection class from a schema object.
      *
-     * @param SchemaDeclare $schema
+     * @param DeclareSchema $schema
      * @return array class name, class file path
      */
-    public function generateCollectionClass(SchemaDeclare $schema)
+    public function generateCollectionClass(DeclareSchema $schema)
     {
         $cTemplate = CollectionClassFactory::create($schema);
         return $this->updateClassFile($cTemplate, $schema, false);
@@ -185,7 +185,7 @@ class SchemaGenerator
     }
 
 
-    public function injectModelSchema(SchemaDeclare $schema)
+    public function injectModelSchema(DeclareSchema $schema)
     {
         $model = $schema->getModel();
 
@@ -223,7 +223,7 @@ class SchemaGenerator
         }
 
         // in new schema declare, we can describe a schema in a model class.
-        if( $schema instanceof DynamicSchemaDeclare ) {
+        if( $schema instanceof DynamicDeclareSchema ) {
             if ( $result = $this->injectModelSchema($schema) ) {
                 list($className, $classFile) = $result;
                 $classMap[ $className ] = $classFile;

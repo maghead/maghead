@@ -7,7 +7,7 @@ use CLIFramework\Command;
 use LazyRecord\Schema;
 use LazyRecord\Command\BaseCommand;
 use LazyRecord\Schema\SchemaFinder;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\ConfigLoader;
 use LazyRecord\TableParser\TableParser;
@@ -69,7 +69,7 @@ class DiffCommand extends BaseCommand
                 echo $formatter->format( $msg,'green') , "\n";
 
                 $a = isset($tableSchemas[ $t ]) ? $tableSchemas[ $t ] : null;
-                $diff = $comparator->compare(new SchemaDeclare, $b);
+                $diff = $comparator->compare(new DeclareSchema, $b);
                 foreach( $diff as $diffItem ) {
                     echo "  ", $diffItem->toColumnAttrsString() , "\n";
                 }

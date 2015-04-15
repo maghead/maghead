@@ -3,12 +3,12 @@ namespace LazyRecord\Schema\Factory;
 use ClassTemplate\TemplateClassFile;
 use ClassTemplate\ClassFile;
 use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use DateTime;
 
 class SchemaProxyClassFactory
 {
-    public static function create(SchemaDeclare $schema) {
+    public static function create(DeclareSchema $schema) {
         $schemaProxyClass = $schema->getSchemaProxyClass();
         $cTemplate = new TemplateClassFile( $schemaProxyClass, array( 
             'template_dirs' => dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Templates',

@@ -3,6 +3,7 @@ namespace LazyRecord\Schema;
 use RuntimeException;
 use InvalidArgumentException;
 use Exception;
+use LazyRecord\Schema\DynamicSchemaDeclare;
 
 abstract class SchemaBase
 {
@@ -174,12 +175,12 @@ abstract class SchemaBase
                 }
                 $schemas[ $class ] = 1;
                 $model = new $class;
-                $schema = new \LazyRecord\Schema\DynamicSchemaDeclare($model);
+                $schema = new DynamicSchemaDeclare($model);
                 if( $recursive ) {
                     $schemas = array_merge($schemas, $schema->getReferenceSchemas(false));
                 }
             }
-            elseif ( is_subclass_of( $class, 'LazyRecord\\Schema\\SchemaDeclare',true ) ) {
+            elseif ( is_subclass_of($class, 'LazyRecord\\Schema\\DeclareSchema',true ) ) {
                 $schemas[ $class ] = 1;
                 $fs = new $class;
                 if( $recursive ) {

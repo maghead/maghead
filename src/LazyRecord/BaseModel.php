@@ -26,7 +26,7 @@ use SQLBuilder\Raw;
 use LazyRecord\Result\OperationError;
 use LazyRecord\Result;
 use LazyRecord\ConnectionManager;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship;

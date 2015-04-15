@@ -1,6 +1,6 @@
 <?php
 namespace LazyRecord\Schema\Helper;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use Exception;
 
 abstract class BaseHelper
@@ -9,7 +9,7 @@ abstract class BaseHelper
 
     public $schema;
 
-    public function __construct(SchemaDeclare $schema, $arguments = array() )
+    public function __construct(DeclareSchema $schema, $arguments = array() )
     {
         $this->schema = $schema;
         $this->arguments = $arguments;

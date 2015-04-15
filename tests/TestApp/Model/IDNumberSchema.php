@@ -1,8 +1,8 @@
 <?php
 namespace TestApp\Model;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 
-class IDNumberSchema extends SchemaDeclare
+class IDNumberSchema extends DeclareSchema
 {
     public function schema()
     {

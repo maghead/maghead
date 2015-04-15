@@ -1,7 +1,7 @@
 <?php
 namespace LazyRecord\Schema;
 
-class MixinSchemaDeclare extends SchemaDeclare
+class MixinSchemaDeclare extends DeclareSchema
 {
     /**
      * Build schema

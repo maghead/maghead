@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\Relationship;
 
 class RelationshipTest extends PHPUnit_Framework_TestCase

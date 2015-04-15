@@ -37,7 +37,7 @@ class SchemaCollectionTest extends PHPUnit_Framework_TestCase
 
         $ec = $c->evaluate();
         foreach ($ec->getSchemas() as $s) {
-            $this->assertInstanceOf('LazyRecord\Schema\SchemaDeclare', $s);
+            $this->assertInstanceOf('LazyRecord\Schema\DeclareSchema', $s);
         }
     }
 

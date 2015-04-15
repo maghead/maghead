@@ -1,6 +1,6 @@
 <?php
 namespace LazyRecord\Schema\Helper;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 
 class FlagHelper extends BaseHelper
 {

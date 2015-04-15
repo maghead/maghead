@@ -1,6 +1,6 @@
 <?php
 namespace MetricApp\Model;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\TemplateSchema;
 
 class MetricValueSchema extends TemplateSchema

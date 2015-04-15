@@ -1,6 +1,6 @@
 <?php
 namespace LazyRecord\SqlBuilder;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\QueryBuilder;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\RuntimeColumn;

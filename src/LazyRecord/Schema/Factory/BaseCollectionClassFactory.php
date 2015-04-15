@@ -3,11 +3,11 @@ namespace LazyRecord\Schema\Factory;
 use ClassTemplate\TemplateClassFile;
 use ClassTemplate\ClassFile;
 use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 
 class BaseCollectionClassFactory
 {
-    public static function create(SchemaDeclare $schema, $baseCollectionClass)
+    public static function create(DeclareSchema $schema, $baseCollectionClass)
     {
         $cTemplate = new ClassFile($schema->getBaseCollectionClass());
         $cTemplate->addConsts(array(

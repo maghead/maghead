@@ -1,6 +1,6 @@
 <?php
 use LazyRecord\Schema\Comparator;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\Comparator\ConsolePrinter;
 use LazyRecord\Schema\ColumnDiff;
 
@@ -9,7 +9,7 @@ class ComparatorTest extends \PHPUnit_Framework_TestCase
 
     public function testBasicComparison()
     {
-        $before = new SchemaDeclare;
+        $before = new DeclareSchema;
         $before->column('same');
         $before->column('changed')
             ->varchar(20);
@@ -17,7 +17,7 @@ class ComparatorTest extends \PHPUnit_Framework_TestCase
         $before->column('removed')
             ->boolean();
 
-        $after = new SchemaDeclare;
+        $after = new DeclareSchema;
         $after->column('same');
         $after->column('changed')
             ->varchar(30);

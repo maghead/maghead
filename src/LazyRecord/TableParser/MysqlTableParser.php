@@ -2,7 +2,7 @@
 namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\TableParser\TypeInfo;
 use LazyRecord\TableParser\TypeInfoParser;
 use SQLBuilder\Raw;
@@ -19,7 +19,7 @@ class MysqlTableParser extends BaseTableParser
     public function reverseTableSchema($table)
     {
         $stm = $this->connection->query("SHOW COLUMNS FROM $table");
-        $schema = new SchemaDeclare;
+        $schema = new DeclareSchema;
         $schema->columnNames = $schema->columns = array();
         $schema->table($table);
         $rows = $stm->fetchAll();

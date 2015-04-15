@@ -1,8 +1,8 @@
 <?php
 namespace LazyRecord\Model;
-use LazyRecord\Schema\SchemaDeclare;
+use LazyRecord\Schema\DeclareSchema;
 
-class MetadataSchema extends SchemaDeclare 
+class MetadataSchema extends DeclareSchema 
 {
     public function schema() 
     {
