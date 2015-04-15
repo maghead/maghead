@@ -10,6 +10,7 @@
         "corneltek/class-template": "~2",
         "corneltek/serializerkit": "~1",
         "corneltek/validationkit": "~1.1",
+        "symfony\/yaml": "~2",
         "doctrine/inflector": "*",
         "corneltek/configkit": "~1",
         "corneltek/cascading-attribute": "~1.2",

@@ -41,7 +41,8 @@ use ValidationKit\ValidationMessage;
 use ActionKit;
 use ActionKit\RecordAction\BaseRecordAction;
 
-
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Dumper;
 
 class QueryException extends RuntimeException {
 
@@ -78,6 +79,9 @@ abstract class BaseModel implements
     IteratorAggregate, 
     Countable
 {
+
+    static $yamlExtension;
+    static $yamlEncoding = YAML_UTF8_ENCODING;
 
     const schema_proxy_class = '';
 
@@ -1815,8 +1819,11 @@ abstract class BaseModel implements
      */
     public function toYaml()
     {
-        $ser = new YamlSerializer;
-        return $ser->encode( $this->_data );
+        self::$yamlExtension = extension_loaded('yaml');
+        if (static::$yamlExtension) {
+            return yaml_emit($this->_data, self::$yamlExtension);
+        }
+        return file_put_contents($yamlFile, "---\n" . Yaml::dump($config, $inline = true, $exceptionOnInvalidType = true));
     }
 
     /**

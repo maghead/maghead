@@ -26,7 +26,6 @@ use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaLoader;
 use SerializerKit\YamlSerializer;
 use SerializerKit\XmlSerializer;
-use SerializerKit\JsonSerializer;
 
 /**
  * base collection class
