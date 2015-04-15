@@ -13,6 +13,7 @@ use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\SchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\SqlBuilder\SqlBuilder;
+use LazyRecord\ServiceContainer;
 use PDO;
 use PDOException;
 use LogicException;
@@ -43,21 +44,21 @@ class Migration implements Migratable
 
     public function __construct($dsId)
     {
+        $c = ServiceContainer::getInstance();
         $connectionManager = ConnectionManager::getInstance();
         $this->driver = $connectionManager->getQueryDriver($dsId);
         $this->connection = $connectionManager->getConnection($dsId);
-        // $this->builder = new MigrationBuilder($this->driver);
-        $this->logger  = Console::getInstance()->getLogger();
-
+        $this->logger  = $c['logger'] ?: Console::getInstance()->getLogger();
         $this->builder = SqlBuilder::create($this->driver);
     }
 
     public static function getId()
     {
         $name = get_called_class() ?: get_class($this);
-        if( preg_match('#_(\d+)$#',$name,$regs) ) {
+        if (preg_match('#_(\d+)$#',$name,$regs)) {
             return $regs[1];
         }
+        throw new Exception("Can't parse migration script ID from class name: " . get_class($this));
     }
 
 

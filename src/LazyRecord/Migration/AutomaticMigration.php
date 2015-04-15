@@ -12,35 +12,24 @@ use GetOptionKit\OptionResult;
 
 class AutomaticMigration extends Migration implements Migratable
 {
-    /*
-    protected $driver;
-
-    protected $connection;
-
-    public function __construct(QueryDriver $driver, Connection $connection)
-    {
-        $this->driver = $driver;
-        $this->connection = $connection;
-    }
-    */
     protected $options = null;
 
     public function __construct($dsId, OptionResult $options = null) {
-        parent::__construct($dsId);
         $this->options = $options ?: new OptionResult;
+        parent::__construct($dsId);
     }
     
     public function upgrade()
     {
         $parser = TableParser::create($this->driver, $this->connection);
-        $tableSchemas = $parser->getTableSchemaMaps();
+        $tableSchemas = $parser->getTableSchemaMap();
         $comparator = new Comparator;
 
         $existingTables = $parser->getTables();
 
         // schema from runtime
         foreach ($tableSchemas as $t => $schema) {
-            $this->logger->debug("Checking table $t for schema " . get_class($schema));
+            $this->logger->info("Checking table $t for schema " . get_class($schema));
 
             $foundTable = in_array($t, $existingTables);
             if ($foundTable) {

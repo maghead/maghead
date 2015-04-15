@@ -25,11 +25,8 @@ class MigrateAutomaticCommand extends BaseCommand
     public function execute() {
         $dsId = $this->getCurrentDataSourceId();
         $container = ServiceContainer::getInstance();
-        $finder = $container['schema_finder'];
-        $finder->find();
-        $schemas = $finder->getSchemas();
         $runner = new MigrationRunner($dsId);
-        $runner->runUpgradeAutomatically($schemas, $this->options);
+        $runner->runUpgradeAutomatically($this->options);
         $this->logger->info('Done.');
     }
 

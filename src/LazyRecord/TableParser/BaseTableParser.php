@@ -40,6 +40,11 @@ abstract class BaseTableParser
         $this->schemas = SchemaUtils::filterBuildableSchemas($this->schemas);
     }
 
+    public function getDefinedSchemas()
+    {
+        return $this->schemas;
+    }
+
     /**
      * Implements the query to parse table names from database
      *
@@ -50,16 +55,16 @@ abstract class BaseTableParser
     /**
      * Implements the logic to reverse table definition to DeclareSchema object.
      *
-     * @return DeclareSchema[string tableName]
+     *
+     * @return DeclareSchema[string tableName] returns (defined table + undefined table)
      */
-    abstract function getTableSchemaMap($table);
+    abstract function reverseTableSchema($table);
 
-    public function getTableSchemaMaps()
+    public function getTableSchemaMap()
     {
         $tableSchemas = array();
 
         foreach($this->schemas as $schema) {
-            // echo $schema->getTable() . ' => ' . get_class($schema), "\n";
             $tableSchemas[$schema->getTable()] = $schema;
         }
 
@@ -67,9 +72,10 @@ abstract class BaseTableParser
         $tables = $this->getTables();
         foreach ($tables as $table) {
             if (!isset($tableSchemas[$table])) {
-                $tableSchemas[$table] = $this->getTableSchemaMap($table);
+                $tableSchemas[$table] = $this->reverseTableSchema($table);
             }
         }
+
         return $tableSchemas;
     }
 

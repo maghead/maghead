@@ -170,7 +170,7 @@ class MigrationRunner
             try {
                 $connection->beginTransaction();
                 foreach ($scripts as $script) {
-                    $this->logger->info("Running upgrade migration script $script on data source $dsId");
+                    $this->logger->info("Performing upgrade migration script $script on data source $dsId");
                     $migration = new $script($dsId);
                     $migration->upgrade();
                     $this->updateLastMigrationId($dsId,$script::getId());
@@ -186,10 +186,10 @@ class MigrationRunner
         }
     }
 
-    public function runUpgradeAutomatically($schemas, OptionResult $options = NULL)
+    public function runUpgradeAutomatically(OptionResult $options = NULL)
     {
         foreach ($this->dataSourceIds as $dsId) {
-            $this->logger->info("Running upgrade over data source: $dsId");
+            $this->logger->info("Performing automatic upgrade over data source: $dsId");
 
             $connectionManager = ConnectionManager::getInstance();
             $driver = $connectionManager->getQueryDriver($dsId);
@@ -197,11 +197,12 @@ class MigrationRunner
 
             $script = new AutomaticMigration($dsId, $options);
             try {
+                $this->logger->info('Begining transaction...');
                 $connection->beginTransaction();
-                $this->logger->info("Running automatic migration on data source $dsId");
-                $migration = new $script($dsId);
-                $migration->upgrade();
-                $this->updateLastMigrationId($dsId,$script::getId());
+
+                $script->upgrade();
+
+                $this->logger->info('Committing...');
                 $connection->commit();
             } catch (Exception $e) {
                 $this->logger->error('Exception was thrown: ' . $e->getMessage());

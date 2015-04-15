@@ -16,19 +16,13 @@ class MysqlTableParser extends BaseTableParser
         return array_map(function($row) { return $row[0]; },$rows);
     }
 
-    public function getTableSchemaMap($table)
+    public function reverseTableSchema($table)
     {
         $stm = $this->connection->query("SHOW COLUMNS FROM $table");
         $schema = new SchemaDeclare;
         $schema->columnNames = $schema->columns = array();
         $schema->table($table);
         $rows = $stm->fetchAll();
-
-        /*
-        if ($table == 'users') {
-            var_dump($rows); 
-        }
-         */
 
         foreach ($rows as $row) {
             $type = $row['Type'];

@@ -92,7 +92,7 @@ class MigrationGenerator
         $driver      = $connectionManager->getQueryDriver($dataSourceId);
 
         $parser = TableParser::create( $driver, $connection );
-        $tableSchemas = $parser->getTableSchemaMaps();
+        $tableSchemas = $parser->getTableSchemaMap();
 
         $this->logger->info( 'Found ' . count($schemas) . ' schemas to compare.' );
 
