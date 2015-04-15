@@ -23,7 +23,6 @@ class AutomaticMigration extends Migration implements Migratable
         $this->connection = $connection;
     }
     */
-
     protected $options = null;
 
     public function __construct($dsId, OptionResult $options = null) {
@@ -69,7 +68,7 @@ class AutomaticMigration extends Migration implements Migratable
                             }
 
                             // Supported attribute
-                            if (in_array($key, ['type','primary','name','unique','default','notNull','null','autoIncrement'])) 
+                            if (in_array($key, ['type','primary','name','unique','default','notNull','null','autoIncrement','unsigned'])) 
                             {
                                 $columnArgs[ $key ] = $value;
                             }
