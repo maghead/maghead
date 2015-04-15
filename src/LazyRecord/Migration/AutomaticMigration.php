@@ -22,24 +22,25 @@ class AutomaticMigration extends Migration implements Migratable
     public function upgrade()
     {
         $parser = TableParser::create($this->driver, $this->connection);
+
         $tableSchemas = $parser->getTableSchemaMap();
         $comparator = new Comparator;
 
         $existingTables = $parser->getTables();
 
         // schema from runtime
-        foreach ($tableSchemas as $t => $schema) {
-            $this->logger->info("Checking table $t for schema " . get_class($schema));
+        foreach ($tableSchemas as $t => $after) {
+            $this->logger->debug("Checking table $t for schema " . get_class($after));
 
             $foundTable = in_array($t, $existingTables);
             if ($foundTable) {
 
                 $this->logger->debug("Found existing table $t");
 
-                $a = $tableSchemas[ $t ]; // schema object, extracted from database.
+                $before = $parser->reverseTableSchema($t);
 
                 $this->logger->debug("Comparing table $t with schema");
-                $diffs = $comparator->compare($a , $schema);
+                $diffs = $comparator->compare($before , $after);
 
                 if (count($diffs)) {
                     $this->logger->debug("Found " . count($diffs) . ' differences');
@@ -74,7 +75,7 @@ class AutomaticMigration extends Migration implements Migratable
                 $this->logger->debug("Table $t not found, importing schema...");
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
-                $this->importSchema($schema);
+                $this->importSchema($after);
             }
         }
     }
