@@ -9,11 +9,7 @@ class MigrationRunnerTest extends PHPUnit_Framework_TestCase
         $connm->addDataSource('default',array( 'dsn' => 'sqlite::memory:' ));
         $runner = new LazyRecord\Migration\MigrationRunner('default');
         $runner->load('tests/migrations');
-        /*
-        $scripts = $runner->getMigrationScripts();
-        $runner->runUpgrade();
-        $runner->runDowngrade();
-         */
+        $runner->runUpgradeAutomatically();
     }
 }
 

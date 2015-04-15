@@ -21,21 +21,20 @@ class SqliteTableParserTest extends PHPUnit_Framework_TestCase
         ok($sql);
 
         $columns = $parser->parseTableSql('foo');
-        ok($columns);
+        $this->assertNotEmpty($columns);
 
         $columns = $parser->parseTableSql('bar');
-        ok($columns);
+        $this->assertNotEmpty($columns);
 
-        $schema = $parser->getTableSchemaMap('bar');
+        $schema = $parser->reverseTableSchema('bar');
         ok($schema);
 
-        $column = $schema->getColumn('id');
-        ok($column);
-
-        ok($column->autoIncrement);
-        is('integer',$column->type);
-        is('int',$column->isa);
-        is(true,$column->primary);
+        $id = $schema->getColumn('id');
+        $this->assertNotNull($id);
+        $this->assertTrue($id->autoIncrement);
+        $this->assertEquals('integer',$id->type);
+        $this->assertEquals('int',$id->isa);
+        $this->assertTrue($id->primary);
     }
 }
 

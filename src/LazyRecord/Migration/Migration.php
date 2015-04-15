@@ -16,6 +16,7 @@ use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\ServiceContainer;
 use PDO;
 use PDOException;
+use Exception;
 use LogicException;
 
 
@@ -58,7 +59,7 @@ class Migration implements Migratable
         if (preg_match('#_(\d+)$#',$name,$regs)) {
             return $regs[1];
         }
-        throw new Exception("Can't parse migration script ID from class name: " . get_class($this));
+        // throw new Exception("Can't parse migration script ID from class name: " . $name);
     }
 
 

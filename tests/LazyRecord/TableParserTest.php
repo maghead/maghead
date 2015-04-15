@@ -11,7 +11,7 @@ class TableParserTest extends BaseTestCase
             new \AuthorBooks\Model\AddressSchema,
             new \AuthorBooks\Model\AuthorBookSchema,
             new \AuthorBooks\Model\BookSchema,
-            ];
+        ];
     }
 
     /**
@@ -34,7 +34,7 @@ class TableParserTest extends BaseTestCase
         foreach ($tables as $table) {
             $this->assertNotNull($table);
 
-            $schema = $parser->getTableSchemaMap( $table );
+            $schema = $parser->reverseTableSchema( $table );
             $this->assertNotNull($schema);
 
             $columns = $schema->getColumns();
