@@ -9,14 +9,16 @@ use LazyRecord\Connection;
 use LazyRecord\QueryDriver;
 use LazyRecord\Migration\Migratable;
 use GetOptionKit\OptionResult;
+use SQLBuilder\Driver\BaseDriver;
+use PDO;
 
 class AutomaticMigration extends Migration implements Migratable
 {
     protected $options = null;
 
-    public function __construct($dsId, OptionResult $options = null) {
+    public function __construct(BaseDriver $driver, PDO $connection, OptionResult $options = null) {
         $this->options = $options ?: new OptionResult;
-        parent::__construct($dsId);
+        parent::__construct($driver, $connection);
     }
     
     public function upgrade()

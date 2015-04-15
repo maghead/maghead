@@ -4,6 +4,7 @@ use SQLBuilder\Universal\Query\AlterTableQuery;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
+use SQLBuilder\Driver\BaseDriver;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Console;
 use LazyRecord\Migration\Migratable;
@@ -42,14 +43,13 @@ class Migration implements Migratable
      */
     public $builder;
 
-    public function __construct($dsId)
+    public function __construct(BaseDriver $driver, PDO $connection)
     {
         $c = ServiceContainer::getInstance();
-        $connectionManager = ConnectionManager::getInstance();
-        $this->driver = $connectionManager->getQueryDriver($dsId);
-        $this->connection = $connectionManager->getConnection($dsId);
+        $this->driver = $driver;
+        $this->connection = $connection;
         $this->logger  = $c['logger'] ?: Console::getInstance()->getLogger();
-        $this->builder = SqlBuilder::create($this->driver);
+        $this->builder = SqlBuilder::create($driver);
     }
 
     public static function getId()

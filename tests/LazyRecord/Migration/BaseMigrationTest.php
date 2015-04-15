@@ -26,9 +26,11 @@ class MigrationTest extends PHPUnit_Framework_TestCase
         $conn = $connm->getConnection('default');
         ok($conn);
 
+        $driver = $connm->getQueryDriver('default');
+
         $conn->query('CREATE TABLE foo (id integer primary key, name varchar(32));');
 
-        $migration = new FooMigration('default');
+        $migration = new FooMigration($driver, $conn);
         ok($migration);
         $migration->upgrade();
 

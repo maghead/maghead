@@ -14,14 +14,17 @@ use GetOptionKit\OptionResult;
 
 class MigrationRunner
 {
-    public $logger;
+    protected $logger;
 
-    public $dataSourceIds = array();
+    protected $dataSourceIds = array();
+
+    protected $connectionManager;
 
     public function __construct($dsIds)
     {
         $c = ServiceContainer::getInstance();
         $this->logger = $c['logger'];
+        $this->connectionManager = ConnectionManager::getInstance();
 
         // XXX: get data source id list from config loader
         $this->dataSourceIds = (array) $dsIds;
@@ -123,18 +126,23 @@ class MigrationRunner
      */
     public function runDowngrade(array $scripts = NULL, $steps = 1)
     {
+        $this->logger->info("Performing downgrade...");
+
         foreach( $this->dataSourceIds as $dsId ) {
+            $driver = $this->connectionManager->getQueryDriver($dsId);
+            $connection = $this->connectionManager->getConnection($dsId);
+
             $this->logger->info("Running downgrade over data source: $dsId");
 
             if (!$scripts) {
                 $scripts = $this->getDowngradeScripts($dsId);
             }
-            $this->logger->info("I just found " . count($scripts) . ' migration scripts to run downgrade!');
+            $this->logger->info("Found " . count($scripts) . ' migration scripts to run downgrade!');
             while($steps--) {
                 // downgrade a migration one at one time.
                 if ($script = array_pop($scripts) ) {
                     $this->logger->info("Running downgrade migration script $script on data source $dsId");
-                    $migration = new $script( $dsId );
+                    $migration = new $script($driver, $connection);
                     $migration->downgrade();
 
                     if ($nextScript = end($scripts)) {
@@ -150,12 +158,13 @@ class MigrationRunner
      */
     public function runUpgrade(array $scripts = NULL)
     {
+        $this->logger->info("Performing upgrade...");
+
         foreach ($this->dataSourceIds as $dsId) {
             $this->logger->info("Running upgrade over data source: $dsId");
 
-            $connectionManager = ConnectionManager::getInstance();
-            $driver = $connectionManager->getQueryDriver($dsId);
-            $connection = $connectionManager->getConnection($dsId);
+            $driver = $this->connectionManager->getQueryDriver($dsId);
+            $connection = $this->connectionManager->getConnection($dsId);
 
             if (!$scripts) {
                 $scripts = $this->getUpgradeScripts($dsId);
@@ -164,18 +173,21 @@ class MigrationRunner
                     return;
                 }
             }
-
-            $this->logger->info("I just found " . count($scripts) . ' migration scripts to run upgrade!');
+            $this->logger->info("Found " . count($scripts) . ' migration scripts to run upgrade!');
 
             try {
+                $this->logger->info('Begining transaction...');
                 $connection->beginTransaction();
                 foreach ($scripts as $script) {
                     $this->logger->info("Performing upgrade migration script $script on data source $dsId");
-                    $migration = new $script($dsId);
+                    $migration = new $script($driver, $connection);
                     $migration->upgrade();
                     $this->updateLastMigrationId($dsId,$script::getId());
                 }
+
+                $this->logger->info('Committing...');
                 $connection->commit();
+
             } catch (Exception $e) {
                 $this->logger->error('Exception was thrown: ' . $e->getMessage());
                 $this->logger->warn('Rolling back ...');
@@ -188,14 +200,14 @@ class MigrationRunner
 
     public function runUpgradeAutomatically(OptionResult $options = NULL)
     {
+        $this->logger->info("Performing automatic upgrade...");
         foreach ($this->dataSourceIds as $dsId) {
+            $driver = $this->connectionManager->getQueryDriver($dsId);
+            $connection = $this->connectionManager->getConnection($dsId);
+
             $this->logger->info("Performing automatic upgrade over data source: $dsId");
 
-            $connectionManager = ConnectionManager::getInstance();
-            $driver = $connectionManager->getQueryDriver($dsId);
-            $connection = $connectionManager->getConnection($dsId);
-
-            $script = new AutomaticMigration($dsId, $options);
+            $script = new AutomaticMigration($driver, $connection, $options);
             try {
                 $this->logger->info('Begining transaction...');
                 $connection->beginTransaction();

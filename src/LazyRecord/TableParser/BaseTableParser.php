@@ -2,7 +2,6 @@
 namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
-use SQLBuilder\Driver;
 use SQLBuilder\Driver\BaseDriver;
 use LazyRecord\QueryDriver;
 
