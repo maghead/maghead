@@ -24,8 +24,10 @@ use LazyRecord\Result;
 use LazyRecord\BaseModel;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Schema\SchemaLoader;
-use SerializerKit\YamlSerializer;
 use SerializerKit\XmlSerializer;
+
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Dumper;
 
 /**
  * base collection class
@@ -36,6 +38,9 @@ class BaseCollection
     Countable, 
     IteratorAggregate
 {
+    static $yamlExtension;
+    static $yamlEncoding = YAML_UTF8_ENCODING;
+
     protected $_lastSql;
 
     protected $_vars;
@@ -703,8 +708,11 @@ class BaseCollection
     public function toYaml()
     {
         $list = $this->toArray();
-        $yaml = new YamlSerializer;
-        return $yaml->encode( $list );
+        self::$yamlExtension = extension_loaded('yaml');
+        if (self::$yamlExtension) {
+            return yaml_emit($list, self::$yamlExtension);
+        }
+        return file_put_contents($yamlFile, "---\n" . Yaml::dump($list, $inline = true, $exceptionOnInvalidType = true));
     }
 
 

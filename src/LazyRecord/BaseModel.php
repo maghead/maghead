@@ -1820,10 +1820,10 @@ abstract class BaseModel implements
     public function toYaml()
     {
         self::$yamlExtension = extension_loaded('yaml');
-        if (static::$yamlExtension) {
+        if (self::$yamlExtension) {
             return yaml_emit($this->_data, self::$yamlExtension);
         }
-        return file_put_contents($yamlFile, "---\n" . Yaml::dump($config, $inline = true, $exceptionOnInvalidType = true));
+        return file_put_contents($yamlFile, "---\n" . Yaml::dump($this->_data, $inline = true, $exceptionOnInvalidType = true));
     }
 
     /**
