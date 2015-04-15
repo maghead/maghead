@@ -142,19 +142,10 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
         return $this;
     }
 
-    public function autoIncrement()
-    {
-        $this->autoIncrement = true;
-        $this->type = 'int';
-        $this->isa = 'int';
-        return $this;
-    }
-
     public function index($indexName = null) {
         $this->attributes['index'] = $indexName ?: true;
         return $this;
     }
-
 
     public function validator() {
         $args = func_get_args();
