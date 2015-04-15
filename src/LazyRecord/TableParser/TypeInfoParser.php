@@ -54,16 +54,18 @@ class TypeInfoParser
             if ($typeInfo->type === 'tinyint' && $typeInfo->length == 1) {
                 $typeInfo->type = 'boolean';
                 $typeInfo->isa = 'bool';
-                $typeInfo->length = NULL; // reset NULL
-            } else if (($typeInfo->type === 'integer' || $typeInfo->type === 'int') && $typeInfo->length == 11) {
+                $typeInfo->length = NULL;
+            } 
+            // reset length if it's mysql default data length
+            if (($typeInfo->type === 'integer' || $typeInfo->type === 'int') && $typeInfo->length == 11) {
                 $typeInfo->type = 'int';
-                $typeInfo->length = NULL; // reset NULL
-            } else if ($typeInfo->type === 'mediumint' && $typeInfo->length == 8) {
-                $typeInfo->length = NULL; // reset NULL
-            } else if ($typeInfo->type === 'smallint' && $typeInfo->length == 5) {
-                $typeInfo->length = NULL; // reset NULL
-            } else if ($typeInfo->type === 'bigint' && $typeInfo->length == 20) {
-                $typeInfo->length = NULL; // reset NULL
+                $typeInfo->length = NULL;
+            } else if ($typeInfo->type === 'mediumint' && ($typeInfo->length == 8 || $typeInfo->length == 9)) {
+                $typeInfo->length = NULL;
+            } else if ($typeInfo->type === 'smallint' && ($typeInfo->length == 5 || $typeInfo->length == 6)) {
+                $typeInfo->length = NULL;
+            } else if ($typeInfo->type === 'bigint' && ($typeInfo->length == 20 || $typeInfo->length == 21)) {
+                $typeInfo->length = NULL;
             }
 
         }

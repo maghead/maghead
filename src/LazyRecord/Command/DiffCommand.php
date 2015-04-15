@@ -19,7 +19,7 @@ class DiffCommand extends BaseCommand
 
     public function brief()
     {
-        return 'diff database schema.';
+        return 'Compare the defined schemas with the tables in database.';
     }
 
     public function execute()
@@ -38,22 +38,22 @@ class DiffCommand extends BaseCommand
 
         $this->logger->info('Comparing...');
 
-
         // XXX: currently only mysql support
         $parser = TableParser::create( $driver, $conn );
-        $tables = $parser->getTables();
+        $existingTables = $parser->getTables();
         $tableSchemas = $parser->getTableSchemaMap();
 
         $found = false;
         $comparator = new Comparator;
         foreach ($tableSchemas as $t => $b) {
-            $class = $b->getModelClass();
-            $ref = new ReflectionClass($class);
+            $this->logger->debug("Checking table $t");
+
+            $ref = new ReflectionObject($b);
 
             $filepath = $ref->getFilename();
             $filepath = substr($filepath,strlen(getcwd()) + 1);
 
-            if (in_array($t, $tables)) {
+            if (in_array($t, $existingTables)) {
                 $before = $parser->reverseTableSchema($t);
                 $diff = $comparator->compare($before, $b );
                 if (count($diff)) {
@@ -73,9 +73,6 @@ class DiffCommand extends BaseCommand
                 foreach( $diff as $diffItem ) {
                     echo "  ", $diffItem->toColumnAttrsString() , "\n";
                 }
-
-
-
                 $found = true;
             }
         }
