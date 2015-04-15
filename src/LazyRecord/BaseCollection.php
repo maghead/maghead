@@ -29,6 +29,8 @@ use SerializerKit\XmlSerializer;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Dumper;
 
+defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
+
 /**
  * base collection class
  */

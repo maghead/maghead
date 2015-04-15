@@ -44,6 +44,8 @@ use ActionKit\RecordAction\BaseRecordAction;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Dumper;
 
+defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
+
 class QueryException extends RuntimeException {
 
     public $debugInfo = array();
