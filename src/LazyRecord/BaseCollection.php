@@ -39,7 +39,6 @@ class BaseCollection
     IteratorAggregate
 {
     static $yamlExtension;
-    static $yamlEncoding = YAML_UTF8_ENCODING;
 
     protected $_lastSql;
 
@@ -710,7 +709,7 @@ class BaseCollection
         $list = $this->toArray();
         self::$yamlExtension = extension_loaded('yaml');
         if (self::$yamlExtension) {
-            return yaml_emit($list, self::$yamlExtension);
+            return yaml_emit($list, YAML_UTF8_ENCODING);
         }
         return file_put_contents($yamlFile, "---\n" . Yaml::dump($list, $inline = true, $exceptionOnInvalidType = true));
     }

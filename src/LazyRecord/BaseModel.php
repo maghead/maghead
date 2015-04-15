@@ -1821,7 +1821,7 @@ abstract class BaseModel implements
     {
         self::$yamlExtension = extension_loaded('yaml');
         if (self::$yamlExtension) {
-            return yaml_emit($this->_data, self::$yamlExtension);
+            return yaml_emit($this->_data, YAML_UTF8_ENCODING);
         }
         return file_put_contents($yamlFile, "---\n" . Yaml::dump($this->_data, $inline = true, $exceptionOnInvalidType = true));
     }
