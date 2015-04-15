@@ -467,7 +467,7 @@ class SchemaDeclare extends SchemaBase implements SchemaInterface
      *      post_id => post
      *   )
      */
-    public function one($accessor,$selfColumn,$foreignClass,$foreignColumn = null)
+    public function one($accessor,$foreignClass,$foreignColumn = null, $selfColumn)
     {
         // foreignColumn is default to foreignClass.primary key
         return $this->relations[ $accessor ] = new Relationship($accessor, array(

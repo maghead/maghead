@@ -163,7 +163,7 @@ abstract class SchemaBase
                 continue;
             }
 
-            if ( ! class_exists($class,true) ) {
+            if (! class_exists($class,true)) {
                 throw new RuntimeException("Foreign schema class $class not found." );
             }
 
