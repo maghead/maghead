@@ -71,6 +71,7 @@ class Migration implements Migratable
     }
 
 
+
     /**
      * Execute sql for migration
      *
@@ -94,63 +95,79 @@ class Migration implements Migratable
         }
     }
 
-    public function dropColumn($table, $arg)
+    public function alterTable($table)
     {
         $query = new AlterTableQuery($table);
-        if (is_callable($arg)) {
-            $c = new Column;
-            call_user_func($arg, $c);
-            $query->dropColumn($c);
-        } else if ($arg instanceof Column) {
-            $query->dropColumn($arg);
-        } else if (is_string($arg)) {
-            $column = new Column($arg);
-            $query->dropColumn($column);
-        } else {
-            if (isset($arg['name'])) {
-                $column = new Column($arg['name']);
-                $query->dropColumn($column);
-            } else {
-                throw new LogicException("Column name undefined.");
-            }
-        }
+        return $query;
     }
 
-    public function modifyColumn($table, $arg)
+    public function dropColumnByClosure($table, callable $closure)
     {
         $query = new AlterTableQuery($table);
-        if (is_callable($arg)) {
-            $c = new Column;
-            call_user_func($arg, $c);
-            $query->modifyColumn($c);
-        } else if ($arg instanceof Column) {
-            $query->modifyColumn($arg);
+        $column = new Column;
+        if ($ret = call_user_func($arg, $column)) {
+            $column = $ret;
         }
-        $sql = $query->toSql($this->connection->createQueryDriver(), new ArgumentArray);
+        $query->dropColumn($column);
+        $sql = $query->toSql($this->driver, new ArgumentArray);
         $this->query($sql);
     }
 
-    public function addColumn($table, $arg)
+    public function dropColumnByName($table, $columnName)
+    {
+        $column = new Column($arg);
+
+        $query = new AlterTableQuery($table);
+        $query->dropColumn($column);
+        $sql = $query->toSql($this->driver, new ArgumentArray);
+        $this->query($sql);
+    }
+
+    public function dropColumn($table, Column $column)
     {
         $query = new AlterTableQuery($table);
-        if (is_callable($arg)) {
-            $c = new Column;
-            call_user_func($arg, $c);
-            $query->addColumn($c);
-        } else if ($arg instanceof Column) {
-            $query->addColumn($arg);
-        } else if (is_string($arg)) {
-            $column = new Column($arg);
-            $query->addColumn($column);
-        } else {
-            if (isset($arg['name'])) {
-                $column = new Column($arg['name']);
-                $query->addColumn($column);
-            } else {
-                throw new LogicException("Column name undefined.");
-            }
+        $query->dropColumn($column);
+        $sql = $query->toSql($this->driver, new ArgumentArray);
+        $this->query($sql);
+    }
+
+    public function modifyColumnByClosure($table, callable $cb)
+    {
+        $query = new AlterTableQuery($table);
+        $column = new Column;
+        if ($ret = call_user_func($arg, $column)) {
+            $column = $ret;
         }
-        $sql = $query->toSql($this->connection->createQueryDriver(), new ArgumentArray);
+        $query->modifyColumn($column);
+        $sql = $query->toSql($this->driver, new ArgumentArray);
+        $this->query($sql);
+    }
+
+    public function modifyColumn($table, Column $column)
+    {
+        $query = new AlterTableQuery($table);
+        $query->modifyColumn($column);
+        $sql = $query->toSql($this->driver, new ArgumentArray);
+        $this->query($sql);
+    }
+
+    public function addColumnByClosure($table, callable $cb)
+    {
+        $query = new AlterTableQuery($table);
+        $column = new Column;
+        if ($ret = call_user_func($cb, $column)) {
+            $column = $ret;
+        }
+        $query->addColumn($column);
+        $sql = $query->toSql($this->driver, new ArgumentArray);
+        $this->query($sql);
+    }
+
+    public function addColumn($table, Column $column)
+    {
+        $query = new AlterTableQuery($table);
+        $query->addColumn($arg);
+        $sql = $query->toSql($this->driver, new ArgumentArray);
         $this->query($sql);
     }
 

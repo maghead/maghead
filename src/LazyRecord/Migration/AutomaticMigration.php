@@ -25,24 +25,23 @@ class AutomaticMigration extends Migration implements Migratable
     {
         $parser = TableParser::create($this->driver, $this->connection);
 
-        $tableSchemas = $parser->getTableSchemaMap();
-        $comparator = new Comparator;
+        $tableSchemas = $parser->getDeclareSchemaMap();
 
+        $comparator = new Comparator;
         $existingTables = $parser->getTables();
 
         // schema from runtime
-        foreach ($tableSchemas as $t => $after) {
-            $this->logger->debug("Checking table $t for schema " . get_class($after));
+        foreach ($tableSchemas as $table => $schema) {
+            $this->logger->debug("Checking table $table for schema " . get_class($schema));
 
-            $foundTable = in_array($t, $existingTables);
+            $foundTable = in_array($table, $existingTables);
             if ($foundTable) {
+                $this->logger->debug("Found existing table $table");
 
-                $this->logger->debug("Found existing table $t");
+                $before = $parser->reverseTableSchema($table);
 
-                $before = $parser->reverseTableSchema($t);
-
-                $this->logger->debug("Comparing table $t with schema");
-                $diffs = $comparator->compare($before , $after);
+                $this->logger->debug("Comparing table $table with schema");
+                $diffs = $comparator->compare($before , $schema);
 
                 if (count($diffs)) {
                     $this->logger->debug("Found " . count($diffs) . ' differences');
@@ -53,17 +52,25 @@ class AutomaticMigration extends Migration implements Migratable
 
                     switch($diff->flag) {
                     case '+':
-                        $this->addColumn($t , $column);
+                        $this->addColumn($table, $column);
                         break;
                     case '-':
                         if ($this->options->{'no-drop-column'}) {
                             continue;
                         }
-                        $this->dropColumn($t, $diff->name);
+                        $this->dropColumn($table, $diff->name);
                         break;
                     case '=':
                         if ($afterColumn = $diff->getAfterColumn()) {
-                            $this->modifyColumn($t, $afterColumn);
+                            $beforeColumn = $diff->getBeforeColumn();
+
+                            // check foreign key change
+                            if ($beforeColumn->primary != $afterColumn->primary) {
+                                $alterTable = $this->alterTable($table;
+                                $alterTable->add()->primaryKey(['id']);
+                            }
+
+                            $this->modifyColumn($table, $afterColumn);
                         } else {
                             throw new \Exception("afterColumn is undefined.");
                         }
@@ -74,10 +81,10 @@ class AutomaticMigration extends Migration implements Migratable
                     }
                 }
             } else {
-                $this->logger->debug("Table $t not found, importing schema...");
+                $this->logger->debug("Table $table not found, importing schema...");
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
-                $this->importSchema($after);
+                $this->importSchema($schema);
             }
         }
     }
