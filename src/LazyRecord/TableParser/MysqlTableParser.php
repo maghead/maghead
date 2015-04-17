@@ -64,7 +64,7 @@ class MysqlTableParser extends BaseTableParser
             }
 
 
-            if (strtolower($row['Extra']) === 'auto_increment') {
+            if (strtolower($row['Extra']) == 'auto_increment') {
                 $column->autoIncrement();
             }
 

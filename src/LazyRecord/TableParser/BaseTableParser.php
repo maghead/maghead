@@ -42,13 +42,25 @@ abstract class BaseTableParser
         $this->schemas = SchemaUtils::findSchemasByConfigLoader($this->config, $c['logger']);
         $this->schemas = SchemaUtils::filterBuildableSchemas($this->schemas);
 
+        // map table names to declare schema objects
         foreach($this->schemas as $schema) {
             $this->schemaMap[$schema->getTable()] = $schema;
         }
-
     }
 
-    public function getDefinedSchemas()
+
+    /**
+     * @return DeclareSchema[] Return declared schema object in associative array
+     */
+    public function getDeclareSchemaMap()
+    {
+        return $this->schemaMap;
+    }
+
+    /**
+     * Return declared schema objects in list
+     */
+    public function getDeclareSchemas()
     {
         return $this->schemas;
     }
@@ -74,16 +86,11 @@ abstract class BaseTableParser
     public function getTableSchemaMap()
     {
         $tableSchemas = array();
-        foreach($this->schemas as $schema) {
-            $tableSchemas[$schema->getTable()] = $schema;
-        }
 
         // Parse existing table and try to find the schema
         $tables = $this->getTables();
         foreach ($tables as $table) {
-            if (!isset($tableSchemas[$table])) {
-                $tableSchemas[$table] = $this->reverseTableSchema($table);
-            }
+            $tableSchemas[$table] = $this->reverseTableSchema($table);
         }
         return $tableSchemas;
     }
