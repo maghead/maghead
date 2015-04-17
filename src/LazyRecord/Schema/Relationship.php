@@ -5,6 +5,7 @@ use IteratorAggregate;
 use SQLBuilder\Universal\Syntax\Conditions;
 use LazyRecord\BaseCollection;
 use LazyRecord\BaseModel;
+use LogicException;
 
 class Relationship implements IteratorAggregate, ArrayAccess
 {
@@ -12,6 +13,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
     const HAS_ONE = 2;
     const BELONGS_TO = 3;
     const MANY_TO_MANY = 4;
+
 
     /**
      * @var array The stashed data
@@ -28,6 +30,8 @@ class Relationship implements IteratorAggregate, ArrayAccess
      * @var Conditions The SQLBuilder Condition Syntax Object
      */
     public $where;
+
+    public $orderBy = array();
 
 
     public function __construct($accessor, array $data = array())
@@ -110,8 +114,9 @@ class Relationship implements IteratorAggregate, ArrayAccess
 
     public function applyOrder(BaseCollection & $collection) 
     {
-        if ( isset($this->data['order']) ) {
-            foreach( $this->data['order'] as $o ) {
+        if (isset($this->data['orderBy']) && $this->data['orderBy']) {
+            var_dump( $this->data['orderBy'] ); 
+            foreach($this->data['orderBy'] as $o ) {
                 $collection->orderBy($o[0] , $o[1]);
             }
         }
@@ -151,6 +156,10 @@ class Relationship implements IteratorAggregate, ArrayAccess
     }
 
 
+    public function order()
+    {
+        throw new LogicException("order(column, ordering) is now deprecated, please use orderBy(column, ordering)");
+    }
 
     /**
      * Save order on the relationship.
@@ -160,10 +169,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
      */
     public function orderBy($column, $ordering)
     {
-        if (!isset($this->data['order']) ) {
-            $this->data['order'] = array();
-        }
-        $this->data['order'][] = array($column ,$ordering);
+        $this->orderBy[] = array($column ,$ordering);
         return $this;
     }
 
@@ -226,6 +232,9 @@ class Relationship implements IteratorAggregate, ArrayAccess
         $r = new self($data['accessor'], $data['data']);
         if (isset($data['where'])) {
             $r->where = $data['where'];
+        }
+        if (isset($data['orderBy'])) {
+            $r->orderBy = $data['orderBy'];
         }
         return $r;
     }
