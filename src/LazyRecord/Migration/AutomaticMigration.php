@@ -11,6 +11,7 @@ use LazyRecord\Migration\Migratable;
 use GetOptionKit\OptionResult;
 use SQLBuilder\Driver\BaseDriver;
 use PDO;
+use LogicException;
 
 class AutomaticMigration extends Migration implements Migratable
 {
@@ -34,49 +35,59 @@ class AutomaticMigration extends Migration implements Migratable
         foreach ($tableSchemas as $table => $schema) {
             $this->logger->debug("Checking table $table for schema " . get_class($schema));
 
-            $foundTable = in_array($table, $existingTables);
-            if ($foundTable) {
+            if (in_array($table, $existingTables)) {
                 $this->logger->debug("Found existing table $table");
+
+                $alterTable = $this->alterTable($table);
 
                 $before = $parser->reverseTableSchema($table);
 
-                $this->logger->debug("Comparing table $table with schema");
+                $this->logger->debug("Comparing table `$table` with schema");
                 $diffs = $comparator->compare($before , $schema);
 
-                if (count($diffs)) {
-                    $this->logger->debug("Found " . count($diffs) . ' differences');
+                if (empty($diffs)) {
+                    $this->logger->debug("Nothing changed.");
+                    continue;
                 }
 
+                $this->logger->debug("Found " . count($diffs) . ' differences');
+
                 foreach ($diffs as $diff) {
+                    if ($this->options->{'separate-alter'}) {
+                        $alterTable = $this->alterTable($table);
+                    }
+
                     $column = $diff->getAfterColumn();
 
                     switch($diff->flag) {
+
                     case '+':
-                        $this->addColumn($table, $column);
+                        $alterTable->addColumn($column);
                         break;
+
                     case '-':
                         if ($this->options->{'no-drop-column'}) {
                             continue;
                         }
-                        $this->dropColumn($table, $diff->name);
+                        $alterTable->dropColumnByName($diff->name);
                         break;
+
                     case '=':
-                        if ($afterColumn = $diff->getAfterColumn()) {
-                            $beforeColumn = $diff->getBeforeColumn();
-
-                            // check foreign key change
-                            if ($beforeColumn->primary != $afterColumn->primary) {
-                                $alterTable = $this->alterTable($table);
-                                $alterTable->add()->primaryKey(['id']);
-                            }
-
-                            $this->modifyColumn($table, $afterColumn);
-                        } else {
-                            throw new \Exception("afterColumn is undefined.");
+                        $afterColumn = $diff->getAfterColumn();
+                        $beforeColumn = $diff->getBeforeColumn();
+                        if (!$afterColumn || !$beforeColumn) {
+                            throw new LogicException("afterColumn or beforeColumn is undefined.");
                         }
+
+                        // check foreign key change
+                        if ($beforeColumn->primary != $afterColumn->primary) {
+                            $alterTable->add()->primaryKey(['id']);
+                        }
+
+                        $alterTable->modifyColumn($afterColumn);
                         break;
                     default:
-                        $this->logger->warn("** unsupported flag: " . $diff->flag);
+                        $this->logger->warn("** Unsupported flag: " . $diff->flag);
                         break;
                     }
                 }

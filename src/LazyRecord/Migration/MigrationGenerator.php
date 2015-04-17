@@ -116,24 +116,26 @@ class MigrationGenerator
                     if ($diff->flag == '+') {
                         $this->logger->info(sprintf("'%s': add column %s", $tableName, $diff->name) , 1);
 
-                        $upcall = new MethodCallExpr('$this','addColumn', [$tableName]);
-                        $downcall = new MethodCallExpr('$this','dropColumn', [$tableName, $diff->name]);
-
                         $column = $diff->getAfterColumn();
-                        $upcall->addArgument($column);
 
+                        $upcall = new MethodCallExpr('$this','addColumn', [$tableName, $column]);
                         $upgradeMethod[] = new Statement($upcall);
+
+                        $downcall = new MethodCallExpr('$this','dropColumnByName', [$tableName, $diff->name]);
                         $downgradeMethod[] = new Statement($downcall);
 
                     } else if ($diff->flag == '-') {
-                        $upcall = new MethodCallExpr('$this', 'dropColumn', [$tableName, $diff->name]);
+
+                        $upcall = new MethodCallExpr('$this', 'dropColumnByName', [$tableName, $diff->name]);
                         $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
+
                     } else if ($diff->flag == '=') {
 
                         if ($afterColumn = $diff->getAfterColumn()) {
+
                             $upcall = new MethodCallExpr('$this', 'modifyColumn', [$tableName, $afterColumn]);
                             $upgradeMethod[] = new Statement($upcall);
-                            // $this->modifyColumn($t, $afterColumn);
+
                         } else {
                             throw new \Exception("afterColumn is undefined.");
                         }

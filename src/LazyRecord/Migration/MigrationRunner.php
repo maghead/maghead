@@ -200,7 +200,6 @@ class MigrationRunner
 
     public function runUpgradeAutomatically(OptionResult $options = NULL)
     {
-        $this->logger->info("Performing automatic upgrade...");
         foreach ($this->dataSourceIds as $dsId) {
             $driver = $this->connectionManager->getQueryDriver($dsId);
             $connection = $this->connectionManager->getConnection($dsId);
@@ -216,6 +215,7 @@ class MigrationRunner
 
                 $this->logger->info('Committing...');
                 $connection->commit();
+
             } catch (Exception $e) {
                 $this->logger->error('Exception was thrown: ' . $e->getMessage());
                 $this->logger->warn('Rolling back ...');
