@@ -52,6 +52,11 @@ class Comparator
                 if ($bc->unsigned != $ac->unsigned) {
                     $d->appendDetail(new AttributeDiff('unsigned', $bc->unsigned, $ac->unsigned));
                 }
+
+                if ($bc->notNull != $ac->notNull) {
+                    $d->appendDetail(new AttributeDiff('notNull', $bc->notNull, $ac->notNull));
+                }
+
                 if ($bc->primary != $ac->primary) {
                     $d->appendDetail(new AttributeDiff('primary', $bc->primary, $ac->primary));
                 }

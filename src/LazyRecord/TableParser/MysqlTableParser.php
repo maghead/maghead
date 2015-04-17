@@ -45,10 +45,10 @@ class MysqlTableParser extends BaseTableParser
                 $column->unsigned();
             }
 
-            if ($row['Null'] == 'YES') {
-                $column->null();
-            } else {
+            if ($row['Null'] == 'NO') {
                 $column->notNull();
+            } else {
+                $column->null();
             }
 
             switch($row['Key']) {

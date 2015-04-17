@@ -12,7 +12,7 @@ class ColumnTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('foo',$column->name);
         $this->assertTrue($column->primary);
         $this->assertEquals('int',$column->type);
-        $this->assertFalse($column->null);
+        $this->assertTrue($column->notNull);
     }
 }
 
