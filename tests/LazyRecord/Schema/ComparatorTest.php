@@ -32,15 +32,15 @@ class ComparatorTest extends \PHPUnit_Framework_TestCase
 
         $firstDiff = $diffs[0];
         $this->assertEquals('changed', $firstDiff->name);
-        $this->assertEquals('=', $firstDiff->flag);
+        $this->assertEquals('M', $firstDiff->flag);
 
         $secondDiff = $diffs[1];
         $this->assertEquals('removed', $secondDiff->name);
-        $this->assertEquals('-', $secondDiff->flag);
+        $this->assertEquals('D', $secondDiff->flag);
 
         $thirdDiff = $diffs[2];
         $this->assertEquals('added', $thirdDiff->name);
-        $this->assertEquals('+', $thirdDiff->flag);
+        $this->assertEquals('A', $thirdDiff->flag);
 
 
 
