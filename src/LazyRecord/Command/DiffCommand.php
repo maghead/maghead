@@ -30,46 +30,43 @@ class DiffCommand extends BaseCommand
 
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
 
-        // XXX: from config files
         $dsId = $this->getCurrentDataSourceId();
         
         $conn = $connectionManager->getConnection($dsId);
         $driver = $connectionManager->getQueryDriver($dsId);
 
-        $this->logger->info('Comparing...');
+        $this->logger->info('Performing Comparison...');
 
-        // XXX: currently only mysql support
-        $parser = TableParser::create( $driver, $conn );
+        $parser = TableParser::create($driver, $conn);
         $existingTables = $parser->getTables();
-        $tableSchemas = $parser->getTableSchemaMap();
+        $tableSchemas = $parser->getDeclareSchemaMap();
 
         $found = false;
         $comparator = new Comparator;
-        foreach ($tableSchemas as $t => $b) {
-            $this->logger->debug("Checking table $t");
+        foreach ($tableSchemas as $table => $schema) {
+            $this->logger->debug("Checking table $table");
 
-            $ref = new ReflectionObject($b);
+            $ref = new ReflectionObject($schema);
 
             $filepath = $ref->getFilename();
             $filepath = substr($filepath,strlen(getcwd()) + 1);
 
-            if (in_array($t, $existingTables)) {
-                $before = $parser->reverseTableSchema($t);
-                $diff = $comparator->compare($before, $b );
-                if (count($diff)) {
+            if (in_array($table, $existingTables)) {
+                $before = $parser->reverseTableSchema($table);
+                $diffs = $comparator->compare($before, $schema);
+                if (count($diffs)) {
                     $found = true;
+                    $printer = new ComparatorConsolePrinter($diffs);
+                    $printer->beforeName = $table . ":data source [$dsId]";
+                    $printer->afterName = $table . ':' . $filepath ;
+                    $printer->output();
                 }
-                $printer = new ComparatorConsolePrinter($diff);
-                $printer->beforeName = $t . ":data source [$dsId]";
-                $printer->afterName = $t . ':' . $filepath ;
-                $printer->output();
-            }
-            else {
-                $msg = sprintf("+ table %-20s %s", "'" . $t . "'" ,$filepath);
+            } else {
+                $msg = sprintf("+ table %-20s %s", "'" . $table . "'" ,$filepath);
                 echo $formatter->format( $msg,'green') , "\n";
 
-                $a = isset($tableSchemas[ $t ]) ? $tableSchemas[ $t ] : null;
-                $diff = $comparator->compare(new DeclareSchema, $b);
+                $a = isset($tableSchemas[ $table ]) ? $tableSchemas[ $table ] : null;
+                $diff = $comparator->compare(new DeclareSchema, $schema);
                 foreach( $diff as $diffItem ) {
                     echo "  ", $diffItem->toColumnAttrsString() , "\n";
                 }
@@ -77,7 +74,7 @@ class DiffCommand extends BaseCommand
             }
         }
 
-        if( false === $found ) {
+        if (!$found) {
             $this->logger->info("No diff found");
         }
     }

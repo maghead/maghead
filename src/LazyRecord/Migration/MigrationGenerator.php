@@ -113,7 +113,7 @@ class MigrationGenerator
 
                 // generate alter table statement.
                 foreach ($diffs as $diff) {
-                    if ($diff->flag == '+') {
+                    if ($diff->flag == 'A') {
                         $this->logger->info(sprintf("'%s': add column %s", $tableName, $diff->name) , 1);
 
                         $column = $diff->getAfterColumn();
@@ -124,12 +124,12 @@ class MigrationGenerator
                         $downcall = new MethodCallExpr('$this','dropColumnByName', [$tableName, $diff->name]);
                         $downgradeMethod[] = new Statement($downcall);
 
-                    } else if ($diff->flag == '-') {
+                    } else if ($diff->flag == 'D') {
 
                         $upcall = new MethodCallExpr('$this', 'dropColumnByName', [$tableName, $diff->name]);
                         $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
 
-                    } else if ($diff->flag == '=') {
+                    } else if ($diff->flag == 'M') {
 
                         if ($afterColumn = $diff->getAfterColumn()) {
 
