@@ -181,6 +181,8 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         $column = new ColumnDeclare('id');
         $column->isa('int')
             ->integer()
+            ->notNull()
+            ->unsigned()
             ->primary()
             ->autoIncrement();
         $this->primaryKey = 'id';

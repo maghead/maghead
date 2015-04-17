@@ -86,7 +86,7 @@ class TypeInfoParser
                 $typeInfo->length = NULL;
             } 
             // reset length if it's mysql default data length
-            if (($typeInfo->type === 'integer' || $typeInfo->type === 'int') && $typeInfo->length == 11) {
+            if (($typeInfo->type === 'integer' || $typeInfo->type === 'int') && ($typeInfo->length == 11 || $typeInfo->length == 10)) {
                 $typeInfo->type = 'int';
                 $typeInfo->length = NULL;
             } else if ($typeInfo->type === 'mediumint' && ($typeInfo->length == 8 || $typeInfo->length == 9)) {
