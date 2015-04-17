@@ -64,7 +64,7 @@ class ColumnDiff {
     public function toColumnAttrsString() 
     {
         $column = $this->getAfterOrBeforeColumn();
-        $line = sprintf('% 2s %-16s %-16s',$this->flag, $this->name, $column->type );
+        $line = sprintf('%s %-16s %-16s',$this->flag, $this->name, $column->type );
         $attrStrs = array();
         foreach ($column->attributes as $property => $value ) {
             if ($property == "type") {

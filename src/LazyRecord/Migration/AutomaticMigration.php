@@ -45,7 +45,7 @@ class AutomaticMigration extends Migration implements Migratable
                 $this->logger->debug("Comparing table `$table` with schema");
                 $diffs = $comparator->compare($before , $schema);
 
-                if (empty($diffs)) {
+                if (count($diffs) == 0) {
                     $this->logger->debug("Nothing changed.");
                     continue;
                 }
@@ -61,18 +61,18 @@ class AutomaticMigration extends Migration implements Migratable
 
                     switch($diff->flag) {
 
-                    case '+':
+                    case 'A':
                         $alterTable->addColumn($column);
                         break;
 
-                    case '-':
+                    case 'D':
                         if ($this->options->{'no-drop-column'}) {
                             continue;
                         }
                         $alterTable->dropColumnByName($diff->name);
                         break;
 
-                    case '=':
+                    case 'M':
                         $afterColumn = $diff->getAfterColumn();
                         $beforeColumn = $diff->getBeforeColumn();
                         if (!$afterColumn || !$beforeColumn) {
@@ -91,6 +91,9 @@ class AutomaticMigration extends Migration implements Migratable
                         break;
                     }
                 }
+
+                $this->executeQuery($alterTable);
+
             } else {
                 $this->logger->debug("Table $table not found, importing schema...");
                 // generate create table statement.
@@ -102,9 +105,5 @@ class AutomaticMigration extends Migration implements Migratable
 
 
 }
-
-
-
-
 
 

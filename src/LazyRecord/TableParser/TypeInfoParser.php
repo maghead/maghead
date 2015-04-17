@@ -26,7 +26,7 @@ class TypeInfoParser
             |varchar
             |character\ varying
             |character
-            ) (?: \(  (?:(\d+),(\d+)|(\d+))   \) )? (unsigned)?/x', $type, $matches)) {
+            ) (?: \(  (?:(\d+),(\d+)|(\d+))   \) )?\s*(unsigned)?/x', $type, $matches)) {
 
             if (isset($matches[1]) && $matches[1] && isset($matches[2]) && isset($matches[3]) && $matches[2] && $matches[3]) {
                 $typeInfo->type = $matches[1];
@@ -41,6 +41,8 @@ class TypeInfoParser
 
             if (isset($matches[5]) && $matches[5]) {
                 $typeInfo->unsigned = TRUE;
+            } else {
+                $typeInfo->unsigned = FALSE;
             }
         }
 

@@ -82,6 +82,8 @@ abstract class BaseTableParser
 
     /**
      * Find all user-defined schema
+     *
+     * This is not used right now.
      */
     public function getTableSchemaMap()
     {

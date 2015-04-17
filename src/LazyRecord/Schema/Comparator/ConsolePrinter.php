@@ -29,15 +29,22 @@ class ConsolePrinter
 
         foreach ($this->diff as $d) {
             // for each diff items, show attribute diff
-            if ($d->flag == '=') {
-                echo '=' , ' ' , $d->name , "\n";
-                foreach ($d->details as $attrDiff) {
-                    echo $formatter->format($attrDiff->getBeforeDescription(), 'red');
-                    echo $formatter->format($attrDiff->getAfterDescription(), 'green');
-                }
-            } else {
-                $line = $d->toColumnAttrsString();
-                echo $formatter->format("  " . $line . "\n", $d->flag === '+' ? 'green' : 'red' );
+            switch ($d->flag) {
+                case 'M':
+                    echo $formatter->format('M ' . $d->name, 'yellow') , "\n";
+                    foreach ($d->details as $attrDiff) {
+                        echo "\t" . $formatter->format($attrDiff->getBeforeDescription(), 'red');
+                        echo "\t" . $formatter->format($attrDiff->getAfterDescription(), 'green');
+                    }
+                    break;
+                case 'A':
+                    $line = $d->toColumnAttrsString();
+                    echo $formatter->format($line . "\n", 'green');
+                    break;
+                case 'D':
+                    $line = $d->toColumnAttrsString();
+                    echo $formatter->format($line . "\n", 'red');
+                    break;
             }
         }
     }

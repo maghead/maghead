@@ -34,7 +34,7 @@ class Comparator
                 $ac = $afterColumns[$key];
                 $afterc = $afterColumns[$key];
 
-                $d = new ColumnDiff($key, '=', $bc, $ac);
+                $d = new ColumnDiff($key, 'M', $bc, $ac);
 
                 // compare the type info
                 if (strtolower($bc->type) != strtolower($ac->type)) {
@@ -90,12 +90,12 @@ class Comparator
             elseif ( isset($beforeColumns[$key]) && ! isset($afterColumns[$key]))
             {
                 // flag: -
-                $diff[] = new ColumnDiff($key, '-', $beforeColumns[$key], NULL);
+                $diff[] = new ColumnDiff($key, 'D', $beforeColumns[$key], NULL);
             }
             elseif ( isset($afterColumns[$key]) && ! isset($beforeColumns[$key]) ) 
             {
                 // flag: +
-                $diff[] = new ColumnDiff($key, '+', NULL, $afterColumns[$key]);
+                $diff[] = new ColumnDiff($key, 'A', NULL, $afterColumns[$key]);
             }
         }
         return $diff;

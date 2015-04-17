@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Migration;
 use SQLBuilder\Universal\Query\AlterTableQuery;
+use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
@@ -71,21 +72,24 @@ class Migration implements Migratable
     }
 
 
+    public function executeQuery(ToSqlInterface $query)
+    {
+        $sql = $query->toSql($this->driver, new ArgumentArray);
+        $this->query($sql);
+    }
+
 
     /**
      * Execute sql for migration
      *
      * @param string $sql
      */
-    public function query($sql, $title = NULL) 
+    public function query($sql, $title = '') 
     {
-        $sql = (array) $sql;
-        if ($title) {
-            $this->logger->info('Executing query: '. $title);
-        }
-        foreach ($sql as $q) {
+        $sqls = (array) $sql;
+        foreach ($sqls as $q) {
             if (strpos($q,"\n") !== false) {
-                $this->logger->info('Performing Query:');
+                $this->logger->info('Performing Query: ' . $title);
                 $this->logger->info($q);
             }
             if (count(explode("\n",$q)) == 1) {
