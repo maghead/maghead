@@ -56,6 +56,10 @@ class MysqlTableParser extends BaseTableParser
                     $column->primary(true);
                     $schema->primaryKey = $row['Field'];
                     break;
+                // If Key is MUL, multiple occurrences of a given value are
+                // permitted within the column. The column is the first
+                // column of a nonunique index or a unique-valued index
+                // that can contain NULL values.
                 case 'MUL':
                     break;
                 case 'UNI':
@@ -64,10 +68,23 @@ class MysqlTableParser extends BaseTableParser
             }
 
 
+            // Parse information from the Extra field
+            // @see https://dev.mysql.com/doc/refman/5.7/en/show-columns.html
+            $extraAttributes = [ ];
             if (strtolower($row['Extra']) == 'auto_increment') {
                 $column->autoIncrement();
+            } else if (preg_match('/ON UPDATE CURRENT_TIMESTAMP/i', $row['Extra'])) {
+                $extraAttributes['OnUpdateCurrentTimestamp'] = true;
+            } else if (preg_match('/VIRTUAL GENERATED/i', $row['Extra'])) {
+                $extraAttributes['VirtualGenerated'] = true;
+            } else if (preg_match('/VIRTUAL STORED/i', $row['Extra'])) {
+                $extraAttributes['VirtualStored'] = true;
             }
+            
 
+            // The default value returned from MySQL is string, we need the
+            // type information to cast them to PHP Scalar or other
+            // corresponding type
             if (NULL !== $row['Default']) {
                 $default = $row['Default'];
 

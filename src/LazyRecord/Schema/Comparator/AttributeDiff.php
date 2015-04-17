@@ -5,6 +5,7 @@ use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\ColumnAccessorInterface;
 use LazyRecord\Schema\Comparator\ColumnDiff;
 use LazyRecord\Schema\Comparator\AttributeDiff;
+use SQLBuilder\Raw;
 
 class AttributeDiff
 {
@@ -30,7 +31,9 @@ class AttributeDiff
     }
 
     public function serializeVar($var) {
-        if (is_object($var)) {
+        if ($var instanceof Raw) {
+            return $var->__toString();
+        } else if (is_object($var)) {
             return get_class($var);
         } else if (is_array($var)) {
             return join(', ', $var);
