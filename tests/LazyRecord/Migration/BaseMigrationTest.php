@@ -5,7 +5,7 @@ class FooMigration extends LazyRecord\Migration\Migration
 {
     public function upgrade() 
     {
-        $this->addColumn('foo', function($column) {
+        $this->addColumnByCallable('foo', function($column) {
             $column->type('varchar(128)')
                 ->default('(none)')
                 ->notNull();

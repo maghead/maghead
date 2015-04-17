@@ -66,7 +66,7 @@ class AutomaticMigration extends Migration implements Migratable
 
                             // check foreign key change
                             if ($beforeColumn->primary != $afterColumn->primary) {
-                                $alterTable = $this->alterTable($table;
+                                $alterTable = $this->alterTable($table);
                                 $alterTable->add()->primaryKey(['id']);
                             }
 

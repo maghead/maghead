@@ -131,7 +131,7 @@ class Migration implements Migratable
         $this->query($sql);
     }
 
-    public function modifyColumnByClosure($table, callable $cb)
+    public function modifyColumnByCallable($table, callable $cb)
     {
         $query = new AlterTableQuery($table);
         $column = new Column;
@@ -151,7 +151,7 @@ class Migration implements Migratable
         $this->query($sql);
     }
 
-    public function addColumnByClosure($table, callable $cb)
+    public function addColumnByCallable($table, callable $cb)
     {
         $query = new AlterTableQuery($table);
         $column = new Column;
@@ -166,7 +166,7 @@ class Migration implements Migratable
     public function addColumn($table, Column $column)
     {
         $query = new AlterTableQuery($table);
-        $query->addColumn($arg);
+        $query->addColumn($column);
         $sql = $query->toSql($this->driver, new ArgumentArray);
         $this->query($sql);
     }
