@@ -77,15 +77,12 @@ class Migration implements Migratable
      *
      * @param string $sql
      */
-    public function query($sql, $title = NULL) 
+    public function query($sql, $title = '') 
     {
-        $sql = (array) $sql;
-        if ($title) {
-            $this->logger->info('Executing query: '. $title);
-        }
-        foreach ($sql as $q) {
+        $sqls = (array) $sql;
+        foreach ($sqls as $q) {
             if (strpos($q,"\n") !== false) {
-                $this->logger->info('Performing Query:');
+                $this->logger->info('Performing Query: ' . $title);
                 $this->logger->info($q);
             }
             if (count(explode("\n",$q)) == 1) {
