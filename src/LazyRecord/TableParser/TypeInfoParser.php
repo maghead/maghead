@@ -12,7 +12,7 @@ class TypeInfoParser
     {
         $type = strtolower($typeName);
 
-        $typeInfo = new TypeInfo($type);
+        $typeInfo = new TypeInfo();
 
         // Type name with precision
         if (preg_match('/^(
@@ -28,6 +28,8 @@ class TypeInfoParser
             |varchar
             |character\ varying
             |character
+            |binary
+            |varbinary
             ) (?: \(  (?:(\d+),(\d+)|(\d+))   \) )?\s*(unsigned)?/ix', $typeName, $matches)) {
 
             if (isset($matches[1]) && $matches[1] && isset($matches[2]) && isset($matches[3]) && $matches[2] && $matches[3]) {
@@ -66,6 +68,9 @@ class TypeInfoParser
                 $typeInfo->set = $values;
                 break;
             }
+        } else {
+            // for type like: 'text' or 'blob'.. type name without length or decimals
+            $typeInfo->type = strtolower($typeName);
         }
 
         // Canonicalization for PgSQL

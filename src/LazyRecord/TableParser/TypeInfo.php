@@ -21,7 +21,7 @@ class TypeInfo {
 
     public $set = array();
 
-    public function __construct($typeName, $length = NULL)
+    public function __construct($typeName = NULL, $length = NULL)
     {
         $this->type = $typeName;
         $this->length = $length;
