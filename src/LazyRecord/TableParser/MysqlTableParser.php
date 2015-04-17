@@ -102,8 +102,14 @@ class MysqlTableParser extends BaseTableParser
                     $column->default(floatval($default));
                 } else if ($typeInfo->isa == 'str') {
                     $column->default($default);
-                } else if ($typeInfo->isa == 'DateTime') {
-                    if (strtolower($default) == 'current_timestamp') {
+                } else if ($typeInfo->type == 'timestamp') {
+                    // for mysql, timestamp fields' default value is
+                    // 'current_timestamp' and 'on update current_timestamp'
+                    // when the two conditions are matched, we need to elimante
+                    // the default value just as what we've defined in schema.
+                    if (isset($extraAttributes['OnUpdateCurrentTimestamp']) && strtolower($default) == 'current_timestamp') {
+                        // Do nothing
+                    } else if (strtolower($default) == 'current_timestamp') {
                         $column->default(new Raw($default));
                     } else if (is_numeric($default)) {
                         $column->default(intval($default));
