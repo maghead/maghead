@@ -41,7 +41,6 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
             'unique'        => self::ATTR_FLAG, /* unique, should support by SQL syntax */
             'null'          => self::ATTR_FLAG,
             'notNull'       => self::ATTR_FLAG,
-            'required'      => self::ATTR_FLAG,
             'typeConstraint' => self::ATTR_FLAG,
             'timezone'      => self::ATTR_FLAG,
             'renderable'    => self::ATTR_FLAG,
@@ -102,6 +101,16 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
     public function name($name) 
     {
         $this->name = $name;
+        return $this;
+    }
+
+
+    /**
+     * This method is an alias of "notNull"
+     */
+    public function required()
+    {
+        $this->notNull = false;
         return $this;
     }
 
