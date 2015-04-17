@@ -15,9 +15,11 @@ class TypeInfoParser
         $typeInfo = new TypeInfo($type);
 
         // Type name with precision
-        if (preg_match('/^(double
+        if (preg_match('/^(
+             double
             |float
             |int
+            |integer
             |tinyint
             |smallint
             |mediumint
@@ -26,23 +28,43 @@ class TypeInfoParser
             |varchar
             |character\ varying
             |character
-            ) (?: \(  (?:(\d+),(\d+)|(\d+))   \) )?\s*(unsigned)?/x', $type, $matches)) {
+            ) (?: \(  (?:(\d+),(\d+)|(\d+))   \) )?\s*(unsigned)?/ix', $typeName, $matches)) {
 
             if (isset($matches[1]) && $matches[1] && isset($matches[2]) && isset($matches[3]) && $matches[2] && $matches[3]) {
-                $typeInfo->type = $matches[1];
+                $typeInfo->type = strtolower($matches[1]);
                 $typeInfo->length = intval($matches[2]);
                 $typeInfo->precision = intval($matches[3]);
             } else if (isset($matches[1]) && $matches[1] && isset($matches[4]) && $matches[4]) {
-                $typeInfo->type = $matches[1]; // override the original type
+                $typeInfo->type = strtolower($matches[1]); // override the original type
                 $typeInfo->length = intval($matches[4]);
             } else if (isset($matches[1]) && $matches[1]) {
-                $typeInfo->type = $matches[1];
+                $typeInfo->type = strtolower($matches[1]);
             }
 
             if (isset($matches[5]) && $matches[5]) {
                 $typeInfo->unsigned = TRUE;
             } else {
                 $typeInfo->unsigned = FALSE;
+            }
+        } else if ($driver instanceof MySQLDriver && preg_match('/(enum|set)\((.*)\)/', $typeName, $matches)) {
+            $typeInfo->type = strtolower($matches[1]);
+            $values = array();
+            $strvalues = explode(',',$matches[2]);
+            foreach ($strvalues as $strvalue) {
+                // looks like a string
+                if (preg_match('/^([\'"])(.*)\\1$/', $strvalue, $matches)) {
+                    $values[] = $matches[2];
+                } else if (is_numeric($strvalue)) {
+                    $values[] = intval($strvalue);
+                }
+            }
+            switch ($typeInfo->type) {
+            case 'enum':
+                $typeInfo->enum = $values;
+                break;
+            case 'set':
+                $typeInfo->set = $values;
+                break;
             }
         }
 
@@ -72,34 +94,37 @@ class TypeInfoParser
 
         }
 
-        if (in_array($typeInfo->type,[ 'char', 'varchar', 'text' ])) {
-            $typeInfo->isa = 'str';
-        } else if (preg_match('/int/', $typeInfo->type)) {
-            $typeInfo->isa = 'int';
-        } else if (in_array($typeInfo->type, ['boolean', 'bool'])) {
-            $typeInfo->isa = 'bool';
-        } else if (in_array($typeInfo->type, ['blob', 'binary'])) {
-            $typeInfo->isa = 'str';
-        } else if ($typeInfo->type == 'double') {
-            $typeInfo->isa = 'double';
-        } else if ($typeInfo->type == 'float') {
-            $typeInfo->isa = 'float';
-        } else if ($typeInfo->type == 'point') {
-            $typeInfo->isa = 'point';
-        } else if ('datetime' === $typeInfo->type || 'date' === $typeInfo->type ) {
-            $typeInfo->isa = 'DateTime';
-        } 
-        // For postgresql, the 'timestamp' can be 'timestamp with timezone'
-        else if (preg_match('/timestamp/', $typeInfo->type)) 
-        {
-            $typeInfo->isa = 'DateTime';
-        } 
-        else if ('time' == $typeInfo->type) 
-        {
-            // DateTime::createFromFormat('H:s','10:00')
-            $typeInfo->isa = 'DateTime';
-        } else {
-            throw new Exception("Unknown type $type");
+        // Update isa property
+        if (!$typeInfo->isa) {
+            if (in_array($typeInfo->type,[ 'char', 'varchar', 'text' ])) {
+                $typeInfo->isa = 'str';
+            } else if (preg_match('/int/', $typeInfo->type)) {
+                $typeInfo->isa = 'int';
+            } else if (in_array($typeInfo->type, ['boolean', 'bool'])) {
+                $typeInfo->isa = 'bool';
+            } else if (in_array($typeInfo->type, ['blob', 'binary'])) {
+                $typeInfo->isa = 'str';
+            } else if ($typeInfo->type == 'double') {
+                $typeInfo->isa = 'double';
+            } else if ($typeInfo->type == 'float') {
+                $typeInfo->isa = 'float';
+            } else if ($typeInfo->type == 'enum') {
+                $typeInfo->isa = 'enum';
+            } else if ($typeInfo->type == 'set') {
+                $typeInfo->isa = 'set';
+            } else if ($typeInfo->type == 'point') {
+                $typeInfo->isa = 'point';
+            } else if ('datetime' === $typeInfo->type || 'date' === $typeInfo->type ) {
+                $typeInfo->isa = 'DateTime';
+            } else if (preg_match('/timestamp/', $typeInfo->type)) {
+                // For postgresql, the 'timestamp' can be 'timestamp with timezone'
+                $typeInfo->isa = 'DateTime';
+            } else if ('time' == $typeInfo->type) {
+                // DateTime::createFromFormat('H:s','10:00')
+                $typeInfo->isa = 'DateTime';
+            } else {
+                throw new Exception("Unknown type $type");
+            }
         }
         return $typeInfo;
     }

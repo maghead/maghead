@@ -1,5 +1,6 @@
 <?php
 use SQLBuilder\Driver\PDOSQLiteDriver;
+use LazyRecord\TableParser\SqliteTableParser;
 
 class SqliteTableParserTest extends PHPUnit_Framework_TestCase
 {
@@ -12,10 +13,11 @@ class SqliteTableParserTest extends PHPUnit_Framework_TestCase
         $pdo->query('CREATE TABLE foo ( id integer primary key autoincrement, name varchar(12), phone varchar(32) unique , address text not null );');
         $pdo->query('CREATE TABLE bar ( id integer primary key autoincrement, confirmed boolean default false, content blob );');
 
-        $parser = new LazyRecord\TableParser\SqliteTableParser(new PDOSQLiteDriver($pdo),$pdo);
-        ok($parser);
-        ok($parser->getTables());
-        count_ok(2,$parser->getTables());
+        $parser = new SqliteTableParser(new PDOSQLiteDriver($pdo),$pdo);
+        $tables = $parser->getTables();
+
+        $this->assertNotEmpty($tables);
+        $this->assertCount(2, $tables);
 
         $sql = $parser->getTableSql('foo');
         ok($sql);
@@ -27,7 +29,7 @@ class SqliteTableParserTest extends PHPUnit_Framework_TestCase
         $this->assertNotEmpty($columns);
 
         $schema = $parser->reverseTableSchema('bar');
-        ok($schema);
+        $this->assertNotNull($schema);
 
         $id = $schema->getColumn('id');
         $this->assertNotNull($id);

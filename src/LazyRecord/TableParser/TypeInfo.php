@@ -17,6 +17,10 @@ class TypeInfo {
 
     public $unsigned;
 
+    public $enum = array();
+
+    public $set = array();
+
     public function __construct($typeName, $length = NULL)
     {
         $this->type = $typeName;

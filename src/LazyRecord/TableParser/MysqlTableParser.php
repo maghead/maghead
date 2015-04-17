@@ -45,6 +45,12 @@ class MysqlTableParser extends BaseTableParser
                 $column->unsigned();
             }
 
+            if ($typeInfo->enum) {
+                $column->enum($typeInfo->enum);
+            } else if ($typeInfo->set) {
+                $column->set($typeInfo->set);
+            }
+
             if ($row['Null'] == 'NO') {
                 $column->notNull();
             } else {
