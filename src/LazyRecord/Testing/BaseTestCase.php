@@ -1,14 +1,16 @@
 <?php
 namespace LazyRecord\Testing;
 use LazyRecord\ConnectionManager;
-use LazyRecord\SqlBuilder;
+use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\BaseModel;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Schema\SchemaGenerator;
+use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\ClassUtils;
 use LazyRecord\BaseCollection;
 use LazyRecord\Result;
 use LazyRecord\PDOExceptionPrinter;
+use SQLBuilder\Driver\BaseDriver;
 use PHPUnit_Framework_TestCase;
 use CLIFramework\Logger;
 use PDO;
@@ -108,10 +110,32 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
         if (method_exists($this, 'getModels')) {
             $generator = new SchemaGenerator($this->config, $this->logger);
-            $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
+            $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
             $classMap = $generator->generate($schemas);
         }
     }
+
+    /**
+     * @return array[] class map
+     */
+    public function updateSchemaFiles(DeclareSchema $schema)
+    {
+        $generator = new SchemaGenerator($this->config, $this->logger);
+        return $generator->generate([$schema]);
+    }
+
+
+    public function buildSchemaTable(BaseDriver $driver, PDO $conn, DeclareSchema $schema, array $options = [ 'rebuild' => true ])
+    {
+        $builder = SqlBuilder::create($driver, $options);
+        $this->assertNotNull($builder);
+
+        $sqls = $builder->build($schema);
+        foreach($sqls as $sql ) {
+            $conn->query( $sql );
+        }
+    }
+
 
     public function matrixDataProvider(array $alist, array $blist)
     {

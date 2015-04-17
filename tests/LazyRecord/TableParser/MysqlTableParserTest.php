@@ -8,8 +8,6 @@ use LazyRecord\ConnectionManager;
 
 class MysqlTableParserTest extends BaseTestCase
 {
-
-
     public function setUp()
     {
         parent::setUp();
@@ -53,6 +51,20 @@ class MysqlTableParserTest extends BaseTestCase
         $column = $schema->getColumn('val');
         $this->assertNotNull($column);
         $this->assertSame(['ON','OFF','PENDING'],$column->enum);
+    }
+
+    public function testReverseSchemaAndCompare()
+    {
+        $manager = ConnectionManager::getInstance();
+        $conn = $manager->getConnection('mysql');
+        $driver = $manager->getQueryDriver('mysql');
+
+        $schema = new \AuthorBooks\Model\AuthorSchema;
+        $this->updateSchemaFiles($schema);
+        $this->buildSchemaTable($driver, $conn, $schema);
+
+        $parser = new MysqlTableParser($driver, $conn);
+        $parser->reverseTableSchema('authors');
     }
 
     public function testGetTables()

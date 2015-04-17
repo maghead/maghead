@@ -52,13 +52,15 @@ abstract class ModelTestCase extends BaseTestCase
 
         if ($rebuild) {
             $builder = SqlBuilder::create($driver , array('rebuild' => true));
-            ok($builder, 'SqlBuilder OK');
+            $this->assertNotNull($builder);
 
-            $schemas = ClassUtils::schema_classes_to_objects( $this->getModels() );
+            // $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
+            $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
             foreach( $schemas as $schema ) {
                 $sqls = $builder->build($schema);
-                ok($sqls);
-                foreach( $sqls as $sql ) {
+                $this->assertNotEmpty($sqls);
+
+                foreach ($sqls as $sql) {
                     $dbh->query( $sql );
                 }
             }
