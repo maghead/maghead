@@ -4,10 +4,11 @@ LazyRecord
 ![Logo](https://c9s.github.io/LazyRecord/assets/images/LazyRecord.svg)
 
 [![Build Status](https://travis-ci.org/c9s/LazyRecord.svg?branch=master)](https://travis-ci.org/c9s/LazyRecord)
-
 [![Coverage Status](https://img.shields.io/coveralls/c9s/LazyRecord.svg)](https://coveralls.io/r/c9s/LazyRecord)
-
-[![Latest Stable Version](https://poser.pugx.org/corneltek/lazyrecord/v/stable.svg)](https://packagist.org/packages/corneltek/lazyrecord) [![Total Downloads](https://poser.pugx.org/corneltek/lazyrecord/downloads.svg)](https://packagist.org/packages/corneltek/lazyrecord) [![Latest Unstable Version](https://poser.pugx.org/corneltek/lazyrecord/v/unstable.svg)](https://packagist.org/packages/corneltek/lazyrecord) [![License](https://poser.pugx.org/corneltek/lazyrecord/license.svg)](https://packagist.org/packages/corneltek/lazyrecord)
+[![Latest Stable Version](https://poser.pugx.org/corneltek/lazyrecord/v/stable.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
+[![Total Downloads](https://poser.pugx.org/corneltek/lazyrecord/downloads.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
+[![Latest Unstable Version](https://poser.pugx.org/corneltek/lazyrecord/v/unstable.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
+[![License](https://poser.pugx.org/corneltek/lazyrecord/license.svg)](https://packagist.org/packages/corneltek/lazyrecord)
 
 LazyRecord is an open-source Object-Relational Mapping (ORM) for PHP5. 
 
