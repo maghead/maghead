@@ -19,7 +19,8 @@ use PDO;
 use PDOException;
 use Exception;
 use LogicException;
-
+use InvalidArgumentException;
+use BadMethodCallException;
 
 class Migration implements Migratable
 {
@@ -75,9 +76,20 @@ class Migration implements Migratable
     public function executeQuery(ToSqlInterface $query)
     {
         $sql = $query->toSql($this->driver, new ArgumentArray);
+        $this->showSql($sql);
         $this->query($sql);
     }
 
+
+    public function showSql($sql, $title = '')
+    {
+        if (strpos($q,"\n") !== false) {
+            $this->logger->info('Performing Query: ' . $title);
+            $this->logger->info($sql);
+        } else {
+            $this->logger->info('Performing Query: ' . $sql);
+        }
+    }
 
     /**
      * Execute sql for migration
@@ -88,13 +100,7 @@ class Migration implements Migratable
     {
         $sqls = (array) $sql;
         foreach ($sqls as $q) {
-            if (strpos($q,"\n") !== false) {
-                $this->logger->info('Performing Query: ' . $title);
-                $this->logger->info($q);
-            }
-            if (count(explode("\n",$q)) == 1) {
-                $this->logger->info('Performing Query: ' . $q);
-            }
+            $this->showSql($q, $title);
             return $this->connection->query($q);
         }
     }
@@ -203,7 +209,7 @@ class Migration implements Migratable
             $sqls = $this->builder->build($schema);
             $this->query($sqls);
         } else {
-            throw new Exception("Unsupported schema type");
+            throw new InvalidArgumentException("Unsupported schema type");
         }
     }
 
@@ -222,6 +228,8 @@ class Migration implements Migratable
             $this->logger->info($m);
             $sql = call_user_func_array(array($this->builder,$m) , $a );
             $this->query($sql);
+        } else {
+            throw new BadMethodCallException("Method $m does not exist.");
         }
     }
 }
