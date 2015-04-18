@@ -1,5 +1,5 @@
 #!/bin/bash
-onion compile \
+onion --debug compile \
     --lib src \
     --lib vendor/corneltek/cascading-attribute/src \
     --lib vendor/corneltek/cliframework/src \
@@ -12,6 +12,11 @@ onion compile \
     --lib vendor/corneltek/universal/src \
     --lib vendor/corneltek/universal-cache/src \
     --lib vendor/corneltek/validationkit/src \
+    --lib vendor/symfony/yaml \
+    --exclude "Test.php$" \
+    --exclude "Tests/Fixtures" \
+    --exclude ".git" \
+    --exclude "composer.json$" \
     --classloader \
     --bootstrap scripts/lazy.emb.php \
     --executable \
