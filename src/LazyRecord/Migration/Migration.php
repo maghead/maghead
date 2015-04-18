@@ -83,7 +83,7 @@ class Migration implements Migratable
 
     public function showSql($sql, $title = '')
     {
-        if (strpos($q,"\n") !== false) {
+        if (strpos($sql,"\n") !== false) {
             $this->logger->info('Performing Query: ' . $title);
             $this->logger->info($sql);
         } else {
