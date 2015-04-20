@@ -38,6 +38,18 @@ class PageModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
     }
 
+    public function testSaveRevisionWhenUpdate()
+    {
+        $page = new Page;
+        $ret = $page->create([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
+        $this->assertResultSuccess($ret);
+
+        $page->saveRevisionWhenUpdate = true;
+
+        $ret = $page->update([ 'title' => 'Book A' ]);
+        $this->assertResultSuccess($ret);
+
+    }
 
 
     public function testRevisionRelationship() {

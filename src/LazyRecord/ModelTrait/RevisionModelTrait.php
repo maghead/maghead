@@ -6,7 +6,16 @@ use Exception;
 trait RevisionModelTrait
 {
 
-    public function saveWithRevision()
+    public $saveRevisionWhenUpdate = false;
+
+    public function beforeUpdate($args = array()) {
+        if ($this->saveRevisionWhenUpdate) {
+            $rev = $this->createRevision();
+        }
+        return $args;
+    }
+
+    public function createRevision() 
     {
         // back up data
         $modelClass = get_class($this);
@@ -40,6 +49,13 @@ trait RevisionModelTrait
         if ($ret->error) {
             throw $ret->toException("Can't create revision.");
         }
+        return $rev;
+    }
+
+
+    public function saveWithRevision()
+    {
+        $rev = $this->createRevision();
         $ret = $this->save();
         if ($ret->error) {
             throw $ret->toException("Can't save record.");
