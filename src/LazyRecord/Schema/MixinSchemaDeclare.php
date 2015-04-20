@@ -3,12 +3,24 @@ namespace LazyRecord\Schema;
 
 class MixinSchemaDeclare extends DeclareSchema
 {
+    protected $parentSchema;
+
+    public function __construct($parentSchema, array $options = array()) {
+        $this->parentSchema = $parentSchema;
+        parent::__construct($options);
+    }
+
+
+    public function getParentSchema() {
+        return $this->parentSchema;
+    }
+
     /**
      * Build schema
      */
     public function build(array $options = array())
     {
-        $this->schema( $options );
+        $this->schema($options);
         // we don't need primary field (id) for mixin schema
     }
 

@@ -35,6 +35,10 @@
         <directory suffix="Test.php">tests/LazyRecord/ModelTest</directory>
     </testsuite>
 
+    <testsuite name="PageApp">
+        <directory suffix="Test.php">tests/PageApp</directory>
+    </testsuite>
+
     <testsuite name="AuthorBooks">
         <directory suffix="Test.php">tests/AuthorBooks</directory>
     </testsuite>

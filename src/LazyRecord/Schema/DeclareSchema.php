@@ -25,6 +25,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public $collectionTraitClasses = array();
 
+    /**
+     * Constructor of declare schema.
+     *
+     * The constructor calls `build` method to build the schema information.
+     */
     public function __construct(array $options = array())
     {
         $this->build($options);
@@ -335,12 +340,13 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
             }
         }
 
-        $mixin = new $class($options);
+        $mixin = new $class($this, $options);
         $this->addMixinSchemaClass($class);
 
         /* merge columns into self */
-        $this->columns = array_merge( $this->columns, $mixin->columns );
-        $this->relations = array_merge($mixin->relations, $this->relations);
+        $this->columns = array_merge($this->columns, $mixin->columns);
+        $this->relations = array_merge($this->relations, $mixin->relations);
+        $this->modelTraitClasses = array_merge($this->modelTraitClasses, $mixin->modelTraitClasses);
     }
 
     public function getLabel()

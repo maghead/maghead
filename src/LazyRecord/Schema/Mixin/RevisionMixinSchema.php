@@ -31,7 +31,10 @@ class RevisionMixinSchema extends MixinSchemaDeclare
                 return date('c'); 
             });
 
-        $this->addModelTrait('RevisionModelTrait');
+        $this->belongsTo('root_revision', get_class($this->parentSchema), 'id', 'revision_root_id');
+        $this->belongsTo('parent_revision', get_class($this->parentSchema), 'id', 'revision_parent_id');
+
+        $this->addModelTrait('LazyRecord\\ModelTrait\\RevisionModelTrait');
     }
 }
 

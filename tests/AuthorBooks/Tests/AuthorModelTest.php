@@ -9,7 +9,7 @@ class AuthorModelTest extends ModelTestCase
 
     public function getModels()
     {
-        return array('AuthorBooks\Model\AuthorSchema');
+        return [new \AuthorBooks\Model\AuthorSchema];
     }
 
     /**
