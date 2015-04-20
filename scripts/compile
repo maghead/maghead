@@ -13,6 +13,8 @@ onion --debug compile \
     --lib vendor/corneltek/universal-cache/src \
     --lib vendor/corneltek/validationkit/src \
     --lib vendor/symfony/yaml \
+    --lib vendor/pimple/pimple/src \
+    --lib vendor/doctrine/inflector/lib \
     --exclude "Test.php$" \
     --exclude "Tests/Fixtures" \
     --exclude ".git" \
