@@ -1,12 +1,12 @@
 <?php
 namespace LazyRecord\Schema\Mixin;
-use LazyRecord\Schema\MixinSchemaDeclare;
+use LazyRecord\Schema\MixinDeclareSchema;
 use LazyRecord\Schema;
 use DateTime;
 
 trigger_error("Deprecated class, please use MetadataMixinSchema instead.", E_USER_DEPRECATED);
 
-class MetadataSchema extends MixinSchemaDeclare
+class MetadataSchema extends MixinDeclareSchema
 {
     public function schema()
     {

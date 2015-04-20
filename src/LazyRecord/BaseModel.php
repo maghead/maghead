@@ -147,7 +147,7 @@ abstract class BaseModel implements
     static $_cacheInstance;
 
     /**
-     * @var array Mixin classes are emtpy. (MixinSchemaDeclare)
+     * @var array Mixin classes are emtpy. (MixinDeclareSchema)
      * */
     static $mixin_classes = array();
 

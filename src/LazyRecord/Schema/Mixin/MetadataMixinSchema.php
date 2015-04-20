@@ -1,10 +1,10 @@
 <?php
 namespace LazyRecord\Schema\Mixin;
-use LazyRecord\Schema\MixinSchemaDeclare;
+use LazyRecord\Schema\MixinDeclareSchema;
 use LazyRecord\Schema;
 use DateTime;
 
-class MetadataMixinSchema extends MixinSchemaDeclare
+class MetadataMixinSchema extends MixinDeclareSchema
 {
     public function schema()
     {

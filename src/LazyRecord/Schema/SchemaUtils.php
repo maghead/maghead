@@ -4,7 +4,7 @@ use CLIFramework\Logger;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\DynamicSchemaDeclare;
-use LazyRecord\Schema\MixinSchemaDeclare;
+use LazyRecord\Schema\MixinDeclareSchema;
 use LazyRecord\Schema\TemplateSchema;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
@@ -77,7 +77,7 @@ class SchemaUtils
         foreach ($schemas as $schema) {
             // skip abstract classes.
             if (   $schema instanceof DynamicSchemaDeclare 
-                || $schema instanceof MixinSchemaDeclare 
+                || $schema instanceof MixinDeclareSchema 
                 || (! $schema instanceof SchemaDeclare && ! $schema instanceof DeclareSchema)
             ) { continue; }
 

@@ -91,8 +91,8 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
             if (
               ! is_subclass_of($schema, 'LazyRecord\Schema\DeclareSchema',true)
               || is_a($schema, 'LazyRecord\Schema\DynamicSchemaDeclare',true)
-              || is_a($schema, 'LazyRecord\Schema\MixinSchemaDeclare',true)
-              || is_subclass_of($schema, 'LazyRecord\Schema\MixinSchemaDeclare',true)
+              || is_a($schema, 'LazyRecord\Schema\MixinDeclareSchema',true)
+              || is_subclass_of($schema, 'LazyRecord\Schema\MixinDeclareSchema',true)
             ) { 
                 continue; 
             }

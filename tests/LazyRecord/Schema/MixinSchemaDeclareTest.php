@@ -1,6 +1,6 @@
 <?php
 
-class MixinSchemaDeclareTest extends PHPUnit_Framework_TestCase
+class MixinDeclareSchemaTest extends PHPUnit_Framework_TestCase
 {
     public function testCallMixinSchemaDirectly()
     {
