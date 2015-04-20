@@ -20,6 +20,12 @@ use SQLBuilder\Universal\Syntax\Column;
  */
 class ColumnDeclare extends Column implements ColumnAccessorInterface
 {
+
+    /**
+     * @var string[]
+     */
+    public $locales;
+
     /**
      * @var array $attributes
      *
@@ -104,6 +110,11 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
         return $this;
     }
 
+
+    public function localize(array $locales) {
+        $this->locales = $locales;
+        return $this;
+    }
 
     /**
      * This method is an alias of "notNull"
