@@ -29,6 +29,7 @@ class MixinSchemaDeclare extends DeclareSchema
     /* is_a can not work on an abstract class */
     public function schema() { }
 
+    public function postSchema() {  }
 
     /**
      * compatible methods for BaseModel to mixin

@@ -8,6 +8,7 @@ use ReflectionClass;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\Schema\Relationship;
+use LazyRecord\Schema\ColumnDeclare;
 
 use ClassTemplate\TemplateClassFile;
 use ClassTemplate\ClassTrait;
@@ -41,6 +42,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public function build(array $options = array())
     {
         $this->schema($options);
+
+        // postSchema is added for mixin that needs all schema information, for example LocalizeMixin
+        foreach ($this->mixinSchemas as $mixin) {
+            $mixin->postSchema();
+        }
 
         $this->primaryKey = $this->findPrimaryKey();
 
@@ -342,6 +348,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
 
         $mixin = new $class($this, $options);
         $this->addMixinSchemaClass($class);
+        $this->mixinSchemas[] = $mixin;
 
         /* merge columns into self */
         $this->columns = array_merge($this->columns, $mixin->columns);
@@ -431,13 +438,22 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public function column($name, $class = 'LazyRecord\\Schema\\ColumnDeclare')
     {
-        if( isset($this->columns[$name]) ) {
+        if (isset($this->columns[$name])) {
             throw new Exception("column $name of ". get_class($this) . " is already defined.");
         }
         $this->columnNames[] = $name;
         return $this->columns[ $name ] = new $class( $name );
     }
 
+
+    public function addColumn(ColumnDeclare $column)
+    {
+        if (isset($this->columns[$column->name])) {
+            throw new Exception("column $name of ". get_class($this) . " is already defined.");
+        }
+        $this->columnNames[] = $column->name;
+        return $this->columns[ $column->name ] = $column;
+    }
 
 
     /**
