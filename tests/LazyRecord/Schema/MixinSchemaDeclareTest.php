@@ -4,7 +4,7 @@ class MixinSchemaDeclareTest extends PHPUnit_Framework_TestCase
 {
     public function testCallMixinSchemaDirectly()
     {
-        $mixin = new LazyRecord\Schema\Mixin\MetadataSchema;
+        $mixin = new LazyRecord\Schema\Mixin\MetadataMixinSchema;
         ok($mixin);
 
         ok( $mixin->getColumns() );

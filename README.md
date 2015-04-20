@@ -496,7 +496,7 @@ $this->column('name')->datetime();
 namespace LazyRecord\Schema\Mixin;
 use LazyRecord\Schema\MixinSchemaDeclare;
 
-class MetadataSchema extends MixinSchemaDeclare
+class MetadataMixinSchema extends MixinSchemaDeclare
 {
     public function schema()
     {

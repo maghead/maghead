@@ -4,9 +4,7 @@ use LazyRecord\Schema\MixinSchemaDeclare;
 use LazyRecord\Schema;
 use DateTime;
 
-trigger_error("Deprecated class, please use MetadataMixinSchema instead.", E_USER_DEPRECATED);
-
-class MetadataSchema extends MixinSchemaDeclare
+class MetadataMixinSchema extends MixinSchemaDeclare
 {
     public function schema()
     {
@@ -14,15 +12,13 @@ class MetadataSchema extends MixinSchemaDeclare
             ->timestamp()
             ->default(function() { 
                 return date('c'); 
-            })
-            ->timestamp();
+            });
 
         $this->column('created_on')
             ->timestamp()
             ->default(function() { 
                 return date('c'); 
-            })
-            ->timestamp();
+            });
     }
 
     // Mixin methods

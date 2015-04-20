@@ -45,8 +45,8 @@ class MetadataTest extends PHPUnit_Framework_TestCase
         $metadata->init();
 
         $metaItem = new \LazyRecord\Model\Metadata;
-        ok($metaItem);
-        ok($metaItem->getSchema(),"Get schema");
+        $schema = $metaItem->getSchema();
+        $this->assertNotNull($schema);
 
         $ret = $metaItem->create(array('name' => 'version', 'value' => '0.1' ));
         ok($ret->success);

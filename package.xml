@@ -101,7 +101,7 @@
       <file name="src/LazyRecord/Model/Metadata.php" role="php" md5sum="d5b30bdcbfe2994134080612c42e9c41"/>
       <file name="src/LazyRecord/Model/MetadataCollection.php" role="php" md5sum="81df200a596e0be6b64c537fd90a7bb8"/>
       <file name="src/LazyRecord/Model/MetadataCollectionBase.php" role="php" md5sum="9ade406502e16e786b218daa946724e3"/>
-      <file name="src/LazyRecord/Model/MetadataSchemaProxy.php" role="php" md5sum="f678fa417f176a9773eddbb71cdaeea3"/>
+      <file name="src/LazyRecord/Model/MetadataMixinSchemaProxy.php" role="php" md5sum="f678fa417f176a9773eddbb71cdaeea3"/>
       <file name="src/LazyRecord/ModelTestCase.php" role="php" md5sum="8a228f16e6b6e9ad3ec21223851d13b5"/>
       <file name="src/LazyRecord/OperationResult/OperationError.php" role="php" md5sum="2e62a787b6042778f8eda30f040a048d"/>
       <file name="src/LazyRecord/OperationResult/OperationResult.php" role="php" md5sum="c34bbb1d4e6037ee446a19e084beb3b7"/>
@@ -111,7 +111,7 @@
       <file name="src/LazyRecord/Schema/Comparator.php" role="php" md5sum="5d21dc26adce6abce6fa1a343aedf3b4"/>
       <file name="src/LazyRecord/Schema/DynamicSchemaDeclare.php" role="php" md5sum="e88a1e2cd87d9a5fc39ba6e7cdce6afb"/>
       <file name="src/LazyRecord/Schema/Mixin/I18nSchema.php" role="php" md5sum="ef6514fa4f5e71e2b9f88b3e9e065bff"/>
-      <file name="src/LazyRecord/Schema/Mixin/MetadataSchema.php" role="php" md5sum="a977af9330a0538126cfa137bf942b28"/>
+      <file name="src/LazyRecord/Schema/Mixin/MetadataMixinSchema.php" role="php" md5sum="a977af9330a0538126cfa137bf942b28"/>
       <file name="src/LazyRecord/Schema/MixinSchemaDeclare.php" role="php" md5sum="13f1fe6fde2fbab515b8092ce16a3b54"/>
       <file name="src/LazyRecord/Schema/Relationship.php" role="php" md5sum="c41c83485feb1652ce7e8fe43955ab13"/>
       <file name="src/LazyRecord/Schema/RuntimeColumn.php" role="php" md5sum="41e713b3175d2e7ca313582ab3c36b8c"/>
@@ -295,7 +295,7 @@
       <install name="src/LazyRecord/Model/Metadata.php" as="LazyRecord/Model/Metadata.php"/>
       <install name="src/LazyRecord/Model/MetadataCollection.php" as="LazyRecord/Model/MetadataCollection.php"/>
       <install name="src/LazyRecord/Model/MetadataCollectionBase.php" as="LazyRecord/Model/MetadataCollectionBase.php"/>
-      <install name="src/LazyRecord/Model/MetadataSchemaProxy.php" as="LazyRecord/Model/MetadataSchemaProxy.php"/>
+      <install name="src/LazyRecord/Model/MetadataMixinSchemaProxy.php" as="LazyRecord/Model/MetadataMixinSchemaProxy.php"/>
       <install name="src/LazyRecord/ModelTestCase.php" as="LazyRecord/ModelTestCase.php"/>
       <install name="src/LazyRecord/OperationResult/OperationError.php" as="LazyRecord/OperationResult/OperationError.php"/>
       <install name="src/LazyRecord/OperationResult/OperationResult.php" as="LazyRecord/OperationResult/OperationResult.php"/>
@@ -305,7 +305,7 @@
       <install name="src/LazyRecord/Schema/Comparator.php" as="LazyRecord/Schema/Comparator.php"/>
       <install name="src/LazyRecord/Schema/DynamicSchemaDeclare.php" as="LazyRecord/Schema/DynamicSchemaDeclare.php"/>
       <install name="src/LazyRecord/Schema/Mixin/I18nSchema.php" as="LazyRecord/Schema/Mixin/I18nSchema.php"/>
-      <install name="src/LazyRecord/Schema/Mixin/MetadataSchema.php" as="LazyRecord/Schema/Mixin/MetadataSchema.php"/>
+      <install name="src/LazyRecord/Schema/Mixin/MetadataMixinSchema.php" as="LazyRecord/Schema/Mixin/MetadataMixinSchema.php"/>
       <install name="src/LazyRecord/Schema/MixinSchemaDeclare.php" as="LazyRecord/Schema/MixinSchemaDeclare.php"/>
       <install name="src/LazyRecord/Schema/Relationship.php" as="LazyRecord/Schema/Relationship.php"/>
       <install name="src/LazyRecord/Schema/RuntimeColumn.php" as="LazyRecord/Schema/RuntimeColumn.php"/>

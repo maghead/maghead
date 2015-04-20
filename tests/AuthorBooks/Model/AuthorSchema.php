@@ -29,7 +29,7 @@ class AuthorSchema extends Schema
             ->boolean()
             ->default(false);
 
-        $this->mixin('LazyRecord\\Schema\\Mixin\\MetadataSchema');
+        $this->mixin('LazyRecord\\Schema\\Mixin\\MetadataMixinSchema');
 
         $this->many('addresses', 'AuthorBooks\Model\AddressSchema', 'author_id', 'id');
 

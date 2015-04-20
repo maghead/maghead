@@ -52,6 +52,7 @@ $schemas = array(
     new \AuthorBooks\Model\AuthorBookSchema,
     new \AuthorBooks\Model\PublisherSchema,
     new \MetricApp\Model\MetricValueSchema,
+    new \PageApp\Model\PageSchema,
 );
 $g = new \LazyRecord\Schema\SchemaGenerator($config, $logger);
 $g->setForceUpdate(true);
