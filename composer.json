@@ -6,7 +6,7 @@
     "require": {
         "php": ">=5.4.0",
         "corneltek/sqlbuilder": "~2",
-        "corneltek/cliframework": "~2",
+        "corneltek/cliframework": "2.5.0",
         "corneltek/class-template": "~2",
         "corneltek/serializerkit": "~1",
         "corneltek/validationkit": "~1.1",
