@@ -453,9 +453,9 @@ abstract class BaseModel implements
      * @parma array  $a method arguments.
      * @return mixed execution result
      */
-    public function invokeMixinClassMethod($mixinClass, $m,$a) 
+    public function invokeMixinClassMethod($mixinClass, $m, array $a)
     {
-        return call_user_func_array(array($mixinClass, $m) , array($this) + $a );
+        return call_user_func_array(array($mixinClass, $m) , array($this) + $a);
     }
 
 
