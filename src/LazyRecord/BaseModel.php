@@ -440,7 +440,7 @@ abstract class BaseModel implements
         foreach( static::$mixin_classes as $mixinClass ) {
             // if we found it, just call it and return the result. 
             if (method_exists($mixinClass , $m)) {
-                call_user_func_array( array($mixinClass, $m) , array($this) + $a );
+                call_user_func_array( array($mixinClass, $m) , array_merge(array($this), $a));
             }
         }
     }
@@ -455,7 +455,7 @@ abstract class BaseModel implements
      */
     public function invokeMixinClassMethod($mixinClass, $m, array $a)
     {
-        return call_user_func_array(array($mixinClass, $m) , array($this) + $a);
+        return call_user_func_array(array($mixinClass, $m) , array_merge(array($this), $a));
     }
 
 
