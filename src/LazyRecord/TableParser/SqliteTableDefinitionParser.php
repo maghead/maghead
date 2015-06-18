@@ -70,11 +70,20 @@ class SqliteTableDefinitionParser
         $tableDef = new stdClass;
 
         $this->skipSpaces();
-        $this->tryParseKeyword(['CREATE']);
+
+        $keyword = $this->tryParseKeyword(['CREATE']);
+
+        $this->skipSpaces();
+
         if ($this->tryParseKeyword(['TEMPORARY', 'TEMP'])) {
             $tableDef->temporary = TRUE;
         }
+
+        $this->skipSpaces();
+
         $this->tryParseKeyword(['TABLE']);
+
+        $this->skipSpaces();
 
         if ($this->tryParseKeyword(['IF']) && $this->tryParseKeyword(['NOT']) && $this->tryParseKeyword(['EXISTS'])) {
             $tableDef->ifNotExists = true;
@@ -377,7 +386,8 @@ class SqliteTableDefinitionParser
         $this->sortKeywordsByLen($keywords);
 
         foreach($keywords as $keyword) {
-            if (($p2 = stripos($this->str, $keyword, $this->p)) && $p2 == $this->p) {
+            $p2 = stripos($this->str, $keyword, $this->p);
+            if ($p2 === $this->p) {
                 $this->p += strlen($keyword);
                 return new Token($as, $keyword);
             }
@@ -500,7 +510,6 @@ class SqliteTableDefinitionParser
             return new Token('identifier',$matches[1]);
         }
         return NULL;
-        // throw new Exception('Not an identifier: ' . substr($this->str, $this->p));
     }
 
     protected function tryParseScalar() 
