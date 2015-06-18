@@ -8,7 +8,7 @@ class SqliteTableDefinitionParserTest extends PHPUnit_Framework_TestCase
      */
     public function testForIssue94()
     {
-        $parser = new SqliteTableDefinitionParser('CREATE TABLE foo (`col4` text DEFAULT \'123\')');
+        $parser = new SqliteTableDefinitionParser('CREATE TABLE foo (`col4` text DEFAULT \'123\\\'\'\')');
         $def = $parser->parse();
         $this->assertNotNull($def);
         $this->assertEquals('foo',$def->tableName);
@@ -16,8 +16,7 @@ class SqliteTableDefinitionParserTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('col4',$def->columns->columns[0]->name);
         $this->assertEquals('TEXT',$def->columns->columns[0]->type);
-        $this->assertEquals('123',$def->columns->columns[0]->default);
-        // echo json_encode( $def , JSON_PRETTY_PRINT); 
+        $this->assertEquals("123\\'",$def->columns->columns[0]->default);
+        // echo json_encode( $def , JSON_PRETTY_PRINT);
     }
 }
-
