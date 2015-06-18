@@ -516,13 +516,8 @@ class SqliteTableDefinitionParser
     {
         $this->skipSpaces();
 
-        if (preg_match('/-?\d+  \. \d+/x', substr($this->str, $this->p), $matches)) {
-            $this->p += strlen($matches[0]);
-            return new Token('double', doubleval($matches[0]));
-        } else if (preg_match('/-?\d+/x', substr($this->str, $this->p), $matches)) {
-            $this->p += strlen($matches[0]);
-            return new Token('int', intval($matches[0]));
-        } else if ($this->cur() == "'") {
+        if ($this->cur() == "'") {
+
             $this->advance();
 
             $p = $this->p;
@@ -536,9 +531,17 @@ class SqliteTableDefinitionParser
                     $this->advance();
                     break;
                 }
+                $this->advance();
             }
             $string = substr($this->str, $p, ($this->p - 1) - $p);
             return new Token('string', $string);
+
+        } else if (preg_match('/-?\d+  \. \d+/x', substr($this->str, $this->p), $matches)) {
+            $this->p += strlen($matches[0]);
+            return new Token('double', doubleval($matches[0]));
+        } else if (preg_match('/-?\d+/x', substr($this->str, $this->p), $matches)) {
+            $this->p += strlen($matches[0]);
+            return new Token('int', intval($matches[0]));
         }
     }
 }
