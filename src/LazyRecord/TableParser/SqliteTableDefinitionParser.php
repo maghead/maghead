@@ -523,23 +523,22 @@ class SqliteTableDefinitionParser
             $p = $this->p;
 
             while (!$this->metEnd()) {
-                if ($this->cur() == '\\') {
-                    $this->advance();
-                    $this->advance(); // skip the char after slash
-                }
-                if ($this->cur() == "'") {
-                    $this->advance();
-                    break;
-                }
                 $this->advance();
+                if ($this->cur() == "'") {
+                    $pos = $this->p;
+                    $this->advance();
+                    if ($this->cur() != "'") {
+                        $this->rollback($pos);
+                        break;
+                    }
+                }
             }
-            $string = substr($this->str, $p, ($this->p - 1) - $p);
+            $string = str_replace("''", "'", substr($this->str, $p, ($this->p - 1) - $p));
             return new Token('string', $string);
-
-        } else if (preg_match('/-?\d+  \. \d+/x', substr($this->str, $this->p), $matches)) {
+        } elseif (preg_match('/-?\d+  \. \d+/x', substr($this->str, $this->p), $matches)) {
             $this->p += strlen($matches[0]);
             return new Token('double', doubleval($matches[0]));
-        } else if (preg_match('/-?\d+/x', substr($this->str, $this->p), $matches)) {
+        } elseif (preg_match('/-?\d+/x', substr($this->str, $this->p), $matches)) {
             $this->p += strlen($matches[0]);
             return new Token('int', intval($matches[0]));
         }
