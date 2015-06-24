@@ -351,7 +351,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      * @return string[]
      */
     public function getCollectionTraitClasses() {
-        return $this->modelTraitClasses;
+        return $this->collectionTraitClasses;
     }
 
     /**
