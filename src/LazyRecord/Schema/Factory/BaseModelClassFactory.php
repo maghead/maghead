@@ -40,7 +40,7 @@ class BaseModelClassFactory
         $cTemplate->extendClass( '\\' . $baseClass );
 
         // interfaces
-        if ($ifs = $schema->getModelInterfaceClasses()) {
+        if ($ifs = $schema->getModelInterfaces()) {
             foreach ($ifs as $iface) {
                 $cTemplate->implementClass($iface);
             }

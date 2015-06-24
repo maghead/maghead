@@ -25,7 +25,7 @@ class BaseCollectionClassFactory
         $cTemplate->extendClass( '\\' . $baseCollectionClass );
 
         // interfaces
-        if ($ifs = $schema->getModelInterfaceClasses()) {
+        if ($ifs = $schema->getCollectionInterfaces()) {
             foreach ($ifs as $iface) {
                 $cTemplate->implementClass($iface);
             }

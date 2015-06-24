@@ -357,7 +357,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     /**
      * @return string[]
      */
-    public function getModelInterfaceClasses()
+    public function getModelInterfaces()
     {
         return $this->modelInterfaceClasses;
     }
@@ -365,7 +365,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     /**
      * @return string[]
      */
-    public function getCollectionInterfaceClasses()
+    public function getCollectionInterfaces()
     {
         return $this->collectionInterfaceClasses;
     }
