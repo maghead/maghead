@@ -27,6 +27,16 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public $collectionTraitClasses = array();
 
     /**
+     * @var string[]
+     */
+    public $modelInterfaceClasses = array();
+
+    /**
+     * @var string[]
+     */
+    public $collectionInterfaceClasses = array();
+
+    /**
      * Constructor of declare schema.
      *
      * The constructor calls `build` method to build the schema information.
@@ -309,6 +319,25 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         $this->collectionTraitClasses[] = $traitClass;
     }
 
+    /**
+     * Implement interface in model class.
+     *
+     * @param string $class
+     */
+    public function addModelInterface($iface)
+    {
+        $this->modelInterfaceClasses[] = $iface;
+    }
+
+    /**
+     * Implement interface in collection class.
+     *
+     * @param string $class
+     */
+    public function addCollectionInterface($iface)
+    {
+        $this->collectionInterfaceClasses[] = $iface;
+    }
 
     /** 
      * @return string[]
@@ -325,7 +354,21 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->modelTraitClasses;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getModelInterfaceClasses()
+    {
+        return $this->modelInterfaceClasses;
+    }
 
+    /**
+     * @return string[]
+     */
+    public function getCollectionInterfaceClasses()
+    {
+        return $this->collectionInterfaceClasses;
+    }
 
     /**
      * Mixin

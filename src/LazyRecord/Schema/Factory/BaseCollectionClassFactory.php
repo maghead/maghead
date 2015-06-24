@@ -23,6 +23,14 @@ class BaseCollectionClassFactory
             }
         }
         $cTemplate->extendClass( '\\' . $baseCollectionClass );
+
+        // interfaces
+        if ($ifs = $schema->getModelInterfaceClasses()) {
+            foreach ($ifs as $iface) {
+                $cTemplate->implementClass($iface);
+            }
+        }
+
         return $cTemplate;
     }
 }
