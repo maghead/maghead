@@ -55,6 +55,8 @@ class BookSchema extends Schema
 
         $this->addModelTrait('TestApp\ModelTrait\EBookTrait');
 
+        $this->addModelInterface('TestApp\ModelInterface\EBookInterface');
+
         /**
          * get BookAuthor.author 
          */
