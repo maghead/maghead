@@ -39,6 +39,13 @@ class BaseModelClassFactory
 
         $cTemplate->extendClass( '\\' . $baseClass );
 
+        // interfaces
+        if ($ifs = $schema->getModelInterfaces()) {
+            foreach ($ifs as $iface) {
+                $cTemplate->implementClass($iface);
+            }
+        }
+
         // Create column accessor
         if ($schema->enableColumnAccessors) {
             foreach ($schema->getColumnNames() as $columnName) {
