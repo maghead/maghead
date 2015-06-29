@@ -9,12 +9,21 @@ class AuthorModelTest extends ModelTestCase
 
     public function getModels()
     {
-        return [new \AuthorBooks\Model\AuthorSchema];
+        return [
+            new \AuthorBooks\Model\AuthorSchema,
+            new \AuthorBooks\Model\AddressSchema,
+        ];
     }
 
-    /**
-     * @rebuild false
-     */
+    public function tearDown() 
+    {
+        // Clean up all author records
+        $authors = new AuthorCollection;
+        foreach ($authors as $author) {
+            $author->delete();
+        }
+    }
+
     public function testCollection()
     {
         $author = new Author;
@@ -31,9 +40,6 @@ class AuthorModelTest extends ModelTestCase
     }
 
 
-    /**
-     * @rebuild false
-     */
     public function testSchemaInterface()
     {
         $author = new Author;
@@ -281,11 +287,6 @@ class AuthorModelTest extends ModelTestCase
     }
 
 
-
-    /**
-     * @rebuild false
-     * @basedata false
-     */
     public function testUpdateNull()
     {
         $author = new Author;
