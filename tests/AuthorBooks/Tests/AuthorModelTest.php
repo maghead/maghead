@@ -78,18 +78,19 @@ class AuthorModelTest extends ModelTestCase
 
         $authors = new AuthorCollection;
         $authors->where()
-                ->equal( 'confirmed', false);
+                ->equal('confirmed', false);
         $ret = $authors->fetch();
-        ok($ret);
-
+        $this->assertInstanceOf('LazyRecord\Result', $ret);
         $this->assertCollectionSize(1, $authors);
+        $this->assertFalse($authors[0]->confirmed);
 
         $authors = new AuthorCollection;
         $authors->where()
                 ->equal( 'confirmed', true);
         $ret = $authors->fetch();
-        ok($ret);
+        $this->assertInstanceOf('LazyRecord\Result', $ret);
         $this->assertCollectionSize(1, $authors);
+        $this->assertTrue($authors[0]->confirmed);
 
         $authors->delete();
     }
