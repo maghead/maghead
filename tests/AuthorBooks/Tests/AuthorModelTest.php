@@ -46,8 +46,11 @@ class AuthorModelTest extends ModelTestCase
 
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');
         foreach( $author->getColumnNames() as $n ) {
-            ok( in_array( $n , $names ));
-            ok( $author->getColumn( $n ) );
+            // $this->assertContains($n, $names);
+
+            $this->assertTrue( in_array( $n , $names ));
+            $column = $author->getColumn( $n );
+            $this->assertInstanceOf('LazyRecord\Schema\RuntimeColumn', $column);
         }
 
         $columns = $author->getColumns();
