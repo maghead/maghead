@@ -25,7 +25,8 @@ class AuthorModelTest extends ModelTestCase
             'confirmed' => false,
         )));
         $collection = $author->asCollection();
-        ok($collection);
+        $this->assertNotNull($collection);
+        $this->assertInstanceOf('LazyRecord\BaseCollection',$collection);
         $this->assertResultSuccess($author->delete());
     }
 
