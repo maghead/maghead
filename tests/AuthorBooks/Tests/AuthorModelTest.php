@@ -54,12 +54,13 @@ class AuthorModelTest extends ModelTestCase
         }
 
         $columns = $author->getColumns();
-        count_ok( 7 , $columns );
+        $this->assertCount(7, $columns);
 
         $columns = $author->getColumns(true); // with virtual column 'v'
-        count_ok( 8 , $columns );
-        ok( 'authors' , $author->getTable() );
-        ok( 'Author' , $author->getLabel() );
+        $this->assertCount(8, $columns);
+
+        $this->assertEquals('authors', $author->getTable() );
+        $this->assertEquals('Author', $author->getLabel() );
         $this->assertInstanceOf('AuthorBooks\Model\AuthorCollection', $author->newCollection() );
     }
 
