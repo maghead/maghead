@@ -76,6 +76,10 @@ class BookModelTest extends ModelTestCase
         $this->assertSame(['store1', 'store2'], $b->getStores());
     }
 
+    public function testInterface() {
+        $this->assertInstanceOf('TestApp\ModelInterface\EBookInterface', new Book);
+    }
+
     public function testLoadOrCreate() {
         $results = array();
         $b = new Book ;
