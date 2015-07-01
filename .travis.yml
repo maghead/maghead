@@ -8,18 +8,19 @@ php:
 #   - DB=mysql DB_USER=root                         # only database tests against mysql
 #   - DB=pgsql DB_USER=postgres DB_NAME=postgres    # only database tests against postgresql
 #   - DB=sqlite
-before_script:
+install:
   - rm -rf vendor/corneltek/serializerkit
-  - phpenv config-add tests/php.ini
-  - phpenv rehash
-  # - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  # - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - psql -c "create database testing;" -U postgres
-  - mysql -uroot -e "create database testing charset utf8;"
   - composer self-update
   - composer require satooshi/php-coveralls:dev-master --no-update
   - composer install --prefer-source
+before_script:
+  # - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  # - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - phpenv config-add tests/php.ini
+  - phpenv rehash
+  - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - psql -c "create database testing;" -U postgres
+  - mysql -uroot -e "create database testing charset utf8;"
   - php bin/lazy build-conf db/config/database.travis-ci.yml
   - php bin/lazy schema build -f
   - php bin/lazy schema build -f src # build meta model class
