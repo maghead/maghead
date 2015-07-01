@@ -9,6 +9,7 @@ php:
 #   - DB=pgsql DB_USER=postgres DB_NAME=postgres    # only database tests against postgresql
 #   - DB=sqlite
 before_script:
+  - rm -rf vendor/corneltek/serializerkit
   - phpenv config-add tests/php.ini
   - phpenv rehash
   # - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
