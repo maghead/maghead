@@ -32,8 +32,8 @@ very easily and you can even embed closure in your schema classes.
 Concept
 --------
 
-- Function calls in PHP are very slow, so we bulid the model schema data
-  statically, convert all definitions (default value, validator, filter, valid
+- Function calls in PHP are very slow, so the model schema data
+  will be built statically, LazyRecord converts all definitions (default value, validator, filter, valid
   value builder) into classes and static PHP array, this keeps these model
   classes very lightweight and fast.
   
@@ -41,8 +41,7 @@ Concept
   schema object, and we can reuse the prebuild data from the static schema class.
 
 - We keep base model class constructor empty, so when you are querying data from
-  database, these model objects can be created very quickly without extra
-  costs.
+  database, these model objects can be created with zero effort.
 
 
 Feature
