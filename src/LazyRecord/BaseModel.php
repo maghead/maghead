@@ -2041,25 +2041,25 @@ abstract class BaseModel implements
         $this->autoReload = $this->autoReload;
     }
 
-    public function asCreateAction(array $args = array())
+    public function asCreateAction(array $args = array(), array $options = array())
     {
         // the create action requires empty args
-        return $this->newAction('Create', $args);
+        return $this->newAction('Create', $args, $options);
     }
 
-    public function asUpdateAction(array $args = array())
+    public function asUpdateAction(array $args = array(), array $options = array())
     {
         // should only update the defined fields
-        return $this->newAction('Update',$args);
+        return $this->newAction('Update',$args, $options);
     }
 
-    public function asDeleteAction(array $args = array())
+    public function asDeleteAction(array $args = array(), array $options = array())
     {
         $pk = static::primary_key;
         if ( isset($this->_data[$pk]) ) {
             $args[$pk] = $this->_data[$pk];
         }
-        return $this->newAction('Delete', array_merge($this->_data , $args ));
+        return $this->newAction('Delete', array_merge($this->_data , $args ), $options);
     }
 
     /**
@@ -2067,11 +2067,12 @@ abstract class BaseModel implements
      *
      * @param string $type 'create','update','delete'
      */
-    public function newAction($type, array $args = array() )
+    public function newAction($type, array $args = array(), $options = array())
     {
         $class = get_class($this);
         $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class,$type);
-        return new $actionClass( $args , $this );
+        $options['record'] = $this;
+        return new $actionClass($args , $options);
     }
 
     public function getRecordActionClass($type) {
