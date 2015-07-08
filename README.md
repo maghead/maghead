@@ -8,6 +8,7 @@ LazyRecord
 [![Latest Stable Version](https://poser.pugx.org/corneltek/lazyrecord/v/stable.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
 [![Total Downloads](https://poser.pugx.org/corneltek/lazyrecord/downloads.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
 [![Monthly Downloads](https://poser.pugx.org/corneltek/lazyrecord/d/monthly)](https://packagist.org/packages/corneltek/lazyrecord)
+[![Daily Downloads](https://poser.pugx.org/corneltek/lazyrecord/d/daily)](https://packagist.org/packages/corneltek/lazyrecord)
 [![Latest Unstable Version](https://poser.pugx.org/corneltek/lazyrecord/v/unstable.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
 [![License](https://poser.pugx.org/corneltek/lazyrecord/license.svg)](https://packagist.org/packages/corneltek/lazyrecord)
 
