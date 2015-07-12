@@ -19,22 +19,22 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     /**
      * @var string[]
      */
-    public $modelTraitClasses = array();
+    protected $modelTraitClasses = array();
 
     /**
      * @var string[]
      */
-    public $collectionTraitClasses = array();
+    protected $collectionTraitClasses = array();
 
     /**
      * @var string[]
      */
-    public $modelInterfaceClasses = array();
+    protected $modelInterfaceClasses = array();
 
     /**
      * @var string[]
      */
-    public $collectionInterfaceClasses = array();
+    protected $collectionInterfaceClasses = array();
 
     /**
      * Constructor of declare schema.
