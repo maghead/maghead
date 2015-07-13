@@ -1,6 +1,17 @@
 Changes
 =======
 
+## v2.1.5
+
+- Upgrade cliframework to ~2.6
+
+## v2.1.4
+
+- Upgraded cliframework to 2.5.3
+- Support actionkit options.
+- Merged pull request #96 from `Ronmi/add_impl`
+- Merged pull request #95 from Ronmi/master
+
 ## v1.14
 
 - Added Collection Filter (define filter types, valid values in backend and apply filters from HTTP Request)

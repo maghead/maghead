@@ -59,6 +59,7 @@ local ret=1
     '(-h --help)'{-h,--help}'[Show help.]' \
     '--version[Show version.]' \
     '(-p --profile)'{-p,--profile}'[Display timing and memory usage information.]' \
+    '--log-path[The path of a log file.]' \
     '--no-interact[Do not ask any interactive question.]' \
     ': :->cmds' \
     '*:: :->option-or-argument' \
