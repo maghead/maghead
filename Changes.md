@@ -7,10 +7,21 @@ Changes
 
 ## v2.1.4
 
+Bug Fixes:
+
 - Upgraded cliframework to 2.5.3
 - Support actionkit options.
-- Merged pull request #96 from `Ronmi/add_impl`
-- Merged pull request #95 from Ronmi/master
+
+Merged PRs:
+
+- Commit 6cfac73: Merge pull request #96 from `Ronmi/add_impl`
+
+   Let generated models and collections can implement some interfaces
+
+- Commit 7de10b3: Merge pull request #95 from `Ronmi/master`
+
+   Change the string matching process to fit sqlite way.
+
 
 ## v1.14
 
