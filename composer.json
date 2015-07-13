@@ -29,6 +29,9 @@
     "bin": [
         "bin/lazy"
     ],
+    "support": {
+        "issues": "https://github.com/c9s/LazyRecord/issues"
+    },
     "license": "MIT",
     "authors": [
         {
