@@ -2,6 +2,7 @@
     "name": "corneltek/lazyrecord",
     "homepage": "http://github.com/c9s/LazyRecord",
     "keywords": ["database", "generator", "orm", "model", "collection", "fast"],
+    "homepage": "https://github.com/c9s/LazyRecord",
     "description": "The Fast PHP ORM",
     "version": "2.1.5",
     "require": {
@@ -12,7 +13,7 @@
         "corneltek/serializerkit": "~1",
         "corneltek/validationkit": "~1.1",
         "symfony/yaml": "~2",
-        "doctrine/inflector": "*",
+        "doctrine/inflector": "~1.0",
         "corneltek/configkit": "~1",
         "corneltek/cascading-attribute": "~1.2",
         "corneltek/universal-cache": "~1",
