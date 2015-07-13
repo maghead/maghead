@@ -1,6 +1,7 @@
 {
     "name": "corneltek/lazyrecord",
     "homepage": "http://github.com/c9s/LazyRecord",
+    "keywords": ["database", "generator", "orm", "model", "collection", "fast"],
     "description": "The Fast PHP ORM",
     "version": "2.1.5",
     "require": {
