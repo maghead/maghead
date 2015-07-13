@@ -38,8 +38,8 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "LazyRecord": "src"
+        "psr-4": {
+            "LazyRecord\\": "src/LazyRecord/"
         }
     }
 }
