@@ -70,6 +70,7 @@ local ret=1
     zsh:'This function generate a zsh-completion script automatically'
     bash:'This command generate a bash completion script automatically'
     meta:'Set, get or list meta.'
+    compile:'compile current source into Phar format library file.'
     github:build-topics:'Build topic classes from the wiki of a GitHub Project.'
     init:'initialize your lazyrecord structures.'
     build-conf:'Build configuration file.'
@@ -113,6 +114,20 @@ local ret=1
         (meta)
             _arguments -w -S -s \
               '(-D --data-source)'{-D,--data-source=}'[specify data source id]::{___bin_lazymeta "" meta opt data-source valid-values}' \
+               && ret=0
+        
+        ;;
+        (compile)
+            _arguments -w -S -s \
+              '--classloader[embed classloader source file]' \
+              '--bootstrap[bootstrap or executable source file]' \
+              '--executable[is a executable script ?]' \
+              '--lib=[library path]' \
+              '--include=[include path]' \
+              '--exclude=[exclude pattern]' \
+              '--output=[output]' \
+              '(-c --compress)'{-c,--compress}'[phar file compress type\: gz, bz2]' \
+              '--no-compress[do not compress phar file.]' \
                && ret=0
         
         ;;
