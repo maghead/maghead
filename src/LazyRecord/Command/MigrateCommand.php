@@ -26,5 +26,7 @@ class MigrateCommand extends BaseCommand
         $this->command('status', 'LazyRecord\\Command\\MigrateStatusCommand');
         $this->command('diff', 'LazyRecord\\Command\\MigrateNewFromDiffCommand');
     }
+
+    public function execute() { }
 }
 

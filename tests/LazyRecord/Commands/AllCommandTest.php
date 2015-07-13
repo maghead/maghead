@@ -6,7 +6,7 @@ class AllCommandsTest extends CommandTestCase
         return new LazyRecord\Console;
     }
 
-    public function test()
+    public function testCommands()
     {
         ok( $this->app->createCommand('LazyRecord\Command\BuildConfCommand') );
         ok( $this->app->createCommand('LazyRecord\Command\BuildSchemaCommand') );

@@ -6,7 +6,7 @@
     "require": {
         "php": ">=5.4.0",
         "corneltek/sqlbuilder": "~2",
-        "corneltek/cliframework": "~2.5",
+        "corneltek/cliframework": "~2.6",
         "corneltek/class-template": "~2",
         "corneltek/serializerkit": "~1",
         "corneltek/validationkit": "~1.1",
@@ -22,7 +22,7 @@
     },
     "require-dev": {
         "corneltek/phpunit-testmore": "dev-master",
-        "corneltek/universal": "dev-master",
+        "corneltek/universal": "~1.4",
         "facebook/xhprof": "dev-master",
         "simplyadmire/composer-plugins": "@dev"
     },
