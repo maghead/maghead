@@ -1,10 +1,16 @@
 {
     "name": "corneltek/lazyrecord",
-    "homepage": "http://github.com/c9s/LazyRecord",
-    "keywords": ["database", "generator", "orm", "model", "collection", "fast"],
     "homepage": "https://github.com/c9s/LazyRecord",
+    "keywords": [
+        "database",
+        "generator",
+        "orm",
+        "model",
+        "collection",
+        "fast"
+    ],
     "description": "The Fast PHP ORM",
-    "version": "2.1.5",
+    "version": "2.1.6",
     "require": {
         "php": ">=5.4.0",
         "corneltek/sqlbuilder": "~2",

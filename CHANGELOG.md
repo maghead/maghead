@@ -1,6 +1,14 @@
 Changes
 =======
 
+## v2.1.6
+
+Merged PR:
+
+- Commit 9b19a46: Merge pull request #100 from azole/master
+
+   Fixes #99 - pass host to dbutil
+
 ## v2.1.5
 
 - Upgrade cliframework to ~2.6
