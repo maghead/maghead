@@ -42,11 +42,16 @@ class CreateDBCommand extends BaseCommand
             return;
         }
 
+        if (!isset($ds['host'])) {
+            $ds['host'] = 'localhost';
+        }
+
         $this->logger->info("creating database {$ds['database']}...");
         $dbutil->create($ds['driver'],array( 
             'username' => $user,
             'password' => $pass,
             'database' => $ds['database'],
+            'host' => $ds['host']
         ));
     }
 
