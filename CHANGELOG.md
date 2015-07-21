@@ -15,10 +15,14 @@ Merged PR:
 
 ## v2.1.4
 
+- new migration tools
+- lazy migrate -U option is removed.  use `lazy migrate automatic` instead.
+
 Bug Fixes:
 
 - Upgraded cliframework to 2.5.3
 - Support actionkit options.
+
 
 Merged PRs:
 
