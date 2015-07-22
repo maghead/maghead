@@ -48,6 +48,7 @@ class Console extends Application
         $this->command('migrate');
         $this->command('meta');
         $this->command('version');
+        $this->command('db');
         $this->command('create-db'      , 'LazyRecord\\Command\\CreateDBCommand');
     }
 
