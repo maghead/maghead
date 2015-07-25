@@ -245,7 +245,7 @@ class ConnectionManager
      */
     public function close($sourceId)
     {
-        if( isset($this->conns[ $sourceId ]) ) {
+        if (isset($this->conns[ $sourceId ])) {
             $this->conns[ $sourceId ] = null;
             unset( $this->conns[ $sourceId ] );
         }
@@ -330,7 +330,7 @@ class ConnectionManager
         return $this->getConnection($dsId)->query( $sql );
     }
 
-    public function prepareAndExecute($dsId,$sql,$args = array() )
+    public function prepareAndExecute($dsId, $sql, array $args = array() )
     {
         $stm = NULL;
         try {
