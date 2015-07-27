@@ -4,6 +4,9 @@ use ArrayAccess;
 use IteratorAggregate;
 use ArrayIterator;
 
+/**
+ * Data object for DSN information
+ */
 class DSN implements ArrayAccess, IteratorAggregate
 {
     protected $driver;
