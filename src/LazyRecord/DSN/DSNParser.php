@@ -1,33 +1,33 @@
 <?php
 namespace LazyRecord\DSN;
-
+use Exception;
 
 /**
  * DataSourceName class provides a basic DSN parser
  */
-class DNSParser
+class DSNParser
 {
-    protected $dsn;
-
-    protected $prefix;
-
-    protected $attributes = array();
-
     public function parse($dsn)
     {
-        $this->dsn = $dsn;
         if (preg_match('/^(\w+):/', $dsn, $matches)) {
-            $this->prefix = $matches[1];
+            $driver = $matches[1];
+        } else {
+            throw new Exception('Invalid DSN string');
         }
-        $str = preg_replace('/^\w+:/','', $dsn);
-        $parts = preg_split('/[ ;]/', $str);
+        $reststr = preg_replace('/^\w+:/','', $dsn);
+        $attributes = [];
+        $arguments = [];
+        $parts = preg_split('/[ ;]/', $reststr);
         foreach ($parts as $part) {
-            list($key, $val) = explode('=',$part);
-            $this->attributes[ trim($key) ] = trim($val);
+            if (strpos('=',$part) === false) {
+                $arguments[] = $part;
+            } else {
+                list($key, $val) = explode('=',$part);
+                $attributes[ trim($key) ] = trim($val);
+            }
         }
+        return new DSN($driver, $attributes, $arguments, $dsn);
     }
-
-    public function getDriver() {  }
 }
 
 
