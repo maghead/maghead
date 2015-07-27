@@ -19,7 +19,7 @@ class DSNParser
         $arguments = [];
         $parts = preg_split('/[ ;]/', $reststr);
         foreach ($parts as $part) {
-            if (strpos('=',$part) === false) {
+            if (strpos($part,'=') === false) {
                 $arguments[] = $part;
             } else {
                 list($key, $val) = explode('=',$part);
