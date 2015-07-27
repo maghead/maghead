@@ -49,7 +49,6 @@ class Console extends Application
         $this->command('meta');
         $this->command('version');
         $this->command('db');
-        $this->command('create-db'      , 'LazyRecord\\Command\\CreateDBCommand');
     }
 
     public static function getInstance() 
