@@ -40,11 +40,16 @@ class ConfigLoader
      */
     protected $config;
 
+
+    /**
+     * @var array class map
+     */
+    protected $classMap = array();
+
     public $symbolFilename = '.lazy.yml';
 
-    public $classMap;
-
     public $loaded = false;
+
 
     public function loadFromSymbol($force = false)
     {
