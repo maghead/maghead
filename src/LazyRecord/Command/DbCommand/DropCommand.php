@@ -7,9 +7,10 @@ use LazyRecord\DSN\DSNParser;
 use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\CreateDatabaseQuery;
+use SQLBuilder\Universal\Query\DropDatabaseQuery;
 use PDO;
 
-class CreateCommand extends BaseCommand
+class DropCommand extends BaseCommand
 {
 
     public function brief() 
@@ -34,13 +35,11 @@ class CreateCommand extends BaseCommand
 
         $pdo = new PDO($dsn, @$ds['user'], @$ds['pass'], @$ds['connection_options']);
 
-        $q = new CreateDatabaseQuery($dbName);
-        if (isset($ds['charset'])) {
-            $q->characterSet($ds['charset']);
-        } else {
-            $q->characterSet('utf8');
-        }
+        $q = new DropDatabaseQuery($dbName);
+        $q->ifExists();
 
+
+        // Create query Driver object
         $queryDriver = PDODriverFactory::create($pdo);
         $sql = $q->toSql($queryDriver, new ArgumentArray);
         $this->logger->info($sql);
@@ -50,7 +49,7 @@ class CreateCommand extends BaseCommand
             $this->logger->error("$statusCode:$errorCode $message");
             return false;
         }
-        $this->logger->info('Database created successfully.');
+        $this->logger->info('Database dropped successfully.');
     }
 
 }
