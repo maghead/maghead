@@ -1,9 +1,11 @@
 <?php
 namespace LazyRecord\DSN;
+use ArrayAccess;
+use IteratorAggregate;
+use ArrayIterator;
 
-class DSN
+class DSN implements ArrayAccess, IteratorAggregate
 {
-
     protected $driver;
 
     protected $attributes;
@@ -23,6 +25,15 @@ class DSN
         $this->dsn = $dsn;
     }
 
+    public function __isset($key)
+    {
+        return isset($this->attributes[$key]);
+    }
+
+    public function __get($key)
+    {
+        return $this->attributes[$key];
+    }
 
     public function __toString()
     {
@@ -34,6 +45,33 @@ class DSN
             $attrstrs[] = $key . '=' . $val;
         }
         return $this->driver . ':' . join(';',$attrstrs);
+    }
+
+
+    
+    public function offsetSet($key,$value)
+    {
+        $this->attributes[ $key ] = $value;
+    }
+    
+    public function offsetExists($key)
+    {
+        return isset($this->attributes[ $key ]);
+    }
+    
+    public function offsetGet($key)
+    {
+        return $this->attributes[ $key ];
+    }
+    
+    public function offsetUnset($key)
+    {
+        unset($this->attributes[$key]);
+    }
+    
+    public function getIterator()
+    {
+        return new ArrayIterator($this->attributes);
     }
 
 }
