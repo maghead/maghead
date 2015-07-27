@@ -9,7 +9,8 @@ use LazyRecord\Connection;
 use LazyRecord\ConfigLoader;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PDODriverFactory;
-
+use LazyRecord\DSN\DSNParser;
+use LazyRecord\DSN\DSN;
 
 class SQLQueryException extends Exception 
 {

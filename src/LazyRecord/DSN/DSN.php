@@ -38,14 +38,11 @@ class DSN implements ArrayAccess, IteratorAggregate
 
     public function __get($key)
     {
-        return $this->attributes[$key];
+        return $this->getAttribute($key);
     }
 
     public function __toString()
     {
-        if ($this->dsn) {
-            return $this->dsn;
-        }
         return $this->driver . ':' . $this->getAttributeString();
     }
 
