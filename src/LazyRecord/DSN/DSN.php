@@ -6,6 +6,9 @@ use ArrayIterator;
 
 /**
  * Data object for DSN information
+ *
+ * getHost(), getPort(), getDBName() methods are used by MySQL and PostgreSQL
+ *
  */
 class DSN implements ArrayAccess, IteratorAggregate
 {
@@ -18,14 +21,14 @@ class DSN implements ArrayAccess, IteratorAggregate
     /**
      * The original DSN string
      */
-    protected $dsn;
+    protected $originalDSN;
 
-    public function __construct($driver, array $attributes = array(), array $arguments = array(), $dsn = null)
+    public function __construct($driver, array $attributes = array(), array $arguments = array(), $originalDSN = null)
     {
         $this->driver = $driver;
         $this->attributes = $attributes;
         $this->arguments = $arguments;
-        $this->dsn = $dsn;
+        $this->originalDSN = $originalDSN;
     }
 
     public function __isset($key)
@@ -43,14 +46,17 @@ class DSN implements ArrayAccess, IteratorAggregate
         if ($this->dsn) {
             return $this->dsn;
         }
+        return $this->driver . ':' . $this->getAttributeString();
+    }
+
+    public function getAttributeString()
+    {
         $attrstrs = [];
         foreach ($this->attributes as $key => $val) {
             $attrstrs[] = $key . '=' . $val;
         }
-        return $this->driver . ':' . join(';',$attrstrs);
+        return join(';',$attrstrs);
     }
-
-
     
     public function offsetSet($key,$value)
     {
@@ -75,6 +81,43 @@ class DSN implements ArrayAccess, IteratorAggregate
     public function getIterator()
     {
         return new ArrayIterator($this->attributes);
+    }
+
+
+    public function getArguments()
+    {
+        return $this->arguments;
+    }
+
+    public function getHost()
+    {
+        if (isset($this->attributes['host'])) {
+            return $this->attributes['host'];
+        }
+    }
+
+    public function getPort()
+    {
+        if (isset($this->attributes['port'])) {
+            return $this->attributes['port'];
+        }
+    }
+
+    public function getDBName()
+    {
+        if (isset($this->attributes['dbname'])) {
+            return $this->attributes['dbname'];
+        }
+    }
+
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
+    public function getOriginalDSN()
+    {
+        return $this->originalDSN;
     }
 
 }
