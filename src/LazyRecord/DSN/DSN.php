@@ -83,6 +83,23 @@ class DSN implements ArrayAccess, IteratorAggregate
         return new ArrayIterator($this->attributes);
     }
 
+    public function setAttribute($key, $val)
+    {
+        $this->attributes[$key] = $val;
+    }
+
+    public function removeAttribute($key)
+    {
+        unset($this->attributes[$key]);
+    }
+
+    public function getAttribute($key)
+    {
+        if (isset($this->attributes[$key])) {
+            return $this->attributes[$key];
+        }
+    }
+
 
     public function getArguments()
     {
@@ -91,23 +108,17 @@ class DSN implements ArrayAccess, IteratorAggregate
 
     public function getHost()
     {
-        if (isset($this->attributes['host'])) {
-            return $this->attributes['host'];
-        }
+        return $this->getAttribute('host');
     }
 
     public function getPort()
     {
-        if (isset($this->attributes['port'])) {
-            return $this->attributes['port'];
-        }
+        return $this->getAttribute('port');
     }
 
     public function getDBName()
     {
-        if (isset($this->attributes['dbname'])) {
-            return $this->attributes['dbname'];
-        }
+        return $this->getAttribute('dbname');
     }
 
     public function getDriver()
