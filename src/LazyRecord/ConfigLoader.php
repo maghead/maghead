@@ -34,7 +34,11 @@ use PDO;
 class ConfigLoader
     implements ArrayAccess
 {
-    public $config;
+
+    /**
+     * The stashed config
+     */
+    protected $config;
 
     public $symbolFilename = '.lazy.yml';
 
