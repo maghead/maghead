@@ -13,19 +13,18 @@
     "version": "2.1.6",
     "require": {
         "php": ">=5.4.0",
-        "corneltek/sqlbuilder": "~2",
-        "corneltek/cliframework": "~2.6",
-        "corneltek/class-template": "~2",
+        "corneltek/sqlbuilder": "^2.0",
+        "corneltek/cliframework": "^2.6",
+        "corneltek/class-template": "^2.1",
         "corneltek/serializerkit": "~1",
         "corneltek/validationkit": "~1.1",
-        "symfony/yaml": "~2",
+        "symfony/yaml": "^2.7@stable",
         "doctrine/inflector": "~1.0",
         "corneltek/configkit": "~1",
         "corneltek/cascading-attribute": "~1.2",
         "corneltek/universal-cache": "~1",
         "pimple/pimple": "~3.0",
-        "cpliakas/git-wrapper": "~1.0",
-        "twig/twig": "~1"
+        "cpliakas/git-wrapper": "~1.0"
     },
     "require-dev": {
         "corneltek/phpunit-testmore": "dev-master",
