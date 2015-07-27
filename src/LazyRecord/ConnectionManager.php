@@ -54,12 +54,12 @@ class ConnectionManager
     /**
      * @var array contains data source configurations
      */
-    public $datasources = array();
+    protected $datasources = array();
 
     /**
      * @var PDOConnection[] contains PDO connection objects.
      */
-    public $conns = array();
+    protected $conns = array();
 
 
     public function init(ConfigLoader $config) 

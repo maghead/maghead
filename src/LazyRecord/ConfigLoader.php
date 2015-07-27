@@ -317,8 +317,9 @@ class ConfigLoader
 
     public function getCacheConfig()
     {
-        if( isset($this->config['cache']) )
+        if (isset($this->config['cache'])) {
             return $this->config['cache'];
+        }
     }
 
 
