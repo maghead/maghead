@@ -3,7 +3,11 @@ Changes
 
 ## v2.2.0
 
-- Added DSN parser
+- Added DSN parser.
+- Added `db create` command.
+- Added `db drop` command.
+- Removed dbutil from dependency
+- Removed create-db command
 
 ## v2.1.6
 
