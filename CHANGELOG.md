@@ -1,6 +1,10 @@
 Changes
 =======
 
+## v2.2.0
+
+- Added DSN parser
+
 ## v2.1.6
 
 Merged PR:
