@@ -37,6 +37,7 @@ class SetDefaultCommand extends BaseCommand
         $config = $configLoader->getConfigStash();
         $config['data_source']['default'] = $defaultDataSource;
 
+        $configLoader->setConfigStash($config);
         $configLoader->writeToSymbol();
         $this->logger->info("Config file is updated successfully.");
     }

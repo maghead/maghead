@@ -18,9 +18,9 @@ class DataSourceCommand extends BaseCommand
 
     public function init()
     {
-        // $this->command('add');
         // $this->command('remove');
         // $this->command('set');
+        $this->command('add');
         $this->command('set-default');
     }
 
