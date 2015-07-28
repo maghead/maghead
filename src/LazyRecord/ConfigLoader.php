@@ -4,6 +4,9 @@ use ConfigKit\ConfigCompiler;
 use Exception;
 use ArrayAccess;
 use PDO;
+use LazyRecord\DSN\DSN;
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Dumper;
 
 /**
  * Available config key:
@@ -56,9 +59,27 @@ class ConfigLoader
         if (file_exists($this->symbolFilename) ) {
             return $this->load( $this->symbolFilename, $force );
         }
-        elseif( file_exists('.lazy.php') ) {
+        elseif (file_exists('.lazy.php')) {
             return $this->load('.lazy.php', $force );
         }
+    }
+
+    public function writeToSymbol()
+    {
+        if (!file_exists($this->symbolFilename) ) {
+            throw new Exception("symbol link " . $this->symbolFilename . ' does not exist.');
+        }
+
+        $targetFile = readlink($this->symbolFilename);
+        if ($targetFile === false || !file_exists($targetFile)) {
+            throw new Exception('Missing target config file. incorrect symbol link.');
+        }
+
+        $yaml = Yaml::dump($this->config, $inlineLevel = 4, $indentSpaces = 2, $exceptionOnInvalidType = true);
+        if (false === file_put_contents($targetFile, "---\n" . $yaml)) {
+            throw new Exception("YAML config update failed: $targetFile");
+        }
+        return true;
     }
 
     /**
@@ -79,15 +100,64 @@ class ConfigLoader
 
 
 
-    static public function preprocessConfigArray(array $dbconfig)
-    {
-        foreach($dbconfig['data_sources'] as & $config) {
 
+
+    /**
+     * Convert data source config to DSN object
+     *
+     * @param array data source config
+     * @return LazyRecord\DSN\DSN
+     */
+    static public function buildDSNObject(array $config)
+    {
+        // Build DSN connection string for PDO
+        $dsn = new DSN($config['driver']);
+        foreach (array('database','dbname') as $key) {
+            if (isset($config[$key])) {
+                $dsn->setAttribute('dbname', $config[$key]);
+                break;
+            }
+        }
+        if (isset($config['host'])) {
+            $dsn->setAttribute('host', $config['host']);
+        }
+        if (isset($config['port'])) {
+            $dsn->setAttribute('port', $config['port']);
+        }
+        return $dsn;
+    }
+
+
+
+
+
+
+    static public function preprocessConfig(array $config)
+    {
+        if (isset($config['data_source']['nodes'])) {
+            $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_source']['nodes']);
+        } else if (isset($config['data_sources'])) {
+            // convert 'data_sources' to ['data_sources']['nodes']
+            $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_sources']);
+            unset($config['data_sources']);
+        }
+        return $config;
+    }
+
+    /**
+     * This method is used for compiling config array.
+     *
+     * @param array PHP array from yaml config file
+     */
+    static public function preprocessDataSourceConfig(array $dbconfig)
+    {
+        foreach ($dbconfig as & $config) {
             if (!isset($config['driver'])) {
                 list($driverType) = explode( ':', $config['dsn'] , 2 );
                 $config['driver'] = $driverType;
             }
 
+            // compatible keys for username and password
             if (isset($config['username']) && $config['username']) {
                 $config['user'] = $config['username'];
             }
@@ -101,16 +171,11 @@ class ConfigLoader
                 $config['pass'] = NULL;
             }
 
+            // build dsn string for PDO
             if (!isset($config['dsn']) ) {
                 // Build DSN connection string for PDO
-                $params = array();
-                if( isset($config['database']) ) {
-                    $params[] = 'dbname=' . $config['database'];
-                }
-                if( isset($config['host']) ) {
-                    $params[] = 'host=' . $config['host'];
-                }
-                $config['dsn'] = $config['driver'] . ':' . join(';', $params);
+                $dsn = self::buildDSNObject($config);
+                $config['dsn'] = $dsn->__toString();
             }
 
             if (!isset($config['query_options'])) {
@@ -132,8 +197,9 @@ class ConfigLoader
     {
         $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
         if (ConfigCompiler::test($sourceFile, $compiledFile)) {
-            $config = self::preprocessConfigArray(ConfigCompiler::parse($sourceFile));
-            ConfigCompiler::write($compiledFile,$config);
+            $config = ConfigCompiler::parse($sourceFile);
+            $config = self::preprocessConfig($config);
+            ConfigCompiler::write($compiledFile, $config);
             return $config;
         } else {
             return require $compiledFile;
@@ -170,11 +236,21 @@ class ConfigLoader
 
         if ((is_string($arg) && file_exists($arg)) || $arg === true ) {
             $this->loadFromFile($arg);
-        } elseif( is_array($arg) ) {
-            $this->config = self::preprocessConfigArray($arg);
+        } else if (is_array($arg)) {
+            $this->config = self::preprocessConfig($arg);
         } else {
             throw new Exception("unknown config format.");
         }
+
+        // XXX: validate config structure if we are migrating to new major version with incompatible changes
+        /*
+        if (isset($this->config['data_sources'])) {
+            throw new Exception('Your config file is out-of-date, please update your config file by referencing CHANGELOG.md');
+        }
+        if (!isset($this->config['data_source'])) {
+            throw new Exception('data_source is missing, please update your config file.');
+        }
+        */
         $this->loaded = true;
     }
 
@@ -281,7 +357,7 @@ class ConfigLoader
     {
         // load data source into connection manager
         $manager = ConnectionManager::getInstance();
-        foreach( $this->getDataSources() as $sourceId => $ds ) {
+        foreach ($this->getDataSources() as $sourceId => $ds) {
             $manager->addDataSource( $sourceId , $ds );
         }
     }
@@ -293,8 +369,6 @@ class ConfigLoader
     }
 
 
-
-
     /**
      * get all data sources
      *
@@ -302,11 +376,35 @@ class ConfigLoader
      */
     public function getDataSources()
     {
-        return $this->config['data_sources'];
+        if (isset($this->config['data_source']['nodes'])) {
+            return $this->config['data_source']['nodes'];
+        }
+
+        // backward compatible config structure
+        if (isset($this->config['data_sources'])) {
+            return $this->config['data_sources'];
+        }
+        return array();
     }
 
     public function getDataSourceIds() {
-        return array_keys($this->config['data_sources']);
+        if (isset($this->config['data_source']['nodes'])) {
+            return array_keys($this->config['data_source']['nodes']);
+        }
+
+        // backward compatible config structure
+        if (isset($this->config['data_sources'])) {
+            return array_keys($this->config['data_sources']);
+        }
+        return array();
+    }
+
+    public function getDefaultDataSource()
+    {
+        if (isset($this->config['data_source']['default'])) {
+            return $this->config['data_source']['default'];
+        }
+        return 'default';
     }
 
     public function getSeedScripts() {
@@ -348,6 +446,11 @@ class ConfigLoader
      */
     public function getDataSource($sourceId)
     {
+        if (isset($this->config['data_source']['nodes'][$sourceId])) {
+            return $this->config['data_source']['nodes'][$sourceId];
+        }
+
+        // backward compatible config structure
         if ( isset( $this->config['data_sources'][$sourceId] ) ) {
             return $this->config['data_sources'][$sourceId];
         }

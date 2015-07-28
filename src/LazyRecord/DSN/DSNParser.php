@@ -12,7 +12,7 @@ class DSNParser
         if (preg_match('/^(\w+):/', $dsn, $matches)) {
             $driver = $matches[1];
         } else {
-            throw new Exception('Invalid DSN string');
+            throw new Exception("Invalid DSN string: $dsn");
         }
         $reststr = preg_replace('/^\w+:/','', $dsn);
         $attributes = [];

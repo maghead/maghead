@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord;
 use Exception;
+use LogicException;
 use PDOException;
 use PDO;
 use LazyRecord\Adapter\PdoAdapter;
@@ -46,11 +47,11 @@ class UndefinedDataSourceException extends Exception
  *
  *    }
  */
-
-class ConnectionManager
-    implements ArrayAccess
+class ConnectionManager implements ArrayAccess
 {
     const DEFAULT_DS = 'default';
+
+    private $config;
 
     /**
      * @var array contains data source configurations
@@ -63,8 +64,9 @@ class ConnectionManager
     protected $conns = array();
 
 
-    public function init(ConfigLoader $config) 
+    public function init(ConfigLoader $config)
     {
+        $this->config = $config;
         foreach ($config->getDataSources() as $sourceId => $ds ) {
             $this->addDataSource($sourceId , $ds);
         }
@@ -201,9 +203,9 @@ class ConnectionManager
     public function getConnection($sourceId = 'default')
     {
         // use cached connection objects
-        if( isset($this->conns[$sourceId]) ) {
+        if (isset($this->conns[$sourceId]) ) {
             return $this->conns[$sourceId];
-        } 
+        }
         if (!isset($this->datasources[ $sourceId ])) {
             throw new UndefinedDataSourceException("data source $sourceId not found.");
         }
@@ -227,7 +229,13 @@ class ConnectionManager
      */
     public function getDefaultConnection()
     {
-        return $this->getConnection(self::DEFAULT_DS);
+        // backward compatible
+        if (!$this->config) {
+            return $this->getConnection(self::DEFAULT_DS);
+        }
+
+        $id = $this->config->getDefaultDataSource();
+        return $this->getConnection($id);
     }
 
 
@@ -337,7 +345,7 @@ class ConnectionManager
         try {
             $conn = $this->getConnection($dsId);
             $stm = $conn->prepareAndExecute($sql, $args);
-        } catch( PDOException $e ) {
+        } catch (PDOException $e) {
             throw new SQLQueryException($dsId,$sql,$args,$e);
         }
         // if failed ?
