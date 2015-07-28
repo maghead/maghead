@@ -10,32 +10,25 @@ use SQLBuilder\Universal\Query\CreateDatabaseQuery;
 use Exception;
 use PDO;
 
-class SetDefaultCommand extends BaseCommand
+class RemoveCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'set default data source for PDO connections.';
+        return 'Remove data source from config file.';
     }
 
     public function arguments($args)
     {
-        $args->add('default-datasource');
+        $args->add('data-source-id');
     }
 
-    public function execute($defaultDataSource)
+    public function execute($dataSourceId)
     {
         // force loading data source
         $configLoader = $this->getConfigLoader(true);
 
-        $dataSources = $configLoader->getDataSources();
-
-        if (!in_array($defaultDataSource, array_keys($dataSources))) {
-            $this->logger->error("Undefined data source ID: $defaultDataSource");
-            return false;
-        }
-
         $config = $configLoader->getConfigStash();
-        $config['data_source']['default'] = $defaultDataSource;
+        unset($config['data_source']['nodes'][$dataSourceId]);
 
         $configLoader->setConfigStash($config);
         $configLoader->writeToSymbol();

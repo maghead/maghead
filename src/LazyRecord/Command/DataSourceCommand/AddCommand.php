@@ -63,7 +63,7 @@ class AddCommand extends BaseCommand
 
         $configLoader->setConfigStash($config);
         $configLoader->writeToSymbol();
-        $this->logger->info("Config file is updated successfully.");
+        return true;
     }
 }
 
