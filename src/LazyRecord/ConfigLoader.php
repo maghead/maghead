@@ -79,6 +79,30 @@ class ConfigLoader
     }
 
 
+    /**
+     * Convert data source config to DSN object
+     *
+     * @param array data source config
+     * @return LazyRecord\DSN\DSN
+     */
+    static public function buildDSNObject(array $config)
+    {
+        // Build DSN connection string for PDO
+        $dsn = new DSN($config['driver']);
+        foreach (array('database','dbname') as $key) {
+            if (isset($config[$key])) {
+                $dsn->setAttribute('dbname', $config[$key]);
+                break;
+            }
+        }
+        if (isset($config['host'])) {
+            $dsn->setAttribute('host', $config['host']);
+        }
+        if (isset($config['port'])) {
+            $dsn->setAttribute('port', $config['port']);
+        }
+        return $dsn;
+    }
 
 
     /**
@@ -108,20 +132,10 @@ class ConfigLoader
                 $config['pass'] = NULL;
             }
 
-            // build dsn
+            // build dsn string for PDO
             if (!isset($config['dsn']) ) {
                 // Build DSN connection string for PDO
-                $dsn = new DSN($config['driver']);
-
-                foreach (array('database','dbname') as $key) {
-                    if (isset($config[$key])) {
-                        $dsn->setAttribute('dbname', $config[$key]);
-                        break;
-                    }
-                }
-                if (isset($config['host'])) {
-                    $dsn->setAttribute('host', $config['host']);
-                }
+                $dsn = self::buildDSNObject($config);
                 $config['dsn'] = $dsn->__toString();
             }
 
