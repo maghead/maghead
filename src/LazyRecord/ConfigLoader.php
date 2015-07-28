@@ -5,6 +5,8 @@ use Exception;
 use ArrayAccess;
 use PDO;
 use LazyRecord\DSN\DSN;
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Dumper;
 
 /**
  * Available config key:
@@ -62,6 +64,24 @@ class ConfigLoader
         }
     }
 
+    public function writeToSymbol()
+    {
+        if (!file_exists($this->symbolFilename) ) {
+            throw new Exception("symbol link " . $this->symbolFilename . ' does not exist.');
+        }
+
+        $targetFile = readlink($this->symbolFilename);
+        if ($targetFile === false || !file_exists($targetFile)) {
+            throw new Exception('Missing target config file. incorrect symbol link.');
+        }
+
+        $yaml = Yaml::dump($this->config, $inlineLevel = 4, $indentSpaces = 2, $exceptionOnInvalidType = true);
+        if (false === file_put_contents($targetFile, "---\n" . $yaml)) {
+            throw new Exception("YAML config update failed: $targetFile");
+        }
+        return true;
+    }
+
     /**
      * Load config from array directly.
      *
@@ -77,6 +97,9 @@ class ConfigLoader
     {
         $this->loaded = $loaded;
     }
+
+
+
 
 
     /**
@@ -105,13 +128,18 @@ class ConfigLoader
     }
 
 
+
+
+
+
     static public function preprocessConfig(array $config)
     {
         if (isset($config['data_source']['nodes'])) {
             $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_source']['nodes']);
         } else if (isset($config['data_sources'])) {
             // convert 'data_sources' to ['data_sources']['nodes']
-            $config['data_source']['nodes'] = $config['data_sources'] = self::preprocessDataSourceConfig($config['data_sources']);
+            $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_sources']);
+            unset($config['data_sources']);
         }
         return $config;
     }
