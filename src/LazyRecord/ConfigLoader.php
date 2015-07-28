@@ -110,7 +110,8 @@ class ConfigLoader
         if (isset($config['data_source']['nodes'])) {
             $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_source']['nodes']);
         } else if (isset($config['data_sources'])) {
-            $config['data_sources'] = self::preprocessDataSourceConfig($config['data_sources']);
+            // convert 'data_sources' to ['data_sources']['nodes']
+            $config['data_source']['nodes'] = $config['data_sources'] = self::preprocessDataSourceConfig($config['data_sources']);
         }
         return $config;
     }
