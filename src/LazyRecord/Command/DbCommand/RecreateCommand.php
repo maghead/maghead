@@ -9,7 +9,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\CreateDatabaseQuery;
 use PDO;
 
-class ReCreateCommand extends CreateCommand
+class RecreateCommand extends CreateCommand
 {
     public function brief() 
     {
