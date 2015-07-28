@@ -4,6 +4,7 @@ use ConfigKit\ConfigCompiler;
 use Exception;
 use ArrayAccess;
 use PDO;
+use LazyRecord\DSN\DSN;
 
 /**
  * Available config key:
@@ -79,15 +80,21 @@ class ConfigLoader
 
 
 
+
+    /**
+     * This method is used for compiling config array.
+     *
+     * @param array PHP array from yaml config file
+     */
     static public function preprocessConfigArray(array $dbconfig)
     {
-        foreach($dbconfig['data_sources'] as & $config) {
-
+        foreach ($dbconfig['data_sources'] as & $config) {
             if (!isset($config['driver'])) {
                 list($driverType) = explode( ':', $config['dsn'] , 2 );
                 $config['driver'] = $driverType;
             }
 
+            // compatible keys for username and password
             if (isset($config['username']) && $config['username']) {
                 $config['user'] = $config['username'];
             }
@@ -101,16 +108,21 @@ class ConfigLoader
                 $config['pass'] = NULL;
             }
 
+            // build dsn
             if (!isset($config['dsn']) ) {
                 // Build DSN connection string for PDO
-                $params = array();
-                if( isset($config['database']) ) {
-                    $params[] = 'dbname=' . $config['database'];
+                $dsn = new DSN($config['driver']);
+
+                foreach (array('database','dbname') as $key) {
+                    if (isset($config[$key])) {
+                        $dsn->setAttribute('dbname', $config[$key]);
+                        break;
+                    }
                 }
-                if( isset($config['host']) ) {
-                    $params[] = 'host=' . $config['host'];
+                if (isset($config['host'])) {
+                    $dsn->setAttribute('host', $config['host']);
                 }
-                $config['dsn'] = $config['driver'] . ':' . join(';', $params);
+                $config['dsn'] = $dsn->__toString();
             }
 
             if (!isset($config['query_options'])) {
