@@ -11,8 +11,7 @@ php:
 install:
   - rm -rf vendor/corneltek/serializerkit
   - composer self-update
-  - composer require satooshi/php-coveralls:dev-master --no-update
-  - composer install --prefer-source
+  - composer install
 before_script:
   # - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   # - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
