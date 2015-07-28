@@ -3,24 +3,29 @@ bootstrap:
   - tests/bootstrap.php
 schema:
   auto_id: 1
-# Customize your schema class loader
-# loader: custom_schema_loader.php
-# Customize your schema lookup paths
   paths:
     - tests
-#  cache:
-#    class: LazyRecord\Cache\Memcache
-#    servers:
-#      - { host: localhost, port: 11211 }
 data_source:
   default: sqlite
   nodes:
     sqlite:
       dsn: 'sqlite:testing.sqlite3'
-      # dsn: 'sqlite::memory:'
+      driver: sqlite
+      user: null
+      pass: null
+      query_options: {  }
+      connection_options: {  }
     pgsql:
       dsn: 'pgsql:host=localhost;dbname=testing'
       user: postgres
+      driver: pgsql
+      pass: null
+      query_options: {  }
+      connection_options: {  }
     mysql:
       dsn: 'mysql:host=localhost;dbname=testing'
       user: testing
+      driver: mysql
+      pass: null
+      query_options: {  }
+      connection_options: { 1002: 'SET NAMES utf8' }
