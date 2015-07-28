@@ -16,6 +16,7 @@ class DbCommand extends BaseCommand
     public function init()
     {
         $this->command('create');
+        $this->command('recreate');
         $this->command('drop');
     }
 
