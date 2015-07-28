@@ -6,6 +6,12 @@ class AllCommandsTest extends CommandTestCase
         return new LazyRecord\Console;
     }
 
+    public function testConfCommand()
+    {
+        $this->expectOutputRegex('/Making link/');
+        $this->app->run(array('lazy','build-conf'));
+    }
+
     public function testCommands()
     {
         ok( $this->app->createCommand('LazyRecord\Command\BuildConfCommand') );
@@ -17,11 +23,6 @@ class AllCommandsTest extends CommandTestCase
         ok( $this->app->createCommand('LazyRecord\Command\DiffCommand') );
     }
 
-    public function testConfCommand()
-    {
-        $this->expectOutputRegex('/Making link/');
-        $this->app->run(array('lazy','build-conf'));
-    }
 
 
     /**

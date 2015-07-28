@@ -307,7 +307,7 @@ class ConfigLoader
     {
         // load data source into connection manager
         $manager = ConnectionManager::getInstance();
-        foreach( $this->getDataSources() as $sourceId => $ds ) {
+        foreach ($this->getDataSources() as $sourceId => $ds) {
             $manager->addDataSource( $sourceId , $ds );
         }
     }
@@ -319,8 +319,6 @@ class ConfigLoader
     }
 
 
-
-
     /**
      * get all data sources
      *
@@ -328,11 +326,17 @@ class ConfigLoader
      */
     public function getDataSources()
     {
-        return $this->config['data_sources'];
+        if (isset($this->config['data_sources'])) {
+            return $this->config['data_sources'];
+        }
+        return array();
     }
 
     public function getDataSourceIds() {
-        return array_keys($this->config['data_sources']);
+        if (isset($this->config['data_sources'])) {
+            return array_keys($this->config['data_sources']);
+        }
+        return array();
     }
 
     public function getSeedScripts() {
