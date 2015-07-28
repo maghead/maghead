@@ -11,6 +11,11 @@ class DataSourceCommand extends BaseCommand
         return 'data source related commands.';
     }
 
+    public function options($opts)
+    {
+        $opts->add('v|verbose', 'Display verbose information');
+    }
+
     public function init()
     {
         // $this->command('add');
@@ -21,13 +26,14 @@ class DataSourceCommand extends BaseCommand
 
     public function execute()
     {
-        // Force loading data source
         $configLoader = $this->getConfigLoader(true);
         $dataSources = $configLoader->getDataSources();
-
-        // XXX: use Logger->dump method (not released yet)
         foreach ($dataSources as $id => $config) {
-            $this->logger->writeln(sprintf("%-10s %s",$id, $config['dsn']));
+            if ($this->options->verbose) {
+                $this->logger->writeln(sprintf("%-10s %s",$id, $config['dsn']));
+            } else {
+                $this->logger->writeln($id);
+            }
         }
     }
 
