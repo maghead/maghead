@@ -49,6 +49,7 @@ class Console extends Application
         $this->command('meta');
         $this->command('version');
         $this->command('db');
+        $this->command('data-source');
     }
 
     public static function getInstance() 
