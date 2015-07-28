@@ -6,6 +6,7 @@ Changes
 - Added DSN parser.
 - Added `db create` command.
 - Added `db drop` command.
+- Added `db recreate` command.
 - Removed dbutil from dependency
 - Removed create-db command
 
