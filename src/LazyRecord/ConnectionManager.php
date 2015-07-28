@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord;
 use Exception;
+use LogicException;
 use PDOException;
 use PDO;
 use LazyRecord\Adapter\PdoAdapter;
@@ -52,6 +53,8 @@ class ConnectionManager
 {
     const DEFAULT_DS = 'default';
 
+    private $config;
+
     /**
      * @var array contains data source configurations
      */
@@ -63,8 +66,9 @@ class ConnectionManager
     protected $conns = array();
 
 
-    public function init(ConfigLoader $config) 
+    public function init(ConfigLoader $config)
     {
+        $this->config = $config;
         foreach ($config->getDataSources() as $sourceId => $ds ) {
             $this->addDataSource($sourceId , $ds);
         }
@@ -227,7 +231,13 @@ class ConnectionManager
      */
     public function getDefaultConnection()
     {
-        return $this->getConnection(self::DEFAULT_DS);
+        // backward compatible
+        if (!$this->config) {
+            return $this->getConnection(self::DEFAULT_DS);
+        }
+
+        $id = $this->config->getDefaultDataSource();
+        return $this->getConnection($id);
     }
 
 

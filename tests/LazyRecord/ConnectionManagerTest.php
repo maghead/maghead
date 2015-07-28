@@ -16,8 +16,10 @@ class ConnectionManagerTest extends PHPUnit_Framework_TestCase
 
         $manager->add($conn, 'default');
 
+        /*
         $conn = $manager->getDefaultConnection();
-        ok( $conn );
+        ok($conn);
+         */
 
         $manager->addDataSource( 'master', array( 
             'dsn' => 'sqlite::memory:',

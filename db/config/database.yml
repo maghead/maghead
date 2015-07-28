@@ -12,15 +12,15 @@ schema:
 #    class: LazyRecord\Cache\Memcache
 #    servers:
 #      - { host: localhost, port: 11211 }
-data_sources:
-  default:
-    dsn: 'sqlite:testing.sqlite3'
-#     dsn: 'sqlite::memory:'
-    user: 
-    pass: 
-  pgsql:
-    dsn: 'pgsql:host=localhost;dbname=testing'
-    user: postgres
-  mysql:
-    dsn: 'mysql:host=localhost;dbname=testing'
-    user: testing
+data_source:
+  default: sqlite
+  nodes:
+    sqlite:
+      dsn: 'sqlite:testing.sqlite3'
+      # dsn: 'sqlite::memory:'
+    pgsql:
+      dsn: 'pgsql:host=localhost;dbname=testing'
+      user: postgres
+    mysql:
+      dsn: 'mysql:host=localhost;dbname=testing'
+      user: testing

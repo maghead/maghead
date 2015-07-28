@@ -21,20 +21,22 @@ $config->loadFromArray(array(
         'auto_id' => 1,
         'paths' => array('tests/TestApp'),
     ),
-    'data_sources' =>
-    array (
-        'default' =>
-            array (
-                'dsn' => 'sqlite::memory:',
-                // 'dsn' => 'sqlite:testing.sqlite3',
-                'user' => NULL,
-                'pass' => NULL,
-            ),
-        'pgsql' =>
-            array (
-                'dsn' => 'pgsql:host=localhost;dbname=testing',
-                'user' => 'postgres',
-            ),
+    'data_source' => array(
+        'default' => 'sqlite',
+        'nodes' => array(
+            'sqlite' =>
+                array (
+                    'dsn' => 'sqlite::memory:',
+                    // 'dsn' => 'sqlite:testing.sqlite3',
+                    'user' => NULL,
+                    'pass' => NULL,
+                ),
+            'pgsql' =>
+                array (
+                    'dsn' => 'pgsql:host=localhost;dbname=testing',
+                    'user' => 'postgres',
+                ),
+        ),
     ),
 ));
 

@@ -57,7 +57,7 @@ class ConfigLoader
         if (file_exists($this->symbolFilename) ) {
             return $this->load( $this->symbolFilename, $force );
         }
-        elseif( file_exists('.lazy.php') ) {
+        elseif (file_exists('.lazy.php')) {
             return $this->load('.lazy.php', $force );
         }
     }
@@ -105,14 +105,24 @@ class ConfigLoader
     }
 
 
+    static public function preprocessConfig(array $config)
+    {
+        if (isset($config['data_source']['nodes'])) {
+            $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_source']['nodes']);
+        } else if (isset($config['data_sources'])) {
+            $config['data_sources'] = self::preprocessDataSourceConfig($config['data_sources']);
+        }
+        return $config;
+    }
+
     /**
      * This method is used for compiling config array.
      *
      * @param array PHP array from yaml config file
      */
-    static public function preprocessConfigArray(array $dbconfig)
+    static public function preprocessDataSourceConfig(array $dbconfig)
     {
-        foreach ($dbconfig['data_sources'] as & $config) {
+        foreach ($dbconfig as & $config) {
             if (!isset($config['driver'])) {
                 list($driverType) = explode( ':', $config['dsn'] , 2 );
                 $config['driver'] = $driverType;
@@ -158,8 +168,9 @@ class ConfigLoader
     {
         $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
         if (ConfigCompiler::test($sourceFile, $compiledFile)) {
-            $config = self::preprocessConfigArray(ConfigCompiler::parse($sourceFile));
-            ConfigCompiler::write($compiledFile,$config);
+            $config = ConfigCompiler::parse($sourceFile);
+            $config = self::preprocessConfig($config);
+            ConfigCompiler::write($compiledFile, $config);
             return $config;
         } else {
             return require $compiledFile;
@@ -196,11 +207,21 @@ class ConfigLoader
 
         if ((is_string($arg) && file_exists($arg)) || $arg === true ) {
             $this->loadFromFile($arg);
-        } elseif( is_array($arg) ) {
-            $this->config = self::preprocessConfigArray($arg);
+        } else if (is_array($arg)) {
+            $this->config = self::preprocessConfig($arg);
         } else {
             throw new Exception("unknown config format.");
         }
+
+        // XXX: validate config structure if we are migrating to new major version with incompatible changes
+        /*
+        if (isset($this->config['data_sources'])) {
+            throw new Exception('Your config file is out-of-date, please update your config file by referencing CHANGELOG.md');
+        }
+        if (!isset($this->config['data_source'])) {
+            throw new Exception('data_source is missing, please update your config file.');
+        }
+        */
         $this->loaded = true;
     }
 
@@ -326,6 +347,11 @@ class ConfigLoader
      */
     public function getDataSources()
     {
+        if (isset($this->config['data_source']['nodes'])) {
+            return $this->config['data_source']['nodes'];
+        }
+
+        // backward compatible config structure
         if (isset($this->config['data_sources'])) {
             return $this->config['data_sources'];
         }
@@ -333,10 +359,23 @@ class ConfigLoader
     }
 
     public function getDataSourceIds() {
+        if (isset($this->config['data_source']['nodes'])) {
+            return array_keys($this->config['data_source']['nodes']);
+        }
+
+        // backward compatible config structure
         if (isset($this->config['data_sources'])) {
             return array_keys($this->config['data_sources']);
         }
         return array();
+    }
+
+    public function getDefaultDataSource()
+    {
+        if (isset($this->config['data_source']['default'])) {
+            return $this->config['data_source']['default'];
+        }
+        return 'default';
     }
 
     public function getSeedScripts() {
@@ -378,6 +417,11 @@ class ConfigLoader
      */
     public function getDataSource($sourceId)
     {
+        if (isset($this->config['data_source']['nodes'][$sourceId])) {
+            return $this->config['data_source']['nodes'][$sourceId];
+        }
+
+        // backward compatible config structure
         if ( isset( $this->config['data_sources'][$sourceId] ) ) {
             return $this->config['data_sources'][$sourceId];
         }

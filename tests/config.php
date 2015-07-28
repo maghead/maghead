@@ -5,14 +5,15 @@ return array(
           'tests',
         ),
     ),
-  'data_sources' => array( 
-      'default' => array( 
-          'dsn' => 'sqlite::memory:',
-        ),
-      'slave' => array( 
-          'dsn' => 'mysql:host=localhost;dbname=test',
-          'user' => 'root',
-          'pass' => 123123,
+  'data_source' => array( 
+      'default' => 'sqlite',
+      'nodes' => array(
+            'sqlite' => array( 'dsn' => 'sqlite::memory:',),
+            'slave' => array( 
+                'dsn' => 'mysql:host=localhost;dbname=test',
+                'user' => 'root',
+                'pass' => 123123,
+            ),
         ),
     ),
 );
