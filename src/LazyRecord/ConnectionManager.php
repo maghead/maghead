@@ -47,9 +47,7 @@ class UndefinedDataSourceException extends Exception
  *
  *    }
  */
-
-class ConnectionManager
-    implements ArrayAccess
+class ConnectionManager implements ArrayAccess
 {
     const DEFAULT_DS = 'default';
 
@@ -205,9 +203,9 @@ class ConnectionManager
     public function getConnection($sourceId = 'default')
     {
         // use cached connection objects
-        if( isset($this->conns[$sourceId]) ) {
+        if (isset($this->conns[$sourceId]) ) {
             return $this->conns[$sourceId];
-        } 
+        }
         if (!isset($this->datasources[ $sourceId ])) {
             throw new UndefinedDataSourceException("data source $sourceId not found.");
         }
@@ -347,7 +345,7 @@ class ConnectionManager
         try {
             $conn = $this->getConnection($dsId);
             $stm = $conn->prepareAndExecute($sql, $args);
-        } catch( PDOException $e ) {
+        } catch (PDOException $e) {
             throw new SQLQueryException($dsId,$sql,$args,$e);
         }
         // if failed ?
