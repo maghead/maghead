@@ -1432,7 +1432,7 @@ abstract class BaseModel implements
      * @param string $dsId data source id
      * @return PDO
      */
-    public function getConnection( $dsId = 'default' )
+    public function getConnection($dsId = 'default')
     {
         $connManager = ConnectionManager::getInstance();
         return $connManager->getConnection( $dsId ); 
@@ -1446,7 +1446,7 @@ abstract class BaseModel implements
      */
     public function getWriteConnection()
     {
-        return ConnectionManager::getInstance()->getConnection( $this->getWriteSourceId() );
+        return ConnectionManager::getInstance()->getConnection($this->getWriteSourceId());
     }
 
 

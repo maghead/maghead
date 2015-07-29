@@ -5,6 +5,7 @@ use Exception;
 use ArrayAccess;
 use PDO;
 use LazyRecord\DSN\DSN;
+use LazyRecord\ConnectionManager;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Dumper;
 
@@ -357,9 +358,7 @@ class ConfigLoader
     {
         // load data source into connection manager
         $manager = ConnectionManager::getInstance();
-        foreach ($this->getDataSources() as $sourceId => $ds) {
-            $manager->addDataSource( $sourceId , $ds );
-        }
+        $manager->init($this);
     }
 
 
