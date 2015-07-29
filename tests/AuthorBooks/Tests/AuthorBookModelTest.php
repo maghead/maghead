@@ -29,6 +29,7 @@ class AuthorBookModelTest extends ModelTestCase
             'confirmed' => false,
         ));
         $this->resultOK(true,$ret);
+        $this->assertFalse($a->confirmed);
 
         $ret = $a->create(array(
             'name' => 'b',
@@ -36,6 +37,7 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'b',
             'confirmed' => true,
         ));
+        $this->assertTrue($a->confirmed);
         $this->resultOK(true,$ret);
 
         $authors = new \AuthorBooks\Model\AuthorCollection;
