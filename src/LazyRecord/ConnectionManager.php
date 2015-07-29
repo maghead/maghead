@@ -200,12 +200,13 @@ class ConnectionManager implements ArrayAccess
      *                     sqlite2:mydb.sq2
      *
      */
-    public function getConnection($sourceId = 'default')
+    public function getConnection($sourceId)
     {
         // use cached connection objects
         if (isset($this->conns[$sourceId]) ) {
             return $this->conns[$sourceId];
         }
+        // var_dump( $this->datasources ); 
         if (!isset($this->datasources[ $sourceId ])) {
             throw new UndefinedDataSourceException("data source $sourceId not found.");
         }
