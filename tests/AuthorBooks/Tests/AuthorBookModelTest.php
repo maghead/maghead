@@ -15,6 +15,28 @@ class AuthorBookModelTest extends ModelTestCase
         );
     }
 
+    /**
+     * @basedata false
+     */
+    public function testBooleanCreate()
+    {
+        $a = new Author;
+        $ret = $a->create(array(
+            'name' => 'a',
+            'email' => 'a@a',
+            'identity' => 'a',
+            'confirmed' => true,
+        ));
+        $this->resultOK(true,$ret);
+        $this->assertTrue($a->confirmed);
+        $a->reload();
+        $this->assertTrue($a->confirmed);
+
+        $a = new Author;
+        $ret = $a->load([ 'name' => 'a' ]);
+        $this->resultOK(true,$ret);
+        $this->assertTrue($a->confirmed);
+    }
 
     /**
      * @basedata false
@@ -30,6 +52,8 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true,$ret);
         $this->assertFalse($a->confirmed);
+        $a->reload();
+        $this->assertFalse($a->confirmed);
 
         $ret = $a->create(array(
             'name' => 'b',
@@ -37,8 +61,10 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'b',
             'confirmed' => true,
         ));
-        $this->assertTrue($a->confirmed);
         $this->resultOK(true,$ret);
+        $this->assertTrue($a->confirmed);
+        $a->reload();
+        $this->assertTrue($a->confirmed);
 
         $authors = new \AuthorBooks\Model\AuthorCollection;
         $authors->where()
