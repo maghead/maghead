@@ -30,7 +30,7 @@ abstract class ModelTestCase extends BaseTestCase
         }
 
         $configLoader = ConfigLoader::getInstance();
-        $configLoader->setDataSource('default', $dataSourceConfig);
+        $configLoader->addDataSource('default', $dataSourceConfig);
         $configLoader->loadDataSources();
 
         try {
