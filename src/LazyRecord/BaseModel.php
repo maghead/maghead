@@ -1102,6 +1102,8 @@ abstract class BaseModel implements
         $validationError = false;
         $validationResults = array();
 
+        $updateArgs = array();
+
         try
         {
             $args = $this->beforeUpdate($args);
@@ -1109,58 +1111,60 @@ abstract class BaseModel implements
 
             $args = $this->filterArrayWithColumns($args);
 
-
             foreach( $this->getSchema()->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
-                if( isset($args[$n]) 
+                if (isset($args[$n]) 
                     && ! $args[$n]
                     && ! $c->primary )
                 {
-                    if( $val = $c->getDefaultValue($this ,$args) ) {
+                    if ($val = $c->getDefaultValue($this ,$args)) {
                         $args[$n] = $val;
                     }
                 }
 
                 // column validate (value is set.)
-                if (isset($args[$n]))
-                {
-                    // TODO: Do not render immutable field in ActionKit
-                    if ($c->immutable) {
-                        // TODO: render as a validation results?
-                        // unset($args[$n]);
-                        // continue;
-                        return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));
-                    }
+                if (!array_key_exists($n, $args)) {
+                    continue;
+                }
 
-                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
-                        $args[$n] = $c->typeCasting( $args[$n] );
-                    }
+                // TODO: Do not render immutable field in ActionKit
+                if ($c->immutable) {
+                    // TODO: render as a validation results?
+                    // unset($args[$n]);
+                    // continue;
+                    return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));
+                }
 
-                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
-                        if ( false === $c->checkTypeConstraint($args[$n])) {
-                            return $this->reportError($args[$n] . " is not " . $c->isa . " type");
-                        }
-                    }
+                if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
+                    $args[$n] = $c->typeCasting( $args[$n] );
+                }
 
-                    if ($c->filter || $c->canonicalizer) {
-                        $args[$n] = $c->canonicalizeValue($args[$n], $this, $args);
+                if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
+                    if ( false === $c->checkTypeConstraint($args[$n])) {
+                        return $this->reportError($args[$n] . " is not " . $c->isa . " type");
                     }
+                }
 
-                    if ($validationResult = $this->_validateColumn($c, $args[$n], $args)) {
-                        $validationResults[$n] = $validationResult;
-                        if (! $validationResult['valid']) {
-                            $validationError = true;
-                        }
+                if ($c->filter || $c->canonicalizer) {
+                    $args[$n] = $c->canonicalizeValue($args[$n], $this, $args);
+                }
+
+                if ($validationResult = $this->_validateColumn($c, $args[$n], $args)) {
+                    $validationResults[$n] = $validationResult;
+                    if (! $validationResult['valid']) {
+                        $validationError = true;
                     }
+                }
 
-                    if (!is_string($args[$n])) {
-                        if ($args[$n] instanceof Raw) {
-
-                        } else {
-                            $args[$n] = $c->deflate( $args[$n], $driver);
-                        }
+                if (!is_scalar($args[$n])) {
+                    if ($args[$n] instanceof Raw) {
+                        $updateArgs[$n] = $args[$n];
+                    } else {
+                        $updateArgs[$n] = new Bind($n, $c->deflate($args[$n], $driver));
                     }
+                } else {
+                    $updateArgs[$n] = new Bind($n, $args[$n]);
                 }
             }
 
@@ -1170,9 +1174,13 @@ abstract class BaseModel implements
                 ));
             }
 
+            echo "Args:\n";
+            var_dump( $args ); 
+            var_dump( $updateArgs ); 
+
 
             // TODO: optimized to built cache
-            $query->set($args);
+            $query->set($updateArgs);
             $query->update( $this->getTable() );
             $query->where()->equal($k , $kVal);
 
