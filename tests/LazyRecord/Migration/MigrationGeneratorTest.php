@@ -10,9 +10,8 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
     public function testGenerator()
     {
         $connectionManager = ConnectionManager::getInstance();
-        $connectionManager->addDataSource('default',array( 'dsn' => 'sqlite::memory:' ));
-        $connectionManager = ConnectionManager::getInstance();
-        $pdo = $connectionManager->getConnection('default');
+        $connectionManager->addDataSource('sqlite',array( 'dsn' => 'sqlite::memory:' ));
+        $pdo = $connectionManager->getConnection('sqlite');
         $pdo->query('CREATE TABLE users (id integer NOT NULL PRIMARY KEY);');
 
         $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'tests/migrations');
@@ -24,22 +23,21 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('tests/migrations/20120902_UpdateUser.php',$path);
         unlink($path);
 
-        $connectionManager = ConnectionManager::getInstance();
-        $connectionManager->removeDataSource('default');
-        $connectionManager->close('default');
+        $connectionManager->removeDataSource('sqlite');
+        $connectionManager->close('sqlite');
     }
 
     public function testMigrationByDiff() 
     {
         $connectionManager = ConnectionManager::getInstance();
-        $connectionManager->addDataSource('default',array( 
+        $connectionManager->addDataSource('mysql',array( 
             'driver' => 'mysql',
             'dsn' =>  @$_ENV['DB_MYSQL_DSN'],
             'user' => @$_ENV['DB_MYSQL_USER'],
             'pass' => @$_ENV['DB_MYSQL_PASS'],
         ));
 
-        $pdo = $connectionManager->getConnection('default');
+        $pdo = $connectionManager->getConnection('mysql');
         $pdo->query('DROP TABLE IF EXISTS users');
         $pdo->query('DROP TABLE IF EXISTS test');
         $pdo->query('CREATE TABLE users (account VARCHAR(128) UNIQUE)');
@@ -54,7 +52,7 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
 
         $finder = new SchemaFinder;
         $finder->find();
-        list($class,$path) = $generator->generateWithDiff('DiffMigration', 'default', [ new TestApp\Model\UserSchema ], '20120101');
+        list($class,$path) = $generator->generateWithDiff('DiffMigration', 'mysql', [ new TestApp\Model\UserSchema ], '20120101');
         require_once $path;
         ok($class::getId());
 
@@ -67,8 +65,8 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
          */
 
         // run migration
-        $runner = new MigrationRunner('default');
-        $runner->resetMigrationId('default');
+        $runner = new MigrationRunner('mysql');
+        $runner->resetMigrationId('mysql');
         $runner->load('tests/migrations_testing');
 
 
@@ -85,8 +83,8 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         unlink($path);
 
         $pdo->query('DROP TABLE IF EXISTS users');
-        $connectionManager->removeDataSource('default');
-        $connectionManager->close('default');
+        $connectionManager->removeDataSource('mysql');
+        $connectionManager->close('mysql');
     }
 }
 

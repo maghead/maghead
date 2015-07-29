@@ -24,11 +24,14 @@ abstract class ModelTestCase extends BaseTestCase
 
         $connManager = ConnectionManager::getInstance();
         $dataSourceConfig = self::createDataSourceConfig($this->driver);
-        if ($dataSourceConfig) {
-            $connManager->addDataSource('default', $dataSourceConfig);
-        } else {
+
+        if (!$dataSourceConfig) {
             $this->markTestSkipped("{$this->driver} database configuration is missing.");
         }
+
+        $configLoader = ConfigLoader::getInstance();
+        $configLoader->setDataSource('default', $dataSourceConfig);
+        $configLoader->loadDataSources();
 
         try {
             $dbh = $connManager->getConnection('default');

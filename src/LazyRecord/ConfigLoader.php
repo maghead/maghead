@@ -367,6 +367,10 @@ class ConfigLoader
         return $this->classMap ?: $this->loadClassMapFile();
     }
 
+    public function addDataSource($dataSourceId, $config)
+    {
+        $this->config['data_source']['nodes'][ $dataSourceId ] = $config;
+    }
 
     /**
      * get all data sources

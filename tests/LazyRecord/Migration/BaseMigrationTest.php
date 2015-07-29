@@ -19,14 +19,16 @@ class MigrationTest extends PHPUnit_Framework_TestCase
     {
         ob_start();
         $connm = LazyRecord\ConnectionManager::getInstance();
-        $connm->addDataSource('default',array(
+        $connm->free();
+        $connm->addDataSource('sqlite',array(
             'dsn' => 'sqlite::memory:'
         ));
 
-        $conn = $connm->getConnection('default');
-        ok($conn);
+        $conn = $connm->getConnection('sqlite');
+        $this->assertNotNull($conn);
 
-        $driver = $connm->getQueryDriver('default');
+        $driver = $connm->getQueryDriver('sqlite');
+        $this->assertNotNull($driver);
 
         $conn->query('CREATE TABLE foo (id integer primary key, name varchar(32));');
 
@@ -34,7 +36,7 @@ class MigrationTest extends PHPUnit_Framework_TestCase
         ok($migration);
         $migration->upgrade();
 
-        $connm->removeDataSource('default');
+        $connm->removeDataSource('sqlite');
         ob_end_clean();
     }
 }
