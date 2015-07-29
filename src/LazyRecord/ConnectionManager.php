@@ -158,10 +158,11 @@ class ConnectionManager implements ArrayAccess
      *
      * @return array
      */
-    public function getDataSource($id = 'default')
+    public function getDataSource($id)
     {
-        if( isset($this->datasources[ $id ] ) )
+        if (isset($this->datasources[ $id ] )) {
             return $this->datasources[ $id ];
+        }
     }
 
 
@@ -171,7 +172,7 @@ class ConnectionManager implements ArrayAccess
      * @param string $id datasource name
      * @return LazyRecord\QueryDriver
      */
-    public function getQueryDriver($id = 'default')
+    public function getQueryDriver($id = null)
     {
         $self = $this;
         return $this->getConnection($id)->createQueryDriver();
