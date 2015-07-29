@@ -796,9 +796,9 @@ abstract class BaseModel implements
                     } else {
                         $args[$n] = $val;
                     }
-                    if (!is_string($val)) {
+                    if (!is_scalar($val)) {
                         if ($val instanceof Raw) {
-                            $insertArgs[$n] = new Bind($n, $val);
+                            $insertArgs[$n] = $val;
                         } else {
                             $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
                         }
