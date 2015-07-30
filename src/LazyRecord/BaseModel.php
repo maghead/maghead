@@ -799,7 +799,7 @@ abstract class BaseModel implements
                     }
 
                     if (is_scalar($val) || is_null($val)) {
-                        $insertArgs[$n] = new Bind($n, $val);
+                        $insertArgs[$n] = new Bind($n, $driver->cast($val));
                     } else if ($val instanceof Raw) {
                         $insertArgs[$n] = $val;
                     } else {
@@ -1171,7 +1171,7 @@ abstract class BaseModel implements
                 // use parameter binding for binding
                 $val = $args[$n];
                 if (is_scalar($args[$n]) || is_null($args[$n])) {
-                    $updateArgs[$n] = $bind = new Bind($n, $args[$n]);
+                    $updateArgs[$n] = $bind = new Bind($n, $driver->cast($args[$n]));
                     $arguments->add($bind);
                 } else if ($args[$n] instanceof Raw) {
                     $updateArgs[$n] = $args[$n];

@@ -1,5 +1,6 @@
 <?php
 use LazyRecord\SqlBuilder;
+use LazyRecord\ConnectionManager;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\Author;
@@ -23,7 +24,7 @@ class AuthorFactory {
 
 class AuthorCollectionTest extends ModelTestCase
 {
-    public $driver = 'sqlite';
+    public $driver = 'mysql';
 
     public function getModels()
     {
@@ -147,7 +148,10 @@ class AuthorCollectionTest extends ModelTestCase
             'confirmed' => false,
         ));
         $this->assertResultSuccess($ret);
+        // $a->reload();
+        // $this->assertFalse($a->confirmed);
 
+        $a = new Author;
         $ret = $a->create(array(
             'name' => 'b',
             'email' => 'b@b',
@@ -156,9 +160,15 @@ class AuthorCollectionTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
+        /*
+        $connManager = ConnectionManager::getInstance();
+        $dbh = $connManager->getConnection('default');
+        $stm = $dbh->query('SELECT * FROM authors AS a WHERE a.confirmed IS TRUE');
+        */
+
         $authors = new AuthorCollection;
         $authors->where()
-                ->equal( 'confirmed', false);
+                ->equal('confirmed', false);
         $ret = $authors->fetch();
         ok($ret);
         is(1, $authors->size());
