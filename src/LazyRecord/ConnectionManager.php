@@ -206,7 +206,7 @@ class ConnectionManager implements ArrayAccess
     {
         if ($sourceId === 'default' && $this->config) {
             if (!isset($this->datasources[ $sourceId ])) {
-                $sourceId = $this->config->getDefaultDataSource();
+                $sourceId = $this->config->getDefaultDataSourceId();
             }
         }
 
@@ -243,7 +243,7 @@ class ConnectionManager implements ArrayAccess
             return $this->getConnection(self::DEFAULT_DS);
         }
 
-        $id = $this->config->getDefaultDataSource();
+        $id = $this->config->getDefaultDataSourceId();
         return $this->getConnection($id);
     }
 
