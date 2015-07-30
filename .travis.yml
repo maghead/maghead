@@ -31,7 +31,7 @@ before_script:
   - php bin/lazy sql --rebuild -D=pgsql
   - php bin/lazy sql --rebuild -D=sqlite
 script:
-  - phpunit -c phpunit-travis-ci.xml
+  - phpunit --debug -c phpunit-travis-ci.xml
 after_script:
   - php vendor/bin/coveralls -v
 
