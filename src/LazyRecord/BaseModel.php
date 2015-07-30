@@ -924,7 +924,7 @@ abstract class BaseModel implements
 
     public function load($args)
     {
-        if( ! $this->currentUserCan( $this->getCurrentUser() , 'load', $args ) ) {
+        if (! $this->currentUserCan( $this->getCurrentUser() , 'load', $args ) ) {
             return $this->reportError("Permission denied. Can not load record.", array('args' => $args));
         }
 
@@ -1162,13 +1162,15 @@ abstract class BaseModel implements
                     if ($args[$n] instanceof Raw) {
                         $updateArgs[$n] = $args[$n];
                     } else {
-                        $updateArgs[$n] = $bind = new Bind($n, $c->deflate($args[$n], $driver));
+                        // $c->deflate($args[$n], $driver)
+                        $updateArgs[$n] = $bind = new Bind($n, $args[$n]);
                         $arguments->add($bind);
                     }
                 } else {
                     $updateArgs[$n] = $bind = new Bind($n, $args[$n]);
                     $arguments->add($bind);
                 }
+
             }
 
             if ($validationError) {
