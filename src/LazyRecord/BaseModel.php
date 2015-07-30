@@ -1080,7 +1080,7 @@ abstract class BaseModel implements
         if (isset($args[$k]) && is_scalar($args[$k])) {
             $kVal = intval($args[$k]);
         } else if (isset($this->_data[$k])) {
-            $kVal = $this->_data[$k];
+            $kVal = intval($this->_data[$k]);
         }
 
 
