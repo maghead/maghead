@@ -22,10 +22,8 @@ data_source:
     mysql:
       dsn: 'mysql:host=localhost;dbname=testing'
       user: root
-      pass:
       # create database testing charset utf8;
       # grant all privileges on testing.* to testing@localhost identified by 'testing';
     pgsql:
       dsn: 'pgsql:host=localhost;dbname=testing'
       user: postgres
-      pass:
