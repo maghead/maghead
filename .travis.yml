@@ -4,11 +4,10 @@ php:
   - 5.5
   - 5.6
 #   - hhvm
-# env:
-#   - DB=agnostic                                   # only database agnostic tests
-#   - DB=mysql DB_USER=root                         # only database tests against mysql
-#   - DB=pgsql DB_USER=postgres DB_NAME=postgres    # only database tests against postgresql
-#   - DB=sqlite
+env:
+  - DB=mysql                         # only database tests against mysql
+  - DB=sqlite    # only database tests against postgresql
+  - DB=pgsql
 install:
   - rm -rf vendor/corneltek/serializerkit
   - composer self-update
