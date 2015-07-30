@@ -162,6 +162,7 @@ class ConfigLoader
             if (isset($config['username']) && $config['username']) {
                 $config['user'] = $config['username'];
             }
+
             if (isset($config['password']) && $config['password']) {
                 $config['pass'] = $config['password'];
             }

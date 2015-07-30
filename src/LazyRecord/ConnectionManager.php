@@ -190,10 +190,10 @@ class ConnectionManager implements ArrayAccess
      *
      *    $dbh = new Connection('mysql:host=localhost;dbname=test', $user, $pass);
      *
-     *    $pdo = new Connection( 
-     *          'mysql:host=hostname;dbname=defaultDbName', 
-     *          'username', 
-     *          'password', 
+     *    $pdo = new Connection(
+     *          'mysql:host=hostname;dbname=defaultDbName',
+     *          'username',
+     *          'password',
      *          array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8") 
      *    ); 
      *
@@ -219,6 +219,7 @@ class ConnectionManager implements ArrayAccess
             throw new UndefinedDataSourceException("data source $sourceId not found.");
         }
         $config = $this->datasources[ $sourceId ];
+        var_dump( $config );
         $conn = new Connection($config['dsn'], $config['user'], $config['pass'], $config['connection_options']);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // TODO: can we make this optional ?
