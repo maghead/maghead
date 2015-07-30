@@ -1,20 +1,24 @@
 language: php
+services:
+- memcached
 php:
-  - 5.4
-  - 5.5
-  - 5.6
-#   - hhvm
+- 5.4
+- 5.5
+- 5.6
+# - hhvm
 env:
   - DB=mysql                         # only database tests against mysql
   - DB=sqlite    # only database tests against postgresql
   - DB=pgsql
+addons:
+  postgresql: "9.3"
 install:
   - rm -rf vendor/corneltek/serializerkit
   - composer self-update
   - composer install
 before_script:
   # - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  # - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - phpenv config-add tests/php.ini
   - phpenv rehash
   - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
@@ -44,4 +48,4 @@ after_script:
 cache:
   apt: true
   directories:
-    - vendor
+  - vendor
