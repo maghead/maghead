@@ -48,7 +48,7 @@ defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
 
 class QueryException extends RuntimeException {
 
-    public $debugInfo = array();
+    protected $debugInfo = array();
 
     public function __construct($msg, PDOException $previous = NULL, $debugInfo = array()) {
         parent::__construct($msg, 0, $previous);
