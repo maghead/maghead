@@ -77,7 +77,6 @@ class AuthorModelTest extends ModelTestCase
             'confirmed' => false,
         ));
         $this->assertResultSuccess($ret);
-        var_dump($ret);
 
         $ret = $a->create(array(
             'name' => 'b',
@@ -86,14 +85,13 @@ class AuthorModelTest extends ModelTestCase
             'confirmed' => true,
         ));
         $this->assertResultSuccess($ret);
-        var_dump( $ret );
 
 
+        /*
         $connManager = \LazyRecord\ConnectionManager::getInstance();
         $dbh = $connManager->getConnection('default');
         $stm = $dbh->query('SELECT * FROM authors WHERE confirmed = 0');
-        echo "Authors:\n";
-        var_dump($stm->fetchAll());
+        */
 
         $authors = new AuthorCollection;
         $authors->where()
