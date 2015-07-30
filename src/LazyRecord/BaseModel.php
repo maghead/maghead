@@ -50,7 +50,8 @@ class QueryException extends RuntimeException {
 
     protected $debugInfo = array();
 
-    public function __construct($msg, PDOException $previous = NULL, $debugInfo = array()) {
+    public function __construct($msg, Exception $previous = NULL, $debugInfo = array()) 
+    {
         parent::__construct($msg, 0, $previous);
         $this->debugInfo = $debugInfo;
     }
@@ -1161,10 +1162,12 @@ abstract class BaseModel implements
                     if ($args[$n] instanceof Raw) {
                         $updateArgs[$n] = $args[$n];
                     } else {
-                        $updateArgs[$n] = new Bind($n, $c->deflate($args[$n], $driver));
+                        $updateArgs[$n] = $bind = new Bind($n, $c->deflate($args[$n], $driver));
+                        $arguments->add($bind);
                     }
                 } else {
-                    $updateArgs[$n] = new Bind($n, $args[$n]);
+                    $updateArgs[$n] = $bind = new Bind($n, $args[$n]);
+                    $arguments->add($bind);
                 }
             }
 
@@ -1174,16 +1177,10 @@ abstract class BaseModel implements
                 ));
             }
 
-            echo "Args:\n";
-            var_dump( $args ); 
-            var_dump( $updateArgs ); 
-
-
             // TODO: optimized to built cache
             $query->set($updateArgs);
             $query->update( $this->getTable() );
             $query->where()->equal($k , $kVal);
-
 
             $sql  = $query->toSql($driver, $arguments);
             $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
@@ -1200,9 +1197,9 @@ abstract class BaseModel implements
 
             $this->afterUpdate($origArgs);
         } 
-        catch(PDOException $e) 
+        catch(PDOException $e)
         {
-            throw new QueryException('Record update failed', $e, array(
+            throw new QueryException("Record update failed", $e, array(
                 'driver' => get_class($driver),
                 'args' => $args,
                 'sql' => $sql,
