@@ -53,6 +53,7 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'a',
             'confirmed' => false,
         ));
+        var_dump($ret); 
         $this->resultOK(true,$ret);
         $this->assertFalse($a->confirmed);
 
@@ -72,7 +73,7 @@ class AuthorBookModelTest extends ModelTestCase
         // test collection query with boolean value
         $authors = new AuthorCollection;
         $authors->where()
-                ->equal('confirmed', 1);
+                ->equal('confirmed', false);
         $ret = $authors->fetch();
         ok($ret);
         is(1,$authors->size());

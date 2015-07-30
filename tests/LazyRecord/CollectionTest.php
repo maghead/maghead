@@ -67,7 +67,7 @@ class CollectionTest extends ModelTestCase
         }
 
         $names = new NameCollection;
-        $names->select( 'name' )->where()
+        $names->setSelect('name')->where()
             ->equal('name','Foo');
         $names->groupBy(['name','address']);
 
