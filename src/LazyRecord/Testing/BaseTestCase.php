@@ -15,6 +15,7 @@ use PHPUnit_Framework_TestCase;
 use CLIFramework\Logger;
 use PDO;
 use PDOException;
+use Exception;
 
 abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
@@ -63,6 +64,9 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
                 'user' => self::getDatabaseUser($driver),
                 'pass' => self::getDatabasePassword($driver),
             ];
+        } else {
+            throw new Exception("Can't create data source config from $driver.");
+
         }
     }
 
@@ -74,21 +78,11 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         return $config;
     }
 
-    public function registerDataSource($driverType)
-    {
-        $connManager = ConnectionManager::getInstance();
-        if ($dataSource = BaseTestCase::createDataSourceConfig($driverType)) {
-            $connManager->addDataSource($driverType, $dataSource);
-        } else {
-            $this->markTestSkipped("Data source for $driverType is undefined");
-        }
-    }
 
     public function setConfig(ConfigLoader $config)
     {
         $this->config = $config;
     }
-
 
     public function __construct($name = NULL, array $data = array(), $dataName = '')
     {
@@ -112,6 +106,16 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             $generator = new SchemaGenerator($this->config, $this->logger);
             $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
             $classMap = $generator->generate($schemas);
+        }
+    }
+
+    public function registerDataSource($driverType)
+    {
+        $connManager = ConnectionManager::getInstance();
+        if ($dataSource = BaseTestCase::createDataSourceConfig($driverType)) {
+            $connManager->addDataSource($driverType, $dataSource);
+        } else {
+            $this->markTestSkipped("Data source for $driverType is undefined");
         }
     }
 
