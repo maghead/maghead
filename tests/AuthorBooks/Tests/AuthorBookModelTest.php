@@ -53,7 +53,6 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'a',
             'confirmed' => false,
         ));
-        var_dump($ret); 
         $this->resultOK(true,$ret);
         $this->assertFalse($a->confirmed);
 
