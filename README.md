@@ -917,6 +917,10 @@ To test with pgsql database:
     $ sudo -u postgres createuser --no-createrole --no-superuser --pwprompt testing
     $ sudo -u postgres createdb -E=utf8 --owner=testing testing
 
+If you've set password accidentally, remove user password by running the command below:
+
+    > alter role postgres password null;
+
 ### Run PHPUnit
 
     $ phpunit
