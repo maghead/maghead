@@ -904,7 +904,11 @@ To test with mysql database:
 
     $ mysql -uroot -p
     > create database testing charset utf8;
-    > grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing';
+    > create user 'testing'@'localhost';
+    > grant all privileges on testing.* to 'testing'@'localhost';
+
+    if you want password
+    > --- grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing';
 
 ### Unit Testing with PostgreSQL database
 
