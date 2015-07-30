@@ -409,6 +409,19 @@ class ConfigLoader
 
     public function getDefaultDataSource()
     {
+        $id = $this->getDefaultDataSourceId();
+        if (isset($this->config['data_source']['nodes'][$id])) {
+            return $this->config['data_source']['nodes'][$id];
+        }
+    }
+
+    public function setDefaultDataSourceId($id)
+    {
+        $this->config['data_source']['default'] = $id;
+    }
+
+    public function getDefaultDataSourceId()
+    {
         if (isset($this->config['data_source']['default'])) {
             return $this->config['data_source']['default'];
         }
