@@ -18,29 +18,35 @@ abstract class ModelTestCase extends BaseTestCase
 
     public $schemaClasses = array( );
 
+    public function getDriverType()
+    {
+        return getenv('DB') ?: $this->driver;
+    }
+
     public function setUp()
     {
         $annnotations = $this->getAnnotations();
 
         $connManager = ConnectionManager::getInstance();
-        $dataSourceConfig = self::createDataSourceConfig($this->driver);
+        $dataSourceConfig = self::createDataSourceConfig($this->getDriverType());
 
         if (!$dataSourceConfig) {
             $this->markTestSkipped("{$this->driver} database configuration is missing.");
         }
 
         $configLoader = ConfigLoader::getInstance();
-        $configLoader->addDataSource('default', $dataSourceConfig);
+        $configLoader->addDataSource($this->driver, $dataSourceConfig);
+        $configLoader->setDefaultDataSourceId($this->getDriverType());
         $configLoader->loadDataSources();
 
         try {
-            $dbh = $connManager->getConnection('default');
+            $dbh = $connManager->getConnection($this->getDriverType());
         } catch (PDOException $e) {
             $this->markTestSkipped('Can not connect to database, test skipped: ' . $e->getMessage() );
             return;
         }
 
-        $driver = ConnectionManager::getInstance()->getQueryDriver('default');
+        $driver = $connManager->getQueryDriver($this->getDriverType());
         ok($driver,'QueryDriver object OK');
 
         // Rebuild means rebuild the database for new tests
