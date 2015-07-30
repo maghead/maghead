@@ -54,7 +54,6 @@ class NameModelTest extends ModelTestCase
             array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '1' ) ),
             array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => true ) ),
             array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => 'true' ) ),
-            array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => ' ' ) ),  // space string (true)
         );
     }
 
@@ -99,15 +98,14 @@ class NameModelTest extends ModelTestCase
         $n = new \TestApp\Model\Name;
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
-
         ok($n->id);
 
         $this->assertTrue($n->confirmed, 'Confirmed value should be TRUE.');
 
-        $this->assertResultSuccess($n->load($n->id));
+        $ret = $n->load($n->id);
+        $this->assertResultSuccess($ret);
 
         $this->assertTrue($n->confirmed, 'Confirmed value should be TRUE.');
-
         $this->successfulDelete($n);
     }
 
