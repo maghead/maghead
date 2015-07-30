@@ -797,14 +797,14 @@ abstract class BaseModel implements
                     } else {
                         $args[$n] = $val;
                     }
-                    if (!is_scalar($val)) {
-                        if ($val instanceof Raw) {
-                            $insertArgs[$n] = $val;
-                        } else {
-                            $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
-                        }
-                    } else {
+
+                    if (is_scalar($val) || is_null($val)) {
                         $insertArgs[$n] = new Bind($n, $val);
+                    } else if ($val instanceof Raw) {
+                        $insertArgs[$n] = $val;
+                    } else {
+                        // deflate objects into string
+                        $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
                     }
                 }
             }
@@ -1158,19 +1158,27 @@ abstract class BaseModel implements
                     }
                 }
 
-                if (!is_scalar($args[$n])) {
-                    if ($args[$n] instanceof Raw) {
-                        $updateArgs[$n] = $args[$n];
-                    } else {
-                        // $c->deflate($args[$n], $driver)
-                        $updateArgs[$n] = $bind = new Bind($n, $args[$n]);
-                        $arguments->add($bind);
-                    }
+                // deflate the values into query
+                /*
+                if ($args[$n] instanceof Raw) {
+                    $updateArgs[$n] = $args[$n];
                 } else {
+                    $updateArgs[$n] = $c->deflate($args[$n], $driver);
+                }
+                */
+
+
+                // use parameter binding for binding
+                $val = $args[$n];
+                if (is_scalar($args[$n]) || is_null($args[$n])) {
                     $updateArgs[$n] = $bind = new Bind($n, $args[$n]);
                     $arguments->add($bind);
+                } else if ($args[$n] instanceof Raw) {
+                    $updateArgs[$n] = $args[$n];
+                } else {
+                    $updateArgs[$n] = $bind = new Bind($n, $c->deflate($args[$n], $driver));
+                    $arguments->add($bind);
                 }
-
             }
 
             if ($validationError) {
@@ -1432,7 +1440,7 @@ abstract class BaseModel implements
     public function dbPrepareAndExecute(PDO $conn, $sql, array $args = array() )
     {
         $stm = $conn->prepare( $sql );
-        $stm->execute( $args );
+        $stm->execute($args);
         return $stm;
     }
 
