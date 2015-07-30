@@ -214,12 +214,10 @@ class ConnectionManager implements ArrayAccess
         if (isset($this->conns[$sourceId]) ) {
             return $this->conns[$sourceId];
         }
-        // var_dump( $this->datasources ); 
         if (!isset($this->datasources[ $sourceId ])) {
             throw new UndefinedDataSourceException("data source $sourceId not found.");
         }
         $config = $this->datasources[ $sourceId ];
-        var_dump( $config );
         $conn = new Connection($config['dsn'], $config['user'], $config['pass'], $config['connection_options']);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // TODO: can we make this optional ?
