@@ -15,30 +15,7 @@ use LazyRecord\ConfigLoader;
 use CLIFramework\Logger;
 
 $config = ConfigLoader::getInstance();
-$config->loadFromArray(array( 
-    'bootstrap' => array ('tests/bootstrap.php'),
-    'schema' => array(
-        'auto_id' => 1,
-        'paths' => array('tests/TestApp'),
-    ),
-    'data_source' => array(
-        'default' => 'sqlite',
-        'nodes' => array(
-            'sqlite' =>
-                array (
-                    'dsn' => 'sqlite::memory:',
-                    // 'dsn' => 'sqlite:testing.sqlite3',
-                    'user' => NULL,
-                    'pass' => NULL,
-                ),
-            'pgsql' =>
-                array (
-                    'dsn' => 'pgsql:host=localhost;dbname=testing',
-                    'user' => 'postgres',
-                ),
-        ),
-    ),
-));
+$config->loadFromSymbol(true);
 
 $logger = new Logger;
 $logger->info("Building schema class files...");
