@@ -34,18 +34,6 @@ abstract class ModelTestCase extends BaseTestCase
         $connManager = ConnectionManager::getInstance();
         $connManager->init($configLoader);
 
-        /*
-        $dataSourceConfig = self::createDataSourceConfig($this->getDriverType());
-        if (!$dataSourceConfig) {
-            $this->markTestSkipped("{$this->driver} database configuration is missing.");
-        }
-         */
-
-        /*
-        $configLoader = ConfigLoader::getInstance();
-        $configLoader->addDataSource($this->driver, $dataSourceConfig);
-         */
-
         try {
             $dbh = $connManager->getConnection($this->getDriverType());
         } catch (PDOException $e) {
