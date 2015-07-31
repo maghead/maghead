@@ -907,8 +907,11 @@ To test with mysql database:
     > create user 'testing'@'localhost';
     > grant all privileges on testing.* to 'testing'@'localhost';
 
-    if you want password
-    > --- grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing';
+    > --- if you want password
+    > grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing';
+
+    > --- if you want to remove password
+    > SET PASSWORD FOR root@localhost=PASSWORD('');
 
 ### Unit Testing with PostgreSQL database
 
