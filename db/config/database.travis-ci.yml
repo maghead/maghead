@@ -20,7 +20,7 @@ data_source:
       # dsn: 'sqlite::memory:'
       query_options: { quote_column: true, quote_table: true }
     mysql:
-      dsn: 'mysql:host=localhost;dbname=testing'
+      dsn: 'mysql:host=127.0.0.1;dbname=testing'
       user: root
       pass: null
       # create database testing charset utf8;
