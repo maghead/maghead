@@ -31,7 +31,7 @@ before_script:
   - php bin/lazy schema build -f src # build meta model class
   - php bin/lazy sql --rebuild -D=$DB
 script:
-  - phpunit --debug -c phpunit-travis-ci.xml
+  - phpunit -c phpunit-travis-ci.xml
 after_success:
   - php vendor/bin/coveralls -v
 matrix:
