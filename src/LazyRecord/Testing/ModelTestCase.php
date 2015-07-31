@@ -19,6 +19,8 @@ abstract class ModelTestCase extends BaseTestCase
 
     public $schemaClasses = array( );
 
+    protected $allowConnectionFailure = false;
+
     public function getDriverType()
     {
         return getenv('DB') ?: $this->driver;
@@ -38,13 +40,22 @@ abstract class ModelTestCase extends BaseTestCase
         try {
             $dbh = $connManager->getConnection($this->getDriverType());
         } catch (PDOException $e) {
-            $this->markTestSkipped(
-                sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'", 
+            if ($this->allowConnectionFailure) {
+                $this->markTestSkipped(
+                    sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'", 
+                        $this->getDriverType(),
+                        $e->getMessage(),
+                        var_export($configLoader->getDataSource($this->getDriverType()), true)
+                    ));
+                return;
+            } else {
+                echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'", 
                     $this->getDriverType(),
                     $e->getMessage(),
                     var_export($configLoader->getDataSource($this->getDriverType()), true)
-                ));
-            return;
+                );
+                throw $e;
+            }
         }
 
         $driver = $connManager->getQueryDriver($this->getDriverType());
