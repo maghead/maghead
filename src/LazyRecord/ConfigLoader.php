@@ -195,10 +195,10 @@ class ConfigLoader
         return $dbconfig;
     }
 
-    static public function compile($sourceFile)
+    static public function compile($sourceFile, $force = false)
     {
         $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
-        if (ConfigCompiler::test($sourceFile, $compiledFile)) {
+        if ($force || ConfigCompiler::test($sourceFile, $compiledFile)) {
             $config = ConfigCompiler::parse($sourceFile);
             $config = self::preprocessConfig($config);
             ConfigCompiler::write($compiledFile, $config);
