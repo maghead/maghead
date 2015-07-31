@@ -3,7 +3,8 @@
 $loader = require 'vendor/autoload.php';
 $console = LazyRecord\Console::getInstance();
 if( isset($argv[1]) && $argv[1] == '-d' ) {
-    $console->run($argv);
+    $ret = $console->run($argv);
 } else {
-    $console->runWithTry($argv);
+    $ret = $console->runWithTry($argv);
 }
+exit($ret);
