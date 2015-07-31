@@ -11,31 +11,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
     }
 
     public function schemaProvider() {
-        $loader = \LazyRecord\ConfigLoader::getInstance();
-        $loader->loadFromArray(array( 
-            'bootstrap' => array ('tests/bootstrap.php'),
-            'schema' => array(
-                'auto_id' => 1,
-                'paths' => array('tests/TestApp'),
-            ),
-            'data_sources' =>
-            array (
-                'default' =>
-                    array (
-                        'dsn' => 'sqlite::memory:',
-                        'user' => NULL,
-                        'pass' => NULL,
-                    ),
-                'pgsql' =>
-                    array (
-                        'dsn' => 'pgsql:host=localhost;dbname=testing',
-                        'user' => 'postgres',
-                    ),
-            ),
-        )); // force loading
-
         $g = $this->createSchemaGenerator();
-
         $schemas = array();
         $schemas[] = [ $g, new \TestApp\Model\UserSchema ];
         $schemas[] = [ $g, new \AuthorBooks\Model\AddressSchema ];
