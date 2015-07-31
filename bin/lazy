@@ -4,7 +4,7 @@ use LazyRecord\Console;
 require 'vendor/autoload.php';
 
 $console = Console::getInstance();
-if( isset($argv[1]) && $argv[1] == '-d' ) {
+if (isset($argv[1]) && $argv[1] == '-d') {
     $ret = $console->run($argv);
 } else {
     $ret = $console->runWithTry($argv);
