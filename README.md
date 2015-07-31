@@ -904,7 +904,14 @@ To test with mysql database:
 
     $ mysql -uroot -p
     > create database testing charset utf8;
+    > create user 'testing'@'localhost';
+    > grant all privileges on testing.* to 'testing'@'localhost';
+
+    > --- if you want password
     > grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing';
+
+    > --- if you want to remove password
+    > SET PASSWORD FOR root@localhost=PASSWORD('');
 
 ### Unit Testing with PostgreSQL database
 
@@ -912,6 +919,10 @@ To test with pgsql database:
 
     $ sudo -u postgres createuser --no-createrole --no-superuser --pwprompt testing
     $ sudo -u postgres createdb -E=utf8 --owner=testing testing
+
+If you've set password accidentally, remove user password by running the command below:
+
+    > alter role postgres password null;
 
 ### Run PHPUnit
 

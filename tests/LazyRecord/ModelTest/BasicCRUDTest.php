@@ -146,7 +146,7 @@ class BasicCRUDTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $ret = $author->update(array( 'id' => array('id + 3') ));
+        $ret = $author->update(array('id' => new Raw('id + 3') ));
         $this->assertResultSuccess($ret);
     }
 

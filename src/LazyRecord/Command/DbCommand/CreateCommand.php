@@ -33,6 +33,7 @@ class CreateCommand extends BaseCommand
         $this->logger->debug("Connection DSN: " . $dsn);
 
         $pdo = new PDO($dsn, @$ds['user'], @$ds['pass'], @$ds['connection_options']);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $q = new CreateDatabaseQuery($dbName);
         if (isset($ds['charset'])) {

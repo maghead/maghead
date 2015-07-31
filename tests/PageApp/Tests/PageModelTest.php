@@ -48,9 +48,7 @@ class PageModelTest extends ModelTestCase
 
         $ret = $page->update([ 'title' => 'Book A' ]);
         $this->assertResultSuccess($ret);
-
     }
-
 
     public function testRevisionRelationship() {
         $page = new Page;

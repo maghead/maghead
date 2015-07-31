@@ -190,10 +190,10 @@ class ConnectionManager implements ArrayAccess
      *
      *    $dbh = new Connection('mysql:host=localhost;dbname=test', $user, $pass);
      *
-     *    $pdo = new Connection( 
-     *          'mysql:host=hostname;dbname=defaultDbName', 
-     *          'username', 
-     *          'password', 
+     *    $pdo = new Connection(
+     *          'mysql:host=hostname;dbname=defaultDbName',
+     *          'username',
+     *          'password',
      *          array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8") 
      *    ); 
      *
@@ -206,7 +206,7 @@ class ConnectionManager implements ArrayAccess
     {
         if ($sourceId === 'default' && $this->config) {
             if (!isset($this->datasources[ $sourceId ])) {
-                $sourceId = $this->config->getDefaultDataSource();
+                $sourceId = $this->config->getDefaultDataSourceId();
             }
         }
 
@@ -214,7 +214,6 @@ class ConnectionManager implements ArrayAccess
         if (isset($this->conns[$sourceId]) ) {
             return $this->conns[$sourceId];
         }
-        // var_dump( $this->datasources ); 
         if (!isset($this->datasources[ $sourceId ])) {
             throw new UndefinedDataSourceException("data source $sourceId not found.");
         }
@@ -243,7 +242,7 @@ class ConnectionManager implements ArrayAccess
             return $this->getConnection(self::DEFAULT_DS);
         }
 
-        $id = $this->config->getDefaultDataSource();
+        $id = $this->config->getDefaultDataSourceId();
         return $this->getConnection($id);
     }
 

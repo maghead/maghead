@@ -1,42 +1,45 @@
 language: php
+services:
+- memcached
 php:
-  - 5.4
-  - 5.5
-  - 5.6
-#   - hhvm
-# env:
-#   - DB=agnostic                                   # only database agnostic tests
-#   - DB=mysql DB_USER=root                         # only database tests against mysql
-#   - DB=pgsql DB_USER=postgres DB_NAME=postgres    # only database tests against postgresql
-#   - DB=sqlite
+- 5.4
+# - 5.5
+# - 5.6
+# - hhvm
+env:
+  - DB=mysql                         # only database tests against mysql
+  - DB=sqlite    # only database tests against postgresql
+  - DB=pgsql
+addons:
+  postgresql: "9.3"
 install:
   - rm -rf vendor/corneltek/serializerkit
-  - composer self-update
-  - composer install
-before_script:
-  # - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  # - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - phpenv config-add tests/php.ini
   - phpenv rehash
   - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - composer self-update
+  - composer install
+before_script:
   - psql -c "create database testing;" -U postgres
   - mysql -uroot -e "create database testing charset utf8;"
-  - php bin/lazy build-conf db/config/database.travis-ci.yml
+  - cp -v db/config/database.travis-ci.yml db/config/database.yml
+  - php bin/lazy build-conf -f db/config/database.yml
+  # - php bin/lazy db create -D=$DB
   - php bin/lazy schema build -f
   - php bin/lazy schema build -f src # build meta model class
-  - php bin/lazy sql --rebuild -D=mysql
-  - php bin/lazy sql --rebuild -D=pgsql
-  - php bin/lazy sql --rebuild -D=sqlite
+  - php bin/lazy sql --rebuild -D=$DB
 script:
   - phpunit -c phpunit-travis-ci.xml
-after_script:
+after_success:
   - php vendor/bin/coveralls -v
-
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: hhvm
+    - php: 5.6
 # matrix:
-#   fast_finish: true
-#   allow_failures:
-#     - php: hhvm
-#     - php: 5.6
 #   exclude:
 #     - php: hhvm
 #       env: DB=pgsql DB_USER=postgres DB_NAME=postgres  # driver currently unsupported by HHVM
@@ -45,4 +48,4 @@ after_script:
 cache:
   apt: true
   directories:
-    - vendor
+  - vendor

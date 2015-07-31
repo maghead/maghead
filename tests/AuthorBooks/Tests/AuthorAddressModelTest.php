@@ -8,7 +8,7 @@ class AuthorAddressModelTest extends ModelTestCase
     public function getModels()
     {
         return array(
-            'AuthorBooks\Model\AuthorSchema', 
+            'AuthorBooks\Model\AuthorSchema',
             'AuthorBooks\Model\AddressSchema',
         );
     }
@@ -16,13 +16,12 @@ class AuthorAddressModelTest extends ModelTestCase
     public function testHasManyRelationFetch()
     {
         $author = new \AuthorBooks\Model\Author;
-        ok( $author );
 
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        ok( $author->id );
+        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertResultSuccess($ret);
+        ok($author->id);
 
         $address = new \AuthorBooks\Model\Address;
-        ok( $address );
 
         $ret = $address->create(array( 
             'author_id' => $author->id,

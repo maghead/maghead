@@ -19,14 +19,14 @@ class RevisionMixinSchema extends MixinDeclareSchema
             ;
 
         $this->column('revision_updated_at')
-            ->datetime()
+            ->timestamp()
             ->default(function() { 
                 return date('c'); 
             })
             ->timestamp();
 
         $this->column('revision_created_at')
-            ->datetime()
+            ->timestamp()
             ->default(function() { 
                 return date('c'); 
             });

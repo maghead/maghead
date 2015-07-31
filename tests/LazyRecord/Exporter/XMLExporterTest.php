@@ -1,6 +1,6 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
-use AuthorBooks\Model\Book ;
+use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorCollection;

@@ -31,9 +31,8 @@ class AllCommandsTest extends CommandTestCase
     public function testSchemaCommand()
     {
         $this->expectOutputRegex('/Done/');
-        $this->app->run(array('lazy','build-schema'));
+        $this->app->run(array('lazy','schema','build'));
     }
-
 
     /**
      * @depends testSchemaCommand

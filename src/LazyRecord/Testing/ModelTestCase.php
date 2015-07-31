@@ -9,6 +9,7 @@ use LazyRecord\Result;
 use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\Testing\BaseTestCase;
 use PHPUnit_Framework_TestCase;
+use PDOException;
 
 abstract class ModelTestCase extends BaseTestCase
 {
@@ -18,29 +19,46 @@ abstract class ModelTestCase extends BaseTestCase
 
     public $schemaClasses = array( );
 
+    protected $allowConnectionFailure = false;
+
+    public function getDriverType()
+    {
+        return getenv('DB') ?: $this->driver;
+    }
+
     public function setUp()
     {
         $annnotations = $this->getAnnotations();
 
-        $connManager = ConnectionManager::getInstance();
-        $dataSourceConfig = self::createDataSourceConfig($this->driver);
-
-        if (!$dataSourceConfig) {
-            $this->markTestSkipped("{$this->driver} database configuration is missing.");
-        }
-
         $configLoader = ConfigLoader::getInstance();
-        $configLoader->addDataSource('default', $dataSourceConfig);
-        $configLoader->loadDataSources();
+        $configLoader->loadFromSymbol(true);
+        $configLoader->setDefaultDataSourceId($this->getDriverType());
+
+        $connManager = ConnectionManager::getInstance();
+        $connManager->init($configLoader);
 
         try {
-            $dbh = $connManager->getConnection('default');
+            $dbh = $connManager->getConnection($this->getDriverType());
         } catch (PDOException $e) {
-            $this->markTestSkipped('Can not connect to database, test skipped: ' . $e->getMessage() );
-            return;
+            if ($this->allowConnectionFailure) {
+                $this->markTestSkipped(
+                    sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'", 
+                        $this->getDriverType(),
+                        $e->getMessage(),
+                        var_export($configLoader->getDataSource($this->getDriverType()), true)
+                    ));
+                return;
+            } else {
+                echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'", 
+                    $this->getDriverType(),
+                    $e->getMessage(),
+                    var_export($configLoader->getDataSource($this->getDriverType()), true)
+                );
+                throw $e;
+            }
         }
 
-        $driver = ConnectionManager::getInstance()->getQueryDriver('default');
+        $driver = $connManager->getQueryDriver($this->getDriverType());
         ok($driver,'QueryDriver object OK');
 
         // Rebuild means rebuild the database for new tests

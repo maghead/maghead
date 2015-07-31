@@ -1,6 +1,8 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
+use AuthorBooks\Model\AuthorCollection;
+use SQLBuilder\Raw;
 
 class AuthorBookModelTest extends ModelTestCase
 {
@@ -15,6 +17,29 @@ class AuthorBookModelTest extends ModelTestCase
         );
     }
 
+    /**
+     * @basedata false
+     */
+    public function testBooleanCreate()
+    {
+        $a = new Author;
+        $ret = $a->create(array(
+            'name' => 'a',
+            'email' => 'a@a',
+            'identity' => 'a',
+            'confirmed' => true,
+        ));
+        $this->resultOK(true,$ret);
+        $this->assertTrue($a->confirmed,'confirmed should be true');
+        $a->reload();
+        $this->assertTrue($a->confirmed,'confirmed should be true');
+
+        $a = new Author;
+        $ret = $a->load([ 'name' => 'a' ]);
+        $this->assertNotNull($a->id);
+        $this->resultOK(true,$ret);
+        $this->assertTrue($a->confirmed);
+    }
 
     /**
      * @basedata false
@@ -29,6 +54,7 @@ class AuthorBookModelTest extends ModelTestCase
             'confirmed' => false,
         ));
         $this->resultOK(true,$ret);
+        $this->assertFalse($a->confirmed);
 
         $ret = $a->create(array(
             'name' => 'b',
@@ -37,10 +63,16 @@ class AuthorBookModelTest extends ModelTestCase
             'confirmed' => true,
         ));
         $this->resultOK(true,$ret);
+        $this->assertTrue($a->confirmed);
 
-        $authors = new \AuthorBooks\Model\AuthorCollection;
+        $authors = new AuthorCollection;
+        $this->assertEquals(2,$authors->size(), 'created two authors');
+
+
+        // test collection query with boolean value
+        $authors = new AuthorCollection;
         $authors->where()
-                ->equal( 'confirmed', false);
+                ->equal('confirmed', false);
         $ret = $authors->fetch();
         ok($ret);
         is(1,$authors->size());
@@ -51,7 +83,6 @@ class AuthorBookModelTest extends ModelTestCase
         $ret = $authors->fetch();
         ok($ret);
         is(1,$authors->size());
-
         $authors->delete();
     }
 
@@ -143,13 +174,22 @@ class AuthorBookModelTest extends ModelTestCase
     }
 
 
+
+    public function testCreateRecordWithEmptyArguments()
+    {
+        $author = new Author;
+        $ret = $author->create(array());
+        $this->assertResultFail($ret);
+        is( 'Empty arguments' , $ret->message );
+    }
+
+
     /**
      * Basic CRUD Test 
      */
     public function testModel()
     {
         $author = new Author;
-        ok($author);
 
         $a2 = new Author;
         $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
@@ -164,16 +204,10 @@ class AuthorBookModelTest extends ModelTestCase
         ok( $ret->success );
         ok( $a2->id );
 
-        $ret = $author->create(array());
-        ok( $ret );
-        ok( ! $ret->success );
-        ok( $ret->message );
-        is( 'Empty arguments' , $ret->message );
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
-        ok( $ret );
+        $this->resultOK(true, $ret);
         ok( $id = $ret->id );
-        ok( $ret->success );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
 
@@ -191,13 +225,13 @@ class AuthorBookModelTest extends ModelTestCase
         is( 'foo@google.com', $author->email );
         is( false , $author->confirmed );
 
-        $ret = $author->update(array( 'name' => 'Bar' ));
-        ok( $ret->success );
+        $ret = $author->update(array('name' => 'Bar'));
+        $this->resultOK(true, $ret);
 
         is( 'Bar', $author->name );
 
         $ret = $author->delete();
-        ok( $ret->success );
+        $this->resultOK(true, $ret);
 
         $data = $author->toArray();
         ok( empty($data), 'should be empty');
@@ -216,7 +250,7 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         result_ok($ret);
-        $ret = $author->update(array( 'id' => array('id + 3') ));
+        $ret = $author->update(array('id' => new Raw('id + 3') ));
         result_ok($ret);
     }
 
@@ -228,19 +262,22 @@ class AuthorBookModelTest extends ModelTestCase
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
-        result_ok($ret);
+        $this->resultOK(true, $ret);
 
         $id = $author->id;
 
-        ok( $author->update(array( 'name' => 'I' ))->success );
+        $ret = $author->update(array( 'name' => 'I' ));
+        $this->resultOK(true, $ret);
         is( $id , $author->id );
         is( 'I', $author->name );
 
-        ok( $author->update(array( 'name' => null ))->success );
+        $ret = $author->update(array('name' => null));
+        $this->resultOK(true, $ret);
         is( $id , $author->id );
         is( null, $author->name );
 
-        ok( $author->load( $author->id )->success );
+        $ret = $author->load( $author->id );
+        $this->resultOK(true, $ret);
         is( $id , $author->id );
         is( null, $author->name );
     }

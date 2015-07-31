@@ -20,6 +20,11 @@ class BuildConfCommand extends \CLIFramework\Command
         return 'Build configuration file.';
     }
 
+    public function options($opts)
+    {
+        $opts->add('f|force', 'force building config file.');
+    }
+
     public function arguments($args) {
         $args->add('file')
             ->isa('file')
@@ -56,18 +61,18 @@ class BuildConfCommand extends \CLIFramework\Command
 
         $this->logger->info("Building config from $configFile");
         $dir = dirname($configFile);
-        ConfigLoader::compile($configFile);
+        ConfigLoader::compile($configFile, $this->options->force);
 
         // make master config link
         $loader = ConfigLoader::getInstance();
 
         if (file_exists($loader->symbolFilename)) {
             $this->logger->info('Cleaning up symbol link');
-            unlink( $loader->symbolFilename );
+            unlink($loader->symbolFilename);
         }
         if (file_exists('.lazy.php')) {
             $this->logger->info('Cleaning up symbol link');
-            unlink( '.lazy.php' );
+            unlink('.lazy.php');
         }
 
         $this->logger->info("Making link => " . $loader->symbolFilename );

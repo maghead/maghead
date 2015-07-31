@@ -48,9 +48,10 @@ defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
 
 class QueryException extends RuntimeException {
 
-    public $debugInfo = array();
+    protected $debugInfo = array();
 
-    public function __construct($msg, PDOException $previous = NULL, $debugInfo = array()) {
+    public function __construct($msg, Exception $previous = NULL, $debugInfo = array()) 
+    {
         parent::__construct($msg, 0, $previous);
         $this->debugInfo = $debugInfo;
     }
@@ -796,14 +797,14 @@ abstract class BaseModel implements
                     } else {
                         $args[$n] = $val;
                     }
-                    if (!is_scalar($val)) {
-                        if ($val instanceof Raw) {
-                            $insertArgs[$n] = new Bind($n, $val);
-                        } else {
-                            $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
-                        }
+
+                    if (is_scalar($val) || is_null($val)) {
+                        $insertArgs[$n] = new Bind($n, $driver->cast($val));
+                    } else if ($val instanceof Raw) {
+                        $insertArgs[$n] = $val;
                     } else {
-                        $insertArgs[$n] = new Bind($n, $val);
+                        // deflate objects into string
+                        $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
                     }
                 }
             }
@@ -923,7 +924,7 @@ abstract class BaseModel implements
 
     public function load($args)
     {
-        if( ! $this->currentUserCan( $this->getCurrentUser() , 'load', $args ) ) {
+        if (! $this->currentUserCan( $this->getCurrentUser() , 'load', $args ) ) {
             return $this->reportError("Permission denied. Can not load record.", array('args' => $args));
         }
 
@@ -1075,9 +1076,13 @@ abstract class BaseModel implements
 
 
         // check if we get primary key value
-        $kVal = isset($args[$k]) 
-            ? intval($args[$k]) : isset($this->_data[$k]) 
-            ? intval($this->_data[$k]) : null;
+        // here we allow users to specifty primary key value from arguments if the record is not loaded.
+        $kVal = null;
+        if (isset($args[$k]) && is_scalar($args[$k])) {
+            $kVal = intval($args[$k]);
+        } else if (isset($this->_data[$k])) {
+            $kVal = intval($this->_data[$k]);
+        }
 
 
         if (! $kVal) {
@@ -1098,6 +1103,8 @@ abstract class BaseModel implements
         $validationError = false;
         $validationResults = array();
 
+        $updateArgs = array();
+
         try
         {
             $args = $this->beforeUpdate($args);
@@ -1105,60 +1112,71 @@ abstract class BaseModel implements
 
             $args = $this->filterArrayWithColumns($args);
 
-
             foreach( $this->getSchema()->getColumns() as $n => $c ) {
                 // if column is required (can not be empty)
                 //   and default is defined.
-                if( isset($args[$n]) 
+                if (isset($args[$n]) 
                     && ! $args[$n]
                     && ! $c->primary )
                 {
-                    if( $val = $c->getDefaultValue($this ,$args) ) {
+                    if ($val = $c->getDefaultValue($this ,$args)) {
                         $args[$n] = $val;
                     }
                 }
 
                 // column validate (value is set.)
-                if (isset($args[$n]))
-                {
-                    // TODO: Do not render immutable field in ActionKit
-                    if ($c->immutable) {
-                        // TODO: render as a validation results?
-                        // unset($args[$n]);
-                        // continue;
-                        return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));
-                    }
+                if (!array_key_exists($n, $args)) {
+                    continue;
+                }
 
-                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
-                        $args[$n] = $c->typeCasting( $args[$n] );
-                    }
+                // TODO: Do not render immutable field in ActionKit
+                if ($c->immutable) {
+                    // TODO: render as a validation results?
+                    // unset($args[$n]);
+                    // continue;
+                    return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));
+                }
 
-                    if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
-                        if ( false === $c->checkTypeConstraint($args[$n])) {
-                            return $this->reportError($args[$n] . " is not " . $c->isa . " type");
-                        }
-                    }
+                if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
+                    $args[$n] = $c->typeCasting( $args[$n] );
+                }
 
-                    if ($c->filter || $c->canonicalizer) {
-                        $args[$n] = $c->canonicalizeValue($args[$n], $this, $args);
+                if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
+                    if ( false === $c->checkTypeConstraint($args[$n])) {
+                        return $this->reportError($args[$n] . " is not " . $c->isa . " type");
                     }
+                }
 
-                    if ($validationResult = $this->_validateColumn($c, $args[$n], $args)) {
-                        $validationResults[$n] = $validationResult;
-                        if (! $validationResult['valid']) {
-                            $validationError = true;
-                        }
-                    }
+                if ($c->filter || $c->canonicalizer) {
+                    $args[$n] = $c->canonicalizeValue($args[$n], $this, $args);
+                }
 
-                    if (!is_scalar($args[$n])) {
-                        if ($args[$n] instanceof Raw) {
-                            $args[$n] = new Bind($n, $args[$n]);
-                        } else {
-                            $args[$n] = new Bind($n, $c->deflate( $args[$n], $driver));
-                        }
-                    } else {
-                        $args[$n] = new Bind($args[$n]);
+                if ($validationResult = $this->_validateColumn($c, $args[$n], $args)) {
+                    $validationResults[$n] = $validationResult;
+                    if (! $validationResult['valid']) {
+                        $validationError = true;
                     }
+                }
+
+                // deflate the values into query
+                /*
+                if ($args[$n] instanceof Raw) {
+                    $updateArgs[$n] = $args[$n];
+                } else {
+                    $updateArgs[$n] = $c->deflate($args[$n], $driver);
+                }
+                */
+
+                // use parameter binding for binding
+                $val = $args[$n];
+                if (is_scalar($args[$n]) || is_null($args[$n])) {
+                    $updateArgs[$n] = $bind = new Bind($n, $driver->cast($args[$n]));
+                    $arguments->add($bind);
+                } else if ($args[$n] instanceof Raw) {
+                    $updateArgs[$n] = $args[$n];
+                } else {
+                    $updateArgs[$n] = $bind = new Bind($n, $c->deflate($args[$n], $driver));
+                    $arguments->add($bind);
                 }
             }
 
@@ -1168,12 +1186,10 @@ abstract class BaseModel implements
                 ));
             }
 
-
             // TODO: optimized to built cache
-            $query->set($args);
+            $query->set($updateArgs);
             $query->update( $this->getTable() );
             $query->where()->equal($k , $kVal);
-
 
             $sql  = $query->toSql($driver, $arguments);
             $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
@@ -1190,9 +1206,9 @@ abstract class BaseModel implements
 
             $this->afterUpdate($origArgs);
         } 
-        catch(PDOException $e) 
+        catch(PDOException $e)
         {
-            throw new QueryException('Record update failed', $e, array(
+            throw new QueryException("Record update failed", $e, array(
                 'driver' => get_class($driver),
                 'args' => $args,
                 'sql' => $sql,
@@ -1423,7 +1439,7 @@ abstract class BaseModel implements
     public function dbPrepareAndExecute(PDO $conn, $sql, array $args = array() )
     {
         $stm = $conn->prepare( $sql );
-        $stm->execute( $args );
+        $stm->execute($args);
         return $stm;
     }
 

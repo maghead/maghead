@@ -86,6 +86,13 @@ class AuthorModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
+
+        /*
+        $connManager = \LazyRecord\ConnectionManager::getInstance();
+        $dbh = $connManager->getConnection('default');
+        $stm = $dbh->query('SELECT * FROM authors WHERE confirmed = 0');
+        */
+
         $authors = new AuthorCollection;
         $authors->where()
                 ->equal('confirmed', false);
@@ -166,26 +173,39 @@ class AuthorModelTest extends ModelTestCase
         ok(! $a->id);
     }
 
+    public function testFindInexistingRecord()
+    {
+        $a2 = new Author;
+        $ret = $a2->find(array( 'name' => 'A record does not exist.'));
+        $this->assertResultFail($ret);
+        ok(! $a2->id);
+    }
+
+
+    public function testCreateRecordWithEscapedString()
+    {
+        $a2 = new Author;
+        $ret = $a2->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
+        $this->assertResultSuccess($ret);
+        ok( $a2->id );
+    }
+
+    public function testCreateRecordWithEmptyArgument()
+    {
+        $author = new Author;
+        $ret = $author->create(array());
+        $this->assertResultFail($ret);
+        ok($ret->message);
+        like('/Empty arguments/' , $ret->message );
+    }
+
     /**
      * Basic CRUD Test 
      */
     public function testBasicCRUDOperations()
     {
         $author = new Author;
-
         $a2 = new Author;
-        $ret = $a2->find(array( 'name' => 'A record does not exist.'));
-        $this->assertResultFail($ret);
-        ok(! $a2->id);
-
-        $ret = $a2->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
-        $this->assertResultSuccess($ret);
-        ok( $a2->id );
-
-        $ret = $author->create(array());
-        $this->assertResultFail($ret);
-        ok($ret->message);
-        like('/Empty arguments/' , $ret->message );
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->assertResultSuccess($ret);
@@ -195,10 +215,10 @@ class AuthorModelTest extends ModelTestCase
 
         $ret = $author->load( $id );
         $this->assertResultSuccess($ret);
-        is($id , $author->id );
-        is('Foo', $author->name );
-        is('foo@google.com', $author->email );
-        is(false , $author->confirmed );
+        $this->assertEquals($id , $author->id );
+        $this->assertEquals('Foo', $author->name);
+        $this->assertEquals('foo@google.com', $author->email);
+        $this->assertEquals(false , $author->confirmed );
 
         $ret = $author->find(array( 'name' => 'Foo' ));
         $this->assertResultSuccess($ret);
@@ -207,7 +227,7 @@ class AuthorModelTest extends ModelTestCase
         is( 'foo@google.com', $author->email );
         is( false , $author->confirmed );
 
-        $ret = $author->update(array( 'name' => 'Bar' ));
+        $ret = $author->update(array('name' => 'Bar'));
         $this->assertResultSuccess($ret);
 
         is('Bar', $author->name);
@@ -216,7 +236,6 @@ class AuthorModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
 
         $data = $author->toArray();
-
         $this->assertEmpty($data);
     }
 
@@ -307,12 +326,15 @@ class AuthorModelTest extends ModelTestCase
         is($id , $author->id );
         is('I', $author->name );
 
-        $this->assertResultSuccess($author->update(array( 'name' => null )) );
-        is( $id , $author->id );
-        is( null, $author->name );
+        $ret = $author->update(array( 'name' => null ));
+        $this->assertResultSuccess($ret);
+        $this->assertEquals($id , $author->id);
+        $this->assertNull($author->name, 'updated name should be null');
 
-        $this->assertResultSuccess($author->load( $author->id ));
-        is($id , $author->id );
-        $this->assertNull($author->name);
+        $author = new Author;
+        $ret = $author->load($id);
+        $this->assertResultSuccess($ret);
+        $this->assertEquals($id , $author->id);
+        $this->assertNull($author->name, 'loaded name should be null');
     }
 }

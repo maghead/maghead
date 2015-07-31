@@ -162,6 +162,7 @@ class ConfigLoader
             if (isset($config['username']) && $config['username']) {
                 $config['user'] = $config['username'];
             }
+
             if (isset($config['password']) && $config['password']) {
                 $config['pass'] = $config['password'];
             }
@@ -194,10 +195,10 @@ class ConfigLoader
         return $dbconfig;
     }
 
-    static public function compile($sourceFile)
+    static public function compile($sourceFile, $force = false)
     {
         $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
-        if (ConfigCompiler::test($sourceFile, $compiledFile)) {
+        if ($force || ConfigCompiler::test($sourceFile, $compiledFile)) {
             $config = ConfigCompiler::parse($sourceFile);
             $config = self::preprocessConfig($config);
             ConfigCompiler::write($compiledFile, $config);
@@ -408,6 +409,19 @@ class ConfigLoader
     }
 
     public function getDefaultDataSource()
+    {
+        $id = $this->getDefaultDataSourceId();
+        if (isset($this->config['data_source']['nodes'][$id])) {
+            return $this->config['data_source']['nodes'][$id];
+        }
+    }
+
+    public function setDefaultDataSourceId($id)
+    {
+        $this->config['data_source']['default'] = $id;
+    }
+
+    public function getDefaultDataSourceId()
     {
         if (isset($this->config['data_source']['default'])) {
             return $this->config['data_source']['default'];
