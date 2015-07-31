@@ -89,7 +89,7 @@ class SqliteTableParser extends BaseTableParser
                 $column->primary(true);
                 $schema->primaryKey = $name;
 
-                if ($columnDef->autoIncrement) {
+                if (isset($columnDef->autoIncrement)) {
                     $column->autoIncrement(true);
                 }
 

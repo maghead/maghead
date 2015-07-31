@@ -3,15 +3,18 @@ use LazyRecord\Migration\MigrationGenerator;
 use LazyRecord\Console;
 use LazyRecord\Migration\MigrationRunner;
 use LazyRecord\Schema\SchemaFinder;
+use LazyRecord\Testing\ModelTestCase;
 use LazyRecord\ConnectionManager;
 
-class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
+class MigrationGeneratorTest extends ModelTestCase
 {
+    public function getModels() { return array(); }
+
     public function testGenerator()
     {
         $connectionManager = ConnectionManager::getInstance();
-        $connectionManager->addDataSource('sqlite',array( 'dsn' => 'sqlite::memory:' ));
-        $pdo = $connectionManager->getConnection('sqlite');
+        $pdo = $connectionManager->getConnection($this->getDriverType());
+        $pdo->query('DROP TABLE IF EXISTS users;');
         $pdo->query('CREATE TABLE users (id integer NOT NULL PRIMARY KEY);');
 
         $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'tests/migrations');
@@ -22,22 +25,18 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertFileExists($path);
         $this->assertEquals('tests/migrations/20120902_UpdateUser.php',$path);
         unlink($path);
-
-        $connectionManager->removeDataSource('sqlite');
-        $connectionManager->close('sqlite');
     }
 
     public function testMigrationByDiff() 
     {
-        $connectionManager = ConnectionManager::getInstance();
-        $connectionManager->addDataSource('mysql',array( 
-            'driver' => 'mysql',
-            'dsn' =>  @$_ENV['DB_MYSQL_DSN'],
-            'user' => @$_ENV['DB_MYSQL_USER'],
-            'pass' => @$_ENV['DB_MYSQL_PASS'],
-        ));
+        if ($this->getDriverType() == 'sqlite') {
+            $this->markTestSkipped('sqlite migration tests skipped');
+            return;
+        }
 
-        $pdo = $connectionManager->getConnection('mysql');
+
+        $connectionManager = ConnectionManager::getInstance();
+        $pdo = $connectionManager->getConnection($this->getDriverType());
         $pdo->query('DROP TABLE IF EXISTS users');
         $pdo->query('DROP TABLE IF EXISTS test');
         $pdo->query('CREATE TABLE users (account VARCHAR(128) UNIQUE)');
@@ -52,7 +51,7 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
 
         $finder = new SchemaFinder;
         $finder->find();
-        list($class,$path) = $generator->generateWithDiff('DiffMigration', 'mysql', [ new TestApp\Model\UserSchema ], '20120101');
+        list($class,$path) = $generator->generateWithDiff('DiffMigration', $this->getDriverType(), [ new TestApp\Model\UserSchema ], '20120101');
         require_once $path;
         ok($class::getId());
 
@@ -65,8 +64,8 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
          */
 
         // run migration
-        $runner = new MigrationRunner('mysql');
-        $runner->resetMigrationId('mysql');
+        $runner = new MigrationRunner($this->getDriverType());
+        $runner->resetMigrationId($this->getDriverType());
         $runner->load('tests/migrations_testing');
 
 
@@ -81,10 +80,7 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
 
         # echo file_get_contents($path);
         unlink($path);
-
         $pdo->query('DROP TABLE IF EXISTS users');
-        $connectionManager->removeDataSource('mysql');
-        $connectionManager->close('mysql');
     }
 }
 
