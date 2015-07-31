@@ -24,8 +24,8 @@ before_script:
   # - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   # - psql -c "create database testing;" -U postgres
   # - mysql -uroot -e "create database testing charset utf8;"
-  - php bin/lazy db create
   - php bin/lazy build-conf db/config/database.travis-ci.yml
+  - php bin/lazy db create
   - php bin/lazy schema build -f
   - php bin/lazy schema build -f src # build meta model class
   - php bin/lazy sql --rebuild -D=$DB
