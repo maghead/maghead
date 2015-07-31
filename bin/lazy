@@ -1,10 +1,12 @@
 #!/usr/bin/env php
 <?php
+use LazyRecord\Console;
+
 $loader = require 'vendor/autoload.php';
-$console = LazyRecord\Console::getInstance();
+$console = Console::getInstance();
 if( isset($argv[1]) && $argv[1] == '-d' ) {
     $ret = $console->run($argv);
 } else {
     $ret = $console->runWithTry($argv);
 }
-exit($ret);
+exit($ret === false ? -1 : 0);
