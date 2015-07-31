@@ -22,7 +22,7 @@ install:
   - composer self-update
   - composer install
 before_script:
-  - rm -f .lazy.yml
+  - rm -f .lazy.yml .lazy.php
   - rm -f db/config/*.php
   - psql -c "create database testing;" -U postgres
   - mysql -uroot -e "create database testing charset utf8;"
