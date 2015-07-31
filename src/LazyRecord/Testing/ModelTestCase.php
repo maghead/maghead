@@ -9,6 +9,7 @@ use LazyRecord\Result;
 use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\Testing\BaseTestCase;
 use PHPUnit_Framework_TestCase;
+use PDOException;
 
 abstract class ModelTestCase extends BaseTestCase
 {
@@ -37,7 +38,8 @@ abstract class ModelTestCase extends BaseTestCase
         try {
             $dbh = $connManager->getConnection($this->getDriverType());
         } catch (PDOException $e) {
-            $this->markTestSkipped('Can not connect to database, test skipped: ' . $e->getMessage() );
+            var_dump($configLoader->getConfigStash());
+            $this->markTestSkipped("Can not connect to database by data source '" . $this->getDriverType() . "': " . $e->getMessage() );
             return;
         }
 
