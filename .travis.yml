@@ -22,6 +22,8 @@ install:
   - composer self-update
   - composer install
 before_script:
+  - rm .lazy.yml
+  - rm db/config/*.php
   - psql -c "create database testing;" -U postgres
   - mysql -uroot -e "create database testing charset utf8;"
   - php bin/lazy build-conf -f db/config/database.travis-ci.yml
