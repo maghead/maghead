@@ -38,7 +38,7 @@ abstract class ModelTestCase extends BaseTestCase
         try {
             $dbh = $connManager->getConnection($this->getDriverType());
         } catch (PDOException $e) {
-            var_dump($configLoader->getConfigStash());
+            print_r($configLoader->getConfigStash());
             $this->markTestSkipped("Can not connect to database by data source '" . $this->getDriverType() . "': " . $e->getMessage() );
             return;
         }
