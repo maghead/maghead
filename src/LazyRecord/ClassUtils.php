@@ -60,6 +60,7 @@ class ClassUtils
               ! is_subclass_of($class, 'LazyRecord\Schema\DeclareSchema',true)
               || is_a($class, 'LazyRecord\Schema\DynamicSchemaDeclare',true)
               || is_a($class, 'LazyRecord\Schema\MixinDeclareSchema',true)
+              || is_a($class, 'LazyRecord\Schema\MixinSchemaDeclare',true)
               || is_subclass_of($class, 'LazyRecord\Schema\MixinDeclareSchema',true)
             ) { 
                 continue; 
