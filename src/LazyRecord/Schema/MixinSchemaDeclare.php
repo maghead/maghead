@@ -1,8 +1,6 @@
 <?php
 namespace LazyRecord\Schema;
 
-trigger_error("MixinDeclareSchema was deprecated, please use MixinDeclareSchema instead.", E_USER_DEPRECATED);
-
 class MixinSchemaDeclare extends DeclareSchema
 {
     protected $parentSchema;
