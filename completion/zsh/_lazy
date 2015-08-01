@@ -72,6 +72,7 @@ local ret=1
     bash:'This command generate a bash completion script automatically'
     meta:'Set, get or list meta.'
     compile:'compile current source into Phar format library file.'
+    archive:'Build executable phar file from composer.json'
     github:build-topics:'Build topic classes from the wiki of a GitHub Project.'
     init:'initialize your lazyrecord structures.'
     build-conf:'Build configuration file.'
@@ -85,7 +86,8 @@ local ret=1
     diff:'Compare the defined schemas with the tables in database.'
     migrate:'Database migration commands'
     version:'Show database version'
-    create-db:'Create database from config'
+    db:'database related commands.'
+    data-source:'data source related commands.'
   )
   _describe -t commands 'command' commands && ret=0
     ;;
@@ -132,6 +134,23 @@ local ret=1
                && ret=0
         
         ;;
+        (archive)
+            _arguments -w -S -s \
+              '(-d --working-dir)'{-d,--working-dir=}'[If specified, use the given directory as working directory.]:dir:_directories' \
+              '(-c --composer)'{-c,--composer=}'[The composer.json file. If --working-dir is ignored, dirname of the composer.json will be used.]:file:_files' \
+              '--vendor=[Vendor directory name]' \
+              '--bootstrap[bootstrap or executable php file]:file:_files' \
+              '--executable[make the phar file executable]:bool' \
+              '(-c --compress)'{-c,--compress}'[compress type\: gz, bz2]::("gz" "bz2")' \
+              '--no-compress[do not compress phar file.]' \
+              '--add=[add a path respectively]' \
+              '--exclude=[exclude pattern]' \
+              '--no-classloader[do not embed a built-in classloader in the generated phar file.]' \
+              '--app-bootstrap[Include CLIFramework bootstrap script.]' \
+              ':phar-file' \
+               && ret=0
+        
+        ;;
         (github:build-topics)
             _arguments -w -S -s \
               '--ns=[Class namespace]' \
@@ -147,12 +166,14 @@ local ret=1
         ;;
         (build-conf)
             _arguments -w -S -s \
+              '(-f --force)'{-f,--force}'[force building config file.]' \
               ':file:_files -g "*.yml"' \
                && ret=0
         
         ;;
         (conf)
             _arguments -w -S -s \
+              '(-f --force)'{-f,--force}'[force building config file.]' \
               ':file:_files -g "*.yml"' \
                && ret=0
         
@@ -320,10 +341,94 @@ local ret=1
                && ret=0
         
         ;;
-        (create-db)
-            _arguments -w -S -s \
-              '(-D --data-source)'{-D,--data-source=}'[specify data source id]::{___bin_lazymeta "" create-db opt data-source valid-values}' \
-               && ret=0
+        (db)
+            _arguments -C \
+              '(-D --data-source)'{-D,--data-source=}'[specify data source id]::{___bin_lazymeta "" db opt data-source valid-values}' \
+              ': :->cmds' \
+              '*:: :->option-or-argument' \
+               && return
+            case $state in
+              (cmds)
+            local commands; commands=(
+              create:'create database bases on the current config.'
+              recreate:'re-create database bases on the current config.'
+              drop:'create database bases on the current config.'
+            )
+            _describe -t commands 'command' commands && ret=0
+              ;;
+              (option-or-argument)
+                curcontext=${curcontext%:*}-$line[1]:
+                case $line[1] in
+                  (create)
+                        _arguments -w -S -s \
+                          '(-D --data-source)'{-D,--data-source=}'[specify data source id]::{___bin_lazymeta "" db.create opt data-source valid-values}' \
+                           && ret=0
+                  
+                  ;;
+                  (recreate)
+                        _arguments -w -S -s \
+                          '(-D --data-source)'{-D,--data-source=}'[specify data source id]::{___bin_lazymeta "" db.recreate opt data-source valid-values}' \
+                           && ret=0
+                  
+                  ;;
+                  (drop)
+                        _arguments -w -S -s \
+                          '(-D --data-source)'{-D,--data-source=}'[specify data source id]::{___bin_lazymeta "" db.drop opt data-source valid-values}' \
+                           && ret=0
+                  
+                  ;;
+                esac
+                ;;
+              esac
+        
+        ;;
+        (data-source)
+            _arguments -C \
+              '(-v --verbose)'{-v,--verbose}'[Display verbose information]' \
+              ': :->cmds' \
+              '*:: :->option-or-argument' \
+               && return
+            case $state in
+              (cmds)
+            local commands; commands=(
+              add:'Add data source to config file.'
+              remove:'Remove data source from config file.'
+              set-default:'set default data source for PDO connections.'
+            )
+            _describe -t commands 'command' commands && ret=0
+              ;;
+              (option-or-argument)
+                curcontext=${curcontext%:*}-$line[1]:
+                case $line[1] in
+                  (add)
+                        _arguments -w -S -s \
+                          '(-D --data-source)'{-D,--data-source=}'[specify data source id]::{___bin_lazymeta "" data-source.add opt data-source valid-values}' \
+                          '--host=[host for database]' \
+                          '--port=[port for database]' \
+                          '--user=[user id for database connection]' \
+                          '--password=[password for database connection]' \
+                          ':data-source-id' \
+                          ':dsn' \
+                           && ret=0
+                  
+                  ;;
+                  (remove)
+                        _arguments -w -S -s \
+                          '(-D --data-source)'{-D,--data-source=}'[specify data source id]::{___bin_lazymeta "" data-source.remove opt data-source valid-values}' \
+                          ':data-source-id' \
+                           && ret=0
+                  
+                  ;;
+                  (set-default)
+                        _arguments -w -S -s \
+                          '(-D --data-source)'{-D,--data-source=}'[specify data source id]::{___bin_lazymeta "" data-source.set-default opt data-source valid-values}' \
+                          ':default-datasource' \
+                           && ret=0
+                  
+                  ;;
+                esac
+                ;;
+              esac
         
         ;;
       esac
