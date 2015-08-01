@@ -19,8 +19,8 @@ install:
   - phpenv config-add tests/php.ini
   - phpenv rehash
   - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - composer self-update
-  - composer install
+  - travis_retry composer self-update
+  - travis_retry composer install
 before_script:
   - psql -c "create database testing;" -U postgres
   - mysql -uroot -e "create database testing charset utf8;"
