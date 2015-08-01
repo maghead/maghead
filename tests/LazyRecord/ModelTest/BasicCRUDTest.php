@@ -106,9 +106,12 @@ class BasicCRUDTest extends ModelTestCase
 
         $this->successfulDelete($b3);
 
-        foreach( $results as $r ) {
-            $book = new Book;
-            $book->delete($r->id);
+        foreach($results as $r ) {
+            $book = new Book();
+            $book->load(intval($r->id));
+            if ($book->id) {
+                $book->delete();
+            }
         }
     }
 

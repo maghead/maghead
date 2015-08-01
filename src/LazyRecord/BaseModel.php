@@ -999,20 +999,18 @@ abstract class BaseModel implements
      *
      * @return Result operation result (success or error)
      */
-    public function delete($pkId = NULL)
+    public function delete()
     {
         $k = static::primary_key;
         if (!$k) {
             throw new Exception("primary key is not defined.");
         }
-
-        if ($pkId == NULL && !isset($this->_data[$k])) {
+        if (!isset($this->_data[$k])) {
             throw new Exception('Record is not loaded, Record delete failed.');
         }
 
-        $kVal = $pkId ? $pkId : ($this->_data && isset($this->_data[$k]) ? $this->_data[$k] : NULL);
-
-        if( ! $this->currentUserCan( $this->getCurrentUser() , 'delete' ) ) {
+        $kVal = $this->_data[$k];
+        if (! $this->currentUserCan( $this->getCurrentUser() , 'delete' )) {
             return $this->reportError( _('Permission denied. Can not delete record.') , array( ));
         }
 

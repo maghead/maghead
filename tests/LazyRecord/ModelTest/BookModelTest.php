@@ -123,8 +123,11 @@ class BookModelTest extends ModelTestCase
         $b3->delete();
 
         foreach( $results as $r ) {
-            $book = new Book ;
-            $book->delete($r->id);
+            $book = new Book;
+            $book->load($r->id);
+            if ($book->id) {
+                $book->delete();
+            }
         }
     }
 
