@@ -8,8 +8,8 @@ class AllCommandsTest extends CommandTestCase
 
     public function testConfCommand()
     {
-        $this->expectOutputRegex('/Making link/');
-        $this->app->run(array('lazy','build-conf'));
+        $this->expectOutputRegex('/Creating symbol/');
+        $this->app->run(array('lazy','build-conf','db/config/database.yml'));
     }
 
     public function testCommands()
