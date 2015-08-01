@@ -1,9 +1,10 @@
 Changes
 =======
 
-## v3
+## 2.2.0
 
-- Changed data source config to the structure below:
+- Fixed boolean insertion and selection
+- Changed data source config to the structure below (backward compatible change):
 
 ```yml
 data_source:
