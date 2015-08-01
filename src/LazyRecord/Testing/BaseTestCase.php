@@ -19,7 +19,12 @@ use Exception;
 
 abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
-    public $config;
+    protected $config;
+
+    static public function getCurrentDriverType()
+    {
+        return getenv('DB') ?: 'sqlite';
+    }
 
     static public function getDSN($driver)
     {

@@ -2,41 +2,43 @@
 use LazyRecord\Sqlbuilder\SqlBuilder;
 use LazyRecord\Connection;
 use LazyRecord\Testing\BaseTestCase;
+use LazyRecord\ConfigLoader;
+use LazyRecord\ConnectionManager;
 
 class SqlBuilderTest extends BaseTestCase
 {
 
     public function schemaProvider()
     {
-        return $this->matrixDataProvider([ 'mysql', 'sqlite', 'pgsql' ], [
-            new \AuthorBooks\Model\AuthorSchema,
-            new \AuthorBooks\Model\AddressSchema,
-            new \AuthorBooks\Model\AuthorBookSchema,
-            new \AuthorBooks\Model\BookSchema,
-            new \TestApp\Model\NameSchema,
-        ]);
+        return [
+            [new \AuthorBooks\Model\AuthorSchema],
+            [new \AuthorBooks\Model\AddressSchema],
+            [new \AuthorBooks\Model\AuthorBookSchema],
+            [new \AuthorBooks\Model\BookSchema],
+            [new \TestApp\Model\NameSchema],
+        ];
     }
 
 
     /**
      * @dataProvider schemaProvider
      */
-    public function testBuilder($dataSource, $schema) {
-        $this->insertIntoDataSource($dataSource,$schema);
+    public function testBuilder($schema) {
+        $this->insertIntoDataSource($schema);
     }
 
 
-    public function insertIntoDataSource($driverType, $schema)
+    public function insertIntoDataSource($schema)
     {
         $connManager = LazyRecord\ConnectionManager::getInstance();
-        $connManager->free();
+        $configLoader = ConfigLoader::getInstance();
+        $configLoader->loadFromSymbol(true);
+        $connManager->init($configLoader);
 
-        $this->registerDataSource($driverType);
-
-        $pdo = $connManager->getConnection($driverType);
+        $pdo = $connManager->getConnection(self::getCurrentDriverType());
         $this->assertInstanceOf('PDO', $pdo);
 
-        $queryDriver = $connManager->getQueryDriver($driverType);
+        $queryDriver = $connManager->getQueryDriver(self::getCurrentDriverType());
         $builder = SqlBuilder::create($queryDriver,array( 'rebuild' => true ));
         $builder->build($schema);
 
