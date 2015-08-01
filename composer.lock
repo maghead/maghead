@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4a39463a3110b44feb073c96bd6d7b13",
+    "hash": "c6164b0641d5707f9aa39ddb75c5e186",
     "packages": [
         {
             "name": "corneltek/cascading-attribute",
@@ -76,16 +76,16 @@
         },
         {
             "name": "corneltek/cliframework",
-            "version": "2.6.0",
+            "version": "2.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/CLIFramework.git",
-                "reference": "f802fcd14cf38bc2425a1d3097513cd792a646d1"
+                "reference": "b4904279a2bdbeafd186e619862edbbca81709f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/CLIFramework/zipball/f802fcd14cf38bc2425a1d3097513cd792a646d1",
-                "reference": "f802fcd14cf38bc2425a1d3097513cd792a646d1",
+                "url": "https://api.github.com/repos/c9s/CLIFramework/zipball/b4904279a2bdbeafd186e619862edbbca81709f1",
+                "reference": "b4904279a2bdbeafd186e619862edbbca81709f1",
                 "shasum": ""
             },
             "require": {
@@ -118,7 +118,7 @@
             ],
             "description": "Command-line framework for PHP",
             "homepage": "http://github.com/c9s/CLIFramework",
-            "time": "2015-07-13 11:31:27"
+            "time": "2015-07-30 08:05:06"
         },
         {
             "name": "corneltek/codegen",
@@ -294,16 +294,16 @@
         },
         {
             "name": "corneltek/sqlbuilder",
-            "version": "2.7.0",
+            "version": "2.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/SQLBuilder.git",
-                "reference": "caf449e9a4a4bf801b8c30ba10df5c86302252b4"
+                "reference": "a9d25f721dac2381d6ab8e630cbbe322ecdaf055"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/SQLBuilder/zipball/caf449e9a4a4bf801b8c30ba10df5c86302252b4",
-                "reference": "caf449e9a4a4bf801b8c30ba10df5c86302252b4",
+                "url": "https://api.github.com/repos/c9s/SQLBuilder/zipball/a9d25f721dac2381d6ab8e630cbbe322ecdaf055",
+                "reference": "a9d25f721dac2381d6ab8e630cbbe322ecdaf055",
                 "shasum": ""
             },
             "require-dev": {
@@ -326,7 +326,7 @@
                 }
             ],
             "description": "Fast and Powerful SQLBuilder for PHP5.3",
-            "time": "2015-07-30 05:29:22"
+            "time": "2015-07-30 07:59:55"
         },
         {
             "name": "corneltek/universal",
@@ -558,16 +558,16 @@
         },
         {
             "name": "pimple/pimple",
-            "version": "v3.0.0",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/silexphp/Pimple.git",
-                "reference": "876bf0899d01feacd2a2e83f04641e51350099ef"
+                "reference": "3313af5935dbc560fab845b76a1ca351b47855af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Pimple/zipball/876bf0899d01feacd2a2e83f04641e51350099ef",
-                "reference": "876bf0899d01feacd2a2e83f04641e51350099ef",
+                "url": "https://api.github.com/repos/silexphp/Pimple/zipball/3313af5935dbc560fab845b76a1ca351b47855af",
+                "reference": "3313af5935dbc560fab845b76a1ca351b47855af",
                 "shasum": ""
             },
             "require": {
@@ -600,11 +600,11 @@
                 "container",
                 "dependency injection"
             ],
-            "time": "2014-07-24 09:48:15"
+            "time": "2015-07-30 09:57:46"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.7.2",
+            "version": "v2.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
@@ -662,7 +662,7 @@
         },
         {
             "name": "symfony/process",
-            "version": "v2.7.2",
+            "version": "v2.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
@@ -711,16 +711,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.7.2",
+            "version": "v2.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "4bfbe0ed3909bfddd75b70c094391ec1f142f860"
+                "reference": "71340e996171474a53f3d29111d046be4ad8a0ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/4bfbe0ed3909bfddd75b70c094391ec1f142f860",
-                "reference": "4bfbe0ed3909bfddd75b70c094391ec1f142f860",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/71340e996171474a53f3d29111d046be4ad8a0ff",
+                "reference": "71340e996171474a53f3d29111d046be4ad8a0ff",
                 "shasum": ""
             },
             "require": {
@@ -756,20 +756,20 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-07-01 11:25:50"
+            "time": "2015-07-28 14:07:07"
         },
         {
             "name": "twig/twig",
-            "version": "v1.18.2",
+            "version": "v1.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "e8e6575abf6102af53ec283f7f14b89e304fa602"
+                "reference": "edbeaf43b0a606cdaadc32a11d2673614a377b90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e8e6575abf6102af53ec283f7f14b89e304fa602",
-                "reference": "e8e6575abf6102af53ec283f7f14b89e304fa602",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/edbeaf43b0a606cdaadc32a11d2673614a377b90",
+                "reference": "edbeaf43b0a606cdaadc32a11d2673614a377b90",
                 "shasum": ""
             },
             "require": {
@@ -778,7 +778,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.18-dev"
+                    "dev-master": "1.19-dev"
                 }
             },
             "autoload": {
@@ -813,7 +813,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-06-06 23:31:24"
+            "time": "2015-07-31 13:45:26"
         }
     ],
     "packages-dev": [
@@ -1215,7 +1215,7 @@
         },
         {
             "name": "symfony/config",
-            "version": "v2.7.2",
+            "version": "v2.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Config.git",
@@ -1265,16 +1265,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v2.7.2",
+            "version": "v2.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "8cf484449130cabfd98dcb4694ca9945802a21ed"
+                "reference": "d6cf02fe73634c96677e428f840704bfbcaec29e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/8cf484449130cabfd98dcb4694ca9945802a21ed",
-                "reference": "8cf484449130cabfd98dcb4694ca9945802a21ed",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/d6cf02fe73634c96677e428f840704bfbcaec29e",
+                "reference": "d6cf02fe73634c96677e428f840704bfbcaec29e",
                 "shasum": ""
             },
             "require": {
@@ -1318,11 +1318,11 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-07-09 16:07:40"
+            "time": "2015-07-28 15:18:12"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v2.7.2",
+            "version": "v2.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
@@ -1371,7 +1371,7 @@
         },
         {
             "name": "symfony/stopwatch",
-            "version": "v2.7.2",
+            "version": "v2.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Stopwatch.git",
