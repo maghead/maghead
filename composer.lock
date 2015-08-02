@@ -294,16 +294,16 @@
         },
         {
             "name": "corneltek/sqlbuilder",
-            "version": "2.7.1",
+            "version": "2.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/SQLBuilder.git",
-                "reference": "a9d25f721dac2381d6ab8e630cbbe322ecdaf055"
+                "reference": "5968a491cac28addd57916307887c391413e4c26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/SQLBuilder/zipball/a9d25f721dac2381d6ab8e630cbbe322ecdaf055",
-                "reference": "a9d25f721dac2381d6ab8e630cbbe322ecdaf055",
+                "url": "https://api.github.com/repos/c9s/SQLBuilder/zipball/5968a491cac28addd57916307887c391413e4c26",
+                "reference": "5968a491cac28addd57916307887c391413e4c26",
                 "shasum": ""
             },
             "require-dev": {
@@ -326,7 +326,7 @@
                 }
             ],
             "description": "Fast and Powerful SQLBuilder for PHP5.3",
-            "time": "2015-07-30 07:59:55"
+            "time": "2015-08-02 12:39:11"
         },
         {
             "name": "corneltek/universal",
