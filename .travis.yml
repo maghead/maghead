@@ -22,11 +22,11 @@ install:
   - travis_retry composer self-update
   - travis_retry composer install
 before_script:
-  - psql -c "create database testing;" -U postgres
-  - mysql -uroot -e "create database testing charset utf8;"
+  # - psql -c "create database testing;" -U postgres
+  # - mysql -uroot -e "create database testing charset utf8;"
   - cp -v db/config/database.travis-ci.yml db/config/database.yml
   - php bin/lazy build-conf -f db/config/database.yml
-    # - php bin/lazy db create -D=$DB
+  - php bin/lazy db create -D=$DB
   - php bin/lazy schema build -f
   - php bin/lazy schema build -f src # build meta model class
   - php bin/lazy sql --rebuild -D=$DB

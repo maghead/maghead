@@ -5,9 +5,11 @@ use LazyRecord\Command\BaseCommand;
 use LazyRecord\ConfigLoader;
 use LazyRecord\DSN\DSNParser;
 use SQLBuilder\Driver\PDODriverFactory;
+use SQLBuilder\Driver\PDOSQLiteDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\CreateDatabaseQuery;
 use PDO;
+use Exception;
 
 class CreateCommand extends BaseCommand
 {
@@ -23,6 +25,10 @@ class CreateCommand extends BaseCommand
         $dsId = $this->getCurrentDataSourceId();
         $ds = $configLoader->getDataSource($dsId);
 
+        if (! isset($ds['dsn'])) {
+            throw new Exception("Attribute 'dsn' undefined in data source settings.");
+        }
+
         $dsnParser = new DSNParser;
         $dsn = $dsnParser->parse($ds['dsn']);
 
@@ -35,14 +41,21 @@ class CreateCommand extends BaseCommand
         $pdo = new PDO($dsn, @$ds['user'], @$ds['pass'], @$ds['connection_options']);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+        $queryDriver = PDODriverFactory::create($pdo);
+
+        if ($queryDriver instanceof PDOSQLiteDriver) {
+            $this->logger->info('Create database query is not supported by sqlite. ths sqlite database shall have been created.');
+            return true;
+        }
+
         $q = new CreateDatabaseQuery($dbName);
+        $q->ifNotExists();
         if (isset($ds['charset'])) {
             $q->characterSet($ds['charset']);
         } else {
             $q->characterSet('utf8');
         }
 
-        $queryDriver = PDODriverFactory::create($pdo);
         $sql = $q->toSql($queryDriver, new ArgumentArray);
         $this->logger->info($sql);
 
