@@ -468,6 +468,14 @@ class ConfigLoader
      */
     public function getDataSource($sourceId)
     {
+        if ($sourceId === 'default') {
+            // If there is a node named 'default', we should use it, otherwise
+            // we get the node name from default attribute.
+            if (!isset($this->config['data_source']['nodes'][ $sourceId ])) {
+                $sourceId = $this->getDefaultDataSourceId();
+            }
+        }
+
         if (isset($this->config['data_source']['nodes'][$sourceId])) {
             return $this->config['data_source']['nodes'][$sourceId];
         }
