@@ -51,9 +51,7 @@ class BaseModelClassFactory
             foreach ($schema->getColumnNames() as $columnName) {
                 $accessorMethodName = 'get' . ucfirst(Inflector::camelize($columnName));
                 $cTemplate->addMethod('public', $accessorMethodName, [], [
-                    'if (isset($this->_data[' . var_export($columnName, true) . '])) {',
-                    '    return $this->_data[' . var_export($columnName, true) . '];',
-                    '}',
+                    '    return $this->get(' . var_export($columnName, true) . ');',
                 ]);
             }
         }

@@ -112,6 +112,30 @@ class AuthorModelTest extends ModelTestCase
         $authors->delete();
     }
 
+    public function testAccessor()
+    {
+        $author = new Author;
+        $ret = $author->create(array( 
+            'name' => 'Pedro' , 
+            'email' => 'pedro@gmail.com' , 
+            'identity' => 'id',
+            'confirmed' => true,
+        ));
+        $this->assertResultSuccess($ret);
+
+        $ret = $author->reload();
+        $this->assertResultSuccess($ret);
+
+        $this->assertEquals('Pedro',$author->getName());
+
+        $this->assertEquals('pedro@gmail.com',$author->getEmail());
+
+        $this->assertEquals(true,$author->getConfirmed());
+
+        $ret = $author->delete();
+        $this->assertResultSuccess($ret);
+    }
+
     /**
      * @basedata false
      */
