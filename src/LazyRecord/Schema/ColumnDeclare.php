@@ -289,6 +289,12 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface, IteratorA
         }
     }
 
+
+    /**
+     * Return an array iterator of extended attributes.
+     *
+     * TODO: consider using export() method to combine the column properties.
+     */
     public function getIterator()
     {
         return new ArrayIterator($this->attributes);
