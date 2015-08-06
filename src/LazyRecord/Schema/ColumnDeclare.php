@@ -121,7 +121,7 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
      */
     public function required()
     {
-        $this->notNull = false;
+        $this->notNull = true;
         return $this;
     }
 
