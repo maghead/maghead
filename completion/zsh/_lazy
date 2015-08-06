@@ -72,7 +72,6 @@ local ret=1
     bash:'This command generate a bash completion script automatically'
     meta:'Set, get or list meta.'
     compile:'compile current source into Phar format library file.'
-    archive:'Build executable phar file from composer.json'
     github:build-topics:'Build topic classes from the wiki of a GitHub Project.'
     init:'initialize your lazyrecord structures.'
     build-conf:'Build configuration file.'
@@ -131,23 +130,6 @@ local ret=1
               '--output=[output]' \
               '(-c --compress)'{-c,--compress}'[phar file compress type\: gz, bz2]' \
               '--no-compress[do not compress phar file.]' \
-               && ret=0
-        
-        ;;
-        (archive)
-            _arguments -w -S -s \
-              '(-d --working-dir)'{-d,--working-dir=}'[If specified, use the given directory as working directory.]:dir:_directories' \
-              '(-c --composer)'{-c,--composer=}'[The composer.json file. If --working-dir is ignored, dirname of the composer.json will be used.]:file:_files' \
-              '--vendor=[Vendor directory name]' \
-              '--bootstrap[bootstrap or executable php file]:file:_files' \
-              '--executable[make the phar file executable]:bool' \
-              '(-c --compress)'{-c,--compress}'[compress type\: gz, bz2]::("gz" "bz2")' \
-              '--no-compress[do not compress phar file.]' \
-              '--add=[add a path respectively]' \
-              '--exclude=[exclude pattern]' \
-              '--no-classloader[do not embed a built-in classloader in the generated phar file.]' \
-              '--app-bootstrap[Include CLIFramework bootstrap script.]' \
-              ':phar-file' \
                && ret=0
         
         ;;
