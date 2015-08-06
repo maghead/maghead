@@ -202,27 +202,23 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
         $this->attributes['validator'] = $args[0];
     }
 
+
+    /**
+     * Export column attributes to an array
+     *
+     * @return array
+     */
     public function export()
     {
         return array(
             'name' => $this->name,
-            'attributes' => array(
-                'isa' => $this->isa,
-                'type' => $this->type,
-                'primary' => $this->primary,
-            ) + $this->attributes,
+            'attributes' => array_merge(get_object_vars($this), $this->attributes),
         );
     }
 
     public function toArray()
     {
-        $attrs = $this->attributes;
-        $attrs['name'] = $this->name;
-        $attrs['primary'] = $this->primary;
-        $attrs['unsigned'] = $this->unsigned;
-        $attrs['type'] = $this->type;
-        $attrs['notNull'] = $this->notNull;
-        return $attrs;
+        return array_merge(get_object_vars($this),$this->attributes);
     }
 
     public function dump()
