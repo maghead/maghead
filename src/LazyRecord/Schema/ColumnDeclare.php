@@ -3,6 +3,8 @@ namespace LazyRecord\Schema;
 use Exception;
 use InvalidArgumentException;
 use SQLBuilder\Universal\Syntax\Column;
+use ArrayIterator;
+use IteratorAggregate;
 
 
 /**
@@ -18,7 +20,7 @@ use SQLBuilder\Universal\Syntax\Column;
  * @link http://dev.mysql.com/doc/refman/5.0/en/blob.html (MySQL)
  * @link http://www.postgresql.org/docs/9.1/interactive/datatype-binary.html (Postgresql)
  */
-class ColumnDeclare extends Column implements ColumnAccessorInterface
+class ColumnDeclare extends Column implements ColumnAccessorInterface, IteratorAggregate
 {
 
     /**
@@ -216,6 +218,11 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
         );
     }
 
+    /**
+     * Combine column object properties and extended attributes 
+     *
+     * @return array
+     */
     public function toArray()
     {
         return array_merge(get_object_vars($this),$this->attributes);
@@ -282,6 +289,10 @@ class ColumnDeclare extends Column implements ColumnAccessorInterface
         }
     }
 
+    public function getIterator()
+    {
+        return new ArrayIterator($this->attributes);
+    }
 
     /**
      * Rebless the data into RuntimeColumn object.
