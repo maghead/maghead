@@ -782,7 +782,7 @@ abstract class BaseModel implements
                 }
 
                 if ($validationResult = $this->_validateColumn($c,$val,$args)) {
-                    $validationResults[$n] = (object) $validationResult;
+                    $validationResults[$n] = $validationResult;
                     if ( ! $validationResult['valid'] ) {
                         $validationError = true;
                     }
