@@ -20,7 +20,7 @@
         "corneltek/validationkit": "~1.1",
         "symfony/yaml": "^2.7@stable",
         "doctrine/inflector": "~1.0",
-        "corneltek/configkit": "~1",
+        "corneltek/configkit": "^1",
         "corneltek/cascading-attribute": "~1.2",
         "corneltek/universal-cache": "~1",
         "pimple/pimple": "~3.0",
@@ -28,7 +28,7 @@
     },
     "require-dev": {
         "corneltek/phpunit-testmore": "dev-master",
-        "corneltek/universal": "~1.4",
+        "corneltek/universal": "^1",
         "satooshi/php-coveralls": "dev-master",
         "facebook/xhprof": "dev-master",
         "simplyadmire/composer-plugins": "@dev"
