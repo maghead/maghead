@@ -527,17 +527,18 @@ abstract class BaseModel implements
      */
     public function loadOrCreate(array $args, $byKeys = null)
     {
-        $pk = static::primary_key;
-
         $ret = null;
-        if( $pk && isset($args[$pk]) ) {
+        $pk = static::primary_key;
+        if ($byKeys) {
+            $ret = $this->find(
+                array_intersect_key($args, 
+                    array_fill_keys((array) $byKeys, 1))
+            );
+        } else if ($pk && isset($args[$pk])) {
             $val = $args[$pk];
             $ret = $this->find(array( $pk => $val ));
-        } elseif( $byKeys ) {
-            $ret = $this->find(
-                array_intersect_key( $args , 
-                    array_fill_keys( (array) $byKeys , 1 ))
-            );
+        } else {
+            throw new Exception("primary key is not defined.");
         }
 
         if( $ret && $ret->success 
