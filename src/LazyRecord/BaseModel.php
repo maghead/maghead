@@ -1857,7 +1857,7 @@ abstract class BaseModel implements
         foreach( $this->_data as $k => $v ) {
             $col = $schema->getColumn( $k );
             if ( $col->isa ) {
-                $data[ $k ] = $col->inflate( $v );
+                $data[ $k ] = $col->inflate($v, $this);
             } else {
                 $data[ $k ] = $v;
             }
