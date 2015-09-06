@@ -584,7 +584,7 @@ abstract class BaseModel implements
     {
         // check for requried columns
         if ($column->required && ( $val === '' || $val === NULL)) {
-            return array( 
+            return (object) array( 
                 'valid' => false, 
                 'message' => sprintf(_('Field %s is required.'), $column->getLabel() ), 
                 'field' => $column->name 
@@ -596,9 +596,9 @@ abstract class BaseModel implements
             if ( is_callable($validator) ) {
                 $ret = call_user_func($validator, $val, $args, $this );
                 if( is_bool($ret) ) {
-                    return array( 'valid' => $ret, 'message' => 'Validation failed.' , 'field' => $column->name );
+                    return (object) array( 'valid' => $ret, 'message' => 'Validation failed.' , 'field' => $column->name );
                 } elseif( is_array($ret) ) {
-                    return array( 'valid' => $ret[0], 'message' => $ret[1], 'field' => $column->name );
+                    return (object) array( 'valid' => $ret[0], 'message' => $ret[1], 'field' => $column->name );
                 } else {
                     throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
                 }
@@ -608,7 +608,7 @@ abstract class BaseModel implements
                 $ret = $validator->validate($val);
                 $msgs = $validator->getMessages();
                 $msg = isset($msgs[0]) ? $msgs[0] : 'Validation failed.';
-                return array('valid' => $ret , 'message' => $msg , 'field' => $column->name );
+                return (object) array('valid' => $ret , 'message' => $msg , 'field' => $column->name );
             } else {
                 throw new Exception("Unsupported validator");
             }
@@ -617,7 +617,7 @@ abstract class BaseModel implements
             if ( $validValues = $column->getValidValues( $this, $args ) ) {
                 // sort by index
                 if ( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
-                    return array(
+                    return (object) array(
                         'valid' => false,
                         'message' => sprintf("%s is not a valid value for %s", $val , $column->name ),
                         'field' => $column->name,
@@ -641,7 +641,7 @@ abstract class BaseModel implements
                     }
 
                     if( ! in_array( $val , $values ) ) {
-                        return array(
+                        return (object) array(
                             'valid' => false,
                             'message' => sprintf(_("%s is not a valid value for %s"), $val , $column->name ),
                             'field' => $column->name,
@@ -784,7 +784,7 @@ abstract class BaseModel implements
 
                 if ($validationResult = $this->_validateColumn($c,$val,$args)) {
                     $validationResults[$n] = $validationResult;
-                    if ( ! $validationResult['valid'] ) {
+                    if ( ! $validationResult->valid ) {
                         $validationError = true;
                     }
                 }
@@ -1152,7 +1152,7 @@ abstract class BaseModel implements
 
                 if ($validationResult = $this->_validateColumn($c, $args[$n], $args)) {
                     $validationResults[$n] = $validationResult;
-                    if (! $validationResult['valid']) {
+                    if (! $validationResult->valid) {
                         $validationError = true;
                     }
                 }

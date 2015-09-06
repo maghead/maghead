@@ -109,8 +109,9 @@ class Result
     {
         $vlds = array();
         foreach( $this->validations as $k => $vld ) {
-            if( $vld->valid )
+            if ($vld->valid) {
                 $vlds[$k] = $vld;
+            }
         }
         return $vlds;
     }
