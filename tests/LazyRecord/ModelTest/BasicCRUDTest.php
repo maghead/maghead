@@ -2,6 +2,7 @@
 use SQLBuilder\Raw;
 use AuthorBooks\Model\Book ;
 use LazyRecord\Testing\ModelTestCase;
+use LazyRecord\RESULT;
 /**
  * Testing models:
  *   1. Author
@@ -48,6 +49,7 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $b->rawCreate(array( 'title' => 'Go Programming' ));
         $this->assertResultSuccess($ret);
         ok($b->id);
+        is(RESULT::TYPE_CREATE, $ret->type);        
         $this->successfulDelete($b);
     }
 
@@ -61,6 +63,7 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $b->rawUpdate(array( 'title' => 'Perl Programming without filtering' ));
         $this->assertResultSuccess($ret);
         ok($b->id);
+        is(RESULT::TYPE_UPDATE, $ret->type);
         $this->successfulDelete($b);
     }
 
@@ -84,6 +87,7 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertResultSuccess($ret);
         is($id, $b->id, 'is the same ID');
+        is(RESULT::TYPE_LOAD, $ret->type);
         $results[] = $ret;
 
 
@@ -95,6 +99,7 @@ class BasicCRUDTest extends ModelTestCase
 
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
         $this->assertResultSuccess($ret);
+        is(RESULT::TYPE_CREATE, $ret->type);
         ok($id != $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
@@ -151,6 +156,7 @@ class BasicCRUDTest extends ModelTestCase
 
         $ret = $author->update(array('id' => new Raw('id + 3') ));
         $this->assertResultSuccess($ret);
+        is(RESULT::TYPE_UPDATE, $ret->type);
     }
 
     public function testManyToManyRelationRecordCreate()
@@ -224,6 +230,7 @@ class BasicCRUDTest extends ModelTestCase
 
         $ret = $book->delete();
         ok( $ret->success );
+        is(RESULT::TYPE_DELETE, $ret->type);
 
         $ab = new \AuthorBooks\Model\AuthorBook;
         $book = new \AuthorBooks\Model\Book ;
