@@ -474,16 +474,18 @@ abstract class BaseModel implements
     {
         $pk = static::primary_key;
         $ret = null;
-        if( $pk && isset($args[$pk]) ) {
+        if ( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
             $ret = $this->find(array( $pk => $val ));
-        } elseif( $byKeys ) {
+        } else if ( $byKeys ) {
             $conds = array();
             foreach( (array) $byKeys as $k ) {
-                if( isset($args[$k]) )
+                if (array_key_exists($k, $args)) {
                     $conds[$k] = $args[$k];
+                }
             }
-            $ret = $this->find( $conds );
+            $ret = $this->load($conds);
+            echo $ret->sql , PHP_EOL;
         }
 
         if( $ret && $ret->success 
@@ -530,13 +532,13 @@ abstract class BaseModel implements
         $ret = null;
         $pk = static::primary_key;
         if ($byKeys) {
-            $ret = $this->find(
+            $ret = $this->load(
                 array_intersect_key($args, 
                     array_fill_keys((array) $byKeys, 1))
             );
         } else if ($pk && isset($args[$pk])) {
             $val = $args[$pk];
-            $ret = $this->find(array( $pk => $val ));
+            $ret = $this->load(array( $pk => $val ));
         } else {
             throw new Exception("primary key is not defined.");
         }
