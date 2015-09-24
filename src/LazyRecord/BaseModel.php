@@ -485,10 +485,9 @@ abstract class BaseModel implements
                 }
             }
             $ret = $this->load($conds);
-            echo $ret->sql , PHP_EOL;
         }
 
-        if( $ret && $ret->success 
+        if ($ret && $ret->success
             || ( $pk && isset($this->_data[ $pk ] )) ) 
         {
             return $this->update($args);
@@ -970,7 +969,9 @@ abstract class BaseModel implements
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             if (false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
                 // Record not found is not an exception
-                return $this->reportError("Record not found");
+                return $this->reportError("Record not found", [ 
+                    'sql' => $sql,
+                ]);
             }
         }
         catch (PDOException $e)
