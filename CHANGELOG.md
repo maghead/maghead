@@ -1,14 +1,15 @@
 Changes
 =======
 
-## v2.2.2
+## v2.2.3
 
-Fixed loadOrCreate / updateOrCreate method checking.
+- Fixed loadOrCreate / updateOrCreate method checking.
 
 ## v2.2.1
 
 - Fixed #115: Added tests for auto-generated accessor method. 
 - Fixed #116: required method should set notNull = true
+- Fixed #116: use get_object_vars to export all column properties
 
 ## v2.2.0
 
