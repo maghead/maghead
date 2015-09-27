@@ -1,9 +1,14 @@
 Changes
 =======
 
+## v2.2.2
+
+Fixed loadOrCreate / updateOrCreate method checking.
+
 ## v2.2.1
 
-- Fixed loadOrCreate / updateOrCreate method checking.
+- Fixed #115: Added tests for auto-generated accessor method. 
+- Fixed #116: required method should set notNull = true
 
 ## v2.2.0
 

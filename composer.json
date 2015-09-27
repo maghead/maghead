@@ -10,7 +10,7 @@
         "fast"
     ],
     "description": "The Fast PHP ORM",
-    "version": "2.2.1",
+    "version": "2.2.2",
     "require": {
         "php": ">=5.4.0",
         "corneltek/sqlbuilder": "^2.8",
