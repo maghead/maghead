@@ -1,7 +1,11 @@
 Changes
 =======
 
-## 2.2.0
+## v2.2.1
+
+- Fixed loadOrCreate / updateOrCreate method checking.
+
+## v2.2.0
 
 - Fixed boolean insertion and selection
 - Changed data source config to the structure below (backward compatible change):
@@ -26,8 +30,6 @@ data_source:
       port: ...
 ```
 
-
-## v2.2.0
 
 - Added DSN parser.
 - Added `db create` command.

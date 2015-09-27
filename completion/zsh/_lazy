@@ -167,6 +167,7 @@ local ret=1
         (build-conf)
             _arguments -w -S -s \
               '(-f --force)'{-f,--force}'[force building config file.]' \
+              '(-s --search)'{-s,--search}'[search default config file automatically]' \
               ':file:_files -g "*.yml"' \
                && ret=0
         
@@ -174,6 +175,7 @@ local ret=1
         (conf)
             _arguments -w -S -s \
               '(-f --force)'{-f,--force}'[force building config file.]' \
+              '(-s --search)'{-s,--search}'[search default config file automatically]' \
               ':file:_files -g "*.yml"' \
                && ret=0
         
