@@ -58,7 +58,7 @@ class Result
     /**
      * @var const CREATE_RESULT, READ_RESULT, UPDATE_RESULT, DELETE_RESULT
      */
-    public $type = RESULT::TYPE_NONE;
+    public $type = Result::TYPE_NONE;
 
     public $code;
 

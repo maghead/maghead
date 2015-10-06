@@ -882,7 +882,7 @@ abstract class BaseModel implements
             'args' => $args,
             'binds' => $arguments,
             'validations' => $validationResults,
-            'type' => RESULT::TYPE_CREATE,
+            'type' => Result::TYPE_CREATE,
         ));
     }
 
@@ -1005,7 +1005,7 @@ abstract class BaseModel implements
         return $this->reportSuccess( 'Data loaded', array( 
             'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
             'sql' => $sql,
-            'type' => RESULT::TYPE_LOAD,
+            'type' => Result::TYPE_LOAD,
         ));
     }
 
@@ -1070,7 +1070,7 @@ abstract class BaseModel implements
         $this->clear();
         return $this->reportSuccess('Record deleted', array( 
             'sql' => $sql,
-            'type' => RESULT::TYPE_DELETE,
+            'type' => Result::TYPE_DELETE,
             // XXX 'args' => $arguments->toArray(),
         ));
     }
@@ -1245,7 +1245,7 @@ abstract class BaseModel implements
             'id'  => $kVal,
             'sql' => $sql,
             'args' => $args,
-            'type' => RESULT::TYPE_UPDATE
+            'type' => Result::TYPE_UPDATE
         ));
     }
 
@@ -1280,7 +1280,7 @@ abstract class BaseModel implements
 
         return $this->reportSuccess( 'Update success', array( 
             'sql' => $sql,
-            'type' => RESULT::TYPE_UPDATE,
+            'type' => Result::TYPE_UPDATE,
         ));
     }
 
@@ -1322,7 +1322,7 @@ abstract class BaseModel implements
 
         return $this->reportSuccess( 'Create success', array( 
             'sql' => $sql,
-            'type' => RESULT::TYPE_CREATE,
+            'type' => Result::TYPE_CREATE,
         ));
 
     }
