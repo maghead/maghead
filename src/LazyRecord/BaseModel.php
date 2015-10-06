@@ -50,15 +50,35 @@ class QueryException extends RuntimeException {
 
     protected $debugInfo = array();
 
-    public function __construct($msg, Exception $previous = NULL, $debugInfo = array()) 
+    protected $record;
+
+    public function __construct($msg, BaseModel $record, Exception $previous = NULL, $debugInfo = array()) 
     {
         parent::__construct($msg, 0, $previous);
         $this->debugInfo = $debugInfo;
+        $this->record = $record;
     }
 
-    public function toArray() {
+    public function __debugInfo()
+    {
         return [
             'message' => $this->getMessage(),
+            'record' => get_class($this->record),
+            'file' => $this->getFile(),
+            'line' => $this->getLine(),
+            'trace' => $this->getTrace(),
+            'previous_trace' => $this->getPrevious()->getTrace(),
+            'previous_message' => $this->getPrevious()->getMessage(),
+            'debug' => $this->debugInfo,
+        ];
+
+    }
+
+    public function toArray()
+    {
+        return [
+            'message' => $this->getMessage(),
+            'record' => get_class($this->record),
             'file' => $this->getFile(),
             'line' => $this->getLine(),
             'trace' => $this->getTrace(),
@@ -539,7 +559,7 @@ abstract class BaseModel implements
             $val = $args[$pk];
             $ret = $this->load(array( $pk => $val ));
         } else {
-            throw new Exception("primary key is not defined.");
+            throw new PrimaryKeyNotFoundException("primary key is not defined.");
         }
 
         if( $ret && $ret->success 
@@ -827,7 +847,7 @@ abstract class BaseModel implements
         }
         catch (PDOException $e)
         {
-            throw new QueryException('Record create failed:' . $e->getMessage(), $e, array(
+            throw new QueryException('Record create failed.', $this, $e, array(
                 'args' => $args,
                 'sql' => $sql,
                 'validations' => $validationResults,
@@ -976,7 +996,7 @@ abstract class BaseModel implements
         }
         catch (PDOException $e)
         {
-            throw new QueryException('Record load failed', $e, array(
+            throw new QueryException('Record load failed', $this, $e, array(
                 // XXX: 'args' => $args,
                 'sql' => $sql,
             ));
@@ -1039,7 +1059,7 @@ abstract class BaseModel implements
         try {
             $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
         } catch (PDOException $e) {
-            throw new QueryException('Delete failed', $e, array(
+            throw new QueryException('Delete failed', $this, $e, array(
                 // XXX 'args' => $arguments->toArray(),
                 'sql' => $sql,
                 'validations' => $validationResults,
@@ -1213,7 +1233,7 @@ abstract class BaseModel implements
         } 
         catch(PDOException $e)
         {
-            throw new QueryException("Record update failed", $e, array(
+            throw new QueryException("Record update failed", $this, $e, array(
                 'driver' => get_class($driver),
                 'args' => $args,
                 'sql' => $sql,
