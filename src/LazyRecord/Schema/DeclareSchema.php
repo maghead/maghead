@@ -206,7 +206,6 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
 
-
     public function insertAutoIdColumn()
     {
         $column = new AutoIncrementPrimaryKeyColumn;
@@ -219,8 +218,8 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public function findPrimaryKey()
     {
-        foreach( $this->columns as $name => $column ) {
-            if ( $column->primary ) {
+        foreach ($this->columns as $name => $column) {
+            if ($column->primary) {
                 return $name;
             }
         }
@@ -433,11 +432,6 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public function getDirectory()
     {
-        static $dir;
-        if ( $dir ) {
-            return $dir;
-        }
-
         $refl = new ReflectionObject($this);
         return $dir = dirname($refl->getFilename());
     }
