@@ -199,12 +199,19 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
 
+    public function insertColumn(ColumnDeclare $column)
+    {
+        array_unshift($this->columnNames, $column->name);
+        $this->columns = [ $column->name => $column ] + $this->columns;
+    }
+
+
+
     public function insertAutoIdColumn()
     {
         $column = new AutoIncrementPrimaryKeyColumn;
         $this->primaryKey = $column->name;
-        array_unshift($this->columnNames,'id');
-        $this->columns = [ 'id' => $column ] + $this->columns;
+        $this->insertColumn($column);
     }
 
     /**
