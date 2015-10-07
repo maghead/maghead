@@ -18,6 +18,7 @@ $config = ConfigLoader::getInstance();
 $config->loadFromSymbol(true);
 
 $logger = new Logger;
+$logger->quiet();
 $logger->info("Building schema class files...");
 
 // build schema class files
