@@ -27,7 +27,6 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         $this->attributes = $attributes;
     }
 
-
     public function getName() {
         return $this->name;
     }
@@ -144,21 +143,23 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                 return intval($value);
             } elseif ($isa === 'str') {
                 return (string) $value;
-            } elseif ($isa === 'bool' || $isa === 'boolean' ) {
+            } elseif ($isa === 'bool' || $isa === 'boolean') {
                 if ($value === NULL) {
                     return NULL;
                 }
                 if (is_string($value)) {
-                    if ($value === '' ) {
+                    if ($value === '') {
                         return NULL;
-                    } elseif( $value === '1' ) {
+                    } else if ($value === '1') {
                         return true;
-                    } elseif( $value === '0' ) {
+                    } else if ($value === '0') {
                         return false;
-                    } elseif(strncasecmp($value,'false',5) == 0 ) {
+                    } else if (strcasecmp($value,'false') === 0 ) {
                         return false;
-                    } elseif(strncasecmp($value,'true',4 ) == 0 ) {
+                    } else if (strcasecmp($value,'true') === 0 ) {
                         return true;
+                    } else {
+                        throw new Exception("Unexpected value for boolean type.");
                     }
                 }
                 return $value;
