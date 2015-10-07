@@ -26,14 +26,14 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     /**
      * @var string[]
      */
-    public $locales;
+    protected $locales;
 
     /**
      * @var array $attributes
      *
      * The default attributes for a column.
      */
-    public $attributes = array();
+    protected $attributes = array();
 
     /**
      * @var string $name column name (id)
@@ -115,7 +115,13 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     }
 
 
-    public function localize(array $locales) {
+    /**
+     * provide localized columns 
+     * 
+     * @param string[] $locales 
+     */
+    public function localize(array $locales)
+    {
         $this->locales = $locales;
         return $this;
     }
@@ -151,7 +157,8 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         return $this;
     }
 
-    public function renderAs($renderAs,$widgetAttributes = array() ) {
+    public function renderAs($renderAs, array $widgetAttributes = array())
+    {
         $this->renderAs = $renderAs;
         $this->widgetAttributes = $widgetAttributes;
         return $this;
