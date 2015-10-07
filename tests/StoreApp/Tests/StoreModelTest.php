@@ -32,5 +32,9 @@ class StoreModelTest extends ModelTestCase
 
         $ret = $store->update([ 'name' => 'testapp', 'code' => null ]);
         $this->assertResultFail($ret);
+
+        $ret = $store->update([ 'name' => 'testapp 2' ]);
+        $this->assertResultSuccess($ret);
+        $this->assertEquals('testapp 2', $store->name);
     }
 }
