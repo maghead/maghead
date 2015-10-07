@@ -50,7 +50,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     /**
      * Build schema
      */
-    public function build(array $options = array())
+    protected function build(array $options = array())
     {
         $this->schema($options);
 
