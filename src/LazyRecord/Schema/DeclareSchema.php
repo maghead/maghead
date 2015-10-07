@@ -9,6 +9,7 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\Schema\Relationship;
 use LazyRecord\Schema\ColumnDeclare;
+use LazyRecord\Schema\Column\AutoIncrementPrimaryKeyColumn;
 
 use ClassTemplate\TemplateClassFile;
 use ClassTemplate\ClassTrait;
@@ -200,13 +201,8 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
 
     public function insertAutoIdColumn()
     {
-        $column = new ColumnDeclare('id');
-        $column->isa('int')
-            ->integer()
-            ->notNull()
-            ->primary()
-            ->autoIncrement();
-        $this->primaryKey = 'id';
+        $column = new AutoIncrementPrimaryKeyColumn;
+        $this->primaryKey = $column->name;
         array_unshift($this->columnNames,'id');
         $this->columns = [ 'id' => $column ] + $this->columns;
     }
