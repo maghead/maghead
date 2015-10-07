@@ -207,8 +207,8 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
             ->primary()
             ->autoIncrement();
         $this->primaryKey = 'id';
-        $this->columns[ 'id' ] = $column;
         array_unshift($this->columnNames,'id');
+        $this->columns = [ 'id' => $column ] + $this->columns;
     }
 
     /**
