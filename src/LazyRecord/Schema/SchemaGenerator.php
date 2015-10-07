@@ -105,8 +105,8 @@ class SchemaGenerator
             $this->logger->info2(" - Creating $classFilePath");
             return array( $cTemplate->getClassName(), $classFilePath );
 
-        } elseif ( $schema->isNewerThanFile($classFilePath) || $this->forceUpdate ) {
-            if ( $this->writeClassTemplateToPath($cTemplate, $classFilePath, $overwrite) ) {
+        } else if ($schema->isNewerThanFile($classFilePath) || $this->forceUpdate || $overwrite ) {
+            if ($this->writeClassTemplateToPath($cTemplate, $classFilePath, $overwrite)) {
                 $this->logger->info2(" - Updating $classFilePath");
                 return array( $cTemplate->getClassName() , $classFilePath );
             } else {
@@ -203,22 +203,22 @@ class SchemaGenerator
     }
 
 
-    public function generateSchema(SchemaInterface $schema)
+    public function generateSchema(SchemaInterface $schema, $overwrite = false)
     {
         $classMap = array();
 
         // support old-style schema declare
-        if ( $result = $this->generateSchemaProxyClass( $schema) ) {
+        if ( $result = $this->generateSchemaProxyClass($schema, $overwrite) ) {
             list($className, $classFile) = $result;
             $classMap[ $className ] = $classFile;
         }
 
         // collection classes
-        if ( $result = $this->generateBaseCollectionClass( $schema ) ) {
+        if ( $result = $this->generateBaseCollectionClass($schema, $overwrite) ) {
             list($className, $classFile) = $result;
             $classMap[ $className ] = $classFile;
         }
-        if ( $result = $this->generateCollectionClass( $schema ) ) {
+        if ( $result = $this->generateCollectionClass($schema) ) {
             list($className, $classFile) = $result;
             $classMap[ $className ] = $classFile;
         }
@@ -230,11 +230,11 @@ class SchemaGenerator
                 $classMap[ $className ] = $classFile;
             }
         } else {
-            if ( $result = $this->generateBaseModelClass($schema) ) {
+            if ( $result = $this->generateBaseModelClass($schema, $overwrite) ) {
                 list($className, $classFile) = $result;
                 $classMap[ $className ] = $classFile;
             }
-            if ( $result = $this->generateModelClass( $schema ) ) {
+            if ( $result = $this->generateModelClass($schema) ) {
                 list($className, $classFile) = $result;
                 $classMap[ $className ] = $classFile;
             }
@@ -248,7 +248,7 @@ class SchemaGenerator
      * @param array $classes class list or schema object list.
      * @return array class map array of schema class and file path.
      */
-    public function generate(array $schemas)
+    public function generate(array $schemas, $overwrite = false)
     {
         // for generated class source code.
         set_error_handler(function($errno, $errstr, $errfile, $errline) {
@@ -259,7 +259,14 @@ class SchemaGenerator
         $classMap = array();
         foreach( $schemas as $schema ) {
             $this->logger->debug("Checking " . get_class($schema) . '...');
-            $classMap += $this->generateSchema($schema);
+            $generated = $this->generateSchema($schema, $overwrite);
+            if (!empty($generated)) {
+                $this->logger->info("Updating " . get_class($schema));
+                foreach ($generated as $className => $classPath) {
+                    $this->logger->info($classPath);
+                }
+                $classMap += $generated;
+            }
         }
 
         restore_error_handler();
