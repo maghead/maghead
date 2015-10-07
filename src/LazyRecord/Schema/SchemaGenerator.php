@@ -94,7 +94,8 @@ class SchemaGenerator
      * @param ClassTemplate\ClassFile $cTemplate
      * @param DeclareSchema $schema
      */
-    public function updateClassFile(ClassFile $cTemplate, DeclareSchema $schema, $overwrite = false) {
+    protected function updateClassFile(ClassFile $cTemplate, DeclareSchema $schema, $overwrite = false)
+    {
         // always update the proxy schema file
         $classFilePath = $schema->getRelatedClassPath( $cTemplate->getShortClassName() );
 
@@ -117,16 +118,16 @@ class SchemaGenerator
     }
 
 
-    public function generateSchemaProxyClass(DeclareSchema $schema)
+    public function generateSchemaProxyClass(DeclareSchema $schema, $overwrite = false)
     {
         $cTemplate = SchemaProxyClassFactory::create($schema);
-        return $this->updateClassFile($cTemplate, $schema, true);
+        return $this->updateClassFile($cTemplate, $schema, $overwrite);
     }
 
-    public function generateBaseModelClass(DeclareSchema $schema)
+    public function generateBaseModelClass(DeclareSchema $schema, $overwrite = false)
     {
         $cTemplate = BaseModelClassFactory::create($schema, $this->getBaseModelClass() );
-        return $this->updateClassFile($cTemplate, $schema, true);
+        return $this->updateClassFile($cTemplate, $schema, $overwrite);
     }
 
 
@@ -137,16 +138,16 @@ class SchemaGenerator
      * @param Schema $schema
      * @param bool $force = true
      */
-    public function generateModelClass(DeclareSchema $schema)
+    public function generateModelClass(DeclareSchema $schema, $overwrite = false)
     {
         $cTemplate = ModelClassFactory::create($schema);
-        return $this->updateClassFile($cTemplate, $schema, false); // do not overwrite
+        return $this->updateClassFile($cTemplate, $schema, $overwrite); // do not overwrite
     }
 
-    public function generateBaseCollectionClass(DeclareSchema $schema)
+    public function generateBaseCollectionClass(DeclareSchema $schema, $overwrite = false)
     {
         $cTemplate = BaseCollectionClassFactory::create($schema, $this->getBaseCollectionClass() );
-        return $this->updateClassFile($cTemplate, $schema, true);
+        return $this->updateClassFile($cTemplate, $schema, $overwrite);
     }
 
 
@@ -156,10 +157,10 @@ class SchemaGenerator
      * @param DeclareSchema $schema
      * @return array class name, class file path
      */
-    public function generateCollectionClass(DeclareSchema $schema)
+    public function generateCollectionClass(DeclareSchema $schema, $overwrite = false)
     {
         $cTemplate = CollectionClassFactory::create($schema);
-        return $this->updateClassFile($cTemplate, $schema, false);
+        return $this->updateClassFile($cTemplate, $schema, $overwrite);
     }
 
 
@@ -257,7 +258,7 @@ class SchemaGenerator
         // class map [ class => class file path ]
         $classMap = array();
         foreach( $schemas as $schema ) {
-            $this->logger->info("Checking " . get_class($schema) . '...');
+            $this->logger->debug("Checking " . get_class($schema) . '...');
             $classMap += $this->generateSchema($schema);
         }
 

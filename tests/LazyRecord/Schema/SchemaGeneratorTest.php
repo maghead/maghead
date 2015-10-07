@@ -62,7 +62,6 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
     public function testGenerateMethod($g, $schema) 
     {
         if ( $classMap = $g->generate(array($schema)) ) {
-            $this->expectOutputRegex('/Checking /' );
             ok($classMap);
             foreach( $classMap as $class => $file ) {
                 ok($class);
