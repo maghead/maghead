@@ -432,11 +432,6 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public function getDirectory()
     {
-        static $dir;
-        if ( $dir ) {
-            return $dir;
-        }
-
         $refl = new ReflectionObject($this);
         return $dir = dirname($refl->getFilename());
     }
