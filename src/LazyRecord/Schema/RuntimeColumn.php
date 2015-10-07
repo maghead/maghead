@@ -19,7 +19,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 {
     public $name;
 
-    public $attributes = array();
+    protected $attributes = array();
 
     public function __construct($name, & $attributes)
     {
