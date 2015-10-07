@@ -7,7 +7,7 @@ class MixinDeclareSchemaTest extends PHPUnit_Framework_TestCase
         $mixin = new LazyRecord\Schema\Mixin\MetadataMixinSchema(null);
         $this->assertNotEmpty( $mixin->getColumns() );
         foreach( $mixin->getColumns() as $column ) {
-            $this->assertInstanceOf('LazyRecord\\Schema\\ColumnDeclare', $column);
+            $this->assertInstanceOf('LazyRecord\\Schema\\DeclareColumn', $column);
             $this->assertNotNull($column->name);
         }
     }

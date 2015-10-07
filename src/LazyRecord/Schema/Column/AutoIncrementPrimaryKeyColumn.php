@@ -1,8 +1,8 @@
 <?php
 namespace LazyRecord\Schema\Column;
-use LazyRecord\Schema\ColumnDeclare;
+use LazyRecord\Schema\DeclareColumn;
 
-class AutoIncrementPrimaryKeyColumn extends ColumnDeclare
+class AutoIncrementPrimaryKeyColumn extends DeclareColumn
 {
     public function __construct()
     {
@@ -20,7 +20,7 @@ class AutoIncrementPrimaryKeyColumn extends ColumnDeclare
      */
     static public function forMySQL($type = 'bigint')
     {
-        $column = new ColumnDeclare('id');
+        $column = new DeclareColumn('id');
         $column->isa('int');
         $column->type($type);
         $column->unsigned();

@@ -9,7 +9,7 @@ use SQLBuilder\Driver\BaseDriver;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Console;
 use LazyRecord\Migration\Migratable;
-use LazyRecord\Schema\ColumnDeclare;
+use LazyRecord\Schema\DeclareColumn;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;

@@ -20,7 +20,7 @@ use IteratorAggregate;
  * @link http://dev.mysql.com/doc/refman/5.0/en/blob.html (MySQL)
  * @link http://www.postgresql.org/docs/9.1/interactive/datatype-binary.html (Postgresql)
  */
-class ColumnDeclare extends Column implements ColumnAccessorInterface, IteratorAggregate
+class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorAggregate
 {
 
     /**

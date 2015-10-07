@@ -8,7 +8,7 @@ use ReflectionClass;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\Schema\Relationship;
-use LazyRecord\Schema\ColumnDeclare;
+use LazyRecord\Schema\DeclareColumn;
 use LazyRecord\Schema\Column\AutoIncrementPrimaryKeyColumn;
 
 use ClassTemplate\TemplateClassFile;
@@ -199,7 +199,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
 
-    public function insertColumn(ColumnDeclare $column)
+    public function insertColumn(DeclareColumn $column)
     {
         array_unshift($this->columnNames, $column->name);
         $this->columns = [ $column->name => $column ] + $this->columns;
@@ -480,9 +480,9 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *
      * @param string $name column name
      * @param string $class column class name
-     * @return ColumnDeclare
+     * @return DeclareColumn
      */
-    public function column($name, $class = 'LazyRecord\\Schema\\ColumnDeclare')
+    public function column($name, $class = 'LazyRecord\\Schema\\DeclareColumn')
     {
         if (isset($this->columns[$name])) {
             throw new Exception("column $name of ". get_class($this) . " is already defined.");
@@ -492,7 +492,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
 
-    public function addColumn(ColumnDeclare $column)
+    public function addColumn(DeclareColumn $column)
     {
         if (isset($this->columns[$column->name])) {
             throw new Exception("column $name of ". get_class($this) . " is already defined.");
