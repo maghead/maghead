@@ -43,7 +43,6 @@ class Inflator
             return (int) $value;
         case "str":
             return (string) $value;
-        case "boolean":
         case "bool":
             if (is_string($value)) {
                 if (strcasecmp('false', $value) == 0 || $value == '0') {

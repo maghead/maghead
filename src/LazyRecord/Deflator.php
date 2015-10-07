@@ -31,7 +31,6 @@ class Deflator
                 return NULL;
             }
             return $value; // might return ""
-        case 'boolean':
         case 'bool':
             // Convert string into bool
             if (is_string($value)) {

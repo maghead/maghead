@@ -127,10 +127,11 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 
 
     /**
-     * Column value type casting
-     *
+     * Column value type casting for input values.
      *
      * @param mixed $value referenced value
+     *
+     * @return mixed
      */
     public function typeCasting($value)
     {
@@ -141,9 +142,9 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         if ($isa = $this->get('isa')) {
             if ($isa === 'int') {
                 return intval($value);
-            } elseif ($isa === 'str') {
+            } else if ($isa === 'str') {
                 return (string) $value;
-            } elseif ($isa === 'bool' || $isa === 'boolean') {
+            } else if ($isa === 'bool') {
                 if ($value === NULL) {
                     return NULL;
                 }
@@ -154,9 +155,9 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                         return true;
                     } else if ($value === '0') {
                         return false;
-                    } else if (strcasecmp($value,'false') === 0 ) {
+                    } else if (strcasecmp($value,'false') === 0) {
                         return false;
-                    } else if (strcasecmp($value,'true') === 0 ) {
+                    } else if (strcasecmp($value,'true') === 0) {
                         return true;
                     } else {
                         throw new Exception("Unexpected value for boolean type.");
@@ -188,8 +189,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                 }
                 break;
             case 'bool':
-            case 'boolean':
-                if (! is_bool($value) ) {
+                if (!is_bool($value)) {
                     return false;
                 }
                 break;
