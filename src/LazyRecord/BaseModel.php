@@ -1174,11 +1174,12 @@ abstract class BaseModel implements
                 }
 
                 if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
-                    $args[$n] = $c->typeCasting( $args[$n] );
+                    $args[$n] = $c->typeCasting($args[$n]);
                 }
 
+                // The is_array function here is for checking raw sql value.
                 if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
-                    if ( false === $c->checkTypeConstraint($args[$n])) {
+                    if (false === $c->checkTypeConstraint($args[$n])) {
                         return $this->reportError($args[$n] . " is not " . $c->isa . " type");
                     }
                 }

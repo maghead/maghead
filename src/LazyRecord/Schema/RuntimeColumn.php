@@ -181,6 +181,11 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                     return false;
                 }
                 break;
+            case 'float':
+                if (!is_float($value)) {
+                    return false;
+                }
+                break;
             case 'bool':
             case 'boolean':
                 if (! is_bool($value) ) {
