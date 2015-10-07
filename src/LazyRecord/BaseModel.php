@@ -789,6 +789,12 @@ abstract class BaseModel implements
 
                 // short alias for argument value.
                 $val = isset($args[$n]) ? $args[$n] : null;
+
+
+                // if column is required (can not be empty) //   and default is defined.
+                if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
+                    return $this->reportError("Value of $n is required.");
+                }
                 
                 if ($c->typeConstraint && ($val !== null && ! is_array($val) && ! $val instanceof Raw)) {
                     if (false === $c->checkTypeConstraint($val)) {
@@ -1138,8 +1144,8 @@ abstract class BaseModel implements
             $args = $this->filterArrayWithColumns($args);
 
             foreach( $this->getSchema()->getColumns() as $n => $c ) {
-                // if column is required (can not be empty)
-                //   and default is defined.
+
+
                 if (isset($args[$n]) 
                     && ! $args[$n]
                     && ! $c->primary )
@@ -1152,6 +1158,11 @@ abstract class BaseModel implements
                 // column validate (value is set.)
                 if (!array_key_exists($n, $args)) {
                     continue;
+                }
+
+                // if column is required (can not be empty) //   and default is defined.
+                if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
+                    return $this->reportError("Value of $n is required.");
                 }
 
                 // TODO: Do not render immutable field in ActionKit

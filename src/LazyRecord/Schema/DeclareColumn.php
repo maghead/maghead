@@ -85,6 +85,8 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
 
             'virtual' => self::ATTR_FLAG,
 
+            'required' => self::ATTR_FLAG,
+
             // an alias of canonicalizer
             'filter' => self::ATTR_CALLABLE,
 
@@ -119,11 +121,14 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     }
 
     /**
-     * This method is an alias of "notNull"
+     * When enabled required(), notNull should also be set.
+     *
+     * required() method enabled software validation.
      */
     public function required()
     {
         $this->notNull = true;
+        $this->required = true;
         return $this;
     }
 
