@@ -36,10 +36,6 @@ class Console extends Application
         //    $ lazy schema list
         //    $ lazy schema build
         //
-        $this->command('list-schema'    , 'LazyRecord\\Command\\ListSchemaCommand');
-        $this->command('build-schema'   , 'LazyRecord\\Command\\BuildSchemaCommand');
-        $this->command('clean-schema'   , 'LazyRecord\\Command\\CleanSchemaCommand');
-
         $this->command('build-basedata' , 'LazyRecord\\Command\\BuildBaseDataCommand');
 
         $this->command('sql'            , 'LazyRecord\\Command\\BuildSqlCommand');

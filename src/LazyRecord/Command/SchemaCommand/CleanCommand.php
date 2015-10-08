@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Command;
+namespace LazyRecord\Command\SchemaCommand;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Command\BaseCommand;
 
@@ -7,7 +7,7 @@ use LazyRecord\Command\BaseCommand;
  * $ lazy clean-schema path/to/Schema path/to/SchemaDir
  *
  */
-class CleanSchemaCommand extends BaseCommand
+class CleanCommand extends BaseCommand
 {
 
     public function usage()
@@ -71,6 +71,5 @@ class CleanSchemaCommand extends BaseCommand
         */
         $logger->info('Done');
     }
-
 }
 

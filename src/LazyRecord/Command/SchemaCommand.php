@@ -15,7 +15,7 @@ class SchemaCommand extends Command
         $this->command('build' , 'LazyRecord\\Command\\BuildSchemaCommand');
         $this->command('sql'   , 'LazyRecord\\Command\\BuildSqlCommand');
         $this->command('list'  , 'LazyRecord\\Command\\ListSchemaCommand');
-        $this->command('clean' , 'LazyRecord\\Command\\CleanSchemaCommand');
+        $this->command('clean');
     }
 
     public function options($opts) {
