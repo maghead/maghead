@@ -1,12 +1,13 @@
 <?php
 namespace LazyRecord\Command;
 use LazyRecord\Schema\SchemaGenerator;
+use LazyRecord\Command\BaseCommand;
 
 /**
  * $ lazy clean-schema path/to/Schema path/to/SchemaDir
  *
  */
-class CleanSchemaCommand extends \CLIFramework\Command
+class CleanSchemaCommand extends BaseCommand
 {
 
     public function usage()
