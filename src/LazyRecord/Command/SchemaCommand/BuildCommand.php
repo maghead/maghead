@@ -1,5 +1,6 @@
 <?php
-namespace LazyRecord\Command;
+namespace LazyRecord\Command\SchemaCommand;
+use LazyRecord\Command\BaseCommand;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\SchemaUtils;
 
@@ -7,12 +8,12 @@ use LazyRecord\Schema\SchemaUtils;
  * $ lazy build-schema path/to/Schema path/to/SchemaDir
  *
  */
-class BuildSchemaCommand extends BaseCommand
+class BuildCommand extends BaseCommand
 {
 
     public function usage()
     {
-        return 'build-schema [paths|classes]';
+        return 'schema build [paths|classes]';
     }
 
     public function brief()

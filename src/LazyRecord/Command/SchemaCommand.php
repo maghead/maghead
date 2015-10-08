@@ -12,12 +12,13 @@ class SchemaCommand extends Command
     public function init()
     {
         parent::init();
-        $this->command('build' , 'LazyRecord\\Command\\BuildSchemaCommand');
+        $this->command('build');
         $this->command('list');
         $this->command('clean');
     }
 
-    public function options($opts) {
+    public function options($opts)
+    {
         $diff = $this->createCommand('LazyRecord\\Command\\DiffCommand');
         $diff->logger = $diff->logger;
         $diff->options($opts);
