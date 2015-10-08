@@ -39,7 +39,6 @@ class SchemaUtils
         $schemas = array();
         foreach ($classes as $class) {
             $schema = new $class; // declare schema
-            $map[$class] = TRUE;
 
             if ($refs = $schema->getReferenceSchemas()) {
                 foreach ($refs as $refClass => $v) {
@@ -65,6 +64,7 @@ class SchemaUtils
                     continue;
                 }
                 $schemas[] = $schema;
+                $map[$class] = TRUE;
             }
         }
         return $schemas;
