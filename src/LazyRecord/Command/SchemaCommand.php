@@ -1,7 +1,6 @@
 <?php
 namespace LazyRecord\Command;
 use CLIFramework\Command;
-use LazyRecord\Command\BuildSchemaCommand;
 use LazyRecord\Command\DiffCommand;
 
 class SchemaCommand extends Command

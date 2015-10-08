@@ -13,15 +13,15 @@
     "version": "2.2.3",
     "require": {
         "php": ">=5.4.0",
-        "corneltek/sqlbuilder": "^2.8",
-        "corneltek/cliframework": "^2.6",
-        "corneltek/class-template": "^2.1",
-        "corneltek/serializerkit": "~1",
-        "corneltek/validationkit": "~1.1",
+        "corneltek/sqlbuilder": ">= 2.8.4 < 3.0",
+        "corneltek/cliframework": ">= 2.6 < 3.0",
+        "corneltek/class-template": "^2",
+        "corneltek/serializerkit": "^1",
+        "corneltek/validationkit": "^1",
         "symfony/yaml": "^2.7@stable",
         "doctrine/inflector": "~1.0",
         "corneltek/configkit": "^1",
-        "corneltek/cascading-attribute": "~1.2",
+        "corneltek/cascading-attribute": "^1.2",
         "corneltek/universal-cache": "~1",
         "pimple/pimple": "~3.0",
         "cypresslab/gitelephant": "^1.0"
@@ -30,7 +30,7 @@
         "corneltek/phpunit-testmore": "dev-master",
         "corneltek/universal": "^1",
         "satooshi/php-coveralls": "dev-master",
-        "facebook/xhprof": "dev-master",
+        "lox/xhprof": "dev-master",
         "simplyadmire/composer-plugins": "@dev"
     },
     "bin": [
