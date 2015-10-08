@@ -36,8 +36,7 @@ class Console extends Application
         //    $ lazy schema list
         //    $ lazy schema build
         //
-        $this->command('build-basedata' , 'LazyRecord\\Command\\BuildBaseDataCommand');
-
+        $this->command('basedata' , 'LazyRecord\\Command\\BuildBaseDataCommand');
         $this->command('sql'            , 'LazyRecord\\Command\\BuildSqlCommand');
 
         $this->command('diff');

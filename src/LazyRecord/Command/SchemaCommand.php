@@ -13,8 +13,7 @@ class SchemaCommand extends Command
     {
         parent::init();
         $this->command('build' , 'LazyRecord\\Command\\BuildSchemaCommand');
-        $this->command('sql'   , 'LazyRecord\\Command\\BuildSqlCommand');
-        $this->command('list'  , 'LazyRecord\\Command\\ListSchemaCommand');
+        $this->command('list');
         $this->command('clean');
     }
 

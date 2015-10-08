@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Command;
+namespace LazyRecord\Command\SchemaCommand;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Utils;
@@ -11,7 +11,7 @@ use ReflectionClass;
  * $ lazy build-schema path/to/Schema path/to/SchemaDir
  *
  */
-class ListSchemaCommand extends Command
+class ListCommand extends Command
 {
 
     public function usage()
