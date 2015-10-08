@@ -40,7 +40,7 @@ class AllCommandsTest extends CommandTestCase
     public function testListSchemaCommand()
     {
         $this->expectOutputRegex('/AuthorBooks\\\\Model\\\\AuthorSchema/');
-        $this->app->run(array('lazy','list-schema'));
+        $this->app->run(array('lazy','schema','list'));
     }
 
     /**
