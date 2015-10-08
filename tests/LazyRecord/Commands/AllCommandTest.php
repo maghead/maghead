@@ -16,7 +16,7 @@ class AllCommandsTest extends CommandTestCase
     {
         ok( $this->app->createCommand('LazyRecord\Command\BuildConfCommand') );
         ok( $this->app->createCommand('LazyRecord\Command\BuildSchemaCommand') );
-        ok( $this->app->createCommand('LazyRecord\Command\BuildBaseDataCommand') );
+        ok( $this->app->createCommand('LazyRecord\Command\BaseDataCommand.php') );
         ok( $this->app->createCommand('LazyRecord\Command\InitCommand') );
         ok( $this->app->createCommand('LazyRecord\Command\MigrateCommand') );
         ok( $this->app->createCommand('LazyRecord\Command\SchemaCommand') );

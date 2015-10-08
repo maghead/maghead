@@ -19,7 +19,7 @@ class Console extends Application
         /**
          * Command for initialize related file structure
          */
-        $this->command('init',    'LazyRecord\Command\InitCommand');
+        $this->command('init');
 
         /**
          * Command for building config file.
@@ -27,18 +27,9 @@ class Console extends Application
         $this->command('build-conf', 'LazyRecord\\Command\\BuildConfCommand');
         $this->command('conf',       'LazyRecord\\Command\\BuildConfCommand');
 
-        /**
-         * schema command.
-         */
         $this->command('schema'); // the schema command builds all schema files and shows a diff after building new schema
-
-        // XXX: move list to the subcommand of schema command, eg:
-        //    $ lazy schema list
-        //    $ lazy schema build
-        //
-        $this->command('basedata' , 'LazyRecord\\Command\\BuildBaseDataCommand');
-        $this->command('sql'            , 'LazyRecord\\Command\\BuildSqlCommand');
-
+        $this->command('basedata');
+        $this->command('sql');
         $this->command('diff');
         $this->command('migrate');
         $this->command('meta');

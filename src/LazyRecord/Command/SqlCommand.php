@@ -13,7 +13,7 @@ use LazyRecord\ConnectionManager;
 use LazyRecord\Command\BaseCommand;
 use Exception;
 
-class BuildSqlCommand extends BaseCommand
+class SqlCommand extends BaseCommand
 {
 
     public function options($opts)

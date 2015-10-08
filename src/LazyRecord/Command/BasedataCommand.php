@@ -9,7 +9,7 @@ use LazyRecord\Schema\SchemaUtils;
 use Exception;
 use LazyRecord\Schema\SchemaCollection;
 
-class BuildBaseDataCommand extends BaseCommand
+class BaseDataCommand extends BaseCommand
 {
 
     public function brief() { return 'insert basedata into datasource.'; }
