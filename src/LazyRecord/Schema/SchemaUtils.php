@@ -20,7 +20,6 @@ class SchemaUtils
             $c = ServiceContainer::getInstance();
             $logger = $c['logger'];
         }
-
         $logger->info('Schema classes:');
         foreach( $classes as $class ) {
             $logger->info($logger->formatter->format($class, 'green') , 1);

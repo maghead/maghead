@@ -5,15 +5,18 @@ use IteratorAggregate;
 use Countable;
 use ArrayIterator;
 use LazyRecord\Schema\DeclareSchema;
+use LazyRecord\Schema\DynamicSchemaDeclare;
+use LazyRecord\Schema\MixinDeclareSchema;
+use LazyRecord\Schema\MixinSchemaDeclare;
 use InvalidArgumentException;
 
 class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
 {
     protected $schemas = array();
 
-    public function __construct(array $args) 
+    public function __construct(array $classNames) 
     {
-        $this->schemas = $args;
+        $this->schemas = $classNames;
     }
 
     public function filter(callable $cb) {
@@ -49,7 +52,8 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
         return new self($expands);
     }
 
-    public function expandSchemaDependency(DeclareSchema $schema) {
+    protected function expandSchemaDependency(DeclareSchema $schema)
+    {
         $expands = array();
         $refs = $schema->getReferenceSchemas();
         foreach($refs as $refClass => $v) {
@@ -58,11 +62,16 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
             $expands[] = $refClass;
         }
         $expands[] = get_class($schema);
-        return $expands;
+        return array_unique($expands);
     }
 
 
-    public function declareable() {
+    /**
+     *
+     * @return LazyRecord\Schema\DeclareSchema[]
+     */
+    public function getDeclareSchemas()
+    {
         return $this->filter(function($schema) {
             return is_subclass_of($schema, 'LazyRecord\Schema\DeclareSchema', true);
         });
