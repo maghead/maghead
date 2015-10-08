@@ -131,12 +131,15 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      *
      * required() method enabled software validation.
      */
-    public function required()
+    public function required($notNull = true)
     {
-        $this->notNull = true;
         $this->required = true;
+	if ($notNull) {
+		$this->notNull = true;
+	}
         return $this;
     }
+
 
     /**
      * serial type
