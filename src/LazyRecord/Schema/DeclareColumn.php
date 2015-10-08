@@ -134,9 +134,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     public function required($notNull = true)
     {
         $this->required = true;
-	if ($notNull) {
-		$this->notNull = true;
-	}
+        $this->notNull = $notNull;
         return $this;
     }
 
