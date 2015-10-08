@@ -53,7 +53,7 @@ class ClassUtils
     static public function filter_schema_classes(array $classes)
     {
         $list = array();
-        foreach( $classes as $class ) {
+        foreach ($classes as $class) {
             // skip abstract classes.
             if (
               ! is_subclass_of($class, 'LazyRecord\Schema\DeclareSchema',true)
@@ -64,11 +64,10 @@ class ClassUtils
             ) { 
                 continue; 
             }
-            $rf = new ReflectionClass( $class );
+            $rf = new ReflectionClass($class);
             if ($rf->isAbstract()) {
                 continue;
             }
-
             $list[] = $class;
         }
         return $list;

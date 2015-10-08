@@ -4,6 +4,7 @@ bootstrap:
 schema:
   auto_id: 1
   paths:
+    - src
     - tests
 data_source:
   default: sqlite
