@@ -85,7 +85,6 @@ DOC;
         if ($this->options->basedata) {
             $collection = new SchemaCollection($schemas);
             $collection = $collection->evaluate();
-
             $seedBuilder = new SeedBuilder($this->getConfigLoader(), $this->logger);
             $seedBuilder->build($collection);
         }

@@ -37,13 +37,12 @@ class ClassUtils
 
     public static function schema_classes_to_objects(array $classes) 
     {
-        $schemas = array();
-        foreach ($classes as $class) {
-            if (is_subclass_of($class,'LazyRecord\Schema\DeclareSchema',true)) {
-                $schemas[] = new $class;
-            }
-        }
-        return $schemas;
+        $classes = array_filter($classes, function($class) {
+            return is_subclass_of($class,'LazyRecord\Schema\DeclareSchema',true);
+        });
+        return array_map(function($class) { 
+            return new $class;
+        }, $classes);
     }
 
     /**

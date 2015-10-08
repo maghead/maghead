@@ -54,16 +54,21 @@ class SchemaUtils
             if ($schema instanceof TemplateSchema) {
                 $expandedSchemas = $schema->provideSchemas();
                 foreach ($expandedSchemas as $expandedSchema) {
+                    if (isset($map[get_class($expandedSchema)])) {
+                        continue;
+                    }
                     $schemas[] = $expandedSchema;
                     $map[get_class($expandedSchema)] = TRUE;
                 }
             } else {
+                if (isset($map[$class])) {
+                    continue;
+                }
                 $schemas[] = $schema;
             }
         }
         return $schemas;
     }
-
 
 
     /**
@@ -136,7 +141,7 @@ class SchemaUtils
                     }
                 }
             }
-            return ClassUtils::schema_classes_to_objects($classes);
+            return ClassUtils::schema_classes_to_objects(array_unique($classes));
         } else {
             $finder = new SchemaFinder;
             if (count($args) && file_exists($args[0])) {
