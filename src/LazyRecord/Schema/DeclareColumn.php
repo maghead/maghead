@@ -158,13 +158,6 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         return $this;
     }
 
-    public function timestamp()
-    {
-        parent::timestamp();
-        $this->notNull = true; // mysql timestamp type use Null=No as default.
-        return $this;
-    }
-
     public function renderAs($renderAs, array $widgetAttributes = array())
     {
         $this->renderAs = $renderAs;
