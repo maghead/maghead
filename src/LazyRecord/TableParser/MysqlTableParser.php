@@ -52,8 +52,12 @@ class MysqlTableParser extends BaseTableParser
             }
 
             if ($row['Null'] == 'NO') {
-                $column->notNull();
-            } else {
+                // timestamp is set to Null=No by default.
+                if ($row['Type'] !== "timestamp") {
+                    $column->requried();
+                    $column->notNull(true);
+                }
+            } else if ($row['Null'] == 'YES') {
                 $column->null();
             }
 

@@ -43,17 +43,17 @@ class DiffCommand extends BaseCommand
 
         $found = false;
         $comparator = new Comparator;
-        foreach ($tableSchemas as $table => $schema) {
+        foreach ($tableSchemas as $table => $currentSchema) {
             $this->logger->debug("Checking table $table");
 
-            $ref = new ReflectionObject($schema);
+            $ref = new ReflectionObject($currentSchema);
 
             $filepath = $ref->getFilename();
             $filepath = substr($filepath,strlen(getcwd()) + 1);
 
             if (in_array($table, $existingTables)) {
                 $before = $parser->reverseTableSchema($table);
-                $diffs = $comparator->compare($before, $schema);
+                $diffs = $comparator->compare($before, $currentSchema);
                 if (count($diffs)) {
                     $found = true;
                     $printer = new ComparatorConsolePrinter($diffs);
@@ -66,7 +66,7 @@ class DiffCommand extends BaseCommand
                 echo $formatter->format( $msg,'green') , "\n";
 
                 $a = isset($tableSchemas[ $table ]) ? $tableSchemas[ $table ] : null;
-                $diff = $comparator->compare(new DeclareSchema, $schema);
+                $diff = $comparator->compare(new DeclareSchema, $currentSchema);
                 foreach( $diff as $diffItem ) {
                     echo "  ", $diffItem->toColumnAttrsString() , "\n";
                 }
