@@ -496,7 +496,7 @@ abstract class BaseModel implements
         $ret = null;
         if ( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
-            $ret = $this->find(array( $pk => $val ));
+            $ret = $this->load(array( $pk => $val ));
         } else if ( $byKeys ) {
             $conds = array();
             foreach( (array) $byKeys as $k ) {
@@ -922,6 +922,7 @@ abstract class BaseModel implements
     }
 
     protected $_preparedFindStm;
+    protected $_preparedFindSql;
 
     /**
      * Find record
@@ -947,6 +948,9 @@ abstract class BaseModel implements
             $query->select( $this->selected ?: '*' )->where()->equal($pk, new Bind($pk, $pkId));
             $arguments = new ArgumentArray;
             $sql = $query->toSql($driver, $arguments);
+
+            $this->_preparedFindSql = $sql;
+
             $this->_preparedFindStm = $conn->prepare($sql);
 
             $this->_preparedFindStm->execute($arguments->toArray());
@@ -961,24 +965,23 @@ abstract class BaseModel implements
         try {
             // $stm = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
             // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
-
             if (false === ($this->_data = $this->_preparedFindStm->fetch(PDO::FETCH_ASSOC)) ) {
                 // Record not found is not an exception
-                return $this->reportError("Record not found", [ 
-                    'sql' => $sql,
+                return $this->reportError("Record not found", [
+                    'sql' => $this->_preparedFindSql,
                 ]);
             }
         }
         catch (PDOException $e)
         {
             throw new QueryException('Record load failed', $this, $e, array(
-                'sql' => $sql,
+                'sql' => $this->_preparedFindSql,
             ));
         }
 
         return $this->reportSuccess( 'Data loaded', array( 
             'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
-            'sql' => $sql,
+            'sql' => $this->_preparedFindSql,
             'type' => Result::TYPE_LOAD,
         ));
     }

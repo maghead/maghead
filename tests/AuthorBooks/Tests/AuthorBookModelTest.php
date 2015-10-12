@@ -192,7 +192,7 @@ class AuthorBookModelTest extends ModelTestCase
         $author = new Author;
 
         $a2 = new Author;
-        $ret = $a2->find( array( 'name' => 'A record does not exist.' ) );
+        $ret = $a2->load( array( 'name' => 'A record does not exist.' ) );
         ok( ! $ret->success );
         ok( ! $a2->id );
 
@@ -218,7 +218,7 @@ class AuthorBookModelTest extends ModelTestCase
         is( 'foo@google.com', $author->email );
         is( false , $author->confirmed );
 
-        $ret = $author->find(array( 'name' => 'Foo' ));
+        $ret = $author->load(array( 'name' => 'Foo' ));
         ok( $ret->success );
         is( $id , $author->id );
         is( 'Foo', $author->name );

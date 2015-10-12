@@ -192,7 +192,7 @@ class AuthorModelTest extends ModelTestCase
     public function testFindAnInexistingRecord()
     {
         $a = new Author;
-        $ret = $a->find(array( 'name' => 'A record does not exist.'));
+        $ret = $a->load(array( 'name' => 'A record does not exist.'));
         $this->assertResultFail($ret);
         ok(! $a->id);
     }
@@ -200,7 +200,7 @@ class AuthorModelTest extends ModelTestCase
     public function testFindInexistingRecord()
     {
         $a2 = new Author;
-        $ret = $a2->find(array( 'name' => 'A record does not exist.'));
+        $ret = $a2->load(array( 'name' => 'A record does not exist.'));
         $this->assertResultFail($ret);
         ok(! $a2->id);
     }
@@ -244,7 +244,7 @@ class AuthorModelTest extends ModelTestCase
         $this->assertEquals('foo@google.com', $author->email);
         $this->assertEquals(false , $author->confirmed );
 
-        $ret = $author->find(array( 'name' => 'Foo' ));
+        $ret = $author->load(array( 'name' => 'Foo' ));
         $this->assertResultSuccess($ret);
         is( $id , $author->id );
         is( 'Foo', $author->name );

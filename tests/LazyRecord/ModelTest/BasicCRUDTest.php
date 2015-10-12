@@ -38,10 +38,11 @@ class BasicCRUDTest extends ModelTestCase
     public function testTitleIsRequired()
     {
         $b = new \AuthorBooks\Model\Book ;
-        $ret = $b->find(array( 'name' => 'LoadOrCreateTest' ));
+        $ret = $b->load(array( 'name' => 'LoadOrCreateTest' ));
         $this->assertResultFail($ret);
         $this->assertNull($b->id);
     }
+
 
     public function testRecordRawCreateBook()
     {
@@ -65,6 +66,30 @@ class BasicCRUDTest extends ModelTestCase
         ok($b->id);
         is(RESULT::TYPE_UPDATE, $ret->type);
         $this->successfulDelete($b);
+    }
+
+
+    public function testFind()
+    {
+        $results = array();
+        $book1 = new Book;
+        $ret = $book1->create(array( 'title' => 'Book1' ));
+        $this->assertResultSuccess($ret);
+
+        $book2 = new Book;
+        $ret = $book2->create(array( 'title' => 'Book2' ));
+        $this->assertResultSuccess($ret);
+
+        $findBook = new Book;
+        $ret = $findBook->find($book1->id);
+        $this->assertResultSuccess($ret);
+        $this->assertEquals($book1->id, $findBook->id);
+
+
+        $ret = $findBook->find($book2->id);
+        $this->assertResultSuccess($ret);
+        $this->assertEquals($book2->id, $findBook->id);
+
     }
 
 

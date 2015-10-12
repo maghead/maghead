@@ -40,7 +40,7 @@ class BookModelTest extends ModelTestCase
     {
         $b = new Book ;
         // Column not found: 1054 Unknown column 'name' in 'where clause'
-        $b->find(array('name' => 'LoadOrCreateTest'));
+        $b->load(array('name' => 'LoadOrCreateTest'));
     }
 
     /**
