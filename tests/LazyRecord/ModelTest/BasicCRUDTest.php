@@ -56,15 +56,14 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testRecordRawUpdateBook()
     {
-        $b = new \AuthorBooks\Model\Book ;
-        ok($b);
+        $b = new \AuthorBooks\Model\Book;
         $ret = $b->rawCreate(array( 'title' => 'Go Programming without software validation' ));
         $this->assertResultSuccess($ret);
         ok($b->id);
         $ret = $b->rawUpdate(array( 'title' => 'Perl Programming without filtering' ));
         $this->assertResultSuccess($ret);
         ok($b->id);
-        is(RESULT::TYPE_UPDATE, $ret->type);
+        $this->assertEquals(RESULT::TYPE_UPDATE, $ret->type);
         $this->successfulDelete($b);
     }
 
@@ -89,7 +88,6 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $findBook->find($book2->id);
         $this->assertResultSuccess($ret);
         $this->assertEquals($book2->id, $findBook->id);
-
     }
 
 
@@ -107,38 +105,38 @@ class BasicCRUDTest extends ModelTestCase
         $results[] = $ret;
 
         $id = $b->id;
-        ok($id);
+        $this->assertNotNull($id);
 
         $ret = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertResultSuccess($ret);
-        is($id, $b->id, 'is the same ID');
-        is(RESULT::TYPE_LOAD, $ret->type);
+        $this->assertEquals($id, $b->id, 'is the same ID');
+        $this->assertEquals(RESULT::TYPE_LOAD, $ret->type);
         $results[] = $ret;
 
 
-        $b2 = new \AuthorBooks\Model\Book ;
+        $b2 = new Book;
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertResultSuccess($ret);
-        is($id,$b2->id);
+        $this->assertEquals($id,$b2->id);
         $results[] = $ret;
 
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
         $this->assertResultSuccess($ret);
-        is(RESULT::TYPE_CREATE, $ret->type);
-        ok($id != $b2->id , 'we should create anther one'); 
+        $this->assertEquals(RESULT::TYPE_CREATE, $ret->type);
+        $this->assertNotEquals($id, $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
-        $b3 = new \AuthorBooks\Model\Book ;
+        $b3 = new Book;
         $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         $this->assertResultSuccess($ret);
-        ok($id != $b3->id , 'we should create anther one'); 
+        $this->assertNotEquals($id, $b3->id , 'we should create anther one'); 
         $results[] = $ret;
 
         $this->successfulDelete($b3);
 
         foreach($results as $r ) {
             $book = new Book();
-            $book->load(intval($r->id));
+            $book->find(intval($r->id));
             if ($book->id) {
                 $book->delete();
             }
@@ -439,10 +437,10 @@ class BasicCRUDTest extends ModelTestCase
         ok($b->id);
         is( 0 , $b->view );
 
-        $ret = $b->load($ret->id);
+        $ret = $b->find($ret->id);
         $this->assertResultSuccess($ret);
-        ok($b->id);
-        is( 0 , $b->view );
+        $this->assertNotNull($b->id);
+        $this->assertEquals(0 , $b->view);
         $this->successfulDelete($b);
     }
 
