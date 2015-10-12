@@ -303,9 +303,13 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      */
     public function export()
     {
+        $attributes = array_merge(get_object_vars($this), $this->attributes);
+        if (isset($attributes['attributeTypes'])) {
+            unset($attributes['attributeTypes']);
+        }
         return array(
             'name' => $this->name,
-            'attributes' => array_merge(get_object_vars($this), $this->attributes),
+            'attributes' => $attributes,
         );
     }
 

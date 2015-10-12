@@ -228,21 +228,20 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public function export()
     {
         $columnArray = array();
-        foreach ( $this->columns as $name => $column ) {
-
+        foreach ($this->columns as $name => $column ) {
             // This idea is from:
             // http://search.cpan.org/~tsibley/Jifty-DBI-0.75/lib/Jifty/DBI/Schema.pm
             //
             // if the refer attribute is defined, we should create the belongsTo relationship
-            if ( $refer = $column->refer ) {
+            if ($refer = $column->refer) {
                 // remove _id suffix if possible
                 $accessorName = preg_replace('#_id$#','',$name);
                 $schema = null;
                 $schemaClass = $refer;
 
                 // convert class name "Post" to "PostSchema"
-                if ( substr($refer, -strlen('Schema')) != 'Schema') {
-                    if ( class_exists($refer. 'Schema', true) ) {
+                if (substr($refer, -strlen('Schema')) != 'Schema') {
+                    if (class_exists($refer. 'Schema', true)) {
                         $refer = $refer . 'Schema';
                     }
                 }

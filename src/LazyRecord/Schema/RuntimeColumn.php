@@ -17,14 +17,43 @@ class InvalidValueTypeException extends Exception { }
 
 class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 {
+    // Read only fields
     public $name;
 
-    protected $attributes = array();
+    public $primary;
 
-    public function __construct($name, & $attributes)
+    public $unsigned;
+
+    public $type;
+
+    public $isa;
+
+    public $notNull;
+
+    public $required;
+
+    public $default;
+
+    protected $attributes;
+
+    public function __construct($name, array $attributes = array())
     {
         $this->name = $name;
         $this->attributes = $attributes;
+
+        // predefined properties in SQLBuilder\Universal\Syntax\Column
+        $this->primary = $attributes['primary'];
+        $this->unsigned = $attributes['unsigned'];
+        $this->type = $attributes['type'];
+        $this->isa = $attributes['isa'];
+        $this->notNull = $attributes['notNull'];
+
+        if (isset($attributes['required'])) {
+            $this->required = $attributes['required'];
+        }
+        if (isset($attributes['default'])) {
+            $this->default = $attributes['default'];
+        }
     }
 
     public function getName() {

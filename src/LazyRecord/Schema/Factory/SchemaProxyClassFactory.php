@@ -19,7 +19,7 @@ class SchemaProxyClassFactory
         $schemaClass = get_class($schema);
         $schemaArray = $schema->export();
         $cTemplate->addConst( 'schema_class'     , $schemaClass );
-        $cTemplate->addConst( 'collection_class' , $schemaArray['collection_class'] );
+        $cTemplate->addConst( 'collection_class' , $schemaArray['collection_class']);
         $cTemplate->addConst( 'model_class'      , $schemaArray['model_class'] );
         $cTemplate->addConst( 'model_name'       , $schema->getModelName() );
         $cTemplate->addConst( 'model_namespace'  , $schema->getNamespace() );

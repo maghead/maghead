@@ -21,7 +21,8 @@ class RuntimeSchema extends SchemaBase
     protected $_columnNamesExcludeVirutal;
 
 
-    public function __construct() {
+    public function __construct()
+    {
         // build RuntimeColumn objects
         foreach ($this->columnData as $name => $columnMeta) {
             $this->columns[ $name ] = new RuntimeColumn($name,$columnMeta['attributes']);
@@ -62,8 +63,6 @@ class RuntimeSchema extends SchemaBase
         return $schema;
     }
 
-
-
     public function hasColumn($name)
     {
         return isset($this->columns[$name]);
@@ -87,7 +86,7 @@ class RuntimeSchema extends SchemaBase
     }
 
     public function getRenderableColumnNames() {
-        return array_map(function($column){ return $column->name; },array_filter($this->columns, function($column) { 
+        return array_map(function($column){ return $column->name; }, array_filter($this->columns, function($column) {
             return $column->renderable !== false;
         }));
     }

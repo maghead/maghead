@@ -21,7 +21,8 @@ class BuildCommand extends BaseCommand
         return 'build schema files.';
     }
 
-    public function arguments($args) {
+    public function arguments($args)
+    {
         $args->add('file')
             ->isa('file')
             ;
@@ -49,11 +50,11 @@ class BuildCommand extends BaseCommand
 
         $generator = new SchemaGenerator($config, $this->logger);
 
-        if ( $this->options->force ) {
+        if ($this->options->force) {
             $generator->setForceUpdate(true);
         }
 
-        $classMap = $generator->generate($classes);
+        $classMap = $generator->generate($classes, $this->options->force);
         /*
         foreach( $classMap as $class => $file ) {
             $path = $file;

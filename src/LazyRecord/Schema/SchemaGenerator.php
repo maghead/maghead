@@ -101,11 +101,13 @@ class SchemaGenerator
 
         // classes not Model/Collection class are overwriteable
         if (! file_exists($classFilePath)) {
+
             $this->writeClassTemplateToPath($cTemplate, $classFilePath, $overwrite);
             $this->logger->info2(" - Creating $classFilePath");
             return array( $cTemplate->getClassName(), $classFilePath );
 
         } else if ($schema->isNewerThanFile($classFilePath) || $this->forceUpdate || $overwrite ) {
+
             if ($this->writeClassTemplateToPath($cTemplate, $classFilePath, $overwrite)) {
                 $this->logger->info2(" - Updating $classFilePath");
                 return array( $cTemplate->getClassName() , $classFilePath );
@@ -181,11 +183,11 @@ class SchemaGenerator
             }
         }
 
-        if ($result = $this->generateCollectionClass($schema)) {
+        if ($result = $this->generateCollectionClass($schema, false)) {
             list($className, $classFile) = $result;
             $classMap[ $className ] = $classFile;
         }
-        if ($result = $this->generateModelClass($schema)) {
+        if ($result = $this->generateModelClass($schema, false)) {
             list($className, $classFile) = $result;
             $classMap[ $className ] = $classFile;
         }
@@ -212,9 +214,8 @@ class SchemaGenerator
             $this->logger->debug("Checking " . get_class($schema) . '...');
             $generated = $this->generateSchema($schema, $overwrite);
             if (!empty($generated)) {
-                $this->logger->info("Updating " . get_class($schema));
                 foreach ($generated as $className => $classPath) {
-                    $this->logger->info($classPath);
+                    $this->logger->info("- Updated " . $classPath);
                 }
                 $classMap += $generated;
             }
