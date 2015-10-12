@@ -218,34 +218,6 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     }
 
 
-    /**
-     * Export column attributes to an array
-     *
-     * @return array
-     */
-    public function export()
-    {
-        return array(
-            'name' => $this->name,
-            'attributes' => array_merge(get_object_vars($this), $this->attributes),
-        );
-    }
-
-    /**
-     * Combine column object properties and extended attributes 
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return array_merge(get_object_vars($this),$this->attributes);
-    }
-
-    public function dump()
-    {
-        return var_export( $this->export() , true );
-    }
-
     public function __isset($name)
     {
         return isset( $this->attributes[ $name ] );
@@ -318,8 +290,38 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      *
      * @return RuntimeColumn
      */
-    public function asRuntimeColumn() {
+    public function asRuntimeColumn()
+    {
         return new RuntimeColumn($this->name, $this->attributes);
+    }
+
+
+    /**
+     * Export column attributes to an array
+     *
+     * @return array
+     */
+    public function export()
+    {
+        return array(
+            'name' => $this->name,
+            'attributes' => array_merge(get_object_vars($this), $this->attributes),
+        );
+    }
+
+    /**
+     * Combine column object properties and extended attributes 
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return array_merge(get_object_vars($this),$this->attributes);
+    }
+
+    public function dump()
+    {
+        return var_export( $this->export() , true );
     }
 }
 
