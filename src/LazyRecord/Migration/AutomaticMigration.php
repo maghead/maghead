@@ -49,11 +49,11 @@ class AutomaticMigration extends Migration implements Migratable
 
             $before = $parser->reverseTableSchema($table);
 
-            $this->logger->info("Comparing table `$table` with schema");
+            $this->logger->debug("Comparing table `$table` with schema");
             $diffs = $comparator->compare($before , $schema);
 
             if (count($diffs) == 0) {
-                $this->logger->info("Nothing changed.");
+                $this->logger->debug("Nothing changed in `$table`.");
                 continue;
             }
 
@@ -99,7 +99,6 @@ class AutomaticMigration extends Migration implements Migratable
             }
             $this->executeQuery($alterTable);
         }
-        $this->logger->info('Done!');
     }
 
 
