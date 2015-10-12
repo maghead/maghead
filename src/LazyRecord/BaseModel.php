@@ -986,7 +986,7 @@ abstract class BaseModel implements
         }
 
         return $this->reportSuccess( 'Data loaded', array( 
-            'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
+            'id' => (isset($this->_data[$primaryKey]) ? $this->_data[$primaryKey] : null),
             'sql' => $this->_preparedFindSql,
             'type' => Result::TYPE_LOAD,
         ));
