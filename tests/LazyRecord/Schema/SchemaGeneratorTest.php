@@ -25,20 +25,6 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider schemaProvider
      */
-    public function testBaseCollectionClassGeneration($g, $schema)
-    {
-        if ( $result = $g->generateBaseCollectionClass($schema) ) {
-            list($class, $file) = $result;
-            ok($class);
-            ok($file);
-            path_ok($file);
-            $this->syntaxTest($file);
-        }
-    }
-
-    /**
-     * @dataProvider schemaProvider
-     */
     public function testCollectionClassGeneration($g, $schema)
     {
         if ( $result = $g->generateCollectionClass($schema) ) {
@@ -62,7 +48,6 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
     public function testGenerateMethod($g, $schema) 
     {
         if ( $classMap = $g->generate(array($schema)) ) {
-            ok($classMap);
             foreach( $classMap as $class => $file ) {
                 ok($class);
                 ok($file);
@@ -73,27 +58,13 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
         }
 
         $pk = $schema->findPrimaryKey();
-        ok($pk, "Find primary key from " . get_class($schema) );
+        $this->assertNotNull($pk, "Find primary key from " . get_class($schema) );
 
         $model = $schema->newModel();
-        ok($model);
+        $this->assertNotNull($model);
 
         $collection = $schema->newCollection();
-        ok($collection);
-    }
-
-    /**
-     * @dataProvider schemaProvider
-     */
-    public function testSchemaProxyGeneration($g, $schema)
-    {
-        if ( $result = $g->generateSchemaProxyClass($schema) ) {
-            list($class, $file) = $result;
-            ok($class);
-            ok($file);
-            path_ok($file);
-            $this->syntaxTest($file);
-        }
+        $this->assertNotNull($collection);
     }
 }
 
