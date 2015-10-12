@@ -921,17 +921,66 @@ abstract class BaseModel implements
         return $this->create($args, array( 'reload' => false));
     }
 
-
-
+    protected $_preparedFindStm;
 
     /**
      * Find record
      *
      * @param array condition array
      */
-    public function find($args)
+    public function find($pkId)
     {
-        return $this->load($args);
+        $dsId  = $this->getReadSourceId();
+        $pk    = static::primary_key;
+
+
+        $conn  = $this->getReadConnection();
+
+        if (!$this->_preparedFindStm) {
+
+            $query = new SelectQuery;
+            $query->from($this->getTable());
+
+            $driver = $conn->createQueryDriver();
+            $column = $this->getSchema()->getColumn($pk);
+            // $kVal = $column->deflate($pkId);
+            $query->select( $this->selected ?: '*' )->where()->equal($pk, new Bind($pk, $pkId));
+            $arguments = new ArgumentArray;
+            $sql = $query->toSql($driver, $arguments);
+            $this->_preparedFindStm = $conn->prepare($sql);
+
+            $this->_preparedFindStm->execute($arguments->toArray());
+
+        } else {
+
+            $this->_preparedFindStm->execute([ ":$pk" => $pkId ]);
+
+        }
+
+
+        try {
+            // $stm = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
+            // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
+
+            if (false === ($this->_data = $this->_preparedFindStm->fetch(PDO::FETCH_ASSOC)) ) {
+                // Record not found is not an exception
+                return $this->reportError("Record not found", [ 
+                    'sql' => $sql,
+                ]);
+            }
+        }
+        catch (PDOException $e)
+        {
+            throw new QueryException('Record load failed', $this, $e, array(
+                'sql' => $sql,
+            ));
+        }
+
+        return $this->reportSuccess( 'Data loaded', array( 
+            'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
+            'sql' => $sql,
+            'type' => Result::TYPE_LOAD,
+        ));
     }
 
     public function loadFromCache($args, $ttl = 3600)
