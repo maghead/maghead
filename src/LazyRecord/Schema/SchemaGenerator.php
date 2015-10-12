@@ -117,21 +117,6 @@ class SchemaGenerator
         }
     }
 
-
-    public function generateSchemaProxyClass(DeclareSchema $schema, $overwrite = false)
-    {
-        $cTemplate = SchemaProxyClassFactory::create($schema);
-        return $this->updateClassFile($cTemplate, $schema, $overwrite);
-    }
-
-    public function generateBaseModelClass(DeclareSchema $schema, $overwrite = false)
-    {
-        $cTemplate = BaseModelClassFactory::create($schema, $this->getBaseModelClass() );
-        return $this->updateClassFile($cTemplate, $schema, $overwrite);
-    }
-
-
-
     /**
      * Generate modal class file, overwrite by default.
      *
@@ -143,13 +128,6 @@ class SchemaGenerator
         $cTemplate = ModelClassFactory::create($schema);
         return $this->updateClassFile($cTemplate, $schema, $overwrite); // do not overwrite
     }
-
-    public function generateBaseCollectionClass(DeclareSchema $schema, $overwrite = false)
-    {
-        $cTemplate = BaseCollectionClassFactory::create($schema, $this->getBaseCollectionClass() );
-        return $this->updateClassFile($cTemplate, $schema, $overwrite);
-    }
-
 
     /**
      * Generate collection class from a schema object.
@@ -207,37 +185,24 @@ class SchemaGenerator
     {
         $classMap = array();
 
-        // support old-style schema declare
-        if ( $result = $this->generateSchemaProxyClass($schema, $overwrite) ) {
-            list($className, $classFile) = $result;
-            $classMap[ $className ] = $classFile;
+        $cTemplates = array();
+        $cTemplates[] = BaseModelClassFactory::create($schema, $this->getBaseModelClass());
+        $cTemplates[] = SchemaProxyClassFactory::create($schema);
+        $cTemplates[] = BaseCollectionClassFactory::create($schema, $this->getBaseCollectionClass());
+        foreach ($cTemplates as $cTemplate) {
+            if ($result = $this->updateClassFile($cTemplate, $schema, $overwrite)) {
+                list($className, $classFile) = $result;
+                $classMap[ $className ] = $classFile;
+            }
         }
 
-        // collection classes
-        if ( $result = $this->generateBaseCollectionClass($schema, $overwrite) ) {
+        if ($result = $this->generateCollectionClass($schema)) {
             list($className, $classFile) = $result;
             $classMap[ $className ] = $classFile;
         }
-        if ( $result = $this->generateCollectionClass($schema) ) {
+        if ($result = $this->generateModelClass($schema)) {
             list($className, $classFile) = $result;
             $classMap[ $className ] = $classFile;
-        }
-
-        // in new schema declare, we can describe a schema in a model class.
-        if( $schema instanceof DynamicDeclareSchema ) {
-            if ( $result = $this->injectModelSchema($schema) ) {
-                list($className, $classFile) = $result;
-                $classMap[ $className ] = $classFile;
-            }
-        } else {
-            if ( $result = $this->generateBaseModelClass($schema, $overwrite) ) {
-                list($className, $classFile) = $result;
-                $classMap[ $className ] = $classFile;
-            }
-            if ( $result = $this->generateModelClass($schema) ) {
-                list($className, $classFile) = $result;
-                $classMap[ $className ] = $classFile;
-            }
         }
         return $classMap;
     }
