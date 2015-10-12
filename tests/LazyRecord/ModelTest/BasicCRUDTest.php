@@ -406,21 +406,20 @@ class BasicCRUDTest extends ModelTestCase
             'title' => 'book title',
             'view' => 0,
         ));
-        is( 0 , $n->view );
+        $this->assertEquals( 0 , $n->view );
         $ret = $n->update(array( 
             'view' => new Raw('view + 1')
         ), array('reload' => true));
 
-        ok($ret->success, $ret->message);
-        is(1, $n->view);
+        $this->assertTrue($ret->success, $ret->message);
+        $this->assertEquals(1, $n->view);
 
         $n->update(array( 
             'view' => new Raw('view + 3'),
         ), array('reload' => true));
         $ret = $n->reload();
-        ok( $ret->success );
-        is( 4, $n->view );
-
+        $this->assertTrue( $ret->success );
+        $this->assertEquals( 4, $n->view );
         result_ok($n->delete());
     }
 
