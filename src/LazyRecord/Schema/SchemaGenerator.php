@@ -201,6 +201,7 @@ class SchemaGenerator
     public function generate(array $schemas, $overwrite = false)
     {
         // for generated class source code.
+        $this->logger->debug("Setting up error handler...");
         set_error_handler(function($errno, $errstr, $errfile, $errline) {
             printf( "ERROR %s:%s  [%s] %s\n" , $errfile, $errline, $errno, $errstr );
         }, E_ERROR );
@@ -219,6 +220,7 @@ class SchemaGenerator
             }
         }
 
+        $this->logger->debug("Restoring error handler...");
         restore_error_handler();
         return $classMap;
     }
