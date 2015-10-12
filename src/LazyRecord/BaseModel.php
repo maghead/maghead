@@ -172,6 +172,15 @@ abstract class BaseModel implements
      * */
     static $mixin_classes = array();
 
+
+    /**
+     * @var PDOStatement prepared statement for find by primary key method.
+     */
+    private $_preparedFindStm;
+
+    private $_preparedFindSql;
+
+
     /**
      * The constructor
      *
@@ -921,8 +930,7 @@ abstract class BaseModel implements
         return $this->create($args, array( 'reload' => false));
     }
 
-    protected $_preparedFindStm;
-    protected $_preparedFindSql;
+
 
     /**
      * Find record
@@ -932,21 +940,19 @@ abstract class BaseModel implements
     public function find($pkId)
     {
         $dsId  = $this->getReadSourceId();
-        $pk    = static::primary_key;
-
-
+        $primaryKey = static::primary_key;
         $conn  = $this->getReadConnection();
 
         if (!$this->_preparedFindStm) {
 
+            $arguments = new ArgumentArray;
             $query = new SelectQuery;
             $query->from($this->getTable());
 
             $driver = $conn->createQueryDriver();
-            $column = $this->getSchema()->getColumn($pk);
+            $column = $this->getSchema()->getColumn($primaryKey);
             // $kVal = $column->deflate($pkId);
-            $query->select( $this->selected ?: '*' )->where()->equal($pk, new Bind($pk, $pkId));
-            $arguments = new ArgumentArray;
+            $query->select($this->selected ?: '*')->where()->equal($primaryKey, new Bind($primaryKey, $pkId));
             $sql = $query->toSql($driver, $arguments);
 
             $this->_preparedFindSql = $sql;
@@ -957,7 +963,7 @@ abstract class BaseModel implements
 
         } else {
 
-            $this->_preparedFindStm->execute([ ":$pk" => $pkId ]);
+            $this->_preparedFindStm->execute([ ":$primaryKey" => $pkId ]);
 
         }
 
