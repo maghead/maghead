@@ -4,27 +4,45 @@ use ClassTemplate\TemplateClassFile;
 use ClassTemplate\ClassFile;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\DeclareSchema;
+use LazyRecord\ConnectionManager;
 use Doctrine\Common\Inflector\Inflector;
+
+
+// used for SQL generator
+use SQLBuilder\Universal\Query\SelectQuery;
+use SQLBuilder\Universal\Query\UpdateQuery;
+use SQLBuilder\Universal\Query\DeleteQuery;
+use SQLBuilder\Universal\Query\InsertQuery;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\PDOPgSQLDriver;
+use SQLBuilder\Driver\PDOMySQLDriver;
+use SQLBuilder\Driver\PDOSQLiteDriver;
+use SQLBuilder\Bind;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Raw;
 
 class BaseModelClassFactory
 {
     public static function create(DeclareSchema $schema, $baseClass) {
         $cTemplate = new ClassFile($schema->getBaseModelClass());
+
+        $cTemplate->useClass('LazyRecord\\Schema\\SchemaLoader');
+
         $cTemplate->addConsts(array(
-            'schema_proxy_class' => $schema->getSchemaProxyClass(),
-            'collection_class'   => $schema->getCollectionClass(),
-            'model_class'        => $schema->getModelClass(),
-            'table'              => $schema->getTable(),
-            'read_source_id'     => $schema->getReadSourceId(),
-            'write_source_id'    => $schema->getWriteSourceId(),
-            'primary_key'        => $schema->primaryKey,
+            'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),
+            'COLLECTION_CLASS'   => $schema->getCollectionClass(),
+            'MODEL_CLASS'        => $schema->getModelClass(),
+            'TABLE'              => $schema->getTable(),
+            'READ_SOURCE_ID'     => $schema->getReadSourceId(),
+            'WRITE_SOURCE_ID'    => $schema->getWriteSourceId(),
+            'PRIMARY_KEY'        => $schema->primaryKey,
         ));
 
         $cTemplate->addMethod('public', 'getSchema', [], [
             'if ($this->_schema) {',
             '   return $this->_schema;',
             '}',
-            'return $this->_schema = \LazyRecord\Schema\SchemaLoader::load(' . var_export($schema->getSchemaProxyClass(),true) .  ');',
+            'return $this->_schema = SchemaLoader::load(' . var_export($schema->getSchemaProxyClass(),true) .  ');',
         ]);
 
         $cTemplate->addStaticVar('column_names',  $schema->getColumnNames());
@@ -36,6 +54,31 @@ class BaseModelClassFactory
                 $cTemplate->useTrait($traitClass);
             }
         }
+
+
+        // TODO: refacory this into factory method
+        // Generate findByPrimaryKey SQL query
+        $arguments = new ArgumentArray;
+        $findByPrimaryKeyQuery = new SelectQuery;
+        $findByPrimaryKeyQuery->from($schema->getTable());
+        $primaryKey = $schema->primaryKey;
+        $readFrom  = $schema->getReadSourceId();
+        $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
+        $readQueryDriver = $readConnection->createQueryDriver();
+        $primaryKeyColumn = $schema->getColumn($primaryKey);
+        $findByPrimaryKeyQuery->select('*')
+            ->where()->equal($primaryKey, new Bind($primaryKey));
+        $findByPrimaryKeyQuery->limit(1);
+        $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
+        $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
+
+
+        /*
+         * TODO: filter findable columns
+        foreach ($schema->getColumns() as $column) {
+
+        }
+         */
 
         $cTemplate->extendClass( '\\' . $baseClass );
 

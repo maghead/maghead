@@ -27,13 +27,13 @@ class SchemaProxyClassFactory
 
         $cTemplate->addConsts(array(
             'schema_class'     => $schemaClass,
-            'collection_class' => $schemaArray['collection_class'],
-            'model_class'      => $schemaArray['model_class'],
+            'COLLECTION_CLASS' => $schemaArray['collection_class'],
+            'MODEL_CLASS'      => $schemaArray['model_class'],
             'model_name'       => $schema->getModelName(),
             'model_namespace'  => $schema->getNamespace(),
-            'primary_key'      => $schemaArray['primary_key'],
-            'table' => $schema->getTable(),
-            'label' =>  $schema->getLabel(),
+            'PRIMARY_KEY'      => $schemaArray['primary_key'],
+            'TABLE' => $schema->getTable(),
+            'LABEL' =>  $schema->getLabel(),
         ));
 
         $cTemplate->useClass('\\LazyRecord\\Schema\\RuntimeColumn');

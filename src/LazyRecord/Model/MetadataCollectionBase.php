@@ -4,9 +4,10 @@ use LazyRecord\BaseCollection;
 class MetadataCollectionBase
     extends BaseCollection
 {
-    const schema_proxy_class = 'LazyRecord\\Model\\MetadataSchemaProxy';
-    const model_class = 'LazyRecord\\Model\\Metadata';
-    const table = '__meta__';
-    const read_source_id = 'default';
-    const write_source_id = 'default';
+    const SCHEMA_PROXY_CLASS = 'LazyRecord\\Model\\MetadataSchemaProxy';
+    const MODEL_CLASS = 'LazyRecord\\Model\\Metadata';
+    const TABLE = '__meta__';
+    const READ_SOURCE_ID = 'default';
+    const WRITE_SOURCE_ID = 'default';
+    const PRIMARY_KEY = 'id';
 }

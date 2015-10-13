@@ -2,17 +2,18 @@
 namespace LazyRecord\Model;
 use LazyRecord\Schema\RuntimeSchema;
 use LazyRecord\Schema\RuntimeColumn;
+use LazyRecord\Schema\Relationship;
 class MetadataSchemaProxy
     extends RuntimeSchema
 {
     const schema_class = 'LazyRecord\\Model\\MetadataSchema';
-    const collection_class = 'LazyRecord\\Model\\MetadataCollection';
-    const model_class = 'LazyRecord\\Model\\Metadata';
+    const COLLECTION_CLASS = 'LazyRecord\\Model\\MetadataCollection';
+    const MODEL_CLASS = 'LazyRecord\\Model\\Metadata';
     const model_name = 'Metadata';
     const model_namespace = 'LazyRecord\\Model';
-    const primary_key = 'id';
-    const table = '__meta__';
-    const label = 'Metadata';
+    const PRIMARY_KEY = 'id';
+    const TABLE = '__meta__';
+    const LABEL = 'Metadata';
     public static $column_names = array (
       0 => 'id',
       1 => 'name',

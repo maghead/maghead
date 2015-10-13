@@ -115,8 +115,8 @@ class BaseCollection
     {
         if ($this->_schema){
             return $this->_schema;
-        } elseif (@constant('static::schema_proxy_class')) {
-            return $this->_schema = SchemaLoader::load(static::schema_proxy_class);
+        } elseif (@constant('static::SCHEMA_PROXY_CLASS')) {
+            return $this->_schema = SchemaLoader::load(static::SCHEMA_PROXY_CLASS);
         } 
         throw new RuntimeException("schema is not defined in " . get_class($this) );
     }
@@ -228,7 +228,7 @@ class BaseCollection
         // return $this->getSchema()->getTable();
 
         // Use constant, it's faster...
-        return static::table;
+        return static::TABLE;
     }
 
     public function setPreferredTable($tableName)
@@ -455,7 +455,7 @@ class BaseCollection
         if (!$this->handle) {
             $this->prepareHandle();
         }
-        return $this->handle->fetchObject( static::model_class );
+        return $this->handle->fetchObject( static::MODEL_CLASS );
     }
 
 
@@ -480,7 +480,7 @@ class BaseCollection
         }
 
         // Use fetch all
-        return $this->_rows = $this->handle->fetchAll(PDO::FETCH_CLASS, static::model_class );
+        return $this->_rows = $this->handle->fetchAll(PDO::FETCH_CLASS, static::MODEL_CLASS );
     }
 
 

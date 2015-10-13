@@ -106,7 +106,7 @@ abstract class BaseModel implements
     static $yamlExtension;
     static $yamlEncoding = YAML_UTF8_ENCODING;
 
-    const schema_proxy_class = '';
+    const SCHEMA_PROXY_CLASS = '';
 
     protected $_data = array();
 
@@ -273,7 +273,7 @@ abstract class BaseModel implements
         if ( $this->dataLabelField ) {
             return $this->dataLabelField;
         }
-        return static::primary_key;
+        return static::PRIMARY_KEY;
     }
 
     public function getDataValueField()
@@ -281,7 +281,7 @@ abstract class BaseModel implements
         if ( $this->dataValueField ) {
             return $this->dataValueField;
         }
-        return static::primary_key;
+        return static::PRIMARY_KEY;
     }
 
 
@@ -501,7 +501,7 @@ abstract class BaseModel implements
      */
     public function createOrUpdate(array $args, $byKeys = null )
     {
-        $pk = static::primary_key;
+        $pk = static::PRIMARY_KEY;
         $ret = null;
         if ( $pk && isset($args[$pk]) ) {
             $val = $args[$pk];
@@ -539,7 +539,7 @@ abstract class BaseModel implements
     {
         if ($pkId) {
             return $this->load( $pkId );
-        } elseif( NULL === $pkId && $pk = static::primary_key ) {
+        } elseif( NULL === $pkId && $pk = static::PRIMARY_KEY ) {
             $pkId = $this->_data[ $pk ];
             return $this->load( $pkId );
         } else {
@@ -558,7 +558,7 @@ abstract class BaseModel implements
     public function loadOrCreate(array $args, $byKeys = null)
     {
         $ret = null;
-        $pk = static::primary_key;
+        $pk = static::PRIMARY_KEY;
         if ($byKeys) {
             $ret = $this->load(
                 array_intersect_key($args, 
@@ -746,7 +746,7 @@ abstract class BaseModel implements
         // save $args for afterCreate trigger method
         $origArgs = $args;
 
-        $k = static::primary_key;
+        $k = static::PRIMARY_KEY;
         $sql = $vars     = null;
         $this->_data     = array();
         $stm = null;
@@ -911,7 +911,7 @@ abstract class BaseModel implements
         if ($this->preferredTable) {
             return $this->preferredTable;
         }
-        return static::table;
+        return static::TABLE;
     }
 
 
@@ -940,54 +940,31 @@ abstract class BaseModel implements
     public function find($pkId)
     {
         $dsId  = $this->getReadSourceId();
-        $primaryKey = static::primary_key;
+        $primaryKey = static::PRIMARY_KEY;
         $conn  = $this->getReadConnection();
 
         if (!$this->_preparedFindStm) {
-
-            $arguments = new ArgumentArray;
-            $query = new SelectQuery;
-            $query->from($this->getTable());
-
-            $driver = $conn->createQueryDriver();
-            $column = $this->getSchema()->getColumn($primaryKey);
-            // $kVal = $column->deflate($pkId);
-            $query->select($this->selected ?: '*')->where()->equal($primaryKey, new Bind($primaryKey, $pkId));
-            $sql = $query->toSql($driver, $arguments);
-
-            $this->_preparedFindSql = $sql;
-
-            $this->_preparedFindStm = $conn->prepare($sql);
-
-            $this->_preparedFindStm->execute($arguments->toArray());
-
-        } else {
-
-            $this->_preparedFindStm->execute([ ":$primaryKey" => $pkId ]);
-
+            $this->_preparedFindStm = $conn->prepare(static::FIND_BY_PRIMARY_KEY_SQL);
         }
-
+        $this->_preparedFindStm->execute([ ":$primaryKey" => $pkId ]);
 
         try {
-            // $stm = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
-            // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
             if (false === ($this->_data = $this->_preparedFindStm->fetch(PDO::FETCH_ASSOC)) ) {
-                // Record not found is not an exception
                 return $this->reportError("Record not found", [
-                    'sql' => $this->_preparedFindSql,
+                    'sql' => static::FIND_BY_PRIMARY_KEY_SQL,
                 ]);
             }
         }
         catch (PDOException $e)
         {
             throw new QueryException('Record load failed', $this, $e, array(
-                'sql' => $this->_preparedFindSql,
+                'sql' => static::FIND_BY_PRIMARY_KEY_SQL,
             ));
         }
 
         return $this->reportSuccess( 'Data loaded', array( 
             'id' => (isset($this->_data[$primaryKey]) ? $this->_data[$primaryKey] : null),
-            'sql' => $this->_preparedFindSql,
+            'sql' => static::FIND_BY_PRIMARY_KEY_SQL,
             'type' => Result::TYPE_LOAD,
         ));
     }
@@ -997,7 +974,7 @@ abstract class BaseModel implements
         $key = serialize($args);
         if( $cacheData = $this->getCache($key) ) {
             $this->_data = $cacheData;
-            $pk = static::primary_key;
+            $pk = static::PRIMARY_KEY;
             return $this->reportSuccess( 'Data loaded', array(
                 'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null)
             ));
@@ -1016,7 +993,7 @@ abstract class BaseModel implements
         }
 
         $dsId  = $this->getReadSourceId();
-        $pk    = static::primary_key;
+        $pk    = static::PRIMARY_KEY;
 
         $query = new SelectQuery;
         $query->from( $this->getTable() );
@@ -1091,7 +1068,7 @@ abstract class BaseModel implements
      */
     public function delete()
     {
-        $k = static::primary_key;
+        $k = static::PRIMARY_KEY;
         if (!$k) {
             throw new Exception("primary key is not defined.");
         }
@@ -1152,7 +1129,7 @@ abstract class BaseModel implements
         $schema = $this->getSchema();
 
         // check if the record is loaded.
-        $k = static::primary_key;
+        $k = static::PRIMARY_KEY;
         if ($k && ! isset($args[ $k ]) && ! isset($this->_data[$k])) {
             throw new Exception('Record is not loaded, Can not update record.', array('args' => $args));
         }
@@ -1330,7 +1307,7 @@ abstract class BaseModel implements
     {
         $dsId  = $this->getWriteSourceId();
         $conn  = $this->getConnection( $dsId );
-        $k = static::primary_key;
+        $k = static::PRIMARY_KEY;
         $kVal = isset($args[$k]) 
             ? $args[$k] : isset($this->_data[$k]) 
             ? $this->_data[$k] : null;
@@ -1365,7 +1342,7 @@ abstract class BaseModel implements
     {
         $dsId  = $this->getWriteSourceId();
         $conn  = $this->getConnection( $dsId );
-        $k = static::primary_key;
+        $k = static::PRIMARY_KEY;
 
         $driver = $conn->createQueryDriver();
 
@@ -1410,7 +1387,7 @@ abstract class BaseModel implements
      */
     public function save()
     {
-        $k = static::primary_key;
+        $k = static::PRIMARY_KEY;
         return ( $k && ! isset($this->_data[$k]) )
                 ? $this->create( $this->_data )
                 : $this->update( $this->_data )
@@ -1579,7 +1556,7 @@ abstract class BaseModel implements
 
     public function getSchemaProxyClass()
     {
-        return static::schema_proxy_class;
+        return static::SCHEMA_PROXY_CLASS;
     }
 
 
@@ -1888,7 +1865,7 @@ abstract class BaseModel implements
      */
     public function asCollection()
     {
-        $class = static::collection_class;
+        $class = static::COLLECTION_CLASS;
         return new $class;
     }
 
@@ -2032,12 +2009,12 @@ abstract class BaseModel implements
     {
         if ($this->_schema) {
             return $this->_schema;
-        } elseif ( @constant('static::schema_proxy_class') ) {
-            // the schema_proxy_class is from the *Base.php file.
-            if ($this->_schema = SchemaLoader::load(static::schema_proxy_class)) {
+        } elseif ( @constant('static::SCHEMA_PROXY_CLASS') ) {
+            // the SCHEMA_PROXY_CLASS is from the *Base.php file.
+            if ($this->_schema = SchemaLoader::load(static::SCHEMA_PROXY_CLASS)) {
                 return $this->_schema;
             }
-            throw new Exception("Can not load " . static::schema_proxy_class);
+            throw new Exception("Can not load " . static::SCHEMA_PROXY_CLASS);
         }
         throw new RuntimeException("schema is not defined in " . get_class($this) );
     }
@@ -2171,7 +2148,7 @@ abstract class BaseModel implements
 
     public function asDeleteAction(array $args = array(), array $options = array())
     {
-        $pk = static::primary_key;
+        $pk = static::PRIMARY_KEY;
         if ( isset($this->_data[$pk]) ) {
             $args[$pk] = $this->_data[$pk];
         }
