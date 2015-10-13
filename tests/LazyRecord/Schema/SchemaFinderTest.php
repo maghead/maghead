@@ -1,12 +1,14 @@
 <?php
+namespace LazyRecord\Schema;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\Schema\SchemaLoader;
+use PHPUnit_Framework_TestCase;
 
 class SchemaFinderTest extends PHPUnit_Framework_TestCase
 {
     public function testSchemaFinder()
     {
-        $finder = new LazyRecord\Schema\SchemaFinder;
+        $finder = new SchemaFinder;
         $finder->findByPaths(['src', 'tests']);
 
         $schemas = SchemaLoader::loadDeclaredSchemas();
