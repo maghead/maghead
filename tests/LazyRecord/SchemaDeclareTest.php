@@ -15,13 +15,10 @@ class SchemaDeclareTest extends \PHPUnit_Framework_TestCase
     public function testRuntimeSchemaConstruction()
     {
         $declare = new BookSchema;
-        ok( $declare , 'schema ok' );
-
-        ok( $declare->columns , 'columns' );
-        ok( $declare->columns );
-        ok( $c = $declare->columns['title'] );
-        ok( $c = $declare->columns['subtitle'] );
-        ok( $c = $declare->columns['description'] );
+        $this->assertNotEmpty( $declare->columns , 'columns' );
+        $this->assertNotNull( $c = $declare->columns['title'] );
+        $this->assertNotNull( $c = $declare->columns['subtitle'] );
+        $this->assertNotNull( $c = $declare->columns['description'] );
 
         is( 'AuthorBooks\Model\Book' , $declare->getModelClass() );
         is( 'books' , $declare->getTable() );
@@ -29,11 +26,6 @@ class SchemaDeclareTest extends \PHPUnit_Framework_TestCase
         $schemaArray = $declare->export();
         ok( $schemaArray );
         ok( is_array($schemaArray) );
-
-        $schema = new \LazyRecord\Schema\RuntimeSchema;
-        $schema->import( $schemaArray );
-
-        ok( $schema );
     }
 }
 

@@ -29,9 +29,9 @@ class AuthorAddressModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        ok( $address->author );
-        ok( $address->author->id );
-        is( $author->id, $address->author->id );
+        $this->assertNotNull($address->author, 'has many relation fetch');
+        $this->assertNotNull($address->author->id);
+        $this->assertEquals($author->id, $address->author->id);
 
         $ret = $address->create(array( 
             'author_id' => $author->id,

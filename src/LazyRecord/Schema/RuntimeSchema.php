@@ -24,9 +24,11 @@ class RuntimeSchema extends SchemaBase
     public function __construct()
     {
         // build RuntimeColumn objects
+        /*
         foreach ($this->columnData as $name => $columnMeta) {
             $this->columns[ $name ] = new RuntimeColumn($name,$columnMeta['attributes']);
         }
+        */
     }
 
     /**
@@ -37,29 +39,15 @@ class RuntimeSchema extends SchemaBase
         return new ArrayIterator($this->columns);
     }
 
-
-    /**
-     * Inject schema array data into runtime schema object,
-     * This is much like __set_state method
-     *
-     * XXX: should use __set_state instead of using `import` method.
-     *
-     * @param array $schemaArray
-     */
-    public function import($schemaArray)
-    {
-        $this->columnData  = $schemaArray['column_data']; /* contains column names => column attribute array */
-        $this->columnNames = $schemaArray['column_names']; /* column names array */
-        $this->primaryKey = $schemaArray['primary_key'];
-        $this->table      = $schemaArray['table'];
-        $this->label      = $schemaArray['label'];
-        $this->modelClass = $schemaArray['model_class'];
-    }
-
     public static function __set_state($array) 
     {
         $schema = new self;
-        $schema->import($array);
+        $schema->columnData  = $array['column_data']; /* contains column names => column attribute array */
+        $schema->columnNames = $array['column_names']; /* column names array */
+        $schema->primaryKey = $array['primary_key'];
+        $schema->table      = $array['table'];
+        $schema->label      = $array['label'];
+        $schema->modelClass = $array['model_class'];
         return $schema;
     }
 

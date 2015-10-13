@@ -11,5 +11,6 @@ class Author  extends AuthorBase {
 
 
 
+    // XXX
 }
 
