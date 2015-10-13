@@ -1,7 +1,10 @@
 <?php
+namespace AuthorBooks\Tests;
 use SQLBuilder\Raw;
 use LazyRecord\Testing\ModelTestCase;
 use AuthorBooks\Model\Book;
+use AuthorBooks\Model\BookSchema;
+use DateTime;
 
 class BookModelTest extends ModelTestCase
 {
@@ -9,7 +12,7 @@ class BookModelTest extends ModelTestCase
 
     public function getModels()
     {
-        return array( 'AuthorBooks\Model\BookSchema' );
+        return array(new BookSchema);
     }
 
     /**
