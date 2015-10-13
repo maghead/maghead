@@ -2,8 +2,8 @@
 <phpunit bootstrap="tests/bootstrap.php"
          backupGlobals="false"
          colors="true"
-         stopOnFailure="true"
-         stopOnError="true"
+         stopOnFailure="false"
+         stopOnError="false"
          verbose="true">
   <php>
 
@@ -18,6 +18,11 @@
     <!--<env name="DB_PGSQL_PASS" value="postgres"/>-->
 
     <env name="DB_SQLITE_DSN" value="sqlite::memory:"/>
+
+    <!--
+      <env name="XHPROF_ROOT" value="/Users/c9s/src/php/xhprof"/>
+      <env name="XHPROF_HOST" value="xhprof.dev"/>
+    -->
   </php>
 
   <filter>

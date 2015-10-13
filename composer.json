@@ -30,7 +30,6 @@
         "corneltek/phpunit-testmore": "dev-master",
         "corneltek/universal": "^1",
         "satooshi/php-coveralls": "dev-master",
-        "lox/xhprof": "dev-master",
         "simplyadmire/composer-plugins": "@dev"
     },
     "bin": [
