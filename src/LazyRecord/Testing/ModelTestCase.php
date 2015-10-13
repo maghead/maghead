@@ -59,7 +59,7 @@ abstract class ModelTestCase extends BaseTestCase
         }
 
         $driver = $connManager->getQueryDriver($this->getDriverType());
-        ok($driver,'QueryDriver object OK');
+        $this->assertInstanceOf('SQLBuilder\\Driver\\BaseDriver', $driver,'QueryDriver object OK');
 
         // Rebuild means rebuild the database for new tests
         $rebuild = true;
