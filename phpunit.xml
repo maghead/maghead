@@ -25,6 +25,11 @@
   </filter>
 
   <testsuites>
+
+    <testsuite name="Profile">
+      <directory suffix="ProfileTest.php">tests</directory>
+    </testsuite>
+
     <testsuite name="All">
       <directory suffix="Test.php">tests</directory>
     </testsuite>
