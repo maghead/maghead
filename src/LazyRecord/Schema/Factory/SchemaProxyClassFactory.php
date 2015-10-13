@@ -37,6 +37,7 @@ class SchemaProxyClassFactory
         ));
 
         $cTemplate->useClass('\\LazyRecord\\Schema\\RuntimeColumn');
+        $cTemplate->useClass('\\LazyRecord\\Schema\\\Relationship');
 
         $cTemplate->addPublicProperty('columnNames', $schemaArray['column_names']);
         $cTemplate->addPublicProperty('primaryKey', $schemaArray['primary_key']);
@@ -47,6 +48,7 @@ class SchemaProxyClassFactory
         $cTemplate->addPublicProperty('readSourceId', $schemaArray['read_data_source']);
         $cTemplate->addPublicProperty('writeSourceId', $schemaArray['write_data_source']);
         $cTemplate->addPublicProperty('relations', array());
+
 
         $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
         $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
