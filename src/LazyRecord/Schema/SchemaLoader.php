@@ -1,5 +1,7 @@
 <?php
 namespace LazyRecord\Schema;
+use LazyRecord\Schema\SchemaUtils;
+use LazyRecord\ClassUtils;
 
 
 /**
@@ -17,14 +19,28 @@ class SchemaLoader
      *
      * @return LazyRecord\Schema\RuntimeSchema
      */
-    static function load($class)
+    static public function load($class)
     {
-        if (isset( self::$schemas[ $class ] )) {
-            return self::$schemas[ $class ];
+        if (isset( self::$schemas[$class] )) {
+            return self::$schemas[$class];
         }
         if (class_exists($class,true)) {
             return self::$schemas[ $class ] = new $class;
         }
     }
+
+
+    /**
+     * Returns declared schema objects
+     *
+     * @return array Schema objects
+     */
+    static public function loadDeclaredSchemas()
+    {
+        return SchemaUtils::expandSchemaClasses(
+            ClassUtils::get_declared_schema_classes()
+        );
+    }
+
 }
 

@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Schema;
 use CLIFramework\Logger;
+use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\DynamicSchemaDeclare;
@@ -114,7 +115,7 @@ class SchemaUtils
                 }
             }
         }
-        return $finder->getSchemas();
+        return SchemaLoader::loadDeclaredSchemas();
     }
 
 
@@ -165,7 +166,7 @@ class SchemaUtils
                     }
                 }
             }
-            return $finder->getSchemas();
+            return SchemaLoader::loadDeclaredSchemas();
         }
     }
 }
