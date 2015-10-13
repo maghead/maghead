@@ -41,12 +41,6 @@ class SchemaFinder implements IteratorAggregate
         $this->paths = $paths;
     }
 
-    // DEPRECATED
-    public function loadFiles()
-    {
-        return $this->find(); 
-    }
-
     public function findByPaths(array $paths)
     {
         $this->logger->debug('Finding schemas in (' . join(', ',$paths) . ')');
