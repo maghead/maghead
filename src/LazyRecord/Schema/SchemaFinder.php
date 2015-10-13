@@ -20,16 +20,20 @@ use Traversable;
  * 1. Find SchemaDeclare-based schema class files.
  * 2. Find model-based schema, pass dynamic schema class 
  */
-class SchemaFinder implements IteratorAggregate
+class SchemaFinder
 {
     public $paths = array();
 
     protected $logger;
 
-    public function __construct(array $paths = array(), Logger $logger = null) {
+    public function __construct(array $paths = array(), Logger $logger = null)
+    {
         $this->paths = $paths;
-        $c = ServiceContainer::getInstance();
-        $this->logger = $logger ?: $c['logger'];
+        if (!$logger) {
+            $c = ServiceContainer::getInstance();
+            $logger = $c['logger'];
+        }
+        $this->logger = $logger;
     }
 
     public function in($path)
@@ -37,7 +41,8 @@ class SchemaFinder implements IteratorAggregate
         $this->paths[] = $path;
     }
 
-    public function setPaths(array $paths) {
+    public function setPaths(array $paths)
+    {
         $this->paths = $paths;
     }
 
@@ -90,11 +95,6 @@ class SchemaFinder implements IteratorAggregate
         return SchemaUtils::expandSchemaClasses(
             ClassUtils::get_declared_schema_classes()
         );
-    }
-
-    public function getIterator()
-    {
-        return $this->getSchemas();
     }
 }
 
