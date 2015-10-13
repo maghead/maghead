@@ -12,7 +12,13 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/CascadingAttribute.git",
-                "reference": "f9e8ca892a72e04f2d781cf0cb1d66daba469199"
+                "reference": "6ffd238021be3eba1285b28001390a5135833e70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/c9s/CascadingAttribute/zipball/6ffd238021be3eba1285b28001390a5135833e70",
+                "reference": "6ffd238021be3eba1285b28001390a5135833e70",
+                "shasum": ""
             },
             "require-dev": {
                 "corneltek/phpunit-testmore": "dev-master"
@@ -23,10 +29,12 @@
                     "src/CascadingAttribute.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
-                    "name": "c9s",
-                    "email": "cornelius.howl@gmail.com"
+                    "name": "Yo-An Lin",
+                    "email": "cornelius.howl@gmail.com",
+                    "homepage": "http://c9s.me"
                 }
             ],
             "time": "2013-03-23 07:26:05"
@@ -224,6 +232,12 @@
                 "url": "https://github.com/c9s/php-fileutil.git",
                 "reference": "2a23c578674d5dd2f73352f5b8574ff67ebf1a50"
             },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/c9s/php-fileutil/zipball/2a23c578674d5dd2f73352f5b8574ff67ebf1a50",
+                "reference": "2a23c578674d5dd2f73352f5b8574ff67ebf1a50",
+                "shasum": ""
+            },
             "require-dev": {
                 "corneltek/phpunit-testmore": "dev-master"
             },
@@ -233,10 +247,12 @@
                     "src/FileUtil.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
-                    "name": "c9s",
-                    "email": "cornelius.howl@gmail.com"
+                    "name": "Yo-An Lin",
+                    "email": "cornelius.howl@gmail.com",
+                    "homepage": "http://c9s.me"
                 }
             ],
             "description": "Fast File Utility Extension",
@@ -400,6 +416,12 @@
                 "url": "https://github.com/c9s/php-UniversalCache.git",
                 "reference": "22a966a47f82e547f2ccf84270172b338eeb23de"
             },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/c9s/php-UniversalCache/zipball/22a966a47f82e547f2ccf84270172b338eeb23de",
+                "reference": "22a966a47f82e547f2ccf84270172b338eeb23de",
+                "shasum": ""
+            },
             "require": {
                 "corneltek/fileutil": "~1.6",
                 "php": ">=5.3.0"
@@ -413,6 +435,7 @@
                     "UniversalCache": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],

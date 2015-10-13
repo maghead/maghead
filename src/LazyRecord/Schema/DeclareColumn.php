@@ -50,8 +50,9 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
             'null'          => self::ATTR_FLAG,
             'notNull'       => self::ATTR_FLAG,
             'typeConstraint' => self::ATTR_FLAG,
-            'timezone'      => self::ATTR_FLAG,
-            'renderable'    => self::ATTR_FLAG,
+            'timezone'       => self::ATTR_FLAG,
+            'renderable'     => self::ATTR_FLAG,
+            'findable'       => self::ATTR_FLAG,
 
             /* column label */
             'label' => self::ATTR_ANY,

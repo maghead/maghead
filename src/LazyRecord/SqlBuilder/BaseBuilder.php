@@ -80,7 +80,7 @@ abstract class BaseBuilder
 
     public function buildIndex(SchemaInterface $schema) 
     {
-        // Single column index
+        // build single column index
         $sqls = array();
         foreach ($schema->columns as $name => $column ) {
             if ($column->index) {

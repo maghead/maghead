@@ -29,6 +29,10 @@ class ModelProfileTestCase extends ModelTestCase
             return $this->markTestSkipped('XHPROF_ROOT environment variable must be set.');
         }
 
+        if ($N = getenv('N')) {
+            $this->N = $N;
+        }
+
         /*
         if (extension_loaded('xhprof') ) {
             // ini_set('xhprof.output_dir','/tmp');

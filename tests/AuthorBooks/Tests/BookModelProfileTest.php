@@ -9,12 +9,29 @@ use XHProfRuns_Default;
 
 class BookModelProfileTest extends ModelProfileTestCase
 {
-
     public function getModels()
     {
         return array(new BookSchema);
     }
 
+
+    /**
+     * @rebuild true
+     * @group profile
+     */
+    public function testProfileFindByISBN()
+    {
+        $b = new Book;
+        $b->create(array(
+            'title' => "OOP Programming Guide",
+            'subtitle' => 'subtitle',
+            'isbn' => $uuid = uniqid(),
+        ));
+        $b2 = new Book;
+        for ($i = 0 ; $i < $this->N; $i++) {
+            $b2->findByIsbn($uuid);
+        }
+    }
 
 
     /**

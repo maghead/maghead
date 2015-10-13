@@ -178,6 +178,8 @@ abstract class BaseModel implements
      */
     private $_preparedFindStm;
 
+    protected $_preparedFindStms = array();
+
     private $_preparedFindSql;
 
     protected $_readQueryDriver;
