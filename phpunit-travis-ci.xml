@@ -24,6 +24,12 @@
     </whitelist>
   </filter>
 
+  <groups>
+    <exclude>
+      <group>profile</group>
+    </exclude>
+  </groups>
+
   <testsuites>
     <testsuite name="All">
       <directory suffix="Test.php">tests</directory>
@@ -31,6 +37,14 @@
 
     <testsuite name="Model">
         <directory suffix="Test.php">tests/LazyRecord/ModelTest</directory>
+    </testsuite>
+
+    <testsuite name="PageApp">
+        <directory suffix="Test.php">tests/PageApp</directory>
+    </testsuite>
+
+    <testsuite name="StoreApp">
+        <directory suffix="Test.php">tests/StoreApp</directory>
     </testsuite>
 
     <testsuite name="AuthorBooks">

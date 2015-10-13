@@ -24,11 +24,13 @@
     </whitelist>
   </filter>
 
-  <testsuites>
+  <groups>
+    <exclude>
+      <group>profile</group>
+    </exclude>
+  </groups>
 
-    <testsuite name="Profile">
-      <directory suffix="ProfileTest.php">tests</directory>
-    </testsuite>
+  <testsuites>
 
     <testsuite name="All">
       <directory suffix="Test.php">tests</directory>
