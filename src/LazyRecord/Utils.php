@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord;
 use LazyRecord\Schema\SchemaFinder;
+use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\ConfigLoader;
 
 class Utils
@@ -47,13 +48,14 @@ class Utils
             $finder->find();
 
             // load class from class map
-            if( $classMap = $loader->getClassMap() ) {
-                foreach( $classMap as $file => $class ) {
-                    if( ! is_integer($file) && is_string($file) )
+            if ($classMap = $loader->getClassMap()) {
+                foreach ($classMap as $file => $class ) {
+                    if (! is_numeric($file) && is_string($file)) {
                         require $file;
+                    }
                 }
             }
-            return $finder->getSchemas();
+            return SchemaLoader::loadDeclaredSchemas();
         }
     }
 

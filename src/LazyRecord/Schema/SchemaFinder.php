@@ -7,10 +7,8 @@ use RegexIterator;
 use ReflectionClass;
 use RuntimeException;
 use IteratorAggregate;
-use LazyRecord\ClassUtils;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ServiceContainer;
-use LazyRecord\Schema\SchemaUtils;
 use CLIFramework\Logger;
 use Traversable;
 
@@ -85,16 +83,5 @@ class SchemaFinder
     }
 
 
-    /**
-     * Returns schema objects
-     *
-     * @return array Schema objects
-     */
-    public function getSchemas()
-    {
-        return SchemaUtils::expandSchemaClasses(
-            ClassUtils::get_declared_schema_classes()
-        );
-    }
 }
 
