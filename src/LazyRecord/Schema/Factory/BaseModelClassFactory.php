@@ -27,6 +27,8 @@ class BaseModelClassFactory
         $cTemplate = new ClassFile($schema->getBaseModelClass());
 
         $cTemplate->useClass('LazyRecord\\Schema\\SchemaLoader');
+        $cTemplate->useClass('LazyRecord\\Result');
+        $cTemplate->useClass('PDO');
 
         $cTemplate->addConsts(array(
             'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),
@@ -73,12 +75,47 @@ class BaseModelClassFactory
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
 
 
-        /*
-         * TODO: filter findable columns
         foreach ($schema->getColumns() as $column) {
+            if (!$column->findable) {
+                continue;
+            }
+            $columnName = $column->name;
+            $findMethodName = 'findBy' . ucfirst(Inflector::camelize($columnName));
 
+            $findMethod = $cTemplate->addMethod('public', $findMethodName, ['$value']);
+            $block = $findMethod->block;
+
+            $arguments = new ArgumentArray;
+            $findByColumnQuery = new SelectQuery;
+            $findByColumnQuery->from($schema->getTable());
+            $columnName = $column->name;
+            $readFrom  = $schema->getReadSourceId();
+            $findByColumnQuery->select('*')
+                ->where()->equal($columnName, new Bind($columnName));
+            $findByColumnQuery->limit(1);
+            $findByColumnSql = $findByColumnQuery->toSql($readQueryDriver, $arguments);
+
+            $block[] = '$conn  = $this->getReadConnection();';
+            $block[] = 'if (!isset($this->_preparedFindStms[' . var_export($columnName, true ) . '])) {';
+            $block[] = '    $this->_preparedFindStms[' . var_export($columnName, true ) . '] = $conn->prepare(' . var_export($findByColumnSql, true) . ');';
+            $block[] = '}';
+            $block[] = '$this->_preparedFindStms[' . var_export($columnName, true) . ']->execute([' .  var_export(":$columnName", true ) . ' => $value ]);';
+            $block[] = 'try {';
+            $block[] = '    if (false === ($this->_data = $this->_preparedFindStms[' . var_export($columnName, true ) . ']->fetch(PDO::FETCH_ASSOC)) ) {';
+            $block[] = '        return $this->reportError("Record not found", [';
+            $block[] = '            "sql" => ' . var_export($findByColumnSql, true) . ',';
+            $block[] = '        ]);';
+            $block[] = '    }';
+            $block[] = '} catch (PDOException $e) {';
+            $block[] = '    throw new QueryException("Record load failed", $this, $e, array(';
+            $block[] = '        "sql" => ' . var_export($findByColumnSql, true)  . ',';
+            $block[] = '    ));';
+            $block[] = '}';
+            $block[] = 'return $this->reportSuccess( "Data loaded", array( ';
+            $block[] = '    "sql" => ' . var_export($findByColumnSql, true) . ',';
+            $block[] = '    "type" => Result::TYPE_LOAD,';
+            $block[] = '));';
         }
-         */
 
         $cTemplate->extendClass( '\\' . $baseClass );
 

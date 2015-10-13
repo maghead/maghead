@@ -9,7 +9,8 @@ use SQLBuilder\ArgumentArray;
 
 class MysqlBuilder extends BaseBuilder
 {
-    public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column) {
+    public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column)
+    {
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         if (! $column->type && $isa == 'str' ) {

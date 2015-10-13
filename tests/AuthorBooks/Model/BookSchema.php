@@ -19,6 +19,7 @@ class BookSchema extends Schema
         $this->column('isbn')
             ->varchar(128)
             ->immutable()
+            ->findable()
             ;
 
         $this->column('description')
