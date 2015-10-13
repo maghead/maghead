@@ -21,6 +21,13 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
     protected $config;
 
+    public $driver = 'sqlite';
+
+    public function getDriverType()
+    {
+        return getenv('DB') ?: $this->driver;
+    }
+
     static public function getCurrentDriverType()
     {
         return getenv('DB') ?: 'sqlite';
@@ -101,8 +108,14 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         // free and override default connection
         ConnectionManager::getInstance()->free();
 
-        $config = self::createNeutralConfigLoader();
-        $this->setConfig($config);
+        $configLoader = ConfigLoader::getInstance();
+        $configLoader->loadFromSymbol(true);
+        $configLoader->setDefaultDataSourceId($this->getDriverType());
+        $connManager = ConnectionManager::getInstance();
+        $connManager->init($configLoader);
+
+        // $config = self::createNeutralConfigLoader();
+        $this->setConfig($configLoader);
 
         $this->logger = new Logger;
         $this->logger->setQuiet();

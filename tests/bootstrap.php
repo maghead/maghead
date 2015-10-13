@@ -12,6 +12,7 @@ use CLIFramework\Logger;
 
 $config = ConfigLoader::getInstance();
 $config->loadFromSymbol(true);
+$config->initForBuild();
 
 $logger = new Logger;
 $logger->quiet();

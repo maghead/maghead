@@ -13,18 +13,12 @@ use PDOException;
 
 abstract class ModelTestCase extends BaseTestCase
 {
-    public $driver = 'sqlite';
-
     public $schemaHasBeenBuilt = false;
 
     public $schemaClasses = array( );
 
     protected $allowConnectionFailure = false;
 
-    public function getDriverType()
-    {
-        return getenv('DB') ?: $this->driver;
-    }
 
     public function setUp()
     {

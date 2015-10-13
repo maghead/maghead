@@ -8,15 +8,6 @@ use LazyRecord\ConnectionManager;
 
 class MysqlTableParserTest extends BaseTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-        $config = self::createNeutralConfigLoader();
-        $manager = ConnectionManager::getInstance();
-        $manager->free();
-        $this->registerDataSource('mysql');
-    }
-
     public function testReverseSchemaWithStringSet()
     {
         $manager = ConnectionManager::getInstance();

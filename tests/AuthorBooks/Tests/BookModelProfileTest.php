@@ -15,6 +15,27 @@ class BookModelProfileTest extends ModelProfileTestCase
         return array(new BookSchema);
     }
 
+
+
+    /**
+     * @rebuild true
+     * @group profile
+     */
+    public function testProfileFindByPrimaryKey()
+    {
+        $b = new Book;
+        $b->create(array(
+            'title' => "OOP Programming Guide",
+            'subtitle' => 'subtitle',
+            'isbn' => $uuid = uniqid(),
+        ));
+        $b2 = new Book;
+        for ($i = 0 ; $i < $this->N; $i++) {
+            $b2->find($b->id);
+        }
+    }
+
+
     /**
      * @rebuild true
      * @group profile
