@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f734205cfe61bbcf6d575392d2dfbf41",
+    "hash": "9b334b56b8fea4acb7313ec07cea6671",
     "packages": [
         {
             "name": "corneltek/cascading-attribute",
@@ -133,22 +133,22 @@
         },
         {
             "name": "corneltek/codegen",
-            "version": "2.4.0",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/CodeGen.git",
-                "reference": "0fe3e022596f9954fdae5c7dc60ab53a7869f0ce"
+                "reference": "f47e3f9171bf28852aa9ebb6c83d96aa50566b75"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/CodeGen/zipball/0fe3e022596f9954fdae5c7dc60ab53a7869f0ce",
-                "reference": "0fe3e022596f9954fdae5c7dc60ab53a7869f0ce",
+                "url": "https://api.github.com/repos/c9s/CodeGen/zipball/f47e3f9171bf28852aa9ebb6c83d96aa50566b75",
+                "reference": "f47e3f9171bf28852aa9ebb6c83d96aa50566b75",
                 "shasum": ""
             },
             "require": {
                 "doctrine/inflector": "*",
                 "php": ">=5.3.0",
-                "twig/twig": "^1.21"
+                "twig/twig": "^1 >=1.21"
             },
             "require-dev": {
                 "corneltek/phpunit-testmore": "dev-master"
@@ -172,7 +172,7 @@
             ],
             "description": "PHP Code Generation Library",
             "homepage": "http://github.com/c9s/CodeGen",
-            "time": "2015-09-28 16:54:27"
+            "time": "2015-10-08 15:42:50"
         },
         {
             "name": "corneltek/configkit",
@@ -1054,46 +1054,6 @@
             "time": "2014-02-28 04:55:50"
         },
         {
-            "name": "facebook/xhprof",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lox/xhprof.git",
-                "reference": "d9bfac3d543e017eff1351d2bd795240d747a079"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lox/xhprof/zipball/d9bfac3d543e017eff1351d2bd795240d747a079",
-                "reference": "d9bfac3d543e017eff1351d2bd795240d747a079",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "bin": [
-                "bin/xhprofile"
-            ],
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "xhprof_lib/utils/xhprof_lib.php",
-                    "xhprof_lib/utils/xhprof_runs.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "XHProf: A Hierarchical Profiler for PHP",
-            "homepage": "http://pecl.php.net/package/xhprof",
-            "keywords": [
-                "performance",
-                "profiling"
-            ],
-            "abandoned": "lox/xhprof",
-            "time": "2015-08-23 09:14:39"
-        },
-        {
             "name": "guzzle/guzzle",
             "version": "v3.9.3",
             "source": {
@@ -1187,6 +1147,45 @@
                 "web service"
             ],
             "time": "2015-03-18 18:23:50"
+        },
+        {
+            "name": "lox/xhprof",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lox/xhprof.git",
+                "reference": "c64571f892bda1298bad9c5e94ede0bc3f0e4627"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lox/xhprof/zipball/c64571f892bda1298bad9c5e94ede0bc3f0e4627",
+                "reference": "c64571f892bda1298bad9c5e94ede0bc3f0e4627",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "bin": [
+                "bin/xhprofile"
+            ],
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "xhprof_lib/utils/xhprof_lib.php",
+                    "xhprof_lib/utils/xhprof_runs.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "XHProf: A Hierarchical Profiler for PHP",
+            "homepage": "http://pecl.php.net/package/xhprof",
+            "keywords": [
+                "performance",
+                "profiling"
+            ],
+            "time": "2015-08-31 22:07:48"
         },
         {
             "name": "psr/log",
@@ -1648,7 +1647,7 @@
         "symfony/yaml": 0,
         "corneltek/phpunit-testmore": 20,
         "satooshi/php-coveralls": 20,
-        "facebook/xhprof": 20,
+        "lox/xhprof": 20,
         "simplyadmire/composer-plugins": 20
     },
     "prefer-stable": false,
