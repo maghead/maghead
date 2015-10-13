@@ -8,10 +8,11 @@ class SchemaFinderTest extends PHPUnit_Framework_TestCase
     {
         $finder = new LazyRecord\Schema\SchemaFinder;
         $finder->findByPaths(['src', 'tests']);
+
         $schemas = SchemaLoader::loadDeclaredSchemas();
         $this->assertNotEmpty($schemas);
         foreach ($schemas as $schema) {
-            ok($schema);
+            $this->assertInstanceOf('LazyRecord\\Schema\\DeclareSchema',$schema);
         }
     }
 
