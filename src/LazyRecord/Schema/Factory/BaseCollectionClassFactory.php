@@ -11,11 +11,12 @@ class BaseCollectionClassFactory
     {
         $cTemplate = new ClassFile($schema->getBaseCollectionClass());
         $cTemplate->addConsts(array(
-            'schema_proxy_class' => $schema->getSchemaProxyClass(),
-            'model_class'        => $schema->getModelClass(),
-            'table'              => $schema->getTable(),
-            'read_source_id'     => $schema->getReadSourceId(),
-            'write_source_id'     => $schema->getWriteSourceId(),
+            'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),
+            'MODEL_CLASS'        => $schema->getModelClass(),
+            'TABLE'              => $schema->getTable(),
+            'READ_SOURCE_ID'     => $schema->getReadSourceId(),
+            'WRITE_SOURCE_ID'    => $schema->getWriteSourceId(),
+            'PRIMARY_KEY'        => $schema->primaryKey,
         ));
         if ($traitClasses = $schema->getCollectionTraitClasses()) {
             foreach($traitClasses as $traitClass) {

@@ -42,13 +42,13 @@ Where condition:
 To get schema proxy class from collection class:
 
     $authors = new AuthorCollection;
-    $class = AuthorCollection::schema_proxy_class;
-    $class = $authors::schema_proxy_class;
+    $class = AuthorCollection::SCHEMA_PROXY_CLASS;
+    $class = $authors::SCHEMA_PROXY_CLASS;
 
 ## To get model class
 
-    $class = AuthorCollection::model_class;
-    $class = $authors::model_class;
+    $class = AuthorCollection::MODEL_CLASS;
+    $class = $authors::MODEL_CLASS;
 
 ## Collection pager
 

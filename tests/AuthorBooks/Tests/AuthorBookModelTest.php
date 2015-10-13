@@ -165,7 +165,7 @@ class AuthorBookModelTest extends ModelTestCase
         ok( isset($columnMap['identity']) );
         ok( isset($columnMap['name']) );
 
-        ok( $author::schema_proxy_class );
+        ok( $author::SCHEMA_PROXY_CLASS );
 
         $columnMap = $author->getColumns();
 

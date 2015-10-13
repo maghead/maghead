@@ -23,10 +23,10 @@ class Todo extends BaseModel
     }
 
 #boundary start e6c43a79f921219423c18a77ab2386d9
-	const schema_proxy_class = 'Todos\\Model\\TodoSchemaProxy';
-	const collection_class = 'Todos\\Model\\TodoCollection';
-	const model_class = 'Todos\\Model\\Todo';
-	const table = 'todos';
+	const SCHEMA_PROXY_CLASS = 'Todos\\Model\\TodoSchemaProxy';
+	const COLLECTION_CLASS = 'Todos\\Model\\TodoCollection';
+	const MODEL_CLASS = 'Todos\\Model\\Todo';
+	const TABLE = 'todos';
 #boundary end e6c43a79f921219423c18a77ab2386d9
 }
 

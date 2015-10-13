@@ -286,8 +286,8 @@ class AuthorCollectionTest extends ModelTestCase
     public function testMeta()
     {
         $authors = new AuthorCollection;
-        ok($authors::schema_proxy_class);
-        ok($authors::model_class);
+        ok($authors::SCHEMA_PROXY_CLASS);
+        ok($authors::MODEL_CLASS);
     }
 
 

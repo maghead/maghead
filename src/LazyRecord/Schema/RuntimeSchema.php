@@ -102,12 +102,12 @@ class RuntimeSchema extends SchemaBase
 
     public function getTable()
     {
-        return static::table;
+        return static::TABLE;
     }
 
     public function getLabel()
     {
-        return static::label;
+        return static::LABEL;
     }
 
 
@@ -127,12 +127,12 @@ class RuntimeSchema extends SchemaBase
 
     public function getModelClass()
     {
-        return static::model_class;
+        return static::MODEL_CLASS;
     }
 
     public function getCollectionClass()
     {
-        return static::collection_class;
+        return static::COLLECTION_CLASS;
     }
 
     public function newModel()
