@@ -153,7 +153,7 @@ class SchemaUtils
                 }
             } 
             // load schema paths from config
-            else if( $paths = $loader->getSchemaPaths() ) {
+            else if ($paths = $loader->getSchemaPaths()) {
                 $finder->setPaths($paths);
             }
             $finder->find();
