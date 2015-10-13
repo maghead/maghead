@@ -1,12 +1,18 @@
 <?php
 use LazyRecord\Schema\SchemaFinder;
+use LazyRecord\Schema\SchemaLoader;
 
 class SchemaFinderTest extends PHPUnit_Framework_TestCase
 {
-    public function testFinder()
+    public function testSchemaFinder()
     {
-        $finder = new SchemaFinder;
-        $files = $finder->findByPaths(['src']);
+        $finder = new LazyRecord\Schema\SchemaFinder;
+        $finder->findByPaths(['src', 'tests']);
+        $schemas = SchemaLoader::loadDeclaredSchemas();
+        $this->assertNotEmpty($schemas);
+        foreach ($schemas as $schema) {
+            ok($schema);
+        }
     }
 
 

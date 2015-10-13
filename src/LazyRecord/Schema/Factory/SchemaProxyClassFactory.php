@@ -37,7 +37,7 @@ class SchemaProxyClassFactory
         ));
 
         $cTemplate->useClass('\\LazyRecord\\Schema\\RuntimeColumn');
-        $cTemplate->useClass('\\LazyRecord\\Schema\\\Relationship');
+        $cTemplate->useClass('\\LazyRecord\\Schema\\Relationship');
 
         $cTemplate->addPublicProperty('columnNames', $schemaArray['column_names']);
         $cTemplate->addPublicProperty('primaryKey', $schemaArray['primary_key']);
@@ -56,8 +56,6 @@ class SchemaProxyClassFactory
         $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
 
         $constructor = $cTemplate->addMethod('public', '__construct', []);
-
-
         if (!empty($schemaArray['relations'])) {
             $constructor->block[] = '$this->relations = ' . php_var_export($schemaArray['relations']) . ';';
         }
