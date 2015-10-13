@@ -42,24 +42,24 @@ class SchemaFinder implements IteratorAggregate
     }
 
     // DEPRECATED
-    public function loadFiles() { 
+    public function loadFiles()
+    {
         return $this->find(); 
     }
 
-    public function find()
+    public function findByPaths(array $paths)
     {
-        if (empty($this->paths)) {
-            return;
-        }
+        $this->logger->debug('Finding schemas in (' . join(', ',$paths) . ')');
 
-        $this->logger->debug('Finding schemas in (' . join(', ',$this->paths) . ')');
-        foreach ($this->paths as $path) {
+        $files = array();
+        foreach ($paths as $path) {
             $this->logger->debug('Finding schemas in ' . $path);
             if (is_file($path)) {
                 $this->logger->debug('Loading schema: ' . $path);
                 require_once $path;
+                $files[] = $path;
             } else if (is_dir($path)) {
-                $rii   = new RecursiveIteratorIterator(
+                $rii = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($path,
                         RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::FOLLOW_SYMLINKS
                     ),
@@ -69,10 +69,20 @@ class SchemaFinder implements IteratorAggregate
                     if (substr($fi->getFilename(), -10) == "Schema.php") {
                         $this->logger->debug('Loading schema: ' . $fi->getPathname());
                         require_once $fi->getPathname();
+                        $files[] = $path;
                     }
                 }
             }
         }
+        return $files;
+    }
+
+    public function find()
+    {
+        if (empty($this->paths)) {
+            return;
+        }
+        return $this->findByPaths($this->paths);
     }
 
 
