@@ -176,15 +176,17 @@ abstract class BaseModel implements
     /**
      * @var PDOStatement prepared statement for find by primary key method.
      */
-    private $_preparedFindStm;
+    protected $_preparedFindStm;
 
     protected $_preparedFindStms = array();
 
-    private $_preparedFindSql;
+    protected $_preparedCreateStms = array();
 
-    protected $_readQueryDriver;
+    protected $_preparedFindSql;
 
-    protected $_writeQueryDriver;
+    private $_readQueryDriver;
+
+    private $_writeQueryDriver;
 
     private $_readConnection;
 
@@ -768,12 +770,12 @@ abstract class BaseModel implements
         $this->_data     = array();
         $stm = null;
 
-        $query = new InsertQuery;
-        $arguments = new ArgumentArray;
-        $conn = $this->getWriteConnection();
-        $driver = $conn->createQueryDriver();
+        static $cacheable;
+        $cacheable = extension_loaded('xarray');
 
-        $query->into( $this->getTable() );
+        $conn = $this->getWriteConnection();
+        $driver = $this->getWriteQueryDriver();
+
 
         // Just a note: Exceptions should be used for exceptional conditions; things you 
         // don't expect to happen. Validating input isn't very exceptional.
@@ -798,7 +800,7 @@ abstract class BaseModel implements
 
             // arguments that are will Bind
             $insertArgs = array();
-            foreach ($schema->getColumns() as $n => $c) {
+            foreach ($schema->columns as $n => $c) {
                 // if column is required (can not be empty)
                 //   and default is defined.
                 if (!$c->primary && (!isset($args[$n]) || !$args[$n] ))
@@ -856,6 +858,7 @@ abstract class BaseModel implements
                         $insertArgs[$n] = new Bind($n, $driver->cast($val));
                     } else if ($val instanceof Raw) {
                         $insertArgs[$n] = $val;
+                        $cacheable = false;
                     } else {
                         // deflate objects into string
                         $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
@@ -869,13 +872,35 @@ abstract class BaseModel implements
                 ));
             }
 
-            $query->insert($insertArgs);
-            $query->returning($k);
 
-            $sql  = $query->toSql($driver, $arguments);
+            $arguments = new ArgumentArray;
 
-            /* get connection, do query */
-            $stm = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray()); // returns $stm
+            $cacheKey = null;
+            if ($cacheable) {
+                $cacheKey = array_keys_join($insertArgs);
+                if (isset($this->_preparedCreateStms[$cacheKey])) {
+                    $stm = $this->_preparedCreateStms[$cacheKey];
+                    foreach ($insertArgs as $name => $bind) {
+                        $arguments->add($bind);
+                    }
+                }
+            }
+
+            if (!$stm) {
+                $query = new InsertQuery;
+                $query->into($this->getTable());
+                $query->insert($insertArgs);
+                $query->returning($k);
+                $sql  = $query->toSql($driver, $arguments);
+                $stm = $conn->prepare($sql);
+                if ($cacheable) {
+                    $this->_preparedCreateStms[$cacheKey] = $stm;
+                }
+            }
+
+            // $this->_preparedCreateStms[$queryKey] = $stm = $conn->prepare($sql);
+
+            $stm->execute($arguments->toArray());
         }
         catch (PDOException $e)
         {
@@ -1016,19 +1041,16 @@ abstract class BaseModel implements
         $query->from( $this->getTable() );
 
         $conn  = $this->getReadConnection();
-        $driver = $conn->createQueryDriver();
+        $driver = $this->getReadQueryDriver();
         $kVal  = null;
 
         // build query from array.
         if (is_array($args)) {
-            $query->select( $this->selected ?: '*' )
-                ->where($args);
-        }
-        else
-        {
+            $query->select( $this->selected ?: '*' )->where($args);
+        } else {
             $kVal = $args;
             $column = $this->getSchema()->getColumn($pk);
-            if ( ! $column ) {
+            if (! $column) {
                 // This should not happend, every schema should have it's own primary key
                 // TODO: Create new exception class for this.
                 throw new MissingPrimaryKeyException("Primary key $pk is not defined" , $this->getSchema());
@@ -1039,7 +1061,7 @@ abstract class BaseModel implements
         }
 
         $arguments = new ArgumentArray;
-        $sql = $query->toSql($conn->createQueryDriver(), $arguments);
+        $sql = $query->toSql($driver, $arguments);
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         try {
@@ -1100,16 +1122,16 @@ abstract class BaseModel implements
 
         $dsId = $this->getWriteSourceId();
         $conn = $this->getWriteConnection();
+        $driver = $this->getWriteQueryDriver();
 
         $this->beforeDelete( $this->_data );
 
         $arguments = new ArgumentArray;
 
         $query = new DeleteQuery;
-        $query->delete( $this->getTable() );
-        $query->where()
-            ->equal($k , $kVal);
-        $sql = $query->toSql($conn->createQueryDriver(), $arguments);
+        $query->delete($this->getTable());
+        $query->where()->equal($k , $kVal);
+        $sql = $query->toSql($driver, $arguments);
 
         $vars = $arguments->toArray();
 
@@ -1176,11 +1198,11 @@ abstract class BaseModel implements
         $origArgs = $args;
         $dsId = $this->getWriteSourceId();
         $conn = $this->getWriteConnection();
+        $driver = $this->getWriteQueryDriver();
         $sql  = null;
         $vars = null;
 
         $arguments = new ArgumentArray;
-        $driver = $conn->createQueryDriver();
         $query = new UpdateQuery;
 
         $validationError = false;
@@ -1195,7 +1217,7 @@ abstract class BaseModel implements
 
             $args = $this->filterArrayWithColumns($args);
 
-            foreach( $this->getSchema()->getColumns() as $n => $c ) {
+            foreach ($this->getSchema()->columns as $n => $c ) {
 
 
                 if (isset($args[$n]) 
@@ -1323,7 +1345,8 @@ abstract class BaseModel implements
     public function rawUpdate(array $args) 
     {
         $dsId  = $this->getWriteSourceId();
-        $conn  = $this->getConnection( $dsId );
+        $conn  = $this->getWriteConnection();
+        $driver  = $this->getWriteQueryDriver();
         $k = static::PRIMARY_KEY;
         $kVal = isset($args[$k]) 
             ? $args[$k] : isset($this->_data[$k]) 
@@ -1336,7 +1359,7 @@ abstract class BaseModel implements
         $query->where()
             ->equal( $k , $kVal );
 
-        $sql  = $query->toSql($conn->createQueryDriver(), $arguments);
+        $sql  = $query->toSql($driver, $arguments);
         $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
 
         // update current data stash
@@ -1358,10 +1381,11 @@ abstract class BaseModel implements
     public function rawCreate(array $args) 
     {
         $dsId  = $this->getWriteSourceId();
-        $conn  = $this->getConnection( $dsId );
+        $conn  = $this->getWriteConnection();
+
         $k = static::PRIMARY_KEY;
 
-        $driver = $conn->createQueryDriver();
+        $driver = $conn->getWriteQueryDriver();
 
         $query = new InsertQuery;
         $query->insert($args);
@@ -1970,7 +1994,7 @@ abstract class BaseModel implements
      */
     public function filterArrayWithColumns(array $args , $includeVirtualColumns = false )
     {
-        return array_intersect_key( $args , $this->getSchema()->getColumns( $includeVirtualColumns ) );
+        return array_intersect_key( $args , $this->getSchema()->getColumns($includeVirtualColumns));
     }
 
 
