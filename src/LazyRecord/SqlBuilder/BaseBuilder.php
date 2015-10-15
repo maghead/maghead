@@ -86,9 +86,13 @@ abstract class BaseBuilder
             if ($column->index) {
                 $indexName = is_string($column->index) ? $column->index 
                     : "idx_" . $schema->getTable() . "_" . $name;
-
                 $query = new CreateIndexQuery($indexName);
                 $query->on($schema->getTable(), (array) $name);
+                $sqls[] = $query->toSql($this->driver, new ArgumentArray);
+            }
+        }
+        if ($queries = $schema->getIndexQueries()) {
+            foreach ($queries as $query) {
                 $sqls[] = $query->toSql($this->driver, new ArgumentArray);
             }
         }
