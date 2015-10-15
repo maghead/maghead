@@ -1063,8 +1063,8 @@ abstract class BaseModel implements
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         try {
-            $stm = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
-            // mixed PDOStatement::fetchObject ([ string $class_name = "stdClass" [, array $ctor_args ]] )
+            $stm = $conn->prepare($sql);
+            $stm->execute($arguments->toArray());
             if (false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
                 // Record not found is not an exception
                 return $this->reportError("Record not found", [ 
@@ -1135,7 +1135,9 @@ abstract class BaseModel implements
 
         $validationResults = array();
         try {
-            $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
+
+            $conn->query($sql, $arguments->toArray());
+
         } catch (PDOException $e) {
             throw new QueryException('Delete failed', $this, $e, array(
                 // XXX 'args' => $arguments->toArray(),
@@ -1301,7 +1303,9 @@ abstract class BaseModel implements
             $query->where()->equal($k , $kVal);
 
             $sql  = $query->toSql($driver, $arguments);
-            $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
+
+            $stm = $conn->prepare($sql);
+            $stm->execute($arguments->toArray());
 
             // Merge updated data.
             //
@@ -1357,8 +1361,10 @@ abstract class BaseModel implements
         $query->where()
             ->equal( $k , $kVal );
 
-        $sql  = $query->toSql($driver, $arguments);
-        $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
+        $sql = $query->toSql($driver, $arguments);
+
+        $stm = $conn->prepare($sql);
+        $stm->execute($arguments->toArray());
 
         // update current data stash
         $this->_data = array_merge($this->_data,$args);
@@ -1393,7 +1399,9 @@ abstract class BaseModel implements
         $arguments = new ArgumentArray;
 
         $sql  = $query->toSql($driver, $arguments);
-        $stm  = $this->dbPrepareAndExecute($conn, $sql, $arguments->toArray());
+
+        $stm = $conn->prepare($sql);
+        $stm->execute($arguments->toArray());
 
         $pkId = null;
         if ($driver instanceof PDOPgSQLDriver) {
@@ -1524,14 +1532,15 @@ abstract class BaseModel implements
      *
      * @return Result
      */
-    public function loadQuery($sql , $args = array() , $dsId = null ) 
+    public function loadQuery($sql, array $args = array() , $dsId = null ) 
     {
         if (! $dsId) {
             $dsId = $this->readSourceId;
         }
 
         $conn = $this->getConnection( $dsId );
-        $stm = $this->dbPrepareAndExecute($conn, $sql, $args);
+        $stm = $conn->prepare($sql);
+        $stm->execute($args);
         if ( FALSE === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
             return $this->reportError('Data load failed.', array( 
                 'sql' => $sql,
