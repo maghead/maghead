@@ -49,8 +49,8 @@ class BaseModelClassFactory
             'PRIMARY_KEY'        => $schema->primaryKey,
         ));
 
-        $cTemplate->addPublicProperty('readSourceId', $schema->getReadSourceId());
-        $cTemplate->addPublicProperty('writeSourceId', $schema->getWriteSourceId());
+        $cTemplate->addPublicProperty('readSourceId', $schema->getReadSourceId() ?: 'default');
+        $cTemplate->addPublicProperty('writeSourceId', $schema->getWriteSourceId() ?: 'default');
 
         $cTemplate->addMethod('public', 'getSchema', [], [
             'if ($this->_schema) {',
