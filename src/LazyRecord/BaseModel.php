@@ -2282,14 +2282,14 @@ abstract class BaseModel implements
     public function lockWrite()
     {
         // the ::table consts is in the child class.
-        $this->getConnection($this->writeSourceId)
+        $this->getWriteConnection()
             ->query("LOCK TABLES " . $this->getTable() . " AS " . $this->getAlias() . " WRITE");
     }
 
     public function lockRead()
     {
         // the ::table consts is in the child class.
-        $this->getConnection($this->readSourceId)
+        $this->getReadConnection()
             ->query("LOCK TABLES " . $this->getTable() . " AS " . $this->getAlias() . " READ");
     }
 
