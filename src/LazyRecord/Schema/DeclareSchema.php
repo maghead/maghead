@@ -633,7 +633,8 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *
      * @return string the class filepath.
      */
-    public function getRelatedClassPath($class) {
+    public function getRelatedClassPath($class)
+    {
         $_p = explode('\\',$class);
         $shortClassName = end($_p);
         return $this->getDirectory() . DIRECTORY_SEPARATOR . $shortClassName . '.php';
@@ -648,7 +649,8 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *
      * @return Helper\BaseHelper
      */
-    public function helper($helperName, $arguments = array()) {
+    public function helper($helperName, $arguments = array())
+    {
         $helperClass = 'LazyRecord\\Schema\\Helper\\' . $helperName . 'Helper';
         $helper = new $helperClass($this, $arguments);
         return $helper;

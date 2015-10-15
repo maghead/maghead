@@ -26,7 +26,7 @@ class SeedBuilder
         if ($seeds = $schema->getSeedClasses()) {
             foreach ($seeds as $seedClass){
                 if (class_exists($seedClass,true) ) {
-                    $this->logger->info("Running seed script: $seedClass");
+                    $this->logger->info("Seeding: $seedClass");
                     $seedClass::seed();
                 } else {
                     $this->logger->error("ERROR: Seed script $seedClass not found.");
