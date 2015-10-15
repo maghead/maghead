@@ -16,8 +16,8 @@ class BookModelProfileTest extends ModelProfileTestCase
 
 
     /**
-     * @rebuild true
      * @group profile
+     * @rebuild true
      */
     public function testProfileFindByISBN()
     {
@@ -35,8 +35,8 @@ class BookModelProfileTest extends ModelProfileTestCase
 
 
     /**
-     * @rebuild true
      * @group profile
+     * @rebuild true
      */
     public function testProfileFindByPrimaryKey()
     {
