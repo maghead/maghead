@@ -180,6 +180,14 @@ abstract class BaseModel implements
 
     private $_preparedFindSql;
 
+    protected $_readQueryDriver;
+
+    protected $_writeQueryDriver;
+
+    private $_readConnection;
+
+    private $_writeConnection;
+
 
     /**
      * The constructor
@@ -328,13 +336,16 @@ abstract class BaseModel implements
     }
 
 
-
     /**
      * Get SQL Query driver object for writing data
      */
     public function getWriteQueryDriver()
     {
-        return $this->getQueryDriver($this->getWriteSourceId());
+        if ($this->_writeQueryDriver) {
+            return $this->_writeQueryDriver;
+        }
+        return $this->_writeQueryDriver
+            = ConnectionManager::getInstance()->getQueryDriver($this->getWriteSourceId());
     }
 
 
@@ -345,7 +356,11 @@ abstract class BaseModel implements
      */
     public function getReadQueryDriver()
     {
-        return $this->getQueryDriver( $this->getReadSourceId() );
+        if ($this->_readQueryDriver) {
+            return $this->_readQueryDriver;
+        }
+        return $this->_readQueryDriver
+            = ConnectionManager::getInstance()->getQueryDriver( $this->getReadSourceId());
     }
 
     public function setAlias($alias) {
@@ -1539,7 +1554,9 @@ abstract class BaseModel implements
      */
     public function getWriteConnection()
     {
-        return ConnectionManager::getInstance()->getConnection($this->getWriteSourceId());
+        return $this->_writeConnection 
+            ? $this->_writeConnection 
+            : $this->_writeConnection = ConnectionManager::getInstance()->getConnection($this->getWriteSourceId());
     }
 
 
@@ -1550,7 +1567,9 @@ abstract class BaseModel implements
      */
     public function getReadConnection()
     {
-        return ConnectionManager::getInstance()->getConnection( $this->getReadSourceId() );
+        return $this->_readConnection 
+            ? $this->_readConnection 
+            : $this->_readConnection = ConnectionManager::getInstance()->getConnection($this->getReadSourceId());
     }
 
 
@@ -2248,11 +2267,11 @@ abstract class BaseModel implements
     {
         $readDsId  = $this->getReadSourceId();
         $writeDsId  = $this->getWriteSourceId();
-        if ( $readDsId === $writeDsId ) {
-            $this->getConnection($readDsId)->query("UNLOCK TABLES;");
+        if ($readDsId === $writeDsId) {
+            $this->getReadConnection()->query("UNLOCK TABLES;");
         } else {
-            $this->getConnection($readDsId)->query("UNLOCK TABLES;");
-            $this->getConnection($writeDsId)->query("UNLOCK TABLES;");
+            $this->getReadConnection()->query("UNLOCK TABLES;");
+            $this->getWriteConnection()->query("UNLOCK TABLES;");
         }
     }
 
