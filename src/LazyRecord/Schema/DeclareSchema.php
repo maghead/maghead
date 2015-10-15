@@ -140,16 +140,6 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this;
     }
 
-    /**
-     * bootstrap script (to create basedata)
-     *
-     * @param $record current model object.
-     */
-    public function bootstrap($record) 
-    {
-
-    }
-
     public function getColumns($includeVirtual = false) 
     {
         if ( $includeVirtual ) {
