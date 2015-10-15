@@ -27,10 +27,10 @@ class SchemaProxyClassFactory
 
         $cTemplate->addConsts(array(
             'schema_class'     => $schemaClass,
-            'COLLECTION_CLASS' => $schemaArray['collection_class'],
-            'MODEL_CLASS'      => $schemaArray['model_class'],
             'model_name'       => $schema->getModelName(),
             'model_namespace'  => $schema->getNamespace(),
+            'COLLECTION_CLASS' => $schemaArray['collection_class'],
+            'MODEL_CLASS'      => $schemaArray['model_class'],
             'PRIMARY_KEY'      => $schemaArray['primary_key'],
             'TABLE' => $schema->getTable(),
             'LABEL' =>  $schema->getLabel(),
