@@ -1138,7 +1138,8 @@ abstract class BaseModel implements
         $validationResults = array();
         try {
 
-            $conn->query($sql, $arguments->toArray());
+            $stm = $conn->prepare($sql);
+            $stm->execute($arguments->toArray());
 
         } catch (PDOException $e) {
             throw new QueryException('Delete failed', $this, $e, array(
