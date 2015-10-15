@@ -11,6 +11,8 @@ class BookSchema extends Schema
             ->unique()
             ->varchar(128);
 
+        $this->index('idx_book_title_subtitle', [ 'title', 'subtitle' ]);
+
         $this->column('subtitle')
             ->varchar(256);
 
@@ -58,6 +60,7 @@ class BookSchema extends Schema
 
         $this->addCollectionTrait('TestApp\ModelTrait\EBookCollectionTrait');
         $this->addCollectionInterface('TestApp\ModelInterface\EBookCollectionInterface');
+
 
         /**
          * get BookAuthor.author 

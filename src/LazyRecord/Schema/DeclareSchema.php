@@ -3,6 +3,7 @@ namespace LazyRecord\Schema;
 
 
 use Exception;
+use InvalidArgumentException;
 use ReflectionObject;
 use ReflectionClass;
 use LazyRecord\ConfigLoader;
@@ -13,6 +14,7 @@ use LazyRecord\Schema\Column\AutoIncrementPrimaryKeyColumn;
 
 use ClassTemplate\TemplateClassFile;
 use ClassTemplate\ClassTrait;
+use SQLBuilder\Universal\Query\CreateIndexQuery;
 
 class DeclareSchema extends SchemaBase implements SchemaInterface
 {
@@ -20,22 +22,32 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     /**
      * @var string[]
      */
-    protected $modelTraitClasses = array();
+    public $modelTraitClasses = array();
 
     /**
      * @var string[]
      */
-    protected $collectionTraitClasses = array();
+    public $collectionTraitClasses = array();
 
     /**
      * @var string[]
      */
-    protected $modelInterfaceClasses = array();
+    public $modelInterfaceClasses = array();
 
     /**
      * @var string[]
      */
-    protected $collectionInterfaceClasses = array();
+    public $collectionInterfaceClasses = array();
+
+
+
+    /**
+     * @var array[string indexName] = CreateIndexQuery
+     *
+     * Indexes
+     */
+    public $indexes = array();
+
 
     /**
      * Constructor of declare schema.
@@ -397,6 +409,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         /* merge columns into self */
         $this->columns = array_merge($this->columns, $mixin->columns);
         $this->relations = array_merge($this->relations, $mixin->relations);
+        $this->indexes = array_merge($this->indexes, $mixin->indexes);
         $this->modelTraitClasses = array_merge($this->modelTraitClasses, $mixin->modelTraitClasses);
     }
 
@@ -650,6 +663,28 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         $helper = new $helperClass($this, $arguments);
         return $helper;
     }
+
+
+    public function getIndexQueries()
+    {
+        return $this->indexes;
+    }
+
+    public function index($name, array $columns = null)
+    {
+        if (isset($this->indexes[$name])) {
+            return $this->indexes[$name];
+        }
+        $query = $this->indexes[$name] = new CreateIndexQuery($name);
+        if ($columns) {
+            if (empty($columns)) {
+                throw new InvalidArgumentException("index columns must not be empty.");
+            }
+            $query->on($this->getTable(), $columns);
+        }
+        return $query;
+    }
+
 
 }
 
