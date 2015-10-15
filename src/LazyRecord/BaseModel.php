@@ -261,7 +261,8 @@ abstract class BaseModel implements
      */
     public function using($dsId)
     {
-        $this->usingDataSource = $dsId;
+        $this->readSourceId = $dsId;
+        $this->writeSourceId = $dsId;
         return $this;
     }
 
@@ -349,7 +350,7 @@ abstract class BaseModel implements
             return $this->_writeQueryDriver;
         }
         return $this->_writeQueryDriver
-            = ConnectionManager::getInstance()->getQueryDriver($this->getWriteSourceId());
+            = ConnectionManager::getInstance()->getQueryDriver($this->writeSourceId);
     }
 
 
@@ -364,7 +365,7 @@ abstract class BaseModel implements
             return $this->_readQueryDriver;
         }
         return $this->_readQueryDriver
-            = ConnectionManager::getInstance()->getQueryDriver( $this->getReadSourceId());
+            = ConnectionManager::getInstance()->getQueryDriver($this->readSourceId);
     }
 
     public function setAlias($alias) {
@@ -897,9 +898,6 @@ abstract class BaseModel implements
                     $this->_preparedCreateStms[$cacheKey] = $stm;
                 }
             }
-
-            // $this->_preparedCreateStms[$queryKey] = $stm = $conn->prepare($sql);
-
             $stm->execute($arguments->toArray());
         }
         catch (PDOException $e)
@@ -981,7 +979,7 @@ abstract class BaseModel implements
      */
     public function find($pkId)
     {
-        $dsId  = $this->getReadSourceId();
+        $dsId  = $this->readSourceId;
         $primaryKey = static::PRIMARY_KEY;
         $conn  = $this->getReadConnection();
 
@@ -1034,7 +1032,7 @@ abstract class BaseModel implements
             return $this->reportError("Permission denied. Can not load record.", array('args' => $args));
         }
 
-        $dsId  = $this->getReadSourceId();
+        $dsId  = $this->readSourceId;
         $pk    = static::PRIMARY_KEY;
 
         $query = new SelectQuery;
@@ -1120,7 +1118,7 @@ abstract class BaseModel implements
             return $this->reportError( _('Permission denied. Can not delete record.') , array( ));
         }
 
-        $dsId = $this->getWriteSourceId();
+        $dsId = $this->writeSourceId;
         $conn = $this->getWriteConnection();
         $driver = $this->getWriteQueryDriver();
 
@@ -1196,7 +1194,7 @@ abstract class BaseModel implements
 
 
         $origArgs = $args;
-        $dsId = $this->getWriteSourceId();
+        $dsId = $this->writeSourceId;
         $conn = $this->getWriteConnection();
         $driver = $this->getWriteQueryDriver();
         $sql  = null;
@@ -1344,7 +1342,7 @@ abstract class BaseModel implements
      */
     public function rawUpdate(array $args) 
     {
-        $dsId  = $this->getWriteSourceId();
+        $dsId  = $this->writeSourceId;
         $conn  = $this->getWriteConnection();
         $driver  = $this->getWriteQueryDriver();
         $k = static::PRIMARY_KEY;
@@ -1380,12 +1378,12 @@ abstract class BaseModel implements
      */
     public function rawCreate(array $args) 
     {
-        $dsId  = $this->getWriteSourceId();
+        $dsId  = $this->writeSourceId;
         $conn  = $this->getWriteConnection();
 
         $k = static::PRIMARY_KEY;
 
-        $driver = $conn->getWriteQueryDriver();
+        $driver = $this->getWriteQueryDriver();
 
         $query = new InsertQuery;
         $query->insert($args);
@@ -1529,7 +1527,7 @@ abstract class BaseModel implements
     public function loadQuery($sql , $args = array() , $dsId = null ) 
     {
         if (! $dsId) {
-            $dsId = $this->getReadSourceId();
+            $dsId = $this->readSourceId;
         }
 
         $conn = $this->getConnection( $dsId );
@@ -1582,7 +1580,7 @@ abstract class BaseModel implements
     {
         return $this->_writeConnection 
             ? $this->_writeConnection 
-            : $this->_writeConnection = ConnectionManager::getInstance()->getConnection($this->getWriteSourceId());
+            : $this->_writeConnection = ConnectionManager::getInstance()->getConnection($this->writeSourceId);
     }
 
 
@@ -1595,7 +1593,7 @@ abstract class BaseModel implements
     {
         return $this->_readConnection 
             ? $this->_readConnection 
-            : $this->_readConnection = ConnectionManager::getInstance()->getConnection($this->getReadSourceId());
+            : $this->_readConnection = ConnectionManager::getInstance()->getConnection($this->readSourceId);
     }
 
 
@@ -2141,18 +2139,12 @@ abstract class BaseModel implements
 
     public function getWriteSourceId()
     {
-        if ($this->usingDataSource) {
-            return $this->usingDataSource;
-        }
-        return $this->getSchema()->getWriteSourceId();
+        return $this->writeSourceId;
     }
 
     public function getReadSourceId()
     {
-        if ($this->usingDataSource) {
-            return $this->usingDataSource;
-        }
-        return $this->getSchema()->getReadSourceId();
+        return $this->readSourceId;
     }
 
 
@@ -2278,21 +2270,21 @@ abstract class BaseModel implements
     public function lockWrite()
     {
         // the ::table consts is in the child class.
-        $this->getConnection($this->getWriteSourceId())
+        $this->getConnection($this->writeSourceId)
             ->query("LOCK TABLES " . $this->getTable() . " AS " . $this->getAlias() . " WRITE");
     }
 
     public function lockRead()
     {
         // the ::table consts is in the child class.
-        $this->getConnection($this->getReadSourceId())
+        $this->getConnection($this->readSourceId)
             ->query("LOCK TABLES " . $this->getTable() . " AS " . $this->getAlias() . " READ");
     }
 
     public function unlock()
     {
-        $readDsId  = $this->getReadSourceId();
-        $writeDsId  = $this->getWriteSourceId();
+        $readDsId  = $this->readSourceId;
+        $writeDsId  = $this->writeSourceId;
         if ($readDsId === $writeDsId) {
             $this->getReadConnection()->query("UNLOCK TABLES;");
         } else {

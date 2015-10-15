@@ -21,6 +21,15 @@ use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
 
+/**
+ * Base Model class generator
+ *
+ * Some rules for generating code:
+ *
+ * - Mutable values should be generated as propertes.
+ * - Immutable values should be generated as constants.
+ *
+ */
 class BaseModelClassFactory
 {
     public static function create(DeclareSchema $schema, $baseClass) {
@@ -39,6 +48,9 @@ class BaseModelClassFactory
             'WRITE_SOURCE_ID'    => $schema->getWriteSourceId(),
             'PRIMARY_KEY'        => $schema->primaryKey,
         ));
+
+        $cTemplate->addPublicProperty('readSourceId', $schema->getReadSourceId());
+        $cTemplate->addPublicProperty('writeSourceId', $schema->getWriteSourceId());
 
         $cTemplate->addMethod('public', 'getSchema', [], [
             'if ($this->_schema) {',
