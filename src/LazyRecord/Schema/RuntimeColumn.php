@@ -5,6 +5,7 @@ use LazyRecord\Deflator;
 use LazyRecord\Inflator;
 use LazyRecord\ArrayUtils;
 use LazyRecord\Utils;
+use LazyRecord\BaseModel;
 use LazyRecord\Schema\ColumnAccessorInterface;
 use Exception;
 use ArrayIterator;
@@ -12,6 +13,7 @@ use IteratorAggregate;
 use InvalidArgumentException;
 use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;
+use Closure;
 
 class InvalidValueTypeException extends Exception { }
 
@@ -127,7 +129,10 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
     {
         $cb = $this->get('filter') ?: $this->get('canonicalizer') ?: null;
         if ($cb) {
-            return $value = call_user_func($cb, $value, $record, $args);
+            if ($cb instanceof Closure) {
+                return $cb($value, $record, $args);
+            }
+            return call_user_func($cb, $value, $record, $args);
         }
         return $value;
     }
@@ -137,25 +142,36 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      */
     public function getValidValues( $record = null , $args = null )
     {
-        if( $validValues = $this->get('validValues') ) {
-            return Utils::evaluate( $validValues , array($record, $args) );
-        } elseif( $builder = $this->get('validValueBuilder') ) {
-            return Utils::evaluate( $builder , array($record, $args) );
+        $builder = $this->get('validValues') ?: $this->get('validValueBuilder');
+        if ($builder) {
+            if ($builder instanceof Closure) {
+                return $builder($record, $args);
+            } else if (is_callable($builder)) {
+                return call_user_func_array($builder, array($record, $args));
+            }
+            return $builder;
         }
     }
 
     public function getOptionValues( $record = null, $args = null )
     {
-        if( $optionValues = $this->get('optionValues') ) {
+        if ($optionValues = $this->get('optionValues')) {
             return Utils::evaluate( $optionValues , array($record, $args) );
         } 
     }
 
-    public function getDefaultValue( $record = null, $args = null )
+    public function getDefaultValue($record = null, $args = null)
     {
-        // XXX: might contains array() which is a raw sql statement.
-        if( $val = $this->get('default') ) {
-            return Utils::evaluate( $val , array($record, $args));
+        // NOTE: the default value property might contain array() which was
+        // designed for raw sql statement.
+        if ($this->default !== null) {
+            $val = $this->default;
+            if ($val instanceof Closure) {
+                return $val($record, $args);
+            } else if (is_callable($val)) {
+                return call_user_func_array($val, array($record, $args));
+            }
+            return $val;
         }
     }
 
