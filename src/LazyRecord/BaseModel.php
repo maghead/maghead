@@ -785,7 +785,7 @@ abstract class BaseModel implements
         }
 
         // first, filter the array, arguments for inserting data.
-        $args = $this->filterArrayWithColumns($args);
+        $args = array_intersect_key($args, array_flip($schema->columnNames));
 
         if (! $this->currentUserCan($this->getCurrentUser(), 'create', $args )) {
             return $this->reportError( _('Permission denied. Can not create record.') , array( 
@@ -1189,15 +1189,17 @@ abstract class BaseModel implements
 
         $updateArgs = array();
 
+        $schema = $this->getSchema();
+
         try
         {
             $args = $this->beforeUpdate($args);
+
             // foreach mixin schema, run their beforeUpdate method,
 
-            $args = $this->filterArrayWithColumns($args);
+            $args = array_intersect_key($args, array_flip($schema->columnNames));
 
-            foreach ($this->getSchema()->columns as $n => $c ) {
-
+            foreach ($schema->columns as $n => $c ) {
 
                 if (isset($args[$n]) 
                     && ! $args[$n]
@@ -1971,17 +1973,6 @@ abstract class BaseModel implements
             }
         }
         return $data;
-    }
-
-    /**
-     * use array_intersect_key to filter array with column names
-     *
-     * @param array $args
-     * @return array
-     */
-    protected function filterArrayWithColumns(array $args , $includeVirtualColumns = false )
-    {
-        return array_intersect_key($args , $this->getSchema()->getColumns($includeVirtualColumns));
     }
 
 
