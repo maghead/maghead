@@ -990,18 +990,10 @@ abstract class BaseModel implements
         }
         $this->_preparedFindStm->execute([ ":$primaryKey" => $pkId ]);
 
-        try {
-            if (false === ($this->_data = $this->_preparedFindStm->fetch(PDO::FETCH_ASSOC)) ) {
-                return $this->reportError("Record not found", [
-                    'sql' => static::FIND_BY_PRIMARY_KEY_SQL,
-                ]);
-            }
-        }
-        catch (PDOException $e)
-        {
-            throw new QueryException('Record load failed', $this, $e, array(
+        if (false === ($this->_data = $this->_preparedFindStm->fetch(PDO::FETCH_ASSOC)) ) {
+            return $this->reportError("Record not found", [
                 'sql' => static::FIND_BY_PRIMARY_KEY_SQL,
-            ));
+            ]);
         }
         $this->_preparedFindStm->closeCursor();
         return $this->reportSuccess( 'Data loaded', array( 
@@ -1038,7 +1030,7 @@ abstract class BaseModel implements
         $pk    = static::PRIMARY_KEY;
 
         $query = new SelectQuery;
-        $query->from( $this->getTable() );
+        $query->from(static::TABLE);
 
         $conn  = $this->getReadConnection();
         $driver = $this->getReadQueryDriver();
