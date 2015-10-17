@@ -123,6 +123,7 @@ class BaseModelClassFactory
             $block[] = '        "sql" => ' . var_export($findByColumnSql, true)  . ',';
             $block[] = '    ));';
             $block[] = '}';
+            $block[] = '$this->_preparedFindStms[' . var_export($columnName, true) . ']->closeCursor();';
             $block[] = 'return $this->reportSuccess( "Data loaded", array( ';
             $block[] = '    "sql" => ' . var_export($findByColumnSql, true) . ',';
             $block[] = '    "type" => Result::TYPE_LOAD,';
