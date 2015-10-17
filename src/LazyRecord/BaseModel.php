@@ -786,7 +786,14 @@ abstract class BaseModel implements
         // first, filter the array, arguments for inserting data.
         $args = array_intersect_key($args, array_flip($schema->columnNames));
 
-        // @codegen currentUserCan
+        // @codegenBlock currentUserCan
+        if (! $this->currentUserCan($this->getCurrentUser(), 'create', $args )) {
+            return $this->reportError( _('Permission denied. Can not create record.') , array( 
+                'args' => $args,
+            ));
+        }
+        // @codegenBlockEnd
+
 
         // arguments that are will Bind
         $insertArgs = array();
@@ -810,14 +817,41 @@ abstract class BaseModel implements
 
 
             // if column is required (can not be empty) //   and default is defined.
-            // @codegen validateRequire
+            // @codegenBlock validateRequire
+            if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
+                return $this->reportError("Value of $n is required.");
+            }
+            // @codegenBlockEnd
 
-            // @codegen typeConstraint
+
+            // @codegenBlock typeConstraint
+            if ($c->typeConstraint && ($val !== null && ! is_array($val) && ! $val instanceof Raw)) {
+                if (false === $c->checkTypeConstraint($val)) {
+                    return $this->reportError("{$val} is not " . $c->isa . " type");
+                }
+            } else if ($val !== NULL && !is_array($val) && !$val instanceof Raw) {
+                $val = $c->typeCasting($val);
+            }
+            // @codegenBlockEnd
 
 
-            // @codegen filterColumn
+            // @codegenBlock filterColumn
+            if ($c->filter || $c->canonicalizer) {
+                $val = $c->canonicalizeValue($val, $this, $args);
+            }
+            // @codegenBlockEnd
 
-            // @codegen validateColumn
+
+
+            // @codegenBlock validateColumn
+            if ($validationResult = $this->_validateColumn($c,$val,$args)) {
+                $validationResults[$n] = $validationResult;
+                if (!$validationResult['valid']) {
+                    $validationError = true;
+                }
+            }
+            // @codegenBlockEnd
+
 
             if ($val !== NULL) {
                 // Update filtered value back to args
@@ -841,7 +875,13 @@ abstract class BaseModel implements
             }
         }
 
-        // @codegen handleValidationError
+        // @codegenBlock handleValidationError
+        if ($validationError) {
+            return $this->reportError("Validation failed.", array( 
+                'validations' => $validationResults,
+            ));
+        }
+        // @codegenBlockEnd
 
         $arguments = new ArgumentArray;
 
