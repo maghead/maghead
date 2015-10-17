@@ -63,7 +63,6 @@ DOC;
 
         $connectionManager = ConnectionManager::getInstance();
         $conn = $connectionManager->getConnection($id);
-
         $driver = $connectionManager->getQueryDriver($id);
 
         $sqlBuilder = SqlBuilder::create($driver, array( 

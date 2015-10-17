@@ -5,6 +5,7 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\Metadata;
 use LazyRecord\Utils;
 use LazyRecord\Schema\SchemaUtils;
+use LazyRecord\ConnectionManager;
 use RuntimeException;
 
 class BaseCommand extends Command
@@ -15,7 +16,8 @@ class BaseCommand extends Command
      */
     public $config;
 
-    public function init() {
+    public function init()
+    {
         parent::init();
         // softly load the config file.
         $this->config = ConfigLoader::getInstance();
@@ -49,9 +51,27 @@ class BaseCommand extends Command
             ;
     }
 
-    public function getCurrentDataSourceId() {
+    public function getCurrentDataSourceId()
+    {
         return $this->options->{'data-source'} ?: 'default';
     }
+
+
+    public function getCurrentQueryDriver()
+    {
+        $dataSource = $this->getCurrentDataSourceId();
+        $connectionManager = ConnectionManager::getInstance();
+        return $connectionManager->getQueryDriver($dataSource);
+    }
+
+    public function getCurrentConnection()
+    {
+        $dataSource = $this->getCurrentDataSourceId();
+        $connectionManager = ConnectionManager::getInstance();
+        return $connectionManager->getConnection($dataSource);
+    }
+
+
 
 
     public function findSchemasByArguments(array $arguments) 
