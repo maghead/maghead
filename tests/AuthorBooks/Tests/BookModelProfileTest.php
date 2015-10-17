@@ -7,6 +7,9 @@ use AuthorBooks\Model\BookSchema;
 use DateTime;
 use XHProfRuns_Default;
 
+/**
+ * @group profile
+ */
 class BookModelProfileTest extends ModelProfileTestCase
 {
     public function getModels()
