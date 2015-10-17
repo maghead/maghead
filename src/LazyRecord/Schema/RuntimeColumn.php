@@ -34,6 +34,8 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 
     public $default;
 
+    public $validator;
+
     protected $attributes;
 
     public function __construct($name, array $attributes = array())
@@ -50,6 +52,9 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 
         if (isset($attributes['required'])) {
             $this->required = $attributes['required'];
+        }
+        if (isset($attributes['validator'])) {
+            $this->validator = $attributes['validator'];
         }
         if (isset($attributes['default'])) {
             $this->default = $attributes['default'];
