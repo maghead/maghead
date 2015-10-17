@@ -640,8 +640,8 @@ abstract class BaseModel implements
         }
 
         // XXX: migrate this method to runtime column
-        if ( $validator = $column->get('validator') ) {
-            if ( is_callable($validator) ) {
+        if ($validator = $column->validator) {
+            if (is_callable($validator)) {
                 $ret = call_user_func($validator, $val, $args, $this );
                 if( is_bool($ret) ) {
                     return (object) array( 'valid' => $ret, 'message' => 'Validation failed.' , 'field' => $column->name );
@@ -662,7 +662,7 @@ abstract class BaseModel implements
             }
         }
         if ( $val && ($column->validValues || $column->validValueBuilder ) ) {
-            if ( $validValues = $column->getValidValues( $this, $args ) ) {
+            if ($validValues = $column->getValidValues($this, $args)) {
                 // sort by index
                 if ( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
                     return (object) array(
