@@ -37,11 +37,11 @@ class BookModelTest extends ModelTestCase
      * TODO: Should we validate the field ? think again.
      *
      * @rebuild false
-     * @expectedException LazyRecord\QueryException
+     * @expectedException PDOException
      */
     public function testUpdateUnknownColumn()
     {
-        $b = new Book ;
+        $b = new Book;
         // Column not found: 1054 Unknown column 'name' in 'where clause'
         $b->load(array('name' => 'LoadOrCreateTest'));
     }
