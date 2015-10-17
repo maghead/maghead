@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord\Schema;
+use LazyRecord\BaseModel;
 
 interface ColumnAccessorInterface 
 {

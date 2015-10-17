@@ -5,6 +5,8 @@ use InvalidArgumentException;
 use SQLBuilder\Universal\Syntax\Column;
 use ArrayIterator;
 use IteratorAggregate;
+use LazyRecord\BaseModel;
+use Closure;
 
 
 /**
@@ -251,16 +253,20 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         return _($this->get('label'));
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
-    public function getDefaultValue( $record = null, $args = null )
+    public function getDefaultValue($record = null, $args = null)
     {
-        // XXX: might contains array() which is a raw sql statement.
-        if ($val = $this->get('default') ) {
-            return Utils::evaluate( $val , array($record, $args));
+        $val = $this->get('default');
+        if ($val instanceof Closure) {
+            return $val($record, $args);
+        } else if (is_callable($val)) {
+            return call_user_func_array($val, array($record, $args));
         }
+        return $val;
     }
 
     /**
