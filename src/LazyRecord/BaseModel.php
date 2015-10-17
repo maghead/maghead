@@ -1086,9 +1086,7 @@ abstract class BaseModel implements
     public function delete()
     {
         $k = static::PRIMARY_KEY;
-        if (!$k) {
-            throw new Exception("primary key is not defined.");
-        }
+
         if (!isset($this->_data[$k])) {
             throw new Exception('Record is not loaded, Record delete failed.');
         }
