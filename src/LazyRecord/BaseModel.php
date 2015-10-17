@@ -786,11 +786,10 @@ abstract class BaseModel implements
             ));
         }
 
-
         // first, filter the array, arguments for inserting data.
         $args = $this->filterArrayWithColumns($args);
 
-        if (! $this->currentUserCan( $this->getCurrentUser(), 'create', $args )) {
+        if (! $this->currentUserCan($this->getCurrentUser(), 'create', $args )) {
             return $this->reportError( _('Permission denied. Can not create record.') , array( 
                 'args' => $args,
             ));
@@ -906,9 +905,9 @@ abstract class BaseModel implements
         $pkId = null;
 
         if ($driver instanceof PDOPgSQLDriver) {
-            $this->_data['id'] = $args['id'] = $pkId = intval($stm->fetchColumn());
+            $this->_data[$k] = $args[$k] = $pkId = intval($stm->fetchColumn());
         } else {
-            $this->_data['id'] = $args['id'] = $pkId = intval($conn->lastInsertId());
+            $this->_data[$k] = $args[$k] = $pkId = intval($conn->lastInsertId());
         }
 
         if ($pkId && ((isset($options['reload']) && $options['reload']) || $this->autoReload)) {
