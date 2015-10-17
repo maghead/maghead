@@ -44,7 +44,6 @@ class RuntimeSchema extends SchemaBase
         $schema = new self;
         $schema->columnData  = $array['column_data']; /* contains column names => column attribute array */
         $schema->columnNames = $array['column_names']; /* column names array */
-        $schema->primaryKey = $array['primary_key'];
         $schema->table      = $array['table'];
         $schema->label      = $array['label'];
         $schema->modelClass = $array['model_class'];

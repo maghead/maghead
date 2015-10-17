@@ -40,8 +40,8 @@ class SchemaProxyClassFactory
         $cTemplate->useClass('\\LazyRecord\\Schema\\Relationship');
 
         $cTemplate->addPublicProperty('columnNames', $schemaArray['column_names']);
-        $cTemplate->addPublicProperty('primaryKey', $schemaArray['primary_key']);
-        $cTemplate->addPublicProperty('table', $schemaArray['table']);
+        // $cTemplate->addPublicProperty('primaryKey', $schemaArray['primary_key']);
+        // $cTemplate->addPublicProperty('table', $schemaArray['table']);
         $cTemplate->addPublicProperty('modelClass', $schemaArray['model_class']);
         $cTemplate->addPublicProperty('collectionClass', $schemaArray['collection_class']);
         $cTemplate->addPublicProperty('label', $schemaArray['label']);

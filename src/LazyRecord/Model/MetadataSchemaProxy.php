@@ -36,8 +36,6 @@ class MetadataSchemaProxy
       1 => 'name',
       2 => 'value',
     );
-    public $primaryKey = 'id';
-    public $table = '__meta__';
     public $modelClass = 'LazyRecord\\Model\\Metadata';
     public $collectionClass = 'LazyRecord\\Model\\MetadataCollection';
     public $label = 'Metadata';

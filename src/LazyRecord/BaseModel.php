@@ -247,9 +247,7 @@ abstract class BaseModel implements
 
     public function unsetPrimaryKey()
     {
-        if ($pk = $this->getSchema()->primaryKey) {
-            unset($this->data[ $pk ]);
-        }
+        unset($this->data[static::PRIMARY_KEY]);
     }
 
     /**
@@ -1985,7 +1983,7 @@ abstract class BaseModel implements
      */
     protected function filterArrayWithColumns(array $args , $includeVirtualColumns = false )
     {
-        return array_intersect_key( $args , $this->getSchema()->getColumns($includeVirtualColumns));
+        return array_intersect_key($args , $this->getSchema()->getColumns($includeVirtualColumns));
     }
 
 
