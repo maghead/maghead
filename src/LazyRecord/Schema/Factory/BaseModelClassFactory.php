@@ -78,16 +78,10 @@ class BaseModelClassFactory
 
         $schemaReflection = new ReflectionClass($schema);
         $schemaDocComment = $schemaReflection->getDocComment();
-        $foundAnnotation = strpos($schemaDocComment, '@codegen') !== FALSE;
 
 
         // TODO: apply settings from schema...
-        $codegenSettings = [
-            'filterColumn' => true,
-            'validateRequire' => true,
-            'validateColumn' => true,
-            'typeConstraint' => true,
-        ];
+        $codegenSettings = [];
         preg_match_all('/@codegen (\w+)(?:\s*=\s*(\S+))?$/m', $schemaDocComment, $allMatches);
         for ($i = 0; $i < count($allMatches[0]); $i++) {
             $key = $allMatches[1][$i];
@@ -105,11 +99,13 @@ class BaseModelClassFactory
             $codegenSettings[$key] = $value;
         }
 
+        /*
         if ($codegenSettings['validateColumn']) {
             $codegenSettings['handleValidationError'] = true;
         }
+        */
 
-        if ($foundAnnotation || !empty($codegenSettings)) {
+        if (!empty($codegenSettings)) {
             $reflectionModel = new ReflectionClass('LazyRecord\\BaseModel');
             $createMethod = $reflectionModel->getMethod('create');
             $methodFile = $createMethod->getFilename();
@@ -118,81 +114,56 @@ class BaseModelClassFactory
             $lines = file($methodFile);
             $methodLines = array_slice($lines, $startLine + 1, $endLine - $startLine - 2); // exclude '{', '}'
 
-            $codegenBlock = array();
-
-            $codegenBlock['validateRequire'] =<<<'CODE'
-
-            if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
-                return $this->reportError("Value of $n is required.");
-            }
-CODE;
-
-
-            $codegenBlock['typeConstraint'] =<<<'CODE'
-
-            if ($c->typeConstraint && ($val !== null && ! is_array($val) && ! $val instanceof Raw)) {
-                if (false === $c->checkTypeConstraint($val)) {
-                    return $this->reportError("{$val} is not " . $c->isa . " type");
-                }
-            } else if ($val !== NULL && !is_array($val) && !$val instanceof Raw) {
-                $val = $c->typeCasting($val);
-            }
-CODE;
-
-            $codegenBlock['filterColumn'] =<<<'CODE'
-
-            if ($c->filter || $c->canonicalizer) {
-                $val = $c->canonicalizeValue($val, $this, $args);
-            }
-CODE;
-
-
-            $codegenBlock['currentUserCan'] =<<<'CODE'
-
-        if (! $this->currentUserCan($this->getCurrentUser(), 'create', $args )) {
-            return $this->reportError( _('Permission denied. Can not create record.') , array( 
-                'args' => $args,
-            ));
-        }
-CODE;
-
-            $codegenBlock['validateColumn'] =<<<'CODE'
-            if ($validationResult = $this->_validateColumn($c,$val,$args)) {
-                $validationResults[$n] = $validationResult;
-                if (!$validationResult['valid']) {
-                    $validationError = true;
+            $blockRanges = array();
+            $blockLines = array();
+            // parse code blocks
+            for ($i = 0 ; $i < count($methodLines); $i++) {
+                $line = rtrim($methodLines[$i]);
+                if (preg_match('/@codegenBlock (\w+)/', $line, $matches)) {
+                    $blockId = $matches[1];
+                    for ($j = $i; $j < count($methodLines); $j++) {
+                        $line = rtrim($methodLines[$j]);
+                        $blockLines[$blockId][] = $line;
+                        if (preg_match('/@codegenBlockEnd/', $line)) {
+                            $blockRanges[$blockId] = [$i, $j];
+                            $i = $j;
+                            break;
+                        }
+                    }
                 }
             }
-CODE;
 
-            $codegenBlock['handleValidationError'] =<<<'CODE'
-        if ($validationError) {
-            return $this->reportError("Validation failed.", array( 
-                'validations' => $validationResults,
-            ));
-        }
-CODE;
 
             $overrideCreateMethod = $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()']);
             $overrideBlock = $overrideCreateMethod->getBlock();
-            foreach ($methodLines as $line) {
-                $line = rtrim($line);
-                if (preg_match('/@codegen (\w+)/',$line, $matches)) {
-                    if (isset($codegenSettings[$matches[1]]) && $codegenSettings[$matches[1]]) {
-                        $overrideBlock[] = $codegenBlock[$matches[1]];
-                    } else {
-                        $overrideBlock[] = $line;
+            for ($i = 0; $i < count($methodLines) ; $i++) {
+                $line = rtrim($methodLines[$i]);
+
+                if (preg_match('/@codegenBlock (\w+)/',$line, $matches)) {
+                    $blockId = $matches[1];
+
+                    if (isset($codegenSettings[$matches[1]]) && isset($blockLines[$blockId])) {
+                        if ($codegenSettings[$matches[1]]) {
+
+                            $overrideBlock[] = $blockLines[$blockId];
+
+                            list($startLine, $endLine) = $blockRanges[$blockId];
+                            $i = $endLine;
+                            continue;
+
+                        } else {
+
+                            list($startLine, $endLine) = $blockRanges[$blockId];
+                            $i = $endLine;
+                            continue;
+
+                        }
                     }
-                } else {
-                    $overrideBlock[] = $line;
+
                 }
+                $overrideBlock[] = $line;
             }
         }
-
-
-
-
-
 
 
         // TODO: refacory this into factory method
