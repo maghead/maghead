@@ -169,10 +169,10 @@ class NameModelTest extends ModelTestCase
 
         $this->assertResultSuccess($ret);
 
-        ok( $ret->validations );
+        $this->assertNotEmpty($ret->validations);
 
-        ok( $ret->validations['address'] );
-        ok( $ret->validations['address']->valid );
+        $this->assertTrue(isset($ret->validations['address']));
+        $this->assertTrue($ret->validations['address']['valid']);
 
         ok( $vlds = $ret->getSuccessValidations() );
         count_ok( 1, $vlds );
@@ -184,8 +184,8 @@ class NameModelTest extends ModelTestCase
         ok( $ret->validations );
 
         foreach( $ret->getErrorValidations() as $vld ) {
-            is( false , $vld->valid );
-            is( 'Please don\'t',  $vld->message );
+            $this->assertFalse($vld['valid']);
+            $this->assertEquals('Please don\'t',  $vld['message']);
         }
     }
 
