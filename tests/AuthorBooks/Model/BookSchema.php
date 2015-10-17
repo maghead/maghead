@@ -2,6 +2,12 @@
 namespace AuthorBooks\Model;
 use LazyRecord\Schema;
 
+/**
+ * @codegen filterColumn=false
+ * @codegen validateColumn=false
+ * @codegen validateRequire=false
+ * @codegen typeConstraint=false
+ */
 class BookSchema extends Schema
 {
 
