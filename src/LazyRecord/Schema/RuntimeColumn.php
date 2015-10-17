@@ -38,6 +38,12 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 
     public $validator;
 
+    public $filter;
+
+    public $canonicalizer;
+
+    public $validValues;
+
     protected $attributes;
 
     public function __construct($name, array $attributes = array())
@@ -55,8 +61,17 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         if (isset($attributes['required'])) {
             $this->required = $attributes['required'];
         }
+        if (isset($attributes['filter'])) {
+            $this->filter = $attributes['filter'];
+        }
+        if (isset($attributes['canonicalizer'])) {
+            $this->canonicalizer = $attributes['canonicalizer'];
+        }
         if (isset($attributes['validator'])) {
             $this->validator = $attributes['validator'];
+        }
+        if (isset($attributes['validValues'])) {
+            $this->validValues = $attributes['validValues'];
         }
         if (isset($attributes['default'])) {
             $this->default = $attributes['default'];
@@ -127,7 +142,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      */
     public function canonicalizeValue( & $value , $record = null , $args = null )
     {
-        $cb = $this->get('filter') ?: $this->get('canonicalizer') ?: null;
+        $cb = $this->filter ?: $this->canonicalizer ?: null;
         if ($cb) {
             if ($cb instanceof Closure) {
                 return $cb($value, $record, $args);
@@ -142,8 +157,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      */
     public function getValidValues( $record = null , $args = null )
     {
-        $builder = $this->get('validValues') ?: $this->get('validValueBuilder');
-        if ($builder) {
+        if ($builder = $this->validValues) {
             if ($builder instanceof Closure) {
                 return $builder($record, $args);
             } else if (is_callable($builder)) {
@@ -188,8 +202,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         if ($value instanceof Raw) {
             return $value;
         }
-
-        if ($isa = $this->get('isa')) {
+        if ($isa = $this->isa) {
             if ($isa === 'int') {
                 return intval($value);
             } else if ($isa === 'str') {
@@ -221,7 +234,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 
     public function checkTypeConstraint($value)
     {
-        if ($isa = $this->get('isa')) {
+        if ($isa = $this->isa) {
             switch($isa) {
             case 'str':
                 if (! is_string($value)) {
@@ -260,7 +273,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
             return call_user_func($f, $value);
         }
         // use global deflator, check self type, and do type casting
-        return Deflator::deflate($value , $this->get('isa'), $driver);
+        return Deflator::deflate($value , $this->isa, $driver);
     }
 
     public function inflate($value, $record)
@@ -269,7 +282,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
             return call_user_func($f , $value , $record );
         }
         // use global inflator
-        return Inflator::inflate( $value , $this->get('isa') );
+        return Inflator::inflate( $value , $this->isa);
     }
 
 
@@ -319,7 +332,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
             }
         }
 
-        if ( $this->get('isa') == 'bool' ) {
+        if ($this->isa == 'bool') {
             return $value ? _('Yes') : _('No');
         }
 
