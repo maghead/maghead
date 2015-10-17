@@ -6,6 +6,7 @@ use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\ConnectionManager;
 use Doctrine\Common\Inflector\Inflector;
+use ReflectionClass;
 
 
 // used for SQL generator
@@ -39,6 +40,13 @@ class BaseModelClassFactory
         $cTemplate->useClass('LazyRecord\\Result');
         $cTemplate->useClass('PDO');
 
+
+
+
+
+
+
+
         $cTemplate->addConsts(array(
             'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),
             'COLLECTION_CLASS'   => $schema->getCollectionClass(),
@@ -69,6 +77,72 @@ class BaseModelClassFactory
                 $cTemplate->useTrait($traitClass);
             }
         }
+
+        $schemaReflection = new ReflectionClass($schema);
+        $schemaDocComment = $schemaReflection->getDocComment();
+        $foundAnnotation = strpos($schemaDocComment, '@codegen') !== FALSE;
+        $codegenSettings = [ ];
+        preg_match_all('/@codegen (\w+)(?:\s*=\s*(\S+))?$/m', $schemaDocComment, $allMatches);
+        for ($i = 0; $i < count($allMatches[0]); $i++) {
+            $key = $allMatches[1][$i];
+            $value = $allMatches[2][$i];
+            $codegenSettings[$key] = $value !== "" ? $value : true;
+        }
+
+        if ($foundAnnotation) {
+            $reflectionModel = new ReflectionClass('LazyRecord\\BaseModel');
+            $createMethod = $reflectionModel->getMethod('create');
+            $methodFile = $createMethod->getFilename();
+            $startLine = $createMethod->getStartLine();
+            $endLine = $createMethod->getEndLine();
+            $lines = file($methodFile);
+            $methodLines = array_slice($lines, $startLine + 1, $endLine - $startLine - 1); // exclude '{', '}'
+
+            $codegenBlock = array();
+            $codegenBlock['currentUserCan'] =<<<'CODE'
+        if (! $this->currentUserCan($this->getCurrentUser(), 'create', $args )) {
+            return $this->reportError( _('Permission denied. Can not create record.') , array( 
+                'args' => $args,
+            ));
+        }
+CODE;
+
+            $codegenBlock['validateColumn'] =<<<'CODE'
+            if ($validationResult = $this->_validateColumn($c,$val,$args)) {
+                $validationResults[$n] = $validationResult;
+                if (!$validationResult['valid']) {
+                    $validationError = true;
+                }
+            }
+CODE;
+
+            $overrideCreateMethod = $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()']);
+            $overrideBlock = $overrideCreateMethod->getBlock();
+            foreach ($methodLines as $line) {
+                $line = rtrim($line);
+                if (preg_match('/@codegen (\w+)/',$line, $matches)) {
+                    if (isset($codegenSettings[$matches[1]])) {
+                        switch ($matches[1]) {
+                            case "currentUserCan":
+                                $overrideBlock[] = $codegenBlock['currentUserCan'];
+                                break;
+                            case "validateColumn":
+                                $overrideBlock[] = $codegenBlock['validateColumn'];
+                                break;
+                        }
+                    } else {
+                        $overrideBlock[] = $line;
+                    }
+                } else {
+                    $overrideBlock[] = $line;
+                }
+            }
+        }
+
+
+
+
+
 
 
         // TODO: refacory this into factory method
@@ -113,16 +187,10 @@ class BaseModelClassFactory
             $block[] = '    $this->_preparedFindStms[' . var_export($columnName, true ) . '] = $conn->prepare(' . var_export($findByColumnSql, true) . ');';
             $block[] = '}';
             $block[] = '$this->_preparedFindStms[' . var_export($columnName, true) . ']->execute([' .  var_export(":$columnName", true ) . ' => $value ]);';
-            $block[] = 'try {';
-            $block[] = '    if (false === ($this->_data = $this->_preparedFindStms[' . var_export($columnName, true ) . ']->fetch(PDO::FETCH_ASSOC)) ) {';
-            $block[] = '        return $this->reportError("Record not found", [';
-            $block[] = '            "sql" => ' . var_export($findByColumnSql, true) . ',';
-            $block[] = '        ]);';
-            $block[] = '    }';
-            $block[] = '} catch (PDOException $e) {';
-            $block[] = '    throw new QueryException("Record load failed", $this, $e, array(';
-            $block[] = '        "sql" => ' . var_export($findByColumnSql, true)  . ',';
-            $block[] = '    ));';
+            $block[] = 'if (false === ($this->_data = $this->_preparedFindStms[' . var_export($columnName, true ) . ']->fetch(PDO::FETCH_ASSOC)) ) {';
+            $block[] = '    return $this->reportError("Record not found", [';
+            $block[] = '        "sql" => ' . var_export($findByColumnSql, true) . ',';
+            $block[] = '    ]);';
             $block[] = '}';
             $block[] = '$this->_preparedFindStms[' . var_export($columnName, true) . ']->closeCursor();';
             $block[] = 'return $this->reportSuccess( "Data loaded", array( ';
