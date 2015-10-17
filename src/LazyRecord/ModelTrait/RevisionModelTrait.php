@@ -25,7 +25,7 @@ trait RevisionModelTrait
 
         $schema = $rev->getSchema();
 
-        if ($primaryKey = $schema->primaryKey) {
+        if ($primaryKey = static::PRIMARY_KEY) {
             // Remove the primary key and create new revision
 
             if ( !isset($data[$primaryKey])) {
