@@ -100,8 +100,10 @@ schema:
   paths:
     - src/    # where you store the schema class files.
 data_sources:
-  default:
-    dsn: 'sqlite:test'
+  default: master
+  nodes:
+    master:
+      dsn: 'sqlite:test'
 ```
 
 In the above config file, the `auto_id` means an id column with auto-increment
@@ -597,7 +599,7 @@ class UserSchema extends LazyRecord\Schema {
 
 The bootstrap method is triggerd when you run:
 
-`lazy build-sql`
+`lazy sql`
 
 ### Using Multiple Data Source
 
@@ -940,7 +942,7 @@ Build config
 
 Build Schema files
 
-    php bin/lazy build-schema
+    php bin/lazy schema build
 
 We've already defined 3 data sources, they were named as 'mysql', 'pgsql', 'sqlite' , 
 now you can insert schema sqls into these data sources:
