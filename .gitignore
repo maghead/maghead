@@ -4,3 +4,4 @@ vendor
 *Base.php
 *SchemaProxy.php
 build/
+db/config/*.php
