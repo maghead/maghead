@@ -14,11 +14,6 @@ class MetadataSchemaProxy
     const PRIMARY_KEY = 'id';
     const TABLE = '__meta__';
     const LABEL = 'Metadata';
-    public static $column_names = array (
-      0 => 'id',
-      1 => 'name',
-      2 => 'value',
-    );
     public static $column_hash = array (
       'id' => 1,
       'name' => 1,
@@ -26,18 +21,16 @@ class MetadataSchemaProxy
     );
     public static $mixin_classes = array (
     );
-    public static $column_names_include_virtual = array (
-      0 => 'id',
-      1 => 'name',
-      2 => 'value',
-    );
     public $columnNames = array (
       0 => 'id',
       1 => 'name',
       2 => 'value',
     );
-    public $modelClass = 'LazyRecord\\Model\\Metadata';
-    public $collectionClass = 'LazyRecord\\Model\\MetadataCollection';
+    public $columnNamesIncludeVirtual = array (
+      0 => 'id',
+      1 => 'name',
+      2 => 'value',
+    );
     public $label = 'Metadata';
     public $readSourceId = 'default';
     public $writeSourceId = 'default';

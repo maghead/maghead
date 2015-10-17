@@ -39,21 +39,16 @@ class SchemaProxyClassFactory
         $cTemplate->useClass('\\LazyRecord\\Schema\\RuntimeColumn');
         $cTemplate->useClass('\\LazyRecord\\Schema\\Relationship');
 
-        $cTemplate->addPublicProperty('columnNames', $schemaArray['column_names']);
-        // $cTemplate->addPublicProperty('primaryKey', $schemaArray['primary_key']);
-        // $cTemplate->addPublicProperty('table', $schemaArray['table']);
-        $cTemplate->addPublicProperty('modelClass', $schemaArray['model_class']);
-        $cTemplate->addPublicProperty('collectionClass', $schemaArray['collection_class']);
+        $cTemplate->addPublicProperty('columnNames', $schema->getColumnNames());
+        $cTemplate->addPublicProperty('columnNamesIncludeVirtual', $schema->getColumnNames(true));
         $cTemplate->addPublicProperty('label', $schemaArray['label']);
         $cTemplate->addPublicProperty('readSourceId', $schemaArray['read_data_source']);
         $cTemplate->addPublicProperty('writeSourceId', $schemaArray['write_data_source']);
         $cTemplate->addPublicProperty('relations', array());
 
-
-        $cTemplate->addStaticVar( 'column_names',  $schema->getColumnNames() );
         $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
         $cTemplate->addStaticVar( 'mixin_classes',  array_reverse($schema->getMixinSchemaClasses()) );
-        $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
+        // $cTemplate->addStaticVar('column_names_include_virtual',  $schema->getColumnNames(true));
 
         $constructor = $cTemplate->addMethod('public', '__construct', []);
         if (!empty($schemaArray['relations'])) {
@@ -71,8 +66,6 @@ class SchemaProxyClassFactory
 
         /*
         // export column names including virutal columns
-        $cTemplate->addStaticVar( 'column_names_include_virtual',  $schema->getColumnNames(true) );
-
         // Aggregate basic translations from labels
         $msgIds = $schema->getMsgIds();
         $cTemplate->setMsgIds($msgIds);

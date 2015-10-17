@@ -44,7 +44,6 @@ class RuntimeSchema extends SchemaBase
         $schema = new self;
         $schema->columnData  = $array['column_data']; /* contains column names => column attribute array */
         $schema->columnNames = $array['column_names']; /* column names array */
-        $schema->table      = $array['table'];
         $schema->label      = $array['label'];
         $schema->modelClass = $array['model_class'];
         return $schema;
@@ -66,9 +65,9 @@ class RuntimeSchema extends SchemaBase
     public function getColumnNames($includeVirtual = false)
     {
         if ( $includeVirtual ) {
-            return static::$column_names_include_virtual;
+            return $this->columnNamesIncludeVirtual;
         } else {
-            return static::$column_names;
+            return $this->columnNames;
         }
     }
 
@@ -84,7 +83,7 @@ class RuntimeSchema extends SchemaBase
         if( $includeVirtual ) {
             return $this->columns;
         }
-        $names = array_fill_keys(static::$column_names,1);
+        $names = array_fill_keys($this->columnNames,1);
         return array_intersect_key($this->columns, $names);
     }
 
@@ -136,12 +135,14 @@ class RuntimeSchema extends SchemaBase
 
     public function newModel()
     {
-        return new $this->modelClass;
+        $class = static::MODEL_CLASS;
+        return new $class;
     }
 
     public function newCollection()
     {
-        return new $this->collectionClass;
+        $class = static::COLLECTION_CLASS;
+        return new $class;
     }
 
 
