@@ -233,6 +233,7 @@ CODE;
             $findByColumnSql = $findByColumnQuery->toSql($readQueryDriver, $arguments);
 
             $block[] = '$conn  = $this->getReadConnection();';
+
             $block[] = 'if (!isset($this->_preparedFindStms[' . var_export($columnName, true ) . '])) {';
             $block[] = '    $this->_preparedFindStms[' . var_export($columnName, true ) . '] = $conn->prepare(' . var_export($findByColumnSql, true) . ');';
             $block[] = '}';
@@ -243,6 +244,7 @@ CODE;
             $block[] = '    ]);';
             $block[] = '}';
             $block[] = '$this->_preparedFindStms[' . var_export($columnName, true) . ']->closeCursor();';
+
             $block[] = 'return $this->reportSuccess( "Data loaded", array( ';
             $block[] = '    "sql" => ' . var_export($findByColumnSql, true) . ',';
             $block[] = '    "type" => Result::TYPE_LOAD,';

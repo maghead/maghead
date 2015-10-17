@@ -2229,8 +2229,21 @@ abstract class BaseModel implements
         }
     }
 
+    public function free()
+    {
+        if ($this->_preparedCreateStms) {
+            $this->_preparedCreateStms->closeCursor();
+            $this->_preparedCreateStms = null;
+        }
+        if ($this->_preparedFindStm) {
+            $this->_preparedFindStm->closeCursor();
+            $this->_preparedFindStm = null;
+        }
+        foreach ($this->_preparedFindStms as & $stm) {
+            $stm->closeCursor();
+            $stm = null;
+        }
 
-
-
+    }
 }
 
