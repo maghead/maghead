@@ -2,10 +2,6 @@
 namespace AuthorBooks\Model;
 use LazyRecord\Schema;
 
-/**
- * @codegen validateColumn
- * @codegen foo=bar
- */
 class AuthorSchema extends Schema
 {
     public function schema()
