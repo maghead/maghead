@@ -86,7 +86,7 @@ class BaseModelClassFactory
             'filterColumn' => true,
             'validateRequire' => true,
             'validateColumn' => true,
-            'typeConstraint' => false,
+            'typeConstraint' => true,
         ];
         preg_match_all('/@codegen (\w+)(?:\s*=\s*(\S+))?$/m', $schemaDocComment, $allMatches);
         for ($i = 0; $i < count($allMatches[0]); $i++) {
