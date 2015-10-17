@@ -779,145 +779,136 @@ abstract class BaseModel implements
         // Just a note: Exceptions should be used for exceptional conditions; things you 
         // don't expect to happen. Validating input isn't very exceptional.
 
-        try {
-            $args = $this->beforeCreate($args);
-            if ($args === false) {
-                return $this->reportError( _('Create failed') , array( 
-                    'args' => $args,
-                ));
-            }
-
-
-            // first, filter the array, arguments for inserting data.
-            $args = $this->filterArrayWithColumns($args);
-
-            if (! $this->currentUserCan( $this->getCurrentUser(), 'create', $args )) {
-                return $this->reportError( _('Permission denied. Can not create record.') , array( 
-                    'args' => $args,
-                ));
-            }
-
-            // arguments that are will Bind
-            $insertArgs = array();
-            foreach ($schema->columns as $n => $c) {
-                // if column is required (can not be empty)
-                //   and default is defined.
-                if (!$c->primary && (!isset($args[$n]) || !$args[$n] ))
-                {
-                    if ($val = $c->getDefaultValue($this ,$args)) {
-                        $args[$n] = $val;
-                    } 
-                }
-
-                // if type constraint is on, check type,
-                // if not, we should try to cast the type of value, 
-                // if type casting is fail, we should throw an exception.
-
-
-                // short alias for argument value.
-                $val = isset($args[$n]) ? $args[$n] : null;
-
-
-                // if column is required (can not be empty) //   and default is defined.
-                if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
-                    return $this->reportError("Value of $n is required.");
-                }
-                
-                if ($c->typeConstraint && ($val !== null && ! is_array($val) && ! $val instanceof Raw)) {
-                    if (false === $c->checkTypeConstraint($val)) {
-                        return $this->reportError("{$val} is not " . $c->isa . " type");
-                    }
-                } elseif ($val !== NULL && !is_array($val) && !$val instanceof Raw) {
-                    $val = $c->typeCasting($val);
-                }
-
-
-                if ($c->filter || $c->canonicalizer) {
-                    $val = $c->canonicalizeValue($val, $this, $args );
-                }
-
-                if ($validationResult = $this->_validateColumn($c,$val,$args)) {
-                    $validationResults[$n] = $validationResult;
-                    if ( ! $validationResult->valid ) {
-                        $validationError = true;
-                    }
-                }
-
-                if ($val !== NULL) {
-                    // Update filtered value back to args
-                    // Note that we don't deflate a scalar value, this is to prevent the overhead of data reload from database
-                    // We should try to keep all variables just like the row result we query from database.
-                    if (is_object($val) || is_array($val)) {
-                        $args[$n] = $c->deflate($val, $driver);
-                    } else {
-                        $args[$n] = $val;
-                    }
-
-                    if (is_scalar($val) || is_null($val)) {
-                        $insertArgs[$n] = new Bind($n, $driver->cast($val));
-                    } else if ($val instanceof Raw) {
-                        $insertArgs[$n] = $val;
-                        $cacheable = false;
-                    } else {
-                        // deflate objects into string
-                        $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
-                    }
-                }
-            }
-
-            if ($validationError) {
-                return $this->reportError("Validation failed.", array( 
-                    'validations' => $validationResults,
-                ));
-            }
-
-
-            $arguments = new ArgumentArray;
-
-            $cacheKey = null;
-            if ($cacheable) {
-                $cacheKey = array_keys_join($insertArgs);
-                if (isset($this->_preparedCreateStms[$cacheKey])) {
-                    $stm = $this->_preparedCreateStms[$cacheKey];
-                    foreach ($insertArgs as $name => $bind) {
-                        $arguments->add($bind);
-                    }
-                }
-            }
-
-            if (!$stm) {
-                $query = new InsertQuery;
-                $query->into($this->table);
-                $query->insert($insertArgs);
-                $query->returning($k);
-                $sql  = $query->toSql($driver, $arguments);
-                $stm = $conn->prepare($sql);
-                if ($cacheable) {
-                    $this->_preparedCreateStms[$cacheKey] = $stm;
-                }
-            }
-            $stm->execute($arguments->toArray());
+        $args = $this->beforeCreate($args);
+        if ($args === false) {
+            return $this->reportError( _('Create failed') , array( 
+                'args' => $args,
+            ));
         }
-        catch (PDOException $e)
-        {
-            throw new QueryException('Record create failed.', $this, $e, array(
+
+
+        // first, filter the array, arguments for inserting data.
+        $args = $this->filterArrayWithColumns($args);
+
+        if (! $this->currentUserCan( $this->getCurrentUser(), 'create', $args )) {
+            return $this->reportError( _('Permission denied. Can not create record.') , array( 
+                'args' => $args,
+            ));
+        }
+
+        // arguments that are will Bind
+        $insertArgs = array();
+        foreach ($schema->columns as $n => $c) {
+            // if column is required (can not be empty)
+            //   and default is defined.
+            if (!$c->primary && (!isset($args[$n]) || !$args[$n] ))
+            {
+                if ($val = $c->getDefaultValue($this ,$args)) {
+                    $args[$n] = $val;
+                } 
+            }
+
+            // if type constraint is on, check type,
+            // if not, we should try to cast the type of value, 
+            // if type casting is fail, we should throw an exception.
+
+
+            // short alias for argument value.
+            $val = isset($args[$n]) ? $args[$n] : null;
+
+
+            // if column is required (can not be empty) //   and default is defined.
+            if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
+                return $this->reportError("Value of $n is required.");
+            }
+            
+            if ($c->typeConstraint && ($val !== null && ! is_array($val) && ! $val instanceof Raw)) {
+                if (false === $c->checkTypeConstraint($val)) {
+                    return $this->reportError("{$val} is not " . $c->isa . " type");
+                }
+            } elseif ($val !== NULL && !is_array($val) && !$val instanceof Raw) {
+                $val = $c->typeCasting($val);
+            }
+
+
+            if ($c->filter || $c->canonicalizer) {
+                $val = $c->canonicalizeValue($val, $this, $args );
+            }
+
+            if ($validationResult = $this->_validateColumn($c,$val,$args)) {
+                $validationResults[$n] = $validationResult;
+                if ( ! $validationResult->valid ) {
+                    $validationError = true;
+                }
+            }
+
+            if ($val !== NULL) {
+                // Update filtered value back to args
+                // Note that we don't deflate a scalar value, this is to prevent the overhead of data reload from database
+                // We should try to keep all variables just like the row result we query from database.
+                if (is_object($val) || is_array($val)) {
+                    $args[$n] = $c->deflate($val, $driver);
+                } else {
+                    $args[$n] = $val;
+                }
+
+                if (is_scalar($val) || is_null($val)) {
+                    $insertArgs[$n] = new Bind($n, $driver->cast($val));
+                } else if ($val instanceof Raw) {
+                    $insertArgs[$n] = $val;
+                    $cacheable = false;
+                } else {
+                    // deflate objects into string
+                    $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
+                }
+            }
+        }
+
+        if ($validationError) {
+            return $this->reportError("Validation failed.", array( 
+                'validations' => $validationResults,
+            ));
+        }
+
+
+        $arguments = new ArgumentArray;
+
+        $cacheKey = null;
+        if ($cacheable) {
+            $cacheKey = array_keys_join($insertArgs);
+            if (isset($this->_preparedCreateStms[$cacheKey])) {
+                $stm = $this->_preparedCreateStms[$cacheKey];
+                foreach ($insertArgs as $name => $bind) {
+                    $arguments->add($bind);
+                }
+            }
+        }
+
+        if (!$stm) {
+            $query = new InsertQuery;
+            $query->into($this->table);
+            $query->insert($insertArgs);
+            $query->returning($k);
+            $sql  = $query->toSql($driver, $arguments);
+            $stm = $conn->prepare($sql);
+            if ($cacheable) {
+                $this->_preparedCreateStms[$cacheKey] = $stm;
+            }
+        }
+        if (false === $stm->execute($arguments->toArray())) {
+            return $this->reportError("Record create failed.", array( 
+                'validations' => $validationResults,
                 'args' => $args,
                 'sql' => $sql,
-                'validations' => $validationResults,
             ));
         }
 
         $pkId = null;
 
         if ($driver instanceof PDOPgSQLDriver) {
-            $pkId = intval($stm->fetchColumn());
+            $this->_data['id'] = $args['id'] = $pkId = intval($stm->fetchColumn());
         } else {
-            $pkId = intval($conn->lastInsertId());
-        }
-
-        if ($pkId) {
-            $args['id'] = $pkId;
-            $this->_data['id'] = $pkId;
+            $this->_data['id'] = $args['id'] = $pkId = intval($conn->lastInsertId());
         }
 
         if ($pkId && ((isset($options['reload']) && $options['reload']) || $this->autoReload)) {
