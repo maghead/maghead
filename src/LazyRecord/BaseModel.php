@@ -930,6 +930,8 @@ abstract class BaseModel implements
 
         $this->afterCreate($origArgs);
 
+        $stm->closeCursor();
+
         // collect debug info
         return $this->reportSuccess('Record created.', array(
             'id'  => $pkId,
@@ -1001,7 +1003,7 @@ abstract class BaseModel implements
                 'sql' => static::FIND_BY_PRIMARY_KEY_SQL,
             ));
         }
-
+        $this->_preparedFindStm->closeCursor();
         return $this->reportSuccess( 'Data loaded', array( 
             'id' => (isset($this->_data[$primaryKey]) ? $this->_data[$primaryKey] : null),
             'sql' => static::FIND_BY_PRIMARY_KEY_SQL,
