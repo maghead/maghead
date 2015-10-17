@@ -48,7 +48,6 @@ class SchemaProxyClassFactory
 
         $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
         $cTemplate->addStaticVar( 'mixin_classes',  array_reverse($schema->getMixinSchemaClasses()) );
-        // $cTemplate->addStaticVar('column_names_include_virtual',  $schema->getColumnNames(true));
 
         $constructor = $cTemplate->addMethod('public', '__construct', []);
         if (!empty($schemaArray['relations'])) {
