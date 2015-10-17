@@ -810,21 +810,12 @@ abstract class BaseModel implements
 
 
             // if column is required (can not be empty) //   and default is defined.
-            if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
-                return $this->reportError("Value of $n is required.");
-            }
-            
-            if ($c->typeConstraint && ($val !== null && ! is_array($val) && ! $val instanceof Raw)) {
-                if (false === $c->checkTypeConstraint($val)) {
-                    return $this->reportError("{$val} is not " . $c->isa . " type");
-                }
-            } else if ($val !== NULL && !is_array($val) && !$val instanceof Raw) {
-                $val = $c->typeCasting($val);
-            }
+            // @codegen validateRequire
 
-            if ($c->filter || $c->canonicalizer) {
-                $val = $c->canonicalizeValue($val, $this, $args );
-            }
+            // @codegen typeConstraint
+
+
+            // @codegen filterColumn
 
             // @codegen validateColumn
 
@@ -850,12 +841,7 @@ abstract class BaseModel implements
             }
         }
 
-        if ($validationError) {
-            return $this->reportError("Validation failed.", array( 
-                'validations' => $validationResults,
-            ));
-        }
-
+        // @codegen handleValidationError
 
         $arguments = new ArgumentArray;
 

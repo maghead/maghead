@@ -38,12 +38,10 @@ class BaseModelClassFactory
 
         $cTemplate->useClass('LazyRecord\\Schema\\SchemaLoader');
         $cTemplate->useClass('LazyRecord\\Result');
+        $cTemplate->useClass('SQLBuilder\\Bind');
+        $cTemplate->useClass('SQLBuilder\\ArgumentArray');
         $cTemplate->useClass('PDO');
-
-
-
-
-
+        $cTemplate->useClass('SQLBuilder\\Universal\\Query\\InsertQuery');
 
 
 
@@ -81,25 +79,76 @@ class BaseModelClassFactory
         $schemaReflection = new ReflectionClass($schema);
         $schemaDocComment = $schemaReflection->getDocComment();
         $foundAnnotation = strpos($schemaDocComment, '@codegen') !== FALSE;
-        $codegenSettings = [ ];
+
+
+        // TODO: apply settings from schema...
+        $codegenSettings = [
+            'filterColumn' => true,
+            'validateRequire' => true,
+            'validateColumn' => true,
+            'typeConstraint' => false,
+        ];
         preg_match_all('/@codegen (\w+)(?:\s*=\s*(\S+))?$/m', $schemaDocComment, $allMatches);
         for ($i = 0; $i < count($allMatches[0]); $i++) {
             $key = $allMatches[1][$i];
             $value = $allMatches[2][$i];
-            $codegenSettings[$key] = $value !== "" ? $value : true;
+
+            if ($value === "") {
+                $value = true;
+            } else {
+                if (strcasecmp($value, "true") == 0 || strcasecmp($value, "false") == 0) {
+                    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                } else if (preg_match('/^\d+$/', $value)) {
+                    $value = intval($value);
+                }
+            }
+            $codegenSettings[$key] = $value;
         }
 
-        if ($foundAnnotation) {
+        if ($codegenSettings['validateColumn']) {
+            $codegenSettings['handleValidationError'] = true;
+        }
+
+        if ($foundAnnotation || !empty($codegenSettings)) {
             $reflectionModel = new ReflectionClass('LazyRecord\\BaseModel');
             $createMethod = $reflectionModel->getMethod('create');
             $methodFile = $createMethod->getFilename();
             $startLine = $createMethod->getStartLine();
             $endLine = $createMethod->getEndLine();
             $lines = file($methodFile);
-            $methodLines = array_slice($lines, $startLine + 1, $endLine - $startLine - 1); // exclude '{', '}'
+            $methodLines = array_slice($lines, $startLine + 1, $endLine - $startLine - 2); // exclude '{', '}'
 
             $codegenBlock = array();
+
+            $codegenBlock['validateRequire'] =<<<'CODE'
+
+            if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
+                return $this->reportError("Value of $n is required.");
+            }
+CODE;
+
+
+            $codegenBlock['typeConstraint'] =<<<'CODE'
+
+            if ($c->typeConstraint && ($val !== null && ! is_array($val) && ! $val instanceof Raw)) {
+                if (false === $c->checkTypeConstraint($val)) {
+                    return $this->reportError("{$val} is not " . $c->isa . " type");
+                }
+            } else if ($val !== NULL && !is_array($val) && !$val instanceof Raw) {
+                $val = $c->typeCasting($val);
+            }
+CODE;
+
+            $codegenBlock['filterColumn'] =<<<'CODE'
+
+            if ($c->filter || $c->canonicalizer) {
+                $val = $c->canonicalizeValue($val, $this, $args);
+            }
+CODE;
+
+
             $codegenBlock['currentUserCan'] =<<<'CODE'
+
         if (! $this->currentUserCan($this->getCurrentUser(), 'create', $args )) {
             return $this->reportError( _('Permission denied. Can not create record.') , array( 
                 'args' => $args,
@@ -116,20 +165,21 @@ CODE;
             }
 CODE;
 
+            $codegenBlock['handleValidationError'] =<<<'CODE'
+        if ($validationError) {
+            return $this->reportError("Validation failed.", array( 
+                'validations' => $validationResults,
+            ));
+        }
+CODE;
+
             $overrideCreateMethod = $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()']);
             $overrideBlock = $overrideCreateMethod->getBlock();
             foreach ($methodLines as $line) {
                 $line = rtrim($line);
                 if (preg_match('/@codegen (\w+)/',$line, $matches)) {
-                    if (isset($codegenSettings[$matches[1]])) {
-                        switch ($matches[1]) {
-                            case "currentUserCan":
-                                $overrideBlock[] = $codegenBlock['currentUserCan'];
-                                break;
-                            case "validateColumn":
-                                $overrideBlock[] = $codegenBlock['validateColumn'];
-                                break;
-                        }
+                    if (isset($codegenSettings[$matches[1]]) && $codegenSettings[$matches[1]]) {
+                        $overrideBlock[] = $codegenBlock[$matches[1]];
                     } else {
                         $overrideBlock[] = $line;
                     }
