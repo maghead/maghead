@@ -1,24 +1,22 @@
 <?php
+
 namespace LazyRecord\Testing;
+
 use LazyRecord\ConnectionManager;
 use LazyRecord\ConfigLoader;
-use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\ClassUtils;
 use LazyRecord\SeedBuilder;
-use LazyRecord\Result;
 use LazyRecord\SqlBuilder\SqlBuilder;
-use LazyRecord\Testing\BaseTestCase;
-use PHPUnit_Framework_TestCase;
+
 use PDOException;
 
 abstract class ModelTestCase extends BaseTestCase
 {
     public $schemaHasBeenBuilt = false;
 
-    public $schemaClasses = array( );
+    public $schemaClasses = array();
 
     protected $allowConnectionFailure = false;
-
 
     public function setUp()
     {
@@ -36,14 +34,15 @@ abstract class ModelTestCase extends BaseTestCase
         } catch (PDOException $e) {
             if ($this->allowConnectionFailure) {
                 $this->markTestSkipped(
-                    sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'", 
+                    sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
                         $this->getDriverType(),
                         $e->getMessage(),
                         var_export($configLoader->getDataSource($this->getDriverType()), true)
                     ));
+
                 return;
             } else {
-                echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'", 
+                echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
                     $this->getDriverType(),
                     $e->getMessage(),
                     var_export($configLoader->getDataSource($this->getDriverType()), true)
@@ -53,7 +52,7 @@ abstract class ModelTestCase extends BaseTestCase
         }
 
         $driver = $connManager->getQueryDriver($this->getDriverType());
-        $this->assertInstanceOf('SQLBuilder\\Driver\\BaseDriver', $driver,'QueryDriver object OK');
+        $this->assertInstanceOf('SQLBuilder\\Driver\\BaseDriver', $driver, 'QueryDriver object OK');
 
         // Rebuild means rebuild the database for new tests
         $rebuild = true;
@@ -66,26 +65,26 @@ abstract class ModelTestCase extends BaseTestCase
         }
 
         if ($rebuild) {
-            $builder = SqlBuilder::create($driver , array('rebuild' => true));
+            $builder = SqlBuilder::create($driver, array('rebuild' => true));
             $this->assertNotNull($builder);
 
             // $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
             $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
-            foreach( $schemas as $schema ) {
+            foreach ($schemas as $schema) {
                 $sqls = $builder->build($schema);
                 $this->assertNotEmpty($sqls);
 
                 foreach ($sqls as $sql) {
-                    $dbh->query( $sql );
+                    $dbh->query($sql);
                 }
             }
             if ($basedata) {
                 $runner = new SeedBuilder($this->config, $this->logger);
-                foreach($schemas as $schema) {
+                foreach ($schemas as $schema) {
                     $runner->buildSchemaSeeds($schema);
                 }
                 if ($scripts = $this->config->getSeedScripts()) {
-                    foreach($scripts as $script) {
+                    foreach ($scripts as $script) {
                         $runner->buildScriptSeed($script);
                     }
                 }
@@ -94,16 +93,12 @@ abstract class ModelTestCase extends BaseTestCase
     }
 
     /**
-     * Test cases
+     * Test cases.
      */
     public function testClasses()
     {
-        foreach ($this->getModels() as $class ) {
+        foreach ($this->getModels() as $class) {
             class_ok($class);
         }
     }
-
 }
-
-
-
