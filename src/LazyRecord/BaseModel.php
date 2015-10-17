@@ -1030,7 +1030,7 @@ abstract class BaseModel implements
         $pk    = static::PRIMARY_KEY;
 
         $query = new SelectQuery;
-        $query->from(static::TABLE);
+        $query->from($this->getTable());
 
         $conn  = $this->getReadConnection();
         $driver = $this->getReadQueryDriver();
@@ -1995,7 +1995,7 @@ abstract class BaseModel implements
      * @param array $args
      * @return array
      */
-    public function filterArrayWithColumns(array $args , $includeVirtualColumns = false )
+    protected function filterArrayWithColumns(array $args , $includeVirtualColumns = false )
     {
         return array_intersect_key( $args , $this->getSchema()->getColumns($includeVirtualColumns));
     }
