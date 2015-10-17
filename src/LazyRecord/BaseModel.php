@@ -641,14 +641,14 @@ abstract class BaseModel implements
         if ($validator = $column->validator) {
             if (is_callable($validator)) {
                 $ret = call_user_func($validator, $val, $args, $this );
-                if( is_bool($ret) ) {
+                if (is_bool($ret) ) {
                     return array( 'valid' => $ret, 'message' => 'Validation failed.' , 'field' => $column->name );
                 } elseif( is_array($ret) ) {
                     return array( 'valid' => $ret[0], 'message' => $ret[1], 'field' => $column->name );
                 } else {
                     throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
                 }
-            } elseif ( is_string($validator) && is_a($validator,'ValidationKit\\Validator',true) ) {
+            } else if (is_string($validator) && is_a($validator,'ValidationKit\\Validator',true) ) {
                 // it's a ValidationKit\Validator
                 $validator = $column->validatorArgs ? new $validator($column->get('validatorArgs')) : new $validator;
                 $ret = $validator->validate($val);
@@ -659,10 +659,10 @@ abstract class BaseModel implements
                 throw new Exception("Unsupported validator");
             }
         }
-        if ( $val && ($column->validValues || $column->validValueBuilder ) ) {
+        if ($val && $column->validValues) {
             if ($validValues = $column->getValidValues($this, $args)) {
                 // sort by index
-                if ( isset($validValues[0]) && ! in_array( $val , $validValues ) ) {
+                if (isset($validValues[0]) && ! in_array( $val , $validValues)) {
                     return array(
                         'valid' => false,
                         'message' => sprintf("%s is not a valid value for %s", $val , $column->name ),
@@ -876,7 +876,7 @@ abstract class BaseModel implements
             if (isset($this->_preparedCreateStms[$cacheKey])) {
                 $stm = $this->_preparedCreateStms[$cacheKey];
                 foreach ($insertArgs as $name => $bind) {
-                    $arguments->add($bind);
+                    $arguments->bind($bind);
                 }
             }
         }
@@ -1263,12 +1263,12 @@ abstract class BaseModel implements
                 $val = $args[$n];
                 if (is_scalar($args[$n]) || is_null($args[$n])) {
                     $updateArgs[$n] = $bind = new Bind($n, $driver->cast($args[$n]));
-                    $arguments->add($bind);
+                    $arguments->bind($bind);
                 } else if ($args[$n] instanceof Raw) {
                     $updateArgs[$n] = $args[$n];
                 } else {
                     $updateArgs[$n] = $bind = new Bind($n, $c->deflate($args[$n], $driver));
-                    $arguments->add($bind);
+                    $arguments->bind($bind);
                 }
             }
 
