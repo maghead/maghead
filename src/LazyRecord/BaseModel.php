@@ -1017,24 +1017,14 @@ abstract class BaseModel implements
         $sql = $query->toSql($driver, $arguments);
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
-        try {
-            $stm = $conn->prepare($sql);
-            $stm->execute($arguments->toArray());
-            if (false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
-                // Record not found is not an exception
-                return $this->reportError("Record not found", [ 
-                    'sql' => $sql,
-                ]);
-            }
-        }
-        catch (PDOException $e)
-        {
-            throw new QueryException('Record load failed', $this, $e, array(
-                // XXX: 'args' => $args,
+        $stm = $conn->prepare($sql);
+        $stm->execute($arguments->toArray());
+        if (false === ($this->_data = $stm->fetch( PDO::FETCH_ASSOC )) ) {
+            // Record not found is not an exception
+            return $this->reportError("Record not found", [ 
                 'sql' => $sql,
-            ));
+            ]);
         }
-
         return $this->reportSuccess( 'Data loaded', array( 
             'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
             'sql' => $sql,
@@ -1087,18 +1077,9 @@ abstract class BaseModel implements
         $vars = $arguments->toArray();
 
         $validationResults = array();
-        try {
 
-            $stm = $conn->prepare($sql);
-            $stm->execute($arguments->toArray());
-
-        } catch (PDOException $e) {
-            throw new QueryException('Delete failed', $this, $e, array(
-                // XXX 'args' => $arguments->toArray(),
-                'sql' => $sql,
-                'validations' => $validationResults,
-            ));
-        }
+        $stm = $conn->prepare($sql);
+        $stm->execute($arguments->toArray());
 
         $this->afterDelete( $this->_data );
         $this->clear();
