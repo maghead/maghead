@@ -773,7 +773,6 @@ abstract class BaseModel implements
         $conn = $this->getWriteConnection();
         $driver = $this->getWriteQueryDriver();
 
-
         // Just a note: Exceptions should be used for exceptional conditions; things you 
         // don't expect to happen. Validating input isn't very exceptional.
 
@@ -787,11 +786,7 @@ abstract class BaseModel implements
         // first, filter the array, arguments for inserting data.
         $args = array_intersect_key($args, array_flip($schema->columnNames));
 
-        if (! $this->currentUserCan($this->getCurrentUser(), 'create', $args )) {
-            return $this->reportError( _('Permission denied. Can not create record.') , array( 
-                'args' => $args,
-            ));
-        }
+        // @codegen currentUserCan
 
         // arguments that are will Bind
         $insertArgs = array();
@@ -823,21 +818,15 @@ abstract class BaseModel implements
                 if (false === $c->checkTypeConstraint($val)) {
                     return $this->reportError("{$val} is not " . $c->isa . " type");
                 }
-            } elseif ($val !== NULL && !is_array($val) && !$val instanceof Raw) {
+            } else if ($val !== NULL && !is_array($val) && !$val instanceof Raw) {
                 $val = $c->typeCasting($val);
             }
-
 
             if ($c->filter || $c->canonicalizer) {
                 $val = $c->canonicalizeValue($val, $this, $args );
             }
 
-            if ($validationResult = $this->_validateColumn($c,$val,$args)) {
-                $validationResults[$n] = $validationResult;
-                if (!$validationResult['valid']) {
-                    $validationError = true;
-                }
-            }
+            // @codegen validateColumn
 
             if ($val !== NULL) {
                 // Update filtered value back to args
