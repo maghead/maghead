@@ -889,7 +889,7 @@ Setting Up Environment
 
 Use Composer to install the dependency:
 
-    composer install --dev
+    composer install --prefer-source
 
 To deploy a testing environment, you need to install dependent packages.
 
@@ -926,15 +926,17 @@ If you've set password accidentally, remove user password by running the command
 
     > alter role postgres password null;
 
-### Run PHPUnit
 
-    $ phpunit
 
 ### Command-line testing
 
 To test sql builder from command-line, please copy the default testing config
 
     $ cp db/config/database.testing.yml db/config/database.yml
+
+Customize your phpunit.xml configuration:
+
+    $ cp phpunit.xml.dist phpunit.xml
 
 Build config
 
@@ -950,6 +952,14 @@ now you can insert schema sqls into these data sources:
     bin/lazy sql --rebuild -D=mysql
     bin/lazy sql --rebuild -D=pgsql
     bin/lazy sql --rebuild -D=sqlite
+
+### Run PHPUnit
+
+    $ phpunit
+
+### Profiling
+
+    $ phpunit --group profile
 
 
 Using LazyRecord TableParser
