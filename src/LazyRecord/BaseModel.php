@@ -163,8 +163,6 @@ abstract class BaseModel implements
 
     protected $_cachePrefix;
 
-    protected $preferredTable;
-
     static $_cacheInstance;
 
     /**
@@ -889,7 +887,7 @@ abstract class BaseModel implements
 
             if (!$stm) {
                 $query = new InsertQuery;
-                $query->into($this->getTable());
+                $query->into($this->table);
                 $query->insert($insertArgs);
                 $query->returning($k);
                 $sql  = $query->toSql($driver, $arguments);
@@ -945,13 +943,13 @@ abstract class BaseModel implements
 
     public function setPreferredTable($tableName)
     {
-        $this->preferredTable = $tableName;
+        $this->table = $tableName;
     }
 
     public function getTable()
     {
-        if ($this->preferredTable) {
-            return $this->preferredTable;
+        if ($this->table) {
+            return $this->table;
         }
         return static::TABLE;
     }
@@ -1030,7 +1028,7 @@ abstract class BaseModel implements
         $pk    = static::PRIMARY_KEY;
 
         $query = new SelectQuery;
-        $query->from($this->getTable());
+        $query->from($this->table);
 
         $conn  = $this->getReadConnection();
         $driver = $this->getReadQueryDriver();
@@ -1121,7 +1119,7 @@ abstract class BaseModel implements
         $arguments = new ArgumentArray;
 
         $query = new DeleteQuery;
-        $query->delete($this->getTable());
+        $query->delete($this->table);
         $query->where()->equal($k , $kVal);
         $sql = $query->toSql($driver, $arguments);
 
@@ -1294,7 +1292,7 @@ abstract class BaseModel implements
 
             // TODO: optimized to built cache
             $query->set($updateArgs);
-            $query->update( $this->getTable() );
+            $query->update($this->table);
             $query->where()->equal($k , $kVal);
 
             $sql  = $query->toSql($driver, $arguments);
@@ -1352,7 +1350,7 @@ abstract class BaseModel implements
         $arguments = new ArgumentArray;
         $query = new UpdateQuery;
         $query->set($args);
-        $query->update( $this->getTable() );
+        $query->update($this->table);
         $query->where()
             ->equal( $k , $kVal );
 
@@ -1388,7 +1386,7 @@ abstract class BaseModel implements
 
         $query = new InsertQuery;
         $query->insert($args);
-        $query->into( $this->getTable() );
+        $query->into($this->table);
         $query->returning($k);
 
         $arguments = new ArgumentArray;
@@ -2276,14 +2274,14 @@ abstract class BaseModel implements
     {
         // the ::table consts is in the child class.
         $this->getWriteConnection()
-            ->query("LOCK TABLES " . $this->getTable() . " AS " . $this->getAlias() . " WRITE");
+            ->query("LOCK TABLES " . $this->table . " AS " . $this->getAlias() . " WRITE");
     }
 
     public function lockRead()
     {
         // the ::table consts is in the child class.
         $this->getReadConnection()
-            ->query("LOCK TABLES " . $this->getTable() . " AS " . $this->getAlias() . " READ");
+            ->query("LOCK TABLES " . $this->table . " AS " . $this->getAlias() . " READ");
     }
 
     public function unlock()
