@@ -1480,10 +1480,11 @@ abstract class BaseModel implements
      * @return array current record data.
      */
     public function deflateData(array & $args) {
+        $schema = $this->getSchema();
         foreach( $args as $k => $v ) {
-            $c = $this->getSchema()->getColumn($k);
-            if( $c )
+            if ($c = $schema->getColumn($k)) {
                 $args[ $k ] = $this->_data[ $k ] = $c->deflate( $v );
+            }
         }
         return $args;
     }
