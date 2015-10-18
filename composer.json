@@ -23,7 +23,7 @@
         "corneltek/configkit": "^1",
         "corneltek/cascading-attribute": "^1.2",
         "corneltek/universal-cache": "~1",
-        "pimple/pimple": "~3.0",
+        "pimple/pimple": "^3.0",
         "cypresslab/gitelephant": "^1.0"
     },
     "require-dev": {
@@ -32,6 +32,7 @@
         "satooshi/php-coveralls": "dev-master",
         "simplyadmire/composer-plugins": "@dev"
     },
+    "suggest": { "ext-xarray": "*" },
     "bin": [
         "bin/lazy"
     ],
