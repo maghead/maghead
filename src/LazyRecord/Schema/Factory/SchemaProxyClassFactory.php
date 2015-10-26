@@ -31,7 +31,7 @@ class SchemaProxyClassFactory
             'model_namespace'  => $schema->getNamespace(),
             'COLLECTION_CLASS' => $schemaArray['collection_class'],
             'MODEL_CLASS'      => $schemaArray['model_class'],
-            'PRIMARY_KEY'      => $schemaArray['primary_key'],
+            'PRIMARY_KEY'      => $schema->getPrimaryKey(),
             'TABLE' => $schema->getTable(),
             'LABEL' =>  $schema->getLabel(),
         ));
@@ -40,6 +40,7 @@ class SchemaProxyClassFactory
         $cTemplate->useClass('\\LazyRecord\\Schema\\Relationship');
 
         $cTemplate->addPublicProperty('columnNames', $schema->getColumnNames());
+        $cTemplate->addPublicProperty('primaryKey', $schema->getPrimaryKey());
         $cTemplate->addPublicProperty('columnNamesIncludeVirtual', $schema->getColumnNames(true));
         $cTemplate->addPublicProperty('label', $schemaArray['label']);
         $cTemplate->addPublicProperty('readSourceId', $schemaArray['read_data_source']);
