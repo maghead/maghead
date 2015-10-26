@@ -413,6 +413,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->table ?: $this->_classnameToTable();
     }
 
+    public function getPrimaryKey()
+    {
+        return $this->primaryKey;
+    }
+
     /**
      * classname methods
      */
