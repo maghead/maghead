@@ -18,6 +18,8 @@ class TypeInfoParser
         if (preg_match('/^(
              double
             |float
+            |decimal
+            |numeric
             |int
             |integer
             |tinyint
@@ -111,7 +113,7 @@ class TypeInfoParser
                 $typeInfo->isa = 'str';
             } else if ($typeInfo->type == 'double') {
                 $typeInfo->isa = 'double';
-            } else if ($typeInfo->type == 'float') {
+            } else if (in_array($typeInfo->type, ['float','decimal','numeric'])) {
                 $typeInfo->isa = 'float';
             } else if ($typeInfo->type == 'enum') {
                 $typeInfo->isa = 'enum';
