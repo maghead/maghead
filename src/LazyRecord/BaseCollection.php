@@ -834,17 +834,14 @@ class BaseCollection
         if (is_object($target)) {
             $table = $target->getTable();
 
-
             /* XXX: should get selected column names by default, if not get all column names */
-            $columns = $target->selected ?: $target->getColumnNames();
-
-            if ( ! empty($columns) ) {
+            $columns = $target->getColumnNames();
+            if (! empty($columns) ) {
                 $select = array();
-
-                if ( $alias ) {
-                    $target->setAlias($alias);
+                if ($alias) {
+                    // $target->setAlias($alias);
                 }
-                $alias = $target->getAlias() != 'm' ? $target->getAlias() : $table;
+                $alias = $alias ? $alias : $table;
 
                 foreach( $columns as $name ) {
                     // Select alias.column as alias_column

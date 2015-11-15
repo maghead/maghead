@@ -66,6 +66,8 @@ class Migration implements Migratable
 
     /**
      * Deprecated, use query method instead.
+     *
+     * @deprecated
      */
     public function executeSql($sql)
     {
