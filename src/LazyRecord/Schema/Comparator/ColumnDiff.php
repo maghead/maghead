@@ -66,19 +66,22 @@ class ColumnDiff {
         $column = $this->getAfterOrBeforeColumn();
         $line = sprintf('%s %-16s %-16s',$this->flag, $this->name, $column->type );
         $attrStrs = array();
-        foreach ($column->attributes as $property => $value ) {
-            if ($property == "type") {
-                continue;
-            }
-            if (is_object($value)) {
-                if ($value instanceof Closure) {
-                    $attrStrs[] = "$property:{Closure}";
-                } else {
-                    $attrStrs[] = "$property:" . str_replace("\n","",var_export($value,true));
+
+        if (!empty($column->attributes)) {
+            foreach ($column->attributes as $property => $value ) {
+                if ($property == "type") {
+                    continue;
                 }
-            }
-            elseif (is_string($value)) {
-                $attrStrs[] = "$property:$value";
+                if (is_object($value)) {
+                    if ($value instanceof Closure) {
+                        $attrStrs[] = "$property:{Closure}";
+                    } else {
+                        $attrStrs[] = "$property:" . str_replace("\n","",var_export($value,true));
+                    }
+                }
+                elseif (is_string($value)) {
+                    $attrStrs[] = "$property:$value";
+                }
             }
         }
         return $line . join(', ', $attrStrs);
