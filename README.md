@@ -3,6 +3,7 @@ LazyRecord
 
 ![Logo](https://c9s.github.io/LazyRecord/assets/images/LazyRecord.svg)
 
+[![works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
 [![Build Status](https://travis-ci.org/c9s/LazyRecord.svg?branch=master)](https://travis-ci.org/c9s/LazyRecord)
 [![Coverage Status](https://img.shields.io/coveralls/c9s/LazyRecord.svg)](https://coveralls.io/r/c9s/LazyRecord)
 [![Latest Stable Version](https://poser.pugx.org/corneltek/lazyrecord/v/stable.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
