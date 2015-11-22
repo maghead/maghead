@@ -825,7 +825,7 @@ class BaseCollection
      *
      * @return QueryBuilder
      */
-    public function join($target, $type = 'LEFT' , $alias = null, $relationId = null )
+    public function join($target, $type = 'LEFT', $alias = null, $relationId = null )
     {
         $this->explictSelect = true;
         $query = $this->getCurrentReadQuery();
@@ -836,16 +836,14 @@ class BaseCollection
 
             /* XXX: should get selected column names by default, if not get all column names */
             $columns = $target->getColumnNames();
+
+            $joinAlias = $alias ?: $table;
+
             if (! empty($columns) ) {
                 $select = array();
-                if ($alias) {
-                    // $target->setAlias($alias);
-                }
-                $alias = $alias ? $alias : $table;
-
                 foreach( $columns as $name ) {
                     // Select alias.column as alias_column
-                    $select[ $alias . '.' . $name ] = $alias . '_' . $name;
+                    $select[ $joinAlias . '.' . $name ] = $joinAlias . '_' . $name;
                 }
                 $query->select($select);
             }
@@ -853,10 +851,12 @@ class BaseCollection
 
             // here the relationship is defined, join the it.
             if ($relationId) {
-                $relation = $this->getSchema()->getRelation( $relationId );
-                $joinExpr->on()
-                    ->equal( $this->getAlias() . '.' . $relation['self_column'] , 
-                    array( $alias . '.' . $relation['foreign_column'] ));
+                if ($relation = $this->getSchema()->getRelation($relationId)) {
+                    $joinExpr->on()->equal( $this->getAlias() . '.' . $relation['self_column'],
+                        array( $joinAlias . '.' . $relation['foreign_column'] ));
+                } else {
+                    throw new Exception("Relationship '$relationId' not found.");
+                }
             } else {
                 // find the related relatinship from defined relatinpships
                 $relations = $this->getSchema()->relations;
@@ -875,8 +875,8 @@ class BaseCollection
                 }
             }
 
-            if ($alias) {
-                $joinExpr->as($alias);
+            if ($joinAlias) {
+                $joinExpr->as($joinAlias);
             }
             return $joinExpr;
         }
