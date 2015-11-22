@@ -211,20 +211,10 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                 if ($value === NULL) {
                     return NULL;
                 }
-                if (is_string($value)) {
-                    if ($value === '') {
-                        return NULL;
-                    } else if ($value === '1') {
-                        return true;
-                    } else if ($value === '0') {
-                        return false;
-                    } else if (strcasecmp($value,'false') === 0) {
-                        return false;
-                    } else if (strcasecmp($value,'true') === 0) {
-                        return true;
-                    } else {
-                        throw new Exception("Unexpected value for boolean type.");
-                    }
+                if ($value === '') {
+                    return NULL;
+                } else {
+                    return filter_var($value, FILTER_VALIDATE_BOOLEAN, array('flags' => FILTER_NULL_ON_FAILURE));
                 }
                 return $value;
             }
