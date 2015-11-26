@@ -14,6 +14,7 @@
     "require": {
         "php": ">=5.4.0",
         "corneltek/sqlbuilder": "^2",
+        "corneltek/locale": "2.0.x-dev",
         "corneltek/cliframework": "^2",
         "corneltek/class-template": "^2",
         "corneltek/serializerkit": "^1",
