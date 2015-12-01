@@ -1,5 +1,7 @@
 <?php
+
 namespace LazyRecord\Backup;
+
 use LazyRecord\Connection;
 use Exception;
 use LogicException;
@@ -11,8 +13,8 @@ class MySQLBackup
 
     protected $mysql = 'mysql';
 
-    public function __construct() {
-
+    public function __construct()
+    {
     }
 
     protected function formatCommandParameters(Connection $conn)
@@ -21,30 +23,28 @@ class MySQLBackup
         $config = $conn->getConfig();
         $parameters = [];
         if (isset($config['user'])) {
-            $parameters[] = '-u' . $config['user'];
+            $parameters[] = '-u'.$config['user'];
         }
         if (isset($config['pass'])) {
-            $parameters[] = '-p' . $config['pass'];
+            $parameters[] = '-p'.$config['pass'];
         }
         if ($dbname = $dsn->getAttribute('dbname')) {
             $parameters[] = $dbname;
         } else {
             throw new Exception('dbname attribute is required.');
         }
+
         return $parameters;
     }
-
 
     public function incrementalBackup(Connection $source)
     {
         $newDSN = $source->getDSN();
         $dbname = $newDSN->getAttribute('dbname');
-        $now = new DateTime;
-        $dbname .= '_' . $now->format('Ymd_Hi');
+        $now = new DateTime();
+        $dbname .= '_'.$now->format('Ymd_Hi');
+        $source->query('CREATE DATABASE IF NOT EXISTS '.$dbname.' CHARSET utf8;');
 
-
-
-        $source->query('CREATE DATABASE IF NOT EXISTS ' . $dbname . ' CHARSET utf8;');
         return $this->backupToDatabase($source, $dbname, false);
     }
 
@@ -56,8 +56,8 @@ class MySQLBackup
         }
 
         if ($dropAndCreate) {
-            $source->query('DROP DATABASE IF EXISTS ' . $databaseName);
-            $source->query('CREATE DATABASE IF NOT EXISTS ' . $databaseName . ' CHARSET utf8;');
+            $source->query('DROP DATABASE IF EXISTS '.$databaseName);
+            $source->query('CREATE DATABASE IF NOT EXISTS '.$databaseName.' CHARSET utf8;');
         }
 
         // Create new dest database connection
@@ -65,9 +65,9 @@ class MySQLBackup
         $newDSN->setAttribute('dbname', $databaseName);
         $newConfig['dsn'] = $newDSN->__toString();
         $dest = Connection::create($newConfig);
+
         return $this->backup($source, $dest);
     }
-
 
     /*
     $ mysqldbcopy \
@@ -85,14 +85,11 @@ class MySQLBackup
     */
     public function backup(Connection $source, Connection $dest)
     {
-        $dumpCommand = $this->mysqldump . ' ' . join(' ', $this->formatCommandParameters($source));
-        $mysqlCommand = $this->mysql    . ' ' . join(' ', $this->formatCommandParameters($dest));
-        $command = $dumpCommand . ' | ' . $mysqlCommand;
+        $dumpCommand = $this->mysqldump.' '.implode(' ', $this->formatCommandParameters($source));
+        $mysqlCommand = $this->mysql.' '.implode(' ', $this->formatCommandParameters($dest));
+        $command = $dumpCommand.' | '.$mysqlCommand;
         $lastline = system($command, $ret);
+
         return $ret == 0 ? true : false;
     }
 }
-
-
-
-
