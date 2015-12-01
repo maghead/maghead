@@ -218,7 +218,7 @@ class ConnectionManager implements ArrayAccess
             throw new UndefinedDataSourceException("data source $sourceId not found.");
         }
         $config = $this->datasources[ $sourceId ];
-        $conn = new Connection($config['dsn'], $config['user'], $config['pass'], $config['connection_options']);
+        $conn = Connection::create($config);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // TODO: can we make this optional ?
         // $conn->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
