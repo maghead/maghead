@@ -1,6 +1,12 @@
 Changes
 =======
 
+## v3.0
+
+- Added `--backup` option to migration command.
+- Added mysql backup support tool.
+- Added predefined uuid primary key column.
+
 ## v2.2.3
 
 - Fixed loadOrCreate / updateOrCreate method checking.
