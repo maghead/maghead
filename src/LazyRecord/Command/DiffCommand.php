@@ -42,7 +42,7 @@ class DiffCommand extends BaseCommand
         $tableSchemas = $parser->getDeclareSchemaMap();
 
         $found = false;
-        $comparator = new Comparator;
+        $comparator = new Comparator($driver);
         foreach ($tableSchemas as $table => $currentSchema) {
             $this->logger->debug("Checking table $table");
 

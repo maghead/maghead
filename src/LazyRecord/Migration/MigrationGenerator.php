@@ -102,7 +102,8 @@ class MigrationGenerator
         $upgradeMethod = $template->addMethod('public', 'upgrade', array(),'');
         $downgradeMethod = $template->addMethod('public', 'downgrade', array(),'');
 
-        $comparator = new Comparator;
+        $comparator = new Comparator($driver);
+
         // schema from runtime
         foreach( $schemas as $b ) {
             $tableName = $b->getTable();

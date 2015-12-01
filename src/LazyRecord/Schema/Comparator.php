@@ -12,7 +12,7 @@ class Comparator
 {
     protected $driver;
 
-    public function __construct(BaseDriver $driver = null)
+    public function __construct(BaseDriver $driver)
     {
         $this->driver = $driver;
     }

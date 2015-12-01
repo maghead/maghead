@@ -29,7 +29,7 @@ class AutomaticMigration extends Migration implements Migratable
 
         $tableSchemas = $parser->getDeclareSchemaMap();
 
-        $comparator = new Comparator;
+        $comparator = new Comparator($this->driver);
         $existingTables = $parser->getTables();
 
         // schema from runtime

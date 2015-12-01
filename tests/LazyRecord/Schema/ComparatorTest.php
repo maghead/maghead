@@ -3,6 +3,16 @@ use LazyRecord\Schema\Comparator;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\Comparator\ConsolePrinter;
 use LazyRecord\Schema\ColumnDiff;
+use SQLBuilder\Driver\BaseDriver;
+
+class NeutralDriver extends BaseDriver {
+
+    public function quoteIdentifier($identifier)
+    {
+        return $identifier;
+    }
+
+}
 
 class ComparatorTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +34,7 @@ class ComparatorTest extends \PHPUnit_Framework_TestCase
         $after->column('added')
             ->varchar(10);
 
-        $comparator = new Comparator;
+        $comparator = new Comparator(new NeutralDriver);
         $diffs = $comparator->compare($before, $after);
         foreach ($diffs as $diff) {
             $this->assertInstanceOf('LazyRecord\Schema\Comparator\ColumnDiff', $diff);

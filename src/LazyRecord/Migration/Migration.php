@@ -28,23 +28,23 @@ class Migration implements Migratable
     /**
      * @var QueryDriver
      */
-    public $driver;
+    protected $driver;
 
 
     /**
      * @var PDO object
      */
-    public $connection;
+    protected $connection;
 
     /**
      * @var CLIFramework\Logger
      */
-    public $logger;
+    protected $logger;
 
     /**
      * @var LazyRecord\SqlBuilder\BaseBuilder
      */
-    public $builder;
+    protected $builder;
 
     public function __construct(BaseDriver $driver, PDO $connection, Container $serviceContainer = null)
     {
