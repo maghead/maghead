@@ -8,12 +8,25 @@ use LazyRecord\DSN\DSN;
 
 class Connection extends PDO
 {
+    /**
+     * @var array
+     */
     protected $config;
 
+    /**
+     * @var string
+     */
     protected $user;
 
+
+    /**
+     * @var string
+     */
     protected $pass;
 
+    /**
+     * @var LazyRecord\DSN\DSN
+     */
     private $dsn;
 
     static public function create(array $config)
@@ -55,6 +68,10 @@ class Connection extends PDO
         return $this->dsn = $parser->parse($this->config['dsn']);
     }
 
+    public function __clone()
+    {
+        $this->dsn = clone $this->dsn;
+    }
 }
 
 

@@ -13,6 +13,22 @@ class MySQLBackupTest extends ModelTestCase
         return [];
     }
 
+    public function testIncrementalBackup()
+    {
+        $connManager = ConnectionManager::getInstance();
+        $source = $connManager->getConnection('mysql');
+        $backup = new MySQLBackup;
+        $backup->incrementalBackup($source);
+    }
+
+    public function testBackupToDatabase()
+    {
+        $connManager = ConnectionManager::getInstance();
+        $source = $connManager->getConnection('mysql');
+        $backup = new MySQLBackup;
+        $backup->backupToDatabase($source, 'backup_test2', true);
+    }
+
     public function testBackup()
     {
         $connManager = ConnectionManager::getInstance();
@@ -28,6 +44,6 @@ class MySQLBackupTest extends ModelTestCase
             ]
         ]);
         $backup = new MySQLBackup;
-        $backup->pipe($source, $dest);
+        $backup->backup($source, $dest);
     }
 }

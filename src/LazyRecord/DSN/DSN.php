@@ -12,10 +12,19 @@ use ArrayIterator;
  */
 class DSN implements ArrayAccess, IteratorAggregate
 {
+    /**
+     * @var string 
+     */
     protected $driver;
 
+    /**
+     * @var array
+     */
     protected $attributes;
 
+    /**
+     * @var array
+     */
     protected $arguments;
 
     /**
@@ -127,7 +136,6 @@ class DSN implements ArrayAccess, IteratorAggregate
     {
         return $this->originalDSN;
     }
-
 }
 
 
