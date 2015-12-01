@@ -19,8 +19,14 @@ class SqliteBuilder extends BaseBuilder
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
         $type = $column->type;
-        if( ! $type && $isa == 'str' )
+        if (! $type && $isa == 'str') {
             $type = 'text';
+        }
+
+        // Note that sqlite doesn't support unsigned integer primary key column
+        if ($column->autoIncrement) {
+            $column->unsigned = false;
+        }
 
         $args = new ArgumentArray;
         $sql = $column->buildDefinitionSql($this->driver, $args);

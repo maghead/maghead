@@ -4,7 +4,7 @@ use LazyRecord\Schema\DeclareColumn;
 
 class AutoIncrementPrimaryKeyColumn extends DeclareColumn
 {
-    public function __construct($name = 'id', $type = 'int')
+    public function __construct($name = 'id', $type = 'integer')
     {
         parent::__construct($name);
         $this->type($type)
