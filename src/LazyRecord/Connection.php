@@ -10,6 +10,10 @@ class Connection extends PDO
 {
     protected $config;
 
+    protected $user;
+
+    protected $pass;
+
     private $dsn;
 
     static public function create(array $config)
@@ -19,10 +23,6 @@ class Connection extends PDO
         return $connection;
     }
 
-    public function setConfig(array $config)
-    {
-        $this->config = $config;
-    }
 
     public function prepareAndExecute($sql, array $args = array())
     {
@@ -41,13 +41,20 @@ class Connection extends PDO
         return $this->config;
     }
 
+    public function setConfig(array $config)
+    {
+        $this->config = $config;
+    }
+
     public function getDSN()
     {
         if ($this->dsn) {
             return $this->dsn;
         }
-        return $this->dsn = DSNParser::parse($this->config['dsn']);
+        $parser = new DSNParser;
+        return $this->dsn = $parser->parse($this->config['dsn']);
     }
+
 }
 
 
