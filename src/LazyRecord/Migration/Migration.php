@@ -76,6 +76,11 @@ class Migration implements Migratable
     }
 
 
+    /**
+     * executeQuery method execute the query for objects that supports SQLBuilder\ToSqlInterface
+     *
+     * @param ToSqlInterface $query
+     */
     public function executeQuery(ToSqlInterface $query)
     {
         $sql = $query->toSql($this->driver, new ArgumentArray);
@@ -83,7 +88,7 @@ class Migration implements Migratable
     }
 
 
-    public function showSql($sql, $title = '')
+    protected function showSql($sql, $title = '')
     {
         if (strpos($sql,"\n") !== false) {
             $this->logger->info('Performing Query: ' . $title);
