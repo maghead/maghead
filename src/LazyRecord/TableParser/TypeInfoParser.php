@@ -82,23 +82,49 @@ class TypeInfoParser
             }
         } else if ($driver instanceof MySQLDriver) {
 
-            if ($typeInfo->type === 'tinyint' && $typeInfo->length == 1) {
-                $typeInfo->type = 'boolean';
-                $typeInfo->isa = 'bool';
-                $typeInfo->length = NULL;
-            } 
-            // reset length if it's mysql default data length
-            if (($typeInfo->type === 'integer' || $typeInfo->type === 'int') && ($typeInfo->length == 11 || $typeInfo->length == 10)) {
-                $typeInfo->type = 'int';
-                $typeInfo->length = NULL;
-            } else if ($typeInfo->type === 'mediumint' && ($typeInfo->length == 8 || $typeInfo->length == 9)) {
-                $typeInfo->length = NULL;
-            } else if ($typeInfo->type === 'smallint' && ($typeInfo->length == 5 || $typeInfo->length == 6)) {
-                $typeInfo->length = NULL;
-            } else if ($typeInfo->type === 'bigint' && ($typeInfo->length == 20 || $typeInfo->length == 21)) {
-                $typeInfo->length = NULL;
-            }
 
+            switch ($typeInfo->type) {
+            case 'tinyint':
+                if ($typeInfo->length == 1) {
+                    $typeInfo->type = 'boolean';
+                    $typeInfo->isa = 'bool';
+                    $typeInfo->length = NULL;
+                } else if (
+                    ($typeInfo->unsigned && $typeInfo->length == 3)
+                    || (!$typeInfo->unsigned && $typeInfo->length == 4)
+                ) {
+                    $typeInfo->length = NULL;
+                }
+                break;
+            case 'integer':
+            case 'int':
+                $typeInfo->type = 'int';
+                if (($typeInfo->unsigned && $typeInfo->length == 10)
+                    || (!$typeInfo->unsigned && $typeInfo->length == 11))
+                {
+                    $typeInfo->length = NULL;
+                }
+                break;
+            case 'smallint':
+                if (($typeInfo->unsigned && $typeInfo->length == 5)
+                    || (!$typeInfo->unsigned && $typeInfo->length == 6)) {
+                    $typeInfo->length = NULL;
+                }
+                break;
+            case 'mediumint':
+                if (($typeInfo->unsigned && $typeInfo->length == 8)
+                    || (!$typeInfo->unsigned && $typeInfo->length == 9))
+                {
+                    $typeInfo->length = NULL;
+                }
+                break;
+            case 'bigint':
+                if (($typeInfo->unsigned && $typeInfo->length == 20)
+                    || (!$typeInfo->unsigned && $typeInfo->length == 21)) {
+                    $typeInfo->length = NULL;
+                }
+                break;
+            }
         }
 
         // Update isa property

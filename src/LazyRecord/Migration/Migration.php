@@ -15,6 +15,7 @@ use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\ServiceContainer;
+use Pimple\Container;
 use PDO;
 use PDOException;
 use Exception;
@@ -45,9 +46,9 @@ class Migration implements Migratable
      */
     public $builder;
 
-    public function __construct(BaseDriver $driver, PDO $connection)
+    public function __construct(BaseDriver $driver, PDO $connection, Container $serviceContainer = null)
     {
-        $c = ServiceContainer::getInstance();
+        $c = $serviceContainer ?: ServiceContainer::getInstance();
         $this->driver = $driver;
         $this->connection = $connection;
         $this->logger  = $c['logger'] ?: Console::getInstance()->getLogger();
