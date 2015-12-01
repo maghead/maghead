@@ -8,7 +8,7 @@ class UUIDPrimaryKeyColumn extends DeclareColumn
     /**
      * TODO: the best type for UUID in mysql is BINARY(36)
      */
-    public function __construct($name = 'id', $type = 'char', $length = 36)
+    public function __construct($name = 'uuid', $type = 'char', $length = 36)
     {
         parent::__construct($name);
         $this->type($type)
