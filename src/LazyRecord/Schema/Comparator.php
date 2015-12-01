@@ -5,6 +5,7 @@ use LazyRecord\Schema\ColumnAccessorInterface;
 use LazyRecord\Schema\Comparator\ColumnDiff;
 use LazyRecord\Schema\Comparator\AttributeDiff;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\MySQLDriver;
 use Closure;
 use SQLBuilder\Raw;
 
@@ -57,17 +58,22 @@ class Comparator
                     $d->appendDetail(new AttributeDiff('decimals', $bc->buildTypeName(), $ac->buildTypeName()));
                 }
 
-                if ($bc->unsigned != $ac->unsigned) {
-                    $d->appendDetail(new AttributeDiff('unsigned', $bc->unsigned, $ac->unsigned));
+                if ($bc->primary != $ac->primary) {
+                    $d->appendDetail(new AttributeDiff('primary', $bc->primary, $ac->primary));
+                }
+
+                // we only compare unsigned when:
+                //   driver is MySQL or the column is not a primary key
+                if (!$ac->primary && !$bc->primary || $this->driver instanceof MySQLDriver) {
+                    if ($bc->unsigned != $ac->unsigned) {
+                        $d->appendDetail(new AttributeDiff('unsigned', $bc->unsigned, $ac->unsigned));
+                    }
                 }
 
                 if ($bc->notNull != $ac->notNull) {
                     $d->appendDetail(new AttributeDiff('notNull', $bc->notNull, $ac->notNull));
                 }
 
-                if ($bc->primary != $ac->primary) {
-                    $d->appendDetail(new AttributeDiff('primary', $bc->primary, $ac->primary));
-                }
 
                 // have the same column, compare attributes
                 $attributes = array('default');
