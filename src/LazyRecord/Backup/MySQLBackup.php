@@ -44,8 +44,10 @@ class MySQLBackup
         $now = new DateTime();
         $dbname .= '_'.$now->format('Ymd_Hi');
         $source->query('CREATE DATABASE IF NOT EXISTS '.$dbname.' CHARSET utf8;');
-
-        return $this->backupToDatabase($source, $dbname, false);
+        if ($this->backupToDatabase($source, $dbname, false)) {
+            return $dbname;
+        }
+        return false;
     }
 
     public function backupToDatabase(Connection $source, $databaseName, $dropAndCreate = false)
