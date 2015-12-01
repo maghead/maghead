@@ -4,11 +4,19 @@ use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\ColumnAccessorInterface;
 use LazyRecord\Schema\Comparator\ColumnDiff;
 use LazyRecord\Schema\Comparator\AttributeDiff;
+use SQLBuilder\Driver\BaseDriver;
 use Closure;
 use SQLBuilder\Raw;
 
 class Comparator
 {
+    protected $driver;
+
+    public function __construct(BaseDriver $driver = null)
+    {
+        $this->driver = $driver;
+    }
+
     /**
      * compare two schemas
      *
