@@ -15,7 +15,7 @@
         "php": ">=5.4.0",
         "corneltek/sqlbuilder": "dev-master",
         "corneltek/locale": "2.0.x-dev",
-        "corneltek/cliframework": "^2",
+        "corneltek/cliframework": "3.0.x-dev",
         "corneltek/class-template": "^2",
         "corneltek/serializerkit": "^1",
         "corneltek/validationkit": "^1",
