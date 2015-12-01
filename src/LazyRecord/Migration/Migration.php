@@ -78,7 +78,6 @@ class Migration implements Migratable
     public function executeQuery(ToSqlInterface $query)
     {
         $sql = $query->toSql($this->driver, new ArgumentArray);
-        $this->showSql($sql);
         $this->query($sql);
     }
 
