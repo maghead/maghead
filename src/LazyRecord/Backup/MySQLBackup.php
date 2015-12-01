@@ -21,7 +21,7 @@ class MySQLBackup
     {
         $dsn = $conn->getDSN();
         $config = $conn->getConfig();
-        $parameters = [];
+        $parameters = ['--default-character-set=utf8'];
         if (isset($config['user'])) {
             $parameters[] = '-u'.$config['user'];
         }
@@ -39,11 +39,11 @@ class MySQLBackup
 
     public function incrementalBackup(Connection $source)
     {
-        $newDSN = $source->getDSN();
+        $newDSN = clone $source->getDSN();
         $dbname = $newDSN->getAttribute('dbname');
         $now = new DateTime();
         $dbname .= '_'.$now->format('Ymd_Hi');
-        $source->query('CREATE DATABASE IF NOT EXISTS '.$dbname.' CHARSET utf8;');
+        $source->query('CREATE DATABASE IF NOT EXISTS '.$dbname.' CHARSET utf8');
         if ($this->backupToDatabase($source, $dbname, false)) {
             return $dbname;
         }
@@ -52,14 +52,14 @@ class MySQLBackup
 
     public function backupToDatabase(Connection $source, $databaseName, $dropAndCreate = false)
     {
-        $newDSN = $source->getDSN();
+        $newDSN = clone $source->getDSN();
         if ($newDSN->getAttribute('dbname') == $databaseName) {
             throw new LogicException('Backup to the same database.');
         }
 
         if ($dropAndCreate) {
             $source->query('DROP DATABASE IF EXISTS '.$databaseName);
-            $source->query('CREATE DATABASE IF NOT EXISTS '.$databaseName.' CHARSET utf8;');
+            $source->query('CREATE DATABASE IF NOT EXISTS '.$databaseName.' CHARSET utf8');
         }
 
         // Create new dest database connection
@@ -91,7 +91,6 @@ class MySQLBackup
         $mysqlCommand = $this->mysql.' '.implode(' ', $this->formatCommandParameters($dest));
         $command = $dumpCommand.' | '.$mysqlCommand;
         $lastline = system($command, $ret);
-
         return $ret == 0 ? true : false;
     }
 }
