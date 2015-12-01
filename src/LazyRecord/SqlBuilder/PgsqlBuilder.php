@@ -22,6 +22,12 @@ class PgsqlBuilder extends BaseBuilder
         if (!$column->type && $isa == 'str') {
             $column->type = 'text';
         }
+
+        // Note that pgsql doesn't support unsigned integer primary key column
+        if ($column->autoIncrement) {
+            $column->unsigned = false;
+        }
+
         $args = new ArgumentArray;
         $sql = $column->buildDefinitionSql($this->driver, $args);
         return $sql;
