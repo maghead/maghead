@@ -208,11 +208,18 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
 
-    public function insertAutoIdColumn()
+    /**
+     * Insert a primary key column with auto increment
+     *
+     * @param string $name default to 'id'
+     * @param string $columnType 'int', 'smallint', 'bigint' ...
+     */
+    protected function insertAutoIdColumn($name = 'id', $columnType = 'int')
     {
-        $column = new AutoIncrementPrimaryKeyColumn;
+        $column = new AutoIncrementPrimaryKeyColumn($name, $columnType);
         $this->primaryKey = $column->name;
         $this->insertColumn($column);
+        return $column;
     }
 
     /**
