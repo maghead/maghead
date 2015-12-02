@@ -219,6 +219,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
 
+    /**
+     * 'getColumn' gets the column object by the given column name.
+     *
+     * @param string $name
+     */
     public function getColumn($name)
     {
         if ( isset($this->columns[ $name ]) ) {
@@ -226,12 +231,24 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         }
     }
 
+
+    /**
+     * hasColumn method returns true if a column name is defined.
+     *
+     * @param string $name
+     * @return boolean
+     */
     public function hasColumn($name)
     {
         return isset($this->columns[ $name ]);
     }
 
 
+    /**
+     * Insert column object at the begining of the column list.
+     *
+     * @param DeclareColumn $column
+     */
     public function insertColumn(DeclareColumn $column)
     {
         array_unshift($this->columnNames, $column->name);
@@ -255,6 +272,8 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
 
     /**
      * Find primary keys from columns
+     *
+     * @return string
      */
     public function findPrimaryKey()
     {
@@ -694,12 +713,13 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         }
     }
 
-    public function __toString() 
+    public function __toString()
     {
         return get_class($this);
     }
 
-    public function getMsgIds() {
+    public function getMsgIds()
+    {
         $ids = [];
         $ids[] = $this->getLabel();
         foreach( $this->getColumnLabels() as $label ) {
