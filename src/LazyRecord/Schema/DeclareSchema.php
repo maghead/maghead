@@ -346,6 +346,17 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->collectionInterfaceClasses;
     }
 
+    public function getShortClassName()
+    {
+        $strs = explode('\\', get_class($this));
+        return end($strs);
+    }
+
+    public function getClassName()
+    {
+        return get_class($this);
+    }
+
 
     public function getLabel()
     {
@@ -782,6 +793,8 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->getDirectory() . DIRECTORY_SEPARATOR . $shortClassName . '.php';
     }
 
+
+
     /**
      * Get directory from current schema object.
      *
@@ -793,6 +806,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $dir = dirname($refl->getFilename());
     }
 
+    public function getClassFileName()
+    {
+        $refl = new ReflectionObject($this);
+        return $refl->getFilename();
+    }
 
     /**
      * Return the modification time of this schema definition class.

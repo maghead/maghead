@@ -48,7 +48,19 @@ class StatusCommand extends BaseCommand
 
         $schemas = $this->findSchemasByArguments(func_get_args());
         foreach ($schemas as $schema) {
-            $actionLog = $actionLogger->newAction(get_class($schema), '');
+
+            if ($this->logger->isVerbose()) {
+                $actionLog = $actionLogger->newAction(get_class($schema), get_class($schema));
+
+            } else if ($this->logger->isDebug()) {
+
+                $filepath = str_replace(getcwd() . '/', '', $schema->getClassFileName());
+                $actionLog = $actionLogger->newAction($filepath, get_class($schema));
+                $actionLog->setActionColumnWidth(50);
+
+            } else {
+                $actionLog = $actionLogger->newAction($schema->getShortClassName(), get_class($schema));
+            }
             $actionLog->setStatus('checking');
 
             if ($schema->requireProxyFileUpdate()) {
