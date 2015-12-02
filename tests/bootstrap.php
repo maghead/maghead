@@ -40,5 +40,5 @@ $schemas = array(
 );
 $g = new \LazyRecord\Schema\SchemaGenerator($config, $logger);
 $g->setForceUpdate(true);
-$g->generate($schemas, true);
+$g->generate($schemas);
 // $logger->info("Starting tests...");

@@ -58,7 +58,9 @@ class BuildCommand extends BaseCommand
         set_error_handler(function($errno, $errstr, $errfile, $errline) {
             printf( "ERROR %s:%s  [%s] %s\n" , $errfile, $errline, $errno, $errstr );
         }, E_ERROR );
-        $classMap = $generator->generate($classes, $this->options->force);
+
+
+        $classMap = $generator->generate($classes);
 
         $this->logger->debug("Restoring error handler...");
         restore_error_handler();
