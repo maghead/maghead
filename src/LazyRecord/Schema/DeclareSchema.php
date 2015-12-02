@@ -101,70 +101,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->readSourceId ?: 'default';
     }
 
-    /**
-     * set data source for both write and read
-     *
-     * @param string $id data source id
-     */
-    public function using( $id ) 
-    {
-        $this->writeSourceId = $id;
-        $this->readSourceId = $id;
-        return $this;
-    }
 
-
-    /**
-     * set data source for write
-     *
-     * @param string $id data source id
-     */
-    public function writeTo( $id ) 
-    {
-        $this->writeSourceId = $id;
-        return $this;
-    }
-
-
-    /**
-     * set data source for read
-     *
-     * @param string $id data source id
-     */
-    public function readFrom( $id )
-    {
-        $this->readSourceId = $id;
-        return $this;
-    }
-
-
-    /**
-     * 'seeds' helps you define seed classes
-     *
-     *     $this->seeds('User\\Seed','Data\\Seed');
-     *
-     * @return DeclareSchema
-     */
-    public function seeds()
-    {
-        $seeds = func_get_args();
-        $this->seeds = array_map(function($class) {
-            return str_replace('::','\\',$class);
-        }, $seeds);
-        return $this;
-    }
-
-
-    /**
-     * Add seed class
-     *
-     * @param string $seed
-     */
-    public function addSeed($seed)
-    {
-        $this->seeds[] = $seed;
-        return $this;
-    }
 
     public function getColumns($includeVirtual = false) 
     {
@@ -335,28 +272,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return var_export( $this->export() , true );
     }
 
-    /**
-     * Define schema label.
-     *
-     * @param string $label label name
-     */
-    public function label($label)
-    {
-        $this->label = $label;
-        return $this;
-    }
 
-
-    /**
-     * Define table name
-     *
-     * @param string $table table name
-     */
-    public function table($table)
-    {
-        $this->table = $table;
-        return $this;
-    }
 
 
     /**
@@ -430,35 +346,6 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->collectionInterfaceClasses;
     }
 
-    /**
-     * Mixin
-     *
-     * Availabel mixins
-     *
-     *     $this->mixin('Metadata' , array( options ) );
-     *     $this->mixin('I18n');
-     *
-     * @param string $class mixin class name
-     */
-    public function mixin($class, array $options = array())
-    {
-        if (! class_exists($class,true) ) {
-            $class = 'LazyRecord\\Schema\\Mixin\\' . $class;
-            if ( ! class_exists($class,true) ) {
-                throw new Exception("Mixin class $class not found.");
-            }
-        }
-
-        $mixin = new $class($this, $options);
-        $this->addMixinSchemaClass($class);
-        $this->mixinSchemas[] = $mixin;
-
-        /* merge columns into self */
-        $this->columns = array_merge($this->columns, $mixin->columns);
-        $this->relations = array_merge($this->relations, $mixin->relations);
-        $this->indexes = array_merge($this->indexes, $mixin->indexes);
-        $this->modelTraitClasses = array_merge($this->modelTraitClasses, $mixin->modelTraitClasses);
-    }
 
     public function getLabel()
     {
@@ -502,40 +389,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $class;
     }
 
-    /**
-     * Get directory from current schema object.
-     *
-     * @return string path
-     */
-    public function getDirectory()
-    {
-        $refl = new ReflectionObject($this);
-        return $dir = dirname($refl->getFilename());
-    }
 
-
-    /**
-     * Return the modification time of this schema definition class.
-     *
-     * @return integer timestamp
-     */
-    public function getModificationTime()
-    {
-        $refl = new ReflectionObject($this);
-        return filemtime($refl->getFilename());
-    }
-
-    /**
-     *
-     * @param string $path
-     */
-    public function isNewerThanFile($path)
-    {
-        if (! file_exists($path)) {
-            return true;
-        }
-        return $this->getModificationTime() > filemtime($path);
-    }
 
     /**
      * Convert current model name to a class name.
@@ -548,17 +402,82 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
 
+
     /**
-     * SchemaGenerator generates column accessor methods from the
-     * column definition automatically
+     * Add column object into the column list.
      *
-     * If you don't want these accessors to be generated, you may simply call
-     * 'disableColumnAccessors'
+     * @param DeclareColumn
+     * @return DeclareColumn
      */
-    protected function disableColumnAccessors()
+    public function addColumn(DeclareColumn $column)
     {
-        $this->enableColumnAccessors = false;
+        if (isset($this->columns[$column->name])) {
+            throw new Exception("column $name of ". get_class($this) . " is already defined.");
+        }
+        $this->columnNames[] = $column->name;
+        return $this->columns[ $column->name ] = $column;
     }
+
+
+    protected function _modelClassToLabel()
+    {
+        /* Get the latest token. */
+        if ( preg_match( '/(\w+)(?:Model)?$/', $this->getModelClass() , $reg) ) 
+        {
+            $label = @$reg[1];
+            if ( ! $label ) {
+                throw new Exception( "Table name error" );
+            }
+
+            /* convert blah_blah to BlahBlah */
+            return ucfirst(preg_replace( '/[_]/' , ' ' , $label ));
+        }
+    }
+
+    public function __toString()
+    {
+        return get_class($this);
+    }
+
+    public function getMsgIds()
+    {
+        $ids = [];
+        $ids[] = $this->getLabel();
+        foreach( $this->getColumnLabels() as $label ) {
+            $ids[] = $label;
+        }
+        return $ids;
+    }
+
+    /*****************************************************************************
+     * Definition Methods
+     * =====================
+     *
+     * Methods used for defining a schema.
+     ****************************************************************************/
+
+    /**
+     * Define schema label.
+     *
+     * @param string $label label name
+     */
+    public function label($label)
+    {
+        $this->label = $label;
+        return $this;
+    }
+
+    /**
+     * Define table name
+     *
+     * @param string $table table name
+     */
+    public function table($table)
+    {
+        $this->table = $table;
+        return $this;
+    }
+
 
     /**
      * Define new column object
@@ -576,21 +495,159 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->columns[ $name ] = new $class( $name );
     }
 
+    /**
+     * SchemaGenerator generates column accessor methods from the
+     * column definition automatically
+     *
+     * If you don't want these accessors to be generated, you may simply call
+     * 'disableColumnAccessors'
+     */
+    protected function disableColumnAccessors()
+    {
+        $this->enableColumnAccessors = false;
+    }
 
     /**
-     * Add column object into the column list.
+     * Invode helper
      *
-     * @param DeclareColumn
-     * @return DeclareColumn
+     * @param string $helperName 
+     * @param array $arguments indexed array, passed to the init function of helper class.
+     *
+     * @return Helper\BaseHelper
      */
-    public function addColumn(DeclareColumn $column)
+    public function helper($helperName, $arguments = array())
     {
-        if (isset($this->columns[$column->name])) {
-            throw new Exception("column $name of ". get_class($this) . " is already defined.");
-        }
-        $this->columnNames[] = $column->name;
-        return $this->columns[ $column->name ] = $column;
+        $helperClass = 'LazyRecord\\Schema\\Helper\\' . $helperName . 'Helper';
+        $helper = new $helperClass($this, $arguments);
+        return $helper;
     }
+
+    /**
+     * Mixin
+     *
+     * Availabel mixins
+     *
+     *     $this->mixin('Metadata' , array( options ) );
+     *     $this->mixin('I18n');
+     *
+     * @param string $class mixin class name
+     */
+    public function mixin($class, array $options = array())
+    {
+        if (! class_exists($class,true) ) {
+            $class = 'LazyRecord\\Schema\\Mixin\\' . $class;
+            if ( ! class_exists($class,true) ) {
+                throw new Exception("Mixin class $class not found.");
+            }
+        }
+
+        $mixin = new $class($this, $options);
+        $this->addMixinSchemaClass($class);
+        $this->mixinSchemas[] = $mixin;
+
+        /* merge columns into self */
+        $this->columns = array_merge($this->columns, $mixin->columns);
+        $this->relations = array_merge($this->relations, $mixin->relations);
+        $this->indexes = array_merge($this->indexes, $mixin->indexes);
+        $this->modelTraitClasses = array_merge($this->modelTraitClasses, $mixin->modelTraitClasses);
+    }
+
+
+    /**
+     * set data source for both write and read
+     *
+     * @param string $id data source id
+     */
+    public function using( $id ) 
+    {
+        $this->writeSourceId = $id;
+        $this->readSourceId = $id;
+        return $this;
+    }
+
+
+    /**
+     * set data source for write
+     *
+     * @param string $id data source id
+     */
+    public function writeTo( $id ) 
+    {
+        $this->writeSourceId = $id;
+        return $this;
+    }
+
+
+    /**
+     * set data source for read
+     *
+     * @param string $id data source id
+     */
+    public function readFrom( $id )
+    {
+        $this->readSourceId = $id;
+        return $this;
+    }
+
+
+
+
+    /**
+     * 'index' method helps you define index queries.
+     *
+     * @return CreateIndexQuery
+     */
+    protected function index($name, array $columns = null)
+    {
+        if (isset($this->indexes[$name])) {
+            return $this->indexes[$name];
+        }
+        $query = $this->indexes[$name] = new CreateIndexQuery($name);
+        if ($columns) {
+            if (empty($columns)) {
+                throw new InvalidArgumentException("index columns must not be empty.");
+            }
+            $query->on($this->getTable(), $columns);
+        }
+        return $query;
+    }
+
+
+    /**
+     * 'seeds' helps you define seed classes
+     *
+     *     $this->seeds('User\\Seed','Data\\Seed');
+     *
+     * @return DeclareSchema
+     */
+    public function seeds()
+    {
+        $seeds = func_get_args();
+        $this->seeds = array_map(function($class) {
+            return str_replace('::','\\',$class);
+        }, $seeds);
+        return $this;
+    }
+
+
+    /**
+     * Add seed class
+     *
+     * @param string $seed
+     */
+    public function addSeed($seed)
+    {
+        $this->seeds[] = $seed;
+        return $this;
+    }
+
+
+    /*****************************************************************************
+     * Relationship Definition Methods
+     * ===============================
+     *
+     * Methods used for defining relationships
+     ****************************************************************************/
 
 
     /**
@@ -698,44 +755,23 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         throw new Exception("Relation $relationId is not defined.");
     }
 
-    protected function _modelClassToLabel()
-    {
-        /* Get the latest token. */
-        if ( preg_match( '/(\w+)(?:Model)?$/', $this->getModelClass() , $reg) ) 
-        {
-            $label = @$reg[1];
-            if ( ! $label ) {
-                throw new Exception( "Table name error" );
-            }
 
-            /* convert blah_blah to BlahBlah */
-            return ucfirst(preg_replace( '/[_]/' , ' ' , $label ));
-        }
-    }
 
-    public function __toString()
-    {
-        return get_class($this);
-    }
 
-    public function getMsgIds()
-    {
-        $ids = [];
-        $ids[] = $this->getLabel();
-        foreach( $this->getColumnLabels() as $label ) {
-            $ids[] = $label;
-        }
-        return $ids;
-    }
+    /*****************************************************************************
+     *                            File Level Methods
+     ****************************************************************************/
 
 
     /**
-     * Get the related class file path.
+     * Get the related class file path by the given class name.
      *
      * @param string $class the scheam related class name
      *
-     * $schema->getRelatedClassPath( $schema->getModelClass() );
-     * $schema->getRelatedClassPath("App\\Model\\Book"); // return {app dir}/App/Model/Book.php
+     * @code
+     *   $schema->getRelatedClassPath( $schema->getModelClass() );
+     *   $schema->getRelatedClassPath("App\\Model\\Book"); // return {app dir}/App/Model/Book.php
+     * @code
      *
      * @return string the class filepath.
      */
@@ -746,21 +782,60 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->getDirectory() . DIRECTORY_SEPARATOR . $shortClassName . '.php';
     }
 
+    /**
+     * Get directory from current schema object.
+     *
+     * @return string path
+     */
+    public function getDirectory()
+    {
+        $refl = new ReflectionObject($this);
+        return $dir = dirname($refl->getFilename());
+    }
+
 
     /**
-     * Invode helper
+     * Return the modification time of this schema definition class.
      *
-     * @param string $helperName 
-     * @param array $arguments indexed array, passed to the init function of helper class.
-     *
-     * @return Helper\BaseHelper
+     * @return integer timestamp
      */
-    public function helper($helperName, $arguments = array())
+    public function getModificationTime()
     {
-        $helperClass = 'LazyRecord\\Schema\\Helper\\' . $helperName . 'Helper';
-        $helper = new $helperClass($this, $arguments);
-        return $helper;
+        $refl = new ReflectionObject($this);
+        return filemtime($refl->getFilename());
     }
+
+    /**
+     * isNewerThanFile returns true if the schema file is newer than a file.
+     *
+     * @param string $path
+     *
+     * @return boolean
+     */
+    public function isNewerThanFile($path)
+    {
+        if (! file_exists($path)) {
+            return true;
+        }
+        return $this->getModificationTime() > filemtime($path);
+    }
+
+
+    /**
+     * requireProxyFileUpdate returns true if the schema proxy file is out of date.
+     *
+     * @return boolean
+     */
+    public function requireProxyFileUpdate()
+    {
+        $classFilePath = $this->getRelatedClassPath($this->getSchemaProxyClass());
+        return $this->isNewerThanFile($classFilePath);
+    }
+
+
+
+
+
 
 
     /**
@@ -772,25 +847,6 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->indexes;
     }
 
-    /**
-     * 'index' method helps you define index queries.
-     *
-     * @return CreateIndexQuery
-     */
-    protected function index($name, array $columns = null)
-    {
-        if (isset($this->indexes[$name])) {
-            return $this->indexes[$name];
-        }
-        $query = $this->indexes[$name] = new CreateIndexQuery($name);
-        if ($columns) {
-            if (empty($columns)) {
-                throw new InvalidArgumentException("index columns must not be empty.");
-            }
-            $query->on($this->getTable(), $columns);
-        }
-        return $query;
-    }
 
 
 }

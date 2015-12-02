@@ -39,22 +39,14 @@ class StatusCommand extends BaseCommand
     public function execute()
     {
         $logger = $this->getLogger();
-
-
         $config = $this->getConfigLoader();
-
         $this->logger->debug('Finding schemas...');
         $classes = $this->findSchemasByArguments(func_get_args());
-
-        $this->logger->debug("Initializing schema generator...");
-
-        $generator = new SchemaGenerator($config, $this->logger);
-
+        $generator = new SchemaGenerator($config);
         if ($this->options->force) {
             $generator->setForceUpdate(true);
         }
-        $classMap = $generator->generate($classes, $this->options->force);
-        $logger->info('Done');
+        $classMap = $generator->generate($classes);
     }
 
 }

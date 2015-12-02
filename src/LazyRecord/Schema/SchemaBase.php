@@ -33,6 +33,8 @@ abstract class SchemaBase
 
     protected $_modelName;
 
+    abstract public function getModelClass();
+
     public function getModelName()
     {
         if ( $this->_modelName ) {
