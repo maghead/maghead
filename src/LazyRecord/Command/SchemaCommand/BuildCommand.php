@@ -45,7 +45,7 @@ class BuildCommand extends BaseCommand
 
         $this->logger->debug("Initializing schema generator...");
 
-        $generator = new SchemaGenerator($config, $this->logger);
+        $generator = new SchemaGenerator($config);
 
         if ($this->options->force) {
             $generator->setForceUpdate(true);

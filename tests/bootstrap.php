@@ -38,7 +38,6 @@ $schemas = array(
     new \TestApp\Model\WineCategorySchema,
     new \TestApp\Model\WineSchema,
 );
-$g = new \LazyRecord\Schema\SchemaGenerator($config, $logger);
+$g = new \LazyRecord\Schema\SchemaGenerator($config);
 $g->setForceUpdate(true);
 $g->generate($schemas);
-// $logger->info("Starting tests...");
