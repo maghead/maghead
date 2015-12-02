@@ -197,6 +197,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
 
+    /**
+     *
+     * @param boolean $includeVirtual
+     * @return string[]
+     */
     public function getColumnNames($includeVirtual = false)
     {
         if ( $includeVirtual ) {
@@ -738,12 +743,21 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
 
+    /**
+     *
+     * @return CreateIndexQuery[]
+     */
     public function getIndexQueries()
     {
         return $this->indexes;
     }
 
-    public function index($name, array $columns = null)
+    /**
+     * 'index' method helps you define index queries.
+     *
+     * @return CreateIndexQuery
+     */
+    protected function index($name, array $columns = null)
     {
         if (isset($this->indexes[$name])) {
             return $this->indexes[$name];
