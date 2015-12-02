@@ -104,7 +104,7 @@ class SchemaUtils
     static public function findSchemasByConfigLoader(ConfigLoader $loader, Logger $logger = null)
     {
         $finder = new SchemaFinder;
-        $finder->paths = $loader->getSchemaPaths();
+        $finder->setPaths($loader->getSchemaPaths());
         $finder->find();
 
         // load class from class map

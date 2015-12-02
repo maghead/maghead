@@ -43,7 +43,7 @@ class Utils
             } 
             // load schema paths from config
             elseif( $paths = $loader->getSchemaPaths() ) {
-                $finder->paths = $paths;
+                $finder->setPaths($paths);
             }
             $finder->find();
 
