@@ -45,7 +45,7 @@ class SchemaGenerator
         $this->forceUpdate = $force;
     }
 
-    public function getBaseModelClass() 
+    protected function getBaseModelClass() 
     {
         if ($this->config && $this->config->loaded) {
             return $this->config->getBaseModelClass();
@@ -53,7 +53,8 @@ class SchemaGenerator
         return 'LazyRecord\BaseModel';
     }
 
-    public function getBaseCollectionClass() {
+    protected function getBaseCollectionClass()
+    {
         if ($this->config && $this->config->loaded) {
             return $this->config->getBaseCollectionClass();
         }
