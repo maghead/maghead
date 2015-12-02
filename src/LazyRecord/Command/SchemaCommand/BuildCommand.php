@@ -51,7 +51,17 @@ class BuildCommand extends BaseCommand
         if ($this->options->force) {
             $generator->setForceUpdate(true);
         }
+
+
+        // for generated class source code.
+        $this->logger->debug("Setting up error handler...");
+        set_error_handler(function($errno, $errstr, $errfile, $errline) {
+            printf( "ERROR %s:%s  [%s] %s\n" , $errfile, $errline, $errno, $errstr );
+        }, E_ERROR );
         $classMap = $generator->generate($classes, $this->options->force);
+
+        $this->logger->debug("Restoring error handler...");
+        restore_error_handler();
     }
 }
 
