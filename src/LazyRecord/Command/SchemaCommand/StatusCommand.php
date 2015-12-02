@@ -41,12 +41,14 @@ class StatusCommand extends BaseCommand
         $logger = $this->getLogger();
         $config = $this->getConfigLoader();
         $this->logger->debug('Finding schemas...');
-        $classes = $this->findSchemasByArguments(func_get_args());
-        $generator = new SchemaGenerator($config);
-        if ($this->options->force) {
-            $generator->setForceUpdate(true);
+        $schemas = $this->findSchemasByArguments(func_get_args());
+        foreach ($schemas as $schema) {
+            if ($schema->requireProxyFileUpdate()) {
+                $this->logger->info(get_class($schema) . ' is out-of-date');
+            } else {
+                $this->logger->info(get_class($schema) . ' is up-to-date');
+            }
         }
-        $classMap = $generator->generate($classes);
     }
 
 }
