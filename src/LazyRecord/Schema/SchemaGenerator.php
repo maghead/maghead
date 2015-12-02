@@ -161,7 +161,7 @@ class SchemaGenerator
     }
 
 
-    public function generateSchema(SchemaInterface $schema, $overwrite = false)
+    public function generateSchema(SchemaInterface $schema)
     {
         $classMap = array();
         $cTemplates = array();
@@ -194,7 +194,7 @@ class SchemaGenerator
      * @param array $classes class list or schema object list.
      * @return array class map array of schema class and file path.
      */
-    public function generate(array $schemas, $overwrite = false)
+    public function generate(array $schemas)
     {
         // for generated class source code.
         $this->logger->debug("Setting up error handler...");
@@ -204,9 +204,9 @@ class SchemaGenerator
 
         // class map [ class => class file path ]
         $classMap = array();
-        foreach( $schemas as $schema ) {
+        foreach ($schemas as $schema) {
             $this->logger->debug("Checking " . get_class($schema) . '...');
-            $generated = $this->generateSchema($schema, $overwrite);
+            $generated = $this->generateSchema($schema);
             if (!empty($generated)) {
                 foreach ($generated as $className => $classPath) {
                     $this->logger->info(" - Updated " . $classPath);

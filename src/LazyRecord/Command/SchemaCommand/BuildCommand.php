@@ -52,8 +52,6 @@ class BuildCommand extends BaseCommand
             $generator->setForceUpdate(true);
         }
         $classMap = $generator->generate($classes, $this->options->force);
-        $logger->info('Done');
     }
-
 }
 
