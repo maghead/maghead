@@ -18,6 +18,7 @@ use SQLBuilder\Universal\Query\CreateIndexQuery;
 
 class DeclareSchema extends SchemaBase implements SchemaInterface
 {
+    public $enableColumnAccessors = true;
 
     /**
      * @var string[]
@@ -84,7 +85,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         }
     }
 
-    public function schema() 
+    public function schema()
     {
 
     }
@@ -100,6 +101,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->readSourceId ?: 'default';
     }
 
+    /**
+     * set data source for both write and read
+     *
+     * @param string $id data source id
+     */
     public function using( $id ) 
     {
         $this->writeSourceId = $id;
@@ -107,13 +113,25 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this;
     }
 
+
+    /**
+     * set data source for write
+     *
+     * @param string $id data source id
+     */
     public function writeTo( $id ) 
     {
         $this->writeSourceId = $id;
         return $this;
     }
 
-    public function readFrom( $id ) 
+
+    /**
+     * set data source for read
+     *
+     * @param string $id data source id
+     */
+    public function readFrom( $id )
     {
         $this->readSourceId = $id;
         return $this;
@@ -121,19 +139,27 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
 
 
     /**
-     * Define seed class
+     * 'seeds' helps you define seed classes
      *
-     * $this->seeds('User\Seed','Data\Seed');
+     *     $this->seeds('User\\Seed','Data\\Seed');
+     *
+     * @return DeclareSchema
      */
-    public function seeds() 
+    public function seeds()
     {
         $seeds = func_get_args();
-        $this->seeds = array_map(function($class){ 
+        $this->seeds = array_map(function($class) {
             return str_replace('::','\\',$class);
         }, $seeds);
         return $this;
     }
 
+
+    /**
+     * Add seed class
+     *
+     * @param string $seed
+     */
     public function addSeed($seed)
     {
         $this->seeds[] = $seed;
@@ -474,7 +500,6 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return ClassUtils::convertClassToTableName($this->getModelName());
     }
 
-    public $enableColumnAccessors = true;
 
     public function disableColumnAccessors()
     {
@@ -498,6 +523,12 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
 
+    /**
+     * Add column object into the column list.
+     *
+     * @param DeclareColumn
+     * @return DeclareColumn
+     */
     public function addColumn(DeclareColumn $column)
     {
         if (isset($this->columns[$column->name])) {
@@ -545,7 +576,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *      post_id => post
      *   )
      */
-    public function one($accessor,$foreignClass,$foreignColumn = null, $selfColumn)
+    public function one($accessor, $foreignClass, $foreignColumn = null, $selfColumn)
     {
         // foreignColumn is default to foreignClass.primary key
         return $this->relations[ $accessor ] = new Relationship($accessor, array(

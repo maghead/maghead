@@ -20,7 +20,7 @@ use Traversable;
  */
 class SchemaFinder
 {
-    public $paths = array();
+    protected $paths = array();
 
     protected $logger;
 

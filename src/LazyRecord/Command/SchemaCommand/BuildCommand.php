@@ -51,7 +51,6 @@ class BuildCommand extends BaseCommand
             $generator->setForceUpdate(true);
         }
 
-
         // for generated class source code.
         $this->logger->debug("Setting up error handler...");
         set_error_handler(function($errno, $errstr, $errfile, $errline) {
