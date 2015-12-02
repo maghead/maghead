@@ -441,18 +441,31 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->label ?: $this->_modelClassToLabel();
     }
 
+
+    /**
+     * Get the table name of this schema class
+     *
+     * @return string
+     */
     public function getTable()
     {
         return $this->table ?: $this->_classnameToTable();
     }
 
+    /**
+     * Get the primary key column name
+     *
+     * @return string primary key column name
+     */
     public function getPrimaryKey()
     {
         return $this->primaryKey;
     }
 
     /**
-     * classname methods
+     * Get model class name of this schema
+     *
+     * @return string model class name
      */
     public function getModelClass()
     {
@@ -476,12 +489,22 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $dir = dirname($refl->getFilename());
     }
 
+
+    /**
+     * Return the modification time of this schema definition class.
+     *
+     * @return integer timestamp
+     */
     public function getModificationTime()
     {
         $refl = new ReflectionObject($this);
         return filemtime($refl->getFilename());
     }
 
+    /**
+     *
+     * @param string $path
+     */
     public function isNewerThanFile($path)
     {
         if (! file_exists($path)) {
@@ -495,13 +518,20 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *
      * @return string table name
      */
-    protected function _classnameToTable() 
+    protected function _classnameToTable()
     {
         return ClassUtils::convertClassToTableName($this->getModelName());
     }
 
 
-    public function disableColumnAccessors()
+    /**
+     * SchemaGenerator generates column accessor methods from the
+     * column definition automatically
+     *
+     * If you don't want these accessors to be generated, you may simply call
+     * 'disableColumnAccessors'
+     */
+    protected function disableColumnAccessors()
     {
         $this->enableColumnAccessors = false;
     }
@@ -575,6 +605,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *   model(
      *      post_id => post
      *   )
+     *
+     * @param string $accessor          accessor name.
+     * @param string $foreignClass      foreign schema class
+     * @param string $foreignColumn     foreign schema column
+     * @param string $selfColumn        self schema column
      */
     public function one($accessor, $foreignClass, $foreignColumn = null, $selfColumn)
     {
@@ -598,12 +633,16 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     /**
      * Add has-many relation
      *
-     *
      * TODO: provide a relationship object to handle sush operation, that will be:
      *
      *    $this->hasMany('books','id')
      *         ->from('App_Model_Book','author_id')
      *
+     *
+     * @param string $accessor          accessor name.
+     * @param string $foreignClass      foreign schema class
+     * @param string $foreignColumn     foreign schema column
+     * @param string $selfColumn        self schema column
      */
     public function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
     {
@@ -619,8 +658,9 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
 
     /**
      *
-     * @param string $accessor   accessor name
-     * @param string $relationId a hasMany relationship 
+     * @param string $accessor          accessor name.
+     * @param string $relationId        a hasMany relationship.
+     * @param string $foreignRelationId foreign relation id.
      */
     public function manyToMany($accessor, $relationId, $foreignRelationId )
     {
@@ -634,7 +674,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         throw new Exception("Relation $relationId is not defined.");
     }
 
-    protected function _modelClassToLabel() 
+    protected function _modelClassToLabel()
     {
         /* Get the latest token. */
         if ( preg_match( '/(\w+)(?:Model)?$/', $this->getModelClass() , $reg) ) 
