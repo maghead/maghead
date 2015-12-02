@@ -52,7 +52,8 @@ class CSVExporter
         $schema = $collection->getSchema();
         $keys = $schema->getColumnNames();
 
-        if (version_compare(phpversion(), '5.5.0') < 0) {
+        $php54 = version_compare(phpversion(), '5.5.0') < 0;
+        if ($php54) {
             fputcsv($this->fd, $keys, $this->delimiter, $this->enclosure);
         } else {
             fputcsv($this->fd, $keys, $this->delimiter, $this->enclosure, $this->escapeChar);
@@ -65,7 +66,7 @@ class CSVExporter
             foreach ($keys as $key) {
                 $fields[] = $array[$key];
             }
-            if (version_compare(phpversion(), '5.5.0') < 0) {
+            if ($php54) {
                 fputcsv($this->fd, $fields, $this->delimiter, $this->enclosure);
             } else {
                 fputcsv($this->fd, $fields, $this->delimiter, $this->enclosure, $this->escapeChar);
