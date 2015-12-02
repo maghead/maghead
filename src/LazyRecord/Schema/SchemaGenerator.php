@@ -94,28 +94,28 @@ class SchemaGenerator
      * @param ClassTemplate\ClassFile $cTemplate
      * @param DeclareSchema $schema
      */
-    protected function updateClassFile(ClassFile $cTemplate, DeclareSchema $schema, $overwrite = false)
+    protected function updateClassFile(ClassFile $cTemplate, DeclareSchema $schema, $canOverwrite = false)
     {
         // always update the proxy schema file
         $classFilePath = $schema->getRelatedClassPath( $cTemplate->getShortClassName() );
 
         // classes not Model/Collection class are overwriteable
-        if (! file_exists($classFilePath)) {
-
-            $this->writeClassTemplateToPath($cTemplate, $classFilePath, $overwrite);
-            $this->logger->info2(" - Creating $classFilePath");
-            return array( $cTemplate->getClassName(), $classFilePath );
-
-        } else if ($schema->isNewerThanFile($classFilePath) || $this->forceUpdate || $overwrite ) {
-
-            if ($this->writeClassTemplateToPath($cTemplate, $classFilePath, $overwrite)) {
+        if (file_exists($classFilePath)) {
+            if ($schema->isNewerThanFile($classFilePath) || ($canOverwrite && $this->forceUpdate)) {
+                $this->writeClassTemplateToPath($cTemplate, $classFilePath);
                 $this->logger->info2(" - Updating $classFilePath");
-                return array( $cTemplate->getClassName() , $classFilePath );
+                return [$cTemplate->getClassName(), $classFilePath];
+            }
+
+        } else {
+
+            if ($this->writeClassTemplateToPath($cTemplate, $classFilePath)) {
+                $this->logger->info2(" - Creating $classFilePath");
+                return [$cTemplate->getClassName() , $classFilePath];
             } else {
                 $this->logger->info2(" - Skipping $classFilePath");
             }
-        } else {
-            $this->logger->info2(" - Skipping $classFilePath");
+
         }
     }
 
@@ -125,10 +125,10 @@ class SchemaGenerator
      * @param Schema $schema
      * @param bool $force = true
      */
-    public function generateModelClass(DeclareSchema $schema, $overwrite = false)
+    public function generateModelClass(DeclareSchema $schema)
     {
         $cTemplate = ModelClassFactory::create($schema);
-        return $this->updateClassFile($cTemplate, $schema, $overwrite); // do not overwrite
+        return $this->updateClassFile($cTemplate, $schema, false); // do not overwrite
     }
 
     /**
@@ -137,10 +137,10 @@ class SchemaGenerator
      * @param DeclareSchema $schema
      * @return array class name, class file path
      */
-    public function generateCollectionClass(DeclareSchema $schema, $overwrite = false)
+    public function generateCollectionClass(DeclareSchema $schema)
     {
         $cTemplate = CollectionClassFactory::create($schema);
-        return $this->updateClassFile($cTemplate, $schema, $overwrite);
+        return $this->updateClassFile($cTemplate, $schema, false);
     }
 
 
@@ -152,42 +152,36 @@ class SchemaGenerator
      * @param boolean $overwrite Overwrite class file. 
      * @return array
      */
-    public function writeClassTemplateToPath(ClassFile $cTemplate, $filepath, $overwrite = false) 
+    protected function writeClassTemplateToPath(ClassFile $cTemplate, $filepath)
     {
-        if (! file_exists($filepath) || $overwrite) {
-            if (false === file_put_contents( $filepath, $cTemplate->render() )) {
-                throw RuntimeException("Can not write file $filepath");
-            }
-            return true;
-        } elseif ( file_exists($filepath) ) {
-            return true;
+        if (false === file_put_contents($filepath, $cTemplate->render())) {
+            throw RuntimeException("Can not write file $filepath");
         }
-        return false;
+        return true;
     }
-
-
 
 
     public function generateSchema(SchemaInterface $schema, $overwrite = false)
     {
         $classMap = array();
-
         $cTemplates = array();
-        $cTemplates[] = BaseModelClassFactory::create($schema, $this->getBaseModelClass());
+
+        // always update schema proxy and base classes
         $cTemplates[] = SchemaProxyClassFactory::create($schema);
+        $cTemplates[] = BaseModelClassFactory::create($schema, $this->getBaseModelClass());
         $cTemplates[] = BaseCollectionClassFactory::create($schema, $this->getBaseCollectionClass());
         foreach ($cTemplates as $cTemplate) {
-            if ($result = $this->updateClassFile($cTemplate, $schema, $overwrite)) {
+            if ($result = $this->updateClassFile($cTemplate, $schema, true)) {
                 list($className, $classFile) = $result;
                 $classMap[ $className ] = $classFile;
             }
         }
 
-        if ($result = $this->generateCollectionClass($schema, false)) {
+        if ($result = $this->generateCollectionClass($schema)) {
             list($className, $classFile) = $result;
             $classMap[ $className ] = $classFile;
         }
-        if ($result = $this->generateModelClass($schema, false)) {
+        if ($result = $this->generateModelClass($schema)) {
             list($className, $classFile) = $result;
             $classMap[ $className ] = $classFile;
         }
@@ -215,7 +209,7 @@ class SchemaGenerator
             $generated = $this->generateSchema($schema, $overwrite);
             if (!empty($generated)) {
                 foreach ($generated as $className => $classPath) {
-                    $this->logger->info("- Updated " . $classPath);
+                    $this->logger->info(" - Updated " . $classPath);
                 }
                 $classMap += $generated;
             }
