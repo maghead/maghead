@@ -4,7 +4,7 @@ use LazyRecord\Schema;
 
 class NameSchema extends Schema
 {
-    function schema()
+    public function schema()
     {
 
         $this->column('id')

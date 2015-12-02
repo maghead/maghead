@@ -3,6 +3,7 @@ namespace LazyRecord\Command\SchemaCommand;
 use LazyRecord\Command\BaseCommand;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\SchemaUtils;
+use CLIFramework\Logger\ActionLogger;
 
 /**
  * $ lazy build-schema path/to/Schema path/to/SchemaDir
@@ -41,13 +42,21 @@ class StatusCommand extends BaseCommand
         $logger = $this->getLogger();
         $config = $this->getConfigLoader();
         $this->logger->debug('Finding schemas...');
+
+        $actionLogger = new ActionLogger(STDERR);
+
+
         $schemas = $this->findSchemasByArguments(func_get_args());
         foreach ($schemas as $schema) {
+            $actionLog = $actionLogger->newAction(get_class($schema), '');
+            $actionLog->setStatus('checking');
+
             if ($schema->requireProxyFileUpdate()) {
-                $this->logger->info(get_class($schema) . ' is out-of-date');
+                $actionLog->setStatus('modified', 'yellow');
             } else {
-                $this->logger->info(get_class($schema) . ' is up-to-date');
+                $actionLog->setStatus('up-to-date');
             }
+            $actionLog->finalize();
         }
     }
 
