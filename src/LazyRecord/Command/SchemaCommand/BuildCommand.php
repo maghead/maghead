@@ -44,8 +44,6 @@ class BuildCommand extends BaseCommand
         $this->logger->debug('Finding schemas...');
         $classes = $this->findSchemasByArguments(func_get_args());
 
-        SchemaUtils::printSchemaClasses($classes, $this->logger);
-
         $this->logger->debug("Initializing schema generator...");
 
         $generator = new SchemaGenerator($config, $this->logger);
@@ -53,18 +51,7 @@ class BuildCommand extends BaseCommand
         if ($this->options->force) {
             $generator->setForceUpdate(true);
         }
-
         $classMap = $generator->generate($classes, $this->options->force);
-        /*
-        foreach( $classMap as $class => $file ) {
-            $path = $file;
-            if ( strpos( $path , getcwd() ) === 0 ) {
-                $path = substr( $path , strlen(getcwd()) + 1 );
-            }
-            $logger->info($path);
-            // $logger->info(sprintf("%-32s",ltrim($class,'\\')) . " => $path",1);
-        }
-        */
         $logger->info('Done');
     }
 

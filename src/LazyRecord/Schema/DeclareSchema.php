@@ -456,14 +456,12 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return filemtime($refl->getFilename());
     }
 
-    public function isNewerThanFile($path) 
+    public function isNewerThanFile($path)
     {
-        if ( ! file_exists($path) ) {
+        if (! file_exists($path)) {
             return true;
         }
-        $mtime1 = $this->getModificationTime();
-        $mtime2 = filemtime($path);
-        return $mtime1 > $mtime2;
+        return $this->getModificationTime() > filemtime($path);
     }
 
     /**

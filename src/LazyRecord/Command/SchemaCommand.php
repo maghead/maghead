@@ -14,6 +14,7 @@ class SchemaCommand extends Command
         $this->command('build');
         $this->command('list');
         $this->command('clean');
+        $this->command('status');
     }
 
     public function options($opts)

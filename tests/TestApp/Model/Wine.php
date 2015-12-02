@@ -1,8 +1,7 @@
 <?php
 namespace TestApp\Model;
-use LazyRecord\BaseModel;
-
-class Wine extends WineBase
+use TestApp\Model\WineBase;
+class Wine
+    extends WineBase
 {
-
 }

@@ -1,7 +1,7 @@
 <?php
 namespace TestApp\Model;
-
-class Edm  extends \TestApp\Model\EdmBase {
-
-
+use TestApp\Model\EdmBase;
+class Edm
+    extends EdmBase
+{
 }
