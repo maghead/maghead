@@ -80,17 +80,13 @@ class SchemaGenerator
         if (file_exists($classFilePath)) {
             if ($schema->isNewerThanFile($classFilePath) || ($canOverwrite && $this->forceUpdate)) {
                 $this->writeClassTemplateToPath($cTemplate, $classFilePath);
-                $this->logger->info2(" - Updating $classFilePath");
                 return [$cTemplate->getClassName(), $classFilePath];
             }
 
         } else {
 
             if ($this->writeClassTemplateToPath($cTemplate, $classFilePath)) {
-                $this->logger->info2(" - Creating $classFilePath");
                 return [$cTemplate->getClassName() , $classFilePath];
-            } else {
-                $this->logger->info2(" - Skipping $classFilePath");
             }
 
         }
