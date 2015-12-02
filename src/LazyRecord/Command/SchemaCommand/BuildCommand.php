@@ -38,11 +38,10 @@ class BuildCommand extends BaseCommand
     {
         $logger = $this->getLogger();
 
-
         $config = $this->getConfigLoader();
 
         $this->logger->debug('Finding schemas...');
-        $classes = $this->findSchemasByArguments(func_get_args());
+        $schemas = $this->findSchemasByArguments(func_get_args());
 
         $this->logger->debug("Initializing schema generator...");
 
@@ -59,8 +58,17 @@ class BuildCommand extends BaseCommand
             printf( "ERROR %s:%s  [%s] %s\n" , $errfile, $errline, $errno, $errstr );
         }, E_ERROR );
 
-
-        $classMap = $generator->generate($classes);
+        $classMap = array();
+        foreach ($schemas as $schema) {
+            $this->logger->debug("Checking " . get_class($schema) . '...');
+            $generated = $generator->generateSchema($schema);
+            if (!empty($generated)) {
+                foreach ($generated as $className => $classPath) {
+                    $this->logger->info(" - Updated " . $classPath);
+                }
+                $classMap += $generated;
+            }
+        }
 
         $this->logger->debug("Restoring error handler...");
         restore_error_handler();

@@ -35,12 +35,9 @@ class SchemaGenerator
 
     protected $forceUpdate = false;
 
-    protected $logger;
-
-    public function __construct(ConfigLoader $config, Logger $logger)
+    public function __construct(ConfigLoader $config)
     {
         $this->config = $config; // ConfigLoader::getInstance();
-        $this->logger = $logger; // Console::getInstance()->getLogger();
     }
 
     public function setForceUpdate($force = true)
@@ -172,13 +169,9 @@ class SchemaGenerator
         // class map [ class => class file path ]
         $classMap = array();
         foreach ($schemas as $schema) {
-            $this->logger->debug("Checking " . get_class($schema) . '...');
             $generated = $this->generateSchema($schema);
             if (!empty($generated)) {
-                foreach ($generated as $className => $classPath) {
-                    $this->logger->info(" - Updated " . $classPath);
-                }
-                $classMap += $generated;
+                $classMap = array_merge($classMap, $generated);
             }
         }
         return $classMap;
