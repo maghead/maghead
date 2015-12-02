@@ -61,7 +61,7 @@ class BuildCommand extends BaseCommand
         $classMap = array();
         foreach ($schemas as $schema) {
             $this->logger->debug("Checking " . get_class($schema) . '...');
-            $generated = $generator->generateSchema($schema);
+            $generated = $generator->generateSchemaFiles($schema);
             if (!empty($generated)) {
                 foreach ($generated as $className => $classPath) {
                     $this->logger->info(" - Updated " . $classPath);

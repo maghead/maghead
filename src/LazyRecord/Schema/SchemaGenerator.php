@@ -45,7 +45,7 @@ class SchemaGenerator
         $this->forceUpdate = $force;
     }
 
-    protected function getBaseModelClass() 
+    protected function getBaseModelClass()
     {
         if ($this->config && $this->config->loaded) {
             return $this->config->getBaseModelClass();
@@ -132,7 +132,7 @@ class SchemaGenerator
     }
 
 
-    public function generateSchema(SchemaInterface $schema)
+    public function generateSchemaFiles(SchemaInterface $schema)
     {
         $classMap = array();
         $cTemplates = array();
@@ -170,7 +170,7 @@ class SchemaGenerator
         // class map [ class => class file path ]
         $classMap = array();
         foreach ($schemas as $schema) {
-            $generated = $this->generateSchema($schema);
+            $generated = $this->generateSchemaFiles($schema);
             if (!empty($generated)) {
                 $classMap = array_merge($classMap, $generated);
             }
