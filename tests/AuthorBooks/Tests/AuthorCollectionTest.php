@@ -6,6 +6,7 @@ use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorCollection;
 use LazyRecord\Testing\ModelTestCase;
+use LazyRecord\Exporter\CSVExporter;
 
 class AuthorFactory {
 
@@ -171,7 +172,7 @@ class AuthorCollectionTest extends ModelTestCase
                 ->equal('confirmed', false);
         $ret = $authors->fetch();
         ok($ret);
-        is(1, $authors->size());
+        $this->assertEquals(1, $authors->size());
 
 
         $authors = new AuthorCollection;
@@ -179,13 +180,12 @@ class AuthorCollectionTest extends ModelTestCase
                 ->equal( 'confirmed', true);
         $ret = $authors->fetch();
         ok($ret);
-        is(1,$authors->size());
+        $this->assertEquals(1,$authors->size());
     }
 
     public function testCollection()
     {
         $author = new Author;
-        ok($author);
         foreach( range(1,3) as $i ) {
             $ret = $author->create(array(
                 'name' => 'Bar-' . $i,
@@ -210,24 +210,24 @@ class AuthorCollectionTest extends ModelTestCase
         $authors2->where()
                 ->like('name','Foo');
         $count = $authors2->queryCount();
-        is(20 , $count);
+        $this->assertEquals(20 , $count);
 
         $authors = new AuthorCollection;
         $authors->where()->like('name','Foo');
 
         $items = $authors->items();
-        is(20, $authors->size());
+        $this->assertEquals(20, $authors->size());
 
-        ok(is_array($items));
+        $this->assertTrue(is_array($items));
         foreach($items as $item) {
             ok( $item->id );
             $this->assertInstanceOf('AuthorBooks\Model\Author', $item);
 
             $ret = $item->delete();
-            ok($ret->success);
+            $this->assertTrue($ret->success);
         }
         $size = $authors->free()->size();
-        is( 0, $size );
+        $this->assertEquals( 0, $size );
 
         {
             $authors = new AuthorCollection;
@@ -321,6 +321,27 @@ class AuthorCollectionTest extends ModelTestCase
 
         $someBooks = $books->splice(0,2);
         is(2, count($someBooks));
+    }
+
+    public function testCollectionExporter()
+    {
+        $author = new Author;
+        foreach( range(1,10) as $i ) {
+            $ret = $author->create(array(
+                'name' => 'Foo-' . $i,
+                'email' => 'foo@foo' . $i,
+                'identity' => 'foo' . $i,
+                'confirmed' => true,
+            ));
+            $this->assertTrue($author->confirmed , 'is true');
+            $this->assertTrue($ret->success);
+        }
+
+        @mkdir('tests/tmp', 0755, true);
+        $fp = fopen('tests/tmp/authors.csv', 'w');
+        $exporter = new CSVExporter($fp);
+        $exporter->exportCollection(new AuthorCollection);
+        fclose($fp);
     }
 
 
