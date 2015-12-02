@@ -6,7 +6,7 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 {
     public function createSchemaGenerator() {
         $g = new \LazyRecord\Schema\SchemaGenerator(ConfigLoader::getInstance(), Logger::getInstance());
-        $g->forceUpdate = true;
+        $g->setForceUpdate(true);
         return $g;
     }
 

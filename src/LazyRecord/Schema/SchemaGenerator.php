@@ -31,11 +31,11 @@ use LazyRecord\Console;
  */
 class SchemaGenerator
 {
-    public $config;
+    protected $config;
 
-    public $forceUpdate = false;
+    protected $forceUpdate = false;
 
-    public $logger;
+    protected $logger;
 
     public function __construct(ConfigLoader $config, Logger $logger)
     {
@@ -43,7 +43,7 @@ class SchemaGenerator
         $this->logger = $logger; // Console::getInstance()->getLogger();
     }
 
-    public function setForceUpdate($force = true) 
+    public function setForceUpdate($force = true)
     {
         $this->forceUpdate = $force;
     }
@@ -61,29 +61,6 @@ class SchemaGenerator
             return $this->config->getBaseCollectionClass();
         }
         return 'LazyRecord\BaseCollection';
-    }
-
-
-    /**
-     * Returns code template directory
-     */
-    protected function getTemplateDirs()
-    {
-        static $templateDir;
-        if ( $templateDir ) {
-            return $templateDir;
-        }
-        $refl = new ReflectionObject($this);
-        $path = $refl->getFilename();
-        return $templateDir = dirname($refl->getFilename()) . DIRECTORY_SEPARATOR . 'Templates'; // should be LazyRecord/Schema/Templates
-    }
-
-    public function preventFileDir($path,$mode = 0755)
-    {
-        $dir = dirname($path);
-        if ( ! file_exists($dir) ) {
-            mkdir( $dir , $mode, true );
-        }
     }
 
     /**
