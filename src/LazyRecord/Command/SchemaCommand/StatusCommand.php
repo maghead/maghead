@@ -22,6 +22,11 @@ class StatusCommand extends BaseCommand
         return 'show schema status.';
     }
 
+    public function aliases()
+    {
+        return ['st'];
+    }
+
     public function arguments($args)
     {
         /*
