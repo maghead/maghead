@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<export>
+  <collection>
+    <record class="AuthorBooks\Model\Book">
+      <id isa="int" type="int">1</id>
+      <title isa="str" type="varchar">Run &amp; Skate</title>
+      <subtitle isa="str" type="varchar"></subtitle>
+      <isbn isa="str" type="varchar"></isbn>
+      <description isa="str" type="text"></description>
+      <view isa="int" type="int">0</view>
+      <publisher_id isa="int" type="int"></publisher_id>
+      <published_at isa="DateTime" type="timestamp"></published_at>
+      <is_hot isa="bool" type="boolean">1</is_hot>
+      <is_selled isa="bool" type="boolean">0</is_selled>
+    </record>
+    <record class="AuthorBooks\Model\Book">
+      <id isa="int" type="int">2</id>
+      <title isa="str" type="varchar">Run &amp; Skate II</title>
+      <subtitle isa="str" type="varchar"></subtitle>
+      <isbn isa="str" type="varchar"></isbn>
+      <description isa="str" type="text"></description>
+      <view isa="int" type="int">0</view>
+      <publisher_id isa="int" type="int"></publisher_id>
+      <published_at isa="DateTime" type="timestamp"></published_at>
+      <is_hot isa="bool" type="boolean">1</is_hot>
+      <is_selled isa="bool" type="boolean">0</is_selled>
+    </record>
+  </collection>
+  <record class="AuthorBooks\Model\Author">
+    <id isa="int" type="int">1</id>
+    <name isa="str" type="varchar">Z</name>
+    <email isa="str" type="varchar">z@z</email>
+    <identity isa="str" type="varchar">z</identity>
+    <confirmed isa="bool" type="boolean"></confirmed>
+    <updated_on isa="DateTime" type="timestamp">2012-01-01 00:00</updated_on>
+    <created_on isa="DateTime" type="timestamp">2012-01-01 00:00</created_on>
+    <addresses type="has-many">
+      <collection>
+        <record class="AuthorBooks\Model\Address">
+          <id isa="int" type="int">1</id>
+          <author_id isa="int" type="int">1</author_id>
+          <address isa="str" type="varchar">far far away</address>
+          <unused isa="bool" type="boolean"></unused>
+        </record>
+        <record class="AuthorBooks\Model\Address">
+          <id isa="int" type="int">2</id>
+          <author_id isa="int" type="int">1</author_id>
+          <address isa="str" type="varchar">taipei 101</address>
+          <unused isa="bool" type="boolean"></unused>
+        </record>
+        <record class="AuthorBooks\Model\Address">
+          <id isa="int" type="int">3</id>
+          <author_id isa="int" type="int">1</author_id>
+          <address isa="str" type="varchar">brazil</address>
+          <unused isa="bool" type="boolean"></unused>
+        </record>
+        <record class="AuthorBooks\Model\Address">
+          <id isa="int" type="int">4</id>
+          <author_id isa="int" type="int">1</author_id>
+          <address isa="str" type="varchar">san francisco</address>
+          <unused isa="bool" type="boolean"></unused>
+        </record>
+      </collection>
+    </addresses>
+    <author_books type="has-many">
+      <collection>
+        <record class="AuthorBooks\Model\AuthorBook">
+          <id isa="int" type="int">1</id>
+          <author_id isa="int" type="int">1</author_id>
+          <created_on isa="DateTime" type="timestamp"></created_on>
+          <book_id isa="int" type="int">1</book_id>
+        </record>
+        <record class="AuthorBooks\Model\AuthorBook">
+          <id isa="int" type="int">2</id>
+          <author_id isa="int" type="int">1</author_id>
+          <created_on isa="DateTime" type="timestamp"></created_on>
+          <book_id isa="int" type="int">2</book_id>
+        </record>
+      </collection>
+    </author_books>
+  </record>
+</export>

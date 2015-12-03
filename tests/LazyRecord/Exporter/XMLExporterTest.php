@@ -61,7 +61,13 @@ class XMLExporterTest extends ModelTestCase
     public function testRecursiveExporting()
     {
         $author = new Author;
-        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $ret = $author->create(array(
+            'name' => 'Z',
+            'email' => 'z@z',
+            'identity' => 'z',
+            'updated_on' => '2012-01-01 00:00',
+            'created_on' => '2012-01-01 00:00',
+        ));
         $this->assertResultSuccess($ret);
 
         // Has Many Relationship
@@ -74,6 +80,8 @@ class XMLExporterTest extends ModelTestCase
         $book = new Book;
         $ret = $book->create([ 
             'title' => 'Run & Skate',
+            'updated_on' => '2012-01-01 00:00',
+            'created_on' => '2012-01-01 00:00',
         ]);
         $this->assertResultSuccess($ret);
 
@@ -84,6 +92,8 @@ class XMLExporterTest extends ModelTestCase
         $book = new Book;
         $ret = $book->create([ 
             'title' => 'Run & Skate II',
+            'updated_on' => '2012-01-01 00:00',
+            'created_on' => '2012-01-01 00:00',
         ]);
         $this->assertResultSuccess($ret);
         $author->author_books->create([ 'book_id' => $book->id ]);
@@ -97,7 +107,8 @@ class XMLExporterTest extends ModelTestCase
         $xml = $dom->saveXML();
         $this->assertNotEmpty($xml);
 
-        // echo $xml;
+        file_put_contents('tests/xmlTestRecursiveExporting.actual', $xml);
+        $this->assertFileEquals('tests/xmlTestRecursiveExporting.expected', 'tests/xmlTestRecursiveExporting.actual');
     }
 
 

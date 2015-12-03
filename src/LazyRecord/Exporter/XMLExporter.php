@@ -93,9 +93,7 @@ class XMLExporter
                 $this->appendRecord($dom, $collectionRoot, $record, $schema, true);
             }
         }
-
         $dom->formatOutput = true;
-        echo $dom->saveXml();
         return $dom;
     }
 
