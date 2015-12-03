@@ -8,6 +8,8 @@ use LazyRecord\Schema\RuntimeSchema;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\SchemaInterface;
+use PDOStatement;
+use PDO;
 
 class CSVExporter
 {
@@ -42,6 +44,34 @@ class CSVExporter
         $this->escapeChar = $char;
     }
 
+    public function exportQuery(PDOStatement $stm)
+    {
+        $all = $stm->fetchAll(PDO::FETCH_ASSOC);
+        if (empty($all)) {
+            return false;
+        }
+        $columns = array_keys($all[0]);
+        $php54 = version_compare(phpversion(), '5.5.0') < 0;
+        if ($php54) {
+            fputcsv($this->fd, $columns, $this->delimiter, $this->enclosure);
+        } else {
+            fputcsv($this->fd, $columns, $this->delimiter, $this->enclosure, $this->escapeChar);
+        }
+
+        foreach ($all as $row) {
+            $fields = [];
+            foreach ($keys as $key) {
+                $fields[] = $row[$key];
+            }
+            if ($php54) {
+                fputcsv($this->fd, $fields, $this->delimiter, $this->enclosure);
+            } else {
+                fputcsv($this->fd, $fields, $this->delimiter, $this->enclosure, $this->escapeChar);
+            }
+        }
+        return true;
+    }
+
     /**
      * Export collection object into CSV file.
      *
@@ -59,9 +89,7 @@ class CSVExporter
             fputcsv($this->fd, $keys, $this->delimiter, $this->enclosure, $this->escapeChar);
         }
         foreach ($collection as $record) {
-            // $array = $record->toInflatedArray();
             $array = $record->toArray();
-
             $fields = [];
             foreach ($keys as $key) {
                 $fields[] = $array[$key];
@@ -72,6 +100,7 @@ class CSVExporter
                 fputcsv($this->fd, $fields, $this->delimiter, $this->enclosure, $this->escapeChar);
             }
         }
+        return true;
     }
 
 }
