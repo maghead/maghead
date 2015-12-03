@@ -56,7 +56,7 @@ class AuthorModelTest extends ModelTestCase
         $columns = $author->getColumns();
         $this->assertCount(7, $columns);
 
-        $columns = $author->getColumns(true); // with virtual column 'v'
+        $columns = $author->getColumns(true); // with virtual column
         $this->assertCount(8, $columns);
 
         $this->assertEquals('authors', $author->getTable() );
@@ -134,33 +134,6 @@ class AuthorModelTest extends ModelTestCase
 
         $ret = $author->delete();
         $this->assertResultSuccess($ret);
-    }
-
-    /**
-     * @basedata false
-     */
-    public function testVirtualColumn() 
-    {
-        $author = new Author;
-        $ret = $author->create(array( 
-            'name' => 'Pedro' , 
-            'email' => 'pedro@gmail.com' , 
-            'identity' => 'id',
-        ));
-        ok($ret->success);
-
-        ok( $v = $author->getColumn('v') ); // virtual colun
-        ok( $v->virtual );
-
-        $columns = $author->getSchema()->getColumns();
-        ok( ! isset($columns['v']) );
-
-        is('pedro@gmail.compedro@gmail.com',$author->get('v'));
-
-        ok( $display = $author->display( 'v' ) );
-
-        $authors = new AuthorCollection;
-        ok($authors);
     }
 
     /**

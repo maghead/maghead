@@ -102,7 +102,7 @@ class AuthorBookModelTest extends ModelTestCase
         $columns = $author->getColumns();
         count_ok( 7 , $columns );
 
-        $columns = $author->getColumns(true); // with virtual column 'v'
+        $columns = $author->getColumns(true); // with virtual column
         count_ok( 8 , $columns );
 
         ok( 'authors' , $author->getTable() );
@@ -136,19 +136,17 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        ok( $v = $author->getColumn('v') ); // virtual colun
-        ok( $v->virtual );
+        ok($v = $author->getColumn('account_brief')); // virtual colun
+        $this->assertTrue($v->virtual);
 
         $columns = $author->getSchema()->getColumns();
 
-        ok( ! isset($columns['v']) );
+        ok( ! isset($columns['account_brief']) );
 
-        is('pedro@gmail.compedro@gmail.com',$author->get('v'));
+        is('Pedro(pedro@gmail.com)',$author->get('account_brief'));
 
-        ok( $display = $author->display( 'v' ) );
-
-        $authors = new AuthorBooks\Model\AuthorCollection;
-        ok($authors);
+        ok( $display = $author->display('account_brief'));
+        $authors = new AuthorCollection;
     }
 
     /**

@@ -13,11 +13,11 @@ class AuthorSchema extends Schema
             ->required()
             ->varchar(128);
 
-        $this->column('v')
-            ->label('Virtual Column')
+        $this->column('account_brief')
+            ->label('Account Brief')
             ->virtual()
             ->inflator(function($value,$record) {
-                return $record->email . $record->email;
+                return $record->name . '(' . $record->email . ')';
             });
 
         $this->column('identity')
