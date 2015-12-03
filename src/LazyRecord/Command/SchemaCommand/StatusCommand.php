@@ -55,7 +55,9 @@ class StatusCommand extends BaseCommand
         foreach ($schemas as $schema) {
 
             if ($this->logger->isVerbose()) {
+
                 $actionLog = $actionLogger->newAction(get_class($schema), get_class($schema));
+                $actionLog->setActionColumnWidth(50);
 
             } else if ($this->logger->isDebug()) {
 
@@ -64,7 +66,9 @@ class StatusCommand extends BaseCommand
                 $actionLog->setActionColumnWidth(50);
 
             } else {
+
                 $actionLog = $actionLogger->newAction($schema->getShortClassName(), get_class($schema));
+
             }
             $actionLog->setStatus('checking');
 

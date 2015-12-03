@@ -3,6 +3,7 @@ namespace LazyRecord\Command\SchemaCommand;
 use LazyRecord\Command\BaseCommand;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\SchemaUtils;
+use CLIFramework\Logger\ActionLogger;
 
 /**
  * $ lazy build-schema path/to/Schema path/to/SchemaDir
@@ -43,13 +44,12 @@ class BuildCommand extends BaseCommand
         $this->logger->debug('Finding schemas...');
         $schemas = $this->findSchemasByArguments(func_get_args());
 
-        $this->logger->debug("Initializing schema generator...");
-
         $generator = new SchemaGenerator($config);
-
         if ($this->options->force) {
             $generator->setForceUpdate(true);
         }
+
+        $actionLogger = new ActionLogger(STDERR);
 
         // for generated class source code.
         $this->logger->debug("Setting up error handler...");
@@ -59,14 +59,34 @@ class BuildCommand extends BaseCommand
 
         $classMap = array();
         foreach ($schemas as $schema) {
-            $this->logger->debug("Checking " . get_class($schema) . '...');
+
+            if ($this->logger->isVerbose()) {
+
+                $actionLog = $actionLogger->newAction(get_class($schema), get_class($schema));
+                $actionLog->setActionColumnWidth(50);
+
+            } else if ($this->logger->isDebug()) {
+
+                $filepath = str_replace(getcwd() . '/', '', $schema->getClassFileName());
+                $actionLog = $actionLogger->newAction($filepath, get_class($schema));
+                $actionLog->setActionColumnWidth(50);
+
+            } else {
+
+                $actionLog = $actionLogger->newAction($schema->getShortClassName(), get_class($schema));
+
+            }
+            $actionLog->setStatus('checking');
+
             $generated = $generator->generateSchemaFiles($schema);
             if (!empty($generated)) {
-                foreach ($generated as $className => $classPath) {
-                    $this->logger->info(" - Updated " . $classPath);
-                }
+                $actionLog->setStatus('updated');
                 $classMap += $generated;
+            } else {
+                $actionLog->setStatus('skipped');
             }
+
+            $actionLog->finalize();
         }
 
         $this->logger->debug("Restoring error handler...");
