@@ -7,6 +7,7 @@ use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorCollection;
 use LazyRecord\Testing\ModelTestCase;
 use LazyRecord\Exporter\CSVExporter;
+use LazyRecord\Importer\CSVImporter;
 
 class AuthorFactory {
 
@@ -341,6 +342,14 @@ class AuthorCollectionTest extends ModelTestCase
         $fp = fopen('tests/tmp/authors.csv', 'w');
         $exporter = new CSVExporter($fp);
         $exporter->exportCollection(new AuthorCollection);
+        fclose($fp);
+
+        $authors = new AuthorCollection;
+        $authors->delete();
+
+        $fp = fopen('tests/tmp/authors.csv', 'r');
+        $importer = new CSVImporter(new Author);
+        $importer->importResource($fp);
         fclose($fp);
     }
 
