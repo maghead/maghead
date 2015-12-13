@@ -346,8 +346,7 @@ To make a query (the Query syntax is powered by SQLBuilder):
 ```php
 $authors->where()
     ->equal( 'id' , 'foo' )
-    ->like( 'content' , '%foo%' )
-    ;
+    ->like( 'content' , '%foo%' );
 ```
 
 Or you can do:
@@ -395,8 +394,7 @@ class BookSchema extends Schema
 
         $this->column('isbn')
             ->varchar(128)
-            ->immutable()
-            ;
+            ->immutable();
 
         $this->column('description')
             ->text();
@@ -1024,17 +1022,8 @@ foreach( $schema->getColumns() as $n => $c ) {
 }
 ```
 
-
-
-
-
-
-
-
-
 PROFILING
 ==============
-
 
     $ scripts/run-xhprof
 
@@ -1044,10 +1033,6 @@ OR
     $ cd xhprof_html
     $ php -S localhost:8888
 
-
 LICENSE
 ===============
 BSD License
-
-
-
