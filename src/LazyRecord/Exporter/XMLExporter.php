@@ -138,7 +138,16 @@ class XMLExporter
             }
 
             $value = $record->getValue($column->name);
-            $columnElement->appendChild(new DOMText($value));
+            if ($column->isa == "bool") {
+                if ($value === null) {
+                    $text = '';
+                } else {
+                    $text = $value ? '1' : '0';
+                }
+            } else {
+                $text = $value;
+            }
+            $columnElement->appendChild(new DOMText($text));
             $root->appendChild($columnElement);
         }
 

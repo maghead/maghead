@@ -83,6 +83,7 @@ class XMLExporterTest extends ModelTestCase
             'published_at' => '2012-01-01 00:00:00',
             'updated_on' => '2012-01-01 00:00:00',
             'created_on' => '2012-01-01 00:00:00',
+            'is_selled' => false,
         ]);
         $this->assertResultSuccess($ret);
 
@@ -99,6 +100,7 @@ class XMLExporterTest extends ModelTestCase
             'updated_on' => '2012-01-01 00:00:00',
             'created_on' => '2012-01-01 00:00:00',
             'published_at' => '2012-01-01 00:00:00',
+            'is_selled' => false,
         ]);
         $this->assertResultSuccess($ret);
         $author->author_books->create([
