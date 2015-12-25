@@ -227,7 +227,7 @@ class AuthorModelTest extends ModelTestCase
         $ret = $author->update(array('name' => 'Bar'));
         $this->assertResultSuccess($ret);
 
-        is('Bar', $author->name);
+        $this->assertEquals('Bar', $author->name);
 
         $ret = $author->delete();
         $this->assertResultSuccess($ret);
@@ -241,7 +241,7 @@ class AuthorModelTest extends ModelTestCase
         $author = new Author;
         $ret = $author->create(array( 
             'name' => 'testMixinMethods',
-            'email' => 'zz3@zz3',
+            'email' => 'test.user@gmail.com',
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
