@@ -65,8 +65,8 @@ class XMLExporterTest extends ModelTestCase
             'name' => 'Z',
             'email' => 'z@z',
             'identity' => 'z',
-            'updated_on' => '2012-01-01 00:00',
-            'created_on' => '2012-01-01 00:00',
+            'updated_on' => '2012-01-01 00:00:00',
+            'created_on' => '2012-01-01 00:00:00',
         ));
         $this->assertResultSuccess($ret);
 
@@ -80,30 +80,30 @@ class XMLExporterTest extends ModelTestCase
         $book = new Book;
         $ret = $book->create([ 
             'title' => 'Run & Skate',
-            'published_at' => '2012-01-01 00:00',
-            'updated_on' => '2012-01-01 00:00',
-            'created_on' => '2012-01-01 00:00',
+            'published_at' => '2012-01-01 00:00:00',
+            'updated_on' => '2012-01-01 00:00:00',
+            'created_on' => '2012-01-01 00:00:00',
         ]);
         $this->assertResultSuccess($ret);
 
         // ManyToMany
         $author->author_books->create([
             'book_id' => $book->id,
-            'created_on' => '2012-01-01 00:00',
+            'created_on' => '2012-01-01 00:00:00',
         ]);
 
 
         $book = new Book;
         $ret = $book->create([ 
             'title' => 'Run & Skate II',
-            'updated_on' => '2012-01-01 00:00',
-            'created_on' => '2012-01-01 00:00',
-            'published_at' => '2012-01-01 00:00',
+            'updated_on' => '2012-01-01 00:00:00',
+            'created_on' => '2012-01-01 00:00:00',
+            'published_at' => '2012-01-01 00:00:00',
         ]);
         $this->assertResultSuccess($ret);
         $author->author_books->create([
             'book_id' => $book->id,
-            'created_on' => '2012-01-01 00:00',
+            'created_on' => '2012-01-01 00:00:00',
         ]);
 
 

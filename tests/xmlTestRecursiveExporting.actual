@@ -32,8 +32,8 @@
     <email isa="str" type="varchar">z@z</email>
     <identity isa="str" type="varchar">z</identity>
     <confirmed isa="bool" type="boolean"></confirmed>
-    <updated_on isa="DateTime" type="timestamp">2012-01-01 00:00</updated_on>
-    <created_on isa="DateTime" type="timestamp">2012-01-01 00:00</created_on>
+    <updated_on isa="DateTime" type="timestamp">2012-01-01 00:00:00</updated_on>
+    <created_on isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_on>
     <addresses type="has-many">
       <collection>
         <record class="AuthorBooks\Model\Address">
