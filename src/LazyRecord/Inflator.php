@@ -60,10 +60,10 @@ class Inflator
             return json_decode($value);
         case "DateTime":
             // already a DateTime object
-            if( is_a( $value , 'DateTime',true) ) {
+            if ($value instanceof DateTime) {
                 return $value;
             }
-            if ( $value && date_parse($value) !== false ) {
+            if ($value) {
                 return new DateTime( $value );
             }
             return null;
