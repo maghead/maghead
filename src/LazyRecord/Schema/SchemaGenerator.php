@@ -76,7 +76,8 @@ class SchemaGenerator
 
         // classes not Model/Collection class are overwriteable
         if (file_exists($classFilePath)) {
-            if ($schema->isNewerThanFile($classFilePath) || ($canOverwrite && $this->forceUpdate)) {
+
+            if ($canOverwrite && ($schema->isNewerThanFile($classFilePath) || $this->forceUpdate)) {
                 $this->writeClassTemplateToPath($cTemplate, $classFilePath);
                 return [$cTemplate->getClassName(), $classFilePath];
             }
