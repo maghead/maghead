@@ -1190,6 +1190,11 @@ abstract class BaseModel implements
         try
         {
             $args = $this->beforeUpdate($args);
+            if ($args === false) {
+                return $this->reportError(_('Update failed'), array( 
+                    'args' => $args,
+                ));
+            }
 
             // foreach mixin schema, run their beforeUpdate method,
 
