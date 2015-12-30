@@ -2260,7 +2260,6 @@ abstract class BaseModel implements
         } else {
             $sql = "LOCK TABLES " . $this->table . " WRITE";
         }
-        echo $sql, PHP_EOL;
         $this->getWriteConnection()->query($sql);
     }
 
