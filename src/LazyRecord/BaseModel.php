@@ -1031,7 +1031,7 @@ abstract class BaseModel implements
         $pk    = static::PRIMARY_KEY;
 
         $query = new SelectQuery;
-        $query->from($this->table);
+        $query->from($this->table, $this->alias);
 
         $conn  = $this->getReadConnection();
         $driver = $this->getReadQueryDriver();
