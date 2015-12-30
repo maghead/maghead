@@ -170,9 +170,6 @@ class BaseCollection
     public function setAlias($alias)
     {
         $this->_alias = $alias;
-        if ($q = $this->getCurrentReadQuery()) {
-            $q->alias($alias);
-        }
         return $this;
     }
 
@@ -246,14 +243,14 @@ class BaseCollection
         $q = new SelectQuery;
 
         // Read from class consts
-        $q->from($this->getTable(), $this->getAlias()); // main table alias
+        $q->from($this->getTable(), $this->_alias); // main table alias
 
         $selection = $this->getSelected();
         $q->select(
             $selection ? $selection
                 : $this->explictSelect 
                     ? $this->getExplicitColumnSelect($driver)
-                    : $this->getAlias() . '.*'
+                    : $this->_alias . '.*'
         );
 
         // Setup Default Ordering.
@@ -269,7 +266,7 @@ class BaseCollection
     // xxx: this might be used in other join statements.
     public function getExplicitColumnSelect(BaseDriver $driver)
     {
-        $alias = $this->getAlias();
+        $alias = $this->_alias;
         return array_map(function($name) use($alias,$driver) { 
                 return $alias . '.' . $driver->quoteIdentifier( $name );
         }, $this->getSchema()->getColumnNames());
@@ -852,7 +849,7 @@ class BaseCollection
             // here the relationship is defined, join the it.
             if ($relationId) {
                 if ($relation = $this->getSchema()->getRelation($relationId)) {
-                    $joinExpr->on()->equal( $this->getAlias() . '.' . $relation['self_column'],
+                    $joinExpr->on()->equal( $this->_alias . '.' . $relation['self_column'],
                         array( $joinAlias . '.' . $relation['foreign_column'] ));
                 } else {
                     throw new Exception("Relationship '$relationId' not found.");
@@ -868,7 +865,7 @@ class BaseCollection
                     $fschema = new $relation['foreign_schema'];
                     if (is_a($target, $fschema->getModelClass() ) ) {
                         $joinExpr->on()
-                            ->equal( $this->getAlias() . '.' . $relation['self_column'] , 
+                            ->equal( $this->_alias . '.' . $relation['self_column'] , 
                             array( $alias. '.' . $relation['foreign_column'] ));
                         break;
                     }
