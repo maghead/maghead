@@ -1187,8 +1187,6 @@ abstract class BaseModel implements
 
         $schema = $this->getSchema();
 
-        try
-        {
             $args = $this->beforeUpdate($args);
             if ($args === false) {
                 return $this->reportError(_('Update failed'), array( 
@@ -1300,6 +1298,7 @@ abstract class BaseModel implements
             }
 
             $this->afterUpdate($origArgs);
+        /*
         } 
         catch(PDOException $e)
         {
@@ -1310,8 +1309,8 @@ abstract class BaseModel implements
                 'validations' => $validationResults,
             ));
         }
-
-        return $this->reportSuccess( 'Updated' , array( 
+        */
+        return $this->reportSuccess('Updated successfully' , array( 
             'id'  => $kVal,
             'sql' => $sql,
             'args' => $args,
