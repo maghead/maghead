@@ -899,7 +899,7 @@ abstract class BaseModel implements
         if (!$stm) {
             $query = new InsertQuery;
             $query->into($this->table);
-            $query->insert($insertArgs, $this->alias);
+            $query->insert($insertArgs);
             $query->returning($k);
             $sql  = $query->toSql($driver, $arguments);
             $stm = $conn->prepare($sql);
@@ -1281,7 +1281,7 @@ abstract class BaseModel implements
 
             // TODO: optimized to built cache
             $query->set($updateArgs);
-            $query->update($this->table);
+            $query->update($this->table, $this->alias);
             $query->where()->equal($k , $kVal);
 
             $sql  = $query->toSql($driver, $arguments);
