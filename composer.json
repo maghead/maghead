@@ -30,7 +30,7 @@
     "require-dev": {
         "corneltek/phpunit-testmore": "dev-master",
         "corneltek/universal": "^1",
-        "satooshi/php-coveralls": "dev-master",
+        "satooshi/php-coveralls": "^1",
         "simplyadmire/composer-plugins": "@dev"
     },
     "suggest": { "ext-xarray": "*" },
