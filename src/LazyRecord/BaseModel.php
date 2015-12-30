@@ -899,7 +899,7 @@ abstract class BaseModel implements
         if (!$stm) {
             $query = new InsertQuery;
             $query->into($this->table);
-            $query->insert($insertArgs);
+            $query->insert($insertArgs, $this->alias);
             $query->returning($k);
             $sql  = $query->toSql($driver, $arguments);
             $stm = $conn->prepare($sql);
@@ -2244,22 +2244,38 @@ abstract class BaseModel implements
         return count($this->_data);
     }
 
-    public function getAlias() {
+    public function getAlias()
+    {
         return $this->alias;
     }
 
-    public function lockWrite()
+    public function lockWrite($alias = null)
     {
+        if (!$alias) {
+            $alias = $this->alias;
+        }
         // the ::table consts is in the child class.
-        $this->getWriteConnection()
-            ->query("LOCK TABLES " . $this->table . " AS " . $this->getAlias() . " WRITE");
+        if ($alias) {
+            $sql = "LOCK TABLES " . $this->table . " AS " . $alias . " WRITE";
+        } else {
+            $sql = "LOCK TABLES " . $this->table . " WRITE";
+        }
+        echo $sql, PHP_EOL;
+        $this->getWriteConnection()->query($sql);
     }
 
-    public function lockRead()
+    public function lockRead($alias = null)
     {
+        if (!$alias) {
+            $alias = $this->alias;
+        }
         // the ::table consts is in the child class.
-        $this->getReadConnection()
-            ->query("LOCK TABLES " . $this->table . " AS " . $this->getAlias() . " READ");
+        if ($alias) {
+            $sql = "LOCK TABLES " . $this->table . " AS " . $alias . " READ";
+        } else {
+            $sql = "LOCK TABLES " . $this->table . " READ";
+        }
+        $this->getReadConnection()->query($sql);
     }
 
     public function unlock()
