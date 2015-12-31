@@ -124,6 +124,18 @@ class MysqlTableParser extends BaseTableParser
                     } else if (is_numeric($default)) {
                         $column->default(intval($default));
                     }
+                } else if ($typeInfo->type == 'datetime') {
+                    // basically, CURRENT_TIMESTAMP, transaction_timestamp()
+                    // and now() do exactly the same. CURRENT_TIMESTAMP is a
+                    // syntactical oddity for a function, having no trailing
+                    // pair of parentheses. That's according to the SQL
+                    // standard.
+                    // 
+                    // @see http://dba.stackexchange.com/questions/63548/difference-between-now-and-current-timestamp
+                    if (strtolower($default) == 'current_timestamp') {
+                        // XXX: NOW() will be converted into current_timestamp
+                        $column->default(new Raw($default));
+                    }
                 }
             }
         }
