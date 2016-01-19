@@ -51,6 +51,10 @@ class MysqlBuilder extends BaseBuilder
 
 
         FOREIGN KEY (`order_uuid`) REFERENCES orders(`uuid`)
+
+
+        A column with foreign key should not be nullable.
+        @see http://stackoverflow.com/questions/10028214/add-foreign-key-to-existing-table
         */
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
