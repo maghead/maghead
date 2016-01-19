@@ -48,14 +48,16 @@ class MysqlBuilder extends BaseBuilder
         REFERENCES `schema`.`Addresses` (`idAddresses`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
+
+
+        FOREIGN KEY (`order_uuid`) REFERENCES orders(`uuid`)
         */
         foreach( $schema->relations as $rel ) {
             switch( $rel['type'] ) {
             case Relationship::BELONGS_TO:
-            case Relationship::HAS_MANY:
-            case Relationship::HAS_ONE:
-                if( $name != 'id' && $rel['self_column'] == $name ) 
-                {
+            // case Relationship::HAS_MANY:
+            // case Relationship::HAS_ONE:
+                if ($name != 'id' && $rel['self_column'] == $name) {
                     $fSchema = new $rel['foreign_schema'];
                     $fColumn = $rel['foreign_column'];
                     $fc = $fSchema->columns[$fColumn];
