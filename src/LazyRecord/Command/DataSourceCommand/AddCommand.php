@@ -43,19 +43,31 @@ class AddCommand extends BaseCommand
         $dsnParser = new DSNParser;
         $dsn = $dsnParser->parse($dsnStr);
 
+        $dataSource['driver'] = $dsn->getDriver();
         if ($host = $this->options->host) {
             $dsn->setAttribute('host', $host);
+            $dataSource['host'] = $host;
         }
         if ($port = $this->options->port) {
             $dsn->setAttribute('port', $port);
+            $dataSource['port'] = $port;
         }
-        $dataSource['dsn'] = $dsn->__toString();
-
+        // mysql only attribute
+        if ($dbname = $dsn->getAttribute('dbname')) {
+            $dataSource['database'] = $dbname;
+        }
         if ($user = $this->options->user) {
             $dataSource['user'] = $user;
         }
         if ($password = $this->options->password) {
             $dataSource['pass'] = $password;
+        }
+        $dataSource['dsn'] = $dsn->__toString();
+
+
+        if ($dsn->getDriver() == "mysql") {
+            $this->logger->debug('Setting connection options: PDO::MYSQL_ATTR_INIT_COMMAND');
+            $dataSource['connection_options'] = [ PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8' ];
         }
 
         $config = $configLoader->getConfigStash();
