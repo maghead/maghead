@@ -8,9 +8,9 @@ use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 
-use LazyRecord\SqlBuilder\MySQLBuilder;
-use LazyRecord\SqlBuilder\PgSQLBuilder;
-use LazyRecord\SqlBuilder\SQLiteBuilder;
+use LazyRecord\SqlBuilder\MysqlBuilder;
+use LazyRecord\SqlBuilder\PgsqlBuilder;
+use LazyRecord\SqlBuilder\SqliteBuilder;
 
 class SqlBuilder
 {
