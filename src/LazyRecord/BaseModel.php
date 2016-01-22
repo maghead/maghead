@@ -1279,7 +1279,7 @@ abstract class BaseModel implements
 
             // TODO: optimized to built cache
             $query->set($updateArgs);
-            $query->update($this->table, $this->alias);
+            $query->update($this->table);
             $query->where()->equal($k , $kVal);
 
             $sql  = $query->toSql($driver, $arguments);
