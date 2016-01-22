@@ -29,64 +29,42 @@ class DatabaseBuilder
 
     public function build(array $schemas)
     {
-        $sqls = array();
         foreach ($schemas as $schema) {
-            $sqls[] = $this->buildTableSql($schema);
-            $sqls[] = $this->buildIndexSql($schema);
-            $sqls[] = $this->buildForeignKeysSql($schema);
+            $class = get_class($schema);
+            $this->logger->info("Building table for $class");
+            $sqls = $this->builder->buildTable($schema);
+            $this->executeStatements($sqls);
         }
-        return $sqls;
+        foreach ($schemas as $schema) {
+            $class = get_class($schema);
+            $this->logger->info("Building index for $class");
+
+            $sqls = $this->builder->buildIndex($schema);
+            $this->executeStatements($sqls);
+        }
+        foreach ($schemas as $schema) {
+            $class = get_class($schema);
+            $this->logger->info("Building foreign keys for $class");
+
+            $sqls = $this->builder->buildForeignKeys($schema);
+            $this->executeStatements($sqls);
+        }
     }
 
-
-    public function buildTableSql(SchemaInterface $schema)
+    protected function executeStatements(array $sqls)
     {
-        $class = get_class($schema);
-        $sqls = $this->builder->buildTable($schema);
-        if (!empty($sqls)) {
-            $this->logger->info('Building table definition for ' . $schema);
-            foreach ($sqls as $sql ) {
-                $this->query($sql);
-            }
+        foreach ($sqls as $sql) {
+            $this->executeStatement($sql);
         }
-        return "--- Schema $class \n" . join("\n",$sqls);
     }
 
-    public function query($sql) {
+    protected function executeStatement($sql)
+    {
         try {
             $this->logger->debug($sql);
             $this->conn->query( $sql );
         } catch (PDOException $e) {
             PDOExceptionPrinter::show($e, $sql, [], $this->logger);
         }
-    }
-
-    public function buildIndexSql(SchemaInterface $schema)
-    {
-        $class = get_class($schema);
-        $sqls = $this->builder->buildIndex($schema);
-        if (!empty($sqls)) {
-            $this->logger->info('Building index for ' . $schema);
-            foreach ($sqls as $sql) {
-                $this->query($sql);
-            }
-            return "--- Index For $class \n" . join("\n",$sqls);
-        }
-        return "";
-    }
-
-
-    public function buildForeignKeysSql(SchemaInterface $schema)
-    {
-        $class = get_class($schema);
-        $sqls = $this->builder->buildForeignKeys($schema);
-        if (!empty($sqls)) {
-            $this->logger->info('Building foreign key index: ' . $schema);
-            foreach ($sqls as $sql) {
-                $this->query($sql);
-            }
-            return "--- Index For $class \n" . join("\n",$sqls);
-        }
-        return "";
     }
 }

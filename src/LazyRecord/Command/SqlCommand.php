@@ -11,6 +11,9 @@ use LazyRecord\Schema\SchemaCollection;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Command\BaseCommand;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
 use Exception;
 
 class SqlCommand extends BaseCommand
@@ -26,7 +29,7 @@ class SqlCommand extends BaseCommand
         // --clean
         $opts->add('c|clean','clean up SQL schema.');
 
-        $opts->add('f|file:', 'write schema sql to file');
+        $opts->add('o|output:', 'write schema sql to file');
 
         $opts->add('b|basedata','insert basedata' );
     }
@@ -61,45 +64,82 @@ DOC;
         $logger->debug("Initialize schema builder...");
 
 
-        $connectionManager = ConnectionManager::getInstance();
-        $conn = $connectionManager->getConnection($id);
-        $driver = $connectionManager->getQueryDriver($id);
 
-        $sqlBuilder = SqlBuilder::create($driver, array( 
-            'rebuild' => $options->rebuild,
-            'clean' => $options->clean,
-        ));
+        if ($output = $this->options->output) {
+            $configLoader = $this->getConfigLoader(true);
+            $dataSourceConfig = $configLoader->getDataSource($id);
+            $driverType = $dataSourceConfig['driver'];
 
-        $builder = new DatabaseBuilder($conn, $sqlBuilder, $this->logger);
-        $sqls    = $builder->build($schemas);
-        $sqlOutput = join("\n", $sqls );
+            switch ($driverType) {
+            case "sqlite":
+                $driver = new SQLiteDriver;
+                break;
+            case "mysql":
+                $driver = new MySQLDriver;
+                break;
+            case "pgsql":
+                $driver = new PgSQLDriver;
+                break;
+            default:
+                throw new Exception("Unsupported driver type: $driverType");
+                break;
+            }
+
+            $sqlBuilder = SqlBuilder::create($driver,[
+                'rebuild' => $options->rebuild,
+                'clean' => $options->clean,
+            ]);
 
 
-        if ($file = $this->options->file) {
-            $fp = fopen($file,'w');
-            fwrite($fp, $sqlOutput);
+            $fp = fopen($output, 'w');
+            foreach ($schemas as $schema) {
+                $sqls = $sqlBuilder->buildTable($schema);
+                fwrite($fp, join("\n", $sqls));
+                $sqls = $sqlBuilder->buildIndex($schema);
+                fwrite($fp, join("\n", $sqls));
+                $sqls = $sqlBuilder->buildForeignKeys($schema);
+                fwrite($fp, join("\n", $sqls));
+            }
             fclose($fp);
+
+
+            $this->logger->warn('Warning: seeding is not supported when using --output option.');
+
+        } else {
+
+            $connectionManager = ConnectionManager::getInstance();
+            $conn = $connectionManager->getConnection($id);
+            $driver = $connectionManager->getQueryDriver($id);
+
+            $sqlBuilder = SqlBuilder::create($driver,[
+                'rebuild' => $options->rebuild,
+                'clean' => $options->clean,
+            ]);
+
+            $builder = new DatabaseBuilder($conn, $sqlBuilder, $this->logger);
+            $builder->build($schemas);
+
+            if ($this->options->basedata) {
+                $collection = new SchemaCollection($schemas);
+                $collection = $collection->evaluate();
+                $seedBuilder = new SeedBuilder($this->getConfigLoader(), $this->logger);
+                $seedBuilder->build($collection);
+            }
+
+            $time = time();
+            $logger->info("Setting migration timestamp to $time");
+            $metadata = new Metadata($driver, $conn);
+
+            // update migration timestamp
+            $metadata['migration'] = $time;
+
+            $logger->info(
+                $logger->formatter->format(
+                    'Done. ' . count($schemas) . " schema tables were generated into data source '$id'."
+                ,'green')
+            );
         }
 
-        if ($this->options->basedata) {
-            $collection = new SchemaCollection($schemas);
-            $collection = $collection->evaluate();
-            $seedBuilder = new SeedBuilder($this->getConfigLoader(), $this->logger);
-            $seedBuilder->build($collection);
-        }
-
-        $time = time();
-        $logger->info("Setting migration timestamp to $time");
-        $metadata = new Metadata($driver, $conn);
-
-        // update migration timestamp
-        $metadata['migration'] = $time;
-
-        $logger->info(
-            $logger->formatter->format(
-                'Done. ' . count($schemas) . " schema tables were generated into data source '$id'."
-            ,'green')
-        );
     }
 }
 
