@@ -120,7 +120,6 @@ class Relationship implements IteratorAggregate, ArrayAccess
     public function applyOrder(BaseCollection & $collection) 
     {
         if (isset($this->data['orderBy']) && $this->data['orderBy']) {
-            var_dump( $this->data['orderBy'] ); 
             foreach($this->data['orderBy'] as $o ) {
                 $collection->orderBy($o[0] , $o[1]);
             }
