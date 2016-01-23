@@ -19,8 +19,14 @@ class AuthorBookSchema extends Schema
             ->integer()
             ->required();
 
-        $this->belongsTo('book','\AuthorBooks\Model\BookSchema','id','book_id');
-        $this->belongsTo('author', '\AuthorBooks\Model\AuthorSchema' , 'id', 'author_id');
+        $this->belongsTo('book','\AuthorBooks\Model\BookSchema','id','book_id')
+            ->onDelete('CASCADE')
+            ->onUpdate('CASCADE')
+            ;
+        $this->belongsTo('author', '\AuthorBooks\Model\AuthorSchema' , 'id', 'author_id')
+            ->onDelete('CASCADE')
+            ->onUpdate('CASCADE')
+            ;
     }
 }
 

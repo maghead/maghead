@@ -34,9 +34,9 @@ class Relationship implements IteratorAggregate, ArrayAccess
     public $orderBy = array();
 
 
-    protected $onUpdate;
+    public $onUpdate;
 
-    protected $onDelete;
+    public $onDelete;
 
 
     public function __construct($accessor, array $data = array())

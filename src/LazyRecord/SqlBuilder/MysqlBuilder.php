@@ -66,10 +66,18 @@ class MysqlBuilder extends BaseBuilder
                     $fColumn = $rel['foreign_column'];
                     $fc = $fSchema->columns[$fColumn];
                     $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
+
+                    if ($rel->onUpdate) {
+                        $sql .= ' ON UPDATE ' . $rel->onUpdate;
+                    }
+                    if ($rel->onDelete) {
+                        $sql .= ' ON DELETE ' . $rel->onDelete;
+                    }
                 }
                 break;
             }
         }
+        echo $sql, PHP_EOL;
         return $sql;
     }
 
