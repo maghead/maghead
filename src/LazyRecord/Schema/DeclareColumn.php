@@ -180,8 +180,10 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         return $this;
     }
 
-    public function index($indexName = null) {
+    public function index($indexName = null, $using = null)
+    {
         $this->attributes['index'] = $indexName ?: true;
+        $this->attributes['index_using'] = $using;
         return $this;
     }
 

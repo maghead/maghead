@@ -84,10 +84,14 @@ abstract class BaseBuilder
         $sqls = array();
         foreach ($schema->columns as $name => $column ) {
             if ($column->index) {
+                $table = $schema->getTable() ;
                 $indexName = is_string($column->index) ? $column->index 
-                    : "idx_" . $schema->getTable() . "_" . $name;
+                    : "idx_" . $table . "_" . $name;
                 $query = new CreateIndexQuery($indexName);
-                $query->on($schema->getTable(), (array) $name);
+                $query->on($table, [$name]);
+                if ($column->index_using) {
+                    $query->using($column->index_using);
+                }
                 $sqls[] = $query->toSql($this->driver, new ArgumentArray);
             }
         }
