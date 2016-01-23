@@ -42,20 +42,9 @@ class MixinDeclareSchema extends DeclareSchema
     public static function afterUpdate($args) {}
 
 
-    public function index($name, array $columns = null)
+    public function index($name, $columns = null, $using = null)
     {
-        if (isset($this->indexes[$name])) {
-            return $this->indexes[$name];
-        }
-        $query = $this->indexes[$name] = new CreateIndexQuery($name);
-        if ($columns) {
-            if (empty($columns)) {
-                throw new InvalidArgumentException("index columns must not be empty.");
-            }
-            $query->on($this->parentSchema->getTable(), $columns);
-        }
-        return $query;
+        return $this->parentSchema->index($name, $columns, $using);
     }
-
 
 }
