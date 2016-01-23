@@ -608,8 +608,9 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *
      * @return CreateIndexQuery
      */
-    protected function index($name, array $columns = null)
+    protected function index($name, array $columns = null, $using = null)
     {
+        // return the cached index query object
         if (isset($this->indexes[$name])) {
             return $this->indexes[$name];
         }
@@ -619,6 +620,9 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
                 throw new InvalidArgumentException("index columns must not be empty.");
             }
             $query->on($this->getTable(), $columns);
+        }
+        if ($using) {
+            $query->using($using);
         }
         return $query;
     }
