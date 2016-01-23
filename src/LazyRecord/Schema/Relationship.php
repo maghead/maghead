@@ -34,6 +34,11 @@ class Relationship implements IteratorAggregate, ArrayAccess
     public $orderBy = array();
 
 
+    protected $onUpdate;
+
+    protected $onDelete;
+
+
     public function __construct($accessor, array $data = array())
     {
         $this->accessor = $accessor;
@@ -239,6 +244,17 @@ class Relationship implements IteratorAggregate, ArrayAccess
         return $r;
     }
 
+    public function onUpdate($action)
+    {
+        $this->onUpdate = $action;
+        return $this;
+    }
+
+    public function onDelete($action)
+    {
+        $this->onDelete = $action;
+        return $this;
+    }
 
     public function __get($key)
     {

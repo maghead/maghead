@@ -56,7 +56,7 @@ class MysqlBuilder extends BaseBuilder
         A column with foreign key should not be nullable.
         @see http://stackoverflow.com/questions/10028214/add-foreign-key-to-existing-table
         */
-        foreach( $schema->relations as $rel ) {
+        foreach ($schema->relations as $rel) {
             switch( $rel['type'] ) {
             case Relationship::BELONGS_TO:
             // case Relationship::HAS_MANY:
