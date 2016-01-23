@@ -49,7 +49,6 @@ class MysqlBuilder extends BaseBuilder
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
 
-
         FOREIGN KEY (`order_uuid`) REFERENCES orders(`uuid`)
 
 

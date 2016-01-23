@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\SqlBuilder;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\Universal\Syntax\Constraint;
@@ -106,10 +107,10 @@ abstract class BaseBuilder
 
     public function buildForeignKeys(SchemaInterface $schema)
     {
-        return array(); // FIXME
+        return []; // FIXME
 
-        $sqls = array();
-        if ($this->driver->type == 'sqlite') {
+        $sqls = [];
+        if ($this->driver instanceof SQLiteDriver) {
             return $sqls;
         }
 
@@ -122,18 +123,18 @@ abstract class BaseBuilder
                 {
                     $n = $rel['self_column'];
                     $column = $schema->getColumn($n);
-                    if ( $column->isa == "str" ) {
-                        continue;
-                    }
-
-                    
                     $fSchema = new $rel['foreign_schema'];
 
                     $constraint = new Constraint();
                     $constraint->foreignKey($rel['self_column']);
                     $constraint->reference($fSchema->getTable(), (array) $rel['foreign_column']);
-                    // $constraint->onUpdate('CASCADE');
-                    // $constraint->onDelete('CASCADE');
+
+                    if ($action = $rel->onUpdate) {
+                        $constraint->onUpdate($action);
+                    }
+                    if ($action = $rel->onDelete) {
+                        $constraint->onDelete($action);
+                    }
                     $sqls[] = $query->toSql($this->driver, new ArgumentArray);
                 }
             }
