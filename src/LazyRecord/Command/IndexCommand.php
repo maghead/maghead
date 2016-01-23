@@ -32,32 +32,41 @@ class IndexCommand extends BaseCommand
 
             $query = new SelectQuery;
             $query->select([
-                'TABLE_NAME',
-                'CONCAT(INDEX_NAME, " (", GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX ASC), ")")' => 'COLUMNS', 
-                'INDEX_TYPE',
-                'NULLABLE',
-                'NON_UNIQUE',
-                'COMMENT ',
+                'stat.TABLE_NAME',
+                'CONCAT(stat.INDEX_NAME, " (", GROUP_CONCAT(DISTINCT stat.COLUMN_NAME ORDER BY stat.SEQ_IN_INDEX ASC), ")")' => 'COLUMNS', 
+                'stat.INDEX_TYPE',
+                'stat.NULLABLE',
+                'stat.NON_UNIQUE',
+                'stat.COMMENT',
+                'SUM(index_stat.stat_value)' => 'pages',
+                'CONCAT(ROUND((SUM(stat_value) * @@innodb_page_size) / 1024 / 1024, 1), "MB")' => 'page_size',
             ]);
-            $query->from('information_schema.STATISTICS');
+            $query->from('information_schema.STATISTICS stat');
+
+            $query->join('mysql.innodb_index_stats', 'index_stat', 'LEFT')
+                ->on('index_stat.database_name = stat.TABLE_SCHEMA 
+                    AND index_stat.table_name = stat.TABLE_NAME 
+                    AND index_stat.index_name = stat.INDEX_NAME')
+                ;
+
             $query->where()
-                ->equal('TABLE_SCHEMA', 'bossnet')
+                ->equal('stat.TABLE_SCHEMA', 'bossnet')
                 ;
 
             if (!empty($tables)) {
                 $query->where()
-                    ->in('TABLE_NAME', $tables)
+                    ->in('stat.TABLE_NAME', $tables)
                     ;
             }
 
-            $query->groupBy('INDEX_NAME');
-            $query->groupBy('TABLE_NAME');
-            $query->groupBy('TABLE_SCHEMA');
+            $query->groupBy('stat.INDEX_NAME');
+            $query->groupBy('stat.TABLE_NAME');
+            $query->groupBy('stat.TABLE_SCHEMA');
 
-            $query->orderBy('TABLE_SCHEMA', 'ASC');
-            $query->orderBy('TABLE_NAME', 'ASC');
-            $query->orderBy('INDEX_NAME', 'ASC');
-            $query->orderBy('SEQ_IN_INDEX', 'ASC');
+            $query->orderBy('stat.TABLE_SCHEMA', 'ASC');
+            $query->orderBy('stat.TABLE_NAME', 'ASC');
+            $query->orderBy('stat.INDEX_NAME', 'ASC');
+            $query->orderBy('stat.SEQ_IN_INDEX', 'ASC');
 
             $args = new ArgumentArray;
             $sql = $query->toSql($driver, $args);
