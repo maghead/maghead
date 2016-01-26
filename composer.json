@@ -13,7 +13,7 @@
     "version": "2.2.4",
     "require": {
         "php": ">=5.4.0",
-        "corneltek/sqlbuilder": "dev-master",
+        "corneltek/sqlbuilder": "2.8.x-dev",
         "corneltek/locale": "2.0.x-dev",
         "corneltek/cliframework": "3.0.x-dev",
         "corneltek/class-template": "^2",
