@@ -15,24 +15,6 @@ class ClassUtils
         return self::filter_schema_classes($classes);
     }
 
-    /**
-     * Get referenced schema classes and put them in order.
-     *
-     * @param string[] schema objects
-     */
-    static public function expand_schema_classes(array $classes)
-    {
-        $schemas = array();
-        foreach ($classes as $class) {
-            $schema = new $class; // declare schema
-            $refs = $schema->getReferenceSchemas();
-            foreach ( $refs as $refClass => $v ) {
-                $schemas[] = $refClass;
-            }
-            $schemas[] = $class;
-        }
-        return self::schema_classes_to_objects(array_unique($schemas));
-    }
 
 
     public static function schema_classes_to_objects(array $classes) 

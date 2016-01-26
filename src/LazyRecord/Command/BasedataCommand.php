@@ -6,8 +6,8 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\SeedBuilder;
 use LazyRecord\Schema\SchemaUtils;
-use Exception;
 use LazyRecord\Schema\SchemaCollection;
+use Exception;
 
 class BaseDataCommand extends BaseCommand
 {
@@ -19,8 +19,7 @@ class BaseDataCommand extends BaseCommand
         $options = $this->options;
         $logger  = $this->logger;
 
-
-        $classes = $this->findSchemasByArguments( func_get_args() );
+        $classes = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
 
         SchemaUtils::printSchemaClasses($classes, $this->logger);
 

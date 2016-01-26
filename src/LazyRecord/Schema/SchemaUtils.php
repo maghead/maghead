@@ -27,6 +27,29 @@ class SchemaUtils
         }
     }
 
+    /*
+    static public function find_schema_parents(array $classes)
+    {
+        $parents = [];
+        foreach ($classes as $class) {
+            $schema = new $class; // declare schema
+            foreach ($schema->relations as $relKey => $rel ) {
+                if (!isset($rel['foreign_schema'])) {
+                    continue;
+                }
+                $foreignClass = ltrim($rel['foreign_schema'],'\\');
+                $schema = new $foreignClass;
+                if ($rel->type == Relationship::BELONGS_TO) {
+                    $parents[$class][] = $foreignClass;
+                } else if ($rel->type == Relationship::HAS_ONE || $rel->type == Relationship::HAS_MANY) {
+                    $parents[$foreignClass][] = $class;
+                }
+            }
+        }
+        return $parents;
+    }
+     */
+
 
     /**
      * Get referenced schema classes and put them in order.
@@ -35,6 +58,10 @@ class SchemaUtils
      */
     static public function expandSchemaClasses(array $classes)
     {
+
+
+
+
         $map = array();
         $schemas = array();
         foreach ($classes as $class) {

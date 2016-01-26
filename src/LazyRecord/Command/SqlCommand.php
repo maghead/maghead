@@ -14,6 +14,7 @@ use LazyRecord\Command\BaseCommand;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
+use LazyRecord\Schema\SchemaUtils;
 use Exception;
 
 class SqlCommand extends BaseCommand
@@ -59,11 +60,9 @@ DOC;
         $id = $this->getCurrentDataSourceId();
 
         $logger->debug("Finding schema classes...");
-        $schemas = $this->findSchemasByArguments(func_get_args());
+        $schemas = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
 
         $logger->debug("Initialize schema builder...");
-
-
 
         if ($output = $this->options->output) {
             $configLoader = $this->getConfigLoader(true);

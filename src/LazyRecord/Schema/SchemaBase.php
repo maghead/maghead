@@ -154,26 +154,25 @@ abstract class SchemaBase
      */
     public function getReferenceSchemas($recursive = true)
     {
-        $schemas = array();
-        foreach( $this->relations as $rel ) {
-            if ( ! isset($rel['foreign_schema']) ) {
+        $schemas = [];
+        foreach ($this->relations as $relKey => $rel ) {
+            if (!isset($rel['foreign_schema'])) {
                 continue;
             }
 
             $class = ltrim($rel['foreign_schema'],'\\');
-
-            if ( isset($schemas[$class]) ) {
+            if (isset($schemas[$class]) ) {
                 continue;
             }
-
             if (! class_exists($class,true)) {
                 throw new RuntimeException("Foreign schema class $class not found." );
             }
 
-            if ( is_a($class,'LazyRecord\\BaseModel',true) ) {
+
+            if (is_a($class,'LazyRecord\\BaseModel',true)) {
                 // bless model class to schema object.
-                if ( ! method_exists($class, 'schema') ) {
-                    throw new Exception( get_class($this) . ": You need to define schema method in $class class.");
+                if (! method_exists($class, 'schema')) {
+                    throw new Exception(get_class($this) . ": You need to define schema method in $class class.");
                 }
                 $schemas[ $class ] = 1;
                 $model = new $class;
@@ -181,15 +180,13 @@ abstract class SchemaBase
                 if( $recursive ) {
                     $schemas = array_merge($schemas, $schema->getReferenceSchemas(false));
                 }
-            }
-            elseif ( is_subclass_of($class, 'LazyRecord\\Schema\\DeclareSchema',true ) ) {
+            } else if (is_subclass_of($class, 'LazyRecord\\Schema\\DeclareSchema',true)) {
                 $schemas[ $class ] = 1;
                 $fs = new $class;
-                if( $recursive ) {
+                if ($recursive) {
                     $schemas = array_merge($schemas, $fs->getReferenceSchemas(false));
                 }
-            }
-            else {
+            } else {
                 throw new InvalidArgumentException("Foreign schema class $class is not a SchemaDeclare class");
             }
 

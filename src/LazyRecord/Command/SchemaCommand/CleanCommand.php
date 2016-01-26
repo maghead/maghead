@@ -1,6 +1,7 @@
 <?php
 namespace LazyRecord\Command\SchemaCommand;
 use LazyRecord\Schema\SchemaGenerator;
+use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\Command\BaseCommand;
 
 /**
@@ -33,7 +34,7 @@ class CleanCommand extends BaseCommand
         $config = $this->getConfigLoader();
 
         $this->logger->debug('Finding schemas...');
-        $schemas = $this->findSchemasByArguments( func_get_args() );
+        $schemas = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
 
         foreach ($schemas as $schema) {
             $this->logger->info('Cleaning schema ' . get_class($schema) );

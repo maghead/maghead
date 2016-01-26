@@ -51,7 +51,7 @@ class StatusCommand extends BaseCommand
         $actionLogger = new ActionLogger(STDERR);
 
 
-        $schemas = $this->findSchemasByArguments(func_get_args());
+        $schemas = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
         foreach ($schemas as $schema) {
 
             if ($this->logger->isVerbose()) {
