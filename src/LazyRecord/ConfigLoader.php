@@ -58,10 +58,9 @@ class ConfigLoader
     public function loadFromSymbol($force = false)
     {
         if (file_exists($this->symbolFilename) ) {
-            return $this->load( $this->symbolFilename, $force );
-        }
-        elseif (file_exists('.lazy.php')) {
-            return $this->load('.lazy.php', $force );
+            return $this->load(realpath($this->symbolFilename), $force );
+        } else if (file_exists('.lazy.php')) {
+            return $this->load(realpath('.lazy.php'), $force );
         }
     }
 
