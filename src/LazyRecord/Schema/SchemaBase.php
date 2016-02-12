@@ -165,7 +165,7 @@ abstract class SchemaBase
                 continue;
             }
             if (! class_exists($class,true)) {
-                throw new RuntimeException("Foreign schema class $class not found." );
+                throw new RuntimeException("Foreign schema class '$class' not found in schema {$this}." );
             }
 
 
@@ -187,7 +187,7 @@ abstract class SchemaBase
                     $schemas = array_merge($schemas, $fs->getReferenceSchemas(false));
                 }
             } else {
-                throw new InvalidArgumentException("Foreign schema class $class is not a SchemaDeclare class");
+                throw new InvalidArgumentException("Foreign schema class '$class' is not a SchemaDeclare class");
             }
 
         }
