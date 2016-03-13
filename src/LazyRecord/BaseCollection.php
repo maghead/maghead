@@ -245,13 +245,13 @@ class BaseCollection
         // Read from class consts
         $q->from($this->getTable(), $this->_alias); // main table alias
 
-        $selection = $this->getSelected();
-        $q->select(
-            $selection ? $selection
-                : $this->explictSelect 
-                    ? $this->getExplicitColumnSelect($driver)
-                    : $this->_alias . '.*'
-        );
+        if ($selection = $this->getSelected()) {
+            $q->select($selection);
+        } else {
+            $q->select($this->explictSelect
+                ? $this->getExplicitColumnSelect($driver)
+                : $this->_alias . '.*');
+        }
 
         // Setup Default Ordering.
         if (! empty($this->defaultOrdering)) {
@@ -299,14 +299,11 @@ class BaseCollection
         $dsId = $this->getSchema()->getReadSourceId();
         $conn = ConnectionManager::getInstance()->getConnection($dsId);
         $driver = $conn->createQueryDriver();
-
         $arguments = new ArgumentArray;
-
         $this->_lastSql = $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
         $this->_vars = $vars = $arguments->toArray();
-
-        try {
-            $this->handle = $conn->prepareAndExecute($sql, $vars);
+        $this->handle = $conn->prepareAndExecute($sql, $vars);
+        /*
         } catch (Exception $e) {
             return Result::failure('Collection fetch failed: ' . $e->getMessage() , array( 
                 'vars' => $vars,
@@ -314,6 +311,7 @@ class BaseCollection
                 'exception' => $e,
             ));
         }
+         */
         return Result::success('Updated', array( 'sql' => $sql ));
     }
 
