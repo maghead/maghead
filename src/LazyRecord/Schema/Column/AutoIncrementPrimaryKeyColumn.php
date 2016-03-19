@@ -12,7 +12,9 @@ class AutoIncrementPrimaryKeyColumn extends DeclareColumn
             ->notNull()
             ->unsigned()
             ->primary()
-            ->autoIncrement();
+            ->autoIncrement()
+            ->renderAs('HiddenInput')
+            ;
     }
 }
 
