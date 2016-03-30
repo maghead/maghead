@@ -842,7 +842,7 @@ class BaseCollection
                 }
                 $query->select($select);
             }
-            $joinExpr = $query->join($table, $type); // it returns JoinExpression object
+            $joinExpr = $query->join($table, $joinAlias, $type); // it returns JoinExpression object
 
             // here the relationship is defined, join the it.
             if ($relationId) {
