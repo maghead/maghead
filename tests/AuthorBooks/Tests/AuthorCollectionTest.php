@@ -241,10 +241,10 @@ class AuthorCollectionTest extends ModelTestCase
     public function testJoin()
     {
         $authors = new AuthorCollection;
-        $authors->join(new \AuthorBooks\Model\Address);
+        $authors->join(new \AuthorBooks\Model\Address, 'LEFT', 'a');
         $authors->fetch();
         $sql = $authors->toSQL();
-        like( '/addresses.address\s+AS\s+addresses_address/', $sql );
+        like('/LEFT JOIN addresses AS a ON \(m.id = a.author_id\)/', $sql);
     }
 
     public function testJoinWithAliasAndRelationId() {

@@ -303,15 +303,6 @@ class BaseCollection
         $this->_lastSql = $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
         $this->_vars = $vars = $arguments->toArray();
         $this->handle = $conn->prepareAndExecute($sql, $vars);
-        /*
-        } catch (Exception $e) {
-            return Result::failure('Collection fetch failed: ' . $e->getMessage() , array( 
-                'vars' => $vars,
-                'sql' => $sql,
-                'exception' => $e,
-            ));
-        }
-         */
         return Result::success('Updated', array( 'sql' => $sql ));
     }
 
