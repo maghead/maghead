@@ -19,6 +19,10 @@ class BaseCommand extends Command
     public function init()
     {
         parent::init();
+    }
+
+    public function prepare()
+    {
         // softly load the config file.
         $this->config = ConfigLoader::getInstance();
         $this->config->loadFromSymbol(true); // force loading
