@@ -23,7 +23,6 @@
         "doctrine/inflector": "~1.0",
         "corneltek/configkit": "^1",
         "corneltek/cascading-attribute": "^1.2",
-        "corneltek/universal-cache": "~1",
         "pimple/pimple": "^3.0",
         "cypresslab/gitelephant": "^1.0"
     },
