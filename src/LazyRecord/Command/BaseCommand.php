@@ -50,7 +50,11 @@ class BaseCommand extends Command
         $self = $this;
         $opts->add('D|data-source:', 'specify data source id')
             ->validValues(function() use($self) {
-                return $self->config->getDataSourceIds();
+                $config = $self->getConfigLoader();
+                if ($config) {
+                    return $config->getDataSourceIds();
+                }
+                return array();
             })
             ;
     }
