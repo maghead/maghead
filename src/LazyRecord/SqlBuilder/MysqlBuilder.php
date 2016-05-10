@@ -76,7 +76,6 @@ class MysqlBuilder extends BaseBuilder
                 break;
             }
         }
-        echo $sql, PHP_EOL;
         return $sql;
     }
 
