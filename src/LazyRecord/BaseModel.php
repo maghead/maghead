@@ -1145,7 +1145,7 @@ abstract class BaseModel implements
         // check if the record is loaded.
         $k = static::PRIMARY_KEY;
         if ($k && ! isset($args[ $k ]) && ! isset($this->_data[$k])) {
-            throw new Exception('Record is not loaded, Can not update record.', array('args' => $args));
+            return $this->reportError('Record is not loaded, Can not update record.', array('args' => $args));
         }
 
         if( ! $this->currentUserCan( $this->getCurrentUser() , 'update', $args ) ) {
