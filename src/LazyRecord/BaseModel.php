@@ -1220,11 +1220,12 @@ abstract class BaseModel implements
                 }
 
                 // TODO: Do not render immutable field in ActionKit
+                // XXX: calling ::save() might update the immutable columns
                 if ($c->immutable) {
+                    continue;
                     // TODO: render as a validation results?
-                    // unset($args[$n]);
                     // continue;
-                    return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));
+                    // return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));
                 }
 
                 if ($args[$n] !== null && ! is_array($args[$n]) && ! $args[$n] instanceof Raw) {
