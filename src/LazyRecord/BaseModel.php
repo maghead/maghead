@@ -1278,6 +1278,10 @@ abstract class BaseModel implements
                 ));
             }
 
+            if (empty($updateArgs)) {
+                return $this->reportError("Empty args");
+            }
+
             // TODO: optimized to built cache
             $query->set($updateArgs);
             $query->update($this->table);
