@@ -21,6 +21,7 @@ class MigrationGeneratorTest extends ModelTestCase
         $this->assertEquals('20120901_CreateUser.php',$generator->generateFilename('CreateUser','20120901'));
 
         list($class,$path) = $generator->generate('UpdateUser','20120902');
+        // this requires timezone = asia/taipei
         $this->assertEquals('UpdateUser_1346515200', $class);
         $this->assertFileExists($path);
         $this->assertEquals('tests/migrations/20120902_UpdateUser.php',$path);
