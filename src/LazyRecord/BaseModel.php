@@ -1021,7 +1021,7 @@ abstract class BaseModel implements
         }
     }
 
-    public function load($args)
+    public function load($args, array $options = null)
     {
         if (! $this->currentUserCan( $this->getCurrentUser() , 'load', $args ) ) {
             return $this->reportError("Permission denied. Can not load record.", array('args' => $args));
@@ -1051,6 +1051,11 @@ abstract class BaseModel implements
             $kVal = $column->deflate( $kVal );
             $args = array( $pk => $kVal );
             $query->select( $this->selected ?: '*' )->where($args);
+        }
+
+        // generate select * ... for update syntax for MySQL driver
+        if (isset($options['for_update']) && $driver instanceof PDOMySQLDriver) {
+            $query->forUpdate();
         }
 
         $arguments = new ArgumentArray;
