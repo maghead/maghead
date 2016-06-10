@@ -236,7 +236,7 @@ class AuthorModelTest extends ModelTestCase
         $this->assertEmpty($data);
     }
 
-    public function testMixinMethods() 
+    public function testMixinMethods()
     {
         $author = new Author;
         $ret = $author->create(array( 
@@ -306,6 +306,22 @@ class AuthorModelTest extends ModelTestCase
         $this->assertTrue($unusedAddresses[0]->unused);
     }
 
+    public function testLoadForUpdate()
+    {
+        $author = new Author;
+        $ret = $author->create(array( 
+            'name' => 'Mary III',
+            'email' => 'zz3@zz3',
+            'identity' => 'zz3',
+        ));
+        $this->assertResultSuccess($ret);
+
+        $a2 = new Author;
+        $ret = $a2->load([ 'identity' => 'zz3' ], [ 'for_update' => true ]);
+        $this->assertResultSuccess($ret);
+        $ret = $a2->update(['name' => 'Maroon V']);
+        $this->assertResultSuccess($ret);
+    }
 
     public function testUpdateNull()
     {
