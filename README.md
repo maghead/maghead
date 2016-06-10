@@ -916,16 +916,23 @@ To test with mysql database:
 
 ### Unit Testing with PostgreSQL database
 
-To test with pgsql database:
 
-    $ sudo -u postgres createuser --no-createrole --no-superuser --pwprompt testing
-    $ sudo -u postgres createdb -E=utf8 --owner=testing testing
+To test with pgsql database, you need to prepare database:
+
+    sudo -u postgres createdb -E=utf8 testing
+
+If you want to use a separated user, use the command below to create the pgsql user:
+
+    sudo -u postgres createuser --no-createrole --no-superuser --no-password testing
+    sudo -u postgres createdb -E=utf8 --owner=testing testing
 
 If you've set password accidentally, remove user password by running the command below:
 
     > alter role postgres password null;
 
+To connect pgsql with PDO, you need to configure your DSN for postgresql through socket like this:
 
+    pgsql:host=localhost;dbname=testing
 
 ### Command-line testing
 
