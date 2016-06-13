@@ -2,6 +2,8 @@
 use LazyRecord\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorCollection;
+use LazyRecord\Migration\Migration;
+use SQLBuilder\Universal\Syntax\Column;
 
 class AuthorModelTest extends ModelTestCase
 {
@@ -350,4 +352,19 @@ class AuthorModelTest extends ModelTestCase
         $this->assertEquals($id , $author->id);
         $this->assertNull($author->name, 'loaded name should be null');
     }
+
+
+    public function testMigrationRename()
+    {
+        $migration = new Migration($this->queryDriver, $this->conn);
+
+        $author = new Author;
+        $schema = $author->getDeclareSchema();
+        $column = $schema->getColumn('name');
+        $newColumn = clone $column;
+        $newColumn->name('name2');
+        $migration->renameColumn('authors', $column, $newColumn);
+    }
+
+
 }

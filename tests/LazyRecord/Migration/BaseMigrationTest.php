@@ -33,7 +33,6 @@ class MigrationTest extends PHPUnit_Framework_TestCase
         $conn->query('CREATE TABLE foo (id integer primary key, name varchar(32));');
 
         $migration = new FooMigration($driver, $conn);
-        ok($migration);
         $migration->upgrade();
 
         $connm->removeDataSource('sqlite');
