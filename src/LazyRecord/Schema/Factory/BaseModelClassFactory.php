@@ -46,6 +46,7 @@ class BaseModelClassFactory
 
 
         $cTemplate->addConsts(array(
+            'SCHEMA_CLASS'       => get_class($schema),
             'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),
             'COLLECTION_CLASS'   => $schema->getCollectionClass(),
             'MODEL_CLASS'        => $schema->getModelClass(),
