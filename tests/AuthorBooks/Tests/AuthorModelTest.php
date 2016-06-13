@@ -4,6 +4,9 @@ use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorCollection;
 use LazyRecord\Migration\Migration;
 use SQLBuilder\Universal\Syntax\Column;
+use SQLBuilder\Driver\PDOMySQLDriver;
+use SQLBuilder\Driver\PDOPgSQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
 
 class AuthorModelTest extends ModelTestCase
 {
@@ -356,8 +359,12 @@ class AuthorModelTest extends ModelTestCase
 
     public function testMigrationRename()
     {
-        $migration = new Migration($this->queryDriver, $this->conn);
+        if ($this->queryDriver instanceof SQLiteDriver) {
+            return $this->markTestSkipped('skip this test when sqlite driver is used.');
+        }
 
+
+        $migration = new Migration($this->queryDriver, $this->conn);
         $author = new Author;
         $schema = $author->getDeclareSchema();
         $column = $schema->getColumn('name');
