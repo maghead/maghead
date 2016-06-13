@@ -364,6 +364,7 @@ class AuthorModelTest extends ModelTestCase
         $newColumn = clone $column;
         $newColumn->name('name2');
         $migration->renameColumn('authors', $column, $newColumn);
+        $migration->renameColumn('authors', $newColumn, $column);
     }
 
 
