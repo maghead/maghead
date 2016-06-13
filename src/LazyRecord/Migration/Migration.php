@@ -6,6 +6,8 @@ use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Console;
 use LazyRecord\Migration\Migratable;
@@ -116,6 +118,17 @@ class Migration implements Migratable
     {
         $query = new AlterTableQuery($table);
         return $query;
+    }
+
+    /**
+     * Rename column requires $schema object
+     */
+    protected function renameColumn($table, $oldColumn, Column $newColumn)
+    {
+        $query = new AlterTableQuery($table);
+        $query->renameColumn($oldColumn, $newColumn);
+        $sql = $query->toSql($this->driver, new ArgumentArray);
+        $this->query($sql);
     }
 
     protected function dropColumnByClosure($table, callable $closure)

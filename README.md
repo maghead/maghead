@@ -716,9 +716,6 @@ class AddUserColumn_1347451491  extends \LazyRecord\Migration\Migration {
         // To upgrade with new schema:
         $this->importSchema(new TestApp\AuthorBookSchema);
         
-        // To rename table column:
-        $this->renameColumn($table, $columnName, $newColumnName);
-        
         // To create index:
         $this->createIndex($table,$indexName,$columnNames);
         
