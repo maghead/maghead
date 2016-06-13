@@ -13,12 +13,12 @@
     "require": {
         "php": ">=5.4.0",
         "corneltek/sqlbuilder": "^3.0",
-        "corneltek/cliframework": "^3.0.0",
+        "corneltek/cliframework": "^3.0",
         "corneltek/locale": "^2.0.0",
-        "corneltek/class-template": "^3.0.0",
+        "corneltek/class-template": "^3.0",
         "corneltek/serializerkit": "^1",
         "corneltek/validationkit": "^1",
-        "symfony/yaml": "^2.7@stable",
+        "symfony/yaml": "^2.8",
         "doctrine/inflector": "~1.0",
         "corneltek/configkit": "^1",
         "corneltek/cascading-attribute": "^1.2",
@@ -27,8 +27,6 @@
     },
     "require-dev": {
         "corneltek/phpunit-testmore": "dev-master",
-        "corneltek/universal": "^1",
-        "satooshi/php-coveralls": "^1",
         "simplyadmire/composer-plugins": "@dev"
     },
     "suggest": { "ext-xarray": "*" },

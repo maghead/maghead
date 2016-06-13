@@ -20,6 +20,7 @@ install:
   - phpenv rehash
   - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - travis_retry composer self-update
+  - travis_retry composer require "satooshi/php-coveralls" "^1" --no-update --dev
   - travis_retry composer install
 before_script:
   - psql -c "create database testing;" -U postgres
