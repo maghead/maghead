@@ -1,6 +1,8 @@
 LazyRecord
 ==========
 
+[![Join the chat at https://gitter.im/c9s/LazyRecord](https://badges.gitter.im/c9s/LazyRecord.svg)](https://gitter.im/c9s/LazyRecord?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ![Logo](https://c9s.github.io/LazyRecord/assets/images/LazyRecord.svg)
 
 [![works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
