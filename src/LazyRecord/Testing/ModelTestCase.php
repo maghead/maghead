@@ -18,6 +18,10 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected $allowConnectionFailure = false;
 
+    protected $conn;
+
+    protected $queryDriver;
+
     public function setUp()
     {
         $annnotations = $this->getAnnotations();
@@ -30,7 +34,7 @@ abstract class ModelTestCase extends BaseTestCase
         $connManager->init($configLoader);
 
         try {
-            $dbh = $connManager->getConnection($this->getDriverType());
+            $this->conn = $dbh = $connManager->getConnection($this->getDriverType());
         } catch (PDOException $e) {
             if ($this->allowConnectionFailure) {
                 $this->markTestSkipped(
@@ -51,7 +55,7 @@ abstract class ModelTestCase extends BaseTestCase
             }
         }
 
-        $driver = $connManager->getQueryDriver($this->getDriverType());
+        $this->queryDriver = $driver = $connManager->getQueryDriver($this->getDriverType());
         $this->assertInstanceOf('SQLBuilder\\Driver\\BaseDriver', $driver, 'QueryDriver object OK');
 
         // Rebuild means rebuild the database for new tests
