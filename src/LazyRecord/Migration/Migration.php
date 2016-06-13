@@ -123,7 +123,7 @@ class Migration implements Migratable
     /**
      * Rename column requires $schema object
      */
-    protected function renameColumn($table, $oldColumn, Column $newColumn)
+    public function renameColumn($table, $oldColumn, Column $newColumn)
     {
         $query = new AlterTableQuery($table);
         $query->renameColumn($oldColumn, $newColumn);
@@ -131,7 +131,7 @@ class Migration implements Migratable
         $this->query($sql);
     }
 
-    protected function dropColumnByClosure($table, callable $closure)
+    public function dropColumnByClosure($table, callable $closure)
     {
         $query = new AlterTableQuery($table);
         $column = new Column;
@@ -143,17 +143,16 @@ class Migration implements Migratable
         $this->query($sql);
     }
 
-    protected function dropColumnByName($table, $columnName)
+    public function dropColumnByName($table, $columnName)
     {
         $column = new Column($arg);
-
         $query = new AlterTableQuery($table);
         $query->dropColumn($column);
         $sql = $query->toSql($this->driver, new ArgumentArray);
         $this->query($sql);
     }
 
-    protected function dropColumn($table, Column $column)
+    public function dropColumn($table, Column $column)
     {
         $query = new AlterTableQuery($table);
         $query->dropColumn($column);
@@ -161,7 +160,7 @@ class Migration implements Migratable
         $this->query($sql);
     }
 
-    protected function modifyColumnByCallable($table, callable $cb)
+    public function modifyColumnByCallable($table, callable $cb)
     {
         $query = new AlterTableQuery($table);
         $column = new Column;
@@ -173,7 +172,7 @@ class Migration implements Migratable
         $this->query($sql);
     }
 
-    protected function modifyColumn($table, Column $column)
+    public function modifyColumn($table, Column $column)
     {
         $query = new AlterTableQuery($table);
         $query->modifyColumn($column);
@@ -181,7 +180,7 @@ class Migration implements Migratable
         $this->query($sql);
     }
 
-    protected function addColumnByCallable($table, callable $cb)
+    public function addColumnByCallable($table, callable $cb)
     {
         $query = new AlterTableQuery($table);
         $column = new Column;
@@ -193,7 +192,7 @@ class Migration implements Migratable
         $this->query($sql);
     }
 
-    protected function addColumn($table, Column $column)
+    public function addColumn($table, Column $column)
     {
         $query = new AlterTableQuery($table);
         $query->addColumn($column);
@@ -206,7 +205,7 @@ class Migration implements Migratable
      *      $s->column('title')->varchar(120);
      * });
      */
-    protected function createTable($cb) 
+    public function createTable($cb) 
     {
         $ds =  new DynamicSchemaDeclare;
         call_user_func($cb,$ds);
@@ -216,7 +215,7 @@ class Migration implements Migratable
         $this->query($sqls);
     }
 
-    protected function importSchema($schema)
+    public function importSchema($schema)
     {
         $this->logger->info("Importing schema: " . get_class($schema));
 
