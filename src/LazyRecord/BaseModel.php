@@ -2037,6 +2037,11 @@ abstract class BaseModel implements
         return $this->lastResult;
     }
 
+    public function getDeclareSchema()
+    {
+        $class = static::SCHEMA_CLASS;
+        return new $class;
+    }
 
     public function getSchema()
     {
