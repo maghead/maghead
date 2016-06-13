@@ -49,7 +49,7 @@
     "extra": { "branch-alias": { "dev-master": "3.0.x-dev" } },
     "autoload": {
         "psr-4": {
-            "LazyRecord\\": "src/LazyRecord/"
+            "LazyRecord\\": "src/"
         }
     }
 }
