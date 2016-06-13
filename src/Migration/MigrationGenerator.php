@@ -60,6 +60,10 @@ class MigrationGenerator
         return sprintf('%s_%s.php', $date, $taskName);
     }
 
+
+    /**
+     * @return ClassTemplate\ClassFile
+     */
     public function createClassTemplate($taskName,$time = null) 
     {
         if (!$time) {
@@ -69,6 +73,17 @@ class MigrationGenerator
         }
         $className = $taskName . '_' . $time;
         $template = new ClassFile($className);
+        $template->useClass('SQLBuilder\\Universal\\Syntax\\Column');
+        $template->useClass('SQLBuilder\\Universal\\Query\\AlterTableQuery');
+        $template->useClass('SQLBuilder\\Universal\\Query\\CreateTableQuery');
+        $template->useClass('SQLBuilder\\Universal\\Query\\UpdateTableQuery');
+        $template->useClass('SQLBuilder\\Universal\\Query\\DeleteTableQuery');
+        $template->useClass('SQLBuilder\\Universal\\Query\\InsertTableQuery');
+        $template->useClass('SQLBuilder\\Universal\\Query\\CreateIndexQuery');
+        $template->useClass('SQLBuilder\\Universal\\Query\\UnionQuery');
+        $template->useClass('SQLBuilder\\Bind');
+        $template->useClass('SQLBuilder\\ArgumentArray');
+        $template->useClass('SQLBuilder\\Literal');
         $template->extendClass('LazyRecord\Migration\Migration');
         return $template;
     }
@@ -98,7 +113,6 @@ class MigrationGenerator
         $this->logger->info( 'Found ' . count($schemas) . ' schemas to compare.' );
 
         $template = $this->createClassTemplate($taskName,$time);
-        $template->useClass('SQLBuilder\Universal\Syntax\Column');
         $upgradeMethod = $template->addMethod('public', 'upgrade', array(),'');
         $downgradeMethod = $template->addMethod('public', 'downgrade', array(),'');
 
