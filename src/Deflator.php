@@ -1,18 +1,17 @@
 <?php
 namespace LazyRecord;
-use DateTime;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\PDOMySQLDriver;
+use DateTime;
 
 /**
  * Deflate object value into database
  */
 class Deflator
 {
-
     static public function deflate($value, $isa, BaseDriver $driver = NULL)
     {
         switch($isa) {
-
         case 'int':
             return (int) $value;
         case 'str':
@@ -24,13 +23,13 @@ class Deflator
         case "json":
             return json_encode($value);
         case "DateTime":
-            if (is_a($value, 'DateTime',true)) {
-                return $value->format( DateTime::ATOM );
-            } 
-            if (!$value) {
-                return NULL;
+            if ($value instanceof DateTime) {
+                if ($driver instanceof PDOMySQLDriver) {
+                    return $value->format('Y-m-d H:i:s');
+                }
+                return $value->format(DateTime::ATOM);
             }
-            return $value; // might return ""
+            return $value;
         case 'bool':
             // Convert string into bool
             if (is_string($value)) {

@@ -64,7 +64,7 @@ class Inflator
                 return $value;
             }
             if ($value) {
-                return new DateTime( $value );
+                return new DateTime($value);
             }
             return null;
         }

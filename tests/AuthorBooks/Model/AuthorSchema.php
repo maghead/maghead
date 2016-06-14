@@ -30,7 +30,6 @@ class AuthorSchema extends Schema
             ->default(false);
 
         $this->mixin('LazyRecord\\Schema\\Mixin\\MetadataMixinSchema');
-
         $this->many('addresses', 'AuthorBooks\Model\AddressSchema', 'author_id', 'id');
 
         $this->many('unused_addresses', 'AuthorBooks\Model\AddressSchema', 'author_id', 'id')

@@ -902,16 +902,22 @@ following steps are based on the default configuration. you may also take a look
 
 To test with mysql database:
 
-    $ mysql -uroot -p
-    > create database testing charset utf8;
-    > create user 'testing'@'localhost';
-    > grant all privileges on testing.* to 'testing'@'localhost';
+    mysql -uroot -p
 
-    > --- if you want password
-    > grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing';
+Enter the SQL to initialize a database:
 
-    > --- if you want to remove password
-    > SET PASSWORD FOR root@localhost=PASSWORD('');
+    create database testing charset utf8;
+    create user 'testing'@'localhost';
+    grant all privileges on testing.* to 'testing'@'localhost';
+
+    --- if you want password
+    grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing';
+
+    --- if you want to remove password for root user
+    SET PASSWORD FOR root@localhost=PASSWORD('');
+
+    --- for mysql 5.7, you should run
+    SET PASSWORD FOR root@localhost='';
 
 ### Unit Testing with PostgreSQL database
 

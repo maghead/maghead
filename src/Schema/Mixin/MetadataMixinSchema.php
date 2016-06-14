@@ -3,22 +3,24 @@ namespace LazyRecord\Schema\Mixin;
 use LazyRecord\Schema\MixinDeclareSchema;
 use LazyRecord\Schema;
 use DateTime;
+use SQLBuilder\Raw;
 
 class MetadataMixinSchema extends MixinDeclareSchema
 {
     public function schema()
     {
-        $this->column('updated_on')
-            ->timestamp()
-            ->default(function() { 
-                return date('c'); 
-            });
-
         $this->column('created_on')
             ->timestamp()
+            ->isa('DateTime')
             ->default(function() { 
-                return date('c'); 
+                return new \DateTime;
             });
+
+        $this->column('updated_on')
+            ->timestamp()
+            ->isa('DateTime')
+            ->null()
+            ->default(new Raw('CURRENT_TIMESTAMP'));
     }
 
     // Mixin methods

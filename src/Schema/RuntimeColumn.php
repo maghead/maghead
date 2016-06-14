@@ -268,7 +268,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 
     public function inflate($value, $record)
     {
-        if( $f = $this->get('inflator') ) {
+        if ($f = $this->get('inflator')) {
             return call_user_func($f , $value , $record );
         }
         // use global inflator
