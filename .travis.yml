@@ -14,7 +14,6 @@ addons:
 install:
   - rm -rf vendor/corneltek/serializerkit
   - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - phpenv config-add tests/php.ini
   - phpenv rehash
   - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
