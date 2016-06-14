@@ -1,6 +1,13 @@
 Changes
 =======
 
+## v3.0.1
+
+- Increase MySQL 5.7 compatibility.
+- Fixed Metadata Mixin Schema timestamp column definition.
+- Fixed Reivision Mixin Schema timestamp column definition.
+- Be sure to put timestamp column with default current_timestamp to the last.
+
 ## v3.0
 
 - Added `--backup` option to migration command.

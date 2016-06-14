@@ -181,13 +181,13 @@ class BookModelTest extends ModelTestCase
         $date = new DateTime;
         $book = new Book;
 
-        $ret = $book->create([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date->format(DateTime::ATOM) ]);
+        $ret = $book->create([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
         $this->assertResultSuccess($ret);
 
         $id = $book->id;
         $this->assertNotNull($id);
 
-        $ret = $book->createOrUpdate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date->format(DateTime::ATOM) ], [ 'published_at' ]);
+        $ret = $book->createOrUpdate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date ], [ 'published_at' ]);
         $this->assertResultSuccess($ret);
 
         $this->assertEquals('Update With Time', $book->title);

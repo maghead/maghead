@@ -35,7 +35,11 @@ class BookSchema extends Schema
 
         $this->column('published_at')
             ->isa('DateTime')
-            ->timestamp();
+            ->timestamp()
+            ->default(function() {
+                return new \DateTime;
+            })
+            ;
 
         // Create a flag column named "is_hot" labeld "Hot Sale", checked by default
         $this->helper('Flag', ['is_hot','Hot Sale', true]);
