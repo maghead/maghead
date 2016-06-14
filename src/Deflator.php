@@ -22,14 +22,6 @@ class Deflator
             return floatval($value);
         case "json":
             return json_encode($value);
-        case "DateTime":
-            if ($value instanceof DateTime) {
-                if ($driver instanceof PDOMySQLDriver) {
-                    return $value->format('Y-m-d H:i:s');
-                }
-                return $value->format(DateTime::ATOM);
-            }
-            return $value;
         case 'bool':
             // Convert string into bool
             if (is_string($value)) {
@@ -44,6 +36,14 @@ class Deflator
             }
             return (boolean) $value ? 1 : 0;
         }
+
+        if ($value instanceof DateTime) {
+            if ($driver instanceof PDOMySQLDriver) {
+                return $value->format('Y-m-d H:i:s');
+            }
+            return $value->format(DateTime::ATOM);
+        }
+
         /* respect the data type to inflate value */
         return $value;
     }
