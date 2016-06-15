@@ -2,6 +2,7 @@
 namespace LazyRecord\TableParser;
 use PDO;
 use Exception;
+use stdClass;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\TableParser\TypeInfo;
 use LazyRecord\TableParser\ReferenceParser;
@@ -144,18 +145,15 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
     }
 
 
+
     public function queryReferences($table)
     {
         $stm = $this->connection->query('SELECT DATABASE() FROM DUAL');
         $dbName = $stm->fetchColumn(0);
 
-        $sql = "
-        SELECT
-            TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
-        FROM
-            INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-        WHERE
-            REFERENCED_TABLE_SCHEMA = :table_schema 
+        $sql = "SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
+        FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+        WHERE REFERENCED_TABLE_SCHEMA = :table_schema
         ";
         $stm = $this->connection->prepare($sql);
             // AND REFERENCED_TABLE_NAME = :table_name 
@@ -167,13 +165,18 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
         $references = [];
         foreach ($rows as $row) {
             // CONSTRAINT_NAME = [PRIMARY, child_ibfk_1 ...  ]
-            $references[$row->COLUMN_NAME] = (object) [
-                'name'   => $row->CONSTRAINT_NAME,
-                'table'  => $row->REFERENCED_TABLE_NAME,
-                'column' => $row->REFERENCED_COLUMN_NAME,
-            ];
+            $references[$row->COLUMN_NAME] = $this->transformReferenceInfo($row);
         }
         return $references;
+    }
+
+    protected function transformReferenceInfo(stdClass $row)
+    {
+        return (object) [
+            'name'   => $row->CONSTRAINT_NAME,
+            'table'  => $row->REFERENCED_TABLE_NAME,
+            'column' => $row->REFERENCED_COLUMN_NAME,
+        ];
     }
 
 

@@ -37,7 +37,7 @@ class MysqlTableParserTest extends BaseTestCase
         $this->buildSchemaTable($driver, $conn, $schema);
 
         $parser = new MysqlTableParser($driver, $conn);
-        $references = $parser->queryReference('authors');
+        $references = $parser->queryReferences('authors');
         var_dump($references);
     }
 
