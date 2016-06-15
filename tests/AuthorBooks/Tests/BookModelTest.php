@@ -177,6 +177,19 @@ class BookModelTest extends ModelTestCase
     }
 
 
+    public function testDateTimeValue()
+    {
+        $date = new DateTime;
+        $book = new Book;
+        $ret = $book->create([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
+        $this->assertResultSuccess($ret);
+        $this->assertInstanceOf('DateTime', $book->published_at);
+        $this->assertEquals('00-00-00 00-00-00',$date->diff($book->published_at)->format('%Y-%M-%D %H-%I-%S')));
+    }
+
+
+
+
     public function testCreateOrUpdateOnTimestampColumn()
     {
         $date = new DateTime;
