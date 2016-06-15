@@ -23,7 +23,8 @@ class SqlBuilderTest extends BaseTestCase
     /**
      * @dataProvider schemaProvider
      */
-    public function testBuilder($schema) {
+    public function testBuilder($schema)
+    {
         $this->insertIntoDataSource($schema);
     }
 
@@ -40,9 +41,8 @@ class SqlBuilderTest extends BaseTestCase
 
         $queryDriver = $connManager->getQueryDriver(self::getCurrentDriverType());
         $builder = SqlBuilder::create($queryDriver,array( 'rebuild' => true ));
-        $builder->build($schema);
 
-        $sqls = $builder->build( $schema );
+        $sqls = array_filter(array_merge($builder->prepare(), $builder->build($schema), $builder->finalize()));
         $this->assertNotEmpty($sqls);
         foreach ($sqls as $sql) {
             $this->assertQueryOK($pdo, $sql);

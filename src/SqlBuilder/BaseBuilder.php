@@ -18,7 +18,9 @@ use LazyRecord\Schema\DeclareColumn;
 abstract class BaseBuilder
 {
     public $rebuild;
+
     public $clean;
+
     public $driver;
 
     public function __construct(BaseDriver $driver, array $options = array())
@@ -33,6 +35,10 @@ abstract class BaseBuilder
     }
 
     abstract public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column);
+
+    public function prepare() { return []; }
+
+    public function finalize() { return []; }
 
     public function createTable(SchemaInterface $schema)
     {
@@ -71,7 +77,6 @@ abstract class BaseBuilder
     public function buildTable(SchemaInterface $schema)
     {
         $sqls = array();
-
         if ($this->clean || $this->rebuild) {
             $sqls[] = $this->dropTable($schema);
         }
@@ -133,7 +138,6 @@ abstract class BaseBuilder
         $constraint = new Constraint();
         $constraint->foreignKey($rel['self_column']);
         $references = $constraint->references($fSchema->getTable(), (array) $rel['foreign_column']);
-
         if ($act = $rel->onUpdate) {
             $references->onUpdate($act);
         }
@@ -146,14 +150,12 @@ abstract class BaseBuilder
 
     public function buildForeignKeys(SchemaInterface $schema)
     {
-        // return [];
         $sqls = [];
         foreach ($schema->relations as $rel) {
             switch ($rel['type']) {
             case Relationship::BELONGS_TO:
             case Relationship::HAS_MANY:
             case Relationship::HAS_ONE:
-                var_dump( $rel );
                 if ($rel['foreign_schema'] == $rel['self_schema']) {
                     continue;
                 }
@@ -166,9 +168,4 @@ abstract class BaseBuilder
         }
         return $sqls;
     }
-
 }
-
-
-
-

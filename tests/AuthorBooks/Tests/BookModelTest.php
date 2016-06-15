@@ -147,16 +147,10 @@ class BookModelTest extends ModelTestCase
         $ret = $book->create(array( 
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',
-            'publisher_id' => '""',  /* cast this to null or empty */
+            'view' => '""',  /* cast this to null or empty */
             // 'publisher_id' => NULL,  /* cast this to null or empty */
         ));
-
-
-        // FIXME: in sqlite, it works, in pgsql, can not be cast to null
-        // ok( $ret->success );
-#          print_r($ret->sql);
-#          print_r($ret->vars);
-#          echo $ret->exception;
+        $this->assertResultSuccess($ret);
     }
 
 

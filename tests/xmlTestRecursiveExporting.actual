@@ -67,14 +67,14 @@
         <record class="AuthorBooks\Model\AuthorBook">
           <id isa="int" type="int">1</id>
           <author_id isa="int" type="int">1</author_id>
-          <created_on isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_on>
           <book_id isa="int" type="int">1</book_id>
+          <created_on isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_on>
         </record>
         <record class="AuthorBooks\Model\AuthorBook">
           <id isa="int" type="int">2</id>
           <author_id isa="int" type="int">1</author_id>
-          <created_on isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_on>
           <book_id isa="int" type="int">2</book_id>
+          <created_on isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_on>
         </record>
       </collection>
     </author_books>

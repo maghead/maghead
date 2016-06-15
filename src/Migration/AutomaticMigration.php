@@ -4,6 +4,7 @@ use LazyRecord\Console;
 use LazyRecord\Metadata;
 use LazyRecord\Schema\Comparator;
 use LazyRecord\TableParser\TableParser;
+use LazyRecord\TableParser\ReferenceParser;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Connection;
 use LazyRecord\QueryDriver;
@@ -18,7 +19,8 @@ class AutomaticMigration extends Migration implements Migratable
 {
     protected $options = null;
 
-    public function __construct(BaseDriver $driver, PDO $connection, OptionResult $options = null) {
+    public function __construct(BaseDriver $driver, PDO $connection, OptionResult $options = null)
+    {
         $this->options = $options ?: new OptionResult;
         parent::__construct($driver, $connection);
     }
@@ -34,6 +36,11 @@ class AutomaticMigration extends Migration implements Migratable
 
         // schema from runtime
         foreach ($tableSchemas as $table => $schema) {
+
+            if ($parser instanceof ReferenceParser) {
+                $references = $parser->queryReference($table);
+            }
+
             $this->logger->debug("Checking table $table for schema " . get_class($schema));
 
             if (!in_array($table, $existingTables)) {
@@ -100,8 +107,4 @@ class AutomaticMigration extends Migration implements Migratable
             $this->executeQuery($alterTable);
         }
     }
-
-
 }
-
-

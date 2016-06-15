@@ -7,7 +7,8 @@ class AddressSchema extends Schema
     public function schema()
     {
         $this->column('author_id')
-                ->integer();
+            ->unsigned()
+            ->integer();
 
         $this->column('address')
                 ->varchar(128);

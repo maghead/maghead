@@ -33,6 +33,10 @@ class PgsqlBuilder extends BaseBuilder
         return $sql;
     }
 
+    public function buildForeignKeys(SchemaInterface $schema)
+    {
+        return [];
+    }
 
     public function dropTable(SchemaInterface $schema)
     {

@@ -8,8 +8,8 @@ class UserModelTest extends ModelTestCase
     public function getModels()
     {
         return array(
-            'TestApp\Model\UserSchema',
-            'AuthorBooks\Model\BookSchema'
+            new \TestApp\Model\UserSchema,
+            new \AuthorBooks\Model\BookSchema,
         );
     }
 
@@ -23,12 +23,11 @@ class UserModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         ok( $user->id );
 
-        $book = new \AuthorBooks\Model\Book ;
+        $book = new \AuthorBooks\Model\Book;
         $ret = $book->create(array( 
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',
-            'publisher_id' => '""',  /* cast this to null or empty */
-            'created_by' => $user->id,
+            'created_by'   => $user->id,
         ));
         $this->assertResultSuccess($ret);
     }

@@ -13,8 +13,18 @@ use SQLBuilder\ArgumentArray;
  *
  * @see http://www.sqlite.org/docs.html
  */
-class SqliteBuilder extends BaseBuilder 
+class SqliteBuilder extends BaseBuilder
 {
+    public function prepare()
+    {
+        return [
+            'PRAGMA foreign_keys = 0',
+        ];
+    }
+
+
+
+
     public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column) {
         $name = $column->name;
         $isa  = $column->isa ?: 'str';
@@ -80,11 +90,11 @@ class SqliteBuilder extends BaseBuilder
 
     public function buildIndex(SchemaInterface $schema)
     {
-        return array();
+        return [];
     }
 
     public function buildForeignKeys(SchemaInterface $schema) {
-        return array();
+        return [];
     }
 
 }

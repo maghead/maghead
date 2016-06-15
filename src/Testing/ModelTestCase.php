@@ -70,18 +70,25 @@ abstract class ModelTestCase extends BaseTestCase
 
         if ($rebuild) {
             $builder = SqlBuilder::create($driver, array('rebuild' => true));
-            $this->assertNotNull($builder);
-
-            // $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
-            $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
-            foreach ($schemas as $schema) {
-                $sqls = $builder->build($schema);
-                $this->assertNotEmpty($sqls);
-
+            if ($sqls = $builder->prepare()) {
                 foreach ($sqls as $sql) {
                     $dbh->query($sql);
                 }
             }
+            $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
+            foreach ($schemas as $schema) {
+                $sqls = $builder->build($schema);
+                $this->assertNotEmpty($sqls);
+                foreach ($sqls as $sql) {
+                    $dbh->query($sql);
+                }
+            }
+            if ($sqls = $builder->finalize()) {
+                foreach ($sqls as $sql) {
+                    $dbh->query($sql);
+                }
+            }
+
             if ($basedata) {
                 $runner = new SeedBuilder($this->config, $this->logger);
                 foreach ($schemas as $schema) {

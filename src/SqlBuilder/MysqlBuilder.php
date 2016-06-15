@@ -9,6 +9,24 @@ use SQLBuilder\ArgumentArray;
 
 class MysqlBuilder extends BaseBuilder
 {
+
+    public function prepare()
+    {
+        return [
+            '/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */',
+            '/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */',
+        ];
+    }
+
+    public function finalize()
+    {
+        return [
+            '/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */',
+            '/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */',
+        ];
+    }
+
+
     public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column)
     {
         $name = $column->name;
@@ -19,7 +37,6 @@ class MysqlBuilder extends BaseBuilder
 
         $args = new ArgumentArray;
         $sql = $column->buildDefinitionSql($this->driver, $args);
-
         /**
         BUILD COLUMN REFERENCE
 
@@ -58,8 +75,8 @@ class MysqlBuilder extends BaseBuilder
         foreach ($schema->relations as $rel) {
             switch( $rel['type'] ) {
             case Relationship::BELONGS_TO:
-            // case Relationship::HAS_MANY:
-            // case Relationship::HAS_ONE:
+                // case Relationship::HAS_MANY:
+                // case Relationship::HAS_ONE:
                 if ($name != 'id' && $rel['self_column'] == $name) {
                     $fSchema = new $rel['foreign_schema'];
                     $fColumn = $rel['foreign_column'];

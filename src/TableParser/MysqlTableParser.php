@@ -4,12 +4,9 @@ use PDO;
 use Exception;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\TableParser\TypeInfo;
+use LazyRecord\TableParser\ReferenceParser;
 use LazyRecord\TableParser\TypeInfoParser;
 use SQLBuilder\Raw;
-
-interface ReferenceParser {
-    // public function queryReference();
-}
 
 class MysqlTableParser extends BaseTableParser implements ReferenceParser
 {
@@ -144,6 +141,30 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
             }
         }
         return $schema;
+    }
+
+
+    public function queryReference($table)
+    {
+        $stm = $this->connection->query('SELECT DATABASE() FROM DUAL');
+        $dbName = $stm->fetchColumn(0);
+
+        $sql = "
+        SELECT 
+            TABLE_SCHEMA, TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME
+        FROM
+            INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+        WHERE
+            REFERENCED_TABLE_SCHEMA = :table_schema 
+        ";
+        $stm = $this->connection->prepare($sql);
+            // AND REFERENCED_TABLE_NAME = :table_name 
+        $stm->execute([
+            ':table_schema' => $dbName,
+            // ':table_name' => $table
+        ]);
+        $rows = $stm->fetchAll(PDO::FETCH_OBJ);
+        var_dump($rows);
     }
 
 

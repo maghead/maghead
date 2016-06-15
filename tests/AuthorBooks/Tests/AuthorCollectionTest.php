@@ -30,12 +30,12 @@ class AuthorCollectionTest extends ModelTestCase
 
     public function getModels()
     {
-        return array( 
-            'AuthorBooks\Model\AuthorSchema', 
-            'AuthorBooks\Model\BookSchema',
-            'AuthorBooks\Model\AuthorBookSchema',
-            'AuthorBooks\Model\AddressSchema',
-        );
+        return [
+            new \AuthorBooks\Model\AuthorSchema,
+            new \AuthorBooks\Model\BookSchema,
+            new \AuthorBooks\Model\AuthorBookSchema,
+            new \AuthorBooks\Model\AddressSchema,
+        ];
     }
 
     public function testCollectionAsPairs()
@@ -44,23 +44,21 @@ class AuthorCollectionTest extends ModelTestCase
         $results = array();
         $results[] = $ret = $address->create(array( 'address' => 'Hack' ));
         $this->assertResultSuccess($ret);
-
-        result_ok( $results[] = $address->create(array( 'address' => 'Hack I' )) );
-        result_ok( $results[] = $address->create(array( 'address' => 'Hack II' )) );
+        $this->assertResultSuccess($results[] = $address->create(array( 'address' => 'Hack I' )));
+        $this->assertResultSuccess($results[] = $address->create(array( 'address' => 'Hack II' )));
 
         $addresses = new \AuthorBooks\Model\AddressCollection;
         $pairs = $addresses->asPairs( 'id' , 'address' );
-        ok( $pairs );
+        $this->assertNotEmpty($pairs);
 
         // Run update
-        $addresses->where(array( 'address' => 'Hack' ));
-        $ret = $addresses->update(array( 'address' => 'BooBoo' ));
-        result_ok($ret);
-
-        foreach( $results as $result ) {
+        $addresses->where(array('address' => 'Hack'));
+        $ret = $addresses->update(array('address' => 'BooBoo'));
+        $this->assertResultSuccess($ret);
+        foreach ($results as $result) {
             $id = $result->id;
             ok($id);
-            ok(isset($pairs[$id]));
+            $this->assertTrue(isset($pairs[$id]));
             like('/Hack/',$pairs[$id]);
             $address = new \AuthorBooks\Model\Address($result->id);
             $address->delete();
@@ -274,7 +272,6 @@ class AuthorCollectionTest extends ModelTestCase
      */
     public function testJoinWithAliasAndWithoutRelationId() {
         $authors = new AuthorCollection;
-        ok($authors);
         $authors->join(new \AuthorBooks\Model\Address ,'LEFT','a');
         $authors->fetch();
         $sql = $authors->toSQL();

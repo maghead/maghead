@@ -8,15 +8,18 @@ class AuthorBookSchema extends Schema
     {
         $this->column('author_id')
                 ->required()
-                ->integer();
+                ->integer()
+                ->unsigned()
+                ;
+
+        $this->column('book_id')
+            ->integer()
+            ->unsigned()
+            ->required();
 
         $this->column('created_on')
                 ->isa('str')
                 ->timestamp();
-
-        $this->column('book_id')
-            ->integer()
-            ->required();
 
         $this->belongsTo('book','\AuthorBooks\Model\BookSchema','id','book_id')
             ->onDelete('CASCADE')

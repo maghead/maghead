@@ -152,11 +152,9 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     public function buildSchemaTable(BaseDriver $driver, PDO $conn, DeclareSchema $schema, array $options = [ 'rebuild' => true ])
     {
         $builder = SqlBuilder::create($driver, $options);
-        $this->assertNotNull($builder);
-
-        $sqls = $builder->build($schema);
-        foreach($sqls as $sql ) {
-            $conn->query( $sql );
+        $sqls = array_filter(array_merge($builder->prepare(), $builder->build($schema), $builder->finalize()));
+        foreach ($sqls as $sql) {
+            $conn->query($sql);
         }
     }
 
@@ -227,6 +225,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             return $ret;
         } catch (PDOException $e) {
             PDOExceptionPrinter::show($e, $sql, $args, new Logger);
+            throw $e;
         }
     }
 

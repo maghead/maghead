@@ -12,7 +12,7 @@
     "description": "The Fast PHP ORM",
     "require": {
         "php": ">=5.4.0",
-        "corneltek/sqlbuilder": "^3.0",
+        "corneltek/sqlbuilder": "dev-master",
         "corneltek/cliframework": "^3.0",
         "corneltek/locale": "^2.0.0",
         "corneltek/class-template": "^3.0",
