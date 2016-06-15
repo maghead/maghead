@@ -38,7 +38,9 @@ class MysqlTableParserTest extends BaseTestCase
 
         $parser = new MysqlTableParser($driver, $conn);
         $references = $parser->queryReferences('authors');
-        var_dump($references);
+        $this->assertNotEmpty($references);
+        $this->assertEquals('publishers', $references['publisher_id']->table);
+        $this->assertEquals('id', $references['publisher_id']->column);
     }
 
     public function testReverseSchemaWithStringSet()

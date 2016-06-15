@@ -178,6 +178,4 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
             'column' => $row->REFERENCED_COLUMN_NAME,
         ];
     }
-
-
 }
