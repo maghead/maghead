@@ -150,8 +150,8 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
         $dbName = $stm->fetchColumn(0);
 
         $sql = "
-        SELECT 
-            TABLE_SCHEMA, TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME
+        SELECT
+            TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
         FROM
             INFORMATION_SCHEMA.KEY_COLUMN_USAGE
         WHERE
@@ -164,7 +164,16 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
             // ':table_name' => $table
         ]);
         $rows = $stm->fetchAll(PDO::FETCH_OBJ);
-        var_dump($rows);
+        $references = [];
+        foreach ($rows as $row) {
+            // CONSTRAINT_NAME = [PRIMARY, child_ibfk_1 ...  ]
+            $references[$row->COLUMN_NAME] = (object) [
+                'name'   => $row->CONSTRAINT_NAME,
+                'table'  => $row->REFERENCED_TABLE_NAME,
+                'column' => $row->REFERENCED_COLUMN_NAME,
+            ];
+        }
+        return $references;
     }
 
 

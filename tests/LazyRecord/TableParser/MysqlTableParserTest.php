@@ -18,6 +18,28 @@ class MysqlTableParserTest extends BaseTestCase
         parent::setUp();
     }
 
+    public function testReferenceQuery()
+    {
+        $manager = ConnectionManager::getInstance();
+        $conn = $manager->getConnection('mysql');
+        $driver = $manager->getQueryDriver('mysql');
+
+        $schema = new \AuthorBooks\Model\AuthorSchema;
+        $this->updateSchemaFiles($schema);
+        $this->buildSchemaTable($driver, $conn, $schema);
+
+        $schema = new \AuthorBooks\Model\BookSchema;
+        $this->updateSchemaFiles($schema);
+        $this->buildSchemaTable($driver, $conn, $schema);
+
+        $schema = new \AuthorBooks\Model\AuthorBookSchema;
+        $this->updateSchemaFiles($schema);
+        $this->buildSchemaTable($driver, $conn, $schema);
+
+        $parser = new MysqlTableParser($driver, $conn);
+        $references = $parser->queryReference('authors');
+        var_dump($references);
+    }
 
     public function testReverseSchemaWithStringSet()
     {
