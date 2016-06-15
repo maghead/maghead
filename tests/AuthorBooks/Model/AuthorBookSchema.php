@@ -4,8 +4,7 @@ use LazyRecord\Schema;
 
 class AuthorBookSchema extends Schema
 {
-
-    function schema()
+    public function schema()
     {
         $this->column('author_id')
                 ->required()
