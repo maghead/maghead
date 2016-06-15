@@ -144,7 +144,7 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
     }
 
 
-    public function queryReference($table)
+    public function queryReferences($table)
     {
         $stm = $this->connection->query('SELECT DATABASE() FROM DUAL');
         $dbName = $stm->fetchColumn(0);
