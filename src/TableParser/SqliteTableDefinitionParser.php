@@ -138,8 +138,11 @@ class SqliteTableDefinitionParser
                         }
                     }
 
-                    while($constraintToken = $this->tryParseColumnConstraint()) {
+                    if (in_array(strtoupper($column->type), self::$intTypes)) {
+                        $unsigned = $this->consume('unsigned', 'unsigned');
+                    }
 
+                    while($constraintToken = $this->tryParseColumnConstraint()) {
                         if ($constraintToken->val == 'PRIMARY') {
 
                             $this->tryParseKeyword(['KEY']);
@@ -467,20 +470,32 @@ class SqliteTableDefinitionParser
         });
     }
 
+    static public $intTypes = ['INT', 'INTEGER', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT', 'BIG INT', 'INT2' , 'INT8'];
+    static public $textTypes = ['CHARACTER', 'VARCHAR', 'VARYING CHARACTER', 'NCHAR', 'NATIVE CHARACTER', 'NVARCHAR', 'TEXT', 'CLOB'];
+    static public $numericTypes = ['NUMERIC', 'DECIMAL', 'BOOLEAN', 'DATE', 'DATETIME', 'TIMESTAMP'];
 
-    protected function tryParseTypeName() 
+
+    protected function consume($token, $typeName)
     {
-        $intTypes = ['INT', 'INTEGER', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT', 'BIG INT', 'INT2' , 'INT8'];
-        $textTypes = ['CHARACTER', 'VARCHAR', 'VARYING CHARACTER', 'NCHAR', 'NATIVE CHARACTER', 'NVARCHAR', 'TEXT', 'CLOB'];
+        if (($p2 = stripos($this->str, $token, $this->p)) !== false && $p2 == $this->p) {
+            $this->p += strlen($token);
+            return new Token($typeName, $token);
+        }
+        return false;
+    }
+
+
+    protected function tryParseTypeName()
+    {
         $blobTypes = ['BLOB', 'NONE'];
         $realTypes = ['REAL', 'DOUBLE', 'DOUBLE PRECISION', 'FLOAT'];
-        $numericTypes = ['NUMERIC', 'DECIMAL', 'BOOLEAN', 'DATE', 'DATETIME', 'TIMESTAMP'];
-
-        $allTypes = array_merge($intTypes, $textTypes, $blobTypes, $realTypes, $numericTypes);
-
+        $allTypes = array_merge(self::$intTypes,
+            self::$textTypes,
+            $blobTypes,
+            $realTypes,
+            self::$numericTypes);
         $this->sortKeywordsByLen($allTypes);
-
-        foreach($allTypes as $typeName) {
+        foreach ($allTypes as $typeName) {
             // Matched
             if (($p2 = stripos($this->str, $typeName, $this->p)) !== false && $p2 == $this->p) {
                 $this->p += strlen($typeName);
