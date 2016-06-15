@@ -710,7 +710,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      * @param string $foreignColumn     foreign schema column
      * @param string $selfColumn        self schema column
      */
-    public function one($accessor, $foreignClass, $foreignColumn = null, $selfColumn)
+    public function hasOne($accessor, $foreignClass, $foreignColumn = null, $selfColumn)
     {
         // foreignColumn is default to foreignClass.primary key
         return $this->relations[ $accessor ] = new Relationship($accessor, array(
