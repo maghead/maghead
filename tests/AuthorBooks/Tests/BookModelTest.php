@@ -5,6 +5,8 @@ use LazyRecord\Testing\ModelTestCase;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\BookSchema;
+use AuthorBooks\Model\AuthorSchema;
+use AuthorBooks\Model\AuthorBookSchema;
 use DateTime;
 
 class BookModelTest extends ModelTestCase
@@ -13,7 +15,11 @@ class BookModelTest extends ModelTestCase
 
     public function getModels()
     {
-        return array(new BookSchema);
+        return [
+            new AuthorSchema,
+            new BookSchema,
+            new AuthorBookSchema,
+        ];
     }
 
     /**
