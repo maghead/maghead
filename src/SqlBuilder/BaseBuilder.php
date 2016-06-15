@@ -36,16 +36,19 @@ abstract class BaseBuilder
 
     public function createTable(SchemaInterface $schema)
     {
-        $sql = 'CREATE TABLE ' 
+        $sql = 'CREATE TABLE '
             . $this->driver->quoteIdentifier($schema->getTable()) . " ( \n";
-        $columnSql = array();
+
+        $columnSqls = array();
         foreach( $schema->columns as $name => $column ) {
             if ($column->virtual) {
                 continue;
             }
-            $columnSql[] = '  ' . $this->buildColumnSql( $schema, $column );
+            $columnSqls[] = '  ' . $this->buildColumnSql( $schema, $column );
         }
-        $sql .= join(",\n",$columnSql);
+        $referencesSqls = $this->buildForeignKeys($schema);
+        $sql .= join(",\n",array_merge($columnSqls, $referencesSqls));
+
         $sql .= "\n);\n";
         return $sql;
     }
@@ -105,37 +108,59 @@ abstract class BaseBuilder
     }
 
 
+
+    // protected function buildForeignKeySql()
+
+
+
+    /**
+
+    It's possible to raise an error like this:
+
+    ERROR 1215 (HY000): Cannot add foreign key constraint
+
+    Cannot find an index in the referenced table where the
+    referenced columns appear as the first columns, or column types
+    in the table and the referenced table do not match for constraint.
+    Note that the internal storage type of ENUM and SET changed in
+    tables created with >= InnoDB-4.1.12, and such columns in old tables
+    cannot be referenced by such columns in new tables.
+    Please refer to http://dev.mysql.com/doc/refman/5.7/en/innodb-foreign-key-constraints.html for correct foreign key definition.
+     */
+    public function buildForeignKeyConstraint(Relationship $rel)
+    {
+        $fSchema = new $rel['foreign_schema'];
+        $constraint = new Constraint();
+        $constraint->foreignKey($rel['self_column']);
+        $references = $constraint->references($fSchema->getTable(), (array) $rel['foreign_column']);
+
+        if ($act = $rel->onUpdate) {
+            $references->onUpdate($act);
+        }
+        if ($act = $rel->onDelete) {
+            $references->onDelete($act);
+        }
+        return $constraint;
+    }
+
+
     public function buildForeignKeys(SchemaInterface $schema)
     {
-        return []; // FIXME
-
+        // return [];
         $sqls = [];
-        if ($this->driver instanceof SQLiteDriver) {
-            return $sqls;
-        }
-
         foreach ($schema->relations as $rel) {
-            switch ( $rel['type'] ) {
+            switch ($rel['type']) {
             case Relationship::BELONGS_TO:
             case Relationship::HAS_MANY:
             case Relationship::HAS_ONE:
+                var_dump( $rel );
+                if ($rel['foreign_schema'] == $rel['self_schema']) {
+                    continue;
+                }
                 if (isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
                 {
-                    $n = $rel['self_column'];
-                    $column = $schema->getColumn($n);
-                    $fSchema = new $rel['foreign_schema'];
-
-                    $constraint = new Constraint();
-                    $constraint->foreignKey($rel['self_column']);
-                    $constraint->reference($fSchema->getTable(), (array) $rel['foreign_column']);
-
-                    if ($action = $rel->onUpdate) {
-                        $constraint->onUpdate($action);
-                    }
-                    if ($action = $rel->onDelete) {
-                        $constraint->onDelete($action);
-                    }
-                    $sqls[] = $query->toSql($this->driver, new ArgumentArray);
+                    $constraint = $this->buildForeignKeyConstraint($rel);
+                    $sqls[] = $constraint->toSql($this->driver, new ArgumentArray);
                 }
             }
         }
