@@ -45,14 +45,6 @@ class DatabaseBuilder
             $sqls = $this->builder->buildIndex($schema);
             $this->executeStatements($sqls);
         }
-        /*
-        foreach ($schemas as $schema) {
-            $class = get_class($schema);
-            $this->logger->info("Building foreign keys for $class");
-            $sqls = $this->builder->buildForeignKeys($schema);
-            $this->executeStatements($sqls);
-        }
-        */
         if ($sqls = $this->builder->finalize()) {
             $this->executeStatements($sqls);
         }
