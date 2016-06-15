@@ -19,6 +19,7 @@ class AddressSchema extends Schema
         /**
          * $address->author 
          */
-        $this->belongsTo( 'author', '\\AuthorBooks\Model\\AuthorSchema', 'id' , 'author_id' );
+        $this->belongsTo('author', '\\AuthorBooks\Model\\AuthorSchema', 'id' , 'author_id')
+            ->onDelete('CASCADE');
     }
 }
