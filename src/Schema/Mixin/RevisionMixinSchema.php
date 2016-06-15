@@ -11,16 +11,19 @@ class RevisionMixinSchema extends MixinDeclareSchema
     {
         $this->column('revision_parent_id')
             ->int()
+            ->unsigned()
             ->null()
             ;
 
         $this->column('revision_root_id')
             ->int()
+            ->unsigned()
             ->null()
             ;
 
         $this->column('revision_created_at')
             ->timestamp()
+            ->null()
             ->isa('DateTime')
             ->default(function() { 
                 return new \DateTime;
@@ -28,8 +31,11 @@ class RevisionMixinSchema extends MixinDeclareSchema
 
         $this->column('revision_updated_at')
             ->timestamp()
+            ->null()
             ->isa('DateTime')
-            ->default(new Raw('CURRENT_TIMESTAMP'));
+            ->default(new Raw('CURRENT_TIMESTAMP'))
+            ->onUpdate(new Raw('CURRENT_TIMESTAMP'))
+            ;
 
 
         $this->belongsTo('root_revision', get_class($this->parentSchema), 'id', 'revision_root_id');
