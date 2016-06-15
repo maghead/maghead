@@ -30,8 +30,9 @@ class BookSchema extends Schema
             ->integer();
 
         $this->column('publisher_id')
-            ->isa('int')
-            ->integer();
+            ->integer()
+            ->unsigned()
+            ;
 
         $this->column('published_at')
             ->isa('DateTime')
