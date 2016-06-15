@@ -11,20 +11,18 @@ use LazyRecord\RESULT;
  */
 class BasicCRUDTest extends ModelTestCase
 {
-    public $driver = 'sqlite';
-
     public function getModels()
     {
-        return array( 
-            'AuthorBooks\Model\AuthorSchema',
-            'AuthorBooks\Model\BookSchema',
-            'AuthorBooks\Model\AuthorBookSchema',
-            'AuthorBooks\Model\AddressSchema',
-        );
+        return [
+            new \AuthorBooks\Model\AuthorSchema,
+            new \AuthorBooks\Model\BookSchema,
+            new \AuthorBooks\Model\AuthorBookSchema,
+            new \AuthorBooks\Model\AddressSchema,
+        ];
     }
 
     public function setUp() {
-        if( ! extension_loaded('pdo_' . $this->driver) ) {
+        if (! extension_loaded('pdo_' . $this->driver)) {
             $this->markTestSkipped('pdo_' . $this->driver . ' extension is required for model testing');
             return;
         }
@@ -262,10 +260,11 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertTrue( $book->create(array( 'title' => 'Book I Ex' ))->success );
         $this->assertTrue( $book->create(array( 'title' => 'Book I' ))->success );
 
-        result_ok( $ab->create(array( 
+        $ret = $ab->create(array(
             'author_id' => $author->id,
             'book_id' => $book->id,
-        )) );
+        ));
+        $this->assertResultSuccess($ret);
 
         $this->assertTrue( $book->create(array( 'title' => 'Book II' ))->success );
         $ab->create(array( 
@@ -296,15 +295,14 @@ class BasicCRUDTest extends ModelTestCase
         ok( $bookTitles[ 'Book II' ] );
         ok( $bookTitles[ 'Book III' ] );
         ok( ! isset($bookTitles[ 'Book I Ex' ] ) );
-
         $author->delete();
     }
 
     public function testHasManyRelationCreate2()
     {
         $author = new \AuthorBooks\Model\Author;
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        ok( $author->id );
+        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertResultSuccess($ret);
 
         // append items
         $author->addresses[] = array( 'address' => 'Harvard' );
@@ -317,26 +315,24 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertEquals( 'Harvard' , $addresses[0]->address );
 
         $a = $addresses[0];
-        ok( $retAuthor = $a->author );
-        ok( $retAuthor->id );
-        ok( $retAuthor->name );
-        $this->assertEquals( 'Z', $retAuthor->name );
-
-        $author->delete();
+        $this->assertInstanceOf('LazyRecord\BaseModel', $retAuthor = $a->author);
+        $this->assertEquals('Z', $retAuthor->name );
+        $ret = $author->delete();
+        $this->assertResultSuccess($ret);
     }
 
     public function testHasManyRelationCreate()
     {
         $author = new \AuthorBooks\Model\Author;
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        ok( $author->id );
+        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertResultSuccess($ret);
 
-        $address = $author->addresses->create(array( 
+        $address = $author->addresses->create(array(
             'address' => 'farfaraway'
         ));
 
-        ok( $address->id );
-        ok( $address->author_id );
+        ok($address->id);
+        ok($address->author_id);
         $this->assertEquals( $author->id, $address->author_id );
 
         $this->assertEquals( 'farfaraway' , $address->address );
@@ -349,50 +345,32 @@ class BasicCRUDTest extends ModelTestCase
     public function testHasManyRelationFetch()
     {
         $author = new \AuthorBooks\Model\Author;
-        ok( $author );
-
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        ok( $author->id );
+        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertResultSuccess($ret);
 
         $address = new \AuthorBooks\Model\Address;
-        ok( $address );
-
-        $address->create(array( 
+        $ret = $address->create(array(
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei',
         ));
-        ok( $address->author );
-        ok( $address->author->id );
+        $this->assertResultSuccess($ret);
+
+        $this->assertInstanceOf('LazyRecord\BaseModel' , $address->author);
         $this->assertEquals( $author->id, $address->author->id );
 
-        $address->create(array( 
+        $ret = $address->create(array(
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei II',
         ));
+        $this->assertResultSuccess($ret);
 
         // xxx: provide getAddresses() method generator
         $addresses = $author->addresses;
-        ok( $addresses );
+        $this->assertInstanceOf('LazyRecord\BaseCollection', $addresses);
 
         $items = $addresses->items();
-        ok( $items );
-
-        ok( $addresses[0] );
-        ok( $addresses[1] );
-        ok( ! isset($addresses[2]) );
-        ok( ! @$addresses[2] );
-
-        ok( $addresses[0]->id );
-        ok( $addresses[1]->id );
-
-        ok( $size = $addresses->size() );
-        $this->assertEquals( 2 , $size );
-
-        foreach( $author->addresses as $ad ) {
-            ok( $ad->delete()->success );
-        }
-
-        $author->delete();
+        $this->assertNotEmpty($items);
+        $this->assertCount(2, $items);
     }
 
 
@@ -402,25 +380,27 @@ class BasicCRUDTest extends ModelTestCase
     public function testRecordUpdateWithRawSQL()
     {
         $n = new \AuthorBooks\Model\Book ;
-        $n->create(array(
+        $ret = $n->create(array(
             'title' => 'book title',
             'view' => 0,
         ));
+        $this->assertResultSuccess($ret);
         $this->assertEquals( 0 , $n->view );
         $ret = $n->update(array( 
             'view' => new Raw('view + 1')
         ), array('reload' => true));
-
-        $this->assertTrue($ret->success, $ret->message);
+        $this->assertResultSuccess($ret);
         $this->assertEquals(1, $n->view);
 
-        $n->update(array( 
+        $ret = $n->update(array(
             'view' => new Raw('view + 3'),
         ), array('reload' => true));
+        $this->assertResultSuccess($ret);
+
         $ret = $n->reload();
-        $this->assertTrue( $ret->success );
+        $this->assertResultSuccess($ret);
         $this->assertEquals( 4, $n->view );
-        result_ok($n->delete());
+        $this->assertResultSuccess($n->delete());
     }
 
 
@@ -466,5 +446,3 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertResultSuccess($ret);
     }
 }
-
-

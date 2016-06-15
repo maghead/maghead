@@ -3,17 +3,15 @@ use LazyRecord\Testing\ModelTestCase;
 
 class IDNumberModelTest extends ModelTestCase
 {
-    public $driver = 'sqlite';
-
     public function getModels()
     {
-        return array('TestApp\Model\\IDNumberSchema');
+        return [new \TestApp\Model\IDNumberSchema];
     }
 
     /**
      * @basedata false
      */
-    public function testValidation() 
+    public function testValidation()
     {
         $record = new TestApp\Model\IDNumber;
         $ret = $record->create(array( 'id_number' => 'A186679004' ));

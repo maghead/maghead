@@ -213,26 +213,21 @@ class NameModelTest extends ModelTestCase
             'type' => 'type-a',
         ));
         $this->assertResultSuccess($ret);
-        is( 'Type Name A', $name->display( 'type' ) );
+        $this->assertEquals( 'Type Name A', $name->display( 'type' ) );
 
         $xml = $name->toXml();
-        ok( $xml );
-
         $dom = new DOMDocument;
-        $dom->loadXml( $xml );
-
+        $dom->loadXml($xml);
 
         if (extension_loaded('yaml')) {
             $yaml = $name->toYaml();
-            ok( $yaml );
             yaml_parse($yaml);
         }
 
         $json = $name->toJson();
-        ok( $json );
-        json_decode( $json );
-
-        ok( $name->delete()->success );
+        $this->assertNotEmpty($json);
+        $this->assertNotEmpty(json_decode($json));
+        $this->assertResultSuccess($name->delete());
     }
 
     public function testDeflator()
@@ -249,7 +244,7 @@ class NameModelTest extends ModelTestCase
         $d = $n->date;
         $this->assertNotNull($d);
         $this->assertInstanceOf('DateTime', $d);
-        is( '20110101' , $d->format( 'Ymd' ) );
+        $this->assertEquals('20110101' , $d->format( 'Ymd' ));
 
         $ret = $n->delete();
         $this->assertResultSuccess($ret);
@@ -264,7 +259,6 @@ class NameModelTest extends ModelTestCase
         $name = new \TestApp\Model\Name;
         $ret = $name->create($args);
         $this->assertResultSuccess($ret);
-
         $ret = $name->delete();
         $this->assertResultSuccess($ret);
     }
@@ -278,14 +272,13 @@ class NameModelTest extends ModelTestCase
         $instance = \TestApp\Model\Name::fromArray(array( 
             $args
         ));
-        ok( $instance );
-        isa_ok( 'TestApp\Model\Name' ,  $instance );
+        $this->assertInstanceOf( 'TestApp\Model\Name' ,  $instance);
 
         $collection = \TestApp\Model\NameCollection::fromArray(array( 
             $args,
             $args,
         ));
-        isa_ok( 'TestApp\Model\NameCollection' , $collection );
+        $this->assertInstanceOf('TestApp\Model\NameCollection' , $collection);
     }
 
     /**
@@ -295,21 +288,20 @@ class NameModelTest extends ModelTestCase
     {
         $n = new \TestApp\Model\Name;
         $date = new DateTime('2011-01-01 00:00:00');
-        $ret = $n->create(array( 
-            'name' => 'Deflator Test' , 
-            'country' => 'Tokyo', 
+        $ret = $n->create(array(
+            'name' => 'Deflator Test',
+            'country' => 'Tokyo',
             'confirmed' => false,
             'date' => $date,
         ));
         $this->assertResultSuccess($ret);
 
         $array = $n->toArray();
-        ok( is_string( $array['date'] ) );
+        $this->assertTrue(is_string( $array['date']));
 
         $d = $n->date; // inflated
-        isa_ok( 'DateTime' , $d );
-        is( '20110101' , $d->format( 'Ymd' ) );
-
+        $this->assertInstanceOf('DateTime' , $d);
+        $this->assertEquals('20110101' , $d->format('Ymd'));
         $this->successfulDelete($n);
     }
 }
