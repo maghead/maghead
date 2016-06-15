@@ -26,8 +26,6 @@ class AuthorFactory {
 
 class AuthorCollectionTest extends ModelTestCase
 {
-    public $driver = 'mysql';
-
     public function getModels()
     {
         return [
