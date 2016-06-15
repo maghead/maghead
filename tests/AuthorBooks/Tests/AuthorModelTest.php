@@ -10,8 +10,6 @@ use SQLBuilder\Driver\SQLiteDriver;
 
 class AuthorModelTest extends ModelTestCase
 {
-    public $driver = 'sqlite';
-
     public function getModels()
     {
         return [

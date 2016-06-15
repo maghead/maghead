@@ -3,13 +3,11 @@ use LazyRecord\Testing\ModelTestCase;
 
 class AuthorAddressModelTest extends ModelTestCase
 {
-    public $driver = 'sqlite';
-
     public function getModels()
     {
         return array(
-            'AuthorBooks\Model\AuthorSchema',
-            'AuthorBooks\Model\AddressSchema',
+            new \AuthorBooks\Model\AuthorSchema,
+            new \AuthorBooks\Model\AddressSchema,
         );
     }
 

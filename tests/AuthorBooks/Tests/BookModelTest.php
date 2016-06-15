@@ -11,8 +11,6 @@ use DateTime;
 
 class BookModelTest extends ModelTestCase
 {
-    public $driver = 'sqlite';
-
     public function getModels()
     {
         return [
