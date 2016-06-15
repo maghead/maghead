@@ -49,6 +49,9 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public $indexes = array();
 
+    public $onDelete;
+
+    public $onUpdate;
 
     /**
      * Constructor of declare schema.
@@ -717,6 +720,26 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
             'foreign_column' => $foreignColumn,
             'foreign_schema' => $foreignClass,
         ));
+    }
+
+    /**
+     * onUpdate defines a software trigger of update action
+     */
+    public function onUpdate($action)
+    {
+        $this->onUpdate = $action;
+        return $this;
+    }
+
+    /**
+     * onDelete defines a software trigger of delete action
+     *
+     * @param string $action Currently for 'cascade'
+     */
+    public function onDelete($action)
+    {
+        $this->onDelete = $action;
+        return $this;
     }
 
 
