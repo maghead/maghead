@@ -660,6 +660,18 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
 
+
+
+    protected function getCurrentSchemaClass()
+    {
+        if ($this instanceof MixinDeclareSchema) {
+            return get_class($this->parentSchema);
+        }
+        return get_class($this);
+    }
+
+
+
     /*****************************************************************************
      * Relationship Definition Methods
      * ===============================
@@ -689,7 +701,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         }
         return $this->relations[$accessor] = new Relationship($accessor, array(
             'type' => Relationship::BELONGS_TO,
-            'self_schema' => get_class($this),
+            'self_schema' => $this->getCurrentSchemaClass(),
             'self_column' => $selfColumn,
             'foreign_schema' => $foreignClass,
             'foreign_column' => $foreignColumn,
@@ -716,7 +728,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->relations[ $accessor ] = new Relationship($accessor, array(
             'type'           => Relationship::HAS_ONE,
             'self_column'    => $selfColumn,
-            'self_schema'    => $this->getSchemaProxyClass(),
+            'self_schema'    => $this->getCurrentSchemaClass(),
             'foreign_column' => $foreignColumn,
             'foreign_schema' => $foreignClass,
         ));
@@ -768,11 +780,16 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->relations[ $accessor ] = new Relationship($accessor, array(
             'type'           => Relationship::HAS_MANY,
             'self_column'    => $selfColumn,
-            'self_schema'    => get_class($this),
+            'self_schema'    => $this->getCurrentSchemaClass(),
             'foreign_column' => $foreignColumn,
             'foreign_schema' => $foreignClass,
         ));
     }
+
+
+
+
+
 
 
     /**
