@@ -7,7 +7,11 @@ use LazyRecord\TableParser\TypeInfo;
 use LazyRecord\TableParser\TypeInfoParser;
 use SQLBuilder\Raw;
 
-class MysqlTableParser extends BaseTableParser
+interface ReferenceParser {
+    // public function queryReference();
+}
+
+class MysqlTableParser extends BaseTableParser implements ReferenceParser
 {
     public function getTables()
     {

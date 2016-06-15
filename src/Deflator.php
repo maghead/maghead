@@ -36,7 +36,6 @@ class Deflator
             }
             return (boolean) $value ? 1 : 0;
         }
-
         if ($value instanceof DateTime) {
             if ($driver instanceof PDOMySQLDriver) {
                 return $value->format('Y-m-d H:i:s');
