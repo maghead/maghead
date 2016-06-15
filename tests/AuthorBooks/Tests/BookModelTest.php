@@ -178,11 +178,16 @@ class BookModelTest extends ModelTestCase
 
     public function testCreateOrUpdateOnTimestampColumn()
     {
-        $date = new DateTime;
+        $now = new DateTime;
+        $date = $now->format(\DateTime::ATOM);
+
+        // echo $date->format(\DateTime::ATOM), PHP_EOL;
         $book = new Book;
 
         $ret = $book->create([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
         $this->assertResultSuccess($ret);
+
+        // echo $book->published_at->format(\DateTime::ATOM), PHP_EOL;
 
         $id = $book->id;
         $this->assertNotNull($id);
