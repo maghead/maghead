@@ -45,6 +45,15 @@ class Relationship implements IteratorAggregate, ArrayAccess
         $this->data = $data;
     }
 
+
+    public function by($column)
+    {
+        $this->data['self_column'] = $column;
+        return $this;
+    }
+
+
+
     public function newForeignSchema()
     {
         $class = $this->data['foreign_schema'];

@@ -693,7 +693,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      * @param string $foreignColumn foreign reference schema column.
      * @param string $selfColumn self column name
      */
-    public function belongsTo($accessor, $foreignClass = NULL, $foreignColumn = NULL,  $selfColumn = 'id')
+    public function belongsTo($accessor, $foreignClass, $foreignColumn = 'id', $selfColumn = null)
     {
         if ($foreignClass && NULL === $foreignColumn) {
             $s = new $foreignClass;

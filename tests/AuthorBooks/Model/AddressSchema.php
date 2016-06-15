@@ -17,10 +17,9 @@ class AddressSchema extends Schema
             ->boolean()
             ->defaultValue(false)
             ;
-        /**
-         * $address->author 
-         */
-        $this->belongsTo('author', '\\AuthorBooks\Model\\AuthorSchema', 'id' , 'author_id')
+
+        $this->belongsTo('author', '\\AuthorBooks\Model\\AuthorSchema')
+            ->by('author_id')
             ->onDelete('CASCADE');
     }
 }
