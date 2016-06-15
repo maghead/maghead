@@ -6,10 +6,10 @@ use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship;
 use LazyRecord\Schema\DeclareColumn;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\Universal\Syntax\Constraint;
 
 class MysqlBuilder extends BaseBuilder
 {
-
     public function prepare()
     {
         return [
@@ -26,6 +26,34 @@ class MysqlBuilder extends BaseBuilder
         ];
     }
 
+
+    /**
+    It's possible to raise an error like this:
+
+    ERROR 1215 (HY000): Cannot add foreign key constraint
+
+    Cannot find an index in the referenced table where the
+    referenced columns appear as the first columns, or column types
+    in the table and the referenced table do not match for constraint.
+    Note that the internal storage type of ENUM and SET changed in
+    tables created with >= InnoDB-4.1.12, and such columns in old tables
+    cannot be referenced by such columns in new tables.
+    Please refer to http://dev.mysql.com/doc/refman/5.7/en/innodb-foreign-key-constraints.html for correct foreign key definition.
+     */
+    public function buildForeignKeyConstraint(Relationship $rel)
+    {
+        $fSchema = new $rel['foreign_schema'];
+        $constraint = new Constraint();
+        $constraint->foreignKey($rel['self_column']);
+        $references = $constraint->references($fSchema->getTable(), (array) $rel['foreign_column']);
+        if ($act = $rel->onUpdate) {
+            $references->onUpdate($act);
+        }
+        if ($act = $rel->onDelete) {
+            $references->onDelete($act);
+        }
+        return $constraint;
+    }
 
     public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column)
     {

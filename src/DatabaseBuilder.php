@@ -41,7 +41,6 @@ class DatabaseBuilder
         foreach ($schemas as $schema) {
             $class = get_class($schema);
             $this->logger->info("Building index for $class");
-
             $sqls = $this->builder->buildIndex($schema);
             $this->executeStatements($sqls);
         }

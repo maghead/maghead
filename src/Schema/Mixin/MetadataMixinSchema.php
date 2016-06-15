@@ -11,8 +11,9 @@ class MetadataMixinSchema extends MixinDeclareSchema
     {
         $this->column('created_on')
             ->timestamp()
+            ->null()
             ->isa('DateTime')
-            ->default(function() { 
+            ->default(function() {
                 return new \DateTime;
             });
 
@@ -20,7 +21,9 @@ class MetadataMixinSchema extends MixinDeclareSchema
             ->timestamp()
             ->isa('DateTime')
             ->null()
-            ->default(new Raw('CURRENT_TIMESTAMP'));
+            ->default(new Raw('CURRENT_TIMESTAMP'))
+            ->onUpdate(new Raw('CURRENT_TIMESTAMP'))
+            ;
     }
 
     // Mixin methods

@@ -96,5 +96,4 @@ class SqliteBuilder extends BaseBuilder
     public function buildForeignKeys(SchemaInterface $schema) {
         return [];
     }
-
 }

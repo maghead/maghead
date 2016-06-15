@@ -112,41 +112,14 @@ abstract class BaseBuilder
         return $sqls;
     }
 
-
-
-    // protected function buildForeignKeySql()
-
-
-
-    /**
-
-    It's possible to raise an error like this:
-
-    ERROR 1215 (HY000): Cannot add foreign key constraint
-
-    Cannot find an index in the referenced table where the
-    referenced columns appear as the first columns, or column types
-    in the table and the referenced table do not match for constraint.
-    Note that the internal storage type of ENUM and SET changed in
-    tables created with >= InnoDB-4.1.12, and such columns in old tables
-    cannot be referenced by such columns in new tables.
-    Please refer to http://dev.mysql.com/doc/refman/5.7/en/innodb-foreign-key-constraints.html for correct foreign key definition.
-     */
     public function buildForeignKeyConstraint(Relationship $rel)
     {
         $fSchema = new $rel['foreign_schema'];
         $constraint = new Constraint();
         $constraint->foreignKey($rel['self_column']);
         $references = $constraint->references($fSchema->getTable(), (array) $rel['foreign_column']);
-        if ($act = $rel->onUpdate) {
-            $references->onUpdate($act);
-        }
-        if ($act = $rel->onDelete) {
-            $references->onDelete($act);
-        }
         return $constraint;
     }
-
 
     public function buildForeignKeys(SchemaInterface $schema)
     {
@@ -161,8 +134,9 @@ abstract class BaseBuilder
                 }
                 if (isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
                 {
-                    $constraint = $this->buildForeignKeyConstraint($rel);
-                    $sqls[] = $constraint->toSql($this->driver, new ArgumentArray);
+                    if ($constraint = $this->buildForeignKeyConstraint($rel)) {
+                        $sqls[] = $constraint->toSql($this->driver, new ArgumentArray);
+                    }
                 }
             }
         }
