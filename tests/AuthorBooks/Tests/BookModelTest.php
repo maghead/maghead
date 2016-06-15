@@ -3,6 +3,7 @@ namespace AuthorBooks\Tests;
 use SQLBuilder\Raw;
 use LazyRecord\Testing\ModelTestCase;
 use AuthorBooks\Model\Book;
+use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\BookSchema;
 use DateTime;
 
@@ -178,22 +179,23 @@ class BookModelTest extends ModelTestCase
 
     public function testCreateOrUpdateOnTimestampColumn()
     {
-        $now = new DateTime;
-        $date = $now->format(\DateTime::ATOM);
+        $date = new DateTime;
 
-        // echo $date->format(\DateTime::ATOM), PHP_EOL;
         $book = new Book;
-
         $ret = $book->create([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
         $this->assertResultSuccess($ret);
-
-        // echo $book->published_at->format(\DateTime::ATOM), PHP_EOL;
+        $this->assertCount(1, new BookCollection);
 
         $id = $book->id;
         $this->assertNotNull($id);
 
+        $ret = $book->load([ 'published_at' => $date ]);
+        $this->assertResultSuccess($ret);
+
         $ret = $book->createOrUpdate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date ], [ 'published_at' ]);
         $this->assertResultSuccess($ret);
+        $this->assertCount(1, new BookCollection);
+        
 
         $this->assertEquals('Update With Time', $book->title);
         $this->assertEquals($id, $book->id);
