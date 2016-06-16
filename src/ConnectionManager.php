@@ -263,9 +263,9 @@ class ConnectionManager implements ArrayAccess
      */
     public function close($sourceId)
     {
-        if (isset($this->conns[ $sourceId ])) {
-            $this->conns[ $sourceId ] = null;
-            unset( $this->conns[ $sourceId ] );
+        if (isset($this->conns[$sourceId])) {
+            $this->conns[$sourceId] = null;
+            unset( $this->conns[$sourceId] );
         }
     }
 
@@ -275,7 +275,7 @@ class ConnectionManager implements ArrayAccess
      */
     public function closeAll()
     {
-        foreach( $this->conns as $id => $conn ) {
+        foreach ($this->conns as $id => $conn) {
             $this->close( $id );
         }
     }
