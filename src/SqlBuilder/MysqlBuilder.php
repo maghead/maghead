@@ -103,20 +103,19 @@ class MysqlBuilder extends BaseBuilder
         foreach ($schema->relations as $rel) {
             switch ($rel['type']) {
                 case Relationship::BELONGS_TO:
-                // case Relationship::HAS_MANY:
-                // case Relationship::HAS_ONE:
                 if ($name != 'id' && $rel['self_column'] == $name) {
                     $fSchema = new $rel['foreign_schema'];
                     $fColumn = $rel['foreign_column'];
                     $fc = $fSchema->columns[$fColumn];
                     $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
-
+                    /*
                     if ($rel->onUpdate) {
                         $sql .= ' ON UPDATE ' . $rel->onUpdate;
                     }
                     if ($rel->onDelete) {
                         $sql .= ' ON DELETE ' . $rel->onDelete;
                     }
+                    */
                 }
                 break;
             }
