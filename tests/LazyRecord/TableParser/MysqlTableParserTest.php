@@ -8,15 +8,7 @@ use LazyRecord\ConnectionManager;
 
 class MysqlTableParserTest extends BaseTestCase
 {
-
-
-    public function setUp()
-    {
-        if ($this->getDriverType() != 'mysql') {
-            return $this->markTestSkipped('skip mysql tests');
-        }
-        parent::setUp();
-    }
+    public $onlyDriver = 'mysql';
 
     public function testReferenceQuery()
     {
