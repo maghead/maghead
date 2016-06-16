@@ -23,6 +23,15 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     public $driver = 'sqlite';
 
+    public $onlyDriver;
+
+    public function setUp()
+    {
+        if ($this->onlyDriver !== null && $this->getDriverType() != $this->onlyDriver) {
+            return $this->markTestSkipped("{$this->onlyDriver} only");
+        }
+    }
+
     public function getDriverType()
     {
         return getenv('DB') ?: $this->driver;
