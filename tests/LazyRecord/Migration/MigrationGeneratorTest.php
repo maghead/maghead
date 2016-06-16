@@ -6,6 +6,9 @@ use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\Testing\ModelTestCase;
 use LazyRecord\ConnectionManager;
 
+/**
+ * @group migration
+ */
 class MigrationGeneratorTest extends ModelTestCase
 {
     public function getModels() { return array(); }
@@ -34,7 +37,6 @@ class MigrationGeneratorTest extends ModelTestCase
             $this->markTestSkipped('sqlite migration tests skipped');
             return;
         }
-
 
         $connectionManager = ConnectionManager::getInstance();
         $pdo = $connectionManager->getConnection($this->getDriverType());

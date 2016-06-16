@@ -1,9 +1,11 @@
 <?php
 use SQLBuilder\Column;
+use SQLBuilder\Driver\PDODriverFactory;
+use LazyRecord\ConnectionManager;
 
-class FooMigration extends LazyRecord\Migration\Migration 
+class FooMigration extends LazyRecord\Migration\Migration
 {
-    public function upgrade() 
+    public function upgrade()
     {
         $this->addColumnByCallable('foo', function($column) {
             $column->type('varchar(128)')
@@ -13,6 +15,9 @@ class FooMigration extends LazyRecord\Migration\Migration
     }
 }
 
+/**
+ * @group migration
+ */
 class MigrationTest extends PHPUnit_Framework_TestCase
 {
     public function testMigrationUpgrade()
