@@ -12,6 +12,7 @@ use LazyRecord\QueryDriver;
 use LazyRecord\Migration\Migratable;
 use GetOptionKit\OptionResult;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\MySQLDriver;
 use PDO;
 use LogicException;
 use Exception;
@@ -103,35 +104,59 @@ class AutomaticMigration extends Migration implements Migratable
                 $this->executeQuery($alterTable);
             } while (0);
 
-            // TODO: Compare references with relationships
+            // Compare references with relationships
             if ($parser instanceof ReferenceParser) {
                 $references = $parser->queryReferences($table);
                 $relationships = $schema->getRelations();
+
+                $relationshipColumns = [];
                 foreach ($relationships as $accessor => $rel) {
-                    switch ($rel['type']) {
-                        // case Relationship::HAS_MANY:
-                        // case Relationship::HAS_ONE:
-                        case Relationship::BELONGS_TO:
-                            if ($rel['foreign_schema'] == $rel['self_schema']) {
-                                continue;
+                    if ($rel['type'] !== Relationship::BELONGS_TO) {
+                        continue;
+                    }
+                    if ($rel['foreign_schema'] == $rel['self_schema']) {
+                        continue;
+                    }
+                    if (isset($rel['self_column']) && $rel['self_column'] == 'id' ) {
+                        continue;
+                    }
+
+                    $col = $rel['self_column'];
+                    $relationshipColumns[$col] = $rel;
+                    if (isset($references[$col]) && preg_match('/_ibfk_/i', $references[$col]->name)) {
+                        $this->logger->debug("Column {$col} foreign key {$references[$col]->name} exists");
+                        continue;
+                    }
+                    if ($constraint = $this->builder->buildForeignKeyConstraint($rel)) {
+                        $alterTable = $this->alterTable($table);
+                        $add = $alterTable->add();
+                        $add->foreignKey($rel['self_column']);
+                        $fSchema = new $rel['foreign_schema'];
+                        $alterReferences = $add->references($fSchema->getTable(), (array) $rel['foreign_column']);
+
+                        if ($this->driver instanceof MySQLDriver) {
+                            if ($act = $rel->onUpdate) {
+                                $alterReferences->onUpdate($act);
                             }
-                            if (isset($rel['self_column']) && $rel['self_column'] == 'id' ) {
-                                continue;
+                            if ($act = $rel->onDelete) {
+                                $alterReferences->onDelete($act);
                             }
-                            $col = $rel['self_column'];
-                            if (isset($references[$col]) && strtoupper($references[$col]->name) != 'PRIMARY') {
-                                $this->logger->debug("Column {$col} foreign key {$references[$col]->name} exists");
-                                continue;
-                            }
-                            if ($constraint = $this->builder->buildForeignKeyConstraint($rel)) {
-                                $alterTable = $this->alterTable($table);
-                                $add = $alterTable->add();
-                                $add->foreignKey($rel['self_column']);
-                                $fSchema = new $rel['foreign_schema'];
-                                $add->references($fSchema->getTable(), (array) $rel['foreign_column']);
-                                $this->executeQuery($alterTable);
-                            }
-                        break;
+                        }
+
+                        $this->executeQuery($alterTable);
+                    }
+                }
+
+                // Find foreign keys that are dropped (doesn't exist in relationship)
+                foreach ($references as $col => $ref) {
+                    if (!preg_match('/_ibfk_/i', $ref->name)) {
+                        continue;
+                    }
+                    if (!isset($relationshipColumns[$col])) {
+                        // echo "drop {$ref->name} for ({$ref->table}, {$ref->column}) from table $table\n";
+                        $alterTable = $this->alterTable($table);
+                        $alterTable->dropForeignKey($ref->name);
+                        $this->executeQuery($alterTable);
                     }
                 }
             }

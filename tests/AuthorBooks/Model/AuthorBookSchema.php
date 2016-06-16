@@ -26,6 +26,7 @@ class AuthorBookSchema extends Schema
             ->onDelete('CASCADE')
             ->onUpdate('CASCADE')
             ;
+
         $this->belongsTo('author', '\AuthorBooks\Model\AuthorSchema' , 'id', 'author_id')
             ->onDelete('CASCADE')
             ->onUpdate('CASCADE')
