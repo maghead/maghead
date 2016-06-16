@@ -99,7 +99,7 @@ class Comparator
 
                     if (($aval instanceof Raw && $bval instanceof Raw && $aval->compare($bval) != 0)) {
                         $d->appendDetail(new AttributeDiff($n , $aval, $bval));
-                    } else if (is_scalar($aval) && is_scalar($bval) && $aval !== $bval) {
+                    } else if (is_scalar($aval) && is_scalar($bval) && $aval != $bval) {
                         $d->appendDetail(new AttributeDiff($n , $aval, $bval));
                     }
                 }
