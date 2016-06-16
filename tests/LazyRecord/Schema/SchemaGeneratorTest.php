@@ -1,17 +1,16 @@
 <?php
 use LazyRecord\ConfigLoader;
+use LazyRecord\ConnectionManager;
 use CLIFramework\Logger;
 
 class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
 {
-    public function createSchemaGenerator() {
-        $g = new \LazyRecord\Schema\SchemaGenerator(ConfigLoader::getInstance(), Logger::getInstance());
-        $g->setForceUpdate(true);
-        return $g;
-    }
-
     public function schemaProvider() {
-        $g = $this->createSchemaGenerator();
+        $this->configLoader = ConfigLoader::getInstance();
+        $this->configLoader->loadFromSymbol(true);
+        $g = new \LazyRecord\Schema\SchemaGenerator($this->configLoader, Logger::getInstance());
+        $g->setForceUpdate(true);
+
         $schemas = array();
         $schemas[] = [ $g, new \TestApp\Model\UserSchema ];
         $schemas[] = [ $g, new \AuthorBooks\Model\AddressSchema ];
