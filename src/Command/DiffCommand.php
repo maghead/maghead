@@ -52,7 +52,7 @@ class DiffCommand extends BaseCommand
             $filepath = substr($filepath,strlen(getcwd()) + 1);
 
             if (in_array($table, $existingTables)) {
-                $before = $parser->reverseTableSchema($table);
+                $before = $parser->reverseTableSchema($table, $currentSchema);
                 $diffs = $comparator->compare($before, $currentSchema);
                 if (count($diffs)) {
                     $found = true;

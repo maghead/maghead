@@ -45,7 +45,7 @@ class SqliteTableParser extends BaseTableParser
         }
     }
 
-    public function reverseTableSchema($table)
+    public function reverseTableSchema($table, $referenceSchema = null)
     {
         $tableDef = $this->parseTableSql($table);
 

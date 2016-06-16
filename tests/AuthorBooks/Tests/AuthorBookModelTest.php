@@ -6,8 +6,6 @@ use SQLBuilder\Raw;
 
 class AuthorBookModelTest extends ModelTestCase
 {
-    public $driver = 'sqlite';
-
     public function getModels()
     {
         return array( 
@@ -283,52 +281,62 @@ class AuthorBookModelTest extends ModelTestCase
     public function testJoin()
     {
         $author = new Author;
-        $author->create(array( 
+        $ret = $author->create([
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
-        ));
+        ]);
+        $this->assertResultSuccess($ret);
 
         $ab = new \AuthorBooks\Model\AuthorBook;
         $book = new \AuthorBooks\Model\Book;
 
-        ok( $book->create(array( 'title' => 'Book I' ))->success );
-        ok( $ab->create(array( 
+        $ret = $book->create(array( 'title' => 'Book I' ));
+        $this->assertResultSuccess($ret);
+
+        $ret = $ab->create([
             'author_id' => $author->id,
             'book_id' => $book->id,
-        ))->success );
+        ]);
+        $this->assertResultSuccess($ret);
 
-        ok( $book->create(array( 'title' => 'Book II' ))->success );
-        $ab->create(array( 
+        $ret = $book->create(array( 'title' => 'Book II' ));
+        $this->assertResultSuccess($ret);
+
+        $ret = $ab->create([
+            'author_id' => $author->id,
+            'book_id' => $book->id,
+        ]);
+        $this->assertResultSuccess($ret);
+
+        $ret = $book->create(array( 'title' => 'Book III' ));
+        $this->assertResultSuccess($ret);
+
+        $ret = $ab->create(array( 
             'author_id' => $author->id,
             'book_id' => $book->id,
         ));
-
-        ok( $book->create(array( 'title' => 'Book III' ))->success );
-        $ab->create(array( 
-            'author_id' => $author->id,
-            'book_id' => $book->id,
-        ));
+        $this->assertResultSuccess($ret);
 
         $books = new \AuthorBooks\Model\BookCollection;
         $books->join('author_books')
             ->as('ab')
                 ->on()
                     ->equal( 'ab.book_id' , array('m.id') );
-        $books->where()
-            ->equal( 'ab.author_id' , $author->id );
+        $books->where()->equal( 'ab.author_id' , $author->id );
         $items = $books->items();
+        $this->assertNotEmpty($items);
 
         $bookTitles = array();
-        foreach( $items as $item ) {
-            $bookTitles[ $item->title ] = true;
-            $item->delete();
+        foreach ($books as $book ) {
+            $bookTitles[ $book->title ] = true;
+            $book->delete();
         }
 
-        count_ok( 3, array_keys($bookTitles) );
-        ok( $bookTitles[ 'Book I' ] );
-        ok( $bookTitles[ 'Book II' ] );
-        ok( $bookTitles[ 'Book III' ] );
+        $this->assertCount(3, array_keys($bookTitles) );
+        ok($bookTitles['Book I']);
+        ok($bookTitles['Book II' ]);
+        ok($bookTitles['Book III']);
     }
 
 

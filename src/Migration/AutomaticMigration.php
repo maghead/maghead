@@ -52,7 +52,7 @@ class AutomaticMigration extends Migration implements Migratable
             $this->logger->debug("Found existing table $table");
 
 
-            $before = $parser->reverseTableSchema($table);
+            $before = $parser->reverseTableSchema($table, $schema);
 
             $this->logger->debug("Comparing table `$table` with schema");
             $diffs = $comparator->compare($before , $schema);

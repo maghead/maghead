@@ -19,7 +19,8 @@ class AuthorBookSchema extends Schema
 
         $this->column('created_on')
                 ->isa('str')
-                ->timestamp();
+                ->timestamp()
+                ;
 
         $this->belongsTo('book','\AuthorBooks\Model\BookSchema','id','book_id')
             ->onDelete('CASCADE')

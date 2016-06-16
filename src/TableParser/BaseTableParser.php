@@ -78,7 +78,7 @@ abstract class BaseTableParser
      *
      * @return DeclareSchema[string tableName] returns (defined table + undefined table)
      */
-    abstract function reverseTableSchema($table);
+    abstract function reverseTableSchema($table, $referenceSchema = null);
 
     /**
      * Find all user-defined schema

@@ -9,7 +9,11 @@ class MetricValueSchema extends TemplateSchema
     {
         $this->column('val')->double(5,3)->default(0)->notNull();
 
-        $this->column('published_at')->timestamp()->isa('DateTime')->notNull();
+        $this->column('published_at')
+            ->isa('DateTime')
+            ->timestamp()
+            ->notNull()
+            ;
 
         $this->column('unit')->varchar(3);
     }

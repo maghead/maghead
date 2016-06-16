@@ -17,7 +17,7 @@ class PgsqlTableParser extends BaseTableParser
         return array_map(function($row) { return $row[0]; },$rows);
     }
 
-    public function reverseTableSchema($table)
+    public function reverseTableSchema($table, $referenceSchema = null)
     {
         /**
          * postgresql information schema column descriptions

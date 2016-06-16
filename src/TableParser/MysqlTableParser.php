@@ -19,7 +19,7 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
         return array_map(function($row) { return $row[0]; },$rows);
     }
 
-    public function reverseTableSchema($table)
+    public function reverseTableSchema($table, $referenceSchema = null)
     {
         $stm = $this->connection->query("SHOW COLUMNS FROM $table");
         $schema = new DeclareSchema;
@@ -37,7 +37,7 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
 
             if ($typeInfo->length) {
                 $column->length($typeInfo->length);
-            } 
+            }
             if ($typeInfo->precision) {
                 $column->decimals($typeInfo->precision);
             }
@@ -60,8 +60,9 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                 // timestamp is set to Null=No by default.
                 // However, it's possible that user didn't set notNull in the schema,
                 // we should skip the check in comparator.
-                if ($row['Type'] !== "timestamp") {
-                    $column->requried();
+                if ($referenceSchema && strtolower($typeInfo->type) === 'timestamp' 
+                    && !$referenceSchema->getColumn($row['Field'])->notNull) {
+                } else {
                     $column->notNull(true);
                 }
                 break;
@@ -93,6 +94,16 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
             if (strtolower($row['Extra']) == 'auto_increment') {
                 $column->autoIncrement();
             } else if (preg_match('/ON UPDATE (\w+)/i', $row['Extra'], $matches)) {
+                /*
+                To specify automatic properties, use the DEFAULT
+                CURRENT_TIMESTAMP and ON UPDATE CURRENT_TIMESTAMP clauses
+                in column definitions. The order of the clauses does not
+                matter. If both are present in a column definition, either
+                can occur first. Any of the synonyms for CURRENT_TIMESTAMP
+                have the same meaning as CURRENT_TIMESTAMP. These are
+                CURRENT_TIMESTAMP(), NOW(), LOCALTIME, LOCALTIME(),
+                LOCALTIMESTAMP, and LOCALTIMESTAMP().
+                */
                 $extraAttributes['OnUpdate' . Inflector::getInstance()->camelize(strtolower($matches[1]))] = true;
             } else if (preg_match('/VIRTUAL GENERATED/i', $row['Extra'])) {
                 $extraAttributes['VirtualGenerated'] = true;
