@@ -5,7 +5,7 @@ use SQLBuilder\Raw;
 
 class EdmSchema extends Schema
 {
-    function schema()
+    public function schema()
     {
         $this->table('Edm');
 
@@ -33,7 +33,9 @@ class EdmSchema extends Schema
 
         $this->column('edmUpdatedOn')
             ->timestamp()
-            ->default(new Raw('CURRENT_TIMESTAMP'));
+            ->default(new Raw('CURRENT_TIMESTAMP'))
+            ->onUpdate(new Raw('CURRENT_TIMESTAMP'))
+            ;
     }
 }
 

@@ -101,8 +101,8 @@ class MysqlBuilder extends BaseBuilder
         @see http://stackoverflow.com/questions/10028214/add-foreign-key-to-existing-table
         */
         foreach ($schema->relations as $rel) {
-            switch( $rel['type'] ) {
-            case Relationship::BELONGS_TO:
+            switch ($rel['type']) {
+                case Relationship::BELONGS_TO:
                 // case Relationship::HAS_MANY:
                 // case Relationship::HAS_ONE:
                 if ($name != 'id' && $rel['self_column'] == $name) {

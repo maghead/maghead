@@ -114,9 +114,10 @@ abstract class BaseBuilder
 
     public function buildForeignKeyConstraint(Relationship $rel)
     {
-        $fSchema = new $rel['foreign_schema'];
         $constraint = new Constraint();
         $constraint->foreignKey($rel['self_column']);
+
+        $fSchema = new $rel['foreign_schema'];
         $references = $constraint->references($fSchema->getTable(), (array) $rel['foreign_column']);
         return $constraint;
     }
@@ -126,18 +127,19 @@ abstract class BaseBuilder
         $sqls = [];
         foreach ($schema->relations as $rel) {
             switch ($rel['type']) {
-            case Relationship::BELONGS_TO:
-            case Relationship::HAS_MANY:
-            case Relationship::HAS_ONE:
-                if ($rel['foreign_schema'] == $rel['self_schema']) {
-                    continue;
-                }
-                if (isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
-                {
-                    if ($constraint = $this->buildForeignKeyConstraint($rel)) {
-                        $sqls[] = $constraint->toSql($this->driver, new ArgumentArray);
+                case Relationship::BELONGS_TO:
+                case Relationship::HAS_MANY:
+                case Relationship::HAS_ONE:
+                    if ($rel['foreign_schema'] == $rel['self_schema']) {
+                        continue;
                     }
-                }
+                    if (isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
+                    {
+                        if ($constraint = $this->buildForeignKeyConstraint($rel)) {
+                            $sqls[] = $constraint->toSql($this->driver, new ArgumentArray);
+                        }
+                    }
+                break;
             }
         }
         return $sqls;

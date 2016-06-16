@@ -8,6 +8,7 @@ use LazyRecord\TableParser\TypeInfo;
 use LazyRecord\TableParser\ReferenceParser;
 use LazyRecord\TableParser\TypeInfoParser;
 use SQLBuilder\Raw;
+use LazyRecord\Inflector;
 
 class MysqlTableParser extends BaseTableParser implements ReferenceParser
 {
@@ -53,14 +54,20 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                 $column->set($typeInfo->set);
             }
 
-            if ($row['Null'] == 'NO') {
+
+            switch ($row['Null']) {
+            case 'NO':
                 // timestamp is set to Null=No by default.
+                // However, it's possible that user didn't set notNull in the schema,
+                // we should skip the check in comparator.
                 if ($row['Type'] !== "timestamp") {
                     $column->requried();
                     $column->notNull(true);
                 }
-            } else if ($row['Null'] == 'YES') {
+                break;
+            case 'YES':
                 $column->null();
+                break;
             }
 
             switch($row['Key']) {
@@ -85,14 +92,13 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
             $extraAttributes = [ ];
             if (strtolower($row['Extra']) == 'auto_increment') {
                 $column->autoIncrement();
-            } else if (preg_match('/ON UPDATE CURRENT_TIMESTAMP/i', $row['Extra'])) {
-                $extraAttributes['OnUpdateCurrentTimestamp'] = true;
+            } else if (preg_match('/ON UPDATE (\w+)/i', $row['Extra'], $matches)) {
+                $extraAttributes['OnUpdate' . Inflector::getInstance()->camelize(strtolower($matches[1]))] = true;
             } else if (preg_match('/VIRTUAL GENERATED/i', $row['Extra'])) {
                 $extraAttributes['VirtualGenerated'] = true;
             } else if (preg_match('/VIRTUAL STORED/i', $row['Extra'])) {
                 $extraAttributes['VirtualStored'] = true;
             }
-            
 
             // The default value returned from MySQL is string, we need the
             // type information to cast them to PHP Scalar or other
@@ -120,12 +126,13 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                     // when the two conditions are matched, we need to elimante
                     // the default value just as what we've defined in schema.
                     if (isset($extraAttributes['OnUpdateCurrentTimestamp']) && strtolower($default) == 'current_timestamp') {
-                        // Do nothing
+                        // Don't set default value
                     } else if (strtolower($default) == 'current_timestamp') {
                         $column->default(new Raw($default));
                     } else if (is_numeric($default)) {
                         $column->default(intval($default));
                     }
+
                 } else if ($typeInfo->type == 'datetime') {
                     // basically, CURRENT_TIMESTAMP, transaction_timestamp()
                     // and now() do exactly the same. CURRENT_TIMESTAMP is a
