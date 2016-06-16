@@ -171,13 +171,13 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
 
         $sql = "SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
         FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-        WHERE REFERENCED_TABLE_SCHEMA = :table_schema
+        WHERE TABLE_SCHEMA = :table_schema
+            AND TABLE_NAME = :table_name
         ";
         $stm = $this->connection->prepare($sql);
-            // AND REFERENCED_TABLE_NAME = :table_name 
         $stm->execute([
             ':table_schema' => $dbName,
-            // ':table_name' => $table
+            ':table_name' => $table,
         ]);
         $rows = $stm->fetchAll(PDO::FETCH_OBJ);
         $references = [];
