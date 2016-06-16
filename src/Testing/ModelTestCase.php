@@ -24,28 +24,29 @@ abstract class ModelTestCase extends BaseTestCase
 
     public function setUp()
     {
-        $annnotations = $this->getAnnotations();
+        if ($this->onlyDriver !== null && $this->getDriverType() != $this->onlyDriver) {
+            return $this->markTestSkipped("{$this->onlyDriver} only");
+        }
 
-        $configLoader = ConfigLoader::getInstance();
-        $configLoader->loadFromSymbol(true);
-        $configLoader->setDefaultDataSourceId($this->getDriverType());
+        if ($this->conn == null) {
+            $configLoader = ConfigLoader::getInstance();
+            $configLoader->loadFromSymbol(true);
+            $configLoader->setDefaultDataSourceId($this->getDriverType());
+            $connManager = ConnectionManager::getInstance();
+            $connManager->init($configLoader);
 
-        $connManager = ConnectionManager::getInstance();
-        $connManager->init($configLoader);
-
-        try {
-            $this->conn = $dbh = $connManager->getConnection($this->getDriverType());
-        } catch (PDOException $e) {
-            if ($this->allowConnectionFailure) {
-                $this->markTestSkipped(
-                    sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
-                        $this->getDriverType(),
-                        $e->getMessage(),
-                        var_export($configLoader->getDataSource($this->getDriverType()), true)
-                    ));
-
-                return;
-            } else {
+            try {
+                $this->conn = $connManager->getConnection($this->getDriverType());
+            } catch (PDOException $e) {
+                if ($this->allowConnectionFailure) {
+                    $this->markTestSkipped(
+                        sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
+                            $this->getDriverType(),
+                            $e->getMessage(),
+                            var_export($configLoader->getDataSource($this->getDriverType()), true)
+                        ));
+                    return;
+                }
                 echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
                     $this->getDriverType(),
                     $e->getMessage(),
@@ -53,12 +54,13 @@ abstract class ModelTestCase extends BaseTestCase
                 );
                 throw $e;
             }
+
+            $this->queryDriver = $connManager->getQueryDriver($this->getDriverType());
+            $this->assertInstanceOf('SQLBuilder\\Driver\\BaseDriver', $this->queryDriver, 'QueryDriver object OK');
         }
 
-        $this->queryDriver = $driver = $connManager->getQueryDriver($this->getDriverType());
-        $this->assertInstanceOf('SQLBuilder\\Driver\\BaseDriver', $driver, 'QueryDriver object OK');
-
         // Rebuild means rebuild the database for new tests
+        $annnotations = $this->getAnnotations();
         $rebuild = true;
         $basedata = true;
         if (isset($annnotations['method']['rebuild'][0]) && $annnotations['method']['rebuild'][0] == 'false') {
@@ -69,10 +71,10 @@ abstract class ModelTestCase extends BaseTestCase
         }
 
         if ($rebuild) {
-            $builder = SqlBuilder::create($driver, array('rebuild' => true));
+            $builder = SqlBuilder::create($this->queryDriver, array('rebuild' => true));
             if ($sqls = $builder->prepare()) {
                 foreach ($sqls as $sql) {
-                    $dbh->query($sql);
+                    $this->conn->query($sql);
                 }
             }
             $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
@@ -80,12 +82,12 @@ abstract class ModelTestCase extends BaseTestCase
                 $sqls = $builder->build($schema);
                 $this->assertNotEmpty($sqls);
                 foreach ($sqls as $sql) {
-                    $dbh->query($sql);
+                    $this->conn->query($sql);
                 }
             }
             if ($sqls = $builder->finalize()) {
                 foreach ($sqls as $sql) {
-                    $dbh->query($sql);
+                    $this->conn->query($sql);
                 }
             }
 
@@ -101,6 +103,12 @@ abstract class ModelTestCase extends BaseTestCase
                 }
             }
         }
+    }
+
+
+    public function tearDown()
+    {
+        $this->conn = null;
     }
 
     /**
