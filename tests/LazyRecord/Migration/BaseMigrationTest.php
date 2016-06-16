@@ -20,28 +20,34 @@ class FooMigration extends LazyRecord\Migration\Migration
  */
 class MigrationTest extends PHPUnit_Framework_TestCase
 {
-    public function testMigrationUpgrade()
+    protected $conn;
+    protected $driver;
+
+    public function setUp()
+    {
+        // XXX: mysterious workaround for tests
+        $connm = \LazyRecord\ConnectionManager::getInstance();
+        $connm->free();
+
+        $this->conn = new PDO('sqlite::memory:');
+        $this->driver = PDODriverFactory::create($this->conn);
+
+    }
+
+    public function tearDown()
+    {
+        $this->conn = null;
+    }
+
+
+    public function testUpgradeWithAddColumnByCallable()
     {
         ob_start();
-        $connm = LazyRecord\ConnectionManager::getInstance();
-        $connm->free();
-        $connm->addDataSource('sqlite',array(
-            'dsn' => 'sqlite::memory:'
-        ));
-
-        $conn = $connm->getConnection('sqlite');
-        $this->assertNotNull($conn);
-
-        $driver = $connm->getQueryDriver('sqlite');
-        $this->assertNotNull($driver);
-
-        $conn->query('CREATE TABLE foo (id integer primary key, name varchar(32));');
-
-        $migration = new FooMigration($driver, $conn);
+        $this->conn->query('CREATE TABLE foo (id INTEGER PRIMARY KEY, name varchar(32));');
+        $migration = new FooMigration($this->driver, $this->conn);
         $migration->upgrade();
-
-        $connm->removeDataSource('sqlite');
         ob_end_clean();
     }
+
 }
 
