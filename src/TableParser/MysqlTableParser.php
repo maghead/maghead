@@ -60,8 +60,11 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                 // timestamp is set to Null=No by default.
                 // However, it's possible that user didn't set notNull in the schema,
                 // we should skip the check in comparator.
-                if ($referenceSchema && strtolower($typeInfo->type) === 'timestamp' 
-                    && !$referenceSchema->getColumn($row['Field'])->notNull) {
+                if ($referenceSchema
+                    && (strtolower($typeInfo->type) === 'timestamp' || $row['Key'] === 'PRI')
+                    && !$referenceSchema->getColumn($row['Field'])->notNull
+                ) {
+
                 } else {
                     $column->notNull(true);
                 }
