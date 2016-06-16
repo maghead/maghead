@@ -20,9 +20,6 @@ class BookModelTest extends ModelTestCase
         ];
     }
 
-    /**
-     * @rebuild false
-     */
     public function testImmutableColumn()
     {
         $b = new Book ;
@@ -41,7 +38,6 @@ class BookModelTest extends ModelTestCase
     /**
      * TODO: Should we validate the field ? think again.
      *
-     * @rebuild false
      * @expectedException PDOException
      */
     public function testUpdateUnknownColumn()
@@ -51,12 +47,11 @@ class BookModelTest extends ModelTestCase
         $b->load(array('name' => 'LoadOrCreateTest'));
     }
 
-    /**
-     * @rebuild false
-     */
-    public function testFlagHelper() {
+    public function testFlagHelper()
+    {
         $b = new Book ;
-        $b->create([ 'title' => 'Test Book' ]);
+        $ret = $b->create([ 'title' => 'Test Book' ]);
+        $this->assertResultSuccess($ret);
 
         $schema = $b->getSchema();
         ok($schema);
@@ -67,17 +62,15 @@ class BookModelTest extends ModelTestCase
         ok($cB);
 
         $ret = $b->update([ 'is_hot' => true ]);
-        result_ok( $ret );
+        $this->assertResultSuccess($ret);
 
         $ret = $b->update([ 'is_selled' => true ]);
-        result_ok( $ret );
+        $this->assertResultSuccess($ret);
 
-        $b->delete();
+        $ret = $b->delete();
+        $this->assertResultSuccess($ret);
     }
 
-    /**
-     * @rebuild false
-     */
     public function testTraitMethods() {
         $b = new Book ;
         $this->assertSame(['link1', 'link2'], $b->getLinks());
@@ -152,6 +145,9 @@ class BookModelTest extends ModelTestCase
     }
 
 
+    /**
+     * @rebuild false
+     */
     public function testRawSQL()
     {
         $n = new Book ;
@@ -211,7 +207,6 @@ class BookModelTest extends ModelTestCase
         $this->assertEquals('Update With Time', $book->title);
         $this->assertEquals($id, $book->id);
     }
-
 
 
     /**
