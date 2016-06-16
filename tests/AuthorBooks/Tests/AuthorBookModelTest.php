@@ -98,7 +98,7 @@ class AuthorBookModelTest extends ModelTestCase
         }
 
         $columns = $author->getColumns();
-        count_ok( 7 , $columns );
+        $this->assertCount(7 , $columns);
 
         $columns = $author->getColumns(true); // with virtual column
         count_ok( 8 , $columns );

@@ -14,6 +14,7 @@ class AuthorModelTest extends ModelTestCase
     {
         return [
             new \AuthorBooks\Model\AuthorSchema,
+            new \AuthorBooks\Model\BookSchema,
             new \AuthorBooks\Model\AddressSchema,
         ];
     }
@@ -360,7 +361,6 @@ class AuthorModelTest extends ModelTestCase
         if ($this->queryDriver instanceof SQLiteDriver) {
             return $this->markTestSkipped('skip this test when sqlite driver is used.');
         }
-
 
         $migration = new Migration($this->queryDriver, $this->conn);
         $author = new Author;

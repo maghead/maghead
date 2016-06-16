@@ -97,7 +97,7 @@ class AuthorCollectionTest extends ModelTestCase
         $authors->fetch();
 
         $clone = clone $authors;
-        ok($clone !== $authors);
+        $this->assertTrue($clone !== $authors);
         $this->assertNotSame($clone->getCurrentReadQuery(), $authors->getCurrentReadQuery());
     }
 
@@ -282,8 +282,8 @@ class AuthorCollectionTest extends ModelTestCase
     public function testMeta()
     {
         $authors = new AuthorCollection;
-        ok($authors::SCHEMA_PROXY_CLASS);
-        ok($authors::MODEL_CLASS);
+        $this->assertEquals('AuthorBooks\Model\AuthorSchemaProxy', $authors::SCHEMA_PROXY_CLASS);
+        $this->assertEquals('AuthorBooks\Model\Author', $authors::MODEL_CLASS);
     }
 
 

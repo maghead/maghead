@@ -2,7 +2,7 @@
 use SQLBuilder\Raw;
 use AuthorBooks\Model\Book ;
 use LazyRecord\Testing\ModelTestCase;
-use LazyRecord\RESULT;
+use LazyRecord\Result;
 /**
  * Testing models:
  *   1. Author
@@ -14,8 +14,8 @@ class BasicCRUDTest extends ModelTestCase
     public function getModels()
     {
         return [
-            new \AuthorBooks\Model\AuthorSchema,
             new \AuthorBooks\Model\BookSchema,
+            new \AuthorBooks\Model\AuthorSchema,
             new \AuthorBooks\Model\AuthorBookSchema,
             new \AuthorBooks\Model\AddressSchema,
         ];
@@ -44,13 +44,14 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testRecordRawCreateBook()
     {
-        $b = new Book ;
+        $b = new Book;
         $ret = $b->rawCreate(array( 'title' => 'Go Programming' ));
         $this->assertResultSuccess($ret);
         $this->assertNotNull($b->id);
-        $this->assertEquals(RESULT::TYPE_CREATE, $ret->type);        
+        $this->assertEquals(Result::TYPE_CREATE, $ret->type);
         $this->successfulDelete($b);
     }
+
 
     public function testRecordRawUpdateBook()
     {
@@ -61,7 +62,7 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $b->rawUpdate(array( 'title' => 'Perl Programming without filtering' ));
         $this->assertResultSuccess($ret);
         $this->assertNotNull($b->id);
-        $this->assertEquals(RESULT::TYPE_UPDATE, $ret->type);
+        $this->assertEquals(Result::TYPE_UPDATE, $ret->type);
         $this->successfulDelete($b);
     }
 
@@ -89,10 +90,10 @@ class BasicCRUDTest extends ModelTestCase
     }
 
 
-    public function testLoadOrCreateModel() 
+    public function testLoadOrCreateModel()
     {
         $results = array();
-        $b = new \AuthorBooks\Model\Book ;
+        $b = new \AuthorBooks\Model\Book;
 
         $ret = $b->create(array( 'title' => 'Should Create, not load this' ));
         $this->assertResultSuccess($ret);
@@ -108,7 +109,7 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertResultSuccess($ret);
         $this->assertEquals($id, $b->id, 'is the same ID');
-        $this->assertEquals(RESULT::TYPE_LOAD, $ret->type);
+        $this->assertEquals(Result::TYPE_LOAD, $ret->type);
         $results[] = $ret;
 
 
@@ -120,7 +121,7 @@ class BasicCRUDTest extends ModelTestCase
 
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
         $this->assertResultSuccess($ret);
-        $this->assertEquals(RESULT::TYPE_CREATE, $ret->type);
+        $this->assertEquals(Result::TYPE_CREATE, $ret->type);
         $this->assertNotEquals($id, $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
@@ -177,7 +178,7 @@ class BasicCRUDTest extends ModelTestCase
 
         $ret = $author->update(array('id' => new Raw('id + 3') ));
         $this->assertResultSuccess($ret);
-        $this->assertEquals(RESULT::TYPE_UPDATE, $ret->type);
+        $this->assertEquals(Result::TYPE_UPDATE, $ret->type);
     }
 
     public function testManyToManyRelationRecordCreate()
@@ -251,7 +252,7 @@ class BasicCRUDTest extends ModelTestCase
 
         $ret = $book->delete();
         $this->assertTrue($ret->success);
-        $this->assertEquals(RESULT::TYPE_DELETE, $ret->type);
+        $this->assertEquals(Result::TYPE_DELETE, $ret->type);
 
         $ab = new \AuthorBooks\Model\AuthorBook;
         $book = new \AuthorBooks\Model\Book ;
@@ -321,6 +322,9 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertResultSuccess($ret);
     }
 
+    /**
+     * @rebuild false
+     */
     public function testHasManyRelationCreate()
     {
         $author = new \AuthorBooks\Model\Author;
@@ -331,15 +335,12 @@ class BasicCRUDTest extends ModelTestCase
             'address' => 'farfaraway'
         ));
 
-        ok($address->id);
-        ok($address->author_id);
-        $this->assertEquals( $author->id, $address->author_id );
-
-        $this->assertEquals( 'farfaraway' , $address->address );
-
-        $address->delete();
-        $author->delete();
-
+        $this->assertEquals($author->id, $address->author_id);
+        $this->assertEquals('farfaraway', $address->address);
+        $ret = $address->delete();
+        $this->assertResultSuccess($ret);
+        $ret = $author->delete();
+        $this->assertResultSuccess($ret);
     }
 
     public function testHasManyRelationFetch()
@@ -423,18 +424,17 @@ class BasicCRUDTest extends ModelTestCase
         $this->successfulDelete($b);
     }
 
-
     /**
      * @rebuild false
      */
     public function testUpdateWithReloadOption()
     {
-        $b = new \AuthorBooks\Model\Book ;
-        $ret = $b->create(array( 'title' => 'Create for reload test' , 'view' => 0 ));
+        $b = new \AuthorBooks\Model\Book;
+        $ret = $b->create(array('title' => 'Create for reload test' , 'view' => 0));
         $this->assertResultSuccess($ret);
 
         // test incremental with Raw statement
-        $ret = $b->update(array( 'view'  => new Raw('view + 1') ), array('reload' => true));
+        $ret = $b->update(array('view'  => new Raw('view + 1') ), array('reload' => true));
         $this->assertResultSuccess($ret);
         $this->assertEquals(1,  $b->view);
 

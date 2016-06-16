@@ -93,7 +93,7 @@ class AuthorAddressModelTest extends ModelTestCase
     {
         $author = new \AuthorBooks\Model\Author;
         $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        ok($author->id);
+        $this->assertResultSuccess($ret);
         $this->assertResultSuccess($ret);
 
         // append items
@@ -121,8 +121,8 @@ class AuthorAddressModelTest extends ModelTestCase
     {
         $a = new \AuthorBooks\Model\Address;
         ok($a->getQueryDriver('default') );
-        ok($a->getWriteQueryDriver() );
-        ok($a->getReadQueryDriver() );
+        ok($a->getWriteQueryDriver());
+        ok($a->getReadQueryDriver());
     }
 
 }
