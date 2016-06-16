@@ -8,6 +8,7 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use Closure;
 use SQLBuilder\Raw;
+use Exception;
 
 class Comparator
 {
@@ -64,9 +65,11 @@ class Comparator
 
                 // we only compare unsigned when:
                 //   driver is MySQL or the column is not a primary key
-                if (!$ac->primary && !$bc->primary || $this->driver instanceof MySQLDriver) {
-                    if ($bc->unsigned != $ac->unsigned) {
-                        $d->appendDetail(new AttributeDiff('unsigned', $bc->unsigned, $ac->unsigned));
+                if ($this->driver instanceof MySQLDriver) {
+                    if (!$ac->primary && !$bc->primary) {
+                        if ($bc->unsigned != $ac->unsigned) {
+                            $d->appendDetail(new AttributeDiff('unsigned', $bc->unsigned, $ac->unsigned));
+                        }
                     }
                 }
 
@@ -74,17 +77,18 @@ class Comparator
                     $d->appendDetail(new AttributeDiff('notNull', $bc->notNull, $ac->notNull));
                 }
 
-
-                // have the same column, compare attributes
+                // They are the same column, let's compare these attributes
                 $attributes = array('default');
                 foreach ($attributes as $n) {
                     // Closure are meaningless
-                    if ($ac->{$n} instanceof Closure || $bc->{$n} instanceof Closure) {
-                        continue;
-                    }
-
                     $aval = $ac->{$n};
                     $bval = $bc->{$n};
+                    if ($aval instanceof Closure || $bval instanceof Closure) {
+                        continue;
+                    }
+                    if (($aval === null && $bval === null) || ($aval === false && $bval === false)) {
+                        continue;
+                    }
 
                     if (is_array($aval)) {
                         $aval = new Raw($aval[0]);
@@ -93,7 +97,9 @@ class Comparator
                         $bval = new Raw($bval[0]);
                     }
 
-                    if (($aval instanceof Raw && $bval instanceof Raw && $aval->compare($bval) != 0) || $aval != $bval) {
+                    if (($aval instanceof Raw && $bval instanceof Raw && $aval->compare($bval) != 0)) {
+                        $d->appendDetail(new AttributeDiff($n , $aval, $bval));
+                    } else if (is_scalar($aval) && is_scalar($bval) && $aval !== $bval) {
                         $d->appendDetail(new AttributeDiff($n , $aval, $bval));
                     }
                 }
@@ -101,12 +107,12 @@ class Comparator
                     $diff[] = $d;
                 }
             }
-            elseif ( isset($beforeColumns[$key]) && ! isset($afterColumns[$key]))
+            else if ( isset($beforeColumns[$key]) && ! isset($afterColumns[$key]))
             {
                 // flag: -
                 $diff[] = new ColumnDiff($key, 'D', $beforeColumns[$key], NULL);
             }
-            elseif ( isset($afterColumns[$key]) && ! isset($beforeColumns[$key]) ) 
+            else if ( isset($afterColumns[$key]) && ! isset($beforeColumns[$key]) )
             {
                 // flag: +
                 $diff[] = new ColumnDiff($key, 'A', NULL, $afterColumns[$key]);
