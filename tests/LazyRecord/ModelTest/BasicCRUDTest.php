@@ -14,8 +14,8 @@ class BasicCRUDTest extends ModelTestCase
     public function getModels()
     {
         return [
-            new \AuthorBooks\Model\BookSchema,
             new \AuthorBooks\Model\AuthorSchema,
+            new \AuthorBooks\Model\BookSchema,
             new \AuthorBooks\Model\AuthorBookSchema,
             new \AuthorBooks\Model\AddressSchema,
         ];
