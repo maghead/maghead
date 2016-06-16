@@ -120,7 +120,7 @@ class AutomaticMigration extends Migration implements Migratable
                             }
                             $col = $rel['self_column'];
                             if (isset($references[$col]) && strtoupper($references[$col]->name) != 'PRIMARY') {
-                                $this->logger->info("Column {$col} foreign key {$references[$col]->name} exists");
+                                $this->logger->debug("Column {$col} foreign key {$references[$col]->name} exists");
                                 continue;
                             }
                             if ($constraint = $this->builder->buildForeignKeyConstraint($rel)) {
