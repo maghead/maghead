@@ -204,6 +204,9 @@ class NameModelTest extends ModelTestCase
         is( $name2->id , $name->id );
     }
 
+    /**
+     * @rebuild false
+     */
     public function testValidValueBuilder()
     {
         $name = new \TestApp\Model\Name;
@@ -230,6 +233,9 @@ class NameModelTest extends ModelTestCase
         $this->assertResultSuccess($name->delete());
     }
 
+    /**
+     * @rebuild false
+     */
     public function testDeflator()
     {
         $n = new \TestApp\Model\Name;
