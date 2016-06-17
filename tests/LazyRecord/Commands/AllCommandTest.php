@@ -69,7 +69,6 @@ class AllCommandsTest extends CommandTestCase
         $this->app->run(array('lazy','migrate','status'));
         $this->app->run(array('lazy','migrate','up'));
         $this->app->run(array('lazy','migrate','down'));
-        $this->app->run(array('lazy','migrate','auto'));
     }
 
 
