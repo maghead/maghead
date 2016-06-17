@@ -1,7 +1,7 @@
 LazyRecord
 ==========
 
-<img src="https://c9s.github.io/c9s/LazyRecord/assets/images/logo.png" width="64"/>
+<img src="https://raw.github.com/c9s/LazyRecord/master/assets/images/logo.png" width="64"/>
 
 [![works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
 [![Build Status](https://travis-ci.org/c9s/LazyRecord.svg?branch=master)](https://travis-ci.org/c9s/LazyRecord)
