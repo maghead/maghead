@@ -703,7 +703,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
             'type' => Relationship::BELONGS_TO,
             'self_schema' => $this->getCurrentSchemaClass(),
             'self_column' => $selfColumn,
-            'foreign_schema' => $foreignClass,
+            'foreign_schema' => $this->resolveSchemaClass($foreignClass),
             'foreign_column' => $foreignColumn,
         ));
     }
@@ -727,10 +727,10 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         // foreignColumn is default to foreignClass.primary key
         return $this->relations[ $accessor ] = new Relationship($accessor, array(
             'type'           => Relationship::HAS_ONE,
-            'self_column'    => $selfColumn,
             'self_schema'    => $this->getCurrentSchemaClass(),
+            'self_column'    => $selfColumn,
+            'foreign_schema' => $this->resolveSchemaClass($foreignClass),
             'foreign_column' => $foreignColumn,
-            'foreign_schema' => $foreignClass,
         ));
     }
 
@@ -779,10 +779,10 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     {
         return $this->relations[ $accessor ] = new Relationship($accessor, array(
             'type'           => Relationship::HAS_MANY,
-            'self_column'    => $selfColumn,
             'self_schema'    => $this->getCurrentSchemaClass(),
+            'self_column'    => $selfColumn,
+            'foreign_schema' => $this->resolveSchemaClass($foreignClass),
             'foreign_column' => $foreignColumn,
-            'foreign_schema' => $foreignClass,
         ));
     }
 
@@ -810,6 +810,20 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         throw new Exception("Relation $relationId is not defined.");
     }
 
+    protected function resolveSchemaClass($class)
+    {
+        if (!preg_match('/Schema$/', $class)) {
+            $class = $class . "Schema";
+        }
+        if ($class[0] == '\\' || class_exists($class)) {
+            return $class;
+        }
+        $nsClass = $this->getNamespace() . '\\' . $class;
+        if (class_exists($nsClass)) {
+            return $nsClass;
+        }
+        throw new Exception("Schema class $class or $nsClass not found.");
+    }
 
 
 

@@ -22,13 +22,13 @@ class AuthorBookSchema extends Schema
                 ->timestamp()
                 ;
 
-        $this->belongsTo('book','\AuthorBooks\Model\BookSchema')
+        $this->belongsTo('book','Book')
             ->by('book_id')
             ->onDelete('CASCADE')
             ->onUpdate('CASCADE')
             ;
 
-        $this->belongsTo('author', '\AuthorBooks\Model\AuthorSchema')
+        $this->belongsTo('author','Author')
             ->by('author_id')
             ->onDelete('CASCADE')
             ->onUpdate('CASCADE')
