@@ -22,6 +22,7 @@ class AuthorBookSchema extends Schema
                 ->timestamp()
                 ;
 
+        // also works for relationships
         $this->belongsTo('book','Book')
             ->by('book_id')
             ->onDelete('CASCADE')
