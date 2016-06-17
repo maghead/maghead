@@ -108,8 +108,7 @@ class MysqlBuilder extends BaseBuilder
                 if ($name != 'id' && $rel['self_column'] == $name) {
                     $fSchema = new $rel['foreign_schema']();
                     $fColumn = $rel['foreign_column'];
-                    $fc = $fSchema->columns[$fColumn];
-                    $sql .= ' REFERENCES '.$fSchema->getTable().'('.$fColumn.')';
+                    $sql .= ' REFERENCES '.$this->driver->quoteIdentifier($fSchema->getTable()).'('.$this->driver->quoteIdentifier($fColumn).')';
                 }
                 break;
             }
