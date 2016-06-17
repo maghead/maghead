@@ -3,7 +3,7 @@
 namespace LazyRecord\SqlBuilder;
 
 use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\Relationship;
+use LazyRecord\Schema\Relationship\Relationship;
 use LazyRecord\Schema\DeclareColumn;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Syntax\Constraint;

@@ -4,7 +4,7 @@ namespace LazyRecord\Exporter;
 
 use LazyRecord\BaseModel;
 use LazyRecord\BaseCollection;
-use LazyRecord\Schema\Relationship;
+use LazyRecord\Schema\Relationship\Relationship;
 use LazyRecord\Schema\SchemaInterface;
 use DOMDocument;
 use DOMElement;

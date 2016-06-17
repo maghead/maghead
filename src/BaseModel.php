@@ -26,7 +26,7 @@ use LazyRecord\Result\OperationError;
 
 use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Schema\RuntimeColumn;
-use LazyRecord\Schema\Relationship;
+use LazyRecord\Schema\Relationship\Relationship;
 use LazyRecord\Exception\MissingPrimaryKeyException;
 use SerializerKit\XmlSerializer;
 use ActionKit;

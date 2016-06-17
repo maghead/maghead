@@ -36,7 +36,7 @@ class SchemaProxyClassFactory
         ));
 
         $cTemplate->useClass('\\LazyRecord\\Schema\\RuntimeColumn');
-        $cTemplate->useClass('\\LazyRecord\\Schema\\Relationship');
+        $cTemplate->useClass('\\LazyRecord\\Schema\\Relationship\\Relationship');
 
         $cTemplate->addPublicProperty('columnNames', $schema->getColumnNames());
         $cTemplate->addPublicProperty('primaryKey', $schema->getPrimaryKey());
