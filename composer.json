@@ -7,6 +7,7 @@
         "orm",
         "model",
         "collection",
+        "sql",
         "fast"
     ],
     "description": "The Fast PHP ORM",
