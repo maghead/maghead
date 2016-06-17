@@ -2,7 +2,8 @@
 
 namespace LazyRecord;
 
-use CLIFramework\Logger; use LazyRecord\SqlBuilder\BaseBuilder;
+use LazyRecord\SqlBuilder\BaseBuilder;
+use CLIFramework\Logger;
 use PDO;
 use PDOException;
 
