@@ -45,6 +45,28 @@ class MysqlBuilder extends BaseBuilder
         return $constraint;
     }
 
+    /**
+     * Override buildColumnSql to support inline reference
+     *
+     *  MySQL Syntax:
+     *  
+     *      reference_definition:
+     *      REFERENCES tbl_name (index_col_name,...)
+     *          [MATCH FULL | MATCH PARTIAL | MATCH SIMPLE]
+     *          [ON DELETE reference_option]
+     *          [ON UPDATE reference_option]
+     *      reference_option:
+     *          RESTRICT | CASCADE | SET NULL | NO ACTION
+     *  A reference example:
+     *
+     *      PRIMARY KEY (`idEmployee`) ,
+     *      CONSTRAINT `fkEmployee_Addresses`
+     *      FOREIGN KEY `fkEmployee_Addresses` (`idAddresses`)
+     *      REFERENCES `schema`.`Addresses` (`idAddresses`)
+     *      ON DELETE NO ACTION
+     *      ON UPDATE NO ACTION
+     *  FOREIGN KEY (`order_uuid`) REFERENCES orders(`uuid`)
+     */
     public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column)
     {
         $name = $column->name;
@@ -55,6 +77,8 @@ class MysqlBuilder extends BaseBuilder
 
         $args = new ArgumentArray();
         $sql = $column->buildDefinitionSql($this->driver, $args);
+
+
         /*
         BUILD COLUMN REFERENCE
 
@@ -63,29 +87,17 @@ class MysqlBuilder extends BaseBuilder
             artist_id INTEGER REFERENCES artist
         )
 
-        MySQL Syntax:
-        
-            reference_definition:
 
-            REFERENCES tbl_name (index_col_name,...)
-                [MATCH FULL | MATCH PARTIAL | MATCH SIMPLE]
-                [ON DELETE reference_option]
-                [ON UPDATE reference_option]
+        And here is the important part:
 
-            reference_option:
-                RESTRICT | CASCADE | SET NULL | NO ACTION
+        Furthermore, MySQL parses but ignores “inline REFERENCES
+        specifications” (as defined in the SQL standard) where the references
+        are defined as part of the column specification.
 
-        A reference example:
-
-        PRIMARY KEY (`idEmployee`) ,
-        CONSTRAINT `fkEmployee_Addresses`
-        FOREIGN KEY `fkEmployee_Addresses` (`idAddresses`)
-        REFERENCES `schema`.`Addresses` (`idAddresses`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-
-        FOREIGN KEY (`order_uuid`) REFERENCES orders(`uuid`)
-
+        MySQL accepts REFERENCES clauses only when specified as part of a
+        separate FOREIGN KEY specification. For storage engines that do not
+        support foreign keys (such as MyISAM), MySQL Server parses and ignores
+        foreign key specifications.
 
         A column with foreign key should not be nullable.
         @see http://stackoverflow.com/questions/10028214/add-foreign-key-to-existing-table
@@ -98,14 +110,6 @@ class MysqlBuilder extends BaseBuilder
                     $fColumn = $rel['foreign_column'];
                     $fc = $fSchema->columns[$fColumn];
                     $sql .= ' REFERENCES '.$fSchema->getTable().'('.$fColumn.')';
-                    /*
-                    if ($rel->onUpdate) {
-                        $sql .= ' ON UPDATE ' . $rel->onUpdate;
-                    }
-                    if ($rel->onDelete) {
-                        $sql .= ' ON DELETE ' . $rel->onDelete;
-                    }
-                    */
                 }
                 break;
             }
