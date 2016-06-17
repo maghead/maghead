@@ -1,12 +1,13 @@
 <?php
+
 namespace LazyRecord\Schema\Column;
+
 use LazyRecord\Schema\DeclareColumn;
 
 class UUIDPrimaryKeyColumn extends DeclareColumn
 {
-
     /**
-     * TODO: the best type for UUID in mysql is BINARY(36)
+     * TODO: the best type for UUID in mysql is BINARY(36).
      */
     public function __construct($name = 'uuid', $type = 'char', $length = 36)
     {
@@ -19,6 +20,3 @@ class UUIDPrimaryKeyColumn extends DeclareColumn
             ;
     }
 }
-
-
-

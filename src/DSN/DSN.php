@@ -1,19 +1,20 @@
 <?php
+
 namespace LazyRecord\DSN;
+
 use ArrayAccess;
 use IteratorAggregate;
 use ArrayIterator;
 
 /**
- * Data object for DSN information
+ * Data object for DSN information.
  *
  * getHost(), getPort(), getDBName() methods are used by MySQL and PostgreSQL
- *
  */
 class DSN implements ArrayAccess, IteratorAggregate
 {
     /**
-     * @var string 
+     * @var string
      */
     protected $driver;
 
@@ -28,7 +29,7 @@ class DSN implements ArrayAccess, IteratorAggregate
     protected $arguments;
 
     /**
-     * The original DSN string
+     * The original DSN string.
      */
     protected $originalDSN;
 
@@ -52,38 +53,39 @@ class DSN implements ArrayAccess, IteratorAggregate
 
     public function __toString()
     {
-        return $this->driver . ':' . $this->getAttributeString();
+        return $this->driver.':'.$this->getAttributeString();
     }
 
     public function getAttributeString()
     {
         $attrstrs = [];
         foreach ($this->attributes as $key => $val) {
-            $attrstrs[] = $key . '=' . $val;
+            $attrstrs[] = $key.'='.$val;
         }
-        return join(';',$attrstrs);
+
+        return implode(';', $attrstrs);
     }
-    
-    public function offsetSet($key,$value)
+
+    public function offsetSet($key, $value)
     {
         $this->attributes[ $key ] = $value;
     }
-    
+
     public function offsetExists($key)
     {
         return isset($this->attributes[ $key ]);
     }
-    
+
     public function offsetGet($key)
     {
         return $this->attributes[ $key ];
     }
-    
+
     public function offsetUnset($key)
     {
         unset($this->attributes[$key]);
     }
-    
+
     public function getIterator()
     {
         return new ArrayIterator($this->attributes);
@@ -105,7 +107,6 @@ class DSN implements ArrayAccess, IteratorAggregate
             return $this->attributes[$key];
         }
     }
-
 
     public function getArguments()
     {
@@ -137,6 +138,3 @@ class DSN implements ArrayAccess, IteratorAggregate
         return $this->originalDSN;
     }
 }
-
-
-

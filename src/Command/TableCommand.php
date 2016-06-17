@@ -1,9 +1,8 @@
 <?php
+
 namespace LazyRecord\Command;
-use CLIFramework\Command;
-use LazyRecord\Command\BaseCommand;
+
 use LazyRecord\TableStatus\MySQLTableStatus;
-use LazyRecord\ConnectionManager;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use CLIFramework\Component\Table\Table;
 
@@ -37,18 +36,17 @@ class TableCommand extends BaseCommand
         if ($driver instanceof PDOMySQLDriver) {
             $status = new MySQLTableStatus($conn, $driver);
 
-            $this->logger->info("Table Status:");
+            $this->logger->info('Table Status:');
             $rows = $status->queryDetails($tables);
             $this->displayRows($rows);
 
             $this->logger->newline();
-            $this->logger->info("Table Status Summary:");
+            $this->logger->info('Table Status Summary:');
             $rows = $status->querySummary($tables);
             $this->displayRows($rows);
         } else {
-            $this->logger->error("Driver not supported.");
+            $this->logger->error('Driver not supported.');
         }
-
     }
 
     protected function displayRows(array $rows)
@@ -63,10 +61,4 @@ class TableCommand extends BaseCommand
             echo $table->render();
         }
     }
-
 }
-
-
-
-
-

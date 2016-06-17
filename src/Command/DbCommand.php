@@ -1,17 +1,15 @@
 <?php
+
 namespace LazyRecord\Command;
 
 use CLIFramework\Command;
-use LazyRecord\Command\BaseCommand;
 
 class DbCommand extends BaseCommand
 {
-
-    public function brief() 
+    public function brief()
     {
         return 'database related commands.';
     }
-
 
     public function init()
     {
@@ -20,7 +18,7 @@ class DbCommand extends BaseCommand
         $this->command('drop');
     }
 
-    public function execute() { }
-
+    public function execute()
+    {
+    }
 }
-

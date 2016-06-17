@@ -1,13 +1,9 @@
 <?php
+
 namespace LazyRecord\Command\DataSourceCommand;
-use CLIFramework\Command;
+
 use LazyRecord\Command\BaseCommand;
-use LazyRecord\ConfigLoader;
 use LazyRecord\DSN\DSNParser;
-use SQLBuilder\Driver\PDODriverFactory;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Universal\Query\CreateDatabaseQuery;
-use Exception;
 use PDO;
 
 class AddCommand extends BaseCommand
@@ -40,7 +36,7 @@ class AddCommand extends BaseCommand
         // The data source array to be added to the config array
         $dataSource = array();
 
-        $dsnParser = new DSNParser;
+        $dsnParser = new DSNParser();
         $dsn = $dsnParser->parse($dsnStr);
 
         $dataSource['driver'] = $dsn->getDriver();
@@ -64,10 +60,9 @@ class AddCommand extends BaseCommand
         }
         $dataSource['dsn'] = $dsn->__toString();
 
-
-        if ($dsn->getDriver() == "mysql") {
+        if ($dsn->getDriver() == 'mysql') {
             $this->logger->debug('Setting connection options: PDO::MYSQL_ATTR_INIT_COMMAND');
-            $dataSource['connection_options'] = [ PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8' ];
+            $dataSource['connection_options'] = [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'];
         }
 
         $config = $configLoader->getConfigStash();
@@ -75,9 +70,7 @@ class AddCommand extends BaseCommand
 
         $configLoader->setConfigStash($config);
         $configLoader->writeToSymbol();
+
         return true;
     }
 }
-
-
-

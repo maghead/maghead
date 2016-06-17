@@ -1,26 +1,23 @@
 <?php
+
 namespace LazyRecord;
+
 use Exception;
-use LogicException;
 use PDOException;
 use PDO;
-use LazyRecord\Adapter\PdoAdapter;
 use ArrayAccess;
-use LazyRecord\Connection;
-use LazyRecord\ConfigLoader;
-use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PDODriverFactory;
-use LazyRecord\DSN\DSNParser;
+
 use LazyRecord\DSN\DSN;
 
-class SQLQueryException extends Exception 
+class SQLQueryException extends Exception
 {
     public $args = array();
 
     public $sql;
 
-    public function __construct($dsId, $sql, $args, Exception $e) {
-        parent::__construct( 'SQL Query Error at "' . $dsId . '" data source, Message: ' . $e->getMessage() , 0 , $e);
+    public function __construct($dsId, $sql, $args, Exception $e)
+    {
+        parent::__construct('SQL Query Error at "'.$dsId.'" data source, Message: '.$e->getMessage(), 0, $e);
         $this->sql = $sql;
         $this->args = $args;
     }
@@ -28,11 +25,10 @@ class SQLQueryException extends Exception
 
 class UndefinedDataSourceException extends Exception
 {
-
 }
 
 /**
- * Connection Manager
+ * Connection Manager.
  *
  *    $connManager = ConnectionManager::getInstance();
  *    $conn = $connManager->create( '{{id}}', '' );
@@ -63,50 +59,45 @@ class ConnectionManager implements ArrayAccess
      */
     protected $conns = array();
 
-
     public function init(ConfigLoader $config)
     {
         $this->config = $config;
-        foreach ($config->getDataSources() as $sourceId => $ds ) {
-            $this->addDataSource($sourceId , $ds);
+        foreach ($config->getDataSources() as $sourceId => $ds) {
+            $this->addDataSource($sourceId, $ds);
         }
     }
 
     /**
-     * Check if we have connected already
+     * Check if we have connected already.
      *
-     * @param PDO $conn pdo connection.
-     * @param string $id data source id.
+     * @param PDO    $conn pdo connection.
+     * @param string $id   data source id.
      */
     public function has($id)
     {
         return isset($this->conns[$id]);
     }
 
-
     /**
-     * Add connection
+     * Add connection.
      *
      * @param Connection $conn pdo connection
-     * @param string $id data source id
+     * @param string     $id   data source id
      */
-    public function add(Connection $conn, $id = 'default' )
+    public function add(Connection $conn, $id = 'default')
     {
-        if (isset( $this->conns[ $id ] )) {
-            throw new Exception( "$id connection is already defined." );
+        if (isset($this->conns[ $id ])) {
+            throw new Exception("$id connection is already defined.");
         }
         $this->conns[ $id ] = $conn;
     }
 
-
-
-
     /**
-     * Add custom data source:
+     * Add custom data source:.
      *
      * source config:
      *
-     * @param string $id data source id
+     * @param string $id     data source id
      * @param string $config data source config
      */
     public function addDataSource($id, array $config)
@@ -115,17 +106,17 @@ class ConnectionManager implements ArrayAccess
             $config['connection_options'] = array();
         }
         if (!isset($config['user'])) {
-            $config['user'] = NULL;
+            $config['user'] = null;
         }
         if (!isset($config['pass'])) {
-            $config['pass'] = NULL;
+            $config['pass'] = null;
         }
         if (!isset($config['query_options'])) {
             $config['query_options'] = array();
         }
         if (!isset($config['driver'])) {
-            if (isset($config['dsn']) ) {
-                list($driver) = explode( ':', $config['dsn'], 2);
+            if (isset($config['dsn'])) {
+                list($driver) = explode(':', $config['dsn'], 2);
                 $config['driver'] = $driver;
             }
         }
@@ -134,16 +125,16 @@ class ConnectionManager implements ArrayAccess
 
     public function hasDataSource($id = 'default')
     {
-        return isset($this->datasources[ $id ] );
+        return isset($this->datasources[ $id ]);
     }
 
-    public function removeDataSource($id) 
+    public function removeDataSource($id)
     {
-        unset( $this->datasource[$id] );
+        unset($this->datasource[$id]);
     }
 
     /**
-     * Return datasource id(s)
+     * Return datasource id(s).
      *
      * @return array key list
      */
@@ -152,41 +143,41 @@ class ConnectionManager implements ArrayAccess
         return array_keys($this->datasources);
     }
 
-
     /**
-     * Get datasource config
+     * Get datasource config.
      *
      * @return array
      */
     public function getDataSource($id)
     {
-        if (isset($this->datasources[ $id ] )) {
+        if (isset($this->datasources[ $id ])) {
             return $this->datasources[ $id ];
         }
     }
-
 
     /**
      * Get SQLBuilder\QueryDriver by data source id.
      *
      * @param string $id datasource name
+     *
      * @return LazyRecord\QueryDriver
      */
     public function getQueryDriver($id)
     {
         $self = $this;
+
         return $this->getConnection($id)->createQueryDriver();
     }
 
     public function getDriverType($id)
     {
         $config = $this->getDataSource($id);
+
         return $config['driver'];
     }
 
-
     /**
-     * Create connection
+     * Create connection.
      *
      *    $dbh = new Connection('mysql:host=localhost;dbname=test', $user, $pass);
      *
@@ -200,7 +191,6 @@ class ConnectionManager implements ArrayAccess
      *    $dbh = new Connection('pgsql:dbname=$dbname; host=$host; username=$username; password=$password'); 
      *    $pdo = new Connection( 'sqlite::memory:', null, null, array(PDO::ATTR_PERSISTENT => true) );
      *                     sqlite2:mydb.sq2
-     *
      */
     public function getConnection($sourceId)
     {
@@ -211,7 +201,7 @@ class ConnectionManager implements ArrayAccess
         }
 
         // use cached connection objects
-        if (isset($this->conns[$sourceId]) ) {
+        if (isset($this->conns[$sourceId])) {
             return $this->conns[$sourceId];
         }
         if (!isset($this->datasources[ $sourceId ])) {
@@ -230,9 +220,8 @@ class ConnectionManager implements ArrayAccess
         return $this->getConnection($dsId);
     }
 
-
     /**
-     * Get default data source id
+     * Get default data source id.
      *
      * @return string 'default'
      */
@@ -244,45 +233,44 @@ class ConnectionManager implements ArrayAccess
         }
 
         $id = $this->config->getDefaultDataSourceId();
+
         return $this->getConnection($id);
     }
 
-
     /**
-     * Get singleton instance
+     * Get singleton instance.
      */
-    static function getInstance()
+    public static function getInstance()
     {
         static $instance;
-        return $instance ? $instance : $instance = new static;
+
+        return $instance ? $instance : $instance = new static();
     }
 
-
     /**
-     * Close connection
+     * Close connection.
      */
     public function close($sourceId)
     {
         if (isset($this->conns[$sourceId])) {
             $this->conns[$sourceId] = null;
-            unset( $this->conns[$sourceId] );
+            unset($this->conns[$sourceId]);
         }
     }
 
-
     /**
-     * Close all connections
+     * Close all connections.
      */
     public function closeAll()
     {
         foreach ($this->conns as $id => $conn) {
-            $this->close( $id );
+            $this->close($id);
         }
     }
 
     /**
      * free connections,
-     * reset data sources
+     * reset data sources.
      */
     public function free()
     {
@@ -291,22 +279,19 @@ class ConnectionManager implements ArrayAccess
         $this->conns = array();
     }
 
-
-
     /**
-     * ArrayAccess interface
+     * ArrayAccess interface.
      *
-     * @param string $name
+     * @param string     $name
      * @param Connection $value
      */
     public function offsetSet($name, $value)
     {
-        if (! $value instanceof Connection) {
+        if (!$value instanceof Connection) {
             throw new InvalidArgumentException('$value is not a Connection object.');
         }
         $this->conns[ $name ] = $value;
     }
-    
 
     /**
      * Check if a connection exists.
@@ -317,7 +302,6 @@ class ConnectionManager implements ArrayAccess
     {
         return isset($this->conns[ $name ]);
     }
-    
 
     /**
      * Get connection by data source id.
@@ -337,32 +321,31 @@ class ConnectionManager implements ArrayAccess
         $this->close($name);
     }
 
-
     /**
-     * get pdo connetion and make a query
+     * get pdo connetion and make a query.
      *
      * @param string $sql SQL statement
      */
-    public function query($dsId,$sql)
+    public function query($dsId, $sql)
     {
-        return $this->getConnection($dsId)->query( $sql );
+        return $this->getConnection($dsId)->query($sql);
     }
 
-    public function prepareAndExecute($dsId, $sql, array $args = array() )
+    public function prepareAndExecute($dsId, $sql, array $args = array())
     {
-        $stm = NULL;
+        $stm = null;
         try {
             $conn = $this->getConnection($dsId);
             $stm = $conn->prepareAndExecute($sql, $args);
         } catch (PDOException $e) {
-            throw new SQLQueryException($dsId,$sql,$args,$e);
+            throw new SQLQueryException($dsId, $sql, $args, $e);
         }
         // if failed ?
         // if( false === $success ) {  }
         return $stm;
     }
 
-    public function __destruct() 
+    public function __destruct()
     {
         $this->free();
     }

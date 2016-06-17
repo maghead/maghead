@@ -1,19 +1,14 @@
 <?php
+
 namespace LazyRecord\Schema;
+
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use RecursiveRegexIterator;
-use RegexIterator;
-use ReflectionClass;
-use RuntimeException;
-use IteratorAggregate;
-use LazyRecord\ConfigLoader;
 use LazyRecord\ServiceContainer;
 use CLIFramework\Logger;
-use Traversable;
 
 /**
- * Find schema classes from files (or from current runtime)
+ * Find schema classes from files (or from current runtime).
  *
  * 1. Find SchemaDeclare-based schema class files.
  * 2. Find model-based schema, pass dynamic schema class 
@@ -46,16 +41,16 @@ class SchemaFinder
 
     public function findByPaths(array $paths)
     {
-        $this->logger->debug('Finding schemas in (' . join(', ',$paths) . ')');
+        $this->logger->debug('Finding schemas in ('.implode(', ', $paths).')');
 
         $files = array();
         foreach ($paths as $path) {
-            $this->logger->debug('Finding schemas in ' . $path);
+            $this->logger->debug('Finding schemas in '.$path);
             if (is_file($path)) {
-                $this->logger->debug('Loading schema: ' . $path);
+                $this->logger->debug('Loading schema: '.$path);
                 require_once $path;
                 $files[] = $path;
-            } else if (is_dir($path)) {
+            } elseif (is_dir($path)) {
                 $rii = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($path,
                         RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::FOLLOW_SYMLINKS
@@ -63,14 +58,15 @@ class SchemaFinder
                     RecursiveIteratorIterator::SELF_FIRST
                 );
                 foreach ($rii as $fi) {
-                    if (substr($fi->getFilename(), -10) == "Schema.php") {
-                        $this->logger->debug('Loading schema: ' . $fi->getPathname());
+                    if (substr($fi->getFilename(), -10) == 'Schema.php') {
+                        $this->logger->debug('Loading schema: '.$fi->getPathname());
                         require_once $fi->getPathname();
                         $files[] = $path;
                     }
                 }
             }
         }
+
         return $files;
     }
 
@@ -79,9 +75,7 @@ class SchemaFinder
         if (empty($this->paths)) {
             return;
         }
+
         return $this->findByPaths($this->paths);
     }
-
-
 }
-

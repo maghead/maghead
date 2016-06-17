@@ -1,16 +1,13 @@
 <?php
+
 namespace LazyRecord\Migration;
+
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use LazyRecord\Console;
 use LazyRecord\Metadata;
-use LazyRecord\Schema\Comparator;
-use LazyRecord\TableParser\TableParser;
 use LazyRecord\ConnectionManager;
-use LazyRecord\Migration\AutomaticMigration;
 use LazyRecord\ServiceContainer;
 use GetOptionKit\OptionResult;
-
 
 class MigrationRunner
 {
@@ -30,46 +27,48 @@ class MigrationRunner
         $this->dataSourceIds = (array) $dsIds;
     }
 
-    public function addDataSource( $dsId ) 
+    public function addDataSource($dsId)
     {
         $this->dataSourceIds[] = $dsId;
     }
 
-    public function load($directory) 
+    public function load($directory)
     {
-        if (! file_exists($directory)) {
+        if (!file_exists($directory)) {
             return array();
         }
         $loaded = array();
-        $iterator = new RecursiveIteratorIterator( 
-            new RecursiveDirectoryIterator($directory) , RecursiveIteratorIterator::CHILD_FIRST
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directory), RecursiveIteratorIterator::CHILD_FIRST
         );
         foreach ($iterator as $path) {
-            if ($path->isFile() && $path->getExtension() === 'php' ) {
+            if ($path->isFile() && $path->getExtension() === 'php') {
                 $code = file_get_contents($path);
-                if (preg_match('#Migration#',$code) ) {
+                if (preg_match('#Migration#', $code)) {
                     $this->logger->debug("Loading migration script: $path");
-                    require_once($path);
+                    require_once $path;
                     $loaded[] = $path;
                 }
             }
         }
+
         return $loaded;
     }
 
     public function getLastMigrationId($dsId)
     {
         $meta = Metadata::createWithDataSource($dsId);
+
         return $meta['migration'] ?: 0;
     }
 
-    public function resetMigrationId($dsId) 
+    public function resetMigrationId($dsId)
     {
         $metadata = Metadata::createWithDataSource($dsId);
         $metadata['migration'] = 0;
     }
 
-    public function updateLastMigrationId($dsId, $id) 
+    public function updateLastMigrationId($dsId, $id)
     {
         $metadata = Metadata::createWithDataSource($dsId);
         $lastId = $metadata['migration'];
@@ -77,24 +76,28 @@ class MigrationRunner
         $this->logger->info("Updating migration version to $id.");
     }
 
-    public function getMigrationScripts() 
+    public function getMigrationScripts()
     {
         $classes = get_declared_classes();
-        $classes = array_filter($classes, function($class) { 
-            return is_a($class,'LazyRecord\\Migration\\Migration',true) 
+        $classes = array_filter($classes, function ($class) {
+            return is_a($class, 'LazyRecord\\Migration\\Migration', true)
                 && $class != 'LazyRecord\\Migration\\Migration';
         });
 
         // sort class with timestamp suffix
-        usort($classes,function($a,$b) { 
-            if( preg_match('#_(\d+)$#',$a,$regsA) && preg_match('#_(\d+)$#',$b,$regsB) ) {
-                list($aId,$bId) = array($regsA[1],$regsB[1]);
-                if( $aId == $bId )
+        usort($classes, function ($a, $b) {
+            if (preg_match('#_(\d+)$#', $a, $regsA) && preg_match('#_(\d+)$#', $b, $regsB)) {
+                list($aId, $bId) = array($regsA[1], $regsB[1]);
+                if ($aId == $bId) {
                     return 0;
+                }
+
                 return $aId < $bId ? -1 : 1;
             }
+
             return 0;
         });
+
         return $classes;
     }
 
@@ -103,8 +106,10 @@ class MigrationRunner
         $lastMigrationId = $this->getLastMigrationId($dsId);
         $this->logger->debug("Found last migration id: $lastMigrationId");
         $scripts = $this->getMigrationScripts();
-        return array_filter($scripts,function($class) use ($lastMigrationId) {
+
+        return array_filter($scripts, function ($class) use ($lastMigrationId) {
             $id = $class::getId();
+
             return $id > $lastMigrationId;
         });
     }
@@ -113,22 +118,22 @@ class MigrationRunner
     {
         $scripts = $this->getMigrationScripts();
         $lastMigrationId = $this->getLastMigrationId($dsId);
-        return array_filter($scripts,function($class) use ($lastMigrationId) {
+
+        return array_filter($scripts, function ($class) use ($lastMigrationId) {
             $id = $class::getId();
+
             return $id <= $lastMigrationId;
         });
     }
 
-
     /**
-     * Run downgrade scripts
-     *
+     * Run downgrade scripts.
      */
-    public function runDowngrade(array $scripts = NULL, $steps = 1)
+    public function runDowngrade(array $scripts = null, $steps = 1)
     {
-        $this->logger->info("Performing downgrade...");
+        $this->logger->info('Performing downgrade...');
 
-        foreach( $this->dataSourceIds as $dsId ) {
+        foreach ($this->dataSourceIds as $dsId) {
             $driver = $this->connectionManager->getQueryDriver($dsId);
             $connection = $this->connectionManager->getConnection($dsId);
 
@@ -137,10 +142,10 @@ class MigrationRunner
             if (!$scripts) {
                 $scripts = $this->getDowngradeScripts($dsId);
             }
-            $this->logger->info("Found " . count($scripts) . ' migration scripts to run downgrade!');
-            while($steps--) {
+            $this->logger->info('Found '.count($scripts).' migration scripts to run downgrade!');
+            while ($steps--) {
                 // downgrade a migration one at one time.
-                if ($script = array_pop($scripts) ) {
+                if ($script = array_pop($scripts)) {
                     $this->logger->info("Running downgrade migration script $script on data source $dsId");
                     $migration = new $script($driver, $connection);
                     $migration->downgrade();
@@ -154,11 +159,11 @@ class MigrationRunner
     }
 
     /**
-     * Run upgrade scripts
+     * Run upgrade scripts.
      */
-    public function runUpgrade(array $scripts = NULL)
+    public function runUpgrade(array $scripts = null)
     {
-        $this->logger->info("Performing upgrade...");
+        $this->logger->info('Performing upgrade...');
 
         foreach ($this->dataSourceIds as $dsId) {
             $this->logger->info("Running upgrade over data source: $dsId");
@@ -169,11 +174,12 @@ class MigrationRunner
             if (!$scripts) {
                 $scripts = $this->getUpgradeScripts($dsId);
                 if (count($scripts) == 0) {
-                    $this->logger->info("No migration script found.");
+                    $this->logger->info('No migration script found.');
+
                     return;
                 }
             }
-            $this->logger->info("Found " . count($scripts) . ' migration scripts to run upgrade!');
+            $this->logger->info('Found '.count($scripts).' migration scripts to run upgrade!');
 
             try {
                 $this->logger->info('Begining transaction...');
@@ -182,14 +188,13 @@ class MigrationRunner
                     $this->logger->info("Performing upgrade migration script $script on data source $dsId");
                     $migration = new $script($driver, $connection);
                     $migration->upgrade();
-                    $this->updateLastMigrationId($dsId,$script::getId());
+                    $this->updateLastMigrationId($dsId, $script::getId());
                 }
 
                 $this->logger->info('Committing...');
                 $connection->commit();
-
             } catch (Exception $e) {
-                $this->logger->error('Exception was thrown: ' . $e->getMessage());
+                $this->logger->error('Exception was thrown: '.$e->getMessage());
                 $this->logger->warn('Rolling back ...');
                 $connection->rollback();
                 $this->logger->warn('Recovered, escaping...');
@@ -198,7 +203,7 @@ class MigrationRunner
         }
     }
 
-    public function runUpgradeAutomatically(OptionResult $options = NULL)
+    public function runUpgradeAutomatically(OptionResult $options = null)
     {
         foreach ($this->dataSourceIds as $dsId) {
             $driver = $this->connectionManager->getQueryDriver($dsId);
@@ -215,9 +220,8 @@ class MigrationRunner
 
                 $this->logger->info('Committing...');
                 $connection->commit();
-
             } catch (Exception $e) {
-                $this->logger->error('Exception was thrown: ' . $e->getMessage());
+                $this->logger->error('Exception was thrown: '.$e->getMessage());
                 $this->logger->warn('Rolling back ...');
                 $connection->rollback();
                 $this->logger->warn('Recovered, escaping...');
@@ -225,6 +229,4 @@ class MigrationRunner
             }
         }
     }
-
 }
-

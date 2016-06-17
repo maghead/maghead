@@ -1,13 +1,10 @@
 <?php
+
 namespace LazyRecord\Migration;
 
-interface Migratable {
-
+interface Migratable
+{
     public function upgrade();
 
     public function downgrade();
-
 }
-
-
-

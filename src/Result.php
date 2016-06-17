@@ -1,9 +1,13 @@
 <?php
+
 namespace LazyRecord;
+
 use ValidationKit\ValidationMessage;
 use Exception;
 
-class ResultException extends Exception { }
+class ResultException extends Exception
+{
+}
 
 class Result
 {
@@ -13,23 +17,19 @@ class Result
     const TYPE_UPDATE = 3;
     const TYPE_DELETE = 4;
 
-
     public $id;
 
-
     /**
-     * @var boolean Success or fail.
+     * @var bool Success or fail.
      */
     public $success;
 
     public $error;
 
-
     /**
      * @var string Message
      */
     public $message;
-
 
     /**
      * @var string SQL query string
@@ -37,18 +37,16 @@ class Result
     public $sql;
 
     /**
-     * column key => ValidationMessage object
+     * column key => ValidationMessage object.
      */
     public $validations;
 
     public $errors;
 
-
     /**
      * @var array Arguments before applying to SQL builder.
      */
     public $args;
-
 
     /**
      * @var array Variables that built from SQL Query Builder
@@ -58,7 +56,7 @@ class Result
     /**
      * @var const CREATE_RESULT, READ_RESULT, UPDATE_RESULT, DELETE_RESULT
      */
-    public $type = Result::TYPE_NONE;
+    public $type = self::TYPE_NONE;
 
     public $code;
 
@@ -66,86 +64,94 @@ class Result
 
     public $debugInfo = array();
 
-    public static function success($msg = null, $extra = array()) {
-        $result = new self;
+    public static function success($msg = null, $extra = array())
+    {
+        $result = new self();
         $result->setSuccess();
         $result->setMessage($msg);
-        foreach( $extra as $k => $v ) {
+        foreach ($extra as $k => $v) {
             $result->$k = $v;
         }
+
         return $result;
     }
 
-    public static function failure($msg = null, $extra = array()) {
-        $result = new self;
+    public static function failure($msg = null, $extra = array())
+    {
+        $result = new self();
         $result->setError();
         $result->setMessage($msg);
-        foreach( $extra as $k => $v ) {
+        foreach ($extra as $k => $v) {
             $result->$k = $v;
         }
+
         return $result;
     }
 
-
-
-    public function setSuccess() {
+    public function setSuccess()
+    {
         $this->success = true;
         $this->error = false;
     }
 
-    public function setError() {
+    public function setError()
+    {
         $this->success = false;
         $this->error = true;
     }
 
-
-    public function setDebugInfo(array $info) {
+    public function setDebugInfo(array $info)
+    {
         $this->debugInfo = $info;
     }
 
-    public function getDebugInfo() {
+    public function getDebugInfo()
+    {
         return $this->debugInfo;
     }
 
-    public function setMessage($msg) {
+    public function setMessage($msg)
+    {
         $this->message = $msg;
     }
 
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->type = $type;
     }
 
-    public function getType($type) {
+    public function getType($type)
+    {
         return $this->type;
     }
 
-
     /**
-     * returns an array contains success validations 
+     * returns an array contains success validations.
      */
-    public function getSuccessValidations() 
+    public function getSuccessValidations()
     {
         $vlds = array();
-        foreach( $this->validations as $k => $vld ) {
+        foreach ($this->validations as $k => $vld) {
             if ($vld['valid']) {
                 $vlds[$k] = $vld;
             }
         }
+
         return $vlds;
     }
 
-
     /**
-     * Returns an array of ValidationMessage objects
+     * Returns an array of ValidationMessage objects.
      */
-    public function getErrorValidations() 
+    public function getErrorValidations()
     {
         $vlds = array();
-        foreach( $this->validations as $k => $vld ) {
+        foreach ($this->validations as $k => $vld) {
             if (!$vld['valid']) {
                 $vlds[$k] = $vld;
             }
         }
+
         return $vlds;
     }
 
@@ -154,7 +160,8 @@ class Result
         if ($this->exception) {
             return $this->exception;
         }
-        return new ResultException($message . ';' . $this->message);
+
+        return new ResultException($message.';'.$this->message);
     }
 
     public function throwExceptionIfFailed()
@@ -167,48 +174,46 @@ class Result
         }
     }
 
-    public function __toString() {
-        $msg = $this->message . "\n";
-        if ( $this->exception ) {
-            $msg .= ' Exception:' . $this->exception->getMessage() . "\n";
-            if( $this->sql ) {
-                $msg .= ' SQL:' . $this->sql . "\n";
+    public function __toString()
+    {
+        $msg = $this->message."\n";
+        if ($this->exception) {
+            $msg .= ' Exception:'.$this->exception->getMessage()."\n";
+            if ($this->sql) {
+                $msg .= ' SQL:'.$this->sql."\n";
             }
         }
 
         if ($this->validations) {
-            foreach( $this->validations as $k => $vld ) {
-                $msg .= $k . ': ' . ($vld->valid ? 'Valid' : 'Invalid') . "\n";
+            foreach ($this->validations as $k => $vld) {
+                $msg .= $k.': '.($vld->valid ? 'Valid' : 'Invalid')."\n";
             }
         }
+
         return $msg;
     }
 
     /**
-     * Trigger error with errorType, default to E_USER_NOTICE
+     * Trigger error with errorType, default to E_USER_NOTICE.
      *
-     * @param string $desc error description
-     * @param int $errorType error types defined in http://php.net/manual/en/function.trigger-error.php
+     * @param string $desc      error description
+     * @param int    $errorType error types defined in http://php.net/manual/en/function.trigger-error.php
      */
-    public function triggerError($desc = NULL, $errorType = E_USER_NOTICE) {
-        trigger_error(($desc ? "$desc:" : "") . $this->message, $errorType);
+    public function triggerError($desc = null, $errorType = E_USER_NOTICE)
+    {
+        trigger_error(($desc ? "$desc:" : '').$this->message, $errorType);
     }
 
-    public function silentError($desc = NULL, $messageType = 0)
+    public function silentError($desc = null, $messageType = 0)
     {
-        error_log(($desc ? "$desc:" : "") . $this->message , $messageType);
+        error_log(($desc ? "$desc:" : '').$this->message, $messageType);
     }
 
     /**
      * @param string $desc
      */
-    public function notice($desc = NULL) {
-        trigger_error(($desc ? "$desc:" : "") . $this->message, E_USER_NOTICE);
+    public function notice($desc = null)
+    {
+        trigger_error(($desc ? "$desc:" : '').$this->message, E_USER_NOTICE);
     }
-
 }
-
-
-
-
-

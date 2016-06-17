@@ -1,5 +1,7 @@
 <?php
+
 namespace LazyRecord\Schema\Helper;
+
 use LazyRecord\Schema\DeclareSchema;
 use Exception;
 
@@ -9,14 +11,13 @@ abstract class BaseHelper
 
     public $schema;
 
-    public function __construct(DeclareSchema $schema, $arguments = array() )
+    public function __construct(DeclareSchema $schema, $arguments = array())
     {
         $this->schema = $schema;
         $this->arguments = $arguments;
-        if (!method_exists($this,'init')) {
+        if (!method_exists($this, 'init')) {
             throw new Exception('init method is not defined in helper');
         }
-        call_user_func_array(array($this,'init'), $arguments);
+        call_user_func_array(array($this, 'init'), $arguments);
     }
 }
-

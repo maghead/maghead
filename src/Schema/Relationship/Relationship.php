@@ -1,19 +1,18 @@
 <?php
-namespace LazyRecord\Schema;
-use ArrayAccess;
-use IteratorAggregate;
+namespace LazyRecord\Schema\Relationship;
+
 use SQLBuilder\Universal\Syntax\Conditions;
 use LazyRecord\BaseCollection;
-use LazyRecord\BaseModel;
 use LogicException;
+use ArrayAccess;
+use IteratorAggregate;
 
 class Relationship implements IteratorAggregate, ArrayAccess
 {
-    const HAS_MANY = 1;
-    const HAS_ONE = 2;
-    const BELONGS_TO = 3;
+    const HAS_MANY     = 1;
+    const HAS_ONE      = 2;
+    const BELONGS_TO   = 3;
     const MANY_TO_MANY = 4;
-
 
     /**
      * @var array The stashed data
@@ -25,7 +24,6 @@ class Relationship implements IteratorAggregate, ArrayAccess
      */
     public $accessor;
 
-
     /**
      * @var Conditions The SQLBuilder Condition Syntax Object
      */
@@ -33,11 +31,9 @@ class Relationship implements IteratorAggregate, ArrayAccess
 
     public $orderBy = array();
 
-
     public $onUpdate;
 
     public $onDelete;
-
 
     public function __construct($accessor, array $data = array())
     {
@@ -45,19 +41,18 @@ class Relationship implements IteratorAggregate, ArrayAccess
         $this->data = $data;
     }
 
-
     public function by($column)
     {
         $this->data['self_column'] = $column;
+
         return $this;
     }
-
-
 
     public function newForeignSchema()
     {
         $class = $this->data['foreign_schema'];
-        return new $class;
+
+        return new $class();
     }
 
     public function newForeignModel()
@@ -71,9 +66,8 @@ class Relationship implements IteratorAggregate, ArrayAccess
     {
         $schema = $this->newForeignSchema();
         $collectionClass = $schema->getCollectionClass();
-        return new $collectionClass;
+        return new $collectionClass();
     }
-
 
     /**
      * Resolve the junction relationship to retrieve foreign collection of the foreign collection.
@@ -84,53 +78,52 @@ class Relationship implements IteratorAggregate, ArrayAccess
      */
     public function newForeignForeignCollection($junctionRelation)
     {
-        $junctionSchema  = new $junctionRelation['foreign_schema'];
-        $foreignRelation = $junctionSchema->getRelation( $this['relation_foreign'] );
+        $junctionSchema = new $junctionRelation['foreign_schema']();
+        $foreignRelation = $junctionSchema->getRelation($this['relation_foreign']);
         $collection = $foreignRelation->newForeignCollection();
         $this->applyFilter($collection); // apply this filter to the foreign collection.
         return $collection;
     }
 
-    public function isType($type) 
+    public function isType($type)
     {
         return $this->data['type'] === $type;
     }
 
-    public function isManyToMany() 
+    public function isManyToMany()
     {
-        return $this->data['type'] === Relationship::MANY_TO_MANY;
+        return $this->data['type'] === self::MANY_TO_MANY;
     }
 
-    public function isOneToMany() 
+    public function isOneToMany()
     {
-        return $this->data['type'] === Relationship::HAS_MANY;
+        return $this->data['type'] === self::HAS_MANY;
     }
 
-    public function isHasMany() 
+    public function isHasMany()
     {
-        return $this->data['type'] === Relationship::HAS_MANY;
+        return $this->data['type'] === self::HAS_MANY;
     }
 
-
-    public function applyFilter(BaseCollection & $collection) 
+    public function applyFilter(BaseCollection &$collection)
     {
-        if ( isset($this->data['filter']) ) {
-            $collection = call_user_func_array( $this->data['filter'] , array($collection) );
+        if (isset($this->data['filter'])) {
+            $collection = call_user_func_array($this->data['filter'], array($collection));
         }
     }
 
-    public function applyWhere(BaseCollection & $collection) 
+    public function applyWhere(BaseCollection &$collection)
     {
         if ($this->where) {
             $collection->setWhere($this->where);
         }
     }
 
-    public function applyOrder(BaseCollection & $collection) 
+    public function applyOrder(BaseCollection &$collection)
     {
         if (isset($this->data['orderBy']) && $this->data['orderBy']) {
-            foreach($this->data['orderBy'] as $o ) {
-                $collection->orderBy($o[0] , $o[1]);
+            foreach ($this->data['orderBy'] as $o) {
+                $collection->orderBy($o[0], $o[1]);
             }
         }
     }
@@ -141,11 +134,12 @@ class Relationship implements IteratorAggregate, ArrayAccess
         $this->applyFilter($collection);
         $this->applyWhere($collection);
         $this->applyOrder($collection);
+
         return $collection;
     }
 
     /**
-     * Provide dynamic cascading accessors
+     * Provide dynamic cascading accessors.
      *
      * $relationship->foreign_schema('something')
      * $relationship->view('something')
@@ -153,25 +147,25 @@ class Relationship implements IteratorAggregate, ArrayAccess
     public function __call($m, $as)
     {
         $this->data[ $m ] = $as[0];
+
         return $this;
     }
 
-
     /**
-     * Define filter for collection
+     * Define filter for collection.
      *
      * @param callback $filter filter callback.
      */
     public function filter($filter)
     {
         $this->data['filter'] = $filter;
+
         return $this;
     }
 
-
     public function order()
     {
-        throw new LogicException("order(column, ordering) is now deprecated, please use orderBy(column, ordering)");
+        throw new LogicException('order(column, ordering) is now deprecated, please use orderBy(column, ordering)');
     }
 
     /**
@@ -182,31 +176,30 @@ class Relationship implements IteratorAggregate, ArrayAccess
      */
     public function orderBy($column, $ordering)
     {
-        $this->orderBy[] = array($column ,$ordering);
+        $this->orderBy[] = array($column, $ordering);
+
         return $this;
     }
 
-
-    public function where($expr = NULL , array $args = array()) {
+    public function where($expr = null, array $args = array())
+    {
         if (!$this->where) {
-            $this->where = new Conditions;
+            $this->where = new Conditions();
         }
         if ($expr) {
             if (is_string($expr)) {
                 $this->where->appendExpr($expr, $args);
-            } else if (is_array($expr)) {
-                foreach($expr as $key => $val) {
+            } elseif (is_array($expr)) {
+                foreach ($expr as $key => $val) {
                     $this->where->equal($key, $val);
                 }
             } else {
                 throw new InvalidArgumentException("Unsupported argument type of 'where' method.");
             }
         }
+
         return $this->where;
     }
-
-
-
 
     /**
      * To support foreach operation.
@@ -216,8 +209,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
         return new ArrayIterator($this->data);
     }
 
-
-    public function offsetSet($name,$value)
+    public function offsetSet($name, $value)
     {
         $this->data[$name] = $value;
     }
@@ -238,7 +230,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
     }
 
     /**
-     * To support var_export
+     * To support var_export.
      */
     public static function __set_state(array $data)
     {
@@ -249,18 +241,21 @@ class Relationship implements IteratorAggregate, ArrayAccess
         if (isset($data['orderBy'])) {
             $r->orderBy = $data['orderBy'];
         }
+
         return $r;
     }
 
     public function onUpdate($action)
     {
         $this->onUpdate = $action;
+
         return $this;
     }
 
     public function onDelete($action)
     {
         $this->onDelete = $action;
+
         return $this;
     }
 
@@ -276,6 +271,4 @@ class Relationship implements IteratorAggregate, ArrayAccess
         $this->data[$key] = $val;
     }
 }
-
-
 

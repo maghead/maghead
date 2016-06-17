@@ -1,17 +1,14 @@
 <?php
+
 namespace LazyRecord\SqlBuilder;
+
 use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\Universal\Syntax\Constraint;
-
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\Schema\TemplateSchema;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\RuntimeColumn;
-use LazyRecord\Schema\Relationship;
+use LazyRecord\Schema\Relationship\Relationship;
 use LazyRecord\BaseModel;
 use LazyRecord\Schema\DeclareColumn;
 
@@ -36,26 +33,33 @@ abstract class BaseBuilder
 
     abstract public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column);
 
-    public function prepare() { return []; }
+    public function prepare()
+    {
+        return [];
+    }
 
-    public function finalize() { return []; }
+    public function finalize()
+    {
+        return [];
+    }
 
     public function createTable(SchemaInterface $schema)
     {
         $sql = 'CREATE TABLE '
-            . $this->driver->quoteIdentifier($schema->getTable()) . " ( \n";
+            .$this->driver->quoteIdentifier($schema->getTable())." ( \n";
 
         $columnSqls = array();
-        foreach( $schema->columns as $name => $column ) {
+        foreach ($schema->columns as $name => $column) {
             if ($column->virtual) {
                 continue;
             }
-            $columnSqls[] = '  ' . $this->buildColumnSql( $schema, $column );
+            $columnSqls[] = '  '.$this->buildColumnSql($schema, $column);
         }
         $referencesSqls = $this->buildForeignKeys($schema);
-        $sql .= join(",\n",array_merge($columnSqls, $referencesSqls));
+        $sql .= implode(",\n", array_merge($columnSqls, $referencesSqls));
 
         $sql .= "\n);\n";
+
         return $sql;
     }
 
@@ -67,10 +71,11 @@ abstract class BaseBuilder
         }
         $sqls = [];
         $tableSqls = $this->buildTable($schema);
-        $sqls = array_merge($sqls , $tableSqls);
+        $sqls = array_merge($sqls, $tableSqls);
 
         $indexSqls = $this->buildIndex($schema);
-        $sqls = array_merge($sqls , $indexSqls);
+        $sqls = array_merge($sqls, $indexSqls);
+
         return $sqls;
     }
 
@@ -84,31 +89,33 @@ abstract class BaseBuilder
             return $sqls;
         }
         $sqls[] = $this->createTable($schema);
+
         return $sqls;
     }
 
-    public function buildIndex(SchemaInterface $schema) 
+    public function buildIndex(SchemaInterface $schema)
     {
         // build single column index
         $sqls = array();
-        foreach ($schema->columns as $name => $column ) {
+        foreach ($schema->columns as $name => $column) {
             if ($column->index) {
-                $table = $schema->getTable() ;
-                $indexName = is_string($column->index) ? $column->index 
-                    : "idx_" . $table . "_" . $name;
+                $table = $schema->getTable();
+                $indexName = is_string($column->index) ? $column->index
+                    : 'idx_'.$table.'_'.$name;
                 $query = new CreateIndexQuery($indexName);
                 $query->on($table, [$name]);
                 if ($column->index_using) {
                     $query->using($column->index_using);
                 }
-                $sqls[] = $query->toSql($this->driver, new ArgumentArray);
+                $sqls[] = $query->toSql($this->driver, new ArgumentArray());
             }
         }
         if ($queries = $schema->getIndexQueries()) {
             foreach ($queries as $query) {
-                $sqls[] = $query->toSql($this->driver, new ArgumentArray);
+                $sqls[] = $query->toSql($this->driver, new ArgumentArray());
             }
         }
+
         return $sqls;
     }
 
@@ -117,8 +124,9 @@ abstract class BaseBuilder
         $constraint = new Constraint();
         $constraint->foreignKey($rel['self_column']);
 
-        $fSchema = new $rel['foreign_schema'];
+        $fSchema = new $rel['foreign_schema']();
         $references = $constraint->references($fSchema->getTable(), (array) $rel['foreign_column']);
+
         return $constraint;
     }
 
@@ -133,15 +141,15 @@ abstract class BaseBuilder
                     if ($rel['foreign_schema'] == $rel['self_schema']) {
                         continue;
                     }
-                    if (isset($rel['self_column']) && $rel['self_column'] != 'id' ) 
-                    {
+                    if (isset($rel['self_column']) && $rel['self_column'] != 'id') {
                         if ($constraint = $this->buildForeignKeyConstraint($rel)) {
-                            $sqls[] = $constraint->toSql($this->driver, new ArgumentArray);
+                            $sqls[] = $constraint->toSql($this->driver, new ArgumentArray());
                         }
                     }
                 break;
             }
         }
+
         return $sqls;
     }
 }

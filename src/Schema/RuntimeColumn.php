@@ -1,21 +1,23 @@
 <?php
+
 namespace LazyRecord\Schema;
+
 use DateTime;
 use LazyRecord\Deflator;
 use LazyRecord\Inflator;
 use LazyRecord\ArrayUtils;
 use LazyRecord\Utils;
 use LazyRecord\BaseModel;
-use LazyRecord\Schema\ColumnAccessorInterface;
 use Exception;
 use ArrayIterator;
 use IteratorAggregate;
-use InvalidArgumentException;
 use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;
 use Closure;
 
-class InvalidValueTypeException extends Exception { }
+class InvalidValueTypeException extends Exception
+{
+}
 
 class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 {
@@ -78,100 +80,100 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         }
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
-     * For iterating attributes
+     * For iterating attributes.
      */
     public function getIterator()
     {
         return new ArrayIterator($this->attributes);
     }
 
-    public static function __set_state($hash) 
+    public static function __set_state($hash)
     {
         return new self($hash['name'], $hash['attributes']);
     }
 
-
-
     public function __isset($name)
     {
-        return isset( $this->attributes[ $name ] );
+        return isset($this->attributes[ $name ]);
     }
 
     public function __get($name)
     {
-        if ( isset($this->attributes[$name]) ) {
+        if (isset($this->attributes[$name])) {
             return $this->attributes[$name];
         }
     }
 
-    public function get($name) 
+    public function get($name)
     {
-        if ( isset($this->attributes[$name]) ) {
+        if (isset($this->attributes[$name])) {
             return $this->attributes[$name];
         }
     }
 
     public function has($name)
     {
-        return isset( $this->attributes[ $name ] );
+        return isset($this->attributes[ $name ]);
     }
 
-    public function __set($n,$v) 
+    public function __set($n, $v)
     {
         return $this->attributes[$n] = $v;
     }
 
-
-
     /**
-     * Canonicalize a value before updating or creating
+     * Canonicalize a value before updating or creating.
      *
      * The canonicalize handler takes the original value ($value), current 
      * record ($record) and the arguments ($args)
      *
-     * @param mixed $value
+     * @param mixed     $value
      * @param BaseModel $record
-     * @param array $args
+     * @param array     $args
      *
      * @return mixed $value
      */
-    public function canonicalizeValue( & $value , $record = null , $args = null )
+    public function canonicalizeValue(&$value, $record = null, $args = null)
     {
         $cb = $this->filter ?: $this->canonicalizer ?: null;
         if ($cb) {
             if ($cb instanceof Closure) {
                 return $cb($value, $record, $args);
             }
+
             return call_user_func($cb, $value, $record, $args);
         }
+
         return $value;
     }
 
     /**
      * For an existing record, we might need the record data to return specified valid values.
      */
-    public function getValidValues( $record = null , $args = null )
+    public function getValidValues($record = null, $args = null)
     {
         if ($builder = $this->validValues) {
             if ($builder instanceof Closure) {
                 return $builder($record, $args);
-            } else if (is_callable($builder)) {
+            } elseif (is_callable($builder)) {
                 return call_user_func_array($builder, array($record, $args));
             }
+
             return $builder;
         }
     }
 
-    public function getOptionValues( $record = null, $args = null )
+    public function getOptionValues($record = null, $args = null)
     {
         if ($optionValues = $this->get('optionValues')) {
-            return Utils::evaluate( $optionValues , array($record, $args) );
-        } 
+            return Utils::evaluate($optionValues, array($record, $args));
+        }
     }
 
     public function getDefaultValue($record = null, $args = null)
@@ -182,13 +184,13 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
             $val = $this->default;
             if ($val instanceof Closure) {
                 return $val($record, $args);
-            } else if (is_callable($val)) {
+            } elseif (is_callable($val)) {
                 return call_user_func_array($val, array($record, $args));
             }
+
             return $val;
         }
     }
-
 
     /**
      * Column value type casting for input values.
@@ -205,34 +207,36 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         if ($isa = $this->isa) {
             if ($isa === 'int') {
                 return intval($value);
-            } else if ($isa === 'str') {
+            } elseif ($isa === 'str') {
                 return (string) $value;
-            } else if ($isa === 'bool') {
-                if ($value === NULL) {
-                    return NULL;
+            } elseif ($isa === 'bool') {
+                if ($value === null) {
+                    return;
                 }
                 if ($value === '') {
-                    return NULL;
+                    return;
                 } else {
                     return filter_var($value, FILTER_VALIDATE_BOOLEAN, array('flags' => FILTER_NULL_ON_FAILURE));
                 }
+
                 return $value;
             }
         }
+
         return $value;
     }
 
     public function checkTypeConstraint($value)
     {
         if ($isa = $this->isa) {
-            switch($isa) {
+            switch ($isa) {
             case 'str':
-                if (! is_string($value)) {
+                if (!is_string($value)) {
                     return false;
                 }
                 break;
             case 'int':
-                if (! is_integer($value)) {
+                if (!is_integer($value)) {
                     return false;
                 }
                 break;
@@ -248,76 +252,80 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                 break;
             }
         }
+
         return true;
     }
 
     /** 
-     * deflate value 
+     * deflate value.
      *
      * @param mixed $value
      **/
-    public function deflate($value, BaseDriver $driver = NULL)
+    public function deflate($value, BaseDriver $driver = null)
     {
         // run column specified deflator
-        if( $f = $this->get('deflator') ) {
+        if ($f = $this->get('deflator')) {
             return call_user_func($f, $value);
         }
         // use global deflator, check self type, and do type casting
-        return Deflator::deflate($value , $this->isa, $driver);
+        return Deflator::deflate($value, $this->isa, $driver);
     }
 
     public function inflate($value, $record)
     {
         if ($f = $this->get('inflator')) {
-            return call_user_func($f , $value , $record );
+            return call_user_func($f, $value, $record);
         }
         // use global inflator
-        return Inflator::inflate( $value , $this->isa);
+        return Inflator::inflate($value, $this->isa);
     }
 
-
-    public function display( $value )
+    public function display($value)
     {
-        if( $this->validPairs && isset( $this->validPairs[ $value ] ) ) {
+        if ($this->validPairs && isset($this->validPairs[ $value ])) {
             return $this->validPairs[ $value ];
         }
 
-        if( $this->validValues && $validValues = Utils::evaluate($this->validValues) ) {
+        if ($this->validValues && $validValues = Utils::evaluate($this->validValues)) {
             // search value in validValues array
             // because we store the validValues in an (label => value) array.
-            if( ArrayUtils::is_assoc_array( $validValues ) ) {
-                if( false !== ($label = array_search( $value , $validValues)) ) {
+            if (ArrayUtils::is_assoc_array($validValues)) {
+                if (false !== ($label = array_search($value, $validValues))) {
                     return $label;
                 }
+
                 return;
-            } elseif( in_array($value,$validValues) ) {
+            } elseif (in_array($value, $validValues)) {
                 return $value;
             }
         }
 
         // Optional Values
-        if( $this->optionValues && $optionValues = Utils::evaluate($this->optionValues) ) {
+        if ($this->optionValues && $optionValues = Utils::evaluate($this->optionValues)) {
             // search value in validValues array
             // because we store the validValues in an (label => value) array.
-            if( ArrayUtils::is_assoc_array( $optionValues ) ) {
-                if( false !== ($label = array_search( $value , $optionValues)) ) {
+            if (ArrayUtils::is_assoc_array($optionValues)) {
+                if (false !== ($label = array_search($value, $optionValues))) {
                     return $label;
                 }
+
                 return $value;
-            } elseif( in_array($value,$optionValues) ) {
+            } elseif (in_array($value, $optionValues)) {
                 return $value;
             }
+
             return $value;
         }
 
         // backward compatible method
-        if( $this->validValueBuilder && $values = call_user_func($this->validValueBuilder) ) {
-            if( ArrayUtils::is_assoc_array( $values ) ) {
-                if( false !== ($label = array_search($value,$values) ) ) {
+        if ($this->validValueBuilder && $values = call_user_func($this->validValueBuilder)) {
+            if (ArrayUtils::is_assoc_array($values)) {
+                if (false !== ($label = array_search($value, $values))) {
                     return $label;
                 }
+
                 return;
-            } elseif( in_array($value, $values ) ) {
+            } elseif (in_array($value, $values)) {
                 return $value;
             }
         }
@@ -326,24 +334,25 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
             return $value ? _('Yes') : _('No');
         }
 
-        if( $value ) {
-            if( is_string($value) ) {
-                return _( $value );
-            } 
+        if ($value) {
+            if (is_string($value)) {
+                return _($value);
+            }
             // quick inflator for DateTime object.
-            elseif ( $value instanceof DateTime) {
-                return $value->format( DateTime::ATOM );
+            elseif ($value instanceof DateTime) {
+                return $value->format(DateTime::ATOM);
             }
         }
+
         return $value;
     }
 
     public function getLabel()
     {
-        if( $label = $this->get('label') ) {
-            return _( $label );
+        if ($label = $this->get('label')) {
+            return _($label);
         }
+
         return ucfirst($this->name);
     }
-
 }

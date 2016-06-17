@@ -1,36 +1,34 @@
 <?php
+
 namespace LazyRecord\TableParser;
+
 use PDO;
-use Exception;
 use LazyRecord\Schema;
 use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\TableParser\TypeInfo;
-use LazyRecord\TableParser\TypeInfoParser;
-
 class PgsqlTableParser extends BaseTableParser
 {
-
     public function getTables()
     {
         $stm = $this->connection->query('SELECT table_name FROM information_schema.tables WHERE table_schema = \'public\';');
         $rows = $stm->fetchAll(PDO::FETCH_NUM);
-        return array_map(function($row) { return $row[0]; },$rows);
+
+        return array_map(function ($row) { return $row[0]; }, $rows);
     }
 
     public function reverseTableSchema($table, $referenceSchema = null)
     {
-        /**
+        /*
          * postgresql information schema column descriptions
          *
          * @see http://www.postgresql.org/docs/8.1/static/infoschema-columns.html
          */
         $sql = "SELECT * FROM information_schema.columns WHERE table_name = '$table';";
         $stm = $this->connection->query($sql);
-        $schema = new DeclareSchema;
+        $schema = new DeclareSchema();
         $schema->columnNames = $schema->columns = array();
-        $rows = $stm->fetchAll( PDO::FETCH_OBJ );
+        $rows = $stm->fetchAll(PDO::FETCH_OBJ);
 
-        /**
+        /*
          * more detailed attributes
          *
          * > select * from pg_attribute, pg_type where typname = 'addresses';
@@ -55,7 +53,7 @@ class PgsqlTableParser extends BaseTableParser
          *
          * @see http://notfaq.wordpress.com/2006/07/29/sql-postgresql-get-tables-and-columns/
          */
-        foreach( $rows as $row ) {
+        foreach ($rows as $row) {
             $column = $schema->column($row->column_name);
             if ($row->is_nullable === 'YES') {
                 $column->null();
@@ -67,19 +65,19 @@ class PgsqlTableParser extends BaseTableParser
 
             $typeInfo = TypeInfoParser::parseTypeInfo($type);
             if ($typeInfo->type === 'varchar') {
-                $type = 'varchar(' . $row->character_maximum_length . ')' ;
+                $type = 'varchar('.$row->character_maximum_length.')';
             }
 
-            $column->type( $type );
+            $column->type($type);
 
             $isa = null;
-            if (preg_match( '/^(text|varchar|character)/i', $type ))  {
+            if (preg_match('/^(text|varchar|character)/i', $type)) {
                 $isa = 'str';
-            } else if (preg_match( '/^(int|bigint|smallint|integer)/i' , $type )) {
+            } elseif (preg_match('/^(int|bigint|smallint|integer)/i', $type)) {
                 $isa = 'int';
-            } else if (preg_match( '/^(timestamp|date)/i' , $type ) ) {
+            } elseif (preg_match('/^(timestamp|date)/i', $type)) {
                 $isa = 'DateTime';
-            } else if ($type === 'boolean' ) {
+            } elseif ($type === 'boolean') {
                 $isa = 'bool';
             }
 
@@ -89,7 +87,7 @@ class PgsqlTableParser extends BaseTableParser
 
             if ($typeInfo->length) {
                 $column->length($typeInfo->length);
-            } 
+            }
             if ($typeInfo->precision) {
                 $column->decimals($typeInfo->precision);
             }
@@ -99,7 +97,7 @@ class PgsqlTableParser extends BaseTableParser
             // $row->column_default
             // $row->character_maximum_length
         }
+
         return $schema;
     }
 }
-

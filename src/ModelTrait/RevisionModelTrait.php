@@ -1,25 +1,27 @@
 <?php
+
 namespace LazyRecord\ModelTrait;
+
 use LogicException;
-use Exception;
 
 trait RevisionModelTrait
 {
-
     public $saveRevisionWhenUpdate = false;
 
-    public function beforeUpdate($args = array()) {
+    public function beforeUpdate($args = array())
+    {
         if ($this->saveRevisionWhenUpdate) {
             $rev = $this->createRevision();
         }
+
         return $args;
     }
 
-    public function createRevision() 
+    public function createRevision()
     {
         // back up data
         $modelClass = get_class($this);
-        $rev = new $modelClass;
+        $rev = new $modelClass();
 
         $data = $this->toArray();
 
@@ -28,8 +30,8 @@ trait RevisionModelTrait
         if ($primaryKey = static::PRIMARY_KEY) {
             // Remove the primary key and create new revision
 
-            if ( !isset($data[$primaryKey])) {
-                throw new LogicException("An existing record is required for making new revision record. Please setup a primary key or create a record.");
+            if (!isset($data[$primaryKey])) {
+                throw new LogicException('An existing record is required for making new revision record. Please setup a primary key or create a record.');
             }
             $id = $data[$primaryKey];
 
@@ -49,9 +51,9 @@ trait RevisionModelTrait
         if ($ret->error) {
             throw $ret->toException("Can't create revision.");
         }
+
         return $rev;
     }
-
 
     public function saveWithRevision()
     {
@@ -60,10 +62,7 @@ trait RevisionModelTrait
         if ($ret->error) {
             throw $ret->toException("Can't save record.");
         }
+
         return $rev;
     }
-    
 }
-
-
-

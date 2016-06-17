@@ -1,13 +1,10 @@
 <?php
+
 namespace LazyRecord\TableParser;
+
 use PDO;
-use Exception;
 use stdClass;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\TableParser\TypeInfo;
-use LazyRecord\TableParser\ReferenceParser;
-use LazyRecord\TableParser\TypeInfoParser;
-use SQLBuilder\Raw;
+use LazyRecord\Schema\DeclareSchema; use SQLBuilder\Raw;
 use LazyRecord\Inflector;
 
 class MysqlTableParser extends BaseTableParser implements ReferenceParser
@@ -15,14 +12,15 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
     public function getTables()
     {
         $stm = $this->connection->query('show tables;');
-        $rows = $stm->fetchAll( PDO::FETCH_NUM);
-        return array_map(function($row) { return $row[0]; },$rows);
+        $rows = $stm->fetchAll(PDO::FETCH_NUM);
+
+        return array_map(function ($row) { return $row[0]; }, $rows);
     }
 
     public function reverseTableSchema($table, $referenceSchema = null)
     {
         $stm = $this->connection->query("SHOW COLUMNS FROM $table");
-        $schema = new DeclareSchema;
+        $schema = new DeclareSchema();
         $schema->columnNames = $schema->columns = array();
         $schema->table($table);
         $rows = $stm->fetchAll();
@@ -50,10 +48,9 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
 
             if ($typeInfo->enum) {
                 $column->enum($typeInfo->enum);
-            } else if ($typeInfo->set) {
+            } elseif ($typeInfo->set) {
                 $column->set($typeInfo->set);
             }
-
 
             switch ($row['Null']) {
             case 'NO':
@@ -67,7 +64,6 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                     && (strtolower($typeInfo->type) === 'timestamp' 
                         || (isset($row['Key']) && $row['Key'] === 'PRI'))
                 ) {
-
                 } else {
                     $column->notNull(true);
                 }
@@ -77,7 +73,7 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                 break;
             }
 
-            switch($row['Key']) {
+            switch ($row['Key']) {
                 case 'PRI':
                     $column->primary(true);
                     $schema->primaryKey = $row['Field'];
@@ -93,13 +89,12 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                     break;
             }
 
-
             // Parse information from the Extra field
             // @see https://dev.mysql.com/doc/refman/5.7/en/show-columns.html
-            $extraAttributes = [ ];
+            $extraAttributes = [];
             if (strtolower($row['Extra']) == 'auto_increment') {
                 $column->autoIncrement();
-            } else if (preg_match('/ON UPDATE (\w+)/i', $row['Extra'], $matches)) {
+            } elseif (preg_match('/ON UPDATE (\w+)/i', $row['Extra'], $matches)) {
                 /*
                 To specify automatic properties, use the DEFAULT
                 CURRENT_TIMESTAMP and ON UPDATE CURRENT_TIMESTAMP clauses
@@ -110,47 +105,46 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                 CURRENT_TIMESTAMP(), NOW(), LOCALTIME, LOCALTIME(),
                 LOCALTIMESTAMP, and LOCALTIMESTAMP().
                 */
-                $extraAttributes['OnUpdate' . Inflector::getInstance()->camelize(strtolower($matches[1]))] = true;
-            } else if (preg_match('/VIRTUAL GENERATED/i', $row['Extra'])) {
+                $extraAttributes['OnUpdate'.Inflector::getInstance()->camelize(strtolower($matches[1]))] = true;
+            } elseif (preg_match('/VIRTUAL GENERATED/i', $row['Extra'])) {
                 $extraAttributes['VirtualGenerated'] = true;
-            } else if (preg_match('/VIRTUAL STORED/i', $row['Extra'])) {
+            } elseif (preg_match('/VIRTUAL STORED/i', $row['Extra'])) {
                 $extraAttributes['VirtualStored'] = true;
             }
 
             // The default value returned from MySQL is string, we need the
             // type information to cast them to PHP Scalar or other
             // corresponding type
-            if (NULL !== $row['Default']) {
+            if (null !== $row['Default']) {
                 $default = $row['Default'];
 
                 if ($typeInfo->type == 'boolean') {
                     if ($default == '1') {
                         $column->default(true);
-                    } else if ($default == '0') {
+                    } elseif ($default == '0') {
                         $column->default(false);
                     }
-                } else if ($typeInfo->isa == 'int') {
+                } elseif ($typeInfo->isa == 'int') {
                     $column->default(intval($default));
-                } else if ($typeInfo->isa == 'double') {
+                } elseif ($typeInfo->isa == 'double') {
                     $column->default(doubleval($default));
-                } else if ($typeInfo->isa == 'float') {
+                } elseif ($typeInfo->isa == 'float') {
                     $column->default(floatval($default));
-                } else if ($typeInfo->isa == 'str') {
+                } elseif ($typeInfo->isa == 'str') {
                     $column->default($default);
-                } else if ($typeInfo->type == 'timestamp') {
+                } elseif ($typeInfo->type == 'timestamp') {
                     // for mysql, timestamp fields' default value is
                     // 'current_timestamp' and 'on update current_timestamp'
                     // when the two conditions are matched, we need to elimante
                     // the default value just as what we've defined in schema.
                     if (isset($extraAttributes['OnUpdateCurrentTimestamp']) && strtolower($default) == 'current_timestamp') {
                         // Don't set default value
-                    } else if (strtolower($default) == 'current_timestamp') {
+                    } elseif (strtolower($default) == 'current_timestamp') {
                         $column->default(new Raw($default));
-                    } else if (is_numeric($default)) {
+                    } elseif (is_numeric($default)) {
                         $column->default(intval($default));
                     }
-
-                } else if ($typeInfo->type == 'datetime') {
+                } elseif ($typeInfo->type == 'datetime') {
                     // basically, CURRENT_TIMESTAMP, transaction_timestamp()
                     // and now() do exactly the same. CURRENT_TIMESTAMP is a
                     // syntactical oddity for a function, having no trailing
@@ -165,21 +159,20 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                 }
             }
         }
+
         return $schema;
     }
-
-
 
     public function queryReferences($table)
     {
         $stm = $this->connection->query('SELECT DATABASE() FROM DUAL');
         $dbName = $stm->fetchColumn(0);
 
-        $sql = "SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
+        $sql = 'SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
         FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
         WHERE TABLE_SCHEMA = :table_schema
             AND TABLE_NAME = :table_name
-        ";
+        ';
         $stm = $this->connection->prepare($sql);
         $stm->execute([
             ':table_schema' => $dbName,
@@ -191,14 +184,15 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
             // CONSTRAINT_NAME = [PRIMARY, child_ibfk_1 ...  ]
             $references[$row->COLUMN_NAME] = $this->transformReferenceInfo($row);
         }
+
         return $references;
     }
 
     protected function transformReferenceInfo(stdClass $row)
     {
         return (object) [
-            'name'   => $row->CONSTRAINT_NAME,
-            'table'  => $row->REFERENCED_TABLE_NAME,
+            'name' => $row->CONSTRAINT_NAME,
+            'table' => $row->REFERENCED_TABLE_NAME,
             'column' => $row->REFERENCED_COLUMN_NAME,
         ];
     }

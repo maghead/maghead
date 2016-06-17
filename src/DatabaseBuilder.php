@@ -1,30 +1,29 @@
 <?php
+
 namespace LazyRecord;
-use CLIFramework\Logger;
-use LazyRecord\ConfigLoader;
+
 use LazyRecord\SqlBuilder\BaseBuilder;
-use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\ServiceContainer;
+use CLIFramework\Logger;
 use PDO;
 use PDOException;
-use LazyRecord\PDOExceptionPrinter;
 
 class DatabaseBuilder
 {
+    protected $conn;
 
-    public $conn;
+    protected $builder;
 
-    public $builder;
+    protected $logger;
 
-    public $logger;
-
-    public function __construct(PDO $conn, BaseBuilder $builder, Logger $logger = NULL)
+    public function __construct(PDO $conn, BaseBuilder $builder, Logger $logger = null)
     {
-        $this->conn    = $conn;
+        $this->conn = $conn;
         $this->builder = $builder;
-
-        $c = ServiceContainer::getInstance();
-        $this->logger  = $logger ?: $c['logger'];
+        if (!$logger) {
+            $c = ServiceContainer::getInstance();
+            $logger ?: $c['logger'];
+        }
+        $this->logger = $logger;
     }
 
     public function build(array $schemas)
@@ -34,15 +33,17 @@ class DatabaseBuilder
         }
         foreach ($schemas as $schema) {
             $class = get_class($schema);
-            $this->logger->info("Building table for $class");
             $sqls = $this->builder->buildTable($schema);
-            $this->executeStatements($sqls);
+            if (!empty($sqls)) {
+                $this->executeStatements($sqls);
+            }
         }
         foreach ($schemas as $schema) {
             $class = get_class($schema);
-            $this->logger->info("Building index for $class");
             $sqls = $this->builder->buildIndex($schema);
-            $this->executeStatements($sqls);
+            if (!empty($sqls)) {
+                $this->executeStatements($sqls);
+            }
         }
         if ($sqls = $this->builder->finalize()) {
             $this->executeStatements($sqls);
@@ -60,7 +61,7 @@ class DatabaseBuilder
     {
         try {
             $this->logger->debug($sql);
-            $this->conn->query( $sql );
+            $this->conn->query($sql);
         } catch (PDOException $e) {
             PDOExceptionPrinter::show($e, $sql, [], $this->logger);
         }

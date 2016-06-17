@@ -1,6 +1,7 @@
 <?php
+
 namespace LazyRecord;
-use SQLBuilder\Driver\MySQLDriver;
+
 use SQLBuilder\Driver\PDODriverFactory;
 use PDO;
 use LazyRecord\DSN\DSNParser;
@@ -18,7 +19,6 @@ class Connection extends PDO
      */
     protected $user;
 
-
     /**
      * @var string
      */
@@ -29,13 +29,13 @@ class Connection extends PDO
      */
     private $dsn;
 
-    static public function create(array $config)
+    public static function create(array $config)
     {
         $connection = new self($config['dsn'], $config['user'], $config['pass'], $config['connection_options']);
         $connection->config = $config;
+
         return $connection;
     }
-
 
     public function prepareAndExecute($sql, array $args = array())
     {
@@ -64,7 +64,8 @@ class Connection extends PDO
         if ($this->dsn) {
             return $this->dsn;
         }
-        $parser = new DSNParser;
+        $parser = new DSNParser();
+
         return $this->dsn = $parser->parse($this->config['dsn']);
     }
 
@@ -73,6 +74,3 @@ class Connection extends PDO
         $this->dsn = clone $this->dsn;
     }
 }
-
-
-

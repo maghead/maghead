@@ -1,8 +1,8 @@
 <?php
+
 namespace LazyRecord\Command;
-use CLIFramework\Command;
-use LazyRecord\Command\BaseCommand;
-use LazyRecord\ConnectionManager;
+
+
 use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\ArgumentArray;
@@ -30,10 +30,10 @@ class IndexCommand extends BaseCommand
         if ($driver instanceof PDOMySQLDriver) {
             $dbName = $conn->query('SELECT database();')->fetchColumn();
 
-            $query = new SelectQuery;
+            $query = new SelectQuery();
             $query->select([
                 'stat.TABLE_NAME',
-                'CONCAT(stat.INDEX_NAME, " (", GROUP_CONCAT(DISTINCT stat.COLUMN_NAME ORDER BY stat.SEQ_IN_INDEX ASC), ")")' => 'COLUMNS', 
+                'CONCAT(stat.INDEX_NAME, " (", GROUP_CONCAT(DISTINCT stat.COLUMN_NAME ORDER BY stat.SEQ_IN_INDEX ASC), ")")' => 'COLUMNS',
                 'stat.INDEX_TYPE',
                 'stat.NULLABLE',
                 'stat.NON_UNIQUE',
@@ -68,7 +68,7 @@ class IndexCommand extends BaseCommand
             $query->orderBy('stat.INDEX_NAME', 'ASC');
             $query->orderBy('stat.SEQ_IN_INDEX', 'ASC');
 
-            $args = new ArgumentArray;
+            $args = new ArgumentArray();
             $sql = $query->toSql($driver, $args);
 
             $this->logger->debug($sql);
@@ -88,9 +88,8 @@ class IndexCommand extends BaseCommand
             $rows = $status->querySummary($tables);
              */
         } else {
-            $this->logger->error("Driver not supported.");
+            $this->logger->error('Driver not supported.');
         }
-
     }
 
     protected function displayRows(array $rows)
@@ -105,6 +104,4 @@ class IndexCommand extends BaseCommand
             echo $table->render();
         }
     }
-
-
 }

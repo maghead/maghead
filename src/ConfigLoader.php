@@ -1,16 +1,16 @@
 <?php
+
 namespace LazyRecord;
+
 use ConfigKit\ConfigCompiler;
 use Exception;
 use ArrayAccess;
 use PDO;
 use LazyRecord\DSN\DSN;
-use LazyRecord\ConnectionManager;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Yaml\Dumper;
 
 /**
- * Available config key:
+ * Available config key:.
  *
  * schema
  * schema.paths = [ dirpath , path, ... ]
@@ -38,12 +38,10 @@ use Symfony\Component\Yaml\Dumper;
 class ConfigLoader
     implements ArrayAccess
 {
-
     /**
-     * The stashed config
+     * The stashed config.
      */
     protected $config;
-
 
     /**
      * @var array class map
@@ -54,20 +52,19 @@ class ConfigLoader
 
     public $loaded = false;
 
-
     public function loadFromSymbol($force = false)
     {
-        if (file_exists($this->symbolFilename) ) {
-            return $this->load(realpath($this->symbolFilename), $force );
-        } else if (file_exists('.lazy.php')) {
-            return $this->load(realpath('.lazy.php'), $force );
+        if (file_exists($this->symbolFilename)) {
+            return $this->load(realpath($this->symbolFilename), $force);
+        } elseif (file_exists('.lazy.php')) {
+            return $this->load(realpath('.lazy.php'), $force);
         }
     }
 
     public function writeToSymbol()
     {
-        if (!file_exists($this->symbolFilename) ) {
-            throw new Exception("symbol link " . $this->symbolFilename . ' does not exist.');
+        if (!file_exists($this->symbolFilename)) {
+            throw new Exception('symbol link '.$this->symbolFilename.' does not exist.');
         }
 
         $targetFile = readlink($this->symbolFilename);
@@ -76,9 +73,10 @@ class ConfigLoader
         }
 
         $yaml = Yaml::dump($this->config, $inlineLevel = 4, $indentSpaces = 2, $exceptionOnInvalidType = true);
-        if (false === file_put_contents($targetFile, "---\n" . $yaml)) {
+        if (false === file_put_contents($targetFile, "---\n".$yaml)) {
             throw new Exception("YAML config update failed: $targetFile");
         }
+
         return true;
     }
 
@@ -87,7 +85,7 @@ class ConfigLoader
      *
      * @param array $config
      */
-    public function loadFromArray(array $config) 
+    public function loadFromArray(array $config)
     {
         $this->config = $config;
         $this->loaded = true;
@@ -98,21 +96,18 @@ class ConfigLoader
         $this->loaded = $loaded;
     }
 
-
-
-
-
     /**
-     * Convert data source config to DSN object
+     * Convert data source config to DSN object.
      *
      * @param array data source config
+     *
      * @return LazyRecord\DSN\DSN
      */
-    static public function buildDSNObject(array $config)
+    public static function buildDSNObject(array $config)
     {
         // Build DSN connection string for PDO
         $dsn = new DSN($config['driver']);
-        foreach (array('database','dbname') as $key) {
+        foreach (array('database', 'dbname') as $key) {
             if (isset($config[$key])) {
                 $dsn->setAttribute('dbname', $config[$key]);
                 break;
@@ -124,23 +119,20 @@ class ConfigLoader
         if (isset($config['port'])) {
             $dsn->setAttribute('port', $config['port']);
         }
+
         return $dsn;
     }
 
-
-
-
-
-
-    static public function preprocessConfig(array $config)
+    public static function preprocessConfig(array $config)
     {
         if (isset($config['data_source']['nodes'])) {
             $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_source']['nodes']);
-        } else if (isset($config['data_sources'])) {
+        } elseif (isset($config['data_sources'])) {
             // convert 'data_sources' to ['data_sources']['nodes']
             $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_sources']);
             unset($config['data_sources']);
         }
+
         return $config;
     }
 
@@ -149,11 +141,11 @@ class ConfigLoader
      *
      * @param array PHP array from yaml config file
      */
-    static public function preprocessDataSourceConfig(array $dbconfig)
+    public static function preprocessDataSourceConfig(array $dbconfig)
     {
-        foreach ($dbconfig as & $config) {
+        foreach ($dbconfig as &$config) {
             if (!isset($config['driver'])) {
-                list($driverType) = explode( ':', $config['dsn'] , 2 );
+                list($driverType) = explode(':', $config['dsn'], 2);
                 $config['driver'] = $driverType;
             }
 
@@ -166,14 +158,14 @@ class ConfigLoader
                 $config['pass'] = $config['password'];
             }
             if (!isset($config['user'])) {
-                $config['user'] = NULL;
+                $config['user'] = null;
             }
             if (!isset($config['pass'])) {
-                $config['pass'] = NULL;
+                $config['pass'] = null;
             }
 
             // build dsn string for PDO
-            if (!isset($config['dsn']) ) {
+            if (!isset($config['dsn'])) {
                 // Build DSN connection string for PDO
                 $dsn = self::buildDSNObject($config);
                 $config['dsn'] = $dsn->__toString();
@@ -191,22 +183,23 @@ class ConfigLoader
                 $config['connection_options'][ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
             }
         }
+
         return $dbconfig;
     }
 
-    static public function compile($sourceFile, $force = false)
+    public static function compile($sourceFile, $force = false)
     {
         $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
         if ($force || ConfigCompiler::test($sourceFile, $compiledFile)) {
             $config = ConfigCompiler::parse($sourceFile);
             $config = self::preprocessConfig($config);
             ConfigCompiler::write($compiledFile, $config);
+
             return $config;
         } else {
             return require $compiledFile;
         }
     }
-
 
     /**
      * Load config from the YAML config file...
@@ -220,7 +213,7 @@ class ConfigLoader
     }
 
     /**
-     * Load configuration
+     * Load configuration.
      *
      * @param mixed $arg config file.
      */
@@ -228,19 +221,19 @@ class ConfigLoader
     {
         // should we load config file force ?
         if ($force !== true && $this->loaded === true) {
-            throw new Exception("Can not load config. Config is already loaded.");
+            throw new Exception('Can not load config. Config is already loaded.');
         }
 
         if ($arg === null || is_bool($arg)) {
             $arg = $this->symbolFilename;
         }
 
-        if ((is_string($arg) && file_exists($arg)) || $arg === true ) {
+        if ((is_string($arg) && file_exists($arg)) || $arg === true) {
             $this->loadFromFile($arg);
-        } else if (is_array($arg)) {
+        } elseif (is_array($arg)) {
             $this->config = self::preprocessConfig($arg);
         } else {
-            throw new Exception("unknown config format.");
+            throw new Exception('unknown config format.');
         }
 
         // XXX: validate config structure if we are migrating to new major version with incompatible changes
@@ -255,9 +248,8 @@ class ConfigLoader
         $this->loaded = true;
     }
 
-
     /**
-     * unload config and stash
+     * unload config and stash.
      */
     public function unload()
     {
@@ -275,7 +267,6 @@ class ConfigLoader
         return $this->config;
     }
 
-
     /**
      * 1. inject config into data source
      * 2. load bootstrap
@@ -290,7 +281,8 @@ class ConfigLoader
         }
     }
 
-    public function isLoaded() {
+    public function isLoaded()
+    {
         return $this->loaded;
     }
 
@@ -305,54 +297,51 @@ class ConfigLoader
         }
     }
 
-    static function getInstance()
+    public static function getInstance()
     {
         static $instance;
-        return $instance ? $instance : $instance = new self;
+
+        return $instance ? $instance : $instance = new self();
     }
 
-
     /**
-     * run bootstrap code
+     * run bootstrap code.
      */
     public function loadBootstrap()
     {
-        if( isset($this->config['bootstrap'] ) ) {
-            foreach( (array) $this->config['bootstrap'] as $bootstrap ) {
+        if (isset($this->config['bootstrap'])) {
+            foreach ((array) $this->config['bootstrap'] as $bootstrap) {
                 require_once $bootstrap;
             }
         }
     }
 
-
     /**
-     * load external schema loader
+     * load external schema loader.
      */
     public function loadExternalSchemaLoader()
     {
-        if( isset($this->config['schema']['loader']) ) {
+        if (isset($this->config['schema']['loader'])) {
             require_once $this->config['schema']['loader'];
         }
     }
-
 
     /**
      * load class from php source,
      * to PHP source should return a PHP array.
      */
-    public function loadClassMapFile() 
+    public function loadClassMapFile()
     {
-        if( isset($this->config['schema']['loader']) && 
-            $file = $this->config['schema']['loader'] ) 
-        {
+        if (isset($this->config['schema']['loader']) &&
+            $file = $this->config['schema']['loader']) {
             return $this->classMap = require $file;
         }
+
         return array();
     }
 
-
     /**
-     * load data sources to connection manager
+     * load data sources to connection manager.
      */
     public function loadDataSources()
     {
@@ -360,7 +349,6 @@ class ConfigLoader
         $manager = ConnectionManager::getInstance();
         $manager->init($this);
     }
-
 
     public function getClassMap()
     {
@@ -378,7 +366,7 @@ class ConfigLoader
     }
 
     /**
-     * get all data sources
+     * get all data sources.
      *
      * @return array data source
      */
@@ -392,10 +380,12 @@ class ConfigLoader
         if (isset($this->config['data_sources'])) {
             return $this->config['data_sources'];
         }
+
         return array();
     }
 
-    public function getDataSourceIds() {
+    public function getDataSourceIds()
+    {
         if (isset($this->config['data_source']['nodes'])) {
             return array_keys($this->config['data_source']['nodes']);
         }
@@ -404,6 +394,7 @@ class ConfigLoader
         if (isset($this->config['data_sources'])) {
             return array_keys($this->config['data_sources']);
         }
+
         return array();
     }
 
@@ -425,11 +416,13 @@ class ConfigLoader
         if (isset($this->config['data_source']['default'])) {
             return $this->config['data_source']['default'];
         }
+
         return 'default';
     }
 
-    public function getSeedScripts() {
-        if( isset($this->config['seeds']) ) {
+    public function getSeedScripts()
+    {
+        if (isset($this->config['seeds'])) {
             return $this->config['seeds'];
         }
     }
@@ -440,7 +433,6 @@ class ConfigLoader
             return $this->config['cache'];
         }
     }
-
 
     // XXX: Provide a simpler config interface and
     // we should use injection container
@@ -453,15 +445,16 @@ class ConfigLoader
 
         // XXX:
         $config = $this->getCacheConfig();
-        if (isset($config['class']) ) {
+        if (isset($config['class'])) {
             $class = $config['class'];
-            $instance = new $class( $config );
+            $instance = new $class($config);
+
             return $instance;
         }
     }
 
     /**
-     * get data source by data source id
+     * get data source by data source id.
      *
      * @param string $sourceId
      */
@@ -480,15 +473,14 @@ class ConfigLoader
         }
 
         // backward compatible config structure
-        if ( isset( $this->config['data_sources'][$sourceId] ) ) {
+        if (isset($this->config['data_sources'][$sourceId])) {
             return $this->config['data_sources'][$sourceId];
         }
         throw new Exception("data source $sourceId is not defined.");
     }
 
-
     /**
-     * get schema config
+     * get schema config.
      *
      * @return array config
      */
@@ -498,9 +490,8 @@ class ConfigLoader
                      $this->config['schema'] : null;
     }
 
-
     /**
-     * get schema paths from config
+     * get schema paths from config.
      *
      * @return array paths
      */
@@ -515,14 +506,12 @@ class ConfigLoader
         return isset($this->config['schema']['auto_id']) ? true : false;
     }
 
-
-    public function getBaseModelClass() 
+    public function getBaseModelClass()
     {
         return @$this->config['schema']['base_model'] ?: '\\LazyRecord\\BaseModel';
     }
 
-
-    public function getBaseCollectionClass() 
+    public function getBaseCollectionClass()
     {
         return @$this->config['schema']['base_collection'] ?: '\\LazyRecord\\BaseCollection';
     }
@@ -535,22 +524,18 @@ class ConfigLoader
         return $this->config[ $offset ];
     }
 
-    public function offsetSet($offset,$value)
+    public function offsetSet($offset, $value)
     {
         $this->config[ $offset ] = $value;
     }
 
-    public function offsetExists ($offset)
+    public function offsetExists($offset)
     {
         return isset($this->config[$offset]);
     }
-    
-    public function offsetUnset($offset) 
+
+    public function offsetUnset($offset)
     {
         unset($this->config[$offset]);
     }
-
-
-
 }
-

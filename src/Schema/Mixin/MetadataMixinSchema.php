@@ -1,5 +1,7 @@
 <?php
+
 namespace LazyRecord\Schema\Mixin;
+
 use LazyRecord\Schema\MixinDeclareSchema;
 use LazyRecord\Schema;
 use DateTime;
@@ -13,8 +15,8 @@ class MetadataMixinSchema extends MixinDeclareSchema
             ->timestamp()
             ->null()
             ->isa('DateTime')
-            ->default(function() {
-                return new \DateTime;
+            ->default(function () {
+                return new \DateTime();
             });
 
         $this->column('updated_on')
@@ -27,12 +29,11 @@ class MetadataMixinSchema extends MixinDeclareSchema
     }
 
     // Mixin methods
-    public static function getAge($record) 
+    public static function getAge($record)
     {
         $createdOn = $record->created_on;
-        $currentDate = new DateTime;
+        $currentDate = new DateTime();
+
         return $currentDate->diff($createdOn);
     }
-
-
 }

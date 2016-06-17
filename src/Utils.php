@@ -1,94 +1,100 @@
 <?php
+
 namespace LazyRecord;
+
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\Schema\SchemaLoader;
-use LazyRecord\ConfigLoader;
 
 class Utils
 {
     /**
-     * Returns schema objects
+     * Returns schema objects.
      *
      * @return array schema objects
      */
     public static function findSchemasByArguments(ConfigLoader $loader, $args, $logger = null)
     {
-        if( count($args) && ! file_exists($args[0]) ) {
+        if (count($args) && !file_exists($args[0])) {
             $classes = array();
             // it's classnames
-            foreach( $args as $class ) {
+            foreach ($args as $class) {
                 // call class loader to load
-                if( class_exists($class,true) ) {
+                if (class_exists($class, true)) {
                     $classes[] = $class;
-                }
-                else {
-                    if ( $logger ) {
-                        $logger->warn( "$class not found." );
+                } else {
+                    if ($logger) {
+                        $logger->warn("$class not found.");
                     } else {
                         echo ">>> $class not found.\n";
                     }
                 }
             }
-            return ClassUtils::schema_classes_to_objects( $classes );
-        }
-        else {
-            $finder = new SchemaFinder;
-            if( count($args) && file_exists($args[0]) ) {
+
+            return ClassUtils::schema_classes_to_objects($classes);
+        } else {
+            $finder = new SchemaFinder();
+            if (count($args) && file_exists($args[0])) {
                 $finder->paths = $args;
-                foreach( $args as $file ) {
-                    if ( is_file( $file ) ) {
+                foreach ($args as $file) {
+                    if (is_file($file)) {
                         require_once $file;
                     }
                 }
-            } 
+            }
             // load schema paths from config
-            elseif( $paths = $loader->getSchemaPaths() ) {
+            elseif ($paths = $loader->getSchemaPaths()) {
                 $finder->setPaths($paths);
             }
             $finder->find();
 
             // load class from class map
             if ($classMap = $loader->getClassMap()) {
-                foreach ($classMap as $file => $class ) {
-                    if (! is_numeric($file) && is_string($file)) {
+                foreach ($classMap as $file => $class) {
+                    if (!is_numeric($file) && is_string($file)) {
                         require $file;
                     }
                 }
             }
+
             return SchemaLoader::loadDeclaredSchemas();
         }
     }
 
-    static function breakDSN($dsn) {
+    public static function breakDSN($dsn)
+    {
         // break DSN string down into parameters
         $params = array();
-        if( strpos( $dsn, ':' ) === false ) {
+        if (strpos($dsn, ':') === false) {
             $params['driver'] = $dsn;
+
             return $params;
         }
 
-        list($driver,$paramString) = explode(':',$dsn,2);
+        list($driver, $paramString) = explode(':', $dsn, 2);
         $params['driver'] = $driver;
 
-        if( $paramString === ':memory:' ) {
+        if ($paramString === ':memory:') {
             $params[':memory:'] = 1;
+
             return $params;
         }
 
-        $paramPairs = explode(';',$paramString);
-        foreach( $paramPairs as $pair ) {
-            if( preg_match('#(\S+)=(\S+)#',$pair,$regs) ) {
+        $paramPairs = explode(';', $paramString);
+        foreach ($paramPairs as $pair) {
+            if (preg_match('#(\S+)=(\S+)#', $pair, $regs)) {
                 $params[$regs[1]] = $regs[2];
             }
         }
+
         return $params;
     }
 
-    static function evaluate($data, $params = array() ) {
-        if( $data && is_callable($data) ) {
-            return call_user_func_array($data, $params );
+    public static function evaluate($data, $params = array())
+    {
+        if ($data && is_callable($data)) {
+            return call_user_func_array($data, $params);
         }
+
         return $data;
     }
 }
-

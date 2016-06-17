@@ -1,29 +1,23 @@
 <?php
+
 namespace LazyRecord\Schema;
+
 use CLIFramework\Logger;
-use LazyRecord\Schema\SchemaLoader;
-use LazyRecord\Schema\SchemaFinder;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\Schema\DynamicSchemaDeclare;
-use LazyRecord\Schema\MixinDeclareSchema;
-use LazyRecord\Schema\TemplateSchema;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
-
 use ReflectionObject;
-use ReflectionMethod;
 
 class SchemaUtils
 {
-    static public function printSchemaClasses(array $classes, Logger $logger = NULL) 
+    public static function printSchemaClasses(array $classes, Logger $logger = null)
     {
         if (!$logger) {
             $c = ServiceContainer::getInstance();
             $logger = $c['logger'];
         }
         $logger->info('Schema classes:');
-        foreach( $classes as $class ) {
-            $logger->info($logger->formatter->format($class, 'green') , 1);
+        foreach ($classes as $class) {
+            $logger->info($logger->formatter->format($class, 'green'), 1);
         }
     }
 
@@ -50,30 +44,25 @@ class SchemaUtils
     }
      */
 
-
     /**
      * Get referenced schema classes and put them in order.
      *
      * @param string[] schema objects
      */
-    static public function expandSchemaClasses(array $classes)
+    public static function expandSchemaClasses(array $classes)
     {
-
-
-
-
         $map = array();
         $schemas = array();
         foreach ($classes as $class) {
-            $schema = new $class; // declare schema
+            $schema = new $class(); // declare schema
 
             if ($refs = $schema->getReferenceSchemas()) {
                 foreach ($refs as $refClass => $v) {
                     if (isset($map[$refClass])) {
                         continue;
                     }
-                    $schemas[] = new $refClass;
-                    $map[$refClass] = TRUE;
+                    $schemas[] = new $refClass();
+                    $map[$refClass] = true;
                 }
             }
 
@@ -84,34 +73,36 @@ class SchemaUtils
                         continue;
                     }
                     $schemas[] = $expandedSchema;
-                    $map[get_class($expandedSchema)] = TRUE;
+                    $map[get_class($expandedSchema)] = true;
                 }
             } else {
                 if (isset($map[$class])) {
                     continue;
                 }
                 $schemas[] = $schema;
-                $map[$class] = TRUE;
+                $map[$class] = true;
             }
         }
+
         return $schemas;
     }
-
 
     /**
      * Filter non-dynamic schema declare classes.
      *
      * @param string[] $classes class list.
      */
-    static public function filterBuildableSchemas(array $schemas)
+    public static function filterBuildableSchemas(array $schemas)
     {
         $list = array();
         foreach ($schemas as $schema) {
             // skip abstract classes.
-            if (   $schema instanceof DynamicSchemaDeclare 
-                || $schema instanceof MixinDeclareSchema 
-                || (! $schema instanceof SchemaDeclare && ! $schema instanceof DeclareSchema)
-            ) { continue; }
+            if ($schema instanceof DynamicSchemaDeclare
+                || $schema instanceof MixinDeclareSchema
+                || (!$schema instanceof SchemaDeclare && !$schema instanceof DeclareSchema)
+            ) {
+                continue;
+            }
 
             $rf = new ReflectionObject($schema);
             if ($rf->isAbstract()) {
@@ -119,19 +110,18 @@ class SchemaUtils
             }
             $list[] = $schema;
         }
+
         return $list;
     }
 
-
     /**
-     *
      * @param ConfigLoader $loader
-     * @param Logger $logger
+     * @param Logger       $logger
      */
-    static public function findSchemasByConfigLoader(ConfigLoader $loader, Logger $logger = null)
+    public static function findSchemasByConfigLoader(ConfigLoader $loader, Logger $logger = null)
     {
         if ($paths = $loader->getSchemaPaths()) {
-            $finder = new SchemaFinder;
+            $finder = new SchemaFinder();
             $finder->setPaths($loader->getSchemaPaths());
             $finder->find();
         }
@@ -139,66 +129,65 @@ class SchemaUtils
         // load class from class map
         if ($classMap = $loader->getClassMap()) {
             foreach ($classMap as $file => $class) {
-                if (! is_integer($file) && is_string($file)) {
+                if (!is_integer($file) && is_string($file)) {
                     require $file;
                 }
             }
         }
+
         return SchemaLoader::loadDeclaredSchemas();
     }
 
-
     /**
-     * Returns schema objects
+     * Returns schema objects.
      *
      * @return array schema objects
      */
-    static public function findSchemasByArguments(ConfigLoader $loader, array $args, Logger $logger = null)
+    public static function findSchemasByArguments(ConfigLoader $loader, array $args, Logger $logger = null)
     {
-        if (count($args) && ! file_exists($args[0])) {
+        if (count($args) && !file_exists($args[0])) {
             $classes = array();
             // it's classnames
             foreach ($args as $class) {
                 // call class loader to load
-                if (class_exists($class,true)) {
+                if (class_exists($class, true)) {
                     $classes[] = $class;
                 } else {
                     if ($logger) {
-                        $logger->warn( "$class not found." );
+                        $logger->warn("$class not found.");
                     } else {
                         echo ">>> $class not found.\n";
                     }
                 }
             }
+
             return ClassUtils::schema_classes_to_objects(array_unique($classes));
         } else {
-            $finder = new SchemaFinder;
+            $finder = new SchemaFinder();
             if (count($args) && file_exists($args[0])) {
                 $finder->setPaths($args);
                 foreach ($args as $file) {
-                    if (is_file($file) ) {
+                    if (is_file($file)) {
                         require_once $file;
                     }
                 }
-            } 
+            }
             // load schema paths from config
-            else if ($paths = $loader->getSchemaPaths()) {
+            elseif ($paths = $loader->getSchemaPaths()) {
                 $finder->setPaths($paths);
             }
             $finder->find();
 
             // load class from class map
             if ($classMap = $loader->getClassMap()) {
-                foreach ($classMap as $file => $class ) {
-                    if (! is_integer($file) && is_string($file)) {
+                foreach ($classMap as $file => $class) {
+                    if (!is_integer($file) && is_string($file)) {
                         require $file;
                     }
                 }
             }
+
             return SchemaLoader::loadDeclaredSchemas();
         }
     }
 }
-
-
-

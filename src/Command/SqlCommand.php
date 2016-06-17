@@ -1,6 +1,7 @@
 <?php
+
 namespace LazyRecord\Command;
-use CLIFramework\Command;
+
 use CLIFramework\Logger;
 use LazyRecord\Metadata;
 use LazyRecord\Schema;
@@ -8,9 +9,7 @@ use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\SeedBuilder;
 use LazyRecord\DatabaseBuilder;
 use LazyRecord\Schema\SchemaCollection;
-use LazyRecord\ConfigLoader;
 use LazyRecord\ConnectionManager;
-use LazyRecord\Command\BaseCommand;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
@@ -19,20 +18,19 @@ use Exception;
 
 class SqlCommand extends BaseCommand
 {
-
     public function options($opts)
     {
         parent::options($opts);
 
         // --rebuild
-        $opts->add('r|rebuild','rebuild SQL schema.');
+        $opts->add('r|rebuild', 'rebuild SQL schema.');
 
         // --clean
-        $opts->add('c|clean','clean up SQL schema.');
+        $opts->add('c|clean', 'clean up SQL schema.');
 
         $opts->add('o|output:', 'write schema sql to file');
 
-        $opts->add('b|basedata','insert basedata' );
+        $opts->add('b|basedata', 'insert basedata');
     }
 
     public function usage()
@@ -55,14 +53,14 @@ DOC;
     public function execute()
     {
         $options = $this->options;
-        $logger  = $this->logger;
+        $logger = $this->logger;
 
         $id = $this->getCurrentDataSourceId();
 
-        $logger->debug("Finding schema classes...");
+        $logger->debug('Finding schema classes...');
         $schemas = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
 
-        $logger->debug("Initialize schema builder...");
+        $logger->debug('Initialize schema builder...');
 
         if ($output = $this->options->output) {
             $configLoader = $this->getConfigLoader(true);
@@ -70,47 +68,43 @@ DOC;
             $driverType = $dataSourceConfig['driver'];
 
             switch ($driverType) {
-            case "sqlite":
-                $driver = new SQLiteDriver;
+            case 'sqlite':
+                $driver = new SQLiteDriver();
                 break;
-            case "mysql":
-                $driver = new MySQLDriver;
+            case 'mysql':
+                $driver = new MySQLDriver();
                 break;
-            case "pgsql":
-                $driver = new PgSQLDriver;
+            case 'pgsql':
+                $driver = new PgSQLDriver();
                 break;
             default:
                 throw new Exception("Unsupported driver type: $driverType");
                 break;
             }
 
-            $sqlBuilder = SqlBuilder::create($driver,[
+            $sqlBuilder = SqlBuilder::create($driver, [
                 'rebuild' => $options->rebuild,
                 'clean' => $options->clean,
             ]);
 
-
             $fp = fopen($output, 'w');
             foreach ($schemas as $schema) {
                 $sqls = $sqlBuilder->buildTable($schema);
-                fwrite($fp, join("\n", $sqls));
+                fwrite($fp, implode("\n", $sqls));
                 $sqls = $sqlBuilder->buildIndex($schema);
-                fwrite($fp, join("\n", $sqls));
+                fwrite($fp, implode("\n", $sqls));
                 $sqls = $sqlBuilder->buildForeignKeys($schema);
-                fwrite($fp, join("\n", $sqls));
+                fwrite($fp, implode("\n", $sqls));
             }
             fclose($fp);
 
-
             $this->logger->warn('Warning: seeding is not supported when using --output option.');
-
         } else {
-
             $connectionManager = ConnectionManager::getInstance();
             $conn = $connectionManager->getConnection($id);
             $driver = $connectionManager->getQueryDriver($id);
 
-            $sqlBuilder = SqlBuilder::create($driver,[
+            $sqlBuilder = SqlBuilder::create($driver, [
                 'rebuild' => $options->rebuild,
                 'clean' => $options->clean,
             ]);
@@ -134,11 +128,8 @@ DOC;
 
             $logger->info(
                 $logger->formatter->format(
-                    'Done. ' . count($schemas) . " schema tables were generated into data source '$id'."
-                ,'green')
+                    'Done. '.count($schemas)." schema tables were generated into data source '$id'.", 'green')
             );
         }
-
     }
 }
-

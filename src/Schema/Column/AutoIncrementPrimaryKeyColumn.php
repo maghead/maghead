@@ -1,5 +1,7 @@
 <?php
+
 namespace LazyRecord\Schema\Column;
+
 use LazyRecord\Schema\DeclareColumn;
 
 class AutoIncrementPrimaryKeyColumn extends DeclareColumn
@@ -17,6 +19,3 @@ class AutoIncrementPrimaryKeyColumn extends DeclareColumn
             ;
     }
 }
-
-
-

@@ -1,17 +1,13 @@
 <?php
+
 namespace LazyRecord\TableParser;
+
 use PDO;
-use Exception;
 use SQLBuilder\Driver\BaseDriver;
 use LazyRecord\QueryDriver;
-
 use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\Schema\DeclareSchema;
-
 use LazyRecord\ServiceContainer;
-use LazyRecord\TableParser\TypeInfo;
-use LazyRecord\TableParser\TypeInfoParser;
-
 abstract class BaseTableParser
 {
     /**
@@ -43,11 +39,10 @@ abstract class BaseTableParser
         $this->schemas = SchemaUtils::filterBuildableSchemas($this->schemas);
 
         // map table names to declare schema objects
-        foreach($this->schemas as $schema) {
+        foreach ($this->schemas as $schema) {
             $this->schemaMap[$schema->getTable()] = $schema;
         }
     }
-
 
     /**
      * @return DeclareSchema[] Return declared schema object in associative array
@@ -58,7 +53,7 @@ abstract class BaseTableParser
     }
 
     /**
-     * Return declared schema objects in list
+     * Return declared schema objects in list.
      */
     public function getDeclareSchemas()
     {
@@ -66,11 +61,11 @@ abstract class BaseTableParser
     }
 
     /**
-     * Implements the query to parse table names from database
+     * Implements the query to parse table names from database.
      *
      * @return string[] table names
      */
-    abstract function getTables();
+    abstract public function getTables();
 
     /**
      * Implements the logic to reverse table definition to DeclareSchema object.
@@ -78,10 +73,10 @@ abstract class BaseTableParser
      *
      * @return DeclareSchema[string tableName] returns (defined table + undefined table)
      */
-    abstract function reverseTableSchema($table, $referenceSchema = null);
+    abstract public function reverseTableSchema($table, $referenceSchema = null);
 
     /**
-     * Find all user-defined schema
+     * Find all user-defined schema.
      *
      * This is not used right now.
      */
@@ -94,13 +89,15 @@ abstract class BaseTableParser
         foreach ($tables as $table) {
             $tableSchemas[$table] = $this->reverseTableSchema($table);
         }
+
         return $tableSchemas;
     }
 
     /**
-     * Lookup schema by table name
+     * Lookup schema by table name.
      *
      * @param string $table table name
+     *
      * @return DeclareSchema
      */
     public function reverseLookupSchema($table)
@@ -108,16 +105,14 @@ abstract class BaseTableParser
         if (isset($this->schemaMap[$table])) {
             return $this->schemaMap[$table];
         }
-        return NULL;
+
+        return;
     }
 
     public function typenameToIsa($typeName)
     {
         $typeInfo = TypeInfoParser::parseTypeInfo($typeName);
+
         return $typeInfo->isa;
     }
-
 }
-
-
-

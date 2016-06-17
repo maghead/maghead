@@ -1,15 +1,14 @@
 <?php
+
 namespace LazyRecord\TableStatus;
+
 use PDO;
-use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\ArgumentArray;
-use CLIFramework\Component\Table\Table;
 
 class MySQLTableStatus
 {
-
     protected $connection;
 
     protected $driver;
@@ -20,11 +19,9 @@ class MySQLTableStatus
         $this->driver = $driver;
     }
 
-
-
     protected function createStatusSummaryQuery()
     {
-        $query = new SelectQuery;
+        $query = new SelectQuery();
         $query->select([
             'CONCAT(table_schema, \'.\', table_name) AS name',
             'CONCAT(ROUND(SUM(table_rows) / 1000000, 2), \'M\') AS rows',
@@ -42,14 +39,13 @@ class MySQLTableStatus
                                                         END AS total_size',
         ]);
         $query->from('information_schema.TABLES');
+
         return $query;
     }
 
-
-
     protected function createStatusDetailQuery()
     {
-        $query = new SelectQuery;
+        $query = new SelectQuery();
         $query->select([
             'CONCAT(table_schema, \'.\', table_name) AS name',
             'CONCAT(ROUND(table_rows / 1000000, 2), \'M\') AS rows',
@@ -73,9 +69,9 @@ class MySQLTableStatus
         ]);
         $query->from('information_schema.TABLES');
         $query->orderBy('data_length + index_length', 'DESC');
+
         return $query;
     }
-
 
     public function querySummary($tables)
     {
@@ -86,12 +82,12 @@ class MySQLTableStatus
             $query->where()
                 ->in('table_name', $tables);
         }
-        $args = new ArgumentArray;
+        $args = new ArgumentArray();
         $sql = $query->toSql($this->driver, $args);
         $stm = $this->connection->prepare($sql);
         $stm->execute($args->toArray());
-        return $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
 
+        return $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function queryDetails(array $tables)
@@ -114,13 +110,11 @@ class MySQLTableStatus
             $query->where()
                 ->in('table_name', $tables);
         }
-        $args = new ArgumentArray;
+        $args = new ArgumentArray();
         $sql = $query->toSql($this->driver, $args);
         $stm = $this->connection->prepare($sql);
         $stm->execute($args->toArray());
+
         return $stm->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-
-
-

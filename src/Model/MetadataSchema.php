@@ -1,10 +1,12 @@
 <?php
+
 namespace LazyRecord\Model;
+
 use LazyRecord\Schema\DeclareSchema;
 
-class MetadataSchema extends DeclareSchema 
+class MetadataSchema extends DeclareSchema
 {
-    public function schema() 
+    public function schema()
     {
         $this->table('__meta__');
         $this->column('id')
@@ -20,4 +22,3 @@ class MetadataSchema extends DeclareSchema
         $this->disableColumnAccessors();
     }
 }
-

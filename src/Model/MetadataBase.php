@@ -1,12 +1,10 @@
 <?php
+
 namespace LazyRecord\Model;
+
 use LazyRecord\Schema\SchemaLoader;
-use LazyRecord\Result;
-use SQLBuilder\Bind;
-use SQLBuilder\ArgumentArray;
-use PDO;
-use SQLBuilder\Universal\Query\InsertQuery;
 use LazyRecord\BaseModel;
+
 class MetadataBase
     extends BaseModel
 {
@@ -18,17 +16,17 @@ class MetadataBase
     const WRITE_SOURCE_ID = 'default';
     const PRIMARY_KEY = 'id';
     const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = :id LIMIT 1';
-    public static $column_names = array (
+    public static $column_names = array(
       0 => 'id',
       1 => 'name',
       2 => 'value',
     );
-    public static $column_hash = array (
+    public static $column_hash = array(
       'id' => 1,
       'name' => 1,
       'value' => 1,
     );
-    public static $mixin_classes = array (
+    public static $mixin_classes = array(
     );
     protected $table = '__meta__';
     public $readSourceId = 'default';
@@ -36,8 +34,9 @@ class MetadataBase
     public function getSchema()
     {
         if ($this->_schema) {
-           return $this->_schema;
+            return $this->_schema;
         }
+
         return $this->_schema = SchemaLoader::load('LazyRecord\\Model\\MetadataSchemaProxy');
     }
 }

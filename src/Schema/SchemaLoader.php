@@ -1,8 +1,8 @@
 <?php
-namespace LazyRecord\Schema;
-use LazyRecord\Schema\SchemaUtils;
-use LazyRecord\ClassUtils;
 
+namespace LazyRecord\Schema;
+
+use LazyRecord\ClassUtils;
 
 /**
  * Schema loader actually catches 
@@ -10,7 +10,7 @@ use LazyRecord\ClassUtils;
  */
 class SchemaLoader
 {
-    static $schemas = array();
+    public static $schemas = array();
 
     /**
      * Load or create schema object and cache it.
@@ -19,28 +19,25 @@ class SchemaLoader
      *
      * @return LazyRecord\Schema\RuntimeSchema
      */
-    static public function load($class)
+    public static function load($class)
     {
-        if (isset( self::$schemas[$class] )) {
+        if (isset(self::$schemas[$class])) {
             return self::$schemas[$class];
         }
-        if (class_exists($class,true)) {
-            return self::$schemas[ $class ] = new $class;
+        if (class_exists($class, true)) {
+            return self::$schemas[ $class ] = new $class();
         }
     }
 
-
     /**
-     * Returns declared schema objects
+     * Returns declared schema objects.
      *
      * @return array Schema objects
      */
-    static public function loadDeclaredSchemas()
+    public static function loadDeclaredSchemas()
     {
         return SchemaUtils::expandSchemaClasses(
             ClassUtils::get_declared_schema_classes()
         );
     }
-
 }
-

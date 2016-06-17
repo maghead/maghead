@@ -1,26 +1,26 @@
 <?php
+
 namespace LazyRecord\TableParser;
+
 use PDO;
 use Exception;
 use LogicException;
 use LazyRecord\Schema\DeclareSchema;
 use SQLBuilder\Raw;
-use LazyRecord\TableParser\TypeInfo;
-use LazyRecord\TableParser\TypeInfoParser;
-
 class SqliteTableParser extends BaseTableParser
 {
-
     public function getTables()
     {
         $stm = $this->connection->query("SELECT * FROM sqlite_master WHERE type='table';");
         $rows = $stm->fetchAll(PDO::FETCH_OBJ);
         $tables = array();
-        foreach( $rows as $row ) {
-            if( $row->tbl_name == 'sqlite_sequence' )
+        foreach ($rows as $row) {
+            if ($row->tbl_name == 'sqlite_sequence') {
                 continue;
+            }
             $tables[] = $row->tbl_name;
         }
+
         return $tables;
     }
 
@@ -31,16 +31,16 @@ class SqliteTableParser extends BaseTableParser
         return $stm->fetch(PDO::FETCH_OBJ)->sql;
     }
 
-
     public function parseTableSql($table)
     {
         $sql = $this->getTableSql($table);
-        if (preg_match('#`?(\w+)`?\s*\((.*)\)#ism',$sql,$regs) ) {
+        if (preg_match('#`?(\w+)`?\s*\((.*)\)#ism', $sql, $regs)) {
             $columns = array();
             $name = $regs[1];
             $columnstr = $regs[2];
             $parser = new SqliteTableDefinitionParser($columnstr);
             $tableDef = $parser->parseColumnDefinitions();
+
             return $tableDef;
         }
     }
@@ -49,7 +49,7 @@ class SqliteTableParser extends BaseTableParser
     {
         $tableDef = $this->parseTableSql($table);
 
-        $schema = new DeclareSchema;
+        $schema = new DeclareSchema();
         $schema->columnNames = $schema->columns = array();
         $schema->table($table);
 
@@ -57,7 +57,7 @@ class SqliteTableParser extends BaseTableParser
             $name = $columnDef->name;
             $column = $schema->column($name);
 
-            if (! isset($columnDef->type) ) {
+            if (!isset($columnDef->type)) {
                 throw new LogicException("Missing column type definition on $table.$name.");
             }
 
@@ -72,7 +72,6 @@ class SqliteTableParser extends BaseTableParser
             if (isset($columnDef->decimals)) {
                 $column->decimals($columnDef->decimals);
             }
-
 
             $isa = $this->typenameToIsa($type);
             $column->isa($isa);
@@ -92,8 +91,7 @@ class SqliteTableParser extends BaseTableParser
                 if (isset($columnDef->autoIncrement)) {
                     $column->autoIncrement(true);
                 }
-
-            } else if (isset($columnDef->unique)) {
+            } elseif (isset($columnDef->unique)) {
                 $column->unique(true);
             }
 
@@ -101,17 +99,14 @@ class SqliteTableParser extends BaseTableParser
                 $default = $columnDef->default;
                 if (is_scalar($default)) {
                     $column->default($default);
-                } else if ($default instanceof Token && $default->type == 'literal') {
+                } elseif ($default instanceof Token && $default->type == 'literal') {
                     $column->default(new Raw($default->val));
                 } else {
                     throw new Exception('Incorrect literal token');
                 }
             }
-
         }
+
         return $schema;
     }
 }
-
-
-

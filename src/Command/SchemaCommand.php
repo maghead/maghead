@@ -1,12 +1,14 @@
 <?php
-namespace LazyRecord\Command;
-use CLIFramework\Command;
-use LazyRecord\Command\DiffCommand;
 
+namespace LazyRecord\Command;
+
+use CLIFramework\Command;
 class SchemaCommand extends Command
 {
-
-    public function brief() { return 'schema command.'; }
+    public function brief()
+    {
+        return 'schema command.';
+    }
 
     public function init()
     {
@@ -24,7 +26,8 @@ class SchemaCommand extends Command
         $diff->options($opts);
     }
 
-    public function execute() { 
+    public function execute()
+    {
         $args = func_get_args();
 
         $buildCommand = $this->getCommand('build');
@@ -37,4 +40,3 @@ class SchemaCommand extends Command
         // $this->logger->info('Usage: schema [build|sql|list]');
     }
 }
-

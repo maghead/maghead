@@ -1,10 +1,9 @@
 <?php
+
 namespace LazyRecord\TableParser;
-use PDO;
-use Exception;
 
-class TypeInfo { 
-
+class TypeInfo
+{
     public $type;
 
     public $length;
@@ -21,13 +20,14 @@ class TypeInfo {
 
     public $set = array();
 
-    public function __construct($typeName = NULL, $length = NULL)
+    public function __construct($typeName = null, $length = null)
     {
         $this->type = $typeName;
         $this->length = $length;
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
@@ -41,4 +41,3 @@ class TypeInfo {
         return $this->precision;
     }
 }
-
