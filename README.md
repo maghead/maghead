@@ -17,24 +17,40 @@ LazyRecord
 
 LazyRecord is an open-source Object-Relational Mapping (ORM) for PHP5. 
 
-It allows you to access your database very easily by using ActiveRecord
-pattern API.
-
 LazyRecord uses code generator to generate static code, which reduces runtime 
 costs, therefore it's pretty lightweight and fast. 
+
+It allows you to access your database very easily by using ActiveRecord
+pattern API.
 
 LazyRecord is not like PropelORM, it doesn't use ugly XML as its schema or
 config file, LazyRecord uses simpler YAML format config file and it compiles
 YAML to pure PHP code to improve the performance of config loading.
 
-LazyRecord also has a simpler schema design, you can define your model schema 
-very easily and you can even embed closure in your schema classes.
+With the simple schema design, you can define your model schema very easily and
+you can even embed closure in your schema classes.
+
+
+See also
 
 <div style="width:425px" id="__ss_12638921"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/lazyrecord-the-fast-orm-for-php" title="LazyRecord: The Fast ORM for PHP" target="_blank">LazyRecord: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
 
 
-Concept
---------
+Feature
+-------
+
+* Fast & Simple
+* Configuration based on YAML format and compiled into PHP
+* PDO, MySQL, Pgsql, SQLite support.
+* Multiple data source.
+* Mix-in model.
+* Powerful Migration Generator
+  * Upgrade & Downgrade of course.
+  * Automatic Migration: generate migration SQL automatically based on the schema diff.
+* Schema/Database diff
+
+Design Concept
+--------------
 
 - Function calls in PHP are very slow, so the model schema data
   will be built statically, LazyRecord converts all definitions (default value, validator, filter, valid
@@ -46,18 +62,6 @@ Concept
 
 - We keep base model class constructor empty, so when you are querying data from
   database, these model objects can be created with zero effort.
-
-
-Feature
--------
-
-* Fast
-* Simple, Lightweight Pure PHP Model Schema (No XML)
-* PDO, MySQL, Pgsql, SQLite support.
-* Multiple data source support.
-* Mix-in model support.
-* Migration support. upgrade, downgrade, upgrade from schema diff.
-* Schema/Database diff
 
 Requirement
 -----------
@@ -77,15 +81,12 @@ Getting Started
 Change directory to your project, run `init` command to initialize 
 your database settings.
 
+
 ```sh
-$ mkdir myapp
-$ cd myapp
-$ lazy init 
-Database driver [sqlite] [sqlite/pgsql/mysql/] sqlite
-Database name [:memory:] test
+composer require corneltek/lazyrecord "^3.1"
 ```
 
-Then edit your config file:
+Then create your config file:
 
 ```sh
 $ vim db/config/database.yml
@@ -97,7 +98,7 @@ then you should provide your schema path in following format:
 ```yaml
 ---
 bootstrap:
-  - vendor/autoload.php   # load the classloader from composer.
+- vendor/autoload.php   # load the classloader from composer.
 schema:
   auto_id: 1
   paths:
@@ -146,7 +147,7 @@ class UserSchema extends Schema
 Then run `build-schema` command to build static schema files:
 
 ```sh
-$ lazy build-schema
+$ vendor/bin/lazy lazy schema build
 Finding schemas...
 Found schema classes
 Initializing schema generator...
@@ -165,9 +166,8 @@ If you are using postgresql or mysql, you can create your database with
 `create-db` command:
 
 ```sh
-$ lazy create-db
+$ php vendor/bin/lazy db create
 ```
-
 
 ### Building SQL From Model Schemas
 
@@ -175,7 +175,7 @@ Now you need to build SQL schema into your database, simply run `build-sql`,
 `-d` is for debug mode, which prints all generated SQL statements:
 
 ```sh
-$ lazy -d build-sql
+$ php vendor/bin/lazy sql
 Finding schema classes...
 Initialize schema builder...
 Building SQL for YourApp\Model\UserSchema
@@ -216,7 +216,7 @@ Now append your application code to the end of `app.php` file:
 ```php
 $user = new YourApp\Model\User;
 $ret = $user->create(array('account' => 'guest', 'password' => '123123' ));
-if( ! $ret->success ) {
+if ($ret->error ) {
     echo $ret->message;  // get the error message
     if ($ret->exception) {
         echo $ret->exception;  // get the exception object
@@ -226,7 +226,6 @@ if( ! $ret->success ) {
 ```
 
 Please check `doc/` directory for more details.
-
 
 
 Basic Usage
