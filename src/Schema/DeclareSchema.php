@@ -11,6 +11,9 @@ use LazyRecord\Schema\Column\AutoIncrementPrimaryKeyColumn;
 use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use LazyRecord\Schema\Relationship\Relationship;
+use LazyRecord\Schema\Relationship\HasMany;
+use LazyRecord\Schema\Relationship\HasOne;
+use LazyRecord\Schema\Relationship\BelongsTo;
 
 class DeclareSchema extends SchemaBase implements SchemaInterface
 {
@@ -687,10 +690,10 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
             $foreignColumn = $s->primaryKey;
         }
 
-        return $this->relations[$accessor] = new Relationship($accessor, array(
-            'type' => Relationship::BELONGS_TO,
-            'self_schema' => $this->getCurrentSchemaClass(),
-            'self_column' => $selfColumn,
+        return $this->relations[$accessor] = new BelongsTo($accessor, array(
+            'type'           => Relationship::BELONGS_TO,
+            'self_schema'    => $this->getCurrentSchemaClass(),
+            'self_column'    => $selfColumn,
             'foreign_schema' => $this->resolveSchemaClass($foreignClass),
             'foreign_column' => $foreignColumn,
         ));
@@ -764,7 +767,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public function many($accessor, $foreignClass, $foreignColumn, $selfColumn)
     {
-        return $this->relations[ $accessor ] = new Relationship($accessor, array(
+        return $this->relations[$accessor] = new HasMany($accessor, array(
             'type' => Relationship::HAS_MANY,
             'self_schema' => $this->getCurrentSchemaClass(),
             'self_column' => $selfColumn,

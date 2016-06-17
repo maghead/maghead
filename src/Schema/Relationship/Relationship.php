@@ -1,17 +1,17 @@
 <?php
 namespace LazyRecord\Schema\Relationship;
 
-use ArrayAccess;
-use IteratorAggregate;
 use SQLBuilder\Universal\Syntax\Conditions;
 use LazyRecord\BaseCollection;
 use LogicException;
+use ArrayAccess;
+use IteratorAggregate;
 
 class Relationship implements IteratorAggregate, ArrayAccess
 {
-    const HAS_MANY = 1;
-    const HAS_ONE = 2;
-    const BELONGS_TO = 3;
+    const HAS_MANY     = 1;
+    const HAS_ONE      = 2;
+    const BELONGS_TO   = 3;
     const MANY_TO_MANY = 4;
 
     /**
@@ -59,7 +59,6 @@ class Relationship implements IteratorAggregate, ArrayAccess
     {
         $schema = $this->newForeignSchema();
         $modelClass = $schema->getModelClass();
-
         return new $modelClass();
     }
 
@@ -67,7 +66,6 @@ class Relationship implements IteratorAggregate, ArrayAccess
     {
         $schema = $this->newForeignSchema();
         $collectionClass = $schema->getCollectionClass();
-
         return new $collectionClass();
     }
 
