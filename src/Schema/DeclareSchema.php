@@ -683,18 +683,20 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      * @param string $foreignColumn foreign reference schema column.
      * @param string $selfColumn    self column name
      */
-    public function belongsTo($accessor, $foreignClass, $foreignColumn = null, $selfColumn = null)
+    public function belongsTo($accessor, $foreignClass, $foreignColumn = 'id', $selfColumn = null)
     {
-        $foreignClass = $this->resolveSchemaClass($foreignClass);
+        // XXX: we can't create the foreign class here, because it might
+        // create a recursive class loading here...
         if ($foreignClass && null === $foreignColumn) {
             $s = new $foreignClass();
             $foreignColumn = $s->primaryKey;
         }
+        */
         return $this->relations[$accessor] = new BelongsTo($accessor, array(
             'type'           => Relationship::BELONGS_TO,
             'self_schema'    => $this->getCurrentSchemaClass(),
             'self_column'    => $selfColumn,
-            'foreign_schema' => $foreignClass,
+            'foreign_schema' => $this->resolveSchemaClass($foreignClass),
             'foreign_column' => $foreignColumn,
         ));
     }
@@ -798,11 +800,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         if (!preg_match('/Schema$/', $class)) {
             $class = $class.'Schema';
         }
-        if ($class[0] == '\\' || class_exists($class)) {
+        if ($class[0] == '\\' || class_exists($class, true)) {
             return $class;
         }
         $nsClass = $this->getNamespace().'\\'.$class;
-        if (class_exists($nsClass)) {
+        if (class_exists($nsClass, true)) {
             return $nsClass;
         }
         throw new Exception("Schema class $class or $nsClass not found.");
