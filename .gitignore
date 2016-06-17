@@ -1,7 +1,7 @@
-vendor
+/vendor
 .onion/
 .lazy.*
 *SchemaProxy.php
 build/
 db/config/*.php
-phpunit.xml
+/phpunit.xml
