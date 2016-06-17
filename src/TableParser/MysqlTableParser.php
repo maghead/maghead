@@ -61,8 +61,11 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                 // However, it's possible that user didn't set notNull in the schema,
                 // we should skip the check in comparator.
                 if ($referenceSchema
-                    && (strtolower($typeInfo->type) === 'timestamp' || $row['Key'] === 'PRI')
+                    && isset($row['Field'])
+                    && $referenceSchema->getColumn($row['Field'])
                     && !$referenceSchema->getColumn($row['Field'])->notNull
+                    && (strtolower($typeInfo->type) === 'timestamp' 
+                        || (isset($row['Key']) && $row['Key'] === 'PRI'))
                 ) {
 
                 } else {
