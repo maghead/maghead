@@ -18,9 +18,11 @@ class DatabaseBuilder
     {
         $this->conn = $conn;
         $this->builder = $builder;
-
-        $c = ServiceContainer::getInstance();
-        $this->logger = $logger ?: $c['logger'];
+        if (!$logger) {
+            $c = ServiceContainer::getInstance();
+            $logger ?: $c['logger'];
+        }
+        $this->logger = $logger;
     }
 
     public function build(array $schemas)
