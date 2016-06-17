@@ -1,16 +1,9 @@
 <?php
+
 namespace LazyRecord\Testing;
-use LazyRecord\ConnectionManager;
-use LazyRecord\ConfigLoader;
-use LazyRecord\Schema\SchemaGenerator;
-use LazyRecord\ClassUtils;
-use LazyRecord\SeedBuilder;
+
 use LazyRecord\Result;
-use LazyRecord\SqlBuilder\SqlBuilder;
-use LazyRecord\Testing\BaseTestCase;
-use PHPUnit_Framework_TestCase;
 use XHProfRuns_Default;
-use PDOException;
 
 class ModelProfileTestCase extends ModelTestCase
 {
@@ -57,15 +50,15 @@ class ModelProfileTestCase extends ModelTestCase
         if (defined('ARRAY_FILTER_USE_KEY')) {
             // ignore all phpunit related keys
             // var_dump($xhprofData);
-            $xhprofData = array_filter($xhprofData, function($key) {
+            $xhprofData = array_filter($xhprofData, function ($key) {
                 return !preg_match('/PHPUnit/', $key);
             }, ARRAY_FILTER_USE_KEY);
         }
 
-        include_once $_ENV['XHPROF_ROOT'] . "/xhprof_lib/utils/xhprof_lib.php";
-        include_once $_ENV['XHPROF_ROOT'] . "/xhprof_lib/utils/xhprof_runs.php";
+        include_once $_ENV['XHPROF_ROOT'].'/xhprof_lib/utils/xhprof_lib.php';
+        include_once $_ENV['XHPROF_ROOT'].'/xhprof_lib/utils/xhprof_runs.php';
 
-        $namespace = 'LazyRecord:' . $this->getName();
+        $namespace = 'LazyRecord:'.$this->getName();
         $runs = new XHProfRuns_Default();
         $runId = $runs->save_run($xhprofData, $namespace);
         $host = 'localhost';
@@ -78,6 +71,4 @@ class ModelProfileTestCase extends ModelTestCase
         printf("See profiling result at http://%s/index.php?run=%s&source=%s\n", $host, $runId, $namespace);
         parent::tearDown();
     }
-
 }
-

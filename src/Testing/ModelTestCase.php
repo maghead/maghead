@@ -7,7 +7,6 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\SeedBuilder;
 use LazyRecord\SqlBuilder\SqlBuilder;
-
 use PDOException;
 
 abstract class ModelTestCase extends BaseTestCase
@@ -45,6 +44,7 @@ abstract class ModelTestCase extends BaseTestCase
                             $e->getMessage(),
                             var_export($configLoader->getDataSource($this->getDriverType()), true)
                         ));
+
                     return;
                 }
                 echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
@@ -104,7 +104,6 @@ abstract class ModelTestCase extends BaseTestCase
             }
         }
     }
-
 
     public function tearDown()
     {

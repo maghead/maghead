@@ -1,4 +1,5 @@
 <?php
+
 namespace LazyRecord;
 
 interface ExporterInterface
@@ -8,4 +9,3 @@ interface ExporterInterface
     public function toYaml();
     public function toArray();
 }
-

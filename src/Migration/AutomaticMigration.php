@@ -1,21 +1,17 @@
 <?php
+
 namespace LazyRecord\Migration;
-use LazyRecord\Console;
-use LazyRecord\Metadata;
+
 use LazyRecord\Schema\Comparator;
 use LazyRecord\Schema\Relationship;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\TableParser\ReferenceParser;
-use LazyRecord\ConnectionManager;
 use LazyRecord\Connection;
-use LazyRecord\QueryDriver;
-use LazyRecord\Migration\Migratable;
 use GetOptionKit\OptionResult;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use PDO;
 use LogicException;
-use Exception;
 
 class AutomaticMigration extends Migration implements Migratable
 {
@@ -23,10 +19,10 @@ class AutomaticMigration extends Migration implements Migratable
 
     public function __construct(BaseDriver $driver, PDO $connection, OptionResult $options = null)
     {
-        $this->options = $options ?: new OptionResult;
+        $this->options = $options ?: new OptionResult();
         parent::__construct($driver, $connection);
     }
-    
+
     public function upgrade()
     {
         $parser = TableParser::create($this->driver, $this->connection);
@@ -38,9 +34,7 @@ class AutomaticMigration extends Migration implements Migratable
 
         // Schema from runtime
         foreach ($tableSchemas as $table => $schema) {
-
-
-            $this->logger->debug("Checking table $table for schema " . get_class($schema));
+            $this->logger->debug("Checking table $table for schema ".get_class($schema));
 
             if (!in_array($table, $existingTables)) {
                 $this->logger->debug("Table $table does not exist, try importing...");
@@ -52,11 +46,10 @@ class AutomaticMigration extends Migration implements Migratable
 
             $this->logger->debug("Found existing table $table");
 
-
             $before = $parser->reverseTableSchema($table, $schema);
 
             $this->logger->debug("Comparing table `$table` with schema");
-            $diffs = $comparator->compare($before , $schema);
+            $diffs = $comparator->compare($before, $schema);
 
             do {
                 if (count($diffs) == 0) {
@@ -64,7 +57,7 @@ class AutomaticMigration extends Migration implements Migratable
                     break;
                 }
 
-                $this->logger->debug("Found " . count($diffs) . ' differences');
+                $this->logger->debug('Found '.count($diffs).' differences');
                 $alterTable = $this->alterTable($table);
                 foreach ($diffs as $diff) {
                     if ($this->options->{'separate-alter'}) {
@@ -72,7 +65,7 @@ class AutomaticMigration extends Migration implements Migratable
                     }
 
                     $column = $diff->getAfterColumn();
-                    switch($diff->flag) {
+                    switch ($diff->flag) {
                     case 'A':
                         $alterTable->addColumn($column);
                         break;
@@ -88,7 +81,7 @@ class AutomaticMigration extends Migration implements Migratable
                         $afterColumn = $diff->getAfterColumn();
                         $beforeColumn = $diff->getBeforeColumn();
                         if (!$afterColumn || !$beforeColumn) {
-                            throw new LogicException("afterColumn or beforeColumn is undefined.");
+                            throw new LogicException('afterColumn or beforeColumn is undefined.');
                         }
                         // Check primary key
                         if ($beforeColumn->primary != $afterColumn->primary) {
@@ -97,7 +90,7 @@ class AutomaticMigration extends Migration implements Migratable
                         $alterTable->modifyColumn($afterColumn);
                         break;
                     default:
-                        throw new LogicException("Unsupported flat: " . $diff->flag);
+                        throw new LogicException('Unsupported flat: '.$diff->flag);
                         break;
                     }
                 }
@@ -117,7 +110,7 @@ class AutomaticMigration extends Migration implements Migratable
                     if ($rel['foreign_schema'] == $rel['self_schema']) {
                         continue;
                     }
-                    if (isset($rel['self_column']) && $rel['self_column'] == 'id' ) {
+                    if (isset($rel['self_column']) && $rel['self_column'] == 'id') {
                         continue;
                     }
 
@@ -131,7 +124,7 @@ class AutomaticMigration extends Migration implements Migratable
                         $alterTable = $this->alterTable($table);
                         $add = $alterTable->add();
                         $add->foreignKey($rel['self_column']);
-                        $fSchema = new $rel['foreign_schema'];
+                        $fSchema = new $rel['foreign_schema']();
                         $alterReferences = $add->references($fSchema->getTable(), (array) $rel['foreign_column']);
 
                         if ($this->driver instanceof MySQLDriver) {

@@ -1,9 +1,10 @@
 <?php
+
 namespace LazyRecord\Schema;
+
 use RuntimeException;
 use InvalidArgumentException;
 use Exception;
-use LazyRecord\Schema\DynamicSchemaDeclare;
 
 abstract class SchemaBase
 {
@@ -37,16 +38,17 @@ abstract class SchemaBase
 
     public function getModelName()
     {
-        if ( $this->_modelName ) {
+        if ($this->_modelName) {
             return $this->_modelName;
         }
 
         $class = $this->getModelClass();
-        $p = strrpos($class,'\\');
-        if ( $p === false ) {
+        $p = strrpos($class, '\\');
+        if ($p === false) {
             return $class;
         }
-        return $this->_modelName = substr($class,$p + 1);
+
+        return $this->_modelName = substr($class, $p + 1);
     }
 
     public function addMixinSchemaClass($class)
@@ -59,7 +61,7 @@ abstract class SchemaBase
         return in_array($class, $this->mixinSchemaClasses);
     }
 
-    public function getMixinSchemaClasses() 
+    public function getMixinSchemaClasses()
     {
         return $this->mixinSchemaClasses;
     }
@@ -72,56 +74,58 @@ abstract class SchemaBase
     // Class name related methods
     public function getBaseModelClass()
     {
-        return $this->getModelClass() . 'Base';
+        return $this->getModelClass().'Base';
     }
 
     public function getBaseModelName()
     {
-        return $this->getModelName() . 'Base';
+        return $this->getModelName().'Base';
     }
 
     public function getCollectionClass()
     {
-        return $this->getModelClass() . 'Collection';
+        return $this->getModelClass().'Collection';
     }
 
     public function getBaseCollectionClass()
     {
-        return $this->getModelClass() . 'CollectionBase';
+        return $this->getModelClass().'CollectionBase';
     }
 
     public function getSchemaProxyClass()
     {
-        return $this->getModelClass() . 'SchemaProxy';
+        return $this->getModelClass().'SchemaProxy';
     }
 
     public function newModel()
     {
         $class = $this->getModelClass();
-        return new $class;
+
+        return new $class();
     }
 
-    public function newCollection() 
+    public function newCollection()
     {
         $class = $this->getCollectionClass();
-        return new $class;
+
+        return new $class();
     }
 
-
     /**
-     * Get class namespace
+     * Get class namespace.
      */
     public function getNamespace()
     {
-        if ( $this->_namespace ) {
+        if ($this->_namespace) {
             return $this->_namespace;
         }
 
         $class = $this->getModelClass();
-        $p = strrpos($class, '\\'); 
-        if ( $p === false ) {
+        $p = strrpos($class, '\\');
+        if ($p === false) {
             return $class;
         }
+
         return $this->_namespace = substr($class, 0, $p);
     }
 
@@ -132,69 +136,62 @@ abstract class SchemaBase
      */
     public function getRelation($relationId)
     {
-        if( isset($this->relations[ $relationId ]) ) {
+        if (isset($this->relations[ $relationId ])) {
             return $this->relations[ $relationId ];
         }
     }
 
-
     /**
-     * Get relationship data
+     * Get relationship data.
      */
-    public function getRelations() 
+    public function getRelations()
     {
         return $this->relations;
     }
 
-
     /**
      * For schema class, get its reference schema classes recursively.
      *
-     * @param boolean $recursive
+     * @param bool $recursive
      */
     public function getReferenceSchemas($recursive = true)
     {
         $schemas = [];
-        foreach ($this->relations as $relKey => $rel ) {
+        foreach ($this->relations as $relKey => $rel) {
             if (!isset($rel['foreign_schema'])) {
                 continue;
             }
 
-            $class = ltrim($rel['foreign_schema'],'\\');
-            if (isset($schemas[$class]) ) {
+            $class = ltrim($rel['foreign_schema'], '\\');
+            if (isset($schemas[$class])) {
                 continue;
             }
-            if (! class_exists($class,true)) {
-                throw new RuntimeException("Foreign schema class '$class' not found in schema {$this}." );
+            if (!class_exists($class, true)) {
+                throw new RuntimeException("Foreign schema class '$class' not found in schema {$this}.");
             }
 
-
-            if (is_a($class,'LazyRecord\\BaseModel',true)) {
+            if (is_a($class, 'LazyRecord\\BaseModel', true)) {
                 // bless model class to schema object.
-                if (! method_exists($class, 'schema')) {
-                    throw new Exception(get_class($this) . ": You need to define schema method in $class class.");
+                if (!method_exists($class, 'schema')) {
+                    throw new Exception(get_class($this).": You need to define schema method in $class class.");
                 }
                 $schemas[ $class ] = 1;
-                $model = new $class;
+                $model = new $class();
                 $schema = new DynamicSchemaDeclare($model);
-                if( $recursive ) {
+                if ($recursive) {
                     $schemas = array_merge($schemas, $schema->getReferenceSchemas(false));
                 }
-            } else if (is_subclass_of($class, 'LazyRecord\\Schema\\DeclareSchema',true)) {
+            } elseif (is_subclass_of($class, 'LazyRecord\\Schema\\DeclareSchema', true)) {
                 $schemas[ $class ] = 1;
-                $fs = new $class;
+                $fs = new $class();
                 if ($recursive) {
                     $schemas = array_merge($schemas, $fs->getReferenceSchemas(false));
                 }
             } else {
                 throw new InvalidArgumentException("Foreign schema class '$class' is not a SchemaDeclare class");
             }
-
         }
+
         return $schemas;
     }
-
-
-
-
 }

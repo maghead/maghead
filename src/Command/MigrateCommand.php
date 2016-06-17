@@ -1,9 +1,8 @@
 <?php
+
 namespace LazyRecord\Command;
+
 use CLIFramework\Command;
-use LazyRecord\Migration\MigrationGenerator;
-use LazyRecord\TableParser\TableParser;
-use LazyRecord\Command\BaseCommand;
 
 class MigrateCommand extends BaseCommand
 {
@@ -12,12 +11,13 @@ class MigrateCommand extends BaseCommand
         return 'Database migration commands';
     }
 
-    public function aliases() 
+    public function aliases()
     {
         return array('m');
     }
 
-    public function init() {
+    public function init()
+    {
         parent::init();
         $this->command('upgrade', 'LazyRecord\\Command\\MigrateUpgradeCommand');
         $this->command('downgrade', 'LazyRecord\\Command\\MigrateDowngradeCommand');
@@ -27,6 +27,7 @@ class MigrateCommand extends BaseCommand
         $this->command('diff', 'LazyRecord\\Command\\MigrateNewFromDiffCommand');
     }
 
-    public function execute() { }
+    public function execute()
+    {
+    }
 }
-

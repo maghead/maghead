@@ -1,11 +1,11 @@
 <?php
+
 namespace LazyRecord\Command;
+
 use CLIFramework\Command;
-use LazyRecord\Command\BaseCommand;
 
 class DataSourceCommand extends BaseCommand
 {
-
     public function brief()
     {
         return 'data source related commands.';
@@ -29,12 +29,10 @@ class DataSourceCommand extends BaseCommand
         $dataSources = $configLoader->getDataSources();
         foreach ($dataSources as $id => $config) {
             if ($this->options->verbose) {
-                $this->logger->writeln(sprintf("%-10s %s",$id, $config['dsn']));
+                $this->logger->writeln(sprintf('%-10s %s', $id, $config['dsn']));
             } else {
                 $this->logger->writeln($id);
             }
         }
     }
-
 }
-

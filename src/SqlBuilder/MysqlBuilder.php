@@ -1,8 +1,8 @@
 <?php
+
 namespace LazyRecord\SqlBuilder;
-use LazyRecord\Schema\DeclareSchema;
+
 use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship;
 use LazyRecord\Schema\DeclareColumn;
 use SQLBuilder\ArgumentArray;
@@ -26,23 +26,12 @@ class MysqlBuilder extends BaseBuilder
         ];
     }
 
-
     /**
-    It's possible to raise an error like this:
-
-    ERROR 1215 (HY000): Cannot add foreign key constraint
-
-    Cannot find an index in the referenced table where the
-    referenced columns appear as the first columns, or column types
-    in the table and the referenced table do not match for constraint.
-    Note that the internal storage type of ENUM and SET changed in
-    tables created with >= InnoDB-4.1.12, and such columns in old tables
-    cannot be referenced by such columns in new tables.
-    Please refer to http://dev.mysql.com/doc/refman/5.7/en/innodb-foreign-key-constraints.html for correct foreign key definition.
+     Please refer to http://dev.mysql.com/doc/refman/5.7/en/innodb-foreign-key-constraints.html for correct foreign key definition.
      */
     public function buildForeignKeyConstraint(Relationship $rel)
     {
-        $fSchema = new $rel['foreign_schema'];
+        $fSchema = new $rel['foreign_schema']();
         $constraint = new Constraint();
         $constraint->foreignKey($rel['self_column']);
         $references = $constraint->references($fSchema->getTable(), (array) $rel['foreign_column']);
@@ -52,20 +41,21 @@ class MysqlBuilder extends BaseBuilder
         if ($act = $rel->onDelete) {
             $references->onDelete($act);
         }
+
         return $constraint;
     }
 
     public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column)
     {
         $name = $column->name;
-        $isa  = $column->isa ?: 'str';
-        if (! $column->type && $isa == 'str' ) {
+        $isa = $column->isa ?: 'str';
+        if (!$column->type && $isa == 'str') {
             $column->type = 'text';
         }
 
-        $args = new ArgumentArray;
+        $args = new ArgumentArray();
         $sql = $column->buildDefinitionSql($this->driver, $args);
-        /**
+        /*
         BUILD COLUMN REFERENCE
 
         track(
@@ -104,10 +94,10 @@ class MysqlBuilder extends BaseBuilder
             switch ($rel['type']) {
                 case Relationship::BELONGS_TO:
                 if ($name != 'id' && $rel['self_column'] == $name) {
-                    $fSchema = new $rel['foreign_schema'];
+                    $fSchema = new $rel['foreign_schema']();
                     $fColumn = $rel['foreign_column'];
                     $fc = $fSchema->columns[$fColumn];
-                    $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
+                    $sql .= ' REFERENCES '.$fSchema->getTable().'('.$fColumn.')';
                     /*
                     if ($rel->onUpdate) {
                         $sql .= ' ON UPDATE ' . $rel->onUpdate;
@@ -120,15 +110,14 @@ class MysqlBuilder extends BaseBuilder
                 break;
             }
         }
+
         return $sql;
     }
 
-
     public function dropTable(SchemaInterface $schema)
     {
-        return 'DROP TABLE IF EXISTS ' 
-            . $this->driver->quoteIdentifier( $schema->getTable() )
-            . ';';
+        return 'DROP TABLE IF EXISTS '
+            .$this->driver->quoteIdentifier($schema->getTable())
+            .';';
     }
 }
-

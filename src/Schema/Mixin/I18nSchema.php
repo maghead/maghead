@@ -1,5 +1,7 @@
 <?php
+
 namespace LazyRecord\Schema\Mixin;
+
 use LazyRecord\Schema\MixinDeclareSchema;
 
 class I18nSchema extends MixinDeclareSchema
@@ -10,6 +12,4 @@ class I18nSchema extends MixinDeclareSchema
             ->varchar(12)
             ->default('en');
     }
-
-
 }

@@ -1,5 +1,7 @@
 <?php
-namespace LazyRecord;
-interface CurrentUserInterface {
-}
 
+namespace LazyRecord;
+
+interface CurrentUserInterface
+{
+}

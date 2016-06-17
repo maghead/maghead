@@ -1,8 +1,8 @@
 <?php
+
 namespace LazyRecord\Command\DbCommand;
-use CLIFramework\Command;
+
 use LazyRecord\Command\BaseCommand;
-use LazyRecord\ConfigLoader;
 use LazyRecord\DSN\DSNParser;
 use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\Driver\PDOSQLiteDriver;
@@ -13,8 +13,7 @@ use Exception;
 
 class CreateCommand extends BaseCommand
 {
-
-    public function brief() 
+    public function brief()
     {
         return 'create database bases on the current config.';
     }
@@ -25,18 +24,18 @@ class CreateCommand extends BaseCommand
         $dsId = $this->getCurrentDataSourceId();
         $ds = $configLoader->getDataSource($dsId);
 
-        if (! isset($ds['dsn'])) {
+        if (!isset($ds['dsn'])) {
             throw new Exception("Attribute 'dsn' undefined in data source settings.");
         }
 
-        $dsnParser = new DSNParser;
+        $dsnParser = new DSNParser();
         $dsn = $dsnParser->parse($ds['dsn']);
 
         $dbName = $dsn->getAttribute('dbname');
 
         $dsn->removeAttribute('dbname');
 
-        $this->logger->debug("Connection DSN: " . $dsn);
+        $this->logger->debug('Connection DSN: '.$dsn);
 
         $pdo = new PDO($dsn, @$ds['user'], @$ds['pass'], @$ds['connection_options']);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -45,6 +44,7 @@ class CreateCommand extends BaseCommand
 
         if ($queryDriver instanceof PDOSQLiteDriver) {
             $this->logger->info('Create database query is not supported by sqlite. ths sqlite database shall have been created.');
+
             return true;
         }
 
@@ -56,18 +56,15 @@ class CreateCommand extends BaseCommand
             $q->characterSet('utf8');
         }
 
-        $sql = $q->toSql($queryDriver, new ArgumentArray);
+        $sql = $q->toSql($queryDriver, new ArgumentArray());
         $this->logger->info($sql);
 
         if ($pdo->query($sql) === false) {
             list($statusCode, $errorCode, $message) = $pdo->errorInfo();
             $this->logger->error("$statusCode:$errorCode $message");
+
             return false;
         }
         $this->logger->info('Database created successfully.');
     }
-
 }
-
-
-

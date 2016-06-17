@@ -1,17 +1,16 @@
 <?php
+
 namespace LazyRecord\Command\SchemaCommand;
+
 use LazyRecord\Command\BaseCommand;
-use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\SchemaUtils;
 use CLIFramework\Logger\ActionLogger;
 
 /**
- * $ lazy build-schema path/to/Schema path/to/SchemaDir
- *
+ * $ lazy build-schema path/to/Schema path/to/SchemaDir.
  */
 class StatusCommand extends BaseCommand
 {
-
     public function usage()
     {
         return 'schema status';
@@ -36,9 +35,9 @@ class StatusCommand extends BaseCommand
          */
     }
 
-    public function options($opts) 
+    public function options($opts)
     {
-        $opts->add('f|force','force generate all schema files.');
+        $opts->add('f|force', 'force generate all schema files.');
         parent::options($opts);
     }
 
@@ -50,25 +49,17 @@ class StatusCommand extends BaseCommand
 
         $actionLogger = new ActionLogger(STDERR);
 
-
         $schemas = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
         foreach ($schemas as $schema) {
-
             if ($this->logger->isVerbose()) {
-
                 $actionLog = $actionLogger->newAction(get_class($schema), get_class($schema));
                 $actionLog->setActionColumnWidth(50);
-
-            } else if ($this->logger->isDebug()) {
-
-                $filepath = str_replace(getcwd() . '/', '', $schema->getClassFileName());
+            } elseif ($this->logger->isDebug()) {
+                $filepath = str_replace(getcwd().'/', '', $schema->getClassFileName());
                 $actionLog = $actionLogger->newAction($filepath, get_class($schema));
                 $actionLog->setActionColumnWidth(50);
-
             } else {
-
                 $actionLog = $actionLogger->newAction($schema->getShortClassName(), get_class($schema));
-
             }
             $actionLog->setStatus('checking');
 
@@ -80,6 +71,4 @@ class StatusCommand extends BaseCommand
             $actionLog->finalize();
         }
     }
-
 }
-

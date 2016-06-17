@@ -1,12 +1,13 @@
 <?php
+
 namespace LazyRecord\Schema\Comparator;
+
 use Closure;
-use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\ColumnAccessorInterface;
 use LogicException;
 
-class ColumnDiff {
-
+class ColumnDiff
+{
     /**
      * @var string Column Name
      */
@@ -29,7 +30,7 @@ class ColumnDiff {
 
     public $details = array();
 
-    public function __construct($name, $flag, ColumnAccessorInterface $before = NULL, ColumnAccessorInterface $after = NULL)
+    public function __construct($name, $flag, ColumnAccessorInterface $before = null, ColumnAccessorInterface $after = null)
     {
         $this->name = $name;
         $this->flag = $flag;
@@ -41,7 +42,7 @@ class ColumnDiff {
         }
     }
 
-    public function getAfterColumn() 
+    public function getAfterColumn()
     {
         return $this->after;
     }
@@ -61,30 +62,29 @@ class ColumnDiff {
         $this->details[] = $attributeDiff;
     }
 
-    public function toColumnAttrsString() 
+    public function toColumnAttrsString()
     {
         $column = $this->getAfterOrBeforeColumn();
-        $line = sprintf('%s %-16s %-16s',$this->flag, $this->name, $column->type );
+        $line = sprintf('%s %-16s %-16s', $this->flag, $this->name, $column->type);
         $attrStrs = array();
 
         if (!empty($column->attributes)) {
-            foreach ($column->attributes as $property => $value ) {
-                if ($property == "type") {
+            foreach ($column->attributes as $property => $value) {
+                if ($property == 'type') {
                     continue;
                 }
                 if (is_object($value)) {
                     if ($value instanceof Closure) {
                         $attrStrs[] = "$property:{Closure}";
                     } else {
-                        $attrStrs[] = "$property:" . str_replace("\n","",var_export($value,true));
+                        $attrStrs[] = "$property:".str_replace("\n", '', var_export($value, true));
                     }
-                }
-                elseif (is_string($value)) {
+                } elseif (is_string($value)) {
                     $attrStrs[] = "$property:$value";
                 }
             }
         }
-        return $line . join(', ', $attrStrs);
+
+        return $line.implode(', ', $attrStrs);
     }
 }
-

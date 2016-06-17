@@ -1,23 +1,22 @@
 <?php
+
 namespace LazyRecord\Command;
-use CLIFramework\Command;
-use LazyRecord\Schema;
-use LazyRecord\ConfigLoader;
-use LazyRecord\ClassUtils;
+
 use LazyRecord\SeedBuilder;
 use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\Schema\SchemaCollection;
-use Exception;
 
-class BaseDataCommand extends BaseCommand
+class BasedataCommand extends BaseCommand
 {
-
-    public function brief() { return 'insert basedata into datasource.'; }
+    public function brief()
+    {
+        return 'insert basedata into datasource.';
+    }
 
     public function execute()
     {
         $options = $this->options;
-        $logger  = $this->logger;
+        $logger = $this->logger;
 
         $classes = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
 
@@ -32,6 +31,3 @@ class BaseDataCommand extends BaseCommand
         $this->logger->info('Done');
     }
 }
-
-
-

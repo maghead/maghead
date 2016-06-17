@@ -1,18 +1,13 @@
 <?php
-namespace LazyRecord\Schema;
 
+namespace LazyRecord\Schema;
 
 use Exception;
 use InvalidArgumentException;
 use ReflectionObject;
-use ReflectionClass;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
-use LazyRecord\Schema\Relationship;
-use LazyRecord\Schema\DeclareColumn;
 use LazyRecord\Schema\Column\AutoIncrementPrimaryKeyColumn;
-
-use ClassTemplate\TemplateClassFile;
 use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 
@@ -40,8 +35,6 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public $collectionInterfaceClasses = array();
 
-
-
     /**
      * @var array[string indexName] = CreateIndexQuery
      *
@@ -64,7 +57,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
     /**
-     * Build schema
+     * Build schema.
      */
     protected function build(array $options = array())
     {
@@ -81,7 +74,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         // AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY
         if (null === $this->primaryKey) {
             if ($config = ConfigLoader::getInstance()) {
-                if ($config->hasAutoId() && ! isset($this->columns['id'] )) {
+                if ($config->hasAutoId() && !isset($this->columns['id'])) {
                     $this->insertAutoIdColumn();
                 }
             }
@@ -90,9 +83,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
 
     public function schema()
     {
-
     }
-
 
     public function getWriteSourceId()
     {
@@ -104,60 +95,60 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this->readSourceId ?: 'default';
     }
 
-
-
-    public function getColumns($includeVirtual = false) 
+    public function getColumns($includeVirtual = false)
     {
-        if ( $includeVirtual ) {
+        if ($includeVirtual) {
             return $this->columns;
         }
 
         $columns = array();
-        foreach( $this->columns as $name => $column ) {
+        foreach ($this->columns as $name => $column) {
             // skip virtal columns
-            if( $column->virtual )
+            if ($column->virtual) {
                 continue;
+            }
             $columns[ $name ] = $column;
         }
+
         return $columns;
     }
 
-    public function getColumnLabels($includeVirtual = false) 
+    public function getColumnLabels($includeVirtual = false)
     {
         $labels = array();
-        foreach( $this->columns as $column ) {
-            if ( ! $includeVirtual && $column->virtual ) {
+        foreach ($this->columns as $column) {
+            if (!$includeVirtual && $column->virtual) {
                 continue;
             }
-            if ( $column->label ) {
+            if ($column->label) {
                 $labels[] = $column->label;
             }
         }
+
         return $labels;
     }
 
-
     /**
+     * @param bool $includeVirtual
      *
-     * @param boolean $includeVirtual
      * @return string[]
      */
     public function getColumnNames($includeVirtual = false)
     {
-        if ( $includeVirtual ) {
+        if ($includeVirtual) {
             return array_keys($this->columns);
         }
 
         $names = array();
-        foreach( $this->columns as $name => $column ) {
-            if ( $column->virtual ) {
+        foreach ($this->columns as $name => $column) {
+            if ($column->virtual) {
                 continue;
             }
             $names[] = $name;
         }
+
         return $names;
     }
-
 
     /**
      * 'getColumn' gets the column object by the given column name.
@@ -166,23 +157,22 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public function getColumn($name)
     {
-        if ( isset($this->columns[ $name ]) ) {
+        if (isset($this->columns[ $name ])) {
             return $this->columns[ $name ];
         }
     }
-
 
     /**
      * hasColumn method returns true if a column name is defined.
      *
      * @param string $name
-     * @return boolean
+     *
+     * @return bool
      */
     public function hasColumn($name)
     {
         return isset($this->columns[ $name ]);
     }
-
 
     /**
      * Insert column object at the begining of the column list.
@@ -192,14 +182,13 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public function insertColumn(DeclareColumn $column)
     {
         array_unshift($this->columnNames, $column->name);
-        $this->columns = [ $column->name => $column ] + $this->columns;
+        $this->columns = [$column->name => $column] + $this->columns;
     }
 
-
     /**
-     * Insert a primary key column with auto increment
+     * Insert a primary key column with auto increment.
      *
-     * @param string $name default to 'id'
+     * @param string $name       default to 'id'
      * @param string $columnType 'int', 'smallint', 'bigint' ...
      */
     protected function insertAutoIdColumn($name = 'id', $columnType = 'integer')
@@ -207,11 +196,12 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         $column = new AutoIncrementPrimaryKeyColumn($name, $columnType);
         $this->primaryKey = $column->name;
         $this->insertColumn($column);
+
         return $column;
     }
 
     /**
-     * Find primary keys from columns
+     * Find primary keys from columns.
      *
      * @return string
      */
@@ -227,64 +217,64 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public function export()
     {
         $columnArray = array();
-        foreach ($this->columns as $name => $column ) {
+        foreach ($this->columns as $name => $column) {
             // This idea is from:
             // http://search.cpan.org/~tsibley/Jifty-DBI-0.75/lib/Jifty/DBI/Schema.pm
             //
             // if the refer attribute is defined, we should create the belongsTo relationship
             if ($refer = $column->refer) {
                 // remove _id suffix if possible
-                $accessorName = preg_replace('#_id$#','',$name);
+                $accessorName = preg_replace('#_id$#', '', $name);
                 $schema = null;
                 $schemaClass = $refer;
 
                 // convert class name "Post" to "PostSchema"
                 if (substr($refer, -strlen('Schema')) != 'Schema') {
-                    if (class_exists($refer. 'Schema', true)) {
-                        $refer = $refer . 'Schema';
+                    if (class_exists($refer.'Schema', true)) {
+                        $refer = $refer.'Schema';
                     }
                 }
 
-                if (! class_exists($refer)) {
+                if (!class_exists($refer)) {
                     throw new Exception("refer schema from '$refer' not found.");
                 }
 
-                $o = new $refer;
+                $o = new $refer();
                 // schema is defined in model
                 $schemaClass = $refer;
                 $this->belongsTo($accessorName, $schemaClass, 'id', $name);
             }
             $columnArray[ $name ] = $column->export();
         }
+
         return array(
-            'label'             => $this->getLabel(),
-            'table'             => $this->getTable(),
-            'column_data'       => $columnArray,
-            'column_names'      => $this->columnNames,
-            'primary_key'       => $this->primaryKey,
-            'model_class'       => $this->getModelClass(),
-            'collection_class'  => $this->getCollectionClass(),
-            'relations'         => $this->relations,
-            'read_data_source'  => $this->readSourceId,
+            'label' => $this->getLabel(),
+            'table' => $this->getTable(),
+            'column_data' => $columnArray,
+            'column_names' => $this->columnNames,
+            'primary_key' => $this->primaryKey,
+            'model_class' => $this->getModelClass(),
+            'collection_class' => $this->getCollectionClass(),
+            'relations' => $this->relations,
+            'read_data_source' => $this->readSourceId,
             'write_data_source' => $this->writeSourceId,
         );
     }
 
     public function dump()
     {
-        return var_export( $this->export() , true );
+        return var_export($this->export(), true);
     }
-
-
-
 
     /**
      * Use trait for the model class.
      *
      * @param string $class...
+     *
      * @return ClassTrait object
      */
-    public function addModelTrait($traitClass) {
+    public function addModelTrait($traitClass)
+    {
         $this->modelTraitClasses[] = $traitClass;
     }
 
@@ -292,9 +282,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      * Use trait for the model class.
      *
      * @param string $class...
+     *
      * @return ClassTrait object
      */
-    public function addCollectionTrait($traitClass) {
+    public function addCollectionTrait($traitClass)
+    {
         $this->collectionTraitClasses[] = $traitClass;
     }
 
@@ -321,15 +313,16 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     /** 
      * @return string[]
      */
-    public function getModelTraitClasses() {
+    public function getModelTraitClasses()
+    {
         return $this->modelTraitClasses;
     }
-
 
     /** 
      * @return string[]
      */
-    public function getCollectionTraitClasses() {
+    public function getCollectionTraitClasses()
+    {
         return $this->collectionTraitClasses;
     }
 
@@ -352,6 +345,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public function getShortClassName()
     {
         $strs = explode('\\', get_class($this));
+
         return end($strs);
     }
 
@@ -360,15 +354,13 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return get_class($this);
     }
 
-
     public function getLabel()
     {
         return $this->label ?: $this->_modelClassToLabel();
     }
 
-
     /**
-     * Get the table name of this schema class
+     * Get the table name of this schema class.
      *
      * @return string
      */
@@ -378,7 +370,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
     /**
-     * Get the primary key column name
+     * Get the primary key column name.
      *
      * @return string primary key column name
      */
@@ -388,7 +380,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
     /**
-     * Get model class name of this schema
+     * Get model class name of this schema.
      *
      * @return string model class name
      */
@@ -396,14 +388,12 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     {
         // If self class name is endded with 'Schema', remove it and return.
         $class = get_class($this);
-        if( ( $p = strrpos($class, 'Schema' ) ) !== false ) {
-            return substr($class , 0 , $p);
+        if (($p = strrpos($class, 'Schema')) !== false) {
+            return substr($class, 0, $p);
         }
         // throw new Exception('Can not get model class from ' . $class );
         return $class;
     }
-
-
 
     /**
      * Convert current model name to a class name.
@@ -415,36 +405,34 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return ClassUtils::convertClassToTableName($this->getModelName());
     }
 
-
-
     /**
      * Add column object into the column list.
      *
      * @param DeclareColumn
+     *
      * @return DeclareColumn
      */
     public function addColumn(DeclareColumn $column)
     {
         if (isset($this->columns[$column->name])) {
-            throw new Exception("column $name of ". get_class($this) . " is already defined.");
+            throw new Exception("column $name of ".get_class($this).' is already defined.');
         }
         $this->columnNames[] = $column->name;
+
         return $this->columns[ $column->name ] = $column;
     }
-
 
     protected function _modelClassToLabel()
     {
         /* Get the latest token. */
-        if ( preg_match( '/(\w+)(?:Model)?$/', $this->getModelClass() , $reg) ) 
-        {
+        if (preg_match('/(\w+)(?:Model)?$/', $this->getModelClass(), $reg)) {
             $label = @$reg[1];
-            if ( ! $label ) {
-                throw new Exception( "Table name error" );
+            if (!$label) {
+                throw new Exception('Table name error');
             }
 
             /* convert blah_blah to BlahBlah */
-            return ucfirst(preg_replace( '/[_]/' , ' ' , $label ));
+            return ucfirst(preg_replace('/[_]/', ' ', $label));
         }
     }
 
@@ -457,9 +445,10 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     {
         $ids = [];
         $ids[] = $this->getLabel();
-        foreach( $this->getColumnLabels() as $label ) {
+        foreach ($this->getColumnLabels() as $label) {
             $ids[] = $label;
         }
+
         return $ids;
     }
 
@@ -478,40 +467,43 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public function label($label)
     {
         $this->label = $label;
+
         return $this;
     }
 
     /**
-     * Define table name
+     * Define table name.
      *
      * @param string $table table name
      */
     public function table($table)
     {
         $this->table = $table;
+
         return $this;
     }
 
-
     /**
-     * Define new column object
+     * Define new column object.
      *
-     * @param string $name column name
+     * @param string $name  column name
      * @param string $class column class name
+     *
      * @return DeclareColumn
      */
     public function column($name, $class = 'LazyRecord\\Schema\\DeclareColumn')
     {
         if (isset($this->columns[$name])) {
-            throw new Exception("column $name of ". get_class($this) . " is already defined.");
+            throw new Exception("column $name of ".get_class($this).' is already defined.');
         }
         $this->columnNames[] = $name;
-        return $this->columns[ $name ] = new $class( $name );
+
+        return $this->columns[ $name ] = new $class($name);
     }
 
     /**
      * SchemaGenerator generates column accessor methods from the
-     * column definition automatically
+     * column definition automatically.
      *
      * If you don't want these accessors to be generated, you may simply call
      * 'disableColumnAccessors'
@@ -522,22 +514,23 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
     /**
-     * Invode helper
+     * Invode helper.
      *
-     * @param string $helperName 
-     * @param array $arguments indexed array, passed to the init function of helper class.
+     * @param string $helperName
+     * @param array  $arguments  indexed array, passed to the init function of helper class.
      *
      * @return Helper\BaseHelper
      */
     public function helper($helperName, $arguments = array())
     {
-        $helperClass = 'LazyRecord\\Schema\\Helper\\' . $helperName . 'Helper';
+        $helperClass = 'LazyRecord\\Schema\\Helper\\'.$helperName.'Helper';
         $helper = new $helperClass($this, $arguments);
+
         return $helper;
     }
 
     /**
-     * Mixin
+     * Mixin.
      *
      * Availabel mixins
      *
@@ -548,9 +541,9 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public function mixin($class, array $options = array())
     {
-        if (! class_exists($class,true) ) {
-            $class = 'LazyRecord\\Schema\\Mixin\\' . $class;
-            if ( ! class_exists($class,true) ) {
+        if (!class_exists($class, true)) {
+            $class = 'LazyRecord\\Schema\\Mixin\\'.$class;
+            if (!class_exists($class, true)) {
                 throw new Exception("Mixin class $class not found.");
             }
         }
@@ -566,45 +559,42 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         $this->modelTraitClasses = array_merge($this->modelTraitClasses, $mixin->modelTraitClasses);
     }
 
-
     /**
-     * set data source for both write and read
+     * set data source for both write and read.
      *
      * @param string $id data source id
      */
-    public function using( $id ) 
+    public function using($id)
     {
         $this->writeSourceId = $id;
         $this->readSourceId = $id;
+
         return $this;
     }
 
-
     /**
-     * set data source for write
+     * set data source for write.
      *
      * @param string $id data source id
      */
-    public function writeTo( $id ) 
+    public function writeTo($id)
     {
         $this->writeSourceId = $id;
+
         return $this;
     }
 
-
     /**
-     * set data source for read
+     * set data source for read.
      *
      * @param string $id data source id
      */
-    public function readFrom( $id )
+    public function readFrom($id)
     {
         $this->readSourceId = $id;
+
         return $this;
     }
-
-
-
 
     /**
      * 'index' method helps you define index queries.
@@ -620,19 +610,19 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         $query = $this->indexes[$name] = new CreateIndexQuery($name);
         if ($columns) {
             if (!$columns || empty($columns)) {
-                throw new InvalidArgumentException("index columns must not be empty.");
+                throw new InvalidArgumentException('index columns must not be empty.');
             }
             $query->on($this->getTable(), (array) $columns);
         }
         if ($using) {
             $query->using($using);
         }
+
         return $query;
     }
 
-
     /**
-     * 'seeds' helps you define seed classes
+     * 'seeds' helps you define seed classes.
      *
      *     $this->seeds('User\\Seed','Data\\Seed');
      *
@@ -641,36 +631,33 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public function seeds()
     {
         $seeds = func_get_args();
-        $this->seeds = array_map(function($class) {
-            return str_replace('::','\\',$class);
+        $this->seeds = array_map(function ($class) {
+            return str_replace('::', '\\', $class);
         }, $seeds);
+
         return $this;
     }
 
-
     /**
-     * Add seed class
+     * Add seed class.
      *
      * @param string $seed
      */
     public function addSeed($seed)
     {
         $this->seeds[] = $seed;
+
         return $this;
     }
-
-
-
 
     protected function getCurrentSchemaClass()
     {
         if ($this instanceof MixinDeclareSchema) {
             return get_class($this->parentSchema);
         }
+
         return get_class($this);
     }
-
-
 
     /*****************************************************************************
      * Relationship Definition Methods
@@ -679,9 +666,8 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      * Methods used for defining relationships
      ****************************************************************************/
 
-
     /**
-     * define self primary key to foreign key reference
+     * define self primary key to foreign key reference.
      *
      * comments(
      *    post_id => author.comment_id
@@ -689,16 +675,17 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *
      * $post->publisher
      *
-     * @param string $foreignClass foreign schema class.
+     * @param string $foreignClass  foreign schema class.
      * @param string $foreignColumn foreign reference schema column.
-     * @param string $selfColumn self column name
+     * @param string $selfColumn    self column name
      */
     public function belongsTo($accessor, $foreignClass, $foreignColumn = 'id', $selfColumn = null)
     {
-        if ($foreignClass && NULL === $foreignColumn) {
-            $s = new $foreignClass;
+        if ($foreignClass && null === $foreignColumn) {
+            $s = new $foreignClass();
             $foreignColumn = $s->primaryKey;
         }
+
         return $this->relations[$accessor] = new Relationship($accessor, array(
             'type' => Relationship::BELONGS_TO,
             'self_schema' => $this->getCurrentSchemaClass(),
@@ -708,61 +695,60 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         ));
     }
 
-
-
     /**
-     * has-one relationship
+     * has-one relationship.
      *
      *   model(
      *      post_id => post
      *   )
      *
-     * @param string $accessor          accessor name.
-     * @param string $foreignClass      foreign schema class
-     * @param string $foreignColumn     foreign schema column
-     * @param string $selfColumn        self schema column
+     * @param string $accessor      accessor name.
+     * @param string $foreignClass  foreign schema class
+     * @param string $foreignColumn foreign schema column
+     * @param string $selfColumn    self schema column
      */
     public function hasOne($accessor, $foreignClass, $foreignColumn = null, $selfColumn)
     {
         // foreignColumn is default to foreignClass.primary key
         return $this->relations[ $accessor ] = new Relationship($accessor, array(
-            'type'           => Relationship::HAS_ONE,
-            'self_schema'    => $this->getCurrentSchemaClass(),
-            'self_column'    => $selfColumn,
+            'type' => Relationship::HAS_ONE,
+            'self_schema' => $this->getCurrentSchemaClass(),
+            'self_column' => $selfColumn,
             'foreign_schema' => $this->resolveSchemaClass($foreignClass),
             'foreign_column' => $foreignColumn,
         ));
     }
 
     /**
-     * onUpdate defines a software trigger of update action
+     * onUpdate defines a software trigger of update action.
      */
     public function onUpdate($action)
     {
         $this->onUpdate = $action;
+
         return $this;
     }
 
     /**
-     * onDelete defines a software trigger of delete action
+     * onDelete defines a software trigger of delete action.
      *
      * @param string $action Currently for 'cascade'
      */
     public function onDelete($action)
     {
         $this->onDelete = $action;
+
         return $this;
     }
-
 
     public function hasMany()
     {
         // forward call
-        return call_user_func_array(array($this,'many'), func_get_args());
+        return call_user_func_array(array($this, 'many'), func_get_args());
     }
 
     /**
-     * Add has-many relation
+     * Add has-many relation.
      *
      * TODO: provide a relationship object to handle sush operation, that will be:
      *
@@ -770,41 +756,34 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *         ->from('App_Model_Book','author_id')
      *
      *
-     * @param string $accessor          accessor name.
-     * @param string $foreignClass      foreign schema class
-     * @param string $foreignColumn     foreign schema column
-     * @param string $selfColumn        self schema column
+     * @param string $accessor      accessor name.
+     * @param string $foreignClass  foreign schema class
+     * @param string $foreignColumn foreign schema column
+     * @param string $selfColumn    self schema column
      */
-    public function many($accessor,$foreignClass,$foreignColumn,$selfColumn)
+    public function many($accessor, $foreignClass, $foreignColumn, $selfColumn)
     {
         return $this->relations[ $accessor ] = new Relationship($accessor, array(
-            'type'           => Relationship::HAS_MANY,
-            'self_schema'    => $this->getCurrentSchemaClass(),
-            'self_column'    => $selfColumn,
+            'type' => Relationship::HAS_MANY,
+            'self_schema' => $this->getCurrentSchemaClass(),
+            'self_column' => $selfColumn,
             'foreign_schema' => $this->resolveSchemaClass($foreignClass),
             'foreign_column' => $foreignColumn,
         ));
     }
 
-
-
-
-
-
-
     /**
-     *
      * @param string $accessor          accessor name.
      * @param string $relationId        a hasMany relationship.
      * @param string $foreignRelationId foreign relation id.
      */
-    public function manyToMany($accessor, $relationId, $foreignRelationId )
+    public function manyToMany($accessor, $relationId, $foreignRelationId)
     {
         if ($r = $this->getRelation($relationId)) {
             return $this->relations[ $accessor ] = new Relationship($accessor, array(
-                'type'              => Relationship::MANY_TO_MANY,
+                'type' => Relationship::MANY_TO_MANY,
                 'relation_junction' => $relationId,
-                'relation_foreign'  => $foreignRelationId,
+                'relation_foreign' => $foreignRelationId,
             ));
         }
         throw new Exception("Relation $relationId is not defined.");
@@ -813,24 +792,21 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     protected function resolveSchemaClass($class)
     {
         if (!preg_match('/Schema$/', $class)) {
-            $class = $class . "Schema";
+            $class = $class.'Schema';
         }
         if ($class[0] == '\\' || class_exists($class)) {
             return $class;
         }
-        $nsClass = $this->getNamespace() . '\\' . $class;
+        $nsClass = $this->getNamespace().'\\'.$class;
         if (class_exists($nsClass)) {
             return $nsClass;
         }
         throw new Exception("Schema class $class or $nsClass not found.");
     }
 
-
-
     /*****************************************************************************
      *                            File Level Methods
      ****************************************************************************/
-
 
     /**
      * Get the related class file path by the given class name.
@@ -846,12 +822,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public function getRelatedClassPath($class)
     {
-        $_p = explode('\\',$class);
+        $_p = explode('\\', $class);
         $shortClassName = end($_p);
-        return $this->getDirectory() . DIRECTORY_SEPARATOR . $shortClassName . '.php';
+
+        return $this->getDirectory().DIRECTORY_SEPARATOR.$shortClassName.'.php';
     }
-
-
 
     /**
      * Get directory from current schema object.
@@ -861,23 +836,26 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public function getDirectory()
     {
         $refl = new ReflectionObject($this);
+
         return $dir = dirname($refl->getFilename());
     }
 
     public function getClassFileName()
     {
         $refl = new ReflectionObject($this);
+
         return $refl->getFilename();
     }
 
     /**
      * Return the modification time of this schema definition class.
      *
-     * @return integer timestamp
+     * @return int timestamp
      */
     public function getModificationTime()
     {
         $refl = new ReflectionObject($this);
+
         return filemtime($refl->getFilename());
     }
 
@@ -886,44 +864,34 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *
      * @param string $path
      *
-     * @return boolean
+     * @return bool
      */
     public function isNewerThanFile($path)
     {
-        if (! file_exists($path)) {
+        if (!file_exists($path)) {
             return true;
         }
+
         return $this->getModificationTime() > filemtime($path);
     }
-
 
     /**
      * requireProxyFileUpdate returns true if the schema proxy file is out of date.
      *
-     * @return boolean
+     * @return bool
      */
     public function requireProxyFileUpdate()
     {
         $classFilePath = $this->getRelatedClassPath($this->getSchemaProxyClass());
+
         return $this->isNewerThanFile($classFilePath);
     }
 
-
-
-
-
-
-
     /**
-     *
      * @return CreateIndexQuery[]
      */
     public function getIndexQueries()
     {
         return $this->indexes;
     }
-
-
-
 }
-

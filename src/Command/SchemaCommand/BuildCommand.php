@@ -1,17 +1,17 @@
 <?php
+
 namespace LazyRecord\Command\SchemaCommand;
+
 use LazyRecord\Command\BaseCommand;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\SchemaUtils;
 use CLIFramework\Logger\ActionLogger;
 
 /**
- * $ lazy build-schema path/to/Schema path/to/SchemaDir
- *
+ * $ lazy build-schema path/to/Schema path/to/SchemaDir.
  */
 class BuildCommand extends BaseCommand
 {
-
     public function usage()
     {
         return 'schema build [paths|classes]';
@@ -29,9 +29,9 @@ class BuildCommand extends BaseCommand
             ;
     }
 
-    public function options($opts) 
+    public function options($opts)
     {
-        $opts->add('f|force','force generate all schema files.');
+        $opts->add('f|force', 'force generate all schema files.');
         parent::options($opts);
     }
 
@@ -52,29 +52,22 @@ class BuildCommand extends BaseCommand
         $actionLogger = new ActionLogger(STDERR);
 
         // for generated class source code.
-        $this->logger->debug("Setting up error handler...");
-        set_error_handler(function($errno, $errstr, $errfile, $errline) {
-            printf( "ERROR %s:%s  [%s] %s\n" , $errfile, $errline, $errno, $errstr );
-        }, E_ERROR );
+        $this->logger->debug('Setting up error handler...');
+        set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+            printf("ERROR %s:%s  [%s] %s\n", $errfile, $errline, $errno, $errstr);
+        }, E_ERROR);
 
         $classMap = array();
         foreach ($schemas as $schema) {
-
             if ($this->logger->isVerbose()) {
-
                 $actionLog = $actionLogger->newAction(get_class($schema), get_class($schema));
                 $actionLog->setActionColumnWidth(50);
-
-            } else if ($this->logger->isDebug()) {
-
-                $filepath = str_replace(getcwd() . '/', '', $schema->getClassFileName());
+            } elseif ($this->logger->isDebug()) {
+                $filepath = str_replace(getcwd().'/', '', $schema->getClassFileName());
                 $actionLog = $actionLogger->newAction($filepath, get_class($schema));
                 $actionLog->setActionColumnWidth(50);
-
             } else {
-
                 $actionLog = $actionLogger->newAction($schema->getShortClassName(), get_class($schema));
-
             }
             $actionLog->setStatus('checking');
 
@@ -89,8 +82,7 @@ class BuildCommand extends BaseCommand
             $actionLog->finalize();
         }
 
-        $this->logger->debug("Restoring error handler...");
+        $this->logger->debug('Restoring error handler...');
         restore_error_handler();
     }
 }
-

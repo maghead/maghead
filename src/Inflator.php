@@ -1,21 +1,23 @@
 <?php
+
 namespace LazyRecord;
+
 use LazyRecord\Types\DateTime;
 use SQLBuilder\Raw;
 
 class Inflator
 {
-    static $inflators = array();
+    public static $inflators = array();
 
     /** 
-     * provide a custom inflator for data type
+     * provide a custom inflator for data type.
      */
-    static function register($isa, $inflator)
+    public static function register($isa, $inflator)
     {
         self::$inflators[ $isa ] = $inflator;
     }
 
-    static function inflate($value,$isa = null)
+    public static function inflate($value, $isa = null)
     {
         if ($value === null || $isa === null) {
             return $value;
@@ -27,38 +29,39 @@ class Inflator
         }
          */
 
-        if( isset(self::$inflators[ $isa ]) ) {
+        if (isset(self::$inflators[ $isa ])) {
             $inflator = self::$inflators[ $isa ];
-            if (is_callable($inflator) ) {
-                return call_user_func( $inflator , $value );
-            }
-            elseif( class_exists($inflator,true) ) {
-                $d = new $inflator;
-                return $d->inflate( $value );
+            if (is_callable($inflator)) {
+                return call_user_func($inflator, $value);
+            } elseif (class_exists($inflator, true)) {
+                $d = new $inflator();
+
+                return $d->inflate($value);
             }
         }
 
-        switch($isa) {
-        case "int":
+        switch ($isa) {
+        case 'int':
             return (int) $value;
-        case "str":
+        case 'str':
             return (string) $value;
-        case "bool":
+        case 'bool':
             if (is_string($value)) {
                 if (strcasecmp('false', $value) == 0 || $value == '0') {
                     return false;
-                } elseif (strcasecmp('true', $value) == 0 || $value == '1' ) {
+                } elseif (strcasecmp('true', $value) == 0 || $value == '1') {
                     return true;
                 } elseif ($value === '') {
-                    return NULL;
+                    return;
                 }
             }
+
             return $value ? true : false;
-        case "float":
+        case 'float':
             return floatval($value);
-        case "json":
+        case 'json':
             return json_decode($value);
-        case "DateTime":
+        case 'DateTime':
             // already a DateTime object
             if ($value instanceof DateTime) {
                 return $value;
@@ -66,13 +69,10 @@ class Inflator
             if (is_string($value)) {
                 return new DateTime($value);
             }
-            return null;
+
+            return;
         }
+
         return $value;
     }
-
 }
-
-
-
-

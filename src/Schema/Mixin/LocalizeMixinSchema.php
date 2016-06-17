@@ -1,14 +1,15 @@
 <?php
+
 namespace LazyRecord\Schema\Mixin;
+
 use LazyRecord\Schema\MixinDeclareSchema;
 use LazyRecord\Schema;
-use DateTime;
 
 class LocalizeMixinSchema extends MixinDeclareSchema
 {
-
-
-    public function schema() { }
+    public function schema()
+    {
+    }
 
     public function postSchema()
     {
@@ -18,7 +19,7 @@ class LocalizeMixinSchema extends MixinDeclareSchema
                     // expand column
                     foreach ($column->locales as $locale) {
                         $newColumn = clone $column;
-                        $newColumn->name( $column->name . '_' . $locale );
+                        $newColumn->name($column->name.'_'.$locale);
                         $schema->addColumn($newColumn);
                     }
                 }
@@ -26,5 +27,3 @@ class LocalizeMixinSchema extends MixinDeclareSchema
         }
     }
 }
-
-

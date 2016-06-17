@@ -1,6 +1,7 @@
 <?php
+
 namespace LazyRecord\Schema;
-use Exception;
+
 use ReflectionClass;
 
 class DynamicSchemaDeclare extends DeclareSchema
@@ -8,15 +9,15 @@ class DynamicSchemaDeclare extends DeclareSchema
     public $model;
     public $modelClass;
 
-    public function __construct($model = null) 
+    public function __construct($model = null)
     {
-        if( $model ) {
-            if( is_object($model) ) {
+        if ($model) {
+            if (is_object($model)) {
                 $this->model = $model;
                 $this->modelClass = get_class($model);
-            } elseif( is_string($model) ) {
+            } elseif (is_string($model)) {
                 $this->modelClass = $model;
-                $this->model = new $model;
+                $this->model = new $model();
             }
             $this->model->schema($this);
             $this->build();
@@ -38,8 +39,7 @@ class DynamicSchemaDeclare extends DeclareSchema
         return new $this->getModelClass();
     }
 
-
-    public function newCollection() 
+    public function newCollection()
     {
         return new $this->getCollectionClass();
     }
@@ -47,6 +47,7 @@ class DynamicSchemaDeclare extends DeclareSchema
     public function getDirectory()
     {
         $ref = new ReflectionClass($this->modelClass);
+
         return dirname($ref->getFilename());
     }
 
@@ -56,10 +57,6 @@ class DynamicSchemaDeclare extends DeclareSchema
     }
 }
 
-
-
-/**
+/*
     $schema = new DynamicSchemaDeclare( $modelClass );
  */
-
-

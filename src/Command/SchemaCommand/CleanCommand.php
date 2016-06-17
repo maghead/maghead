@@ -1,16 +1,16 @@
 <?php
+
 namespace LazyRecord\Command\SchemaCommand;
+
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\Command\BaseCommand;
 
 /**
- * $ lazy clean-schema path/to/Schema path/to/SchemaDir
- *
+ * $ lazy clean-schema path/to/Schema path/to/SchemaDir.
  */
 class CleanCommand extends BaseCommand
 {
-
     public function usage()
     {
         return 'clean-schema [paths|classes]';
@@ -21,9 +21,9 @@ class CleanCommand extends BaseCommand
         return 'clean up schema files.';
     }
 
-    public function options($opts) 
+    public function options($opts)
     {
-        $opts->add('f|force','force generate all schema files.');
+        $opts->add('f|force', 'force generate all schema files.');
         parent::options($opts);
     }
 
@@ -37,15 +37,15 @@ class CleanCommand extends BaseCommand
         $schemas = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
 
         foreach ($schemas as $schema) {
-            $this->logger->info('Cleaning schema ' . get_class($schema) );
+            $this->logger->info('Cleaning schema '.get_class($schema));
             $paths = array();
-            $paths[] = $schema->getRelatedClassPath( $schema->getBaseModelClass() );
-            $paths[] = $schema->getRelatedClassPath( $schema->getBaseCollectionClass() );
-            $paths[] = $schema->getRelatedClassPath( $schema->getSchemaProxyClass() );
+            $paths[] = $schema->getRelatedClassPath($schema->getBaseModelClass());
+            $paths[] = $schema->getRelatedClassPath($schema->getBaseCollectionClass());
+            $paths[] = $schema->getRelatedClassPath($schema->getSchemaProxyClass());
 
-            foreach ( $paths as $path ) {
-                $this->logger->info( " - Deleting " . $path );
-                if ( file_exists($path) ) {
+            foreach ($paths as $path) {
+                $this->logger->info(' - Deleting '.$path);
+                if (file_exists($path)) {
                     unlink($path);
                 }
             }
@@ -58,7 +58,6 @@ class CleanCommand extends BaseCommand
         }
         $classMap = $generator->generate($classes);
          */
-
 
         /*
         foreach( $classMap as $class => $file ) {
@@ -73,4 +72,3 @@ class CleanCommand extends BaseCommand
         $logger->info('Done');
     }
 }
-

@@ -1,15 +1,14 @@
 <?php
+
 namespace LazyRecord\SqlBuilder;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\QueryBuilder;
+
 use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship;
 use LazyRecord\Schema\DeclareColumn;
 use SQLBuilder\ArgumentArray;
 
 /**
- * Schema SQL builder
+ * Schema SQL builder.
  *
  * @see http://www.sqlite.org/docs.html
  */
@@ -22,14 +21,12 @@ class SqliteBuilder extends BaseBuilder
         ];
     }
 
-
-
-
-    public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column) {
+    public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column)
+    {
         $name = $column->name;
-        $isa  = $column->isa ?: 'str';
+        $isa = $column->isa ?: 'str';
         $type = $column->type;
-        if (! $type && $isa == 'str') {
+        if (!$type && $isa == 'str') {
             $type = 'text';
         }
 
@@ -38,10 +35,10 @@ class SqliteBuilder extends BaseBuilder
             $column->unsigned = false;
         }
 
-        $args = new ArgumentArray;
+        $args = new ArgumentArray();
         $sql = $column->buildDefinitionSql($this->driver, $args);
 
-        /**
+        /*
          * build sqlite reference
          *    create table track(
          *        trackartist INTEGER,
@@ -64,28 +61,28 @@ class SqliteBuilder extends BaseBuilder
          *     FOREIGN KEY(songartist, songalbum) REFERENCES album(albumartist, albumname)
          * );
          */
-        foreach( $schema->relations as $rel ) {
-            switch( $rel['type'] ) {
+        foreach ($schema->relations as $rel) {
+            switch ($rel['type']) {
             case Relationship::BELONGS_TO:
             case Relationship::HAS_MANY:
             case Relationship::HAS_ONE:
-                if ($name != 'id' && $rel['self_column'] == $name)
-                {
-                    $fSchema = new $rel['foreign_schema'];
+                if ($name != 'id' && $rel['self_column'] == $name) {
+                    $fSchema = new $rel['foreign_schema']();
                     $fColumn = $rel['foreign_column'];
-                    $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
+                    $sql .= ' REFERENCES '.$fSchema->getTable().'('.$fColumn.')';
                 }
                 break;
             }
         }
+
         return $sql;
     }
 
     public function dropTable(SchemaInterface $schema)
     {
-        return 'DROP TABLE IF EXISTS ' 
-            . $this->driver->quoteIdentifier( $schema->getTable() )
-            . ';';
+        return 'DROP TABLE IF EXISTS '
+            .$this->driver->quoteIdentifier($schema->getTable())
+            .';';
     }
 
     public function buildIndex(SchemaInterface $schema)
@@ -93,7 +90,8 @@ class SqliteBuilder extends BaseBuilder
         return [];
     }
 
-    public function buildForeignKeys(SchemaInterface $schema) {
+    public function buildForeignKeys(SchemaInterface $schema)
+    {
         return [];
     }
 }

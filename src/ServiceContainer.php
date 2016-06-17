@@ -1,12 +1,9 @@
 <?php
-namespace LazyRecord;
-use Pimple\Container;
 
-use LazyRecord\ConfigLoader;
+namespace LazyRecord;
+
+use Pimple\Container;
 use LazyRecord\Schema\SchemaFinder;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\Schema\RuntimeSchema;
-use LazyRecord\Console;
 use CLIFramework\Logger;
 
 class ServiceContainer extends Container
@@ -19,26 +16,27 @@ class ServiceContainer extends Container
             if ($config->isLoaded()) {
                 $config->initForBuild();
             }
+
             return $config;
         };
 
-        $this['logger'] = function($c) {
+        $this['logger'] = function ($c) {
             return Console::getInstance()->getLogger();
         };
 
-        $this['schema_finder'] = function($c) {
-            $finder = new SchemaFinder;
+        $this['schema_finder'] = function ($c) {
+            $finder = new SchemaFinder();
             $finder->paths = $c['config_loader']->getSchemaPaths() ?: [];
+
             return $finder;
         };
     }
 
-    static public function getInstance()
+    public static function getInstance()
     {
         static $instance;
-        $instance = new self;
+        $instance = new self();
+
         return $instance;
     }
 }
-
-

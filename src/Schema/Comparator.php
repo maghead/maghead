@@ -1,14 +1,13 @@
 <?php
+
 namespace LazyRecord\Schema;
-use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\ColumnAccessorInterface;
+
 use LazyRecord\Schema\Comparator\ColumnDiff;
 use LazyRecord\Schema\Comparator\AttributeDiff;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use Closure;
 use SQLBuilder\Raw;
-use Exception;
 
 class Comparator
 {
@@ -20,12 +19,12 @@ class Comparator
     }
 
     /**
-     * compare two schemas
+     * compare two schemas.
      *
      * @param Schema $before schema before
-     * @param Schema $after new schema
+     * @param Schema $after  new schema
      */
-    public function compare(SchemaInterface $before, SchemaInterface $after) 
+    public function compare(SchemaInterface $before, SchemaInterface $after)
     {
         $diff = array();
 
@@ -33,11 +32,10 @@ class Comparator
         $afterColumns = $after ? $after->getColumns() : array();
 
         $columnKeys = array_unique(
-            array_merge(array_keys($beforeColumns), array_keys($afterColumns) )
+            array_merge(array_keys($beforeColumns), array_keys($afterColumns))
         );
 
-        foreach ($columnKeys as $key) 
-        {
+        foreach ($columnKeys as $key) {
             // If schema and db has the same column, we then compare the column definitions
             if (isset($beforeColumns[$key]) && isset($afterColumns[$key])) {
                 $bc = $beforeColumns[$key];
@@ -98,29 +96,23 @@ class Comparator
                     }
 
                     if (($aval instanceof Raw && $bval instanceof Raw && $aval->compare($bval) != 0)) {
-                        $d->appendDetail(new AttributeDiff($n , $aval, $bval));
-                    } else if (is_scalar($aval) && is_scalar($bval) && $aval != $bval) {
-                        $d->appendDetail(new AttributeDiff($n , $aval, $bval));
+                        $d->appendDetail(new AttributeDiff($n, $aval, $bval));
+                    } elseif (is_scalar($aval) && is_scalar($bval) && $aval != $bval) {
+                        $d->appendDetail(new AttributeDiff($n, $aval, $bval));
                     }
                 }
                 if (count($d->details) > 0) {
                     $diff[] = $d;
                 }
-            }
-            else if ( isset($beforeColumns[$key]) && ! isset($afterColumns[$key]))
-            {
+            } elseif (isset($beforeColumns[$key]) && !isset($afterColumns[$key])) {
                 // flag: -
-                $diff[] = new ColumnDiff($key, 'D', $beforeColumns[$key], NULL);
-            }
-            else if ( isset($afterColumns[$key]) && ! isset($beforeColumns[$key]) )
-            {
+                $diff[] = new ColumnDiff($key, 'D', $beforeColumns[$key], null);
+            } elseif (isset($afterColumns[$key]) && !isset($beforeColumns[$key])) {
                 // flag: +
-                $diff[] = new ColumnDiff($key, 'A', NULL, $afterColumns[$key]);
+                $diff[] = new ColumnDiff($key, 'A', null, $afterColumns[$key]);
             }
         }
+
         return $diff;
     }
-
 }
-
-

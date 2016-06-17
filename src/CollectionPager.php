@@ -1,9 +1,9 @@
 <?php
+
 namespace LazyRecord;
 
-class CollectionPager 
+class CollectionPager
 {
-
     /* current page number, start from 1 */
     public $currentPage;
 
@@ -13,33 +13,34 @@ class CollectionPager
     /* size of pages */
     public $totalPages;
 
-
     /* data array */
     public $dataArray;
 
-    public function __construct(array $dataArray, $page = 1 , $pagenum  = 10 )
+    public function __construct(array $dataArray, $page = 1, $pagenum = 10)
     {
-        if ($page == null)
+        if ($page == null) {
             $page = 1;
+        }
 
-        if ($pagenum == null)
+        if ($pagenum == null) {
             $pagenum = 10;
+        }
 
-        $this->perPage     = $pagenum;
+        $this->perPage = $pagenum;
         $this->currentPage = $page;
-        $this->dataArray   = $dataArray;
+        $this->dataArray = $dataArray;
         $this->calculate();
     }
 
-    public function setPerPage(int $num ) 
+    public function setPerPage(int $num)
     {
-        $this->perPage = $num; 
+        $this->perPage = $num;
         $this->calculate();
     }
 
     public function setPage(int $num)
     {
-        $this->currentPage = $num; 
+        $this->currentPage = $num;
         $this->calculate();
     }
 
@@ -50,13 +51,13 @@ class CollectionPager
 
     public function next()
     {
-        $this->currentPage++;
+        ++$this->currentPage;
         $this->calculate();
     }
 
     public function previous()
     {
-        $this->currentPage--;
+        --$this->currentPage;
         $this->calculate();
     }
 
@@ -77,25 +78,25 @@ class CollectionPager
         }
     }
 
-
     public function getPreviousPage()
     {
-        if( $this->hasPreviousPage() ) 
+        if ($this->hasPreviousPage()) {
             return $this->currentPage - 1;
+        }
     }
 
-    public function calculate() 
+    public function calculate()
     {
-        $this->startFrom  = $this->getOffset();
-        $this->totalPages = ($c = count($this->dataArray)) > 0 
-            ? ceil( $c / $this->perPage ) 
+        $this->startFrom = $this->getOffset();
+        $this->totalPages = ($c = count($this->dataArray)) > 0
+            ? ceil($c / $this->perPage)
             : 1;
     }
 
     public function items()
     {
-        return array_slice($this->dataArray, 
-            $this->startFrom, 
+        return array_slice($this->dataArray,
+            $this->startFrom,
             $this->perPage
         );
     }
@@ -104,10 +105,4 @@ class CollectionPager
     {
         return ($this->currentPage - 1) * $this->perPage;
     }
-
 }
-
-
-
-
-

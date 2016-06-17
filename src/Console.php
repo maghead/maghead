@@ -1,11 +1,13 @@
 <?php
+
 namespace LazyRecord;
+
 use CLIFramework\Application;
 
 class Console extends Application
 {
     const name = 'LazyRecord';
-    const VERSION = "2.2.4";
+    const VERSION = '2.2.4';
 
     public function brief()
     {
@@ -16,12 +18,12 @@ class Console extends Application
     {
         parent::init();
 
-        /**
+        /*
          * Command for initialize related file structure
          */
         $this->command('init');
 
-        /**
+        /*
          * Command for building config file.
          */
         $this->command('build-conf', 'LazyRecord\\Command\\BuildConfCommand');
@@ -40,11 +42,13 @@ class Console extends Application
         $this->command('index');
     }
 
-    public static function getInstance() 
+    public static function getInstance()
     {
         static $self;
-        if( $self )
+        if ($self) {
             return $self;
-        return $self = new self;
+        }
+
+        return $self = new self();
     }
 }

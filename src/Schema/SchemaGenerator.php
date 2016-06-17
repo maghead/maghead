@@ -1,33 +1,19 @@
 <?php
+
 namespace LazyRecord\Schema;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use Exception;
+
 use RuntimeException;
-use ReflectionObject;
-use Traversable;
-use RecursiveRegexIterator;
-use RegexIterator;
 use LazyRecord\ConfigLoader;
-use ClassTemplate\TemplateClassFile;
 use ClassTemplate\ClassFile;
-use ClassTemplate\ClassInjection;
-use CodeGen\ClassConst;
-
 use LazyRecord\Schema;
-use CLIFramework\Logger;
-
 use LazyRecord\Schema\Factory\BaseModelClassFactory;
 use LazyRecord\Schema\Factory\BaseCollectionClassFactory;
 use LazyRecord\Schema\Factory\CollectionClassFactory;
 use LazyRecord\Schema\Factory\ModelClassFactory;
 use LazyRecord\Schema\Factory\SchemaProxyClassFactory;
-use LazyRecord\Schema\DynamicSchemaDeclare;
-use LazyRecord\Console;
-
 
 /**
- * Builder for building static schema class file
+ * Builder for building static schema class file.
  */
 class SchemaGenerator
 {
@@ -50,6 +36,7 @@ class SchemaGenerator
         if ($this->config && $this->config->loaded) {
             return $this->config->getBaseModelClass();
         }
+
         return 'LazyRecord\BaseModel';
     }
 
@@ -58,6 +45,7 @@ class SchemaGenerator
         if ($this->config && $this->config->loaded) {
             return $this->config->getBaseCollectionClass();
         }
+
         return 'LazyRecord\BaseCollection';
     }
 
@@ -67,27 +55,24 @@ class SchemaGenerator
      * the generated class files should be updated.
      *
      * @param ClassTemplate\ClassFile $cTemplate
-     * @param DeclareSchema $schema
+     * @param DeclareSchema           $schema
      */
     protected function updateClassFile(ClassFile $cTemplate, DeclareSchema $schema, $canOverwrite = false)
     {
         // always update the proxy schema file
-        $classFilePath = $schema->getRelatedClassPath( $cTemplate->getShortClassName() );
+        $classFilePath = $schema->getRelatedClassPath($cTemplate->getShortClassName());
 
         // classes not Model/Collection class are overwriteable
         if (file_exists($classFilePath)) {
-
             if ($canOverwrite && ($schema->isNewerThanFile($classFilePath) || $this->forceUpdate)) {
                 $this->writeClassTemplateToPath($cTemplate, $classFilePath);
+
                 return [$cTemplate->getClassName(), $classFilePath];
             }
-
         } else {
-
             if ($this->writeClassTemplateToPath($cTemplate, $classFilePath)) {
-                return [$cTemplate->getClassName() , $classFilePath];
+                return [$cTemplate->getClassName(), $classFilePath];
             }
-
         }
     }
 
@@ -95,11 +80,12 @@ class SchemaGenerator
      * Generate modal class file, overwrite by default.
      *
      * @param Schema $schema
-     * @param bool $force = true
+     * @param bool   $force  = true
      */
     public function generateModelClass(DeclareSchema $schema)
     {
         $cTemplate = ModelClassFactory::create($schema);
+
         return $this->updateClassFile($cTemplate, $schema, false); // do not overwrite
     }
 
@@ -107,21 +93,23 @@ class SchemaGenerator
      * Generate collection class from a schema object.
      *
      * @param DeclareSchema $schema
+     *
      * @return array class name, class file path
      */
     public function generateCollectionClass(DeclareSchema $schema)
     {
         $cTemplate = CollectionClassFactory::create($schema);
+
         return $this->updateClassFile($cTemplate, $schema, false);
     }
-
 
     /**
      * Write class template to the schema directory.
      *
      * @param string $directory The schema class directory.
      * @param ClassTemplate\ClassFile class template object.
-     * @param boolean $overwrite Overwrite class file. 
+     * @param bool $overwrite Overwrite class file. 
+     *
      * @return array
      */
     protected function writeClassTemplateToPath(ClassFile $cTemplate, $filepath)
@@ -129,9 +117,9 @@ class SchemaGenerator
         if (false === file_put_contents($filepath, $cTemplate->render())) {
             throw RuntimeException("Can not write file $filepath");
         }
+
         return true;
     }
-
 
     public function generateSchemaFiles(SchemaInterface $schema)
     {
@@ -157,6 +145,7 @@ class SchemaGenerator
             list($className, $classFile) = $result;
             $classMap[ $className ] = $classFile;
         }
+
         return $classMap;
     }
 
@@ -164,6 +153,7 @@ class SchemaGenerator
      * Given a schema class list, generate schema files.
      *
      * @param array $classes class list or schema object list.
+     *
      * @return array class map array of schema class and file path.
      */
     public function generate(array $schemas)
@@ -176,7 +166,7 @@ class SchemaGenerator
                 $classMap = array_merge($classMap, $generated);
             }
         }
+
         return $classMap;
     }
 }
-

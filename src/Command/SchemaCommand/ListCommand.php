@@ -1,5 +1,7 @@
 <?php
+
 namespace LazyRecord\Command\SchemaCommand;
+
 use LazyRecord\ConfigLoader;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Utils;
@@ -7,13 +9,10 @@ use CLIFramework\Command;
 use ReflectionClass;
 
 /**
- *
- * $ lazy build-schema path/to/Schema path/to/SchemaDir
- *
+ * $ lazy build-schema path/to/Schema path/to/SchemaDir.
  */
 class ListCommand extends Command
 {
-
     public function usage()
     {
         return 'list-schema [paths|classes]';
@@ -24,33 +23,30 @@ class ListCommand extends Command
         return 'list schema files.';
     }
 
-
     public function execute()
     {
         $logger = $this->getLogger();
         $options = $this->getOptions();
 
-        $this->logger->debug("Loading config");
+        $this->logger->debug('Loading config');
         $loader = ConfigLoader::getInstance();
         $loader->loadFromSymbol(true);
         $loader->initForBuild();
 
-        $this->logger->debug("Initializing schema generator...");
+        $this->logger->debug('Initializing schema generator...');
         $generator = new SchemaGenerator($loader, $logger);
 
         $args = func_get_args();
-        $classes = Utils::findSchemasByArguments( 
+        $classes = Utils::findSchemasByArguments(
             $loader,
-            $args, 
-            $this->logger );
+            $args,
+            $this->logger);
 
-        foreach( $classes as $class ) {
+        foreach ($classes as $class) {
             $rfc = new ReflectionClass($class);
-            $this->logger->info( 
-                sprintf("  %-50s %s", $class, $rfc->getFilename() ));
+            $this->logger->info(
+                sprintf('  %-50s %s', $class, $rfc->getFilename()));
         }
         $logger->info('Done');
     }
-
 }
-

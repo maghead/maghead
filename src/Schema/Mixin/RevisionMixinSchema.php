@@ -1,5 +1,7 @@
 <?php
+
 namespace LazyRecord\Schema\Mixin;
+
 use LazyRecord\Schema\MixinDeclareSchema;
 use LazyRecord\Schema;
 use DateTime;
@@ -25,8 +27,8 @@ class RevisionMixinSchema extends MixinDeclareSchema
             ->timestamp()
             ->null()
             ->isa('DateTime')
-            ->default(function() { 
-                return new \DateTime;
+            ->default(function () {
+                return new \DateTime();
             });
 
         $this->column('revision_updated_at')
@@ -37,12 +39,9 @@ class RevisionMixinSchema extends MixinDeclareSchema
             ->onUpdate(new Raw('CURRENT_TIMESTAMP'))
             ;
 
-
         $this->belongsTo('root_revision', get_class($this->parentSchema), 'id', 'revision_root_id');
         $this->belongsTo('parent_revision', get_class($this->parentSchema), 'id', 'revision_parent_id');
 
         $this->addModelTrait('LazyRecord\\ModelTrait\\RevisionModelTrait');
     }
 }
-
-

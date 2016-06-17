@@ -1,19 +1,18 @@
 <?php
+
 namespace LazyRecord\Schema\Factory;
-use ClassTemplate\TemplateClassFile;
+
 use ClassTemplate\ClassFile;
-use LazyRecord\Schema\SchemaInterface;
 use LazyRecord\Schema\DeclareSchema;
-use DateTime;
 use SerializerKit\PhpSerializer;
 
 function php_var_export($obj)
 {
-    $ser = new PhpSerializer;
+    $ser = new PhpSerializer();
     $ser->return = false;
-    return $ser->encode( $obj );
-}
 
+    return $ser->encode($obj);
+}
 
 class SchemaProxyClassFactory
 {
@@ -26,14 +25,14 @@ class SchemaProxyClassFactory
         $cTemplate->extendClass('\\LazyRecord\\Schema\\RuntimeSchema');
 
         $cTemplate->addConsts(array(
-            'schema_class'     => $schemaClass,
-            'model_name'       => $schema->getModelName(),
-            'model_namespace'  => $schema->getNamespace(),
+            'schema_class' => $schemaClass,
+            'model_name' => $schema->getModelName(),
+            'model_namespace' => $schema->getNamespace(),
             'COLLECTION_CLASS' => $schemaArray['collection_class'],
-            'MODEL_CLASS'      => $schemaArray['model_class'],
-            'PRIMARY_KEY'      => $schema->getPrimaryKey(),
+            'MODEL_CLASS' => $schemaArray['model_class'],
+            'PRIMARY_KEY' => $schema->getPrimaryKey(),
             'TABLE' => $schema->getTable(),
-            'LABEL' =>  $schema->getLabel(),
+            'LABEL' => $schema->getLabel(),
         ));
 
         $cTemplate->useClass('\\LazyRecord\\Schema\\RuntimeColumn');
@@ -47,20 +46,19 @@ class SchemaProxyClassFactory
         $cTemplate->addPublicProperty('writeSourceId', $schemaArray['write_data_source']);
         $cTemplate->addPublicProperty('relations', array());
 
-        $cTemplate->addStaticVar( 'column_hash',  array_fill_keys($schema->getColumnNames(), 1 ) );
-        $cTemplate->addStaticVar( 'mixin_classes',  array_reverse($schema->getMixinSchemaClasses()) );
+        $cTemplate->addStaticVar('column_hash',  array_fill_keys($schema->getColumnNames(), 1));
+        $cTemplate->addStaticVar('mixin_classes',  array_reverse($schema->getMixinSchemaClasses()));
 
         $constructor = $cTemplate->addMethod('public', '__construct', []);
         if (!empty($schemaArray['relations'])) {
-            $constructor->block[] = '$this->relations = ' . php_var_export($schemaArray['relations']) . ';';
+            $constructor->block[] = '$this->relations = '.php_var_export($schemaArray['relations']).';';
         }
-
 
         foreach ($schemaArray['column_data'] as $columnName => $columnAttributes) {
             // $this->columns[ $column->name ] = new RuntimeColumn($column->name, $column->export());
-            $constructor->block[] = '$this->columns[ ' . var_export($columnName, true) . ' ] = new RuntimeColumn(' 
-                . var_export($columnName, true) . ',' 
-                . php_var_export($columnAttributes['attributes']) . ');';
+            $constructor->block[] = '$this->columns[ '.var_export($columnName, true).' ] = new RuntimeColumn('
+                .var_export($columnName, true).','
+                .php_var_export($columnAttributes['attributes']).');';
         }
         // $method->block[] = 'parent::__construct();';
 
@@ -73,4 +71,3 @@ class SchemaProxyClassFactory
         return $cTemplate;
     }
 }
-

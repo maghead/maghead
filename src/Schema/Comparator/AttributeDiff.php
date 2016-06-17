@@ -1,10 +1,7 @@
 <?php
+
 namespace LazyRecord\Schema\Comparator;
-use Closure;
-use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\ColumnAccessorInterface;
-use LazyRecord\Schema\Comparator\ColumnDiff;
-use LazyRecord\Schema\Comparator\AttributeDiff;
+
 use SQLBuilder\Raw;
 
 class AttributeDiff
@@ -22,24 +19,28 @@ class AttributeDiff
         $this->after = $after;
     }
 
-    public function getBeforeDescription() {
+    public function getBeforeDescription()
+    {
         return sprintf("- %s %s\n", $this->name, $this->serializeVar($this->before));
     }
 
-    public function getAfterDescription() {
+    public function getAfterDescription()
+    {
         return sprintf("+ %s %s\n", $this->name, $this->serializeVar($this->after));
     }
 
-    public function serializeVar($var) {
+    public function serializeVar($var)
+    {
         if ($var instanceof Raw) {
             return $var->__toString();
-        } else if (is_object($var)) {
+        } elseif (is_object($var)) {
             return get_class($var);
-        } else if (is_array($var)) {
-            return join(', ', $var);
+        } elseif (is_array($var)) {
+            return implode(', ', $var);
         } else {
             return var_export($var, true);
         }
+
         return $var;
     }
 }

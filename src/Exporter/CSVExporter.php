@@ -1,13 +1,8 @@
 <?php
+
 namespace LazyRecord\Exporter;
-use LazyRecord\BaseModel;
+
 use LazyRecord\BaseCollection;
-use LazyRecord\Schema\SchemaBase;
-use LazyRecord\Schema\Relationship;
-use LazyRecord\Schema\RuntimeSchema;
-use LazyRecord\Schema\RuntimeColumn;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\Schema\SchemaInterface;
 use PDOStatement;
 use PDO;
 
@@ -19,9 +14,9 @@ class CSVExporter
 
     protected $enclosure = '"'; // default to '"'
 
-    protected $escapeChar = "\\"; // default to "\";
+    protected $escapeChar = '\\'; // default to "\";
 
-    public function __construct($fd, $delimiter = ',', $enclosure = '"', $escapeChar = "\\")
+    public function __construct($fd, $delimiter = ',', $enclosure = '"', $escapeChar = '\\')
     {
         $this->fd = $fd;
         $this->delimiter = $delimiter;
@@ -74,6 +69,7 @@ class CSVExporter
                 fputcsv($this->fd, $fields, $this->delimiter, $this->enclosure, $this->escapeChar);
             }
         }
+
         return true;
     }
 
@@ -109,11 +105,7 @@ class CSVExporter
                 fputcsv($this->fd, $fields, $this->delimiter, $this->enclosure, $this->escapeChar);
             }
         }
+
         return true;
     }
-
 }
-
-
-
-

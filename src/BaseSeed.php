@@ -1,4 +1,5 @@
 <?php
+
 namespace LazyRecord;
 
 /**
@@ -6,6 +7,7 @@ namespace LazyRecord;
  */
 abstract class BaseSeed
 {
-    static function seed() {  }
+    public static function seed()
+    {
+    }
 }
-

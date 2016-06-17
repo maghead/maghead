@@ -1,29 +1,29 @@
 <?php
+
 namespace LazyRecord;
+
 use Exception;
-use RuntimeException;
 use ReflectionClass;
 use Doctrine\Common\Inflector\Inflector;
-use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Exception\TableNameConversionException;
 
 class ClassUtils
 {
-    static public function get_declared_schema_classes() 
+    public static function get_declared_schema_classes()
     {
         $classes = get_declared_classes();
+
         return self::filter_schema_classes($classes);
     }
 
-
-
-    public static function schema_classes_to_objects(array $classes) 
+    public static function schema_classes_to_objects(array $classes)
     {
-        $classes = array_filter($classes, function($class) {
-            return is_subclass_of($class,'LazyRecord\\Schema\\DeclareSchema', true);
+        $classes = array_filter($classes, function ($class) {
+            return is_subclass_of($class, 'LazyRecord\\Schema\\DeclareSchema', true);
         });
-        return array_map(function($class) { 
-            return new $class;
+
+        return array_map(function ($class) {
+            return new $class();
         }, $classes);
     }
 
@@ -32,19 +32,19 @@ class ClassUtils
      *
      * @param string[] $classes class list.
      */
-    static public function filter_schema_classes(array $classes)
+    public static function filter_schema_classes(array $classes)
     {
         $list = array();
         foreach ($classes as $class) {
             // skip abstract classes.
             if (
-              ! is_subclass_of($class, 'LazyRecord\Schema\DeclareSchema',true)
-              || is_a($class, 'LazyRecord\Schema\DynamicSchemaDeclare',true)
-              || is_a($class, 'LazyRecord\Schema\MixinDeclareSchema',true)
-              || is_a($class, 'LazyRecord\Schema\MixinSchemaDeclare',true)
-              || is_subclass_of($class, 'LazyRecord\Schema\MixinDeclareSchema',true)
-            ) { 
-                continue; 
+              !is_subclass_of($class, 'LazyRecord\Schema\DeclareSchema', true)
+              || is_a($class, 'LazyRecord\Schema\DynamicSchemaDeclare', true)
+              || is_a($class, 'LazyRecord\Schema\MixinDeclareSchema', true)
+              || is_a($class, 'LazyRecord\Schema\MixinSchemaDeclare', true)
+              || is_subclass_of($class, 'LazyRecord\Schema\MixinDeclareSchema', true)
+            ) {
+                continue;
             }
             $rf = new ReflectionClass($class);
             if ($rf->isAbstract()) {
@@ -52,14 +52,15 @@ class ClassUtils
             }
             $list[] = $class;
         }
+
         return $list;
     }
 
-    static public function convertClassToTableName($class)
+    public static function convertClassToTableName($class)
     {
-        if (preg_match( '/(\w+?)(?:Model)?$/', $class ,$reg)) {
+        if (preg_match('/(\w+?)(?:Model)?$/', $class, $reg)) {
             if (count($reg) < 2) {
-                throw new Exception( "Can not parse model name: $class" );
+                throw new Exception("Can not parse model name: $class");
             }
 
             /* convert BlahBlah to blah_blah */
@@ -71,12 +72,10 @@ class ClassUtils
             */
             $table = $reg[1];
             $table = Inflector::tableize($table);
+
             return Inflector::pluralize($table);
         } else {
             throw new TableNameConversionException("Table name convert error: $class", $class);
         }
     }
-
 }
-
-

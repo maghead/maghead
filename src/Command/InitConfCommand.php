@@ -1,22 +1,23 @@
 <?php
+
 namespace LazyRecord\Command;
-use Exception;
+
 use CLIFramework\Command;
 
 class InitConfCommand extends Command
 {
-
     public function execute()
     {
         $logger = $this->getLogger();
 
         $configFile = 'db/config/database.yml';
-        if( file_exists($configFile) ) {
+        if (file_exists($configFile)) {
             $logger->info("Config file $configFile already exists.");
+
             return;
         }
 
-        $driver = $this->ask('Database driver [sqlite]',array('sqlite','pgsql','mysql',null)) ?: 'sqlite';
+        $driver = $this->ask('Database driver [sqlite]', array('sqlite', 'pgsql', 'mysql', null)) ?: 'sqlite';
         $dbName = $this->ask('Database name [:memory:]') ?: ':memory:';
 
         $logger->info("Using $driver driver");
@@ -25,13 +26,13 @@ class InitConfCommand extends Command
 
         $user = '';
         $password = '';
-        if( $driver != 'sqlite' ) {
+        if ($driver != 'sqlite') {
             $user = $this->ask('Database user');
             $password = $this->ask('Database password');
         }
 
-        $logger->info("Creating config file skeleton...");
-        $content =<<<EOS
+        $logger->info('Creating config file skeleton...');
+        $content = <<<EOS
 ---
 bootstrap:
   - tests/bootstrap.php
@@ -54,9 +55,9 @@ data_sources:
 #      user: root
 #      pass: 123123
 EOS;
-        if( file_put_contents( $configFile , $content ) !== false ) {
+        if (file_put_contents($configFile, $content) !== false) {
             $logger->info("Config file is generated: $configFile");
-            $logger->info("Please run build-conf to compile php format config file.");
+            $logger->info('Please run build-conf to compile php format config file.');
         }
     }
 }

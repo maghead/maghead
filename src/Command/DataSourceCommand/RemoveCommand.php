@@ -1,14 +1,8 @@
 <?php
+
 namespace LazyRecord\Command\DataSourceCommand;
-use CLIFramework\Command;
+
 use LazyRecord\Command\BaseCommand;
-use LazyRecord\ConfigLoader;
-use LazyRecord\DSN\DSNParser;
-use SQLBuilder\Driver\PDODriverFactory;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Universal\Query\CreateDatabaseQuery;
-use Exception;
-use PDO;
 
 class RemoveCommand extends BaseCommand
 {
@@ -32,9 +26,7 @@ class RemoveCommand extends BaseCommand
 
         $configLoader->setConfigStash($config);
         $configLoader->writeToSymbol();
+
         return true;
     }
 }
-
-
-

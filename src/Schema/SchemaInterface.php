@@ -1,17 +1,16 @@
 <?php
+
 namespace LazyRecord\Schema;
 
-interface SchemaInterface 
+interface SchemaInterface
 {
-
     /**
-     * Returns table name
+     * Returns table name.
      */
     public function getTable();
 
-
     /**
-     * Returns label name
+     * Returns label name.
      */
     public function getLabel();
 
@@ -35,5 +34,3 @@ interface SchemaInterface
 
     public function getRelations();
 }
-
-

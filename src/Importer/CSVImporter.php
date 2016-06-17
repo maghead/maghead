@@ -1,10 +1,11 @@
 <?php
+
 namespace LazyRecord\Importer;
+
 use LazyRecord\BaseModel;
 
 class CSVImporter
 {
-
     /**
      * @var LazyRecord\BaseModel
      */
@@ -17,7 +18,6 @@ class CSVImporter
      *    field idx => schema column name
      *    field idx => schema column name
      * ]
-     *
      */
     protected $columnMap;
 
@@ -28,7 +28,7 @@ class CSVImporter
     }
 
     /**
-     * array fgetcsv ( resource $handle [, int $length = 0 [, string $delimiter = "," [, string $enclosure = '"' [, string $escape = "\" ]]]] )
+     * array fgetcsv ( resource $handle [, int $length = 0 [, string $delimiter = "," [, string $enclosure = '"' [, string $escape = "\" ]]]] ).
      */
     public function importResource($fd, $unsetPrimaryKey = false)
     {
@@ -51,13 +51,7 @@ class CSVImporter
                 }
             }
 
-
             $ret = $this->model->create($args);
         }
     }
-
 }
-
-
-
-
