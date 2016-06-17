@@ -681,18 +681,18 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      * @param string $foreignColumn foreign reference schema column.
      * @param string $selfColumn    self column name
      */
-    public function belongsTo($accessor, $foreignClass, $foreignColumn = 'id', $selfColumn = null)
+    public function belongsTo($accessor, $foreignClass, $foreignColumn = null, $selfColumn = null)
     {
+        $foreignClass = $this->resolveSchemaClass($foreignClass);
         if ($foreignClass && null === $foreignColumn) {
             $s = new $foreignClass();
             $foreignColumn = $s->primaryKey;
         }
-
         return $this->relations[$accessor] = new BelongsTo($accessor, array(
             'type'           => Relationship::BELONGS_TO,
             'self_schema'    => $this->getCurrentSchemaClass(),
             'self_column'    => $selfColumn,
-            'foreign_schema' => $this->resolveSchemaClass($foreignClass),
+            'foreign_schema' => $foreignClass,
             'foreign_column' => $foreignColumn,
         ));
     }
