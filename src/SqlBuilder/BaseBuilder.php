@@ -8,7 +8,7 @@ use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\Universal\Syntax\Constraint;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\Relationship;
+use LazyRecord\Schema\Relationship\Relationship;
 use LazyRecord\BaseModel;
 use LazyRecord\Schema\DeclareColumn;
 

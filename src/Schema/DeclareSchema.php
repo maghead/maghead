@@ -10,6 +10,7 @@ use LazyRecord\ClassUtils;
 use LazyRecord\Schema\Column\AutoIncrementPrimaryKeyColumn;
 use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
+use LazyRecord\Schema\Relationship\Relationship;
 
 class DeclareSchema extends SchemaBase implements SchemaInterface
 {

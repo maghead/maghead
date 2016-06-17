@@ -1,6 +1,5 @@
 <?php
-
-namespace LazyRecord\Schema;
+namespace LazyRecord\Schema\Relationship;
 
 use ArrayAccess;
 use IteratorAggregate;
@@ -274,3 +273,4 @@ class Relationship implements IteratorAggregate, ArrayAccess
         $this->data[$key] = $val;
     }
 }
+

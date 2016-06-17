@@ -3,7 +3,7 @@
 namespace LazyRecord\Migration;
 
 use LazyRecord\Schema\Comparator;
-use LazyRecord\Schema\Relationship;
+use LazyRecord\Schema\Relationship\Relationship;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\TableParser\ReferenceParser;
 use LazyRecord\Connection;
