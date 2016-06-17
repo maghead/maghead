@@ -30,15 +30,17 @@ class DatabaseBuilder
         }
         foreach ($schemas as $schema) {
             $class = get_class($schema);
-            $this->logger->info("Building table for $class");
             $sqls = $this->builder->buildTable($schema);
-            $this->executeStatements($sqls);
+            if (!empty($sqls)) {
+                $this->executeStatements($sqls);
+            }
         }
         foreach ($schemas as $schema) {
             $class = get_class($schema);
-            $this->logger->info("Building index for $class");
             $sqls = $this->builder->buildIndex($schema);
-            $this->executeStatements($sqls);
+            if (!empty($sqls)) {
+                $this->executeStatements($sqls);
+            }
         }
         if ($sqls = $this->builder->finalize()) {
             $this->executeStatements($sqls);
