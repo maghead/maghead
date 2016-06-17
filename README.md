@@ -35,7 +35,7 @@ See also
 <div style="width:425px" id="__ss_12638921"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/lazyrecord-the-fast-orm-for-php" title="LazyRecord: The Fast ORM for PHP" target="_blank">LazyRecord: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
 
 
-Automatic Migration Demostration
+Automatic Migration Demonstration
 --------------------------------
 <img src="https://raw.github.com/c9s/LazyRecord/master/assets/images/migration.gif" width="600"/>
 
@@ -45,7 +45,7 @@ Feature
 * Fast & Simple
 * Configuration based on YAML format and compiled into PHP
 * PDO, MySQL, Pgsql, SQLite support.
-* Multiple data source.
+* Multiple data sources.
 * Mix-in model.
 * Powerful Migration Generator
   * Upgrade & Downgrade of course.
