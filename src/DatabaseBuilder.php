@@ -8,11 +8,11 @@ use PDOException;
 
 class DatabaseBuilder
 {
-    public $conn;
+    protected $conn;
 
-    public $builder;
+    protected $builder;
 
-    public $logger;
+    protected $logger;
 
     public function __construct(PDO $conn, BaseBuilder $builder, Logger $logger = null)
     {
