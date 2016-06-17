@@ -521,12 +521,10 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *
      * @return Helper\BaseHelper
      */
-    public function helper($helperName, $arguments = array())
+    protected function helper($helperName, array $arguments = array())
     {
         $helperClass = 'LazyRecord\\Schema\\Helper\\'.$helperName.'Helper';
-        $helper = new $helperClass($this, $arguments);
-
-        return $helper;
+        return new $helperClass($this, $arguments);
     }
 
     /**
