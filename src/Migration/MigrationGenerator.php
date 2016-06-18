@@ -134,9 +134,8 @@ class MigrationGenerator
         $comparator = new Comparator($driver);
 
         // schema from runtime
-        foreach ($tableSchemas as $table => $a) {
-            $foundTable = isset($tableSchemas[$table]);
-
+        foreach ($tableSchemas as $a) {
+            $table = $a->getTable();
             if (!in_array($table, $existingTables)) {
                 $this->logger->info(sprintf("Found schema '%s' to be imported to '%s'", $a, $table), 1);
                 // generate create table statement.

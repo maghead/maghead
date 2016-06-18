@@ -4,7 +4,8 @@ namespace LazyRecord\TableParser;
 
 use PDO;
 use stdClass;
-use LazyRecord\Schema\DeclareSchema; use SQLBuilder\Raw;
+use LazyRecord\Schema\DeclareSchema;
+use SQLBuilder\Raw;
 use LazyRecord\Inflector;
 
 class MysqlTableParser extends BaseTableParser implements ReferenceParser
