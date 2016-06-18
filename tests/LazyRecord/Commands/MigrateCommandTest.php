@@ -12,8 +12,6 @@ class MigrateCommandsTest extends CommandTestCase
     public function testMigrateCommand()
     {
         $this->app->run(array('lazy','migrate','status'));
-        $this->app->run(array('lazy','migrate','up'));
-        $this->app->run(array('lazy','migrate','down'));
     }
 
 
