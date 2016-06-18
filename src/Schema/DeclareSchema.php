@@ -84,7 +84,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         if (false === $this->primaryKey) {
             if ($config = ConfigLoader::getInstance()) {
                 if ($config->hasAutoId() && !isset($this->columns['id'])) {
-                    $this->insertAutoIdColumn();
+                    $this->insertAutoIdPrimaryColumn();
                 }
             }
         }
@@ -200,7 +200,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      * @param string $name       default to 'id'
      * @param string $columnType 'int', 'smallint', 'bigint' ...
      */
-    protected function insertAutoIdColumn($name = 'id', $columnType = 'integer')
+    protected function insertAutoIdPrimaryColumn($name = 'id', $columnType = 'integer')
     {
         $column = new AutoIncrementPrimaryKeyColumn($this, $name, $columnType);
         $this->primaryKey = $column->name;
@@ -208,22 +208,6 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $column;
     }
 
-    /**
-     * Apply primary key type on a column object.
-     *
-     * @return DeclareColumn
-     */
-    public function applyPrimaryKeyType(DeclareColumn $column)
-    {
-        if (!$this->primaryKey || !isset($this->columns[$this->primaryKey])) {
-            throw new SchemaRelatedException($this, "primary key column doesn't exist on schema.");
-        }
-        $pkColumn = $this->columns[$this->primaryKey];
-        $column->type = $pkColumn->type;
-        $column->notNull = $pkColumn->notNull;
-        $column->unsigned = $pkColumn->unsigned;
-        return $column;
-    }
 
 
     /**

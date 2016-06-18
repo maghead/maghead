@@ -166,20 +166,27 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     {
         $this->renderAs = $renderAs;
         $this->widgetAttributes = $widgetAttributes;
-
         return $this;
     }
 
     /**
      * Use referenece from existing relationship.
      *
+     * Once the column is refered,
+     * the attribute will be changed, unless user override the attribute after
+     * this call.
+     *
      * @param string $relationship relationship id
      */
     public function refer($schemaClass)
     {
         $this->attributes['refer'] = $schemaClass;
-        if (class_exists($schemaClass, true)) {
+        // get the primary key from the refered schema 
+        if (get_class($this->schema) !== ltrim($schemaClass,'\\') && class_exists($schemaClass, true)) {
             $schema = new $schemaClass;
+            if ($primaryKey = $schema->findPrimaryKeyColumn()) {
+                $this->applyType($primaryKey);
+            }
         }
         return $this;
     }
@@ -316,6 +323,22 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     {
         return new RuntimeColumn($this->name, $this->attributes);
     }
+
+
+    /**
+     * Apply column type on a column object for setting foreign key.
+     *
+     * @return DeclareColumn
+     */
+    public function applyType(DeclareColumn $column)
+    {
+        $column->type = $this->type;
+        $column->notNull = $this->notNull;
+        $column->unsigned = $this->unsigned;
+        return $column;
+    }
+
+
 
     /**
      * Export column attributes to an array.
