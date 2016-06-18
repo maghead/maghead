@@ -37,7 +37,6 @@ class MigrateAutomaticCommand extends BaseCommand
             $driver = $this->getCurrentQueryDriver();
             if (!$driver instanceof PDOMySQLDriver) {
                 $this->logger->error('backup is only supported for MySQL');
-
                 return false;
             }
             $this->logger->info('Backing up database...');

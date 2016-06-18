@@ -107,9 +107,7 @@ class Migration implements Migratable
 
     protected function alterTable($table)
     {
-        $query = new AlterTableQuery($table);
-
-        return $query;
+        return new AlterTableQuery($table);
     }
 
     /**
