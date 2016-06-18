@@ -92,7 +92,7 @@ composer require corneltek/lazyrecord "^3.1"
 If you prefer something new, you can require "dev-master"
 
 ```sh
-composer require corneltek/lazyrecord "^3.1"
+composer require corneltek/lazyrecord "dev-master"
 ```
 
 
