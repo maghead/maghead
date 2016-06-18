@@ -22,7 +22,23 @@ class AuthorMigrationTest extends ModelTestCase
         return [];
     }
 
-    public function testAddColumnMigrate()
+    public function testModifyColumn()
+    {
+        $schema = new AuthorSchema;
+        $schema->getColumn('email')
+            ->varchar(20)
+            ->notNull()
+            ;
+        $this->buildSchemaTables([$schema], true);
+        AutomaticMigration::options($options = new OptionCollection);
+        $migrate = new AutomaticMigration($this->queryDriver,
+            $this->conn,
+            OptionResult::create($options, [ ]));
+        $migrate->upgrade();
+    }
+
+
+    public function testAddColumn()
     {
         $schema = new AuthorSchema;
         $schema->removeColumn('email');
@@ -36,7 +52,7 @@ class AuthorMigrationTest extends ModelTestCase
         $migrate->upgrade();
     }
 
-    public function testRemoveColumnMigrate()
+    public function testRemoveColumn()
     {
         $schema = new AuthorSchema;
         $schema->column('cellphone')
