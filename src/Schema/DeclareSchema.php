@@ -8,12 +8,14 @@ use ReflectionObject;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\Schema\Column\AutoIncrementPrimaryKeyColumn;
+use LazyRecord\Exception\SchemaRelatedException;
 use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use LazyRecord\Schema\Relationship\Relationship;
 use LazyRecord\Schema\Relationship\HasMany;
 use LazyRecord\Schema\Relationship\HasOne;
 use LazyRecord\Schema\Relationship\BelongsTo;
+
 
 class DeclareSchema extends SchemaBase implements SchemaInterface
 {
@@ -61,7 +63,10 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     }
 
     /**
-     * Build schema.
+     * Build schema build the schema by running the "schema" method.
+     *
+     * The post process find the primary key from the built columns
+     * And insert the auto-increment primary is auto_id config is enabled.
      */
     protected function build(array $options = array())
     {
@@ -76,7 +81,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
 
         // if the primary key is not define, we should append the default primary key => id
         // AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY
-        if (null === $this->primaryKey) {
+        if (false === $this->primaryKey) {
             if ($config = ConfigLoader::getInstance()) {
                 if ($config->hasAutoId() && !isset($this->columns['id'])) {
                     $this->insertAutoIdColumn();
@@ -208,8 +213,11 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *
      * @return DeclareColumn
      */
-    protected function applyPrimaryKeyType(DeclareColumn $column)
+    public function applyPrimaryKeyType(DeclareColumn $column)
     {
+        if (!$this->primaryKey || !isset($this->columns[$this->primaryKey])) {
+            throw new SchemaRelatedException($this, "primary key column doesn't exist on schema.");
+        }
         $pkColumn = $this->columns[$this->primaryKey];
         $column->type = $pkColumn->type;
         $column->notNull = $pkColumn->notNull;
@@ -219,9 +227,12 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
 
 
     /**
-     * Find primary keys from columns.
+     * Find primary key from columns.
      *
-     * @return string
+     * This method will be called after building schema information to save the
+     * primary key name
+     *
+     * @return string primary key
      */
     public function findPrimaryKey()
     {
@@ -230,6 +241,25 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
                 return $name;
             }
         }
+        return false;
+    }
+
+    /**
+     * Find primary key column object from columns.
+     *
+     * This method will be called after building schema information to save the
+     * primary key name
+     *
+     * @return DeclareColumn
+     */
+    public function findPrimaryKeyColumn()
+    {
+        foreach ($this->columns as $name => $column) {
+            if ($column->primary) {
+                return $column;
+            }
+        }
+        return false;
     }
 
     public function export()

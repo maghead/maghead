@@ -172,7 +172,6 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     public function refer($relationship)
     {
         $this->attributes['refer'] = $relationship;
-
         return $this;
     }
 

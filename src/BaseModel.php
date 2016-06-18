@@ -998,7 +998,7 @@ abstract class BaseModel implements
             if (!$column) {
                 // This should not happend, every schema should have it's own primary key
                 // TODO: Create new exception class for this.
-                throw new MissingPrimaryKeyException("Primary key $pk is not defined", $this->getSchema());
+                throw new MissingPrimaryKeyException($this->getSchema(), "Primary key $pk is not defined");
             }
             $kVal = $column->deflate($kVal);
             $args = array($pk => $kVal);
