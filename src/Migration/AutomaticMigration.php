@@ -113,6 +113,9 @@ class AutomaticMigration extends Migration implements Migratable
                     if (isset($rel['self_column']) && $rel['self_column'] == 'id') {
                         continue;
                     }
+                    if (!$rel->usingIndex) {
+                        continue;
+                    }
 
                     $col = $rel['self_column'];
                     $relationshipColumns[$col] = $rel;

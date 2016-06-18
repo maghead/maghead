@@ -711,10 +711,14 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public function belongsTo($accessor, $foreignClass, $foreignColumn = null, $selfColumn = null)
     {
         $foreignClass = $this->resolveSchemaClass($foreignClass);
+        // XXX: we can't create the foreign class here, because it might
+        // create a recursive class loading here...
+        /*
         if ($foreignClass && null === $foreignColumn) {
             $s = new $foreignClass();
             $foreignColumn = $s->primaryKey;
         }
+        */
         return $this->relations[$accessor] = new BelongsTo($accessor, array(
             'type'           => Relationship::BELONGS_TO,
             'self_schema'    => $this->getCurrentSchemaClass(),

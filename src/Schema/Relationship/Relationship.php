@@ -35,6 +35,8 @@ class Relationship implements IteratorAggregate, ArrayAccess
 
     public $onDelete;
 
+    public $usingIndex;
+
     public function __construct($accessor, array $data = array())
     {
         $this->accessor = $accessor;
@@ -46,6 +48,11 @@ class Relationship implements IteratorAggregate, ArrayAccess
         $this->data['self_column'] = $column;
 
         return $this;
+    }
+
+    public function usingIndex($index = true)
+    {
+        $this->usingIndex = $index;
     }
 
     public function newForeignSchema()
