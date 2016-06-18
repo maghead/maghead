@@ -200,9 +200,23 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         $column = new AutoIncrementPrimaryKeyColumn($name, $columnType);
         $this->primaryKey = $column->name;
         $this->insertColumn($column);
-
         return $column;
     }
+
+    /**
+     * Apply primary key type on a column object.
+     *
+     * @return DeclareColumn
+     */
+    protected function applyPrimaryKeyType(DeclareColumn $column)
+    {
+        $pkColumn = $this->columns[$this->primaryKey];
+        $column->type = $pkColumn->type;
+        $column->notNull = $pkColumn->notNull;
+        $column->unsigned = $pkColumn->unsigned;
+        return $column;
+    }
+
 
     /**
      * Find primary keys from columns.
