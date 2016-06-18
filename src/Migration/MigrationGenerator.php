@@ -53,10 +53,12 @@ class MigrationGenerator
         } else {
             $date = date('Ymd');
         }
-        $name = Inflector::tableize($taskName);
+        // Replace non-word charactors into underline
+        $taskName = preg_replace('#\W#i','_',$taskName);
+        // $name = Inflector::tableize($taskName);
         return str_replace([ 
             '@date@', '@name@'
-        ], [ $date, $name ], $this->filenameFormat);
+        ], [ $date, $taskName ], $this->filenameFormat);
     }
 
     /**

@@ -8,6 +8,8 @@ use LazyRecord\Metadata;
 use LazyRecord\ConnectionManager;
 use LazyRecord\ServiceContainer;
 use GetOptionKit\OptionResult;
+use Exception;
+use RuntimeException;
 
 class MigrationRunner
 {
@@ -182,22 +184,21 @@ class MigrationRunner
             $this->logger->info('Found '.count($scripts).' migration scripts to run upgrade!');
 
             try {
-                $this->logger->info('Begining transaction...');
+                $this->logger->info("Begining transaction...");
                 $connection->beginTransaction();
                 foreach ($scripts as $script) {
-                    $this->logger->info("Performing upgrade migration script $script on data source $dsId");
+                    $this->logger->info("$script: Performing upgrade on data source $dsId");
                     $migration = new $script($driver, $connection);
                     $migration->upgrade();
                     $this->updateLastMigrationId($dsId, $script::getId());
                 }
-
-                $this->logger->info('Committing...');
+                $this->logger->info("Committing...");
                 $connection->commit();
             } catch (Exception $e) {
-                $this->logger->error('Exception was thrown: '.$e->getMessage());
-                $this->logger->warn('Rolling back ...');
+                $this->logger->error(get_class($e) . ' was thrown: '.$e->getMessage());
+                $this->logger->error("Rolling back ...");
                 $connection->rollback();
-                $this->logger->warn('Recovered, escaping...');
+                $this->logger->error("Recovered, escaping...");
                 break;
             }
         }
