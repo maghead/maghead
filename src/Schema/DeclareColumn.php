@@ -31,10 +31,16 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      */
     protected $attributes = array();
 
+
+    /**
+     * the parent schema object
+     */
+    protected $schema;
+
     /**
      * @var string column name (id)
      */
-    public function __construct($name = null, $type = null)
+    public function __construct(DeclareSchema $schema = null, $name = null, $type = null)
     {
         $this->attributeTypes = $this->attributeTypes + array(
             /* primary key */
@@ -169,9 +175,12 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      *
      * @param string $relationship relationship id
      */
-    public function refer($relationship)
+    public function refer($schemaClass)
     {
-        $this->attributes['refer'] = $relationship;
+        $this->attributes['refer'] = $schemaClass;
+        if (class_exists($schemaClass, true)) {
+            $schema = new $schemaClass;
+        }
         return $this;
     }
 

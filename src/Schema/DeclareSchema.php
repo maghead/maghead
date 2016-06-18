@@ -202,7 +202,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     protected function insertAutoIdColumn($name = 'id', $columnType = 'integer')
     {
-        $column = new AutoIncrementPrimaryKeyColumn($name, $columnType);
+        $column = new AutoIncrementPrimaryKeyColumn($this, $name, $columnType);
         $this->primaryKey = $column->name;
         $this->insertColumn($column);
         return $column;
@@ -545,8 +545,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
             throw new Exception("column $name of ".get_class($this).' is already defined.');
         }
         $this->columnNames[] = $name;
-
-        return $this->columns[ $name ] = new $class($name);
+        return $this->columns[$name] = new $class($this, $name);
     }
 
     /**

@@ -10,6 +10,7 @@ class AuthorBookSchema extends Schema
                 ->required()
                 ->integer()
                 ->unsigned()
+                ->refer('AuthorBooks\\Model\\AuthorSchema');
                 ;
 
         $this->column('book_id')
