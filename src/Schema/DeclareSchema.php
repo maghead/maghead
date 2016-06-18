@@ -687,6 +687,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     {
         // XXX: we can't create the foreign class here, because it might
         // create a recursive class loading here...
+        /*
         if ($foreignClass && null === $foreignColumn) {
             $s = new $foreignClass();
             $foreignColumn = $s->primaryKey;
