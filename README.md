@@ -89,6 +89,13 @@ your database settings.
 composer require corneltek/lazyrecord "^3.1"
 ```
 
+If you prefer something new, you can require "dev-master"
+
+```sh
+composer require corneltek/lazyrecord "^3.1"
+```
+
+
 Then create your config file:
 
 ```sh
