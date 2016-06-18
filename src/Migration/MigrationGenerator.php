@@ -18,9 +18,11 @@ use Doctrine\Common\Inflector\Inflector;
 
 class MigrationGenerator
 {
-    public $logger;
+    protected $logger;
 
-    public $migrationDir;
+    protected $migrationDir;
+
+    protected $filenameFormat = '@date@_@name@.php';
 
     public function __construct(Logger $logger, $migrationDir)
     {
@@ -44,15 +46,17 @@ class MigrationGenerator
 
     public function generateFilename($taskName, $time = null)
     {
-        $date = date('Y-m-d');
         if (is_integer($time)) {
             $date = date('Ymd', $time);
         } elseif (is_string($time)) {
             $date = $time;
+        } else {
+            $date = date('Ymd');
         }
         $name = Inflector::tableize($taskName);
-
-        return sprintf('%s_%s.php', $date, $taskName);
+        return str_replace([ 
+            '@date@', '@name@'
+        ], [ $date, $name ], $this->filenameFormat);
     }
 
     /**
