@@ -26,15 +26,17 @@ class SqliteTableParser extends BaseTableParser
 
     public function getTableSql($table)
     {
-        $stm = $this->connection->query("select sql from sqlite_master where type = 'table' AND name = '$table'");
+        $stm = $this->connection->query("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = '$table'");
         // $stm = $this->connection->query("PRAGMA table_info($table)");
-        return $stm->fetch(PDO::FETCH_OBJ)->sql;
+        if ($row = $stm->fetch(PDO::FETCH_OBJ)) {
+            return $row->sql;
+        }
     }
 
     public function parseTableSql($table)
     {
         $sql = $this->getTableSql($table);
-        if (preg_match('#`?(\w+)`?\s*\((.*)\)#ism', $sql, $regs)) {
+        if ($sql && preg_match('#`?(\w+)`?\s*\((.*)\)#ism', $sql, $regs)) {
             $columns = array();
             $name = $regs[1];
             $columnstr = $regs[2];
@@ -48,7 +50,6 @@ class SqliteTableParser extends BaseTableParser
     public function reverseTableSchema($table, $referenceSchema = null)
     {
         $tableDef = $this->parseTableSql($table);
-
         $schema = new DeclareSchema();
         $schema->columnNames = $schema->columns = array();
         $schema->table($table);

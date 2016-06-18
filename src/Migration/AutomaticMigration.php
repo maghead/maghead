@@ -26,30 +26,29 @@ class AutomaticMigration extends Migration implements Migratable
     public function upgrade()
     {
         $parser = TableParser::create($this->driver, $this->connection);
-
         $tableSchemas = $parser->getDeclareSchemaMap();
-
-        $comparator = new Comparator($this->driver);
         $existingTables = $parser->getTables();
 
+        $comparator = new Comparator($this->driver);
+
         // Schema from runtime
-        foreach ($tableSchemas as $table => $schema) {
-            $this->logger->debug("Checking table $table for schema ".get_class($schema));
+        foreach ($tableSchemas as $table => $a) {
+            $this->logger->debug("Checking table $table for schema ".get_class($a));
 
             if (!in_array($table, $existingTables)) {
                 $this->logger->debug("Table $table does not exist, try importing...");
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
-                $this->importSchema($schema);
+                $this->importSchema($a);
                 continue;
             }
 
             $this->logger->debug("Found existing table $table");
 
-            $before = $parser->reverseTableSchema($table, $schema);
+            $b = $parser->reverseTableSchema($table, $a);
 
             $this->logger->debug("Comparing table `$table` with schema");
-            $diffs = $comparator->compare($before, $schema);
+            $diffs = $comparator->compare($b, $a);
 
             do {
                 if (count($diffs) == 0) {
@@ -100,7 +99,7 @@ class AutomaticMigration extends Migration implements Migratable
             // Compare references with relationships
             if ($parser instanceof ReferenceParser) {
                 $references = $parser->queryReferences($table);
-                $relationships = $schema->getRelations();
+                $relationships = $a->getRelations();
 
                 $relationshipColumns = [];
                 foreach ($relationships as $accessor => $rel) {
