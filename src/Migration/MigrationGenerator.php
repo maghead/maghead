@@ -12,6 +12,8 @@ use ClassTemplate\ClassFile;
 use CodeGen\Expr\MethodCallExpr;
 use CodeGen\Statement\Statement;
 use CodeGen\Raw;
+use SQLBuilder\Universal\Query\AlterTableQuery;
+use SQLBuilder\ArgumentArray;
 use Doctrine\Common\Inflector\Inflector;
 
 class MigrationGenerator
@@ -95,7 +97,7 @@ class MigrationGenerator
         return array($template->class->name, $path);
     }
 
-    public function generateWithDiff($taskName, $dataSourceId, $schemas, $time = null)
+    public function generateWithDiff($taskName, $dataSourceId, array $schemas, $time = null)
     {
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $connection = $connectionManager->getConnection($dataSourceId);
@@ -117,36 +119,60 @@ class MigrationGenerator
             $tableName = $b->getTable();
             $foundTable = isset($tableSchemas[ $tableName ]);
             if ($foundTable) {
-                $a = $tableSchemas[ $tableName ]; // schema object, extracted from database.
+                $a = $tableSchemas[$tableName]; // schema object, extracted from database.
                 $diffs = $comparator->compare($a, $b);
 
                 // generate alter table statement.
                 foreach ($diffs as $diff) {
-                    if ($diff->flag == 'A') {
-                        $this->logger->info(sprintf("'%s': add column %s", $tableName, $diff->name), 1);
-
+                    $alterTable = new AlterTableQuery($tableName);
+                    switch ($diff->flag) {
+                    case 'A':
                         $column = $diff->getAfterColumn();
-
+                        $alterTable->addColumn($column);
+                        /*
+                        $this->logger->info(sprintf("'%s': add column %s", $tableName, $diff->name), 1);
                         $upcall = new MethodCallExpr('$this', 'addColumn', [$tableName, $column]);
                         $upgradeMethod[] = new Statement($upcall);
-
                         $downcall = new MethodCallExpr('$this', 'dropColumnByName', [$tableName, $diff->name]);
                         $downgradeMethod[] = new Statement($downcall);
-                    } elseif ($diff->flag == 'D') {
-                        $upcall = new MethodCallExpr('$this', 'dropColumnByName', [$tableName, $diff->name]);
-                        $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
-                    } elseif ($diff->flag == 'M') {
+                        */
+                        break;
+                    case 'M':
+                        $afterColumn = $diff->getAfterColumn();
+                        $beforeColumn = $diff->getBeforeColumn();
+                        if (!$afterColumn || !$beforeColumn) {
+                            throw new LogicException('afterColumn or beforeColumn is undefined.');
+                        }
+                        // Check primary key
+                        if ($beforeColumn->primary != $afterColumn->primary) {
+                            $alterTable->add()->primaryKey(['id']);
+                        }
+                        $alterTable->modifyColumn($afterColumn);
+                        /*
                         if ($afterColumn = $diff->getAfterColumn()) {
                             $upcall = new MethodCallExpr('$this', 'modifyColumn', [$tableName, $afterColumn]);
                             $upgradeMethod[] = new Statement($upcall);
                         } else {
                             throw new \Exception('afterColumn is undefined.');
                         }
-                        continue;
-                    } else {
+                        */
+                        break;
+                    case 'D':
+                        $alterTable->dropColumnByName($diff->name);
+                        /*
+                        $upcall = new MethodCallExpr('$this', 'dropColumnByName', [$tableName, $diff->name]);
+                        $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
+                        */
+                        break;
+                    default:
                         $this->logger->warn('** unsupported flag.');
                         continue;
                     }
+
+                    // Genearte query statement
+                    $sql = $alterTable->toSql($driver, new ArgumentArray());
+                    $upcall = new MethodCallExpr('$this', 'query', [$sql]);
+                    $upgradeMethod->getBlock()->appendLine(new Statement($upcall));
                 }
             } else {
                 $this->logger->info(sprintf("Found schema '%s' to be imported to '%s'", $b, $tableName), 1);

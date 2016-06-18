@@ -4,6 +4,7 @@ namespace LazyRecord\Command;
 
 use LazyRecord\Migration\MigrationGenerator;
 use LazyRecord\Schema\SchemaFinder;
+use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\Console;
 
 class MigrateNewFromDiffCommand extends BaseCommand
@@ -19,10 +20,9 @@ class MigrateNewFromDiffCommand extends BaseCommand
 
         $this->logger->info('Loading schema objects...');
         $finder = new SchemaFinder();
-        $finder->paths = $this->config->getSchemaPaths() ?: array();
+        $finder->setPaths($this->config->getSchemaPaths() ?: array());
         $finder->find();
-        $schemas = $finder->getSchemas();
-
+        $schemas = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), [], $this->logger);
         $this->logger->info('Found '.count($schemas) == 0 .' schemas');
 
         $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'db/migrations');
