@@ -333,7 +333,6 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     public function applyType(DeclareColumn $column)
     {
         $column->type = $this->type;
-        $column->notNull = $this->notNull;
         $column->unsigned = $this->unsigned;
         return $column;
     }

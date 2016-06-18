@@ -65,6 +65,7 @@ class MysqlBuilder extends BaseBuilder
      *      REFERENCES `schema`.`Addresses` (`idAddresses`)
      *      ON DELETE NO ACTION
      *      ON UPDATE NO ACTION
+     *
      *  FOREIGN KEY (`order_uuid`) REFERENCES orders(`uuid`)
      */
     public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column)
