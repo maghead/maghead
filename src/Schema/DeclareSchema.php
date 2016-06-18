@@ -450,9 +450,20 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
             throw new Exception("column $name of ".get_class($this).' is already defined.');
         }
         $this->columnNames[] = $column->name;
-
         return $this->columns[ $column->name ] = $column;
     }
+
+    public function removeColumn($columnName)
+    {
+        unset($this->columns[$columnName]);
+        $this->columnNames = array_filter($this->columnNames, function($n) use ($columnName) {
+            return $n !== $columnName;
+        });
+    }
+
+
+
+
 
     protected function _modelClassToLabel()
     {

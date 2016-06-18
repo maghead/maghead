@@ -71,26 +71,8 @@ abstract class ModelTestCase extends BaseTestCase
         }
 
         if ($rebuild) {
-            $builder = SqlBuilder::create($this->queryDriver, array('rebuild' => true));
-            if ($sqls = $builder->prepare()) {
-                foreach ($sqls as $sql) {
-                    $this->conn->query($sql);
-                }
-            }
             $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
-            foreach ($schemas as $schema) {
-                $sqls = $builder->build($schema);
-                $this->assertNotEmpty($sqls);
-                foreach ($sqls as $sql) {
-                    $this->conn->query($sql);
-                }
-            }
-            if ($sqls = $builder->finalize()) {
-                foreach ($sqls as $sql) {
-                    $this->conn->query($sql);
-                }
-            }
-
+            $this->buildSchemaTables($schemas, true);
             if ($basedata) {
                 $runner = new SeedBuilder($this->config, $this->logger);
                 foreach ($schemas as $schema) {
@@ -104,6 +86,30 @@ abstract class ModelTestCase extends BaseTestCase
             }
         }
     }
+
+    protected function buildSchemaTables(array $schemas, $rebuild = true)
+    {
+        $builder = SqlBuilder::create($this->queryDriver, array('rebuild' => $rebuild));
+        if ($sqls = $builder->prepare()) {
+            foreach ($sqls as $sql) {
+                $this->conn->query($sql);
+            }
+        }
+        foreach ($schemas as $schema) {
+            $sqls = $builder->build($schema);
+            $this->assertNotEmpty($sqls);
+            foreach ($sqls as $sql) {
+                $this->conn->query($sql);
+            }
+        }
+        if ($sqls = $builder->finalize()) {
+            foreach ($sqls as $sql) {
+                $this->conn->query($sql);
+            }
+        }
+    }
+
+
 
     public function tearDown()
     {

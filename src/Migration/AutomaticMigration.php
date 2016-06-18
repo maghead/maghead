@@ -23,6 +23,13 @@ class AutomaticMigration extends Migration implements Migratable
         parent::__construct($driver, $connection);
     }
 
+
+    static public function options($opts)
+    {
+        $opts->add('no-drop-column', 'Do not drop column in automatic migration process.');
+        $opts->add('separate-alter', 'Do not combine multiple alter table subquery into one alter table query.');
+    }
+
     public function upgrade()
     {
         $parser = TableParser::create($this->driver, $this->connection);
@@ -112,9 +119,14 @@ class AutomaticMigration extends Migration implements Migratable
                     if (isset($rel['self_column']) && $rel['self_column'] == 'id') {
                         continue;
                     }
+
                     if (!$rel->usingIndex) {
                         continue;
                     }
+                    $class = $rel['foreign_schema'];
+                    $foreignSchema = new $class;
+                    $foreignColumn = $foreignSchema->getColumn($rel['foreign_column']);
+
 
                     $col = $rel['self_column'];
                     $relationshipColumns[$col] = $rel;

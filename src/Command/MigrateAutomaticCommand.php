@@ -3,6 +3,7 @@
 namespace LazyRecord\Command;
 
 use LazyRecord\Migration\MigrationRunner;
+use LazyRecord\Migration\AutomaticMigration;
 
 use LazyRecord\ServiceContainer;
 use LazyRecord\Backup\MySQLBackup;
@@ -23,7 +24,7 @@ class MigrateAutomaticCommand extends BaseCommand
     public function options($opts)
     {
         parent::options($opts);
-        $opts->add('no-drop-column', 'Do not drop column in automatic migration process.');
+        AutomaticMigration::options($opts);
         $opts->add('b|backup', 'Backup database before running migration script.');
     }
 

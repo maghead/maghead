@@ -346,6 +346,17 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     }
 
 
+    public function compareType(DeclareColumn $column)
+    {
+        return (
+               $this->type !== $column->type 
+            || $this->isa !== $column->isa 
+            || $this->unsigned !== $column->unsigned
+        );
+    }
+
+
+
     /**
      * Apply column type on a column object for setting foreign key.
      *
