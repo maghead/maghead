@@ -13,8 +13,8 @@ class UUIDPrimaryKeyColumn extends DeclareColumn
     {
         parent::__construct($name);
         $this->type($type)
-            ->length($length)
             ->isa('str')
+            ->length($length)
             ->notNull()
             ->primary()
             ;

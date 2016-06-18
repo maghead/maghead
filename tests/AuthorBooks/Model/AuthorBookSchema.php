@@ -7,17 +7,13 @@ class AuthorBookSchema extends Schema
     public function schema()
     {
         $this->column('author_id')
+            ->refer('Author')
             ->required()
-            ->integer()
-            ->unsigned()
-            ->refer('AuthorBooks\\Model\\AuthorSchema')
             ;
 
         $this->column('book_id')
-            ->integer()
-            ->unsigned()
+            ->refer('Book')
             ->required()
-            ->refer('AuthorBooks\\Model\\BookSchema')
             ;
 
         $this->column('created_on')

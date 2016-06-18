@@ -3,6 +3,7 @@
 namespace LazyRecord\Schema;
 
 use SQLBuilder\Universal\Syntax\Column;
+use LazyRecord\Exception\SchemaRelatedException;
 use ArrayIterator;
 use IteratorAggregate;
 use Closure;
@@ -28,6 +29,8 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      * @var array
      *
      * The default attributes for a column.
+     *
+     * Variables stores in attributes should be serializable.
      */
     protected $attributes = array();
 
@@ -40,8 +43,9 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     /**
      * @var string column name (id)
      */
-    public function __construct(DeclareSchema $schema = null, $name = null, $type = null)
+    public function __construct(DeclareSchema $schema, $name = null, $type = null)
     {
+        $this->schema = $schema;
         $this->attributeTypes = $this->attributeTypes + array(
             /* primary key */
             'primary' => self::ATTR_FLAG,
@@ -180,13 +184,30 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      */
     public function refer($schemaClass)
     {
+
+        if (!preg_match('/Schema$/',$schemaClass)) {
+            $schemaClass = "{$schemaClass}Schema";
+        }
+
+        // try classes
+        if (!class_exists($schemaClass, true)) {
+            $schemaClass = $this->schema->getNamespace() . '\\' . $schemaClass;
+        }
+
+        if (!class_exists($schemaClass, true)) {
+            throw new SchemaRelatedException($this->schema, "Can't find referred schema class '$schemaClass'.");
+        }
+
         $this->attributes['refer'] = $schemaClass;
+
         // get the primary key from the refered schema 
-        if (get_class($this->schema) !== ltrim($schemaClass,'\\') && class_exists($schemaClass, true)) {
+        if (get_class($this->schema) === ltrim($schemaClass,'\\')) {
+            $schema = $this->schema;
+        } else {
             $schema = new $schemaClass;
-            if ($primaryKey = $schema->findPrimaryKeyColumn()) {
-                $this->applyType($primaryKey);
-            }
+        }
+        if ($primaryKey = $schema->findPrimaryKeyColumn()) {
+            $this->applyType($primaryKey);
         }
         return $this;
     }
@@ -332,9 +353,10 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      */
     public function applyType(DeclareColumn $column)
     {
-        $column->type = $this->type;
-        $column->unsigned = $this->unsigned;
-        return $column;
+        $this->type = $column->type;
+        $this->isa = $column->isa;
+        $this->length = $column->length;
+        $this->unsigned = $column->unsigned;
     }
 
 
@@ -350,7 +372,8 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         if (isset($attributes['attributeTypes'])) {
             unset($attributes['attributeTypes']);
         }
-
+        // Schema is an object.
+        unset($attributes['schema']);
         return array(
             'name' => $this->name,
             'attributes' => $attributes,
