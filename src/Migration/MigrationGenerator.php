@@ -166,7 +166,7 @@ class MigrationGenerator
                     $this->appendQueryStatement($upgradeMethod, $driver, $alterTable, new ArgumentArray);
 
                     $alterTable = new AlterTableQuery($table);
-                    $alterTable->dropColumn($diff->getBeforeColumn());
+                    $alterTable->dropColumn($diff->getAfterColumn());
                     $this->appendQueryStatement($downgradeMethod, $driver, $alterTable, new ArgumentArray);
                     break;
                 case 'M':
