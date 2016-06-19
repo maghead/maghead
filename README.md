@@ -66,11 +66,6 @@ Design Concept
 - We keep base model class constructor empty, so when you are querying data from
   database, these model objects can be created with zero effort.
 
-Requirement
------------
-
-Please see the details on [Wiki](https://github.com/c9s/LazyRecord/wiki)
-
 Installation
 ------------
 
@@ -86,7 +81,7 @@ your database settings.
 
 
 ```sh
-composer require corneltek/lazyrecord "^3.1"
+composer require corneltek/lazyrecord "^3"
 ```
 
 If you prefer something new, you can require "dev-master"
@@ -94,7 +89,6 @@ If you prefer something new, you can require "dev-master"
 ```sh
 composer require corneltek/lazyrecord "dev-master"
 ```
-
 
 Then create your config file:
 
