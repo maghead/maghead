@@ -31,8 +31,9 @@ class AuthorMigrationTest extends ModelTestCase
             ;
         $this->buildSchemaTables([$schema], true);
         AutomaticMigration::options($options = new OptionCollection);
-        $migrate = new AutomaticMigration($this->queryDriver,
+        $migrate = new AutomaticMigration(
             $this->conn,
+            $this->queryDriver,
             OptionResult::create($options, [ ]));
         $migrate->upgrade();
     }
@@ -44,11 +45,10 @@ class AuthorMigrationTest extends ModelTestCase
         $schema->removeColumn('email');
         $this->buildSchemaTables([$schema], true);
         AutomaticMigration::options($options = new OptionCollection);
-        $migrate = new AutomaticMigration($this->queryDriver,
+        $migrate = new AutomaticMigration(
             $this->conn,
-            OptionResult::create($options, [
-
-            ]));
+            $this->queryDriver,
+            OptionResult::create($options, [ ]));
         $migrate->upgrade();
     }
 
@@ -59,8 +59,9 @@ class AuthorMigrationTest extends ModelTestCase
             ->varchar(30);
         $this->buildSchemaTables([$schema], true);
         AutomaticMigration::options($options = new OptionCollection);
-        $migrate = new AutomaticMigration($this->queryDriver,
+        $migrate = new AutomaticMigration(
             $this->conn,
+            $this->queryDriver,
             OptionResult::create($options, [ ]));
         $migrate->upgrade();
     }
