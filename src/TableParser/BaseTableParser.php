@@ -8,6 +8,9 @@ use LazyRecord\QueryDriver;
 use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\ServiceContainer;
+use LazyRecord\Connection;
+use LazyRecord\ConfigLoader;
+
 abstract class BaseTableParser
 {
     /**
@@ -26,16 +29,19 @@ abstract class BaseTableParser
 
     protected $schemaMap = array();
 
-    public function __construct(BaseDriver $driver, PDO $connection)
+    public function __construct(Connection $connection, BaseDriver $driver, ConfigLoader $config = null)
     {
         $this->driver = $driver;
         $this->connection = $connection;
 
-        $c = ServiceContainer::getInstance();
-        $this->config = $c['config_loader'];
+        if (!$config) {
+            $c = ServiceContainer::getInstance();
+            $config = $c['config_loader'];
+        }
+        $this->config = $config;
 
         // pre-initialize all schema objects and expand template schema
-        $this->schemas = SchemaUtils::findSchemasByConfigLoader($this->config, $c['logger']);
+        $this->schemas = SchemaUtils::findSchemasByConfigLoader($this->config);
         $this->schemas = SchemaUtils::filterBuildableSchemas($this->schemas);
 
         // map table names to declare schema objects
