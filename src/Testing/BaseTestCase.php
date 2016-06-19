@@ -63,7 +63,37 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         if ($this->onlyDriver !== null && $this->getDriverType() != $this->onlyDriver) {
             return $this->markTestSkipped("{$this->onlyDriver} only");
         }
+        $this->prepareConnection();
     }
+
+
+    protected function prepareConnection()
+    {
+        if (!$this->conn) {
+            try {
+                $this->conn = $this->connManager->getConnection($this->getDriverType());
+            } catch (PDOException $e) {
+                if ($this->allowConnectionFailure) {
+                    $this->markTestSkipped(
+                        sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
+                            $this->getDriverType(),
+                            $e->getMessage(),
+                            var_export($this->config->getDataSource($this->getDriverType()), true)
+                        ));
+
+                    return;
+                }
+                echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
+                    $this->getDriverType(),
+                    $e->getMessage(),
+                    var_export($this->config->getDataSource($this->getDriverType()), true)
+                );
+                throw $e;
+            }
+            $this->queryDriver = $this->connManager->getQueryDriver($this->getDriverType());
+        }
+    }
+
 
     public function getDriverType()
     {
