@@ -20,44 +20,38 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected $allowConnectionFailure = false;
 
-    /**
-     * @var LazyRecord\Connection
-     */
-    protected $conn;
-
-    protected $queryDriver;
-
     public function setUp()
     {
         if ($this->onlyDriver !== null && $this->getDriverType() != $this->onlyDriver) {
             return $this->markTestSkipped("{$this->onlyDriver} only");
         }
 
-        // Ensure that we use the correct default data source ID
-        $this->assertEquals($this->getDriverType(), $this->config->getDefaultDataSourceId());
+        if (!$this->conn) {
+            try {
+                $this->conn = $this->connManager->getConnection($this->getDriverType());
+            } catch (PDOException $e) {
+                if ($this->allowConnectionFailure) {
+                    $this->markTestSkipped(
+                        sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
+                            $this->getDriverType(),
+                            $e->getMessage(),
+                            var_export($this->config->getDataSource($this->getDriverType()), true)
+                        ));
 
-        try {
-            $this->conn = $this->connManager->getConnection($this->getDriverType());
-        } catch (PDOException $e) {
-            if ($this->allowConnectionFailure) {
-                $this->markTestSkipped(
-                    sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
-                        $this->getDriverType(),
-                        $e->getMessage(),
-                        var_export($this->config->getDataSource($this->getDriverType()), true)
-                    ));
-
-                return;
+                    return;
+                }
+                echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
+                    $this->getDriverType(),
+                    $e->getMessage(),
+                    var_export($this->config->getDataSource($this->getDriverType()), true)
+                );
+                throw $e;
             }
-            echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
-                $this->getDriverType(),
-                $e->getMessage(),
-                var_export($this->config->getDataSource($this->getDriverType()), true)
-            );
-            throw $e;
+            $this->queryDriver = $this->connManager->getQueryDriver($this->getDriverType());
         }
 
-        $this->queryDriver = $this->connManager->getQueryDriver($this->getDriverType());
+        // Ensure that we use the correct default data source ID
+        $this->assertEquals($this->getDriverType(), $this->config->getDefaultDataSourceId());
         $this->assertInstanceOf('SQLBuilder\\Driver\\BaseDriver', $this->queryDriver, 'QueryDriver object OK');
 
 
@@ -115,7 +109,6 @@ abstract class ModelTestCase extends BaseTestCase
             $sqls = $builder->build($schema);
             $this->assertNotEmpty($sqls);
             foreach ($sqls as $sql) {
-                echo ($sql);
                 $this->conn->query($sql);
             }
         }
@@ -124,11 +117,6 @@ abstract class ModelTestCase extends BaseTestCase
                 $this->conn->query($sql);
             }
         }
-    }
-
-    public function tearDown()
-    {
-        $this->conn = null;
     }
 
     public function testClasses()

@@ -29,6 +29,35 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     protected $config;
 
+    /**
+     * @var LazyRecord\Connection
+     */
+    protected $conn;
+
+    protected $queryDriver;
+
+
+    public function __construct($name = null, array $data = array(), $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+
+        if (!extension_loaded('pdo')) {
+            return $this->markTestSkipped('pdo extension is required for model testing');
+        }
+
+        // The config loader is used to initialize connection manager
+        $this->config = new ConfigLoader;
+        $this->config->loadFromSymbol(true);
+        $this->config->setDefaultDataSourceId($this->getDriverType());
+
+        // free and override default connection
+        $this->connManager = ConnectionManager::getInstance();
+        $this->connManager->init($this->config);
+
+        // $config = self::createNeutralConfigLoader();
+        $this->logger = new Logger();
+    }
+
     public function setUp()
     {
         if ($this->onlyDriver !== null && $this->getDriverType() != $this->onlyDriver) {
@@ -110,25 +139,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->config = $config;
     }
 
-    public function __construct($name = null, array $data = array(), $dataName = '')
-    {
-        parent::__construct($name, $data, $dataName);
-
-        if (!extension_loaded('pdo')) {
-            return $this->markTestSkipped('pdo extension is required for model testing');
-        }
-
-        $this->config = ConfigLoader::getInstance();
-        $this->config->loadFromSymbol(true);
-        $this->config->setDefaultDataSourceId($this->getDriverType());
-
-        // free and override default connection
-        $this->connManager = ConnectionManager::getInstance();
-        $this->connManager->init($this->config);
-
-        // $config = self::createNeutralConfigLoader();
-        $this->logger = new Logger();
-    }
 
     protected function registerDataSource($driverType)
     {
@@ -149,7 +159,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         return $generator->generate([$schema]);
     }
 
-    protected function buildSchemaTable(BaseDriver $driver, PDO $conn, DeclareSchema $schema, array $options = ['rebuild' => true])
+    protected function buildSchemaTable(PDO $conn, BaseDriver $driver, DeclareSchema $schema, array $options = ['rebuild' => true])
     {
         $builder = SqlBuilder::create($driver, $options);
         $sqls = array_filter(array_merge($builder->prepare(), $builder->build($schema), $builder->finalize()));
