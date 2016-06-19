@@ -65,6 +65,14 @@ class SqliteTableParser extends BaseTableParser
             $type = $columnDef->type;
             $typeInfo = TypeInfoParser::parseTypeInfo($type, $this->driver);
 
+            // if the reference schema is given, and the type is similar 
+            // we should just apply the type from schema.
+            // if ($referenceSchema) { }
+
+            // Cast INTEGER to INT
+            if (strtoupper($type) == "INTEGER") {
+                $type = "INT";
+            }
             $column->type($type);
 
             if (isset($columnDef->length)) {
