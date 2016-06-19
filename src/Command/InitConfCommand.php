@@ -13,16 +13,16 @@ class InitConfCommand extends Command
         $opts->add('database:', 'database name');
         $opts->add('username:', 'username');
         $opts->add('password:', 'password');
+        $opts->add('config:', 'config file');
     }
 
     public function execute()
     {
         $logger = $this->getLogger();
 
-        $configFile = 'db/config/database.yml';
+        $configFile = $this->options->config ?: 'db/config/database.yml';
         if (file_exists($configFile)) {
             $logger->info("Config file $configFile already exists.");
-
             return;
         }
 
