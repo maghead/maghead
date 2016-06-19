@@ -78,7 +78,7 @@ class MigrationRunner
         $this->logger->info("Updating migration version to $id.");
     }
 
-    public function getMigrationScripts()
+    public function loadMigrationScripts()
     {
         $classes = get_declared_classes();
         $classes = array_filter($classes, function ($class) {
@@ -103,22 +103,27 @@ class MigrationRunner
         return $classes;
     }
 
+    /**
+     * Each data source has it's own migration timestamp,
+     * we use the data source ID to get the migration timestamp 
+     * and filter the migration script
+     *
+     * @param string $dsId
+     */
     public function getUpgradeScripts($dsId)
     {
         $lastMigrationId = $this->getLastMigrationId($dsId);
         $this->logger->debug("Found last migration id: $lastMigrationId");
-        $scripts = $this->getMigrationScripts();
-
+        $scripts = $this->loadMigrationScripts();
         return array_filter($scripts, function ($class) use ($lastMigrationId) {
             $id = $class::getId();
-
             return $id > $lastMigrationId;
         });
     }
 
     public function getDowngradeScripts($dsId)
     {
-        $scripts = $this->getMigrationScripts();
+        $scripts = $this->loadMigrationScripts();
         $lastMigrationId = $this->getLastMigrationId($dsId);
 
         return array_filter($scripts, function ($class) use ($lastMigrationId) {

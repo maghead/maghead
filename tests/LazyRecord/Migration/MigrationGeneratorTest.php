@@ -74,7 +74,7 @@ class MigrationGeneratorTest extends ModelTestCase
 
         // XXX: PHPUnit can't run this test in separated unit test since 
         // there is a bug of serializing the global array, this assertion will get 5 instead of the expected 1.
-        $scripts = $runner->getMigrationScripts();
+        $scripts = $runner->loadMigrationScripts();
         $this->assertNotEmpty($scripts);
         // $this->assertCount(1, $scripts);
 

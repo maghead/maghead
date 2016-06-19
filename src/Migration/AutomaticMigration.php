@@ -23,7 +23,6 @@ class AutomaticMigration extends Migration implements Migratable
         parent::__construct($driver, $connection);
     }
 
-
     static public function options($opts)
     {
         $opts->add('no-drop-column', 'Do not drop column in automatic migration process.');
