@@ -692,12 +692,12 @@ now you can generate the migration script or upgrade database schema directly.
 
 to upgrade database schema directly, you can simply run:
 
-    $ lazy migrate -U
+    $ lazy migrate auto
 
 to upgrade database schema through a customizable migration script, you can 
 generate a new migration script like:
 
-    $ lazy migrate --diff AddUserRoleColumn
+    $ lazy migrate diff AddUserRoleColumn
     Loading schema objects...
     Creating migration script from diff
     Found 10 schemas to compare.
@@ -756,22 +756,24 @@ want.
 After the migration script is generated, you can check the status of 
 current database and waiting migration scripts:
 
-    $ lazy migrate --status
+    $ lazy migrate status
     Found 1 migration script to be executed.
     - AddUserColumn_1347451491
 
 now you can run upgrade command to 
 upgrade database schema through the migration script:
 
-    $ lazy migrate --up
+    $ lazy migrate up
 
 If you regret, you can run downgrade migrations through the command:
 
-    $ lazy migrate --down
+    $ lazy migrate down
 
-But please note that SQLite doesn't support column renaming and column dropping.
+But please note that SQLite doesn't support column renaming and column
+dropping.
 
-To see what migration script could do, please check the documentation of SQLBuilder package.
+To see what migration script could do, please check the documentation of
+SQLBuilder package.
 
 ## Mix-In Schema
 
