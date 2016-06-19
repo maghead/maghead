@@ -25,6 +25,10 @@ class ConnectionManagerTest extends PHPUnit_Framework_TestCase
         $conn = $connManager->getConnection('default');
         $queryDriver = $conn->createQueryDriver();
         $this->assertInstanceOf('SQLBuilder\Driver\PDOMySQLDriver', $queryDriver);
+
+        $conn = $connManager->getDefaultConnection();
+        $queryDriver = $conn->createQueryDriver();
+        $this->assertInstanceOf('SQLBuilder\Driver\PDOMySQLDriver', $queryDriver);
         $connManager->free();
     }
 
