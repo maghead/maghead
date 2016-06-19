@@ -68,7 +68,6 @@ class BuildConfCommand extends \CLIFramework\Command
 
         // make master config link
         $loader = ConfigLoader::getInstance();
-
         $cleanup = [$loader->symbolFilename, '.lazy.php', '.lazy.yml'];
         foreach ($cleanup as $symlink) {
             if (file_exists($symlink)) {
