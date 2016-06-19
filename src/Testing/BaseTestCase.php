@@ -21,11 +21,13 @@ use Exception;
 
 abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
-    protected $config;
-
     public $driver = 'sqlite';
 
     public $onlyDriver;
+
+    protected $connManager;
+
+    protected $config;
 
     public function setUp()
     {
@@ -113,40 +115,25 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         parent::__construct($name, $data, $dataName);
 
         if (!extension_loaded('pdo')) {
-            $this->markTestSkipped('pdo extension is required for model testing');
-
-            return;
+            return $this->markTestSkipped('pdo extension is required for model testing');
         }
+
+        $this->config = ConfigLoader::getInstance();
+        $this->config->loadFromSymbol(true);
+        $this->config->setDefaultDataSourceId($this->getDriverType());
 
         // free and override default connection
-        ConnectionManager::getInstance()->free();
-
-        $configLoader = ConfigLoader::getInstance();
-        $configLoader->loadFromSymbol(true);
-        $configLoader->setDefaultDataSourceId($this->getDriverType());
-        $connManager = ConnectionManager::getInstance();
-        $connManager->init($configLoader);
+        $this->connManager = ConnectionManager::getInstance();
+        $this->connManager->init($this->config);
 
         // $config = self::createNeutralConfigLoader();
-        $this->setConfig($configLoader);
-
         $this->logger = new Logger();
-        // $this->logger->setQuiet();
-
-        if (method_exists($this, 'getModels')) {
-            /*
-            $generator = new SchemaGenerator($this->config, $this->logger);
-            $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
-            $classMap = $generator->generate($schemas);
-            */
-        }
     }
 
-    public function registerDataSource($driverType)
+    protected function registerDataSource($driverType)
     {
-        $connManager = ConnectionManager::getInstance();
         if ($dataSource = self::createDataSourceConfig($driverType)) {
-            $connManager->addDataSource($driverType, $dataSource);
+            $this->connManager->addDataSource($driverType, $dataSource);
         } else {
             $this->markTestSkipped("Data source for $driverType is undefined");
         }
@@ -155,14 +142,14 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     /**
      * @return array[] class map
      */
-    public function updateSchemaFiles(DeclareSchema $schema)
+    protected function updateSchemaFiles(DeclareSchema $schema)
     {
         $generator = new SchemaGenerator($this->config, $this->logger);
 
         return $generator->generate([$schema]);
     }
 
-    public function buildSchemaTable(BaseDriver $driver, PDO $conn, DeclareSchema $schema, array $options = ['rebuild' => true])
+    protected function buildSchemaTable(BaseDriver $driver, PDO $conn, DeclareSchema $schema, array $options = ['rebuild' => true])
     {
         $builder = SqlBuilder::create($driver, $options);
         $sqls = array_filter(array_merge($builder->prepare(), $builder->build($schema), $builder->finalize()));
