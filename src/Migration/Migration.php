@@ -139,20 +139,18 @@ class Migration implements Migratable
         $this->query($sql);
     }
 
-    public function modifyColumnByCallable($table, callable $cb)
+    public function modifyColumn($table, $arg)
     {
-        $query = new AlterTableQuery($table);
-        $column = new Column();
-        if ($ret = call_user_func($arg, $column)) {
-            $column = $ret;
+        if ($arg instanceof Column) {
+            $column = $arg;
+        } else if (is_callable($arg)) {
+            $column = new Column;
+            if ($ret = call_user_func($arg, $column)) {
+                $column = $ret;
+            }
+        } else {
+            throw new InvalidArgumentException("Invalid argument $arg");
         }
-        $query->modifyColumn($column);
-        $sql = $query->toSql($this->driver, new ArgumentArray());
-        $this->query($sql);
-    }
-
-    public function modifyColumn($table, Column $column)
-    {
         $query = new AlterTableQuery($table);
         $query->modifyColumn($column);
         $sql = $query->toSql($this->driver, new ArgumentArray());
