@@ -10,6 +10,7 @@ class InitConfCommand extends Command
     public function options($opts)
     {
         $opts->add('driver:', 'pdo driver type');
+        $opts->add('dsn:', 'dsn');
         $opts->add('database:', 'database name');
         $opts->add('username:', 'username');
         $opts->add('password:', 'password');
@@ -31,11 +32,11 @@ class InitConfCommand extends Command
 
         $logger->info("Using $driver driver");
         $logger->info("Using database $dbName");
-        $logger->info("Using DSN: $driver:$dbName");
 
         $user = '';
         $password = '';
         if ($driver != 'sqlite') {
+            // FIXME: fix DSN for sqlite, "sqlite:mydb.sqlite3" doesn't require dbname= ...
             $user = $this->options->username ?: $this->ask('Database user');
             $password = $this->options->password ?: $this->ask('Database password');
         }
