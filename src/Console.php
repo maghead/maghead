@@ -28,6 +28,7 @@ class Console extends Application
          */
         $this->command('build-conf', 'LazyRecord\\Command\\BuildConfCommand');
         $this->command('conf',       'LazyRecord\\Command\\BuildConfCommand');
+        $this->command('init-conf',  'LazyRecord\\Command\\InitConfCommand');
 
         $this->command('schema'); // the schema command builds all schema files and shows a diff after building new schema
         $this->command('basedata');
