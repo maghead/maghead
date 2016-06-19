@@ -10,7 +10,7 @@ use SQLBuilder\Driver\BaseDriver;
 
 class TableParser
 {
-    public static function create(Connection $connection, BaseDriver $driver)
+    public static function create(PDO $connection, BaseDriver $driver)
     {
         $class = 'LazyRecord\\TableParser\\'.ucfirst($driver->getDriverName()).'TableParser';
         if (class_exists($class, true)) {

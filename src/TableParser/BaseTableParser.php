@@ -25,7 +25,7 @@ abstract class BaseTableParser
 
     protected $config;
 
-    public function __construct(Connection $connection, BaseDriver $driver)
+    public function __construct(PDO $connection, BaseDriver $driver)
     {
         $this->driver = $driver;
         $this->connection = $connection;
