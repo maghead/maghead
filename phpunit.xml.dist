@@ -43,23 +43,23 @@
     </testsuite>
 
     <testsuite name="Model">
-        <directory suffix="Test.php">tests/LazyRecord/ModelTest</directory>
+      <directory suffix="Test.php">tests/ModelTest</directory>
     </testsuite>
 
     <testsuite name="PageApp">
-        <directory suffix="Test.php">tests/PageApp</directory>
+      <directory suffix="Test.php">tests/apps/PageApp</directory>
     </testsuite>
 
     <testsuite name="StoreApp">
-        <directory suffix="Test.php">tests/StoreApp</directory>
+      <directory suffix="Test.php">tests/apps/StoreApp</directory>
     </testsuite>
 
     <testsuite name="AuthorBooks">
-        <directory suffix="Test.php">tests/AuthorBooks</directory>
+      <directory suffix="Test.php">tests/apps/AuthorBooks</directory>
     </testsuite>
 
     <testsuite name="Schema">
-        <directory suffix="Test.php">tests/LazyRecord/Schema</directory>
+      <directory suffix="Test.php">tests/Schema</directory>
     </testsuite>
   </testsuites>
 
