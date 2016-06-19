@@ -6,11 +6,14 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use LazyRecord\Metadata;
 use LazyRecord\ConnectionManager;
+use LazyRecord\Connection;
 use LazyRecord\ServiceContainer;
 use GetOptionKit\OptionResult;
 use Exception;
 use RuntimeException;
 use CLIFramework\Logger;
+use SQLBuilder\Driver\BaseDriver;
+
 
 class MigrationRunner
 {
@@ -33,11 +36,9 @@ class MigrationRunner
         $this->dataSourceIds = (array) $dsIds;
     }
 
-    public function addDataSource($dsId)
-    {
-        $this->dataSourceIds[] = $dsId;
-    }
-
+    /**
+     * Load migration script from specific directory
+     */
     public function load($directory)
     {
         if (!file_exists($directory)) {
@@ -61,10 +62,9 @@ class MigrationRunner
         return $loaded;
     }
 
-    public function getLastMigrationId($dsId)
+    public function getLastMigrationId(Connection $conn, BaseDriver $driver)
     {
-        $meta = Metadata::createWithDataSource($dsId);
-
+        $meta = new Metadata($driver, $conn);
         return $meta['migration'] ?: 0;
     }
 
@@ -114,9 +114,9 @@ class MigrationRunner
      *
      * @param string $dsId
      */
-    public function getUpgradeScripts($dsId)
+    public function getUpgradeScripts(Connection $conn, BaseDriver $driver)
     {
-        $lastMigrationId = $this->getLastMigrationId($dsId);
+        $lastMigrationId = $this->getLastMigrationId($conn, $driver);
         $this->logger->debug("Found last migration id: $lastMigrationId");
         $scripts = $this->loadMigrationScripts();
         return array_filter($scripts, function ($class) use ($lastMigrationId) {
@@ -125,10 +125,10 @@ class MigrationRunner
         });
     }
 
-    public function getDowngradeScripts($dsId)
+    public function getDowngradeScripts(Connection $conn, BaseDriver $driver)
     {
         $scripts = $this->loadMigrationScripts();
-        $lastMigrationId = $this->getLastMigrationId($dsId);
+        $lastMigrationId = $this->getLastMigrationId($conn, $driver);
 
         return array_filter($scripts, function ($class) use ($lastMigrationId) {
             $id = $class::getId();
@@ -149,9 +149,8 @@ class MigrationRunner
             $connection = $this->connectionManager->getConnection($dsId);
 
             $this->logger->info("Running downgrade over data source: $dsId");
-
             if (!$scripts) {
-                $scripts = $this->getDowngradeScripts($dsId);
+                $scripts = $this->getDowngradeScripts($connection, $driver);
             }
             $this->logger->info('Found '.count($scripts).' migration scripts to run downgrade!');
             while ($steps--) {
@@ -183,7 +182,7 @@ class MigrationRunner
             $connection = $this->connectionManager->getConnection($dsId);
 
             if (!$scripts) {
-                $scripts = $this->getUpgradeScripts($dsId);
+                $scripts = $this->getUpgradeScripts($connection, $driver);
                 if (count($scripts) == 0) {
                     $this->logger->info('No migration script found.');
 

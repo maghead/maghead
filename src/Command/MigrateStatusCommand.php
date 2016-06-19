@@ -3,6 +3,8 @@
 namespace LazyRecord\Command;
 
 use LazyRecord\Migration\MigrationRunner;
+use LazyRecord\ConnectionManager;
+use LazyRecord\Connection;
 
 class MigrateStatusCommand extends MigrateBaseCommand
 {
@@ -19,9 +21,14 @@ class MigrateStatusCommand extends MigrateBaseCommand
     public function execute()
     {
         $dsId = $this->getCurrentDataSourceId();
+
+        $connectionManager = ConnectionManager::getInstance();
+        $conn = $connectionManager->getConnection($dsId);
+        $driver = $connectionManager->getQueryDriver($dsId);
+
         $runner = new MigrationRunner($this->logger, $dsId);
-        $runner->load('db/migrations');
-        $scripts = $runner->getUpgradeScripts($dsId);
+        $runner->load($this->options->{'script-dir'} ?: 'db/migrations');
+        $scripts = $runner->getUpgradeScripts($conn, $driver);
         $count = count($scripts);
         $this->logger->info('Found '.$count.($count > 1 ? ' migration scripts' : ' migration script').' to be executed.');
         foreach ($scripts as $script) {
