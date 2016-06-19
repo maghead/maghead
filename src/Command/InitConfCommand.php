@@ -43,15 +43,14 @@ class InitConfCommand extends Command
         $content = <<<EOS
 ---
 bootstrap:
-  - tests/bootstrap.php
+- vendor/autoload.php
 schema:
-#  Customize your schema class loader
-#
-#  loader: custom_schema_loader.php
-
-#  Customize your schema paths
-#  paths:
-#    - tests
+  # Customize your schema class loader
+  #
+  # loader: custom_schema_loader.php
+  #  Customize your schema paths
+  # paths:
+  # - src
 data_source:
   default: master
   nodes:
