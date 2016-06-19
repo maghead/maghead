@@ -19,6 +19,23 @@ use Exception;
 use InvalidArgumentException;
 use BadMethodCallException;
 
+function buildColumn($arg)
+{
+    if (is_string($arg)) {
+        return new Column($arg);
+    } else if (is_callable($arg)) {
+        $column = new Column();
+        if ($ret = call_user_func($arg, $column)) {
+            return $ret;
+        }
+        return $column;
+    } else if ($arg instanceof Column) {
+        return $arg;
+    } else {
+        throw new InvalidArgumentException("Invalid column argument");
+    }
+}
+
 class Migration implements Migratable
 {
     /**
@@ -121,18 +138,12 @@ class Migration implements Migratable
         $this->query($sql);
     }
 
+
+
+
     public function dropColumn($table, $arg)
     {
-        if (is_string($arg)) {
-            $column = new Column($arg);
-        } else if (is_callable($arg)) {
-            $column = new Column();
-            if ($ret = call_user_func($arg, $column)) {
-                $column = $ret;
-            }
-        } else if ($arg instanceof Column) {
-            $column = $arg;
-        }
+        $column = buildColumn($arg);
         $query = new AlterTableQuery($table);
         $query->dropColumn($column);
         $sql = $query->toSql($this->driver, new ArgumentArray());
@@ -141,16 +152,7 @@ class Migration implements Migratable
 
     public function modifyColumn($table, $arg)
     {
-        if ($arg instanceof Column) {
-            $column = $arg;
-        } else if (is_callable($arg)) {
-            $column = new Column;
-            if ($ret = call_user_func($arg, $column)) {
-                $column = $ret;
-            }
-        } else {
-            throw new InvalidArgumentException("Invalid argument $arg");
-        }
+        $column = buildColumn($arg);
         $query = new AlterTableQuery($table);
         $query->modifyColumn($column);
         $sql = $query->toSql($this->driver, new ArgumentArray());
@@ -159,14 +161,7 @@ class Migration implements Migratable
 
     public function addColumn($table, $arg)
     {
-        if (is_callable($arg)) {
-            $column = new Column();
-            if ($ret = call_user_func($arg, $column)) {
-                $column = $ret;
-            }
-        } else if ($arg instanceof Column) {
-            $column = $arg;
-        }
+        $column = buildColumn($arg);
         $query = new AlterTableQuery($table);
         $query->addColumn($column);
         $sql = $query->toSql($this->driver, new ArgumentArray());
