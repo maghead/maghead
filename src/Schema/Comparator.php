@@ -44,20 +44,20 @@ class Comparator
 
                 $d = new ColumnDiff($key, 'M', $bc, $ac);
 
-                // compare the type info
-                if (strtolower($bc->type) != strtolower($ac->type)) {
-                    $d->appendDetail(new AttributeDiff('type', strtolower($bc->buildTypeName()), strtolower($ac->buildTypeName())));
+                // Compare the type info
+                if (strtolower($bc->type) !== strtolower($ac->type)) {
+                    $d->appendDetail(new AttributeDiff('type', strtolower($bc->buildTypeName($this->driver)), strtolower($ac->buildTypeName($this->driver))));
                 }
 
-                if ($bc->length != $ac->length) {
-                    $d->appendDetail(new AttributeDiff('length', $bc->buildTypeName(), $ac->buildTypeName()));
+                if ($bc->length !== $ac->length) {
+                    $d->appendDetail(new AttributeDiff('length', $bc->buildTypeName($this->driver), $ac->buildTypeName($this->driver)));
                 }
 
-                if ($bc->decimals != $ac->decimals) {
-                    $d->appendDetail(new AttributeDiff('decimals', $bc->buildTypeName(), $ac->buildTypeName()));
+                if ($bc->decimals !== $ac->decimals) {
+                    $d->appendDetail(new AttributeDiff('decimals', $bc->buildTypeName($this->driver), $ac->buildTypeName($this->driver)));
                 }
 
-                if ($bc->primary != $ac->primary) {
+                if ($bc->primary !== $ac->primary) {
                     $d->appendDetail(new AttributeDiff('primary', $bc->primary, $ac->primary));
                 }
 
