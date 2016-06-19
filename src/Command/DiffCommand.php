@@ -31,7 +31,7 @@ class DiffCommand extends BaseCommand
 
         $this->logger->info('Performing Comparison...');
 
-        $parser = TableParser::create($driver, $conn);
+        $parser = TableParser::create($conn, $driver);
         $existingTables = $parser->getTables();
         $tableSchemas = $parser->getDeclareSchemaMap();
 

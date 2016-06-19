@@ -27,7 +27,7 @@ class TableParserTest extends BaseTestCase
 
         $conn   = $manager->getConnection($driverType);
         $driver = $manager->getQueryDriver($driverType);
-        $parser = TableParser::create($driver,$conn);
+        $parser = TableParser::create($conn, $driver);
 
         $tables = $parser->getTables();
         $this->assertNotNull($tables);

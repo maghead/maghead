@@ -30,7 +30,6 @@ class BasicCRUDTest extends ModelTestCase
     }
 
     /**
-     * @rebuild false
      * @expectedException PDOException
      */
     public function testTitleIsRequired()

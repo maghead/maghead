@@ -17,10 +17,8 @@ class MigrationGeneratorTest extends ModelTestCase
 
     public function testGenerator()
     {
-        $connectionManager = ConnectionManager::getInstance();
-        $pdo = $connectionManager->getConnection($this->getDriverType());
-        $pdo->query('DROP TABLE IF EXISTS users;');
-        $pdo->query('CREATE TABLE users (id integer NOT NULL PRIMARY KEY);');
+        $this->conn->query('DROP TABLE IF EXISTS users;');
+        $this->conn->query('CREATE TABLE users (id integer NOT NULL PRIMARY KEY);');
 
         $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'tests/migrations');
         $this->assertEquals('20120901_CreateUser.php',$generator->generateFilename('CreateUser','20120901'));
@@ -35,8 +33,6 @@ class MigrationGeneratorTest extends ModelTestCase
 
     public function testMigrationByDiff() 
     {
-        // $connectionManager = ConnectionManager::getInstance();
-        // $pdo = $connectionManager->getConnection($this->getDriverType());
         $this->conn->query('DROP TABLE IF EXISTS users');
         $this->conn->query('DROP TABLE IF EXISTS test');
         $this->conn->query('CREATE TABLE users (account VARCHAR(128) UNIQUE)');
@@ -64,7 +60,6 @@ class MigrationGeneratorTest extends ModelTestCase
         $runner = new MigrationRunner($this->logger, $this->getDriverType());
         $runner->resetMigrationId($this->conn, $this->queryDriver);
         $runner->load('tests/migrations_testing');
-
 
         // XXX: PHPUnit can't run this test in separated unit test since 
         // there is a bug of serializing the global array, this assertion will get 5 instead of the expected 1.

@@ -149,7 +149,7 @@ class MigrationRunner
             // downgrade a migration one at one time.
             if ($script = array_pop($scripts)) {
                 $this->logger->info("Running {$script}::downgrade");
-                $migration = new $script($conn, $driver);
+                $migration = new $script($conn, $driver, $this->logger);
                 $migration->downgrade();
                 if ($nextScript = end($scripts)) {
                     $this->updateLastMigrationId($conn, $driver, $nextScript::getId());
@@ -177,7 +177,7 @@ class MigrationRunner
             $this->logger->info("Begining transaction...");
             $conn->beginTransaction();
             foreach ($scripts as $script) {
-                $migration = new $script($conn, $driver);
+                $migration = new $script($conn, $driver, $this->logger);
                 $migration->upgrade();
                 $this->updateLastMigrationId($conn, $driver, $script::getId());
             }
@@ -194,7 +194,7 @@ class MigrationRunner
 
     public function runUpgradeAutomatically(Connection $conn, BaseDriver $driver, OptionResult $options = null)
     {
-        $script = new AutomaticMigration($conn, $driver, $options);
+        $script = new AutomaticMigration($conn, $driver, $this->logger, $options);
         try {
             $this->logger->info('Begining transaction...');
             $conn->beginTransaction();

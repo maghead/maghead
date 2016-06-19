@@ -7,13 +7,14 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\MySQLDriver;
 use LazyRecord\Console;
 
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\ServiceContainer;
-use Pimple\Container;
+use CLIFramework\Logger;
 use PDO;
 use Exception;
 use InvalidArgumentException;
@@ -58,12 +59,15 @@ class Migration implements Migratable
      */
     protected $builder;
 
-    public function __construct(PDO $connection, BaseDriver $driver, Container $serviceContainer = null)
+    public function __construct(PDO $connection, BaseDriver $driver, Logger $logger = null)
     {
         $this->connection = $connection;
-        $this->driver = $driver;
-        $c = $serviceContainer ?: ServiceContainer::getInstance();
-        $this->logger = $c['logger'] ?: Console::getInstance()->getLogger();
+        $this->driver     = $driver;
+        if (!$logger) {
+            $c = ServiceContainer::getInstance();
+            $this->logger = $c['logger'] ?: Console::getInstance()->getLogger();
+        }
+        $this->logger = $logger;
         $this->builder = SqlBuilder::create($driver);
     }
 
@@ -122,24 +126,29 @@ class Migration implements Migratable
         }
     }
 
-    protected function alterTable($table)
+    protected function alterTable($arg)
     {
-        return new AlterTableQuery($table);
+        if ($arg instanceof DeclareSchema) {
+            $table = $arg->getTable();
+        } else {
+            $table = $arg;
+        }
+        return new AlterTableQuery($arg);
     }
 
     /**
      * Rename column requires $schema object.
      */
-    public function renameColumn($table, $oldColumn, Column $newColumn)
+    public function renameColumn($table, $oldColumn, $newColumn)
     {
+        if ($this->driver instanceof MySQLDriver && is_string($newColumn)) {
+            throw new InvalidArgumentException("MySQLDriver requires the new column to be a column definition object.");
+        }
         $query = new AlterTableQuery($table);
         $query->renameColumn($oldColumn, $newColumn);
         $sql = $query->toSql($this->driver, new ArgumentArray());
         $this->query($sql);
     }
-
-
-
 
     public function dropColumn($table, $arg)
     {

@@ -53,7 +53,7 @@ class Metadata
      */
     public function init()
     {
-        $parser = TableParser::create($this->driver, $this->connection);
+        $parser = TableParser::create($this->connection, $this->driver);
         $tables = $parser->getTables();
 
         // if the __meta__table is not found, we should create one to prevent error.

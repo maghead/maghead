@@ -17,10 +17,10 @@ class AutomaticMigration extends Migration implements Migratable
 {
     protected $options = null;
 
-    public function __construct(PDO $connection, BaseDriver $driver, OptionResult $options = null)
+    public function __construct(PDO $connection, BaseDriver $driver, Logger $logger = null, OptionResult $options = null)
     {
+        parent::__construct($connection, $driver, $logger);
         $this->options = $options ?: new OptionResult();
-        parent::__construct($connection, $driver);
     }
 
     static public function options($opts)
@@ -31,7 +31,7 @@ class AutomaticMigration extends Migration implements Migratable
 
     public function upgrade()
     {
-        $parser = TableParser::create($this->driver, $this->connection);
+        $parser = TableParser::create($this->connection, $this->driver);
         $tableSchemas = $parser->getDeclareSchemaMap();
         $existingTables = $parser->getTables();
 

@@ -4,12 +4,12 @@ use SQLBuilder\Driver\PDODriverFactory;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Migration\Migration;
 
-class FooMigration extends Migration
+class AddCellphoneMigration extends Migration
 {
     public function upgrade()
     {
         $this->addColumn('foo', function($column) {
-            $column->name('name')
+            $column->name('cellphone')
                 ->type('varchar(128)')
                 ->default('(none)')
                 ->notNull();
@@ -18,42 +18,34 @@ class FooMigration extends Migration
 
     public function downgrade()
     {
-        $this->dropColumn('foo', 'name');
+        $this->dropColumn('foo', 'cellphone');
     }
 }
+
+use LazyRecord\Testing\ModelTestCase;
 
 /**
  * @group migration
  */
-class MigrationTest extends PHPUnit_Framework_TestCase
+class MigrationTest extends ModelTestCase
 {
-    protected $conn;
-    protected $driver;
+    public $onlyDriver = 'mysql';
 
-    public function setUp()
+    public function getModels()
     {
-        // XXX: mysterious workaround for tests
-        $connm = \LazyRecord\ConnectionManager::getInstance();
-        $connm->free();
-        $this->conn = new PDO('sqlite::memory:');
-        $this->driver = PDODriverFactory::create($this->conn);
+        return [];
     }
-
-    public function tearDown()
-    {
-        $this->conn = null;
-    }
-
 
     public function testUpgradeWithAddColumnByCallable()
     {
         ob_start();
+        $this->conn->query('DROP TABLE IF EXISTS foo');
         $this->conn->query('CREATE TABLE foo (id INTEGER PRIMARY KEY, name varchar(32));');
-        $migration = new FooMigration($this->conn, $this->driver);
+        $migration = new AddCellphoneMigration($this->conn, $this->queryDriver, $this->logger);
         $migration->upgrade();
         $migration->downgrade();
+        $this->conn->query('DROP TABLE IF EXISTS foo');
         ob_end_clean();
     }
-
 }
 

@@ -121,7 +121,7 @@ class MigrationGenerator
         $connection = $connectionManager->getConnection($dataSourceId);
         $driver = $connectionManager->getQueryDriver($dataSourceId);
 
-        $parser = TableParser::create($driver, $connection);
+        $parser = TableParser::create($connection, $driver);
         $tableSchemas = $schemas ?: $parser->getDeclareSchemaMap();
         $existingTables = $parser->getTables();
 

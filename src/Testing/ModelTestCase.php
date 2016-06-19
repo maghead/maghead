@@ -7,6 +7,7 @@ use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\SeedBuilder;
 use LazyRecord\SqlBuilder\SqlBuilder;
+use LazyRecord\TableParser\TableParser;
 use PDOException;
 
 abstract class ModelTestCase extends BaseTestCase
@@ -32,6 +33,7 @@ abstract class ModelTestCase extends BaseTestCase
             $configLoader->loadFromSymbol(true);
             $configLoader->setDefaultDataSourceId($this->getDriverType());
             $connManager = ConnectionManager::getInstance();
+            $connManager->free();
             $connManager->init($configLoader);
 
             try {
@@ -70,18 +72,16 @@ abstract class ModelTestCase extends BaseTestCase
             $basedata = false;
         }
 
-        if ($rebuild) {
-            $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
-            $this->buildSchemaTables($schemas, true);
-            if ($basedata) {
-                $runner = new SeedBuilder($this->config, $this->logger);
-                foreach ($schemas as $schema) {
-                    $runner->buildSchemaSeeds($schema);
-                }
-                if ($scripts = $this->config->getSeedScripts()) {
-                    foreach ($scripts as $script) {
-                        $runner->buildScriptSeed($script);
-                    }
+        $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
+        $this->buildSchemaTables($schemas, $rebuild);
+        if ($basedata) {
+            $runner = new SeedBuilder($this->config, $this->logger);
+            foreach ($schemas as $schema) {
+                $runner->buildSchemaSeeds($schema);
+            }
+            if ($scripts = $this->config->getSeedScripts()) {
+                foreach ($scripts as $script) {
+                    $runner->buildScriptSeed($script);
                 }
             }
         }
@@ -89,6 +89,9 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected function buildSchemaTables(array $schemas, $rebuild = true)
     {
+        $parser = TableParser::create($this->conn, $this->queryDriver);
+        $tables = $parser->getTables();
+
         $builder = SqlBuilder::create($this->queryDriver, array('rebuild' => $rebuild));
         if ($sqls = $builder->prepare()) {
             foreach ($sqls as $sql) {
@@ -96,6 +99,10 @@ abstract class ModelTestCase extends BaseTestCase
             }
         }
         foreach ($schemas as $schema) {
+            // Skip schema building if table already exists.
+            if ($rebuild === false && in_array($schema->getTable(), $tables)) {
+                // continue;
+            }
             $sqls = $builder->build($schema);
             $this->assertNotEmpty($sqls);
             foreach ($sqls as $sql) {

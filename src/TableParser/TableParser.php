@@ -7,7 +7,7 @@ use Exception; use SQLBuilder\Driver\BaseDriver;
 
 class TableParser
 {
-    public static function create(BaseDriver $driver, PDO $connection)
+    public static function create(PDO $connection, BaseDriver $driver)
     {
         $class = 'LazyRecord\\TableParser\\'.ucfirst($driver->getDriverName()).'TableParser';
         if (class_exists($class, true)) {
