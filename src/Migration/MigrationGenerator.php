@@ -8,6 +8,7 @@ use CLIFramework\Logger;
 use LazyRecord\Schema;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\Comparator;
+use LazyRecord\Schema\SchemaLoader;
 use ClassTemplate\ClassFile;
 use CodeGen\Expr\MethodCallExpr;
 use CodeGen\Statement\Statement;
@@ -115,14 +116,14 @@ class MigrationGenerator
     }
 
 
-    public function generateWithDiff($taskName, $dataSourceId, array $schemas = null, $time = null)
+    public function generateWithDiff($taskName, $dataSourceId, array $schemas, $time = null)
     {
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $connection = $connectionManager->getConnection($dataSourceId);
         $driver = $connectionManager->getQueryDriver($dataSourceId);
 
         $parser = TableParser::create($connection, $driver);
-        $tableSchemas = $schemas ?: $parser->getDeclareSchemaMap();
+        $tableSchemas = $schemas;
         $existingTables = $parser->getTables();
 
         $this->logger->info('Found '.count($schemas).' schemas to compare.');
@@ -134,8 +135,9 @@ class MigrationGenerator
         $comparator = new Comparator($driver);
 
         // schema from runtime
-        foreach ($tableSchemas as $a) {
-            $table = $a->getTable();
+        foreach ($tableSchemas as $key => $a) {
+            $table = is_numeric($key) ? $a->getTable() : $key;
+
             if (!in_array($table, $existingTables)) {
                 $this->logger->info(sprintf("Found schema '%s' to be imported to '%s'", $a, $table), 1);
                 // generate create table statement.

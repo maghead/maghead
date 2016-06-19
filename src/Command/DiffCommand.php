@@ -7,6 +7,7 @@ use ReflectionObject;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\Comparator;
+use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Schema\Comparator\ConsolePrinter as ComparatorConsolePrinter;
 
 class DiffCommand extends BaseCommand
@@ -33,7 +34,8 @@ class DiffCommand extends BaseCommand
 
         $parser = TableParser::create($conn, $driver);
         $existingTables = $parser->getTables();
-        $tableSchemas = $parser->getDeclareSchemaMap();
+        $tableSchemas = SchemaLoader::loadSchemaTableMap($this->getConfigLoader());
+
 
         $found = false;
         $comparator = new Comparator($driver);

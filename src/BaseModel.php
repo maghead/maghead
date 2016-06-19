@@ -849,23 +849,28 @@ abstract class BaseModel implements
             }
         }
 
-        if (!$stm) {
-            $query = new InsertQuery();
-            $query->into($this->table);
-            $query->insert($insertArgs);
-            $query->returning($k);
-            $sql = $query->toSql($driver, $arguments);
-            $stm = $conn->prepare($sql);
-            if ($cacheable) {
-                $this->_preparedCreateStms[$cacheKey] = $stm;
+        try {
+            if (!$stm) {
+                $query = new InsertQuery();
+                $query->into($this->table);
+                $query->insert($insertArgs);
+                $query->returning($k);
+                $sql = $query->toSql($driver, $arguments);
+                $stm = $conn->prepare($sql);
+                if ($cacheable) {
+                    $this->_preparedCreateStms[$cacheKey] = $stm;
+                }
             }
-        }
-        if (false === $stm->execute($arguments->toArray())) {
-            return $this->reportError('Record create failed.', array(
-                'validations' => $validationResults,
-                'args' => $args,
-                'sql' => $sql,
-            ));
+            if (false === $stm->execute($arguments->toArray())) {
+                return $this->reportError('Record create failed.', array(
+                    'validations' => $validationResults,
+                    'args' => $args,
+                    'sql' => $sql,
+                ));
+            }
+        } catch (Exception $e) {
+            var_dump($conn);
+            throw new Exception("create fail on " . $this->getWriteSourceId(), 0 , $e);
         }
 
         $pkId = null;

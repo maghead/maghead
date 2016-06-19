@@ -4,6 +4,7 @@ namespace LazyRecord\Migration;
 
 use LazyRecord\Schema\Comparator;
 use LazyRecord\Schema\Relationship\Relationship;
+use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\TableParser\ReferenceParser;
 use LazyRecord\Connection;
@@ -32,7 +33,7 @@ class AutomaticMigration extends Migration implements Migratable
     public function upgrade()
     {
         $parser = TableParser::create($this->connection, $this->driver);
-        $tableSchemas = $parser->getDeclareSchemaMap();
+        $tableSchemas = SchemaLoader::loadSchemaTableMap($this->getConfigLoader());
         $existingTables = $parser->getTables();
 
         $comparator = new Comparator($this->driver);

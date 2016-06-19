@@ -3,6 +3,7 @@
 namespace LazyRecord\Schema;
 
 use LazyRecord\ClassUtils;
+use LazyRecord\ConfigLoader;
 
 /**
  * Schema loader actually catches 
@@ -27,6 +28,28 @@ class SchemaLoader
         if (class_exists($class, true)) {
             return self::$schemas[ $class ] = new $class();
         }
+    }
+
+    /**
+     * @return DeclareSchema[] Return declared schema object in associative array
+     */
+    public static function loadSchemaTableMap(ConfigLoader $config = null)
+    {
+        if (!$config) {
+            $container = ServiceContainer::getInstance();
+            $config = $container['config_loader'];
+        }
+
+        // pre-initialize all schema objects and expand template schema
+        $schemas = SchemaUtils::findSchemasByConfigLoader($config);
+        $schemas = SchemaUtils::filterBuildableSchemas($schemas);
+
+        $schemaMap = [];
+        // map table names to declare schema objects
+        foreach ($this->schemas as $schema) {
+            $schemaMap[$schema->getTable()] = $schema;
+        }
+        return $schemaMap;
     }
 
     /**

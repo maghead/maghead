@@ -33,8 +33,8 @@ abstract class ModelTestCase extends BaseTestCase
             return $this->markTestSkipped("{$this->onlyDriver} only");
         }
 
+        // Ensure that we use the correct default data source ID
         $this->assertEquals($this->getDriverType(), $this->config->getDefaultDataSourceId());
-
 
         try {
             $this->conn = $this->connManager->getConnection($this->getDriverType());

@@ -1,9 +1,6 @@
 <?php
-
 namespace LazyRecord\Model;
-
 use LazyRecord\BaseCollection;
-
 class MetadataCollectionBase
     extends BaseCollection
 {

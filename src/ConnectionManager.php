@@ -47,6 +47,9 @@ class ConnectionManager implements ArrayAccess
 {
     const DEFAULT_DS = 'default';
 
+    /**
+     * @var LazyRecord\ConfigLoader
+     */
     private $config;
 
     /**
@@ -62,6 +65,8 @@ class ConnectionManager implements ArrayAccess
     public function init(ConfigLoader $config)
     {
         $this->config = $config;
+        $this->datasources = [];
+        $this->conns = [];
         foreach ($config->getDataSources() as $sourceId => $ds) {
             $this->addDataSource($sourceId, $ds);
         }
@@ -195,11 +200,8 @@ class ConnectionManager implements ArrayAccess
     public function getConnection($sourceId)
     {
         if ($sourceId === 'default' && $this->config) {
-            if (!isset($this->datasources[ $sourceId ])) {
-                $sourceId = $this->config->getDefaultDataSourceId();
-            }
+            $sourceId = $this->config->getDefaultDataSourceId();
         }
-
         // use cached connection objects
         if (isset($this->conns[$sourceId])) {
             return $this->conns[$sourceId];
@@ -207,10 +209,12 @@ class ConnectionManager implements ArrayAccess
         if (!isset($this->datasources[ $sourceId ])) {
             throw new UndefinedDataSourceException("data source $sourceId not found.");
         }
-        $config = $this->datasources[ $sourceId ];
+        $config = $this->datasources[$sourceId];
         $conn = Connection::create($config);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // TODO: can we make this optional ?
+
+        // Only for MySQl
         // $conn->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
         return $this->conns[ $sourceId ] = $conn;
     }
@@ -229,7 +233,7 @@ class ConnectionManager implements ArrayAccess
     {
         // backward compatible
         if (!$this->config) {
-            return $this->getConnection(self::DEFAULT_DS);
+            return $this->getConnection("default");
         }
 
         $id = $this->config->getDefaultDataSourceId();
@@ -243,8 +247,10 @@ class ConnectionManager implements ArrayAccess
     public static function getInstance()
     {
         static $instance;
-
-        return $instance ? $instance : $instance = new static();
+        if ($instance) {
+            return $instance;
+        }
+        return $instance = new static;
     }
 
     /**

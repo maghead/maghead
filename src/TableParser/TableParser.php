@@ -10,11 +10,11 @@ use SQLBuilder\Driver\BaseDriver;
 
 class TableParser
 {
-    public static function create(Connection $connection, BaseDriver $driver, ConfigLoader $config = null)
+    public static function create(Connection $connection, BaseDriver $driver)
     {
         $class = 'LazyRecord\\TableParser\\'.ucfirst($driver->getDriverName()).'TableParser';
         if (class_exists($class, true)) {
-            return new $class($connection, $driver, $config);
+            return new $class($connection, $driver);
         } else {
             throw new Exception("parser driver does not support {$driver->getDriverName()} currently.");
         }

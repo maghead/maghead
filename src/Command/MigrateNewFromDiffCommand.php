@@ -4,6 +4,7 @@ namespace LazyRecord\Command;
 
 use LazyRecord\Migration\MigrationGenerator;
 use LazyRecord\Schema\SchemaFinder;
+use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\Console;
 
@@ -25,7 +26,9 @@ class MigrateNewFromDiffCommand extends MigrateBaseCommand
 
         $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'db/migrations');
         $this->logger->info('Creating migration script from diff');
-        list($class, $path) = $generator->generateWithDiff($taskName, $dsId);
+
+        $schemaMap = SchemaLoader::loadSchemaTableMap($this->getConfigLoader(true));
+        list($class, $path) = $generator->generateWithDiff($taskName, $dsId, $schemaMap);
         $this->logger->info("Migration script is generated: $path");
     }
 }

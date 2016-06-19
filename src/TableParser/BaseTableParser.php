@@ -25,46 +25,12 @@ abstract class BaseTableParser
 
     protected $config;
 
-    protected $schemas = array();
-
-    protected $schemaMap = array();
-
-    public function __construct(Connection $connection, BaseDriver $driver, ConfigLoader $config = null)
+    public function __construct(Connection $connection, BaseDriver $driver)
     {
         $this->driver = $driver;
         $this->connection = $connection;
-
-        if (!$config) {
-            $c = ServiceContainer::getInstance();
-            $config = $c['config_loader'];
-        }
-        $this->config = $config;
-
-        // pre-initialize all schema objects and expand template schema
-        $this->schemas = SchemaUtils::findSchemasByConfigLoader($this->config);
-        $this->schemas = SchemaUtils::filterBuildableSchemas($this->schemas);
-
-        // map table names to declare schema objects
-        foreach ($this->schemas as $schema) {
-            $this->schemaMap[$schema->getTable()] = $schema;
-        }
     }
 
-    /**
-     * @return DeclareSchema[] Return declared schema object in associative array
-     */
-    public function getDeclareSchemaMap()
-    {
-        return $this->schemaMap;
-    }
-
-    /**
-     * Return declared schema objects in list.
-     */
-    public function getDeclareSchemas()
-    {
-        return $this->schemas;
-    }
 
     /**
      * Implements the query to parse table names from database.
@@ -97,22 +63,6 @@ abstract class BaseTableParser
         }
 
         return $tableSchemas;
-    }
-
-    /**
-     * Lookup schema by table name.
-     *
-     * @param string $table table name
-     *
-     * @return DeclareSchema
-     */
-    public function reverseLookupSchema($table)
-    {
-        if (isset($this->schemaMap[$table])) {
-            return $this->schemaMap[$table];
-        }
-
-        return;
     }
 
     public function typenameToIsa($typeName)
