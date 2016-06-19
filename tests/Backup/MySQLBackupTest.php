@@ -6,7 +6,7 @@ use LazyRecord\Connection;
 
 class MySQLBackupTest extends ModelTestCase
 {
-    public $driver = 'mysql';
+    public $onlyDriver = 'mysql';
 
     public function getModels()
     {
