@@ -16,8 +16,8 @@ use Symfony\Component\Yaml\Yaml;
  * schema.paths = [ dirpath , path, ... ]
  *
  * seeds = [ script path ]
- * data_sources
- * data_sources{ ds id } = { 
+ * data_source
+ * data_source{ ds id } = { 
  *      dsn => ..., 
  *      user => , 
  *      pass => 
@@ -127,12 +127,7 @@ class ConfigLoader
     {
         if (isset($config['data_source']['nodes'])) {
             $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_source']['nodes']);
-        } elseif (isset($config['data_sources'])) {
-            // convert 'data_sources' to ['data_sources']['nodes']
-            $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_sources']);
-            unset($config['data_sources']);
         }
-
         return $config;
     }
 
@@ -238,9 +233,6 @@ class ConfigLoader
 
         // XXX: validate config structure if we are migrating to new major version with incompatible changes
         /*
-        if (isset($this->config['data_sources'])) {
-            throw new Exception('Your config file is out-of-date, please update your config file by referencing CHANGELOG.md');
-        }
         if (!isset($this->config['data_source'])) {
             throw new Exception('data_source is missing, please update your config file.');
         }
@@ -375,12 +367,6 @@ class ConfigLoader
         if (isset($this->config['data_source']['nodes'])) {
             return $this->config['data_source']['nodes'];
         }
-
-        // backward compatible config structure
-        if (isset($this->config['data_sources'])) {
-            return $this->config['data_sources'];
-        }
-
         return array();
     }
 
@@ -389,12 +375,6 @@ class ConfigLoader
         if (isset($this->config['data_source']['nodes'])) {
             return array_keys($this->config['data_source']['nodes']);
         }
-
-        // backward compatible config structure
-        if (isset($this->config['data_sources'])) {
-            return array_keys($this->config['data_sources']);
-        }
-
         return array();
     }
 
@@ -416,7 +396,6 @@ class ConfigLoader
         if (isset($this->config['data_source']['default'])) {
             return $this->config['data_source']['default'];
         }
-
         return 'default';
     }
 
@@ -463,18 +442,10 @@ class ConfigLoader
         if ($sourceId === 'default') {
             // If there is a node named 'default', we should use it, otherwise
             // we get the node name from default attribute.
-            if (!isset($this->config['data_source']['nodes'][ $sourceId ])) {
-                $sourceId = $this->getDefaultDataSourceId();
-            }
+            $sourceId = $this->getDefaultDataSourceId();
         }
-
         if (isset($this->config['data_source']['nodes'][$sourceId])) {
             return $this->config['data_source']['nodes'][$sourceId];
-        }
-
-        // backward compatible config structure
-        if (isset($this->config['data_sources'][$sourceId])) {
-            return $this->config['data_sources'][$sourceId];
         }
         throw new Exception("data source $sourceId is not defined.");
     }
