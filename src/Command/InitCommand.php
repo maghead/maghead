@@ -23,13 +23,9 @@ class InitCommand extends Command
     {
         $this->mkpath('db/config');
         $this->mkpath('db/migration');
-
-        $command = new InitConfCommand();
-        $command->application = $this->application;
+        $command = $this->createCommand('LazyRecord\\Command\\InitConfCommand');
         $command->execute();
-
-        $command = new BuildConfCommand();
-        $command->application = $this->application;
+        $command = $this->createCommand('LazyRecord\\Command\\BuildConfCommand');
         $command->execute('db/config/database.yml');
     }
 }
