@@ -1,6 +1,8 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
+use AuthorBooks\Model\AuthorBook;
+use AuthorBooks\Model\AuthorBookSchema;
 use AuthorBooks\Model\AuthorCollection;
 use SQLBuilder\Raw;
 
@@ -8,11 +10,11 @@ class AuthorBookModelTest extends ModelTestCase
 {
     public function getModels()
     {
-        return array( 
-            'AuthorBooks\Model\AuthorSchema', 
-            'AuthorBooks\Model\AuthorBookSchema',
-            'AuthorBooks\Model\BookSchema',
-        );
+        return [
+            new \AuthorBooks\Model\AuthorSchema,
+            new \AuthorBooks\Model\AuthorBookSchema,
+            new \AuthorBooks\Model\BookSchema,
+        ];
     }
 
     /**
@@ -278,6 +280,8 @@ class AuthorBookModelTest extends ModelTestCase
         is( null, $author->name );
     }
 
+
+
     public function testJoin()
     {
         $author = new Author;
@@ -288,7 +292,7 @@ class AuthorBookModelTest extends ModelTestCase
         ]);
         $this->assertResultSuccess($ret);
 
-        $ab = new \AuthorBooks\Model\AuthorBook;
+        $ab = new AuthorBook;
         $book = new \AuthorBooks\Model\Book;
 
         $ret = $book->create(array( 'title' => 'Book I' ));
@@ -330,7 +334,7 @@ class AuthorBookModelTest extends ModelTestCase
         $bookTitles = array();
         foreach ($books as $book ) {
             $bookTitles[ $book->title ] = true;
-            $book->delete();
+            $ret = $book->delete();
         }
 
         $this->assertCount(3, array_keys($bookTitles) );
@@ -343,8 +347,9 @@ class AuthorBookModelTest extends ModelTestCase
     public function testManyToManyRelationCreate()
     {
         $author = new Author;
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        ok( 
+        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertResultSuccess($ret);
+        ok(
             $book = $author->books->create( array( 
                 'title' => 'Programming Perl I',
                 ':author_books' => array( 'created_on' => '2010-01-01' ),

@@ -15,26 +15,23 @@ class MySQLBackupTest extends ModelTestCase
 
     public function testIncrementalBackup()
     {
-        $connManager = ConnectionManager::getInstance();
-        $source = $connManager->getConnection('mysql');
         $backup = new MySQLBackup;
-        $backup->incrementalBackup($source);
+        if ($createdDB = $backup->incrementalBackup($this->conn)) {
+            // FIXME:
+            $this->conn->query("DROP DATABASE IF EXISTS $createdDB");
+        }
     }
 
     public function testBackupToDatabase()
     {
-        $connManager = ConnectionManager::getInstance();
-        $source = $connManager->getConnection('mysql');
         $backup = new MySQLBackup;
-        $backup->backupToDatabase($source, 'backup_test2', true);
+        $backup->backupToDatabase($this->conn, 'backup_test2', true);
     }
 
     public function testBackup()
     {
-        $connManager = ConnectionManager::getInstance();
-        $source = $connManager->getConnection('mysql');
-        $source->query('DROP DATABASE IF EXISTS backup_test');
-        $source->query('CREATE DATABASE IF NOT EXISTS backup_test CHARSET utf8;');
+        $this->conn->query('DROP DATABASE IF EXISTS backup_test');
+        $this->conn->query('CREATE DATABASE IF NOT EXISTS backup_test CHARSET utf8;');
         $dest = Connection::create([
             'dsn' => 'mysql:host=localhost;dbname=backup_test',
             'user' => 'root',
@@ -44,6 +41,6 @@ class MySQLBackupTest extends ModelTestCase
             ]
         ]);
         $backup = new MySQLBackup;
-        $backup->backup($source, $dest);
+        $backup->backup($this->conn, $dest);
     }
 }

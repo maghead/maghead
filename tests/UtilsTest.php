@@ -1,26 +1,27 @@
 <?php
+use LazyRecord\Utils;
 
 class UtilsTest extends PHPUnit_Framework_TestCase
 {
     public function testBreakDSN()
     {
-        $params = LazyRecord\Utils::breakDSN('pgsql:host=localhost;dbname=lazy_test');
-        is( 'pgsql' , $params['driver'] );
-        is( 'localhost' , $params['host'] );
-        is( 'lazy_test' , $params['dbname'] );
+        $params = Utils::breakDSN('pgsql:host=localhost;dbname=lazy_test');
+        $this->assertEquals( 'pgsql' , $params['driver'] );
+        $this->assertEquals( 'localhost' , $params['host'] );
+        $this->assertEquals( 'lazy_test' , $params['dbname'] );
     }
 
     public function testSqliteMemDSN()
     {
-        $params = LazyRecord\Utils::breakDSN('sqlite::memory:');
-        is( 'sqlite' , $params['driver'] );
+        $params = Utils::breakDSN('sqlite::memory:');
+        $this->assertEquals( 'sqlite' , $params['driver'] );
         ok( $params[':memory:'] );
     }
 
     public function testEvaluateFunction()
     {
-        is( 1, LazyRecord\Utils::evaluate(1) );
-        is( 2, LazyRecord\Utils::evaluate( function() { return 2; }) );
+        $this->assertEquals( 1, Utils::evaluate(1) );
+        $this->assertEquals( 2, Utils::evaluate( function() { return 2; }) );
     }
 }
 

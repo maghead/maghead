@@ -46,7 +46,7 @@ class SchemaLoader
 
         $schemaMap = [];
         // map table names to declare schema objects
-        foreach ($this->schemas as $schema) {
+        foreach ($schemas as $schema) {
             $schemaMap[$schema->getTable()] = $schema;
         }
         return $schemaMap;

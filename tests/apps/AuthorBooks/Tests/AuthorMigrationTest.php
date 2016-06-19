@@ -34,8 +34,9 @@ class AuthorMigrationTest extends ModelTestCase
         $migrate = new AutomaticMigration(
             $this->conn,
             $this->queryDriver,
+            $this->logger,
             OptionResult::create($options, [ ]));
-        $migrate->upgrade();
+        $migrate->upgrade([$schema]);
     }
 
 
@@ -48,8 +49,9 @@ class AuthorMigrationTest extends ModelTestCase
         $migrate = new AutomaticMigration(
             $this->conn,
             $this->queryDriver,
+            $this->logger,
             OptionResult::create($options, [ ]));
-        $migrate->upgrade();
+        $migrate->upgrade([$schema]);
     }
 
     public function testRemoveColumn()
@@ -62,7 +64,8 @@ class AuthorMigrationTest extends ModelTestCase
         $migrate = new AutomaticMigration(
             $this->conn,
             $this->queryDriver,
+            $this->logger,
             OptionResult::create($options, [ ]));
-        $migrate->upgrade();
+        $migrate->upgrade([$schema]);
     }
 }

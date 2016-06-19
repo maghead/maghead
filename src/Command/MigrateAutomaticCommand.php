@@ -4,6 +4,7 @@ namespace LazyRecord\Command;
 
 use LazyRecord\Migration\MigrationRunner;
 use LazyRecord\Migration\AutomaticMigration;
+use LazyRecord\Schema\SchemaLoader;
 
 use LazyRecord\ServiceContainer;
 use LazyRecord\Backup\MySQLBackup;
@@ -49,7 +50,9 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
 
         $runner = new MigrationRunner($this->logger, $dsId);
         $this->logger->info("Performing automatic upgrade over data source: $dsId");
-        $runner->runUpgradeAutomatically($conn, $driver, $this->options);
+
+        $tableSchemas = SchemaLoader::loadSchemaTableMap($this->getConfigLoader());
+        $runner->runUpgradeAutomatically($conn, $driver, $tableSchemas, $this->options);
         $this->logger->info('Done.');
     }
 }

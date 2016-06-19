@@ -47,7 +47,7 @@ class MigrationGeneratorTest extends ModelTestCase
 
         $finder = new SchemaFinder;
         $finder->find();
-        list($class,$path) = $generator->generateWithDiff('DiffMigration', $this->getDriverType(), [ new TestApp\Model\UserSchema ], '20120101');
+        list($class,$path) = $generator->generateWithDiff('DiffMigration', $this->getDriverType(), [ "users" => new TestApp\Model\UserSchema ], '20120101');
         require_once $path;
         ok($class::getId());
 

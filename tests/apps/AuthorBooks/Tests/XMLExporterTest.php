@@ -8,22 +8,21 @@ use LazyRecord\Exporter\XMLExporter;
 
 class XMLExporterTest extends ModelTestCase
 {
-
     public function getModels()
     {
-        return [ 
-            'AuthorBooks\Model\BookSchema',
-            'AuthorBooks\Model\AuthorSchema',
-            'AuthorBooks\Model\AuthorBookSchema',
-            'AuthorBooks\Model\AddressSchema',
-            'AuthorBooks\Model\PublisherSchema',
+        return [
+            new \AuthorBooks\Model\BookSchema,
+            new \AuthorBooks\Model\AuthorSchema,
+            new \AuthorBooks\Model\AuthorBookSchema,
+            new \AuthorBooks\Model\AddressSchema,
+            new \AuthorBooks\Model\PublisherSchema,
         ];
     }
 
     public function testSimpleExport()
     {
         $book = new Book;
-        $ret = $book->create([ 
+        $ret = $book->create([
             'title' => 'Run & Skate',
             'is_hot' => true,
             'is_selled' => true,
@@ -120,7 +119,4 @@ class XMLExporterTest extends ModelTestCase
         file_put_contents('tests/xmlTestRecursiveExporting.actual', $xml);
         $this->assertFileEquals('tests/xmlTestRecursiveExporting.expected', 'tests/xmlTestRecursiveExporting.actual');
     }
-
-
 }
-

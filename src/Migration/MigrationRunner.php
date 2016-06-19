@@ -192,14 +192,15 @@ class MigrationRunner
         }
     }
 
-    public function runUpgradeAutomatically(Connection $conn, BaseDriver $driver, OptionResult $options = null)
+    public function runUpgradeAutomatically(Connection $conn, BaseDriver $driver, array $schemas, OptionResult $options = null)
     {
         $script = new AutomaticMigration($conn, $driver, $this->logger, $options);
         try {
             $this->logger->info('Begining transaction...');
             $conn->beginTransaction();
 
-            $script->upgrade();
+            // where to find the schema?
+            $script->upgrade($schemas);
 
             $this->logger->info('Committing...');
             $conn->commit();

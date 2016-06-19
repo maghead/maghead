@@ -31,8 +31,9 @@ class MysqlBuilder extends BaseBuilder
      */
     public function buildForeignKeyConstraint(Relationship $rel)
     {
-        $fSchema = new $rel['foreign_schema']();
-        $constraint = new Constraint();
+        $schemaClass = $rel['foreign_schema'];
+        $fSchema = new $schemaClass;
+        $constraint = new Constraint;
         $constraint->foreignKey($rel['self_column']);
         $references = $constraint->references($fSchema->getTable(), (array) $rel['foreign_column']);
         if ($act = $rel->onUpdate) {
@@ -41,7 +42,6 @@ class MysqlBuilder extends BaseBuilder
         if ($act = $rel->onDelete) {
             $references->onDelete($act);
         }
-
         return $constraint;
     }
 
@@ -109,7 +109,6 @@ class MysqlBuilder extends BaseBuilder
                 if ($name != 'id' && $rel['self_column'] == $name) {
                     $fSchema = new $rel['foreign_schema']();
                     $fColumn = $rel['foreign_column'];
-                    $sql .= ' REFERENCES '.$this->driver->quoteIdentifier($fSchema->getTable()).'('.$this->driver->quoteIdentifier($fColumn).')';
                 }
                 break;
             }

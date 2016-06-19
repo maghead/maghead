@@ -1,5 +1,7 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
+use AuthorBooks\Model\Address;
+use AuthorBooks\Model\Author;
 
 class AuthorAddressModelTest extends ModelTestCase
 {
@@ -17,11 +19,8 @@ class AuthorAddressModelTest extends ModelTestCase
 
         $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
-        ok($author->id);
-
-        $address = new \AuthorBooks\Model\Address;
-
-        $ret = $address->create(array( 
+        $address = new Address;
+        $ret = $address->create(array(
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei',
         ));
@@ -42,23 +41,23 @@ class AuthorAddressModelTest extends ModelTestCase
         $this->assertCollectionSize(2, $addresses);
 
         $items = $addresses->items();
-        ok($items);
+        $this->assertNotEmpty($items);
 
         ok($addresses[0]);
         ok($addresses[1]);
         ok(! isset($addresses[2]));
         ok(! @$addresses[2]);
 
-        ok( $addresses[0]->id );
-        ok( $addresses[1]->id );
+        ok($addresses[0]->id);
+        ok($addresses[1]->id);
+        $this->assertCount(2 , $addresses);
 
-        ok( $size = $addresses->size() );
-        is( 2 , $size );
-
+        /*
         foreach($author->addresses as $ad) {
-            ok( $ad->delete()->success );
+            $this->assertResultSuccess($ad->delete());
         }
-        $author->delete();
+        $this->assertResultSuccess($author->delete());
+        */
     }
 
 
@@ -67,20 +66,20 @@ class AuthorAddressModelTest extends ModelTestCase
      */
     public function testHasManyRelationCreate()
     {
-        $author = new \AuthorBooks\Model\Author;
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = new Author;
+        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertResultSuccess($ret);
         ok( $author->id );
 
-        $address = $author->addresses->create(array( 
+        $address = $author->addresses->create(array(
             'address' => 'farfaraway'
         ));
 
-        ok( $address->id );
-        ok( $address->author_id );
-        is( $author->id, $address->author_id );
+        ok($address->id);
+        ok($address->author_id);
+        $this->assertEquals( $author->id, $address->author_id );
 
-        is( 'farfaraway' , $address->address );
-
+        $this->assertEquals('farfaraway' , $address->address);
         $this->assertResultSuccess($address->delete());
         $this->assertResultSuccess($author->delete());
     }
@@ -117,12 +116,11 @@ class AuthorAddressModelTest extends ModelTestCase
     /**
      * @rebuild false
      */
-    public function testGeneralInterface() 
+    public function testGeneralInterface()
     {
-        $a = new \AuthorBooks\Model\Address;
-        ok($a->getQueryDriver('default') );
+        $a = new Address;
+        ok($a->getQueryDriver('default'));
         ok($a->getWriteQueryDriver());
         ok($a->getReadQueryDriver());
     }
-
 }

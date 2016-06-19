@@ -18,8 +18,9 @@ class AddressSchema extends Schema
             ->defaultValue(false)
             ;
 
-        $this->belongsTo('author', '\\AuthorBooks\Model\\AuthorSchema')
+        $this->belongsTo('author', 'Author')
             ->by('author_id')
-            ->onDelete('CASCADE');
+            ->onDelete('CASCADE')
+            ;
     }
 }

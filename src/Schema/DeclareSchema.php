@@ -274,21 +274,23 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
                 $o = new $refer();
                 // schema is defined in model
                 $schemaClass = $refer;
-                $this->belongsTo($accessorName, $schemaClass, 'id', $name);
+
+                if (!isset($this->relations[$accessorName])) {
+                    $this->belongsTo($accessorName, $schemaClass, 'id', $name);
+                }
             }
             $columnArray[ $name ] = $column->export();
         }
-
         return array(
-            'label' => $this->getLabel(),
-            'table' => $this->getTable(),
-            'column_data' => $columnArray,
-            'column_names' => $this->columnNames,
-            'primary_key' => $this->primaryKey,
-            'model_class' => $this->getModelClass(),
-            'collection_class' => $this->getCollectionClass(),
-            'relations' => $this->relations,
-            'read_data_source' => $this->readSourceId,
+            'label'             => $this->getLabel(),
+            'table'             => $this->getTable(),
+            'column_data'       => $columnArray,
+            'column_names'      => $this->columnNames,
+            'primary_key'       => $this->primaryKey,
+            'model_class'       => $this->getModelClass(),
+            'collection_class'  => $this->getCollectionClass(),
+            'relations'         => $this->relations,
+            'read_data_source'  => $this->readSourceId,
             'write_data_source' => $this->writeSourceId,
         );
     }

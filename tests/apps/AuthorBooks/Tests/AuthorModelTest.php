@@ -90,13 +90,6 @@ class AuthorModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-
-        /*
-        $connManager = \LazyRecord\ConnectionManager::getInstance();
-        $dbh = $connManager->getConnection('default');
-        $stm = $dbh->query('SELECT * FROM authors WHERE confirmed = 0');
-        */
-
         $authors = new AuthorCollection;
         $authors->where()
                 ->equal('confirmed', false);

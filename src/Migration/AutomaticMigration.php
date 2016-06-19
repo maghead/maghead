@@ -11,10 +11,11 @@ use LazyRecord\Connection;
 use GetOptionKit\OptionResult;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
+use CLIFramework\Logger;
 use PDO;
 use LogicException;
 
-class AutomaticMigration extends Migration implements Migratable
+class AutomaticMigration extends BaseMigration
 {
     protected $options = null;
 
@@ -30,16 +31,20 @@ class AutomaticMigration extends Migration implements Migratable
         $opts->add('separate-alter', 'Do not combine multiple alter table subquery into one alter table query.');
     }
 
-    public function upgrade()
+    /**
+     * @param DeclareSchema[string tableName]
+     */
+    public function upgrade(array $tableSchemas)
     {
         $parser = TableParser::create($this->connection, $this->driver);
-        $tableSchemas = SchemaLoader::loadSchemaTableMap($this->getConfigLoader());
         $existingTables = $parser->getTables();
 
         $comparator = new Comparator($this->driver);
 
         // Schema from runtime
-        foreach ($tableSchemas as $table => $a) {
+        foreach ($tableSchemas as $key => $a) {
+            $table = is_numeric($key) ? $a->getTable() : $key;
+
             $this->logger->debug("Checking table $table for schema ".get_class($a));
 
             if (!in_array($table, $existingTables)) {

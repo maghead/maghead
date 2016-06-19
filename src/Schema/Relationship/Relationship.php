@@ -248,7 +248,12 @@ class Relationship implements IteratorAggregate, ArrayAccess
         if (isset($data['orderBy'])) {
             $r->orderBy = $data['orderBy'];
         }
-
+        if (isset($data['onUpdate'])) {
+            $r->onUpdate = $data['onUpdate'];
+        }
+        if (isset($data['onDelete'])) {
+            $r->onDelete = $data['onDelete'];
+        }
         return $r;
     }
 

@@ -1,5 +1,4 @@
 <?php
-
 class TestSeed
 {
     public static function seed() 
@@ -8,6 +7,3 @@ class TestSeed
         $ret = $name->create(array('name' => 'Add','country' => 'Taiwan','address' => 'Address' ));
     }
 }
-
-
-

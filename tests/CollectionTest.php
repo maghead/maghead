@@ -11,11 +11,9 @@ use TestApp\Model\NameCollection;
 
 class CollectionTest extends ModelTestCase
 {
-    public $driver = 'sqlite';
-
     public function getModels()
     {
-        return ['TestApp\Model\NameSchema'];
+        return [new \TestApp\Model\NameSchema];
     }
 
     public function testCreateRecordWithBooleanFalse()

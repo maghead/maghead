@@ -16,7 +16,6 @@ class ServiceContainer extends Container
             if ($config->isLoaded()) {
                 $config->initForBuild();
             }
-
             return $config;
         };
 

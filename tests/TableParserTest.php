@@ -20,15 +20,7 @@ class TableParserTest extends BaseTestCase
      */
     public function testTableParserFor($driverType)
     {
-        $config = self::createNeutralConfigLoader();
-        $manager = ConnectionManager::getInstance();
-        $manager->free();
-        $this->registerDataSource($driverType);
-
-        $conn   = $manager->getConnection($driverType);
-        $driver = $manager->getQueryDriver($driverType);
-        $parser = TableParser::create($conn, $driver);
-
+        $parser = TableParser::create($this->conn, $this->queryDriver);
         $tables = $parser->getTables();
         $this->assertNotNull($tables);
         foreach ($tables as $table) {

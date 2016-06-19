@@ -47,7 +47,6 @@ class MySQLBackup
         if ($this->backupToDatabase($source, $dbname, false)) {
             return $dbname;
         }
-
         return false;
     }
 
@@ -92,7 +91,6 @@ class MySQLBackup
         $mysqlCommand = $this->mysql.' '.implode(' ', $this->formatCommandParameters($dest));
         $command = $dumpCommand.' | '.$mysqlCommand;
         $lastline = system($command, $ret);
-
         return $ret == 0 ? true : false;
     }
 }

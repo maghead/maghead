@@ -1,6 +1,5 @@
 <?php
 use LazyRecord\SqlBuilder;
-use LazyRecord\ConnectionManager;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\Author;
@@ -157,12 +156,6 @@ class AuthorCollectionTest extends ModelTestCase
             'confirmed' => true,
         ));
         $this->assertResultSuccess($ret);
-
-        /*
-        $connManager = ConnectionManager::getInstance();
-        $dbh = $connManager->getConnection('default');
-        $stm = $dbh->query('SELECT * FROM authors AS a WHERE a.confirmed IS TRUE');
-        */
 
         $authors = new AuthorCollection;
         $authors->where()

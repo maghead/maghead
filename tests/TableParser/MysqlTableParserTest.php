@@ -12,23 +12,19 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReferenceQuery()
     {
-        $manager = ConnectionManager::getInstance();
-        $conn = $manager->getConnection('mysql');
-        $driver = $manager->getQueryDriver('mysql');
-
         $schema = new \AuthorBooks\Model\AuthorSchema;
         $this->updateSchemaFiles($schema);
-        $this->buildSchemaTable($driver, $conn, $schema);
+        $this->buildSchemaTable($this->conn, $this->queryDriver, $schema);
 
         $schema = new \AuthorBooks\Model\BookSchema;
         $this->updateSchemaFiles($schema);
-        $this->buildSchemaTable($driver, $conn, $schema);
+        $this->buildSchemaTable($this->conn, $this->queryDriver, $schema);
 
         $schema = new \AuthorBooks\Model\AuthorBookSchema;
         $this->updateSchemaFiles($schema);
-        $this->buildSchemaTable($driver, $conn, $schema);
+        $this->buildSchemaTable($this->conn, $this->queryDriver, $schema);
 
-        $parser = new MysqlTableParser($driver, $conn);
+        $parser = new MysqlTableParser($this->conn, $this->queryDriver);
         $references = $parser->queryReferences('books');
         $this->assertNotEmpty($references);
         $this->assertEquals('publishers', $references['publisher_id']->table);
@@ -37,14 +33,10 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReverseSchemaWithStringSet()
     {
-        $manager = ConnectionManager::getInstance();
-        $conn = $manager->getConnection('mysql');
-        $driver = $manager->getQueryDriver('mysql');
+        $this->conn->query("DROP TABLE IF EXISTS t1");
+        $this->conn->query("CREATE TABLE t1 (val set('a','b','c') );");
 
-        $conn->query("DROP TABLE IF EXISTS t1");
-        $conn->query("CREATE TABLE t1 (val set('a','b','c') );");
-
-        $parser = new MysqlTableParser($driver, $conn);
+        $parser = new MysqlTableParser($this->conn, $this->queryDriver);
         $schema = $parser->reverseTableSchema('t1');
         $this->assertNotNull($schema);
 
@@ -55,14 +47,10 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReverseSchemaWithStringEnum()
     {
-        $manager = ConnectionManager::getInstance();
-        $conn = $manager->getConnection('mysql');
-        $driver = $manager->getQueryDriver('mysql');
+        $this->conn->query("DROP TABLE IF EXISTS t1");
+        $this->conn->query("CREATE TABLE t1 (val enum('ON','OFF','PENDING') );");
 
-        $conn->query("DROP TABLE IF EXISTS t1");
-        $conn->query("CREATE TABLE t1 (val enum('ON','OFF','PENDING') );");
-
-        $parser = new MysqlTableParser($driver, $conn);
+        $parser = new MysqlTableParser($this->conn, $this->queryDriver);
         $schema = $parser->reverseTableSchema('t1');
         $this->assertNotNull($schema);
 
@@ -73,53 +61,24 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReverseSchemaAndCompare()
     {
-        $manager = ConnectionManager::getInstance();
-        $conn = $manager->getConnection('mysql');
-        $driver = $manager->getQueryDriver('mysql');
-
         $schema = new \AuthorBooks\Model\AuthorSchema;
         $this->updateSchemaFiles($schema);
-        $this->buildSchemaTable($driver, $conn, $schema);
-
-        $parser = new MysqlTableParser($driver, $conn);
+        $this->buildSchemaTable($this->conn, $this->queryDriver, $schema);
+        $parser = new MysqlTableParser($this->conn, $this->queryDriver);
         $parser->reverseTableSchema('authors');
     }
 
     public function testGetTables()
     {
-        $manager = ConnectionManager::getInstance();
-        $conn = $manager->getConnection('mysql');
-        $driver = $manager->getQueryDriver('mysql');
+        $this->conn->query("DROP TABLE IF EXISTS t1");
+        $this->conn->query("CREATE TABLE t1 (val enum('a','b','c') );");
 
-        $conn->query("DROP TABLE IF EXISTS t1");
-        $conn->query("CREATE TABLE t1 (val enum('a','b','c') );");
-
-        $parser = new MysqlTableParser($driver, $conn);
+        $parser = new MysqlTableParser($this->conn, $this->queryDriver);
         $tables = $parser->getTables();
         $this->assertNotEmpty($tables);
 
         $schema = $parser->reverseTableSchema('t1');
         $this->assertNotNull($schema);
-        /*
-        $sql = $parser->getTableSql('foo');
-        ok($sql);
-
-        $columns = $parser->parseTableSql('foo');
-        $this->assertNotEmpty($columns);
-
-        $columns = $parser->parseTableSql('bar');
-        $this->assertNotEmpty($columns);
-
-        $schema = $parser->reverseTableSchema('bar');
-        $this->assertNotNull($schema);
-
-        $id = $schema->getColumn('id');
-        $this->assertNotNull($id);
-        $this->assertTrue($id->autoIncrement);
-        $this->assertEquals('INTEGER',$id->type);
-        $this->assertEquals('int',$id->isa);
-        $this->assertTrue($id->primary);
-         */
     }
 }
 
