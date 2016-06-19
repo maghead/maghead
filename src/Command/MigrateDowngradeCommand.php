@@ -18,9 +18,9 @@ class MigrateDowngradeCommand extends MigrateBaseCommand
 
     public function execute()
     {
+        $connection = $this->getCurrentConnection();
+        $driver = $this->getCurrentQueryDriver();
         if ($this->options->backup) {
-            $connection = $this->getCurrentConnection();
-            $driver = $this->getCurrentQueryDriver();
             if (!$driver instanceof PDOMySQLDriver) {
                 $this->logger->error('backup is only supported for MySQL');
 
@@ -36,8 +36,8 @@ class MigrateDowngradeCommand extends MigrateBaseCommand
         $dsId = $this->getCurrentDataSourceId();
         $runner = new MigrationRunner($this->logger, $dsId);
         $runner->load($this->options->{'script-dir'} ?: 'db/migrations');
-        $this->logger->info('Running migration scripts to downgrade...');
-        $runner->runDowngrade();
+        $this->logger->info("Performing downgrade over data source: $dsId...");
+        $runner->runDowngrade($connection, $driver);
         $this->logger->info('Done.');
     }
 }

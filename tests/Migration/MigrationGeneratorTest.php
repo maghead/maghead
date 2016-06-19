@@ -11,6 +11,8 @@ use LazyRecord\ConnectionManager;
  */
 class MigrationGeneratorTest extends ModelTestCase
 {
+    public $onlyDriver = 'mysql';
+
     public function getModels() { return array(); }
 
     public function testGenerator()
@@ -33,16 +35,11 @@ class MigrationGeneratorTest extends ModelTestCase
 
     public function testMigrationByDiff() 
     {
-        if ($this->getDriverType() == 'sqlite') {
-            $this->markTestSkipped('sqlite migration tests skipped');
-            return;
-        }
-
-        $connectionManager = ConnectionManager::getInstance();
-        $pdo = $connectionManager->getConnection($this->getDriverType());
-        $pdo->query('DROP TABLE IF EXISTS users');
-        $pdo->query('DROP TABLE IF EXISTS test');
-        $pdo->query('CREATE TABLE users (account VARCHAR(128) UNIQUE)');
+        // $connectionManager = ConnectionManager::getInstance();
+        // $pdo = $connectionManager->getConnection($this->getDriverType());
+        $this->conn->query('DROP TABLE IF EXISTS users');
+        $this->conn->query('DROP TABLE IF EXISTS test');
+        $this->conn->query('CREATE TABLE users (account VARCHAR(128) UNIQUE)');
 
         if (! file_exists('tests/migrations_testing')) {
             mkdir('tests/migrations_testing');
@@ -65,7 +62,7 @@ class MigrationGeneratorTest extends ModelTestCase
 
         // run migration
         $runner = new MigrationRunner($this->logger, $this->getDriverType());
-        $runner->resetMigrationId($this->getDriverType());
+        $runner->resetMigrationId($this->conn, $this->queryDriver);
         $runner->load('tests/migrations_testing');
 
 
@@ -76,11 +73,11 @@ class MigrationGeneratorTest extends ModelTestCase
         // $this->assertCount(1, $scripts);
 
         // $this->expectOutputRegex('#DiffMigration_1325347200#');
-        $runner->runUpgrade([$class]);
+        $runner->runUpgrade($this->conn, $this->queryDriver, [$class]);
 
         # echo file_get_contents($path);
         unlink($path);
-        $pdo->query('DROP TABLE IF EXISTS users');
+        $this->conn->query('DROP TABLE IF EXISTS users');
     }
 }
 

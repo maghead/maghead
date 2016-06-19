@@ -2,17 +2,17 @@
 
 namespace LazyRecord\Migration;
 
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use LazyRecord\Metadata;
 use LazyRecord\ConnectionManager;
 use LazyRecord\Connection;
 use LazyRecord\ServiceContainer;
 use GetOptionKit\OptionResult;
-use Exception;
-use RuntimeException;
 use CLIFramework\Logger;
 use SQLBuilder\Driver\BaseDriver;
+use Exception;
+use RuntimeException;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 
 class MigrationRunner
@@ -64,22 +64,21 @@ class MigrationRunner
 
     public function getLastMigrationId(Connection $conn, BaseDriver $driver)
     {
-        $meta = new Metadata($driver, $conn);
+        $meta = new Metadata($conn, $driver);
         return $meta['migration'] ?: 0;
     }
 
-    public function resetMigrationId($dsId)
+    public function resetMigrationId(Connection $conn, BaseDriver $driver)
     {
-        $metadata = Metadata::createWithDataSource($dsId);
+        $metadata = new Metadata($conn, $driver);
         $metadata['migration'] = 0;
     }
 
-    public function updateLastMigrationId($dsId, $id)
+    public function updateLastMigrationId(Connection $conn, BaseDriver $driver, $id)
     {
-        $metadata = Metadata::createWithDataSource($dsId);
+        $metadata = new Metadata($conn, $driver);
         $lastId = $metadata['migration'];
         $metadata['migration'] = $id;
-        $this->logger->info("Updating migration version to $id.");
     }
 
     public function loadMigrationScripts()
@@ -140,29 +139,21 @@ class MigrationRunner
     /**
      * Run downgrade scripts.
      */
-    public function runDowngrade(array $scripts = null, $steps = 1)
+    public function runDowngrade(Connection $conn, BaseDriver $driver, array $scripts = null, $steps = 1)
     {
-        $this->logger->info('Performing downgrade...');
-
-        foreach ($this->dataSourceIds as $dsId) {
-            $driver = $this->connectionManager->getQueryDriver($dsId);
-            $connection = $this->connectionManager->getConnection($dsId);
-
-            $this->logger->info("Running downgrade over data source: $dsId");
-            if (!$scripts) {
-                $scripts = $this->getDowngradeScripts($connection, $driver);
-            }
-            $this->logger->info('Found '.count($scripts).' migration scripts to run downgrade!');
-            while ($steps--) {
-                // downgrade a migration one at one time.
-                if ($script = array_pop($scripts)) {
-                    $this->logger->info("Running downgrade migration script $script on data source $dsId");
-                    $migration = new $script($driver, $connection);
-                    $migration->downgrade();
-
-                    if ($nextScript = end($scripts)) {
-                        $this->updateLastMigrationId($dsId, $nextScript::getId());
-                    }
+        if (!$scripts) {
+            $scripts = $this->getDowngradeScripts($conn, $driver);
+        }
+        $this->logger->info('Found '.count($scripts).' migration scripts to run downgrade!');
+        while ($steps--) {
+            // downgrade a migration one at one time.
+            if ($script = array_pop($scripts)) {
+                $this->logger->info("Running {$script}::downgrade");
+                $migration = new $script($conn, $driver);
+                $migration->downgrade();
+                if ($nextScript = end($scripts)) {
+                    $this->updateLastMigrationId($conn, $driver, $nextScript::getId());
+                    $this->logger->info("Updated migration timestamp to $id.");
                 }
             }
         }
@@ -171,71 +162,53 @@ class MigrationRunner
     /**
      * Run upgrade scripts.
      */
-    public function runUpgrade(array $scripts = null)
+    public function runUpgrade(Connection $conn, BaseDriver $driver, array $scripts = null)
     {
-        $this->logger->info('Performing upgrade...');
+        if (!$scripts) {
+            $scripts = $this->getUpgradeScripts($conn, $driver);
+            if (count($scripts) == 0) {
+                $this->logger->info('No migration script found.');
 
-        foreach ($this->dataSourceIds as $dsId) {
-            $this->logger->info("Running upgrade over data source: $dsId");
-
-            $driver = $this->connectionManager->getQueryDriver($dsId);
-            $connection = $this->connectionManager->getConnection($dsId);
-
-            if (!$scripts) {
-                $scripts = $this->getUpgradeScripts($connection, $driver);
-                if (count($scripts) == 0) {
-                    $this->logger->info('No migration script found.');
-
-                    return;
-                }
+                return;
             }
-            $this->logger->info('Found '.count($scripts).' migration scripts to run upgrade!');
-
-            try {
-                $this->logger->info("Begining transaction...");
-                $connection->beginTransaction();
-                foreach ($scripts as $script) {
-                    $this->logger->info("$script: Performing upgrade on data source $dsId");
-                    $migration = new $script($driver, $connection);
-                    $migration->upgrade();
-                    $this->updateLastMigrationId($dsId, $script::getId());
-                }
-                $this->logger->info("Committing...");
-                $connection->commit();
-            } catch (Exception $e) {
-                $this->logger->error(get_class($e) . ' was thrown: '.$e->getMessage());
-                $this->logger->error("Rolling back ...");
-                $connection->rollback();
-                $this->logger->error("Recovered, escaping...");
-                break;
+        }
+        $this->logger->info('Found '.count($scripts).' migration scripts to run upgrade!');
+        try {
+            $this->logger->info("Begining transaction...");
+            $conn->beginTransaction();
+            foreach ($scripts as $script) {
+                $migration = new $script($conn, $driver);
+                $migration->upgrade();
+                $this->updateLastMigrationId($conn, $driver, $script::getId());
             }
+            $this->logger->info("Committing...");
+            $conn->commit();
+        } catch (Exception $e) {
+            $this->logger->error(get_class($e) . ' was thrown: '.$e->getMessage());
+            $this->logger->error("Rolling back ...");
+            $conn->rollback();
+            $this->logger->error("Recovered, escaping...");
+            throw $e;
         }
     }
 
-    public function runUpgradeAutomatically(OptionResult $options = null)
+    public function runUpgradeAutomatically(Connection $conn, BaseDriver $driver, OptionResult $options = null)
     {
-        foreach ($this->dataSourceIds as $dsId) {
-            $driver = $this->connectionManager->getQueryDriver($dsId);
-            $connection = $this->connectionManager->getConnection($dsId);
+        $script = new AutomaticMigration($conn, $driver, $options);
+        try {
+            $this->logger->info('Begining transaction...');
+            $conn->beginTransaction();
 
-            $this->logger->info("Performing automatic upgrade over data source: $dsId");
+            $script->upgrade();
 
-            $script = new AutomaticMigration($driver, $connection, $options);
-            try {
-                $this->logger->info('Begining transaction...');
-                $connection->beginTransaction();
-
-                $script->upgrade();
-
-                $this->logger->info('Committing...');
-                $connection->commit();
-            } catch (Exception $e) {
-                $this->logger->error('Exception was thrown: '.$e->getMessage());
-                $this->logger->warn('Rolling back ...');
-                $connection->rollback();
-                $this->logger->warn('Recovered, escaping...');
-                break;
-            }
+            $this->logger->info('Committing...');
+            $conn->commit();
+        } catch (Exception $e) {
+            $this->logger->error('Exception was thrown: '.$e->getMessage());
+            $this->logger->warn('Rolling back ...');
+            $conn->rollback();
+            $this->logger->warn('Recovered, escaping...');
+            throw $e;
         }
     }
 }

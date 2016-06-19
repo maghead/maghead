@@ -19,9 +19,9 @@ class MigrateUpgradeCommand extends MigrateBaseCommand
 
     public function execute()
     {
+        $connection = $this->getCurrentConnection();
+        $driver = $this->getCurrentQueryDriver();
         if ($this->options->backup) {
-            $connection = $this->getCurrentConnection();
-            $driver = $this->getCurrentQueryDriver();
             if (!$driver instanceof PDOMySQLDriver) {
                 $this->logger->error('backup is only supported for MySQL');
 
@@ -36,9 +36,9 @@ class MigrateUpgradeCommand extends MigrateBaseCommand
 
         $dsId = $this->getCurrentDataSourceId();
         $runner = new MigrationRunner($this->logger, $dsId);
-        $runner->load($this->options->{'script-dir'} ?: 'db/migrations');
-        $this->logger->info('Running migration scripts to upgrade...');
-        $runner->runUpgrade();
+        $runner->load($this->options->{'script-dir'});
+        $this->logger->info("Performing upgrade over data source: $dsId...");
+        $runner->runUpgrade($connection, $driver);
         $this->logger->info('Done.');
     }
 }

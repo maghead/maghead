@@ -44,7 +44,7 @@ class MigrationTest extends PHPUnit_Framework_TestCase
     {
         ob_start();
         $this->conn->query('CREATE TABLE foo (id INTEGER PRIMARY KEY, name varchar(32));');
-        $migration = new FooMigration($this->driver, $this->conn);
+        $migration = new FooMigration($this->conn, $this->driver);
         $migration->upgrade();
         ob_end_clean();
     }

@@ -17,10 +17,10 @@ class AutomaticMigration extends Migration implements Migratable
 {
     protected $options = null;
 
-    public function __construct(BaseDriver $driver, PDO $connection, OptionResult $options = null)
+    public function __construct(PDO $connection, BaseDriver $driver, OptionResult $options = null)
     {
         $this->options = $options ?: new OptionResult();
-        parent::__construct($driver, $connection);
+        parent::__construct($connection, $driver);
     }
 
     static public function options($opts)

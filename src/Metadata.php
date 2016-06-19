@@ -33,10 +33,10 @@ class Metadata
      *
      * @param string $dsId
      */
-    public function __construct(BaseDriver $driver, PDO $connection)
+    public function __construct(PDO $connection, BaseDriver $driver)
     {
-        $this->driver = $driver;
         $this->connection = $connection;
+        $this->driver = $driver;
         $this->init();
     }
 
@@ -45,8 +45,7 @@ class Metadata
         $connm = ConnectionManager::getInstance();
         $connection = $connm->getConnection($dsId);
         $driver = $connm->getQueryDriver($dsId);
-
-        return new self($driver, $connection);
+        return new self($connection, $driver);
     }
 
     /**

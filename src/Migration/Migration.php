@@ -41,11 +41,11 @@ class Migration implements Migratable
      */
     protected $builder;
 
-    public function __construct(BaseDriver $driver, PDO $connection, Container $serviceContainer = null)
+    public function __construct(PDO $connection, BaseDriver $driver, Container $serviceContainer = null)
     {
-        $c = $serviceContainer ?: ServiceContainer::getInstance();
-        $this->driver = $driver;
         $this->connection = $connection;
+        $this->driver = $driver;
+        $c = $serviceContainer ?: ServiceContainer::getInstance();
         $this->logger = $c['logger'] ?: Console::getInstance()->getLogger();
         $this->builder = SqlBuilder::create($driver);
     }

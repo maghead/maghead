@@ -32,22 +32,24 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
         $dsId = $this->getCurrentDataSourceId();
         $container = ServiceContainer::getInstance();
 
+        $conn = $this->getCurrentConnection();
+        $driver = $this->getCurrentQueryDriver();
+
         if ($this->options->backup) {
-            $connection = $this->getCurrentConnection();
-            $driver = $this->getCurrentQueryDriver();
             if (!$driver instanceof PDOMySQLDriver) {
                 $this->logger->error('backup is only supported for MySQL');
                 return false;
             }
             $this->logger->info('Backing up database...');
             $backup = new MySQLBackup();
-            if ($dbname = $backup->incrementalBackup($connection)) {
+            if ($dbname = $backup->incrementalBackup($conn)) {
                 $this->logger->info("Backup at $dbname");
             }
         }
 
         $runner = new MigrationRunner($this->logger, $dsId);
-        $runner->runUpgradeAutomatically($this->options);
+        $this->logger->info("Performing automatic upgrade over data source: $dsId");
+        $runner->runUpgradeAutomatically($conn, $driver, $this->options);
         $this->logger->info('Done.');
     }
 }
