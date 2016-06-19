@@ -63,11 +63,8 @@ class MigrationGeneratorTest extends ModelTestCase
         $column = $userSchema->getColumn('account');
         */
 
-        /*
-         */
-
         // run migration
-        $runner = new MigrationRunner($this->getDriverType());
+        $runner = new MigrationRunner($this->logger, $this->getDriverType());
         $runner->resetMigrationId($this->getDriverType());
         $runner->load('tests/migrations_testing');
 

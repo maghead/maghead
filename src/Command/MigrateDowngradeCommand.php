@@ -4,7 +4,7 @@ namespace LazyRecord\Command;
 
 use LazyRecord\Migration\MigrationRunner;
 
-class MigrateDowngradeCommand extends BaseCommand
+class MigrateDowngradeCommand extends MigrateBaseCommand
 {
     public function brief()
     {
@@ -14,13 +14,6 @@ class MigrateDowngradeCommand extends BaseCommand
     public function aliases()
     {
         return array('d', 'down');
-    }
-
-    public function options($opts)
-    {
-        parent::options($opts);
-        $opts->add('script-dir', 'Migration script directory. (default: db/migrations)');
-        $opts->add('b|backup', 'Backup database before running migration script.');
     }
 
     public function execute()
@@ -41,7 +34,7 @@ class MigrateDowngradeCommand extends BaseCommand
         }
 
         $dsId = $this->getCurrentDataSourceId();
-        $runner = new MigrationRunner($dsId);
+        $runner = new MigrationRunner($this->logger, $dsId);
         $runner->load($this->options->{'script-dir'} ?: 'db/migrations');
         $this->logger->info('Running migration scripts to downgrade...');
         $runner->runDowngrade();

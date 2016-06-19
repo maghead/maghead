@@ -7,7 +7,7 @@ use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\Console;
 
-class MigrateNewFromDiffCommand extends BaseCommand
+class MigrateNewFromDiffCommand extends MigrateBaseCommand
 {
     public function aliases()
     {

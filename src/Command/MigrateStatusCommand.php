@@ -4,7 +4,7 @@ namespace LazyRecord\Command;
 
 use LazyRecord\Migration\MigrationRunner;
 
-class MigrateStatusCommand extends BaseCommand
+class MigrateStatusCommand extends MigrateBaseCommand
 {
     public function brief()
     {
@@ -19,8 +19,7 @@ class MigrateStatusCommand extends BaseCommand
     public function execute()
     {
         $dsId = $this->getCurrentDataSourceId();
-
-        $runner = new MigrationRunner($dsId);
+        $runner = new MigrationRunner($this->logger, $dsId);
         $runner->load('db/migrations');
         $scripts = $runner->getUpgradeScripts($dsId);
         $count = count($scripts);

@@ -5,7 +5,7 @@ namespace LazyRecord\Command;
 use LazyRecord\Migration\MigrationGenerator;
 use LazyRecord\Console;
 
-class MigrateNewCommand extends BaseCommand
+class MigrateNewCommand extends MigrateBaseCommand
 {
     public function aliases()
     {

@@ -5,7 +5,7 @@ namespace LazyRecord\Command;
 use LazyRecord\Migration\MigrationRunner;
 
 
-class MigrateUpgradeCommand extends BaseCommand
+class MigrateUpgradeCommand extends MigrateBaseCommand
 {
     public function brief()
     {
@@ -15,13 +15,6 @@ class MigrateUpgradeCommand extends BaseCommand
     public function aliases()
     {
         return array('u', 'up');
-    }
-
-    public function options($opts)
-    {
-        parent::options($opts);
-        $opts->add('script-dir', 'Migration script directory. (default: db/migrations)');
-        $opts->add('b|backup', 'Backup database before running migration script.');
     }
 
     public function execute()
@@ -42,7 +35,7 @@ class MigrateUpgradeCommand extends BaseCommand
         }
 
         $dsId = $this->getCurrentDataSourceId();
-        $runner = new MigrationRunner($dsId);
+        $runner = new MigrationRunner($this->logger, $dsId);
         $runner->load($this->options->{'script-dir'} ?: 'db/migrations');
         $this->logger->info('Running migration scripts to upgrade...');
         $runner->runUpgrade();

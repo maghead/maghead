@@ -10,6 +10,7 @@ use LazyRecord\ServiceContainer;
 use GetOptionKit\OptionResult;
 use Exception;
 use RuntimeException;
+use CLIFramework\Logger;
 
 class MigrationRunner
 {
@@ -19,10 +20,13 @@ class MigrationRunner
 
     protected $connectionManager;
 
-    public function __construct($dsIds)
+    public function __construct(Logger $logger = null, $dsIds)
     {
-        $c = ServiceContainer::getInstance();
-        $this->logger = $c['logger'];
+        if (!$logger) {
+            $c = ServiceContainer::getInstance();
+            $logger = $c['logger'];
+        }
+        $this->logger = $logger;
         $this->connectionManager = ConnectionManager::getInstance();
 
         // XXX: get data source id list from config loader

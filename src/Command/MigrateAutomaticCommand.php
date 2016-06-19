@@ -9,7 +9,7 @@ use LazyRecord\ServiceContainer;
 use LazyRecord\Backup\MySQLBackup;
 use SQLBuilder\Driver\PDOMySQLDriver;
 
-class MigrateAutomaticCommand extends BaseCommand
+class MigrateAutomaticCommand extends MigrateBaseCommand
 {
     public function brief()
     {
@@ -25,7 +25,6 @@ class MigrateAutomaticCommand extends BaseCommand
     {
         parent::options($opts);
         AutomaticMigration::options($opts);
-        $opts->add('b|backup', 'Backup database before running migration script.');
     }
 
     public function execute()
@@ -47,7 +46,7 @@ class MigrateAutomaticCommand extends BaseCommand
             }
         }
 
-        $runner = new MigrationRunner($dsId);
+        $runner = new MigrationRunner($this->logger, $dsId);
         $runner->runUpgradeAutomatically($this->options);
         $this->logger->info('Done.');
     }
