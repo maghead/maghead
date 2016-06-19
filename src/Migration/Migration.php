@@ -37,40 +37,8 @@ function buildColumn($arg)
     }
 }
 
-class Migration implements Migratable
+class Migration extends BaseMigration implements Upgradable, Downgradable
 {
-    /**
-     * @var QueryDriver
-     */
-    protected $driver;
-
-    /**
-     * @var PDO object
-     */
-    protected $connection;
-
-    /**
-     * @var CLIFramework\Logger
-     */
-    protected $logger;
-
-    /**
-     * @var LazyRecord\SqlBuilder\BaseBuilder
-     */
-    protected $builder;
-
-    public function __construct(PDO $connection, BaseDriver $driver, Logger $logger = null)
-    {
-        $this->connection = $connection;
-        $this->driver     = $driver;
-        if (!$logger) {
-            $c = ServiceContainer::getInstance();
-            $this->logger = $c['logger'] ?: Console::getInstance()->getLogger();
-        }
-        $this->logger = $logger;
-        $this->builder = SqlBuilder::create($driver);
-    }
-
     public static function getId()
     {
         $name = get_called_class() ?: get_class($this);
@@ -78,52 +46,6 @@ class Migration implements Migratable
             return $regs[1];
         }
         // throw new Exception("Can't parse migration script ID from class name: " . $name);
-    }
-
-    /**
-     * Deprecated, use query method instead.
-     *
-     * @deprecated
-     */
-    public function executeSql($sql)
-    {
-        return $this->query($sql);
-    }
-
-    /**
-     * executeQuery method execute the query for objects that supports SQLBuilder\ToSqlInterface.
-     *
-     * @param ToSqlInterface $query
-     */
-    public function executeQuery(ToSqlInterface $query)
-    {
-        $sql = $query->toSql($this->driver, new ArgumentArray());
-        $this->query($sql);
-    }
-
-    protected function showSql($sql, $title = '')
-    {
-        if (strpos($sql, "\n") !== false) {
-            $this->logger->info('Performing Query: '.$title);
-            $this->logger->info($sql);
-        } else {
-            $this->logger->info('Performing Query: '.$sql);
-        }
-    }
-
-    /**
-     * Execute sql for migration.
-     *
-     * @param string $sql
-     */
-    public function query($sql, $title = '')
-    {
-        $sqls = (array) $sql;
-        foreach ($sqls as $q) {
-            $this->showSql($q, $title);
-
-            return $this->connection->query($q);
-        }
     }
 
     protected function alterTable($arg)
