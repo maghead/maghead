@@ -45,6 +45,8 @@ class InitConfCommand extends Command
 bootstrap:
 - vendor/autoload.php
 schema:
+  # Insert auto-increment primary key to every schema classes
+  auto_id: true
   # Customize your schema class loader
   #
   # loader: custom_schema_loader.php
