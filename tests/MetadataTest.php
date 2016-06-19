@@ -1,47 +1,39 @@
 <?php
 use LazyRecord\ConnectionManager;
 use LazyRecord\Metadata;
+use LazyRecord\Model\MetadataSchema;
+use LazyRecord\Testing\ModelTestCase;
 
-class MetadataTest extends PHPUnit_Framework_TestCase
+class MetadataTest extends ModelTestCase
 {
 
-
-    public function setUp()
+    public function getModels()
     {
-        $connm = ConnectionManager::getInstance();
-        $connm->addDataSource('default', array( 'dsn' => 'sqlite::memory:' ));
+        return [
+            new MetadataSchema,
+        ];
     }
 
-    public function tearDown()
+    public function testArrayAccessor()
     {
-        $connm = ConnectionManager::getInstance();
-        $connm->removeDataSource('default');
-        $connm->close('default');
-    }
-
-
-    function test()
-    {
-        $metadata = Metadata::createWithDataSource('default');
+        $metadata = new Metadata($this->conn, $this->queryDriver);
         $metadata->init();
-        $metadata->init();
-
         $metadata['version'] = 1;
-        is(1, $metadata['version']);
+        $this->assertEquals(1, $metadata['version']);
 
         $metadata['version'] = 2;
-        is(2, $metadata['version']);
+        $this->assertEquals(2, $metadata['version']);
 
-        is(2,$metadata->getVersion());
-
-        foreach( $metadata as $key => $value ) {
-            ok($key);
-            ok($value);
+        $this->assertEquals(2,$metadata->getVersion());
+        foreach ($metadata as $key => $value ) {
+            $this->assertTrue(!is_numeric($key));
+            $this->assertNotNull($value);
         }
     }
 
-    public function testMetadata() {
-        $metadata = Metadata::createWithDataSource('default');
+    public function testMetadata()
+    {
+        $metadata = new Metadata($this->conn, $this->queryDriver);
         $metadata->init();
 
         $metaItem = new \LazyRecord\Model\Metadata;
@@ -49,20 +41,18 @@ class MetadataTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($schema);
 
         $ret = $metaItem->create(array('name' => 'version', 'value' => '0.1' ));
-        ok($ret->success);
+        $this->assertResultSuccess($ret);
     }
 
-    public function testCollection() {
-        $metadata = Metadata::createWithDataSource('default');
+    public function testCollection()
+    {
+        $metadata = new Metadata($this->conn, $this->queryDriver);
         $metadata->init();
-
         $metadata['version'] = 1;
         $metadata['name'] = 'c9s';
-
         $metas = new LazyRecord\Model\MetadataCollection;
-        foreach( $metas as $meta ) {
+        foreach ($metas as $meta) {
             ok($meta);
         }
     }
 }
-
