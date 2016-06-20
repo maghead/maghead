@@ -43,13 +43,7 @@ class SchemaLoader
         // pre-initialize all schema objects and expand template schema
         $schemas = SchemaUtils::findSchemasByConfigLoader($config);
         $schemas = SchemaUtils::filterBuildableSchemas($schemas);
-
-        $schemaMap = [];
-        // map table names to declare schema objects
-        foreach ($schemas as $schema) {
-            $schemaMap[$schema->getTable()] = $schema;
-        }
-        return $schemaMap;
+        return SchemaUtils::buildSchemaMap($schemas);
     }
 
     /**

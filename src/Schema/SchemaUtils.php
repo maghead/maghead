@@ -44,6 +44,16 @@ class SchemaUtils
     }
      */
 
+    public static function buildSchemaMap(array $schemas)
+    {
+        $schemaMap = [];
+        // map table names to declare schema objects
+        foreach ($schemas as $schema) {
+            $schemaMap[$schema->getTable()] = $schema;
+        }
+        return $schemaMap;
+    }
+
     /**
      * Get referenced schema classes and put them in order.
      *
