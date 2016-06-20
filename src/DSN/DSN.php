@@ -3,15 +3,13 @@
 namespace LazyRecord\DSN;
 
 use ArrayAccess;
-use IteratorAggregate;
-use ArrayIterator;
 
 /**
  * Data object for DSN information.
  *
  * getHost(), getPort(), getDBName() methods are used by MySQL and PostgreSQL
  */
-class DSN implements ArrayAccess, IteratorAggregate
+class DSN implements ArrayAccess
 {
     /**
      * @var string
@@ -84,11 +82,6 @@ class DSN implements ArrayAccess, IteratorAggregate
     public function offsetUnset($key)
     {
         unset($this->attributes[$key]);
-    }
-
-    public function getIterator()
-    {
-        return new ArrayIterator($this->attributes);
     }
 
     public function setAttribute($key, $val)
