@@ -39,7 +39,7 @@ class MySQLTableStatus
                                                         END AS total_size',
         ]);
         $query->from('information_schema.TABLES');
-
+        $query->groupBy('name');
         return $query;
     }
 
