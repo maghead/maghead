@@ -99,12 +99,12 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected function buildSchemaTables(array $schemas, $rebuild = true)
     {
-        $tables = $this->tableParser->getTables();
         if ($sqls = $this->sqlBuilder->prepare()) {
             foreach ($sqls as $sql) {
                 $this->conn->query($sql);
             }
         }
+        $tables = $this->tableParser->getTables();
         foreach ($schemas as $schema) {
             // Skip schema building if table already exists.
             if ($rebuild === false && in_array($schema->getTable(), $tables)) {

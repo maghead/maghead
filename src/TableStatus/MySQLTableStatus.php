@@ -4,6 +4,7 @@ namespace LazyRecord\TableStatus;
 
 use PDO;
 use SQLBuilder\Driver\PDOMySQLDriver;
+use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\ArgumentArray;
 
@@ -68,12 +69,11 @@ class MySQLTableStatus
             'ROUND(index_length / data_length, 2) AS index_frac',
         ]);
         $query->from('information_schema.TABLES');
-        $query->groupBy('name');
         $query->orderBy('data_length + index_length', 'DESC');
         return $query;
     }
 
-    public function querySummary($tables)
+    public function querySummary(array $tables)
     {
         $dbName = $this->connection->query('SELECT database();')->fetchColumn();
         $query = $this->createStatusSummaryQuery();

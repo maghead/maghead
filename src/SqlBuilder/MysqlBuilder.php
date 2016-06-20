@@ -13,17 +13,42 @@ class MysqlBuilder extends BaseBuilder
     public function prepare()
     {
         return [
-            '/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */',
-            '/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */',
+            'SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0',
+            'SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0',
         ];
     }
 
     public function finalize()
     {
         return [
-            '/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */',
-            '/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */',
+            'SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS',
+            'SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS',
         ];
+    }
+
+    public function createTable(SchemaInterface $schema)
+    {
+        $sql = "CREATE TABLE ";
+        
+        $sql .= " IF NOT EXISTS ";
+
+        $sql .= $this->driver->quoteIdentifier($schema->getTable());
+
+        $sql .= " (\n";
+
+        $columnSqls = array();
+        foreach ($schema->columns as $name => $column) {
+            if ($column->virtual) {
+                continue;
+            }
+            $columnSqls[] = '  '.$this->buildColumnSql($schema, $column);
+        }
+        $referencesSqls = $this->buildForeignKeys($schema);
+        $sql .= implode(",\n", array_merge($columnSqls, $referencesSqls));
+
+        $sql .= "\n);\n";
+
+        return $sql;
     }
 
     /**

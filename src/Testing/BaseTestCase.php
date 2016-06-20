@@ -46,9 +46,13 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         }
 
         // The config loader is used to initialize connection manager
-        $this->config = new ConfigLoader;
+        $this->config = ConfigLoader::getInstance();
         $this->config->loadFromSymbol(true);
         $this->config->setDefaultDataSourceId($this->getDriverType());
+
+        // Always true
+        $configStash = $this->config->getConfigStash();
+        $cnofigStash['schema']['auto_id'] = true;
 
         // free and override default connection
         $this->connManager = ConnectionManager::getInstance();
@@ -161,7 +165,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $config = ConfigLoader::getInstance();
         $config->loaded = true;
         $config->setConfigStash(array('schema' => array('auto_id' => true)));
-
         return $config;
     }
 

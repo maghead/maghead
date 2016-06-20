@@ -2,36 +2,55 @@
 use LazyRecord\ConfigLoader;
 use LazyRecord\ConnectionManager;
 use CLIFramework\Logger;
+use LazyRecord\Testing\ModelTestCase;
+use \LazyRecord\Schema\SchemaGenerator;
 
-class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
+class SchemaGeneratorTest extends ModelTestCase
 {
-    public function schemaProvider() {
-        $this->configLoader = ConfigLoader::getInstance();
-        $this->configLoader->loadFromSymbol(true);
-        $g = new \LazyRecord\Schema\SchemaGenerator($this->configLoader, Logger::getInstance());
-        $g->setForceUpdate(true);
-
-        $schemas = array();
-        $schemas[] = [ $g, new \TestApp\Model\UserSchema ];
-        $schemas[] = [ $g, new \AuthorBooks\Model\AddressSchema ];
-        $schemas[] = [ $g, new \AuthorBooks\Model\BookSchema ];
-        $schemas[] = [ $g, new \TestApp\Model\IDNumberSchema ];
-        $schemas[] = [ $g, new \TestApp\Model\NameSchema ];
-        return $schemas;
+    public function getModels()
+    {
+        return [
+            new \TestApp\Model\UserSchema,
+            new \AuthorBooks\Model\AddressSchema,
+            new \AuthorBooks\Model\BookSchema,
+            new \TestApp\Model\IDNumberSchema,
+            new \TestApp\Model\NameSchema
+        ];
     }
 
-
-    /**
-     * @dataProvider schemaProvider
-     */
-    public function testCollectionClassGeneration($g, $schema)
+    public function testSchemaGenerator()
     {
-        if ( $result = $g->generateCollectionClass($schema) ) {
-            list($class, $file) = $result;
-            ok($class);
-            ok($file);
-            path_ok($file);
-            $this->syntaxTest($file);
+        $g = new SchemaGenerator($this->config, $this->logger);
+        $g->setForceUpdate(true);
+        $schemas = $this->getModels();
+
+        foreach ($schemas as $schema) {
+            if ($result = $g->generateCollectionClass($schema)) {
+                list($class, $file) = $result;
+                ok($class);
+                ok($file);
+                path_ok($file);
+                $this->syntaxTest($file);
+            }
+
+            if ( $classMap = $g->generate(array($schema)) ) {
+                foreach( $classMap as $class => $file ) {
+                    ok($class);
+                    ok($file);
+                    path_ok($file,$file);
+                    // $this->syntaxTest($file);
+                    require_once $file;
+                }
+            }
+
+            $pk = $schema->findPrimaryKey();
+            $this->assertNotNull($pk, "Find primary key from " . get_class($schema) );
+
+            $model = $schema->newModel();
+            $this->assertNotNull($model);
+
+            $collection = $schema->newCollection();
+            $this->assertNotNull($collection);
         }
     }
 
@@ -39,31 +58,4 @@ class SchemaGeneratorTest extends PHPUnit_Framework_TestCase
         $this->expectOutputRegex('/^No syntax errors detected/' );
         system("php -l $file");
     }
-
-
-    /**
-     * @dataProvider schemaProvider
-     */
-    public function testGenerateMethod($g, $schema) 
-    {
-        if ( $classMap = $g->generate(array($schema)) ) {
-            foreach( $classMap as $class => $file ) {
-                ok($class);
-                ok($file);
-                path_ok($file,$file);
-                // $this->syntaxTest($file);
-                require_once $file;
-            }
-        }
-
-        $pk = $schema->findPrimaryKey();
-        $this->assertNotNull($pk, "Find primary key from " . get_class($schema) );
-
-        $model = $schema->newModel();
-        $this->assertNotNull($model);
-
-        $collection = $schema->newCollection();
-        $this->assertNotNull($collection);
-    }
 }
-
