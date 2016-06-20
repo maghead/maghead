@@ -20,6 +20,10 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected $allowConnectionFailure = false;
 
+    protected $tableParser;
+
+    protected $sqlBuilder;
+
     public function setUp()
     {
         if ($this->onlyDriver !== null && $this->getDriverType() != $this->onlyDriver) {
@@ -27,6 +31,7 @@ abstract class ModelTestCase extends BaseTestCase
         }
 
         $this->prepareConnection();
+
 
         // Ensure that we use the correct default data source ID
         $this->assertEquals($this->getDriverType(), $this->config->getDefaultDataSourceId());
@@ -53,6 +58,9 @@ abstract class ModelTestCase extends BaseTestCase
             $this->schemaHasBeenBuilt = true;
         }
 
+        $this->tableParser = TableParser::create($this->conn, $this->queryDriver, $this->config);
+        $this->sqlBuilder = SqlBuilder::create($this->queryDriver, array('rebuild' => $rebuild));
+
         $this->buildSchemaTables($schemas, $rebuild);
 
         if ($rebuild && $basedata) {
@@ -73,11 +81,8 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected function buildSchemaTables(array $schemas, $rebuild = true)
     {
-        $parser = TableParser::create($this->conn, $this->queryDriver, $this->config);
-        $tables = $parser->getTables();
-
-        $builder = SqlBuilder::create($this->queryDriver, array('rebuild' => $rebuild));
-        if ($sqls = $builder->prepare()) {
+        $tables = $this->tableParser->getTables();
+        if ($sqls = $this->sqlBuilder->prepare()) {
             foreach ($sqls as $sql) {
                 $this->conn->query($sql);
             }
@@ -87,13 +92,13 @@ abstract class ModelTestCase extends BaseTestCase
             if ($rebuild === false && in_array($schema->getTable(), $tables)) {
                 continue;
             }
-            $sqls = $builder->build($schema);
+            $sqls = $this->sqlBuilder->build($schema);
             $this->assertNotEmpty($sqls);
             foreach ($sqls as $sql) {
                 $this->conn->query($sql);
             }
         }
-        if ($sqls = $builder->finalize()) {
+        if ($sqls = $this->sqlBuilder->finalize()) {
             foreach ($sqls as $sql) {
                 $this->conn->query($sql);
             }

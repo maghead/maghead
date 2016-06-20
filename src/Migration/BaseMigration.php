@@ -95,8 +95,7 @@ class BaseMigration
         $sqls = (array) $sql;
         foreach ($sqls as $q) {
             $this->showSql($q, $title);
-
-            return $this->connection->query($q);
+            $this->connection->query($q);
         }
     }
 

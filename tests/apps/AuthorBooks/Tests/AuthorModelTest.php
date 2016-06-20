@@ -354,7 +354,6 @@ class AuthorModelTest extends ModelTestCase
         if ($this->queryDriver instanceof SQLiteDriver) {
             return $this->markTestSkipped('skip this test when sqlite driver is used.');
         }
-
         $migration = new Migration($this->conn, $this->queryDriver, $this->logger);
         $author = new Author;
         $schema = $author->getDeclareSchema();

@@ -2,6 +2,7 @@
 use LazyRecord\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorSchema;
+use AuthorBooks\Model\AddressSchema;
 use AuthorBooks\Model\AuthorCollection;
 use LazyRecord\Migration\Migration;
 use SQLBuilder\Universal\Syntax\Column;
@@ -21,6 +22,22 @@ class AuthorMigrationTest extends ModelTestCase
     {
         return [];
     }
+
+
+
+    public function testImportSchema()
+    {
+        $schema = new AddressSchema;
+        $table = $schema->getTable();
+        AutomaticMigration::options($options = new OptionCollection);
+        $migrate = new AutomaticMigration(
+            $this->conn,
+            $this->queryDriver,
+            $this->logger,
+            OptionResult::create($options, [ ]));
+        $migrate->upgrade([$schema]);
+    }
+
 
     public function testModifyColumn()
     {
