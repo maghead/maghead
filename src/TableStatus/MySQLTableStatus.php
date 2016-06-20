@@ -68,8 +68,8 @@ class MySQLTableStatus
             'ROUND(index_length / data_length, 2) AS index_frac',
         ]);
         $query->from('information_schema.TABLES');
+        $query->groupBy('name');
         $query->orderBy('data_length + index_length', 'DESC');
-
         return $query;
     }
 
