@@ -48,7 +48,7 @@ class BaseMigration
         $this->driver     = $driver;
         if (!$logger) {
             $c = ServiceContainer::getInstance();
-            $this->logger = $c['logger'] ?: Console::getInstance()->getLogger();
+            $logger = $c['logger'] ?: Console::getInstance()->getLogger();
         }
         $this->logger = $logger;
         $this->builder = SqlBuilder::create($driver);
