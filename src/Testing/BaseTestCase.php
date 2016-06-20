@@ -56,6 +56,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
         // $config = self::createNeutralConfigLoader();
         $this->logger = new Logger();
+        $this->logger->setQuiet();
     }
 
     public function setUp()

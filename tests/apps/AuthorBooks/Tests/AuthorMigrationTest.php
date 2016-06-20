@@ -28,6 +28,8 @@ class AuthorMigrationTest extends ModelTestCase
     public function testImportSchema()
     {
         $schema = new AddressSchema;
+        $this->dropSchemaTable($schema);
+
         $table = $schema->getTable();
         AutomaticMigration::options($options = new OptionCollection);
         $migrate = new AutomaticMigration(
