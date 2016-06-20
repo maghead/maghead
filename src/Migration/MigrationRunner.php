@@ -152,7 +152,8 @@ class MigrationRunner
                 $migration = new $script($conn, $driver, $this->logger);
                 $migration->downgrade();
                 if ($nextScript = end($scripts)) {
-                    $this->updateLastMigrationId($conn, $driver, $nextScript::getId());
+                    $id = $nextScript::getId();
+                    $this->updateLastMigrationId($conn, $driver, $id);
                     $this->logger->info("Updated migration timestamp to $id.");
                 }
             }
