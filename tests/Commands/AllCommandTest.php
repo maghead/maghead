@@ -63,6 +63,16 @@ class AllCommandsTest extends CommandTestCase
     /**
      * @depends testSqlCommand
      */
+    public function testTableCommand()
+    {
+        $this->expectOutputRegex('//');
+        $this->app->run(array('lazy','table'));
+    }
+
+
+    /**
+     * @depends testSqlCommand
+     */
     public function testMigrateCommand()
     {
         $this->expectOutputRegex('/Found/');
