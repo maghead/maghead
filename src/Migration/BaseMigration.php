@@ -99,4 +99,31 @@ class BaseMigration
             return $this->connection->query($q);
         }
     }
+
+    public function alterTable($arg)
+    {
+        if ($arg instanceof DeclareSchema) {
+            $table = $arg->getTable();
+        } else {
+            $table = $arg;
+        }
+        return new AlterTableQuery($arg);
+    }
+
+    public function importSchema($schema)
+    {
+        $this->logger->info('Importing schema: '.get_class($schema));
+
+        if ($schema instanceof DeclareSchema) {
+            $sqls = $this->builder->build($schema);
+            $this->query($sqls);
+        } elseif ($schema instanceof BaseModel && method_exists($schema, 'schema')) {
+            $model = $schema;
+            $schema = new DynamicSchemaDeclare($model);
+            $sqls = $this->builder->build($schema);
+            $this->query($sqls);
+        } else {
+            throw new InvalidArgumentException('Unsupported schema type');
+        }
+    }
 }

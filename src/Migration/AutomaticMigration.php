@@ -11,6 +11,7 @@ use LazyRecord\Connection;
 use GetOptionKit\OptionResult;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Universal\Query\AlterTableQuery;
 use CLIFramework\Logger;
 use PDO;
 use LogicException;

@@ -48,16 +48,6 @@ class Migration extends BaseMigration implements Upgradable, Downgradable
         // throw new Exception("Can't parse migration script ID from class name: " . $name);
     }
 
-    protected function alterTable($arg)
-    {
-        if ($arg instanceof DeclareSchema) {
-            $table = $arg->getTable();
-        } else {
-            $table = $arg;
-        }
-        return new AlterTableQuery($arg);
-    }
-
     /**
      * Rename column requires $schema object.
      */
@@ -114,22 +104,6 @@ class Migration extends BaseMigration implements Upgradable, Downgradable
         $this->query($sqls);
     }
 
-    public function importSchema($schema)
-    {
-        $this->logger->info('Importing schema: '.get_class($schema));
-
-        if ($schema instanceof DeclareSchema) {
-            $sqls = $this->builder->build($schema);
-            $this->query($sqls);
-        } elseif ($schema instanceof BaseModel && method_exists($schema, 'schema')) {
-            $model = $schema;
-            $schema = new DynamicSchemaDeclare($model);
-            $sqls = $this->builder->build($schema);
-            $this->query($sqls);
-        } else {
-            throw new InvalidArgumentException('Unsupported schema type');
-        }
-    }
 
     public function upgrade()
     {
