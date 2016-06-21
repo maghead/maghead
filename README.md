@@ -4,8 +4,8 @@ LazyRecord
 <img src="https://raw.github.com/c9s/LazyRecord/master/assets/images/logo.png" width="64"/>
 
 [![works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
-[![Build Status](https://travis-ci.org/c9s/LazyRecord.svg?branch=master)](https://travis-ci.org/c9s/LazyRecord)
-[![Coverage Status](https://img.shields.io/coveralls/c9s/LazyRecord.svg)](https://coveralls.io/r/c9s/LazyRecord)
+[![Build Status](https://travis-ci.org/corneltek/LazyRecord.svg?branch=master)](https://travis-ci.org/c9s/LazyRecord)
+[![Coverage Status](https://img.shields.io/coveralls/corneltek/LazyRecord.svg)](https://coveralls.io/r/c9s/LazyRecord)
 [![Latest Stable Version](https://poser.pugx.org/corneltek/lazyrecord/v/stable.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
 [![Total Downloads](https://poser.pugx.org/corneltek/lazyrecord/downloads.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
 [![Monthly Downloads](https://poser.pugx.org/corneltek/lazyrecord/d/monthly)](https://packagist.org/packages/corneltek/lazyrecord)
