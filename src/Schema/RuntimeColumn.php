@@ -209,6 +209,10 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                 return intval($value);
             } elseif ($isa === 'str') {
                 return (string) $value;
+            } elseif ($isa === 'DateTime') {
+                if ($value === '' || $value === 0 || $value === false) {
+                    return null;
+                }
             } elseif ($isa === 'bool') {
                 if ($value === null) {
                     return;
