@@ -15,11 +15,6 @@ class BaseCommand extends Command
      */
     protected $config;
 
-    public function init()
-    {
-        parent::init();
-    }
-
     public function prepare()
     {
         // softly load the config file.
