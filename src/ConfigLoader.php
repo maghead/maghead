@@ -335,7 +335,7 @@ class ConfigLoader
     /**
      * load data sources to connection manager.
      */
-    public function loadDataSources()
+    protected function loadDataSources()
     {
         // load data source into connection manager
         $manager = ConnectionManager::getInstance();
