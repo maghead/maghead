@@ -283,7 +283,14 @@ class ConfigLoader
         if ($this->loaded) {
             $this->loadDataSources();
             $this->loadBootstrap();
-            $this->loadExternalSchemaLoader();
+            if (!$this->loadExternalSchemaLoader()) {
+                // Load default schema loader
+                $paths = $this->getSchemaPaths();
+                if (!empty($paths)) {
+                    $finder = new SchemaFinder($paths);
+                    $finder->find();
+                }
+            }
         } else {
             throw new Exception('Can not initialize config: Config is not loaded.');
         }
@@ -311,11 +318,13 @@ class ConfigLoader
     /**
      * load external schema loader.
      */
-    public function loadExternalSchemaLoader()
+    protected function loadExternalSchemaLoader()
     {
         if (isset($this->config['schema']['loader'])) {
             require_once $this->config['schema']['loader'];
+            return true;
         }
+        return false;
     }
 
     /**
