@@ -8,6 +8,7 @@ use ArrayAccess;
 use PDO;
 use LazyRecord\DSN\DSN;
 use Symfony\Component\Yaml\Yaml;
+use LazyRecord\Schema\SchemaFinder;
 
 /**
  * Available config key:.
@@ -488,12 +489,18 @@ class ConfigLoader
 
     public function getBaseModelClass()
     {
-        return @$this->config['schema']['base_model'] ?: '\\LazyRecord\\BaseModel';
+        if (isset($this->config['schema']['base_model'])) {
+            return $this->config['schema']['base_model'];
+        }
+        return '\\LazyRecord\\BaseModel';
     }
 
     public function getBaseCollectionClass()
     {
-        return @$this->config['schema']['base_collection'] ?: '\\LazyRecord\\BaseCollection';
+        if (isset($this->config['schema']['base_collection'])) {
+            return $this->config['schema']['base_collection'];
+        }
+        return '\\LazyRecord\\BaseCollection';
     }
 
     /******************************
