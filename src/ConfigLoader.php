@@ -281,19 +281,18 @@ class ConfigLoader
 
     public function initForBuild()
     {
-        if ($this->loaded) {
-            $this->loadDataSources();
-            $this->loadBootstrap();
-            if (!$this->loadExternalSchemaLoader()) {
-                // Load default schema loader
-                $paths = $this->getSchemaPaths();
-                if (!empty($paths)) {
-                    $finder = new SchemaFinder($paths);
-                    $finder->find();
-                }
-            }
-        } else {
+        if (!$this->loaded) {
             throw new Exception('Can not initialize config: Config is not loaded.');
+        }
+        $this->loadDataSources();
+        $this->loadBootstrap();
+        if (!$this->loadExternalSchemaLoader()) {
+            // Load default schema loader
+            $paths = $this->getSchemaPaths();
+            if (!empty($paths)) {
+                $finder = new SchemaFinder($paths);
+                $finder->find();
+            }
         }
     }
 
