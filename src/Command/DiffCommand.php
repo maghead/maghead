@@ -23,10 +23,9 @@ class DiffCommand extends BaseCommand
         $options = $this->options;
         $logger = $this->logger;
 
-        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
-
         $dsId = $this->getCurrentDataSourceId();
 
+        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
         $conn = $connectionManager->getConnection($dsId);
         $driver = $connectionManager->getQueryDriver($dsId);
 
@@ -34,7 +33,7 @@ class DiffCommand extends BaseCommand
 
         $parser = TableParser::create($conn, $driver);
         $existingTables = $parser->getTables();
-        $tableSchemas = SchemaLoader::loadSchemaTableMap($this->getConfigLoader());
+        $tableSchemas = SchemaLoader::loadSchemaTableMap($this->getConfigLoader(true));
 
 
         $found = false;
