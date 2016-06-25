@@ -149,7 +149,7 @@ class SchemaUtils
             }
         }
         $paths = $loader->getSchemaPaths();
-        return static::findSchemasByPaths($paths, $logger);
+        return self::findSchemasByPaths($paths, $logger);
     }
 
     /**
