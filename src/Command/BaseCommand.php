@@ -13,7 +13,7 @@ class BaseCommand extends Command
     /**
      * @var ConfigLoader
      */
-    public $config;
+    protected $config;
 
     public function init()
     {

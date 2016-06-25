@@ -159,49 +159,34 @@ class SchemaUtils
      */
     public static function findSchemasByArguments(ConfigLoader $loader, array $args, Logger $logger = null)
     {
-        if (count($args) && !file_exists($args[0])) {
-            $classes = array();
-            // it's classnames
-            foreach ($args as $class) {
-                // call class loader to load
-                if (class_exists($class, true)) {
-                    $classes[] = $class;
-                } else {
-                    if ($logger) {
-                        $logger->warn("$class not found.");
-                    } else {
-                        echo ">>> $class not found.\n";
-                    }
-                }
-            }
-
+        $classes = array_filter($args, function($class) { 
+            return class_exists($class, true);
+        });
+        if (!empty($classes)) {
             return ClassUtils::schema_classes_to_objects(array_unique($classes));
-        } else {
-            $finder = new SchemaFinder();
-            if (count($args) && file_exists($args[0])) {
-                $finder->setPaths($args);
-                foreach ($args as $file) {
-                    if (is_file($file)) {
-                        require_once $file;
-                    }
-                }
-            }
-            // load schema paths from config
-            elseif ($paths = $loader->getSchemaPaths()) {
-                $finder->setPaths($paths);
-            }
-            $finder->find();
-
-            // load class from class map
-            if ($classMap = $loader->getClassMap()) {
-                foreach ($classMap as $file => $class) {
-                    if (!is_integer($file) && is_string($file)) {
-                        require $file;
-                    }
-                }
-            }
-
-            return SchemaLoader::loadDeclaredSchemas();
         }
+
+        $paths = array_filter($args, "file_exists");
+
+        if (empty($paths)) {
+            $paths = $loader->getSchemaPaths();
+        }
+
+        if (!empty($paths)) {
+            $finder = new SchemaFinder($paths);
+            $finder->find();
+        }
+
+        // load class from class map
+        if ($classMap = $loader->getClassMap()) {
+            foreach ($classMap as $file => $class) {
+                if (is_numeric($file)) {
+                    continue;
+                }
+                require_once $file;
+            }
+        }
+
+        return SchemaLoader::loadDeclaredSchemas();
     }
 }

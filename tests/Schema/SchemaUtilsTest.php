@@ -15,10 +15,8 @@ class SchemaUtilsTest extends PHPUnit_Framework_TestCase
     public function testFindSchemasByClassNames()
     {
         $paths = $this->loader->getSchemaPaths();
-
         $this->assertNotEmpty($paths);
-        ok(is_array($paths));
-
+        $this->assertTrue(is_array($paths));
         $schemas = LazyRecord\Schema\SchemaUtils::findSchemasByArguments($this->loader, array('TestApp\\Model\\UserSchema'));
         $this->assertNotEmpty($paths);
     }
