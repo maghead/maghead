@@ -124,18 +124,22 @@ class SchemaUtils
         return $list;
     }
 
+
+    public static function findSchemasByPaths(array $paths = null, Logger $logger = null)
+    {
+        if ($paths && !empty($paths)) {
+            $finder = new SchemaFinder($paths, $logger);
+            $finder->find();
+        }
+        return SchemaLoader::loadDeclaredSchemas();
+    }
+
     /**
      * @param ConfigLoader $loader
      * @param Logger       $logger
      */
     public static function findSchemasByConfigLoader(ConfigLoader $loader, Logger $logger = null)
     {
-        if ($paths = $loader->getSchemaPaths()) {
-            $finder = new SchemaFinder();
-            $finder->setPaths($loader->getSchemaPaths());
-            $finder->find();
-        }
-
         // load class from class map
         if ($classMap = $loader->getClassMap()) {
             foreach ($classMap as $file => $class) {
@@ -144,8 +148,8 @@ class SchemaUtils
                 }
             }
         }
-
-        return SchemaLoader::loadDeclaredSchemas();
+        $paths = $loader->getSchemaPaths();
+        return static::findSchemasByPaths($paths, $logger);
     }
 
     /**
