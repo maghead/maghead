@@ -322,7 +322,7 @@ class ConfigLoader
      * load class from php source,
      * to PHP source should return a PHP array.
      */
-    public function loadClassMapFile()
+    protected function loadClassMapFile()
     {
         if (isset($this->config['schema']['loader']) &&
             $file = $this->config['schema']['loader']) {
