@@ -39,8 +39,7 @@ class BuildCommand extends BaseCommand
     {
         $args = func_get_args();
         $logger = $this->getLogger();
-
-        $config = $this->getConfigLoader();
+        $config = $this->getConfigLoader(true);
 
         $this->logger->debug('Finding schemas...');
         $schemas = SchemaUtils::findSchemasByArguments($config, $args, $logger);
@@ -52,7 +51,6 @@ class BuildCommand extends BaseCommand
 
         $classMap = array();
         foreach ($schemas as $schema) {
-
             if ($this->logger->isDebug()) {
                 $this->logger->debug("Checking " . get_class($schema));
             }

@@ -28,7 +28,7 @@ class MigrateNewFromDiffCommand extends MigrateBaseCommand
         $generator = new MigrationGenerator($this->logger, 'db/migrations');
         $this->logger->info('Creating migration script from diff');
 
-        $schemaMap = SchemaLoader::loadSchemaTableMap($config);
+        $schemaMap = SchemaLoader::loadSchemaTableMap();
         list($class, $path) = $generator->generateWithDiff($taskName, $dsId, $schemaMap);
         $this->logger->info("Migration script is generated: $path");
     }

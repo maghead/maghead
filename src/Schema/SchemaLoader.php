@@ -33,16 +33,9 @@ class SchemaLoader
     /**
      * @return DeclareSchema[] Return declared schema object in associative array
      */
-    public static function loadSchemaTableMap(ConfigLoader $config = null)
+    public static function loadSchemaTableMap()
     {
-        if (!$config) {
-            $container = ServiceContainer::getInstance();
-            $config = $container['config_loader'];
-        }
-
-        // pre-initialize all schema objects and expand template schema
-        $schemas = SchemaUtils::findSchemasByConfigLoader($config);
-        $schemas = SchemaUtils::filterBuildableSchemas($schemas);
+        $schemas = self::loadDeclaredSchemas();
         return SchemaUtils::buildSchemaMap($schemas);
     }
 

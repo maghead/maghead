@@ -51,7 +51,7 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
         $runner = new MigrationRunner($this->logger, $dsId);
         $this->logger->info("Performing automatic upgrade over data source: $dsId");
 
-        $tableSchemas = SchemaLoader::loadSchemaTableMap($this->getConfigLoader());
+        $tableSchemas = SchemaLoader::loadSchemaTableMap();
         $runner->runUpgradeAutomatically($conn, $driver, $tableSchemas, $this->options);
         $this->logger->info('Done.');
     }

@@ -29,12 +29,11 @@ class DiffCommand extends BaseCommand
         $conn = $connectionManager->getConnection($dsId);
         $driver = $connectionManager->getQueryDriver($dsId);
 
-        $this->logger->info('Performing Comparison...');
+        $this->logger->info('Performing comparison...');
 
         $parser = TableParser::create($conn, $driver);
         $existingTables = $parser->getTables();
-        $tableSchemas = SchemaLoader::loadSchemaTableMap($this->getConfigLoader(true));
-
+        $tableSchemas = SchemaLoader::loadSchemaTableMap();
 
         $found = false;
         $comparator = new Comparator($driver);
