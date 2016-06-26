@@ -29,19 +29,17 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
 
     public function evaluate()
     {
-        $schemas = array_map(function ($a) {
+        return new self(array_map(function ($a) {
             if (is_string($a)) {
                 return new $a();
-            } elseif (is_object($a)) {
+            } else if (is_object($a)) {
                 return $a;
             } else {
                 throw new InvalidArgumentException('Invalid schema class argument');
             }
 
             return $a;
-        }, $this->schemas);
-
-        return new self($schemas);
+        }, $this->schemas));
     }
 
     public function expandDependency()

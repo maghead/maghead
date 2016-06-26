@@ -4,7 +4,9 @@ namespace LazyRecord;
 
 use LazyRecord\SqlBuilder\BaseBuilder;
 use LazyRecord\SqlBuilder;
+use LazyRecord\SeedBuilder;
 use LazyRecord\Connection;
+use LazyRecord\Schema\SchemaCollection;
 use CLIFramework\Logger;
 use PDO;
 use PDOException;
@@ -57,6 +59,14 @@ class Bootstrap
         if ($sqls = $this->builder->finalize()) {
             $this->executeStatements($sqls);
         }
+    }
+
+    public function seed(array $schemas)
+    {
+        $collection = new SchemaCollection($schemas);
+        $seedBuilder = new SeedBuilder($this->logger);
+        $seedBuilder->build($collection);
+        // $seedBuilder->buildConfigSeeds($this->getConfigLoader());
     }
 
     protected function executeStatements(array $sqls)

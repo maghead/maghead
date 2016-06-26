@@ -9,9 +9,10 @@ use InvalidArgumentException;
 
 class SeedBuilder
 {
-    public function __construct(ConfigLoader $config, Logger $logger)
+    protected $logger;
+
+    public function __construct(Logger $logger)
     {
-        $this->config = $config;
         $this->logger = $logger;
     }
 
@@ -48,9 +49,9 @@ class SeedBuilder
         throw new InvalidArgumentException('Invalid seed script name');
     }
 
-    public function buildConfigSeeds()
+    public function buildConfigSeeds(ConfigLoader $config)
     {
-        if ($seeds = $this->config->getSeedScripts()) {
+        if ($seeds = $config->getSeedScripts()) {
             foreach ($seeds as $seed) {
                 $this->buildScriptSeed($seed);
             }
@@ -59,9 +60,9 @@ class SeedBuilder
 
     public function build(SchemaCollection $collection)
     {
+        $collection = $collection->evaluate();
         foreach ($collection as $s) {
             $this->buildSchemaSeeds($s);
         }
-        $this->buildConfigSeeds();
     }
 }

@@ -108,15 +108,13 @@ DOC;
                 'rebuild' => $options->rebuild,
                 'clean' => $options->clean,
             ]);
-
             $builder = new Bootstrap($conn, $sqlBuilder, $this->logger);
             $builder->build($schemas);
 
             if ($this->options->basedata) {
-                $collection = new SchemaCollection($schemas);
-                $collection = $collection->evaluate();
-                $seedBuilder = new SeedBuilder($this->getConfigLoader(), $this->logger);
-                $seedBuilder->build($collection);
+                $seedBuilder = new SeedBuilder($this->logger);
+                $seedBuilder->build(new SchemaCollection($schemas));
+                $seedBuilder->buildConfigSeeds($this->getConfigLoader());
             }
 
             $time = time();

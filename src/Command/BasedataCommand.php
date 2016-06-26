@@ -25,8 +25,9 @@ class BasedataCommand extends BaseCommand
         $collection = new SchemaCollection($classes);
         $collection = $collection->evaluate();
 
-        $seedBuilder = new SeedBuilder($this->getConfigLoader(), $this->logger);
+        $seedBuilder = new SeedBuilder($this->logger);
         $seedBuilder->build($collection);
+        $seedBuilder->buildConfigSeeds($this->getConfigLoader());
 
         $this->logger->info('Done');
     }

@@ -10,6 +10,7 @@ use LazyRecord\SeedBuilder;
 use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\SchemaGenerator;
+use LazyRecord\Schema\SchemaCollection;
 use LazyRecord\Bootstrap;
 use PDOException;
 
@@ -65,15 +66,9 @@ abstract class ModelTestCase extends BaseTestCase
         $this->buildSchemaTables($schemas, $rebuild);
 
         if ($rebuild && $basedata) {
-            $runner = new SeedBuilder($this->config, $this->logger);
-            foreach ($schemas as $schema) {
-                $runner->buildSchemaSeeds($schema);
-            }
-            if ($scripts = $this->config->getSeedScripts()) {
-                foreach ($scripts as $script) {
-                    $runner->buildScriptSeed($script);
-                }
-            }
+            $seeder = new SeedBuilder($this->logger);
+            $seeder->build(new SchemaCollection($schemas));
+            $seeder->buildConfigSeeds($this->config);
         }
     }
 
