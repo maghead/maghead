@@ -33,7 +33,8 @@ class Connection extends PDO
     {
         $connection = new self($config['dsn'], $config['user'], $config['pass'], $config['connection_options']);
         $connection->config = $config;
-
+        $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // TODO: can we make this optional ?
         return $connection;
     }
 
