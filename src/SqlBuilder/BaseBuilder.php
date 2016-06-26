@@ -14,11 +14,11 @@ use LazyRecord\Schema\DeclareColumn;
 
 abstract class BaseBuilder
 {
-    public $rebuild;
+    protected $rebuild;
 
-    public $clean;
+    protected $clean;
 
-    public $driver;
+    protected $driver;
 
     public function __construct(BaseDriver $driver, array $options = array())
     {
@@ -32,6 +32,17 @@ abstract class BaseBuilder
     }
 
     abstract public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column);
+
+
+    public function setClean($clean = true)
+    {
+        $this->clean = true;
+    }
+
+    public function setRebuild($rebuild = true)
+    {
+        $this->rebuild = $rebuild;
+    }
 
     public function prepare()
     {
