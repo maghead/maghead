@@ -24,6 +24,8 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected $sqlBuilder;
 
+    protected $bootstrap;
+
     public function setUp()
     {
         if ($this->onlyDriver !== null && $this->getDriverType() != $this->onlyDriver) {
@@ -67,7 +69,9 @@ abstract class ModelTestCase extends BaseTestCase
         }
 
         $this->sqlBuilder = SqlBuilder::create($this->queryDriver, array('rebuild' => $rebuild));
-        $this->buildSchemaTables($schemas, $rebuild);
+        $this->bootstrap = new Bootstrap($this->conn, $this->sqlBuilder, $this->logger);
+
+        $this->buildSchemaTables($schemas);
 
         if ($rebuild && $basedata) {
             $seeder = new SeedBuilder($this->logger);
@@ -78,14 +82,12 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected function dropSchemaTables($schemas)
     {
-        $bootstrap = new Bootstrap($this->conn, $this->sqlBuilder, $this->logger);
-        $bootstrap->remove($schemas);
+        $this->bootstrap->remove($schemas);
     }
 
-    protected function buildSchemaTables(array $schemas, $rebuild = true)
+    protected function buildSchemaTables(array $schemas)
     {
-        $bootstrap = new Bootstrap($this->conn, $this->sqlBuilder, $this->logger);
-        $bootstrap->build($schemas);
+        $this->bootstrap->build($schemas);
     }
 
     public function testClasses()
