@@ -49,7 +49,7 @@ class Bootstrap
         }
 
         foreach ($schemas as $schema) {
-            $sqls = $this->builder->dropTable($schema);
+            $sqls = (array) $this->builder->dropTable($schema);
             if (!empty($sqls)) {
                 $this->executeStatements($sqls);
             }
