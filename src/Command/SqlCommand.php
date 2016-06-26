@@ -109,11 +109,10 @@ DOC;
                 'clean' => $options->clean,
             ]);
 
-            $builder = new Bootstrap($conn, $sqlBuilder, $this->logger);
-            $builder->build($schemas);
-
+            $bootstrap = new Bootstrap($conn, $sqlBuilder, $this->logger);
+            $bootstrap->build($schemas);
             if ($this->options->basedata) {
-                $builder->seed($schemas, $configLoader);
+                $bootstrap->seed($schemas, $configLoader);
             }
 
             $time = time();
