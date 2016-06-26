@@ -11,6 +11,7 @@ use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\SchemaCollection;
+use LazyRecord\Bootstrap;
 use PDOException;
 
 abstract class ModelTestCase extends BaseTestCase
@@ -20,8 +21,6 @@ abstract class ModelTestCase extends BaseTestCase
     public $schemaClasses = array();
 
     protected $allowConnectionFailure = false;
-
-    protected $tableParser;
 
     protected $sqlBuilder;
 
@@ -59,7 +58,14 @@ abstract class ModelTestCase extends BaseTestCase
             $this->schemaHasBeenBuilt = true;
         }
 
-        $this->tableParser = TableParser::create($this->conn, $this->queryDriver, $this->config);
+        if ($rebuild === false) {
+            $tableParser = TableParser::create($this->conn, $this->queryDriver, $this->config);
+            $tables = $tableParser->getTables();
+            $schemas = array_filter($schemas, function($schema) use ($tables) {
+                return !in_array($schema->getTable(), $tables);
+            });
+        }
+
         $this->sqlBuilder = SqlBuilder::create($this->queryDriver, array('rebuild' => $rebuild));
         $this->buildSchemaTables($schemas, $rebuild);
 
@@ -90,31 +96,10 @@ abstract class ModelTestCase extends BaseTestCase
         }
     }
 
-
     protected function buildSchemaTables(array $schemas, $rebuild = true)
     {
-        if ($sqls = $this->sqlBuilder->prepare()) {
-            foreach ($sqls as $sql) {
-                $this->conn->query($sql);
-            }
-        }
-        $tables = $this->tableParser->getTables();
-        foreach ($schemas as $schema) {
-            // Skip schema building if table already exists.
-            if ($rebuild === false && in_array($schema->getTable(), $tables)) {
-                continue;
-            }
-            $sqls = $this->sqlBuilder->build($schema);
-            $this->assertNotEmpty($sqls);
-            foreach ($sqls as $sql) {
-                $this->conn->query($sql);
-            }
-        }
-        if ($sqls = $this->sqlBuilder->finalize()) {
-            foreach ($sqls as $sql) {
-                $this->conn->query($sql);
-            }
-        }
+        $bootstrap = new Bootstrap($this->conn, $this->sqlBuilder, $this->logger);
+        $bootstrap->build($schemas);
     }
 
     public function testClasses()
