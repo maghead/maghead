@@ -23,6 +23,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
     public $driver = 'sqlite';
 
+    public $dataSource;
+
     public $onlyDriver;
 
     protected $connManager;
@@ -48,7 +50,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         // The config loader is used to initialize connection manager
         $this->config = ConfigLoader::getInstance();
         $this->config->loadFromSymbol(true);
-        $this->config->setDefaultDataSourceId($this->getDriverType());
+        $this->config->setDefaultDataSourceId($this->getDataSource());
 
         // Always true
         $configStash = $this->config->getConfigStash();
@@ -65,7 +67,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        if ($this->onlyDriver !== null && $this->getDriverType() != $this->onlyDriver) {
+        if ($this->onlyDriver !== null && $this->getDataSource() != $this->onlyDriver) {
             return $this->markTestSkipped("{$this->onlyDriver} only");
         }
         $this->prepareConnection();
@@ -76,29 +78,36 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     {
         if (!$this->conn) {
             try {
-                $this->conn = $this->connManager->getConnection($this->getDriverType());
+                $this->conn = $this->connManager->getConnection($this->getDataSource());
             } catch (PDOException $e) {
                 if ($this->allowConnectionFailure) {
                     $this->markTestSkipped(
                         sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
-                            $this->getDriverType(),
+                            $this->getDataSource(),
                             $e->getMessage(),
-                            var_export($this->config->getDataSource($this->getDriverType()), true)
+                            var_export($this->config->getDataSource($this->getDataSource()), true)
                         ));
 
                     return;
                 }
                 echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
-                    $this->getDriverType(),
+                    $this->getDataSource(),
                     $e->getMessage(),
-                    var_export($this->config->getDataSource($this->getDriverType()), true)
+                    var_export($this->config->getDataSource($this->getDataSource()), true)
                 );
                 throw $e;
             }
-            $this->queryDriver = $this->connManager->getQueryDriver($this->getDriverType());
+            $this->queryDriver = $this->connManager->getQueryDriver($this->getDataSource());
         }
     }
 
+    public function getDataSource()
+    {
+        if ($this->dataSource) {
+            return $this->dataSource;
+        }
+        return $this->getDriverType();
+    }
 
     public function getDriverType()
     {
