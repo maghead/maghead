@@ -70,8 +70,7 @@ abstract class ModelTestCase extends BaseTestCase
 
         $this->sqlBuilder = SqlBuilder::create($this->queryDriver, array('rebuild' => $rebuild));
         $this->bootstrap = new Bootstrap($this->conn, $this->sqlBuilder, $this->logger);
-
-        $this->buildSchemaTables($schemas);
+        $this->bootstrap->build($schemas);
 
         if ($rebuild && $basedata) {
             $seeder = new SeedBuilder($this->logger);
