@@ -10,6 +10,7 @@ use LazyRecord\SeedBuilder;
 use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\SchemaGenerator;
+use LazyRecord\Bootstrap;
 use PDOException;
 
 abstract class ModelTestCase extends BaseTestCase

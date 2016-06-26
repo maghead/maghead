@@ -3,22 +3,31 @@
 namespace LazyRecord;
 
 use LazyRecord\SqlBuilder\BaseBuilder;
+use LazyRecord\SqlBuilder;
+use LazyRecord\Connection;
 use CLIFramework\Logger;
 use PDO;
 use PDOException;
 
-class DatabaseBuilder
+class Bootstrap
 {
     protected $conn;
+
+    protected $queryDriver;
 
     protected $builder;
 
     protected $logger;
 
-    public function __construct(PDO $conn, BaseBuilder $builder, Logger $logger = null)
+    public function __construct(Connection $conn, BaseBuilder $builder = null, Logger $logger = null)
     {
         $this->conn = $conn;
+        $this->queryDriver = $conn->createQueryDriver();
+        if (!$builder) {
+            $builder = SqlBuilder::create($this->queryDriver);
+        }
         $this->builder = $builder;
+
         if (!$logger) {
             $c = ServiceContainer::getInstance();
             $logger ?: $c['logger'];

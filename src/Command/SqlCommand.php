@@ -7,7 +7,7 @@ use LazyRecord\Metadata;
 use LazyRecord\Schema;
 use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\SeedBuilder;
-use LazyRecord\DatabaseBuilder;
+use LazyRecord\Bootstrap;
 use LazyRecord\Schema\SchemaCollection;
 use LazyRecord\ConnectionManager;
 use SQLBuilder\Driver\MySQLDriver;
@@ -109,7 +109,7 @@ DOC;
                 'clean' => $options->clean,
             ]);
 
-            $builder = new DatabaseBuilder($conn, $sqlBuilder, $this->logger);
+            $builder = new Bootstrap($conn, $sqlBuilder, $this->logger);
             $builder->build($schemas);
 
             if ($this->options->basedata) {
