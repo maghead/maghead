@@ -11,7 +11,6 @@ use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\SchemaCollection;
-use LazyRecord\Bootstrap;
 use PDOException;
 
 abstract class ModelTestCase extends BaseTestCase
@@ -62,7 +61,6 @@ abstract class ModelTestCase extends BaseTestCase
 
         $this->tableParser = TableParser::create($this->conn, $this->queryDriver, $this->config);
         $this->sqlBuilder = SqlBuilder::create($this->queryDriver, array('rebuild' => $rebuild));
-
         $this->buildSchemaTables($schemas, $rebuild);
 
         if ($rebuild && $basedata) {

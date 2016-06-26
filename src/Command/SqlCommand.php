@@ -54,16 +54,16 @@ DOC;
     {
         $options = $this->options;
         $logger = $this->logger;
+        $configLoader = $this->getConfigLoader(true);
 
         $id = $this->getCurrentDataSourceId();
 
         $logger->debug('Finding schema classes...');
-        $schemas = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
+        $schemas = SchemaUtils::findSchemasByArguments($configLoader, func_get_args(), $this->logger);
 
         $logger->debug('Initialize schema builder...');
 
         if ($output = $this->options->output) {
-            $configLoader = $this->getConfigLoader(true);
             $dataSourceConfig = $configLoader->getDataSource($id);
             $driverType = $dataSourceConfig['driver'];
 
@@ -108,13 +108,12 @@ DOC;
                 'rebuild' => $options->rebuild,
                 'clean' => $options->clean,
             ]);
+
             $builder = new Bootstrap($conn, $sqlBuilder, $this->logger);
             $builder->build($schemas);
 
             if ($this->options->basedata) {
-                $seedBuilder = new SeedBuilder($this->logger);
-                $seedBuilder->build(new SchemaCollection($schemas));
-                $seedBuilder->buildConfigSeeds($this->getConfigLoader());
+                $builder->seed($schemas, $configLoader);
             }
 
             $time = time();

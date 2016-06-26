@@ -6,6 +6,7 @@ use LazyRecord\SqlBuilder\BaseBuilder;
 use LazyRecord\SqlBuilder;
 use LazyRecord\SeedBuilder;
 use LazyRecord\Connection;
+use LazyRecord\ConfigLoader;
 use LazyRecord\Schema\SchemaCollection;
 use CLIFramework\Logger;
 use PDO;
@@ -61,12 +62,13 @@ class Bootstrap
         }
     }
 
-    public function seed(array $schemas)
+    public function seed(array $schemas, ConfigLoader $config = null)
     {
-        $collection = new SchemaCollection($schemas);
         $seedBuilder = new SeedBuilder($this->logger);
-        $seedBuilder->build($collection);
-        // $seedBuilder->buildConfigSeeds($this->getConfigLoader());
+        $seedBuilder->build(new SchemaCollection($schemas));
+        if ($config) {
+            $seedBuilder->buildConfigSeeds($config);
+        }
     }
 
     protected function executeStatements(array $sqls)
