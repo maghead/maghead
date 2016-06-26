@@ -76,24 +76,10 @@ abstract class ModelTestCase extends BaseTestCase
         }
     }
 
-
-
-    protected function dropSchemaTable($schema)
+    protected function dropSchemaTables($schemas)
     {
-        if ($sqls = $this->sqlBuilder->prepare()) {
-            foreach ($sqls as $sql) {
-                $this->conn->query($sql);
-            }
-        }
-
-        $sql = $this->sqlBuilder->dropTable($schema);
-        $this->conn->query($sql);
-
-        if ($sqls = $this->sqlBuilder->finalize()) {
-            foreach ($sqls as $sql) {
-                $this->conn->query($sql);
-            }
-        }
+        $bootstrap = new Bootstrap($this->conn, $this->sqlBuilder, $this->logger);
+        $bootstrap->remove($schemas);
     }
 
     protected function buildSchemaTables(array $schemas, $rebuild = true)

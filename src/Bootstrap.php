@@ -38,20 +38,40 @@ class Bootstrap
         $this->logger = $logger;
     }
 
+
+    /**
+     * Remove schemas from database.
+     */
+    public function remove(array $schemas)
+    {
+        if ($sqls = $this->builder->prepare()) {
+            $this->executeStatements($sqls);
+        }
+
+        foreach ($schemas as $schema) {
+            $sqls = $this->builder->dropTable($schema);
+            if (!empty($sqls)) {
+                $this->executeStatements($sqls);
+            }
+        }
+
+        if ($sqls = $this->builder->finalize()) {
+            $this->executeStatements($sqls);
+        }
+    }
+
     public function build(array $schemas)
     {
         if ($sqls = $this->builder->prepare()) {
             $this->executeStatements($sqls);
         }
         foreach ($schemas as $schema) {
-            $class = get_class($schema);
             $sqls = $this->builder->buildTable($schema);
             if (!empty($sqls)) {
                 $this->executeStatements($sqls);
             }
         }
         foreach ($schemas as $schema) {
-            $class = get_class($schema);
             $sqls = $this->builder->buildIndex($schema);
             if (!empty($sqls)) {
                 $this->executeStatements($sqls);
