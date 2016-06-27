@@ -112,11 +112,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         return getenv('DB') ?: $this->driver;
     }
 
-    public static function getCurrentDriverType()
-    {
-        return getenv('DB') ?: 'sqlite';
-    }
-
     public static function getDSN($driver)
     {
         if ($dsn = getenv('DB_'.strtoupper($driver).'_DSN')) {
