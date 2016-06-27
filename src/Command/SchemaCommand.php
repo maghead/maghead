@@ -3,6 +3,7 @@
 namespace LazyRecord\Command;
 
 use CLIFramework\Command;
+
 class SchemaCommand extends Command
 {
     public function brief()

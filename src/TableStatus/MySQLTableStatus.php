@@ -4,7 +4,6 @@ namespace LazyRecord\TableStatus;
 
 use PDO;
 use SQLBuilder\Driver\PDOMySQLDriver;
-use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\ArgumentArray;
 
@@ -41,6 +40,7 @@ class MySQLTableStatus
         ]);
         $query->from('information_schema.TABLES');
         $query->groupBy('name');
+
         return $query;
     }
 
@@ -70,6 +70,7 @@ class MySQLTableStatus
         ]);
         $query->from('information_schema.TABLES');
         $query->orderBy('data_length + index_length', 'DESC');
+
         return $query;
     }
 

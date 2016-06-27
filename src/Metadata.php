@@ -45,6 +45,7 @@ class Metadata
         $connm = ConnectionManager::getInstance();
         $connection = $connm->getConnection($dsId);
         $driver = $connm->getQueryDriver($dsId);
+
         return new self($connection, $driver);
     }
 

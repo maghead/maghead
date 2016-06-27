@@ -3,7 +3,6 @@
 namespace LazyRecord\Schema;
 
 use LazyRecord\ClassUtils;
-use LazyRecord\ConfigLoader;
 
 /**
  * Schema loader actually catches 
@@ -36,6 +35,7 @@ class SchemaLoader
     public static function loadSchemaTableMap()
     {
         $schemas = self::loadDeclaredSchemas();
+
         return SchemaUtils::buildSchemaMap($schemas);
     }
 

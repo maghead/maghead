@@ -5,8 +5,6 @@ namespace LazyRecord\Command;
 use LazyRecord\Migration\MigrationGenerator;
 use LazyRecord\Schema\SchemaFinder;
 use LazyRecord\Schema\SchemaLoader;
-use LazyRecord\Schema\SchemaUtils;
-use LazyRecord\Console;
 
 class MigrateNewFromDiffCommand extends MigrateBaseCommand
 {

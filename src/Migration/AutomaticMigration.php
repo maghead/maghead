@@ -4,14 +4,12 @@ namespace LazyRecord\Migration;
 
 use LazyRecord\Schema\Comparator;
 use LazyRecord\Schema\Relationship\Relationship;
-use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\TableParser\ReferenceParser;
 use LazyRecord\Connection;
 use GetOptionKit\OptionResult;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Universal\Query\AlterTableQuery;
 use CLIFramework\Logger;
 use PDO;
 use LogicException;
@@ -26,7 +24,7 @@ class AutomaticMigration extends BaseMigration
         $this->options = $options ?: new OptionResult();
     }
 
-    static public function options($opts)
+    public static function options($opts)
     {
         $opts->add('no-drop-column', 'Do not drop column in automatic migration process.');
         $opts->add('separate-alter', 'Do not combine multiple alter table subquery into one alter table query.');
@@ -130,9 +128,8 @@ class AutomaticMigration extends BaseMigration
                         continue;
                     }
                     $class = $rel['foreign_schema'];
-                    $foreignSchema = new $class;
+                    $foreignSchema = new $class();
                     $foreignColumn = $foreignSchema->getColumn($rel['foreign_column']);
-
 
                     $col = $rel['self_column'];
                     $relationshipColumns[$col] = $rel;

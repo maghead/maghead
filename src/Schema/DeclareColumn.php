@@ -34,9 +34,8 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      */
     protected $attributes = array();
 
-
     /**
-     * the parent schema object
+     * the parent schema object.
      */
     protected $schema;
 
@@ -170,6 +169,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     {
         $this->renderAs = $renderAs;
         $this->widgetAttributes = $widgetAttributes;
+
         return $this;
     }
 
@@ -184,14 +184,13 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      */
     public function refer($schemaClass)
     {
-
-        if (!preg_match('/Schema$/',$schemaClass)) {
+        if (!preg_match('/Schema$/', $schemaClass)) {
             $schemaClass = "{$schemaClass}Schema";
         }
 
         // try classes
         if (!class_exists($schemaClass, true)) {
-            $schemaClass = $this->schema->getNamespace() . '\\' . $schemaClass;
+            $schemaClass = $this->schema->getNamespace().'\\'.$schemaClass;
         }
 
         if (!class_exists($schemaClass, true)) {
@@ -201,14 +200,15 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         $this->attributes['refer'] = $schemaClass;
 
         // get the primary key from the refered schema 
-        if (get_class($this->schema) === ltrim($schemaClass,'\\')) {
+        if (get_class($this->schema) === ltrim($schemaClass, '\\')) {
             $schema = $this->schema;
         } else {
-            $schema = new $schemaClass;
+            $schema = new $schemaClass();
         }
         if ($primaryKey = $schema->findPrimaryKeyColumn()) {
             $this->applyType($primaryKey);
         }
+
         return $this;
     }
 
@@ -345,17 +345,14 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         return new RuntimeColumn($this->name, $this->attributes);
     }
 
-
     public function compareType(DeclareColumn $column)
     {
-        return (
-               $this->type !== $column->type 
-            || $this->isa !== $column->isa 
+        return
+               $this->type !== $column->type
+            || $this->isa !== $column->isa
             || $this->unsigned !== $column->unsigned
-        );
+        ;
     }
-
-
 
     /**
      * Apply column type on a column object for setting foreign key.
@@ -370,8 +367,6 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         $this->unsigned = $column->unsigned;
     }
 
-
-
     /**
      * Export column attributes to an array.
      *
@@ -385,6 +380,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         }
         // Schema is an object.
         unset($attributes['schema']);
+
         return array(
             'name' => $this->name,
             'attributes' => $attributes,

@@ -2,7 +2,6 @@
 
 namespace LazyRecord\Command;
 
-
 use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\ArgumentArray;

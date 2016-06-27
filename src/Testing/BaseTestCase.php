@@ -8,7 +8,6 @@ use LazyRecord\BaseModel;
 use LazyRecord\ConfigLoader;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\ClassUtils;
 use LazyRecord\BaseCollection;
 use LazyRecord\Result;
 use LazyRecord\PDOExceptionPrinter;
@@ -37,7 +36,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     protected $conn;
 
     protected $queryDriver;
-
 
     public function __construct($name = null, array $data = array(), $dataName = '')
     {
@@ -73,7 +71,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->prepareConnection();
     }
 
-
     protected function prepareConnection()
     {
         if (!$this->conn) {
@@ -106,6 +103,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         if ($this->dataSource) {
             return $this->dataSource;
         }
+
         return $this->getDriverType();
     }
 
@@ -174,6 +172,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $config = ConfigLoader::getInstance();
         $config->loaded = true;
         $config->setConfigStash(array('schema' => array('auto_id' => true)));
+
         return $config;
     }
 
@@ -181,7 +180,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     {
         $this->config = $config;
     }
-
 
     protected function registerDataSource($driverType)
     {

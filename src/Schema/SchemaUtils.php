@@ -51,6 +51,7 @@ class SchemaUtils
         foreach ($schemas as $schema) {
             $schemaMap[$schema->getTable()] = $schema;
         }
+
         return $schemaMap;
     }
 
@@ -124,13 +125,13 @@ class SchemaUtils
         return $list;
     }
 
-
     public static function findSchemasByPaths(array $paths = null, Logger $logger = null)
     {
         if ($paths && !empty($paths)) {
             $finder = new SchemaFinder($paths, $logger);
             $finder->find();
         }
+
         return SchemaLoader::loadDeclaredSchemas();
     }
 
@@ -149,6 +150,7 @@ class SchemaUtils
             }
         }
         $paths = $loader->getSchemaPaths();
+
         return self::findSchemasByPaths($paths, $logger);
     }
 
@@ -159,14 +161,14 @@ class SchemaUtils
      */
     public static function findSchemasByArguments(ConfigLoader $loader, array $args, Logger $logger = null)
     {
-        $classes = array_filter($args, function($class) { 
+        $classes = array_filter($args, function ($class) {
             return class_exists($class, true);
         });
         if (!empty($classes)) {
             return ClassUtils::schema_classes_to_objects(array_unique($classes));
         }
 
-        $paths = array_filter($args, "file_exists");
+        $paths = array_filter($args, 'file_exists');
 
         if (empty($paths)) {
             $paths = $loader->getSchemaPaths();

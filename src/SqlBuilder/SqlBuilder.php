@@ -14,11 +14,11 @@ class SqlBuilder
     {
         if ($driver instanceof MySQLDriver) {
             return new MysqlBuilder($driver, $options);
-        } else if ($driver instanceof PgSQLDriver) {
+        } elseif ($driver instanceof PgSQLDriver) {
             return new PgsqlBuilder($driver, $options);
-        } else if ($driver instanceof SQLiteDriver) {
+        } elseif ($driver instanceof SQLiteDriver) {
             return new SqliteBuilder($driver, $options);
         }
-        throw new Exception("Unsupported driver");
+        throw new Exception('Unsupported driver');
     }
 }

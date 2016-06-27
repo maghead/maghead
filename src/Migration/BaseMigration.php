@@ -4,21 +4,16 @@ namespace LazyRecord\Migration;
 
 use SQLBuilder\Universal\Query\AlterTableQuery;
 use SQLBuilder\ToSqlInterface;
-use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\MySQLDriver;
 use LazyRecord\Console;
-
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\DynamicSchemaDeclare;
 use LazyRecord\SqlBuilder\SqlBuilder;
 use LazyRecord\ServiceContainer;
 use CLIFramework\Logger;
 use PDO;
-use Exception;
 use InvalidArgumentException;
-use BadMethodCallException;
 
 class BaseMigration
 {
@@ -45,7 +40,7 @@ class BaseMigration
     public function __construct(PDO $connection, BaseDriver $driver, Logger $logger = null)
     {
         $this->connection = $connection;
-        $this->driver     = $driver;
+        $this->driver = $driver;
         if (!$logger) {
             $c = ServiceContainer::getInstance();
             $logger = $c['logger'] ?: Console::getInstance()->getLogger();
@@ -106,6 +101,7 @@ class BaseMigration
         } else {
             $table = $arg;
         }
+
         return new AlterTableQuery($arg);
     }
 

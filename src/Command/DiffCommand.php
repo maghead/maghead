@@ -3,7 +3,6 @@
 namespace LazyRecord\Command;
 
 use ReflectionObject;
-
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\Comparator;

@@ -3,19 +3,11 @@
 namespace LazyRecord\Migration;
 
 use SQLBuilder\Universal\Query\AlterTableQuery;
-use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
-use LazyRecord\Console;
-
-use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\Schema\DynamicSchemaDeclare;
-use LazyRecord\SqlBuilder\SqlBuilder;
-use LazyRecord\ServiceContainer;
 use CLIFramework\Logger;
-use PDO;
 use Exception;
 use InvalidArgumentException;
 use BadMethodCallException;
@@ -24,16 +16,17 @@ function buildColumn($arg)
 {
     if (is_string($arg)) {
         return new Column($arg);
-    } else if (is_callable($arg)) {
+    } elseif (is_callable($arg)) {
         $column = new Column();
         if ($ret = call_user_func($arg, $column)) {
             return $ret;
         }
+
         return $column;
-    } else if ($arg instanceof Column) {
+    } elseif ($arg instanceof Column) {
         return $arg;
     } else {
-        throw new InvalidArgumentException("Invalid column argument");
+        throw new InvalidArgumentException('Invalid column argument');
     }
 }
 
@@ -54,7 +47,7 @@ class Migration extends BaseMigration implements Upgradable, Downgradable
     public function renameColumn($table, $oldColumn, $newColumn)
     {
         if ($this->driver instanceof MySQLDriver && is_string($newColumn)) {
-            throw new InvalidArgumentException("MySQLDriver requires the new column to be a column definition object.");
+            throw new InvalidArgumentException('MySQLDriver requires the new column to be a column definition object.');
         }
         $query = new AlterTableQuery($table);
         $query->renameColumn($oldColumn, $newColumn);
@@ -103,7 +96,6 @@ class Migration extends BaseMigration implements Upgradable, Downgradable
         $sqls = $this->builder->build($ds);
         $this->query($sqls);
     }
-
 
     public function upgrade()
     {

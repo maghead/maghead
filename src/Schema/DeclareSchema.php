@@ -8,14 +8,12 @@ use ReflectionObject;
 use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\Schema\Column\AutoIncrementPrimaryKeyColumn;
-use LazyRecord\Exception\SchemaRelatedException;
 use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use LazyRecord\Schema\Relationship\Relationship;
 use LazyRecord\Schema\Relationship\HasMany;
 use LazyRecord\Schema\Relationship\HasOne;
 use LazyRecord\Schema\Relationship\BelongsTo;
-
 
 class DeclareSchema extends SchemaBase implements SchemaInterface
 {
@@ -205,10 +203,9 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         $column = new AutoIncrementPrimaryKeyColumn($this, $name, $columnType);
         $this->primaryKey = $column->name;
         $this->insertColumn($column);
+
         return $column;
     }
-
-
 
     /**
      * Find primary key from columns.
@@ -225,6 +222,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
                 return $name;
             }
         }
+
         return false;
     }
 
@@ -243,6 +241,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
                 return $column;
             }
         }
+
         return false;
     }
 
@@ -281,16 +280,17 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
             }
             $columnArray[ $name ] = $column->export();
         }
+
         return array(
-            'label'             => $this->getLabel(),
-            'table'             => $this->getTable(),
-            'column_data'       => $columnArray,
-            'column_names'      => $this->columnNames,
-            'primary_key'       => $this->primaryKey,
-            'model_class'       => $this->getModelClass(),
-            'collection_class'  => $this->getCollectionClass(),
-            'relations'         => $this->relations,
-            'read_data_source'  => $this->readSourceId,
+            'label' => $this->getLabel(),
+            'table' => $this->getTable(),
+            'column_data' => $columnArray,
+            'column_names' => $this->columnNames,
+            'primary_key' => $this->primaryKey,
+            'model_class' => $this->getModelClass(),
+            'collection_class' => $this->getCollectionClass(),
+            'relations' => $this->relations,
+            'read_data_source' => $this->readSourceId,
             'write_data_source' => $this->writeSourceId,
         );
     }
@@ -452,20 +452,17 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
             throw new Exception("column $name of ".get_class($this).' is already defined.');
         }
         $this->columnNames[] = $column->name;
+
         return $this->columns[ $column->name ] = $column;
     }
 
     public function removeColumn($columnName)
     {
         unset($this->columns[$columnName]);
-        $this->columnNames = array_filter($this->columnNames, function($n) use ($columnName) {
+        $this->columnNames = array_filter($this->columnNames, function ($n) use ($columnName) {
             return $n !== $columnName;
         });
     }
-
-
-
-
 
     protected function _modelClassToLabel()
     {
@@ -542,6 +539,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
             throw new Exception("column $name of ".get_class($this).' is already defined.');
         }
         $this->columnNames[] = $name;
+
         return $this->columns[$name] = new $class($this, $name);
     }
 
@@ -568,6 +566,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     protected function helper($helperName, array $arguments = array())
     {
         $helperClass = 'LazyRecord\\Schema\\Helper\\'.$helperName.'Helper';
+
         return new $helperClass($this, $arguments);
     }
 
@@ -733,9 +732,9 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         }
         */
         return $this->relations[$accessor] = new BelongsTo($accessor, array(
-            'type'           => Relationship::BELONGS_TO,
-            'self_schema'    => $this->getCurrentSchemaClass(),
-            'self_column'    => $selfColumn,
+            'type' => Relationship::BELONGS_TO,
+            'self_schema' => $this->getCurrentSchemaClass(),
+            'self_column' => $selfColumn,
             'foreign_schema' => $foreignClass,
             'foreign_column' => $foreignColumn,
         ));

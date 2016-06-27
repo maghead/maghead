@@ -129,6 +129,7 @@ class ConfigLoader
         if (isset($config['data_source']['nodes'])) {
             $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_source']['nodes']);
         }
+
         return $config;
     }
 
@@ -322,8 +323,10 @@ class ConfigLoader
     {
         if (isset($this->config['schema']['loader'])) {
             require_once $this->config['schema']['loader'];
+
             return true;
         }
+
         return false;
     }
 
@@ -376,6 +379,7 @@ class ConfigLoader
         if (isset($this->config['data_source']['nodes'])) {
             return $this->config['data_source']['nodes'];
         }
+
         return array();
     }
 
@@ -384,6 +388,7 @@ class ConfigLoader
         if (isset($this->config['data_source']['nodes'])) {
             return array_keys($this->config['data_source']['nodes']);
         }
+
         return array();
     }
 
@@ -405,6 +410,7 @@ class ConfigLoader
         if (isset($this->config['data_source']['default'])) {
             return $this->config['data_source']['default'];
         }
+
         return 'default';
     }
 
@@ -491,6 +497,7 @@ class ConfigLoader
         if (isset($this->config['schema']['base_model'])) {
             return $this->config['schema']['base_model'];
         }
+
         return '\\LazyRecord\\BaseModel';
     }
 
@@ -499,6 +506,7 @@ class ConfigLoader
         if (isset($this->config['schema']['base_collection'])) {
             return $this->config['schema']['base_collection'];
         }
+
         return '\\LazyRecord\\BaseCollection';
     }
 

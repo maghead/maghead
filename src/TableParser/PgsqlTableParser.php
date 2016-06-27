@@ -5,6 +5,7 @@ namespace LazyRecord\TableParser;
 use PDO;
 use LazyRecord\Schema;
 use LazyRecord\Schema\DeclareSchema;
+
 class PgsqlTableParser extends BaseTableParser
 {
     public function getTables()

@@ -5,11 +5,8 @@ namespace LazyRecord\TableParser;
 use PDO;
 use SQLBuilder\Driver\BaseDriver;
 use LazyRecord\QueryDriver;
-use LazyRecord\Schema\SchemaUtils;
 use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\ServiceContainer;
 use LazyRecord\Connection;
-use LazyRecord\ConfigLoader;
 
 abstract class BaseTableParser
 {
@@ -30,7 +27,6 @@ abstract class BaseTableParser
         $this->driver = $driver;
         $this->connection = $connection;
     }
-
 
     /**
      * Implements the query to parse table names from database.

@@ -62,7 +62,7 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                     && isset($row['Field'])
                     && $referenceSchema->getColumn($row['Field'])
                     && !$referenceSchema->getColumn($row['Field'])->notNull
-                    && (strtolower($typeInfo->type) === 'timestamp' 
+                    && (strtolower($typeInfo->type) === 'timestamp'
                         || (isset($row['Key']) && $row['Key'] === 'PRI'))
                 ) {
                 } else {

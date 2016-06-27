@@ -23,7 +23,6 @@ use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
 use LazyRecord\Result\OperationError;
-
 use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship\Relationship;

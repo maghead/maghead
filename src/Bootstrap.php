@@ -3,13 +3,8 @@
 namespace LazyRecord;
 
 use LazyRecord\SqlBuilder\BaseBuilder;
-use LazyRecord\SqlBuilder;
-use LazyRecord\SeedBuilder;
-use LazyRecord\Connection;
-use LazyRecord\ConfigLoader;
 use LazyRecord\Schema\SchemaCollection;
 use CLIFramework\Logger;
-use PDO;
 use PDOException;
 
 class Bootstrap
@@ -37,7 +32,6 @@ class Bootstrap
         }
         $this->logger = $logger;
     }
-
 
     /**
      * Remove schemas from database.

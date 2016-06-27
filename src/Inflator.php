@@ -69,7 +69,8 @@ class Inflator
             if (is_string($value)) {
                 return new DateTime($value);
             }
-            return NULL;
+
+            return;
         }
 
         return $value;

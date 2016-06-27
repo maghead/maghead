@@ -32,7 +32,7 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
         return new self(array_map(function ($a) {
             if (is_string($a)) {
                 return new $a();
-            } else if (is_object($a)) {
+            } elseif (is_object($a)) {
                 return $a;
             } else {
                 throw new InvalidArgumentException('Invalid schema class argument');

@@ -5,7 +5,6 @@ namespace LazyRecord\Command;
 use LazyRecord\Migration\MigrationRunner;
 use LazyRecord\Migration\AutomaticMigration;
 use LazyRecord\Schema\SchemaLoader;
-
 use LazyRecord\ServiceContainer;
 use LazyRecord\Backup\MySQLBackup;
 use SQLBuilder\Driver\PDOMySQLDriver;
@@ -39,6 +38,7 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
         if ($this->options->backup) {
             if (!$driver instanceof PDOMySQLDriver) {
                 $this->logger->error('backup is only supported for MySQL');
+
                 return false;
             }
             $this->logger->info('Backing up database...');

@@ -5,7 +5,6 @@ namespace LazyRecord\Schema\Factory;
 use ClassTemplate\ClassFile;
 use LazyRecord\Schema\DeclareSchema;
 use SerializerKit\PhpSerializer;
-use RuntimeException;
 
 function php_var_export($obj)
 {

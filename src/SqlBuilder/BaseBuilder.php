@@ -33,7 +33,6 @@ abstract class BaseBuilder
 
     abstract public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column);
 
-
     public function setClean($clean = true)
     {
         $this->clean = true;

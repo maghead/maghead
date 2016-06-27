@@ -2,8 +2,6 @@
 
 namespace LazyRecord\Schema;
 
-
-
 class MixinDeclareSchema extends DeclareSchema
 {
     protected $parentSchema;

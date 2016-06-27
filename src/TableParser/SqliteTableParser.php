@@ -7,6 +7,7 @@ use Exception;
 use LogicException;
 use LazyRecord\Schema\DeclareSchema;
 use SQLBuilder\Raw;
+
 class SqliteTableParser extends BaseTableParser
 {
     public function getTables()
@@ -70,8 +71,8 @@ class SqliteTableParser extends BaseTableParser
             // if ($referenceSchema) { }
 
             // Cast INTEGER to INT
-            if (strtoupper($type) == "INTEGER") {
-                $type = "INT";
+            if (strtoupper($type) == 'INTEGER') {
+                $type = 'INT';
             }
             $column->type($type);
 

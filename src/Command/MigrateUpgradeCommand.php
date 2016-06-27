@@ -4,7 +4,6 @@ namespace LazyRecord\Command;
 
 use LazyRecord\Migration\MigrationRunner;
 
-
 class MigrateUpgradeCommand extends MigrateBaseCommand
 {
     public function brief()

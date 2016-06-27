@@ -10,10 +10,8 @@ use GetOptionKit\OptionResult;
 use CLIFramework\Logger;
 use SQLBuilder\Driver\BaseDriver;
 use Exception;
-use RuntimeException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-
 
 class MigrationRunner
 {
@@ -37,7 +35,7 @@ class MigrationRunner
     }
 
     /**
-     * Load migration script from specific directory
+     * Load migration script from specific directory.
      */
     public function load($directory)
     {
@@ -65,6 +63,7 @@ class MigrationRunner
     public function getLastMigrationId(Connection $conn, BaseDriver $driver)
     {
         $meta = new Metadata($conn, $driver);
+
         return $meta['migration'] ?: 0;
     }
 
@@ -109,7 +108,7 @@ class MigrationRunner
     /**
      * Each data source has it's own migration timestamp,
      * we use the data source ID to get the migration timestamp 
-     * and filter the migration script
+     * and filter the migration script.
      *
      * @param string $dsId
      */
@@ -118,8 +117,10 @@ class MigrationRunner
         $lastMigrationId = $this->getLastMigrationId($conn, $driver);
         $this->logger->debug("Found last migration id: $lastMigrationId");
         $scripts = $this->loadMigrationScripts();
+
         return array_filter($scripts, function ($class) use ($lastMigrationId) {
             $id = $class::getId();
+
             return $id > $lastMigrationId;
         });
     }
@@ -175,20 +176,20 @@ class MigrationRunner
         }
         $this->logger->info('Found '.count($scripts).' migration scripts to run upgrade!');
         try {
-            $this->logger->info("Begining transaction...");
+            $this->logger->info('Begining transaction...');
             $conn->beginTransaction();
             foreach ($scripts as $script) {
                 $migration = new $script($conn, $driver, $this->logger);
                 $migration->upgrade();
                 $this->updateLastMigrationId($conn, $driver, $script::getId());
             }
-            $this->logger->info("Committing...");
+            $this->logger->info('Committing...');
             $conn->commit();
         } catch (Exception $e) {
-            $this->logger->error(get_class($e) . ' was thrown: '.$e->getMessage());
-            $this->logger->error("Rolling back ...");
+            $this->logger->error(get_class($e).' was thrown: '.$e->getMessage());
+            $this->logger->error('Rolling back ...');
             $conn->rollback();
-            $this->logger->error("Recovered, escaping...");
+            $this->logger->error('Recovered, escaping...');
             throw $e;
         }
     }

@@ -4,7 +4,6 @@ namespace LazyRecord\Command;
 
 use LazyRecord\Migration\MigrationRunner;
 use LazyRecord\ConnectionManager;
-use LazyRecord\Connection;
 
 class MigrateStatusCommand extends MigrateBaseCommand
 {

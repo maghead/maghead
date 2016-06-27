@@ -8,7 +8,6 @@ use CLIFramework\Logger;
 use LazyRecord\Schema;
 use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\Comparator;
-use LazyRecord\Schema\SchemaLoader;
 use ClassTemplate\ClassFile;
 use CodeGen\Expr\MethodCallExpr;
 use CodeGen\Statement\Statement;
@@ -58,11 +57,11 @@ class MigrationGenerator
             $date = date('Ymd');
         }
         // Replace non-word charactors into underline
-        $taskName = preg_replace('#\W#i','_',$taskName);
+        $taskName = preg_replace('#\W#i', '_', $taskName);
         // $name = Inflector::tableize($taskName);
-        return str_replace([ 
-            '@date@', '@name@'
-        ], [ $date, $taskName ], $this->filenameFormat);
+        return str_replace([
+            '@date@', '@name@',
+        ], [$date, $taskName], $this->filenameFormat);
     }
 
     /**
@@ -115,7 +114,6 @@ class MigrationGenerator
         $method->getBlock()->appendLine(new Statement($call));
     }
 
-
     public function generateWithDiff($taskName, $dataSourceId, array $schemas, $time = null)
     {
         $connectionManager = \LazyRecord\ConnectionManager::getInstance();
@@ -164,11 +162,11 @@ class MigrationGenerator
                 case 'A':
                     $alterTable = new AlterTableQuery($table);
                     $alterTable->addColumn($diff->getAfterColumn());
-                    $this->appendQueryStatement($upgradeMethod, $driver, $alterTable, new ArgumentArray);
+                    $this->appendQueryStatement($upgradeMethod, $driver, $alterTable, new ArgumentArray());
 
                     $alterTable = new AlterTableQuery($table);
                     $alterTable->dropColumn($diff->getAfterColumn());
-                    $this->appendQueryStatement($downgradeMethod, $driver, $alterTable, new ArgumentArray);
+                    $this->appendQueryStatement($downgradeMethod, $driver, $alterTable, new ArgumentArray());
                     break;
                 case 'M':
                     $alterTable = new AlterTableQuery($table);
@@ -183,22 +181,21 @@ class MigrationGenerator
                         $alterTable->add()->primaryKey([$after->name]);
                     }
                     $alterTable->modifyColumn($after);
-                    $this->appendQueryStatement($upgradeMethod, $driver, $alterTable, new ArgumentArray);
+                    $this->appendQueryStatement($upgradeMethod, $driver, $alterTable, new ArgumentArray());
 
                     $alterTable = new AlterTableQuery($table);
                     $alterTable->modifyColumn($before);
-                    $this->appendQueryStatement($downgradeMethod, $driver, $alterTable, new ArgumentArray);
+                    $this->appendQueryStatement($downgradeMethod, $driver, $alterTable, new ArgumentArray());
 
                     break;
                 case 'D':
                     $alterTable = new AlterTableQuery($table);
                     $alterTable->dropColumnByName($diff->name);
-                    $this->appendQueryStatement($upgradeMethod, $driver, $alterTable, new ArgumentArray);
-
+                    $this->appendQueryStatement($upgradeMethod, $driver, $alterTable, new ArgumentArray());
 
                     $alterTable = new AlterTableQuery($table);
                     $alterTable->addColumn($diff->getBeforeColumn());
-                    $this->appendQueryStatement($downgradeMethod, $driver, $alterTable, new ArgumentArray);
+                    $this->appendQueryStatement($downgradeMethod, $driver, $alterTable, new ArgumentArray());
                     break;
                 default:
                     $this->logger->warn('** unsupported flag.');

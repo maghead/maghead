@@ -5,7 +5,6 @@ namespace LazyRecord\Command\SchemaCommand;
 use LazyRecord\Command\BaseCommand;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\SchemaUtils;
-use CLIFramework\Logger\ActionLogger;
 
 /**
  * $ lazy build-schema path/to/Schema path/to/SchemaDir.
@@ -52,19 +51,19 @@ class BuildCommand extends BaseCommand
         $classMap = array();
         foreach ($schemas as $schema) {
             if ($this->logger->isDebug()) {
-                $this->logger->debug("Checking " . get_class($schema));
+                $this->logger->debug('Checking '.get_class($schema));
             }
 
             $generated = $generator->generateSchemaFiles($schema);
             if (!empty($generated)) {
                 if ($this->logger->isDebug()) {
                     // $filepath = str_replace(getcwd().'/', '', $schema->getClassFileName());
-                    $this->logger->debug("Updated " . get_class($schema));
+                    $this->logger->debug('Updated '.get_class($schema));
                     foreach ($generated as $class => $file) {
-                        $this->logger->debug(" - Updated " . $file);
+                        $this->logger->debug(' - Updated '.$file);
                     }
                 } else {
-                    $this->logger->info("Updated " . get_class($schema));
+                    $this->logger->info('Updated '.get_class($schema));
                 }
                 $classMap += $generated;
             }

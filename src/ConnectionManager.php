@@ -6,7 +6,6 @@ use Exception;
 use PDOException;
 use PDO;
 use ArrayAccess;
-
 use LazyRecord\DSN\DSN;
 
 class SQLQueryException extends Exception
@@ -228,7 +227,7 @@ class ConnectionManager implements ArrayAccess
     {
         // backward compatible
         if (!$this->config) {
-            return $this->getConnection("default");
+            return $this->getConnection('default');
         }
 
         $id = $this->config->getDefaultDataSourceId();
@@ -245,7 +244,8 @@ class ConnectionManager implements ArrayAccess
         if ($instance) {
             return $instance;
         }
-        return $instance = new static;
+
+        return $instance = new static();
     }
 
     /**

@@ -28,9 +28,9 @@ class MysqlBuilder extends BaseBuilder
 
     public function createTable(SchemaInterface $schema)
     {
-        $sql = "CREATE TABLE ";
-        
-        $sql .= " IF NOT EXISTS ";
+        $sql = 'CREATE TABLE ';
+
+        $sql .= ' IF NOT EXISTS ';
 
         $sql .= $this->driver->quoteIdentifier($schema->getTable());
 
@@ -57,8 +57,8 @@ class MysqlBuilder extends BaseBuilder
     public function buildForeignKeyConstraint(Relationship $rel)
     {
         $schemaClass = $rel['foreign_schema'];
-        $fSchema = new $schemaClass;
-        $constraint = new Constraint;
+        $fSchema = new $schemaClass();
+        $constraint = new Constraint();
         $constraint->foreignKey($rel['self_column']);
         $references = $constraint->references($fSchema->getTable(), (array) $rel['foreign_column']);
         if ($act = $rel->onUpdate) {
@@ -67,11 +67,12 @@ class MysqlBuilder extends BaseBuilder
         if ($act = $rel->onDelete) {
             $references->onDelete($act);
         }
+
         return $constraint;
     }
 
     /**
-     * Override buildColumnSql to support inline reference
+     * Override buildColumnSql to support inline reference.
      *
      *  MySQL Syntax:
      *  
@@ -103,7 +104,6 @@ class MysqlBuilder extends BaseBuilder
 
         $args = new ArgumentArray();
         $sql = $column->buildDefinitionSql($this->driver, $args);
-
 
         /*
         BUILD COLUMN REFERENCE

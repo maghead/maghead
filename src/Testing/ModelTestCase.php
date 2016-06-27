@@ -2,9 +2,6 @@
 
 namespace LazyRecord\Testing;
 
-use LazyRecord\ConnectionManager;
-use LazyRecord\Connection;
-use LazyRecord\ConfigLoader;
 use LazyRecord\ClassUtils;
 use LazyRecord\SeedBuilder;
 use LazyRecord\SqlBuilder\SqlBuilder;
@@ -12,7 +9,6 @@ use LazyRecord\TableParser\TableParser;
 use LazyRecord\Schema\SchemaGenerator;
 use LazyRecord\Schema\SchemaCollection;
 use LazyRecord\Bootstrap;
-use PDOException;
 
 abstract class ModelTestCase extends BaseTestCase
 {
@@ -34,11 +30,9 @@ abstract class ModelTestCase extends BaseTestCase
 
         $this->prepareConnection();
 
-
         // Ensure that we use the correct default data source ID
         $this->assertEquals($this->getDataSource(), $this->config->getDefaultDataSourceId());
         $this->assertInstanceOf('SQLBuilder\\Driver\\BaseDriver', $this->queryDriver, 'QueryDriver object OK');
-
 
         // Rebuild means rebuild the database for new tests
         $annnotations = $this->getAnnotations();
@@ -63,7 +57,7 @@ abstract class ModelTestCase extends BaseTestCase
         if ($rebuild === false) {
             $tableParser = TableParser::create($this->conn, $this->queryDriver, $this->config);
             $tables = $tableParser->getTables();
-            $schemas = array_filter($schemas, function($schema) use ($tables) {
+            $schemas = array_filter($schemas, function ($schema) use ($tables) {
                 return !in_array($schema->getTable(), $tables);
             });
         }

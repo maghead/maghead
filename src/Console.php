@@ -3,7 +3,6 @@
 namespace LazyRecord;
 
 use CLIFramework\Application;
-use LazyRecord\ServiceContainer;
 
 class Console extends Application
 {
@@ -17,7 +16,7 @@ class Console extends Application
 
     public function getServiceContainer()
     {
-        return new ServiceContainer;
+        return new ServiceContainer();
     }
 
     public function init()

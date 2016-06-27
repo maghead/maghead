@@ -4,8 +4,6 @@ namespace LazyRecord\TableParser;
 
 use PDO;
 use Exception;
-use LazyRecord\Connection;
-use LazyRecord\ConfigLoader;
 use SQLBuilder\Driver\BaseDriver;
 
 class TableParser

@@ -24,6 +24,7 @@ class InitConfCommand extends Command
         $configFile = $this->options->config ?: 'db/config/database.yml';
         if (file_exists($configFile)) {
             $logger->info("Config file $configFile already exists.");
+
             return;
         }
 
@@ -67,7 +68,6 @@ EOS;
             $logger->info("Config file is generated: $configFile");
             $logger->info('Please run build-conf to compile php format config file.');
         }
-
 
         $this->logger->info("Building config from $configFile");
         $dir = dirname($configFile);

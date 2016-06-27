@@ -2,7 +2,6 @@
 
 namespace LazyRecord\Schema;
 
-
 use IteratorAggregate;
 use ArrayIterator;
 

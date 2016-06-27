@@ -2,8 +2,6 @@
 
 namespace LazyRecord\Command;
 
-use LazyRecord\Migration\MigrationRunner;
-
 class MigrateBaseCommand extends BaseCommand
 {
     public function options($opts)
