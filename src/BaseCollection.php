@@ -295,8 +295,18 @@ class BaseCollection
         $this->_lastSql = $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
         $this->_vars = $vars = $arguments->toArray();
         $this->handle = $conn->prepareAndExecute($sql, $vars);
-
         return Result::success('Updated', array('sql' => $sql));
+    }
+
+    public function sql()
+    {
+        $dsId = $this->getSchema()->getReadSourceId();
+        $conn = ConnectionManager::getInstance()->getConnection($dsId);
+        $driver = $conn->createQueryDriver();
+        $arguments = new ArgumentArray();
+        $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
+        $args = $arguments->toArray();
+        return [$sql, $args];
     }
 
     /**
