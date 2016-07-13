@@ -677,6 +677,15 @@ class BaseCollection
                             }));
     }
 
+    public function toInflatedArray()
+    {
+        return array_map(function ($item) {
+                            return $item->toInflatedArray();
+                        }, array_filter($this->items(), function ($item) {
+                                return $item->currentUserCan($item->getCurrentUser(), 'read');
+                            }));
+    }
+
     public function toXml()
     {
         $list = $this->toArray();
