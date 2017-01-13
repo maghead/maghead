@@ -212,9 +212,14 @@ class BaseModelClassFactory
         }
 
         // Create column accessor
-        if ($schema->enableColumnAccessors) {
-            foreach ($schema->getColumnNames() as $columnName) {
-                $accessorMethodName = 'get'.ucfirst(Inflector::camelize($columnName));
+        foreach ($schema->getColumnNames() as $columnName) {
+
+            $propertyName = Inflector::camelize($columnName);
+
+            // $cTemplate->addPublicProperty($propertyName, NULL);
+
+            if ($schema->enableColumnAccessors) {
+                $accessorMethodName = 'get'.ucfirst($propertyName);
                 $cTemplate->addMethod('public', $accessorMethodName, [], [
                     '    return $this->get('.var_export($columnName, true).');',
                 ]);
