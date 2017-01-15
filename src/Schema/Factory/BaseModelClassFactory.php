@@ -228,23 +228,29 @@ class BaseModelClassFactory
         }
 
         $cTemplate->addMethod('public', 'getKeyName', [], function() use ($primaryKey) {
-            return [
+            return
                 "return " . var_export($primaryKey, true) . ';'
-            ];
+            ;
         });
 
         $cTemplate->addMethod('public', 'getKey', [], function() use ($primaryKey) {
-            return [
+            return 
                 "return \$this->$primaryKey;"
-            ];
+            ;
+        });
+
+        $cTemplate->addMethod('public', 'setKey', ['$key'], function() use ($primaryKey) {
+            return 
+                "return \$this->$primaryKey = \$key;"
+            ;
         });
 
         $cTemplate->addMethod('public', 'getStashedData', [], function() use ($properties) {
-            return [
+            return 
                 'return [' . join(", ", array_map(function($p) {
                     return "\"$p\" => \$this->$p";
                 }, $properties)) . '];'
-            ];
+            ;
         });
 
         return $cTemplate;
