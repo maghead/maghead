@@ -212,19 +212,28 @@ class BaseModelClassFactory
         }
 
         // Create column accessor
+        $properties = [];
         foreach ($schema->getColumnNames() as $columnName) {
-
             $propertyName = Inflector::camelize($columnName);
+            $properties[] = $propertyName;
 
             // $cTemplate->addPublicProperty($propertyName, NULL);
 
             if ($schema->enableColumnAccessors) {
                 $accessorMethodName = 'get'.ucfirst($propertyName);
                 $cTemplate->addMethod('public', $accessorMethodName, [], [
-                    '    return $this->get('.var_export($columnName, true).');',
+                    'return $this->get('.var_export($columnName, true).');',
                 ]);
             }
         }
+
+        $lines = [];
+        foreach ($properties as $p) {
+            $lines[] = "\"$p\" => \$this->$p";
+        }
+        $cTemplate->addMethod('public', 'getStashedData', [], [
+            'return [' . join(", ", $lines) . '];'
+        ]);
 
         return $cTemplate;
     }
