@@ -41,4 +41,20 @@ class MetadataBase
         }
         return $this->_schema = SchemaLoader::load('LazyRecord\\Model\\MetadataSchemaProxy');
     }
+    public function getKeyName()
+    {
+        return 'id';
+    }
+    public function getKey()
+    {
+        return $this->id;
+    }
+    public function setKey($key)
+    {
+        return $this->id = $key;
+    }
+    public function getStashedData()
+    {
+        return ["id" => $this->id, "name" => $this->name, "value" => $this->value];
+    }
 }
