@@ -227,13 +227,25 @@ class BaseModelClassFactory
             }
         }
 
-        $lines = [];
-        foreach ($properties as $p) {
-            $lines[] = "\"$p\" => \$this->$p";
-        }
-        $cTemplate->addMethod('public', 'getStashedData', [], [
-            'return [' . join(", ", $lines) . '];'
-        ]);
+        $cTemplate->addMethod('public', 'getKeyName', [], function() use ($primaryKey) {
+            return [
+                "return " . var_export($primaryKey, true) . ';'
+            ];
+        });
+
+        $cTemplate->addMethod('public', 'getKey', [], function() use ($primaryKey) {
+            return [
+                "return \$this->$primaryKey;"
+            ];
+        });
+
+        $cTemplate->addMethod('public', 'getStashedData', [], function() use ($properties) {
+            return [
+                'return [' . join(", ", array_map(function($p) {
+                    return "\"$p\" => \$this->$p";
+                }, $properties)) . '];'
+            ];
+        });
 
         return $cTemplate;
     }
