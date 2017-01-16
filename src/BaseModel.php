@@ -518,9 +518,9 @@ abstract class BaseModel implements
     {
         if ($pkId) {
             return $this->load($pkId);
-        } elseif (null === $pkId && $pk = static::PRIMARY_KEY) {
+        } elseif (null === $pkId && static::PRIMARY_KEY) {
             $pkId = $this->getKey();
-            return $this->load($pkId);
+            return $this->find($pkId);
         } else {
             throw new PrimaryKeyNotFoundException('Primary key is not found, can not reload '.get_class($this));
         }
@@ -864,7 +864,6 @@ abstract class BaseModel implements
         $pkId = null;
 
         if ($driver instanceof PDOPgSQLDriver) {
-            // $this->_data[$k] = $args[$k] = $pkId = intval($stm->fetchColumn());
             $this->$k = $args[$k] = $pkId = intval($stm->fetchColumn());
         } else {
             $this->$k = $args[$k] = $pkId = intval($conn->lastInsertId());
@@ -873,7 +872,6 @@ abstract class BaseModel implements
         if ($pkId && ((isset($options['reload']) && $options['reload']) || $this->autoReload)) {
             $this->load($pkId);
         } else {
-            // $this->_data = $args;
             foreach ($args as $k => $v) {
                 $this->$k = $v;
             }
@@ -938,18 +936,18 @@ abstract class BaseModel implements
         }
         $this->_preparedFindStm->execute([":$primaryKey" => $pkId]);
 
-        if (false === ($this->_data = $this->_preparedFindStm->fetch(PDO::FETCH_ASSOC))) {
+        if (false === ($data = $this->_preparedFindStm->fetch(PDO::FETCH_ASSOC))) {
             return $this->reportError('Record not found', [
                 'sql' => static::FIND_BY_PRIMARY_KEY_SQL,
             ]);
         }
         $this->_preparedFindStm->closeCursor();
-
-        return $this->reportSuccess('Data loaded', array(
-            'id' => (isset($this->_data[$primaryKey]) ? $this->_data[$primaryKey] : null),
-            'sql' => static::FIND_BY_PRIMARY_KEY_SQL,
+        $this->setStashedData($data);
+        return $this->reportSuccess('Data loaded', [
+            'id'   => $this->getKey(),
+            'sql'  => static::FIND_BY_PRIMARY_KEY_SQL,
             'type' => Result::TYPE_LOAD,
-        ));
+        ]);
     }
 
     public function loadFromCache($args, $ttl = 3600)
