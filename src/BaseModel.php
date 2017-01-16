@@ -955,15 +955,10 @@ abstract class BaseModel implements
         $key = serialize($args);
         if ($cacheData = $this->getCache($key)) {
             $this->_data = $cacheData;
-            $pk = static::PRIMARY_KEY;
-
-            return $this->reportSuccess('Data loaded', array(
-                'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
-            ));
+            return $this->reportSuccess('Data loaded', [ 'id' => $this->getKey() ]);
         } else {
             $ret = $this->load($args);
             $this->setCache($key, $this->_data, $ttl);
-
             return $ret;
         }
     }
