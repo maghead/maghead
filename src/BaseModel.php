@@ -1325,7 +1325,7 @@ abstract class BaseModel implements
             $pkId = $conn->lastInsertId();
         }
 
-        $this->_data = $args;
+        $this->setStashedData($args);
         $this->setKey($pkId);
         return $this->reportSuccess('Create success', array(
             'sql' => $sql,
@@ -1362,10 +1362,9 @@ abstract class BaseModel implements
             if ($c->virtual) {
                 return $this->get($name);
             }
-
             return $c->display($this->getValue($name));
-        } elseif (isset($this->_data[$name])) {
-            return $this->_data[$name];
+        } elseif (isset($this->$name)) {
+            return $this->$name;
         }
 
         // for relationship record
@@ -1394,7 +1393,6 @@ abstract class BaseModel implements
                 $args[ $k ] = $this->_data[ $k ] = $c->deflate($v);
             }
         }
-
         return $args;
     }
 
@@ -1449,15 +1447,15 @@ abstract class BaseModel implements
         $conn = $this->getConnection($dsId);
         $stm = $conn->prepare($sql);
         $stm->execute($args);
-        if (false === ($this->_data = $stm->fetch(PDO::FETCH_ASSOC))) {
+        if (false === ($data = $stm->fetch(PDO::FETCH_ASSOC))) {
             return $this->reportError('Data load failed.', array(
-                'sql' => $sql,
+                'sql'  => $sql,
                 'args' => $args,
             ));
         }
-
+        $this->setStashedData($data);
         return $this->reportSuccess('Data loaded', array(
-            'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
+            'id'  => $this->getKey(),
             'sql' => $sql,
         ));
     }
