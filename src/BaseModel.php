@@ -500,7 +500,7 @@ abstract class BaseModel implements
         }
 
         if ($ret && $ret->success
-            || ($pk && isset($this->_data[ $pk ]))) {
+            || ($pk && $this->hasKey())) {
             return $this->update($args);
         } else {
             return $this->create($args);
@@ -519,8 +519,7 @@ abstract class BaseModel implements
         if ($pkId) {
             return $this->load($pkId);
         } elseif (null === $pkId && $pk = static::PRIMARY_KEY) {
-            $pkId = $this->_data[ $pk ];
-
+            $pkId = $this->getKey();
             return $this->load($pkId);
         } else {
             throw new PrimaryKeyNotFoundException('Primary key is not found, can not reload '.get_class($this));
@@ -2101,11 +2100,11 @@ abstract class BaseModel implements
     public function asDeleteAction(array $args = array(), array $options = array())
     {
         $pk = static::PRIMARY_KEY;
-        if (isset($this->_data[$pk])) {
-            $args[$pk] = $this->_data[$pk];
+        if ($this->hasKey()) {
+            $args[$pk] = $this->getKey();
         }
-
-        return $this->newAction('Delete', array_merge($this->_data, $args), $options);
+        $data = $this->getStashedData();
+        return $this->newAction('Delete', array_merge($data, $args), $options);
     }
 
     /**
