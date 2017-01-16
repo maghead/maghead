@@ -49,6 +49,10 @@ class MetadataBase
     {
         return $this->id;
     }
+    public function hasKey()
+    {
+        return isset($this->id);
+    }
     public function setKey($key)
     {
         return $this->id = $key;

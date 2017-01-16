@@ -239,11 +239,18 @@ class BaseModelClassFactory
             ;
         });
 
+        $cTemplate->addMethod('public', 'hasKey', [], function() use ($primaryKey) {
+            return 
+                "return isset(\$this->$primaryKey);"
+            ;
+        });
+
         $cTemplate->addMethod('public', 'setKey', ['$key'], function() use ($primaryKey) {
             return 
                 "return \$this->$primaryKey = \$key;"
             ;
         });
+
 
         $cTemplate->addMethod('public', 'getStashedData', [], function() use ($properties) {
             return 
