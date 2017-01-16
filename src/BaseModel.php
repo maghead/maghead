@@ -196,6 +196,7 @@ abstract class BaseModel implements
             }
         }
     }
+
     public function select($sels)
     {
         if (is_array($sels)) {
@@ -870,15 +871,19 @@ abstract class BaseModel implements
         $pkId = null;
 
         if ($driver instanceof PDOPgSQLDriver) {
-            $this->_data[$k] = $args[$k] = $pkId = intval($stm->fetchColumn());
+            // $this->_data[$k] = $args[$k] = $pkId = intval($stm->fetchColumn());
+            $this->$k = $args[$k] = $pkId = intval($stm->fetchColumn());
         } else {
-            $this->_data[$k] = $args[$k] = $pkId = intval($conn->lastInsertId());
+            $this->$k = $args[$k] = $pkId = intval($conn->lastInsertId());
         }
 
         if ($pkId && ((isset($options['reload']) && $options['reload']) || $this->autoReload)) {
             $this->load($pkId);
         } else {
-            $this->_data = $args;
+            // $this->_data = $args;
+            foreach ($args as $k => $v) {
+                $this->$k = $v;
+            }
         }
 
         $this->afterCreate($origArgs);
@@ -1049,11 +1054,11 @@ abstract class BaseModel implements
     {
         $k = static::PRIMARY_KEY;
 
-        if (!isset($this->_data[$k])) {
+        $kVal = $this->getKey();
+        if (! $kVal) {
             throw new Exception('Record is not loaded, Record delete failed.');
         }
 
-        $kVal = $this->_data[$k];
         if (!$this->currentUserCan($this->getCurrentUser(), 'delete')) {
             return $this->reportError(_('Permission denied. Can not delete record.'), array());
         }
@@ -1080,7 +1085,6 @@ abstract class BaseModel implements
 
         $this->afterDelete($this->_data);
         $this->clear();
-
         return $this->reportSuccess('Record deleted', array(
             'sql' => $sql,
             'type' => Result::TYPE_DELETE,
@@ -1101,7 +1105,17 @@ abstract class BaseModel implements
 
         // check if the record is loaded.
         $k = static::PRIMARY_KEY;
-        if ($k && !isset($args[ $k ]) && !isset($this->_data[$k])) {
+
+        // check if we get primary key value
+        // here we allow users to specifty primary key value from arguments if the record is not loaded.
+        $kVal = null;
+        if (isset($args[$k]) && is_scalar($args[$k])) {
+            $kVal = intval($args[$k]);
+        } else if ($k = $this->getKey()) {
+            $kVal = intval($k);
+        }
+
+        if ($k && !isset($args[$k]) && !$kVal) {
             return $this->reportError('Record is not loaded, Can not update record.', array('args' => $args));
         }
 
@@ -1109,19 +1123,6 @@ abstract class BaseModel implements
             return $this->reportError('Permission denied. Can not update record.', array(
                 'args' => $args,
             ));
-        }
-
-        // check if we get primary key value
-        // here we allow users to specifty primary key value from arguments if the record is not loaded.
-        $kVal = null;
-        if (isset($args[$k]) && is_scalar($args[$k])) {
-            $kVal = intval($args[$k]);
-        } elseif (isset($this->_data[$k])) {
-            $kVal = intval($this->_data[$k]);
-        }
-
-        if (!$kVal) {
-            throw new Exception('Primary key value is undefined.');
         }
 
         $origArgs = $args;
@@ -1148,9 +1149,8 @@ abstract class BaseModel implements
                 ));
         }
 
-            // foreach mixin schema, run their beforeUpdate method,
-
-            $args = array_intersect_key($args, array_flip($schema->columnNames));
+        // foreach mixin schema, run their beforeUpdate method,
+        $args = array_intersect_key($args, array_flip($schema->columnNames));
 
         foreach ($schema->columns as $n => $c) {
             if (isset($args[$n])
@@ -1287,15 +1287,14 @@ abstract class BaseModel implements
         $driver = $this->getWriteQueryDriver();
         $k = static::PRIMARY_KEY;
         $kVal = isset($args[$k])
-            ? $args[$k] : isset($this->_data[$k])
-            ? $this->_data[$k] : null;
+            ? $args[$k] 
+            : $this->getKey();
 
         $arguments = new ArgumentArray();
         $query = new UpdateQuery();
         $query->set($args);
         $query->update($this->table);
-        $query->where()
-            ->equal($k, $kVal);
+        $query->where()->equal($k, $kVal);
 
         $sql = $query->toSql($driver, $arguments);
 
@@ -1322,7 +1321,6 @@ abstract class BaseModel implements
         $conn = $this->getWriteConnection();
 
         $k = static::PRIMARY_KEY;
-
         $driver = $this->getWriteQueryDriver();
 
         $query = new InsertQuery();
@@ -1346,8 +1344,7 @@ abstract class BaseModel implements
         }
 
         $this->_data = $args;
-        $this->_data[ $k ] = $pkId;
-
+        $this->setKey($pkId);
         return $this->reportSuccess('Create success', array(
             'sql' => $sql,
             'type' => Result::TYPE_CREATE,
@@ -1364,11 +1361,11 @@ abstract class BaseModel implements
     public function save()
     {
         $k = static::PRIMARY_KEY;
-
-        return ($k && !isset($this->_data[$k]))
-                ? $this->create($this->_data)
-                : $this->update($this->_data)
-                ;
+        $kVal = $this->getKey();
+        if ($kVal) {
+            return $this->update($this->getStashedData());
+        }
+        return $this->create($this->getStashedData());
     }
 
     /**
@@ -1619,8 +1616,7 @@ abstract class BaseModel implements
      */
     public function getData()
     {
-        trigger_error(__METHOD__.' is deprecated.', E_USER_DEPRECATED);
-
+        trigger_error(__METHOD__.' is deprecated, please use getStashedData instead.', E_USER_DEPRECATED);
         return $this->_data;
     }
 
