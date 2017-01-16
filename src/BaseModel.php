@@ -1236,7 +1236,7 @@ abstract class BaseModel implements
             if (isset($options['reload'])) {
                 $this->reload();
             } else {
-                $this->_data = array_merge($this->_data, $args);
+                $this->setStashedData($args);
             }
 
         $this->afterUpdate($origArgs);

@@ -266,13 +266,13 @@ class AuthorBookModelTest extends ModelTestCase
 
         $ret = $author->update(array( 'name' => 'I' ));
         $this->resultOK(true, $ret);
-        is( $id , $author->id );
-        is( 'I', $author->name );
+        $this->assertEquals( $id , $author->id );
+        $this->assertEquals( 'I', $author->name );
 
         $ret = $author->update(array('name' => null));
         $this->resultOK(true, $ret);
-        is( $id , $author->id );
-        is( null, $author->name );
+        $this->assertEquals($id , $author->id );
+        $this->assertEquals(null, $author->name );
 
         $ret = $author->load( $author->id );
         $this->resultOK(true, $ret);

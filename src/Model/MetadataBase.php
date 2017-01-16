@@ -63,8 +63,8 @@ class MetadataBase
     }
     public function setStashedData(array $data)
     {
-        if (isset($data["id"])) { $this->id = $data["id"]; }
-        if (isset($data["name"])) { $this->name = $data["name"]; }
-        if (isset($data["value"])) { $this->value = $data["value"]; }
+        if (array_key_exists("id", $data)) { $this->id = $data["id"]; }
+        if (array_key_exists("name", $data)) { $this->name = $data["name"]; }
+        if (array_key_exists("value", $data)) { $this->value = $data["value"]; }
     }
 }

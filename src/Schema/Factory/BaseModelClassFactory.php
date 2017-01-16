@@ -263,7 +263,7 @@ class BaseModelClassFactory
         $cTemplate->addMethod('public', 'setStashedData', ['array $data'], function() use ($properties) {
             return array_map(function($p) {
                     list($columnName, $propertyName) = $p;
-                    return "if (isset(\$data[\"$columnName\"])) { \$this->$propertyName = \$data[\"$columnName\"]; }";
+                    return "if (array_key_exists(\"$columnName\", \$data)) { \$this->$propertyName = \$data[\"$columnName\"]; }";
                 }, $properties);
         });
 
