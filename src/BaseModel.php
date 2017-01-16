@@ -12,7 +12,6 @@ use ArrayIterator;
 use IteratorAggregate;
 use Serializable;
 use ArrayAccess;
-use Countable;
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\Universal\Query\UpdateQuery;
 use SQLBuilder\Universal\Query\DeleteQuery;
@@ -85,8 +84,7 @@ class PrimaryKeyNotFoundException extends Exception
 abstract class BaseModel implements
     Serializable,
     ArrayAccess,
-    IteratorAggregate,
-    Countable
+    IteratorAggregate
 {
     public static $yamlExtension;
     public static $yamlEncoding = YAML_UTF8_ENCODING;
@@ -2163,19 +2161,13 @@ abstract class BaseModel implements
 
     public function serialize()
     {
-        return serialize($this->_data);
+        return serialize($this->getStashedData());
     }
 
-    public function unserialize($data)
+    public function unserialize($str)
     {
-        $this->_data = unserialize($data);
-    }
-
-    // Countable interface
-
-    public function count()
-    {
-        return count($this->_data);
+        $data = unserialize($str);
+        $this->setStashedData($data);
     }
 
     public function getAlias()
