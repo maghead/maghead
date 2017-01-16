@@ -543,8 +543,7 @@ abstract class BaseModel implements
                     array_fill_keys((array) $byKeys, 1))
             );
         } elseif ($pk && isset($args[$pk])) {
-            $val = $args[$pk];
-            $ret = $this->load(array($pk => $val));
+            $ret = $this->find($args[$pk]);
         } else {
             throw new PrimaryKeyNotFoundException('primary key is not defined.');
         }
