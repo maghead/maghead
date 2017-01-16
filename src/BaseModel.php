@@ -2081,7 +2081,8 @@ abstract class BaseModel implements
 
     public function __clone()
     {
-        $this->_data = $this->_data;
+        $d = $this->getStashedData();
+        $this->setStashedData($d);
         $this->autoReload = $this->autoReload;
     }
 
