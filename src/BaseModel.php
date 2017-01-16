@@ -1041,7 +1041,6 @@ abstract class BaseModel implements
     {
         $record = new static();
         $record->setStashedData($array);
-
         return $record;
     }
 

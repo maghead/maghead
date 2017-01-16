@@ -215,7 +215,7 @@ class BaseModelClassFactory
         $properties = [];
         foreach ($schema->getColumnNames() as $columnName) {
             $propertyName = Inflector::camelize($columnName);
-            $properties[] = $propertyName;
+            $properties[] = [$columnName, $propertyName];
 
             // $cTemplate->addPublicProperty($propertyName, NULL);
 
@@ -251,13 +251,20 @@ class BaseModelClassFactory
             ;
         });
 
-
         $cTemplate->addMethod('public', 'getStashedData', [], function() use ($properties) {
             return 
                 'return [' . join(", ", array_map(function($p) {
-                    return "\"$p\" => \$this->$p";
+                    list($columnName, $propertyName) = $p;
+                    return "\"$columnName\" => \$this->$propertyName";
                 }, $properties)) . '];'
             ;
+        });
+
+        $cTemplate->addMethod('public', 'setStashedData', ['array $data'], function() use ($properties) {
+            return array_map(function($p) {
+                    list($columnName, $propertyName) = $p;
+                    return "if (isset(\$data[\"$columnName\"])) { \$this->$propertyName = \$data[\"$columnName\"]; }";
+                }, $properties);
         });
 
         return $cTemplate;
