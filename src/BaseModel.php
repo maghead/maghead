@@ -549,14 +549,11 @@ abstract class BaseModel implements
             throw new PrimaryKeyNotFoundException('primary key is not defined.');
         }
 
-        if ($ret && $ret->success
-            || ($pk && isset($this->_data[$pk]) && $this->_data[ $pk ])) {
+        if ($ret && $ret->success || ($pk && $this->getKey())) {
             // is loaded
             return $ret;
-        } else {
-            // record not found, create
-            return $this->create($args);
         }
+        return $this->create($args);
     }
 
     /**
