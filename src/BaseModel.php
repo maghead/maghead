@@ -1285,10 +1285,7 @@ abstract class BaseModel implements
 
         $stm = $conn->prepare($sql);
         $stm->execute($arguments->toArray());
-
-        // update current data stash
-        $this->_data = array_merge($this->_data, $args);
-
+        $this->setStashedData($args);
         return $this->reportSuccess('Update success', array(
             'sql' => $sql,
             'type' => Result::TYPE_UPDATE,
