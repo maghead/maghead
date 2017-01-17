@@ -65,7 +65,7 @@ class NameModelTest extends ModelTestCase
         $n = new \TestApp\Model\Name;
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
-        $this->assertFalse($n->getConfirmed());
+        $this->assertFalse($n->isConfirmed());
     }
 
 
@@ -79,11 +79,11 @@ class NameModelTest extends ModelTestCase
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
         ok($n->id);
-        $this->assertNull($n->getConfirmed());
+        $this->assertNull($n->isConfirmed());
 
         $ret = $n->load($n->id);
         $this->assertResultSuccess($ret);
-        $this->assertNull($n->getConfirmed());
+        $this->assertNull($n->isConfirmed());
         $this->successfulDelete($n);
     }
 
@@ -99,12 +99,12 @@ class NameModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         ok($n->id);
 
-        $this->assertTrue($n->getConfirmed(), 'Confirmed value should be TRUE.');
+        $this->assertTrue($n->isConfirmed(), 'Confirmed value should be TRUE.');
 
         $ret = $n->load($n->id);
         $this->assertResultSuccess($ret);
 
-        $this->assertTrue($n->getConfirmed(), 'Confirmed value should be TRUE.');
+        $this->assertTrue($n->isConfirmed(), 'Confirmed value should be TRUE.');
         $this->successfulDelete($n);
     }
 
@@ -138,7 +138,7 @@ class NameModelTest extends ModelTestCase
         $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ));
         $this->assertResultSuccess( $ret );
         ok( $n->id );
-        $this->assertFalse($n->getConfirmed());
+        $this->assertFalse($n->isConfirmed());
         $this->successfulDelete($n);
     }
 

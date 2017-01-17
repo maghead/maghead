@@ -30,15 +30,15 @@ class AuthorBookModelTest extends ModelTestCase
             'confirmed' => true,
         ));
         $this->resultOK(true,$ret);
-        $this->assertTrue($a->getConfirmed(), 'confirmed should be true');
+        $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
         $a->reload();
-        $this->assertTrue($a->getConfirmed(), 'confirmed should be true');
+        $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
 
         $a = new Author;
         $ret = $a->load([ 'name' => 'a' ]);
         $this->assertNotNull($a->id);
         $this->resultOK(true,$ret);
-        $this->assertTrue($a->getConfirmed());
+        $this->assertTrue($a->isConfirmed());
     }
 
     /**
@@ -214,14 +214,14 @@ class AuthorBookModelTest extends ModelTestCase
         is( $id , $author->id );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
-        $this->assertFalse($author->getConfirmed() );
+        $this->assertFalse($author->isConfirmed() );
 
         $ret = $author->load(array( 'name' => 'Foo' ));
         ok( $ret->success );
         is( $id , $author->id );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
-        $this->assertFalse($author->getConfirmed());
+        $this->assertFalse($author->isConfirmed());
 
         $ret = $author->update(array('name' => 'Bar'));
         $this->resultOK(true, $ret);

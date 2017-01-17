@@ -41,15 +41,15 @@ class CollectionTest extends ModelTestCase
 
         $ret = $name->load( array( 'name' => 'Foo' ));
         $this->assertResultSuccess($ret);
-        $this->assertFalse($name->getConfirmed());
+        $this->assertFalse($name->isConfirmed());
 
         $ret = $name->update(array( 'confirmed' => true ) );
         $this->assertResultSuccess($ret);
-        $this->assertTrue($name->getConfirmed());
+        $this->assertTrue($name->isConfirmed());
 
         $ret = $name->update(array( 'confirmed' => false ) );
         $this->assertResultSuccess($ret);
-        $this->assertFalse($name->getConfirmed());
+        $this->assertFalse($name->isConfirmed());
 
         $ret = $name->delete();
         $this->assertResultSuccess($ret);

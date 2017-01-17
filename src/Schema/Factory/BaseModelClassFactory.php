@@ -213,14 +213,18 @@ class BaseModelClassFactory
 
         // Create column accessor
         $properties = [];
-        foreach ($schema->getColumnNames(false) as $columnName) {
+        foreach ($schema->getColumns(false) as $columnName => $column) {
             $propertyName = Inflector::camelize($columnName);
             $properties[] = [$columnName, $propertyName];
 
             $cTemplate->addPublicProperty($columnName, NULL);
 
             if ($schema->enableColumnAccessors) {
+
                 $accessorMethodName = 'get'.ucfirst($propertyName);
+                if ($column->isa === "bool") {
+                    $accessorMethodName = 'is'.ucfirst($propertyName);
+                }
                 $cTemplate->addMethod('public', $accessorMethodName, [], function() use ($columnName, $propertyName) {
                     return [
                         "if (\$c = \$this->getSchema()->getColumn(\"$columnName\")) {",
