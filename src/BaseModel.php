@@ -925,9 +925,9 @@ abstract class BaseModel implements
     {
         $dsId = $this->readSourceId;
         $primaryKey = static::PRIMARY_KEY;
-        $conn = $this->getReadConnection();
 
         if (!$this->_preparedFindStm) {
+            $conn = $this->getReadConnection();
             $this->_preparedFindStm = $conn->prepare(static::FIND_BY_PRIMARY_KEY_SQL);
             // $this->_preparedFindStm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
         }
