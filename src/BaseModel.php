@@ -83,7 +83,6 @@ class PrimaryKeyNotFoundException extends Exception
  */
 abstract class BaseModel implements
     Serializable,
-    ArrayAccess,
     IteratorAggregate
 {
     public static $yamlExtension;
@@ -2064,26 +2063,6 @@ abstract class BaseModel implements
     public function getIterator()
     {
         return new ArrayIterator($this->columns);
-    }
-
-    public function offsetExists($name)
-    {
-        return $this->__isset($name);
-    }
-
-    public function offsetGet($name)
-    {
-        return $this->get($name);
-    }
-
-    public function offsetSet($name, $value)
-    {
-        $this->set($name, $value);
-    }
-
-    public function offsetUnset($name)
-    {
-        unset($this->_data[$name]);
     }
 
     // Serializable interface methods
