@@ -10,6 +10,7 @@ use ReflectionClass;
 // used for SQL generator
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\Bind;
+use SQLBuilder\ParamMarker;
 use SQLBuilder\ArgumentArray;
 
 /**
@@ -158,7 +159,7 @@ class BaseModelClassFactory
         $readQueryDriver = $readConnection->createQueryDriver();
         $primaryKeyColumn = $schema->getColumn($primaryKey);
         $findByPrimaryKeyQuery->select('*')
-            ->where()->equal($primaryKey, new Bind($primaryKey));
+            ->where()->equal($primaryKey, new ParamMarker($primaryKey));
         $findByPrimaryKeyQuery->limit(1);
         $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);

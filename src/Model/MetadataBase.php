@@ -18,7 +18,7 @@ class MetadataBase
     const READ_SOURCE_ID = 'default';
     const WRITE_SOURCE_ID = 'default';
     const PRIMARY_KEY = 'id';
-    const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = :id LIMIT 1';
+    const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = ? LIMIT 1';
     public static $column_names = array (
       0 => 'id',
       1 => 'name',

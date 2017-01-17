@@ -929,14 +929,12 @@ abstract class BaseModel implements
     public function find($pkId)
     {
         $dsId = $this->readSourceId;
-        $primaryKey = static::PRIMARY_KEY;
-
         if (!$this->_preparedFindStm) {
             $conn = $this->getReadConnection();
             $this->_preparedFindStm = $conn->prepare(static::FIND_BY_PRIMARY_KEY_SQL);
             // $this->_preparedFindStm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
         }
-        $this->_preparedFindStm->execute([":$primaryKey" => $pkId]);
+        $this->_preparedFindStm->execute([$pkId]);
 
         if (false === ($data = $this->_preparedFindStm->fetch(PDO::FETCH_ASSOC))) {
             return $this->reportError('Record not found', [
