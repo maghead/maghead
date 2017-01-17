@@ -1071,7 +1071,7 @@ abstract class BaseModel implements
 
         $data = $this->getData();
         $this->afterDelete($data);
-        $this->clear();
+        $this->empty();
         return $this->reportSuccess('Record deleted', array(
             'sql' => $sql,
             'type' => Result::TYPE_DELETE,
@@ -1557,14 +1557,6 @@ abstract class BaseModel implements
         if (isset($this->$name)) {
             return $this->$name;
         }
-    }
-
-    /**
-     * Clear current data stash.
-     */
-    public function clear()
-    {
-        $this->_data = array();
     }
 
     public function getData()
