@@ -2075,8 +2075,7 @@ abstract class BaseModel implements
 
     public function unserialize($str)
     {
-        $data = unserialize($str);
-        $this->setData($data);
+        $this->setData(unserialize($str));
     }
 
     public function getAlias()
