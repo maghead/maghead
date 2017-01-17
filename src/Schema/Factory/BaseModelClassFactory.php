@@ -222,7 +222,9 @@ class BaseModelClassFactory
             if ($schema->enableColumnAccessors) {
 
                 $accessorMethodName = 'get'.ucfirst($propertyName);
-                if ($column->isa === "bool") {
+
+                // for column names like "is_confirmed", don't prepend another "is" prefix to the accessor name.
+                if ($column->isa === "bool" && ! preg_match('/^is_/', $columnName)) {
                     $accessorMethodName = 'is'.ucfirst($propertyName);
                 }
                 $cTemplate->addMethod('public', $accessorMethodName, [], function() use ($columnName, $propertyName) {
