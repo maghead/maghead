@@ -1530,9 +1530,6 @@ abstract class BaseModel implements
             // use model query to load relational record.
             return $this->getRelationalRecords($key, $relation);
         }
-
-        // If it's virtual column, we can do something...
-
         return $this->inflateColumnValue($key);
     }
 
