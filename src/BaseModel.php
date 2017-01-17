@@ -1344,7 +1344,6 @@ abstract class BaseModel implements
      */
     public function save()
     {
-        $k = static::PRIMARY_KEY;
         $kVal = $this->getKey();
         if ($kVal) {
             return $this->update($this->getData());
