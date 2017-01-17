@@ -1581,9 +1581,8 @@ abstract class BaseModel implements
      */
     public function __isset($name)
     {
-        return isset($this->_data[ $name ])
-            || array_key_exists($name, ($this->_data ? $this->_data : array()))
-            || isset($this->getSchema()->columns[ $name ])
+        return array_key_exists($name, ($this->_data ? $this->_data : array()))
+            || isset($this->getSchema()->columns[$name])
             || 'schema' === $name
             || $this->getSchema()->getRelation($name)
             ;
@@ -1593,7 +1592,6 @@ abstract class BaseModel implements
     {
         // check for the object cache
         $cacheKey = 'relationship::'.$key;
-
         if (!$relation) {
             $relation = $this->getSchema()->getRelation($key);
         }
@@ -2058,9 +2056,7 @@ abstract class BaseModel implements
     public function getRecordActionClass($type)
     {
         $class = get_class($this);
-        $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class, $type);
-
-        return $actionClass;
+        return \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class, $type);
     }
 
     // IteratorAggregate interface method
