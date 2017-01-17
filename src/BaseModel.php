@@ -1568,7 +1568,7 @@ abstract class BaseModel implements
      */
     public function __isset($name)
     {
-        return array_key_exists($name, ($this->_data ? $this->_data : array()))
+        return property_exists($this, $name)
             || isset($this->getSchema()->columns[$name])
             || 'schema' === $name
             || $this->getSchema()->getRelation($name)
