@@ -1370,7 +1370,7 @@ abstract class BaseModel implements
         }
 
         // for relationship record
-        $val = $this->__get($name);
+        $val = $this->get($name);
         if ($val && $val instanceof \LazyRecord\BaseModel) {
             return $val->dataLabel();
         }
