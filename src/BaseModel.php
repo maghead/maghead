@@ -719,6 +719,7 @@ abstract class BaseModel implements
         $k = static::PRIMARY_KEY;
         $sql = $vars = null;
         $this->_data = array();
+        $this->empty();
         $stm = null;
 
         static $cacheable;

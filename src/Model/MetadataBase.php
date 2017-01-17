@@ -67,4 +67,10 @@ class MetadataBase
         if (array_key_exists("name", $data)) { $this->name = $data["name"]; }
         if (array_key_exists("value", $data)) { $this->value = $data["value"]; }
     }
+    public function empty()
+    {
+        $this->id = NULL;
+        $this->name = NULL;
+        $this->value = NULL;
+    }
 }

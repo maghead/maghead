@@ -272,6 +272,13 @@ class BaseModelClassFactory
                 }, $properties);
         });
 
+        $cTemplate->addMethod('public', 'empty', [], function() use ($properties) {
+            return array_map(function($p) {
+                    list($columnName, $propertyName) = $p;
+                    return "\$this->$propertyName = NULL;";
+                }, $properties);
+        });
+
         return $cTemplate;
     }
 }
