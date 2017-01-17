@@ -954,11 +954,11 @@ abstract class BaseModel implements
     {
         $key = serialize($args);
         if ($cacheData = $this->getCache($key)) {
-            $this->_data = $cacheData;
+            $this->setData($cacheData);
             return $this->reportSuccess('Data loaded', [ 'id' => $this->getKey() ]);
         } else {
             $ret = $this->load($args);
-            $this->setCache($key, $this->_data, $ttl);
+            $this->setCache($key, $this->getData(), $ttl);
             return $ret;
         }
     }
@@ -1052,7 +1052,8 @@ abstract class BaseModel implements
         $conn = $this->getWriteConnection();
         $driver = $this->getWriteQueryDriver();
 
-        $this->beforeDelete($this->_data);
+        $data = $this->getData();
+        $this->beforeDelete($data);
 
         $arguments = new ArgumentArray();
 
@@ -1068,7 +1069,8 @@ abstract class BaseModel implements
         $stm = $conn->prepare($sql);
         $stm->execute($arguments->toArray());
 
-        $this->afterDelete($this->_data);
+        $data = $this->getData();
+        $this->afterDelete($data);
         $this->clear();
         return $this->reportSuccess('Record deleted', array(
             'sql' => $sql,
