@@ -1,3 +1,15 @@
+UPGRADE TO 4.0.x
+======================
+
+1. data inflating will only happen when using accessor method.
+
+```
+$book->is_published; // will return the raw value from database.
+$book->isPublished() // will return Boolean value (true or false)
+```
+
+
+
 UPGRADE TO 2.0
 ======================
 
