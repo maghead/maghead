@@ -872,9 +872,7 @@ abstract class BaseModel implements
         if ($pkId && ((isset($options['reload']) && $options['reload']) || $this->autoReload)) {
             $this->load($pkId);
         } else {
-            foreach ($args as $k => $v) {
-                $this->$k = $v;
-            }
+            $this->setData($args);
         }
 
         $this->afterCreate($origArgs);
@@ -933,6 +931,7 @@ abstract class BaseModel implements
 
         if (!$this->_preparedFindStm) {
             $this->_preparedFindStm = $conn->prepare(static::FIND_BY_PRIMARY_KEY_SQL);
+            // $this->_preparedFindStm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
         }
         $this->_preparedFindStm->execute([":$primaryKey" => $pkId]);
 
@@ -1005,6 +1004,7 @@ abstract class BaseModel implements
 
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         $stm = $conn->prepare($sql);
+        // $stm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
         $stm->execute($arguments->toArray());
         if (false === ($data = $stm->fetch(PDO::FETCH_ASSOC))) {
             // Record not found is not an exception
@@ -1392,7 +1392,7 @@ abstract class BaseModel implements
         $schema = $this->getSchema();
         foreach ($args as $k => $v) {
             if ($c = $schema->getColumn($k)) {
-                $args[ $k ] = $this->_data[ $k ] = $c->deflate($v);
+                $args[ $k ] = $this->_data[$k] = $c->deflate($v);
             }
         }
         return $args;
@@ -1448,8 +1448,9 @@ abstract class BaseModel implements
 
         $conn = $this->getConnection($dsId);
         $stm = $conn->prepare($sql);
+        $stm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
         $stm->execute($args);
-        if (false === ($data = $stm->fetch(PDO::FETCH_ASSOC))) {
+        if (false === ($data = $stm->fetch(PDO::FETCH_CLASS))) {
             return $this->reportError('Data load failed.', array(
                 'sql'  => $sql,
                 'args' => $args,
@@ -1518,26 +1519,6 @@ abstract class BaseModel implements
         return static::SCHEMA_PROXY_CLASS;
     }
 
-    /*******************
-     * Data Manipulators 
-     *********************/
-
-    /**
-     * Set column value.
-     *
-     * @param string $name
-     * @param mixed  $value
-     */
-    public function __set($name, $value)
-    {
-        $this->_data[ $name ] = $value;
-    }
-
-    public function set($name, $value)
-    {
-        $this->_data[ $name ] = $value;
-    }
-
     /**
      * Get inflate value.
      *
@@ -1551,6 +1532,8 @@ abstract class BaseModel implements
             return $this->getRelationalRecords($key, $relation);
         }
 
+        // If it's virtual column, we can do something...
+
         return $this->inflateColumnValue($key);
     }
 
@@ -1563,7 +1546,7 @@ abstract class BaseModel implements
      */
     public function hasValue($name)
     {
-        return isset($this->_data[$name]);
+        return isset($this->$name);
     }
 
     /**
@@ -1575,8 +1558,8 @@ abstract class BaseModel implements
      */
     public function getValue($name)
     {
-        if (isset($this->_data[$name])) {
-            return $this->_data[$name];
+        if (isset($this->$name)) {
+            return $this->$name;
         }
     }
 
@@ -1622,9 +1605,6 @@ abstract class BaseModel implements
     {
         // check for the object cache
         $cacheKey = 'relationship::'.$key;
-        if ($this->hasInternalCache($cacheKey)) {
-            return clone $this->_cache[ $cacheKey ];
-        }
 
         if (!$relation) {
             $relation = $this->getSchema()->getRelation($key);
@@ -1655,6 +1635,8 @@ abstract class BaseModel implements
 
             return $this->setInternalCache($cacheKey, $model);
         } elseif (Relationship::HAS_MANY === $relation['type']) {
+
+            
             // TODO: migrate this code to Relationship class.
             $sColumn = $relation['self_column'];
             $fSchema = $relation->newForeignSchema();
@@ -1772,8 +1754,10 @@ abstract class BaseModel implements
     }
 
     /**
-     * Get record data, relational records, schema object or 
-     * connection object.
+     * __get magic method is used for getting:
+     *
+     * 1. virtual column data
+     * 2. relational records
      *
      * @param string $key
      */
@@ -1790,7 +1774,6 @@ abstract class BaseModel implements
     public function asCollection()
     {
         $class = static::COLLECTION_CLASS;
-
         return new $class();
     }
 
@@ -1801,11 +1784,11 @@ abstract class BaseModel implements
      */
     public function toArray(array $fields = null)
     {
+        $data = $this->getData();
         if ($fields) {
-            return array_intersect_key($this->_data, array_flip($fields));
+            return array_intersect_key($data, array_flip($fields));
         }
-
-        return $this->_data;
+        return $data;
     }
 
     /**
@@ -1815,7 +1798,8 @@ abstract class BaseModel implements
      */
     public function toJson()
     {
-        return json_encode($this->_data);
+        $data = $this->getData();
+        return json_encode($data);
     }
 
     /**
@@ -1876,7 +1860,7 @@ abstract class BaseModel implements
      */
     protected function inflateColumnValue($n)
     {
-        $value = isset($this->_data[$n]) ? $this->_data[$n] : null;
+        $value = property_exists($this, $n) ? $this->$n : NULL;
         if ($c = $this->getSchema()->getColumn($n)) {
             return $c->inflate($value, $this);
         }

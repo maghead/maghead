@@ -55,6 +55,8 @@ class AuthorCollectionTest extends ModelTestCase
         foreach ($results as $result) {
             $id = $result->id;
             ok($id);
+
+            
             $this->assertTrue(isset($pairs[$id]));
             like('/Hack/',$pairs[$id]);
             $address = new \AuthorBooks\Model\Address($result->id);
@@ -244,15 +246,14 @@ class AuthorCollectionTest extends ModelTestCase
         $author->addresses[] = array( 'address' => 'Address II' );
 
         $authors = new AuthorCollection;
-        ok($authors);
-        $authors->join( new \AuthorBooks\Model\Address ,'LEFT','a', 'addresses');
+        $authors->join(new \AuthorBooks\Model\Address, 'LEFT', 'a', 'addresses');
         $authors->fetch();
         $sql = $authors->toSQL();
         ok($sql, $sql);
 
         $size = $authors->size();
-        is(2,$size);
-        foreach( $authors as $a ) {
+        $this->assertEquals(2,$size);
+        foreach ($authors as $a) {
             ok($a->a_address);
             ok($a->a_id);
         }

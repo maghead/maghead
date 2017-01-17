@@ -198,7 +198,7 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertEquals( 1, $author->author_books->size() );
         $this->assertNotNull( $author->author_books[0] );
         $this->assertNotNull( $author->author_books[0]->created_on );
-        $this->assertEquals( '2010-01-01', $author->author_books[0]->created_on->format('Y-m-d') );
+        $this->assertEquals( '2010-01-01', $author->author_books[0]->getCreatedOn()->format('Y-m-d') );
 
         $author->books[] = array( 
             'title' => 'Programming Perl II',

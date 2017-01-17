@@ -31,9 +31,8 @@ class MetadataMixinSchema extends MixinDeclareSchema
     // Mixin methods
     public static function getAge($record)
     {
-        $createdOn = $record->created_on;
+        $createdOn = $record->getCreatedOn();
         $currentDate = new DateTime();
-
         return $currentDate->diff($createdOn);
     }
 }

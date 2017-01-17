@@ -213,20 +213,20 @@ class BaseModelClassFactory
 
         // Create column accessor
         $properties = [];
-        foreach ($schema->getColumnNames() as $columnName) {
+        foreach ($schema->getColumnNames(false) as $columnName) {
             $propertyName = Inflector::camelize($columnName);
             $properties[] = [$columnName, $propertyName];
 
-            // $cTemplate->addPublicProperty($propertyName, NULL);
+            $cTemplate->addPublicProperty($columnName, NULL);
 
             if ($schema->enableColumnAccessors) {
                 $accessorMethodName = 'get'.ucfirst($propertyName);
                 $cTemplate->addMethod('public', $accessorMethodName, [], function() use ($columnName, $propertyName) {
                     return [
                         "if (\$c = \$this->getSchema()->getColumn(\"$columnName\")) {",
-                        "   return \$c->inflate(\$this->$propertyName, \$this);",
+                        "   return \$c->inflate(\$this->$columnName, \$this);",
                         "}",
-                        "return \$this->$propertyName;",
+                        "return \$this->$columnName;",
                     ];
                 });
             }
@@ -260,7 +260,7 @@ class BaseModelClassFactory
             return 
                 'return [' . join(", ", array_map(function($p) {
                     list($columnName, $propertyName) = $p;
-                    return "\"$columnName\" => \$this->$propertyName";
+                    return "\"$columnName\" => \$this->$columnName";
                 }, $properties)) . '];'
             ;
         });
@@ -268,14 +268,14 @@ class BaseModelClassFactory
         $cTemplate->addMethod('public', 'setData', ['array $data'], function() use ($properties) {
             return array_map(function($p) {
                     list($columnName, $propertyName) = $p;
-                    return "if (array_key_exists(\"$columnName\", \$data)) { \$this->$propertyName = \$data[\"$columnName\"]; }";
+                    return "if (array_key_exists(\"$columnName\", \$data)) { \$this->$columnName = \$data[\"$columnName\"]; }";
                 }, $properties);
         });
 
         $cTemplate->addMethod('public', 'empty', [], function() use ($properties) {
             return array_map(function($p) {
                     list($columnName, $propertyName) = $p;
-                    return "\$this->$propertyName = NULL;";
+                    return "\$this->$columnName = NULL;";
                 }, $properties);
         });
 

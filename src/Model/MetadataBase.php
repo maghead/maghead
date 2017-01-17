@@ -34,6 +34,9 @@ class MetadataBase
     protected $table = '__meta__';
     public $readSourceId = 'default';
     public $writeSourceId = 'default';
+    public $id;
+    public $name;
+    public $value;
     public function getSchema()
     {
         if ($this->_schema) {

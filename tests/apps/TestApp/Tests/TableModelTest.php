@@ -44,8 +44,8 @@ class TableModelTest extends ModelTestCase
         $this->assertSame(['b1', 'b2'], $table->get('columns'));
         $this->assertSame([['zoo', 'kaa']], $table->get('rows'));
 
-        $this->assertTrue(is_array($table->columns));
-        $this->assertTrue(is_array($table->rows));
+        $this->assertTrue(is_array($table->getColumns()));
+        $this->assertTrue(is_array($table->getRows()));
 
         $ret = $table->delete();
         $this->assertResultSuccess($ret);

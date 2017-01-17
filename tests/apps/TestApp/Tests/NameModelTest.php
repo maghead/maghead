@@ -65,7 +65,7 @@ class NameModelTest extends ModelTestCase
         $n = new \TestApp\Model\Name;
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
-        $this->assertFalse($n->confirmed);
+        $this->assertFalse($n->getConfirmed());
     }
 
 
@@ -78,13 +78,12 @@ class NameModelTest extends ModelTestCase
         $n = new \TestApp\Model\Name;
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
-
         ok($n->id);
-        $this->assertNull($n->confirmed);
+        $this->assertNull($n->getConfirmed());
 
         $ret = $n->load($n->id);
         $this->assertResultSuccess($ret);
-        $this->assertNull($n->confirmed);
+        $this->assertNull($n->getConfirmed());
         $this->successfulDelete($n);
     }
 
@@ -100,12 +99,12 @@ class NameModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         ok($n->id);
 
-        $this->assertTrue($n->confirmed, 'Confirmed value should be TRUE.');
+        $this->assertTrue($n->getConfirmed(), 'Confirmed value should be TRUE.');
 
         $ret = $n->load($n->id);
         $this->assertResultSuccess($ret);
 
-        $this->assertTrue($n->confirmed, 'Confirmed value should be TRUE.');
+        $this->assertTrue($n->getConfirmed(), 'Confirmed value should be TRUE.');
         $this->successfulDelete($n);
     }
 
@@ -139,8 +138,7 @@ class NameModelTest extends ModelTestCase
         $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ));
         $this->assertResultSuccess( $ret );
         ok( $n->id );
-
-        $this->assertFalse($n->confirmed);
+        $this->assertFalse($n->getConfirmed());
         $this->successfulDelete($n);
     }
 
@@ -247,7 +245,7 @@ class NameModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $d = $n->date;
+        $d = $n->getDate();
         $this->assertNotNull($d);
         $this->assertInstanceOf('DateTime', $d);
         $this->assertEquals('20110101' , $d->format( 'Ymd' ));
@@ -305,7 +303,7 @@ class NameModelTest extends ModelTestCase
         $array = $n->toArray();
         $this->assertTrue(is_string( $array['date']));
 
-        $d = $n->date; // inflated
+        $d = $n->getDate(); // inflated
         $this->assertInstanceOf('DateTime' , $d);
         $this->assertEquals('20110101' , $d->format('Ymd'));
         $this->successfulDelete($n);
