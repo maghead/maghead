@@ -40,7 +40,7 @@
     "authors": [
         { "name": "Yo-An Lin", "email": "cornelius.howl@gmail.com" }
     ],
-    "extra": { "branch-alias": { "dev-master": "3.4.x-dev" } },
+    "extra": { "branch-alias": { "dev-master": "4.0.x-dev" } },
     "autoload": {
         "psr-4": {
             "LazyRecord\\": "src/"
