@@ -2121,7 +2121,7 @@ abstract class BaseModel implements
             $this->_preparedFindStm->closeCursor();
             $this->_preparedFindStm = null;
         }
-        foreach ($this->_preparedFindStms as &$stm) {
+        foreach ($this->_preparedFindStms as $stm) {
             $stm->closeCursor();
             $stm = null;
         }
