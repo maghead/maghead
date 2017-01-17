@@ -78,14 +78,16 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertResultSuccess($ret);
 
         $findBook = new Book;
-        $ret = $findBook->find($book1->id);
-        $this->assertResultSuccess($ret);
-        $this->assertEquals($book1->id, $findBook->id);
+        $found = $findBook->find($book1->id);
+        $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
+        $this->assertNotFalse($found);
+        $this->assertEquals($book1->id, $found->id);
 
 
-        $ret = $findBook->find($book2->id);
-        $this->assertResultSuccess($ret);
-        $this->assertEquals($book2->id, $findBook->id);
+        $found = $findBook->find($book2->id);
+        $this->assertNotFalse($found);
+        $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
+        $this->assertEquals($book2->id, $found->id);
     }
 
 
@@ -417,11 +419,11 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertNotNull($b->id);
         $this->assertEquals(0 , $b->view);
 
-        $ret = $b->find($ret->id);
-        $this->assertResultSuccess($ret);
-        $this->assertNotNull($b->id);
-        $this->assertEquals(0 , $b->view);
-        $this->successfulDelete($b);
+        $found = $b->find($ret->id);
+        $this->assertNotFalse($found);
+        $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
+        $this->assertEquals(0 , $found->view);
+        $this->successfulDelete($found);
     }
 
     /**

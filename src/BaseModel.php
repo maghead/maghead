@@ -517,12 +517,11 @@ abstract class BaseModel implements
     {
         if ($pkId) {
             return $this->load($pkId);
-        } elseif (null === $pkId && static::PRIMARY_KEY) {
+        } else if (null === $pkId && static::PRIMARY_KEY) {
             $pkId = $this->getKey();
-            return $this->find($pkId);
-        } else {
-            throw new PrimaryKeyNotFoundException('Primary key is not found, can not reload '.get_class($this));
+            return $this->load($pkId);
         }
+        throw new PrimaryKeyNotFoundException('Primary key is not found, can not reload '.get_class($this));
     }
 
     /**
@@ -542,7 +541,7 @@ abstract class BaseModel implements
                     array_fill_keys((array) $byKeys, 1))
             );
         } elseif ($pk && isset($args[$pk])) {
-            $ret = $this->find($args[$pk]);
+            $ret = $this->load($args[$pk]);
         } else {
             throw new PrimaryKeyNotFoundException('primary key is not defined.');
         }
@@ -934,22 +933,13 @@ abstract class BaseModel implements
         if (!$this->_preparedFindStm) {
             $conn = $this->getReadConnection();
             $this->_preparedFindStm = $conn->prepare(static::FIND_BY_PRIMARY_KEY_SQL);
-            // $this->_preparedFindStm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
+            $this->_preparedFindStm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
         }
         $this->_preparedFindStm->execute([":$primaryKey" => $pkId]);
 
-        if (false === ($data = $this->_preparedFindStm->fetch(PDO::FETCH_ASSOC))) {
-            return $this->reportError('Record not found', [
-                'sql' => static::FIND_BY_PRIMARY_KEY_SQL,
-            ]);
-        }
+        $obj = $this->_preparedFindStm->fetch(PDO::FETCH_CLASS);
         $this->_preparedFindStm->closeCursor();
-        $this->setData($data);
-        return $this->reportSuccess('Data loaded', [
-            'id'   => $this->getKey(),
-            'sql'  => static::FIND_BY_PRIMARY_KEY_SQL,
-            'type' => Result::TYPE_LOAD,
-        ]);
+        return $obj;
     }
 
     public function loadFromCache($args, $ttl = 3600)

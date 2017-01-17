@@ -15,6 +15,12 @@ $book->isPublished() // will return Boolean value (true or false)
 "is_published" => "isPublished()"
 ```
 
+3. `BaseModel->find` now returns record object instead of Result object.
+
+```
+$foundBook = $book->find(321);
+```
+
 
 
 UPGRADE TO 2.0
