@@ -115,6 +115,7 @@ class BasicCRUDTest extends ModelTestCase
         $b2 = new Book;
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertResultSuccess($ret);
+        $this->assertEquals(Result::TYPE_LOAD, $ret->type);
         $this->assertEquals($id,$b2->id);
         $results[] = $ret;
 

@@ -221,9 +221,14 @@ class BaseModelClassFactory
 
             if ($schema->enableColumnAccessors) {
                 $accessorMethodName = 'get'.ucfirst($propertyName);
-                $cTemplate->addMethod('public', $accessorMethodName, [], [
-                    'return $this->get('.var_export($columnName, true).');',
-                ]);
+                $cTemplate->addMethod('public', $accessorMethodName, [], function() use ($columnName, $propertyName) {
+                    return [
+                        "if (\$c = \$this->getSchema()->getColumn(\"$columnName\")) {",
+                        "   return \$c->inflate(\$this->$propertyName, \$this);",
+                        "}",
+                        "return \$this->$propertyName;",
+                    ];
+                });
             }
         }
 

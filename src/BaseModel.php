@@ -548,8 +548,7 @@ abstract class BaseModel implements
             throw new PrimaryKeyNotFoundException('primary key is not defined.');
         }
 
-        if ($ret && $ret->success || ($pk && $this->getKey())) {
-            // is loaded
+        if ($ret && $ret->success) {
             return $ret;
         }
         return $this->create($args);
@@ -1006,15 +1005,15 @@ abstract class BaseModel implements
         // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
         $stm = $conn->prepare($sql);
         $stm->execute($arguments->toArray());
-        if (false === ($this->_data = $stm->fetch(PDO::FETCH_ASSOC))) {
+        if (false === ($data = $stm->fetch(PDO::FETCH_ASSOC))) {
             // Record not found is not an exception
             return $this->reportError('Record not found', [
                 'sql' => $sql,
             ]);
         }
-
+        $this->setData($data);
         return $this->reportSuccess('Data loaded', array(
-            'id' => (isset($this->_data[$pk]) ? $this->_data[$pk] : null),
+            'id' => $this->getKey(),
             'sql' => $sql,
             'type' => Result::TYPE_LOAD,
         ));
@@ -1878,7 +1877,6 @@ abstract class BaseModel implements
         if ($c = $this->getSchema()->getColumn($n)) {
             return $c->inflate($value, $this);
         }
-
         return $value;
     }
 
