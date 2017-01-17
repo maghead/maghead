@@ -660,7 +660,7 @@ class BaseCollection
         $records = array();
         foreach ($list as $item) {
             $model = $schema->newModel();
-            $model->setStashedData($item);
+            $model->setData($item);
             $records[] = $model;
         }
         $collection->setRecords($records);

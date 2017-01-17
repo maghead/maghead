@@ -3,9 +3,10 @@
 namespace LazyRecord;
 
 use SQLBuilder\Driver\PDODriverFactory;
-use PDO;
+use SQLBuilder\Raw;
 use LazyRecord\DSN\DSNParser;
 use LazyRecord\DSN\DSN;
+use PDO;
 
 class Connection extends PDO
 {
@@ -73,5 +74,10 @@ class Connection extends PDO
     public function __clone()
     {
         $this->dsn = clone $this->dsn;
+    }
+
+    public function raw($val)
+    {
+        return new Raw($val);
     }
 }

@@ -34,11 +34,46 @@ class MetadataBase
     protected $table = '__meta__';
     public $readSourceId = 'default';
     public $writeSourceId = 'default';
+    public $id;
+    public $name;
+    public $value;
     public function getSchema()
     {
         if ($this->_schema) {
            return $this->_schema;
         }
         return $this->_schema = SchemaLoader::load('LazyRecord\\Model\\MetadataSchemaProxy');
+    }
+    public function getKeyName()
+    {
+        return 'id';
+    }
+    public function getKey()
+    {
+        return $this->id;
+    }
+    public function hasKey()
+    {
+        return isset($this->id);
+    }
+    public function setKey($key)
+    {
+        return $this->id = $key;
+    }
+    public function getData()
+    {
+        return ["id" => $this->id, "name" => $this->name, "value" => $this->value];
+    }
+    public function setData(array $data)
+    {
+        if (array_key_exists("id", $data)) { $this->id = $data["id"]; }
+        if (array_key_exists("name", $data)) { $this->name = $data["name"]; }
+        if (array_key_exists("value", $data)) { $this->value = $data["value"]; }
+    }
+    public function empty()
+    {
+        $this->id = NULL;
+        $this->name = NULL;
+        $this->value = NULL;
     }
 }

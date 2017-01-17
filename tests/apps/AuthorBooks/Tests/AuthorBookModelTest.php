@@ -30,15 +30,15 @@ class AuthorBookModelTest extends ModelTestCase
             'confirmed' => true,
         ));
         $this->resultOK(true,$ret);
-        $this->assertTrue($a->confirmed,'confirmed should be true');
+        $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
         $a->reload();
-        $this->assertTrue($a->confirmed,'confirmed should be true');
+        $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
 
         $a = new Author;
         $ret = $a->load([ 'name' => 'a' ]);
         $this->assertNotNull($a->id);
         $this->resultOK(true,$ret);
-        $this->assertTrue($a->confirmed);
+        $this->assertTrue($a->isConfirmed());
     }
 
     /**
@@ -143,7 +143,7 @@ class AuthorBookModelTest extends ModelTestCase
 
         ok( ! isset($columns['account_brief']) );
 
-        is('Pedro(pedro@gmail.com)',$author->get('account_brief'));
+        $this->assertEquals('Pedro(pedro@gmail.com)',$author->get('account_brief'));
 
         ok( $display = $author->display('account_brief'));
         $authors = new AuthorCollection;
@@ -214,14 +214,14 @@ class AuthorBookModelTest extends ModelTestCase
         is( $id , $author->id );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
-        is( false , $author->confirmed );
+        $this->assertFalse($author->isConfirmed() );
 
         $ret = $author->load(array( 'name' => 'Foo' ));
         ok( $ret->success );
         is( $id , $author->id );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
-        is( false , $author->confirmed );
+        $this->assertFalse($author->isConfirmed());
 
         $ret = $author->update(array('name' => 'Bar'));
         $this->resultOK(true, $ret);
@@ -230,9 +230,6 @@ class AuthorBookModelTest extends ModelTestCase
 
         $ret = $author->delete();
         $this->resultOK(true, $ret);
-
-        $data = $author->toArray();
-        ok( empty($data), 'should be empty');
     }
 
 
@@ -266,13 +263,13 @@ class AuthorBookModelTest extends ModelTestCase
 
         $ret = $author->update(array( 'name' => 'I' ));
         $this->resultOK(true, $ret);
-        is( $id , $author->id );
-        is( 'I', $author->name );
+        $this->assertEquals( $id , $author->id );
+        $this->assertEquals( 'I', $author->name );
 
         $ret = $author->update(array('name' => null));
         $this->resultOK(true, $ret);
-        is( $id , $author->id );
-        is( null, $author->name );
+        $this->assertEquals($id , $author->id );
+        $this->assertEquals(null, $author->name );
 
         $ret = $author->load( $author->id );
         $this->resultOK(true, $ret);
@@ -362,7 +359,7 @@ class AuthorBookModelTest extends ModelTestCase
         is( 1, $author->author_books->size() );
         ok( $author->author_books[0] );
         ok( $author->author_books[0]->created_on );
-        is( '2010-01-01', $author->author_books[0]->created_on->format('Y-m-d'));
+        is('2010-01-01', $author->author_books[0]->getCreatedOn()->format('Y-m-d'));
 
         $author->books[] = array( 
             'title' => 'Programming Perl II',
@@ -397,7 +394,7 @@ class AuthorBookModelTest extends ModelTestCase
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer
         // ok( is_string( $author->getValue('id') ) );
-        ok( is_integer( $author->get('id') ) );
+        ok($author->getId());
 
         $book = $author->books->create(array( 'title' => 'Book Test' ));
         ok( $book );

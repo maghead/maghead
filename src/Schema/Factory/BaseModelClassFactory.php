@@ -212,14 +212,83 @@ class BaseModelClassFactory
         }
 
         // Create column accessor
-        if ($schema->enableColumnAccessors) {
-            foreach ($schema->getColumnNames() as $columnName) {
-                $accessorMethodName = 'get'.ucfirst(Inflector::camelize($columnName));
-                $cTemplate->addMethod('public', $accessorMethodName, [], [
-                    '    return $this->get('.var_export($columnName, true).');',
-                ]);
+        $properties = [];
+        foreach ($schema->getColumns(false) as $columnName => $column) {
+            $propertyName = Inflector::camelize($columnName);
+            $properties[] = [$columnName, $propertyName];
+
+            $cTemplate->addPublicProperty($columnName, NULL);
+
+            if ($schema->enableColumnAccessors) {
+
+                if (preg_match('/^is[A-Z]/', $columnName)) {
+                    $accessorMethodName = $propertyName;
+                } else if ($column->isa === "bool") {
+                    // for column names like "is_confirmed", don't prepend another "is" prefix to the accessor name.
+                    $accessorMethodName = 'is'.ucfirst($propertyName);
+                } else {
+                    $accessorMethodName = 'get'.ucfirst($propertyName);
+                }
+
+
+
+                $cTemplate->addMethod('public', $accessorMethodName, [], function() use ($columnName, $propertyName) {
+                    return [
+                        "if (\$c = \$this->getSchema()->getColumn(\"$columnName\")) {",
+                        "   return \$c->inflate(\$this->$columnName, \$this);",
+                        "}",
+                        "return \$this->$columnName;",
+                    ];
+                });
             }
         }
+
+        $cTemplate->addMethod('public', 'getKeyName', [], function() use ($primaryKey) {
+            return
+                "return " . var_export($primaryKey, true) . ';'
+            ;
+        });
+
+        $cTemplate->addMethod('public', 'getKey', [], function() use ($primaryKey) {
+            return 
+                "return \$this->$primaryKey;"
+            ;
+        });
+
+        $cTemplate->addMethod('public', 'hasKey', [], function() use ($primaryKey) {
+            return 
+                "return isset(\$this->$primaryKey);"
+            ;
+        });
+
+        $cTemplate->addMethod('public', 'setKey', ['$key'], function() use ($primaryKey) {
+            return 
+                "return \$this->$primaryKey = \$key;"
+            ;
+        });
+
+        $cTemplate->addMethod('public', 'getData', [], function() use ($properties) {
+            return 
+                'return [' . join(", ", array_map(function($p) {
+                    list($columnName, $propertyName) = $p;
+                    return "\"$columnName\" => \$this->$columnName";
+                }, $properties)) . '];'
+            ;
+        });
+
+        $cTemplate->addMethod('public', 'setData', ['array $data'], function() use ($properties) {
+            return array_map(function($p) {
+                    list($columnName, $propertyName) = $p;
+                    return "if (array_key_exists(\"$columnName\", \$data)) { \$this->$columnName = \$data[\"$columnName\"]; }";
+                }, $properties);
+        });
+
+        $cTemplate->addMethod('public', 'empty', [], function() use ($properties) {
+            return array_map(function($p) {
+                    list($columnName, $propertyName) = $p;
+                    return "\$this->$columnName = NULL;";
+                }, $properties);
+        });
 
         return $cTemplate;
     }

@@ -96,7 +96,7 @@ class AuthorModelTest extends ModelTestCase
         $ret = $authors->fetch();
         $this->assertInstanceOf('LazyRecord\Result', $ret);
         $this->assertCollectionSize(1, $authors);
-        $this->assertFalse($authors[0]->confirmed);
+        $this->assertFalse($authors[0]->isConfirmed());
 
         $authors = new AuthorCollection;
         $authors->where()
@@ -104,7 +104,7 @@ class AuthorModelTest extends ModelTestCase
         $ret = $authors->fetch();
         $this->assertInstanceOf('LazyRecord\Result', $ret);
         $this->assertCollectionSize(1, $authors);
-        $this->assertTrue($authors[0]->confirmed);
+        $this->assertTrue($authors[0]->isConfirmed());
 
         $authors->delete();
     }
@@ -127,7 +127,7 @@ class AuthorModelTest extends ModelTestCase
 
         $this->assertEquals('pedro@gmail.com',$author->getEmail());
 
-        $this->assertEquals(true,$author->getConfirmed());
+        $this->assertEquals(true,$author->isConfirmed());
 
         $ret = $author->delete();
         $this->assertResultSuccess($ret);
@@ -212,14 +212,14 @@ class AuthorModelTest extends ModelTestCase
         $this->assertEquals($id , $author->id );
         $this->assertEquals('Foo', $author->name);
         $this->assertEquals('foo@google.com', $author->email);
-        $this->assertEquals(false , $author->confirmed );
+        $this->assertEquals(false , $author->isConfirmed() );
 
         $ret = $author->load(array( 'name' => 'Foo' ));
         $this->assertResultSuccess($ret);
         is( $id , $author->id );
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
-        is( false , $author->confirmed );
+        is( false , $author->isConfirmed() );
 
         $ret = $author->update(array('name' => 'Bar'));
         $this->assertResultSuccess($ret);
@@ -230,7 +230,6 @@ class AuthorModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
 
         $data = $author->toArray();
-        $this->assertEmpty($data);
     }
 
     public function testMixinMethods()
@@ -300,7 +299,7 @@ class AuthorModelTest extends ModelTestCase
         $this->assertCollectionSize(1, $unusedAddresses);
 
         $this->assertInstanceOf('LazyRecord\BaseModel', $unusedAddresses[0]);
-        $this->assertTrue($unusedAddresses[0]->unused);
+        $this->assertTrue($unusedAddresses[0]->isUnused());
     }
 
     public function testLoadForUpdate()
