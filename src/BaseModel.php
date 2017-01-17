@@ -942,7 +942,7 @@ abstract class BaseModel implements
             ]);
         }
         $this->_preparedFindStm->closeCursor();
-        $this->setStashedData($data);
+        $this->setData($data);
         return $this->reportSuccess('Data loaded', [
             'id'   => $this->getKey(),
             'sql'  => static::FIND_BY_PRIMARY_KEY_SQL,
@@ -1026,7 +1026,7 @@ abstract class BaseModel implements
     public static function fromArray(array $array)
     {
         $record = new static();
-        $record->setStashedData($array);
+        $record->setData($array);
         return $record;
     }
 
@@ -1236,7 +1236,7 @@ abstract class BaseModel implements
             if (isset($options['reload'])) {
                 $this->reload();
             } else {
-                $this->setStashedData($args);
+                $this->setData($args);
             }
 
         $this->afterUpdate($origArgs);
@@ -1285,7 +1285,7 @@ abstract class BaseModel implements
 
         $stm = $conn->prepare($sql);
         $stm->execute($arguments->toArray());
-        $this->setStashedData($args);
+        $this->setData($args);
         return $this->reportSuccess('Update success', array(
             'sql' => $sql,
             'type' => Result::TYPE_UPDATE,
@@ -1325,7 +1325,7 @@ abstract class BaseModel implements
             $pkId = $conn->lastInsertId();
         }
 
-        $this->setStashedData($args);
+        $this->setData($args);
         $this->setKey($pkId);
         return $this->reportSuccess('Create success', array(
             'sql' => $sql,
@@ -1345,9 +1345,9 @@ abstract class BaseModel implements
         $k = static::PRIMARY_KEY;
         $kVal = $this->getKey();
         if ($kVal) {
-            return $this->update($this->getStashedData());
+            return $this->update($this->getData());
         }
-        return $this->create($this->getStashedData());
+        return $this->create($this->getData());
     }
 
     /**
@@ -1453,7 +1453,7 @@ abstract class BaseModel implements
                 'args' => $args,
             ));
         }
-        $this->setStashedData($data);
+        $this->setData($data);
         return $this->reportSuccess('Data loaded', array(
             'id'  => $this->getKey(),
             'sql' => $sql,
@@ -1586,21 +1586,7 @@ abstract class BaseModel implements
         $this->_data = array();
     }
 
-    /**
-     * get current record data stash.
-     *
-     * DEPRECATED
-     *
-     * @return array record data stash
-     * @codeCoverageIgnore
-     */
     public function getData()
-    {
-        trigger_error(__METHOD__.' is deprecated, please use getStashedData instead.', E_USER_DEPRECATED);
-        return $this->_data;
-    }
-
-    public function getStashedData()
     {
         return $this->_data;
     }
@@ -1608,18 +1594,9 @@ abstract class BaseModel implements
     /**
      * Set raw data.
      *
-     * DEPRECATED
-     *
      * @param array $array
-     * @codeCoverageIgnore
      */
     public function setData(array $array)
-    {
-        trigger_error(__METHOD__.' is deprecated.', E_USER_DEPRECATED);
-        $this->_data = $array;
-    }
-
-    public function setStashedData(array $array)
     {
         $this->_data = $array;
     }
@@ -1895,7 +1872,7 @@ abstract class BaseModel implements
      *
      * @return mixed
      */
-    public function inflateColumnValue($n)
+    protected function inflateColumnValue($n)
     {
         $value = isset($this->_data[$n]) ? $this->_data[$n] : null;
         if ($c = $this->getSchema()->getColumn($n)) {
@@ -2064,8 +2041,8 @@ abstract class BaseModel implements
 
     public function __clone()
     {
-        $d = $this->getStashedData();
-        $this->setStashedData($d);
+        $d = $this->getData();
+        $this->setData($d);
         $this->autoReload = $this->autoReload;
     }
 
@@ -2087,7 +2064,7 @@ abstract class BaseModel implements
         if ($this->hasKey()) {
             $args[$pk] = $this->getKey();
         }
-        $data = $this->getStashedData();
+        $data = $this->getData();
         return $this->newAction('Delete', array_merge($data, $args), $options);
     }
 
@@ -2145,13 +2122,13 @@ abstract class BaseModel implements
 
     public function serialize()
     {
-        return serialize($this->getStashedData());
+        return serialize($this->getData());
     }
 
     public function unserialize($str)
     {
         $data = unserialize($str);
-        $this->setStashedData($data);
+        $this->setData($data);
     }
 
     public function getAlias()

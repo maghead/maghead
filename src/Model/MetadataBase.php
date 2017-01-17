@@ -57,11 +57,11 @@ class MetadataBase
     {
         return $this->id = $key;
     }
-    public function getStashedData()
+    public function getData()
     {
         return ["id" => $this->id, "name" => $this->name, "value" => $this->value];
     }
-    public function setStashedData(array $data)
+    public function setData(array $data)
     {
         if (array_key_exists("id", $data)) { $this->id = $data["id"]; }
         if (array_key_exists("name", $data)) { $this->name = $data["name"]; }

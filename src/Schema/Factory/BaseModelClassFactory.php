@@ -251,7 +251,7 @@ class BaseModelClassFactory
             ;
         });
 
-        $cTemplate->addMethod('public', 'getStashedData', [], function() use ($properties) {
+        $cTemplate->addMethod('public', 'getData', [], function() use ($properties) {
             return 
                 'return [' . join(", ", array_map(function($p) {
                     list($columnName, $propertyName) = $p;
@@ -260,7 +260,7 @@ class BaseModelClassFactory
             ;
         });
 
-        $cTemplate->addMethod('public', 'setStashedData', ['array $data'], function() use ($properties) {
+        $cTemplate->addMethod('public', 'setData', ['array $data'], function() use ($properties) {
             return array_map(function($p) {
                     list($columnName, $propertyName) = $p;
                     return "if (array_key_exists(\"$columnName\", \$data)) { \$this->$propertyName = \$data[\"$columnName\"]; }";
