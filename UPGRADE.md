@@ -8,6 +8,13 @@ $book->is_published; // will return the raw value from database.
 $book->isPublished() // will return Boolean value (true or false)
 ```
 
+2. boolean columns will generate `isXXX` accessors.
+
+```
+"published" => "isPublished()"
+"is_published" => "isPublished()"
+```
+
 
 
 UPGRADE TO 2.0
