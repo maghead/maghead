@@ -717,7 +717,6 @@ abstract class BaseModel implements
 
         $k = static::PRIMARY_KEY;
         $sql = $vars = null;
-        $this->_data = array();
         $this->empty();
         $stm = null;
 
@@ -1390,7 +1389,7 @@ abstract class BaseModel implements
         $schema = $this->getSchema();
         foreach ($args as $k => $v) {
             if ($c = $schema->getColumn($k)) {
-                $args[ $k ] = $this->_data[$k] = $c->deflate($v);
+                $args[ $k ] = $c->deflate($v);
             }
         }
         return $args;
@@ -1558,20 +1557,9 @@ abstract class BaseModel implements
         }
     }
 
-    public function getData()
-    {
-        return $this->_data;
-    }
+    abstract public function getData();
 
-    /**
-     * Set raw data.
-     *
-     * @param array $array
-     */
-    public function setData(array $array)
-    {
-        $this->_data = $array;
-    }
+    abstract public function setData(array $data);
 
     /**
      * Do we have this column ?
