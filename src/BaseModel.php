@@ -919,6 +919,11 @@ abstract class BaseModel implements
     /**
      * Find record.
      *
+     * TODO: right now we can't rewrite this method into static method because:
+     *
+     * 1. data source is dynamic.
+     * 2. require a static property to save the prepared statement object.
+     *
      * @param array condition array
      */
     public function find($pkId)
