@@ -887,7 +887,8 @@ abstract class BaseModel implements
      * @param array condition array
      * @return BaseModel
      */
-    abstract static public function find($pkId);
+    // PHP 5.6 doesn't support static abstract
+    // abstract static public function find($pkId);
 
     static protected function _stmFetch($stm, $args)
     {
