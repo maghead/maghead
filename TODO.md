@@ -22,7 +22,9 @@ TODO
         - BaseModel::find now returns the found record instead of load the data 
         to the object itself.
 
-    - [ ] `Result->getKey()` to make the API consistent.
+    - [x] `Result->getKey()` to make the API consistent.
+    - [x] `BaseModel::find` is now static method.
+    - [x] `BaseModel::createAndLoad` is now static method.
     - [ ] `getReadConnection` could be static method??
 
 
