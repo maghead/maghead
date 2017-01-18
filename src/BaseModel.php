@@ -1379,9 +1379,7 @@ abstract class BaseModel implements
      */
     public function getValue($name)
     {
-        if (isset($this->$name)) {
-            return $this->$name;
-        }
+        return $this->$name;
     }
 
     abstract public function getData();
@@ -1422,13 +1420,12 @@ abstract class BaseModel implements
 
             $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];
-            if (!$this->hasValue($sColumn)) {
+            if (!$this->$sColumn) {
                 return;
             }
 
             // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
-
-            $sValue = $this->getValue($sColumn);
+            $sValue = $this->$sColumn;
 
             $model = $relation->newForeignModel();
             $model->load(array($fColumn => $sValue));
@@ -1442,12 +1439,12 @@ abstract class BaseModel implements
             $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];
 
-            if (!$this->hasValue($sColumn)) {
+            if (!$this->$sColumn) {
                 return;
             }
             // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
 
-            $sValue = $this->getValue($sColumn);
+            $sValue = $this->$sColumn;
 
             $collection = $relation->getForeignCollection();
             $collection->where()
@@ -1467,11 +1464,11 @@ abstract class BaseModel implements
             $fColumn = $relation['foreign_column'];
             $fpSchema = SchemaLoader::load($fSchema->getSchemaProxyClass());
 
-            if (!$this->hasValue($sColumn)) {
+            if (!$this->$sColumn) {
                 return;
             }
 
-            $sValue = $this->getValue($sColumn);
+            $sValue = $this->$sColumn;
             $model = $fpSchema->newModel();
             $ret = $model->load(array($fColumn => $sValue));
 
