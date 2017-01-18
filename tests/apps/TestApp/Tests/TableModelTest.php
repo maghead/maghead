@@ -16,7 +16,6 @@ class TableModelTest extends ModelTestCase
      */
     public function testCreate() {
         $table = new Table;
-        ok($table);
         $ret = $table->create(array( 
             'columns' => array('c1', 'c2'),
             'rows' => array(
@@ -24,6 +23,7 @@ class TableModelTest extends ModelTestCase
             ),
         ));
         $this->assertResultSuccess($ret, 'Table Create results success');
+        $table = $table->find($ret->id);
 
         $ret = $table->update(array(
             'columns' => array('b1', 'b2'),

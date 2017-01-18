@@ -17,6 +17,8 @@ class PageModelTest extends ModelTestCase
         $ret = $page->create([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
         $this->assertResultSuccess($ret);
 
+        $page = $page->find($ret->id);
+
         $ret = $page->delete();
         $this->assertResultSuccess($ret);
     }
@@ -24,10 +26,10 @@ class PageModelTest extends ModelTestCase
 
     public function testSaveRevision() {
         $page = new Page;
-        $ret = $page->create([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
-        $this->assertResultSuccess($ret);
+        $page = $page->createAndLoad([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
 
         $pageRev1 = $page->saveWithRevision();
+
         $this->assertNotEquals($pageRev1->id, $page->id);
         $this->assertGreaterThan($page->id, $pageRev1->id);
 
@@ -41,8 +43,7 @@ class PageModelTest extends ModelTestCase
     public function testSaveRevisionWhenUpdate()
     {
         $page = new Page;
-        $ret = $page->create([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
-        $this->assertResultSuccess($ret);
+        $page = $page->createAndLoad([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
 
         $page->saveRevisionWhenUpdate = true;
 
@@ -52,8 +53,7 @@ class PageModelTest extends ModelTestCase
 
     public function testRevisionRelationship() {
         $page = new Page;
-        $ret = $page->create([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
-        $this->assertResultSuccess($ret);
+        $page = $page->createAndLoad([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
 
         $pageRev1 = $page->saveWithRevision();
         $this->assertNotEquals($pageRev1->id, $page->id);

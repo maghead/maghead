@@ -16,25 +16,26 @@ class AuthorAddressModelTest extends ModelTestCase
     public function testHasManyRelationFetch()
     {
         $author = new \AuthorBooks\Model\Author;
+        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertNotFalse($author);
 
-        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        $this->assertResultSuccess($ret);
         $address = new Address;
-        $ret = $address->create(array(
+        $address = $address->createAndLoad(array(
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei',
         ));
-        $this->assertResultSuccess($ret);
-
+        $this->assertNotFalse($address);
+        
+        $this->assertNotNull($address->author_id);
         $this->assertNotNull($address->author, 'has many relation fetch');
-        $this->assertNotNull($address->author->id);
+        $this->assertNotNull($address->author->getId());
         $this->assertEquals($author->id, $address->author->id);
 
-        $ret = $address->create(array( 
+        $address = $address->createAndLoad(array( 
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei II',
         ));
-        $this->assertResultSuccess($ret);
+        $this->assertNotFalse($address);
 
         // xxx: provide getAddresses() method generator
         $addresses = $author->addresses;
@@ -67,16 +68,16 @@ class AuthorAddressModelTest extends ModelTestCase
     public function testHasManyRelationCreate()
     {
         $author = new Author;
-        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        $this->assertResultSuccess($ret);
-        ok( $author->id );
+        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertNotFalse($author);
+        $this->assertNotNull($author->id);
 
         $address = $author->addresses->create(array(
             'address' => 'farfaraway'
         ));
 
-        ok($address->id);
-        ok($address->author_id);
+        $this->assertNotNull($address->id);
+        $this->assertNotNull($address->author_id);
         $this->assertEquals( $author->id, $address->author_id );
 
         $this->assertEquals('farfaraway' , $address->address);
@@ -91,13 +92,12 @@ class AuthorAddressModelTest extends ModelTestCase
     public function testHasManyRelationCreate2()
     {
         $author = new \AuthorBooks\Model\Author;
-        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        $this->assertResultSuccess($ret);
-        $this->assertResultSuccess($ret);
+        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertNotFalse($author);
 
         // append items
-        $author->addresses[] = array( 'address' => 'Harvard' );
-        $author->addresses[] = array( 'address' => 'Harvard II' );
+        $author->addresses->createAndAppend(['address' => 'Harvard']);
+        $author->addresses->createAndAppend(['address' => 'Harvard II']);
 
         is(2, $author->addresses->size() , 'just two item' );
 

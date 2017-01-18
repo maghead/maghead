@@ -1,8 +1,9 @@
 <?php
 use SQLBuilder\Raw;
-use AuthorBooks\Model\Book ;
 use LazyRecord\Testing\ModelTestCase;
 use LazyRecord\Result;
+use AuthorBooks\Model\Author;
+use AuthorBooks\Model\Book;
 /**
  * Testing models:
  *   1. Author
@@ -70,17 +71,17 @@ class BasicCRUDTest extends ModelTestCase
     {
         $results = array();
         $book1 = new Book;
-        $ret = $book1->create(array( 'title' => 'Book1' ));
-        $this->assertResultSuccess($ret);
+        $book1 = $book1->createAndLoad(array( 'title' => 'Book1' ));
+        $this->assertNotFalse($book1);
 
         $book2 = new Book;
-        $ret = $book2->create(array( 'title' => 'Book2' ));
-        $this->assertResultSuccess($ret);
+        $book2 = $book2->createAndLoad(array( 'title' => 'Book2' ));
+        $this->assertNotFalse($book2);
 
         $findBook = new Book;
         $found = $findBook->find($book1->id);
-        $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
         $this->assertNotFalse($found);
+        $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
         $this->assertEquals($book1->id, $found->id);
 
 
@@ -99,10 +100,12 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $b->create(array( 'title' => 'Should Create, not load this' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
+        $b = $b->find($ret->id);
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
+        $b = $b->find($ret->id);
 
         $id = $b->id;
         $this->assertNotNull($id);
@@ -112,7 +115,6 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertEquals($id, $b->id, 'is the same ID');
         $this->assertEquals(Result::TYPE_LOAD, $ret->type);
         $results[] = $ret;
-
 
         $b2 = new Book;
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
@@ -130,6 +132,7 @@ class BasicCRUDTest extends ModelTestCase
         $b3 = new Book;
         $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         $this->assertResultSuccess($ret);
+        $b3 = $b3->find($ret->id);
         $this->assertNotEquals($id, $b3->id , 'we should create anther one'); 
         $results[] = $ret;
 
@@ -177,6 +180,7 @@ class BasicCRUDTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
+        $author = $author->find($ret->id);
 
         $ret = $author->update(array('id' => new Raw('id + 3') ));
         $this->assertResultSuccess($ret);
@@ -185,10 +189,10 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testManyToManyRelationRecordCreate()
     {
-        $author = new \AuthorBooks\Model\Author;
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = new Author;
+        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertNotNull( 
-            $book = $author->books->create( array( 
+            $book = $author->books->create(array( 
                 'title' => 'Programming Perl I',
                 ':author_books' => array( 'created_on' => '2010-01-01' ),
             ))
@@ -235,10 +239,12 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
 
+        $author = $author->find($ret->id);
+
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer
         // ok( is_string( $author->getValue('id') ) );
-        $this->assertTrue(is_integer($author->get('id')));
+        $this->assertTrue(is_integer($author->getId()));
         $this->successfulDelete($author);
     }
 
@@ -246,7 +252,7 @@ class BasicCRUDTest extends ModelTestCase
     public function testManyToManyRelationFetchRecord()
     {
         $author = new \AuthorBooks\Model\Author;
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
         $book = $author->books->create(array( 'title' => 'Book Test' ));
         $this->assertNotNull( $book );
@@ -260,23 +266,24 @@ class BasicCRUDTest extends ModelTestCase
         $book = new \AuthorBooks\Model\Book ;
 
         // should not include this
-        $this->assertTrue( $book->create(array( 'title' => 'Book I Ex' ))->success );
-        $this->assertTrue( $book->create(array( 'title' => 'Book I' ))->success );
+        $this->assertNotFalse( $book = $book->createAndLoad(array( 'title' => 'Book I Ex' )) );
+        $this->assertNotFalse( $book = $book->createAndLoad(array( 'title' => 'Book I' )) );
 
         $ret = $ab->create(array(
             'author_id' => $author->id,
             'book_id' => $book->id,
         ));
         $this->assertResultSuccess($ret);
+        $ab = $ab->find($ret->id);
 
-        $this->assertTrue( $book->create(array( 'title' => 'Book II' ))->success );
-        $ab->create(array( 
+        $this->assertNotFalse($book = $book->createAndLoad(array( 'title' => 'Book II' )) );
+        $ab = $ab->createAndLoad(array( 
             'author_id' => $author->id,
             'book_id' => $book->id,
         ));
 
-        $this->assertTrue( $book->create(array( 'title' => 'Book III' ))->success );
-        $ab->create(array( 
+        $this->assertNotFalse( $book = $book->createAndLoad(array( 'title' => 'Book III' )) );
+        $ab = $ab->createAndLoad(array( 
             'author_id' => $author->id,
             'book_id' => $book->id,
         ));
@@ -284,8 +291,7 @@ class BasicCRUDTest extends ModelTestCase
         // retrieve books from relationshipt
         $author->flushCache();
         $books = $author->books;
-        $this->assertEquals( 3, $books->size() , 'We have 3 books' );
-
+        $this->assertEquals(3, $books->size() , 'We have 3 books' );
 
         $bookTitles = array();
         foreach( $books->items() as $item ) {
@@ -304,8 +310,7 @@ class BasicCRUDTest extends ModelTestCase
     public function testHasManyRelationCreate2()
     {
         $author = new \AuthorBooks\Model\Author;
-        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        $this->assertResultSuccess($ret);
+        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
         // append items
         $author->addresses[] = array( 'address' => 'Harvard' );
@@ -330,8 +335,7 @@ class BasicCRUDTest extends ModelTestCase
     public function testHasManyRelationCreate()
     {
         $author = new \AuthorBooks\Model\Author;
-        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        $this->assertResultSuccess($ret);
+        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
         $address = $author->addresses->create(array(
             'address' => 'farfaraway'
@@ -348,16 +352,15 @@ class BasicCRUDTest extends ModelTestCase
     public function testHasManyRelationFetch()
     {
         $author = new \AuthorBooks\Model\Author;
-        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
-        $this->assertResultSuccess($ret);
+        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertNotFalse($author);
 
         $address = new \AuthorBooks\Model\Address;
-        $ret = $address->create(array(
+        $address = $address->createAndLoad(array(
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei',
         ));
-        $this->assertResultSuccess($ret);
-
+        $this->assertNotFalse($address);
         $this->assertInstanceOf('LazyRecord\BaseModel' , $address->author);
         $this->assertEquals( $author->id, $address->author->id );
 
@@ -388,6 +391,8 @@ class BasicCRUDTest extends ModelTestCase
             'view' => 0,
         ));
         $this->assertResultSuccess($ret);
+        $n = $n->find($ret->id);
+
         $this->assertEquals( 0 , $n->view );
         $ret = $n->update(array( 
             'view' => new Raw('view + 1')
@@ -416,6 +421,7 @@ class BasicCRUDTest extends ModelTestCase
         $b = new \AuthorBooks\Model\Book ;
         $ret = $b->create(array( 'title' => 'Zero number inflator' , 'view' => 0 ));
         $this->assertResultSuccess($ret);
+        $b = $b->find($ret->id);
         $this->assertNotNull($b->id);
         $this->assertEquals(0 , $b->view);
 
@@ -434,6 +440,7 @@ class BasicCRUDTest extends ModelTestCase
         $b = new \AuthorBooks\Model\Book;
         $ret = $b->create(array('title' => 'Create for reload test' , 'view' => 0));
         $this->assertResultSuccess($ret);
+        $b = $b->find($ret->id);
 
         // test incremental with Raw statement
         $ret = $b->update(array('view'  => new Raw('view + 1') ), array('reload' => true));

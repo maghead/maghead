@@ -30,6 +30,9 @@ class AuthorBookModelTest extends ModelTestCase
             'confirmed' => true,
         ));
         $this->resultOK(true,$ret);
+
+        $a = $a->find($ret->id);
+
         $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
         $a->reload();
         $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
@@ -54,7 +57,10 @@ class AuthorBookModelTest extends ModelTestCase
             'confirmed' => false,
         ));
         $this->resultOK(true,$ret);
-        $this->assertFalse($a->confirmed);
+
+        $a = $a->find($ret->id);
+        
+        $this->assertFalse($a->isConfirmed());
 
         $ret = $a->create(array(
             'name' => 'b',
@@ -63,7 +69,10 @@ class AuthorBookModelTest extends ModelTestCase
             'confirmed' => true,
         ));
         $this->resultOK(true,$ret);
-        $this->assertTrue($a->confirmed);
+
+        $a = $a->find($ret->id);
+
+        $this->assertTrue($a->isConfirmed());
 
         $authors = new AuthorCollection;
         $this->assertEquals(2,$authors->size(), 'created two authors');
@@ -136,6 +145,9 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
+        $author = $author->find($ret->id);
+
+
         ok($v = $author->getColumn('account_brief')); // virtual colun
         $this->assertTrue($v->virtual);
 
@@ -143,7 +155,7 @@ class AuthorBookModelTest extends ModelTestCase
 
         ok( ! isset($columns['account_brief']) );
 
-        $this->assertEquals('Pedro(pedro@gmail.com)',$author->get('account_brief'));
+        $this->assertEquals('Pedro(pedro@gmail.com)',$author->account_brief);
 
         ok( $display = $author->display('account_brief'));
         $authors = new AuthorCollection;
@@ -196,16 +208,19 @@ class AuthorBookModelTest extends ModelTestCase
 
         $ret = $a2->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
         ok( $ret->success );
+        $a2 = $a2->find($ret->id);
         ok( $a2->id );
 
         $ret = $a2->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
         ok( $ret->success );
+        $a2 = $a2->find($ret->id);
         ok( $a2->id );
 
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->resultOK(true, $ret);
         ok( $id = $ret->id );
+        $author = $author->find($ret->id);
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
 
@@ -245,6 +260,7 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         result_ok($ret);
+        $author = $author->find($ret->id);
         $ret = $author->update(array('id' => new Raw('id + 3') ));
         result_ok($ret);
     }
@@ -259,6 +275,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true, $ret);
 
+        $author = $author->find($ret->id);
         $id = $author->id;
 
         $ret = $author->update(array( 'name' => 'I' ));
@@ -288,30 +305,36 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'zz3',
         ]);
         $this->assertResultSuccess($ret);
+        $author = $author->find($ret->id);
 
         $ab = new AuthorBook;
         $book = new \AuthorBooks\Model\Book;
 
         $ret = $book->create(array( 'title' => 'Book I' ));
         $this->assertResultSuccess($ret);
+        $book = $book->find($ret->id);
 
         $ret = $ab->create([
             'author_id' => $author->id,
             'book_id' => $book->id,
         ]);
         $this->assertResultSuccess($ret);
+        $ab = $ab->find($ret->id);
 
         $ret = $book->create(array( 'title' => 'Book II' ));
         $this->assertResultSuccess($ret);
+        $book = $book->find($ret->id);
 
         $ret = $ab->create([
             'author_id' => $author->id,
             'book_id' => $book->id,
         ]);
         $this->assertResultSuccess($ret);
+        $ab = $ab->find($ret->id);
 
         $ret = $book->create(array( 'title' => 'Book III' ));
         $this->assertResultSuccess($ret);
+        $book = $book->find($ret->id);
 
         $ret = $ab->create(array( 
             'author_id' => $author->id,
@@ -346,10 +369,12 @@ class AuthorBookModelTest extends ModelTestCase
         $author = new Author;
         $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
+        $author = $author->find($ret->id);
+
         ok(
             $book = $author->books->create( array( 
                 'title' => 'Programming Perl I',
-                ':author_books' => array( 'created_on' => '2010-01-01' ),
+                ':author_books' => ['created_on' => '2010-01-01'],
             ))
         );
         ok( $book->id );
@@ -389,7 +414,7 @@ class AuthorBookModelTest extends ModelTestCase
     public function testManyToManyRelationFetch()
     {
         $author = new Author;
-        $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer
@@ -407,22 +432,22 @@ class AuthorBookModelTest extends ModelTestCase
         $book = new \AuthorBooks\Model\Book;
 
         // should not include this
-        ok( $book->create(array( 'title' => 'Book I Ex' ))->success );
+        ok( $book = $book->createAndLoad(array( 'title' => 'Book I Ex' )) );
+        ok( $book = $book->createAndLoad(array( 'title' => 'Book I' )) );
 
-        ok( $book->create(array( 'title' => 'Book I' ))->success );
-        ok( $ab->create(array( 
+        ok($ab = $ab->createAndLoad(array( 
             'author_id' => $author->id,
             'book_id' => $book->id,
-        ))->success );
+        )));
 
-        ok( $book->create(array( 'title' => 'Book II' ))->success );
+        ok( $book = $book->createAndLoad(array( 'title' => 'Book II' )) );
         $ab->create(array( 
             'author_id' => $author->id,
             'book_id' => $book->id,
         ));
 
-        ok( $book->create(array( 'title' => 'Book III' ))->success );
-        $ab->create(array( 
+        ok( $book = $book->createAndLoad(array( 'title' => 'Book III' )) );
+        $ab = $ab->createAndLoad(array( 
             'author_id' => $author->id,
             'book_id' => $book->id,
         ));

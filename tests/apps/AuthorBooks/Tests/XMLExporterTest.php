@@ -60,14 +60,13 @@ class XMLExporterTest extends ModelTestCase
     public function testRecursiveExporting()
     {
         $author = new Author;
-        $ret = $author->create(array(
+        $author = $author->createAndLoad(array(
             'name' => 'Z',
             'email' => 'z@z',
             'identity' => 'z',
             'updated_on' => '2012-01-01 00:00:00',
             'created_on' => '2012-01-01 00:00:00',
         ));
-        $this->assertResultSuccess($ret);
 
         // Has Many Relationship
         $author->addresses->create([ 'address' => 'far far away' ]);
@@ -77,14 +76,13 @@ class XMLExporterTest extends ModelTestCase
 
 
         $book = new Book;
-        $ret = $book->create([ 
+        $book = $book->createAndLoad([ 
             'title' => 'Run & Skate',
             'published_at' => '2012-01-01 00:00:00',
             'updated_on' => '2012-01-01 00:00:00',
             'created_on' => '2012-01-01 00:00:00',
             'is_selled' => false,
         ]);
-        $this->assertResultSuccess($ret);
 
         // ManyToMany
         $author->author_books->create([
@@ -94,14 +92,13 @@ class XMLExporterTest extends ModelTestCase
 
 
         $book = new Book;
-        $ret = $book->create([ 
+        $book = $book->createAndLoad([ 
             'title' => 'Run & Skate II',
             'updated_on' => '2012-01-01 00:00:00',
             'created_on' => '2012-01-01 00:00:00',
             'published_at' => '2012-01-01 00:00:00',
             'is_selled' => false,
         ]);
-        $this->assertResultSuccess($ret);
         $author->author_books->create([
             'book_id' => $book->id,
             'created_on' => '2012-01-01 00:00:00',

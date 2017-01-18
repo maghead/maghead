@@ -12,13 +12,12 @@ class AuthorFactory {
 
     static function create($name) {
         $author = new Author;
-        $author->create(array(
+        return $author->createAndLoad(array(
             'name' => $name,
             'email' => 'temp@temp' . rand(),
             'identity' => rand(),
             'confirmed' => true,
         ));
-        return $author;
     }
 
 }
@@ -240,8 +239,6 @@ class AuthorCollectionTest extends ModelTestCase
 
     public function testJoinWithAliasAndRelationId() {
         $author = AuthorFactory::create('John');
-        ok($author->id);
-
         $author->addresses[] = array( 'address' => 'Address I' );
         $author->addresses[] = array( 'address' => 'Address II' );
 
@@ -317,14 +314,14 @@ class AuthorCollectionTest extends ModelTestCase
     {
         $author = new Author;
         foreach( range(1,10) as $i ) {
-            $ret = $author->create(array(
+            $author = $author->createAndLoad(array(
                 'name' => 'Foo-' . $i,
                 'email' => 'foo@foo' . $i,
                 'identity' => 'foo' . $i,
                 'confirmed' => true,
             ));
-            $this->assertTrue($author->confirmed , 'is true');
-            $this->assertTrue($ret->success);
+            $this->assertNotFalse($author);
+            $this->assertTrue($author->isConfirmed() , 'is true');
         }
 
         @mkdir('tests/tmp', 0755, true);
@@ -347,14 +344,13 @@ class AuthorCollectionTest extends ModelTestCase
     {
         $author = new Author;
         foreach( range(1,10) as $i ) {
-            $ret = $author->create(array(
+            $author = $author->createAndLoad(array(
                 'name' => 'Foo-' . $i,
                 'email' => 'foo@foo' . $i,
                 'identity' => 'foo' . $i,
                 'confirmed' => true,
             ));
-            ok($author->confirmed , 'is true');
-            ok($ret->success);
+            ok($author->isConfirmed(), 'is true');
         }
 
 
@@ -363,7 +359,7 @@ class AuthorCollectionTest extends ModelTestCase
                 ->equal( 'confirmed' , true );
 
         foreach( $authors as $author ) {
-            ok( $author->confirmed );
+            ok($author->isConfirmed());
         }
         is( 10, $authors->size() ); 
 

@@ -1,5 +1,6 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
+use TestApp\Model\Name;
 
 class NameModelTest extends ModelTestCase
 {
@@ -62,9 +63,10 @@ class NameModelTest extends ModelTestCase
      */
     public function testCreateWithBooleanFalse(array $args)
     {
-        $n = new \TestApp\Model\Name;
+        $n = new Name;
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
+        $n = $n->find($ret->id);
         $this->assertFalse($n->isConfirmed());
     }
 
@@ -75,10 +77,11 @@ class NameModelTest extends ModelTestCase
      */
     public function testCreateWithBooleanNull(array $args)
     {
-        $n = new \TestApp\Model\Name;
+        $n = new Name;
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
-        ok($n->id);
+
+        $n = $n->find($ret->id);
         $this->assertNull($n->isConfirmed());
 
         $ret = $n->load($n->id);
@@ -94,9 +97,11 @@ class NameModelTest extends ModelTestCase
      */
     public function testCreateWithBooleanTrue(array $args)
     {
-        $n = new \TestApp\Model\Name;
+        $n = new Name;
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
+
+        $n = $n->find($ret->id);
         ok($n->id);
 
         $this->assertTrue($n->isConfirmed(), 'Confirmed value should be TRUE.');
@@ -113,7 +118,7 @@ class NameModelTest extends ModelTestCase
      */
     public function testModelClone()
     {
-        $test1 = new \TestApp\Model\Name;
+        $test1 = new Name;
         $test2 = clone $test1;
         $this->assertNotSame($test1, $test2);
     }
@@ -124,9 +129,11 @@ class NameModelTest extends ModelTestCase
      */
     public function testModelColumnFilter()
     {
-        $name = new \TestApp\Model\Name;
+        $name = new Name;
         $ret = $name->create(array('name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John'));
         $this->assertResultSuccess($ret);
+
+        $name = $name->find($ret->id);
         is('XXXX' , $name->address , 'Should be canonicalized' );
     }
 
@@ -137,7 +144,10 @@ class NameModelTest extends ModelTestCase
         /** confirmed will be cast to true **/
         $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ));
         $this->assertResultSuccess( $ret );
-        ok( $n->id );
+        $n = $n->find($ret->id);
+
+        $this->assertNotFalse($n);
+        $this->assertNotNull($n->id);
         $this->assertFalse($n->isConfirmed());
         $this->successfulDelete($n);
     }
@@ -162,19 +172,15 @@ class NameModelTest extends ModelTestCase
 
     public function testModelColumnDefaultValueBuilder()
     {
-        $name = new \TestApp\Model\Name;
+        $name = new Name;
         $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' ));
-
-        $this->assertResultSuccess($ret);
-
         $this->assertNotEmpty($ret->validations);
-
         $this->assertTrue(isset($ret->validations['address']));
         $this->assertTrue($ret->validations['address']['valid']);
-
         ok( $vlds = $ret->getSuccessValidations() );
         count_ok( 1, $vlds );
 
+        $name = $name->find($ret->id);
         ok( $name->id );
         ok( $name->address );
 
@@ -189,17 +195,17 @@ class NameModelTest extends ModelTestCase
 
     public function testLoadFromContstructor()
     {
-        $name = new \TestApp\Model\Name;
-        $ret = $name->create(array( 
+        $name = new Name;
+        $name = $name->createAndLoad(array( 
             'name' => 'John',
             'country' => 'Taiwan',
             'type' => 'type-a',
         ));
-        $this->assertResultSuccess($ret);
-        ok( $name->id );
+        $this->assertNotFalse($name);
+        $this->assertNotNull($name->id);
 
-        $name2 = new \TestApp\Model\Name( $name->id );
-        is( $name2->id , $name->id );
+        $name2 = $name->find($name->id);
+        $this->assertEquals($name2->id , $name->id);
     }
 
     /**
@@ -214,7 +220,9 @@ class NameModelTest extends ModelTestCase
             'type' => 'type-a',
         ));
         $this->assertResultSuccess($ret);
-        $this->assertEquals( 'Type Name A', $name->display( 'type' ) );
+
+        $name = $name->find($ret->id);
+        $this->assertEquals('Type Name A', $name->display('type'));
 
         $xml = $name->toXml();
         $dom = new DOMDocument;
@@ -237,13 +245,13 @@ class NameModelTest extends ModelTestCase
     public function testDeflator()
     {
         $n = new \TestApp\Model\Name;
-        $ret = $n->create(array( 
+        $n = $n->createAndLoad(array( 
             'name' => 'Deflator Test' , 
             'country' => 'Tokyo', 
             'confirmed' => '0',
             'date' => '2011-01-01'
         ));
-        $this->assertResultSuccess($ret);
+        $this->assertNotFalse($n);
 
         $d = $n->getDate();
         $this->assertNotNull($d);
@@ -258,11 +266,11 @@ class NameModelTest extends ModelTestCase
      * @dataProvider nameDataProvider
      * @rebuild false
      */
-    public function testCreateWithName($args)
+    public function testCreateWithDifferentNames($args)
     {
-        $name = new \TestApp\Model\Name;
-        $ret = $name->create($args);
-        $this->assertResultSuccess($ret);
+        $name = new Name;
+        $name = $name->createAndLoad($args);
+
         $ret = $name->delete();
         $this->assertResultSuccess($ret);
     }
@@ -292,13 +300,13 @@ class NameModelTest extends ModelTestCase
     {
         $n = new \TestApp\Model\Name;
         $date = new DateTime('2011-01-01 00:00:00');
-        $ret = $n->create(array(
+        $n = $n->createAndLoad(array(
             'name' => 'Deflator Test',
             'country' => 'Tokyo',
             'confirmed' => false,
             'date' => $date,
         ));
-        $this->assertResultSuccess($ret);
+        $this->assertNotFalse($n);
 
         $array = $n->toArray();
         $this->assertTrue(is_string( $array['date']));

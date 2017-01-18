@@ -21,7 +21,9 @@ class UserModelTest extends ModelTestCase
         $user = new \TestApp\Model\User;
         $ret = $user->create(array( 'account' => 'c9s' ));
         $this->assertResultSuccess($ret);
-        ok( $user->id );
+
+        $user = $user->find($ret->id);
+        ok($user->id);
 
         $book = new \AuthorBooks\Model\Book;
         $ret = $book->create(array( 

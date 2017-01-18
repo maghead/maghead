@@ -4,6 +4,7 @@ TODO
 - [ ] Move data array into model properties.
     - [x] This require getData() method to collect all property value.
     - [x] Getter should inflate the value from property
+        - [ ] Inflate by the isa in the automatic generated accessor.
     - [ ] Setter should deflate the value from the value.
     - [x] The find method should simply return the record instead of
       the result. Reason: we don't wrap the query logic with try&catch
@@ -12,6 +13,7 @@ TODO
       load the result later)
             $ret = $book->create();
             $newBook = $book->createAndLoad();
+    - [ ] `Result->getKey()` to make the API consistent.
 
 - [ ] Move CRUD operation from modal class to ModelActions class.
 - [ ] Add connection parameter to all the CRUD methods

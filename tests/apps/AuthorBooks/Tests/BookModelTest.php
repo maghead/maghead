@@ -23,14 +23,10 @@ class BookModelTest extends ModelTestCase
     public function testImmutableColumn()
     {
         $b = new Book ;
-        // $b->autoReload = false;
-        $ret = $b->create(array( 'isbn' => '123123123' ));
-
-        $this->assertResultSuccess($ret);
+        $b = $b->createAndLoad(array( 'isbn' => '123123123' ));
 
         $ret = $b->update(array('isbn'  => '456456' ));
         $this->assertResultFail($ret, 'Should not update immutable column');
-
         $this->successfulDelete($b);
     }
 
@@ -50,8 +46,7 @@ class BookModelTest extends ModelTestCase
     public function testFlagHelper()
     {
         $b = new Book ;
-        $ret = $b->create([ 'title' => 'Test Book' ]);
-        $this->assertResultSuccess($ret);
+        $b = $b->createAndLoad([ 'title' => 'Test Book' ]);
 
         $schema = $b->getSchema();
         ok($schema);
@@ -82,44 +77,47 @@ class BookModelTest extends ModelTestCase
     }
 
     public function testLoadOrCreate() {
-        $results = array();
-        $b = new Book ;
+        $results = [];
+        $b = new Book;
 
         $ret = $b->create(array( 'title' => 'Should Not Load This' ));
-        result_ok( $ret );
+        $this->assertResultSuccess( $ret );
         $results[] = $ret;
+        $b = $b->find($ret->id);
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
-        result_ok( $ret );
+        $this->assertResultSuccess( $ret );
         $results[] = $ret;
+        $b = $b->find($ret->id);
 
         $id = $b->id;
         ok($id);
 
         $ret = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         is($id, $b->id, 'is the same ID');
         $results[] = $ret;
 
 
         $b2 = new Book ;
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         is($id,$b2->id);
         $results[] = $ret;
 
         $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         ok($b2);
         ok($id != $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
         $b3 = new Book ;
         $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         ok($b3);
         ok($id != $b3->id , 'we should create anther one'); 
         $results[] = $ret;
+        $b3 = $b3->find($ret->id);
 
         $b3->delete();
 
@@ -151,11 +149,11 @@ class BookModelTest extends ModelTestCase
     public function testRawSQL()
     {
         $n = new Book ;
-        $n->create(array(
+        $n = $n->createAndLoad(array(
             'title' => 'book title',
             'view' => 0,
         ));
-        is( 0 , $n->view );
+        $this->assertEquals(0 , $n->view);
 
         $ret = $n->update(array( 
             'view' => new Raw('view + 1')
@@ -175,8 +173,7 @@ class BookModelTest extends ModelTestCase
     {
         $date = new DateTime;
         $book = new Book;
-        $ret = $book->create([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
-        $this->assertResultSuccess($ret);
+        $book = $book->createAndLoad([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
         $this->assertInstanceOf('DateTime', $book->getPublishedAt());
         $this->assertEquals('00-00-00 00-00-00',$date->diff($book->getPublishedAt())->format('%Y-%M-%D %H-%I-%S'));
     }
@@ -189,8 +186,7 @@ class BookModelTest extends ModelTestCase
         $date = new DateTime;
 
         $book = new Book;
-        $ret = $book->create([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
-        $this->assertResultSuccess($ret);
+        $book = $book->createAndLoad([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
         $this->assertCount(1, new BookCollection);
 
         $id = $book->id;
@@ -215,15 +211,14 @@ class BookModelTest extends ModelTestCase
     public function testZeroInflator()
     {
         $b = new Book ;
-        $ret = $b->create(array( 'title' => 'Create X' , 'view' => 0 ));
-        $this->assertResultSuccess($ret);
+        $b = $b->createAndLoad(array( 'title' => 'Create X' , 'view' => 0 ));
 
-        ok( $b->id );
+        ok($b->id);
         is( 0 , $b->view );
 
-        $ret = $b->load($ret->id);
+        $ret = $b->load($b->id);
         $this->assertResultSuccess($ret);
-        ok( $b->id );
+        ok($b->id);
         is( 0 , $b->view );
 
         // test incremental

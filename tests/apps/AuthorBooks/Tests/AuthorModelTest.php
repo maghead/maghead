@@ -31,7 +31,7 @@ class AuthorModelTest extends ModelTestCase
     public function testCollection()
     {
         $author = new Author;
-        $this->assertResultSuccess($author->create(array( 
+        $this->assertNotFalse($author = $author->createAndLoad(array( 
             'name' => 'FooBar',
             'email' => 'a@a',
             'identity' => 'a',
@@ -119,6 +119,7 @@ class AuthorModelTest extends ModelTestCase
             'confirmed' => true,
         ));
         $this->assertResultSuccess($ret);
+        $author = $author->find($ret->id);
 
         $ret = $author->reload();
         $this->assertResultSuccess($ret);
@@ -141,7 +142,6 @@ class AuthorModelTest extends ModelTestCase
         $a = new Author;
         $ret = $a->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
         $this->assertResultSuccess($ret);
-        ok($a->id);
     }
 
     /**
@@ -181,7 +181,6 @@ class AuthorModelTest extends ModelTestCase
         $a2 = new Author;
         $ret = $a2->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
         $this->assertResultSuccess($ret);
-        ok( $a2->id );
     }
 
     public function testCreateRecordWithEmptyArgument()
@@ -203,9 +202,10 @@ class AuthorModelTest extends ModelTestCase
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->assertResultSuccess($ret);
+        $author = $author->find($ret->id);
         ok( $id = $ret->id );
-        is( 'Foo', $author->name );
-        is( 'foo@google.com', $author->email );
+        is('Foo', $author->name );
+        is('foo@google.com', $author->email );
 
         $ret = $author->load( $id );
         $this->assertResultSuccess($ret);
@@ -241,6 +241,7 @@ class AuthorModelTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
+        $author = $author->find($ret->id);
         $age = $author->getAge();
         $this->assertInstanceOf('DateInterval', $age);
         ok($age->format('%s seconds'));
@@ -289,6 +290,9 @@ class AuthorModelTest extends ModelTestCase
             'email' => 'tom@address',
             'identity' => 'tom-has-two-addresses',
         ));
+        $this->assertResultSuccess($ret);
+        $author = $author->find($ret->id);
+
         $author->addresses[] = array( 'address' => 'Using address', 'unused' => false );
         $author->addresses[] = array( 'address' => 'Unused address', 'unused' => true );
 
@@ -329,9 +333,11 @@ class AuthorModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
+        $author = $author->find($ret->id);
+
         $id = $author->id;
 
-        $this->assertResultSuccess( $author->update(array( 'name' => 'I' )) );
+        $this->assertResultSuccess($author->update(array( 'name' => 'I' )) );
         is($id , $author->id );
         is('I', $author->name );
 

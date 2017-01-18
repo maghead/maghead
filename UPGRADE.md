@@ -21,7 +21,12 @@ $book->isPublished() // will return Boolean value (true or false)
 $foundBook = $book->find(321);
 ```
 
+4. Replace `create` with `createAndLoad`:
 
+```php
+$author = new Author;
+$author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+```
 
 UPGRADE TO 2.0
 ======================

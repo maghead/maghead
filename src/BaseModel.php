@@ -480,6 +480,7 @@ abstract class BaseModel implements
      * If the record does not exist, then the record should be created.
      *
      * @param array $byKeys
+     * @return Result
      */
     public function createOrUpdate(array $args, $byKeys = null)
     {
@@ -674,6 +675,19 @@ abstract class BaseModel implements
         }
     }
 
+
+    /**
+     * Create and return the created record.
+     */
+    public function createAndLoad(array $args)
+    {
+        $ret = $this->create($args);
+        if ($ret->success) {
+            return $this->find($ret->id);
+        }
+        return false;
+    }
+
     /**
      * Method for creating new record, which is called from 
      * static::create and $record->create.
@@ -861,19 +875,12 @@ abstract class BaseModel implements
         $pkId = null;
 
         if ($driver instanceof PDOPgSQLDriver) {
-            $this->$k = $args[$k] = $pkId = intval($stm->fetchColumn());
+            $pkId = intval($stm->fetchColumn());
         } else {
-            $this->$k = $args[$k] = $pkId = intval($conn->lastInsertId());
-        }
-
-        if ($pkId && ((isset($options['reload']) && $options['reload']) || $this->autoReload)) {
-            $this->load($pkId);
-        } else {
-            $this->setData($args);
+            $pkId = intval($conn->lastInsertId());
         }
 
         $this->afterCreate($origArgs);
-
         $stm->closeCursor();
 
         // collect debug info
@@ -1777,8 +1784,8 @@ abstract class BaseModel implements
     {
         // TODO: improve element attributes
         $ser = new XmlSerializer();
-
-        return $ser->encode($this->_data);
+        $data = $this->getData();
+        return $ser->encode($data);
     }
 
     /**
@@ -1788,12 +1795,12 @@ abstract class BaseModel implements
      */
     public function toYaml()
     {
+        $data = $this->getData();
         self::$yamlExtension = extension_loaded('yaml');
         if (self::$yamlExtension) {
-            return yaml_emit($this->_data, YAML_UTF8_ENCODING);
+            return yaml_emit($data, YAML_UTF8_ENCODING);
         }
-
-        return file_put_contents($yamlFile, "---\n".Yaml::dump($this->_data, $inline = true, $exceptionOnInvalidType = true));
+        return file_put_contents($yamlFile, "---\n".Yaml::dump($data, $inline = true, $exceptionOnInvalidType = true));
     }
 
     /**
@@ -1805,7 +1812,8 @@ abstract class BaseModel implements
     {
         $data = array();
         $schema = $this->getSchema();
-        foreach ($this->_data as $k => $v) {
+        $data = $this->getData();
+        foreach ($data as $k => $v) {
             $col = $schema->getColumn($k);
             if ($col && $col->isa) {
                 $data[ $k ] = $col->inflate($v, $this);

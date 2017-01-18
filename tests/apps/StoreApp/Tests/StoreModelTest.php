@@ -27,8 +27,8 @@ class StoreModelTest extends ModelTestCase
     public function testUpdateWithRequiredFieldNull()
     {
         $store = new Store;
-        $ret = $store->create([ 'name' => 'testapp', 'code' => 'testapp' ]);
-        $this->assertResultSuccess($ret);
+        $store = $store->createAndLoad([ 'name' => 'testapp', 'code' => 'testapp' ]);
+        $this->assertNotFalse($store);
 
         $ret = $store->update([ 'name' => 'testapp', 'code' => null ]);
         $this->assertResultFail($ret);

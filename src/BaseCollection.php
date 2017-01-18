@@ -560,6 +560,16 @@ class BaseCollection
         return end($this->_rows);
     }
 
+    public function createAndAppend(array $args)
+    {
+        $record = $this->create($args);
+        if ($record) {
+            return $this->_rows[] = $record;
+        }
+        return false;
+    }
+
+
     /** array access interface */
     public function offsetSet($name, $value)
     {
@@ -567,9 +577,12 @@ class BaseCollection
             $this->readRows();
         }
         if (null === $name) {
-            return $this->create($value);
+            // create from array
+            if (is_array($value)) {
+                $value = $this->create($value);
+            }
         }
-        $this->_rows[ $name ] = $value;
+        return $this->_rows[ $name ] = $value;
     }
 
     public function offsetExists($name)
@@ -726,20 +739,16 @@ class BaseCollection
             $args = array_merge($this->_presetVars, $args);
         }
 
-        // model record
         $record = $this->getSchema()->newModel();
-        $return = $record->create($args);
-        if ($return->success) {
+        $record = $record->createAndLoad($args);
+        if ($record) {
             if ($this->_postCreate) {
                 $middleRecord = call_user_func($this->_postCreate, $record, $args);
                 // $this->_postCreate($record,$args);
             }
             $this->_rows[] = $record;
-
             return $record;
         }
-        $this->_result = $return;
-
         return false;
     }
 

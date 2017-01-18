@@ -16,46 +16,6 @@ class CollectionTest extends ModelTestCase
         return [new \TestApp\Model\NameSchema];
     }
 
-    public function testCreateRecordWithBooleanFalse()
-    {
-        $name = new Name;
-        $ret = $name->create(array( 
-            'name' => 'Foo',
-            'confirmed' => false,
-            'country' => 'Tokyo',
-        ));
-        $this->assertResultSuccess($ret);
-        $this->assertFalse($name->confirmed);
-    }
-
-    public function testBooleanTypeCRUD()
-    {
-        $name = new Name;
-        $ret = $name->create(array( 
-            'name' => 'Foo',
-            'confirmed' => false,
-            'country' => 'Tokyo',
-        ));
-        $this->assertResultSuccess($ret);
-        $this->assertFalse($name->confirmed);
-
-        $ret = $name->load( array( 'name' => 'Foo' ));
-        $this->assertResultSuccess($ret);
-        $this->assertFalse($name->isConfirmed());
-
-        $ret = $name->update(array( 'confirmed' => true ) );
-        $this->assertResultSuccess($ret);
-        $this->assertTrue($name->isConfirmed());
-
-        $ret = $name->update(array( 'confirmed' => false ) );
-        $this->assertResultSuccess($ret);
-        $this->assertFalse($name->isConfirmed());
-
-        $ret = $name->delete();
-        $this->assertResultSuccess($ret);
-
-    }
-
     public function testCollectionGroupBy()
     {
         $name = new Name;
