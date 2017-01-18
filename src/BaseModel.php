@@ -94,8 +94,6 @@ abstract class BaseModel implements
 
     protected $_schema;
 
-    protected $_cachePrefix;
-
     public static $_cacheInstance;
 
     /**
@@ -111,10 +109,6 @@ abstract class BaseModel implements
     protected $_preparedCreateStms = array();
 
     protected $_preparedFindSql;
-
-    private $_readQueryDriver;
-
-    private $_writeQueryDriver;
 
     private $_readConnection;
 
@@ -138,11 +132,7 @@ abstract class BaseModel implements
 
     public function getCachePrefix()
     {
-        if ($this->_cachePrefix) {
-            return $this->_cachePrefix;
-        }
-
-        return $this->_cachePrefix = get_class($this);
+        return static::SCHEMA_CLASS;
     }
 
     public function unsetPrimaryKey()
@@ -227,34 +217,6 @@ abstract class BaseModel implements
     protected function getQueryDriver($dsId)
     {
         return ConnectionManager::getInstance()->getQueryDriver($dsId);
-    }
-
-    /**
-     * Get SQL Query driver object for writing data.
-     */
-    protected function getWriteQueryDriver()
-    {
-        if ($this->_writeQueryDriver) {
-            return $this->_writeQueryDriver;
-        }
-
-        return $this->_writeQueryDriver
-            = ConnectionManager::getInstance()->getQueryDriver($this->writeSourceId);
-    }
-
-    /**
-     * Get SQL Query driver object for reading data.
-     *
-     * @return SQLBuilder\QueryDriver
-     */
-    public function getReadQueryDriver()
-    {
-        if ($this->_readQueryDriver) {
-            return $this->_readQueryDriver;
-        }
-
-        return $this->_readQueryDriver
-            = ConnectionManager::getInstance()->getQueryDriver($this->readSourceId);
     }
 
     public function setAlias($alias)

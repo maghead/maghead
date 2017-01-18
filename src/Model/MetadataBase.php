@@ -1,5 +1,6 @@
 <?php
 namespace LazyRecord\Model;
+require_once __DIR__ . '/MetadataSchemaProxy.php';
 use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Result;
 use LazyRecord\Inflator;
