@@ -95,7 +95,10 @@ class BaseCollection
         return new ArrayIterator($this->_rows);
     }
 
-    public function getSchema()
+    /**
+     * This method will be overrided by code gen.
+     */
+    static public function getSchema()
     {
         if ($this->_schema) {
             return $this->_schema;
@@ -177,7 +180,7 @@ class BaseCollection
 
     public function selectAll()
     {
-        $dsId = $this->getSchema()->getReadSourceId();
+        $dsId = static::getSchema()->getReadSourceId();
         $driver = $this->getQueryDriver($dsId);
         $this->explictSelect = true;
         $this->selected = $this->getExplicitColumnSelect($driver);
@@ -201,12 +204,12 @@ class BaseCollection
 
     public function getWriteQueryDriver()
     {
-        return $this->getQueryDriver($this->getSchema()->getWriteSourceId());
+        return $this->getQueryDriver(static::getSchema()->getWriteSourceId());
     }
 
     public function getReadQueryDriver()
     {
-        return $this->getQueryDriver($this->getSchema()->getReadSourceId());
+        return $this->getQueryDriver(static::getSchema()->getReadSourceId());
     }
 
     public function getTable()
@@ -215,7 +218,6 @@ class BaseCollection
             return $this->preferredTable;
         }
         // return $this->getSchema()->getTable();
-
         // Use constant, it's faster...
         return static::TABLE;
     }
@@ -227,7 +229,7 @@ class BaseCollection
 
     public function createReadQuery()
     {
-        $dsId = $this->getSchema()->getReadSourceId();
+        $dsId = static::getSchema()->getReadSourceId();
 
         $conn = ConnectionManager::getInstance()->getConnection($dsId);
         $driver = $conn->getQueryDriver();
@@ -262,7 +264,7 @@ class BaseCollection
 
         return array_map(function ($name) use ($alias, $driver) {
                 return $alias.'.'.$driver->quoteIdentifier($name);
-        }, $this->getSchema()->getColumnNames());
+        }, static::getSchema()->getColumnNames());
     }
 
     /**
@@ -288,7 +290,7 @@ class BaseCollection
     public function fetch()
     {
         /* fetch by current query */
-        $dsId = $this->getSchema()->getReadSourceId();
+        $dsId = static::getSchema()->getReadSourceId();
         $conn = ConnectionManager::getInstance()->getConnection($dsId);
         $driver = $conn->getQueryDriver();
         $arguments = new ArgumentArray();
@@ -300,7 +302,7 @@ class BaseCollection
 
     public function sql()
     {
-        $dsId = $this->getSchema()->getReadSourceId();
+        $dsId = static::getSchema()->getReadSourceId();
         $conn = ConnectionManager::getInstance()->getConnection($dsId);
         $driver = $conn->getQueryDriver();
         $arguments = new ArgumentArray();
@@ -317,7 +319,7 @@ class BaseCollection
      */
     public function queryCount()
     {
-        $dsId = $this->getSchema()->getReadSourceId();
+        $dsId = static::getSchema()->getReadSourceId();
 
         $conn = ConnectionManager::getInstance()
                     ->getConnection($dsId);
@@ -473,7 +475,7 @@ class BaseCollection
 
     public function delete()
     {
-        $schema = $this->getSchema();
+        $schema = static::getSchema();
         $dsId = $schema->getWriteSourceId();
 
         $conn = ConnectionManager::getInstance()->getConnection($dsId);
@@ -506,7 +508,7 @@ class BaseCollection
      */
     public function update(array $data)
     {
-        $schema = $this->getSchema();
+        $schema = static::getSchema();
         $dsId = $schema->getWriteSourceId();
 
         $conn = ConnectionManager::getInstance()->getConnection($dsId);
@@ -648,7 +650,7 @@ class BaseCollection
     public function loadQuery($sql, array $args = array(), $dsId = null)
     {
         if (!$dsId) {
-            $dsId = $this->getSchema()->getReadSourceId();
+            $dsId = static::getSchema()->getReadSourceId();
         }
         $this->handle = ConnectionManager::getInstance()->getConnection($dsId)->prepareAndExecute($sql, $args);
     }
@@ -660,7 +662,7 @@ class BaseCollection
      */
     public function newModel()
     {
-        return $this->getSchema()->newModel();
+        return static::getSchema()->newModel();
     }
 
     /**
@@ -669,7 +671,7 @@ class BaseCollection
     public static function fromArray(array $list)
     {
         $collection = new static();
-        $schema = $collection->getSchema();
+        $schema = static::getSchema();
         $records = array();
         foreach ($list as $item) {
             $model = $schema->newModel();
@@ -677,7 +679,6 @@ class BaseCollection
             $records[] = $model;
         }
         $collection->setRecords($records);
-
         return $collection;
     }
 
@@ -852,7 +853,7 @@ class BaseCollection
 
             // here the relationship is defined, join the it.
             if ($relationId) {
-                if ($relation = $this->getSchema()->getRelation($relationId)) {
+                if ($relation = static::getSchema()->getRelation($relationId)) {
                     $joinExpr->on()->equal($this->_alias.'.'.$relation['self_column'],
                         array($joinAlias.'.'.$relation['foreign_column']));
                 } else {
@@ -860,7 +861,7 @@ class BaseCollection
                 }
             } else {
                 // find the related relatinship from defined relatinpships
-                $relations = $this->getSchema()->relations;
+                $relations = static::getSchema()->relations;
                 foreach ($relations as $relationId => $relation) {
                     if (!isset($relation['foreign_schema'])) {
                         continue;

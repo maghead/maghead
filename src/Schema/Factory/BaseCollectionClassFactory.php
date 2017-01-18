@@ -25,6 +25,16 @@ class BaseCollectionClassFactory
         }
         $cTemplate->extendClass('\\'.$baseCollectionClass);
 
+        $cTemplate->addStaticMethod('public', 'getSchema', [], function() use ($schema) {
+            return [
+                "static \$schema;",
+                "if (\$schema) {",
+                "   return \$schema;",
+                "}",
+                "return \$schema = new \\{$schema->getSchemaProxyClass()};",
+            ];
+        });
+
         // interfaces
         if ($ifs = $schema->getCollectionInterfaces()) {
             foreach ($ifs as $iface) {

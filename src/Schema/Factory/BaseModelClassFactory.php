@@ -40,7 +40,6 @@ class BaseModelClassFactory
         //
         // By design, users shouldn't use the schema proxy class, it 
         // should be only used by model/collection class.
-        // $schemaProxyPath = $schema->getRelatedClassPath($schema->getModelName() . 'SchemaProxy');
         $schemaProxyFileName = $schema->getModelName() . 'SchemaProxy.php';
         $cTemplate->prependStatement(new RequireOnceStatement(
             new ConcatExpr(new Raw('__DIR__'), DIRECTORY_SEPARATOR . $schemaProxyFileName)
