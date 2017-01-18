@@ -145,9 +145,7 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'id',
         ));
         $this->assertResultSuccess($ret);
-
         $author = Author::find($ret->key);
-
 
         ok($v = $author->getColumn('account_brief')); // virtual colun
         $this->assertTrue($v->virtual);
@@ -320,7 +318,7 @@ class AuthorBookModelTest extends ModelTestCase
             'book_id' => $book->id,
         ]);
         $this->assertResultSuccess($ret);
-        $ab = $ab->find($ret->key);
+        $ab = AuthorBook::find($ret->key);
 
         $ret = $book->create(array( 'title' => 'Book II' ));
         $this->assertResultSuccess($ret);
@@ -331,7 +329,7 @@ class AuthorBookModelTest extends ModelTestCase
             'book_id' => $book->id,
         ]);
         $this->assertResultSuccess($ret);
-        $ab = $ab->find($ret->key);
+        $ab = AuthorBook::find($ret->key);
 
         $ret = $book->create(array( 'title' => 'Book III' ));
         $this->assertResultSuccess($ret);

@@ -1,4 +1,5 @@
 <?php
+use TestApp\Model\User;
 use LazyRecord\Testing\ModelTestCase;
 
 class UserModelTest extends ModelTestCase
@@ -18,11 +19,11 @@ class UserModelTest extends ModelTestCase
      */
     public function testRefer()
     {
-        $user = new \TestApp\Model\User;
+        $user = new User;
         $ret = $user->create(array( 'account' => 'c9s' ));
         $this->assertResultSuccess($ret);
 
-        $user = $user->find($ret->key);
+        $user = User::find($ret->key);
         ok($user->id);
 
         $book = new \AuthorBooks\Model\Book;

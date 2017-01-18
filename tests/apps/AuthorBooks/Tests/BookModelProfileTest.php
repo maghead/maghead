@@ -44,14 +44,13 @@ class BookModelProfileTest extends ModelProfileTestCase
     public function testProfileFindByPrimaryKey()
     {
         $b = new Book;
-        $b->create(array(
+        $b = $b->createAndLoad(array(
             'title' => "OOP Programming Guide",
             'subtitle' => 'subtitle',
             'isbn' => $uuid = uniqid(),
         ));
-        $b2 = new Book;
         for ($i = 0 ; $i < $this->N; $i++) {
-            $b2->find($b->id);
+            Book::find($b->id);
         }
     }
 

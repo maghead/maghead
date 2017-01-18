@@ -23,7 +23,7 @@ class TableModelTest extends ModelTestCase
             ),
         ));
         $this->assertResultSuccess($ret, 'Table Create results success');
-        $table = $table->find($ret->key);
+        $table = Table::find($ret->key);
 
         $ret = $table->update(array(
             'columns' => array('b1', 'b2'),

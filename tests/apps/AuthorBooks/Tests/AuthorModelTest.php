@@ -119,7 +119,7 @@ class AuthorModelTest extends ModelTestCase
             'confirmed' => true,
         ));
         $this->assertResultSuccess($ret);
-        $author = $author->find($ret->key);
+        $author = Author::find($ret->key);
 
         $ret = $author->reload();
         $this->assertResultSuccess($ret);
@@ -202,7 +202,7 @@ class AuthorModelTest extends ModelTestCase
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->assertResultSuccess($ret);
-        $author = $author->find($ret->key);
+        $author = Author::find($ret->key);
         ok( $id = $ret->key );
         is('Foo', $author->name );
         is('foo@google.com', $author->email );
@@ -241,7 +241,7 @@ class AuthorModelTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
-        $author = $author->find($ret->key);
+        $author = Author::find($ret->key);
         $age = $author->getAge();
         $this->assertInstanceOf('DateInterval', $age);
         ok($age->format('%s seconds'));
@@ -291,7 +291,7 @@ class AuthorModelTest extends ModelTestCase
             'identity' => 'tom-has-two-addresses',
         ));
         $this->assertResultSuccess($ret);
-        $author = $author->find($ret->key);
+        $author = Author::find($ret->key);
 
         $author->addresses[] = array( 'address' => 'Using address', 'unused' => false );
         $author->addresses[] = array( 'address' => 'Unused address', 'unused' => true );
@@ -333,7 +333,7 @@ class AuthorModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $author = $author->find($ret->key);
+        $author = Author::find($ret->key);
 
         $id = $author->id;
 
@@ -368,6 +368,4 @@ class AuthorModelTest extends ModelTestCase
         $migration->renameColumn('authors', $column, $newColumn);
         $migration->renameColumn('authors', $newColumn, $column);
     }
-
-
 }
