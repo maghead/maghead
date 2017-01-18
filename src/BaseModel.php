@@ -68,11 +68,6 @@ abstract class BaseModel implements
     public $dataValueField;
 
     /**
-     * The last result object.
-     */
-    public $lastResult;
-
-    /**
      * @var mixed Current user object
      */
     public $_currentUser;
@@ -588,7 +583,7 @@ abstract class BaseModel implements
     public function create(array $args, array $options = array())
     {
         if (empty($args) || $args === null) {
-            return $this->reportError('Empty arguments');
+            return self::reportError('Empty arguments');
         }
 
         $validationResults = array();
@@ -613,7 +608,7 @@ abstract class BaseModel implements
 
         $args = $this->beforeCreate($args);
         if ($args === false) {
-            return $this->reportError(_('Create failed'), array(
+            return self::reportError(_('Create failed'), array(
                 'args' => $args,
             ));
         }
@@ -623,7 +618,7 @@ abstract class BaseModel implements
 
         // @codegenBlock currentUserCan
         if (!$this->currentUserCan($this->getCurrentUser(), 'create', $args)) {
-            return $this->reportError(_('Permission denied. Can not create record.'), array(
+            return self::reportError(_('Permission denied. Can not create record.'), array(
                 'args' => $args,
             ));
         }
@@ -650,14 +645,14 @@ abstract class BaseModel implements
             // if column is required (can not be empty) //   and default is defined.
             // @codegenBlock validateRequire
             if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
-                return $this->reportError("Value of $n is required.");
+                return self::reportError("Value of $n is required.");
             }
             // @codegenBlockEnd
 
             // @codegenBlock typeConstraint
             if ($c->typeConstraint && ($val !== null && !is_array($val) && !$val instanceof Raw)) {
                 if (false === $c->checkTypeConstraint($val)) {
-                    return $this->reportError("{$val} is not ".$c->isa.' type');
+                    return self::reportError("{$val} is not ".$c->isa.' type');
                 }
             } elseif ($val !== null && !is_array($val) && !$val instanceof Raw) {
                 $val = $c->typeCasting($val);
@@ -703,7 +698,7 @@ abstract class BaseModel implements
 
         // @codegenBlock handleValidationError
         if ($validationError) {
-            return $this->reportError('Validation failed.', array(
+            return self::reportError('Validation failed.', array(
                 'validations' => $validationResults,
             ));
         }
@@ -734,7 +729,7 @@ abstract class BaseModel implements
             }
         }
         if (false === $stm->execute($arguments->toArray())) {
-            return $this->reportError('Record create failed.', array(
+            return self::reportError('Record create failed.', array(
                 'validations' => $validationResults,
                 'args' => $args,
                 'sql' => $sql,
@@ -753,7 +748,7 @@ abstract class BaseModel implements
         $stm->closeCursor();
 
         // collect debug info
-        return $this->reportSuccess('Record created.', array(
+        return self::reportSuccess('Record created.', array(
             'key' => $pkId,
             'sql' => $sql,
             'args' => $args,
@@ -816,7 +811,7 @@ abstract class BaseModel implements
         $key = serialize($args);
         if ($cacheData = $this->getCache($key)) {
             $this->setData($cacheData);
-            return $this->reportSuccess('Data loaded', [ 'key' => $this->getKey() ]);
+            return self::reportSuccess('Data loaded', [ 'key' => $this->getKey() ]);
         } else {
             $ret = $this->load($args);
             $this->setCache($key, $this->getData(), $ttl);
@@ -827,7 +822,7 @@ abstract class BaseModel implements
     public function load($args, array $options = null)
     {
         if (!$this->currentUserCan($this->getCurrentUser(), 'load', $args)) {
-            return $this->reportError('Permission denied. Can not load record.', array('args' => $args));
+            return self::reportError('Permission denied. Can not load record.', array('args' => $args));
         }
 
         $dsId = $this->readSourceId;
@@ -870,12 +865,12 @@ abstract class BaseModel implements
         $stm->execute($arguments->toArray());
         if (false === ($data = $stm->fetch(PDO::FETCH_ASSOC))) {
             // Record not found is not an exception
-            return $this->reportError('Record not found', [
+            return self::reportError('Record not found', [
                 'sql' => $sql,
             ]);
         }
         $this->setData($data);
-        return $this->reportSuccess('Data loaded', array(
+        return self::reportSuccess('Data loaded', array(
             'key' => $this->getKey(),
             'sql' => $sql,
             'type' => Result::TYPE_LOAD,
@@ -905,7 +900,7 @@ abstract class BaseModel implements
         }
 
         if (!$this->currentUserCan($this->getCurrentUser(), 'delete')) {
-            return $this->reportError(_('Permission denied. Can not delete record.'), array());
+            return self::reportError(_('Permission denied. Can not delete record.'), array());
         }
 
         $dsId = $this->writeSourceId;
@@ -932,7 +927,7 @@ abstract class BaseModel implements
         $data = $this->getData();
         $this->afterDelete($data);
         $this->clear();
-        return $this->reportSuccess('Record deleted', array(
+        return self::reportSuccess('Record deleted', array(
             'sql' => $sql,
             'type' => Result::TYPE_DELETE,
             // XXX 'args' => $arguments->toArray(),
@@ -963,11 +958,11 @@ abstract class BaseModel implements
         }
 
         if ($k && !isset($args[$k]) && !$kVal) {
-            return $this->reportError('Record is not loaded, Can not update record.', array('args' => $args));
+            return self::reportError('Record is not loaded, Can not update record.', array('args' => $args));
         }
 
         if (!$this->currentUserCan($this->getCurrentUser(), 'update', $args)) {
-            return $this->reportError('Permission denied. Can not update record.', array(
+            return self::reportError('Permission denied. Can not update record.', array(
                 'args' => $args,
             ));
         }
@@ -991,7 +986,7 @@ abstract class BaseModel implements
 
         $args = $this->beforeUpdate($args);
         if ($args === false) {
-            return $this->reportError(_('Update failed'), array(
+            return self::reportError(_('Update failed'), array(
                     'args' => $args,
                 ));
         }
@@ -1015,7 +1010,7 @@ abstract class BaseModel implements
 
                 // if column is required (can not be empty) //   and default is defined.
                 if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
-                    return $this->reportError("Value of $n is required.");
+                    return self::reportError("Value of $n is required.");
                 }
 
                 // TODO: Do not render immutable field in ActionKit
@@ -1024,7 +1019,7 @@ abstract class BaseModel implements
                     continue;
                     // TODO: render as a validation results?
                     // continue;
-                    // return $this->reportError( "You can not update $n column, which is immutable.", array('args' => $args));
+                    // return self::reportError( "You can not update $n column, which is immutable.", array('args' => $args));
                 }
 
             if ($args[$n] !== null && !is_array($args[$n]) && !$args[$n] instanceof Raw) {
@@ -1034,7 +1029,7 @@ abstract class BaseModel implements
                 // The is_array function here is for checking raw sql value.
                 if ($args[$n] !== null && !is_array($args[$n]) && !$args[$n] instanceof Raw) {
                     if (false === $c->checkTypeConstraint($args[$n])) {
-                        return $this->reportError($args[$n].' is not '.$c->isa.' type');
+                        return self::reportError($args[$n].' is not '.$c->isa.' type');
                     }
                 }
 
@@ -1072,13 +1067,13 @@ abstract class BaseModel implements
         }
 
         if ($validationError) {
-            return $this->reportError('Validation failed.', array(
+            return self::reportError('Validation failed.', array(
                     'validations' => $validationResults,
                 ));
         }
 
         if (empty($updateArgs)) {
-            return $this->reportError('Empty args');
+            return self::reportError('Empty args');
         }
 
             // TODO: optimized to built cache
@@ -1114,7 +1109,7 @@ abstract class BaseModel implements
             ));
         }
         */
-        return $this->reportSuccess('Updated successfully', array(
+        return self::reportSuccess('Updated successfully', array(
             'key' => $kVal,
             'sql' => $sql,
             'args' => $args,
@@ -1147,7 +1142,7 @@ abstract class BaseModel implements
         $stm = $conn->prepare($sql);
         $stm->execute($arguments->toArray());
         $this->setData($args);
-        return $this->reportSuccess('Update success', array(
+        return self::reportSuccess('Update success', array(
             'sql' => $sql,
             'type' => Result::TYPE_UPDATE,
         ));
@@ -1187,7 +1182,7 @@ abstract class BaseModel implements
 
         $this->setData($args);
         $this->setKey($pkId);
-        return $this->reportSuccess('Create success', array(
+        return self::reportSuccess('Create success', array(
             'sql' => $sql,
             'type' => Result::TYPE_CREATE,
         ));
@@ -1308,13 +1303,13 @@ abstract class BaseModel implements
         $stm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
         $stm->execute($args);
         if (false === ($data = $stm->fetch(PDO::FETCH_CLASS))) {
-            return $this->reportError('Data load failed.', array(
+            return self::reportError('Data load failed.', array(
                 'sql'  => $sql,
                 'args' => $args,
             ));
         }
         $this->setData($data);
-        return $this->reportSuccess('Data loaded', array(
+        return self::reportSuccess('Data loaded', array(
             'key'  => $this->getKey(),
             'sql' => $sql,
         ));
@@ -1709,9 +1704,9 @@ abstract class BaseModel implements
      *
      * @return OperationError
      */
-    public function reportError($message, $extra = array())
+    static public function reportError($message, $extra = array())
     {
-        return $this->lastResult = Result::failure($message, $extra);
+        return Result::failure($message, $extra);
     }
 
     /**
@@ -1726,14 +1721,9 @@ abstract class BaseModel implements
      *
      * @return Result
      */
-    public function reportSuccess($message, $extra = array())
+    static public function reportSuccess($message, $extra = array())
     {
-        return $this->lastResult = Result::success($message, $extra);
-    }
-
-    public function getLastResult()
-    {
-        return $this->lastResult;
+        return Result::success($message, $extra);
     }
 
     public function getDeclareSchema()
