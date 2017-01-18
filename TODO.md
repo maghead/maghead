@@ -4,8 +4,6 @@ TODO
 - [ ] Move data array into model properties.
     - [x] This require getData() method to collect all property value.
     - [x] Getter should inflate the value from property
-        - [ ] Inflate by the isa in the automatic generated accessor.
-    - [ ] Setter should deflate the value from the value.
     - [x] The find method should simply return the record instead of
       the result. Reason: we don't wrap the query logic with try&catch
       block now. errors will throw if something happens.
@@ -26,7 +24,12 @@ TODO
     - [x] `BaseModel::find` is now static method.
     - [x] `BaseModel::createAndLoad` is now static method.
     - [ ] `getReadConnection` could be static method??
-
+    - [ ] Inflate by the isa in the automatic generated accessor.
+    - [ ] Setter should deflate the value from the value.
+    - [ ] `::load` method refactor.
+- [ ] Generate Repo Class
+    - [ ] Add `::repo($ds)` helper to create repo with specific
+          connection.
 
 
 - [ ] Move CRUD operation from modal class to ModelActions class.
