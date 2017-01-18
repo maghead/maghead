@@ -85,7 +85,7 @@ class BaseCollection
     public function getIterator()
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->_rows = $this->readRows();
         }
 
         return new ArrayIterator($this->_rows);
@@ -114,9 +114,7 @@ class BaseCollection
         if ($this->_rows) {
             return $this->_rows;
         }
-        $this->readRows();
-
-        return $this->_rows;
+        return $this->_rows = $this->readRows();
     }
 
     /**
@@ -347,8 +345,7 @@ class BaseCollection
         if ($this->_rows) {
             return count($this->_rows);
         }
-        $this->readRows();
-
+        $this->_rows = $this->readRows();
         return count($this->_rows);
     }
 
@@ -360,8 +357,7 @@ class BaseCollection
         if ($this->_rows) {
             return count($this->_rows);
         }
-        $this->readRows();
-
+        $this->_rows = $this->readRows();
         return count($this->_rows);
     }
 
@@ -417,7 +413,7 @@ class BaseCollection
     public function pager($page = 1, $pageSize = 10)
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->rows = $this->readRows();
         }
         // Setup limit
         return new CollectionPager($this->_rows, $page, $pageSize);
@@ -431,9 +427,8 @@ class BaseCollection
     public function items()
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->_rows = $this->readRows();
         }
-
         return $this->_rows;
     }
 
@@ -464,9 +459,8 @@ class BaseCollection
             }
             throw new RuntimeException(get_class($this).':'.$this->_result->message);
         }
-
         // Use fetch all
-        return $this->_rows = $this->handle->fetchAll(PDO::FETCH_CLASS, static::MODEL_CLASS);
+        return $this->handle->fetchAll(PDO::FETCH_CLASS, static::MODEL_CLASS);
     }
 
     public function delete()
@@ -534,16 +528,15 @@ class BaseCollection
     public function splice($pos, $count = null)
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->_rows = $this->readRows();
         }
-
         return array_splice($this->_rows, $pos, $count);
     }
 
     public function first()
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->_rows = $this->readRows();
         }
 
         return !empty($this->_rows) ? $this->_rows[0] : null;
@@ -552,9 +545,8 @@ class BaseCollection
     public function last()
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->_rows = $this->readRows();
         }
-
         return end($this->_rows);
     }
 
@@ -572,7 +564,7 @@ class BaseCollection
     public function offsetSet($name, $value)
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->_rows = $this->readRows();
         }
         if (null === $name) {
             // create from array
@@ -586,7 +578,7 @@ class BaseCollection
     public function offsetExists($name)
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->_rows = $this->readRows();
         }
 
         return isset($this->_rows[ $name ]);
@@ -595,7 +587,7 @@ class BaseCollection
     public function offsetGet($name)
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->_rows = $this->readRows();
         }
         if (isset($this->_rows[ $name ])) {
             return $this->_rows[ $name ];
@@ -605,7 +597,7 @@ class BaseCollection
     public function offsetUnset($name)
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->_rows = $this->readRows();
         }
         unset($this->_rows[$name]);
     }
@@ -613,7 +605,7 @@ class BaseCollection
     public function each(callable $cb)
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->_rows = $this->readRows();
         }
 
         $collection = new static();
@@ -627,7 +619,7 @@ class BaseCollection
     public function filter(callable $cb)
     {
         if (!$this->_rows) {
-            $this->readRows();
+            $this->_rows = $this->readRows();
         }
 
         $collection = new static();
