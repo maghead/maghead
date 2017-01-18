@@ -730,7 +730,7 @@ abstract class BaseModel implements
 
         $k = static::PRIMARY_KEY;
         $sql = $vars = null;
-        $this->empty();
+        $this->clear();
         $stm = null;
 
         static $cacheable;
@@ -1069,7 +1069,7 @@ abstract class BaseModel implements
 
         $data = $this->getData();
         $this->afterDelete($data);
-        $this->empty();
+        $this->clear();
         return $this->reportSuccess('Record deleted', array(
             'sql' => $sql,
             'type' => Result::TYPE_DELETE,
