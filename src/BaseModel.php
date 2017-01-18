@@ -137,7 +137,7 @@ abstract class BaseModel implements
 
     public function unsetPrimaryKey()
     {
-        unset($this->data[static::PRIMARY_KEY]);
+        $this->setKey(NULL);
     }
 
     /**
