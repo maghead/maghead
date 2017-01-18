@@ -334,7 +334,7 @@ abstract class BaseModel implements
         }
 
         // Dispatch to schema object method first
-        $schema = $this->getSchema();
+        $schema = static::getSchema();
         if (method_exists($schema, $m)) {
             return call_user_func_array(array($schema, $m), $a);
         }
@@ -581,7 +581,7 @@ abstract class BaseModel implements
      */
     public function columns()
     {
-        return $this->getSchema()->columns;
+        return static::getSchema()->columns;
     }
 
     public function setCurrentUser(CurrentUserInterface $user)
@@ -650,7 +650,7 @@ abstract class BaseModel implements
 
         $validationResults = array();
         $validationError = false;
-        $schema = $this->getSchema();
+        $schema = static::getSchema();
 
         // save $args for afterCreate trigger method
         $origArgs = $args;
@@ -900,11 +900,11 @@ abstract class BaseModel implements
             $query->select($this->selected ?: '*')->where($args);
         } else {
             $kVal = $args;
-            $column = $this->getSchema()->getColumn($pk);
+            $column = static::getSchema()->getColumn($pk);
             if (!$column) {
                 // This should not happend, every schema should have it's own primary key
                 // TODO: Create new exception class for this.
-                throw new MissingPrimaryKeyException($this->getSchema(), "Primary key $pk is not defined");
+                throw new MissingPrimaryKeyException(static::getSchema(), "Primary key $pk is not defined");
             }
             $kVal = $column->deflate($kVal);
             $args = array($pk => $kVal);
@@ -1003,7 +1003,7 @@ abstract class BaseModel implements
      */
     public function update(array $args, $options = array())
     {
-        $schema = $this->getSchema();
+        $schema = static::getSchema();
 
         // check if the record is loaded.
         $k = static::PRIMARY_KEY;
@@ -1042,7 +1042,7 @@ abstract class BaseModel implements
 
         $updateArgs = array();
 
-        $schema = $this->getSchema();
+        $schema = static::getSchema();
 
         $args = $this->beforeUpdate($args);
         if ($args === false) {
@@ -1273,7 +1273,7 @@ abstract class BaseModel implements
      */
     public function display($name)
     {
-        if ($c = $this->getSchema()->getColumn($name)) {
+        if ($c = static::getSchema()->getColumn($name)) {
             // get raw value
             if ($c->virtual) {
                 return $this->get($name);
@@ -1303,7 +1303,7 @@ abstract class BaseModel implements
      */
     public function deflateData(array &$args)
     {
-        $schema = $this->getSchema();
+        $schema = static::getSchema();
         foreach ($args as $k => $v) {
             if ($c = $schema->getColumn($k)) {
                 $args[ $k ] = $c->deflate($v);
@@ -1441,7 +1441,7 @@ abstract class BaseModel implements
     public function get($key)
     {
         // relationship id can override value column.
-        if ($relation = $this->getSchema()->getRelation($key)) {
+        if ($relation = static::getSchema()->getRelation($key)) {
             // use model query to load relational record.
             return $this->getRelationalRecords($key, $relation);
         }
@@ -1486,7 +1486,7 @@ abstract class BaseModel implements
     public function __isset($name)
     {
         return property_exists($this, $name)
-            || isset($this->getSchema()->columns[$name])
+            || isset(static::getSchema()->columns[$name])
             || 'schema' === $name
             || $this->getSchema()->getRelation($name)
             ;
@@ -1497,7 +1497,7 @@ abstract class BaseModel implements
         // check for the object cache
         $cacheKey = 'relationship::'.$key;
         if (!$relation) {
-            $relation = $this->getSchema()->getRelation($key);
+            $relation = static::getSchema()->getRelation($key);
         }
 
         /*
@@ -1570,7 +1570,7 @@ abstract class BaseModel implements
             $rId = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
             $rId2 = $relation['relation_foreign'];  // get external relationId from the middle relation. (book from author_books)
 
-            $middleRelation = $this->getSchema()->getRelation($rId);
+            $middleRelation = static::getSchema()->getRelation($rId);
             if (!$middleRelation) {
                 throw new InvalidArgumentException("first level relationship of many-to-many $rId is empty");
             }
@@ -1728,7 +1728,7 @@ abstract class BaseModel implements
     public function toInflatedArray()
     {
         $data = array();
-        $schema = $this->getSchema();
+        $schema = static::getSchema();
         $data = $this->getData();
         foreach ($data as $k => $v) {
             $col = $schema->getColumn($k);
@@ -1752,7 +1752,7 @@ abstract class BaseModel implements
     protected function inflateColumnValue($n)
     {
         $value = property_exists($this, $n) ? $this->$n : NULL;
-        if ($c = $this->getSchema()->getColumn($n)) {
+        if ($c = static::getSchema()->getColumn($n)) {
             return $c->inflate($value, $this);
         }
         return $value;
@@ -1800,7 +1800,7 @@ abstract class BaseModel implements
         return new $class();
     }
 
-    public function getSchema()
+    static public function getSchema()
     {
         if ($this->_schema) {
             return $this->_schema;
@@ -1907,7 +1907,7 @@ abstract class BaseModel implements
 
     public function fetchManyToManyRelationCollection($relationId)
     {
-        $schema = $this->getSchema();
+        $schema = static::getSchema();
         $relation = $schema->getRelation($relationId);
 
         return $relation->newForeignForeignCollection(

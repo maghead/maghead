@@ -38,12 +38,13 @@ class MetadataBase
     public $id;
     public $name;
     public $value;
-    public function getSchema()
+    public static function getSchema()
     {
-        if ($this->_schema) {
-           return $this->_schema;
+        static $schema;
+        if ($schema) {
+           return $schema;
         }
-        return $this->_schema = SchemaLoader::load('LazyRecord\\Model\\MetadataSchemaProxy');
+        return $schema = new \LazyRecord\Model\MetadataSchemaProxy;
     }
     public static function find($pkId)
     {

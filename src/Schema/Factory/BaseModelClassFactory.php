@@ -50,16 +50,20 @@ class BaseModelClassFactory
         $cTemplate->addPublicProperty('readSourceId', $schema->getReadSourceId() ?: 'default');
         $cTemplate->addPublicProperty('writeSourceId', $schema->getWriteSourceId() ?: 'default');
 
-        $cTemplate->addMethod('public', 'getSchema', [], [
-            'if ($this->_schema) {',
-            '   return $this->_schema;',
-            '}',
-            'return $this->_schema = SchemaLoader::load('.var_export($schema->getSchemaProxyClass(), true).');',
-        ]);
 
         $cTemplate->addStaticVar('column_names',  $schema->getColumnNames());
         $cTemplate->addStaticVar('column_hash',  array_fill_keys($schema->getColumnNames(), 1));
         $cTemplate->addStaticVar('mixin_classes', array_reverse($schema->getMixinSchemaClasses()));
+
+        $cTemplate->addStaticMethod('public', 'getSchema', [], function() use ($schema) {
+            return [
+                "static \$schema;",
+                "if (\$schema) {",
+                "   return \$schema;",
+                "}",
+                "return \$schema = new \\{$schema->getSchemaProxyClass()};",
+            ];
+        });
 
         if ($traitClasses = $schema->getModelTraitClasses()) {
             foreach ($traitClasses as $traitClass) {
@@ -233,7 +237,7 @@ class BaseModelClassFactory
 
             if ($schema->enableColumnAccessors) {
 
-                if (preg_match('/^is[A-Z]/', $columnName)) {
+                if (preg_match('/^is[A-Z]/', $propertyName)) {
                     $accessorMethodName = $propertyName;
                 } else if ($column->isa === "bool") {
                     // for column names like "is_confirmed", don't prepend another "is" prefix to the accessor name.
