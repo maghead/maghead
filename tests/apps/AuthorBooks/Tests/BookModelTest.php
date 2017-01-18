@@ -226,17 +226,4 @@ class BookModelTest extends ModelTestCase
         $ret = $b->delete();
         $this->assertResultSuccess($ret);
     }
-
-    /**
-     * @rebuild false
-     */
-    public function testGeneralInterface() 
-    {
-        $a = new Book;
-        ok($a);
-        ok( $a->getQueryDriver('default') );
-        ok( $a->getWriteQueryDriver() );
-        ok( $a->getReadQueryDriver() );
-    }
 }
-

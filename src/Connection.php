@@ -30,6 +30,12 @@ class Connection extends PDO
      */
     private $dsn;
 
+
+    /**
+     * @var SQLBuilder\Driver\BaseDriver
+     */
+    private $queryDriver; 
+
     public static function create(array $config)
     {
         $connection = new self($config['dsn'], $config['user'], $config['pass'], $config['connection_options']);
@@ -46,9 +52,12 @@ class Connection extends PDO
         return $stm;
     }
 
-    public function createQueryDriver()
+    public function getQueryDriver()
     {
-        return PDODriverFactory::create($this);
+        if ($this->queryDriver) {
+            return $this->queryDriver;
+        }
+        return $this->queryDriver = PDODriverFactory::create($this);
     }
 
     public function getConfig()

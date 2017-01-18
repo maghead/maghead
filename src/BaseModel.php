@@ -224,7 +224,7 @@ abstract class BaseModel implements
      *
      * @param string $dsId Data source id.
      */
-    public function getQueryDriver($dsId)
+    protected function getQueryDriver($dsId)
     {
         return ConnectionManager::getInstance()->getQueryDriver($dsId);
     }
@@ -232,7 +232,7 @@ abstract class BaseModel implements
     /**
      * Get SQL Query driver object for writing data.
      */
-    public function getWriteQueryDriver()
+    protected function getWriteQueryDriver()
     {
         if ($this->_writeQueryDriver) {
             return $this->_writeQueryDriver;
@@ -663,7 +663,7 @@ abstract class BaseModel implements
         $cacheable = extension_loaded('xarray');
 
         $conn = $this->getWriteConnection();
-        $driver = $this->getWriteQueryDriver();
+        $driver = $conn->getQueryDriver();
 
         // Just a note: Exceptions should be used for exceptional conditions; things you 
         // don't expect to happen. Validating input isn't very exceptional.
@@ -825,12 +825,14 @@ abstract class BaseModel implements
         $this->table = $tableName;
     }
 
+    /**
+     * We kept getTable() as dynamic that way we can change the table name.
+     */
     public function getTable()
     {
         if ($this->table) {
             return $this->table;
         }
-
         return static::TABLE;
     }
 
@@ -892,7 +894,7 @@ abstract class BaseModel implements
         $query->from($this->table, $this->alias);
 
         $conn = $this->getReadConnection();
-        $driver = $this->getReadQueryDriver();
+        $driver = $conn->getQueryDriver();
         $kVal = null;
 
         // build query from array.
@@ -965,7 +967,7 @@ abstract class BaseModel implements
 
         $dsId = $this->writeSourceId;
         $conn = $this->getWriteConnection();
-        $driver = $this->getWriteQueryDriver();
+        $driver = $conn->getQueryDriver();
 
         $data = $this->getData();
         $this->beforeDelete($data);
@@ -1030,7 +1032,7 @@ abstract class BaseModel implements
         $origArgs = $args;
         $dsId = $this->writeSourceId;
         $conn = $this->getWriteConnection();
-        $driver = $this->getWriteQueryDriver();
+        $driver = $conn->getQueryDriver();
         $sql = null;
         $vars = null;
 
@@ -1184,9 +1186,8 @@ abstract class BaseModel implements
      */
     public function rawUpdate(array $args)
     {
-        $dsId = $this->writeSourceId;
         $conn = $this->getWriteConnection();
-        $driver = $this->getWriteQueryDriver();
+        $driver = $conn->getQueryDriver();
         $k = static::PRIMARY_KEY;
         $kVal = isset($args[$k])
             ? $args[$k] 
@@ -1216,11 +1217,10 @@ abstract class BaseModel implements
      */
     public function rawCreate(array $args)
     {
-        $dsId = $this->writeSourceId;
         $conn = $this->getWriteConnection();
 
         $k = static::PRIMARY_KEY;
-        $driver = $this->getWriteQueryDriver();
+        $driver = $conn->getQueryDriver();
 
         $query = new InsertQuery();
         $query->insert($args);

@@ -161,7 +161,7 @@ class BaseModelClassFactory
         $primaryKey = $schema->primaryKey;
         $readFrom = $schema->getReadSourceId();
         $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
-        $readQueryDriver = $readConnection->createQueryDriver();
+        $readQueryDriver = $readConnection->getQueryDriver();
         $primaryKeyColumn = $schema->getColumn($primaryKey);
         $findByPrimaryKeyQuery->select('*')
             ->where()->equal($primaryKey, new ParamMarker($primaryKey));

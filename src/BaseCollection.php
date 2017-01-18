@@ -230,7 +230,7 @@ class BaseCollection
         $dsId = $this->getSchema()->getReadSourceId();
 
         $conn = ConnectionManager::getInstance()->getConnection($dsId);
-        $driver = $conn->createQueryDriver();
+        $driver = $conn->getQueryDriver();
 
         $q = new SelectQuery();
 
@@ -290,7 +290,7 @@ class BaseCollection
         /* fetch by current query */
         $dsId = $this->getSchema()->getReadSourceId();
         $conn = ConnectionManager::getInstance()->getConnection($dsId);
-        $driver = $conn->createQueryDriver();
+        $driver = $conn->getQueryDriver();
         $arguments = new ArgumentArray();
         $this->_lastSql = $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
         $this->_vars = $vars = $arguments->toArray();
@@ -302,7 +302,7 @@ class BaseCollection
     {
         $dsId = $this->getSchema()->getReadSourceId();
         $conn = ConnectionManager::getInstance()->getConnection($dsId);
-        $driver = $conn->createQueryDriver();
+        $driver = $conn->getQueryDriver();
         $arguments = new ArgumentArray();
         $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
         $args = $arguments->toArray();
@@ -322,7 +322,7 @@ class BaseCollection
         $conn = ConnectionManager::getInstance()
                     ->getConnection($dsId);
 
-        $driver = $conn->createQueryDriver();
+        $driver = $conn->getQueryDriver();
 
         $q = clone $this->getCurrentReadQuery();
         $q->setSelect('COUNT(distinct m.id)'); // Override current select.
@@ -477,7 +477,7 @@ class BaseCollection
         $dsId = $schema->getWriteSourceId();
 
         $conn = ConnectionManager::getInstance()->getConnection($dsId);
-        $driver = $conn->createQueryDriver();
+        $driver = $conn->getQueryDriver();
 
         $query = new DeleteQuery();
         $query->from($this->getTable());
@@ -510,7 +510,7 @@ class BaseCollection
         $dsId = $schema->getWriteSourceId();
 
         $conn = ConnectionManager::getInstance()->getConnection($dsId);
-        $driver = $conn->createQueryDriver();
+        $driver = $conn->getQueryDriver();
 
         $query = new UpdateQuery();
         $query->setWhere(clone $this->getCurrentReadQuery()->getWhere());

@@ -168,9 +168,7 @@ class ConnectionManager implements ArrayAccess
      */
     public function getQueryDriver($id)
     {
-        $self = $this;
-
-        return $this->getConnection($id)->createQueryDriver();
+        return $this->getConnection($id)->getQueryDriver();
     }
 
     public function getDriverType($id)

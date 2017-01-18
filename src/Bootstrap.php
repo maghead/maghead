@@ -20,7 +20,7 @@ class Bootstrap
     public function __construct(Connection $conn, BaseBuilder $builder = null, Logger $logger = null)
     {
         $this->conn = $conn;
-        $this->queryDriver = $conn->createQueryDriver();
+        $this->queryDriver = $conn->getQueryDriver();
         if (!$builder) {
             $builder = SqlBuilder::create($this->queryDriver);
         }

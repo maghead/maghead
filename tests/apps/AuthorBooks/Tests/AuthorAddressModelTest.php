@@ -108,15 +108,4 @@ class AuthorAddressModelTest extends ModelTestCase
         is('Z', $retAuthor->name);
         $this->assertResultSuccess($author->delete());
     }
-
-    /**
-     * @rebuild false
-     */
-    public function testGeneralInterface()
-    {
-        $a = new Address;
-        ok($a->getQueryDriver('default'));
-        ok($a->getWriteQueryDriver());
-        ok($a->getReadQueryDriver());
-    }
 }
