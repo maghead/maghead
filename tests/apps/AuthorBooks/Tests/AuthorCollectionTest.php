@@ -3,6 +3,7 @@ use LazyRecord\SqlBuilder;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\Author;
+use AuthorBooks\Model\Address;
 use AuthorBooks\Model\AuthorCollection;
 use LazyRecord\Testing\ModelTestCase;
 use LazyRecord\Exporter\CSVExporter;
@@ -54,10 +55,9 @@ class AuthorCollectionTest extends ModelTestCase
             $id = $result->id;
             ok($id);
 
-            
             $this->assertTrue(isset($pairs[$id]));
             like('/Hack/',$pairs[$id]);
-            $address = new \AuthorBooks\Model\Address($result->id);
+            $address = Address::find($result->id);
             $address->delete();
         }
     }
@@ -290,7 +290,7 @@ class AuthorCollectionTest extends ModelTestCase
         $books->fetch();
         count_ok(4, $books);
 
-        $perlBooks = $books->filter(function($item) { 
+        $perlBooks = $books->filter(function($item) {
             return $item->title == 'Perl Programming';
         });
 
@@ -298,10 +298,9 @@ class AuthorCollectionTest extends ModelTestCase
         is(1, $perlBooks->size());
         count_ok(1, $perlBooks->items());
 
- 
         foreach( $results as $result ) {
-            ok( $result->id );
-            $record = new Book($result->id);
+            ok($result->key);
+            $record = Book::find($result->id);
             $record->delete();
         }
 

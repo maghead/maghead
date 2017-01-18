@@ -120,38 +120,6 @@ abstract class BaseModel implements
 
     private $_writeConnection;
 
-    /**
-     * The constructor.
-     *
-     * This constructor simply does nothing if no argument is passed.
-     *
-     * If the first argument is an integer, the record object will try to load 
-     * the record by primary key with the given integer.
-     *
-     * If the first argument is an array, the record object will try to look up
-     * the record by treating the array as conditions, just like `where([ ... ])`
-     *
-     * To avoid record object load the data, you can specify ['load' => false] as the option
-     *
-     * @param mixed $args    arguments for finding
-     * @param array $options constructor options
-     */
-    public function __construct($args = null, array $options = array())
-    {
-        // Load the data only when the ID is defined.
-        if ($args) {
-            if (is_int($args)) {
-                $this->load($args);
-            } elseif (is_array($args)) {
-                if (isset($options['load']) && $options['load'] === false) {
-                    $this->setData($args);
-                } else {
-                    $this->load($args);
-                }
-            }
-        }
-    }
-
     public function select($sels)
     {
         if (is_array($sels)) {
