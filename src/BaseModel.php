@@ -952,8 +952,10 @@ abstract class BaseModel implements
         // here we allow users to specifty primary key value from arguments if the record is not loaded.
         $kVal = null;
         if (isset($args[$k]) && is_scalar($args[$k])) {
+            // FIXME: primary key could be string
             $kVal = intval($args[$k]);
         } else if ($k = $this->getKey()) {
+            // FIXME: primary key could be string
             $kVal = intval($k);
         }
 
