@@ -15,6 +15,8 @@ use SQLBuilder\ParamMarker;
 use SQLBuilder\ArgumentArray;
 use CodeGen\Statement\RequireStatement;
 use CodeGen\Statement\RequireOnceStatement;
+use CodeGen\Expr\ConcatExpr;
+use CodeGen\Raw;
 
 /**
  * Base Model class generator.
@@ -38,8 +40,11 @@ class BaseModelClassFactory
         //
         // By design, users shouldn't use the schema proxy class, it 
         // should be only used by model/collection class.
-        $schemaProxyPath = $schema->getRelatedClassPath($schema->getModelName() . 'SchemaProxy');
-        $cTemplate->prependStatement(new RequireOnceStatement($schemaProxyPath));
+        // $schemaProxyPath = $schema->getRelatedClassPath($schema->getModelName() . 'SchemaProxy');
+        $schemaProxyFileName = $schema->getModelName() . 'SchemaProxy.php';
+        $cTemplate->prependStatement(new RequireOnceStatement(
+            new ConcatExpr(new Raw('__DIR__'), DIRECTORY_SEPARATOR . $schemaProxyFileName)
+        ));
 
         $cTemplate->useClass('LazyRecord\\Schema\\SchemaLoader');
         $cTemplate->useClass('LazyRecord\\Result');
