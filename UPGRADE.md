@@ -36,6 +36,10 @@ $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'iden
     - BaseModel::find now returns the found record instead of load the data 
     to the object itself.
 
+6. `BaseModel::deflate` method is removed.
+7. `BaseModel::deflateData` method is removed.
+8. `BaseModel::getSchema` method is now static.
+
 
 UPGRADE TO 2.0
 ======================

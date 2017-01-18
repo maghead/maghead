@@ -1230,36 +1230,6 @@ abstract class BaseModel implements
         }
     }
 
-    /**
-     * deflate data from database.
-     *
-     * for datetime object, deflate it into DateTime object.
-     * for integer  object, deflate it into int type.
-     * for boolean  object, deflate it into bool type.
-     *
-     * @param array $args
-     *
-     * @return array current record data.
-     */
-    public function deflateData(array &$args)
-    {
-        $schema = static::getSchema();
-        foreach ($args as $k => $v) {
-            if ($c = $schema->getColumn($k)) {
-                $args[ $k ] = $c->deflate($v);
-            }
-        }
-        return $args;
-    }
-
-    /**
-     * deflate current record data, usually deflate data from database 
-     * turns data into objects, int, string (type casting).
-     */
-    public function deflate()
-    {
-        $this->deflateData($this->_data);
-    }
 
     /**
      * get pdo connetion and make a query.
