@@ -167,20 +167,12 @@ abstract class BaseModel implements
 
     public function getDataLabelField()
     {
-        if ($this->dataLabelField) {
-            return $this->dataLabelField;
-        }
-
-        return static::PRIMARY_KEY;
+        return $this->dataLabelField ?: static::PRIMARY_KEY;
     }
 
     public function getDataValueField()
     {
-        if ($this->dataValueField) {
-            return $this->dataValueField;
-        }
-
-        return static::PRIMARY_KEY;
+        return $this->dataValueField ?: static::PRIMARY_KEY;
     }
 
     /**
@@ -209,20 +201,9 @@ abstract class BaseModel implements
         return $this->dataKeyValue();
     }
 
-    /**
-     * Get SQL Query Driver by data source id.
-     *
-     * @param string $dsId Data source id.
-     */
-    protected function getQueryDriver($dsId)
-    {
-        return ConnectionManager::getInstance()->getQueryDriver($dsId);
-    }
-
     public function setAlias($alias)
     {
         $this->alias = $alias;
-
         return $this;
     }
 
