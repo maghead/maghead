@@ -178,7 +178,6 @@ class BaseCollection
         $driver = $this->getQueryDriver($dsId);
         $this->explictSelect = true;
         $this->selected = $this->getExplicitColumnSelect($driver);
-
         return $this;
     }
 
@@ -196,12 +195,12 @@ class BaseCollection
         return ConnectionManager::getInstance()->getQueryDriver($dsId);
     }
 
-    public function getWriteQueryDriver()
+    protected function getWriteQueryDriver()
     {
         return $this->getQueryDriver(static::getSchema()->getWriteSourceId());
     }
 
-    public function getReadQueryDriver()
+    protected function getReadQueryDriver()
     {
         return $this->getQueryDriver(static::getSchema()->getReadSourceId());
     }
