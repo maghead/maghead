@@ -31,7 +31,7 @@ class AuthorModelTest extends ModelTestCase
     public function testCollection()
     {
         $author = new Author;
-        $this->assertNotFalse($author = $author->createAndLoad(array( 
+        $this->assertNotFalse($author = Author::createAndLoad(array( 
             'name' => 'FooBar',
             'email' => 'a@a',
             'identity' => 'a',

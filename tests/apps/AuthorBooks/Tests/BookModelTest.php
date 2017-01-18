@@ -22,8 +22,7 @@ class BookModelTest extends ModelTestCase
 
     public function testImmutableColumn()
     {
-        $b = new Book ;
-        $b = $b->createAndLoad(array( 'isbn' => '123123123' ));
+        $b = Book::createAndLoad(array( 'isbn' => '123123123' ));
 
         $ret = $b->update(array('isbn'  => '456456' ));
         $this->assertResultFail($ret, 'Should not update immutable column');
@@ -45,8 +44,7 @@ class BookModelTest extends ModelTestCase
 
     public function testFlagHelper()
     {
-        $b = new Book ;
-        $b = $b->createAndLoad([ 'title' => 'Test Book' ]);
+        $b = Book::createAndLoad([ 'title' => 'Test Book' ]);
 
         $schema = $b->getSchema();
         ok($schema);
@@ -147,8 +145,7 @@ class BookModelTest extends ModelTestCase
      */
     public function testRawSQL()
     {
-        $n = new Book ;
-        $n = $n->createAndLoad(array(
+        $n = Book::createAndLoad(array(
             'title' => 'book title',
             'view' => 0,
         ));
@@ -171,8 +168,7 @@ class BookModelTest extends ModelTestCase
     public function testDateTimeValue()
     {
         $date = new DateTime;
-        $book = new Book;
-        $book = $book->createAndLoad([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
+        $book = Book::createAndLoad([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
         $this->assertInstanceOf('DateTime', $book->getPublishedAt());
         $this->assertEquals('00-00-00 00-00-00',$date->diff($book->getPublishedAt())->format('%Y-%M-%D %H-%I-%S'));
     }
@@ -184,8 +180,7 @@ class BookModelTest extends ModelTestCase
     {
         $date = new DateTime;
 
-        $book = new Book;
-        $book = $book->createAndLoad([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
+        $book = Book::createAndLoad([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
         $this->assertCount(1, new BookCollection);
 
         $id = $book->id;
@@ -209,8 +204,7 @@ class BookModelTest extends ModelTestCase
      */
     public function testZeroInflator()
     {
-        $b = new Book ;
-        $b = $b->createAndLoad(array( 'title' => 'Create X' , 'view' => 0 ));
+        $b = Book::createAndLoad(array( 'title' => 'Create X' , 'view' => 0 ));
 
         ok($b->id);
         is( 0 , $b->view );

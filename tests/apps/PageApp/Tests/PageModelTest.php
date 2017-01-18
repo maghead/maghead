@@ -25,8 +25,7 @@ class PageModelTest extends ModelTestCase
 
 
     public function testSaveRevision() {
-        $page = new Page;
-        $page = $page->createAndLoad([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
+        $page = Page::createAndLoad([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
 
         $pageRev1 = $page->saveWithRevision();
 
@@ -42,18 +41,14 @@ class PageModelTest extends ModelTestCase
 
     public function testSaveRevisionWhenUpdate()
     {
-        $page = new Page;
-        $page = $page->createAndLoad([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
-
+        $page = Page::createAndLoad([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
         $page->saveRevisionWhenUpdate = true;
-
         $ret = $page->update([ 'title' => 'Book A' ]);
         $this->assertResultSuccess($ret);
     }
 
     public function testRevisionRelationship() {
-        $page = new Page;
-        $page = $page->createAndLoad([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
+        $page = Page::createAndLoad([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
 
         $pageRev1 = $page->saveWithRevision();
         $this->assertNotEquals($pageRev1->id, $page->id);

@@ -412,8 +412,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testManyToManyRelationFetch()
     {
-        $author = new Author;
-        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer
@@ -431,22 +430,22 @@ class AuthorBookModelTest extends ModelTestCase
         $book = new \AuthorBooks\Model\Book;
 
         // should not include this
-        ok( $book = $book->createAndLoad(array( 'title' => 'Book I Ex' )) );
-        ok( $book = $book->createAndLoad(array( 'title' => 'Book I' )) );
+        ok( $book = Book::createAndLoad(array( 'title' => 'Book I Ex' )) );
+        ok( $book = Book::createAndLoad(array( 'title' => 'Book I' )) );
 
-        ok($ab = $ab->createAndLoad(array( 
+        ok($ab = AuthorBook::createAndLoad(array( 
             'author_id' => $author->id,
             'book_id' => $book->id,
         )));
 
-        ok( $book = $book->createAndLoad(array( 'title' => 'Book II' )) );
+        ok( $book = Book::createAndLoad(array( 'title' => 'Book II' )) );
         $ab->create(array( 
             'author_id' => $author->id,
             'book_id' => $book->id,
         ));
 
-        ok( $book = $book->createAndLoad(array( 'title' => 'Book III' )) );
-        $ab = $ab->createAndLoad(array( 
+        ok( $book = Book::createAndLoad(array( 'title' => 'Book III' )) );
+        $ab = AuthorBook::createAndLoad(array( 
             'author_id' => $author->id,
             'book_id' => $book->id,
         ));
@@ -454,7 +453,7 @@ class AuthorBookModelTest extends ModelTestCase
         // retrieve books from relationshipt
         $author->flushCache();
         $books = $author->books;
-        is( 3, $books->size() , 'We have 3 books' );
+        $this->assertEquals( 3, $books->size() , 'We have 3 books' );
 
 
         $bookTitles = array();

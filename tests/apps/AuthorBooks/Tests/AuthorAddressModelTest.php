@@ -15,12 +15,10 @@ class AuthorAddressModelTest extends ModelTestCase
 
     public function testHasManyRelationFetch()
     {
-        $author = new \AuthorBooks\Model\Author;
-        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertNotFalse($author);
 
-        $address = new Address;
-        $address = $address->createAndLoad(array(
+        $address = Address::createAndLoad(array(
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei',
         ));
@@ -31,7 +29,7 @@ class AuthorAddressModelTest extends ModelTestCase
         $this->assertNotNull($address->author->getId());
         $this->assertEquals($author->id, $address->author->id);
 
-        $address = $address->createAndLoad(array( 
+        $address = Address::createAndLoad(array( 
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei II',
         ));
@@ -67,8 +65,7 @@ class AuthorAddressModelTest extends ModelTestCase
      */
     public function testHasManyRelationCreate()
     {
-        $author = new Author;
-        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertNotFalse($author);
         $this->assertNotNull($author->id);
 
@@ -91,8 +88,7 @@ class AuthorAddressModelTest extends ModelTestCase
      */
     public function testHasManyRelationCreate2()
     {
-        $author = new \AuthorBooks\Model\Author;
-        $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertNotFalse($author);
 
         // append items

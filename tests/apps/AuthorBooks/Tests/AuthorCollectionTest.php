@@ -11,8 +11,7 @@ use LazyRecord\Importer\CSVImporter;
 class AuthorFactory {
 
     static function create($name) {
-        $author = new Author;
-        return $author->createAndLoad(array(
+        return Author::createAndLoad(array(
             'name' => $name,
             'email' => 'temp@temp' . rand(),
             'identity' => rand(),
@@ -312,9 +311,8 @@ class AuthorCollectionTest extends ModelTestCase
 
     public function testCollectionExporter()
     {
-        $author = new Author;
         foreach( range(1,10) as $i ) {
-            $author = $author->createAndLoad(array(
+            $author = Author::createAndLoad(array(
                 'name' => 'Foo-' . $i,
                 'email' => 'foo@foo' . $i,
                 'identity' => 'foo' . $i,
@@ -344,7 +342,7 @@ class AuthorCollectionTest extends ModelTestCase
     {
         $author = new Author;
         foreach( range(1,10) as $i ) {
-            $author = $author->createAndLoad(array(
+            $author = Author::createAndLoad(array(
                 'name' => 'Foo-' . $i,
                 'email' => 'foo@foo' . $i,
                 'identity' => 'foo' . $i,

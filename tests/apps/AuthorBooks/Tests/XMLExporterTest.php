@@ -59,8 +59,7 @@ class XMLExporterTest extends ModelTestCase
 
     public function testRecursiveExporting()
     {
-        $author = new Author;
-        $author = $author->createAndLoad(array(
+        $author = Author::createAndLoad(array(
             'name' => 'Z',
             'email' => 'z@z',
             'identity' => 'z',
@@ -75,8 +74,7 @@ class XMLExporterTest extends ModelTestCase
         $author->addresses->create([ 'address' => 'san francisco' ]);
 
 
-        $book = new Book;
-        $book = $book->createAndLoad([ 
+        $book = Book::createAndLoad([ 
             'title' => 'Run & Skate',
             'published_at' => '2012-01-01 00:00:00',
             'updated_on' => '2012-01-01 00:00:00',
@@ -91,8 +89,7 @@ class XMLExporterTest extends ModelTestCase
         ]);
 
 
-        $book = new Book;
-        $book = $book->createAndLoad([ 
+        $book = Book::createAndLoad([ 
             'title' => 'Run & Skate II',
             'updated_on' => '2012-01-01 00:00:00',
             'created_on' => '2012-01-01 00:00:00',

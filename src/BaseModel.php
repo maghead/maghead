@@ -677,11 +677,12 @@ abstract class BaseModel implements
     /**
      * Create and return the created record.
      */
-    public function createAndLoad(array $args)
+    static public function createAndLoad(array $args)
     {
-        $ret = $this->create($args);
+        $record = new static;
+        $ret = $record->create($args);
         if ($ret->success) {
-            return $this->find($ret->key);
+            return static::find($ret->key);
         }
         return false;
     }

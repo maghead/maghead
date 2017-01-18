@@ -196,7 +196,7 @@ class NameModelTest extends ModelTestCase
     public function testLoadFromContstructor()
     {
         $name = new Name;
-        $name = $name->createAndLoad(array( 
+        $name = Name::createAndLoad(array( 
             'name' => 'John',
             'country' => 'Taiwan',
             'type' => 'type-a',
@@ -245,7 +245,7 @@ class NameModelTest extends ModelTestCase
     public function testDeflator()
     {
         $n = new \TestApp\Model\Name;
-        $n = $n->createAndLoad(array( 
+        $n = Name::createAndLoad(array( 
             'name' => 'Deflator Test' , 
             'country' => 'Tokyo', 
             'confirmed' => '0',
@@ -269,7 +269,7 @@ class NameModelTest extends ModelTestCase
     public function testCreateWithDifferentNames($args)
     {
         $name = new Name;
-        $name = $name->createAndLoad($args);
+        $name = Name::createAndLoad($args);
 
         $ret = $name->delete();
         $this->assertResultSuccess($ret);
@@ -300,7 +300,7 @@ class NameModelTest extends ModelTestCase
     {
         $n = new \TestApp\Model\Name;
         $date = new DateTime('2011-01-01 00:00:00');
-        $n = $n->createAndLoad(array(
+        $n = Name::createAndLoad(array(
             'name' => 'Deflator Test',
             'country' => 'Tokyo',
             'confirmed' => false,
