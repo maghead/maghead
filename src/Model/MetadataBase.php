@@ -44,6 +44,17 @@ class MetadataBase
         }
         return $this->_schema = SchemaLoader::load('LazyRecord\\Model\\MetadataSchemaProxy');
     }
+    public static function find($pkId)
+    {
+        static $stm;
+        if (1 || !$stm) {
+            $record = new static;
+            $conn = $record->getReadConnection();
+            $stm = $conn->prepare('SELECT * FROM __meta__ WHERE id = ? LIMIT 1');
+            $stm->setFetchMode(PDO::FETCH_CLASS, 'LazyRecord\Model\Metadata');
+        }
+        return static::_stmFetch($stm, [$pkId]);
+    }
     public function getKeyName()
     {
         return 'id';
@@ -70,7 +81,7 @@ class MetadataBase
         if (array_key_exists("name", $data)) { $this->name = $data["name"]; }
         if (array_key_exists("value", $data)) { $this->value = $data["value"]; }
     }
-    public function empty()
+    public function clear()
     {
         $this->id = NULL;
         $this->name = NULL;

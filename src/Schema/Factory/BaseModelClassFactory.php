@@ -164,6 +164,19 @@ class BaseModelClassFactory
         $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
 
+        $cTemplate->addStaticMethod('public', 'find', ['$pkId'], function() use ($findByPrimaryKeySql, $schema) {
+            return [
+                    "static \$stm;",
+                    "if (1 || !\$stm) {",
+                    "    \$record = new static;",
+                    "    \$conn = \$record->getReadConnection();",
+                    "    \$stm = \$conn->prepare('$findByPrimaryKeySql');",
+                    "    \$stm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}');",
+                    "}",
+                    "return static::_stmFetch(\$stm, [\$pkId]);",
+            ];
+        });
+
         foreach ($schema->getColumns() as $column) {
             if (!$column->findable) {
                 continue;

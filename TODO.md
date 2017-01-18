@@ -23,6 +23,7 @@ TODO
         to the object itself.
 
     - [ ] `Result->getKey()` to make the API consistent.
+    - [ ] `getReadConnection` could be static method??
 
 
 

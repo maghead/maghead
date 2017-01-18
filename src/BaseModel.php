@@ -146,8 +146,6 @@ abstract class BaseModel implements
     /**
      * @var PDOStatement prepared statement for find by primary key method.
      */
-    protected $_preparedFindStm;
-
     protected $_preparedFindStms = array();
 
     protected $_preparedCreateStms = array();
@@ -925,27 +923,19 @@ abstract class BaseModel implements
     /**
      * Find record.
      *
-     * TODO: right now we can't rewrite this method into static method because:
-     *
-     * 1. data source is dynamic.
-     * 2. require a static property to save the prepared statement object.
-     *
      * @param array condition array
+     * @return BaseModel
      */
-    public function find($pkId)
-    {
-        $dsId = $this->readSourceId;
-        if (!$this->_preparedFindStm) {
-            $conn = $this->getReadConnection();
-            $this->_preparedFindStm = $conn->prepare(static::FIND_BY_PRIMARY_KEY_SQL);
-            $this->_preparedFindStm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
-        }
-        $this->_preparedFindStm->execute([$pkId]);
+    abstract static public function find($pkId);
 
-        $obj = $this->_preparedFindStm->fetch(PDO::FETCH_CLASS);
-        $this->_preparedFindStm->closeCursor();
+    static protected function _stmFetch($stm, $args)
+    {
+        $stm->execute($args);
+        $obj = $stm->fetch(PDO::FETCH_CLASS);
+        $stm->closeCursor();
         return $obj;
     }
+
 
     public function loadFromCache($args, $ttl = 3600)
     {
@@ -2117,10 +2107,6 @@ abstract class BaseModel implements
         if ($this->_preparedCreateStms) {
             $this->_preparedCreateStms->closeCursor();
             $this->_preparedCreateStms = null;
-        }
-        if ($this->_preparedFindStm) {
-            $this->_preparedFindStm->closeCursor();
-            $this->_preparedFindStm = null;
         }
         foreach ($this->_preparedFindStms as $stm) {
             $stm->closeCursor();

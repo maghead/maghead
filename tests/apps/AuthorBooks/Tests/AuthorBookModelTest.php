@@ -1,6 +1,7 @@
 <?php
 use LazyRecord\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
+use AuthorBooks\Model\Book;
 use AuthorBooks\Model\AuthorBook;
 use AuthorBooks\Model\AuthorBookSchema;
 use AuthorBooks\Model\AuthorCollection;
@@ -31,7 +32,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $a = $a->find($ret->id);
+        $a = Author::find($ret->id);
 
         $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
         $a->reload();
@@ -58,7 +59,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $a = $a->find($ret->id);
+        $a = Author::find($ret->id);
         
         $this->assertFalse($a->isConfirmed());
 
@@ -70,7 +71,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $a = $a->find($ret->id);
+        $a = Author::find($ret->id);
 
         $this->assertTrue($a->isConfirmed());
 
@@ -145,7 +146,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $author = $author->find($ret->id);
+        $author = Author::find($ret->id);
 
 
         ok($v = $author->getColumn('account_brief')); // virtual colun
@@ -208,19 +209,19 @@ class AuthorBookModelTest extends ModelTestCase
 
         $ret = $a2->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
         ok( $ret->success );
-        $a2 = $a2->find($ret->id);
+        $a2 = Author::find($ret->id);
         ok( $a2->id );
 
         $ret = $a2->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
         ok( $ret->success );
-        $a2 = $a2->find($ret->id);
+        $a2 = Author::find($ret->id);
         ok( $a2->id );
 
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->resultOK(true, $ret);
         ok( $id = $ret->id );
-        $author = $author->find($ret->id);
+        $author = Author::find($ret->id);
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
 
@@ -260,7 +261,7 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         result_ok($ret);
-        $author = $author->find($ret->id);
+        $author = Author::find($ret->id);
         $ret = $author->update(array('id' => new Raw('id + 3') ));
         result_ok($ret);
     }
@@ -275,7 +276,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true, $ret);
 
-        $author = $author->find($ret->id);
+        $author = Author::find($ret->id);
         $id = $author->id;
 
         $ret = $author->update(array( 'name' => 'I' ));
@@ -305,14 +306,14 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'zz3',
         ]);
         $this->assertResultSuccess($ret);
-        $author = $author->find($ret->id);
+        $author = Author::find($ret->id);
 
         $ab = new AuthorBook;
         $book = new \AuthorBooks\Model\Book;
 
         $ret = $book->create(array( 'title' => 'Book I' ));
         $this->assertResultSuccess($ret);
-        $book = $book->find($ret->id);
+        $book = Book::find($ret->id);
 
         $ret = $ab->create([
             'author_id' => $author->id,
@@ -323,7 +324,7 @@ class AuthorBookModelTest extends ModelTestCase
 
         $ret = $book->create(array( 'title' => 'Book II' ));
         $this->assertResultSuccess($ret);
-        $book = $book->find($ret->id);
+        $book = Book::find($ret->id);
 
         $ret = $ab->create([
             'author_id' => $author->id,
@@ -334,7 +335,7 @@ class AuthorBookModelTest extends ModelTestCase
 
         $ret = $book->create(array( 'title' => 'Book III' ));
         $this->assertResultSuccess($ret);
-        $book = $book->find($ret->id);
+        $book = Book::find($ret->id);
 
         $ret = $ab->create(array( 
             'author_id' => $author->id,
@@ -369,7 +370,7 @@ class AuthorBookModelTest extends ModelTestCase
         $author = new Author;
         $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
-        $author = $author->find($ret->id);
+        $author = Author::find($ret->id);
 
         ok(
             $book = $author->books->create( array( 
