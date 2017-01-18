@@ -82,10 +82,6 @@ class BaseCollection
      */
     protected $defaultOrdering = array();
 
-    public function __construct()
-    {
-    }
-
     public function getIterator()
     {
         if (!$this->_rows) {
@@ -102,7 +98,7 @@ class BaseCollection
     {
         if ($this->_schema) {
             return $this->_schema;
-        } elseif (@constant('static::SCHEMA_PROXY_CLASS')) {
+        } else if (@constant('static::SCHEMA_PROXY_CLASS')) {
             return $this->_schema = SchemaLoader::load(static::SCHEMA_PROXY_CLASS);
         }
         throw new RuntimeException('schema is not defined in '.get_class($this));
