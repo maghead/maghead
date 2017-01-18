@@ -318,7 +318,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     public function resultOK($expect, Result $ret)
     {
-        ok($ret);
+        $this->assertNotNull($ret);
         if ($ret->success === $expect) {
             ok($ret->success, $ret->message);
         } else {

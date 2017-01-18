@@ -22,7 +22,7 @@ class UserModelTest extends ModelTestCase
         $ret = $user->create(array( 'account' => 'c9s' ));
         $this->assertResultSuccess($ret);
 
-        $user = $user->find($ret->id);
+        $user = $user->find($ret->key);
         ok($user->id);
 
         $book = new \AuthorBooks\Model\Book;

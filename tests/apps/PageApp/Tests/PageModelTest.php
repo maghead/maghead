@@ -17,7 +17,7 @@ class PageModelTest extends ModelTestCase
         $ret = $page->create([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
         $this->assertResultSuccess($ret);
 
-        $page = $page->find($ret->id);
+        $page = $page->find($ret->key);
 
         $ret = $page->delete();
         $this->assertResultSuccess($ret);

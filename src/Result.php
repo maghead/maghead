@@ -17,7 +17,8 @@ class Result
     const TYPE_UPDATE = 3;
     const TYPE_DELETE = 4;
 
-    public $id;
+
+    public $key;
 
     /**
      * @var bool Success or fail.
@@ -64,27 +65,28 @@ class Result
 
     public $debugInfo = array();
 
-    public static function success($msg = null, $extra = array())
+    public function __construct($success, $message)
     {
-        $result = new self();
-        $result->setSuccess();
-        $result->setMessage($msg);
+        $this->success = $success;
+        $this->error = !$success;
+        $this->message = $message;
+    }
+
+    public static function success($msg = null, array $extra = array())
+    {
+        $result = new self(true, $msg);
         foreach ($extra as $k => $v) {
             $result->$k = $v;
         }
-
         return $result;
     }
 
-    public static function failure($msg = null, $extra = array())
+    public static function failure($msg = null, array $extra = array())
     {
-        $result = new self();
-        $result->setError();
-        $result->setMessage($msg);
+        $result = new self(false, $msg);
         foreach ($extra as $k => $v) {
             $result->$k = $v;
         }
-
         return $result;
     }
 
@@ -123,6 +125,14 @@ class Result
     public function getType($type)
     {
         return $this->type;
+    }
+
+
+    public function __get($name)
+    {
+        if ($name == "id") {
+            return $this->key;
+        }
     }
 
     /**

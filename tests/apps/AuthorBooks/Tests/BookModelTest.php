@@ -83,12 +83,12 @@ class BookModelTest extends ModelTestCase
         $ret = $b->create(array( 'title' => 'Should Not Load This' ));
         $this->assertResultSuccess( $ret );
         $results[] = $ret;
-        $b = Book::find($ret->id);
+        $b = Book::find($ret->key);
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
         $this->assertResultSuccess( $ret );
         $results[] = $ret;
-        $b = Book::find($ret->id);
+        $b = Book::find($ret->key);
 
         $id = $b->id;
         ok($id);
@@ -117,7 +117,7 @@ class BookModelTest extends ModelTestCase
         ok($b3);
         ok($id != $b3->id , 'we should create anther one'); 
         $results[] = $ret;
-        $b3 = Book::find($ret->id);
+        $b3 = Book::find($ret->key);
         $b3->delete();
 
         foreach( $results as $r ) {

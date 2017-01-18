@@ -66,7 +66,7 @@ class NameModelTest extends ModelTestCase
         $n = new Name;
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
-        $n = Name::find($ret->id);
+        $n = Name::find($ret->key);
         $this->assertFalse($n->isConfirmed());
     }
 
@@ -81,7 +81,7 @@ class NameModelTest extends ModelTestCase
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
 
-        $n = Name::find($ret->id);
+        $n = Name::find($ret->key);
         $this->assertNull($n->isConfirmed());
 
         $ret = $n->load($n->id);
@@ -101,7 +101,7 @@ class NameModelTest extends ModelTestCase
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
 
-        $n = Name::find($ret->id);
+        $n = Name::find($ret->key);
         ok($n->id);
 
         $this->assertTrue($n->isConfirmed(), 'Confirmed value should be TRUE.');
@@ -133,7 +133,7 @@ class NameModelTest extends ModelTestCase
         $ret = $name->create(array('name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John'));
         $this->assertResultSuccess($ret);
 
-        $name = Name::find($ret->id);
+        $name = Name::find($ret->key);
         is('XXXX' , $name->address , 'Should be canonicalized' );
     }
 
@@ -144,7 +144,7 @@ class NameModelTest extends ModelTestCase
         /** confirmed will be cast to true **/
         $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ));
         $this->assertResultSuccess( $ret );
-        $n = Name::find($ret->id);
+        $n = Name::find($ret->key);
 
         $this->assertNotFalse($n);
         $this->assertNotNull($n->id);
@@ -180,7 +180,7 @@ class NameModelTest extends ModelTestCase
         ok( $vlds = $ret->getSuccessValidations() );
         $this->assertCount(1, $vlds);
 
-        $name = Name::find($ret->id);
+        $name = Name::find($ret->key);
         ok( $name->id );
         ok( $name->address );
 
@@ -221,7 +221,7 @@ class NameModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $name = Name::find($ret->id);
+        $name = Name::find($ret->key);
         $this->assertEquals('Type Name A', $name->display('type'));
 
         $xml = $name->toXml();

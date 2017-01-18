@@ -681,7 +681,7 @@ abstract class BaseModel implements
     {
         $ret = $this->create($args);
         if ($ret->success) {
-            return $this->find($ret->id);
+            return $this->find($ret->key);
         }
         return false;
     }
@@ -883,7 +883,7 @@ abstract class BaseModel implements
 
         // collect debug info
         return $this->reportSuccess('Record created.', array(
-            'id' => $pkId,
+            'key' => $pkId,
             'sql' => $sql,
             'args' => $args,
             'binds' => $arguments,
@@ -942,7 +942,7 @@ abstract class BaseModel implements
         $key = serialize($args);
         if ($cacheData = $this->getCache($key)) {
             $this->setData($cacheData);
-            return $this->reportSuccess('Data loaded', [ 'id' => $this->getKey() ]);
+            return $this->reportSuccess('Data loaded', [ 'key' => $this->getKey() ]);
         } else {
             $ret = $this->load($args);
             $this->setCache($key, $this->getData(), $ttl);
@@ -1002,7 +1002,7 @@ abstract class BaseModel implements
         }
         $this->setData($data);
         return $this->reportSuccess('Data loaded', array(
-            'id' => $this->getKey(),
+            'key' => $this->getKey(),
             'sql' => $sql,
             'type' => Result::TYPE_LOAD,
         ));
@@ -1243,7 +1243,7 @@ abstract class BaseModel implements
         }
         */
         return $this->reportSuccess('Updated successfully', array(
-            'id' => $kVal,
+            'key' => $kVal,
             'sql' => $sql,
             'args' => $args,
             'type' => Result::TYPE_UPDATE,
@@ -1445,7 +1445,7 @@ abstract class BaseModel implements
         }
         $this->setData($data);
         return $this->reportSuccess('Data loaded', array(
-            'id'  => $this->getKey(),
+            'key'  => $this->getKey(),
             'sql' => $sql,
         ));
     }

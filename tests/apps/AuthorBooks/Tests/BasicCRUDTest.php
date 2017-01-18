@@ -100,12 +100,12 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $b->create(array( 'title' => 'Should Create, not load this' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
-        $b = $b->find($ret->id);
+        $b = $b->find($ret->key);
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
-        $b = $b->find($ret->id);
+        $b = $b->find($ret->key);
 
         $id = $b->id;
         $this->assertNotNull($id);
@@ -132,7 +132,7 @@ class BasicCRUDTest extends ModelTestCase
         $b3 = new Book;
         $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         $this->assertResultSuccess($ret);
-        $b3 = $b3->find($ret->id);
+        $b3 = $b3->find($ret->key);
         $this->assertNotEquals($id, $b3->id , 'we should create anther one'); 
         $results[] = $ret;
 
@@ -180,7 +180,7 @@ class BasicCRUDTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
-        $author = $author->find($ret->id);
+        $author = $author->find($ret->key);
 
         $ret = $author->update(array('id' => new Raw('id + 3') ));
         $this->assertResultSuccess($ret);
@@ -239,7 +239,7 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
 
-        $author = $author->find($ret->id);
+        $author = $author->find($ret->key);
 
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer
@@ -274,7 +274,7 @@ class BasicCRUDTest extends ModelTestCase
             'book_id' => $book->id,
         ));
         $this->assertResultSuccess($ret);
-        $ab = $ab->find($ret->id);
+        $ab = $ab->find($ret->key);
 
         $this->assertNotFalse($book = $book->createAndLoad(array( 'title' => 'Book II' )) );
         $ab = $ab->createAndLoad(array( 
@@ -391,7 +391,7 @@ class BasicCRUDTest extends ModelTestCase
             'view' => 0,
         ));
         $this->assertResultSuccess($ret);
-        $n = $n->find($ret->id);
+        $n = $n->find($ret->key);
 
         $this->assertEquals( 0 , $n->view );
         $ret = $n->update(array( 
@@ -421,11 +421,11 @@ class BasicCRUDTest extends ModelTestCase
         $b = new \AuthorBooks\Model\Book ;
         $ret = $b->create(array( 'title' => 'Zero number inflator' , 'view' => 0 ));
         $this->assertResultSuccess($ret);
-        $b = $b->find($ret->id);
+        $b = $b->find($ret->key);
         $this->assertNotNull($b->id);
         $this->assertEquals(0 , $b->view);
 
-        $found = $b->find($ret->id);
+        $found = $b->find($ret->key);
         $this->assertNotFalse($found);
         $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
         $this->assertEquals(0 , $found->view);
@@ -440,7 +440,7 @@ class BasicCRUDTest extends ModelTestCase
         $b = new \AuthorBooks\Model\Book;
         $ret = $b->create(array('title' => 'Create for reload test' , 'view' => 0));
         $this->assertResultSuccess($ret);
-        $b = $b->find($ret->id);
+        $b = $b->find($ret->key);
 
         // test incremental with Raw statement
         $ret = $b->update(array('view'  => new Raw('view + 1') ), array('reload' => true));
