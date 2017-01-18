@@ -9,11 +9,22 @@ TODO
     - [x] The find method should simply return the record instead of
       the result. Reason: we don't wrap the query logic with try&catch
       block now. errors will throw if something happens.
-    - [ ] The create method should simply return the result (we can
+    - [x] The create method should simply return the result (we can
       load the result later)
             $ret = $book->create();
             $newBook = $book->createAndLoad();
+
+        Fix all test cases according to the new return type
+
+        - BaseModel::create now returns Result object directly and don't reload
+        created data to the object itself.
+
+        - BaseModel::find now returns the found record instead of load the data 
+        to the object itself.
+
     - [ ] `Result->getKey()` to make the API consistent.
+
+
 
 - [ ] Move CRUD operation from modal class to ModelActions class.
 - [ ] Add connection parameter to all the CRUD methods

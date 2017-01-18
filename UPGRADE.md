@@ -28,6 +28,15 @@ $author = new Author;
 $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
 ```
 
+5. Fix `create` and `find` logics:
+
+    - BaseModel::create now returns Result object directly and don't reload
+    created data to the object itself.
+
+    - BaseModel::find now returns the found record instead of load the data 
+    to the object itself.
+
+
 UPGRADE TO 2.0
 ======================
 
