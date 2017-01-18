@@ -127,6 +127,10 @@ class Result
         return $this->type;
     }
 
+    public function getKey()
+    {
+        return $this->key;
+    }
 
     public function __get($name)
     {
