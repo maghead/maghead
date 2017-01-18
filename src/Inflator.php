@@ -17,6 +17,20 @@ class Inflator
         self::$inflators[ $isa ] = $inflator;
     }
 
+
+    public static function inflateInt($value)
+    {
+        return intval($value);
+    }
+
+    public static function inflateBool($value)
+    {
+        if ($value === '' || $value === null) {
+            return null;
+        }
+        return boolval($value);
+    }
+
     public static function inflate($value, $isa = null)
     {
         if ($value === null || $isa === null) {
@@ -42,21 +56,11 @@ class Inflator
 
         switch ($isa) {
         case 'int':
-            return (int) $value;
+            return intval($value);
         case 'str':
             return (string) $value;
         case 'bool':
-            if (is_string($value)) {
-                if (strcasecmp('false', $value) == 0 || $value == '0') {
-                    return false;
-                } elseif (strcasecmp('true', $value) == 0 || $value == '1') {
-                    return true;
-                } elseif ($value === '') {
-                    return;
-                }
-            }
-
-            return $value ? true : false;
+            return self::inflateBool($value);
         case 'float':
             return floatval($value);
         case 'json':

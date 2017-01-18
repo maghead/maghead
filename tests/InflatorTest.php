@@ -5,15 +5,11 @@ class InflatorTest extends PHPUnit_Framework_TestCase
 {
     public function testBooleanFalse()
     {
-        $this->assertFalse(Inflator::inflate( 'false', 'bool'));
-        $this->assertFalse(Inflator::inflate( 'FALSE', 'bool'));
         $this->assertFalse(Inflator::inflate( '0', 'bool'));
     }
 
     public function testBooleanTrue()
     {
-        $this->assertTrue(Inflator::inflate( 'true', 'bool' ));
-        $this->assertTrue(Inflator::inflate( 'TRUE', 'bool' ) );
         $this->assertTrue(Inflator::inflate( '1', 'bool' ) );
     }
 

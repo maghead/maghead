@@ -2,6 +2,7 @@
 namespace LazyRecord\Model;
 use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Result;
+use LazyRecord\Inflator;
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use PDO;

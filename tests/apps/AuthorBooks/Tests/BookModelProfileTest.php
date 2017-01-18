@@ -36,6 +36,38 @@ class BookModelProfileTest extends ModelProfileTestCase
         }
     }
 
+    /**
+     * @group profile
+     * @rebuild true
+     */
+    public function testProfileBooleanColumnAccessor()
+    {
+        $b = Book::createAndLoad(array(
+            'title' => "OOP Programming Guide",
+            'subtitle' => 'subtitle',
+            'isbn' => $uuid = uniqid(),
+            'published' => false,
+        ));
+        for ($i = 0 ; $i < $this->N; $i++) {
+            $b->isPublished();
+        }
+    }
+
+    /**
+     * @group profile
+     * @rebuild true
+     */
+    public function testProfileStringColumnAccessor()
+    {
+        $b = Book::createAndLoad(array(
+            'title' => "OOP Programming Guide",
+            'subtitle' => 'subtitle',
+            'isbn' => $uuid = uniqid(),
+        ));
+        for ($i = 0 ; $i < $this->N; $i++) {
+            $b->getTitle();
+        }
+    }
 
     /**
      * @group profile

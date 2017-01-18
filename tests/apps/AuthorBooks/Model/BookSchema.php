@@ -29,6 +29,11 @@ class BookSchema extends Schema
             ->default(0)
             ->integer();
 
+        $this->column('published')
+            ->boolean()
+            ->default(false)
+            ;
+
         $this->column('publisher_id')
             ->integer()
             ->unsigned()

@@ -29,6 +29,7 @@ class BaseModelClassFactory
 
         $cTemplate->useClass('LazyRecord\\Schema\\SchemaLoader');
         $cTemplate->useClass('LazyRecord\\Result');
+        $cTemplate->useClass('LazyRecord\\Inflator');
         $cTemplate->useClass('SQLBuilder\\Bind');
         $cTemplate->useClass('SQLBuilder\\ArgumentArray');
         $cTemplate->useClass('PDO');
@@ -241,15 +242,33 @@ class BaseModelClassFactory
                     $accessorMethodName = 'get'.ucfirst($propertyName);
                 }
 
-
-
-                $cTemplate->addMethod('public', $accessorMethodName, [], function() use ($columnName, $propertyName) {
-                    return [
-                        "if (\$c = \$this->getSchema()->getColumn(\"$columnName\")) {",
-                        "   return \$c->inflate(\$this->$columnName, \$this);",
-                        "}",
-                        "return \$this->$columnName;",
-                    ];
+                $cTemplate->addMethod('public', $accessorMethodName, [], function() use ($column, $columnName, $propertyName) {
+                    if ($column->get('inflator')) {
+                        return [
+                            "if (\$c = \$this->getSchema()->getColumn(\"$columnName\")) {",
+                            "     return \$c->inflate(\$this->$columnName, \$this);",
+                            "}",
+                            "return \$this->$columnName;",
+                        ];
+                    }
+                    if ($column->isa === "int") {
+                        return ["return intval(\$this->$columnName);"];
+                    } else if ($column->isa === "str") {
+                        return ["return \$this->$columnName;"];
+                    } else if ($column->isa === "bool") {
+                        return [
+                            "\$value = \$this->$columnName;",
+                            "if (\$value === '' || \$value === null) {",
+                            "   return null;",
+                            "}",
+                            "return boolval(\$value);",
+                        ];
+                    } else if ($column->isa === "float") {
+                        return ["return floatval(\$this->$columnName);"];
+                    } else if ($column->isa === "json") {
+                        return ["return json_decode(\$this->$columnName);"];
+                    }
+                    return ["return Inflator::inflate(\$this->$columnName, '{$column->isa}');"];
                 });
             }
         }

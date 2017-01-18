@@ -8,6 +8,7 @@
       <isbn isa="str" type="varchar"></isbn>
       <description isa="str" type="text"></description>
       <view isa="int" type="int">0</view>
+      <published isa="bool" type="boolean">0</published>
       <publisher_id isa="int" type="int"></publisher_id>
       <published_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</published_at>
       <is_hot isa="bool" type="boolean">1</is_hot>
@@ -20,6 +21,7 @@
       <isbn isa="str" type="varchar"></isbn>
       <description isa="str" type="text"></description>
       <view isa="int" type="int">0</view>
+      <published isa="bool" type="boolean">0</published>
       <publisher_id isa="int" type="int"></publisher_id>
       <published_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</published_at>
       <is_hot isa="bool" type="boolean">1</is_hot>
