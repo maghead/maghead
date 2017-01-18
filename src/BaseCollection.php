@@ -211,8 +211,6 @@ class BaseCollection
         if ($this->preferredTable) {
             return $this->preferredTable;
         }
-        // return $this->getSchema()->getTable();
-        // Use constant, it's faster...
         return static::TABLE;
     }
 
