@@ -655,9 +655,8 @@ abstract class BaseModel implements
         // save $args for afterCreate trigger method
         $origArgs = $args;
 
-        $k = static::PRIMARY_KEY;
+        $this->clear(); // clear primary key to prevent loadOrCreate side effect.
         $sql = $vars = null;
-        $this->clear();
         $stm = null;
 
         static $cacheable;
@@ -784,7 +783,7 @@ abstract class BaseModel implements
             $query = new InsertQuery();
             $query->into($this->table);
             $query->insert($insertArgs);
-            $query->returning($k);
+            $query->returning(static::PRIMARY_KEY);
             $sql = $query->toSql($driver, $arguments);
             $stm = $conn->prepare($sql);
             if ($cacheable) {
@@ -955,8 +954,6 @@ abstract class BaseModel implements
      */
     public function delete()
     {
-        $k = static::PRIMARY_KEY;
-
         $kVal = $this->getKey();
         if (! $kVal) {
             throw new Exception('Record is not loaded, Record delete failed.');
@@ -977,7 +974,7 @@ abstract class BaseModel implements
 
         $query = new DeleteQuery();
         $query->delete($this->table);
-        $query->where()->equal($k, $kVal);
+        $query->where()->equal(static::PRIMARY_KEY, $kVal);
         $sql = $query->toSql($driver, $arguments);
 
         $vars = $arguments->toArray();
