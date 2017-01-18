@@ -23,13 +23,26 @@ TODO
     - [x] `Result->getKey()` to make the API consistent.
     - [x] `BaseModel::find` is now static method.
     - [x] `BaseModel::createAndLoad` is now static method.
-    - [ ] `getReadConnection` could be static method??
-    - [ ] Inflate by the isa in the automatic generated accessor.
+    - [x] Inflate by the isa in the automatic generated accessor.
+    - [x] Cache query driver
+    - [ ] ?? `getReadConnection` could be static method?
     - [ ] Setter should deflate the value from the value.
     - [ ] `::load` method refactor.
+    - [ ] `::create` method refactor.
+
 - [ ] Generate Repo Class
     - [ ] Add `::repo($ds)` helper to create repo with specific
           connection.
+    - [ ] Add `::repo($write, $read)` helper to create repo with specific
+          connection.
+    - [ ] Add `::repo($write)` ($read = $write)
+    - [ ] Add `::repo()` (default connection)
+
+    - [ ] Move `find*` method to Repo class.
+    - [ ] Move `create` method to Repo class.
+    - [ ] Move `delete` method to Repo class.
+
+- [ ] Generate ShardingRepo Class
 
 
 - [ ] Move CRUD operation from modal class to ModelActions class.
