@@ -373,7 +373,7 @@ abstract class BaseModel implements
      * @param string $m method name.
      * @param array  $a method arguments.
      */
-    public function invokeAllMixinMethods($m, $a)
+    protected function invokeAllMixinMethods($m, $a)
     {
         foreach (static::$mixin_classes as $mixinClass) {
             // if we found it, just call it and return the result. 
@@ -392,7 +392,7 @@ abstract class BaseModel implements
      *
      * @return mixed execution result
      */
-    public function invokeMixinClassMethod($mixinClass, $m, array $a)
+    protected function invokeMixinClassMethod($mixinClass, $m, array $a)
     {
         return call_user_func_array(array($mixinClass, $m), array_merge(array($this), $a));
     }
