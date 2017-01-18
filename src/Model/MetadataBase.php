@@ -31,6 +31,7 @@ class MetadataBase
     );
     public static $mixin_classes = array (
     );
+    public static $findStm = NULL;
     protected $table = '__meta__';
     public $readSourceId = 'default';
     public $writeSourceId = 'default';
@@ -46,14 +47,11 @@ class MetadataBase
     }
     public static function find($pkId)
     {
-        static $stm;
-        if (1 || !$stm) {
-            $record = new static;
-            $conn = $record->getReadConnection();
-            $stm = $conn->prepare('SELECT * FROM __meta__ WHERE id = ? LIMIT 1');
-            $stm->setFetchMode(PDO::FETCH_CLASS, 'LazyRecord\Model\Metadata');
-        }
-        return static::_stmFetch($stm, [$pkId]);
+        $record = new static;
+        $conn = $record->getReadConnection();
+            $findStm = $conn->prepare('SELECT * FROM __meta__ WHERE id = ? LIMIT 1');
+            $findStm->setFetchMode(PDO::FETCH_CLASS, 'LazyRecord\Model\Metadata');
+        return static::_stmFetch($findStm, [$pkId]);
     }
     public function getKeyName()
     {

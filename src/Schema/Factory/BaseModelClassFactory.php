@@ -166,14 +166,11 @@ class BaseModelClassFactory
 
         $cTemplate->addStaticMethod('public', 'find', ['$pkId'], function() use ($findByPrimaryKeySql, $schema) {
             return [
-                    "static \$stm;",
-                    "if (1 || !\$stm) {",
-                    "    \$record = new static;",
-                    "    \$conn = \$record->getReadConnection();",
-                    "    \$stm = \$conn->prepare('$findByPrimaryKeySql');",
-                    "    \$stm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}');",
-                    "}",
-                    "return static::_stmFetch(\$stm, [\$pkId]);",
+                    "\$record = new static;",
+                    "\$conn = \$record->getReadConnection();",
+                    "\$findStm = \$conn->prepare('$findByPrimaryKeySql');",
+                    "\$findStm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}');",
+                    "return static::_stmFetch(\$findStm, [\$pkId]);",
             ];
         });
 
