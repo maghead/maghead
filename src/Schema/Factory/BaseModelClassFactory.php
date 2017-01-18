@@ -7,11 +7,14 @@ use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\ConnectionManager;
 use Doctrine\Common\Inflector\Inflector;
 use ReflectionClass;
+
 // used for SQL generator
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\ArgumentArray;
+use CodeGen\Statement\RequireStatement;
+use CodeGen\Statement\RequireOnceStatement;
 
 /**
  * Base Model class generator.
@@ -27,6 +30,17 @@ class BaseModelClassFactory
     {
         $cTemplate = new ClassFile($schema->getBaseModelClass());
 
+        // Generate a require statement here to prevent spl autoload when
+        // loading the model class.
+        //
+        // If the user pre-loaded the schema proxy file by the user himself,
+        // then this line will cause error.
+        //
+        // By design, users shouldn't use the schema proxy class, it 
+        // should be only used by model/collection class.
+        $schemaProxyPath = $schema->getRelatedClassPath($schema->getModelName() . 'SchemaProxy');
+        $cTemplate->prependStatement(new RequireOnceStatement($schemaProxyPath));
+
         $cTemplate->useClass('LazyRecord\\Schema\\SchemaLoader');
         $cTemplate->useClass('LazyRecord\\Result');
         $cTemplate->useClass('LazyRecord\\Inflator');
@@ -36,14 +50,14 @@ class BaseModelClassFactory
         $cTemplate->useClass('SQLBuilder\\Universal\\Query\\InsertQuery');
 
         $cTemplate->addConsts(array(
-            'SCHEMA_CLASS' => get_class($schema),
+            'SCHEMA_CLASS'       => get_class($schema),
             'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),
-            'COLLECTION_CLASS' => $schema->getCollectionClass(),
-            'MODEL_CLASS' => $schema->getModelClass(),
-            'TABLE' => $schema->getTable(),
-            'READ_SOURCE_ID' => $schema->getReadSourceId(),
-            'WRITE_SOURCE_ID' => $schema->getWriteSourceId(),
-            'PRIMARY_KEY' => $schema->primaryKey,
+            'COLLECTION_CLASS'   => $schema->getCollectionClass(),
+            'MODEL_CLASS'        => $schema->getModelClass(),
+            'TABLE'              => $schema->getTable(),
+            'READ_SOURCE_ID'     => $schema->getReadSourceId(),
+            'WRITE_SOURCE_ID'    => $schema->getWriteSourceId(),
+            'PRIMARY_KEY'        => $schema->primaryKey,
         ));
 
         $cTemplate->addProtectedProperty('table', $schema->getTable());
