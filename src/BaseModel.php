@@ -130,7 +130,7 @@ abstract class BaseModel implements
         return $this->selected;
     }
 
-    public function getCachePrefix()
+    protected function getCachePrefix()
     {
         return static::SCHEMA_CLASS;
     }
