@@ -26,52 +26,12 @@ use LazyRecord\Schema\SchemaLoader;
 use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship\Relationship;
 use LazyRecord\Exception\MissingPrimaryKeyException;
+use LazyRecord\Exception\QueryException;
 use SerializerKit\XmlSerializer;
 use ActionKit;
 use Symfony\Component\Yaml\Yaml;
 
 defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
-
-class QueryException extends RuntimeException
-{
-    protected $debugInfo = array();
-
-    protected $record;
-
-    public function __construct($msg, BaseModel $record, Exception $previous = null, $debugInfo = array())
-    {
-        parent::__construct($msg, 0, $previous);
-        $this->debugInfo = $debugInfo;
-        $this->record = $record;
-    }
-
-    public function __debugInfo()
-    {
-        return [
-            'message' => $this->getMessage(),
-            'record' => get_class($this->record),
-            'file' => $this->getFile(),
-            'line' => $this->getLine(),
-            'trace' => $this->getTrace(),
-            'previous_trace' => $this->getPrevious()->getTrace(),
-            'previous_message' => $this->getPrevious()->getMessage(),
-            'debug' => $this->debugInfo,
-        ];
-    }
-
-    public function toArray()
-    {
-        return [
-            'message' => $this->getMessage(),
-            'record' => get_class($this->record),
-            'file' => $this->getFile(),
-            'line' => $this->getLine(),
-            'trace' => $this->getTrace(),
-            'previous' => $this->getPrevious(),
-            'debug' => $this->debugInfo,
-        ];
-    }
-}
 
 class PrimaryKeyNotFoundException extends Exception
 {
