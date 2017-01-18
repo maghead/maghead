@@ -16,6 +16,7 @@
         "corneltek/sqlbuilder": "^3.2",
         "corneltek/cliframework": "^3.0",
         "corneltek/class-template": "^3.0",
+        "corneltek/codegen": "3.1.x-dev",
         "corneltek/serializerkit": "^1",
         "corneltek/validationkit": "^1",
         "symfony/yaml": "^2.8",
