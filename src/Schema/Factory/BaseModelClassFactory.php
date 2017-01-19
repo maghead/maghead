@@ -192,11 +192,11 @@ class BaseModelClassFactory
         $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
 
-        $cTemplate->addStaticMethod('public', 'find', ['$pkId'], function() use ($findByPrimaryKeySql, $schema) {
+        $cTemplate->addStaticMethod('public', 'find', ['$pkId'], function() use ($schema) {
             return [
                     "\$record = new static;",
                     "\$conn = \$record->getReadConnection();",
-                    "\$findStm = \$conn->prepare('$findByPrimaryKeySql');",
+                    "\$findStm = \$conn->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",
                     "\$findStm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}');",
                     "return static::_stmFetch(\$findStm, [\$pkId]);",
             ];
@@ -215,7 +215,7 @@ class BaseModelClassFactory
             return [
                     "\$record = new static;",
                     "\$conn = \$record->getWriteConnection();",
-                    "\$stm = \$conn->prepare('$deleteByPrimaryKeySql');",
+                    "\$stm = \$conn->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);",
                     "return \$stm->execute([\$pkId]);",
             ];
         });

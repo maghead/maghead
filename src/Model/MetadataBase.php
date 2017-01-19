@@ -52,7 +52,7 @@ class MetadataBase
     {
         $record = new static;
         $conn = $record->getReadConnection();
-        $findStm = $conn->prepare('SELECT * FROM __meta__ WHERE id = ? LIMIT 1');
+        $findStm = $conn->prepare(self::FIND_BY_PRIMARY_KEY_SQL);
         $findStm->setFetchMode(PDO::FETCH_CLASS, 'LazyRecord\Model\Metadata');
         return static::_stmFetch($findStm, [$pkId]);
     }
@@ -60,7 +60,7 @@ class MetadataBase
     {
         $record = new static;
         $conn = $record->getWriteConnection();
-        $stm = $conn->prepare('DELETE FROM __meta__ WHERE id = ?');
+        $stm = $conn->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);
         return $stm->execute([$pkId]);
     }
     public function getKeyName()
