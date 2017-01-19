@@ -1,6 +1,8 @@
 <?php
 namespace LazyRecord;
 use LazyRecord\Connection;
+use PDOStatement;
+use PDO;
 
 class BaseRepo
 {

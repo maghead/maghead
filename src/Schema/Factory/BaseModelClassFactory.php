@@ -193,18 +193,13 @@ class BaseModelClassFactory
         $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
 
-        /*
         $cTemplate->addStaticMethod('public', 'find', ['$pkId'], function() use ($schema) {
-            return [
-                "\$record = new static;",
-                "\$conn = \$record->getReadConnection();",
-                "\$findStm = \$conn->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",
-                "\$findStm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}');",
-                "return static::_stmFetch(\$findStm, [\$pkId]);",
-            ];
+            return "return static::repo(static::WRITE_SOURCE_ID, static::READ_SOURCE_ID)->find(\$pkId);",
         });
-        */
 
+        $cTemplate->addStaticMethod('protected', '_createRepo', ['$write', '$read'], function() use ($schema) {
+            return "return new \\{$schema->getRepoClass()}(\$write, \$read);";
+        });
 
         $arguments = new ArgumentArray();
         $deleteQuery = new DeleteQuery();

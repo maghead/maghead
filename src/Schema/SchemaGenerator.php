@@ -7,6 +7,7 @@ use LazyRecord\ConfigLoader;
 use ClassTemplate\ClassFile;
 use LazyRecord\Schema;
 use LazyRecord\Schema\Factory\BaseModelClassFactory;
+use LazyRecord\Schema\Factory\BaseRepoClassFactory;
 use LazyRecord\Schema\Factory\BaseCollectionClassFactory;
 use LazyRecord\Schema\Factory\CollectionClassFactory;
 use LazyRecord\Schema\Factory\ModelClassFactory;
@@ -129,6 +130,7 @@ class SchemaGenerator
         // always update schema proxy and base classes
         $cTemplates[] = SchemaProxyClassFactory::create($schema);
         $cTemplates[] = BaseModelClassFactory::create($schema, $this->getBaseModelClass());
+        $cTemplates[] = BaseRepoClassFactory::create($schema, 'LazyRecord\\BaseRepo');
         $cTemplates[] = BaseCollectionClassFactory::create($schema, $this->getBaseCollectionClass());
         foreach ($cTemplates as $cTemplate) {
             if ($result = $this->updateClassFile($cTemplate, $schema, true)) {

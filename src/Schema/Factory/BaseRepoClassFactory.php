@@ -26,7 +26,7 @@ class BaseRepoClassFactory
 {
     public static function create(DeclareSchema $schema, $baseClass)
     {
-        $cTemplate = new ClassFile($schema->getBaseModelClass());
+        $cTemplate = new ClassFile($schema->getRepoClass());
 
         // Generate a require statement here to prevent spl autoload when
         // loading the model class.
@@ -76,12 +76,6 @@ class BaseRepoClassFactory
             ];
         });
 
-        if ($traitClasses = $schema->getModelTraitClasses()) {
-            foreach ($traitClasses as $traitClass) {
-                $cTemplate->useTrait($traitClass);
-            }
-        }
-
         $schemaReflection = new ReflectionClass($schema);
         $schemaDocComment = $schemaReflection->getDocComment();
 
@@ -106,7 +100,7 @@ class BaseRepoClassFactory
         $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
 
-        $cTemplate->addStaticMethod('public', 'find', ['$pkId'], function() use ($schema) {
+        $cTemplate->addMethod('public', 'find', ['$pkId'], function() use ($schema) {
             return [
                     "\$conn = \$this->getReadConnection();",
                     "\$findStm = \$conn->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",
@@ -124,7 +118,7 @@ class BaseRepoClassFactory
         $deleteByPrimaryKeySql = $deleteQuery->toSql($writeQueryDriver, $arguments);
         $cTemplate->addConst('DELETE_BY_PRIMARY_KEY_SQL', $deleteByPrimaryKeySql);
 
-        $cTemplate->addStaticMethod('public', 'deleteByPrimaryKey', ['$pkId'], function() use ($deleteByPrimaryKeySql, $schema) {
+        $cTemplate->addMethod('public', 'deleteByPrimaryKey', ['$pkId'], function() use ($deleteByPrimaryKeySql, $schema) {
             return [
                     "\$conn = \$this->getWriteConnection();",
                     "\$stm = \$conn->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);",

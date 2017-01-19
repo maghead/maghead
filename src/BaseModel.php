@@ -1851,6 +1851,14 @@ abstract class BaseModel implements Serializable
         if (is_string($read)) {
             $read = $connManager->getConnection($read);
         }
+        return static::_createRepo($write, $read);
+    }
+
+    /**
+     * This will be overrided by child model class.
+     */
+    static protected function _createRepo($write, $read)
+    {
         return new BaseRepo($write, $read);
     }
 
