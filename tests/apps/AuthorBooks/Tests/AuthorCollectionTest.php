@@ -300,7 +300,7 @@ class AuthorCollectionTest extends ModelTestCase
 
         foreach( $results as $result ) {
             ok($result->key);
-            $record = Book::find($result->id);
+            $record = Book::defaultRepo()->find($result->id);
             $record->delete();
         }
 

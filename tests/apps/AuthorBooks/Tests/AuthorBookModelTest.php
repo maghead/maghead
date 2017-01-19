@@ -32,7 +32,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $a = Author::find($ret->key);
+        $a = Author::defaultRepo()->find($ret->key);
 
         $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
         $a->reload();
@@ -59,7 +59,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $a = Author::find($ret->key);
+        $a = Author::defaultRepo()->find($ret->key);
         
         $this->assertFalse($a->isConfirmed());
 
@@ -71,7 +71,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $a = Author::find($ret->key);
+        $a = Author::defaultRepo()->find($ret->key);
 
         $this->assertTrue($a->isConfirmed());
 
@@ -145,7 +145,7 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'id',
         ));
         $this->assertResultSuccess($ret);
-        $author = Author::find($ret->key);
+        $author = Author::defaultRepo()->find($ret->key);
 
         ok($v = $author->getColumn('account_brief')); // virtual colun
         $this->assertTrue($v->virtual);
@@ -207,19 +207,19 @@ class AuthorBookModelTest extends ModelTestCase
 
         $ret = $a2->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
         ok( $ret->success );
-        $a2 = Author::find($ret->key);
+        $a2 = Author::defaultRepo()->find($ret->key);
         ok( $a2->id );
 
         $ret = $a2->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
         ok( $ret->success );
-        $a2 = Author::find($ret->key);
+        $a2 = Author::defaultRepo()->find($ret->key);
         ok( $a2->id );
 
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->resultOK(true, $ret);
         ok( $id = $ret->key );
-        $author = Author::find($ret->key);
+        $author = Author::defaultRepo()->find($ret->key);
         is( 'Foo', $author->name );
         is( 'foo@google.com', $author->email );
 
@@ -259,7 +259,7 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         result_ok($ret);
-        $author = Author::find($ret->key);
+        $author = Author::defaultRepo()->find($ret->key);
         $ret = $author->update(array('id' => new Raw('id + 3') ));
         result_ok($ret);
     }
@@ -274,7 +274,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true, $ret);
 
-        $author = Author::find($ret->key);
+        $author = Author::defaultRepo()->find($ret->key);
         $id = $author->id;
 
         $ret = $author->update(array( 'name' => 'I' ));
@@ -304,36 +304,36 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'zz3',
         ]);
         $this->assertResultSuccess($ret);
-        $author = Author::find($ret->key);
+        $author = Author::defaultRepo()->find($ret->key);
 
         $ab = new AuthorBook;
         $book = new \AuthorBooks\Model\Book;
 
         $ret = $book->create(array( 'title' => 'Book I' ));
         $this->assertResultSuccess($ret);
-        $book = Book::find($ret->key);
+        $book = Book::defaultRepo()->find($ret->key);
 
         $ret = $ab->create([
             'author_id' => $author->id,
             'book_id' => $book->id,
         ]);
         $this->assertResultSuccess($ret);
-        $ab = AuthorBook::find($ret->key);
+        $ab = AuthorBook::defaultRepo()->find($ret->key);
 
         $ret = $book->create(array( 'title' => 'Book II' ));
         $this->assertResultSuccess($ret);
-        $book = Book::find($ret->key);
+        $book = Book::defaultRepo()->find($ret->key);
 
         $ret = $ab->create([
             'author_id' => $author->id,
             'book_id' => $book->id,
         ]);
         $this->assertResultSuccess($ret);
-        $ab = AuthorBook::find($ret->key);
+        $ab = AuthorBook::defaultRepo()->find($ret->key);
 
         $ret = $book->create(array( 'title' => 'Book III' ));
         $this->assertResultSuccess($ret);
-        $book = Book::find($ret->key);
+        $book = Book::defaultRepo()->find($ret->key);
 
         $ret = $ab->create(array( 
             'author_id' => $author->id,
@@ -368,7 +368,7 @@ class AuthorBookModelTest extends ModelTestCase
         $author = new Author;
         $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
-        $author = Author::find($ret->key);
+        $author = Author::defaultRepo()->find($ret->key);
 
         ok(
             $book = $author->books->create( array( 
