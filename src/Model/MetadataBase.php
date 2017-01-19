@@ -21,6 +21,7 @@ class MetadataBase
     const WRITE_SOURCE_ID = 'default';
     const PRIMARY_KEY = 'id';
     const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = ? LIMIT 1';
+    const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ?';
     public static $column_names = array (
       0 => 'id',
       1 => 'name',
@@ -54,6 +55,13 @@ class MetadataBase
         $findStm = $conn->prepare('SELECT * FROM __meta__ WHERE id = ? LIMIT 1');
         $findStm->setFetchMode(PDO::FETCH_CLASS, 'LazyRecord\Model\Metadata');
         return static::_stmFetch($findStm, [$pkId]);
+    }
+    public static function deleteByPrimaryKey($pkId)
+    {
+        $record = new static;
+        $conn = $record->getWriteConnection();
+        $stm = $conn->prepare('DELETE FROM __meta__ WHERE id = ?');
+        return $stm->execute([$pkId]);
     }
     public function getKeyName()
     {

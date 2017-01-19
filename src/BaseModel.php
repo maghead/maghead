@@ -902,32 +902,14 @@ abstract class BaseModel implements
             return self::reportError(_('Permission denied. Can not delete record.'), array());
         }
 
-        $dsId = $this->writeSourceId;
-        $conn = $this->getWriteConnection();
-        $driver = $conn->getQueryDriver();
-
         $data = $this->getData();
         $this->beforeDelete($data);
-
-        $arguments = new ArgumentArray();
-
-        $query = new DeleteQuery();
-        $query->delete($this->table);
-        $query->where()->equal(static::PRIMARY_KEY, $kVal);
-        $sql = $query->toSql($driver, $arguments);
-
-        $vars = $arguments->toArray();
-
-        $stm = $conn->prepare($sql);
-        $stm->execute($arguments->toArray());
-
-        $data = $this->getData();
+        $this->deleteByPrimaryKey($kVal);
         $this->afterDelete($data);
         $this->clear();
-        return self::reportSuccess('Record deleted', array(
-            'sql' => $sql,
+        return self::reportSuccess('Record deleted', [
             'type' => Result::TYPE_DELETE,
-        ));
+        ]);
     }
 
     /**
@@ -966,7 +948,6 @@ abstract class BaseModel implements
         }
 
         $origArgs = $args;
-        $dsId = $this->writeSourceId;
         $conn = $this->getWriteConnection();
         $driver = $conn->getQueryDriver();
         $sql = null;

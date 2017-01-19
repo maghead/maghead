@@ -10,6 +10,7 @@ use ReflectionClass;
 
 // used for SQL generator
 use SQLBuilder\Universal\Query\SelectQuery;
+use SQLBuilder\Universal\Query\DeleteQuery;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\ArgumentArray;
@@ -171,18 +172,22 @@ class BaseModelClassFactory
             }
         }
 
+        $primaryKey = $schema->primaryKey;
+        $readFrom = $schema->getReadSourceId();
+        $writeTo  = $schema->getWriteSourceId();
+        $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
+        $writeConnection = ConnectionManager::getInstance()->getConnection($writeTo);
+        $readQueryDriver = $readConnection->getQueryDriver();
+        $writeQueryDriver = $readConnection->getQueryDriver();
+
         // TODO: refacory this into factory method
         // Generate findByPrimaryKey SQL query
         $arguments = new ArgumentArray();
         $findByPrimaryKeyQuery = new SelectQuery();
         $findByPrimaryKeyQuery->from($schema->getTable());
-        $primaryKey = $schema->primaryKey;
-        $readFrom = $schema->getReadSourceId();
-        $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
-        $readQueryDriver = $readConnection->getQueryDriver();
-        $primaryKeyColumn = $schema->getColumn($primaryKey);
+        $primaryKeyColumn = $schema->getColumn($schema->primaryKey);
         $findByPrimaryKeyQuery->select('*')
-            ->where()->equal($primaryKey, new ParamMarker($primaryKey));
+            ->where()->equal($schema->primaryKey, new ParamMarker($schema->primaryKey));
         $findByPrimaryKeyQuery->limit(1);
         $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
@@ -196,6 +201,26 @@ class BaseModelClassFactory
                     "return static::_stmFetch(\$findStm, [\$pkId]);",
             ];
         });
+
+
+        $arguments = new ArgumentArray();
+        $deleteQuery = new DeleteQuery();
+        $deleteQuery->delete($schema->getTable());
+        $deleteQuery->where()->equal($schema->primaryKey,  new ParamMarker($schema->primaryKey));
+        $deleteQuery->limit(1);
+        $deleteByPrimaryKeySql = $deleteQuery->toSql($writeQueryDriver, $arguments);
+        $cTemplate->addConst('DELETE_BY_PRIMARY_KEY_SQL', $deleteByPrimaryKeySql);
+
+        $cTemplate->addStaticMethod('public', 'deleteByPrimaryKey', ['$pkId'], function() use ($deleteByPrimaryKeySql, $schema) {
+            return [
+                    "\$record = new static;",
+                    "\$conn = \$record->getWriteConnection();",
+                    "\$stm = \$conn->prepare('$deleteByPrimaryKeySql');",
+                    "return \$stm->execute([\$pkId]);",
+            ];
+        });
+
+
 
         foreach ($schema->getColumns() as $column) {
             if (!$column->findable) {
