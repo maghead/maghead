@@ -9,7 +9,6 @@ use BadMethodCallException;
 use PDO;
 use PDOException;
 use ArrayIterator;
-use IteratorAggregate;
 use Serializable;
 use ArrayAccess;
 use SQLBuilder\Universal\Query\SelectQuery;
@@ -41,9 +40,7 @@ class PrimaryKeyNotFoundException extends Exception
  * Base Model class,
  * every model class extends from this class.
  */
-abstract class BaseModel implements
-    Serializable,
-    IteratorAggregate
+abstract class BaseModel implements Serializable
 {
     public static $yamlExtension;
     public static $yamlEncoding = YAML_UTF8_ENCODING;
@@ -785,7 +782,7 @@ abstract class BaseModel implements
      */
     public function fastCreate(array $args)
     {
-        return $this->create($args, array('reload' => false));
+        return $this->create($args, ['reload' => false]);
     }
 
     /**
@@ -796,7 +793,6 @@ abstract class BaseModel implements
      */
     // PHP 5.6 doesn't support static abstract
     // abstract static public function find($pkId);
-
     static protected function _stmFetch($stm, $args)
     {
         $stm->execute($args);
@@ -804,7 +800,6 @@ abstract class BaseModel implements
         $stm->closeCursor();
         return $obj;
     }
-
 
     public function loadFromCache($args, $ttl = 3600)
     {
@@ -1838,12 +1833,21 @@ abstract class BaseModel implements
         return \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class, $type);
     }
 
-    // IteratorAggregate interface method
-    // =====================================
-    public function getIterator()
+    static public function repo($write, $read = null)
     {
-        return new ArrayIterator($this->columns);
+        $connManager = ConnectionManager::getInstance();
+        if (!$read) {
+            $read = $write;
+        }
+        if (is_string($write)) {
+            $write = $connManager->getConnection($write);
+        }
+        if (is_string($read)) {
+            $read = $connManager->getConnection($read);
+        }
+        return new BaseRepo($write, $read);
     }
+
 
     // Serializable interface methods
     // ===============================

@@ -117,13 +117,13 @@ class BasicCRUDTest extends ModelTestCase
         $results[] = $ret;
 
         $b2 = new Book;
-        $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        $ret = $b2->loadOrCreate( array('title' => 'LoadOrCreateTest' ) , 'title' );
         $this->assertResultSuccess($ret);
         $this->assertEquals(Result::TYPE_LOAD, $ret->type);
         $this->assertEquals($id,$b2->id);
         $results[] = $ret;
 
-        $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
+        $ret = $b2->loadOrCreate( array('title' => 'LoadOrCreateTest2'  ) , 'title' );
         $this->assertResultSuccess($ret);
         $this->assertEquals(Result::TYPE_CREATE, $ret->type);
         $this->assertNotEquals($id, $b2->id , 'we should create anther one'); 
@@ -135,15 +135,16 @@ class BasicCRUDTest extends ModelTestCase
         $b3 = Book::find($ret->key);
         $this->assertNotEquals($id, $b3->id , 'we should create anther one'); 
         $results[] = $ret;
-
         $this->successfulDelete($b3);
-
-        foreach($results as $r) {
-            if ($book = Book::find($r->key)) {
-                $book->delete();
-            }
-        }
     }
+
+    public function testRepoWithDataSourceId()
+    {
+        $repo = Book::repo('default');
+        $this->assertInstanceOf('LazyRecord\BaseRepo', $repo);
+    }
+
+
 
     public function booleanTrueTestDataProvider()
     {
