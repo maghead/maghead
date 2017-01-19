@@ -80,7 +80,7 @@ abstract class BaseModel implements Serializable
 
     public $usingDataSource;
 
-    public $alias = 'm';
+    public $alias;
 
     public $selected;
 
@@ -511,6 +511,7 @@ abstract class BaseModel implements Serializable
         }
     }
 
+
     /**
      * Get the RuntimeColumn objects from RuntimeSchema object.
      */
@@ -765,10 +766,12 @@ abstract class BaseModel implements Serializable
      */
     public function getTable()
     {
-        if ($this->table) {
-            return $this->table;
-        }
-        return static::TABLE;
+        return $this->table ?: static::TABLE;
+    }
+
+    public function getAlias()
+    {
+        return $this->alias ?: static::TABLE_ALIAS;
     }
 
     /**
@@ -1851,7 +1854,6 @@ abstract class BaseModel implements Serializable
 
     // Serializable interface methods
     // ===============================
-
     public function serialize()
     {
         return serialize($this->getData());
@@ -1862,10 +1864,6 @@ abstract class BaseModel implements Serializable
         $this->setData(unserialize($str));
     }
 
-    public function getAlias()
-    {
-        return $this->alias;
-    }
 
     public function lockWrite($alias = null)
     {
