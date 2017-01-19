@@ -116,7 +116,6 @@ class BaseRepoClassFactory
         $deleteQuery->limit(1);
         $deleteByPrimaryKeySql = $deleteQuery->toSql($writeQueryDriver, $arguments);
         $cTemplate->addConst('DELETE_BY_PRIMARY_KEY_SQL', $deleteByPrimaryKeySql);
-
         $cTemplate->addMethod('public', 'deleteByPrimaryKey', ['$pkId'], function() use ($deleteByPrimaryKeySql, $schema) {
             return [
                     "\$stm = \$this->write->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);",

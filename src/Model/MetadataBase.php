@@ -48,7 +48,7 @@ class MetadataBase
         }
         return $schema = new \LazyRecord\Model\MetadataSchemaProxy;
     }
-    protected static function _createRepo($write, $read)
+    protected static function createRepo($write, $read)
     {
         return new \LazyRecord\Model\MetadataRepo($write, $read);
     }

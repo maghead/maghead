@@ -227,12 +227,11 @@ abstract class BaseModel implements Serializable
     /**
      * Trigger method for.
      */
-    public function beforeDelete($args)
+    public function beforeDelete()
     {
-        return $args;
     }
 
-    public function afterDelete($args)
+    public function afterDelete()
     {
     }
 
@@ -890,14 +889,15 @@ abstract class BaseModel implements Serializable
      */
     public function delete()
     {
-        $kVal = $this->getKey();
+        $key = $this->getKey();
         if (!$this->currentUserCan($this->getCurrentUser(), 'delete')) {
             return self::reportError(_('Permission denied. Can not delete record.'), array());
         }
-        $data = $this->getData();
-        $this->beforeDelete($data);
-        $this->deleteByPrimaryKey($kVal);
-        $this->afterDelete($data);
+
+        $write = $this->getWriteConnection();
+        $this->beforeDelete();
+        static::createRepo($write, $write)->deleteByPrimaryKey($key);
+        $this->afterDelete();
         $this->clear();
         return self::reportSuccess('Record deleted', [
             'type' => Result::TYPE_DELETE,
@@ -1846,7 +1846,7 @@ abstract class BaseModel implements Serializable
         $connManager = ConnectionManager::getInstance();
         $write = $connManager->getConnection(static::WRITE_SOURCE_ID);
         $read  = $connManager->getConnection(static::READ_SOURCE_ID);
-        return static::_createRepo($write, $read);
+        return static::createRepo($write, $read);
     }
 
     static public function repo($write = null, $read = null)
@@ -1866,13 +1866,13 @@ abstract class BaseModel implements Serializable
         if (is_string($read)) {
             $read = $connManager->getConnection($read);
         }
-        return static::_createRepo($write, $read);
+        return static::createRepo($write, $read);
     }
 
     /**
      * This will be overrided by child model class.
      */
-    static protected function _createRepo($write, $read)
+    static protected function createRepo($write, $read)
     {
         return new BaseRepo($write, $read);
     }

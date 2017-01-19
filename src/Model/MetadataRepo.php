@@ -46,15 +46,13 @@ class MetadataRepo
     }
     public function find($pkId)
     {
-        $conn = $this->getReadConnection();
-        $findStm = $conn->prepare(self::FIND_BY_PRIMARY_KEY_SQL);
+        $findStm = $this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);
         $findStm->setFetchMode(PDO::FETCH_CLASS, 'LazyRecord\Model\Metadata');
         return static::_stmFetch($findStm, [$pkId]);
     }
     public function deleteByPrimaryKey($pkId)
     {
-        $conn = $this->getWriteConnection();
-        $stm = $conn->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);
+        $stm = $this->write->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);
         return $stm->execute([$pkId]);
     }
 }

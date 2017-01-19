@@ -181,7 +181,7 @@ class BaseModelClassFactory
         $readQueryDriver = $readConnection->getQueryDriver();
         $writeQueryDriver = $writeConnection->getQueryDriver();
 
-        $cTemplate->addStaticMethod('protected', '_createRepo', ['$write', '$read'], function() use ($schema) {
+        $cTemplate->addStaticMethod('protected', 'createRepo', ['$write', '$read'], function() use ($schema) {
             return "return new \\{$schema->getRepoClass()}(\$write, \$read);";
         });
 

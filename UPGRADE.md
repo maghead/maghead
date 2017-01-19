@@ -39,6 +39,7 @@ $author = $author->createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'iden
 6. `BaseModel::deflate` method is removed.
 7. `BaseModel::deflateData` method is removed.
 8. `BaseModel::getSchema` method is now static.
+9. Remove arguments from beforeDelete and afterDelete (the user may get the data from the data object directly)
 
 
 UPGRADE TO 2.0
