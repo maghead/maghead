@@ -1537,7 +1537,7 @@ abstract class BaseModel implements
                 // create relationship
                 $middleRecord = $spSchema->newModel();
                 $ret = $middleRecord->create($a);
-                if (!$ret->success) {
+                if ($ret->error) {
                     throw new Exception("$rId create failed.");
                 }
 
