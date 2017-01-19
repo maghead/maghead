@@ -894,14 +894,9 @@ abstract class BaseModel implements
     public function delete()
     {
         $kVal = $this->getKey();
-        if (! $kVal) {
-            throw new Exception('Record is not loaded, Record delete failed.');
-        }
-
         if (!$this->currentUserCan($this->getCurrentUser(), 'delete')) {
             return self::reportError(_('Permission denied. Can not delete record.'), array());
         }
-
         $data = $this->getData();
         $this->beforeDelete($data);
         $this->deleteByPrimaryKey($kVal);
