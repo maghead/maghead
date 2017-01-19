@@ -102,8 +102,7 @@ class BaseRepoClassFactory
 
         $cTemplate->addMethod('public', 'find', ['$pkId'], function() use ($schema) {
             return [
-                    "\$conn = \$this->getReadConnection();",
-                    "\$findStm = \$conn->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",
+                    "\$findStm = \$this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",
                     "\$findStm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}');",
                     "return static::_stmFetch(\$findStm, [\$pkId]);",
             ];
@@ -120,8 +119,7 @@ class BaseRepoClassFactory
 
         $cTemplate->addMethod('public', 'deleteByPrimaryKey', ['$pkId'], function() use ($deleteByPrimaryKeySql, $schema) {
             return [
-                    "\$conn = \$this->getWriteConnection();",
-                    "\$stm = \$conn->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);",
+                    "\$stm = \$this->write->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);",
                     "return \$stm->execute([\$pkId]);",
             ];
         });
