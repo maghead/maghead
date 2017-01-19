@@ -1834,11 +1834,16 @@ abstract class BaseModel implements Serializable
         return \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class, $type);
     }
 
-    static public function repo($write, $read = null)
+    static public function repo($write = null, $read = null)
     {
         $connManager = ConnectionManager::getInstance();
         if (!$read) {
-            $read = $write;
+            if (!$write) {
+                $write = static::WRITE_SOURCE_ID;
+                $read  = static::READ_SOURCE_ID;
+            } else {
+                $read = $write;
+            }
         }
         if (is_string($write)) {
             $write = $connManager->getConnection($write);

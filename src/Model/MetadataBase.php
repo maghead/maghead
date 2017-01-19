@@ -49,14 +49,6 @@ class MetadataBase
         }
         return $schema = new \LazyRecord\Model\MetadataSchemaProxy;
     }
-    public static function find($pkId)
-    {
-        $record = new static;
-        $conn = $record->getReadConnection();
-        $findStm = $conn->prepare(self::FIND_BY_PRIMARY_KEY_SQL);
-        $findStm->setFetchMode(PDO::FETCH_CLASS, 'LazyRecord\Model\Metadata');
-        return static::_stmFetch($findStm, [$pkId]);
-    }
     public static function deleteByPrimaryKey($pkId)
     {
         $record = new static;

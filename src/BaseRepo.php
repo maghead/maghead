@@ -29,4 +29,20 @@ class BaseRepo
     {
         return $this->write;
     }
+
+    /**
+     * Find record.
+     *
+     * @param array condition array
+     * @return BaseModel
+     */
+    // PHP 5.6 doesn't support static abstract
+    // abstract static public function find($pkId);
+    static protected function _stmFetch(PDOStatement $stm, array $args)
+    {
+        $stm->execute($args);
+        $obj = $stm->fetch(PDO::FETCH_CLASS);
+        $stm->closeCursor();
+        return $obj;
+    }
 }
