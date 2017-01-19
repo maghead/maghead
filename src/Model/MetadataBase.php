@@ -49,10 +49,6 @@ class MetadataBase
         }
         return $schema = new \LazyRecord\Model\MetadataSchemaProxy;
     }
-    public static function find($pkId)
-    {
-        return static::repo(static::WRITE_SOURCE_ID, static::READ_SOURCE_ID)->find($pkId);
-    }
     protected static function _createRepo($write, $read)
     {
         return new \LazyRecord\Model\MetadataRepo($write, $read);

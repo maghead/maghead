@@ -179,7 +179,7 @@ class BasicCRUDTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
-        $author = AUthor::find($ret->key);
+        $author = Author::defaultRepo()->find($ret->key);
 
         $ret = $author->update(array('id' => new Raw('id + 3') ));
         $this->assertResultSuccess($ret);
