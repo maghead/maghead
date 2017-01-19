@@ -21,7 +21,6 @@ class MetadataBase
     const WRITE_SOURCE_ID = 'default';
     const PRIMARY_KEY = 'id';
     const TABLE_ALIAS = 'm';
-    const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = ? LIMIT 1';
     const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ?';
     public static $column_names = array (
       0 => 'id',

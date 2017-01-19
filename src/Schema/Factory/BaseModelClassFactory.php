@@ -179,25 +179,7 @@ class BaseModelClassFactory
         $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
         $writeConnection = ConnectionManager::getInstance()->getConnection($writeTo);
         $readQueryDriver = $readConnection->getQueryDriver();
-        $writeQueryDriver = $readConnection->getQueryDriver();
-
-        // TODO: refacory this into factory method
-        // Generate findByPrimaryKey SQL query
-        $arguments = new ArgumentArray();
-        $findByPrimaryKeyQuery = new SelectQuery();
-        $findByPrimaryKeyQuery->from($schema->getTable());
-        $primaryKeyColumn = $schema->getColumn($schema->primaryKey);
-        $findByPrimaryKeyQuery->select('*')
-            ->where()->equal($schema->primaryKey, new ParamMarker($schema->primaryKey));
-        $findByPrimaryKeyQuery->limit(1);
-        $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
-        $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
-
-        /*
-        $cTemplate->addStaticMethod('public', 'find', ['$pkId'], function() use ($schema) {
-            return "return static::repo(static::WRITE_SOURCE_ID, static::READ_SOURCE_ID)->find(\$pkId);",
-        });
-        */
+        $writeQueryDriver = $writeConnection->getQueryDriver();
 
         $cTemplate->addStaticMethod('protected', '_createRepo', ['$write', '$read'], function() use ($schema) {
             return "return new \\{$schema->getRepoClass()}(\$write, \$read);";
