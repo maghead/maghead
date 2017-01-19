@@ -825,7 +825,6 @@ abstract class BaseModel implements
             return self::reportError('Permission denied. Can not load record.', array('args' => $args));
         }
 
-        $dsId = $this->readSourceId;
         $pk = static::PRIMARY_KEY;
 
         $query = new SelectQuery();
@@ -870,11 +869,11 @@ abstract class BaseModel implements
             ]);
         }
         $this->setData($data);
-        return self::reportSuccess('Data loaded', array(
-            'key' => $this->getKey(),
-            'sql' => $sql,
+        return self::reportSuccess('Data loaded', [
+            'key'  => $this->getKey(),
+            'sql'  => $sql,
             'type' => Result::TYPE_LOAD,
-        ));
+        ]);
     }
 
     /**
@@ -919,8 +918,6 @@ abstract class BaseModel implements
 
         $vars = $arguments->toArray();
 
-        $validationResults = array();
-
         $stm = $conn->prepare($sql);
         $stm->execute($arguments->toArray());
 
@@ -930,7 +927,6 @@ abstract class BaseModel implements
         return self::reportSuccess('Record deleted', array(
             'sql' => $sql,
             'type' => Result::TYPE_DELETE,
-            // XXX 'args' => $arguments->toArray(),
         ));
     }
 
