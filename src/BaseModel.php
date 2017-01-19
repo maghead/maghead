@@ -1439,7 +1439,7 @@ abstract class BaseModel implements
             $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];
 
-            if (!$this->$sColumn) {
+            if (!isset($this->$sColumn)) {
                 return;
             }
             // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
@@ -1464,7 +1464,7 @@ abstract class BaseModel implements
             $fColumn = $relation['foreign_column'];
             $fpSchema = SchemaLoader::load($fSchema->getSchemaProxyClass());
 
-            if (!$this->$sColumn) {
+            if (!isset($this->$sColumn)) {
                 return;
             }
 
