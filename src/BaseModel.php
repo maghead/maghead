@@ -100,8 +100,6 @@ abstract class BaseModel implements Serializable
 
     protected $_preparedCreateStms = array();
 
-    protected $_preparedFindSql;
-
     private $_readConnection;
 
     private $_writeConnection;
