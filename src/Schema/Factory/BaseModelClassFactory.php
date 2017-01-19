@@ -193,9 +193,11 @@ class BaseModelClassFactory
         $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
 
+        /*
         $cTemplate->addStaticMethod('public', 'find', ['$pkId'], function() use ($schema) {
             return "return static::repo(static::WRITE_SOURCE_ID, static::READ_SOURCE_ID)->find(\$pkId);",
         });
+        */
 
         $cTemplate->addStaticMethod('protected', '_createRepo', ['$write', '$read'], function() use ($schema) {
             return "return new \\{$schema->getRepoClass()}(\$write, \$read);";

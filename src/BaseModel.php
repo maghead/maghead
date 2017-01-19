@@ -26,6 +26,7 @@ use LazyRecord\Schema\RuntimeColumn;
 use LazyRecord\Schema\Relationship\Relationship;
 use LazyRecord\Exception\MissingPrimaryKeyException;
 use LazyRecord\Exception\QueryException;
+use LazyRecord\Connection;
 use SerializerKit\XmlSerializer;
 use ActionKit;
 use Symfony\Component\Yaml\Yaml;
@@ -543,10 +544,10 @@ abstract class BaseModel implements Serializable
     {
         $record = new static;
         $ret = $record->create($args);
-        if ($ret->success) {
-            return static::find($ret->key);
+        if ($ret->error) {
+            return false;
         }
-        return false;
+        return static::defaultRepo()->find($ret->key);
     }
 
     /**
@@ -1832,6 +1833,20 @@ abstract class BaseModel implements Serializable
     {
         $class = get_class($this);
         return \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class, $type);
+    }
+
+
+    /**
+     * defaultRepo method creates the Repo instance class with the default data source IDs
+     *
+     * @return BaseRepo
+     */
+    static public function defaultRepo()
+    {
+        $connManager = ConnectionManager::getInstance();
+        $write = $connManager->getConnection(static::WRITE_SOURCE_ID);
+        $read  = $connManager->getConnection(static::READ_SOURCE_ID);
+        return static::_createRepo($write, $read);
     }
 
     static public function repo($write = null, $read = null)
