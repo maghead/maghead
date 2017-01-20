@@ -19,6 +19,89 @@ use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
 
+
+class CodeBlock
+{
+    public $id;
+    public $lines;
+    public $range;
+
+    public function __construct($id, array $lines = [], array $range = null) {
+        $this->id = $id;
+        $this->lines = $lines;
+        $this->range = $range;
+    }
+
+}
+
+
+class MethodBlockParser
+{
+
+    /**
+     * parseMethod doesn't return block mapping, it returns the lines and blocks in sequence.
+     */
+    static public function elements(ReflectionMethod $method)
+    {
+        $methodFile = $createMethod->getFilename();
+        $startLine = $createMethod->getStartLine();
+        $endLine = $createMethod->getEndLine();
+        $lines = file($methodFile);
+        $methodLines = array_slice($lines, $startLine + 1, $endLine - $startLine - 2); // exclude '{', '}'
+        $blocks = [];
+        for ($i = 0; $i < count($methodLines); ++$i) {
+            $line = rtrim($methodLines[$i]);
+            if (preg_match('/@codegenBlock (\w+)/', $line, $matches)) {
+                $blockId = $matches[1];
+                $block = new CodeBlock($blockId);
+                for ($j = $i; $j < count($methodLines); ++$j) {
+                    $line = rtrim($methodLines[$j]);
+                    $block->lines[] = $line;
+                    if (preg_match('/@codegenBlockEnd/', $line)) {
+                        $block->range = [$i, $j];
+                        $i = $j; // find the next block
+                        break;
+                    }
+                }
+                $blocks[] = $block;
+            } else {
+                $blocks[] = $line;
+            }
+        }
+        return $blocks;
+
+    }
+
+    static public function getBlocks(ReflectionMethod $method)
+    {
+        $methodFile = $createMethod->getFilename();
+        $startLine = $createMethod->getStartLine();
+        $endLine = $createMethod->getEndLine();
+        $lines = file($methodFile);
+        $methodLines = array_slice($lines, $startLine + 1, $endLine - $startLine - 2); // exclude '{', '}'
+        $blocks = [];
+        for ($i = 0; $i < count($methodLines); ++$i) {
+            $line = rtrim($methodLines[$i]);
+            if (preg_match('/@codegenBlock (\w+)/', $line, $matches)) {
+                $blockId = $matches[1];
+                for ($j = $i; $j < count($methodLines); ++$j) {
+                    $line = rtrim($methodLines[$j]);
+                    $blocks[$blockId]['lines'][] = $line;
+                    if (preg_match('/@codegenBlockEnd/', $line)) {
+                        $blocks[$blockId]['range'] = [$i, $j];
+                        $i = $j; // find the next block
+                        break;
+                    }
+                }
+            }
+        }
+        return $blocks;
+    }
+
+
+
+}
+
 /**
  * Base Model class generator.
  *
@@ -118,59 +201,27 @@ class BaseModelClassFactory
             $codegenSettings['handleValidationError'] = true;
         }
         */
-
         if (!empty($codegenSettings)) {
             $reflectionModel = new ReflectionClass('LazyRecord\\BaseModel');
             $createMethod = $reflectionModel->getMethod('create');
-            $methodFile = $createMethod->getFilename();
-            $startLine = $createMethod->getStartLine();
-            $endLine = $createMethod->getEndLine();
-            $lines = file($methodFile);
-            $methodLines = array_slice($lines, $startLine + 1, $endLine - $startLine - 2); // exclude '{', '}'
 
-            $blockRanges = array();
-            $blockLines = array();
-            // parse code blocks
-            for ($i = 0; $i < count($methodLines); ++$i) {
-                $line = rtrim($methodLines[$i]);
-                if (preg_match('/@codegenBlock (\w+)/', $line, $matches)) {
-                    $blockId = $matches[1];
-                    for ($j = $i; $j < count($methodLines); ++$j) {
-                        $line = rtrim($methodLines[$j]);
-                        $blockLines[$blockId][] = $line;
-                        if (preg_match('/@codegenBlockEnd/', $line)) {
-                            $blockRanges[$blockId] = [$i, $j];
-                            $i = $j;
-                            break;
+            $elements = MethodBlockParser::elements($method);
+            $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], function() use ($elements, $codegenSettings) {
+                $body = [];
+                foreach ($elements as $el) {
+                    if ($el instanceof CodeBlock) {
+                        $blockId = $el->id;
+                        if (isset($codegenSettings[$blockId]) && isset($el->lines)) {
+                            if ($codegenSettings[$blockId]) {
+                                $body[] = $el->lines;
+                            }
                         }
+                    } else {
+                        $body[] = $el;
                     }
                 }
-            }
-
-            $overrideCreateMethod = $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()']);
-            $overrideBlock = $overrideCreateMethod->getBlock();
-            for ($i = 0; $i < count($methodLines); ++$i) {
-                $line = rtrim($methodLines[$i]);
-
-                if (preg_match('/@codegenBlock (\w+)/', $line, $matches)) {
-                    $blockId = $matches[1];
-
-                    if (isset($codegenSettings[$matches[1]]) && isset($blockLines[$blockId])) {
-                        if ($codegenSettings[$matches[1]]) {
-                            $overrideBlock[] = $blockLines[$blockId];
-
-                            list($startLine, $endLine) = $blockRanges[$blockId];
-                            $i = $endLine;
-                            continue;
-                        } else {
-                            list($startLine, $endLine) = $blockRanges[$blockId];
-                            $i = $endLine;
-                            continue;
-                        }
-                    }
-                }
-                $overrideBlock[] = $line;
-            }
+                return $body;
+            });
         }
 
         $primaryKey = $schema->primaryKey;

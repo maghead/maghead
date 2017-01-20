@@ -91,8 +91,9 @@ class BaseRepoClassFactory
         $readQueryDriver = $readConnection->getQueryDriver();
         $writeQueryDriver = $writeConnection->getQueryDriver();
 
-        // TODO: refacory this into factory method
-        // Generate findByPrimaryKey SQL query
+
+
+
         $arguments = new ArgumentArray();
         $findByPrimaryKeyQuery = new SelectQuery();
         $findByPrimaryKeyQuery->from($schema->getTable());
