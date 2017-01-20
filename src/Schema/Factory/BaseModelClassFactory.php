@@ -2,11 +2,13 @@
 
 namespace LazyRecord\Schema\Factory;
 
+use ReflectionClass;
+use ReflectionMethod;
+
 use ClassTemplate\ClassFile;
 use LazyRecord\Schema\DeclareSchema;
 use LazyRecord\ConnectionManager;
 use Doctrine\Common\Inflector\Inflector;
-use ReflectionClass;
 
 // used for SQL generator
 use SQLBuilder\Universal\Query\SelectQuery;
@@ -18,7 +20,6 @@ use CodeGen\Statement\RequireStatement;
 use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
-
 
 class CodeBlock
 {
@@ -51,8 +52,30 @@ class CodeBlock
     }
 }
 
-class BlockGenerator
+
+class CodeGenSettingsParser
 {
+    static public function parse($comment)
+    {
+        $settings = [];
+        preg_match_all('/@codegen (\w+)(?:\s*=\s*(\S+))?$/m', $comment, $allMatches);
+        for ($i = 0; $i < count($allMatches[0]); ++$i) {
+            $key = $allMatches[1][$i];
+            $value = $allMatches[2][$i];
+
+            if ($value === '') {
+                $value = true;
+            } else {
+                if (strcasecmp($value, 'true') == 0 || strcasecmp($value, 'false') == 0) {
+                    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                } elseif (preg_match('/^\d+$/', $value)) {
+                    $value = intval($value);
+                }
+            }
+            $settings[$key] = $value;
+        }
+        return $settings;
+    }
 }
 
 class MethodBlockParser
@@ -61,23 +84,33 @@ class MethodBlockParser
     /**
      * parseMethod doesn't return block mapping, it returns the lines and blocks in sequence.
      */
-    static public function elements(ReflectionMethod $method)
+    static public function parseElements(ReflectionMethod $method, $tag)
     {
-        $methodFile = $createMethod->getFilename();
-        $startLine = $createMethod->getStartLine();
-        $endLine = $createMethod->getEndLine();
+        $methodFile = $method->getFilename();
+        $startLine = $method->getStartLine();
+        $endLine = $method->getEndLine();
         $lines = file($methodFile);
         $methodLines = array_slice($lines, $startLine + 1, $endLine - $startLine - 2); // exclude '{', '}'
         $blocks = [];
-        for ($i = 0; $i < count($methodLines); ++$i) {
-            $line = rtrim($methodLines[$i]);
-            if (preg_match('/@codegenBlock (\w+)/', $line, $matches)) {
+
+        $numberOfLines = count($methodLines);
+
+        $indent = 0;
+        if (preg_match('/^(\s+)/',$methodLines[0], $m)) {
+            $indent = strlen($m[0]);
+        }
+
+        for ($i = 0; $i < $numberOfLines; ++$i) {
+            $line = substr(rtrim($methodLines[$i]), $indent);
+
+            if (preg_match("/@$tag (\w+)/", $line, $matches)) {
                 $blockId = $matches[1];
                 $block = new CodeBlock($blockId);
-                for ($j = $i; $j < count($methodLines); ++$j) {
-                    $line = rtrim($methodLines[$j]);
-                    $block->lines[] = $line;
-                    if (preg_match('/@codegenBlockEnd/', $line)) {
+                for ($j = $i; $j < $numberOfLines; ++$j) {
+                    // $line = rtrim($methodLines[$j]);
+                    $line = substr(rtrim($methodLines[$j]), $indent);
+                    $block->lines[] = $line ?: '';
+                    if (preg_match("/@{$tag}End/", $line)) {
                         $block->range = [$i, $j];
                         $i = $j; // find the next block
                         break;
@@ -85,41 +118,12 @@ class MethodBlockParser
                 }
                 $blocks[] = $block;
             } else {
-                $blocks[] = $line;
+                $blocks[] = $line ?: '';
             }
         }
         return $blocks;
 
     }
-
-    static public function getBlocks(ReflectionMethod $method)
-    {
-        $methodFile = $createMethod->getFilename();
-        $startLine = $createMethod->getStartLine();
-        $endLine = $createMethod->getEndLine();
-        $lines = file($methodFile);
-        $methodLines = array_slice($lines, $startLine + 1, $endLine - $startLine - 2); // exclude '{', '}'
-        $blocks = [];
-        for ($i = 0; $i < count($methodLines); ++$i) {
-            $line = rtrim($methodLines[$i]);
-            if (preg_match('/@codegenBlock (\w+)/', $line, $matches)) {
-                $blockId = $matches[1];
-                for ($j = $i; $j < count($methodLines); ++$j) {
-                    $line = rtrim($methodLines[$j]);
-                    $blocks[$blockId]['lines'][] = $line;
-                    if (preg_match('/@codegenBlockEnd/', $line)) {
-                        $blocks[$blockId]['range'] = [$i, $j];
-                        $i = $j; // find the next block
-                        break;
-                    }
-                }
-            }
-        }
-        return $blocks;
-    }
-
-
-
 }
 
 /**
@@ -196,25 +200,7 @@ class BaseModelClassFactory
 
         $schemaReflection = new ReflectionClass($schema);
         $schemaDocComment = $schemaReflection->getDocComment();
-
-        // TODO: apply settings from schema...
-        $codegenSettings = [];
-        preg_match_all('/@codegen (\w+)(?:\s*=\s*(\S+))?$/m', $schemaDocComment, $allMatches);
-        for ($i = 0; $i < count($allMatches[0]); ++$i) {
-            $key = $allMatches[1][$i];
-            $value = $allMatches[2][$i];
-
-            if ($value === '') {
-                $value = true;
-            } else {
-                if (strcasecmp($value, 'true') == 0 || strcasecmp($value, 'false') == 0) {
-                    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-                } elseif (preg_match('/^\d+$/', $value)) {
-                    $value = intval($value);
-                }
-            }
-            $codegenSettings[$key] = $value;
-        }
+        $codegenSettings = CodeGenSettingsParser::parse($schemaDocComment);
 
         /*
         if ($codegenSettings['validateColumn']) {
@@ -224,7 +210,7 @@ class BaseModelClassFactory
         if (!empty($codegenSettings)) {
             $reflectionModel = new ReflectionClass('LazyRecord\\BaseModel');
             $createMethod = $reflectionModel->getMethod('create');
-            $elements = MethodBlockParser::elements($method);
+            $elements = MethodBlockParser::parseElements($createMethod, 'codegenBlock');
             $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], CodeBlock::apply($elements, $codegenSettings));
         }
 

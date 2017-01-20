@@ -21,6 +21,7 @@ class BasicCRUDTest extends ModelTestCase
             new \AuthorBooks\Model\BookSchema,
             new \AuthorBooks\Model\AuthorBookSchema,
             new \AuthorBooks\Model\AddressSchema,
+            new \AuthorBooks\Model\TagSchema,
         ];
     }
 
