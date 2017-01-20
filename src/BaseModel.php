@@ -1854,8 +1854,7 @@ abstract class BaseModel implements Serializable
         $connManager = ConnectionManager::getInstance();
         if (!$read) {
             if (!$write) {
-                $write = static::WRITE_SOURCE_ID;
-                $read  = static::READ_SOURCE_ID;
+                return static::defaultRepo();
             } else {
                 $read = $write;
             }
@@ -1871,6 +1870,10 @@ abstract class BaseModel implements Serializable
 
     /**
      * This will be overrided by child model class.
+     *
+     * @param Connection $write
+     * @param Connection $read
+     * @return BaseRepo
      */
     static protected function createRepo($write, $read)
     {
