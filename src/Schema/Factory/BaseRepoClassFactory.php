@@ -66,6 +66,9 @@ class BaseRepoClassFactory
         $cTemplate->addStaticVar('columnHash',  array_fill_keys($schema->getColumnNames(), 1));
         $cTemplate->addStaticVar('mixinClasses', array_reverse($schema->getMixinSchemaClasses()));
 
+        $cTemplate->addProtectedProperty('findStm');
+        $cTemplate->addProtectedProperty('deleteStm');
+
         $cTemplate->addStaticMethod('public', 'getSchema', [], function() use ($schema) {
             return [
                 "static \$schema;",
@@ -86,7 +89,7 @@ class BaseRepoClassFactory
         $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
         $writeConnection = ConnectionManager::getInstance()->getConnection($writeTo);
         $readQueryDriver = $readConnection->getQueryDriver();
-        $writeQueryDriver = $readConnection->getQueryDriver();
+        $writeQueryDriver = $writeConnection->getQueryDriver();
 
         // TODO: refacory this into factory method
         // Generate findByPrimaryKey SQL query
@@ -102,9 +105,11 @@ class BaseRepoClassFactory
 
         $cTemplate->addMethod('public', 'find', ['$pkId'], function() use ($schema) {
             return [
-                    "\$findStm = \$this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",
-                    "\$findStm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}');",
-                    "return static::_stmFetch(\$findStm, [\$pkId]);",
+                "if (!\$this->findStm) {",
+                "   \$this->findStm = \$this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",
+                "   \$this->findStm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}');",
+                "}",
+                "return static::_stmFetch(\$this->findStm, [\$pkId]);",
             ];
         });
 
@@ -118,8 +123,10 @@ class BaseRepoClassFactory
         $cTemplate->addConst('DELETE_BY_PRIMARY_KEY_SQL', $deleteByPrimaryKeySql);
         $cTemplate->addMethod('public', 'deleteByPrimaryKey', ['$pkId'], function() use ($deleteByPrimaryKeySql, $schema) {
             return [
-                    "\$stm = \$this->write->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);",
-                    "return \$stm->execute([\$pkId]);",
+                "if (!\$this->deleteStm) {",
+                "   \$this->deleteStm = \$this->write->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);",
+                "}",
+                "return \$this->deleteStm->execute([\$pkId]);",
             ];
         });
 

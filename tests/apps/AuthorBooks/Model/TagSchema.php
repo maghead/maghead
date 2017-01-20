@@ -9,7 +9,6 @@ use LazyRecord\Schema;
  * @codegen validateColumn=false
  * @codegen validateRequire=false
  * @codegen handleValidationError=false
- * @codegen typeConstraint=false
  */
 class TagSchema extends Schema
 {

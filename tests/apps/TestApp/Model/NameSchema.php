@@ -13,7 +13,6 @@ class NameSchema extends Schema
             ->autoIncrement();
 
         $this->column('name')
-            ->typeConstraint()
             ->required()
             ->varchar(128);
 

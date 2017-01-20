@@ -22,7 +22,7 @@ class MetadataRepo
     const PRIMARY_KEY = 'id';
     const TABLE_ALIAS = 'm';
     const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = ? LIMIT 1';
-    const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ?';
+    const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ? LIMIT 1';
     public static $columnNames = array (
       0 => 'id',
       1 => 'name',
@@ -36,6 +36,8 @@ class MetadataRepo
     public static $mixinClasses = array (
     );
     protected $table = '__meta__';
+    protected $findStm;
+    protected $deleteStm;
     public static function getSchema()
     {
         static $schema;
@@ -46,13 +48,17 @@ class MetadataRepo
     }
     public function find($pkId)
     {
-        $findStm = $this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);
-        $findStm->setFetchMode(PDO::FETCH_CLASS, 'LazyRecord\Model\Metadata');
-        return static::_stmFetch($findStm, [$pkId]);
+        if (!$this->findStm) {
+           $this->findStm = $this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);
+           $this->findStm->setFetchMode(PDO::FETCH_CLASS, 'LazyRecord\Model\Metadata');
+        }
+        return static::_stmFetch($this->findStm, [$pkId]);
     }
     public function deleteByPrimaryKey($pkId)
     {
-        $stm = $this->write->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);
-        return $stm->execute([$pkId]);
+        if (!$this->deleteStm) {
+           $this->deleteStm = $this->write->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);
+        }
+        return $this->deleteStm->execute([$pkId]);
     }
 }

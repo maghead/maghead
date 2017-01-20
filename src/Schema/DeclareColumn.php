@@ -54,7 +54,6 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
             'unique' => self::ATTR_FLAG, /* unique, should support by SQL syntax */
             'null' => self::ATTR_FLAG,
             'notNull' => self::ATTR_FLAG,
-            'typeConstraint' => self::ATTR_FLAG,
             'timezone' => self::ATTR_FLAG,
             'renderable' => self::ATTR_FLAG,
             'findable' => self::ATTR_FLAG,

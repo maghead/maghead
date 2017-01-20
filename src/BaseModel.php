@@ -604,9 +604,7 @@ abstract class BaseModel implements Serializable
 
         $args = $this->beforeCreate($args);
         if ($args === false) {
-            return self::reportError(_('Create failed'), array(
-                'args' => $args,
-            ));
+            return self::reportError('Create failed', [ 'args' => $args ]);
         }
 
         // first, filter the array, arguments for inserting data.
@@ -614,9 +612,7 @@ abstract class BaseModel implements Serializable
 
         // @codegenBlock currentUserCan
         if (!$this->currentUserCan($this->getCurrentUser(), 'create', $args)) {
-            return self::reportError(_('Permission denied. Can not create record.'), array(
-                'args' => $args,
-            ));
+            return self::reportError('Permission denied. Can not create record.', [ 'args' => $args ]);
         }
         // @codegenBlockEnd
 
@@ -646,12 +642,8 @@ abstract class BaseModel implements Serializable
             // @codegenBlockEnd
 
             // @codegenBlock typeConstraint
-            if ($c->typeConstraint && ($val !== null && !is_array($val) && !$val instanceof Raw)) {
-                if (false === $c->checkTypeConstraint($val)) {
-                    return self::reportError("{$val} is not ".$c->isa.' type');
-                }
-            } elseif ($val !== null && !is_array($val) && !$val instanceof Raw) {
-                $val = $c->typeCasting($val);
+            if ($val !== null && !is_array($val) && !$val instanceof Raw) {
+                $val = $c->typeCast($val);
             }
             // @codegenBlockEnd
 
@@ -694,9 +686,7 @@ abstract class BaseModel implements Serializable
 
         // @codegenBlock handleValidationError
         if ($validationError) {
-            return self::reportError('Validation failed.', array(
-                'validations' => $validationResults,
-            ));
+            return self::reportError('Validation failed.', [ 'validations' => $validationResults ]);
         }
         // @codegenBlockEnd
 
@@ -994,12 +984,12 @@ abstract class BaseModel implements Serializable
                 }
 
             if ($args[$n] !== null && !is_array($args[$n]) && !$args[$n] instanceof Raw) {
-                $args[$n] = $c->typeCasting($args[$n]);
+                $args[$n] = $c->typeCast($args[$n]);
             }
 
                 // The is_array function here is for checking raw sql value.
                 if ($args[$n] !== null && !is_array($args[$n]) && !$args[$n] instanceof Raw) {
-                    if (false === $c->checkTypeConstraint($args[$n])) {
+                    if (false === $c->validateType($args[$n])) {
                         return self::reportError($args[$n].' is not '.$c->isa.' type');
                     }
                 }

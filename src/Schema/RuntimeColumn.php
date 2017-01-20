@@ -199,64 +199,53 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      *
      * @return mixed
      */
-    public function typeCasting($value)
+    public function typeCast($value)
     {
         if ($value instanceof Raw) {
             return $value;
         }
-        if ($isa = $this->isa) {
-            if ($isa === 'int') {
-                return intval($value);
-            } elseif ($isa === 'str') {
-                return (string) $value;
-            } elseif ($isa === 'DateTime') {
-                if ($value === '' || $value === 0 || $value === false) {
-                    return;
-                }
-            } elseif ($isa === 'bool') {
-                if ($value === null) {
-                    return;
-                }
-                if ($value === '') {
-                    return;
-                } else {
-                    return filter_var($value, FILTER_VALIDATE_BOOLEAN, array('flags' => FILTER_NULL_ON_FAILURE));
-                }
-
-                return $value;
+        switch ($this->isa) {
+        case 'int':
+            return intval($value);
+        case 'str':
+            return (string) $value;
+        case 'bool':
+            if ($value === null || $value === '') {
+                return;
+            }
+            return filter_var($value, FILTER_VALIDATE_BOOLEAN, array('flags' => FILTER_NULL_ON_FAILURE));
+        case 'DateTime':
+            if ($value === '' || $value === 0 || $value === false) {
+                return;
             }
         }
-
         return $value;
     }
 
-    public function checkTypeConstraint($value)
+    public function validateType($value)
     {
-        if ($isa = $this->isa) {
-            switch ($isa) {
-            case 'str':
-                if (!is_string($value)) {
-                    return false;
-                }
-                break;
-            case 'int':
-                if (!is_integer($value)) {
-                    return false;
-                }
-                break;
-            case 'float':
-                if (!is_float($value)) {
-                    return false;
-                }
-                break;
-            case 'bool':
-                if (!is_bool($value)) {
-                    return false;
-                }
-                break;
+        switch ($this->isa) {
+        case 'str':
+            if (!is_string($value)) {
+                return false;
             }
+            break;
+        case 'int':
+            if (!is_integer($value)) {
+                return false;
+            }
+            break;
+        case 'float':
+            if (!is_float($value)) {
+                return false;
+            }
+            break;
+        case 'bool':
+            if (!is_bool($value)) {
+                return false;
+            }
+            break;
         }
-
         return true;
     }
 
