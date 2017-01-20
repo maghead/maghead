@@ -138,6 +138,20 @@ class BaseModelClassFactory
 {
     public static function create(DeclareSchema $schema, $baseClass)
     {
+        // get data source ids
+        $readFrom = $schema->getReadSourceId();
+        $writeTo  = $schema->getWriteSourceId();
+
+        // get read connection
+        $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
+        $readQueryDriver = $readConnection->getQueryDriver();
+
+        // get write connection
+        $writeConnection = ConnectionManager::getInstance()->getConnection($writeTo);
+        $writeQueryDriver = $writeConnection->getQueryDriver();
+
+        $primaryKey = $schema->primaryKey;
+
         $cTemplate = new ClassFile($schema->getBaseModelClass());
 
         // Generate a require statement here to prevent spl autoload when
@@ -198,15 +212,10 @@ class BaseModelClassFactory
             }
         }
 
+        // parse codegen settings from schema doc comment string
         $schemaReflection = new ReflectionClass($schema);
         $schemaDocComment = $schemaReflection->getDocComment();
         $codegenSettings = CodeGenSettingsParser::parse($schemaDocComment);
-
-        /*
-        if ($codegenSettings['validateColumn']) {
-            $codegenSettings['handleValidationError'] = true;
-        }
-        */
         if (!empty($codegenSettings)) {
             $reflectionModel = new ReflectionClass('LazyRecord\\BaseModel');
             $createMethod = $reflectionModel->getMethod('create');
@@ -214,13 +223,6 @@ class BaseModelClassFactory
             $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], CodeBlock::apply($elements, $codegenSettings));
         }
 
-        $primaryKey = $schema->primaryKey;
-        $readFrom = $schema->getReadSourceId();
-        $writeTo  = $schema->getWriteSourceId();
-        $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
-        $writeConnection = ConnectionManager::getInstance()->getConnection($writeTo);
-        $readQueryDriver = $readConnection->getQueryDriver();
-        $writeQueryDriver = $writeConnection->getQueryDriver();
 
         $cTemplate->addStaticMethod('protected', 'createRepo', ['$write', '$read'], function() use ($schema) {
             return "return new \\{$schema->getRepoClass()}(\$write, \$read);";
