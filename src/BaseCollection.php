@@ -322,7 +322,7 @@ class BaseCollection
 
         // when selecting count(*), we dont' use groupBys or order by
         $q->clearOrderBy();
-        $q->clearGroupBy();
+        $q->removeGroupBy();
 
         $arguments = new ArgumentArray();
         $sql = $q->toSql($driver, $arguments);
