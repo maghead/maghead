@@ -32,8 +32,28 @@ class CodeBlock
         $this->range = $range;
     }
 
+    static public function apply($elements, array $settings)
+    {
+        $body = [];
+        foreach ($elements as $el) {
+            if ($el instanceof CodeBlock) {
+                $blockId = $el->id;
+                if (isset($settings[$blockId]) && isset($el->lines)) {
+                    if ($settings[$blockId]) {
+                        $body[] = $el->lines;
+                    }
+                }
+            } else {
+                $body[] = $el;
+            }
+        }
+        return $body;
+    }
 }
 
+class BlockGenerator
+{
+}
 
 class MethodBlockParser
 {
@@ -204,24 +224,8 @@ class BaseModelClassFactory
         if (!empty($codegenSettings)) {
             $reflectionModel = new ReflectionClass('LazyRecord\\BaseModel');
             $createMethod = $reflectionModel->getMethod('create');
-
             $elements = MethodBlockParser::elements($method);
-            $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], function() use ($elements, $codegenSettings) {
-                $body = [];
-                foreach ($elements as $el) {
-                    if ($el instanceof CodeBlock) {
-                        $blockId = $el->id;
-                        if (isset($codegenSettings[$blockId]) && isset($el->lines)) {
-                            if ($codegenSettings[$blockId]) {
-                                $body[] = $el->lines;
-                            }
-                        }
-                    } else {
-                        $body[] = $el;
-                    }
-                }
-                return $body;
-            });
+            $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], CodeBlock::apply($elements, $codegenSettings));
         }
 
         $primaryKey = $schema->primaryKey;
