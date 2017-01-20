@@ -80,8 +80,9 @@ class BookModelProfileTest extends ModelProfileTestCase
             'subtitle' => 'subtitle',
             'isbn' => $uuid = uniqid(),
         ));
+        $bookRepo = Book::defaultRepo();
         for ($i = 0 ; $i < $this->N; $i++) {
-            Book::defaultRepo()->find($b->id);
+            $bookRepo->find($b->id);
         }
     }
 
