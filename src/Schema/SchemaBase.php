@@ -77,14 +77,19 @@ abstract class SchemaBase
         return $this->getModelClass().'Base';
     }
 
+    public function getBaseModelName()
+    {
+        return $this->getModelName().'Base';
+    }
+
     public function getRepoClass()
     {
         return $this->getModelClass().'Repo';
     }
 
-    public function getBaseModelName()
+    public function getBaseRepoClass()
     {
-        return $this->getModelName().'Base';
+        return $this->getModelClass().'BaseRepo';
     }
 
     public function getCollectionClass()

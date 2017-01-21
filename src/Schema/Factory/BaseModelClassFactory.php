@@ -224,41 +224,9 @@ class BaseModelClassFactory
         }
 
         $cTemplate->addStaticMethod('public', 'createRepo', ['$write', '$read'], function() use ($schema) {
-            return "return new \\{$schema->getRepoClass()}(\$write, \$read);";
+            return "return new \\{$schema->getBaseRepoClass()}(\$write, \$read);";
         });
 
-        foreach ($schema->getColumns() as $column) {
-            if (!$column->findable) {
-                continue;
-            }
-            $columnName = $column->name;
-            $findMethodName = 'findBy'.ucfirst(Inflector::camelize($columnName));
-            $findMethod = $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use($schema, $readQueryDriver, $columnName) {
-                $block = [];
-                $arguments = new ArgumentArray;
-                $query = new SelectQuery;
-                $query->from($schema->getTable());
-                $query->select('*')->where()->equal($columnName, new Bind($columnName));
-                $query->limit(1);
-                $sql = $query->toSql($readQueryDriver, $arguments);
-                $block[] = '$conn  = $this->getReadConnection();';
-                $block[] = 'if (!isset($this->_preparedFindStms['.var_export($columnName, true).'])) {';
-                $block[] = '    $this->_preparedFindStms['.var_export($columnName, true).'] = $conn->prepare('.var_export($sql, true).');';
-                $block[] = '}';
-                $block[] = '$this->_preparedFindStms['.var_export($columnName, true).']->execute(['.var_export(":$columnName", true).' => $value ]);';
-                $block[] = 'if (false === ($this->_data = $this->_preparedFindStms['.var_export($columnName, true).']->fetch(PDO::FETCH_ASSOC)) ) {';
-                $block[] = '    return $this->reportError("Record not found", [';
-                $block[] = '        "sql" => '.var_export($sql, true).',';
-                $block[] = '    ]);';
-                $block[] = '}';
-                $block[] = '$this->_preparedFindStms['.var_export($columnName, true).']->closeCursor();';
-                $block[] = 'return $this->reportSuccess( "Data loaded", array( ';
-                $block[] = '    "sql" => '.var_export($sql, true).',';
-                $block[] = '    "type" => Result::TYPE_LOAD,';
-                $block[] = '));';
-                return $block;
-            });
-        }
 
         $cTemplate->extendClass('\\'.$baseClass);
 

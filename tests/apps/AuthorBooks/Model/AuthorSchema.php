@@ -7,10 +7,13 @@ class AuthorSchema extends Schema
     public function schema()
     {
         $this->column('name')
-            ->varchar(128);
+            ->varchar(128)
+            ->findable()
+            ;
 
         $this->column('email')
             ->required()
+            ->findable()
             ->varchar(128);
 
         $this->column('account_brief')
@@ -23,7 +26,9 @@ class AuthorSchema extends Schema
         $this->column('identity')
             ->unique()
             ->required()
-            ->varchar(128);
+            ->varchar(128)
+            ->findable()
+            ;
 
         $this->column('confirmed')
             ->boolean()
@@ -41,5 +46,4 @@ class AuthorSchema extends Schema
 
         $this->manyToMany('books', 'author_books' , 'book');
     }
-
 }

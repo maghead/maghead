@@ -49,7 +49,7 @@ class MetadataBase
     }
     public static function createRepo($write, $read)
     {
-        return new \LazyRecord\Model\MetadataRepo($write, $read);
+        return new \LazyRecord\Model\MetadataBaseRepo($write, $read);
     }
     public function getKeyName()
     {

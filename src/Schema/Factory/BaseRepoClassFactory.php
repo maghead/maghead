@@ -26,7 +26,7 @@ class BaseRepoClassFactory
 {
     public static function create(DeclareSchema $schema, $baseClass)
     {
-        $cTemplate = new ClassFile($schema->getRepoClass());
+        $cTemplate = new ClassFile($schema->getBaseRepoClass());
 
         // Generate a require statement here to prevent spl autoload when
         // loading the model class.
@@ -114,6 +114,34 @@ class BaseRepoClassFactory
             ];
         });
 
+        foreach ($schema->getColumns() as $column) {
+            if (!$column->findable) {
+                continue;
+            }
+            $columnName = $column->name;
+            $findMethodName = 'findBy'.ucfirst(Inflector::camelize($columnName));
+            $propertyName = $findMethodName . 'Stm';
+            $cTemplate->addProtectedProperty($propertyName);
+
+            $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use($schema, $readQueryDriver, $columnName, $propertyName) {
+                $arguments = new ArgumentArray;
+                $query = new SelectQuery;
+                $query->from($schema->getTable());
+                $query->select('*')->where()->equal($columnName, new Bind($columnName));
+                $query->limit(1);
+                $sql = $query->toSql($readQueryDriver, $arguments);
+
+                $block = [];
+                $block[] = "if (!\$this->{$propertyName}) {";
+                $block[] = "    \$this->{$propertyName} = \$this->read->prepare(".var_export($sql, true).");";
+                $block[] = "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, \\{$schema->getModelClass()});";
+                $block[] = "}";
+                $block[] = "return static::_stmFetch(\$this->{$propertyName}, [':{$columnName}' => \$value ]);";
+                return $block;
+            });
+        }
+
+
 
         $arguments = new ArgumentArray();
         $deleteQuery = new DeleteQuery();
@@ -131,46 +159,6 @@ class BaseRepoClassFactory
             ];
         });
 
-
-
-        foreach ($schema->getColumns() as $column) {
-            if (!$column->findable) {
-                continue;
-            }
-            $columnName = $column->name;
-            $findMethodName = 'findBy'.ucfirst(Inflector::camelize($columnName));
-
-            $findMethod = $cTemplate->addMethod('public', $findMethodName, ['$value']);
-            $block = $findMethod->block;
-
-            $arguments = new ArgumentArray();
-            $findByColumnQuery = new SelectQuery();
-            $findByColumnQuery->from($schema->getTable());
-            $columnName = $column->name;
-            $readFrom = $schema->getReadSourceId();
-            $findByColumnQuery->select('*')
-                ->where()->equal($columnName, new Bind($columnName));
-            $findByColumnQuery->limit(1);
-            $findByColumnSql = $findByColumnQuery->toSql($readQueryDriver, $arguments);
-
-            $block[] = '$conn  = $this->getReadConnection();';
-
-            $block[] = 'if (!isset($this->_preparedFindStms['.var_export($columnName, true).'])) {';
-            $block[] = '    $this->_preparedFindStms['.var_export($columnName, true).'] = $conn->prepare('.var_export($findByColumnSql, true).');';
-            $block[] = '}';
-            $block[] = '$this->_preparedFindStms['.var_export($columnName, true).']->execute(['.var_export(":$columnName", true).' => $value ]);';
-            $block[] = 'if (false === ($this->_data = $this->_preparedFindStms['.var_export($columnName, true).']->fetch(PDO::FETCH_ASSOC)) ) {';
-            $block[] = '    return $this->reportError("Record not found", [';
-            $block[] = '        "sql" => '.var_export($findByColumnSql, true).',';
-            $block[] = '    ]);';
-            $block[] = '}';
-            $block[] = '$this->_preparedFindStms['.var_export($columnName, true).']->closeCursor();';
-
-            $block[] = 'return $this->reportSuccess( "Data loaded", array( ';
-            $block[] = '    "sql" => '.var_export($findByColumnSql, true).',';
-            $block[] = '    "type" => Result::TYPE_LOAD,';
-            $block[] = '));';
-        }
         $cTemplate->extendClass('\\'.$baseClass);
         return $cTemplate;
     }
