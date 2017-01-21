@@ -758,6 +758,49 @@ abstract class BaseModel implements Serializable
         }
     }
 
+
+    public function loadForUpdate($args)
+    {
+        $query = new SelectQuery();
+        $query->select($this->selected ?: '*');
+        $query->from($this->table, $this->alias);
+
+
+        if (is_array($args)) {
+            $query->where($args);
+        } else {
+            $query->where()->equal(static::PRIMARY_KEY, $args);
+        }
+
+        $query->forUpdate();
+        $arguments = new ArgumentArray();
+
+        $conn = $this->getReadConnection();
+        $driver = $conn->getQueryDriver();
+        if (!$driver instanceof PDOMySQLDriver) {
+            throw new Exception("The current driver doesn't support SELECT ... FOR UPDATE");
+        }
+        $sql = $query->toSql($driver, $arguments);
+
+        // mixed PDOStatement::fetch ([ int $fetch_style [, int $cursor_orientation = PDO::FETCH_ORI_NEXT [, int $cursor_offset = 0 ]]] )
+        $stm = $conn->prepare($sql);
+        // $stm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
+        $stm->execute($arguments->toArray());
+        if (false === ($data = $stm->fetch(PDO::FETCH_ASSOC))) {
+            // Record not found is not an exception
+            return Result::failure('Record not found', [
+                'sql' => $sql,
+            ]);
+        }
+        $this->setData($data);
+        return Result::success('Data loaded', [
+            'key'  => $this->getKey(),
+            'sql'  => $sql,
+            'type' => Result::TYPE_LOAD,
+        ]);
+    }
+
+
     public function load($args, array $options = null)
     {
         $query = new SelectQuery();
@@ -771,11 +814,6 @@ abstract class BaseModel implements Serializable
             $query->where($args);
         } else {
             $query->where()->equal(static::PRIMARY_KEY, $args);
-        }
-
-        // generate select * ... for update syntax for MySQL driver
-        if (isset($options['for_update']) && $driver instanceof PDOMySQLDriver) {
-            $query->forUpdate();
         }
 
         $arguments = new ArgumentArray();

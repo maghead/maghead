@@ -325,16 +325,19 @@ class AuthorModelTest extends ModelTestCase
 
     public function testLoadForUpdate()
     {
+        if (!$this->queryDriver instanceof PDOMySQLDriver) {
+            return $this->markTestSkipped('select for update is for mysql driver');
+        }
+
         $author = new Author;
-        $ret = $author->create(array( 
+        $ret = $author->create(array(
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
-
         $a2 = new Author;
-        $ret = $a2->load([ 'identity' => 'zz3' ], [ 'for_update' => true ]);
+        $ret = $a2->loadForUpdate([ 'identity' => 'zz3' ]);
         $this->assertResultSuccess($ret);
         $ret = $a2->update(['name' => 'Maroon V']);
         $this->assertResultSuccess($ret);
@@ -343,7 +346,7 @@ class AuthorModelTest extends ModelTestCase
     public function testUpdateNull()
     {
         $author = new Author;
-        $ret = $author->create(array( 
+        $ret = $author->create(array(
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
