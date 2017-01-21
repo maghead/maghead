@@ -78,17 +78,16 @@ class BasicCRUDTest extends ModelTestCase
         $book2 = Book::createAndLoad(array( 'title' => 'Book2' ));
         $this->assertNotFalse($book2);
 
-        $findBook = new Book;
-        $found = Book::defaultRepo()->find($book1->id);
-        $this->assertNotFalse($found);
-        $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
-        $this->assertEquals($book1->id, $found->id);
+        $book = Book::find($book1->id);
+        $this->assertNotFalse($book);
+        $this->assertInstanceOf('AuthorBooks\Model\Book', $book);
+        $this->assertEquals($book1->id, $book->id);
 
 
-        $found = Book::defaultRepo()->find($book2->id);
-        $this->assertNotFalse($found);
-        $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
-        $this->assertEquals($book2->id, $found->id);
+        $book = Book::find($book2->id);
+        $this->assertNotFalse($book);
+        $this->assertInstanceOf('AuthorBooks\Model\Book', $book);
+        $this->assertEquals($book2->id, $book->id);
     }
 
 
