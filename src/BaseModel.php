@@ -33,10 +33,6 @@ use Symfony\Component\Yaml\Yaml;
 
 defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
 
-class PrimaryKeyNotFoundException extends Exception
-{
-}
-
 /**
  * Base Model class,
  * every model class extends from this class.
@@ -307,21 +303,12 @@ abstract class BaseModel implements Serializable
     }
 
 
+    /**
+     * An alias for BaseRepo::loadByKeys
+     */
     static protected function loadByKeys(array $args, $byKeys = null)
     {
-        $pk = static::PRIMARY_KEY;
-        $record = null;
-        if ($pk && isset($args[$pk])) {
-            return static::load([$pk => $args[$pk]]);
-        } else if ($byKeys) {
-            $conds = array();
-            foreach ((array) $byKeys as $k) {
-                if (array_key_exists($k, $args)) {
-                    $conds[$k] = $args[$k];
-                }
-            }
-            return static::load($conds);
-        }
+        return static::defaultRepo()->loadByKeys($args, $byKeys);
     }
 
     /**
@@ -344,7 +331,7 @@ abstract class BaseModel implements Serializable
         } else {
             return $this->create($args);
         }
-        throw new PrimaryKeyNotFoundException('primary key is not defined.');
+        throw new MissingPrimaryKeyException('primary key is not defined.');
     }
 
 

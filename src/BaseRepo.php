@@ -166,4 +166,22 @@ class BaseRepo
             return $this->create($args);
         }
     }
+
+    public function loadByKeys(array $args, $byKeys = null)
+    {
+        $pk = static::PRIMARY_KEY;
+        $record = null;
+        if ($pk && isset($args[$pk])) {
+            return $this->load([$pk => $args[$pk]]);
+        } else if ($byKeys) {
+            $conds = [];
+            foreach ((array) $byKeys as $k) {
+                if (array_key_exists($k, $args)) {
+                    $conds[$k] = $args[$k];
+                }
+            }
+            return $this->load($conds);
+        }
+        throw new MissingPrimaryKeyException('primary key is not defined.');
+    }
 }
