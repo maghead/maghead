@@ -699,20 +699,6 @@ abstract class BaseModel implements Serializable
     }
 
     /**
-     * The fast create method does not reload record from created the primary 
-     * key.
-     *
-     * TODO: refactor create code to call fastCreate.
-     * TODO: provide rawCreate to create data without validation.
-     *
-     * @param array $args
-     */
-    public function fastCreate(array $args)
-    {
-        return $this->create($args, ['reload' => false]);
-    }
-
-    /**
      * Find record.
      *
      * @param array condition array
@@ -728,9 +714,6 @@ abstract class BaseModel implements Serializable
     {
         return static::defaultRepo()->find($pkId);
     }
-
-
-
 
 
     static protected function _stmFetch($stm, $args)
