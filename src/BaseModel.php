@@ -797,7 +797,7 @@ abstract class BaseModel implements Serializable
         $key = serialize($args);
         if ($cacheData = $this->getCache($key)) {
             $this->setData($cacheData);
-            return self::reportSuccess('Data loaded', [ 'key' => $this->getKey() ]);
+            return Result::success('Data loaded', [ 'key' => $this->getKey() ]);
         } else {
             $ret = $this->load($args);
             $this->setCache($key, $this->getData(), $ttl);
@@ -889,7 +889,7 @@ abstract class BaseModel implements Serializable
         static::createRepo($write, $write)->deleteByPrimaryKey($key);
         $this->afterDelete();
         $this->clear();
-        return self::reportSuccess('Record deleted', [
+        return Result::success('Record deleted', [
             'type' => Result::TYPE_DELETE,
         ]);
     }
@@ -920,7 +920,7 @@ abstract class BaseModel implements Serializable
         }
 
         if ($k && !isset($args[$k]) && !$kVal) {
-            return self::reportError('Record is not loaded, Can not update record.', array('args' => $args));
+            return Result::failure('Record is not loaded, Can not update record.', array('args' => $args));
         }
 
         if (!$this->currentUserCan($this->getCurrentUser(), 'update', $args)) {
@@ -947,7 +947,7 @@ abstract class BaseModel implements Serializable
 
         $args = $this->beforeUpdate($args);
         if ($args === false) {
-            return self::reportError(_('Update failed'), array(
+            return Result::failure(_('Update failed'), array(
                     'args' => $args,
                 ));
         }
@@ -971,7 +971,7 @@ abstract class BaseModel implements Serializable
 
                 // if column is required (can not be empty) //   and default is defined.
                 if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
-                    return self::reportError("Value of $n is required.");
+                    return Result::failure("Value of $n is required.");
                 }
 
                 // TODO: Do not render immutable field in ActionKit
@@ -980,7 +980,7 @@ abstract class BaseModel implements Serializable
                     continue;
                     // TODO: render as a validation results?
                     // continue;
-                    // return self::reportError( "You can not update $n column, which is immutable.", array('args' => $args));
+                    // return Result::failure( "You can not update $n column, which is immutable.", array('args' => $args));
                 }
 
             if ($args[$n] !== null && !is_array($args[$n]) && !$args[$n] instanceof Raw) {
@@ -990,7 +990,7 @@ abstract class BaseModel implements Serializable
                 // The is_array function here is for checking raw sql value.
                 if ($args[$n] !== null && !is_array($args[$n]) && !$args[$n] instanceof Raw) {
                     if (false === $c->validateType($args[$n])) {
-                        return self::reportError($args[$n].' is not '.$c->isa.' type');
+                        return Result::failure($args[$n].' is not '.$c->isa.' type');
                     }
                 }
 
@@ -1028,13 +1028,13 @@ abstract class BaseModel implements Serializable
         }
 
         if ($validationError) {
-            return self::reportError('Validation failed.', array(
+            return Result::failure('Validation failed.', array(
                     'validations' => $validationResults,
                 ));
         }
 
         if (empty($updateArgs)) {
-            return self::reportError('Empty args');
+            return Result::failure('Empty args');
         }
 
             // TODO: optimized to built cache
@@ -1070,7 +1070,7 @@ abstract class BaseModel implements Serializable
             ));
         }
         */
-        return self::reportSuccess('Updated successfully', array(
+        return Result::success('Updated successfully', array(
             'key' => $kVal,
             'sql' => $sql,
             'args' => $args,
@@ -1103,7 +1103,7 @@ abstract class BaseModel implements Serializable
         $stm = $conn->prepare($sql);
         $stm->execute($arguments->toArray());
         $this->setData($args);
-        return self::reportSuccess('Update success', array(
+        return Result::success('Update success', array(
             'sql' => $sql,
             'type' => Result::TYPE_UPDATE,
         ));
@@ -1143,7 +1143,7 @@ abstract class BaseModel implements Serializable
 
         $this->setData($args);
         $this->setKey($pkId);
-        return self::reportSuccess('Create success', array(
+        return Result::success('Create success', array(
             'sql' => $sql,
             'type' => Result::TYPE_CREATE,
         ));
@@ -1234,13 +1234,13 @@ abstract class BaseModel implements Serializable
         $stm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
         $stm->execute($args);
         if (false === ($data = $stm->fetch(PDO::FETCH_CLASS))) {
-            return self::reportError('Data load failed.', array(
+            return Result::failure('Data load failed.', array(
                 'sql'  => $sql,
                 'args' => $args,
             ));
         }
         $this->setData($data);
-        return self::reportSuccess('Data loaded', array(
+        return Result::success('Data loaded', array(
             'key'  => $this->getKey(),
             'sql' => $sql,
         ));
@@ -1622,36 +1622,6 @@ abstract class BaseModel implements Serializable
             return $c->inflate($value, $this);
         }
         return $value;
-    }
-
-    /**
-     * Report error.
-     *
-     * @param string $message Error message.
-     * @param array  $extra   Extra data.
-     *
-     * @return OperationError
-     */
-    static public function reportError($message, $extra = array())
-    {
-        return Result::failure($message, $extra);
-    }
-
-    /**
-     * Report success.
-     *
-     * In this method, which pushs result object into ->results array.
-     * you can use flushResult() method to clean up these 
-     * result objects.
-     *
-     * @param string $message Success message.
-     * @param array  $extra   Extra data.
-     *
-     * @return Result
-     */
-    static public function reportSuccess($message, $extra = array())
-    {
-        return Result::success($message, $extra);
     }
 
     public function getDeclareSchema()
