@@ -760,21 +760,17 @@ abstract class BaseModel implements Serializable
 
     public function load($args, array $options = null)
     {
-        $pk = static::PRIMARY_KEY;
-
         $query = new SelectQuery();
+        $query->select($this->selected ?: '*');
         $query->from($this->table, $this->alias);
 
         $conn = $this->getReadConnection();
         $driver = $conn->getQueryDriver();
-        $kVal = null;
 
-        // build query from array.
-        $query->select($this->selected ?: '*');
         if (is_array($args)) {
             $query->where($args);
         } else {
-            $query->where()->equal($pk, $args);
+            $query->where()->equal(static::PRIMARY_KEY, $args);
         }
 
         // generate select * ... for update syntax for MySQL driver
