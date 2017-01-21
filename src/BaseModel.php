@@ -438,10 +438,7 @@ abstract class BaseModel implements Serializable
         $this->beforeDelete();
         static::createRepo($write, $write)->deleteByPrimaryKey($key);
         $this->afterDelete();
-        $this->clear();
-        return Result::success('Record deleted', [
-            'type' => Result::TYPE_DELETE,
-        ]);
+        return Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
     }
 
     /**
