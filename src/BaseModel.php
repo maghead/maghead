@@ -538,7 +538,7 @@ abstract class BaseModel implements Serializable
     public function create(array $args, array $options = array())
     {
         if (empty($args) || $args === null) {
-            return self::reportError('Empty arguments');
+            return Result::failure('Empty arguments');
         }
 
         $validationResults = array();
@@ -563,7 +563,7 @@ abstract class BaseModel implements Serializable
 
         $args = $this->beforeCreate($args);
         if ($args === false) {
-            return self::reportError('Create failed', [ 'args' => $args ]);
+            return Result::failure('Create failed', [ 'args' => $args ]);
         }
 
         // first, filter the array, arguments for inserting data.
@@ -590,7 +590,7 @@ abstract class BaseModel implements Serializable
             // if column is required (can not be empty) //   and default is defined.
             // @codegenBlock validateRequire
             if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
-                return self::reportError("Value of $n is required.");
+                return Result::failure("Value of $n is required.");
             }
             // @codegenBlockEnd
 
@@ -639,7 +639,7 @@ abstract class BaseModel implements Serializable
 
         // @codegenBlock handleValidationError
         if ($validationError) {
-            return self::reportError('Validation failed.', [ 'validations' => $validationResults ]);
+            return Result::failure('Validation failed.', [ 'validations' => $validationResults ]);
         }
         // @codegenBlockEnd
 
@@ -668,7 +668,7 @@ abstract class BaseModel implements Serializable
             }
         }
         if (false === $stm->execute($arguments->toArray())) {
-            return self::reportError('Record create failed.', array(
+            return Result::failure('Record create failed.', array(
                 'validations' => $validationResults,
                 'args' => $args,
                 'sql' => $sql,
@@ -687,7 +687,7 @@ abstract class BaseModel implements Serializable
         $stm->closeCursor();
 
         // collect debug info
-        return self::reportSuccess('Record created.', array(
+        return Result::success('Record created.', array(
             'key' => $pkId,
             'sql' => $sql,
             'args' => $args,
@@ -799,12 +799,12 @@ abstract class BaseModel implements Serializable
         $stm->execute($arguments->toArray());
         if (false === ($data = $stm->fetch(PDO::FETCH_ASSOC))) {
             // Record not found is not an exception
-            return self::reportError('Record not found', [
+            return Result::failure('Record not found', [
                 'sql' => $sql,
             ]);
         }
         $this->setData($data);
-        return self::reportSuccess('Data loaded', [
+        return Result::success('Data loaded', [
             'key'  => $this->getKey(),
             'sql'  => $sql,
             'type' => Result::TYPE_LOAD,
