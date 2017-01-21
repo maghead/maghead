@@ -389,18 +389,20 @@ class BasicCRUDTest extends ModelTestCase
         $book = Book::defaultRepo()->find($ret->key);
 
         $this->assertEquals( 0 , $book->view );
-        $ret = $book->update(array( 
+        $ret = $book->update([
             'view' => new Raw('view + 1')
-        ), array('reload' => true));
+        ]);
         $this->assertResultSuccess($ret);
+
+        $book = Book::defaultRepo()->find($ret->key);
         $this->assertEquals(1, $book->view);
 
-        $ret = $book->update(array(
+        $ret = $book->update([
             'view' => new Raw('view + 3'),
-        ), array('reload' => true));
+        ]);
         $this->assertResultSuccess($ret);
 
-        $ret = $book->reload();
+        $book = Book::defaultRepo()->find($ret->key);
         $this->assertResultSuccess($ret);
         $this->assertEquals( 4, $book->view );
         $this->assertResultSuccess($book->delete());
@@ -425,28 +427,5 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
         $this->assertEquals(0 , $found->view);
         $this->successfulDelete($found);
-    }
-
-    /**
-     * @rebuild false
-     */
-    public function testUpdateWithReloadOption()
-    {
-        $b = new \AuthorBooks\Model\Book;
-        $ret = $b->create(array('title' => 'Create for reload test' , 'view' => 0));
-        $this->assertResultSuccess($ret);
-        $b = Book::defaultRepo()->find($ret->key);
-
-        // test incremental with Raw statement
-        $ret = $b->update(array('view'  => new Raw('view + 1') ), array('reload' => true));
-        $this->assertResultSuccess($ret);
-        $this->assertEquals(1,  $b->view);
-
-        $ret = $b->update(array('view' => new Raw('view + 1') ), array('reload' => true));
-        $this->assertResultSuccess($ret);
-        $this->assertEquals( 2,  $b->view );
-
-        $ret = $b->delete();
-        $this->assertResultSuccess($ret);
     }
 }

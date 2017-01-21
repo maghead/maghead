@@ -141,4 +141,29 @@ class BaseRepo
         $stm->execute($arguments->toArray());
         return $stm->fetch(PDO::FETCH_CLASS);
     }
+
+    public function createOrUpdate(array $args, $byKeys = null)
+    {
+        $primaryKey = static::PRIMARY_KEY;
+        $record = null;
+        if ($primaryKey && isset($args[$primaryKey])) {
+            $val = $args[$primaryKey];
+            $record = $this->find($val);
+        } else if ($byKeys) {
+            $conds = [];
+            foreach ((array) $byKeys as $k) {
+                if (array_key_exists($k, $args)) {
+                    $conds[$k] = $args[$k];
+                }
+            }
+            $record = $this->load($conds);
+        }
+
+        if ($record && $record->hasKey()) {
+            $record->update($args);
+            return $record;
+        } else {
+            return $this->create($args);
+        }
+    }
 }

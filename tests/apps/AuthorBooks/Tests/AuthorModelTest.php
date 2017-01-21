@@ -129,26 +129,18 @@ class AuthorModelTest extends ModelTestCase
     public function testAccessor()
     {
         $author = new Author;
-        $ret = $author->create(array( 
-            'name' => 'Pedro' , 
-            'email' => 'pedro@gmail.com' , 
+        $ret = $author->create([
+            'name' => 'Pedro',
+            'email' => 'pedro@gmail.com',
             'identity' => 'id',
             'confirmed' => true,
-        ));
+        ]);
         $this->assertResultSuccess($ret);
         $author = Author::defaultRepo()->find($ret->key);
 
-        $ret = $author->reload();
-        $this->assertResultSuccess($ret);
-
         $this->assertEquals('Pedro',$author->getName());
-
         $this->assertEquals('pedro@gmail.com',$author->getEmail());
-
         $this->assertEquals(true,$author->isConfirmed());
-
-        $ret = $author->delete();
-        $this->assertResultSuccess($ret);
     }
 
     /**

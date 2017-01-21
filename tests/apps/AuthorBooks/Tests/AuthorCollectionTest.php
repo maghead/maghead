@@ -145,8 +145,6 @@ class AuthorCollectionTest extends ModelTestCase
             'confirmed' => false,
         ));
         $this->assertResultSuccess($ret);
-        // $a->reload();
-        // $this->assertFalse($a->confirmed);
 
         $a = new Author;
         $ret = $a->create(array(

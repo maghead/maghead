@@ -719,7 +719,20 @@ abstract class BaseModel implements Serializable
      * @return BaseModel
      */
     // PHP 5.6 doesn't support static abstract
-    // abstract static public function find($pkId);
+
+
+    /**
+     * find() is an alias method of defaultRepo->find
+     */
+    static public function find($pkId)
+    {
+        return static::defaultRepo()->find($pkId);
+    }
+
+
+
+
+
     static protected function _stmFetch($stm, $args)
     {
         $stm->execute($args);
@@ -756,7 +769,7 @@ abstract class BaseModel implements Serializable
             $args[static::PRIMARY_KEY] = $key;
         }
         // return static::defaultRepo()->load($args);
-        $record = $repo->load($args);
+        $record = static::defaultRepo()->load($args);
         if (!$record) {
             return Result::failure('Record not found');
         }
@@ -766,23 +779,6 @@ abstract class BaseModel implements Serializable
             'key'  => $this->getKey(),
             'type' => Result::TYPE_LOAD,
         ]);
-    }
-
-    /**
-     * Relaod record data by primary key,
-     * parameter is optional if you've already defined 
-     * the primary key column in this model.
-     *
-     * @param string $pkId primary key name
-     */
-    public function reload($pkId = null)
-    {
-        if ($pkId) {
-            return $this->load($pkId);
-        } else if ($pkId = $this->getKey()) {
-            return $this->load($pkId);
-        }
-        throw new PrimaryKeyNotFoundException('Primary key is not found, can not reload '.get_class($this));
     }
 
     /**

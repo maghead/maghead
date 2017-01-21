@@ -145,23 +145,25 @@ class BookModelTest extends ModelTestCase
      */
     public function testRawSQL()
     {
-        $n = Book::createAndLoad(array(
+        $book = Book::createAndLoad(array(
             'title' => 'book title',
             'view' => 0,
         ));
-        $this->assertEquals(0 , $n->view);
+        $this->assertEquals(0 , $book->view);
 
-        $ret = $n->update(array( 
+        $ret = $book->update([
             'view' => new Raw('view + 1')
-        ), array('reload' => 1));
+        ]);
+        $this->assertResultSuccess($ret);
 
-        ok( $ret->success );
-        is( 1 , $n->view );
+        $book = Book::find($book->id);
+        $this->assertEquals(1 , $book->view );
 
-        $n->update(array( 
+        $book->update([
             'view' => new Raw('view + 3')
-        ), array('reload' => 1));
-        is( 4, $n->view );
+        ]);
+        $book = Book::find($book->id);
+        $this->assertEquals(4, $book->view);
     }
 
 
@@ -192,7 +194,6 @@ class BookModelTest extends ModelTestCase
         $ret = $book->createOrUpdate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date ], [ 'published_at' ]);
         $this->assertResultSuccess($ret);
         $this->assertCount(1, new BookCollection);
-        
 
         $this->assertEquals('Update With Time', $book->title);
         $this->assertEquals($id, $book->id);
@@ -215,15 +216,21 @@ class BookModelTest extends ModelTestCase
         is( 0 , $b->view );
 
         // test incremental
-        $ret = $b->update(array( 'view'  => new Raw('view + 1') ), array('reload' => true));
+        $ret = $b->update(array( 'view'  => new Raw('view + 1')));
         $this->assertResultSuccess($ret);
-        is( 1,  $b->view );
 
-        $ret = $b->update(array( 'view'  => new Raw('view + 1') ), array('reload' => true));
+        $b = Book::find($b->id);
+        $this->assertEquals(1,  $b->view);
+
+        $ret = $b->update(array( 'view'  => new Raw('view + 1') ));
         $this->assertResultSuccess($ret);
-        is( 2,  $b->view );
+
+        $b = Book::find($b->id);
+        $this->assertEquals( 2,  $b->view);
 
         $ret = $b->delete();
         $this->assertResultSuccess($ret);
     }
 }
+
+

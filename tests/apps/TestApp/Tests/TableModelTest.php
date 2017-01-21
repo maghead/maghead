@@ -35,9 +35,7 @@ class TableModelTest extends ModelTestCase
         ok($ret->key);
         ok($ret->success);
 
-        $ret = $table->reload();
-        $this->assertResultSuccess($ret);
-
+        $table = Table::find($ret->key);
         $this->assertNotEmpty($table->get('columns'));
         $this->assertNotEmpty($table->get('rows'));
 
@@ -46,8 +44,5 @@ class TableModelTest extends ModelTestCase
 
         $this->assertTrue(is_array($table->getColumns()));
         $this->assertTrue(is_array($table->getRows()));
-
-        $ret = $table->delete();
-        $this->assertResultSuccess($ret);
     }
 }

@@ -33,9 +33,6 @@ class AuthorBookModelTest extends ModelTestCase
         $this->resultOK(true,$ret);
 
         $a = Author::defaultRepo()->find($ret->key);
-
-        $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
-        $a->reload();
         $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
 
         $a = new Author;
