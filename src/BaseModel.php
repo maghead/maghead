@@ -355,102 +355,6 @@ abstract class BaseModel implements Serializable
         return static::find($ret->key);
     }
 
-    /**
-     * Run validator to validate column.
-     *
-     * A validator could be:
-     *   1. a ValidationKit validator,
-     *   2. a closure
-     *   3. a function name
-     *
-     * The validation result must be returned as in following format:
-     *
-     *   boolean (valid or invalid, true or false)
-     *
-     *   array( boolean valid , string message )
-     *
-     *   ValidationKit\ValidationMessage object.
-     *
-     * This method returns
-     *
-     *   (object) {
-     *       valid: boolean valid or invalid
-     *       field: string field name
-     *       message: 
-     *   }
-     */
-    protected function _validateColumn(RuntimeColumn $column, $val, array $args)
-    {
-        // check for requried columns
-        if ($column->required && ($val === '' || $val === null)) {
-            return array(
-                'valid' => false,
-                'message' => sprintf(_('Field %s is required.'), $column->getLabel()),
-                'field' => $column->name,
-            );
-        }
-
-        // XXX: migrate this method to runtime column
-        if ($validator = $column->validator) {
-            if (is_callable($validator)) {
-                $ret = call_user_func($validator, $val, $args, $this);
-                if (is_bool($ret)) {
-                    return array('valid' => $ret, 'message' => 'Validation failed.', 'field' => $column->name);
-                } elseif (is_array($ret)) {
-                    return array('valid' => $ret[0], 'message' => $ret[1], 'field' => $column->name);
-                } else {
-                    throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
-                }
-            } elseif (is_string($validator) && is_a($validator, 'ValidationKit\\Validator', true)) {
-                // it's a ValidationKit\Validator
-                $validator = $column->validatorArgs ? new $validator($column->get('validatorArgs')) : new $validator();
-                $ret = $validator->validate($val);
-                $msgs = $validator->getMessages();
-                $msg = isset($msgs[0]) ? $msgs[0] : 'Validation failed.';
-
-                return array('valid' => $ret, 'message' => $msg, 'field' => $column->name);
-            } else {
-                throw new Exception('Unsupported validator');
-            }
-        }
-        if ($val && $column->validValues) {
-            if ($validValues = $column->getValidValues($this, $args)) {
-                // sort by index
-                if (isset($validValues[0]) && !in_array($val, $validValues)) {
-                    return array(
-                        'valid' => false,
-                        'message' => sprintf('%s is not a valid value for %s', $val, $column->name),
-                        'field' => $column->name,
-                    );
-                }
-
-                /*
-                 * Validate for Options
-                 * "Label" => "Value",
-                 * "Group" => array( "Label" => "Value" )
-                
-                 * Order with key => value
-                 *    value => label
-                 */
-                else {
-                    $values = array_values($validValues);
-                    foreach ($values as &$v) {
-                        if (is_array($v)) {
-                            $v = array_values($v);
-                        }
-                    }
-
-                    if (!in_array($val, $values)) {
-                        return array(
-                            'valid' => false,
-                            'message' => sprintf(_('%s is not a valid value for %s'), $val, $column->name),
-                            'field' => $column->name,
-                        );
-                    }
-                }
-            }
-        }
-    }
 
 
     /**
@@ -474,6 +378,12 @@ abstract class BaseModel implements Serializable
         }
         return static::defaultRepo()->find($ret->key);
     }
+
+    static public function _validateColumn($c, $val, $args, $record)
+    {
+        return static::defaultRepo()::_validateColumn($c, $val, $args, $record);
+    }
+
 
     /**
      * Method for creating new record, which is called from 
@@ -574,7 +484,7 @@ abstract class BaseModel implements Serializable
             // @codegenBlockEnd
 
             // @codegenBlock validateColumn
-            if ($validationResult = $this->_validateColumn($c, $val, $args)) {
+            if ($validationResult = static::_validateColumn($c, $val, $args, null)) {
                 $validationResults[$n] = $validationResult;
                 if (!$validationResult['valid']) {
                     $validationError = true;
@@ -745,8 +655,6 @@ abstract class BaseModel implements Serializable
      */
     public function update(array $args, $options = array())
     {
-        $schema = static::getSchema();
-
         // check if the record is loaded.
         $k = static::PRIMARY_KEY;
 
@@ -754,164 +662,17 @@ abstract class BaseModel implements Serializable
         // here we allow users to specifty primary key value from arguments if the record is not loaded.
         $kVal = null;
         if (isset($args[$k]) && is_scalar($args[$k])) {
-            // FIXME: primary key could be string
-            $kVal = intval($args[$k]);
+            $kVal = $args[$k];
+            unset($args[$k]);
         } else if ($k = $this->getKey()) {
-            // FIXME: primary key could be string
-            $kVal = intval($k);
+            $kVal = $k;
         }
-
-        if ($k && !isset($args[$k]) && !$kVal) {
+        if (!$kVal) {
             return Result::failure('Record is not loaded, Can not update record.', array('args' => $args));
         }
-
-        $origArgs = $args;
-        $conn = $this->getWriteConnection();
-        $driver = $conn->getQueryDriver();
-        $sql = null;
-        $vars = null;
-
-        $arguments = new ArgumentArray();
-        $query = new UpdateQuery();
-
-        $validationError = false;
-        $validationResults = array();
-
-        $updateArgs = array();
-
-        $schema = static::getSchema();
-
-        $args = $this->beforeUpdate($args);
-        if ($args === false) {
-            return Result::failure(_('Update failed'), array(
-                    'args' => $args,
-                ));
-        }
-
-        // foreach mixin schema, run their beforeUpdate method,
-        $args = array_intersect_key($args, array_flip($schema->columnNames));
-
-        foreach ($schema->columns as $n => $c) {
-            if (isset($args[$n])
-                    && !$args[$n]
-                    && !$c->primary) {
-                if ($val = $c->getDefaultValue($this, $args)) {
-                    $args[$n] = $val;
-                }
-            }
-
-                // column validate (value is set.)
-                if (!array_key_exists($n, $args)) {
-                    continue;
-                }
-
-                // if column is required (can not be empty) //   and default is defined.
-                if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
-                    return Result::failure("Value of $n is required.");
-                }
-
-                // TODO: Do not render immutable field in ActionKit
-                // XXX: calling ::save() might update the immutable columns
-                if ($c->immutable) {
-                    continue;
-                    // TODO: render as a validation results?
-                    // continue;
-                    // return Result::failure( "You can not update $n column, which is immutable.", array('args' => $args));
-                }
-
-            if ($args[$n] !== null && !is_array($args[$n]) && !$args[$n] instanceof Raw) {
-                $args[$n] = $c->typeCast($args[$n]);
-            }
-
-                // The is_array function here is for checking raw sql value.
-                if ($args[$n] !== null && !is_array($args[$n]) && !$args[$n] instanceof Raw) {
-                    if (false === $c->validateType($args[$n])) {
-                        return Result::failure($args[$n].' is not '.$c->isa.' type');
-                    }
-                }
-
-            if ($c->filter || $c->canonicalizer) {
-                $args[$n] = $c->canonicalizeValue($args[$n], $this, $args);
-            }
-
-            if ($validationResult = $this->_validateColumn($c, $args[$n], $args)) {
-                $validationResults[$n] = $validationResult;
-                if (!$validationResult['valid']) {
-                    $validationError = true;
-                }
-            }
-
-                // deflate the values into query
-                /*
-                if ($args[$n] instanceof Raw) {
-                    $updateArgs[$n] = $args[$n];
-                } else {
-                    $updateArgs[$n] = $c->deflate($args[$n], $driver);
-                }
-                */
-
-                // use parameter binding for binding
-                $val = $args[$n];
-            if (is_scalar($args[$n]) || is_null($args[$n])) {
-                $updateArgs[$n] = $bind = new Bind($n, $driver->cast($args[$n]));
-                $arguments->bind($bind);
-            } elseif ($args[$n] instanceof Raw) {
-                $updateArgs[$n] = $args[$n];
-            } else {
-                $updateArgs[$n] = $bind = new Bind($n, $c->deflate($args[$n], $driver));
-                $arguments->bind($bind);
-            }
-        }
-
-        if ($validationError) {
-            return Result::failure('Validation failed.', array(
-                    'validations' => $validationResults,
-                ));
-        }
-
-        if (empty($updateArgs)) {
-            return Result::failure('Empty args');
-        }
-
-            // TODO: optimized to built cache
-            $query->set($updateArgs);
-        $query->update($this->table);
-        $query->where()->equal($k, $kVal);
-
-        $sql = $query->toSql($driver, $arguments);
-
-        $stm = $conn->prepare($sql);
-        $stm->execute($arguments->toArray());
-
-            // Merge updated data.
-            //
-            // if $args contains a raw SQL string, 
-            // we should reload data from database
-            if (isset($options['reload'])) {
-                $this->reload();
-            } else {
-                $this->setData($args);
-            }
-
-        $this->afterUpdate($origArgs);
-        /*
-        } 
-        catch(PDOException $e)
-        {
-            throw new QueryException("Record update failed", $this, $e, array(
-                'driver' => get_class($driver),
-                'args' => $args,
-                'sql' => $sql,
-                'validations' => $validationResults,
-            ));
-        }
-        */
-        return Result::success('Updated successfully', array(
-            'key' => $kVal,
-            'sql' => $sql,
-            'args' => $args,
-            'type' => Result::TYPE_UPDATE,
-        ));
+        $ret = static::defaultRepo()->updateByPrimaryKey($kVal, $args);
+        $this->setData($args);
+        return $ret;
     }
 
     /**

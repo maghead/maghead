@@ -39,6 +39,8 @@ UPGRADE TO 4.0.x
 
 12. `BaseModel::find` is now static method.
 
+13. Trigger methods like beforeCreate, beforeUpdate, afterUpdate are moved to BaseRepo.
+
 UPGRADE TO 2.0
 ======================
 

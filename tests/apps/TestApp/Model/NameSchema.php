@@ -24,15 +24,16 @@ class NameSchema extends Schema
 
         $this->column('address')
             ->varchar(64)
-            ->validator( function($val,$args,$record) { 
-                if( preg_match( '/fuck/', $val ) )
+            ->validator( function($val,$args) {
+                if (preg_match('/fuck/', $val)) {
                     return array( false , "Please don't" );
+                }
                 return array( true , "Good" );
             })
-            ->filter(function($val, $args, $record) {
+            ->filter(function($val, $args) {
                 return str_replace('John', 'XXXX', $val);
             })
-            ->default( function() { 
+            ->default( function() {
                 return 'Default Address';
             })
             ->varchar(256);
@@ -45,7 +46,7 @@ class NameSchema extends Schema
 
         $this->column('type')
             ->varchar(24)
-            ->validValues(function() { 
+            ->validValues(function() {
                 return array(
                     /* description => value */
                     'Type Name A' => 'type-a',
