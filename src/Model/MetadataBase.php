@@ -21,7 +21,6 @@ class MetadataBase
     const WRITE_SOURCE_ID = 'default';
     const PRIMARY_KEY = 'id';
     const TABLE_ALIAS = 'm';
-    const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ? LIMIT 1';
     public static $column_names = array (
       0 => 'id',
       1 => 'name',
@@ -48,16 +47,9 @@ class MetadataBase
         }
         return $schema = new \LazyRecord\Model\MetadataSchemaProxy;
     }
-    protected static function createRepo($write, $read)
+    public static function createRepo($write, $read)
     {
         return new \LazyRecord\Model\MetadataRepo($write, $read);
-    }
-    public static function deleteByPrimaryKey($pkId)
-    {
-        $record = new static;
-        $conn = $record->getWriteConnection();
-        $stm = $conn->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);
-        return $stm->execute([$pkId]);
     }
     public function getKeyName()
     {

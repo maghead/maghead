@@ -223,29 +223,9 @@ class BaseModelClassFactory
             $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], CodeBlock::apply($elements, $codegenSettings));
         }
 
-
-        $cTemplate->addStaticMethod('protected', 'createRepo', ['$write', '$read'], function() use ($schema) {
+        $cTemplate->addStaticMethod('public', 'createRepo', ['$write', '$read'], function() use ($schema) {
             return "return new \\{$schema->getRepoClass()}(\$write, \$read);";
         });
-
-        $arguments = new ArgumentArray();
-        $deleteQuery = new DeleteQuery();
-        $deleteQuery->delete($schema->getTable());
-        $deleteQuery->where()->equal($schema->primaryKey,  new ParamMarker($schema->primaryKey));
-        $deleteQuery->limit(1);
-        $deleteByPrimaryKeySql = $deleteQuery->toSql($writeQueryDriver, $arguments);
-        $cTemplate->addConst('DELETE_BY_PRIMARY_KEY_SQL', $deleteByPrimaryKeySql);
-
-        $cTemplate->addStaticMethod('public', 'deleteByPrimaryKey', ['$pkId'], function() use ($deleteByPrimaryKeySql, $schema) {
-            return [
-                    "\$record = new static;",
-                    "\$conn = \$record->getWriteConnection();",
-                    "\$stm = \$conn->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);",
-                    "return \$stm->execute([\$pkId]);",
-            ];
-        });
-
-
 
         foreach ($schema->getColumns() as $column) {
             if (!$column->findable) {
@@ -253,37 +233,31 @@ class BaseModelClassFactory
             }
             $columnName = $column->name;
             $findMethodName = 'findBy'.ucfirst(Inflector::camelize($columnName));
-
-            $findMethod = $cTemplate->addMethod('public', $findMethodName, ['$value']);
-            $block = $findMethod->block;
-
-            $arguments = new ArgumentArray();
-            $findByColumnQuery = new SelectQuery();
-            $findByColumnQuery->from($schema->getTable());
-            $columnName = $column->name;
-            $readFrom = $schema->getReadSourceId();
-            $findByColumnQuery->select('*')
-                ->where()->equal($columnName, new Bind($columnName));
-            $findByColumnQuery->limit(1);
-            $findByColumnSql = $findByColumnQuery->toSql($readQueryDriver, $arguments);
-
-            $block[] = '$conn  = $this->getReadConnection();';
-
-            $block[] = 'if (!isset($this->_preparedFindStms['.var_export($columnName, true).'])) {';
-            $block[] = '    $this->_preparedFindStms['.var_export($columnName, true).'] = $conn->prepare('.var_export($findByColumnSql, true).');';
-            $block[] = '}';
-            $block[] = '$this->_preparedFindStms['.var_export($columnName, true).']->execute(['.var_export(":$columnName", true).' => $value ]);';
-            $block[] = 'if (false === ($this->_data = $this->_preparedFindStms['.var_export($columnName, true).']->fetch(PDO::FETCH_ASSOC)) ) {';
-            $block[] = '    return $this->reportError("Record not found", [';
-            $block[] = '        "sql" => '.var_export($findByColumnSql, true).',';
-            $block[] = '    ]);';
-            $block[] = '}';
-            $block[] = '$this->_preparedFindStms['.var_export($columnName, true).']->closeCursor();';
-
-            $block[] = 'return $this->reportSuccess( "Data loaded", array( ';
-            $block[] = '    "sql" => '.var_export($findByColumnSql, true).',';
-            $block[] = '    "type" => Result::TYPE_LOAD,';
-            $block[] = '));';
+            $findMethod = $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use($schema, $readQueryDriver, $columnName) {
+                $block = [];
+                $arguments = new ArgumentArray;
+                $query = new SelectQuery;
+                $query->from($schema->getTable());
+                $query->select('*')->where()->equal($columnName, new Bind($columnName));
+                $query->limit(1);
+                $sql = $query->toSql($readQueryDriver, $arguments);
+                $block[] = '$conn  = $this->getReadConnection();';
+                $block[] = 'if (!isset($this->_preparedFindStms['.var_export($columnName, true).'])) {';
+                $block[] = '    $this->_preparedFindStms['.var_export($columnName, true).'] = $conn->prepare('.var_export($sql, true).');';
+                $block[] = '}';
+                $block[] = '$this->_preparedFindStms['.var_export($columnName, true).']->execute(['.var_export(":$columnName", true).' => $value ]);';
+                $block[] = 'if (false === ($this->_data = $this->_preparedFindStms['.var_export($columnName, true).']->fetch(PDO::FETCH_ASSOC)) ) {';
+                $block[] = '    return $this->reportError("Record not found", [';
+                $block[] = '        "sql" => '.var_export($sql, true).',';
+                $block[] = '    ]);';
+                $block[] = '}';
+                $block[] = '$this->_preparedFindStms['.var_export($columnName, true).']->closeCursor();';
+                $block[] = 'return $this->reportSuccess( "Data loaded", array( ';
+                $block[] = '    "sql" => '.var_export($sql, true).',';
+                $block[] = '    "type" => Result::TYPE_LOAD,';
+                $block[] = '));';
+                return $block;
+            });
         }
 
         $cTemplate->extendClass('\\'.$baseClass);
