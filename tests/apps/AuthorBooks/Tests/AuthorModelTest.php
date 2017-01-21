@@ -170,13 +170,13 @@ class AuthorModelTest extends ModelTestCase
      */
     public function testFindAnInexistingRecord()
     {
-        $a = Author::load(array( 'name' => 'A record does not exist.'));
+        $a = Author::find(array( 'name' => 'A record does not exist.'));
         $this->assertFalse($a);
     }
 
     public function testFindInexistingRecord()
     {
-        $a = Author::load(array( 'name' => 'A record does not exist.'));
+        $a = Author::find(array( 'name' => 'A record does not exist.'));
         $this->assertFalse($a);
     }
 
@@ -219,7 +219,7 @@ class AuthorModelTest extends ModelTestCase
         $this->assertEquals('foo@google.com', $author->email);
         $this->assertEquals(false , $author->isConfirmed() );
 
-        $author = Author::load(array( 'name' => 'Foo' ));
+        $author = Author::find(array( 'name' => 'Foo' ));
         $this->assertNotFalse($author);
         $this->assertEquals($id , $author->id );
         $this->assertEquals('Foo', $author->name );
@@ -325,7 +325,7 @@ class AuthorModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $a2 = Author::loadForUpdate([ 'identity' => 'zz3' ]);
+        $a2 = Author::findForUpdate([ 'identity' => 'zz3' ]);
         $this->assertNotFalse($a2);
 
         $ret = $a2->update(['name' => 'Maroon V']);

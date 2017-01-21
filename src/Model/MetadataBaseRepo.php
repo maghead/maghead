@@ -46,7 +46,7 @@ class MetadataBaseRepo
         }
         return $schema = new \LazyRecord\Model\MetadataSchemaProxy;
     }
-    public function find($pkId)
+    public function findByPrimaryKey($pkId)
     {
         if (!$this->findStm) {
            $this->findStm = $this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);

@@ -35,7 +35,7 @@ class AuthorBookModelTest extends ModelTestCase
         $a = Author::find($ret->key);
         $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
 
-        $a = Author::load([ 'name' => 'a' ]);
+        $a = Author::find([ 'name' => 'a' ]);
         $this->assertNotNull($a->id);
         $this->resultOK(true,$ret);
         $this->assertTrue($a->isConfirmed());
@@ -196,7 +196,7 @@ class AuthorBookModelTest extends ModelTestCase
     {
         $author = new Author;
 
-        $a2 = Author::load(array( 'name' => 'A record does not exist.' ));
+        $a2 = Author::find(array( 'name' => 'A record does not exist.' ));
         $this->assertFalse($a2);
 
         $ret = Author::create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
@@ -224,7 +224,7 @@ class AuthorBookModelTest extends ModelTestCase
         $this->assertEquals( 'foo@google.com', $author->email );
         $this->assertFalse($author->isConfirmed() );
 
-        $author = Author::load(array( 'name' => 'Foo' ));
+        $author = Author::find(array( 'name' => 'Foo' ));
         $this->assertEquals( $id , $author->id );
         $this->assertEquals( 'Foo', $author->name );
         $this->assertEquals( 'foo@google.com', $author->email );

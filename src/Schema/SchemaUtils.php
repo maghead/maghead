@@ -132,7 +132,7 @@ class SchemaUtils
             $finder->find();
         }
 
-        return SchemaLoader::loadDeclaredSchemas();
+        return SchemaLoader::findDeclaredSchemas();
     }
 
     /**
@@ -189,6 +189,6 @@ class SchemaUtils
             }
         }
 
-        return SchemaLoader::loadDeclaredSchemas();
+        return SchemaLoader::findDeclaredSchemas();
     }
 }

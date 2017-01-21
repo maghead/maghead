@@ -11,7 +11,7 @@ class SchemaFinderTest extends PHPUnit_Framework_TestCase
         $finder = new SchemaFinder;
         $finder->findByPaths(['src', 'tests']);
 
-        $schemas = SchemaLoader::loadDeclaredSchemas();
+        $schemas = SchemaLoader::findDeclaredSchemas();
         $this->assertNotEmpty($schemas);
         foreach ($schemas as $schema) {
             $this->assertInstanceOf('LazyRecord\\Schema\\DeclareSchema',$schema);

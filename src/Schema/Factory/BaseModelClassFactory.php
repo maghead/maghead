@@ -114,13 +114,16 @@ class BaseModelClassFactory
         // parse codegen settings from schema doc comment string
         $schemaReflection = new ReflectionClass($schema);
         $schemaDocComment = $schemaReflection->getDocComment();
+
         $codegenSettings = CodeGenSettingsParser::parse($schemaDocComment);
+        /*
         if (!empty($codegenSettings)) {
             $reflectionModel = new ReflectionClass('LazyRecord\\BaseModel');
             $createMethod = $reflectionModel->getMethod('create');
             $elements = MethodBlockParser::parseElements($createMethod, 'codegenBlock');
             $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], AnnotatedBlock::apply($elements, $codegenSettings));
         }
+        */
 
         $cTemplate->addStaticMethod('public', 'createRepo', ['$write', '$read'], function() use ($schema) {
             return "return new \\{$schema->getBaseRepoClass()}(\$write, \$read);";

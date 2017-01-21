@@ -38,10 +38,9 @@ class BasicCRUDTest extends ModelTestCase
      */
     public function testTitleIsRequired()
     {
-        $b = new Book;
-        $ret = $b->load(array( 'name' => 'LoadOrCreateTest' ));
-        $this->assertResultFail($ret);
-        $this->assertNull($b->id);
+        $book = Book::find(array( 'name' => 'LoadOrCreateTest' ));
+        $this->assertNotFalse($book);
+        $this->assertNull($book->id);
     }
 
 
@@ -109,21 +108,21 @@ class BasicCRUDTest extends ModelTestCase
         $id = $b->id;
         $this->assertNotNull($id);
 
-        $b = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        $b = $b->findOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertEquals($id, $b->id, 'is the same ID');
         $results[] = $ret;
 
         $b2 = new Book;
-        $b2 = $b2->loadOrCreate(array('title' => 'LoadOrCreateTest' ) , 'title');
+        $b2 = $b2->findOrCreate(array('title' => 'LoadOrCreateTest' ) , 'title');
         $this->assertEquals($id,$b2->id);
         $results[] = $ret;
 
-        $b2 = $b2->loadOrCreate( array('title' => 'LoadOrCreateTest2'  ) , 'title' );
+        $b2 = $b2->findOrCreate( array('title' => 'LoadOrCreateTest2'  ) , 'title' );
         $this->assertNotEquals($id, $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
         $b3 = new Book;
-        $b3 = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
+        $b3 = $b3->findOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         $this->assertNotEquals($id, $b3->id , 'we should create anther one'); 
         $this->successfulDelete($b3);
     }

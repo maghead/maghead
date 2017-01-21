@@ -104,7 +104,8 @@ class BaseRepoClassFactory
         $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
 
-        $cTemplate->addMethod('public', 'find', ['$pkId'], function() use ($schema) {
+
+        $cTemplate->addMethod('public', 'findByPrimaryKey', ['$pkId'], function() use ($schema) {
             return [
                 "if (!\$this->findStm) {",
                 "   \$this->findStm = \$this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",

@@ -37,9 +37,8 @@ class BookModelTest extends ModelTestCase
      */
     public function testUpdateUnknownColumn()
     {
-        $b = new Book;
         // Column not found: 1054 Unknown column 'name' in 'where clause'
-        $b->load(array('name' => 'LoadOrCreateTest'));
+        $book = Book::find([ 'name' => 'LoadOrCreateTest' ]);
     }
 
     public function testFlagHelper()
@@ -91,18 +90,18 @@ class BookModelTest extends ModelTestCase
         $id = $b->id;
         ok($id);
 
-        $b = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        $b = $b->findOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertEquals($id, $b->id, 'is the same ID');
 
         $b2 = new Book ;
-        $b2 = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        $b2 = $b2->findOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertEquals($id,$b2->id);
 
-        $b2 = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
+        $b2 = $b2->findOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
         $this->assertNotEquals($id, $b2->id , 'we should create anther one'); 
 
         $b3 = new Book ;
-        $b3 = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
+        $b3 = $b3->findOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         $this->assertNotNull($id, $b3->id , 'we should create anther one'); 
 
         $b3 = Book::defaultRepo()->find($b3->getKey());
@@ -170,12 +169,13 @@ class BookModelTest extends ModelTestCase
         $id = $book->id;
         $this->assertNotNull($id);
 
-        $book = Book::load([ 'published_at' => $date ]);
+        $book = Book::find([ 'published_at' => $date ]);
+        $this->assertNotNull($book);
 
-        $book = $book->updateOrCreate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date ], [ 'published_at' ]);
+        $ret = $book->updateOrCreate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date ], [ 'published_at' ]);
+        $this->assertResultSuccess($ret);
         $this->assertCount(1, new BookCollection);
-
-        $this->assertEquals('Create With Time', $book->title);
+        $this->assertEquals('Update With Time', $book->title);
         $this->assertEquals($id, $book->id);
     }
 

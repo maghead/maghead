@@ -56,7 +56,7 @@ class Utils
                 }
             }
 
-            return SchemaLoader::loadDeclaredSchemas();
+            return SchemaLoader::findDeclaredSchemas();
         }
     }
 

@@ -96,11 +96,14 @@ class BaseRepo
      * @return BaseModel
      */
     // PHP 5.6 doesn't support static abstract
-    // abstract static public function find($pkId);
     static protected function _stmFetch(PDOStatement $stm, array $args)
     {
         $stm->execute($args);
         $obj = $stm->fetch(PDO::FETCH_CLASS);
+
+        // PDOStatement::closeCursor() frees up the connection to the server so
+        // that other SQL statements may be issued, but leaves the statement in
+        // a state that enables it to be executed again.
         $stm->closeCursor();
         return $obj;
     }
@@ -110,7 +113,7 @@ class BaseRepo
      *
      * @param array $args
      */
-    public function load(array $args)
+    public function findWith(array $args)
     {
         $schema = $this->getSchema();
         $query = new SelectQuery();
@@ -128,7 +131,7 @@ class BaseRepo
         return $stm->fetch(PDO::FETCH_CLASS);
     }
 
-    public function loadForUpdate(array $args)
+    public function findForUpdate(array $args)
     {
         $schema = $this->getSchema();
         $query = new SelectQuery();
@@ -152,37 +155,12 @@ class BaseRepo
         return $stm->fetch(PDO::FETCH_CLASS);
     }
 
-    public function updateOrCreate(array $args, $byKeys = null)
-    {
-        $primaryKey = static::PRIMARY_KEY;
-        $record = null;
-        if ($primaryKey && isset($args[$primaryKey])) {
-            $val = $args[$primaryKey];
-            $record = $this->find($val);
-        } else if ($byKeys) {
-            $conds = [];
-            foreach ((array) $byKeys as $k) {
-                if (array_key_exists($k, $args)) {
-                    $conds[$k] = $args[$k];
-                }
-            }
-            $record = $this->load($conds);
-        }
-
-        if ($record && $record->hasKey()) {
-            $record->update($args);
-            return $record;
-        } else {
-            return $this->create($args);
-        }
-    }
-
-    public function loadByKeys(array $args, $byKeys = null)
+    public function findByKeys(array $args, $byKeys = null)
     {
         $pk = static::PRIMARY_KEY;
         $record = null;
         if ($pk && isset($args[$pk])) {
-            return $this->load([$pk => $args[$pk]]);
+            return $this->findByPrimaryKey($args[$pk]);
         } else if ($byKeys) {
             $conds = [];
             foreach ((array) $byKeys as $k) {
@@ -190,9 +168,17 @@ class BaseRepo
                     $conds[$k] = $args[$k];
                 }
             }
-            return $this->load($conds);
+            return $this->findWith($conds);
         }
         throw new MissingPrimaryKeyException('primary key is not defined.');
+    }
+
+    public function find($arg)
+    {
+        if (is_array($arg)) {
+            return $this->findWith($arg);
+        }
+        return $this->findByPrimaryKey($arg);
     }
 
     public function updateByPrimaryKey($kVal, array $args)
@@ -218,7 +204,7 @@ class BaseRepo
                 ));
         }
 
-        $record = $this->find($kVal);
+        $record = $this->findByPrimaryKey($kVal);
 
         $arguments = new ArgumentArray();
 
@@ -500,7 +486,6 @@ class BaseRepo
         }
 
         $this->afterCreate($origArgs);
-        $stm->closeCursor();
 
         // collect debug info
         return Result::success('Record created.', [

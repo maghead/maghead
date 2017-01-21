@@ -93,6 +93,14 @@ abstract class BaseModel implements Serializable
         return $this->selected;
     }
 
+    /**
+     * Get the RuntimeColumn objects from RuntimeSchema object.
+     */
+    public function columns()
+    {
+        return static::getSchema()->columns;
+    }
+
     protected function getCachePrefix()
     {
         return static::SCHEMA_CLASS;
@@ -139,17 +147,12 @@ abstract class BaseModel implements Serializable
         return $this->dataKeyValue();
     }
 
-
-
-
-
-
     /**
-     * An alias for BaseRepo::loadByKeys
+     * An alias for BaseRepo::findByKeys
      */
-    static protected function loadByKeys(array $args, $byKeys = null)
+    static protected function findByKeys(array $args, $byKeys = null)
     {
-        return static::defaultRepo()->loadByKeys($args, $byKeys);
+        return static::defaultRepo()->findByKeys($args, $byKeys);
     }
 
     /**
@@ -163,17 +166,12 @@ abstract class BaseModel implements Serializable
      * @param array $byKeys
      * @return Result
      */
-    public function updateOrCreate(array $args, $byKeys = null)
+    public function updateOrCreate(array $args)
     {
-        $record = static::loadByKeys($args, $byKeys);
-        if ($record) {
-            $this->update($args);
-            return $record;
-        } else {
-            $ret = static::create($args);
-            return $this->find($ret->key);
+        if ($this->hasKey()) {
+            return $this->update($args);
         }
-        throw new MissingPrimaryKeyException('primary key is not defined.');
+        return static::defaultRepo()->create($args);
     }
 
 
@@ -184,29 +182,25 @@ abstract class BaseModel implements Serializable
      * @param array $args
      * @param array $byKeys it's optional if you defined primary key
      */
-    public function loadOrCreate(array $args, $byKeys = null)
+    public function findOrCreate(array $args, $byKeys = null)
     {
-        $record = static::loadByKeys($args, $byKeys);
+        $repo = static::defaultRepo();
+        $record = $repo->findByKeys($args, $byKeys);
         if ($record) {
             return $record;
         }
-        $ret = static::create($args);
+        $ret = $repo->create($args);
         if ($ret->error) {
             return false;
         }
-        return static::find($ret->key);
+        return $repo->findByPrimaryKey($ret->key);
     }
-
-
 
     /**
-     * Get the RuntimeColumn objects from RuntimeSchema object.
+     * create method
+     *
+     * @param array $args
      */
-    public function columns()
-    {
-        return static::getSchema()->columns;
-    }
-
     static public function create(array $args)
     {
         return static::defaultRepo()->create($args);
@@ -222,12 +216,7 @@ abstract class BaseModel implements Serializable
         if ($ret->error) {
             return false;
         }
-        return $repo->find($ret->key);
-    }
-
-    static public function _validateColumn($c, $val, $args, $record)
-    {
-        return static::defaultRepo()::_validateColumn($c, $val, $args, $record);
+        return $repo->findByPrimaryKey($ret->key);
     }
 
     public function setPreferredTable($tableName)
@@ -246,29 +235,25 @@ abstract class BaseModel implements Serializable
     /**
      * find() is an alias method of defaultRepo->find
      */
-    static public function find($pkId)
+    static public function find($arg)
     {
-        return static::defaultRepo()->find($pkId);
+        return static::defaultRepo()->find($arg);
     }
 
-    static public function load($args)
+    static public function findByPrimaryKey($arg)
     {
-        return static::defaultRepo()->load($args);
+        return static::defaultRepo()->findByPrimaryKey($arg);
     }
 
-    static public function loadForUpdate($args)
+    static public function findWith($args)
     {
-        return static::defaultRepo()->loadForUpdate($args);
+        return static::defaultRepo()->findWith($args);
     }
 
-    static protected function _stmFetch($stm, $args)
+    static public function findForUpdate($args)
     {
-        $stm->execute($args);
-        $obj = $stm->fetch(PDO::FETCH_CLASS);
-        $stm->closeCursor();
-        return $obj;
+        return static::defaultRepo()->findForUpdate($args);
     }
-
 
     /**
      * Delete current record, the record should be loaded already.
@@ -294,18 +279,9 @@ abstract class BaseModel implements Serializable
      */
     public function update(array $args, $options = array())
     {
-        // check if the record is loaded.
-        $k = static::PRIMARY_KEY;
-
-        // check if we get primary key value
+        // Check if we get primary key value
         // here we allow users to specifty primary key value from arguments if the record is not loaded.
-        $kVal = null;
-        if (isset($args[$k]) && is_scalar($args[$k])) {
-            $kVal = $args[$k];
-            unset($args[$k]);
-        } else if ($k = $this->getKey()) {
-            $kVal = $k;
-        }
+        $kVal = $this->getKey();
         if (!$kVal) {
             return Result::failure('Record is not loaded, Can not update record.', array('args' => $args));
         }
@@ -322,9 +298,9 @@ abstract class BaseModel implements Serializable
     public function rawUpdate(array $args)
     {
         $repo = static::defaultRepo();
-        $conn = $repo->getWriteConnection();
+        $conn   = $repo->getWriteConnection();
         $driver = $conn->getQueryDriver();
-        $k = static::PRIMARY_KEY;
+        $k      = static::PRIMARY_KEY;
         $kVal = isset($args[$k])
             ? $args[$k] 
             : $this->getKey();
@@ -332,9 +308,8 @@ abstract class BaseModel implements Serializable
         $arguments = new ArgumentArray();
         $query = new UpdateQuery();
         $query->set($args);
-        $query->update($this->table);
+        $query->update($this->getTable());
         $query->where()->equal($k, $kVal);
-
         $sql = $query->toSql($driver, $arguments);
 
         $stm = $conn->prepare($sql);
@@ -700,19 +675,20 @@ abstract class BaseModel implements Serializable
             return $this->setInternalCache($cacheKey, $collection);
         }
         // belongs to one record
-        elseif (Relationship::BELONGS_TO === $relation['type']) {
+        else if (Relationship::BELONGS_TO === $relation['type']) {
+
             $sColumn = $relation['self_column'];
+
             $fSchema = $relation->newForeignSchema();
             $fColumn = $relation['foreign_column'];
             $fpSchema = SchemaLoader::load($fSchema->getSchemaProxyClass());
-
             if (!isset($this->$sColumn)) {
                 return;
             }
 
             $sValue = $this->$sColumn;
             $model = $fpSchema->newModel();
-            $record = $model::load(array($fColumn => $sValue));
+            $record = $model::findWith(array($fColumn => $sValue));
             return $this->setInternalCache($cacheKey, $record);
 
         } elseif (Relationship::MANY_TO_MANY === $relation['type']) {
@@ -778,12 +754,11 @@ abstract class BaseModel implements Serializable
 
                 // create relationship
                 $middleRecord = $spSchema->newModel();
-                $ret = $middleRecord->create($a);
+                $ret = $middleRecord::create($a);
                 if ($ret->error) {
                     throw new Exception("$rId create failed.");
                 }
-
-                return $middleRecord;
+                return $middleRecord::findByPrimaryKey($ret->key);
             });
 
             return $this->setInternalCache($cacheKey, $collection);
