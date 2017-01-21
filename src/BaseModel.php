@@ -342,23 +342,6 @@ abstract class BaseModel implements Serializable
         }
     }
 
-    /**
-     * Relaod record data by primary key,
-     * parameter is optional if you've already defined 
-     * the primary key column in this model.
-     *
-     * @param string $pkId primary key name
-     */
-    public function reload($pkId = null)
-    {
-        if ($pkId) {
-            return $this->load($pkId);
-        } else if (null === $pkId && static::PRIMARY_KEY) {
-            $pkId = $this->getKey();
-            return $this->load($pkId);
-        }
-        throw new PrimaryKeyNotFoundException('Primary key is not found, can not reload '.get_class($this));
-    }
 
     /**
      * Create a record if the record does not exists
@@ -799,6 +782,23 @@ abstract class BaseModel implements Serializable
             'key'  => $this->getKey(),
             'type' => Result::TYPE_LOAD,
         ]);
+    }
+
+    /**
+     * Relaod record data by primary key,
+     * parameter is optional if you've already defined 
+     * the primary key column in this model.
+     *
+     * @param string $pkId primary key name
+     */
+    public function reload($pkId = null)
+    {
+        if ($pkId) {
+            return $this->load($pkId);
+        } else if ($pkId = $this->getKey()) {
+            return $this->load($pkId);
+        }
+        throw new PrimaryKeyNotFoundException('Primary key is not found, can not reload '.get_class($this));
     }
 
     /**
