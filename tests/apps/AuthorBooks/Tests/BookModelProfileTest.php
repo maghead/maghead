@@ -24,12 +24,11 @@ class BookModelProfileTest extends ModelProfileTestCase
      */
     public function testProfileLoadByISBN()
     {
-        $b = new Book;
-        $b->create(array(
+        Book::create([
             'title' => "OOP Programming Guide",
             'subtitle' => 'subtitle',
             'isbn' => $uuid = uniqid(),
-        ));
+        ]);
         $repo = Book::defaultRepo();
         for ($i = 0 ; $i < $this->N; $i++) {
             $repo->loadByIsbn($uuid);
@@ -75,14 +74,14 @@ class BookModelProfileTest extends ModelProfileTestCase
      */
     public function testProfileLoadByPrimaryKey()
     {
-        $b = Book::createAndLoad(array(
+        $b = Book::createAndLoad([
             'title' => "OOP Programming Guide",
             'subtitle' => 'subtitle',
             'isbn' => $uuid = uniqid(),
-        ));
+        ]);
         $bookRepo = Book::defaultRepo();
         for ($i = 0 ; $i < $this->N; $i++) {
-            $bookRepo->load($b->id);
+            $bookRepo->loadByPrimaryKey($b->id);
         }
     }
 
@@ -94,11 +93,11 @@ class BookModelProfileTest extends ModelProfileTestCase
     public function testProfileLoad()
     {
         $b = new Book;
-        $b->create(array(
+        $b->create([
             'title' => "OOP Programming Guide",
             'subtitle' => 'subtitle',
             'isbn' => $uuid = uniqid(),
-        ));
+        ]);
         $b2 = new Book;
         for ($i = 0 ; $i < $this->N; $i++) {
             $b2->load([ 'isbn' => $uuid ]);
