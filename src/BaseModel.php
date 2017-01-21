@@ -569,12 +569,6 @@ abstract class BaseModel implements Serializable
         // first, filter the array, arguments for inserting data.
         $args = array_intersect_key($args, array_flip($schema->columnNames));
 
-        // @codegenBlock currentUserCan
-        if (!$this->currentUserCan($this->getCurrentUser(), 'create', $args)) {
-            return self::reportError('Permission denied. Can not create record.', [ 'args' => $args ]);
-        }
-        // @codegenBlockEnd
-
         // arguments that are will Bind
         $insertArgs = array();
         foreach ($schema->columns as $n => $c) {
