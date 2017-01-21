@@ -306,6 +306,24 @@ abstract class BaseModel implements Serializable
         return call_user_func_array(array($mixinClass, $m), array_merge(array($this), $a));
     }
 
+
+    static protected function loadByKeys(array $args, $byKeys = null)
+    {
+        $pk = static::PRIMARY_KEY;
+        $record = null;
+        if ($pk && isset($args[$pk])) {
+            return static::load([$pk => $args[$pk]]);
+        } else if ($byKeys) {
+            $conds = array();
+            foreach ((array) $byKeys as $k) {
+                if (array_key_exists($k, $args)) {
+                    $conds[$k] = $args[$k];
+                }
+            }
+            return static::load($conds);
+        }
+    }
+
     /**
      * Create or update an record by checking 
      * the existence from the $byKeys array 
@@ -319,26 +337,14 @@ abstract class BaseModel implements Serializable
      */
     public function updateOrCreate(array $args, $byKeys = null)
     {
-        $pk = static::PRIMARY_KEY;
-        $record = null;
-        if ($pk && isset($args[$pk])) {
-            $val = $args[$pk];
-            $record = $this->load(array($pk => $val));
-        } else if ($byKeys) {
-            $conds = array();
-            foreach ((array) $byKeys as $k) {
-                if (array_key_exists($k, $args)) {
-                    $conds[$k] = $args[$k];
-                }
-            }
-            $record = $this->load($conds);
-        }
+        $record = static::loadByKeys($args, $byKeys);
         if ($record) {
             $this->update($args);
             return $record;
         } else {
             return $this->create($args);
         }
+        throw new PrimaryKeyNotFoundException('primary key is not defined.');
     }
 
 
@@ -351,18 +357,7 @@ abstract class BaseModel implements Serializable
      */
     public function loadOrCreate(array $args, $byKeys = null)
     {
-        $record = null;
-        $pk = static::PRIMARY_KEY;
-        if ($byKeys) {
-            $record = static::load(
-                array_intersect_key($args,
-                    array_fill_keys((array) $byKeys, 1))
-            );
-        } else if ($pk && isset($args[$pk])) {
-            $record = static::load($args[$pk]);
-        } else {
-            throw new PrimaryKeyNotFoundException('primary key is not defined.');
-        }
+        $record = static::loadByKeys($args, $byKeys);
         if ($record) {
             return $record;
         }
