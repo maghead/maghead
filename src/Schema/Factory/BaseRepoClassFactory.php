@@ -30,6 +30,15 @@ class BaseRepoClassFactory
 {
     public static function create(DeclareSchema $schema, $baseClass)
     {
+        $readFrom = $schema->getReadSourceId();
+        $writeTo  = $schema->getWriteSourceId();
+
+        $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
+        $readQueryDriver = $readConnection->getQueryDriver();
+
+        $writeConnection = ConnectionManager::getInstance()->getConnection($writeTo);
+        $writeQueryDriver = $writeConnection->getQueryDriver();
+
         $cTemplate = new ClassFile($schema->getBaseRepoClass());
 
         // Generate a require statement here to prevent spl autoload when
@@ -90,12 +99,6 @@ class BaseRepoClassFactory
 
 
         $primaryKey = $schema->primaryKey;
-        $readFrom = $schema->getReadSourceId();
-        $writeTo  = $schema->getWriteSourceId();
-        $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
-        $writeConnection = ConnectionManager::getInstance()->getConnection($writeTo);
-        $readQueryDriver = $readConnection->getQueryDriver();
-        $writeQueryDriver = $writeConnection->getQueryDriver();
 
 
 

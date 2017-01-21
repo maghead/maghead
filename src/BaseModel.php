@@ -285,6 +285,7 @@ abstract class BaseModel implements Serializable
         if (!$kVal) {
             return Result::failure('Record is not loaded, Can not update record.', array('args' => $args));
         }
+
         $ret = static::defaultRepo()->updateByPrimaryKey($kVal, $args);
         $this->setData($args);
         return $ret;

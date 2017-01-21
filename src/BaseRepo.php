@@ -199,9 +199,7 @@ class BaseRepo
 
         $args = $this->beforeUpdate($args);
         if ($args === false) {
-            return Result::failure(_('Update failed'), array(
-                    'args' => $args,
-                ));
+            return Result::failure('Update failed', [ 'args' => $args ]);
         }
 
         $record = $this->loadByPrimaryKey($kVal);
@@ -568,7 +566,7 @@ class BaseRepo
         if ($column->required && ($val === '' || $val === null)) {
             return array(
                 'valid' => false,
-                'message' => sprintf(_('Field %s is required.'), $column->getLabel()),
+                'message' => sprintf('Field %s is required.', $column->getLabel()),
                 'field' => $column->name,
             );
         }
@@ -626,7 +624,7 @@ class BaseRepo
                     if (!in_array($val, $values)) {
                         return array(
                             'valid' => false,
-                            'message' => sprintf(_('%s is not a valid value for %s'), $val, $column->name),
+                            'message' => sprintf('%s is not a valid value for %s', $val, $column->name),
                             'field' => $column->name,
                         );
                     }
