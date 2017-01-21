@@ -106,19 +106,6 @@ abstract class BaseModel implements Serializable
         $this->setKey(NULL);
     }
 
-    /**
-     * Use specific data source for data operations.
-     *
-     * @param string $dsId data source id.
-     */
-    public function using($dsId)
-    {
-        $this->readSourceId = $dsId;
-        $this->writeSourceId = $dsId;
-
-        return $this;
-    }
-
     public function getDataLabelField()
     {
         return $this->dataLabelField ?: static::PRIMARY_KEY;
