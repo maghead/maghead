@@ -770,19 +770,11 @@ abstract class BaseModel implements Serializable
         $kVal = null;
 
         // build query from array.
+        $query->select($this->selected ?: '*');
         if (is_array($args)) {
-            $query->select($this->selected ?: '*')->where($args);
+            $query->where($args);
         } else {
-            $kVal = $args;
-            $column = static::getSchema()->getColumn($pk);
-            if (!$column) {
-                // This should not happend, every schema should have it's own primary key
-                // TODO: Create new exception class for this.
-                throw new MissingPrimaryKeyException(static::getSchema(), "Primary key $pk is not defined");
-            }
-            $kVal = $column->deflate($kVal);
-            $args = array($pk => $kVal);
-            $query->select($this->selected ?: '*')->where($args);
+            $query->where()->equal($pk, $args);
         }
 
         // generate select * ... for update syntax for MySQL driver
