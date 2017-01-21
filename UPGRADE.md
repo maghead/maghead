@@ -11,9 +11,9 @@ UPGRADE TO 4.0.x
     "published" => "isPublished()"
     "is_published" => "isPublished()"
 
-3. `BaseModel->find` now returns record object instead of Result object.
+3. `BaseModel::load` now returns record object instead of returning a Result object:
 
-    $foundBook = $book->load(321);
+    $foundBook = Book::load(321);
 
 4. Replace `create` with `createAndLoad`:
 
@@ -23,8 +23,9 @@ UPGRADE TO 4.0.x
 5. Fix `create` and `find` logics:
   - BaseModel::create now returns Result object directly and don't reload
     created data to the object itself.
-  - BaseModel::find now returns the found record instead of load the data 
+  - BaseModel::load now returns the found record instead of load the data 
     to the object itself.
+
 6. `BaseModel::deflate` method is removed.
 
 7. `BaseModel::deflateData` method is removed.
@@ -39,17 +40,17 @@ UPGRADE TO 4.0.x
 
 12. Trigger methods like `beforeCreate`, `beforeUpdate`, `afterUpdate` are moved to BaseRepo.
 
-13. `lockWrite` => `writeLock`, `lockRead` => `readLock`
+13. `lockWrite` => `BaseRepo::writeLock`, `lockRead` => `BaseRepo::readLock`
 
-14. Renamed `load` to `loadWith`.
+14. Renamed `BaseRepo::load` to `BaseRepo::loadWith`.
 
 15. `load` is now a generic method for both primary key and conditions in array.
 
-16. Added `loadByKeys` for load with keys.
+16. Added `BaseRepo::loadByKeys` for load with keys.
 
-17. `loadByPrimaryKey` is added.
+17. `BaseModel::loadByPrimaryKey` and `BaseRepo::loadByPrimaryKey` are added.
 
-18. `find` is removed.
+18. `BaseModel::find` is removed.
 
 
 UPGRADE TO 2.0
