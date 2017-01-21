@@ -65,18 +65,6 @@ abstract class BaseModel implements Serializable
 
     public $dataValueField;
 
-    /**
-     * @var mixed Current user object
-     */
-    public $_currentUser;
-
-    /**
-     * @var mixed Model-Scope current user object
-     *
-     *    Book::$currentUser = new YourCurrentUser;
-     */
-    public static $currentUser;
-
     // static $schemaCache;
 
     public $usingDataSource;
@@ -142,18 +130,6 @@ abstract class BaseModel implements Serializable
         $this->writeSourceId = $dsId;
 
         return $this;
-    }
-
-    /**
-     * Provide a basic access controll for model.
-     *
-     * @param CurrentUserInterface $user  Current user object, but be sure to implement CurrentUserInterface
-     * @param string               $right Can be 'create', 'update', 'load', 'delete'
-     * @param array                $args  Arguments for operations (update, create, delete.. etc)
-     */
-    public function currentUserCan($user, $right, $args = array())
-    {
-        return true;
     }
 
     public function getDataLabelField()
@@ -518,23 +494,6 @@ abstract class BaseModel implements Serializable
         return static::getSchema()->columns;
     }
 
-    public function setCurrentUser(CurrentUserInterface $user)
-    {
-        $this->_currentUser = $user;
-
-        return $this;
-    }
-
-    public function getCurrentUser()
-    {
-        if ($this->_currentUser) {
-            return $this->_currentUser;
-        }
-        if (static::$currentUser) {
-            return static::$currentUser;
-        }
-    }
-
 
     /**
      * Create and return the created record.
@@ -807,10 +766,6 @@ abstract class BaseModel implements Serializable
 
     public function load($args, array $options = null)
     {
-        if (!$this->currentUserCan($this->getCurrentUser(), 'load', $args)) {
-            return self::reportError('Permission denied. Can not load record.', array('args' => $args));
-        }
-
         $pk = static::PRIMARY_KEY;
 
         $query = new SelectQuery();
@@ -880,10 +835,6 @@ abstract class BaseModel implements Serializable
     public function delete()
     {
         $key = $this->getKey();
-        if (!$this->currentUserCan($this->getCurrentUser(), 'delete')) {
-            return self::reportError(_('Permission denied. Can not delete record.'), array());
-        }
-
         $write = $this->getWriteConnection();
         $this->beforeDelete();
         static::createRepo($write, $write)->deleteByPrimaryKey($key);
@@ -921,12 +872,6 @@ abstract class BaseModel implements Serializable
 
         if ($k && !isset($args[$k]) && !$kVal) {
             return Result::failure('Record is not loaded, Can not update record.', array('args' => $args));
-        }
-
-        if (!$this->currentUserCan($this->getCurrentUser(), 'update', $args)) {
-            return self::reportError('Permission denied. Can not update record.', array(
-                'args' => $args,
-            ));
         }
 
         $origArgs = $args;
