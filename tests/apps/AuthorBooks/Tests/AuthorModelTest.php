@@ -28,6 +28,23 @@ class AuthorModelTest extends ModelTestCase
         }
     }
 
+    public function testFindByEmail()
+    {
+        $author = new Author;
+        $this->assertNotFalse($author = Author::createAndLoad(array( 
+            'name' => 'FooBar',
+            'email' => 'timcook@apple.com',
+            'identity' => 'a',
+            'confirmed' => false,
+        )));
+        $timCook = Author::defaultRepo()->findByEmail('timcook@apple.com');
+        $this->assertNotNull($timCook);
+        /*
+        $timCook = Author::repo('master')->findByEmail('timcook@apple.com');
+        $timCook = Author::repo('slave')->findByEmail('timcook@apple.com');
+        */
+    }
+
     public function testCollection()
     {
         $author = new Author;

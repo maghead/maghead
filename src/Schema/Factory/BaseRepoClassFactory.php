@@ -134,7 +134,7 @@ class BaseRepoClassFactory
                 $block = [];
                 $block[] = "if (!\$this->{$propertyName}) {";
                 $block[] = "    \$this->{$propertyName} = \$this->read->prepare(".var_export($sql, true).");";
-                $block[] = "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, \\{$schema->getModelClass()});";
+                $block[] = "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$schema->getModelClass()}');";
                 $block[] = "}";
                 $block[] = "return static::_stmFetch(\$this->{$propertyName}, [':{$columnName}' => \$value ]);";
                 return $block;
