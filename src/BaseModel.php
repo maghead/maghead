@@ -81,8 +81,6 @@ abstract class BaseModel implements Serializable
     /**
      * @var PDOStatement prepared statement for find by primary key method.
      */
-    protected $_preparedFindStms = array();
-
     protected $_preparedCreateStms = array();
 
     private $_readConnection;
@@ -365,18 +363,22 @@ abstract class BaseModel implements Serializable
         return static::getSchema()->columns;
     }
 
+    static public function create(array $args)
+    {
+        return static::defaultRepo()->create($args);
+    }
 
     /**
      * Create and return the created record.
      */
     static public function createAndLoad(array $args)
     {
-        $record = new static;
-        $ret = $record->create($args);
+        $repo = static::defaultRepo();
+        $ret = $repo->create($args);
         if ($ret->error) {
             return false;
         }
-        return static::defaultRepo()->find($ret->key);
+        return $repo->find($ret->key);
     }
 
     static public function _validateColumn($c, $val, $args, $record)
@@ -385,194 +387,6 @@ abstract class BaseModel implements Serializable
     }
 
 
-    /**
-     * Method for creating new record, which is called from 
-     * static::create and $record->create.
-     *
-     * 1. create method calls beforeCreate to 
-     * trigger events or filter arguments.
-     *
-     * 2. it runs filterArrayWithColumns method to filter 
-     * arguments with column definitions.
-     *
-     * 3. use currentUserCan method to check permission.
-     *
-     * 4. get column definitions and run filters, default value 
-     *    builders, canonicalizer, type constraint checkers to build 
-     *    a new arguments.
-     *
-     * 5. use these new arguments to build a SQL query with 
-     *    SQLBuilder\QueryBuilder.
-     *
-     * 6. insert SQL into data source (write)
-     *
-     * 7. reutrn the operation result.
-     *
-     * @param array $args data
-     *
-     * @return Result operation result (success or error)
-     */
-    public function create(array $args, array $options = array())
-    {
-        if (empty($args) || $args === null) {
-            return Result::failure('Empty arguments');
-        }
-
-        $validationResults = array();
-        $validationError = false;
-        $schema = static::getSchema();
-
-        // save $args for afterCreate trigger method
-        $origArgs = $args;
-
-        $this->clear(); // clear primary key to prevent loadOrCreate side effect.
-        $sql = $vars = null;
-        $stm = null;
-
-        static $cacheable;
-        $cacheable = extension_loaded('xarray');
-
-        $conn = $this->getWriteConnection();
-        $driver = $conn->getQueryDriver();
-
-        // Just a note: Exceptions should be used for exceptional conditions; things you 
-        // don't expect to happen. Validating input isn't very exceptional.
-
-        $args = $this->beforeCreate($args);
-        if ($args === false) {
-            return Result::failure('Create failed', [ 'args' => $args ]);
-        }
-
-        // first, filter the array, arguments for inserting data.
-        $args = array_intersect_key($args, array_flip($schema->columnNames));
-
-        // arguments that are will Bind
-        $insertArgs = array();
-        foreach ($schema->columns as $n => $c) {
-            // if column is required (can not be empty)
-            //   and default is defined.
-            if (!$c->primary && (!isset($args[$n]) || !$args[$n])) {
-                if ($val = $c->getDefaultValue($this, $args)) {
-                    $args[$n] = $val;
-                }
-            }
-
-            // if type constraint is on, check type,
-            // if not, we should try to cast the type of value, 
-            // if type casting is fail, we should throw an exception.
-
-            // short alias for argument value.
-            $val = isset($args[$n]) ? $args[$n] : null;
-
-            // if column is required (can not be empty) //   and default is defined.
-            // @codegenBlock validateRequire
-            if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
-                return Result::failure("Value of $n is required.");
-            }
-            // @codegenBlockEnd
-
-            // @codegenBlock typeConstraint
-            if ($val !== null && !is_array($val) && !$val instanceof Raw) {
-                $val = $c->typeCast($val);
-            }
-            // @codegenBlockEnd
-
-            // @codegenBlock filterColumn
-            if ($c->filter || $c->canonicalizer) {
-                $val = $c->canonicalizeValue($val, $this, $args);
-            }
-            // @codegenBlockEnd
-
-            // @codegenBlock validateColumn
-            if ($validationResult = static::_validateColumn($c, $val, $args, null)) {
-                $validationResults[$n] = $validationResult;
-                if (!$validationResult['valid']) {
-                    $validationError = true;
-                }
-            }
-            // @codegenBlockEnd
-
-            if ($val !== null) {
-                // Update filtered value back to args
-                // Note that we don't deflate a scalar value, this is to prevent the overhead of data reload from database
-                // We should try to keep all variables just like the row result we query from database.
-                if (is_object($val) || is_array($val)) {
-                    $args[$n] = $c->deflate($val, $driver);
-                } else {
-                    $args[$n] = $val;
-                }
-
-                if (is_scalar($val) || is_null($val)) {
-                    $insertArgs[$n] = new Bind($n, $driver->cast($val));
-                } elseif ($val instanceof Raw) {
-                    $insertArgs[$n] = $val;
-                    $cacheable = false;
-                } else {
-                    // deflate objects into string
-                    $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
-                }
-            }
-        }
-
-        // @codegenBlock handleValidationError
-        if ($validationError) {
-            return Result::failure('Validation failed.', [ 'validations' => $validationResults ]);
-        }
-        // @codegenBlockEnd
-
-        $arguments = new ArgumentArray();
-
-        $cacheKey = null;
-        if ($cacheable) {
-            $cacheKey = array_keys_join($insertArgs);
-            if (isset($this->_preparedCreateStms[$cacheKey])) {
-                $stm = $this->_preparedCreateStms[$cacheKey];
-                foreach ($insertArgs as $name => $bind) {
-                    $arguments->bind($bind);
-                }
-            }
-        }
-
-        if (!$stm) {
-            $query = new InsertQuery();
-            $query->into($this->table);
-            $query->insert($insertArgs);
-            $query->returning(static::PRIMARY_KEY);
-            $sql = $query->toSql($driver, $arguments);
-            $stm = $conn->prepare($sql);
-            if ($cacheable) {
-                $this->_preparedCreateStms[$cacheKey] = $stm;
-            }
-        }
-        if (false === $stm->execute($arguments->toArray())) {
-            return Result::failure('Record create failed.', array(
-                'validations' => $validationResults,
-                'args' => $args,
-                'sql' => $sql,
-            ));
-        }
-
-        $pkId = null;
-
-        if ($driver instanceof PDOPgSQLDriver) {
-            $pkId = intval($stm->fetchColumn());
-        } else {
-            $pkId = intval($conn->lastInsertId());
-        }
-
-        $this->afterCreate($origArgs);
-        $stm->closeCursor();
-
-        // collect debug info
-        return Result::success('Record created.', array(
-            'key' => $pkId,
-            'sql' => $sql,
-            'args' => $args,
-            'binds' => $arguments,
-            'validations' => $validationResults,
-            'type' => Result::TYPE_CREATE,
-        ));
-    }
 
     public function setPreferredTable($tableName)
     {
@@ -1495,10 +1309,6 @@ abstract class BaseModel implements Serializable
         if ($this->_preparedCreateStms) {
             $this->_preparedCreateStms->closeCursor();
             $this->_preparedCreateStms = null;
-        }
-        foreach ($this->_preparedFindStms as $stm) {
-            $stm->closeCursor();
-            $stm = null;
         }
     }
 }

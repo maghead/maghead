@@ -50,6 +50,10 @@ class BaseRepo
      */
     protected $read;
 
+
+    protected $_preparedCreateStms = [];
+
+
     public function __construct(Connection $write, Connection $read = null)
     {
         $this->write = $write;
@@ -316,60 +320,192 @@ class BaseRepo
 
 
 
-
-
-    // ================= TRIGGER METHODS ===================
-
     /**
-     * Trigger method for "before creating new record".
+     * Method for creating new record, which is called from 
+     * static::create and $record->create.
      *
-     * By overriding this method, you can modify the 
-     * arguments that is passed to the query builder.
+     * 1. create method calls beforeCreate to 
+     * trigger events or filter arguments.
      *
-     * Remember to return the arguments back.
+     * 2. it runs filterArrayWithColumns method to filter 
+     * arguments with column definitions.
      *
-     * @param array $args Arguments
+     * 3. use currentUserCan method to check permission.
      *
-     * @return array $args Arguments
+     * 4. get column definitions and run filters, default value 
+     *    builders, canonicalizer, type constraint checkers to build 
+     *    a new arguments.
+     *
+     * 5. use these new arguments to build a SQL query with 
+     *    SQLBuilder\QueryBuilder.
+     *
+     * 6. insert SQL into data source (write)
+     *
+     * 7. reutrn the operation result.
+     *
+     * @param array $args data
+     *
+     * @return Result operation result (success or error)
      */
-    public function beforeCreate(array $args)
+    public function create(array $args)
     {
-        return $args;
+        if (empty($args) || $args === null) {
+            return Result::failure('Empty arguments');
+        }
+
+        $validationResults = [];
+        $validationError = false;
+        $schema = static::getSchema();
+
+        // save $args for afterCreate trigger method
+        $origArgs = $args;
+
+        $sql = $vars = null;
+        $stm = null;
+
+        static $cacheable;
+        $cacheable = extension_loaded('xarray');
+
+        $conn = $this->write;
+        $driver = $conn->getQueryDriver();
+
+        // Just a note: Exceptions should be used for exceptional conditions; things you 
+        // don't expect to happen. Validating input isn't very exceptional.
+
+        $args = $this->beforeCreate($args);
+        if ($args === false) {
+            return Result::failure('Create failed', [ 'args' => $args ]);
+        }
+
+        // first, filter the array, arguments for inserting data.
+        $args = array_intersect_key($args, array_flip($schema->columnNames));
+
+        // arguments that are will Bind
+        $insertArgs = [];
+        foreach ($schema->columns as $n => $c) {
+            // if column is required (can not be empty)
+            //   and default is defined.
+            if (!$c->primary && (!isset($args[$n]) || !$args[$n])) {
+                if ($val = $c->getDefaultValue(null, $args)) {
+                    $args[$n] = $val;
+                }
+            }
+
+            // if type constraint is on, check type,
+            // if not, we should try to cast the type of value, 
+            // if type casting is fail, we should throw an exception.
+
+            // short alias for argument value.
+            $val = isset($args[$n]) ? $args[$n] : null;
+
+            // if column is required (can not be empty) //   and default is defined.
+            // @codegenBlock validateRequire
+            if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
+                return Result::failure("Value of $n is required.");
+            }
+            // @codegenBlockEnd
+
+            // @codegenBlock typeConstraint
+            if ($val !== null && !is_array($val) && !$val instanceof Raw) {
+                $val = $c->typeCast($val);
+            }
+            // @codegenBlockEnd
+
+            // @codegenBlock filterColumn
+            if ($c->filter || $c->canonicalizer) {
+                $val = $c->canonicalizeValue($val, null, $args);
+            }
+            // @codegenBlockEnd
+
+            // @codegenBlock validateColumn
+            if ($validationResult = static::_validateColumn($c, $val, $args, null)) {
+                $validationResults[$n] = $validationResult;
+                if (!$validationResult['valid']) {
+                    $validationError = true;
+                }
+            }
+            // @codegenBlockEnd
+
+            if ($val !== null) {
+                // Update filtered value back to args
+                // Note that we don't deflate a scalar value, this is to prevent the overhead of data reload from database
+                // We should try to keep all variables just like the row result we query from database.
+                if (is_object($val) || is_array($val)) {
+                    $args[$n] = $c->deflate($val, $driver);
+                } else {
+                    $args[$n] = $val;
+                }
+
+                if (is_scalar($val) || is_null($val)) {
+                    $insertArgs[$n] = new Bind($n, $driver->cast($val));
+                } elseif ($val instanceof Raw) {
+                    $insertArgs[$n] = $val;
+                    $cacheable = false;
+                } else {
+                    // deflate objects into string
+                    $insertArgs[$n] = new Bind($n, $c->deflate($val, $driver));
+                }
+            }
+        }
+
+        // @codegenBlock handleValidationError
+        if ($validationError) {
+            return Result::failure('Validation failed.', [ 'validations' => $validationResults ]);
+        }
+        // @codegenBlockEnd
+
+        $arguments = new ArgumentArray();
+
+        $cacheKey = null;
+        if ($cacheable) {
+            $cacheKey = array_keys_join($insertArgs);
+            if (isset($this->_preparedCreateStms[$cacheKey])) {
+                $stm = $this->_preparedCreateStms[$cacheKey];
+                foreach ($insertArgs as $name => $bind) {
+                    $arguments->bind($bind);
+                }
+            }
+        }
+
+        if (!$stm) {
+            $query = new InsertQuery();
+            $query->into($this->getTable());
+            $query->insert($insertArgs);
+            $query->returning(static::PRIMARY_KEY);
+            $sql = $query->toSql($driver, $arguments);
+            $stm = $conn->prepare($sql);
+            if ($cacheable) {
+                $this->_preparedCreateStms[$cacheKey] = $stm;
+            }
+        }
+        if (false === $stm->execute($arguments->toArray())) {
+            return Result::failure('Record create failed.', array(
+                'validations' => $validationResults,
+                'args' => $args,
+                'sql' => $sql,
+            ));
+        }
+
+        $key = null;
+        if ($driver instanceof PDOPgSQLDriver) {
+            $key = intval($stm->fetchColumn());
+        } else {
+            $key = intval($conn->lastInsertId());
+        }
+
+        $this->afterCreate($origArgs);
+        $stm->closeCursor();
+
+        // collect debug info
+        return Result::success('Record created.', [
+            'key' => $key,
+            'sql' => $sql,
+            'args' => $args,
+            'binds' => $arguments,
+            'validations' => $validationResults,
+            'type' => Result::TYPE_CREATE,
+        ]);
     }
-
-    /**
-     * Trigger for after creating new record.
-     *
-     * @param array $args
-     */
-    public function afterCreate(array $args)
-    {
-    }
-
-    /**
-     * Trigger method for delete
-     */
-    public function beforeDelete()
-    {
-    }
-
-    public function afterDelete()
-    {
-    }
-
-    /**
-     * Trigger method for update
-     */
-    public function beforeUpdate(array $args)
-    {
-        return $args;
-    }
-
-    public function afterUpdate(array $args)
-    {
-
-    }
-
 
 
 
@@ -471,6 +607,60 @@ class BaseRepo
             }
         }
     }
+
+
+    // ================= TRIGGER METHODS ===================
+
+    /**
+     * Trigger method for "before creating new record".
+     *
+     * By overriding this method, you can modify the 
+     * arguments that is passed to the query builder.
+     *
+     * Remember to return the arguments back.
+     *
+     * @param array $args Arguments
+     *
+     * @return array $args Arguments
+     */
+    public function beforeCreate(array $args)
+    {
+        return $args;
+    }
+
+    /**
+     * Trigger for after creating new record.
+     *
+     * @param array $args
+     */
+    public function afterCreate(array $args)
+    {
+    }
+
+    /**
+     * Trigger method for delete
+     */
+    public function beforeDelete()
+    {
+    }
+
+    public function afterDelete()
+    {
+    }
+
+    /**
+     * Trigger method for update
+     */
+    public function beforeUpdate(array $args)
+    {
+        return $args;
+    }
+
+    public function afterUpdate(array $args)
+    {
+
+    }
+
 
 
 }
