@@ -509,6 +509,42 @@ class BaseRepo
 
 
 
+    /**
+     * Simply create record without validation and triggers.
+     *
+     * @param array $args
+     */
+    public function rawCreate(array $args)
+    {
+        $conn = $this->write;
+
+        $query = new InsertQuery();
+        $query->insert($args);
+        $query->into($this->getTable());
+        $query->returning(static::PRIMARY_KEY);
+
+        $driver = $conn->getQueryDriver();
+        $arguments = new ArgumentArray();
+        $sql = $query->toSql($driver, $arguments);
+
+        $stm = $conn->prepare($sql);
+        $stm->execute($arguments->toArray());
+
+        $key = null;
+        if ($driver instanceof PDOPgSQLDriver) {
+            $key = $stm->fetchColumn();
+        } else {
+            // lastInsertId is supported in SQLite and MySQL
+            $key = $conn->lastInsertId();
+        }
+        return Result::success('Create success', [
+            'key' => $key,
+            'sql' => $sql,
+            'type' => Result::TYPE_CREATE,
+        ]);
+    }
+
+
     // ============================= UTILITY METHODS =============================
 
     /**

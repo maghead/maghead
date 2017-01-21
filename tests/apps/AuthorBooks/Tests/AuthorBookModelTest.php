@@ -24,7 +24,7 @@ class AuthorBookModelTest extends ModelTestCase
     public function testBooleanCreate()
     {
         $a = new Author;
-        $ret = $a->create(array(
+        $ret = Author::create(array(
             'name' => 'a',
             'email' => 'a@a',
             'identity' => 'a',
@@ -47,7 +47,7 @@ class AuthorBookModelTest extends ModelTestCase
     public function testBooleanCondition() 
     {
         $a = new Author;
-        $ret = $a->create(array(
+        $ret = Author::create(array(
             'name' => 'a',
             'email' => 'a@a',
             'identity' => 'a',
@@ -59,7 +59,7 @@ class AuthorBookModelTest extends ModelTestCase
         
         $this->assertFalse($a->isConfirmed());
 
-        $ret = $a->create(array(
+        $ret = Author::create(array(
             'name' => 'b',
             'email' => 'b@b',
             'identity' => 'b',
@@ -135,7 +135,7 @@ class AuthorBookModelTest extends ModelTestCase
     public function testVirtualColumn() 
     {
         $author = new Author;
-        $ret = $author->create(array( 
+        $ret = Author::create(array( 
             'name' => 'Pedro' , 
             'email' => 'pedro@gmail.com' , 
             'identity' => 'id',
@@ -183,7 +183,7 @@ class AuthorBookModelTest extends ModelTestCase
     public function testCreateRecordWithEmptyArguments()
     {
         $author = new Author;
-        $ret = $author->create(array());
+        $ret = Author::create(array());
         $this->assertResultFail($ret);
         is( 'Empty arguments' , $ret->message );
     }
@@ -199,19 +199,19 @@ class AuthorBookModelTest extends ModelTestCase
         $a2 = Author::load(array( 'name' => 'A record does not exist.' ));
         $this->assertFalse($a2);
 
-        $ret = $author->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
+        $ret = Author::create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
         ok($ret->success);
 
         $a2 = Author::find($ret->key);
         ok($a2->id);
 
-        $ret = $author->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
+        $ret = Author::create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
         ok($ret->success);
 
         $a2 = Author::find($ret->key);
         ok($a2->id);
 
-        $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
+        $ret = Author::create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->resultOK(true, $ret);
         ok( $id = $ret->key );
         $author = Author::defaultRepo()->find($ret->key);
@@ -246,7 +246,7 @@ class AuthorBookModelTest extends ModelTestCase
     public function testUpdateRaw() 
     {
         $author = new Author;
-        $ret = $author->create(array( 
+        $ret = Author::create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
@@ -260,7 +260,7 @@ class AuthorBookModelTest extends ModelTestCase
     public function testUpdateNull()
     {
         $author = new Author;
-        $ret = $author->create(array( 
+        $ret = Author::create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
@@ -290,7 +290,7 @@ class AuthorBookModelTest extends ModelTestCase
     public function testJoin()
     {
         $author = new Author;
-        $ret = $author->create([
+        $ret = Author::create([
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
@@ -301,7 +301,7 @@ class AuthorBookModelTest extends ModelTestCase
         $ab = new AuthorBook;
         $book = new \AuthorBooks\Model\Book;
 
-        $ret = $book->create(array( 'title' => 'Book I' ));
+        $ret = Book::create(array( 'title' => 'Book I' ));
         $this->assertResultSuccess($ret);
         $book = Book::defaultRepo()->find($ret->key);
 
@@ -312,7 +312,7 @@ class AuthorBookModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $ab = AuthorBook::defaultRepo()->find($ret->key);
 
-        $ret = $book->create(array( 'title' => 'Book II' ));
+        $ret = Book::create(array( 'title' => 'Book II' ));
         $this->assertResultSuccess($ret);
         $book = Book::defaultRepo()->find($ret->key);
 
@@ -323,7 +323,7 @@ class AuthorBookModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $ab = AuthorBook::defaultRepo()->find($ret->key);
 
-        $ret = $book->create(array( 'title' => 'Book III' ));
+        $ret = Book::create(array( 'title' => 'Book III' ));
         $this->assertResultSuccess($ret);
         $book = Book::defaultRepo()->find($ret->key);
 
@@ -358,7 +358,7 @@ class AuthorBookModelTest extends ModelTestCase
     public function testManyToManyRelationCreate()
     {
         $author = new Author;
-        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $ret = Author::create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
         $author = Author::defaultRepo()->find($ret->key);
 

@@ -112,7 +112,7 @@ class BookModelTest extends ModelTestCase
     public function testTypeConstraint()
     {
         $book = new Book ;
-        $ret = $book->create(array( 
+        $ret = Book::create(array( 
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',
             'view' => '""',  /* cast this to null or empty */

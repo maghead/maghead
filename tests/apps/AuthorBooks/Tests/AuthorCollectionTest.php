@@ -65,14 +65,14 @@ class AuthorCollectionTest extends ModelTestCase
     public function testCollectionReset()
     {
         $book = new Book;
-        $this->assertResultSuccess($book->create(array( 'title' => 'My Book I' )));
-        $this->assertResultSuccess($book->create(array( 'title' => 'My Book II' )));
+        $this->assertResultSuccess(Book::create(array( 'title' => 'My Book I' )));
+        $this->assertResultSuccess(Book::create(array( 'title' => 'My Book II' )));
 
         $books = new \AuthorBooks\Model\BookCollection;
         $books->fetch();
         $this->assertEquals(2,$books->size());
 
-        $this->assertResultSuccess($book->create(array( 'title' => 'My Book III' )));
+        $this->assertResultSuccess(Book::create(array( 'title' => 'My Book III' )));
         $books->reset();
         $books->fetch();
         $this->assertEquals(3,$books->size());
@@ -94,15 +94,17 @@ class AuthorCollectionTest extends ModelTestCase
 
     public function testCloneWithQuery() 
     {
-        $a = new \AuthorBooks\Model\Address;
-        ok( $a->create(array('address' => 'Cindy'))->success );
-        ok( $a->create(array('address' => 'Hack'))->success );
+        $a = new Address;
+        $ret = Address::create(array('address' => 'Cindy'));
+        $this->assertResultSuccess($ret);
+
+        $ret = Address::create(array('address' => 'Hack'));
+        $this->assertResultSuccess($ret);
 
         $addresses = new \AuthorBooks\Model\AddressCollection;
-        $addresses->where()
-            ->equal('address','Cindy');
+        $addresses->where()->equal('address','Cindy');
         $addresses->fetch();
-        is(1, $addresses->size());
+        $this->assertEquals(1, $addresses->size());
 
         $sql1 = $addresses->toSQL();
         
@@ -130,7 +132,7 @@ class AuthorCollectionTest extends ModelTestCase
     public function testBooleanCondition() 
     {
         $a = new Author;
-        $ret = $a->create(array(
+        $ret = Author::create(array(
             'name' => 'a',
             'email' => 'a@a',
             'identity' => 'a',
@@ -139,7 +141,7 @@ class AuthorCollectionTest extends ModelTestCase
         $this->assertResultSuccess($ret);
 
         $a = new Author;
-        $ret = $a->create(array(
+        $ret = Author::create(array(
             'name' => 'b',
             'email' => 'b@b',
             'identity' => 'b',
@@ -167,7 +169,7 @@ class AuthorCollectionTest extends ModelTestCase
     {
         $author = new Author;
         foreach( range(1,3) as $i ) {
-            $ret = $author->create(array(
+            $ret = Author::create(array(
                 'name' => 'Bar-' . $i,
                 'email' => 'bar@bar' . $i,
                 'identity' => 'bar' . $i,
@@ -177,7 +179,7 @@ class AuthorCollectionTest extends ModelTestCase
         }
 
         foreach( range(1,20) as $i ) {
-            $ret = $author->create(array(
+            $ret = Author::create(array(
                 'name' => 'Foo-' . $i,
                 'email' => 'foo@foo' . $i,
                 'identity' => 'foo' . $i,
@@ -271,10 +273,10 @@ class AuthorCollectionTest extends ModelTestCase
     {
         $book = new \AuthorBooks\Model\Book;
         $results = array();
-        result_ok( $results[] = $book->create(array( 'title' => 'My Book I' )) );
-        result_ok( $results[] = $book->create(array( 'title' => 'My Book II' )) );
-        result_ok( $results[] = $book->create(array( 'title' => 'Perl Programming' )) );
-        result_ok( $results[] = $book->create(array( 'title' => 'My Book IV' )) );
+        result_ok( $results[] = Book::create(array( 'title' => 'My Book I' )) );
+        result_ok( $results[] = Book::create(array( 'title' => 'My Book II' )) );
+        result_ok( $results[] = Book::create(array( 'title' => 'Perl Programming' )) );
+        result_ok( $results[] = Book::create(array( 'title' => 'My Book IV' )) );
 
         $books = new \AuthorBooks\Model\BookCollection;
         $books->fetch();

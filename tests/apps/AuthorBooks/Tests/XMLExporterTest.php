@@ -22,7 +22,7 @@ class XMLExporterTest extends ModelTestCase
     public function testSimpleExport()
     {
         $book = new Book;
-        $ret = $book->create([
+        $ret = Book::create([
             'title' => 'Run & Skate',
             'is_hot' => true,
             'is_selled' => true,
@@ -41,11 +41,11 @@ class XMLExporterTest extends ModelTestCase
     public function testExportCollection()
     {
         $book = new Book;
-        $ret = $book->create([ 'title' => 'Run & Skate' ]);
+        $ret = Book::create([ 'title' => 'Run & Skate' ]);
         $this->assertResultSuccess($ret);
 
         $author = new Author;
-        $ret = $author->create(array(
+        $ret = Author::create(array(
             'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' 
         ));
         $this->assertResultSuccess($ret);

@@ -47,26 +47,25 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testRecordRawCreateBook()
     {
-        $b = new Book;
-        $ret = $b->rawCreate(array( 'title' => 'Go Programming' ));
+        $ret = Book::rawCreate(array( 'title' => 'Go Programming' ));
         $this->assertResultSuccess($ret);
-        $this->assertNotNull($b->id);
         $this->assertEquals(Result::TYPE_CREATE, $ret->type);
-        $this->successfulDelete($b);
-    }
 
+        $book = Book::find($ret->key);
+        $this->assertNotNull($book->id);
+    }
 
     public function testRecordRawUpdateBook()
     {
-        $b = new \AuthorBooks\Model\Book;
-        $ret = $b->rawCreate(array( 'title' => 'Go Programming without software validation' ));
+        $ret = Book::rawCreate(array( 'title' => 'Go Programming without software validation' ));
         $this->assertResultSuccess($ret);
-        $this->assertNotNull($b->id);
-        $ret = $b->rawUpdate(array( 'title' => 'Perl Programming without filtering' ));
+        $this->assertNotNull($ret->key);
+
+
+        $book = Book::find($ret->key);
+        $ret = $book->rawUpdate(array( 'title' => 'Perl Programming without filtering' ));
         $this->assertResultSuccess($ret);
-        $this->assertNotNull($b->id);
         $this->assertEquals(Result::TYPE_UPDATE, $ret->type);
-        $this->successfulDelete($b);
     }
 
 
@@ -165,7 +164,7 @@ class BasicCRUDTest extends ModelTestCase
     public function testModelUpdateRaw() 
     {
         $author = new Author;
-        $ret = $author->create(array( 
+        $ret = Author::create(array( 
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
@@ -226,7 +225,7 @@ class BasicCRUDTest extends ModelTestCase
     public function testPrimaryKeyIdIsInteger()
     {
         $author = new \AuthorBooks\Model\Author;
-        $ret = $author->create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $ret = Author::create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
 
         $author = Author::defaultRepo()->find($ret->key);
@@ -371,7 +370,7 @@ class BasicCRUDTest extends ModelTestCase
     public function testRecordUpdateWithRawSQL()
     {
         $book = new \AuthorBooks\Model\Book ;
-        $ret = $book->create(array(
+        $ret = Book::create(array(
             'title' => 'book title',
             'view' => 0,
         ));

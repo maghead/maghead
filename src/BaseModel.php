@@ -286,20 +286,6 @@ abstract class BaseModel implements Serializable
         }
     }
 
-    /**
-     * Invoke single mixin class method statically,.
-     *
-     * @param string $mixinClass mixin class name.
-     * @param string $m          method name.
-     * @parma array  $a method arguments.
-     *
-     * @return mixed execution result
-     */
-    protected function invokeMixinClassMethod($mixinClass, $m, array $a)
-    {
-        return call_user_func_array(array($mixinClass, $m), array_merge(array($this), $a));
-    }
-
 
     /**
      * An alias for BaseRepo::loadByKeys
@@ -385,8 +371,6 @@ abstract class BaseModel implements Serializable
     {
         return static::defaultRepo()::_validateColumn($c, $val, $args, $record);
     }
-
-
 
     public function setPreferredTable($tableName)
     {
@@ -525,39 +509,9 @@ abstract class BaseModel implements Serializable
      *
      * @param array $args
      */
-    public function rawCreate(array $args)
+    static public function rawCreate(array $args)
     {
-        $conn = $this->getWriteConnection();
-
-        $k = static::PRIMARY_KEY;
-        $driver = $conn->getQueryDriver();
-
-        $query = new InsertQuery();
-        $query->insert($args);
-        $query->into($this->table);
-        $query->returning($k);
-
-        $arguments = new ArgumentArray();
-
-        $sql = $query->toSql($driver, $arguments);
-
-        $stm = $conn->prepare($sql);
-        $stm->execute($arguments->toArray());
-
-        $pkId = null;
-        if ($driver instanceof PDOPgSQLDriver) {
-            $pkId = $stm->fetchColumn();
-        } else {
-            // lastInsertId is supported in SQLite and MySQL
-            $pkId = $conn->lastInsertId();
-        }
-
-        $this->setData($args);
-        $this->setKey($pkId);
-        return Result::success('Create success', array(
-            'sql' => $sql,
-            'type' => Result::TYPE_CREATE,
-        ));
+        return static::defaultRepo()->rawCreate($args);
     }
 
     /**
@@ -569,12 +523,35 @@ abstract class BaseModel implements Serializable
      */
     public function save()
     {
-        $kVal = $this->getKey();
-        if ($kVal) {
-            return $this->update($this->getData());
+        $key = $this->getKey();
+        $data = $this->getData();
+        if ($key) {
+            return static::defaultRepo()->updateByPrimaryKey($key, $data);
         }
-        return $this->create($this->getData());
+        return static::defaultRepo()->create($data);
     }
+
+
+
+
+
+
+
+    /**
+     * Invoke single mixin class method statically,.
+     *
+     * @param string $mixinClass mixin class name.
+     * @param string $m          method name.
+     * @parma array  $a method arguments.
+     *
+     * @return mixed execution result
+     */
+    protected function invokeMixinClassMethod($mixinClass, $m, array $a)
+    {
+        return call_user_func_array(array($mixinClass, $m), array_merge(array($this), $a));
+    }
+
+
 
     /**
      * Render readable column value.

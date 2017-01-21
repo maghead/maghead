@@ -91,7 +91,7 @@ class AuthorModelTest extends ModelTestCase
     public function testBooleanCondition() 
     {
         $a = new Author;
-        $ret = $a->create(array(
+        $ret = Author::create(array(
             'name' => 'a',
             'email' => 'a@a',
             'identity' => 'a',
@@ -99,7 +99,7 @@ class AuthorModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $ret = $a->create(array(
+        $ret = Author::create(array(
             'name' => 'b',
             'email' => 'b@b',
             'identity' => 'b',
@@ -129,7 +129,7 @@ class AuthorModelTest extends ModelTestCase
     public function testAccessor()
     {
         $author = new Author;
-        $ret = $author->create([
+        $ret = Author::create([
             'name' => 'Pedro',
             'email' => 'pedro@gmail.com',
             'identity' => 'id',
@@ -149,7 +149,7 @@ class AuthorModelTest extends ModelTestCase
     public function testStringContainsQuotes()
     {
         $a = new Author;
-        $ret = $a->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
+        $ret = Author::create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
         $this->assertResultSuccess($ret);
     }
 
@@ -159,7 +159,7 @@ class AuthorModelTest extends ModelTestCase
     public function testCreateWithAnEmptyArrayShouldFail()
     {
         $a = new Author;
-        $ret = $a->create(array());
+        $ret = Author::create(array());
         $this->assertResultFail($ret);
         like('/Empty arguments/' , $ret->message );
     }
@@ -191,7 +191,7 @@ class AuthorModelTest extends ModelTestCase
     public function testCreateRecordWithEmptyArgument()
     {
         $author = new Author;
-        $ret = $author->create(array());
+        $ret = Author::create(array());
         $this->assertResultFail($ret);
         ok($ret->message);
         like('/Empty arguments/' , $ret->message );
@@ -205,7 +205,7 @@ class AuthorModelTest extends ModelTestCase
         $author = new Author;
         $a2 = new Author;
 
-        $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
+        $ret = Author::create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->assertResultSuccess($ret);
         $author = Author::defaultRepo()->find($ret->key);
         ok( $id = $ret->key );
@@ -240,7 +240,7 @@ class AuthorModelTest extends ModelTestCase
     public function testMixinMethods()
     {
         $author = new Author;
-        $ret = $author->create(array( 
+        $ret = Author::create(array( 
             'name' => 'testMixinMethods',
             'email' => 'test.user@gmail.com',
             'identity' => 'zz3',
@@ -255,7 +255,7 @@ class AuthorModelTest extends ModelTestCase
     public function testToArray()
     {
         $author = new Author;
-        $ret = $author->create(array( 
+        $ret = Author::create(array( 
             'name' => 'testToArray',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
@@ -271,7 +271,7 @@ class AuthorModelTest extends ModelTestCase
     public function testToArrayWithFields() 
     {
         $author = new Author;
-        $ret = $author->create(array( 
+        $ret = Author::create(array( 
             'name' => 'testToArray',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
@@ -290,7 +290,7 @@ class AuthorModelTest extends ModelTestCase
     public function testRelationshipWithPredefinedConditions()
     {
         $author = new Author;
-        $ret = $author->create(array( 
+        $ret = Author::create(array( 
             'name' => 'Address Testing',
             'email' => 'tom@address',
             'identity' => 'tom-has-two-addresses',
@@ -318,7 +318,7 @@ class AuthorModelTest extends ModelTestCase
         }
 
         $author = new Author;
-        $ret = $author->create(array(
+        $ret = Author::create(array(
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
@@ -335,7 +335,7 @@ class AuthorModelTest extends ModelTestCase
     public function testUpdateNull()
     {
         $author = new Author;
-        $ret = $author->create(array(
+        $ret = Author::create(array(
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',

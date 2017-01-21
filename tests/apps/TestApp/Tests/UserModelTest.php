@@ -1,6 +1,7 @@
 <?php
 use TestApp\Model\User;
 use LazyRecord\Testing\ModelTestCase;
+use AuthorBooks\Model\Book;
 
 class UserModelTest extends ModelTestCase
 {
@@ -24,10 +25,9 @@ class UserModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
 
         $user = User::defaultRepo()->find($ret->key);
-        ok($user->id);
+        ok($user);
 
-        $book = new \AuthorBooks\Model\Book;
-        $ret = $book->create(array( 
+        $ret = Book::create(array(
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',
             'created_by'   => $user->id,
