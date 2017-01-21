@@ -1,11 +1,45 @@
 <?php
 namespace LazyRecord;
-use LazyRecord\Connection;
+use PDOException;
 use PDOStatement;
 use PDO;
 
+use Exception;
+use RuntimeException;
+use InvalidArgumentException;
+use BadMethodCallException;
+use ArrayIterator;
+use Serializable;
+use ArrayAccess;
+
+use SQLBuilder\Universal\Query\SelectQuery;
+use SQLBuilder\Universal\Query\UpdateQuery;
+use SQLBuilder\Universal\Query\DeleteQuery;
+use SQLBuilder\Universal\Query\InsertQuery;
+use SQLBuilder\Driver\PDOPgSQLDriver;
+use SQLBuilder\Driver\PDOMySQLDriver;
+use SQLBuilder\Bind;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Raw;
+
+use LazyRecord\Connection;
+use LazyRecord\Result\OperationError;
+use LazyRecord\Schema\SchemaLoader;
+use LazyRecord\Schema\RuntimeColumn;
+use LazyRecord\Schema\Relationship\Relationship;
+use LazyRecord\Exception\MissingPrimaryKeyException;
+use LazyRecord\Exception\QueryException;
+use SerializerKit\XmlSerializer;
+use ActionKit;
+use Symfony\Component\Yaml\Yaml;
+
 class BaseRepo
 {
+    protected $table;
+
+    protected $alias;
+
+
     /**
      * @var Connection
      */
@@ -30,6 +64,19 @@ class BaseRepo
     public function getWriteConnection()
     {
         return $this->write;
+    }
+
+    /**
+     * We kept getTable() as dynamic that way we can change the table name.
+     */
+    public function getTable()
+    {
+        return $this->table ?: static::TABLE;
+    }
+
+    public function getAlias()
+    {
+        return $this->alias ?: static::TABLE_ALIAS;
     }
 
     /**
