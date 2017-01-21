@@ -28,7 +28,7 @@ class AuthorModelTest extends ModelTestCase
         }
     }
 
-    public function testFindByEmail()
+    public function testLoadByEmail()
     {
         $author = new Author;
         $this->assertNotFalse($author = Author::createAndLoad(array( 

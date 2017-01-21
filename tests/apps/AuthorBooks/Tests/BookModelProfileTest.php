@@ -22,7 +22,7 @@ class BookModelProfileTest extends ModelProfileTestCase
      * @group profile
      * @rebuild true
      */
-    public function testProfileFindByISBN()
+    public function testProfileLoadByISBN()
     {
         $b = new Book;
         $b->create(array(
@@ -73,7 +73,7 @@ class BookModelProfileTest extends ModelProfileTestCase
      * @group profile
      * @rebuild true
      */
-    public function testProfileFindByPrimaryKey()
+    public function testProfileLoadByPrimaryKey()
     {
         $b = Book::createAndLoad(array(
             'title' => "OOP Programming Guide",
