@@ -170,18 +170,14 @@ class AuthorModelTest extends ModelTestCase
      */
     public function testFindAnInexistingRecord()
     {
-        $a = new Author;
-        $ret = $a->load(array( 'name' => 'A record does not exist.'));
-        $this->assertResultFail($ret);
-        ok(! $a->id);
+        $a = Author::load(array( 'name' => 'A record does not exist.'));
+        $this->assertFalse($a);
     }
 
     public function testFindInexistingRecord()
     {
-        $a2 = new Author;
-        $ret = $a2->load(array( 'name' => 'A record does not exist.'));
-        $this->assertResultFail($ret);
-        ok(! $a2->id);
+        $a = Author::load(array( 'name' => 'A record does not exist.'));
+        $this->assertFalse($a);
     }
 
 
@@ -216,19 +212,19 @@ class AuthorModelTest extends ModelTestCase
         is('Foo', $author->name );
         is('foo@google.com', $author->email );
 
-        $ret = $author->load( $id );
-        $this->assertResultSuccess($ret);
+        $author = Author::find( $id );
+        $this->assertNotFalse($author);
         $this->assertEquals($id , $author->id );
         $this->assertEquals('Foo', $author->name);
         $this->assertEquals('foo@google.com', $author->email);
         $this->assertEquals(false , $author->isConfirmed() );
 
-        $ret = $author->load(array( 'name' => 'Foo' ));
-        $this->assertResultSuccess($ret);
-        is( $id , $author->id );
-        is( 'Foo', $author->name );
-        is( 'foo@google.com', $author->email );
-        is( false , $author->isConfirmed() );
+        $author = Author::load(array( 'name' => 'Foo' ));
+        $this->assertNotFalse($author);
+        $this->assertEquals($id , $author->id );
+        $this->assertEquals('Foo', $author->name );
+        $this->assertEquals('foo@google.com', $author->email );
+        $this->assertFalse($author->isConfirmed());
 
         $ret = $author->update(array('name' => 'Bar'));
         $this->assertResultSuccess($ret);
@@ -328,9 +324,10 @@ class AuthorModelTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
-        $a2 = new Author;
-        $ret = $a2->loadForUpdate([ 'identity' => 'zz3' ]);
-        $this->assertResultSuccess($ret);
+
+        $a2 = Author::loadForUpdate([ 'identity' => 'zz3' ]);
+        $this->assertNotFalse($a2);
+
         $ret = $a2->update(['name' => 'Maroon V']);
         $this->assertResultSuccess($ret);
     }
@@ -358,9 +355,7 @@ class AuthorModelTest extends ModelTestCase
         $this->assertEquals($id , $author->id);
         $this->assertNull($author->name, 'updated name should be null');
 
-        $author = new Author;
-        $ret = $author->load($id);
-        $this->assertResultSuccess($ret);
+        $author = Author::find($id);
         $this->assertEquals($id , $author->id);
         $this->assertNull($author->name, 'loaded name should be null');
     }

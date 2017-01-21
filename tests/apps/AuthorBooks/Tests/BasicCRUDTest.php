@@ -111,31 +111,22 @@ class BasicCRUDTest extends ModelTestCase
         $id = $b->id;
         $this->assertNotNull($id);
 
-        $ret = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
-        $this->assertResultSuccess($ret);
+        $b = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertEquals($id, $b->id, 'is the same ID');
-        $this->assertEquals(Result::TYPE_LOAD, $ret->type);
         $results[] = $ret;
 
         $b2 = new Book;
-        $ret = $b2->loadOrCreate( array('title' => 'LoadOrCreateTest' ) , 'title' );
-        $this->assertResultSuccess($ret);
-        $this->assertEquals(Result::TYPE_LOAD, $ret->type);
+        $b2 = $b2->loadOrCreate(array('title' => 'LoadOrCreateTest' ) , 'title');
         $this->assertEquals($id,$b2->id);
         $results[] = $ret;
 
-        $ret = $b2->loadOrCreate( array('title' => 'LoadOrCreateTest2'  ) , 'title' );
-        $this->assertResultSuccess($ret);
-        $this->assertEquals(Result::TYPE_CREATE, $ret->type);
+        $b2 = $b2->loadOrCreate( array('title' => 'LoadOrCreateTest2'  ) , 'title' );
         $this->assertNotEquals($id, $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
         $b3 = new Book;
-        $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
-        $this->assertResultSuccess($ret);
-        $b3 = Book::defaultRepo()->find($ret->key);
+        $b3 = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         $this->assertNotEquals($id, $b3->id , 'we should create anther one'); 
-        $results[] = $ret;
         $this->successfulDelete($b3);
     }
 

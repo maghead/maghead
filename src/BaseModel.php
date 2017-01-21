@@ -317,26 +317,25 @@ abstract class BaseModel implements Serializable
      * @param array $byKeys
      * @return Result
      */
-    public function createOrUpdate(array $args, $byKeys = null)
+    public function updateOrCreate(array $args, $byKeys = null)
     {
         $pk = static::PRIMARY_KEY;
-        $ret = null;
+        $record = null;
         if ($pk && isset($args[$pk])) {
             $val = $args[$pk];
-            $ret = $this->load(array($pk => $val));
-        } elseif ($byKeys) {
+            $record = $this->load(array($pk => $val));
+        } else if ($byKeys) {
             $conds = array();
             foreach ((array) $byKeys as $k) {
                 if (array_key_exists($k, $args)) {
                     $conds[$k] = $args[$k];
                 }
             }
-            $ret = $this->load($conds);
+            $record = $this->load($conds);
         }
-
-        if ($ret && $ret->success
-            || ($pk && $this->hasKey())) {
-            return $this->update($args);
+        if ($record) {
+            $this->update($args);
+            return $record;
         } else {
             return $this->create($args);
         }
@@ -352,23 +351,26 @@ abstract class BaseModel implements Serializable
      */
     public function loadOrCreate(array $args, $byKeys = null)
     {
-        $ret = null;
+        $record = null;
         $pk = static::PRIMARY_KEY;
         if ($byKeys) {
-            $ret = $this->load(
+            $record = static::load(
                 array_intersect_key($args,
                     array_fill_keys((array) $byKeys, 1))
             );
-        } elseif ($pk && isset($args[$pk])) {
-            $ret = $this->load($args[$pk]);
+        } else if ($pk && isset($args[$pk])) {
+            $record = static::load($args[$pk]);
         } else {
             throw new PrimaryKeyNotFoundException('primary key is not defined.');
         }
-
-        if ($ret && $ret->success) {
-            return $ret;
+        if ($record) {
+            return $record;
         }
-        return $this->create($args);
+        $ret = $this->create($args);
+        if ($ret->error) {
+            return false;
+        }
+        return static::find($ret->key);
     }
 
     /**
@@ -706,6 +708,15 @@ abstract class BaseModel implements Serializable
         return static::defaultRepo()->find($pkId);
     }
 
+    static public function load($args)
+    {
+        return static::defaultRepo()->load($args);
+    }
+
+    static public function loadForUpdate($args)
+    {
+        return static::defaultRepo()->loadForUpdate($args);
+    }
 
     static protected function _stmFetch($stm, $args)
     {
@@ -715,52 +726,12 @@ abstract class BaseModel implements Serializable
         return $obj;
     }
 
-    public function loadForUpdate($args)
-    {
-        if (!is_array($args)) {
-            $key = $args;
-            $args = [];
-            $args[static::PRIMARY_KEY] = $key;
-        }
-        $repo = static::defaultRepo();
-        $record = $repo->loadForUpdate($args);
-        if (!$record) {
-            return Result::failure('Record not found');
-        }
-        $data = $record->getData();
-        $this->setData($data);
-        return Result::success('Data loaded', [
-            'key'  => $this->getKey(),
-            'type' => Result::TYPE_LOAD,
-        ]);
-    }
-
-    public function load($args)
-    {
-        if (!is_array($args)) {
-            $key = $args;
-            $args = [];
-            $args[static::PRIMARY_KEY] = $key;
-        }
-        // return static::defaultRepo()->load($args);
-        $record = static::defaultRepo()->load($args);
-        if (!$record) {
-            return Result::failure('Record not found');
-        }
-        $data = $record->getData();
-        $this->setData($data);
-        return Result::success('Data loaded', [
-            'key'  => $this->getKey(),
-            'type' => Result::TYPE_LOAD,
-        ]);
-    }
-
     /**
-     * Create from array.
+     * Create a record object from array.
      */
     public static function fromArray(array $array)
     {
-        $record = new static();
+        $record = new static;
         $record->setData($array);
         return $record;
     }
@@ -1270,9 +1241,8 @@ abstract class BaseModel implements Serializable
             $sValue = $this->$sColumn;
 
             $model = $relation->newForeignModel();
-            $model->load(array($fColumn => $sValue));
-
-            return $this->setInternalCache($cacheKey, $model);
+            $record = $model::load(array($fColumn => $sValue));
+            return $this->setInternalCache($cacheKey, $record);
         } elseif (Relationship::HAS_MANY === $relation['type']) {
 
             
@@ -1312,9 +1282,9 @@ abstract class BaseModel implements Serializable
 
             $sValue = $this->$sColumn;
             $model = $fpSchema->newModel();
-            $ret = $model->load(array($fColumn => $sValue));
+            $record = $model::load(array($fColumn => $sValue));
+            return $this->setInternalCache($cacheKey, $record);
 
-            return $this->setInternalCache($cacheKey, $model);
         } elseif (Relationship::MANY_TO_MANY === $relation['type']) {
             $rId = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
             $rId2 = $relation['relation_foreign'];  // get external relationId from the middle relation. (book from author_books)

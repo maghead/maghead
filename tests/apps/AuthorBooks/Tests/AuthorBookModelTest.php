@@ -32,11 +32,10 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true,$ret);
 
-        $a = Author::defaultRepo()->find($ret->key);
+        $a = Author::find($ret->key);
         $this->assertTrue($a->isConfirmed(), 'confirmed should be true');
 
-        $a = new Author;
-        $ret = $a->load([ 'name' => 'a' ]);
+        $a = Author::load([ 'name' => 'a' ]);
         $this->assertNotNull($a->id);
         $this->resultOK(true,$ret);
         $this->assertTrue($a->isConfirmed());
@@ -197,47 +196,44 @@ class AuthorBookModelTest extends ModelTestCase
     {
         $author = new Author;
 
-        $a2 = new Author;
-        $ret = $a2->load( array( 'name' => 'A record does not exist.' ) );
-        ok( ! $ret->success );
-        ok( ! $a2->id );
+        $a2 = Author::load(array( 'name' => 'A record does not exist.' ));
+        $this->assertFalse($a2);
 
-        $ret = $a2->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
-        ok( $ret->success );
-        $a2 = Author::defaultRepo()->find($ret->key);
-        ok( $a2->id );
+        $ret = $author->create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
+        ok($ret->success);
 
-        $ret = $a2->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
-        ok( $ret->success );
-        $a2 = Author::defaultRepo()->find($ret->key);
-        ok( $a2->id );
+        $a2 = Author::find($ret->key);
+        ok($a2->id);
 
+        $ret = $author->create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
+        ok($ret->success);
+
+        $a2 = Author::find($ret->key);
+        ok($a2->id);
 
         $ret = $author->create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->resultOK(true, $ret);
         ok( $id = $ret->key );
         $author = Author::defaultRepo()->find($ret->key);
-        is( 'Foo', $author->name );
-        is( 'foo@google.com', $author->email );
+        $this->assertEquals( 'Foo', $author->name );
+        $this->assertEquals( 'foo@google.com', $author->email );
 
-        $ret = $author->load( $id );
-        ok( $ret->success );
-        is( $id , $author->id );
-        is( 'Foo', $author->name );
-        is( 'foo@google.com', $author->email );
+        $author = Author::find($id);
+        $this->assertEquals( $id , $author->id );
+        $this->assertEquals( 'Foo', $author->name );
+        $this->assertEquals( 'foo@google.com', $author->email );
         $this->assertFalse($author->isConfirmed() );
 
-        $ret = $author->load(array( 'name' => 'Foo' ));
-        ok( $ret->success );
-        is( $id , $author->id );
-        is( 'Foo', $author->name );
-        is( 'foo@google.com', $author->email );
+        $author = Author::load(array( 'name' => 'Foo' ));
+        $this->assertEquals( $id , $author->id );
+        $this->assertEquals( 'Foo', $author->name );
+        $this->assertEquals( 'foo@google.com', $author->email );
         $this->assertFalse($author->isConfirmed());
 
         $ret = $author->update(array('name' => 'Bar'));
         $this->resultOK(true, $ret);
 
-        is( 'Bar', $author->name );
+        $this->assertEquals('Bar', $author->name );
 
         $ret = $author->delete();
         $this->resultOK(true, $ret);
@@ -284,10 +280,9 @@ class AuthorBookModelTest extends ModelTestCase
         $this->assertEquals($id , $author->id );
         $this->assertEquals(null, $author->name );
 
-        $ret = $author->load( $author->id );
-        $this->resultOK(true, $ret);
-        is( $id , $author->id );
-        is( null, $author->name );
+        $author = Author::find($author->id);
+        $this->assertEquals($id , $author->id );
+        $this->assertEquals(null, $author->name );
     }
 
 
@@ -374,34 +369,34 @@ class AuthorBookModelTest extends ModelTestCase
             ))
         );
         ok( $book->id );
-        is( 'Programming Perl I' , $book->title );
+        $this->assertEquals( 'Programming Perl I' , $book->title );
 
-        is( 1, $author->books->size() );
-        is( 1, $author->author_books->size() );
+        $this->assertEquals( 1, $author->books->size() );
+        $this->assertEquals( 1, $author->author_books->size() );
         ok( $author->author_books[0] );
         ok( $author->author_books[0]->created_on );
-        is('2010-01-01', $author->author_books[0]->getCreatedOn()->format('Y-m-d'));
+        $this->assertEquals('2010-01-01', $author->author_books[0]->getCreatedOn()->format('Y-m-d'));
 
         $author->books[] = array( 
             'title' => 'Programming Perl II',
         );
-        is( 2, $author->books->size() , '2 books' );
+        $this->assertEquals( 2, $author->books->size() , '2 books' );
 
         $books = $author->books;
-        is( 2, $books->size() , '2 books' );
+        $this->assertEquals( 2, $books->size() , '2 books' );
 
         foreach( $books as $book ) {
-            ok( $book->id );
-            ok( $book->title );
+            $this->assertNotNull($book->id);
+            $this->assertNotNull($book->title);
         }
 
         foreach( $author->books as $book ) {
-            ok( $book->id );
-            ok( $book->title );
+            $this->assertNotNull( $book->id );
+            $this->assertNotNull( $book->title );
         }
 
         $books = $author->books;
-        is( 2, $books->size() , '2 books' );
+        $this->assertEquals( 2, $books->size() , '2 books' );
         $author->delete();
     }
 

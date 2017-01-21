@@ -84,8 +84,7 @@ class NameModelTest extends ModelTestCase
         $n = Name::defaultRepo()->find($ret->key);
         $this->assertNull($n->isConfirmed());
 
-        $ret = $n->load($n->id);
-        $this->assertResultSuccess($ret);
+        $n = Name::find($n->id);
         $this->assertNull($n->isConfirmed());
         $this->successfulDelete($n);
     }
@@ -101,14 +100,12 @@ class NameModelTest extends ModelTestCase
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
 
-        $n = Name::defaultRepo()->find($ret->key);
-        ok($n->id);
-
+        $n = Name::find($ret->key);
+        $this->assertNotFalse($n);
         $this->assertTrue($n->isConfirmed(), 'Confirmed value should be TRUE.');
 
-        $ret = $n->load($n->id);
-        $this->assertResultSuccess($ret);
-
+        $n = Name::find($n->id);
+        $this->assertNotFalse($n);
         $this->assertTrue($n->isConfirmed(), 'Confirmed value should be TRUE.');
         $this->successfulDelete($n);
     }

@@ -62,28 +62,20 @@ class AuthorCollectionTest extends ModelTestCase
         }
     }
 
-    public function testReset()
+    public function testCollectionReset()
     {
-        $results = array();
-        $book = new \AuthorBooks\Model\Book;
-        result_ok( $results[] = $book->create(array( 'title' => 'My Book I' )) );
-        result_ok( $results[] = $book->create(array( 'title' => 'My Book II' )) );
+        $book = new Book;
+        $this->assertResultSuccess($book->create(array( 'title' => 'My Book I' )));
+        $this->assertResultSuccess($book->create(array( 'title' => 'My Book II' )));
 
         $books = new \AuthorBooks\Model\BookCollection;
         $books->fetch();
-        is(2,$books->size());
+        $this->assertEquals(2,$books->size());
 
-        ok( $book->create(array( 'title' => 'My Book III' ))->success );
+        $this->assertResultSuccess($book->create(array( 'title' => 'My Book III' )));
         $books->reset();
         $books->fetch();
-        is(3,$books->size());
-
-        foreach( $results as $result ) {
-            ok( $result->id );
-            $record = new \AuthorBooks\Model\Book();
-            $record->load($result->id);
-            $record->delete();
-        }
+        $this->assertEquals(3,$books->size());
     }
 
 

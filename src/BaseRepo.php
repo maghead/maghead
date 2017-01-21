@@ -142,7 +142,7 @@ class BaseRepo
         return $stm->fetch(PDO::FETCH_CLASS);
     }
 
-    public function createOrUpdate(array $args, $byKeys = null)
+    public function updateOrCreate(array $args, $byKeys = null)
     {
         $primaryKey = static::PRIMARY_KEY;
         $record = null;

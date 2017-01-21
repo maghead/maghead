@@ -91,40 +91,22 @@ class BookModelTest extends ModelTestCase
         $id = $b->id;
         ok($id);
 
-        $ret = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
-        $this->assertResultSuccess($ret);
-        is($id, $b->id, 'is the same ID');
-        $results[] = $ret;
-
+        $b = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        $this->assertEquals($id, $b->id, 'is the same ID');
 
         $b2 = new Book ;
-        $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
-        $this->assertResultSuccess($ret);
-        is($id,$b2->id);
-        $results[] = $ret;
+        $b2 = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        $this->assertEquals($id,$b2->id);
 
-        $ret = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
-        $this->assertResultSuccess($ret);
-        ok($b2);
-        ok($id != $b2->id , 'we should create anther one'); 
-        $results[] = $ret;
+        $b2 = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
+        $this->assertNotEquals($id, $b2->id , 'we should create anther one'); 
 
         $b3 = new Book ;
-        $ret = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
-        $this->assertResultSuccess($ret);
-        ok($b3);
-        ok($id != $b3->id , 'we should create anther one'); 
-        $results[] = $ret;
-        $b3 = Book::defaultRepo()->find($ret->key);
-        $b3->delete();
+        $b3 = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
+        $this->assertNotNull($id, $b3->id , 'we should create anther one'); 
 
-        foreach( $results as $r ) {
-            $book = new Book;
-            $book->load($r->id);
-            if ($book->id) {
-                $book->delete();
-            }
-        }
+        $b3 = Book::defaultRepo()->find($b3->getKey());
+        $b3->delete();
     }
 
     public function testTypeConstraint()
@@ -188,14 +170,12 @@ class BookModelTest extends ModelTestCase
         $id = $book->id;
         $this->assertNotNull($id);
 
-        $ret = $book->load([ 'published_at' => $date ]);
-        $this->assertResultSuccess($ret);
+        $book = Book::load([ 'published_at' => $date ]);
 
-        $ret = $book->createOrUpdate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date ], [ 'published_at' ]);
-        $this->assertResultSuccess($ret);
+        $book = $book->updateOrCreate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date ], [ 'published_at' ]);
         $this->assertCount(1, new BookCollection);
 
-        $this->assertEquals('Update With Time', $book->title);
+        $this->assertEquals('Create With Time', $book->title);
         $this->assertEquals($id, $book->id);
     }
 
@@ -205,31 +185,24 @@ class BookModelTest extends ModelTestCase
      */
     public function testZeroInflator()
     {
-        $b = Book::createAndLoad(array( 'title' => 'Create X' , 'view' => 0 ));
+        $book = Book::createAndLoad(array( 'title' => 'Create X' , 'view' => 0 ));
+        $this->assertNotFalse($book);
+        $this->assertNotNull($book->id);
+        $this->assertEquals(0, $book->view);
 
-        ok($b->id);
-        is( 0 , $b->view );
-
-        $ret = $b->load($b->id);
-        $this->assertResultSuccess($ret);
-        ok($b->id);
-        is( 0 , $b->view );
-
-        // test incremental
-        $ret = $b->update(array( 'view'  => new Raw('view + 1')));
+        // Test incremental
+        $ret = $book->update([ 'view'  => new Raw('view + 1') ]);
         $this->assertResultSuccess($ret);
 
-        $b = Book::find($b->id);
-        $this->assertEquals(1,  $b->view);
+        // verify update
+        $book = Book::find($book->id);
+        $this->assertEquals(1,  $book->view);
 
-        $ret = $b->update(array( 'view'  => new Raw('view + 1') ));
+        $ret = $book->update(array( 'view'  => new Raw('view + 1') ));
         $this->assertResultSuccess($ret);
 
-        $b = Book::find($b->id);
-        $this->assertEquals( 2,  $b->view);
-
-        $ret = $b->delete();
-        $this->assertResultSuccess($ret);
+        $book = Book::find($book->id);
+        $this->assertEquals(2,  $book->view);
     }
 }
 
