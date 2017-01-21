@@ -23,7 +23,7 @@ class TableModelTest extends ModelTestCase
             ),
         ));
         $this->assertResultSuccess($ret, 'Table Create results success');
-        $table = Table::defaultRepo()->find($ret->key);
+        $table = Table::defaultRepo()->load($ret->key);
 
         $ret = $table->update(array(
             'columns' => array('b1', 'b2'),
@@ -35,7 +35,7 @@ class TableModelTest extends ModelTestCase
         ok($ret->key);
         ok($ret->success);
 
-        $table = Table::find($ret->key);
+        $table = Table::load($ret->key);
         $this->assertNotEmpty($table->get('columns'));
         $this->assertNotEmpty($table->get('rows'));
 

@@ -45,7 +45,7 @@ class Utils
             elseif ($paths = $loader->getSchemaPaths()) {
                 $finder->setPaths($paths);
             }
-            $finder->find();
+            $finder->load();
 
             // load class from class map
             if ($classMap = $loader->getClassMap()) {

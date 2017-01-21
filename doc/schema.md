@@ -232,7 +232,7 @@ foreach( $author->addresses as $address ) {
 To search/find:
 
 ```php
-$address = $author->addresses->find(k);
+$address = $author->addresses->load(k);
 ```
 
 ## RuntimeSchema API

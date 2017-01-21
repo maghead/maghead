@@ -148,11 +148,11 @@ abstract class BaseModel implements Serializable
     }
 
     /**
-     * An alias for BaseRepo::findByKeys
+     * An alias for BaseRepo::loadByKeys
      */
-    static protected function findByKeys(array $args, $byKeys = null)
+    static protected function loadByKeys(array $args, $byKeys = null)
     {
-        return static::defaultRepo()->findByKeys($args, $byKeys);
+        return static::defaultRepo()->loadByKeys($args, $byKeys);
     }
 
     /**
@@ -182,10 +182,10 @@ abstract class BaseModel implements Serializable
      * @param array $args
      * @param array $byKeys it's optional if you defined primary key
      */
-    public function findOrCreate(array $args, $byKeys = null)
+    public function loadOrCreate(array $args, $byKeys = null)
     {
         $repo = static::defaultRepo();
-        $record = $repo->findByKeys($args, $byKeys);
+        $record = $repo->loadByKeys($args, $byKeys);
         if ($record) {
             return $record;
         }
@@ -193,7 +193,7 @@ abstract class BaseModel implements Serializable
         if ($ret->error) {
             return false;
         }
-        return $repo->findByPrimaryKey($ret->key);
+        return $repo->loadByPrimaryKey($ret->key);
     }
 
     /**
@@ -216,7 +216,7 @@ abstract class BaseModel implements Serializable
         if ($ret->error) {
             return false;
         }
-        return $repo->findByPrimaryKey($ret->key);
+        return $repo->loadByPrimaryKey($ret->key);
     }
 
     public function setPreferredTable($tableName)
@@ -235,24 +235,24 @@ abstract class BaseModel implements Serializable
     /**
      * find() is an alias method of defaultRepo->find
      */
-    static public function find($arg)
+    static public function load($arg)
     {
-        return static::defaultRepo()->find($arg);
+        return static::defaultRepo()->load($arg);
     }
 
-    static public function findByPrimaryKey($arg)
+    static public function loadByPrimaryKey($arg)
     {
-        return static::defaultRepo()->findByPrimaryKey($arg);
+        return static::defaultRepo()->loadByPrimaryKey($arg);
     }
 
-    static public function findWith($args)
+    static public function loadWith($args)
     {
-        return static::defaultRepo()->findWith($args);
+        return static::defaultRepo()->loadWith($args);
     }
 
-    static public function findForUpdate($args)
+    static public function loadForUpdate($args)
     {
-        return static::defaultRepo()->findForUpdate($args);
+        return static::defaultRepo()->loadForUpdate($args);
     }
 
     /**
@@ -688,7 +688,7 @@ abstract class BaseModel implements Serializable
 
             $sValue = $this->$sColumn;
             $model = $fpSchema->newModel();
-            $record = $model::findWith(array($fColumn => $sValue));
+            $record = $model::loadWith(array($fColumn => $sValue));
             return $this->setInternalCache($cacheKey, $record);
 
         } elseif (Relationship::MANY_TO_MANY === $relation['type']) {
@@ -758,7 +758,7 @@ abstract class BaseModel implements Serializable
                 if ($ret->error) {
                     throw new Exception("$rId create failed.");
                 }
-                return $middleRecord::findByPrimaryKey($ret->key);
+                return $middleRecord::loadByPrimaryKey($ret->key);
             });
 
             return $this->setInternalCache($cacheKey, $collection);

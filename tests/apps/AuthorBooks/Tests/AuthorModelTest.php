@@ -37,11 +37,11 @@ class AuthorModelTest extends ModelTestCase
             'identity' => 'a',
             'confirmed' => false,
         )));
-        $timCook = Author::defaultRepo()->findByEmail('timcook@apple.com');
+        $timCook = Author::defaultRepo()->loadByEmail('timcook@apple.com');
         $this->assertNotNull($timCook);
         /*
-        $timCook = Author::repo('master')->findByEmail('timcook@apple.com');
-        $timCook = Author::repo('slave')->findByEmail('timcook@apple.com');
+        $timCook = Author::repo('master')->loadByEmail('timcook@apple.com');
+        $timCook = Author::repo('slave')->loadByEmail('timcook@apple.com');
         */
     }
 
@@ -136,7 +136,7 @@ class AuthorModelTest extends ModelTestCase
             'confirmed' => true,
         ]);
         $this->assertResultSuccess($ret);
-        $author = Author::defaultRepo()->find($ret->key);
+        $author = Author::load($ret->key);
 
         $this->assertEquals('Pedro',$author->getName());
         $this->assertEquals('pedro@gmail.com',$author->getEmail());
@@ -170,13 +170,13 @@ class AuthorModelTest extends ModelTestCase
      */
     public function testFindAnInexistingRecord()
     {
-        $a = Author::find(array( 'name' => 'A record does not exist.'));
+        $a = Author::load(array( 'name' => 'A record does not exist.'));
         $this->assertFalse($a);
     }
 
     public function testFindInexistingRecord()
     {
-        $a = Author::find(array( 'name' => 'A record does not exist.'));
+        $a = Author::load(array( 'name' => 'A record does not exist.'));
         $this->assertFalse($a);
     }
 
@@ -207,19 +207,19 @@ class AuthorModelTest extends ModelTestCase
 
         $ret = Author::create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->assertResultSuccess($ret);
-        $author = Author::defaultRepo()->find($ret->key);
+        $author = Author::load($ret->key);
         ok( $id = $ret->key );
-        is('Foo', $author->name );
-        is('foo@google.com', $author->email );
+        $this->assertEquals('Foo', $author->name );
+        $this->assertEquals('foo@google.com', $author->email );
 
-        $author = Author::find( $id );
+        $author = Author::load( $id );
         $this->assertNotFalse($author);
         $this->assertEquals($id , $author->id );
         $this->assertEquals('Foo', $author->name);
         $this->assertEquals('foo@google.com', $author->email);
         $this->assertEquals(false , $author->isConfirmed() );
 
-        $author = Author::find(array( 'name' => 'Foo' ));
+        $author = Author::load(array( 'name' => 'Foo' ));
         $this->assertNotFalse($author);
         $this->assertEquals($id , $author->id );
         $this->assertEquals('Foo', $author->name );
@@ -246,7 +246,7 @@ class AuthorModelTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
-        $author = Author::defaultRepo()->find($ret->key);
+        $author = Author::load($ret->key);
         $age = $author->getAge();
         $this->assertInstanceOf('DateInterval', $age);
         ok($age->format('%s seconds'));
@@ -296,7 +296,7 @@ class AuthorModelTest extends ModelTestCase
             'identity' => 'tom-has-two-addresses',
         ));
         $this->assertResultSuccess($ret);
-        $author = Author::defaultRepo()->find($ret->key);
+        $author = Author::load($ret->key);
 
         $author->addresses[] = array( 'address' => 'Using address', 'unused' => false );
         $author->addresses[] = array( 'address' => 'Unused address', 'unused' => true );
@@ -325,7 +325,7 @@ class AuthorModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $a2 = Author::findForUpdate([ 'identity' => 'zz3' ]);
+        $a2 = Author::loadForUpdate([ 'identity' => 'zz3' ]);
         $this->assertNotFalse($a2);
 
         $ret = $a2->update(['name' => 'Maroon V']);
@@ -342,7 +342,7 @@ class AuthorModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $author = Author::defaultRepo()->find($ret->key);
+        $author = Author::load($ret->key);
 
         $id = $author->id;
 
@@ -355,7 +355,7 @@ class AuthorModelTest extends ModelTestCase
         $this->assertEquals($id , $author->id);
         $this->assertNull($author->name, 'updated name should be null');
 
-        $author = Author::find($id);
+        $author = Author::load($id);
         $this->assertEquals($id , $author->id);
         $this->assertNull($author->name, 'loaded name should be null');
     }

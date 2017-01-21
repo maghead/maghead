@@ -16,7 +16,7 @@ Changes
 
 ## v2.2.3
 
-- Fixed findOrCreate / updateOrCreate method checking.
+- Fixed loadOrCreate / updateOrCreate method checking.
 
 ## v2.2.1
 

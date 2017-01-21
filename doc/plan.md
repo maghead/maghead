@@ -98,7 +98,7 @@ Generated Collection class:
 ### Model
 
     $authors = new AuthorCollection;
-    $authors->find();
+    $authors->load();
     $authors->where(); ... etc  (can use sqlbuilder for query)
 
 ### Schema Columns
@@ -235,7 +235,7 @@ Many to many relation:
 
     find:
 
-        $author->books->find( 123 );   // find 123 in a subset of author books
+        $author->books->load( 123 );   // find 123 in a subset of author books
 
 ManyToMany relation implementation:
 

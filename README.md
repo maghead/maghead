@@ -289,8 +289,8 @@ if ( $ret->success ) {
 To find record:
     
 ```php
-$ret = $author->find(123);
-$ret = $author->find(array( 'foo' => 'Name' ));
+$ret = $author->load(123);
+$ret = $author->load(array( 'foo' => 'Name' ));
 if ( $ret->success ) {
 
 } else {

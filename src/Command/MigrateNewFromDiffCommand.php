@@ -21,7 +21,7 @@ class MigrateNewFromDiffCommand extends MigrateBaseCommand
         $this->logger->info('Loading schema objects...');
         $finder = new SchemaFinder();
         $finder->setPaths($config->getSchemaPaths() ?: array());
-        $finder->find();
+        $finder->load();
 
         $generator = new MigrationGenerator($this->logger, 'db/migrations');
         $this->logger->info('Creating migration script from diff');

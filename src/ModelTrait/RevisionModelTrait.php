@@ -51,7 +51,7 @@ trait RevisionModelTrait
         if ($ret->error) {
             throw $ret->toException("Can't create revision.");
         }
-        return $modelClass::defaultRepo()->find($ret->key);
+        return $modelClass::defaultRepo()->load($ret->key);
     }
 
     public function saveWithRevision()

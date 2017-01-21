@@ -38,7 +38,7 @@ class BasicCRUDTest extends ModelTestCase
      */
     public function testTitleIsRequired()
     {
-        $book = Book::find(array( 'name' => 'LoadOrCreateTest' ));
+        $book = Book::load(array( 'name' => 'LoadOrCreateTest' ));
         $this->assertNotFalse($book);
         $this->assertNull($book->id);
     }
@@ -50,7 +50,7 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $this->assertEquals(Result::TYPE_CREATE, $ret->type);
 
-        $book = Book::find($ret->key);
+        $book = Book::load($ret->key);
         $this->assertNotNull($book->id);
     }
 
@@ -61,7 +61,7 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertNotNull($ret->key);
 
 
-        $book = Book::find($ret->key);
+        $book = Book::load($ret->key);
         $ret = $book->rawUpdate(array( 'title' => 'Perl Programming without filtering' ));
         $this->assertResultSuccess($ret);
         $this->assertEquals(Result::TYPE_UPDATE, $ret->type);
@@ -77,13 +77,13 @@ class BasicCRUDTest extends ModelTestCase
         $book2 = Book::createAndLoad(array( 'title' => 'Book2' ));
         $this->assertNotFalse($book2);
 
-        $book = Book::find($book1->id);
+        $book = Book::load($book1->id);
         $this->assertNotFalse($book);
         $this->assertInstanceOf('AuthorBooks\Model\Book', $book);
         $this->assertEquals($book1->id, $book->id);
 
 
-        $book = Book::find($book2->id);
+        $book = Book::load($book2->id);
         $this->assertNotFalse($book);
         $this->assertInstanceOf('AuthorBooks\Model\Book', $book);
         $this->assertEquals($book2->id, $book->id);
@@ -98,31 +98,31 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $b->create(array( 'title' => 'Should Create, not load this' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
-        $b = Book::defaultRepo()->find($ret->key);
+        $b = Book::defaultRepo()->load($ret->key);
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
-        $b = Book::defaultRepo()->find($ret->key);
+        $b = Book::defaultRepo()->load($ret->key);
 
         $id = $b->id;
         $this->assertNotNull($id);
 
-        $b = $b->findOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        $b = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertEquals($id, $b->id, 'is the same ID');
         $results[] = $ret;
 
         $b2 = new Book;
-        $b2 = $b2->findOrCreate(array('title' => 'LoadOrCreateTest' ) , 'title');
+        $b2 = $b2->loadOrCreate(array('title' => 'LoadOrCreateTest' ) , 'title');
         $this->assertEquals($id,$b2->id);
         $results[] = $ret;
 
-        $b2 = $b2->findOrCreate( array('title' => 'LoadOrCreateTest2'  ) , 'title' );
+        $b2 = $b2->loadOrCreate( array('title' => 'LoadOrCreateTest2'  ) , 'title' );
         $this->assertNotEquals($id, $b2->id , 'we should create anther one'); 
         $results[] = $ret;
 
         $b3 = new Book;
-        $b3 = $b3->findOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
+        $b3 = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         $this->assertNotEquals($id, $b3->id , 'we should create anther one'); 
         $this->successfulDelete($b3);
     }
@@ -168,7 +168,7 @@ class BasicCRUDTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
-        $author = Author::defaultRepo()->find($ret->key);
+        $author = Author::defaultRepo()->load($ret->key);
 
         $ret = $author->update(array('id' => new Raw('id + 3') ));
         $this->assertResultSuccess($ret);
@@ -226,7 +226,7 @@ class BasicCRUDTest extends ModelTestCase
         $ret = Author::create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
 
-        $author = Author::defaultRepo()->find($ret->key);
+        $author = Author::defaultRepo()->load($ret->key);
 
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer
@@ -260,7 +260,7 @@ class BasicCRUDTest extends ModelTestCase
             'book_id' => $book->id,
         ));
         $this->assertResultSuccess($ret);
-        $ab = AuthorBook::defaultRepo()->find($ret->key);
+        $ab = AuthorBook::defaultRepo()->load($ret->key);
 
         $this->assertNotFalse($book = Book::createAndLoad(array( 'title' => 'Book II' )) );
         $ab = AuthorBook::createAndLoad([
@@ -374,7 +374,7 @@ class BasicCRUDTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $book = Book::defaultRepo()->find($ret->key);
+        $book = Book::defaultRepo()->load($ret->key);
 
         $this->assertEquals( 0 , $book->view );
         $ret = $book->update([
@@ -382,7 +382,7 @@ class BasicCRUDTest extends ModelTestCase
         ]);
         $this->assertResultSuccess($ret);
 
-        $book = Book::defaultRepo()->find($ret->key);
+        $book = Book::defaultRepo()->load($ret->key);
         $this->assertEquals(1, $book->view);
 
         $ret = $book->update([
@@ -390,7 +390,7 @@ class BasicCRUDTest extends ModelTestCase
         ]);
         $this->assertResultSuccess($ret);
 
-        $book = Book::defaultRepo()->find($ret->key);
+        $book = Book::defaultRepo()->load($ret->key);
         $this->assertResultSuccess($ret);
         $this->assertEquals( 4, $book->view );
         $this->assertResultSuccess($book->delete());
@@ -406,11 +406,11 @@ class BasicCRUDTest extends ModelTestCase
         $b = new \AuthorBooks\Model\Book ;
         $ret = $b->create(array( 'title' => 'Zero number inflator' , 'view' => 0 ));
         $this->assertResultSuccess($ret);
-        $b = Book::defaultRepo()->find($ret->key);
+        $b = Book::defaultRepo()->load($ret->key);
         $this->assertNotNull($b->id);
         $this->assertEquals(0 , $b->view);
 
-        $found = Book::defaultRepo()->find($ret->key);
+        $found = Book::defaultRepo()->load($ret->key);
         $this->assertNotFalse($found);
         $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
         $this->assertEquals(0 , $found->view);

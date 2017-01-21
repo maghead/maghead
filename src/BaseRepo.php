@@ -113,7 +113,7 @@ class BaseRepo
      *
      * @param array $args
      */
-    public function findWith(array $args)
+    public function loadWith(array $args)
     {
         $schema = $this->getSchema();
         $query = new SelectQuery();
@@ -131,7 +131,7 @@ class BaseRepo
         return $stm->fetch(PDO::FETCH_CLASS);
     }
 
-    public function findForUpdate(array $args)
+    public function loadForUpdate(array $args)
     {
         $schema = $this->getSchema();
         $query = new SelectQuery();
@@ -155,12 +155,12 @@ class BaseRepo
         return $stm->fetch(PDO::FETCH_CLASS);
     }
 
-    public function findByKeys(array $args, $byKeys = null)
+    public function loadByKeys(array $args, $byKeys = null)
     {
         $pk = static::PRIMARY_KEY;
         $record = null;
         if ($pk && isset($args[$pk])) {
-            return $this->findByPrimaryKey($args[$pk]);
+            return $this->loadByPrimaryKey($args[$pk]);
         } else if ($byKeys) {
             $conds = [];
             foreach ((array) $byKeys as $k) {
@@ -168,17 +168,17 @@ class BaseRepo
                     $conds[$k] = $args[$k];
                 }
             }
-            return $this->findWith($conds);
+            return $this->loadWith($conds);
         }
         throw new MissingPrimaryKeyException('primary key is not defined.');
     }
 
-    public function find($arg)
+    public function load($arg)
     {
         if (is_array($arg)) {
-            return $this->findWith($arg);
+            return $this->loadWith($arg);
         }
-        return $this->findByPrimaryKey($arg);
+        return $this->loadByPrimaryKey($arg);
     }
 
     public function updateByPrimaryKey($kVal, array $args)
@@ -204,7 +204,7 @@ class BaseRepo
                 ));
         }
 
-        $record = $this->findByPrimaryKey($kVal);
+        $record = $this->loadByPrimaryKey($kVal);
 
         $arguments = new ArgumentArray();
 

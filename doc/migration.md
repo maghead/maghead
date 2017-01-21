@@ -51,7 +51,7 @@ Find migration classes and run them all.
     $runner = new MigrationRunner(array('default','master','slave') );
     $files = $runner->load('db/migrations');
 
-    $migrationClasses = $runner->find();
+    $migrationClasses = $runner->load();
 
     foreach( $this->dsIds as $dsId ) {
         foreach( $migrationClasses as $class ) {

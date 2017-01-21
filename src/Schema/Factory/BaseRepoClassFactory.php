@@ -19,6 +19,10 @@ use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
 
+use LazyRecord\Schema\CodeGenSettingsParser;
+use LazyRecord\Schema\AnnotatedBlock;
+use LazyRecord\Schema\MethodBlockParser;
+
 /**
  * Base Repo class generator.
  */
@@ -66,7 +70,7 @@ class BaseRepoClassFactory
         $cTemplate->addStaticVar('columnHash',  array_fill_keys($schema->getColumnNames(), 1));
         $cTemplate->addStaticVar('mixinClasses', array_reverse($schema->getMixinSchemaClasses()));
 
-        $cTemplate->addProtectedProperty('findStm');
+        $cTemplate->addProtectedProperty('loadStm');
         $cTemplate->addProtectedProperty('deleteStm');
 
         $cTemplate->addStaticMethod('public', 'getSchema', [], function() use ($schema) {
@@ -78,6 +82,8 @@ class BaseRepoClassFactory
                 "return \$schema = new \\{$schema->getSchemaProxyClass()};",
             ];
         });
+
+
 
         $schemaReflection = new ReflectionClass($schema);
         $schemaDocComment = $schemaReflection->getDocComment();
@@ -93,25 +99,34 @@ class BaseRepoClassFactory
 
 
 
+        // parse codegen settings from schema doc comment string
+        $codegenSettings = CodeGenSettingsParser::parse($schemaDocComment);
+        if (!empty($codegenSettings)) {
+            $reflectionRepo = new ReflectionClass('LazyRecord\\BaseRepo');
+            $createMethod = $reflectionRepo->getMethod('create');
+            $elements = MethodBlockParser::parseElements($createMethod, 'codegenBlock');
+            $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], AnnotatedBlock::apply($elements, $codegenSettings));
+        }
+
 
         $arguments = new ArgumentArray();
-        $findByPrimaryKeyQuery = new SelectQuery();
-        $findByPrimaryKeyQuery->from($schema->getTable());
+        $loadByPrimaryKeyQuery = new SelectQuery();
+        $loadByPrimaryKeyQuery->from($schema->getTable());
         $primaryKeyColumn = $schema->getColumn($schema->primaryKey);
-        $findByPrimaryKeyQuery->select('*')
+        $loadByPrimaryKeyQuery->select('*')
             ->where()->equal($schema->primaryKey, new ParamMarker($schema->primaryKey));
-        $findByPrimaryKeyQuery->limit(1);
-        $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
-        $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
+        $loadByPrimaryKeyQuery->limit(1);
+        $loadByPrimaryKeySql = $loadByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
+        $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $loadByPrimaryKeySql);
 
 
-        $cTemplate->addMethod('public', 'findByPrimaryKey', ['$pkId'], function() use ($schema) {
+        $cTemplate->addMethod('public', 'loadByPrimaryKey', ['$pkId'], function() use ($schema) {
             return [
-                "if (!\$this->findStm) {",
-                "   \$this->findStm = \$this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",
-                "   \$this->findStm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}');",
+                "if (!\$this->loadStm) {",
+                "   \$this->loadStm = \$this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",
+                "   \$this->loadStm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}');",
                 "}",
-                "return static::_stmFetch(\$this->findStm, [\$pkId]);",
+                "return static::_stmFetch(\$this->loadStm, [\$pkId]);",
             ];
         });
 
@@ -120,7 +135,7 @@ class BaseRepoClassFactory
                 continue;
             }
             $columnName = $column->name;
-            $findMethodName = 'findBy'.ucfirst(Inflector::camelize($columnName));
+            $findMethodName = 'loadBy'.ucfirst(Inflector::camelize($columnName));
             $propertyName = $findMethodName . 'Stm';
             $cTemplate->addProtectedProperty($propertyName);
             $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use($schema, $readQueryDriver, $columnName, $propertyName) {

@@ -38,7 +38,7 @@ class BookModelTest extends ModelTestCase
     public function testUpdateUnknownColumn()
     {
         // Column not found: 1054 Unknown column 'name' in 'where clause'
-        $book = Book::find([ 'name' => 'LoadOrCreateTest' ]);
+        $book = Book::load([ 'name' => 'LoadOrCreateTest' ]);
     }
 
     public function testFlagHelper()
@@ -80,31 +80,31 @@ class BookModelTest extends ModelTestCase
         $ret = $b->create(array( 'title' => 'Should Not Load This' ));
         $this->assertResultSuccess( $ret );
         $results[] = $ret;
-        $b = Book::defaultRepo()->find($ret->key);
+        $b = Book::defaultRepo()->load($ret->key);
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
         $this->assertResultSuccess( $ret );
         $results[] = $ret;
-        $b = Book::defaultRepo()->find($ret->key);
+        $b = Book::defaultRepo()->load($ret->key);
 
         $id = $b->id;
         ok($id);
 
-        $b = $b->findOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        $b = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertEquals($id, $b->id, 'is the same ID');
 
         $b2 = new Book ;
-        $b2 = $b2->findOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        $b2 = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
         $this->assertEquals($id,$b2->id);
 
-        $b2 = $b2->findOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
+        $b2 = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
         $this->assertNotEquals($id, $b2->id , 'we should create anther one'); 
 
         $b3 = new Book ;
-        $b3 = $b3->findOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
+        $b3 = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
         $this->assertNotNull($id, $b3->id , 'we should create anther one'); 
 
-        $b3 = Book::defaultRepo()->find($b3->getKey());
+        $b3 = Book::defaultRepo()->load($b3->getKey());
         $b3->delete();
     }
 
@@ -137,13 +137,13 @@ class BookModelTest extends ModelTestCase
         ]);
         $this->assertResultSuccess($ret);
 
-        $book = Book::find($book->id);
+        $book = Book::load($book->id);
         $this->assertEquals(1 , $book->view );
 
         $book->update([
             'view' => new Raw('view + 3')
         ]);
-        $book = Book::find($book->id);
+        $book = Book::load($book->id);
         $this->assertEquals(4, $book->view);
     }
 
@@ -169,7 +169,7 @@ class BookModelTest extends ModelTestCase
         $id = $book->id;
         $this->assertNotNull($id);
 
-        $book = Book::find([ 'published_at' => $date ]);
+        $book = Book::load([ 'published_at' => $date ]);
         $this->assertNotNull($book);
 
         $ret = $book->updateOrCreate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date ], [ 'published_at' ]);
@@ -195,13 +195,13 @@ class BookModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
 
         // verify update
-        $book = Book::find($book->id);
+        $book = Book::load($book->id);
         $this->assertEquals(1,  $book->view);
 
         $ret = $book->update(array( 'view'  => new Raw('view + 1') ));
         $this->assertResultSuccess($ret);
 
-        $book = Book::find($book->id);
+        $book = Book::load($book->id);
         $this->assertEquals(2,  $book->view);
     }
 }

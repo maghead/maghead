@@ -24,7 +24,7 @@ class UserModelTest extends ModelTestCase
         $ret = $user->create(array( 'account' => 'c9s' ));
         $this->assertResultSuccess($ret);
 
-        $user = User::defaultRepo()->find($ret->key);
+        $user = User::defaultRepo()->load($ret->key);
         ok($user);
 
         $ret = Book::create(array(

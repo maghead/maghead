@@ -57,7 +57,7 @@ class AuthorCollectionTest extends ModelTestCase
 
             $this->assertTrue(isset($pairs[$id]));
             like('/Hack/',$pairs[$id]);
-            $address = Address::defaultRepo()->find($result->id);
+            $address = Address::load($result->id);
             $address->delete();
         }
     }
@@ -292,7 +292,7 @@ class AuthorCollectionTest extends ModelTestCase
 
         foreach( $results as $result ) {
             ok($result->key);
-            $record = Book::defaultRepo()->find($result->id);
+            $record = Book::load($result->id);
             $record->delete();
         }
 
