@@ -728,20 +728,6 @@ abstract class BaseModel implements Serializable
         return $obj;
     }
 
-    public function loadFromCache($args, $ttl = 3600)
-    {
-        $key = serialize($args);
-        if ($cacheData = $this->getCache($key)) {
-            $this->setData($cacheData);
-            return Result::success('Data loaded', [ 'key' => $this->getKey() ]);
-        } else {
-            $ret = $this->load($args);
-            $this->setCache($key, $this->getData(), $ttl);
-            return $ret;
-        }
-    }
-
-
     public function loadForUpdate($args)
     {
         if (!is_array($args)) {
@@ -762,7 +748,6 @@ abstract class BaseModel implements Serializable
         ]);
     }
 
-
     public function load($args)
     {
         if (!is_array($args)) {
@@ -770,8 +755,7 @@ abstract class BaseModel implements Serializable
             $args = [];
             $args[static::PRIMARY_KEY] = $key;
         }
-
-        $repo = static::defaultRepo();
+        // return static::defaultRepo()->load($args);
         $record = $repo->load($args);
         if (!$record) {
             return Result::failure('Record not found');

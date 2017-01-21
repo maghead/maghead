@@ -23,7 +23,7 @@ class AuthorAddressModelTest extends ModelTestCase
             'address' => 'Taiwan Taipei',
         ));
         $this->assertNotFalse($address);
-        
+
         $this->assertNotNull($address->author_id);
         $this->assertNotNull($address->author, 'has many relation fetch');
         $this->assertNotNull($address->author->getId());

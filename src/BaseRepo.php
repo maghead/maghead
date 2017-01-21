@@ -95,6 +95,11 @@ class BaseRepo
         return $obj;
     }
 
+    /**
+     * load method loads one record from the repository with compound conditions.
+     *
+     * @param array $args
+     */
     public function load(array $args)
     {
         $schema = $this->getSchema();
