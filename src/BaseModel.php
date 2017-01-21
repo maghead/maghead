@@ -416,15 +416,6 @@ abstract class BaseModel implements Serializable
         return $obj;
     }
 
-    /**
-     * Create a record object from array.
-     */
-    public static function fromArray(array $array)
-    {
-        $record = new static;
-        $record->setData($array);
-        return $record;
-    }
 
     /**
      * Delete current record, the record should be loaded already.
@@ -1130,13 +1121,6 @@ abstract class BaseModel implements Serializable
         );
     }
 
-    public function __clone()
-    {
-        $d = $this->getData();
-        $this->setData($d);
-        $this->autoReload = $this->autoReload;
-    }
-
     public function asCreateAction(array $args = array(), array $options = array())
     {
         // the create action requires empty args
@@ -1179,6 +1163,7 @@ abstract class BaseModel implements Serializable
         return \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class, $type);
     }
 
+    // =========================== REPO METHODS ===========================
 
     /**
      * defaultRepo method creates the Repo instance class with the default data source IDs
@@ -1219,7 +1204,7 @@ abstract class BaseModel implements Serializable
      * @param Connection $read
      * @return BaseRepo
      */
-    static protected function createRepo($write, $read)
+    static public function createRepo($write, $read)
     {
         return new BaseRepo($write, $read);
     }
@@ -1237,52 +1222,13 @@ abstract class BaseModel implements Serializable
         $this->setData(unserialize($str));
     }
 
-
-    public function lockWrite($alias = null)
+    /**
+     * Create a record object from array.
+     */
+    public static function fromArray(array $array)
     {
-        if (!$alias) {
-            $alias = $this->alias;
-        }
-        // the ::table consts is in the child class.
-        if ($alias) {
-            $sql = 'LOCK TABLES '.$this->table.' AS '.$alias.' WRITE';
-        } else {
-            $sql = 'LOCK TABLES '.$this->table.' WRITE';
-        }
-        $this->getWriteConnection()->query($sql);
-    }
-
-    public function lockRead($alias = null)
-    {
-        if (!$alias) {
-            $alias = $this->alias;
-        }
-        // the ::table consts is in the child class.
-        if ($alias) {
-            $sql = 'LOCK TABLES '.$this->table.' AS '.$alias.' READ';
-        } else {
-            $sql = 'LOCK TABLES '.$this->table.' READ';
-        }
-        $this->getReadConnection()->query($sql);
-    }
-
-    public function unlock()
-    {
-        $readDsId = $this->readSourceId;
-        $writeDsId = $this->writeSourceId;
-        if ($readDsId === $writeDsId) {
-            $this->getReadConnection()->query('UNLOCK TABLES;');
-        } else {
-            $this->getReadConnection()->query('UNLOCK TABLES;');
-            $this->getWriteConnection()->query('UNLOCK TABLES;');
-        }
-    }
-
-    public function free()
-    {
-        if ($this->_preparedCreateStms) {
-            $this->_preparedCreateStms->closeCursor();
-            $this->_preparedCreateStms = null;
-        }
+        $record = new static;
+        $record->setData($array);
+        return $record;
     }
 }

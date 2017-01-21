@@ -645,6 +645,46 @@ class BaseRepo
     }
 
 
+
+
+    // ================= Locks =====================
+    public function lockWrite($alias = null)
+    {
+        if (!$alias) {
+            $alias = $this->alias;
+        }
+        $table = $this->getTable();
+        if ($alias) {
+            $this->write->query("LOCK TABLES $table AS $alias WRITE");
+        } else {
+            $this->write->query("LOCK TABLES $table WRITE");
+        }
+    }
+
+    public function lockRead($alias = null)
+    {
+        if (!$alias) {
+            $alias = $this->alias;
+        }
+        $table = $this->getTable();
+        if ($alias) {
+            $this->read->query("LOCK TABLES $table AS $alias READ");
+        } else {
+            $this->read->query("LOCK TABLES $table READ");
+        }
+    }
+
+    public function unlockAll()
+    {
+        if ($this->readSourceId === $this->writeSourceId) {
+            $this->read->query('UNLOCK TABLES');
+        } else {
+            $this->read->query('UNLOCK TABLES');
+            $this->write->query('UNLOCK TABLES');
+        }
+    }
+
+
     // ================= TRIGGER METHODS ===================
 
     /**

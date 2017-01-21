@@ -41,6 +41,8 @@ UPGRADE TO 4.0.x
 
 13. Trigger methods like `beforeCreate`, `beforeUpdate`, `afterUpdate` are moved to BaseRepo.
 
+14. `lockWrite` => `writeLock`, `lockRead` => `readLock`
+
 
 UPGRADE TO 2.0
 ======================
