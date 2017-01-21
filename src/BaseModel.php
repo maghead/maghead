@@ -281,12 +281,11 @@ abstract class BaseModel implements Serializable
     {
         // Check if we get primary key value
         // here we allow users to specifty primary key value from arguments if the record is not loaded.
-        $kVal = $this->getKey();
-        if (!$kVal) {
+        $key = $this->getKey();
+        if (!$key) {
             return Result::failure('Record is not loaded, Can not update record.', array('args' => $args));
         }
-
-        $ret = static::defaultRepo()->updateByPrimaryKey($kVal, $args);
+        $ret = static::defaultRepo()->updateByPrimaryKey($key, $args);
         $this->setData($args);
         return $ret;
     }
@@ -298,28 +297,13 @@ abstract class BaseModel implements Serializable
      */
     public function rawUpdate(array $args)
     {
-        $repo = static::defaultRepo();
-        $conn   = $repo->getWriteConnection();
-        $driver = $conn->getQueryDriver();
-        $k      = static::PRIMARY_KEY;
-        $kVal = isset($args[$k])
-            ? $args[$k] 
-            : $this->getKey();
-
-        $arguments = new ArgumentArray();
-        $query = new UpdateQuery();
-        $query->set($args);
-        $query->update($this->getTable());
-        $query->where()->equal($k, $kVal);
-        $sql = $query->toSql($driver, $arguments);
-
-        $stm = $conn->prepare($sql);
-        $stm->execute($arguments->toArray());
+        $key = $this->getKey();
+        if (!$key) {
+            return Result::failure('Record is not loaded, Can not update record.', array('args' => $args));
+        }
+        $ret = static::defaultRepo()->rawUpdateByPrimaryKey($key, $args);
         $this->setData($args);
-        return Result::success('Update success', array(
-            'sql' => $sql,
-            'type' => Result::TYPE_UPDATE,
-        ));
+        return $ret;
     }
 
     /**

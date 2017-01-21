@@ -181,6 +181,24 @@ class BaseRepo
         return $this->loadByPrimaryKey($arg);
     }
 
+    public function rawUpdateByPrimaryKey($kVal, array $args)
+    {
+        $conn   = $this->write;
+        $driver = $conn->getQueryDriver();
+        $arguments = new ArgumentArray();
+        $query = new UpdateQuery();
+        $query->set($args);
+        $query->update($this->getTable());
+        $query->where()->equal(static::PRIMARY_KEY, $kVal);
+        $sql = $query->toSql($driver, $arguments);
+        $stm = $conn->prepare($sql);
+        $stm->execute($arguments->toArray());
+        return Result::success('Updated', [
+            'sql' => $sql,
+            'type' => Result::TYPE_UPDATE,
+        ]);
+    }
+
     public function updateByPrimaryKey($kVal, array $args)
     {
         $schema = static::getSchema();
