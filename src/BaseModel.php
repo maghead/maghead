@@ -76,10 +76,7 @@ abstract class BaseModel implements Serializable
      * */
     public static $mixin_classes = array();
 
-    private $_readConnection;
-
-    private $_writeConnection;
-
+    // TODO: remove this
     public function select($sels)
     {
         if (is_array($sels)) {
