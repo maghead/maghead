@@ -43,6 +43,14 @@ UPGRADE TO 4.0.x
 
 14. `lockWrite` => `writeLock`, `lockRead` => `readLock`
 
+15. Renamed `loadOrCreate` to `findOrCreate`.
+
+16. Renamed `load` to `findWith`.
+
+17. `find` is now a generic method for both primary key and conditions in array.
+
+18. Added `findByKeys` for load with keys.
+
 
 UPGRADE TO 2.0
 ======================
