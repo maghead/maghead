@@ -94,4 +94,22 @@ class BaseRepo
         $stm->closeCursor();
         return $obj;
     }
+
+    public function load(array $args)
+    {
+        $schema = $this->getSchema();
+        $query = new SelectQuery();
+        $query->select('*');
+        $query->from($this->getTable(), $this->getAlias());
+
+        $conn = $this->read;
+        $driver = $conn->getQueryDriver();
+        $query->where($args);
+        $arguments = new ArgumentArray();
+        $sql = $query->toSql($driver, $arguments);
+        $stm = $conn->prepare($sql);
+        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS);
+        $stm->execute($arguments->toArray());
+        return $stm->fetch(PDO::FETCH_CLASS);
+    }
 }
