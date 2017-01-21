@@ -699,15 +699,6 @@ abstract class BaseModel implements Serializable
     }
 
     /**
-     * Find record.
-     *
-     * @param array condition array
-     * @return BaseModel
-     */
-    // PHP 5.6 doesn't support static abstract
-
-
-    /**
      * find() is an alias method of defaultRepo->find
      */
     static public function find($pkId)
