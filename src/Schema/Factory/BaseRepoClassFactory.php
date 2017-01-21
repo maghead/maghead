@@ -122,7 +122,6 @@ class BaseRepoClassFactory
             $findMethodName = 'findBy'.ucfirst(Inflector::camelize($columnName));
             $propertyName = $findMethodName . 'Stm';
             $cTemplate->addProtectedProperty($propertyName);
-
             $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use($schema, $readQueryDriver, $columnName, $propertyName) {
                 $arguments = new ArgumentArray;
                 $query = new SelectQuery;

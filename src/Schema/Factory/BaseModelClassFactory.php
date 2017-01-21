@@ -21,110 +21,9 @@ use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
 
-class CodeBlock
-{
-    public $id;
-    public $lines;
-    public $range;
-
-    public function __construct($id, array $lines = [], array $range = null) {
-        $this->id = $id;
-        $this->lines = $lines;
-        $this->range = $range;
-    }
-
-    static public function apply($elements, array $settings)
-    {
-        $body = [];
-        foreach ($elements as $el) {
-            if ($el instanceof CodeBlock) {
-                $blockId = $el->id;
-                if (isset($settings[$blockId]) && isset($el->lines)) {
-                    if ($settings[$blockId]) {
-                        $body[] = $el->lines;
-                    }
-                }
-            } else {
-                $body[] = $el;
-            }
-        }
-        return $body;
-    }
-}
-
-
-class CodeGenSettingsParser
-{
-    static public function parse($comment)
-    {
-        $settings = [];
-        preg_match_all('/@codegen (\w+)(?:\s*=\s*(\S+))?$/m', $comment, $allMatches);
-        for ($i = 0; $i < count($allMatches[0]); ++$i) {
-            $key = $allMatches[1][$i];
-            $value = $allMatches[2][$i];
-
-            if ($value === '') {
-                $value = true;
-            } else {
-                if (strcasecmp($value, 'true') == 0 || strcasecmp($value, 'false') == 0) {
-                    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-                } elseif (preg_match('/^\d+$/', $value)) {
-                    $value = intval($value);
-                }
-            }
-            $settings[$key] = $value;
-        }
-        return $settings;
-    }
-}
-
-class MethodBlockParser
-{
-
-    /**
-     * parseMethod doesn't return block mapping, it returns the lines and blocks in sequence.
-     */
-    static public function parseElements(ReflectionMethod $method, $tag)
-    {
-        $methodFile = $method->getFilename();
-        $startLine = $method->getStartLine();
-        $endLine = $method->getEndLine();
-        $lines = file($methodFile);
-        $methodLines = array_slice($lines, $startLine + 1, $endLine - $startLine - 2); // exclude '{', '}'
-        $blocks = [];
-
-        $numberOfLines = count($methodLines);
-
-        $indent = 0;
-        if (preg_match('/^(\s+)/',$methodLines[0], $m)) {
-            $indent = strlen($m[0]);
-        }
-
-        for ($i = 0; $i < $numberOfLines; ++$i) {
-            $line = substr(rtrim($methodLines[$i]), $indent);
-
-            if (preg_match("/@$tag (\w+)/", $line, $matches)) {
-                $blockId = $matches[1];
-                $block = new CodeBlock($blockId);
-                for ($j = $i; $j < $numberOfLines; ++$j) {
-                    // $line = rtrim($methodLines[$j]);
-                    $line = substr(rtrim($methodLines[$j]), $indent);
-                    $block->lines[] = $line ?: '';
-                    if (preg_match("/@{$tag}End/", $line)) {
-                        $block->range = [$i, $j];
-                        $i = $j; // find the next block
-                        break;
-                    }
-                }
-                $blocks[] = $block;
-            } else {
-                $blocks[] = $line ?: '';
-            }
-        }
-        return $blocks;
-
-    }
-}
+use LazyRecord\Schema\CodeGenSettingsParser;
+use LazyRecord\Schema\AnnotatedBlock;
+use LazyRecord\Schema\MethodBlockParser;
 
 /**
  * Base Model class generator.
@@ -220,7 +119,7 @@ class BaseModelClassFactory
             $reflectionModel = new ReflectionClass('LazyRecord\\BaseModel');
             $createMethod = $reflectionModel->getMethod('create');
             $elements = MethodBlockParser::parseElements($createMethod, 'codegenBlock');
-            $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], CodeBlock::apply($elements, $codegenSettings));
+            $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], AnnotatedBlock::apply($elements, $codegenSettings));
         }
 
         $cTemplate->addStaticMethod('public', 'createRepo', ['$write', '$read'], function() use ($schema) {
