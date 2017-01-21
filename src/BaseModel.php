@@ -65,8 +65,6 @@ abstract class BaseModel implements Serializable
 
     public $usingDataSource;
 
-    public $alias;
-
     public $selected;
 
     protected $_schema;
@@ -77,11 +75,6 @@ abstract class BaseModel implements Serializable
      * @var array Mixin classes are emtpy. (MixinDeclareSchema)
      * */
     public static $mixin_classes = array();
-
-    /**
-     * @var PDOStatement prepared statement for find by primary key method.
-     */
-    protected $_preparedCreateStms = array();
 
     private $_readConnection;
 
@@ -162,129 +155,9 @@ abstract class BaseModel implements Serializable
         return $this->dataKeyValue();
     }
 
-    public function setAlias($alias)
-    {
-        $this->alias = $alias;
-        return $this;
-    }
 
-    /**
-     * Trigger method for "before creating new record".
-     *
-     * By overriding this method, you can modify the 
-     * arguments that is passed to the query builder.
-     *
-     * Remember to return the arguments back.
-     *
-     * @param array $args Arguments
-     *
-     * @return array $args Arguments
-     */
-    public function beforeCreate($args)
-    {
-        return $args;
-    }
 
-    /**
-     * Trigger for after creating new record.
-     *
-     * @param array $args
-     */
-    public function afterCreate($args)
-    {
-    }
 
-    /**
-     * Trigger method for.
-     */
-    public function beforeDelete()
-    {
-    }
-
-    public function afterDelete()
-    {
-    }
-
-    public function beforeUpdate($args)
-    {
-        return $args;
-    }
-
-    public function afterUpdate($args)
-    {
-    }
-
-    /**
-     * To support static operation methods like ::create, ::update, we 
-     * can not define methods with the same name, so that 
-     * we dispatch these methods from the magic method __call.
-     *
-     * __call method is slower than normal method, because there are
-     * one more method table to look up. you should call `create` method
-     * if you need a better performance.
-     */
-    public function __call($m, $a)
-    {
-        switch ($m) {
-        case 'update':
-        case 'load':
-        case 'delete':
-            return call_user_func_array(array($this, '_'.$m), $a);
-            break;
-            // XXX: can dispatch methods to Schema object.
-            // return call_user_func_array( array(  ) )
-            break;
-        }
-
-        // Dispatch to schema object method first
-        $schema = static::getSchema();
-        if (method_exists($schema, $m)) {
-            return call_user_func_array(array($schema, $m), $a);
-        }
-
-        // then it's the mixin methods
-        if ($mClass = $this->findMixinMethodClass($m)) {
-            return $this->invokeMixinClassMethod($mClass, $m, $a);
-        }
-
-        // XXX: special case for twig template
-        throw new BadMethodCallException(get_class($this).": $m method not found.");
-    }
-
-    /**
-     * Find methods in mixin schema classes, methods will be called statically.
-     *
-     * @param string $m method name
-     *
-     * @return string the mixin class name.
-     */
-    public function findMixinMethodClass($m)
-    {
-        foreach (static::$mixin_classes as $mixinClass) {
-            // if we found it, just call it and return the result. 
-            if (method_exists($mixinClass, $m)) {
-                return $mixinClass;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Invoke method on all mixin classes statically. this method does not return anything.
-     *
-     * @param string $m method name.
-     * @param array  $a method arguments.
-     */
-    protected function invokeAllMixinMethods($m, $a)
-    {
-        foreach (static::$mixin_classes as $mixinClass) {
-            // if we found it, just call it and return the result. 
-            if (method_exists($mixinClass, $m)) {
-                call_user_func_array(array($mixinClass, $m), array_merge(array($this), $a));
-            }
-        }
-    }
 
 
     /**
@@ -313,7 +186,8 @@ abstract class BaseModel implements Serializable
             $this->update($args);
             return $record;
         } else {
-            return $this->create($args);
+            $ret = static::create($args);
+            return $this->find($ret->key);
         }
         throw new MissingPrimaryKeyException('primary key is not defined.');
     }
@@ -332,7 +206,7 @@ abstract class BaseModel implements Serializable
         if ($record) {
             return $record;
         }
-        $ret = $this->create($args);
+        $ret = static::create($args);
         if ($ret->error) {
             return false;
         }
@@ -385,11 +259,6 @@ abstract class BaseModel implements Serializable
         return $this->table ?: static::TABLE;
     }
 
-    public function getAlias()
-    {
-        return $this->alias ?: static::TABLE_ALIAS;
-    }
-
     /**
      * find() is an alias method of defaultRepo->find
      */
@@ -425,10 +294,10 @@ abstract class BaseModel implements Serializable
     public function delete()
     {
         $key = $this->getKey();
-        $write = $this->getWriteConnection();
-        $this->beforeDelete();
-        static::createRepo($write, $write)->deleteByPrimaryKey($key);
-        $this->afterDelete();
+        $repo = static::defaultRepo();
+        $repo->beforeDelete($this);
+        $repo->deleteByPrimaryKey($key);
+        $repo->afterDelete($this);
         return Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
     }
 
@@ -468,7 +337,8 @@ abstract class BaseModel implements Serializable
      */
     public function rawUpdate(array $args)
     {
-        $conn = $this->getWriteConnection();
+        $repo = static::defaultRepo();
+        $conn = $repo->getWriteConnection();
         $driver = $conn->getQueryDriver();
         $k = static::PRIMARY_KEY;
         $kVal = isset($args[$k])
@@ -520,9 +390,26 @@ abstract class BaseModel implements Serializable
     }
 
 
+    // ============================ MIXIN METHODS ===========================
 
+    /**
+     * Find methods in mixin schema classes, methods will be called statically.
+     *
+     * @param string $m method name
+     *
+     * @return string the mixin class name.
+     */
+    public function findMixinMethodClass($m)
+    {
+        foreach (static::$mixin_classes as $mixinClass) {
+            // if we found it, just call it and return the result. 
+            if (method_exists($mixinClass, $m)) {
+                return $mixinClass;
+            }
+        }
 
-
+        return false;
+    }
 
 
     /**
@@ -539,6 +426,48 @@ abstract class BaseModel implements Serializable
         return call_user_func_array(array($mixinClass, $m), array_merge(array($this), $a));
     }
 
+
+    /**
+     * Invoke method on all mixin classes statically. this method does not return anything.
+     *
+     * @param string $m method name.
+     * @param array  $a method arguments.
+     */
+    protected function invokeAllMixinMethods($m, $a)
+    {
+        foreach (static::$mixin_classes as $mixinClass) {
+            // if we found it, just call it and return the result. 
+            if (method_exists($mixinClass, $m)) {
+                call_user_func_array(array($mixinClass, $m), array_merge(array($this), $a));
+            }
+        }
+    }
+
+    /**
+     * To support static operation methods like ::create, ::update, we 
+     * can not define methods with the same name, so that 
+     * we dispatch these methods from the magic method __call.
+     *
+     * __call method is slower than normal method, because there are
+     * one more method table to look up. you should call `create` method
+     * if you need a better performance.
+     */
+    public function __call($m, $a)
+    {
+        // Dispatch to schema object method first
+        $schema = static::getSchema();
+        if (method_exists($schema, $m)) {
+            return call_user_func_array(array($schema, $m), $a);
+        }
+
+        // then it's the mixin methods
+        if ($mClass = $this->findMixinMethodClass($m)) {
+            return $this->invokeMixinClassMethod($mClass, $m, $a);
+        }
+
+        // XXX: special case for twig template
+        throw new BadMethodCallException(get_class($this).": $m method not found.");
+    }
 
 
     /**
@@ -649,30 +578,6 @@ abstract class BaseModel implements Serializable
         return $connManager->getConnection($dsId);
     }
 
-    /**
-     * Get PDO connection for writing data.
-     *
-     * @return PDO
-     */
-    public function getWriteConnection()
-    {
-        return $this->_writeConnection
-            ? $this->_writeConnection
-            : $this->_writeConnection = ConnectionManager::getInstance()->getConnection($this->writeSourceId);
-    }
-
-    /**
-     * Get PDO connection for reading data.
-     *
-     * @return PDO
-     */
-    public function getReadConnection()
-    {
-        return $this->_readConnection
-            ? $this->_readConnection
-            : $this->_readConnection = ConnectionManager::getInstance()->getConnection($this->readSourceId);
-    }
-
     public function getSchemaProxyClass()
     {
         return static::SCHEMA_PROXY_CLASS;
@@ -717,8 +622,14 @@ abstract class BaseModel implements Serializable
         return $this->$name;
     }
 
+    /**
+     * This will be overrided by child model class.
+     */
     abstract public function getData();
 
+    /**
+     * This will be overrided by child model class.
+     */
     abstract public function setData(array $data);
 
     /**
@@ -733,6 +644,19 @@ abstract class BaseModel implements Serializable
             || 'schema' === $name
             || $this->getSchema()->getRelation($name)
             ;
+    }
+
+    /**
+     * __get magic method is used for getting:
+     *
+     * 1. virtual column data
+     * 2. relational records
+     *
+     * @param string $key
+     */
+    public function __get($key)
+    {
+        return $this->get($key);
     }
 
     public function getRelationalRecords($key, $relation = null)
@@ -884,18 +808,6 @@ abstract class BaseModel implements Serializable
         throw new Exception("The relationship type of $key is not supported.");
     }
 
-    /**
-     * __get magic method is used for getting:
-     *
-     * 1. virtual column data
-     * 2. relational records
-     *
-     * @param string $key
-     */
-    public function __get($key)
-    {
-        return $this->get($key);
-    }
 
     /**
      * Return the collection object of current model object.
@@ -919,6 +831,28 @@ abstract class BaseModel implements Serializable
         if ($fields) {
             return array_intersect_key($data, array_flip($fields));
         }
+        return $data;
+    }
+
+    /**
+     * Deflate data and return.
+     *
+     * @return array
+     */
+    public function toInflatedArray()
+    {
+        $data = array();
+        $schema = static::getSchema();
+        $data = $this->getData();
+        foreach ($data as $k => $v) {
+            $col = $schema->getColumn($k);
+            if ($col && $col->isa) {
+                $data[ $k ] = $col->inflate($v, $this);
+            } else {
+                $data[ $k ] = $v;
+            }
+        }
+
         return $data;
     }
 
@@ -961,27 +895,6 @@ abstract class BaseModel implements Serializable
         return file_put_contents($yamlFile, "---\n".Yaml::dump($data, $inline = true, $exceptionOnInvalidType = true));
     }
 
-    /**
-     * Deflate data and return.
-     *
-     * @return array
-     */
-    public function toInflatedArray()
-    {
-        $data = array();
-        $schema = static::getSchema();
-        $data = $this->getData();
-        foreach ($data as $k => $v) {
-            $col = $schema->getColumn($k);
-            if ($col && $col->isa) {
-                $data[ $k ] = $col->inflate($v, $this);
-            } else {
-                $data[ $k ] = $v;
-            }
-        }
-
-        return $data;
-    }
 
     /**
      * Inflate column value.
@@ -1092,16 +1005,6 @@ abstract class BaseModel implements Serializable
         }
 
         return $val;
-    }
-
-    public function getWriteSourceId()
-    {
-        return $this->writeSourceId;
-    }
-
-    public function getReadSourceId()
-    {
-        return $this->readSourceId;
     }
 
     public function fetchOneToManyRelationCollection($relationId)

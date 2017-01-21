@@ -83,6 +83,12 @@ class BaseRepo
         return $this->alias ?: static::TABLE_ALIAS;
     }
 
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+        return $this;
+    }
+
     /**
      * Find record.
      *
