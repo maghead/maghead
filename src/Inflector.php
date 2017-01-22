@@ -29,7 +29,7 @@
  * @link          http://book.cakephp.org/view/1478/Inflector
  */
 
-namespace LazyRecord;
+namespace Maghead;
 
 class Inflector
 {

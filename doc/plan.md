@@ -1,4 +1,4 @@
-LazyRecord ORM
+Maghead ORM
 ==============
 
 Requirement
@@ -40,12 +40,12 @@ translate this into php config file `build/datasource_config.php`.
 
 Create connection from data source:
 
-    $conn = LazyRecord\ORM::getConnection('master');
+    $conn = Maghead\ORM::getConnection('master');
 
-    LazyRecord\ORM::setConnection( $conn );
-    LazyRecord\ORM::setSchemaLoaderPath( array( 'build/schema' , 'path/to/other/schema' ) );
+    Maghead\ORM::setConnection( $conn );
+    Maghead\ORM::setSchemaLoaderPath( array( 'build/schema' , 'path/to/other/schema' ) );
 
-    $gen = new LazyRecord\SchemaBuilder;
+    $gen = new Maghead\SchemaBuilder;
     $gen->addPath( 'schema/' );
     $gen->setTargetPath( 'build/schema' );
     $gen->build();
@@ -61,7 +61,7 @@ Generated Schema class:
 
     <?php
 
-    class BookSchema extends LazyRecord\BaseSchema
+    class BookSchema extends Maghead\BaseSchema
     {
         function __construct()
         {
@@ -78,7 +78,7 @@ Generated Model class:
 
     <?php
 
-    class Book extends LazyRecord\Model
+    class Book extends Maghead\Model
     {
         // load schema data in __construct
 
@@ -88,7 +88,7 @@ Generated Model class:
 Generated Collection class:
 
     <?php
-    class BookCollection extends LazyRecord\Collection
+    class BookCollection extends Maghead\Collection
     {
 
     }
@@ -114,9 +114,9 @@ Generated Collection class:
 When Model object created, try to load the `ModelSchema` file, which is an
 array reference that handles.
 
-Should have a global cache for schema array, like LazyRecord::schemas[ $class ]
+Should have a global cache for schema array, like Maghead::schemas[ $class ]
 
-    $schema = \LazyRecord\SchemaLoader::load( $class );
+    $schema = \Maghead\SchemaLoader::load( $class );
 
 ### PHP Schema
 

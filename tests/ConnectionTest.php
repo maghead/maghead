@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Connection;
+use Maghead\Connection;
 
 class ConnectionTest extends PHPUnit_Framework_TestCase
 {

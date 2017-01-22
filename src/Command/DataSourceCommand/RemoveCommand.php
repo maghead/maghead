@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Command\DataSourceCommand;
+namespace Maghead\Command\DataSourceCommand;
 
-use LazyRecord\Command\BaseCommand;
+use Maghead\Command\BaseCommand;
 
 class RemoveCommand extends BaseCommand
 {

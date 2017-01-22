@@ -1,13 +1,13 @@
 <?php
 
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
 use DateTime;
-use LazyRecord\Deflator;
-use LazyRecord\Inflator;
-use LazyRecord\ArrayUtils;
-use LazyRecord\Utils;
-use LazyRecord\BaseModel;
+use Maghead\Deflator;
+use Maghead\Inflator;
+use Maghead\ArrayUtils;
+use Maghead\Utils;
+use Maghead\BaseModel;
 use Exception;
 use ArrayIterator;
 use IteratorAggregate;

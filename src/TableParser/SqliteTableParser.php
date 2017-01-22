@@ -1,11 +1,11 @@
 <?php
 
-namespace LazyRecord\TableParser;
+namespace Maghead\TableParser;
 
 use PDO;
 use Exception;
 use LogicException;
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema\DeclareSchema;
 use SQLBuilder\Raw;
 
 class SqliteTableParser extends BaseTableParser

@@ -3,7 +3,7 @@ Unit Testing
 
 ## Config
 
-To test LazyRecord ORM, first you need to copy the config for test:
+To test Maghead ORM, first you need to copy the config for test:
 
     cp -v db/config/database.testing.yml db/config/database.yml
 
@@ -27,16 +27,16 @@ To test with pgsql database:
 
 ## Build Schema files
 
-    $ php bin/lazy build-schema
+    $ php bin/maghead build-schema
 
 ## Build SQL 
 
 We've already defined 3 data sources, they were named as 'mysql', 'pgsql', 'sqlite' , 
 now you can insert schema sqls into these data sources:
 
-    $ php bin/lazy build-sql --rebuild -D=mysql
-    $ php bin/lazy build-sql --rebuild -D=pgsql
-    $ php bin/lazy build-sql --rebuild -D=sqlite
+    $ php bin/maghead build-sql --rebuild -D=mysql
+    $ php bin/maghead build-sql --rebuild -D=pgsql
+    $ php bin/maghead build-sql --rebuild -D=sqlite
 
 ## Run PHPUnit
 

@@ -1,6 +1,6 @@
 <?php
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\Schema\DeclareColumn;
+use Maghead\Schema\DeclareSchema;
+use Maghead\Schema\DeclareColumn;
 
 class ColumnTest extends PHPUnit_Framework_TestCase
 {

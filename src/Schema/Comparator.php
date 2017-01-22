@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
-use LazyRecord\Schema\Comparator\ColumnDiff;
-use LazyRecord\Schema\Comparator\AttributeDiff;
+use Maghead\Schema\Comparator\ColumnDiff;
+use Maghead\Schema\Comparator\AttributeDiff;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use Closure;

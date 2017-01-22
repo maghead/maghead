@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
 use CLIFramework\Logger;
-use LazyRecord\ConfigLoader;
-use LazyRecord\ClassUtils;
+use Maghead\ConfigLoader;
+use Maghead\ClassUtils;
 use ReflectionObject;
 
 class SchemaUtils

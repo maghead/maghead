@@ -1,10 +1,10 @@
 <?php
-use LazyRecord\Testing\ModelTestCase;
+use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorCollection;
-use LazyRecord\Exporter\XMLExporter;
+use Maghead\Exporter\XMLExporter;
 
 class XMLExporterTest extends ModelTestCase
 {

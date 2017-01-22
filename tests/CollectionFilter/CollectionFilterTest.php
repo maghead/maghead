@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\CollectionFilter\CollectionFilter;
+use Maghead\CollectionFilter\CollectionFilter;
 use TestApp\Model\PostCollection;
 use TestApp\Model\Post;
 

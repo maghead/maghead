@@ -1,12 +1,12 @@
 <?php
 
-namespace LazyRecord\Migration;
+namespace Maghead\Migration;
 
-use LazyRecord\Schema\Comparator;
-use LazyRecord\Schema\Relationship\Relationship;
-use LazyRecord\TableParser\TableParser;
-use LazyRecord\TableParser\ReferenceParser;
-use LazyRecord\Connection;
+use Maghead\Schema\Comparator;
+use Maghead\Schema\Relationship\Relationship;
+use Maghead\TableParser\TableParser;
+use Maghead\TableParser\ReferenceParser;
+use Maghead\Connection;
 use GetOptionKit\OptionResult;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;

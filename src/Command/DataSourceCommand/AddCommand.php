@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Command\DataSourceCommand;
+namespace Maghead\Command\DataSourceCommand;
 
-use LazyRecord\Command\BaseCommand;
-use LazyRecord\DSN\DSNParser;
+use Maghead\Command\BaseCommand;
+use Maghead\DSN\DSNParser;
 use PDO;
 
 class AddCommand extends BaseCommand

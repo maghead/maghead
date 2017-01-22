@@ -1,11 +1,11 @@
 <?php
-namespace LazyRecord\Model;
-use LazyRecord\BaseCollection;
+namespace Maghead\Model;
+use Maghead\BaseCollection;
 class MetadataCollectionBase
     extends BaseCollection
 {
-    const SCHEMA_PROXY_CLASS = 'LazyRecord\\Model\\MetadataSchemaProxy';
-    const MODEL_CLASS = 'LazyRecord\\Model\\Metadata';
+    const SCHEMA_PROXY_CLASS = 'Maghead\\Model\\MetadataSchemaProxy';
+    const MODEL_CLASS = 'Maghead\\Model\\Metadata';
     const TABLE = '__meta__';
     const READ_SOURCE_ID = 'default';
     const WRITE_SOURCE_ID = 'default';
@@ -16,6 +16,6 @@ class MetadataCollectionBase
         if ($schema) {
            return $schema;
         }
-        return $schema = new \LazyRecord\Model\MetadataSchemaProxy;
+        return $schema = new \Maghead\Model\MetadataSchemaProxy;
     }
 }

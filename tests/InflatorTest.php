@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Inflator;
+use Maghead\Inflator;
 
 class InflatorTest extends PHPUnit_Framework_TestCase
 {

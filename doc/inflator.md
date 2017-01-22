@@ -1,7 +1,7 @@
 Inflator
 ========
 
-    LazyRecord\Inflator::register('datetime', function($value) { 
+    Maghead\Inflator::register('datetime', function($value) { 
         return new DateTime($value);
     })
 

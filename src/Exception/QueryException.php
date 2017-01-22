@@ -1,8 +1,8 @@
 <?php
-namespace LazyRecord\Exception;
+namespace Maghead\Exception;
 use RuntimeException;
 use Exception;
-use LazyRecord\BaseModel;
+use Maghead\BaseModel;
 
 class QueryException extends RuntimeException
 {

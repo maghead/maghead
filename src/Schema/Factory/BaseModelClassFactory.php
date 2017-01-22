@@ -1,13 +1,13 @@
 <?php
 
-namespace LazyRecord\Schema\Factory;
+namespace Maghead\Schema\Factory;
 
 use ReflectionClass;
 use ReflectionMethod;
 
 use ClassTemplate\ClassFile;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\ConnectionManager;
+use Maghead\Schema\DeclareSchema;
+use Maghead\ConnectionManager;
 use Doctrine\Common\Inflector\Inflector;
 
 // used for SQL generator
@@ -63,9 +63,9 @@ class BaseModelClassFactory
             new ConcatExpr(new Raw('__DIR__'), DIRECTORY_SEPARATOR . $schemaProxyFileName)
         ));
 
-        $cTemplate->useClass('LazyRecord\\Schema\\SchemaLoader');
-        $cTemplate->useClass('LazyRecord\\Result');
-        $cTemplate->useClass('LazyRecord\\Inflator');
+        $cTemplate->useClass('Maghead\\Schema\\SchemaLoader');
+        $cTemplate->useClass('Maghead\\Result');
+        $cTemplate->useClass('Maghead\\Inflator');
         $cTemplate->useClass('SQLBuilder\\Bind');
         $cTemplate->useClass('SQLBuilder\\ArgumentArray');
         $cTemplate->useClass('PDO');

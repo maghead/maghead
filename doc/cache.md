@@ -2,9 +2,9 @@ Cache
 ========
 
 use CacheKit;
-use LazyRecord\CacheManager;
+use Maghead\CacheManager;
 
-LazyRecord\CacheManager::getInstance()->using(
+Maghead\CacheManager::getInstance()->using(
     CacheKit\MemcacheCache::getInstance()
 );
 

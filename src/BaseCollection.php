@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use PDO;
 use RuntimeException;
@@ -14,7 +14,7 @@ use SQLBuilder\Universal\Query\UpdateQuery;
 use SQLBuilder\Universal\Query\DeleteQuery;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
-use LazyRecord\Schema\SchemaLoader;
+use Maghead\Schema\SchemaLoader;
 use SerializerKit\XmlSerializer;
 use Symfony\Component\Yaml\Yaml;
 
@@ -405,7 +405,7 @@ class BaseCollection
      *
      * CollectionPager is a simple data pager, do not depends on database.
      *
-     * @return LazyRecord\CollectionPager
+     * @return Maghead\CollectionPager
      */
     public function pager($page = 1, $pageSize = 10)
     {
@@ -419,7 +419,7 @@ class BaseCollection
     /**
      * Get items.
      *
-     * @return LazyRecord\BaseModel[]
+     * @return Maghead\BaseModel[]
      */
     public function items()
     {

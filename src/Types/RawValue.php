@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Types;
+namespace Maghead\Types;
 
 use SQLBuilder\RawValue;
 

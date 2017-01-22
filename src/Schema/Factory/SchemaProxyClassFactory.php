@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Schema\Factory;
+namespace Maghead\Schema\Factory;
 
 use ClassTemplate\ClassFile;
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema\DeclareSchema;
 use SerializerKit\PhpSerializer;
 
 function php_var_export($obj)
@@ -22,7 +22,7 @@ class SchemaProxyClassFactory
         $schemaArray = $schema->export();
 
         $cTemplate = new ClassFile($schema->getSchemaProxyClass());
-        $cTemplate->extendClass('\\LazyRecord\\Schema\\RuntimeSchema');
+        $cTemplate->extendClass('\\Maghead\\Schema\\RuntimeSchema');
 
         $cTemplate->addConsts(array(
             'schema_class' => $schemaClass,
@@ -35,8 +35,8 @@ class SchemaProxyClassFactory
             'LABEL' => $schema->getLabel(),
         ));
 
-        $cTemplate->useClass('\\LazyRecord\\Schema\\RuntimeColumn');
-        $cTemplate->useClass('\\LazyRecord\\Schema\\Relationship\\Relationship');
+        $cTemplate->useClass('\\Maghead\\Schema\\RuntimeColumn');
+        $cTemplate->useClass('\\Maghead\\Schema\\Relationship\\Relationship');
 
         $cTemplate->addPublicProperty('columnNames', $schema->getColumnNames());
         $cTemplate->addPublicProperty('primaryKey', $schema->getPrimaryKey());

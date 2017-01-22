@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
 use SQLBuilder\Universal\Syntax\Column;
-use LazyRecord\Exception\SchemaRelatedException;
+use Maghead\Exception\SchemaRelatedException;
 use ArrayIterator;
 use IteratorAggregate;
 use Closure;

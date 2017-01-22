@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Utils;
+use Maghead\Utils;
 
 class UtilsTest extends PHPUnit_Framework_TestCase
 {

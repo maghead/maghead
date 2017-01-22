@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord\Command\SchemaCommand;
+namespace Maghead\Command\SchemaCommand;
 
-use LazyRecord\ConfigLoader;
-use LazyRecord\Schema\SchemaGenerator;
-use LazyRecord\Utils;
+use Maghead\ConfigLoader;
+use Maghead\Schema\SchemaGenerator;
+use Maghead\Utils;
 use CLIFramework\Command;
 use ReflectionClass;
 

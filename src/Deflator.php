@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\PDOMySQLDriver;

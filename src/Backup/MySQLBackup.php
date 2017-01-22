@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Backup;
+namespace Maghead\Backup;
 
-use LazyRecord\Connection;
+use Maghead\Connection;
 use Exception;
 use LogicException;
 use DateTime;

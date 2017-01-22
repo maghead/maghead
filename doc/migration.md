@@ -17,7 +17,7 @@ To run migration scripts:
 
 ## Migration Class
 
-    use LazyRecord\Migration\Migration;
+    use Maghead\Migration\Migration;
     class YourMigration extends Migration
     {
         function upgrade() {

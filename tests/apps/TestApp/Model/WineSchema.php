@@ -1,7 +1,7 @@
 <?php
 namespace TestApp\Model;
-use LazyRecord\BaseModel;
-use LazyRecord\Schema;
+use Maghead\BaseModel;
+use Maghead\Schema;
 
 class WineSchema extends Schema
 {

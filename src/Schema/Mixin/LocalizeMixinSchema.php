@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Schema\Mixin;
+namespace Maghead\Schema\Mixin;
 
-use LazyRecord\Schema\MixinDeclareSchema;
-use LazyRecord\Schema;
+use Maghead\Schema\MixinDeclareSchema;
+use Maghead\Schema;
 
 class LocalizeMixinSchema extends MixinDeclareSchema
 {

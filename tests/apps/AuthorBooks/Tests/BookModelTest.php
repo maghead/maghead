@@ -1,7 +1,7 @@
 <?php
 namespace AuthorBooks\Tests;
 use SQLBuilder\Raw;
-use LazyRecord\Testing\ModelTestCase;
+use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\BookSchema;

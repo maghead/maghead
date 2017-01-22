@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Model;
+namespace Maghead\Model;
 
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema\DeclareSchema;
 
 class MetadataSchema extends DeclareSchema
 {

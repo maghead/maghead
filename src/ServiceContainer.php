@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use Pimple\Container;
-use LazyRecord\Schema\SchemaFinder;
+use Maghead\Schema\SchemaFinder;
 use CLIFramework\Logger;
 
 class ServiceContainer extends Container

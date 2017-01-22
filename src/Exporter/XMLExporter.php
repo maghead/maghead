@@ -1,11 +1,11 @@
 <?php
 
-namespace LazyRecord\Exporter;
+namespace Maghead\Exporter;
 
-use LazyRecord\BaseModel;
-use LazyRecord\BaseCollection;
-use LazyRecord\Schema\Relationship\Relationship;
-use LazyRecord\Schema\SchemaInterface;
+use Maghead\BaseModel;
+use Maghead\BaseCollection;
+use Maghead\Schema\Relationship\Relationship;
+use Maghead\Schema\SchemaInterface;
 use DOMDocument;
 use DOMElement;
 use DOMText;

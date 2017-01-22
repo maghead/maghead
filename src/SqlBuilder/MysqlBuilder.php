@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord\SqlBuilder;
+namespace Maghead\SqlBuilder;
 
-use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\Relationship\Relationship;
-use LazyRecord\Schema\DeclareColumn;
+use Maghead\Schema\SchemaInterface;
+use Maghead\Schema\Relationship\Relationship;
+use Maghead\Schema\DeclareColumn;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Syntax\Constraint;
 

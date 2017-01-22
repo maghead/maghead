@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
-use LazyRecord\Schema\SchemaFinder;
-use LazyRecord\Schema\SchemaLoader;
+use Maghead\Schema\SchemaFinder;
+use Maghead\Schema\SchemaLoader;
 
 class Utils
 {

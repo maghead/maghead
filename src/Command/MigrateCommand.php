@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
 use CLIFramework\Command;
 
@@ -19,12 +19,12 @@ class MigrateCommand extends BaseCommand
     public function init()
     {
         parent::init();
-        $this->command('upgrade', 'LazyRecord\\Command\\MigrateUpgradeCommand');
-        $this->command('downgrade', 'LazyRecord\\Command\\MigrateDowngradeCommand');
-        $this->command('new', 'LazyRecord\\Command\\MigrateNewCommand');
-        $this->command('automatic', 'LazyRecord\\Command\\MigrateAutomaticCommand');
-        $this->command('status', 'LazyRecord\\Command\\MigrateStatusCommand');
-        $this->command('diff', 'LazyRecord\\Command\\MigrateNewFromDiffCommand');
+        $this->command('upgrade', 'Maghead\\Command\\MigrateUpgradeCommand');
+        $this->command('downgrade', 'Maghead\\Command\\MigrateDowngradeCommand');
+        $this->command('new', 'Maghead\\Command\\MigrateNewCommand');
+        $this->command('automatic', 'Maghead\\Command\\MigrateAutomaticCommand');
+        $this->command('status', 'Maghead\\Command\\MigrateStatusCommand');
+        $this->command('diff', 'Maghead\\Command\\MigrateNewFromDiffCommand');
     }
 
     public function execute()

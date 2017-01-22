@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Command\DbCommand;
+namespace Maghead\Command\DbCommand;
 
 class RecreateCommand extends CreateCommand
 {
@@ -11,7 +11,7 @@ class RecreateCommand extends CreateCommand
 
     public function execute()
     {
-        $dropCommand = $this->createCommand('LazyRecord\Command\DbCommand\DropCommand');
+        $dropCommand = $this->createCommand('Maghead\Command\DbCommand\DropCommand');
         $dropCommand->options = $this->options;
         $dropCommand->execute();
         parent::execute();

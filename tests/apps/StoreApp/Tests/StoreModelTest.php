@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Testing\ModelTestCase;
+use Maghead\Testing\ModelTestCase;
 use StoreApp\Model\Store;
 use StoreApp\Model\StoreCollection;
 

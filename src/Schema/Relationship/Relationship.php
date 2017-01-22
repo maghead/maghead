@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Schema\Relationship;
+namespace Maghead\Schema\Relationship;
 
 use SQLBuilder\Universal\Syntax\Conditions;
-use LazyRecord\BaseCollection;
+use Maghead\BaseCollection;
 use LogicException;
 use ArrayAccess;
 use IteratorAggregate;
@@ -84,7 +84,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
      *
      * This method is only for many-to-many relationship object.
      *
-     * @return LazyRecord\BaseCollection The foreign foreign collection.
+     * @return Maghead\BaseCollection The foreign foreign collection.
      */
     public function newForeignForeignCollection($junctionRelation)
     {

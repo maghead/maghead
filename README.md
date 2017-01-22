@@ -1,29 +1,29 @@
-LazyRecord
+Maghead
 ==========
 
-<img src="https://raw.github.com/corneltek/LazyRecord/master/assets/images/logo.png" width="64"/>
+<img src="https://raw.github.com/corneltek/Maghead/master/assets/images/logo.png" width="64"/>
 
 [![works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
-[![Build Status](https://travis-ci.org/corneltek/LazyRecord.svg?branch=master)](https://travis-ci.org/corneltek/LazyRecord)
-[![Coverage Status](https://img.shields.io/coveralls/corneltek/LazyRecord.svg)](https://coveralls.io/r/corneltek/LazyRecord)
+[![Build Status](https://travis-ci.org/corneltek/Maghead.svg?branch=master)](https://travis-ci.org/corneltek/Maghead)
+[![Coverage Status](https://img.shields.io/coveralls/corneltek/Maghead.svg)](https://coveralls.io/r/corneltek/Maghead)
 [![Latest Stable Version](https://poser.pugx.org/corneltek/lazyrecord/v/stable.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
 [![Total Downloads](https://poser.pugx.org/corneltek/lazyrecord/downloads.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
 [![Monthly Downloads](https://poser.pugx.org/corneltek/lazyrecord/d/monthly)](https://packagist.org/packages/corneltek/lazyrecord)
 [![Daily Downloads](https://poser.pugx.org/corneltek/lazyrecord/d/daily)](https://packagist.org/packages/corneltek/lazyrecord)
 [![Latest Unstable Version](https://poser.pugx.org/corneltek/lazyrecord/v/unstable.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
 [![License](https://poser.pugx.org/corneltek/lazyrecord/license.svg)](https://packagist.org/packages/corneltek/lazyrecord)
-[![Join the chat at https://gitter.im/c9s/LazyRecord](https://badges.gitter.im/c9s/LazyRecord.svg)](https://gitter.im/c9s/LazyRecord?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/c9s/Maghead](https://badges.gitter.im/c9s/Maghead.svg)](https://gitter.im/c9s/Maghead?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-LazyRecord is an open-source Object-Relational Mapping (ORM) for PHP5. 
+Maghead is an open-source Object-Relational Mapping (ORM) for PHP5. 
 
-LazyRecord uses code generator to generate static code, which reduces runtime 
+Maghead uses code generator to generate static code, which reduces runtime 
 costs, therefore it's pretty lightweight and fast. 
 
 It allows you to access your database very easily by using ActiveRecord
 pattern API.
 
-LazyRecord is not like PropelORM, it doesn't use ugly XML as its schema or
-config file, LazyRecord uses simpler YAML format config file and it compiles
+Maghead is not like PropelORM, it doesn't use ugly XML as its schema or
+config file, Maghead uses simpler YAML format config file and it compiles
 YAML to pure PHP code to improve the performance of config loading.
 
 With the simple schema design, you can define your model schema very easily and
@@ -32,12 +32,12 @@ you can even embed closure in your schema classes.
 
 See also
 
-<div style="width:425px" id="__ss_12638921"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/lazyrecord-the-fast-orm-for-php" title="LazyRecord: The Fast ORM for PHP" target="_blank">LazyRecord: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
+<div style="width:425px" id="__ss_12638921"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/lazyrecord-the-fast-orm-for-php" title="Maghead: The Fast ORM for PHP" target="_blank">Maghead: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
 
 
 Automatic Migration Demonstration
 --------------------------------
-<img src="https://raw.github.com/c9s/LazyRecord/master/assets/images/migration.gif" width="600"/>
+<img src="https://raw.github.com/c9s/Maghead/master/assets/images/migration.gif" width="600"/>
 
 Feature
 -------
@@ -56,7 +56,7 @@ Design Concept
 --------------
 
 - Function calls in PHP are very slow, so the model schema data
-  will be built statically, LazyRecord converts all definitions (default value, validator, filter, valid
+  will be built statically, Maghead converts all definitions (default value, validator, filter, valid
   value builder) into classes and static PHP array, this keeps these model
   classes very lightweight and fast.
   
@@ -69,7 +69,7 @@ Design Concept
 Installation
 ------------
 
-Please see the details on [Wiki](https://github.com/c9s/LazyRecord/wiki)
+Please see the details on [Wiki](https://github.com/c9s/Maghead/wiki)
 
 Getting Started
 ---------------
@@ -131,7 +131,7 @@ Put the content into your file:
 
 ```php
 namespace YourApp\Model;
-use LazyRecord\Schema;
+use Maghead\Schema;
 
 class UserSchema extends Schema
 {
@@ -151,7 +151,7 @@ class UserSchema extends Schema
 Then run `build-schema` command to build static schema files:
 
 ```sh
-$ vendor/bin/lazy lazy schema build
+$ vendor/bin/maghead lazy schema build
 Finding schemas...
 Found schema classes
 Initializing schema generator...
@@ -170,7 +170,7 @@ If you are using postgresql or mysql, you can create your database with
 `create-db` command:
 
 ```sh
-$ php vendor/bin/lazy db create
+$ php vendor/bin/maghead db create
 ```
 
 ### Building SQL From Model Schemas
@@ -179,7 +179,7 @@ Now you need to build SQL schema into your database, simply run `build-sql`,
 `-d` is for debug mode, which prints all generated SQL statements:
 
 ```sh
-$ php vendor/bin/lazy sql
+$ php vendor/bin/maghead sql
 Finding schema classes...
 Initialize schema builder...
 Building SQL for YourApp\Model\UserSchema
@@ -204,7 +204,7 @@ $ vim app.php
 
 ```php
 require 'vendor/autoload.php';
-$config = new LazyRecord\ConfigLoader;
+$config = new Maghead\ConfigLoader;
 $config->load( __DIR__ . '/db/config/database.yml');
 $config->init();
 ```
@@ -237,7 +237,7 @@ Basic Usage
 
 ### Model Accessor
 
-LazyRecord's BaseModel class provides a simple way to retrieve result data from the `__get` magic method,
+Maghead's BaseModel class provides a simple way to retrieve result data from the `__get` magic method,
 by using the magic method, you can retrieve the column value and objects from relationship.
 
 ```php
@@ -378,13 +378,13 @@ Model Schema
 
 ### Defining Schema Class
 
-Simply extend class from `LazyRecord\Schema`, and define your model columns 
+Simply extend class from `Maghead\Schema`, and define your model columns 
 in the `schema` method, e.g.,
 
 ```php
 <?php
 namespace TestApp;
-use LazyRecord\Schema;
+use Maghead\Schema;
 
 class BookSchema extends Schema
 {
@@ -500,8 +500,8 @@ $this->column('name')->datetime();
 #### Defining Mixin Method
 
 ```php
-namespace LazyRecord\Schema\Mixin;
-use LazyRecord\Schema\MixinDeclareSchema;
+namespace Maghead\Schema\Mixin;
+use Maghead\Schema\MixinDeclareSchema;
 
 class MetadataMixinSchema extends MixinDeclareSchema
 {
@@ -591,7 +591,7 @@ If you want to do something after the schmea is created into a database, you can
 
 ```php
 namespace User;
-class UserSchema extends LazyRecord\Schema { 
+class UserSchema extends Maghead\Schema { 
     public function schema() {
         // ...
     }
@@ -610,7 +610,7 @@ The bootstrap method is triggerd when you run:
 You can define specific data source for different model in the model schema:
 
 ```php
-use LazyRecord\Schema;
+use Maghead\Schema;
 class UserSchema extends Schema {
     public function schema() {
         $this->writeTo('master');
@@ -622,7 +622,7 @@ class UserSchema extends Schema {
 Or you can specify for both (read and write):
 
 ```php
-use LazyRecord\Schema;
+use Maghead\Schema;
 class UserSchema extends Schema {
     public function schema() {
         $this->using('master');
@@ -676,11 +676,11 @@ current exisiting database table:
     + table 'names'              tests/tests/Name.php
     + table 'wines'              tests/tests/Wine.php
 
-As you can see, we added a lot of new tables (schemas), and LazyRecord parses
+As you can see, we added a lot of new tables (schemas), and Maghead parses
 the database tables to show you the difference to let you know current
 status.
 
-> Currently LazyRecord supports SQLite, PostgreSQL, MySQL table parsing.
+> Currently Maghead supports SQLite, PostgreSQL, MySQL table parsing.
 
 now you can generate the migration script or upgrade database schema directly.
 
@@ -712,7 +712,7 @@ now you can edit your migration script, which is auto-generated:
 the migration script looks like:
 
 ```php
-class AddUserColumn_1347451491  extends \LazyRecord\Migration\Migration {
+class AddUserColumn_1347451491  extends \Maghead\Migration\Migration {
 
     public function upgrade() { 
         $this->importSchema(new TestApp\AuthorSchema);
@@ -781,7 +781,7 @@ defining filter types, valid values from backend:
 
 
 ```php
-use LazyRecord\CollectionFilter\CollectionFilter;
+use Maghead\CollectionFilter\CollectionFilter;
 $posts = new PostCollection;
 $filter = new CollectionFilter($posts);
 
@@ -816,7 +816,7 @@ SELECT m.title, m.content, m.status, m.created_on, m.created_by, m.id FROM posts
 ## Setting up QueryDriver for SQL syntax
  
 ```php
-$driver = LazyRecord\QueryDriver::getInstance('data_source_id');
+$driver = Maghead\QueryDriver::getInstance('data_source_id');
 $driver->configure('driver','pgsql');
 $driver->configure('quote_column',true);
 $driver->configure('quote_table',true);
@@ -825,7 +825,7 @@ $driver->configure('quote_table',true);
 ## A More Advanced Model Schema
 
 ```php
-use LazyRecord\Schema;
+use Maghead\Schema;
 
 class AuthorSchema extends Schema
 {
@@ -876,7 +876,7 @@ For the detailed content,  please take a look at the `doc/` directory.
 Contribution
 ============
 
-Everybody can contribute to LazyRecord. You can just fork it, and send Pull
+Everybody can contribute to Maghead. You can just fork it, and send Pull
 Requests. 
 
 You have to follow PSR Coding Standards and provides unit tests
@@ -898,7 +898,7 @@ To deploy a testing environment, you need to install dependent packages.
 
 Run script and make sure everything is fine:
 
-    php bin/lazy
+    php bin/maghead
 
 Database configuration is written in `phpunit.xml` file, the 
 following steps are based on the default configuration. you may also take a look at `.travis.yml` for example.
@@ -956,18 +956,18 @@ Customize your phpunit.xml configuration:
 
 Build config
 
-    $ php bin/lazy build-conf db/config/database.yml
+    $ php bin/maghead build-conf db/config/database.yml
 
 Build Schema files
 
-    php bin/lazy schema build
+    php bin/maghead schema build
 
 We've already defined 3 data sources, they were named as 'mysql', 'pgsql', 'sqlite' , 
 now you can insert schema sqls into these data sources:
 
-    bin/lazy sql --rebuild -D=mysql
-    bin/lazy sql --rebuild -D=pgsql
-    bin/lazy sql --rebuild -D=sqlite
+    bin/maghead sql --rebuild -D=mysql
+    bin/maghead sql --rebuild -D=pgsql
+    bin/maghead sql --rebuild -D=sqlite
 
 ### Run PHPUnit
 

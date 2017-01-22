@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
-use LazyRecord\Metadata;
+use Maghead\Metadata;
 
 class MetaCommand extends BaseCommand
 {

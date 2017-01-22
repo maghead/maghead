@@ -1,12 +1,12 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
-use LazyRecord\Migration\MigrationRunner;
-use LazyRecord\Migration\AutomaticMigration;
-use LazyRecord\Schema\SchemaLoader;
-use LazyRecord\ServiceContainer;
-use LazyRecord\Backup\MySQLBackup;
+use Maghead\Migration\MigrationRunner;
+use Maghead\Migration\AutomaticMigration;
+use Maghead\Schema\SchemaLoader;
+use Maghead\ServiceContainer;
+use Maghead\Backup\MySQLBackup;
 use SQLBuilder\Driver\PDOMySQLDriver;
 
 class MigrateAutomaticCommand extends MigrateBaseCommand

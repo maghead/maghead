@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Schema\SchemaCollection;
+use Maghead\Schema\SchemaCollection;
 
 class SchemaCollectionTest extends PHPUnit_Framework_TestCase
 {
@@ -37,7 +37,7 @@ class SchemaCollectionTest extends PHPUnit_Framework_TestCase
 
         $ec = $c->evaluate();
         foreach ($ec->getSchemas() as $s) {
-            $this->assertInstanceOf('LazyRecord\Schema\DeclareSchema', $s);
+            $this->assertInstanceOf('Maghead\Schema\DeclareSchema', $s);
         }
     }
 
@@ -62,7 +62,7 @@ class SchemaCollectionTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($rc));
 
         $expanded = $rc->expandDependency();
-        $this->assertInstanceOf('LazyRecord\Schema\SchemaCollection', $expanded);
+        $this->assertInstanceOf('Maghead\Schema\SchemaCollection', $expanded);
         $this->assertEquals(4, count($expanded));
     }
 }

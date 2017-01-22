@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord\Command\SchemaCommand;
+namespace Maghead\Command\SchemaCommand;
 
-use LazyRecord\Command\BaseCommand;
-use LazyRecord\Schema\SchemaGenerator;
-use LazyRecord\Schema\SchemaUtils;
+use Maghead\Command\BaseCommand;
+use Maghead\Schema\SchemaGenerator;
+use Maghead\Schema\SchemaUtils;
 
 /**
  * $ lazy build-schema path/to/Schema path/to/SchemaDir.

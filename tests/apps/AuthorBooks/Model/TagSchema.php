@@ -1,7 +1,7 @@
 <?php
 namespace AuthorBooks\Model;
 
-use LazyRecord\Schema;
+use Maghead\Schema;
 
 /**
  * @codegen currentUserCan=false

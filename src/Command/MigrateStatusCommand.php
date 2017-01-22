@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
-use LazyRecord\Migration\MigrationRunner;
-use LazyRecord\ConnectionManager;
+use Maghead\Migration\MigrationRunner;
+use Maghead\ConnectionManager;
 
 class MigrateStatusCommand extends MigrateBaseCommand
 {

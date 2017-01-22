@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-use LazyRecord\Console;
+use Maghead\Console;
 require 'vendor/autoload.php';
 
 $console = Console::getInstance();

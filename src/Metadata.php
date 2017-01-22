@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use ArrayAccess;
 use IteratorAggregate;
-use LazyRecord\TableParser\TableParser;
+use Maghead\TableParser\TableParser;
 use SQLBuilder\Driver\BaseDriver;
 use ArrayIterator;
 use PDO;
@@ -60,8 +60,8 @@ class Metadata
         // if the __meta__table is not found, we should create one to prevent error.
         // this will be needed for the compatibility of the older version lazyrecord.
         if (!in_array('__meta__', $tables)) {
-            $schema = new \LazyRecord\Model\MetadataSchema();
-            $builder = \LazyRecord\SqlBuilder\SqlBuilder::create($this->driver);
+            $schema = new \Maghead\Model\MetadataSchema();
+            $builder = \Maghead\SqlBuilder\SqlBuilder::create($this->driver);
             $sqls = $builder->build($schema);
             foreach ($sqls as $sql) {
                 $this->connection->query($sql);

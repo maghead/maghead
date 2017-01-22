@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\ModelTrait;
+namespace Maghead\ModelTrait;
 
 use LogicException;
 

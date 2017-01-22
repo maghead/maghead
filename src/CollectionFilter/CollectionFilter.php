@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord\CollectionFilter;
+namespace Maghead\CollectionFilter;
 
 use Closure;
 use Exception;
-use LazyRecord\BaseCollection;
+use Maghead\BaseCollection;
 
 class CollectionFilter
 {
@@ -32,7 +32,7 @@ class CollectionFilter
     public $collection;
 
     /**
-     * @var LazyRecord\Schema the schema object
+     * @var Maghead\Schema the schema object
      */
     public $schema;
 

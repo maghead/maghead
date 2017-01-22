@@ -1,6 +1,6 @@
 {
-    "name": "corneltek/lazyrecord",
-    "homepage": "https://github.com/c9s/LazyRecord",
+    "name": "maghead/maghead",
+    "homepage": "https://github.com/maghead/maghead",
     "keywords": [
         "database",
         "generator",
@@ -12,7 +12,7 @@
     ],
     "description": "The Fast PHP ORM",
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.6.0",
         "corneltek/sqlbuilder": "4.0.x-dev",
         "corneltek/cliframework": "^3.0",
         "corneltek/class-template": "^3.0",
@@ -31,10 +31,10 @@
     },
     "suggest": { "ext-xarray": "*" },
     "bin": [
-        "bin/lazy"
+        "bin/maghead"
     ],
     "support": {
-        "issues": "https://github.com/c9s/LazyRecord/issues"
+        "issues": "https://github.com/maghead/maghead/issues"
     },
     "license": "MIT",
     "authors": [
@@ -43,7 +43,7 @@
     "extra": { "branch-alias": { "dev-master": "4.0.x-dev" } },
     "autoload": {
         "psr-4": {
-            "LazyRecord\\": "src/"
+            "Maghead\\": "src/"
         }
     },
     "autoload-dev": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Migration;
+namespace Maghead\Migration;
 
 interface Upgradable
 {

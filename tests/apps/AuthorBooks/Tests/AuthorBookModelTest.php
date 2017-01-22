@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Testing\ModelTestCase;
+use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\AuthorBook;

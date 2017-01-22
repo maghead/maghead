@@ -1,6 +1,6 @@
 <?php
 use TestApp\Model\User;
-use LazyRecord\Testing\ModelTestCase;
+use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Book;
 
 class UserModelTest extends ModelTestCase

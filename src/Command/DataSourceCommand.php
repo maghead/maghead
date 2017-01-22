@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
 use CLIFramework\Command;
 

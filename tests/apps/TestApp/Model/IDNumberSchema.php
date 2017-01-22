@@ -1,6 +1,6 @@
 <?php
 namespace TestApp\Model;
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema\DeclareSchema;
 
 class IDNumberSchema extends DeclareSchema
 {

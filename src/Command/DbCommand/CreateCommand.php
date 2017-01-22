@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Command\DbCommand;
+namespace Maghead\Command\DbCommand;
 
-use LazyRecord\Command\BaseCommand;
-use LazyRecord\DSN\DSNParser;
+use Maghead\Command\BaseCommand;
+use Maghead\DSN\DSNParser;
 use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\Driver\PDOSQLiteDriver;
 use SQLBuilder\ArgumentArray;

@@ -1,17 +1,17 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
 use CLIFramework\Logger;
-use LazyRecord\Metadata;
-use LazyRecord\Schema;
-use LazyRecord\SqlBuilder\SqlBuilder;
-use LazyRecord\Bootstrap;
-use LazyRecord\ConnectionManager;
+use Maghead\Metadata;
+use Maghead\Schema;
+use Maghead\SqlBuilder\SqlBuilder;
+use Maghead\Bootstrap;
+use Maghead\ConnectionManager;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
-use LazyRecord\Schema\SchemaUtils;
+use Maghead\Schema\SchemaUtils;
 use Exception;
 
 class SqlCommand extends BaseCommand

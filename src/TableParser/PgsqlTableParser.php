@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord\TableParser;
+namespace Maghead\TableParser;
 
 use PDO;
-use LazyRecord\Schema;
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 
 class PgsqlTableParser extends BaseTableParser
 {

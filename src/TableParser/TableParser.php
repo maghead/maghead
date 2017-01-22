@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\TableParser;
+namespace Maghead\TableParser;
 
 use PDO;
 use Exception;
@@ -10,7 +10,7 @@ class TableParser
 {
     public static function create(PDO $connection, BaseDriver $driver)
     {
-        $class = 'LazyRecord\\TableParser\\'.ucfirst($driver->getDriverName()).'TableParser';
+        $class = 'Maghead\\TableParser\\'.ucfirst($driver->getDriverName()).'TableParser';
         if (class_exists($class, true)) {
             return new $class($connection, $driver);
         } else {

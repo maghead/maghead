@@ -1,16 +1,16 @@
 <?php
 
-namespace LazyRecord\Testing;
+namespace Maghead\Testing;
 
-use LazyRecord\ConnectionManager;
-use LazyRecord\SqlBuilder\SqlBuilder;
-use LazyRecord\BaseModel;
-use LazyRecord\ConfigLoader;
-use LazyRecord\Schema\SchemaGenerator;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\BaseCollection;
-use LazyRecord\Result;
-use LazyRecord\PDOExceptionPrinter;
+use Maghead\ConnectionManager;
+use Maghead\SqlBuilder\SqlBuilder;
+use Maghead\BaseModel;
+use Maghead\ConfigLoader;
+use Maghead\Schema\SchemaGenerator;
+use Maghead\Schema\DeclareSchema;
+use Maghead\BaseCollection;
+use Maghead\Result;
+use Maghead\PDOExceptionPrinter;
 use SQLBuilder\Driver\BaseDriver;
 use PHPUnit_Framework_TestCase;
 use CLIFramework\Logger;
@@ -31,7 +31,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     protected $config;
 
     /**
-     * @var LazyRecord\Connection
+     * @var Maghead\Connection
      */
     protected $conn;
 
@@ -288,12 +288,12 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     public function assertInstanceOfModel(BaseModel $record)
     {
-        $this->assertInstanceOf('LazyRecord\BaseModel', $record);
+        $this->assertInstanceOf('Maghead\BaseModel', $record);
     }
 
     public function assertInstanceOfCollection(BaseCollection $collection)
     {
-        $this->assertInstanceOf('LazyRecord\BaseCollection', $collection);
+        $this->assertInstanceOf('Maghead\BaseCollection', $collection);
     }
 
     public function assertCollectionSize($size, BaseCollection $collection, $message = null)

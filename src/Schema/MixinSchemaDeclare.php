@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
 class MixinSchemaDeclare extends DeclareSchema
 {

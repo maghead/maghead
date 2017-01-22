@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\SqlBuilder;
+namespace Maghead\SqlBuilder;
 
 use Exception;
 use SQLBuilder\Driver\BaseDriver;

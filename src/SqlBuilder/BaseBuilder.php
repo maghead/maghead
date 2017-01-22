@@ -1,16 +1,16 @@
 <?php
 
-namespace LazyRecord\SqlBuilder;
+namespace Maghead\SqlBuilder;
 
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\Universal\Syntax\Constraint;
-use LazyRecord\Schema\DynamicSchemaDeclare;
-use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\Relationship\Relationship;
-use LazyRecord\BaseModel;
-use LazyRecord\Schema\DeclareColumn;
+use Maghead\Schema\DynamicSchemaDeclare;
+use Maghead\Schema\SchemaInterface;
+use Maghead\Schema\Relationship\Relationship;
+use Maghead\BaseModel;
+use Maghead\Schema\DeclareColumn;
 
 abstract class BaseBuilder
 {

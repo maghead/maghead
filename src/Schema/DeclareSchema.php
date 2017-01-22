@@ -1,19 +1,19 @@
 <?php
 
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
 use Exception;
 use InvalidArgumentException;
 use ReflectionObject;
-use LazyRecord\ConfigLoader;
-use LazyRecord\ClassUtils;
-use LazyRecord\Schema\Column\AutoIncrementPrimaryKeyColumn;
+use Maghead\ConfigLoader;
+use Maghead\ClassUtils;
+use Maghead\Schema\Column\AutoIncrementPrimaryKeyColumn;
 use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
-use LazyRecord\Schema\Relationship\Relationship;
-use LazyRecord\Schema\Relationship\HasMany;
-use LazyRecord\Schema\Relationship\HasOne;
-use LazyRecord\Schema\Relationship\BelongsTo;
+use Maghead\Schema\Relationship\Relationship;
+use Maghead\Schema\Relationship\HasMany;
+use Maghead\Schema\Relationship\HasOne;
+use Maghead\Schema\Relationship\BelongsTo;
 
 class DeclareSchema extends SchemaBase implements SchemaInterface
 {
@@ -533,7 +533,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      *
      * @return DeclareColumn
      */
-    public function column($name, $class = 'LazyRecord\\Schema\\DeclareColumn')
+    public function column($name, $class = 'Maghead\\Schema\\DeclareColumn')
     {
         if (isset($this->columns[$name])) {
             throw new Exception("column $name of ".get_class($this).' is already defined.');
@@ -565,7 +565,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     protected function helper($helperName, array $arguments = array())
     {
-        $helperClass = 'LazyRecord\\Schema\\Helper\\'.$helperName.'Helper';
+        $helperClass = 'Maghead\\Schema\\Helper\\'.$helperName.'Helper';
 
         return new $helperClass($this, $arguments);
     }
@@ -583,7 +583,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public function mixin($class, array $options = array())
     {
         if (!class_exists($class, true)) {
-            $class = 'LazyRecord\\Schema\\Mixin\\'.$class;
+            $class = 'Maghead\\Schema\\Mixin\\'.$class;
             if (!class_exists($class, true)) {
                 throw new Exception("Mixin class $class not found.");
             }

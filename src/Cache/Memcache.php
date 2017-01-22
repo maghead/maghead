@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Cache;
+namespace Maghead\Cache;
 
 use Memcache as ExtMemcache;
 

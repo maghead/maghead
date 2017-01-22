@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
 use CLIFramework\Command;
 
@@ -23,9 +23,9 @@ class InitCommand extends Command
     {
         $this->mkpath('db/config');
         $this->mkpath('db/migration');
-        $command = $this->createCommand('LazyRecord\\Command\\InitConfCommand');
+        $command = $this->createCommand('Maghead\\Command\\InitConfCommand');
         $command->execute();
-        $command = $this->createCommand('LazyRecord\\Command\\BuildConfCommand');
+        $command = $this->createCommand('Maghead\\Command\\BuildConfCommand');
         $command->execute('db/config/database.yml');
     }
 }

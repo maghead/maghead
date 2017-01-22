@@ -1,13 +1,13 @@
 <?php
-use LazyRecord\SqlBuilder;
+use Maghead\SqlBuilder;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\Address;
 use AuthorBooks\Model\AuthorCollection;
-use LazyRecord\Testing\ModelTestCase;
-use LazyRecord\Exporter\CSVExporter;
-use LazyRecord\Importer\CSVImporter;
+use Maghead\Testing\ModelTestCase;
+use Maghead\Exporter\CSVExporter;
+use Maghead\Importer\CSVImporter;
 
 class AuthorFactory {
 

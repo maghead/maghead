@@ -1,8 +1,8 @@
 <?php
 use SQLBuilder\Column;
 use SQLBuilder\Driver\PDODriverFactory;
-use LazyRecord\ConnectionManager;
-use LazyRecord\Migration\Migration;
+use Maghead\ConnectionManager;
+use Maghead\Migration\Migration;
 
 class AddCellphoneMigration extends Migration
 {
@@ -22,7 +22,7 @@ class AddCellphoneMigration extends Migration
     }
 }
 
-use LazyRecord\Testing\ModelTestCase;
+use Maghead\Testing\ModelTestCase;
 
 /**
  * @group migration

@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Schema\Factory;
+namespace Maghead\Schema\Factory;
 
 use ClassTemplate\ClassFile;
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema\DeclareSchema;
 
 class BaseCollectionClassFactory
 {

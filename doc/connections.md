@@ -4,7 +4,7 @@ Connections
 To get connection manager:
 
 ```php
-$conn = LazyRecord\ConnectionManager::getInstance();
+$conn = Maghead\ConnectionManager::getInstance();
 ```
 
 To get default connection:
@@ -16,7 +16,7 @@ $defaultConnection = $conn->getDefaultConnection();  // PDO connection object
 To get connection with data source ID:
 
 ```php
-$pdo = \LazyRecord\ConnectionManager::getInstance()->getConnection('default');
+$pdo = \Maghead\ConnectionManager::getInstance()->getConnection('default');
 ```
 
 To add a new data source
@@ -33,7 +33,7 @@ $conn->addDataSource( 'master', array(
 ConnectionManager is `ArrayAccess` implemented, so you can use ['key'] to get connection:
 
 ```php
-$conn = LazyRecord\ConnectionManager::getInstance();
+$conn = Maghead\ConnectionManager::getInstance();
 $conn['default']
 ```
 

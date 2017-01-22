@@ -1,7 +1,7 @@
 Config Loader
 =============
 
-    use LazyRecord\ConfigLoader;
+    use Maghead\ConfigLoader;
     $loader = ConfigLoader::getInstance();
     $loader->load();
     $loader->init(); // for application

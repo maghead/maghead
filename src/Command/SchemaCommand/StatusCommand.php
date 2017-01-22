@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Command\SchemaCommand;
+namespace Maghead\Command\SchemaCommand;
 
-use LazyRecord\Command\BaseCommand;
-use LazyRecord\Schema\SchemaUtils;
+use Maghead\Command\BaseCommand;
+use Maghead\Schema\SchemaUtils;
 use CLIFramework\Logger\ActionLogger;
 
 /**

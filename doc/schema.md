@@ -6,7 +6,7 @@ Schema Example
 
 ```php
 <?php
-use LazyRecord\Schema;
+use Maghead\Schema;
 
 class AddressSchema extends Schema
 {

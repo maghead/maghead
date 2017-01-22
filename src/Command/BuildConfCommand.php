@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
 use Exception;
-use LazyRecord\ConfigLoader;
+use Maghead\ConfigLoader;
 
 function cross_symlink($sourcePath, $targetPath)
 {

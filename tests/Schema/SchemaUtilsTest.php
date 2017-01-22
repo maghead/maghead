@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\ConfigLoader;
+use Maghead\ConfigLoader;
 
 class SchemaUtilsTest extends PHPUnit_Framework_TestCase
 {
@@ -17,7 +17,7 @@ class SchemaUtilsTest extends PHPUnit_Framework_TestCase
         $paths = $this->loader->getSchemaPaths();
         $this->assertNotEmpty($paths);
         $this->assertTrue(is_array($paths));
-        $schemas = LazyRecord\Schema\SchemaUtils::findSchemasByArguments($this->loader, array('TestApp\\Model\\UserSchema'));
+        $schemas = Maghead\Schema\SchemaUtils::findSchemasByArguments($this->loader, array('TestApp\\Model\\UserSchema'));
         $this->assertNotEmpty($paths);
     }
 }

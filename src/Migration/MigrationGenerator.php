@@ -1,13 +1,13 @@
 <?php
 
-namespace LazyRecord\Migration;
+namespace Maghead\Migration;
 
 use RuntimeException;
 use ReflectionClass;
 use CLIFramework\Logger;
-use LazyRecord\Schema;
-use LazyRecord\TableParser\TableParser;
-use LazyRecord\Schema\Comparator;
+use Maghead\Schema;
+use Maghead\TableParser\TableParser;
+use Maghead\Schema\Comparator;
 use ClassTemplate\ClassFile;
 use CodeGen\Expr\MethodCallExpr;
 use CodeGen\Statement\Statement;
@@ -41,7 +41,7 @@ class MigrationGenerator
      */
     protected function getTemplateDirs()
     {
-        $refl = new ReflectionClass('LazyRecord\Schema\SchemaGenerator');
+        $refl = new ReflectionClass('Maghead\Schema\SchemaGenerator');
         $path = $refl->getFilename();
 
         return dirname($path).DIRECTORY_SEPARATOR.'Templates';
@@ -87,7 +87,7 @@ class MigrationGenerator
         $template->useClass('SQLBuilder\\Bind');
         $template->useClass('SQLBuilder\\ArgumentArray');
         $template->useClass('SQLBuilder\\Literal');
-        $template->extendClass('LazyRecord\Migration\Migration');
+        $template->extendClass('Maghead\Migration\Migration');
 
         return $template;
     }
@@ -116,7 +116,7 @@ class MigrationGenerator
 
     public function generateWithDiff($taskName, $dataSourceId, array $schemas, $time = null)
     {
-        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
+        $connectionManager = \Maghead\ConnectionManager::getInstance();
         $connection = $connectionManager->getConnection($dataSourceId);
         $driver = $connectionManager->getQueryDriver($dataSourceId);
 

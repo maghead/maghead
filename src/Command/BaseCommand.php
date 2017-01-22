@@ -1,11 +1,11 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
 use CLIFramework\Command;
-use LazyRecord\ConfigLoader;
-use LazyRecord\Schema\SchemaUtils;
-use LazyRecord\ConnectionManager;
+use Maghead\ConfigLoader;
+use Maghead\Schema\SchemaUtils;
+use Maghead\ConnectionManager;
 use RuntimeException;
 
 class BaseCommand extends Command

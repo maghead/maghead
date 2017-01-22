@@ -1,10 +1,10 @@
 <?php
-use LazyRecord\SqlBuilder;
+use Maghead\SqlBuilder;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorCollection;
-use LazyRecord\Testing\ModelTestCase;
+use Maghead\Testing\ModelTestCase;
 use TestApp\Model\NameSchema;
 use TestApp\Model\Name;
 use TestApp\Model\NameCollection;

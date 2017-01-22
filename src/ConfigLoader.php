@@ -1,14 +1,14 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use ConfigKit\ConfigCompiler;
 use Exception;
 use ArrayAccess;
 use PDO;
-use LazyRecord\DSN\DSN;
+use Maghead\DSN\DSN;
 use Symfony\Component\Yaml\Yaml;
-use LazyRecord\Schema\SchemaFinder;
+use Maghead\Schema\SchemaFinder;
 
 /**
  * Available config key:.
@@ -102,7 +102,7 @@ class ConfigLoader
      *
      * @param array data source config
      *
-     * @return LazyRecord\DSN\DSN
+     * @return Maghead\DSN\DSN
      */
     public static function buildDSNObject(array $config)
     {
@@ -498,7 +498,7 @@ class ConfigLoader
             return $this->config['schema']['base_model'];
         }
 
-        return '\\LazyRecord\\BaseModel';
+        return '\\Maghead\\BaseModel';
     }
 
     public function getBaseCollectionClass()
@@ -507,7 +507,7 @@ class ConfigLoader
             return $this->config['schema']['base_collection'];
         }
 
-        return '\\LazyRecord\\BaseCollection';
+        return '\\Maghead\\BaseCollection';
     }
 
     /******************************

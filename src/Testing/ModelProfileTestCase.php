@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Testing;
+namespace Maghead\Testing;
 
-use LazyRecord\Result;
+use Maghead\Result;
 use XHProfRuns_Default;
 
 class ModelProfileTestCase extends ModelTestCase
@@ -58,7 +58,7 @@ class ModelProfileTestCase extends ModelTestCase
         include_once $_ENV['XHPROF_ROOT'].'/xhprof_lib/utils/xhprof_lib.php';
         include_once $_ENV['XHPROF_ROOT'].'/xhprof_lib/utils/xhprof_runs.php';
 
-        $namespace = 'LazyRecord:'.$this->getName();
+        $namespace = 'Maghead:'.$this->getName();
         $runs = new XHProfRuns_Default();
         $runId = $runs->save_run($xhprofData, $namespace);
         $host = 'localhost';

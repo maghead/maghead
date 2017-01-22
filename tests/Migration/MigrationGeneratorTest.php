@@ -1,10 +1,10 @@
 <?php
-use LazyRecord\Migration\MigrationGenerator;
-use LazyRecord\Console;
-use LazyRecord\Migration\MigrationRunner;
-use LazyRecord\Schema\SchemaFinder;
-use LazyRecord\Testing\ModelTestCase;
-use LazyRecord\ConnectionManager;
+use Maghead\Migration\MigrationGenerator;
+use Maghead\Console;
+use Maghead\Migration\MigrationRunner;
+use Maghead\Schema\SchemaFinder;
+use Maghead\Testing\ModelTestCase;
+use Maghead\ConnectionManager;
 
 /**
  * @group migration

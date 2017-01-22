@@ -1,6 +1,6 @@
 <?php
 namespace StoreApp\Model;
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema\DeclareSchema;
 
 class StoreSchema extends DeclareSchema
 {

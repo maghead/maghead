@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Schema\Mixin;
+namespace Maghead\Schema\Mixin;
 
-use LazyRecord\Schema\MixinDeclareSchema;
+use Maghead\Schema\MixinDeclareSchema;
 
 class I18nSchema extends MixinDeclareSchema
 {

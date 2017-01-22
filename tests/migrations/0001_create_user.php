@@ -1,7 +1,7 @@
 <?php
 
 // do create user
-class CreateUser_1346436136 extends LazyRecord\Migration\Migration
+class CreateUser_1346436136 extends Maghead\Migration\Migration
 {
     public function upgrade() 
     {

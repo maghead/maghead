@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Schema\Comparator;
+namespace Maghead\Schema\Comparator;
 
 use CLIFramework\Formatter;
 

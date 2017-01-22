@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Schema\Mixin;
+namespace Maghead\Schema\Mixin;
 
-use LazyRecord\Schema\MixinDeclareSchema;
-use LazyRecord\Schema;
+use Maghead\Schema\MixinDeclareSchema;
+use Maghead\Schema;
 use DateTime;
 use SQLBuilder\Raw;
 
@@ -42,6 +42,6 @@ class RevisionMixinSchema extends MixinDeclareSchema
         $this->belongsTo('root_revision', get_class($this->parentSchema), 'id', 'revision_root_id');
         $this->belongsTo('parent_revision', get_class($this->parentSchema), 'id', 'revision_parent_id');
 
-        $this->addModelTrait('LazyRecord\\ModelTrait\\RevisionModelTrait');
+        $this->addModelTrait('Maghead\\ModelTrait\\RevisionModelTrait');
     }
 }

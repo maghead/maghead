@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use CLIFramework\Logger;
-use LazyRecord\Schema\SchemaBase;
-use LazyRecord\Schema\SchemaCollection;
+use Maghead\Schema\SchemaBase;
+use Maghead\Schema\SchemaCollection;
 use InvalidArgumentException;
 
 class SeedBuilder

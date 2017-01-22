@@ -1,6 +1,6 @@
 <?php
 namespace AuthorBooks\Model;
-use LazyRecord\Schema;
+use Maghead\Schema;
 
 class AuthorSchema extends Schema
 {
@@ -34,7 +34,7 @@ class AuthorSchema extends Schema
             ->boolean()
             ->default(false);
 
-        $this->mixin('LazyRecord\\Schema\\Mixin\\MetadataMixinSchema');
+        $this->mixin('Maghead\\Schema\\Mixin\\MetadataMixinSchema');
 
         $this->many('addresses', 'AuthorBooks\Model\AddressSchema', 'author_id', 'id');
 

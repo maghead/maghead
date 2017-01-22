@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Schema\Column;
+namespace Maghead\Schema\Column;
 
-use LazyRecord\Schema\DeclareColumn;
+use Maghead\Schema\DeclareColumn;
 
 class UUIDPrimaryKeyColumn extends DeclareColumn
 {

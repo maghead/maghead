@@ -1,7 +1,7 @@
 <?php
 
-namespace LazyRecord\Model;
+namespace Maghead\Model;
 
-class MetadataCollection  extends \LazyRecord\Model\MetadataCollectionBase
+class MetadataCollection  extends \Maghead\Model\MetadataCollectionBase
 {
 }

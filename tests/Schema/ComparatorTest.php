@@ -1,8 +1,8 @@
 <?php
-use LazyRecord\Schema\Comparator;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\Schema\Comparator\ConsolePrinter;
-use LazyRecord\Schema\ColumnDiff;
+use Maghead\Schema\Comparator;
+use Maghead\Schema\DeclareSchema;
+use Maghead\Schema\Comparator\ConsolePrinter;
+use Maghead\Schema\ColumnDiff;
 use SQLBuilder\Driver\BaseDriver;
 
 class NeutralDriver extends BaseDriver {
@@ -37,7 +37,7 @@ class ComparatorTest extends \PHPUnit_Framework_TestCase
         $comparator = new Comparator(new NeutralDriver);
         $diffs = $comparator->compare($before, $after);
         foreach ($diffs as $diff) {
-            $this->assertInstanceOf('LazyRecord\Schema\Comparator\ColumnDiff', $diff);
+            $this->assertInstanceOf('Maghead\Schema\Comparator\ColumnDiff', $diff);
         }
 
         $firstDiff = $diffs[0];

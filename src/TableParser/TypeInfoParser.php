@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\TableParser;
+namespace Maghead\TableParser;
 
 use Exception;
 use SQLBuilder\Driver\MySQLDriver;

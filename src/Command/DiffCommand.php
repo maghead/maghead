@@ -1,13 +1,13 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
 use ReflectionObject;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\TableParser\TableParser;
-use LazyRecord\Schema\Comparator;
-use LazyRecord\Schema\SchemaLoader;
-use LazyRecord\Schema\Comparator\ConsolePrinter as ComparatorConsolePrinter;
+use Maghead\Schema\DeclareSchema;
+use Maghead\TableParser\TableParser;
+use Maghead\Schema\Comparator;
+use Maghead\Schema\SchemaLoader;
+use Maghead\Schema\Comparator\ConsolePrinter as ComparatorConsolePrinter;
 
 class DiffCommand extends BaseCommand
 {
@@ -24,7 +24,7 @@ class DiffCommand extends BaseCommand
 
         $dsId = $this->getCurrentDataSourceId();
 
-        $connectionManager = \LazyRecord\ConnectionManager::getInstance();
+        $connectionManager = \Maghead\ConnectionManager::getInstance();
         $conn = $connectionManager->getConnection($dsId);
         $driver = $connectionManager->getQueryDriver($dsId);
 

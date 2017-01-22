@@ -1,6 +1,6 @@
 <?php
 use CLIFramework\Testing\CommandTestCase;
-use LazyRecord\Console;
+use Maghead\Console;
 
 class MigrateCommandsTest extends CommandTestCase
 {

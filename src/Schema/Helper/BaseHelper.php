@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Schema\Helper;
+namespace Maghead\Schema\Helper;
 
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema\DeclareSchema;
 use Exception;
 
 abstract class BaseHelper

@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Exception;
+namespace Maghead\Exception;
 
 use Exception;
-use LazyRecord\Schema\SchemaInterface;
+use Maghead\Schema\SchemaInterface;
 
 class SchemaRelatedException extends Exception
 {

@@ -1,16 +1,16 @@
 <?php
-use LazyRecord\Testing\ModelTestCase;
+use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorSchema;
 use AuthorBooks\Model\AddressSchema;
 use AuthorBooks\Model\AuthorCollection;
-use LazyRecord\Migration\Migration;
+use Maghead\Migration\Migration;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Driver\PDOPgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 
-use LazyRecord\Migration\AutomaticMigration;
+use Maghead\Migration\AutomaticMigration;
 use GetOptionKit\OptionResult;
 use GetOptionKit\OptionCollection;
 

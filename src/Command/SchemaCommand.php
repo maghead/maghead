@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
 use CLIFramework\Command;
 
@@ -22,7 +22,7 @@ class SchemaCommand extends Command
 
     public function options($opts)
     {
-        $diff = $this->createCommand('LazyRecord\\Command\\DiffCommand');
+        $diff = $this->createCommand('Maghead\\Command\\DiffCommand');
         $diff->logger = $diff->logger;
         $diff->options($opts);
     }
@@ -35,7 +35,7 @@ class SchemaCommand extends Command
         $buildCommand->options = $this->options;
         $buildCommand->executeWrapper($args);
 
-        $diffCommand = $this->createCommand('LazyRecord\\Command\\DiffCommand');
+        $diffCommand = $this->createCommand('Maghead\\Command\\DiffCommand');
         $diffCommand->options = $this->options;
         $diffCommand->executeWrapper(array());
         // $this->logger->info('Usage: schema [build|sql|list]');

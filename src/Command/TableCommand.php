@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
-use LazyRecord\TableStatus\MySQLTableStatus;
+use Maghead\TableStatus\MySQLTableStatus;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use CLIFramework\Component\Table\Table;
 

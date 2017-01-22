@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\TableParser\SqliteTableDefinitionParser;
+use Maghead\TableParser\SqliteTableDefinitionParser;
 
 class SqliteTableDefinitionParserTest extends PHPUnit_Framework_TestCase
 {
@@ -19,7 +19,7 @@ class SqliteTableDefinitionParserTest extends PHPUnit_Framework_TestCase
 
 
     /**
-     * @see https://github.com/c9s/LazyRecord/issues/94
+     * @see https://github.com/c9s/Maghead/issues/94
      */
     public function testForIssue94()
     {

@@ -1,6 +1,6 @@
 <?php
 namespace PageApp\Model;
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema\DeclareSchema;
 
 class PageSchema extends DeclareSchema
 {

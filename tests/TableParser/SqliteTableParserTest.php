@@ -1,6 +1,6 @@
 <?php
 use SQLBuilder\Driver\PDOSQLiteDriver;
-use LazyRecord\TableParser\SqliteTableParser;
+use Maghead\TableParser\SqliteTableParser;
 
 class SqliteTableParserTest extends PHPUnit_Framework_TestCase
 {

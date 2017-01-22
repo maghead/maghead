@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Exception;
+namespace Maghead\Exception;
 
 class MissingPrimaryKeyException extends SchemaRelatedException
 {

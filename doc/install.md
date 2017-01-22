@@ -11,4 +11,4 @@ use PEAR to install this package:
 Make sure that you have `lazy` binary in your path:
 
     $ which lazy
-    /Users/c9s/.phpbrew/php/php-5.4.0/bin/lazy
+    /Users/c9s/.phpbrew/php/php-5.4.0/bin/maghead

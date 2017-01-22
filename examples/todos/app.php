@@ -1,8 +1,8 @@
 <?php
 require 'bootstrap.php';
-require 'LazyRecord/ConfigLoader.php';
+require 'Maghead/ConfigLoader.php';
 
-$dbLoader = new LazyRecord\ConfigLoader;
+$dbLoader = new Maghead\ConfigLoader;
 $dbLoader->load( __DIR__ . '/.lazy.yml');
 $dbLoader->init();
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace LazyRecord\Testing;
+namespace Maghead\Testing;
 
-use LazyRecord\ClassUtils;
-use LazyRecord\SeedBuilder;
-use LazyRecord\SqlBuilder\SqlBuilder;
-use LazyRecord\TableParser\TableParser;
-use LazyRecord\Schema\SchemaGenerator;
-use LazyRecord\Schema\SchemaCollection;
-use LazyRecord\Bootstrap;
+use Maghead\ClassUtils;
+use Maghead\SeedBuilder;
+use Maghead\SqlBuilder\SqlBuilder;
+use Maghead\TableParser\TableParser;
+use Maghead\Schema\SchemaGenerator;
+use Maghead\Schema\SchemaCollection;
+use Maghead\Bootstrap;
 
 abstract class ModelTestCase extends BaseTestCase
 {

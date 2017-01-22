@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\DSN\DSNParser;
+use Maghead\DSN\DSNParser;
 
 class DSNParserTest extends PHPUnit_Framework_TestCase
 {

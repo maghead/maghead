@@ -1,9 +1,9 @@
 <?php
-use LazyRecord\ConfigLoader;
-use LazyRecord\ConnectionManager;
+use Maghead\ConfigLoader;
+use Maghead\ConnectionManager;
 use CLIFramework\Logger;
-use LazyRecord\Testing\ModelTestCase;
-use \LazyRecord\Schema\SchemaGenerator;
+use Maghead\Testing\ModelTestCase;
+use \Maghead\Schema\SchemaGenerator;
 
 class SchemaGeneratorTest extends ModelTestCase
 {

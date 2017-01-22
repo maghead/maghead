@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Schema\Helper;
+namespace Maghead\Schema\Helper;
 
 class FlagHelper extends BaseHelper
 {

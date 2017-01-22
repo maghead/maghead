@@ -1,17 +1,17 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use CLIFramework\Application;
 
 class Console extends Application
 {
-    const name = 'LazyRecord';
+    const name = 'Maghead';
     const VERSION = '2.2.4';
 
     public function brief()
     {
-        return 'LazyRecord ORM';
+        return 'Maghead ORM';
     }
 
     public function getServiceContainer()
@@ -31,9 +31,9 @@ class Console extends Application
         /*
          * Command for building config file.
          */
-        $this->command('build-conf', 'LazyRecord\\Command\\BuildConfCommand');
-        $this->command('conf',       'LazyRecord\\Command\\BuildConfCommand');
-        $this->command('init-conf',  'LazyRecord\\Command\\InitConfCommand');
+        $this->command('build-conf', 'Maghead\\Command\\BuildConfCommand');
+        $this->command('conf',       'Maghead\\Command\\BuildConfCommand');
+        $this->command('init-conf',  'Maghead\\Command\\InitConfCommand');
 
         $this->command('schema'); // the schema command builds all schema files and shows a diff after building new schema
         $this->command('basedata');

@@ -2,8 +2,8 @@ Mixin
 =========
 
 ```php
-namespace LazyRecord\Schema\Mixin;
-use LazyRecord\Schema\MixinDeclareSchema;
+namespace Maghead\Schema\Mixin;
+use Maghead\Schema\MixinDeclareSchema;
 
 class I18nSchema extends MixinDeclareSchema
 {

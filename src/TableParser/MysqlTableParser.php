@@ -1,12 +1,12 @@
 <?php
 
-namespace LazyRecord\TableParser;
+namespace Maghead\TableParser;
 
 use PDO;
 use stdClass;
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema\DeclareSchema;
 use SQLBuilder\Raw;
-use LazyRecord\Inflector;
+use Maghead\Inflector;
 
 class MysqlTableParser extends BaseTableParser implements ReferenceParser
 {

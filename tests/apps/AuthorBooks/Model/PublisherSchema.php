@@ -1,6 +1,6 @@
 <?php
 namespace AuthorBooks\Model;
-use LazyRecord\Schema;
+use Maghead\Schema;
 
 class PublisherSchema extends Schema
 {

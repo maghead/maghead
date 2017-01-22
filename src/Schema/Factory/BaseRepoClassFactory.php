@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord\Schema\Factory;
+namespace Maghead\Schema\Factory;
 
 use ClassTemplate\ClassFile;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\ConnectionManager;
+use Maghead\Schema\DeclareSchema;
+use Maghead\ConnectionManager;
 use Doctrine\Common\Inflector\Inflector;
 use ReflectionClass;
 
@@ -19,9 +19,9 @@ use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
 
-use LazyRecord\Schema\CodeGenSettingsParser;
-use LazyRecord\Schema\AnnotatedBlock;
-use LazyRecord\Schema\MethodBlockParser;
+use Maghead\Schema\CodeGenSettingsParser;
+use Maghead\Schema\AnnotatedBlock;
+use Maghead\Schema\MethodBlockParser;
 
 /**
  * Base Repo class generator.
@@ -54,9 +54,9 @@ class BaseRepoClassFactory
             new ConcatExpr(new Raw('__DIR__'), DIRECTORY_SEPARATOR . $schemaProxyFileName)
         ));
 
-        $cTemplate->useClass('LazyRecord\\Schema\\SchemaLoader');
-        $cTemplate->useClass('LazyRecord\\Result');
-        $cTemplate->useClass('LazyRecord\\Inflator');
+        $cTemplate->useClass('Maghead\\Schema\\SchemaLoader');
+        $cTemplate->useClass('Maghead\\Result');
+        $cTemplate->useClass('Maghead\\Inflator');
         $cTemplate->useClass('SQLBuilder\\Bind');
         $cTemplate->useClass('SQLBuilder\\ArgumentArray');
         $cTemplate->useClass('PDO');
@@ -105,7 +105,7 @@ class BaseRepoClassFactory
         // parse codegen settings from schema doc comment string
         $codegenSettings = CodeGenSettingsParser::parse($schemaDocComment);
         if (!empty($codegenSettings)) {
-            $reflectionRepo = new ReflectionClass('LazyRecord\\BaseRepo');
+            $reflectionRepo = new ReflectionClass('Maghead\\BaseRepo');
             $createMethod = $reflectionRepo->getMethod('create');
             $elements = MethodBlockParser::parseElements($createMethod, 'codegenBlock');
             $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], AnnotatedBlock::apply($elements, $codegenSettings));

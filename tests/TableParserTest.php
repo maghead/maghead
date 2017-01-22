@@ -1,7 +1,7 @@
 <?php
-use LazyRecord\Testing\BaseTestCase;
-use LazyRecord\TableParser\TableParser;
-use LazyRecord\ConnectionManager;
+use Maghead\Testing\BaseTestCase;
+use Maghead\TableParser\TableParser;
+use Maghead\ConnectionManager;
 
 class TableParserTest extends BaseTestCase
 {

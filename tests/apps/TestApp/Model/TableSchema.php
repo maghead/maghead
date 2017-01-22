@@ -1,6 +1,6 @@
 <?php
 namespace TestApp\Model;
-use LazyRecord\Schema;
+use Maghead\Schema;
 
 class TableSchema extends Schema
 {

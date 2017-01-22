@@ -3,7 +3,7 @@ SchemaGenerator
 
 Current API:
 
-    $generator = new \LazyRecord\Schema\SchemaGenerator;
+    $generator = new \Maghead\Schema\SchemaGenerator;
     $generator->setLogger( $logger );
     $classMap = $generator->generate( $finder->getSchemas() );
 

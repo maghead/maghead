@@ -1,16 +1,16 @@
 <?php
 
-namespace LazyRecord\Migration;
+namespace Maghead\Migration;
 
 use SQLBuilder\Universal\Query\AlterTableQuery;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
-use LazyRecord\Console;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\Schema\DynamicSchemaDeclare;
-use LazyRecord\SqlBuilder\SqlBuilder;
-use LazyRecord\ServiceContainer;
+use Maghead\Console;
+use Maghead\Schema\DeclareSchema;
+use Maghead\Schema\DynamicSchemaDeclare;
+use Maghead\SqlBuilder\SqlBuilder;
+use Maghead\ServiceContainer;
 use CLIFramework\Logger;
 use PDO;
 use InvalidArgumentException;
@@ -33,7 +33,7 @@ class BaseMigration
     protected $logger;
 
     /**
-     * @var LazyRecord\SqlBuilder\BaseBuilder
+     * @var Maghead\SqlBuilder\BaseBuilder
      */
     protected $builder;
 

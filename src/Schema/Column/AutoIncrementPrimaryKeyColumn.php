@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Schema\Column;
+namespace Maghead\Schema\Column;
 
-use LazyRecord\Schema\DeclareColumn;
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema\DeclareColumn;
+use Maghead\Schema\DeclareSchema;
 
 class AutoIncrementPrimaryKeyColumn extends DeclareColumn
 {

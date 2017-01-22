@@ -1,7 +1,7 @@
 <?php
-namespace LazyRecord\Schema;
-use LazyRecord\Schema\SchemaFinder;
-use LazyRecord\Schema\SchemaLoader;
+namespace Maghead\Schema;
+use Maghead\Schema\SchemaFinder;
+use Maghead\Schema\SchemaLoader;
 use PHPUnit_Framework_TestCase;
 
 class SchemaFinderTest extends PHPUnit_Framework_TestCase
@@ -14,7 +14,7 @@ class SchemaFinderTest extends PHPUnit_Framework_TestCase
         $schemas = SchemaLoader::findDeclaredSchemas();
         $this->assertNotEmpty($schemas);
         foreach ($schemas as $schema) {
-            $this->assertInstanceOf('LazyRecord\\Schema\\DeclareSchema',$schema);
+            $this->assertInstanceOf('Maghead\\Schema\\DeclareSchema',$schema);
         }
     }
 

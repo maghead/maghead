@@ -3,9 +3,9 @@
 
 To build table sql from schema, you need a query driver object:
 
-    use LazyRecord\Schema\SqlBuilder;
+    use Maghead\Schema\SqlBuilder;
 
-    $connectionManager = \LazyRecord\ConnectionManager::getInstance();
+    $connectionManager = \Maghead\ConnectionManager::getInstance();
     $driver = $connectionManager->getQueryDriver($id);
 
 Then use SqlBuilder to create a Sql builder object:

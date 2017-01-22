@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
-use LazyRecord\Migration\MigrationRunner;
+use Maghead\Migration\MigrationRunner;
 
 class MigrateUpgradeCommand extends MigrateBaseCommand
 {

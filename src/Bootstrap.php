@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
-use LazyRecord\SqlBuilder\BaseBuilder;
-use LazyRecord\Schema\SchemaCollection;
+use Maghead\SqlBuilder\BaseBuilder;
+use Maghead\Schema\SchemaCollection;
 use CLIFramework\Logger;
 use PDOException;
 

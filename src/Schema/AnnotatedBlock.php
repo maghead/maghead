@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
 class AnnotatedBlock
 {

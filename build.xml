@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<project name="LazyRecord" default="build">
+<project name="Maghead" default="build">
 
  <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
@@ -48,23 +48,23 @@
  <target name="init-config">
   <copy file="db/config/database.testing.yml" tofile="db/config/database.yml"/>
   <exec executable="php">
-   <arg value="bin/lazy"/>
+   <arg value="bin/maghead"/>
    <arg value="build-conf"/>
   </exec>
 
   <exec executable="php">
-   <arg value="bin/lazy"/>
+   <arg value="bin/maghead"/>
    <arg value="build-schema"/>
   </exec>
 
   <exec executable="php">
-    <arg value="bin/lazy"/>
+    <arg value="bin/maghead"/>
     <arg value="build-sql"/>
     <arg value="--rebuild"/>
   </exec>
 
   <exec executable="php">
-    <arg value="bin/lazy"/>
+    <arg value="bin/maghead"/>
     <arg value="build-sql"/>
     <arg value="--rebuild"/>
     <arg value="-D"/>
@@ -72,7 +72,7 @@
   </exec>
 
   <exec executable="php">
-    <arg value="bin/lazy"/>
+    <arg value="bin/maghead"/>
     <arg value="build-sql"/>
     <arg value="--rebuild"/>
     <arg value="-D"/>

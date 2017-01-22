@@ -5,7 +5,7 @@ Use Onion to install dependent libraries
 
     $ onion -d install
 
-## Setup for LazyRecord development 
+## Setup for Maghead development 
 
 Copy testing env config file:
 
@@ -41,7 +41,7 @@ files into the executable phar file `lazy`:
 
 To build sql with specific data source:
 
-    php bin/lazy build-sql --data-source=mysql  --rebuild
-    php bin/lazy build-sql --data-source=master --rebuild
-    php bin/lazy build-sql --data-source=slave  --rebuild
+    php bin/maghead build-sql --data-source=mysql  --rebuild
+    php bin/maghead build-sql --data-source=master --rebuild
+    php bin/maghead build-sql --data-source=slave  --rebuild
 

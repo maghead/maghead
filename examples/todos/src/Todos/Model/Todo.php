@@ -1,6 +1,6 @@
 <?php
 namespace Todos\Model;
-use LazyRecord\BaseModel;
+use Maghead\BaseModel;
 
 class Todo extends BaseModel 
 {

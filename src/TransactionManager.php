@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use PDO;
 

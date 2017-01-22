@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
-use LazyRecord\Types\DateTime;
+use Maghead\Types\DateTime;
 use SQLBuilder\Raw;
 
 class Inflator

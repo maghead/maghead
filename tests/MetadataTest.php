@@ -1,8 +1,8 @@
 <?php
-use LazyRecord\ConnectionManager;
-use LazyRecord\Metadata;
-use LazyRecord\Model\MetadataSchema;
-use LazyRecord\Testing\ModelTestCase;
+use Maghead\ConnectionManager;
+use Maghead\Metadata;
+use Maghead\Model\MetadataSchema;
+use Maghead\Testing\ModelTestCase;
 
 class MetadataTest extends ModelTestCase
 {
@@ -36,7 +36,7 @@ class MetadataTest extends ModelTestCase
         $metadata = new Metadata($this->conn, $this->queryDriver);
         $metadata->init();
 
-        $metaItem = new \LazyRecord\Model\Metadata;
+        $metaItem = new \Maghead\Model\Metadata;
         $schema = $metaItem->getSchema();
         $this->assertNotNull($schema);
 
@@ -50,7 +50,7 @@ class MetadataTest extends ModelTestCase
         $metadata->init();
         $metadata['version'] = 1;
         $metadata['name'] = 'c9s';
-        $metas = new LazyRecord\Model\MetadataCollection;
+        $metas = new Maghead\Model\MetadataCollection;
         foreach ($metas as $meta) {
             ok($meta);
         }

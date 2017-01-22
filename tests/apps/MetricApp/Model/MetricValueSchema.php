@@ -1,7 +1,7 @@
 <?php
 namespace MetricApp\Model;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\Schema\TemplateSchema;
+use Maghead\Schema\DeclareSchema;
+use Maghead\Schema\TemplateSchema;
 
 class MetricValueSchema extends TemplateSchema
 {

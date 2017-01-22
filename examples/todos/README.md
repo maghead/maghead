@@ -5,7 +5,7 @@ Installation
 ------------
 
     pear channel-discover pear.corneltek.com
-    pear install -a corneltek/LazyRecord
+    pear install -a corneltek/Maghead
 
 Setup
 ------
@@ -14,7 +14,7 @@ Simply run `lazy` to see the help message
 
     $ lazy
 
-    LazyRecord ORM
+    Maghead ORM
     
     Usage
     	lazy [options] [command] [argument1 argument2...]
@@ -80,10 +80,10 @@ More Details
 
 Please checkout 
 
-1. README.md file in LazyRecord.
+1. README.md file in Maghead.
 2. documentation in `doc/`.
-3. model test code in `tests/LazyRecord/ModelTest/`.
-4. collection test code in `tests/LazyRecord/ColllectionTest`.
+3. model test code in `tests/Maghead/ModelTest/`.
+4. collection test code in `tests/Maghead/ColllectionTest`.
 5. model schema files in `tests`.
 6. #php-tw IRC channel.
 

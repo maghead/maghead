@@ -3,7 +3,7 @@ use CLIFramework\Testing\CommandTestCase;
 class AllCommandsTest extends CommandTestCase
 {
     public function setupApplication() {
-        return new LazyRecord\Console;
+        return new Maghead\Console;
     }
 
     public function testConfCommand()
@@ -14,13 +14,13 @@ class AllCommandsTest extends CommandTestCase
 
     public function testCommands()
     {
-        ok( $this->app->createCommand('LazyRecord\Command\BuildConfCommand') );
-        ok( $this->app->createCommand('LazyRecord\Command\SchemaCommand\BuildCommand') );
-        ok( $this->app->createCommand('LazyRecord\Command\BasedataCommand') );
-        ok( $this->app->createCommand('LazyRecord\Command\InitCommand') );
-        ok( $this->app->createCommand('LazyRecord\Command\MigrateCommand') );
-        ok( $this->app->createCommand('LazyRecord\Command\SchemaCommand') );
-        ok( $this->app->createCommand('LazyRecord\Command\DiffCommand') );
+        ok( $this->app->createCommand('Maghead\Command\BuildConfCommand') );
+        ok( $this->app->createCommand('Maghead\Command\SchemaCommand\BuildCommand') );
+        ok( $this->app->createCommand('Maghead\Command\BasedataCommand') );
+        ok( $this->app->createCommand('Maghead\Command\InitCommand') );
+        ok( $this->app->createCommand('Maghead\Command\MigrateCommand') );
+        ok( $this->app->createCommand('Maghead\Command\SchemaCommand') );
+        ok( $this->app->createCommand('Maghead\Command\DiffCommand') );
     }
 
 

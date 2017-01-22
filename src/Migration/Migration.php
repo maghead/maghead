@@ -1,12 +1,12 @@
 <?php
 
-namespace LazyRecord\Migration;
+namespace Maghead\Migration;
 
 use SQLBuilder\Universal\Query\AlterTableQuery;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\MySQLDriver;
-use LazyRecord\Schema\DynamicSchemaDeclare;
+use Maghead\Schema\DynamicSchemaDeclare;
 use CLIFramework\Logger;
 use Exception;
 use InvalidArgumentException;

@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord\SqlBuilder;
+namespace Maghead\SqlBuilder;
 
-use LazyRecord\Schema;
-use LazyRecord\Schema\SchemaInterface;
-use LazyRecord\Schema\DeclareColumn;
+use Maghead\Schema;
+use Maghead\Schema\SchemaInterface;
+use Maghead\Schema\DeclareColumn;
 use SQLBuilder\ArgumentArray;
 
 /**

@@ -1,8 +1,8 @@
 <?php
-use LazyRecord\Testing\ModelTestCase;
+use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorCollection;
-use LazyRecord\Migration\Migration;
+use Maghead\Migration\Migration;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Driver\PDOPgSQLDriver;
@@ -56,7 +56,7 @@ class AuthorModelTest extends ModelTestCase
         )));
         $collection = $author->asCollection();
         $this->assertNotNull($collection);
-        $this->assertInstanceOf('LazyRecord\BaseCollection',$collection);
+        $this->assertInstanceOf('Maghead\BaseCollection',$collection);
         $this->assertResultSuccess($author->delete());
     }
 
@@ -71,7 +71,7 @@ class AuthorModelTest extends ModelTestCase
 
             $this->assertTrue( in_array( $n , $names ));
             $column = $author->getColumn( $n );
-            $this->assertInstanceOf('LazyRecord\Schema\RuntimeColumn', $column);
+            $this->assertInstanceOf('Maghead\Schema\RuntimeColumn', $column);
         }
 
         $columns = $author->getColumns();
@@ -111,7 +111,7 @@ class AuthorModelTest extends ModelTestCase
         $authors->where()
                 ->equal('confirmed', false);
         $ret = $authors->fetch();
-        $this->assertInstanceOf('LazyRecord\Result', $ret);
+        $this->assertInstanceOf('Maghead\Result', $ret);
         $this->assertCollectionSize(1, $authors);
         $this->assertFalse($authors[0]->isConfirmed());
 
@@ -119,7 +119,7 @@ class AuthorModelTest extends ModelTestCase
         $authors->where()
                 ->equal( 'confirmed', true);
         $ret = $authors->fetch();
-        $this->assertInstanceOf('LazyRecord\Result', $ret);
+        $this->assertInstanceOf('Maghead\Result', $ret);
         $this->assertCollectionSize(1, $authors);
         $this->assertTrue($authors[0]->isConfirmed());
 
@@ -307,7 +307,7 @@ class AuthorModelTest extends ModelTestCase
         $unusedAddresses = $author->unused_addresses;
         $this->assertCollectionSize(1, $unusedAddresses);
 
-        $this->assertInstanceOf('LazyRecord\BaseModel', $unusedAddresses[0]);
+        $this->assertInstanceOf('Maghead\BaseModel', $unusedAddresses[0]);
         $this->assertTrue($unusedAddresses[0]->isUnused());
     }
 

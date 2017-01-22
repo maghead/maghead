@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\TableStatus;
+namespace Maghead\TableStatus;
 
 use PDO;
 use SQLBuilder\Driver\PDOMySQLDriver;

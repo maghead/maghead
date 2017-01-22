@@ -5,11 +5,11 @@ feature checking, table quotes, column quotes ... etc.
 
 QueryDriver is inherited from SQLBuilder\Driver class.
 
-    $driver = LazyRecord\QueryDriver::getInstance( 'data_source_id' );
+    $driver = Maghead\QueryDriver::getInstance( 'data_source_id' );
 
 Free all instances
 
-    LazyRecord\QueryDriver::getInstance()->free();
+    Maghead\QueryDriver::getInstance()->free();
 
 ## The original `sqlbuilder\driver` usage
 

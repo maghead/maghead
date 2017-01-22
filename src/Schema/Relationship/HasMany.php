@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Schema\Relationship;
+namespace Maghead\Schema\Relationship;
 
 class HasMany extends Relationship
 {

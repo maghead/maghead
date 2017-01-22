@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use Exception;
 use RuntimeException;
@@ -20,13 +20,13 @@ use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
-use LazyRecord\Result\OperationError;
-use LazyRecord\Schema\SchemaLoader;
-use LazyRecord\Schema\RuntimeColumn;
-use LazyRecord\Schema\Relationship\Relationship;
-use LazyRecord\Exception\MissingPrimaryKeyException;
-use LazyRecord\Exception\QueryException;
-use LazyRecord\Connection;
+use Maghead\Result\OperationError;
+use Maghead\Schema\SchemaLoader;
+use Maghead\Schema\RuntimeColumn;
+use Maghead\Schema\Relationship\Relationship;
+use Maghead\Exception\MissingPrimaryKeyException;
+use Maghead\Exception\QueryException;
+use Maghead\Connection;
 use SerializerKit\XmlSerializer;
 use ActionKit;
 use Symfony\Component\Yaml\Yaml;
@@ -433,7 +433,7 @@ abstract class BaseModel implements Serializable
 
         // for relationship record
         $val = $this->get($name);
-        if ($val && $val instanceof \LazyRecord\BaseModel) {
+        if ($val && $val instanceof \Maghead\BaseModel) {
             return $val->dataLabel();
         }
     }
@@ -756,7 +756,7 @@ abstract class BaseModel implements Serializable
     /**
      * Return the collection object of current model object.
      *
-     * @return LazyRecord\BaseCollection
+     * @return Maghead\BaseCollection
      */
     public function asCollection()
     {

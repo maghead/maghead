@@ -1,12 +1,12 @@
 <?php
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\Schema\Relationship\Relationship;
+use Maghead\Schema\DeclareSchema;
+use Maghead\Schema\Relationship\Relationship;
 
 class RelationshipTest extends PHPUnit_Framework_TestCase
 {
     public function testRelationshipOperation()
     {
-        $r = new LazyRecord\Schema\Relationship\Relationship('books', array(
+        $r = new Maghead\Schema\Relationship\Relationship('books', array(
                 'type' => Relationship::HAS_MANY,
                 'self_column' => "id",
                 'self_schema' => "AuthorBooks\Model\AuthorSchema",

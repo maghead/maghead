@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
-use LazyRecord\Migration\MigrationGenerator;
-use LazyRecord\Schema\SchemaFinder;
-use LazyRecord\Schema\SchemaLoader;
+use Maghead\Migration\MigrationGenerator;
+use Maghead\Schema\SchemaFinder;
+use Maghead\Schema\SchemaLoader;
 
 class MigrateNewFromDiffCommand extends MigrateBaseCommand
 {

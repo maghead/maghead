@@ -1,11 +1,11 @@
 <?php
 
-namespace LazyRecord\Migration;
+namespace Maghead\Migration;
 
-use LazyRecord\Metadata;
-use LazyRecord\ConnectionManager;
-use LazyRecord\Connection;
-use LazyRecord\ServiceContainer;
+use Maghead\Metadata;
+use Maghead\ConnectionManager;
+use Maghead\Connection;
+use Maghead\ServiceContainer;
 use GetOptionKit\OptionResult;
 use CLIFramework\Logger;
 use SQLBuilder\Driver\BaseDriver;
@@ -84,8 +84,8 @@ class MigrationRunner
     {
         $classes = get_declared_classes();
         $classes = array_filter($classes, function ($class) {
-            return is_a($class, 'LazyRecord\\Migration\\Migration', true)
-                && $class != 'LazyRecord\\Migration\\Migration';
+            return is_a($class, 'Maghead\\Migration\\Migration', true)
+                && $class != 'Maghead\\Migration\\Migration';
         });
 
         // sort class with timestamp suffix

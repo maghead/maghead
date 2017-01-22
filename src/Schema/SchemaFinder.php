@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use LazyRecord\ServiceContainer;
+use Maghead\ServiceContainer;
 use CLIFramework\Logger;
 
 /**

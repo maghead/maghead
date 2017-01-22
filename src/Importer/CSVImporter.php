@@ -1,13 +1,13 @@
 <?php
 
-namespace LazyRecord\Importer;
+namespace Maghead\Importer;
 
-use LazyRecord\BaseModel;
+use Maghead\BaseModel;
 
 class CSVImporter
 {
     /**
-     * @var LazyRecord\BaseModel
+     * @var Maghead\BaseModel
      */
     protected $model;
 

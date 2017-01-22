@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
-use LazyRecord\Migration\MigrationGenerator;
-use LazyRecord\Console;
+use Maghead\Migration\MigrationGenerator;
+use Maghead\Console;
 
 class MigrateNewCommand extends MigrateBaseCommand
 {

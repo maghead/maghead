@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\TableParser;
+namespace Maghead\TableParser;
 
 class TypeInfo
 {

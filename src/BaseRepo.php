@@ -1,5 +1,5 @@
 <?php
-namespace LazyRecord;
+namespace Maghead;
 use PDOException;
 use PDOStatement;
 use PDO;
@@ -22,13 +22,13 @@ use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
 
-use LazyRecord\Connection;
-use LazyRecord\Result\OperationError;
-use LazyRecord\Schema\SchemaLoader;
-use LazyRecord\Schema\RuntimeColumn;
-use LazyRecord\Schema\Relationship\Relationship;
-use LazyRecord\Exception\MissingPrimaryKeyException;
-use LazyRecord\Exception\QueryException;
+use Maghead\Connection;
+use Maghead\Result\OperationError;
+use Maghead\Schema\SchemaLoader;
+use Maghead\Schema\RuntimeColumn;
+use Maghead\Schema\Relationship\Relationship;
+use Maghead\Exception\MissingPrimaryKeyException;
+use Maghead\Exception\QueryException;
 use SerializerKit\XmlSerializer;
 use ActionKit;
 use Symfony\Component\Yaml\Yaml;

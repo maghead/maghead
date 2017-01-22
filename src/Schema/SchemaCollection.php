@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
 use ArrayAccess;
 use IteratorAggregate;
@@ -68,12 +68,12 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
     }
 
     /**
-     * @return LazyRecord\Schema\DeclareSchema[]
+     * @return Maghead\Schema\DeclareSchema[]
      */
     public function getDeclareSchemas()
     {
         return $this->filter(function ($schema) {
-            return is_subclass_of($schema, 'LazyRecord\Schema\DeclareSchema', true);
+            return is_subclass_of($schema, 'Maghead\Schema\DeclareSchema', true);
         });
     }
 
@@ -98,11 +98,11 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
         foreach ($this->schemas as $schema) {
             // skip abstract classes.
             if (
-              !is_subclass_of($schema, 'LazyRecord\Schema\DeclareSchema', true)
-              || is_a($schema, 'LazyRecord\Schema\DynamicSchemaDeclare', true)
-              || is_a($schema, 'LazyRecord\Schema\MixinDeclareSchema', true)
-              || is_a($schema, 'LazyRecord\Schema\MixinSchemaDeclare', true)
-              || is_subclass_of($schema, 'LazyRecord\Schema\MixinDeclareSchema', true)
+              !is_subclass_of($schema, 'Maghead\Schema\DeclareSchema', true)
+              || is_a($schema, 'Maghead\Schema\DynamicSchemaDeclare', true)
+              || is_a($schema, 'Maghead\Schema\MixinDeclareSchema', true)
+              || is_a($schema, 'Maghead\Schema\MixinSchemaDeclare', true)
+              || is_subclass_of($schema, 'Maghead\Schema\MixinDeclareSchema', true)
             ) {
                 continue;
             }

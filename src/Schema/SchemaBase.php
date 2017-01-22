@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
 use RuntimeException;
 use InvalidArgumentException;
@@ -180,7 +180,7 @@ abstract class SchemaBase
                 throw new RuntimeException("Foreign schema class '$class' not found in schema {$this}.");
             }
 
-            if (is_a($class, 'LazyRecord\\BaseModel', true)) {
+            if (is_a($class, 'Maghead\\BaseModel', true)) {
                 // bless model class to schema object.
                 if (!method_exists($class, 'schema')) {
                     throw new Exception(get_class($this).": You need to define schema method in $class class.");
@@ -191,7 +191,7 @@ abstract class SchemaBase
                 if ($recursive) {
                     $schemas = array_merge($schemas, $schema->getReferenceSchemas(false));
                 }
-            } elseif (is_subclass_of($class, 'LazyRecord\\Schema\\DeclareSchema', true)) {
+            } elseif (is_subclass_of($class, 'Maghead\\Schema\\DeclareSchema', true)) {
                 $schemas[ $class ] = 1;
                 $fs = new $class();
                 if ($recursive) {

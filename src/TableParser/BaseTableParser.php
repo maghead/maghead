@@ -1,12 +1,12 @@
 <?php
 
-namespace LazyRecord\TableParser;
+namespace Maghead\TableParser;
 
 use PDO;
 use SQLBuilder\Driver\BaseDriver;
-use LazyRecord\QueryDriver;
-use LazyRecord\Schema\DeclareSchema;
-use LazyRecord\Connection;
+use Maghead\QueryDriver;
+use Maghead\Schema\DeclareSchema;
+use Maghead\Connection;
 
 abstract class BaseTableParser
 {

@@ -25,12 +25,12 @@ before_script:
   - psql -c "create database testing;" -U postgres
   - mysql -uroot -e "create database testing charset utf8;"
   - cp -v db/config/database.travis-ci.yml db/config/database.yml
-  - php bin/lazy build-conf -f db/config/database.yml
-  # - php bin/lazy db create -D=$DB
-  - php bin/lazy schema build -f
-  - php bin/lazy schema build LazyRecord\\Model\\MetadataSchema
-  - php bin/lazy schema build -f src # build meta model class
-  - php bin/lazy sql --rebuild -D=$DB
+  - php bin/maghead build-conf -f db/config/database.yml
+  # - php bin/maghead db create -D=$DB
+  - php bin/maghead schema build -f
+  - php bin/maghead schema build Maghead\\Model\\MetadataSchema
+  - php bin/maghead schema build -f src # build meta model class
+  - php bin/maghead sql --rebuild -D=$DB
 script:
   - phpunit -c phpunit.xml.dist
 after_success:

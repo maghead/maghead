@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
 use CLIFramework\Command;
-use LazyRecord\ConfigLoader;
+use Maghead\ConfigLoader;
 
 class InitConfCommand extends Command
 {

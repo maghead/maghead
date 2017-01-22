@@ -1,7 +1,7 @@
 <?php
-use LazyRecord\Types\DateTime as OurDateTime;
+use Maghead\Types\DateTime as OurDateTime;
 
-class LazyRecordDateTimeTest extends PHPUnit_Framework_TestCase
+class MagheadDateTimeTest extends PHPUnit_Framework_TestCase
 {
     public function testToString()
     {

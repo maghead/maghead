@@ -1,12 +1,12 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use Exception;
 use PDOException;
 use PDO;
 use ArrayAccess;
-use LazyRecord\DSN\DSN;
+use Maghead\DSN\DSN;
 
 class SQLQueryException extends Exception
 {
@@ -47,7 +47,7 @@ class ConnectionManager implements ArrayAccess
     const DEFAULT_DS = 'default';
 
     /**
-     * @var LazyRecord\ConfigLoader
+     * @var Maghead\ConfigLoader
      */
     private $config;
 
@@ -164,7 +164,7 @@ class ConnectionManager implements ArrayAccess
      *
      * @param string $id datasource name
      *
-     * @return LazyRecord\QueryDriver
+     * @return Maghead\QueryDriver
      */
     public function getQueryDriver($id)
     {

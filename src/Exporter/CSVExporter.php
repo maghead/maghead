@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Exporter;
+namespace Maghead\Exporter;
 
-use LazyRecord\BaseCollection;
+use Maghead\BaseCollection;
 use PDOStatement;
 use PDO;
 

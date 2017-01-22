@@ -1,17 +1,17 @@
 <?php
 
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
 use RuntimeException;
-use LazyRecord\ConfigLoader;
+use Maghead\ConfigLoader;
 use ClassTemplate\ClassFile;
-use LazyRecord\Schema;
-use LazyRecord\Schema\Factory\BaseModelClassFactory;
-use LazyRecord\Schema\Factory\BaseRepoClassFactory;
-use LazyRecord\Schema\Factory\BaseCollectionClassFactory;
-use LazyRecord\Schema\Factory\CollectionClassFactory;
-use LazyRecord\Schema\Factory\ModelClassFactory;
-use LazyRecord\Schema\Factory\SchemaProxyClassFactory;
+use Maghead\Schema;
+use Maghead\Schema\Factory\BaseModelClassFactory;
+use Maghead\Schema\Factory\BaseRepoClassFactory;
+use Maghead\Schema\Factory\BaseCollectionClassFactory;
+use Maghead\Schema\Factory\CollectionClassFactory;
+use Maghead\Schema\Factory\ModelClassFactory;
+use Maghead\Schema\Factory\SchemaProxyClassFactory;
 
 /**
  * Builder for building static schema class file.
@@ -38,7 +38,7 @@ class SchemaGenerator
             return $this->config->getBaseModelClass();
         }
 
-        return 'LazyRecord\BaseModel';
+        return 'Maghead\BaseModel';
     }
 
     protected function getBaseCollectionClass()
@@ -47,7 +47,7 @@ class SchemaGenerator
             return $this->config->getBaseCollectionClass();
         }
 
-        return 'LazyRecord\BaseCollection';
+        return 'Maghead\BaseCollection';
     }
 
     /**
@@ -130,7 +130,7 @@ class SchemaGenerator
         // always update schema proxy and base classes
         $cTemplates[] = SchemaProxyClassFactory::create($schema);
         $cTemplates[] = BaseModelClassFactory::create($schema, $this->getBaseModelClass());
-        $cTemplates[] = BaseRepoClassFactory::create($schema, 'LazyRecord\\BaseRepo');
+        $cTemplates[] = BaseRepoClassFactory::create($schema, 'Maghead\\BaseRepo');
         $cTemplates[] = BaseCollectionClassFactory::create($schema, $this->getBaseCollectionClass());
         foreach ($cTemplates as $cTemplate) {
             if ($result = $this->updateClassFile($cTemplate, $schema, true)) {

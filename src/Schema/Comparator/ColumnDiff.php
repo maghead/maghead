@@ -1,9 +1,9 @@
 <?php
 
-namespace LazyRecord\Schema\Comparator;
+namespace Maghead\Schema\Comparator;
 
 use Closure;
-use LazyRecord\Schema\ColumnAccessorInterface;
+use Maghead\Schema\ColumnAccessorInterface;
 use LogicException;
 
 class ColumnDiff

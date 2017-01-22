@@ -1,11 +1,11 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\Raw;
-use LazyRecord\DSN\DSNParser;
-use LazyRecord\DSN\DSN;
+use Maghead\DSN\DSNParser;
+use Maghead\DSN\DSN;
 use PDO;
 
 class Connection extends PDO
@@ -26,7 +26,7 @@ class Connection extends PDO
     protected $pass;
 
     /**
-     * @var LazyRecord\DSN\DSN
+     * @var Maghead\DSN\DSN
      */
     private $dsn;
 

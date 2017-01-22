@@ -1,10 +1,10 @@
 <?php
 
-namespace LazyRecord\Command;
+namespace Maghead\Command;
 
-use LazyRecord\SeedBuilder;
-use LazyRecord\Schema\SchemaUtils;
-use LazyRecord\Schema\SchemaCollection;
+use Maghead\SeedBuilder;
+use Maghead\Schema\SchemaUtils;
+use Maghead\Schema\SchemaCollection;
 
 class BasedataCommand extends BaseCommand
 {

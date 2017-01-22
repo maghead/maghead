@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Testing\ModelTestCase;
+use Maghead\Testing\ModelTestCase;
 use PageApp\Model\Page;
 use PageApp\Model\PageCollection;
 

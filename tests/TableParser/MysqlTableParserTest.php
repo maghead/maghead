@@ -1,10 +1,10 @@
 <?php
-use LazyRecord\Testing\BaseTestCase;
+use Maghead\Testing\BaseTestCase;
 use SQLBuilder\Driver\PDOSQLiteDriver;
 use SQLBuilder\Driver\PDOMySQLDriver;
-use LazyRecord\TableParser\SqliteTableParser;
-use LazyRecord\TableParser\MysqlTableParser;
-use LazyRecord\ConnectionManager;
+use Maghead\TableParser\SqliteTableParser;
+use Maghead\TableParser\MysqlTableParser;
+use Maghead\ConnectionManager;
 
 class MysqlTableParserTest extends BaseTestCase
 {

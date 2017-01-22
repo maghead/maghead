@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\Types;
+use Maghead\Types;
 class TypesTest extends PHPUnit_Framework_TestCase
 {
     public function testTypes()

@@ -1,6 +1,6 @@
 <?php
 
-namespace LazyRecord\DSN;
+namespace Maghead\DSN;
 
 use Exception;
 

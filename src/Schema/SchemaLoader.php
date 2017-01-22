@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord\Schema;
+namespace Maghead\Schema;
 
-use LazyRecord\ClassUtils;
+use Maghead\ClassUtils;
 
 /**
  * Schema loader actually catches 
@@ -17,7 +17,7 @@ class SchemaLoader
      *
      * @param string $class Schema class naem
      *
-     * @return LazyRecord\Schema\RuntimeSchema
+     * @return Maghead\Schema\RuntimeSchema
      */
     public static function load($class)
     {

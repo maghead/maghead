@@ -1,5 +1,5 @@
 <?php
-use LazyRecord\ConfigLoader;
+use Maghead\ConfigLoader;
 
 class ConfigLoaderTest extends PHPUnit_Framework_TestCase
 {

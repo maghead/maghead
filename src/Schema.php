@@ -1,8 +1,8 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
-use LazyRecord\Schema\DeclareSchema;
+use Maghead\Schema\DeclareSchema;
 
 // an alias for schema declare
 abstract class Schema extends DeclareSchema

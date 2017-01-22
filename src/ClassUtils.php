@@ -1,11 +1,11 @@
 <?php
 
-namespace LazyRecord;
+namespace Maghead;
 
 use Exception;
 use ReflectionClass;
 use Doctrine\Common\Inflector\Inflector;
-use LazyRecord\Exception\TableNameConversionException;
+use Maghead\Exception\TableNameConversionException;
 
 class ClassUtils
 {
@@ -19,7 +19,7 @@ class ClassUtils
     public static function schema_classes_to_objects(array $classes)
     {
         $classes = array_filter($classes, function ($class) {
-            return is_subclass_of($class, 'LazyRecord\\Schema\\DeclareSchema', true);
+            return is_subclass_of($class, 'Maghead\\Schema\\DeclareSchema', true);
         });
 
         return array_map(function ($class) {
@@ -38,11 +38,11 @@ class ClassUtils
         foreach ($classes as $class) {
             // skip abstract classes.
             if (
-              !is_subclass_of($class, 'LazyRecord\Schema\DeclareSchema', true)
-              || is_a($class, 'LazyRecord\Schema\DynamicSchemaDeclare', true)
-              || is_a($class, 'LazyRecord\Schema\MixinDeclareSchema', true)
-              || is_a($class, 'LazyRecord\Schema\MixinSchemaDeclare', true)
-              || is_subclass_of($class, 'LazyRecord\Schema\MixinDeclareSchema', true)
+              !is_subclass_of($class, 'Maghead\Schema\DeclareSchema', true)
+              || is_a($class, 'Maghead\Schema\DynamicSchemaDeclare', true)
+              || is_a($class, 'Maghead\Schema\MixinDeclareSchema', true)
+              || is_a($class, 'Maghead\Schema\MixinSchemaDeclare', true)
+              || is_subclass_of($class, 'Maghead\Schema\MixinDeclareSchema', true)
             ) {
                 continue;
             }
