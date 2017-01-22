@@ -1,7 +1,7 @@
 TODO
 ====
 
-- [ ] Move data array into model properties.
+- [x] Move data array into model properties.
     - [x] This require getData() method to collect all property value.
     - [x] Getter should inflate the value from property
     - [x] The find method should simply return the record instead of
@@ -25,24 +25,42 @@ TODO
     - [x] `BaseModel::createAndLoad` is now static method.
     - [x] Inflate by the isa in the automatic generated accessor.
     - [x] Cache query driver
-    - [ ] ?? `getReadConnection` could be static method?
-    - [ ] Setter should deflate the value from the value.
-    - [ ] `::load` method refactor.
-    - [ ] `::create` method refactor.
+    - [x] `BaseModel::getReadConnection` removed.
+    - [x] `::load` method refactor.
+    - [x] `::create` method refactor.
 
-- [ ] Generate Repo Class
-    - [ ] Add `::repo($ds)` helper to create repo with specific
+- [x] Generate BaseRepo Class
+    - [x] Add `::repo($ds)` helper to create repo with specific
           connection.
-    - [ ] Add `::repo($write, $read)` helper to create repo with specific
+    - [x] Add `::repo($write, $read)` helper to create repo with specific
           connection.
-    - [ ] Add `::repo($write)` ($read = $write)
-    - [ ] Add `::repo()` (default connection)
+    - [x] Add `::repo($write)` ($read = $write)
+    - [x] Add `::repo()` (using default connections)
+    - [x] Add `::defaultRepo()` (using default connections)
+    - [x] Move `find*` method to Repo class.
+    - [x] Move `create` method to Repo class.
+    - [x] Move `delete` method to Repo class.
 
-    - [ ] Move `find*` method to Repo class.
-    - [ ] Move `create` method to Repo class.
-    - [ ] Move `delete` method to Repo class.
+- [x] Add facelet static methods on BaseModel to connect BaseRepo methods.
 
-- [ ] Generate ShardingRepo Class
+- [ ] Generate setter methods on BaseModel.
+- [ ] Setter should deflate the value from the value.
+
+- [ ] Sharding Support
+
+    $shards = Book::shards(); // returns Shards of the model.
+
+    // Dispatch to one repository by $key and create the record in the repository.
+    Order::shards()->dispatch($key)->create($args);
+
+    // Automatically dispatch the repository by the "key" defined in $args.
+    Order::shards()->create($args);
+
+    $order = Order::shards()->find(77890);
+
+    $order = Order::shards()->find('569f21d7-fcad-49bf-99dd-795be631f984');
+
+
 
 
 - [ ] Move CRUD operation from modal class to ModelActions class.
