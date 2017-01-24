@@ -147,29 +147,29 @@ class BaseModelClassFactory
                     if ($column->get('inflator')) {
                         return [
                             "if (\$c = \$this->getSchema()->getColumn(\"$columnName\")) {",
-                            "     return \$c->inflate(\$this->$columnName, \$this);",
+                            "     return \$c->inflate(\$this->{$columnName}, \$this);",
                             "}",
-                            "return \$this->$columnName;",
+                            "return \$this->{$columnName};",
                         ];
                     }
                     if ($column->isa === "int") {
-                        return ["return intval(\$this->$columnName);"];
+                        return ["return intval(\$this->{$columnName});"];
                     } else if ($column->isa === "str") {
-                        return ["return \$this->$columnName;"];
+                        return ["return \$this->{$columnName};"];
                     } else if ($column->isa === "bool") {
                         return [
-                            "\$value = \$this->$columnName;",
+                            "\$value = \$this->{$columnName};",
                             "if (\$value === '' || \$value === null) {",
                             "   return null;",
                             "}",
                             "return boolval(\$value);",
                         ];
                     } else if ($column->isa === "float") {
-                        return ["return floatval(\$this->$columnName);"];
+                        return ["return floatval(\$this->{$columnName});"];
                     } else if ($column->isa === "json") {
-                        return ["return json_decode(\$this->$columnName);"];
+                        return ["return json_decode(\$this->{$columnName});"];
                     }
-                    return ["return Inflator::inflate(\$this->$columnName, '{$column->isa}');"];
+                    return ["return Inflator::inflate(\$this->{$columnName}, '{$column->isa}');"];
                 });
             }
         }
@@ -180,19 +180,19 @@ class BaseModelClassFactory
 
         $cTemplate->addMethod('public', 'getKey', [], function() use ($primaryKey) {
             return 
-                "return \$this->$primaryKey;"
+                "return \$this->{$primaryKey};"
             ;
         });
 
         $cTemplate->addMethod('public', 'hasKey', [], function() use ($primaryKey) {
             return 
-                "return isset(\$this->$primaryKey);"
+                "return isset(\$this->{$primaryKey});"
             ;
         });
 
         $cTemplate->addMethod('public', 'setKey', ['$key'], function() use ($primaryKey) {
             return 
-                "return \$this->$primaryKey = \$key;"
+                "return \$this->{$primaryKey} = \$key;"
             ;
         });
 
@@ -200,7 +200,7 @@ class BaseModelClassFactory
             return 
                 'return [' . join(", ", array_map(function($p) {
                     list($columnName, $propertyName) = $p;
-                    return "\"$columnName\" => \$this->$columnName";
+                    return "\"$columnName\" => \$this->{$columnName}";
                 }, $properties)) . '];'
             ;
         });
@@ -208,14 +208,14 @@ class BaseModelClassFactory
         $cTemplate->addMethod('public', 'setData', ['array $data'], function() use ($properties) {
             return array_map(function($p) {
                     list($columnName, $propertyName) = $p;
-                    return "if (array_key_exists(\"$columnName\", \$data)) { \$this->$columnName = \$data[\"$columnName\"]; }";
+                    return "if (array_key_exists(\"{$columnName}\", \$data)) { \$this->{$columnName} = \$data[\"{$columnName}\"]; }";
                 }, $properties);
         });
 
         $cTemplate->addMethod('public', 'clear', [], function() use ($properties) {
             return array_map(function($p) {
                     list($columnName, $propertyName) = $p;
-                    return "\$this->$columnName = NULL;";
+                    return "\$this->{$columnName} = NULL;";
                 }, $properties);
         });
 
