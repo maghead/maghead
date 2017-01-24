@@ -20,7 +20,6 @@ class MetadataSchema extends DeclareSchema
             ;
         $this->column('value')
             ->varchar(256)
-            ->findable()
             ;
     }
 }
