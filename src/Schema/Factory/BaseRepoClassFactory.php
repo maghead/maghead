@@ -196,7 +196,7 @@ class BaseRepoClassFactory
 
                     $cTemplate->addMethod('public', $methodName, [], function() use ($rel, $propertyName, $constName) {
                         $foreignSchema = $rel->newForeignSchema();
-                        $selfColumn = $rel->getSelfColumn();
+                        $selfColumn    = $rel->getSelfColumn();
                         return [
                             "if (!\$this->{$propertyName}) {",
                             "    \$this->{$propertyName} = \$this->read->prepare(self::$constName);",
