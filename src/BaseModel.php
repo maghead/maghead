@@ -453,7 +453,8 @@ abstract class BaseModel implements Serializable
      */
     public function dbQuery($dsId, $sql)
     {
-        $conn = $this->getConnection($dsId);
+        $connManager = ConnectionManager::getInstance();
+        $conn = $connManager->getConnection($dsId);
         if (!$conn) {
             throw new RuntimeException("data source $dsId is not defined.");
         }
@@ -478,7 +479,8 @@ abstract class BaseModel implements Serializable
             $dsId = $this->readSourceId;
         }
 
-        $conn = $this->getConnection($dsId);
+        $connManager = ConnectionManager::getInstance();
+        $conn = $connManager->getConnection($dsId);
         $stm = $conn->prepare($sql);
         $stm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
         $stm->execute($args);
@@ -506,20 +508,6 @@ abstract class BaseModel implements Serializable
         $stm->execute($args);
 
         return $stm;
-    }
-
-    /**
-     * get default connection object (PDO) from connection manager.
-     *
-     * @param string $dsId data source id
-     *
-     * @return PDO
-     */
-    public function getConnection($dsId = 'default')
-    {
-        $connManager = ConnectionManager::getInstance();
-
-        return $connManager->getConnection($dsId);
     }
 
     public function getSchemaProxyClass()
