@@ -176,7 +176,7 @@ class SchemaUtils
 
         if (!empty($paths)) {
             $finder = new SchemaFinder($paths);
-            $finder->load();
+            $finder->find();
         }
 
         // load class from class map

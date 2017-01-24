@@ -15,10 +15,12 @@ class MetadataSchema extends DeclareSchema
             ->autoIncrement()
             ;
         $this->column('name')
-            ->varchar(128);
+            ->varchar(128)
+            ->findable()
+            ;
         $this->column('value')
-            ->varchar(256);
-
-        $this->disableColumnAccessors();
+            ->varchar(256)
+            ->findable()
+            ;
     }
 }
