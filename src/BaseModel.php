@@ -409,7 +409,7 @@ abstract class BaseModel implements Serializable
             return $this->invokeMixinClassMethod($mClass, $m, $a);
         }
 
-        // XXX: special case for twig template
+        // special case for twig template
         throw new BadMethodCallException(get_class($this).": $m method not found.");
     }
 
