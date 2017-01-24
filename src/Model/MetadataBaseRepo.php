@@ -39,6 +39,7 @@ class MetadataBaseRepo
     protected $loadStm;
     protected $deleteStm;
     protected $loadByNameStm;
+    protected $loadByValueStm;
     public static function getSchema()
     {
         static $schema;
@@ -62,6 +63,14 @@ class MetadataBaseRepo
             $this->loadByNameStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
         }
         return static::_stmFetch($this->loadByNameStm, [':name' => $value ]);
+    }
+    public function loadByValue($value)
+    {
+        if (!$this->loadByValueStm) {
+            $this->loadByValueStm = $this->read->prepare('SELECT * FROM __meta__ WHERE value = :value LIMIT 1');
+            $this->loadByValueStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
+        }
+        return static::_stmFetch($this->loadByValueStm, [':value' => $value ]);
     }
     public function deleteByPrimaryKey($pkId)
     {
