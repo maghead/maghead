@@ -10,6 +10,9 @@ use Maghead\ClassUtils;
 use Maghead\Schema\Column\AutoIncrementPrimaryKeyColumn;
 use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
+use SQLBuilder\ParamMarker;
+use SQLBuilder\Universal\Query\SelectQuery;
+use SQLBuilder\Universal\Query\DeleteQuery;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Schema\Relationship\HasMany;
 use Maghead\Schema\Relationship\HasOne;
@@ -939,4 +942,22 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     {
         return $this->indexes;
     }
+
+    public function newFindByPrimaryKeyQuery()
+    {
+        $query = $this->newSelectQuery();
+        $query->where()->equal($this->primaryKey, new ParamMarker($this->primaryKey));
+        $query->limit(1);
+        return $query;
+    }
+
+    public function newSelectQuery()
+    {
+        $query = new SelectQuery();
+        $query->from($this->getTable());
+        $query->select('*');
+        return $query;
+    }
+
+
 }

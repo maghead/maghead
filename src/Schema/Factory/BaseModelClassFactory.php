@@ -7,6 +7,7 @@ use ReflectionMethod;
 
 use ClassTemplate\ClassFile;
 use Maghead\Schema\DeclareSchema;
+use Maghead\Schema\Relationship\Relationship;
 use Maghead\ConnectionManager;
 use Doctrine\Common\Inflector\Inflector;
 
@@ -129,8 +130,8 @@ class BaseModelClassFactory
 
             $cTemplate->addPublicProperty($columnName, NULL);
 
-            if ($schema->enableColumnAccessors) {
 
+            if ($schema->enableColumnAccessors) {
                 if (preg_match('/^is[A-Z]/', $propertyName)) {
                     $accessorMethodName = $propertyName;
                 } else if ($column->isa === "bool") {
@@ -172,9 +173,7 @@ class BaseModelClassFactory
         }
 
         $cTemplate->addMethod('public', 'getKeyName', [], function() use ($primaryKey) {
-            return
-                "return " . var_export($primaryKey, true) . ';'
-            ;
+            return "return " . var_export($primaryKey, true) . ';' ;
         });
 
         $cTemplate->addMethod('public', 'getKey', [], function() use ($primaryKey) {

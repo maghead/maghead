@@ -159,6 +159,10 @@ abstract class SchemaBase
         return $this->relations;
     }
 
+
+
+
+
     /**
      * For schema class, get its reference schema classes recursively.
      *

@@ -22,6 +22,7 @@ use CodeGen\Raw;
 use Maghead\Schema\CodeGenSettingsParser;
 use Maghead\Schema\AnnotatedBlock;
 use Maghead\Schema\MethodBlockParser;
+use Maghead\Schema\Relationship\Relationship;
 
 /**
  * Base Repo class generator.
@@ -113,12 +114,7 @@ class BaseRepoClassFactory
 
 
         $arguments = new ArgumentArray();
-        $loadByPrimaryKeyQuery = new SelectQuery();
-        $loadByPrimaryKeyQuery->from($schema->getTable());
-        $primaryKeyColumn = $schema->getColumn($schema->primaryKey);
-        $loadByPrimaryKeyQuery->select('*')
-            ->where()->equal($schema->primaryKey, new ParamMarker($schema->primaryKey));
-        $loadByPrimaryKeyQuery->limit(1);
+        $loadByPrimaryKeyQuery = $schema->newFindByPrimaryKeyQuery();
         $loadByPrimaryKeySql = $loadByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $loadByPrimaryKeySql);
 
@@ -176,6 +172,43 @@ class BaseRepoClassFactory
                 "return \$this->deleteStm->execute([\$pkId]);",
             ];
         });
+
+
+
+        foreach ($schema->getRelations() as $relKey => $rel) {
+            switch($rel['type']) {
+                case Relationship::HAS_ONE:
+                    break;
+                case Relationship::BELONGS_TO:
+                    $methodName = 'get' . ucfirst(Inflector::camelize($relKey));
+                    $propertyName = 'findBelongsTo'.ucfirst(Inflector::camelize($relKey));
+
+                    $foreignSchema = $rel->newForeignSchema();
+                    $query = $foreignSchema->newSelectQuery(); // foreign key
+                    $query->where()->equal($rel->getForeignColumn(), new ParamMarker());
+                    $query->limit(1); // since it's a belongs to relationship, there is only one record.
+                    $sql = $query->toSql($readQueryDriver, new ArgumentArray);
+
+                    $constName = "FIND_BELONGS_TO_" . strtoupper($relKey) . "_SQL";
+
+                    $cTemplate->addProtectedProperty($propertyName);
+                    $cTemplate->addConst($constName, $sql);
+
+                    $cTemplate->addMethod('public', $methodName, [], function() use ($rel, $propertyName, $constName) {
+                        $foreignSchema = $rel->newForeignSchema();
+                        $selfColumn = $rel->getSelfColumn();
+                        return [
+                            "if (!\$this->{$propertyName}) {",
+                            "    \$this->{$propertyName} = \$this->read->prepare(self::$constName);",
+                            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$foreignSchema->getModelClass()}');",
+                            "}",
+                            "return static::_stmFetch(\$this->{$propertyName}, [\$this->$selfColumn]);",
+                        ];
+                    });
+            }
+        }
+
+
 
         $cTemplate->extendClass('\\'.$baseClass);
         return $cTemplate;
