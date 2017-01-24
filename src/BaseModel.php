@@ -603,6 +603,68 @@ abstract class BaseModel implements Serializable
         return $this->get($key);
     }
 
+    protected function fetchHasOne($key)
+    {
+        $cacheKey = 'relationship::'.$key;
+        $relation = static::getSchema()->getRelation($key);
+        $selfColumn = $relation['self_column'];
+        $fSchema = $relation->newForeignSchema();
+        $fColumn = $relation['foreign_column'];
+        if (!$this->$selfColumn) {
+            return;
+        }
+        $sValue = $this->$selfColumn;
+        $model = $relation->newForeignModel();
+        $record = $model::loadWith(array($fColumn => $sValue));
+        return $this->setInternalCache($cacheKey, $record);
+    }
+
+    protected function fetchBelongsTo($key)
+    {
+        $cacheKey = 'relationship::'.$key;
+        $relation = static::getSchema()->getRelation($key);
+        $selfColumn = $relation['self_column'];
+        $foreignSchema = $relation->newForeignSchema();
+        $fColumn = $relation['foreign_column'];
+        if (!isset($this->$selfColumn)) {
+            return;
+        }
+        $sValue = $this->$selfColumn;
+        $model = $foreignSchema->newModel();
+        $record = $model::loadWith(array($fColumn => $sValue));
+        return $this->setInternalCache($cacheKey, $record);
+    }
+
+    protected function fetchHasMany($key)
+    {
+        $cacheKey = 'relationship::'.$key;
+        $relation = static::getSchema()->getRelation($key);
+
+        // TODO: migrate this code to Relationship class.
+        $selfColumn = $relation['self_column'];
+        $fSchema = $relation->newForeignSchema();
+
+        $fColumn = $relation['foreign_column'];
+
+        if (!isset($this->$selfColumn)) {
+            return;
+        }
+        // throw new Exception("The value of $selfColumn of " . get_class($this) . ' is not defined.');
+
+        $sValue = $this->$selfColumn;
+
+        $collection = $relation->getForeignCollection();
+        $collection->where()
+            ->equal($collection->getAlias().'.'.$fColumn, $sValue); // where 'm' is the default alias.
+
+        // For if we need to create relational records 
+        // though collection object, we need to pre-set 
+        // the relational record id.
+        $collection->setPresetVars(array($fColumn => $sValue));
+        return $this->setInternalCache($cacheKey, $collection);
+    }
+
+
     public function getRelationalRecords($key, $relation = null)
     {
         // check for the object cache
@@ -611,72 +673,19 @@ abstract class BaseModel implements Serializable
             $relation = static::getSchema()->getRelation($key);
         }
 
-        /*
         switch($relation['type']) {
             case Relationship::HAS_ONE:
+                return $this->fetchHasOne($key);
+                break;
+            case Relationship::BELONGS_TO:
+                return $this->fetchBelongsTo($key);
+                break;
             case Relationship::HAS_MANY:
-            break;
+                return $this->fetchHasMany($key);
+                break;
         }
-        */
-        if (Relationship::HAS_ONE === $relation['type']) {
-            $sColumn = $relation['self_column'];
 
-            $fSchema = $relation->newForeignSchema();
-            $fColumn = $relation['foreign_column'];
-            if (!$this->$sColumn) {
-                return;
-            }
-
-            // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
-            $sValue = $this->$sColumn;
-
-            $model = $relation->newForeignModel();
-            $record = $model::load(array($fColumn => $sValue));
-            return $this->setInternalCache($cacheKey, $record);
-        } elseif (Relationship::HAS_MANY === $relation['type']) {
-
-            
-            // TODO: migrate this code to Relationship class.
-            $sColumn = $relation['self_column'];
-            $fSchema = $relation->newForeignSchema();
-            $fColumn = $relation['foreign_column'];
-
-            if (!isset($this->$sColumn)) {
-                return;
-            }
-            // throw new Exception("The value of $sColumn of " . get_class($this) . ' is not defined.');
-
-            $sValue = $this->$sColumn;
-
-            $collection = $relation->getForeignCollection();
-            $collection->where()
-                ->equal($collection->getAlias().'.'.$fColumn, $sValue); // where 'm' is the default alias.
-
-            // For if we need to create relational records 
-            // though collection object, we need to pre-set 
-            // the relational record id.
-            $collection->setPresetVars(array($fColumn => $sValue));
-
-            return $this->setInternalCache($cacheKey, $collection);
-        }
-        // belongs to one record
-        else if (Relationship::BELONGS_TO === $relation['type']) {
-
-            $sColumn = $relation['self_column'];
-
-            $fSchema = $relation->newForeignSchema();
-            $fColumn = $relation['foreign_column'];
-            $fpSchema = SchemaLoader::load($fSchema->getSchemaProxyClass());
-            if (!isset($this->$sColumn)) {
-                return;
-            }
-
-            $sValue = $this->$sColumn;
-            $model = $fpSchema->newModel();
-            $record = $model::loadWith(array($fColumn => $sValue));
-            return $this->setInternalCache($cacheKey, $record);
-
-        } elseif (Relationship::MANY_TO_MANY === $relation['type']) {
+        if (Relationship::MANY_TO_MANY === $relation['type']) {
             $rId = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
             $rId2 = $relation['relation_foreign'];  // get external relationId from the middle relation. (book from author_books)
 
