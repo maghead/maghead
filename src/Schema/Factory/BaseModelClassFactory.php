@@ -224,11 +224,10 @@ class BaseModelClassFactory
                 case Relationship::HAS_ONE:
                 case Relationship::BELONGS_TO:
                 $relName = ucfirst(Inflector::camelize($relKey));
-                $methodName = 'get'. $relName;
-                $repoMethodName = 'get'. $relName . 'Of';
-                $cTemplate->addMethod('public', $methodName, [], function() use ($repoMethodName) {
-                    return "return static::defaultRepo()->{$repoMethodName}(\$this);";
-                });
+                $methodName = 'fetch'. $relName;
+                $repoMethodName = 'fetch'. $relName . 'Of';
+                $cTemplate->addMethod('public', $methodName, [],
+                    "return static::defaultRepo()->{$repoMethodName}(\$this);");
             }
         }
 

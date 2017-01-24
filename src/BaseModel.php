@@ -650,7 +650,7 @@ abstract class BaseModel implements Serializable
         // For if we need to create relational records 
         // though collection object, we need to pre-set 
         // the relational record id.
-        $collection->setPresetVars(array($fColumn => $sValue));
+        $collection->setPresetVars([$fColumn => $sValue]);
         $this->setInternalCache($cacheKey, $collection);
         return $collection;
     }

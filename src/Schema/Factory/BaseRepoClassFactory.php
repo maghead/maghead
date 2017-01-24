@@ -175,12 +175,15 @@ class BaseRepoClassFactory
         );
 
         foreach ($schema->getRelations() as $relKey => $rel) {
+
+
             switch($rel['type']) {
                 case Relationship::HAS_ONE:
                 case Relationship::BELONGS_TO:
                     $relName = ucfirst(Inflector::camelize($relKey));
-                    $methodName = 'get'. $relName. 'Of';
+                    $methodName = 'fetch'. $relName. 'Of';
                     $propertyName = 'fetch'. $relName .'Stm';
+                    $cTemplate->addProtectedProperty($propertyName);
 
                     $foreignSchema = $rel->newForeignSchema();
                     $query = $foreignSchema->newSelectQuery(); // foreign key
@@ -189,9 +192,8 @@ class BaseRepoClassFactory
                     $sql = $query->toSql($readQueryDriver, new ArgumentArray);
 
                     $constName = "FETCH_" . strtoupper($relKey) . "_SQL";
-
-                    $cTemplate->addProtectedProperty($propertyName);
                     $cTemplate->addConst($constName, $sql);
+
                     $cTemplate->addMethod('public', $methodName, ['BaseModel $record'], function() use ($rel, $propertyName, $constName) {
                         $foreignSchema = $rel->newForeignSchema();
                         $selfColumn    = $rel->getSelfColumn();
@@ -201,6 +203,19 @@ class BaseRepoClassFactory
                             $foreignSchema->getModelClass(),
                             "[\$record->$selfColumn]");
                     });
+                    break;
+                case Relationship::HAS_MANY:
+                    $relName = ucfirst(Inflector::camelize($relKey));
+                    $methodName = 'fetch'. $relName. 'Of';
+                    $propertyName = 'fetch'. $relName .'Stm';
+                    $cTemplate->addProtectedProperty($propertyName);
+
+                    $constName = "FETCH_" . strtoupper($relKey) . "_SQL";
+                    // $cTemplate->addConst($constName, $sql);
+
+
+
+                    break;
             }
         }
 

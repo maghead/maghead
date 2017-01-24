@@ -35,7 +35,7 @@ class BaseCollection
 
     protected $_vars;
 
-    public $_readQuery;
+    protected $_readQuery;
 
     /**
      * @var PDOStatement handle
