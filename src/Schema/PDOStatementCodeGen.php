@@ -3,7 +3,7 @@ namespace Maghead\Schema;
 
 class PDOStatementCodeGen
 {
-    public static function generateFetch($propertyName, $constName, $class, $args)
+    public static function generateFetch(string $propertyName, string $constName, string $class, string $args)
     {
         return [
             "if (!\$this->{$propertyName}) {",
@@ -14,7 +14,7 @@ class PDOStatementCodeGen
         ];
     }
 
-    public static function generateExecute($propertyName, $constName, $args)
+    public static function generateExecute(string $propertyName, string $constName, string $args)
     {
         return [
             "if (!\$this->{$propertyName}) {",

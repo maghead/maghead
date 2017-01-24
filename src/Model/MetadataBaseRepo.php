@@ -25,7 +25,7 @@ class MetadataBaseRepo
     const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = ? LIMIT 1';
     const LOAD_BY_NAME_SQL = 'SELECT * FROM __meta__ WHERE name = :name LIMIT 1';
     const LOAD_BY_VALUE_SQL = 'SELECT * FROM __meta__ WHERE value = :value LIMIT 1';
-    const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ? LIMIT 1';
+    const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ?';
     public static $columnNames = array (
       0 => 'id',
       1 => 'name',
