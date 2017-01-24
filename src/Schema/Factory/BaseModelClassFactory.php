@@ -89,7 +89,6 @@ class BaseModelClassFactory
 
 
         $cTemplate->addStaticVar('column_names',  $schema->getColumnNames());
-        $cTemplate->addStaticVar('column_hash',  array_fill_keys($schema->getColumnNames(), 1));
         $cTemplate->addStaticVar('mixin_classes', array_reverse($schema->getMixinSchemaClasses()));
 
         $cTemplate->addStaticMethod('public', 'getSchema', [], function() use ($schema) {

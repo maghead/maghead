@@ -26,11 +26,6 @@ class MetadataBase
       1 => 'name',
       2 => 'value',
     );
-    public static $column_hash = array (
-      'id' => 1,
-      'name' => 1,
-      'value' => 1,
-    );
     public static $mixin_classes = array (
     );
     protected $table = '__meta__';
