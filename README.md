@@ -2,14 +2,14 @@ Maghead
 ==========
 
 [![works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
-[![Build Status](https://travis-ci.org/corneltek/Maghead.svg?branch=master)](https://travis-ci.org/corneltek/Maghead)
-[![Coverage Status](https://img.shields.io/coveralls/corneltek/Maghead.svg)](https://coveralls.io/r/corneltek/Maghead)
-[![Latest Stable Version](https://poser.pugx.org/corneltek/lazyrecord/v/stable.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
-[![Total Downloads](https://poser.pugx.org/corneltek/lazyrecord/downloads.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
-[![Monthly Downloads](https://poser.pugx.org/corneltek/lazyrecord/d/monthly)](https://packagist.org/packages/corneltek/lazyrecord)
-[![Daily Downloads](https://poser.pugx.org/corneltek/lazyrecord/d/daily)](https://packagist.org/packages/corneltek/lazyrecord)
-[![Latest Unstable Version](https://poser.pugx.org/corneltek/lazyrecord/v/unstable.svg)](https://packagist.org/packages/corneltek/lazyrecord) 
-[![License](https://poser.pugx.org/corneltek/lazyrecord/license.svg)](https://packagist.org/packages/corneltek/lazyrecord)
+[![Build Status](https://travis-ci.org/maghead/Maghead.svg?branch=master)](https://travis-ci.org/maghead/Maghead)
+[![Coverage Status](https://img.shields.io/coveralls/maghead/Maghead.svg)](https://coveralls.io/r/maghead/Maghead)
+[![Latest Stable Version](https://poser.pugx.org/maghead/maghead/v/stable.svg)](https://packagist.org/packages/maghead/maghead) 
+[![Total Downloads](https://poser.pugx.org/maghead/maghead/downloads.svg)](https://packagist.org/packages/maghead/maghead) 
+[![Monthly Downloads](https://poser.pugx.org/maghead/maghead/d/monthly)](https://packagist.org/packages/maghead/maghead)
+[![Daily Downloads](https://poser.pugx.org/maghead/maghead/d/daily)](https://packagist.org/packages/maghead/maghead)
+[![Latest Unstable Version](https://poser.pugx.org/maghead/maghead/v/unstable.svg)](https://packagist.org/packages/maghead/maghead) 
+[![License](https://poser.pugx.org/maghead/maghead/license.svg)](https://packagist.org/packages/maghead/maghead)
 [![Join the chat at https://gitter.im/c9s/Maghead](https://badges.gitter.im/c9s/Maghead.svg)](https://gitter.im/c9s/Maghead?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Maghead is an open-source Object-Relational Mapping (ORM) for PHP5. 
@@ -30,7 +30,7 @@ you can even embed closure in your schema classes.
 
 See also
 
-<div style="width:425px" id="__ss_12638921"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/lazyrecord-the-fast-orm-for-php" title="Maghead: The Fast ORM for PHP" target="_blank">Maghead: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
+<div style="width:425px" id="__ss_12638921"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/maghead-the-fast-orm-for-php" title="Maghead: The Fast ORM for PHP" target="_blank">Maghead: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
 
 
 Automatic Migration Demonstration
@@ -79,13 +79,13 @@ your database settings.
 
 
 ```sh
-composer require corneltek/lazyrecord "^3"
+composer require maghead/maghead "^3"
 ```
 
 If you prefer something new, you can require "dev-master"
 
 ```sh
-composer require corneltek/lazyrecord "dev-master"
+composer require maghead/maghead "dev-master"
 ```
 
 Then create your config file:
@@ -194,7 +194,7 @@ Done. 1 schema tables were generated into data source 'default'.
 ### Writing Application Code
 
 Now you can write your application code,
-But first you need to write your lazyrecord config loader code:
+But first you need to write your maghead config loader code:
 
 ```
 $ vim app.php
