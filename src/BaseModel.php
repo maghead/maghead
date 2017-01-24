@@ -604,7 +604,8 @@ abstract class BaseModel implements Serializable
         $sValue = $this->$selfColumn;
         $model = $relation->newForeignModel();
         $record = $model::loadWith(array($fColumn => $sValue));
-        return $this->setInternalCache($cacheKey, $record);
+        $this->setInternalCache($cacheKey, $record);
+        return $record;
     }
 
     protected function fetchBelongsTo($key)
@@ -613,14 +614,15 @@ abstract class BaseModel implements Serializable
         $relation = static::getSchema()->getRelation($key);
         $selfColumn = $relation['self_column'];
         $foreignSchema = $relation->newForeignSchema();
-        $fColumn = $relation['foreign_column'];
+        $foreignColumn = $relation['foreign_column'];
         if (!isset($this->$selfColumn)) {
             return;
         }
         $sValue = $this->$selfColumn;
         $model = $foreignSchema->newModel();
-        $record = $model::loadWith(array($fColumn => $sValue));
-        return $this->setInternalCache($cacheKey, $record);
+        $record = $model::loadWith([$foreignColumn => $sValue]);
+        $this->setInternalCache($cacheKey, $record);
+        return $record;
     }
 
     protected function fetchHasMany($key)
@@ -649,7 +651,8 @@ abstract class BaseModel implements Serializable
         // though collection object, we need to pre-set 
         // the relational record id.
         $collection->setPresetVars(array($fColumn => $sValue));
-        return $this->setInternalCache($cacheKey, $collection);
+        $this->setInternalCache($cacheKey, $collection);
+        return $collection;
     }
 
 
@@ -742,8 +745,8 @@ abstract class BaseModel implements Serializable
                 }
                 return $middleRecord::loadByPrimaryKey($ret->key);
             });
-
-            return $this->setInternalCache($cacheKey, $collection);
+            $this->setInternalCache($cacheKey, $collection);
+            return $collection;
         }
 
         throw new Exception("The relationship type of $key is not supported.");
@@ -894,9 +897,9 @@ abstract class BaseModel implements Serializable
      *
      * @return mixed cached value
      */
-    public function setInternalCache($key, $val)
+    protected function setInternalCache($key, $val)
     {
-        return $this->_cache[ $key ] = $val;
+        $this->_cache[ $key ] = $val;
     }
 
     /**
