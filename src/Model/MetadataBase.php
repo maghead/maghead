@@ -51,6 +51,18 @@ class MetadataBase
     {
         return new \Maghead\Model\MetadataBaseRepo($write, $read);
     }
+    public function getId()
+    {
+        return intval($this->id);
+    }
+    public function getName()
+    {
+        return $this->name;
+    }
+    public function getValue()
+    {
+        return $this->value;
+    }
     public function getKeyName()
     {
         return 'id';
