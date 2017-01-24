@@ -24,11 +24,33 @@ use Maghead\Schema\AnnotatedBlock;
 use Maghead\Schema\MethodBlockParser;
 use Maghead\Schema\Relationship\Relationship;
 
+
 /**
  * Base Repo class generator.
  */
 class BaseRepoClassFactory
 {
+    protected static function generateFetch($propertyName, $constName, $class, $args)
+    {
+        return [
+            "if (!\$this->{$propertyName}) {",
+            "    \$this->{$propertyName} = \$this->read->prepare(self::$constName);",
+            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$class}');",
+            "}",
+            "return static::_stmFetch(\$this->{$propertyName}, $args);",
+        ];
+    }
+
+    protected static function generateExecute($propertyName, $constName, $args)
+    {
+        return [
+            "if (!\$this->{$propertyName}) {",
+            "   \$this->{$propertyName} = \$this->write->prepare(self::$constName);",
+            "}",
+            "return \$this->{$propertyName}->execute($args);",
+        ];
+    }
+
     public static function create(DeclareSchema $schema, $baseClass)
     {
         $readFrom = $schema->getReadSourceId();
@@ -164,16 +186,11 @@ class BaseRepoClassFactory
         $deleteQuery->limit(1);
         $deleteByPrimaryKeySql = $deleteQuery->toSql($writeQueryDriver, $arguments);
         $cTemplate->addConst('DELETE_BY_PRIMARY_KEY_SQL', $deleteByPrimaryKeySql);
-        $cTemplate->addMethod('public', 'deleteByPrimaryKey', ['$pkId'], function() use ($deleteByPrimaryKeySql, $schema) {
-            return [
-                "if (!\$this->deleteStm) {",
-                "   \$this->deleteStm = \$this->write->prepare(self::DELETE_BY_PRIMARY_KEY_SQL);",
-                "}",
-                "return \$this->deleteStm->execute([\$pkId]);",
-            ];
-        });
-
-
+        $cTemplate->addMethod('public',
+            'deleteByPrimaryKey',
+            ['$pkId'], 
+            BaseRepoClassFactory::generateExecute('deleteStm', 'DELETE_BY_PRIMARY_KEY_SQL', "[\$pkId]")
+        );
 
         foreach ($schema->getRelations() as $relKey => $rel) {
             switch($rel['type']) {
@@ -186,24 +203,20 @@ class BaseRepoClassFactory
                     $foreignSchema = $rel->newForeignSchema();
                     $query = $foreignSchema->newSelectQuery(); // foreign key
                     $query->where()->equal($rel->getForeignColumn(), new ParamMarker());
-                    $query->limit(1); // since it's a belongs to relationship, there is only one record.
+                    $query->limit(1); // Since it's a belongs to relationship, there is only one record.
                     $sql = $query->toSql($readQueryDriver, new ArgumentArray);
 
                     $constName = "FIND_BELONGS_TO_" . strtoupper($relKey) . "_SQL";
 
                     $cTemplate->addProtectedProperty($propertyName);
                     $cTemplate->addConst($constName, $sql);
-
                     $cTemplate->addMethod('public', $methodName, [], function() use ($rel, $propertyName, $constName) {
                         $foreignSchema = $rel->newForeignSchema();
                         $selfColumn    = $rel->getSelfColumn();
-                        return [
-                            "if (!\$this->{$propertyName}) {",
-                            "    \$this->{$propertyName} = \$this->read->prepare(self::$constName);",
-                            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$foreignSchema->getModelClass()}');",
-                            "}",
-                            "return static::_stmFetch(\$this->{$propertyName}, [\$this->$selfColumn]);",
-                        ];
+                        return BaseRepoClassFactory::generateFetch($propertyName,
+                            $constName,
+                            $foreignSchema->getModelClass(),
+                            "[\$this->$selfColumn]");
                     });
             }
         }
