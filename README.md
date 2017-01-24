@@ -1,8 +1,6 @@
 Maghead
 ==========
 
-<img src="https://raw.github.com/corneltek/Maghead/master/assets/images/logo.png" width="64"/>
-
 [![works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
 [![Build Status](https://travis-ci.org/corneltek/Maghead.svg?branch=master)](https://travis-ci.org/corneltek/Maghead)
 [![Coverage Status](https://img.shields.io/coveralls/corneltek/Maghead.svg)](https://coveralls.io/r/corneltek/Maghead)
