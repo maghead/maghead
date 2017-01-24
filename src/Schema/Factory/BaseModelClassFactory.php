@@ -9,6 +9,7 @@ use ClassTemplate\ClassFile;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\ConnectionManager;
+use Maghead\Schema\PDOStatementCodeGen;
 use Doctrine\Common\Inflector\Inflector;
 
 // used for SQL generator
@@ -21,6 +22,7 @@ use CodeGen\Statement\RequireStatement;
 use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
+
 
 
 /**

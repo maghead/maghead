@@ -3,8 +3,9 @@
 namespace Maghead\Schema\Factory;
 
 use ClassTemplate\ClassFile;
-use Maghead\Schema\DeclareSchema;
 use Maghead\ConnectionManager;
+use Maghead\Schema\DeclareSchema;
+use Maghead\Schema\PDOStatementCodeGen;
 use Doctrine\Common\Inflector\Inflector;
 use ReflectionClass;
 
@@ -24,30 +25,6 @@ use Maghead\Schema\AnnotatedBlock;
 use Maghead\Schema\MethodBlockParser;
 use Maghead\Schema\Relationship\Relationship;
 
-
-class PDOStatementCodeGen
-{
-    public static function generateFetch($propertyName, $constName, $class, $args)
-    {
-        return [
-            "if (!\$this->{$propertyName}) {",
-            "    \$this->{$propertyName} = \$this->read->prepare(self::$constName);",
-            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$class}');",
-            "}",
-            "return static::_stmFetch(\$this->{$propertyName}, $args);",
-        ];
-    }
-
-    public static function generateExecute($propertyName, $constName, $args)
-    {
-        return [
-            "if (!\$this->{$propertyName}) {",
-            "   \$this->{$propertyName} = \$this->write->prepare(self::$constName);",
-            "}",
-            "return \$this->{$propertyName}->execute($args);",
-        ];
-    }
-}
 
 /**
  * Base Repo class generator.
@@ -83,6 +60,7 @@ class BaseRepoClassFactory
 
         $cTemplate->useClass('Maghead\\Schema\\SchemaLoader');
         $cTemplate->useClass('Maghead\\Result');
+        $cTemplate->useClass('Maghead\\BaseModel');
         $cTemplate->useClass('Maghead\\Inflator');
         $cTemplate->useClass('SQLBuilder\\Bind');
         $cTemplate->useClass('SQLBuilder\\ArgumentArray');
@@ -201,8 +179,8 @@ class BaseRepoClassFactory
                 case Relationship::HAS_ONE:
                     break;
                 case Relationship::BELONGS_TO:
-                    $methodName = 'get' . ucfirst(Inflector::camelize($relKey));
-                    $propertyName = 'findBelongsTo'.ucfirst(Inflector::camelize($relKey));
+                    $methodName = 'get'.ucfirst(Inflector::camelize($relKey)). 'Of';
+                    $propertyName = 'findBelongsTo'.ucfirst(Inflector::camelize($relKey)).'Stm';
 
                     $foreignSchema = $rel->newForeignSchema();
                     $query = $foreignSchema->newSelectQuery(); // foreign key
@@ -214,13 +192,13 @@ class BaseRepoClassFactory
 
                     $cTemplate->addProtectedProperty($propertyName);
                     $cTemplate->addConst($constName, $sql);
-                    $cTemplate->addMethod('public', $methodName, [], function() use ($rel, $propertyName, $constName) {
+                    $cTemplate->addMethod('public', $methodName, ['BaseModel $record'], function() use ($rel, $propertyName, $constName) {
                         $foreignSchema = $rel->newForeignSchema();
                         $selfColumn    = $rel->getSelfColumn();
                         return PDOStatementCodeGen::generateFetch($propertyName,
                             $constName,
                             $foreignSchema->getModelClass(),
-                            "[\$this->$selfColumn]");
+                            "[\$record->$selfColumn]");
                     });
             }
         }

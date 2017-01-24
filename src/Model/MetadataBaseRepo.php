@@ -3,6 +3,7 @@ namespace Maghead\Model;
 require_once __DIR__ . '/MetadataSchemaProxy.php';
 use Maghead\Schema\SchemaLoader;
 use Maghead\Result;
+use Maghead\BaseModel;
 use Maghead\Inflator;
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
