@@ -1,18 +1,41 @@
 <?php
 use Maghead\Testing\ModelTestCase;
-use AuthorBooks\Model\Address;
 use AuthorBooks\Model\Author;
+use AuthorBooks\Model\AuthorSchema;
+use AuthorBooks\Model\Address;
+use AuthorBooks\Model\AddressSchema;
 
 class AuthorAddressModelTest extends ModelTestCase
 {
     public function getModels()
     {
         return array(
-            new \AuthorBooks\Model\AuthorSchema,
-            new \AuthorBooks\Model\AddressSchema,
+            new AuthorSchema,
+            new AddressSchema,
         );
     }
 
+    /**
+     * @basedata false
+     */
+    public function testBelongsToAccessor()
+    {
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $this->assertNotFalse($author);
+
+        $address = Address::createAndLoad(array(
+            'author_id' => $author->id,
+            'address' => 'Taiwan Taipei',
+        ));
+        $this->assertNotFalse($address);
+
+        $author = $address->getAuthor();
+        $this->assertNotFalse($author);
+    }
+
+    /**
+     * @basedata false
+     */
     public function testHasManyRelationFetch()
     {
         $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
@@ -35,6 +58,7 @@ class AuthorAddressModelTest extends ModelTestCase
         ));
         $this->assertNotFalse($address);
 
+
         // xxx: provide getAddresses() method generator
         $addresses = $author->addresses;
         $this->assertCollectionSize(2, $addresses);
@@ -50,13 +74,6 @@ class AuthorAddressModelTest extends ModelTestCase
         ok($addresses[0]->id);
         ok($addresses[1]->id);
         $this->assertCount(2 , $addresses);
-
-        /*
-        foreach($author->addresses as $ad) {
-            $this->assertResultSuccess($ad->delete());
-        }
-        $this->assertResultSuccess($author->delete());
-        */
     }
 
 

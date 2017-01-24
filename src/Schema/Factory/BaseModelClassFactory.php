@@ -219,6 +219,19 @@ class BaseModelClassFactory
                 }, $properties);
         });
 
+        foreach ($schema->getRelations() as $relKey => $rel) {
+            switch($rel['type']) {
+                case Relationship::HAS_ONE:
+                case Relationship::BELONGS_TO:
+                $relName = ucfirst(Inflector::camelize($relKey));
+                $methodName = 'get'. $relName;
+                $repoMethodName = 'get'. $relName . 'Of';
+                $cTemplate->addMethod('public', $methodName, [], function() use ($repoMethodName) {
+                    return "return static::defaultRepo()->{$repoMethodName}(\$this);";
+                });
+            }
+        }
+
         return $cTemplate;
     }
 }
