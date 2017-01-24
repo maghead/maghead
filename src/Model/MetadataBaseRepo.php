@@ -22,6 +22,8 @@ class MetadataBaseRepo
     const PRIMARY_KEY = 'id';
     const TABLE_ALIAS = 'm';
     const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = ? LIMIT 1';
+    const LOAD_BY_NAME_SQL = 'SELECT * FROM __meta__ WHERE name = :name LIMIT 1';
+    const LOAD_BY_VALUE_SQL = 'SELECT * FROM __meta__ WHERE value = :value LIMIT 1';
     const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ?';
     public static $columnNames = array (
       0 => 'id',
@@ -59,7 +61,7 @@ class MetadataBaseRepo
     public function loadByName($value)
     {
         if (!$this->loadByNameStm) {
-            $this->loadByNameStm = $this->read->prepare('SELECT * FROM __meta__ WHERE name = :name LIMIT 1');
+            $this->loadByNameStm = $this->read->prepare(self::LOAD_BY_NAME_SQL);
             $this->loadByNameStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
         }
         return static::_stmFetch($this->loadByNameStm, [':name' => $value ]);
@@ -67,7 +69,7 @@ class MetadataBaseRepo
     public function loadByValue($value)
     {
         if (!$this->loadByValueStm) {
-            $this->loadByValueStm = $this->read->prepare('SELECT * FROM __meta__ WHERE value = :value LIMIT 1');
+            $this->loadByValueStm = $this->read->prepare(self::LOAD_BY_VALUE_SQL);
             $this->loadByValueStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
         }
         return static::_stmFetch($this->loadByValueStm, [':value' => $value ]);

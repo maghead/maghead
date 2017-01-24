@@ -25,12 +25,9 @@ use Maghead\Schema\MethodBlockParser;
 use Maghead\Schema\Relationship\Relationship;
 
 
-/**
- * Base Repo class generator.
- */
-class BaseRepoClassFactory
+class PDOStatementCodeGen
 {
-    protected static function generateFetch($propertyName, $constName, $class, $args)
+    public static function generateFetch($propertyName, $constName, $class, $args)
     {
         return [
             "if (!\$this->{$propertyName}) {",
@@ -41,7 +38,7 @@ class BaseRepoClassFactory
         ];
     }
 
-    protected static function generateExecute($propertyName, $constName, $args)
+    public static function generateExecute($propertyName, $constName, $args)
     {
         return [
             "if (!\$this->{$propertyName}) {",
@@ -50,6 +47,13 @@ class BaseRepoClassFactory
             "return \$this->{$propertyName}->execute($args);",
         ];
     }
+}
+
+/**
+ * Base Repo class generator.
+ */
+class BaseRepoClassFactory
+{
 
     public static function create(DeclareSchema $schema, $baseClass)
     {
@@ -159,21 +163,21 @@ class BaseRepoClassFactory
             $findMethodName = 'loadBy'.ucfirst(Inflector::camelize($columnName));
             $propertyName = $findMethodName . 'Stm';
             $cTemplate->addProtectedProperty($propertyName);
-            $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use($schema, $readQueryDriver, $columnName, $propertyName) {
-                $arguments = new ArgumentArray;
-                $query = new SelectQuery;
-                $query->from($schema->getTable());
-                $query->select('*')->where()->equal($columnName, new Bind($columnName));
-                $query->limit(1);
-                $sql = $query->toSql($readQueryDriver, $arguments);
 
-                $block = [];
-                $block[] = "if (!\$this->{$propertyName}) {";
-                $block[] = "    \$this->{$propertyName} = \$this->read->prepare(".var_export($sql, true).");";
-                $block[] = "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$schema->getModelClass()}');";
-                $block[] = "}";
-                $block[] = "return static::_stmFetch(\$this->{$propertyName}, [':{$columnName}' => \$value ]);";
-                return $block;
+            $query = $schema->newSelectQuery();
+            $query->where()->equal($columnName, new Bind($columnName));
+            $query->limit(1);
+            $sql = $query->toSql($readQueryDriver, new ArgumentArray);
+
+            $constName = 'LOAD_BY_' . strtoupper($columnName) . '_SQL';
+            $cTemplate->addConst($constName, $sql);
+
+            $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use($schema, $columnName, $propertyName, $constName) {
+                return PDOStatementCodeGen::generateFetch(
+                    $propertyName,
+                    $constName,
+                    $schema->getModelClass(),
+                    "[':{$columnName}' => \$value ]");
             });
         }
 
@@ -189,7 +193,7 @@ class BaseRepoClassFactory
         $cTemplate->addMethod('public',
             'deleteByPrimaryKey',
             ['$pkId'], 
-            BaseRepoClassFactory::generateExecute('deleteStm', 'DELETE_BY_PRIMARY_KEY_SQL', "[\$pkId]")
+            PDOStatementCodeGen::generateExecute('deleteStm', 'DELETE_BY_PRIMARY_KEY_SQL', "[\$pkId]")
         );
 
         foreach ($schema->getRelations() as $relKey => $rel) {
@@ -213,7 +217,7 @@ class BaseRepoClassFactory
                     $cTemplate->addMethod('public', $methodName, [], function() use ($rel, $propertyName, $constName) {
                         $foreignSchema = $rel->newForeignSchema();
                         $selfColumn    = $rel->getSelfColumn();
-                        return BaseRepoClassFactory::generateFetch($propertyName,
+                        return PDOStatementCodeGen::generateFetch($propertyName,
                             $constName,
                             $foreignSchema->getModelClass(),
                             "[\$this->$selfColumn]");
