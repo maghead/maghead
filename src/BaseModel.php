@@ -682,12 +682,12 @@ abstract class BaseModel implements Serializable
         }
 
         if (Relationship::MANY_TO_MANY === $relation['type']) {
-            $rId = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
+            $junctionRel = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
             $rId2 = $relation['relation_foreign'];  // get external relationId from the middle relation. (book from author_books)
 
-            $middleRelation = static::getSchema()->getRelation($rId);
+            $middleRelation = static::getSchema()->getRelation($junctionRel);
             if (!$middleRelation) {
-                throw new InvalidArgumentException("first level relationship of many-to-many $rId is empty");
+                throw new InvalidArgumentException("first level relationship of many-to-many $junctionRel is empty");
             }
 
             // eg. author_books
@@ -720,22 +720,22 @@ abstract class BaseModel implements Serializable
             //        'author_books' => [ 'created_on' => date('c') ],
             //        'title' => 'Book Title',
             //    );
-            $collection->setAfterCreate(function ($record, $args) use ($sSchema, $rId, $middleRelation, $foreignRelation, $value) {
+            $collection->setAfterCreate(function ($record, $args) use ($sSchema, $junctionRel, $middleRelation, $foreignRelation, $value) {
                 // arguments for creating middle-relationship record
-                $a = array(
+                $a = [
                     $foreignRelation['self_column'] => $record->getValue($foreignRelation['foreign_column']),  // 2nd relation model id
                     $middleRelation['foreign_column'] => $value,  // self id
-                );
+                ];
 
-                if (isset($args[$rId])) {
-                    $a = array_merge($args[$rId], $a);
+                if (isset($args[$junctionRel])) {
+                    $a = array_merge($args[$junctionRel], $a);
                 }
 
                 // create relationship
                 $middleRecord = $sSchema->newModel();
                 $ret = $middleRecord::create($a);
                 if ($ret->error) {
-                    throw new Exception("$rId create failed.");
+                    throw new Exception("$junctionRel record create failed.");
                 }
                 return $middleRecord::loadByPrimaryKey($ret->key);
             });
