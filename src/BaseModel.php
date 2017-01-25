@@ -591,6 +591,12 @@ abstract class BaseModel implements Serializable
         return $this->get($key);
     }
 
+    /**
+     * Dynamically create a model object with the relationship key for HAS-ONE relationship.
+     *
+     * @param string $key
+     * @return \Maghead\BaseModel
+     */
     protected function fetchHasOne($key)
     {
         $cacheKey = 'relationship::'.$key;
@@ -608,6 +614,12 @@ abstract class BaseModel implements Serializable
         return $record;
     }
 
+    /**
+     * Dynamically create a model object with the relationship key for BELONGS-TO relationship.
+     *
+     * @param string $key
+     * @return \Maghead\BaseModel
+     */
     protected function fetchBelongsTo($key)
     {
         $cacheKey = 'relationship::'.$key;
@@ -1033,13 +1045,9 @@ abstract class BaseModel implements Serializable
                 $read = $write;
             }
         }
-        if (is_string($write)) {
-            $write = $connManager->getConnection($write);
-        }
-        if (is_string($read)) {
-            $read = $connManager->getConnection($read);
-        }
-        return static::createRepo($write, $read);
+        $writeConn = is_string($write) ? $connManager->getConnection($write) : $write;
+        $readConn = is_string($read) ? $connManager->getConnection($read) : $read;
+        return static::createRepo($writeConn, $readConn);
     }
 
     /**
