@@ -694,13 +694,13 @@ abstract class BaseModel implements Serializable
             $sColumn = $junctionRel['foreign_column'];
             $sSchema = $junctionRel->newForeignSchema();
 
-            $foreignRelation = $sSchema->getRelation($rId2);
-            if (!$foreignRelation) {
+            $foreignRel = $sSchema->getRelation($rId2);
+            if (!$foreignRel) {
                 throw new InvalidArgumentException("second level relationship of many-to-many $rId2 is empty.");
             }
 
-            $fSchema = $foreignRelation->newForeignSchema();
-            $fColumn = $foreignRelation['foreign_column'];
+            $fSchema = $foreignRel->newForeignSchema();
+            $fColumn = $foreignRel['foreign_column'];
             $collection = $fSchema->newCollection();
 
             // join middle relation ship
@@ -709,7 +709,7 @@ abstract class BaseModel implements Serializable
             //       WHERE b.author_id = :author_id
             $collection->join($sSchema->getTable())->as('b')
                             ->on()
-                            ->equal('b.'.$foreignRelation['self_column'], array($collection->getAlias().'.'.$fColumn));
+                            ->equal('b.'.$foreignRel['self_column'], array($collection->getAlias().'.'.$fColumn));
 
             $value = $this->getValue($junctionRel['self_column']);
             $collection->where()->equal('b.'.$junctionRel['foreign_column'], $value);
@@ -720,10 +720,10 @@ abstract class BaseModel implements Serializable
             //        'author_books' => [ 'created_on' => date('c') ],
             //        'title' => 'Book Title',
             //    );
-            $collection->setAfterCreate(function ($record, $args) use ($sSchema, $junctionRelKey, $junctionRel, $foreignRelation, $value) {
+            $collection->setAfterCreate(function ($record, $args) use ($sSchema, $junctionRelKey, $junctionRel, $foreignRel, $value) {
                 // arguments for creating middle-relationship record
                 $a = [
-                    $foreignRelation['self_column'] => $record->getValue($foreignRelation['foreign_column']),  // 2nd relation model id
+                    $foreignRel['self_column'] => $record->getValue($foreignRel['foreign_column']),  // 2nd relation model id
                     $junctionRel['foreign_column'] => $value,  // self id
                 ];
 
