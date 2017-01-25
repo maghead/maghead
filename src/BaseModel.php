@@ -989,6 +989,13 @@ abstract class BaseModel implements Serializable
         return static::createRepo($write, $read);
     }
 
+    /**
+     * Create a repo object with custom write/read connections.
+     *
+     * @param string|Connection $write
+     * @param string|Connection $read
+     * @return Maghead\BaseRepo
+     */
     static public function repo($write = null, $read = null)
     {
         $connManager = ConnectionManager::getInstance();
