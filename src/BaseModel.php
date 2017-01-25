@@ -714,11 +714,7 @@ abstract class BaseModel implements Serializable
                             ->equal('b.'.$foreignRelation['self_column'], array($collection->getAlias().'.'.$fColumn));
 
             $value = $this->getValue($middleRelation['self_column']);
-            $collection->where()
-                ->equal(
-                    'b.'.$middleRelation['foreign_column'],
-                    $value
-                );
+            $collection->where()->equal('b.'.$middleRelation['foreign_column'], $value);
 
             /*
                 * for many-to-many creation:

@@ -867,18 +867,15 @@ class BaseCollection
 
             return $joinExpr;
         }
-        return $this->joinTable($target, $type, $alias);
+        return $this->joinTable($target, $alias, $type);
     }
 
 
-    public function joinTable($table, $type = 'LEFT', $alias = null)
+    public function joinTable($table, $alias = null, $type = 'LEFT')
     {
+        $this->explictSelect = true;
         $query = $this->getCurrentReadQuery();
-        $joinExpr = $query->join($table, $type);
-        if ($alias) {
-            $joinExpr->as($alias);
-        }
-        return $joinExpr;
+        return $query->join($table, $alias, $type);
     }
 
 

@@ -4,6 +4,7 @@ namespace Maghead\Schema\Factory;
 
 use ReflectionClass;
 use ReflectionMethod;
+use InvalidArgumentException;
 
 use ClassTemplate\ClassFile;
 use Maghead\Schema\DeclareSchema;
@@ -253,6 +254,46 @@ class BaseModelClassFactory
                     ];
                 });
 
+                break;
+
+                case Relationship::MANY_TO_MANY:
+
+                $relName = ucfirst(Inflector::camelize($relKey));
+                $methodName = 'get'. $relName;
+
+
+                // assemble the join query with the collection class string
+                $cTemplate->addMethod('public', $methodName, [], function() use ($schema, $relName, $relKey, $rel) {
+                    $junctionRelKey = $rel['relation_junction'];
+                    $junctionRel = $schema->getRelation($junctionRelKey);
+                    if (!$junctionRel) {
+                        throw new InvalidArgumentException("Junction relationship of many-to-many $junctionRelKey is undefined.");
+                    }
+                    $junctionSchema = $junctionRel->newForeignSchema();
+                    $junctionCollection = $junctionSchema->newCollection();
+
+                    $foreignRelKey = $rel['relation_foreign'];
+                    $foreignRel = $junctionSchema->getRelation($foreignRelKey);
+                    if (!$foreignRel) {
+                        throw new InvalidArgumentException("Foreign relationship of many-to-many $foreignRelKey is undefined.");
+                    }
+                    $foreignSchema = $foreignRel->newForeignSchema();
+                    $targetCollectionClass = $foreignSchema->getCollectionClass();
+
+                    $selfRefColumn = $foreignRel->getForeignColumn();
+
+                    // Join the junction table, generate some sql query like this:
+                    //      SELECT * from books m LEFT JOIN author_books j on (j.book_id = m.id)
+                    //      WHERE j.author_id = :author_id
+                    return [
+                        "\$collection = new \\{$targetCollectionClass};",
+                        "\$collection->joinTable('{$junctionSchema->getTable()}', 'j', 'INNER')",
+                        "   ->on(\"j.{$foreignRel->getSelfColumn()} = {\$collection->getAlias()}.{$foreignRel->getForeignColumn()}\");",
+                        // " ->on()->equal('j.{$foreignRel->getSelfColumn()}', [\$collection->getAlias() . '.{$foreignRel->getForeignColumn()}']);",
+                        "\$collection->where()->equal('j.{$junctionRel->getForeignColumn()}', \$this->{$selfRefColumn});",
+                        "return \$collection;",
+                    ];
+                });
                 break;
             }
         }

@@ -70,6 +70,7 @@ class AuthorAddressModelTest extends ModelTestCase
         $this->assertNotFalse($author);
     }
 
+
     /**
      * @basedata false
      */
