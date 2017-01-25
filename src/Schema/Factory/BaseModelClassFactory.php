@@ -289,6 +289,17 @@ class BaseModelClassFactory
                         "   ->on(\"j.{$foreignRel->getSelfColumn()} = {\$collection->getAlias()}.{$foreignRel->getForeignColumn()}\");",
                         // " ->on()->equal('j.{$foreignRel->getSelfColumn()}', [\$collection->getAlias() . '.{$foreignRel->getForeignColumn()}']);",
                         "\$collection->where()->equal('j.{$junctionRel->getForeignColumn()}', \$this->{$selfRefColumn});",
+                        "\$parent = \$this;",
+                        "\$collection->setAfterCreate(function(\$record, \$args) use (\$parent) {",
+                        "   \$a = [",
+                        "      '{$foreignRel->getSelfColumn()}' => \$record->get(\"{$foreignRel->getForeignColumn()}\"),",
+                        "      '{$junctionRel['foreign_column']}' => \$parent->{$selfRefColumn},",
+                        "   ];",
+                        "   if (isset(\$args['{$junctionRelKey}'])) {",
+                        "      \$a = array_merge(\$args['{$junctionRelKey}'], \$a);",
+                        "   }",
+                        "   return \\{$junctionSchema->getModelClass()}::createAndLoad(\$a);",
+                        "});",
                         "return \$collection;",
                     ];
                 });

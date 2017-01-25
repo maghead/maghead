@@ -384,6 +384,43 @@ class AuthorBookModelTest extends ModelTestCase
         $this->assertCount(2, $books);
     }
 
+    public function testManyToManyCreate()
+    {
+        $author = Author::createAndLoad(['name' => '高德纳' , 'email' => 'donald@no-email.cloud' , 'identity' => 'donald_knuth']);
+        $this->assertNotFalse($author);
+        $this->assertNotNull($author->getKey());
+
+        $book1 = Book::createAndLoad(['title' => 'The Art of Computer Programming I']);
+        $this->assertNotFalse($book1);
+        $this->assertNotNull($book1->getKey());
+
+        $book2 = Book::createAndLoad(['title' => 'The Art of Computer Programming II']);
+        $this->assertNotFalse($book2);
+        $this->assertNotNull($book2->getKey());
+
+        $nothing = Book::createAndLoad(['title' => 'Nothing']);
+        $this->assertNotFalse($nothing);
+        $this->assertNotNull($nothing->getKey());
+
+        $ret = AuthorBook::create([ 'author_id' => $author->getKey(), 'book_id' => $book1->getKey() ]);
+        $this->assertResultSuccess($ret);
+
+        $ret = AuthorBook::create([ 'author_id' => $author->getKey(), 'book_id' => $book2->getKey() ]);
+        $this->assertResultSuccess($ret);
+
+        $books = $author->getBooks();
+        $this->assertInstanceOf('AuthorBooks\\Model\\BookCollection', $books);
+        $this->assertCount(2, $books);
+
+        $book4 = $books->create([ 'title' => 'The Art of Computer Programming III' ]);
+        $this->assertNotFalse($book4);
+
+        $books = $author->getBooks();
+        $this->assertInstanceOf('AuthorBooks\\Model\\BookCollection', $books);
+        $this->assertCount(3, $books);
+    }
+
+
     public function testManyToManyRelationCreate()
     {
         $ret = Author::create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
