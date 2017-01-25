@@ -33,6 +33,8 @@ class BaseCollection
 {
     public static $yamlExtension;
 
+    public static $jsonOptions = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP;
+
     protected $_lastSql;
 
     protected $_vars;
@@ -695,7 +697,7 @@ class BaseCollection
     {
         $list = $this->toArray();
 
-        return json_encode($list, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+        return json_encode($list, self::$jsonOptions);
     }
 
     public function toYaml()
