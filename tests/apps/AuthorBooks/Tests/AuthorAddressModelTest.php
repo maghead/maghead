@@ -140,7 +140,7 @@ class AuthorAddressModelTest extends ModelTestCase
      * @rebuild false
      * @basedata false
      */
-    public function testHasManyRelationCreate2()
+    public function testHasManyDynamicAccessorWithCreate()
     {
         $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertNotFalse($author);
