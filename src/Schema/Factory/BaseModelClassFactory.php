@@ -270,7 +270,6 @@ class BaseModelClassFactory
                         throw new InvalidArgumentException("Junction relationship of many-to-many $junctionRelKey is undefined.");
                     }
                     $junctionSchema = $junctionRel->newForeignSchema();
-                    $junctionCollection = $junctionSchema->newCollection();
 
                     $foreignRelKey = $rel['relation_foreign'];
                     $foreignRel = $junctionSchema->getRelation($foreignRelKey);
