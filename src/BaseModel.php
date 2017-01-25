@@ -682,17 +682,17 @@ abstract class BaseModel implements Serializable
         }
 
         if (Relationship::MANY_TO_MANY === $relation['type']) {
-            $junctionRel = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
+            $junctionRelKey = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
             $rId2 = $relation['relation_foreign'];  // get external relationId from the middle relation. (book from author_books)
 
-            $middleRelation = static::getSchema()->getRelation($junctionRel);
-            if (!$middleRelation) {
-                throw new InvalidArgumentException("first level relationship of many-to-many $junctionRel is empty");
+            $junctionRel = static::getSchema()->getRelation($junctionRelKey);
+            if (!$junctionRel) {
+                throw new InvalidArgumentException("first level relationship of many-to-many $junctionRelKey is empty");
             }
 
             // eg. author_books
-            $sColumn = $middleRelation['foreign_column'];
-            $sSchema = $middleRelation->newForeignSchema();
+            $sColumn = $junctionRel['foreign_column'];
+            $sSchema = $junctionRel->newForeignSchema();
 
             $foreignRelation = $sSchema->getRelation($rId2);
             if (!$foreignRelation) {
@@ -711,8 +711,8 @@ abstract class BaseModel implements Serializable
                             ->on()
                             ->equal('b.'.$foreignRelation['self_column'], array($collection->getAlias().'.'.$fColumn));
 
-            $value = $this->getValue($middleRelation['self_column']);
-            $collection->where()->equal('b.'.$middleRelation['foreign_column'], $value);
+            $value = $this->getValue($junctionRel['self_column']);
+            $collection->where()->equal('b.'.$junctionRel['foreign_column'], $value);
 
             // for creating many-to-many subrecords, like:
             //
@@ -720,22 +720,22 @@ abstract class BaseModel implements Serializable
             //        'author_books' => [ 'created_on' => date('c') ],
             //        'title' => 'Book Title',
             //    );
-            $collection->setAfterCreate(function ($record, $args) use ($sSchema, $junctionRel, $middleRelation, $foreignRelation, $value) {
+            $collection->setAfterCreate(function ($record, $args) use ($sSchema, $junctionRelKey, $junctionRel, $foreignRelation, $value) {
                 // arguments for creating middle-relationship record
                 $a = [
                     $foreignRelation['self_column'] => $record->getValue($foreignRelation['foreign_column']),  // 2nd relation model id
-                    $middleRelation['foreign_column'] => $value,  // self id
+                    $junctionRel['foreign_column'] => $value,  // self id
                 ];
 
-                if (isset($args[$junctionRel])) {
-                    $a = array_merge($args[$junctionRel], $a);
+                if (isset($args[$junctionRelKey])) {
+                    $a = array_merge($args[$junctionRelKey], $a);
                 }
 
                 // create relationship
                 $middleRecord = $sSchema->newModel();
                 $ret = $middleRecord::create($a);
                 if ($ret->error) {
-                    throw new Exception("$junctionRel record create failed.");
+                    throw new Exception("$junctionRelKey record create failed.");
                 }
                 return $middleRecord::loadByPrimaryKey($ret->key);
             });
