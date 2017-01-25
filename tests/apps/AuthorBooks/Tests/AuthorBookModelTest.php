@@ -393,7 +393,7 @@ class AuthorBookModelTest extends ModelTestCase
         ok(
             $book = $author->books->create(array(
                 'title' => 'Programming Perl I',
-                ':author_books' => ['created_on' => '2010-01-01'],
+                'author_books' => ['created_on' => '2010-01-01'],
             ))
         );
         ok( $book->id );

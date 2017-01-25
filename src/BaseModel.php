@@ -703,12 +703,10 @@ abstract class BaseModel implements Serializable
             $fColumn = $foreignRelation['foreign_column'];
             $collection = $fSchema->newCollection();
 
-            /*
-                * join middle relation ship
-                *
-                *    Select * from books b (r2) left join author_books ab on ( ab.book_id = b.id )
-                *       where b.author_id = :author_id
-                */
+            // join middle relation ship
+            //
+            //    SELECT * from books b left join author_books ab on ( ab.book_id = b.id )
+            //       WHERE b.author_id = :author_id
             $collection->join($sSchema->getTable())->as('b')
                             ->on()
                             ->equal('b.'.$foreignRelation['self_column'], array($collection->getAlias().'.'.$fColumn));
@@ -716,14 +714,12 @@ abstract class BaseModel implements Serializable
             $value = $this->getValue($middleRelation['self_column']);
             $collection->where()->equal('b.'.$middleRelation['foreign_column'], $value);
 
-            /*
-                * for many-to-many creation:
-                *
-                *    $author->books[] = array(
-                *        ':author_books' => array( 'created_on' => date('c') ),
-                *        'title' => 'Book Title',
-                *    );
-                */
+            // for creating many-to-many subrecords, like:
+            //
+            //    $author->books[] = array(
+            //        'author_books' => [ 'created_on' => date('c') ],
+            //        'title' => 'Book Title',
+            //    );
             $collection->setPostCreate(function ($record, $args) use ($sSchema, $rId, $middleRelation, $foreignRelation, $value) {
                 // arguments for creating middle-relationship record
                 $a = array(
@@ -731,8 +727,8 @@ abstract class BaseModel implements Serializable
                     $middleRelation['foreign_column'] => $value,  // self id
                 );
 
-                if (isset($args[':'.$rId ])) {
-                    $a = array_merge($args[':'.$rId ], $a);
+                if (isset($args[$rId])) {
+                    $a = array_merge($args[$rId], $a);
                 }
 
                 // create relationship

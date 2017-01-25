@@ -181,7 +181,7 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertNotNull( 
             $book = $author->books->create(array( 
                 'title' => 'Programming Perl I',
-                ':author_books' => array( 'created_on' => '2010-01-01' ),
+                'author_books' => array( 'created_on' => '2010-01-01' ),
             ))
         );
         $this->assertNotNull($book->id);
