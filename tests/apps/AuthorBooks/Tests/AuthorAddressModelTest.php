@@ -36,6 +36,25 @@ class AuthorAddressModelTest extends ModelTestCase
     /**
      * @basedata false
      */
+    public function testHasManyCollectionAccessor()
+    {
+        $author = Author::createAndLoad(['name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ]);
+        $this->assertNotFalse($author);
+        for ($i = 0 ; $i < 10 ; $i++) {
+            $address = Address::createAndLoad([
+                'author_id' => $author->id,
+                'address' => array_rand(['Taiwan', 'Taipei']),
+            ]);
+            $this->assertNotFalse($address);
+        }
+        $addresses = $author->getAddresses();
+        $this->assertInstanceOf('Maghead\BaseCollection', $addresses);
+        $this->assertCount(10, $addresses);
+    }
+
+    /**
+     * @basedata false
+     */
     public function testBelongsToFetch()
     {
         $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));

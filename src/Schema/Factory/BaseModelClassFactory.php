@@ -231,6 +231,29 @@ class BaseModelClassFactory
                     "return static::defaultRepo()->{$repoMethodName}(\$this);");
                 break;
             }
+
+            switch($rel['type']) {
+                case Relationship::HAS_MANY:
+
+                $relName = ucfirst(Inflector::camelize($relKey));
+                $methodName = 'get'. $relName;
+
+                $foreignSchema = $rel->newForeignSchema();
+                $foreignCollectionClass = $foreignSchema->getCollectionClass();
+
+                $foreignColumn = $rel->getForeignColumn();
+                $selfColumn = $rel->getSelfColumn();
+
+                $cTemplate->addMethod('public', $methodName, [], function() use ($foreignCollectionClass, $foreignColumn, $selfColumn) {
+                    return [
+                        "\$collection = new \\{$foreignCollectionClass};",
+                        "\$collection->where()->equal(\"{$foreignColumn}\", \$this->{$selfColumn});",
+                        "return \$collection;",
+                    ];
+                });
+
+                break;
+            }
         }
 
         return $cTemplate;
