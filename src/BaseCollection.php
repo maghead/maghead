@@ -659,11 +659,15 @@ class BaseCollection
     {
         $collection = new static();
         $schema = static::getSchema();
-        $records = array();
+        $records = [];
         foreach ($list as $item) {
-            $model = $schema->newModel();
-            $model->setData($item);
-            $records[] = $model;
+            if ($item instanceof BaseModel) {
+                $records[] = $item;
+            } else {
+                $model = $schema->newModel();
+                $model->setData($item);
+                $records[] = $model;
+            }
         }
         $collection->setRecords($records);
         return $collection;
