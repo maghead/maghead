@@ -2,25 +2,22 @@ Maghead
 ==========
 
 [![works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
-[![Build Status](https://travis-ci.org/maghead/Maghead.svg?branch=master)](https://travis-ci.org/maghead/Maghead)
-[![Coverage Status](https://img.shields.io/coveralls/maghead/Maghead.svg)](https://coveralls.io/r/maghead/Maghead)
+[![Build Status](https://travis-ci.org/maghead/maghead.svg?branch=master)](https://travis-ci.org/maghead/maghead)
+[![Coverage Status](https://img.shields.io/coveralls/maghead/maghead.svg)](https://coveralls.io/r/maghead/maghead)
 [![Latest Stable Version](https://poser.pugx.org/maghead/maghead/v/stable.svg)](https://packagist.org/packages/maghead/maghead) 
 [![Total Downloads](https://poser.pugx.org/maghead/maghead/downloads.svg)](https://packagist.org/packages/maghead/maghead) 
 [![Monthly Downloads](https://poser.pugx.org/maghead/maghead/d/monthly)](https://packagist.org/packages/maghead/maghead)
 [![Daily Downloads](https://poser.pugx.org/maghead/maghead/d/daily)](https://packagist.org/packages/maghead/maghead)
 [![Latest Unstable Version](https://poser.pugx.org/maghead/maghead/v/unstable.svg)](https://packagist.org/packages/maghead/maghead) 
 [![License](https://poser.pugx.org/maghead/maghead/license.svg)](https://packagist.org/packages/maghead/maghead)
-[![Join the chat at https://gitter.im/c9s/Maghead](https://badges.gitter.im/c9s/Maghead.svg)](https://gitter.im/c9s/Maghead?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/c9s/maghead](https://badges.gitter.im/c9s/maghead.svg)](https://gitter.im/c9s/maghead?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Maghead is an open-source Object-Relational Mapping (ORM) for PHP5. 
+Maghead is an open-source Object-Relational Mapping (ORM) for PHP7.
 
-Maghead uses code generator to generate static code, which reduces runtime 
-costs, therefore it's pretty lightweight and fast. 
+Maghead uses code generator to generate static code, which reduces runtime
+costs, therefore it's pretty lightweight and fast.
 
-It allows you to access your database very easily by using ActiveRecord
-pattern API.
-
-Maghead is not like PropelORM, it doesn't use ugly XML as its schema or
+Maghead is not like Propel ORM or Eloquent ORM, it doesn't use ugly XML as its schema or
 config file, Maghead uses simpler YAML format config file and it compiles
 YAML to pure PHP code to improve the performance of config loading.
 
