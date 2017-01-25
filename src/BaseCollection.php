@@ -932,14 +932,13 @@ class BaseCollection
      * @param string $key
      * @param string $valueKey
      */
-    public function asPairs($key, $valueKey)
+    public function asPairs($keyAccessor, $valueAccessor)
     {
-        $data = array();
+        $map = [];
         foreach ($this as $item) {
-            $data[ $item->get($key) ] = $item->get($valueKey);
+            $map[$item->get($keyAccessor)] = $item->get($valueAccessor);
         }
-
-        return $data;
+        return $map;
     }
 
     public function toPairs($key, $valueKey)
