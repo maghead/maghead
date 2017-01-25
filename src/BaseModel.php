@@ -53,13 +53,6 @@ abstract class BaseModel implements Serializable
 
     protected $_foreignRecordCache = array();
 
-    /**
-     * @var bool Auto reload record after creating new record
-     *
-     * Turn off this if you want performance.
-     */
-    public $autoReload = false;
-
     public $dataLabelField;
 
     public $dataValueField;
