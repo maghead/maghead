@@ -233,11 +233,12 @@ class BaseModelClassFactory
                 break;
             }
 
+
+            $relName = ucfirst(Inflector::camelize($relKey));
+            $methodName = 'get'. $relName;
+
             switch($rel['type']) {
                 case Relationship::HAS_MANY:
-
-                $relName = ucfirst(Inflector::camelize($relKey));
-                $methodName = 'get'. $relName;
 
                 $foreignSchema = $rel->newForeignSchema();
                 $foreignCollectionClass = $foreignSchema->getCollectionClass();
@@ -258,8 +259,6 @@ class BaseModelClassFactory
 
                 case Relationship::MANY_TO_MANY:
 
-                $relName = ucfirst(Inflector::camelize($relKey));
-                $methodName = 'get'. $relName;
 
 
                 // assemble the join query with the collection class string
