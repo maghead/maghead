@@ -569,7 +569,6 @@ abstract class BaseModel implements Serializable
     {
         return property_exists($this, $name)
             || isset(static::getSchema()->columns[$name])
-            || 'schema' === $name
             || $this->getSchema()->getRelation($name)
             ;
     }
@@ -957,6 +956,9 @@ abstract class BaseModel implements Serializable
         return $val;
     }
 
+    /**
+     * Used by ActionKit
+     */
     public function fetchOneToManyRelationCollection($relationId)
     {
         if ($this->id && isset($this->{ $relationId })) {
@@ -964,11 +966,13 @@ abstract class BaseModel implements Serializable
         }
     }
 
+    /**
+     * Used by ActionKit
+     */
     public function fetchManyToManyRelationCollection($relationId)
     {
         $schema = static::getSchema();
         $relation = $schema->getRelation($relationId);
-
         return $relation->newForeignForeignCollection(
             $schema->getRelation($relation['relation_junction'])
         );
