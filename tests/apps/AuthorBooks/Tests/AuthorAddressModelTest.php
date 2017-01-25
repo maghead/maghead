@@ -130,17 +130,17 @@ class AuthorAddressModelTest extends ModelTestCase
         $author->addresses->createAndAppend(['address' => 'Harvard']);
         $author->addresses->createAndAppend(['address' => 'Harvard II']);
 
-        is(2, $author->addresses->size() , 'just two item' );
+        $this->assertEquals(2, $author->addresses->size() , 'just two item' );
 
         $addresses = $author->addresses->items();
-        ok( $addresses );
-        is( 'Harvard' , $addresses[0]->address );
+        $this->assertCount(2, $addresses);
+        $this->assertEquals( 'Harvard' , $addresses[0]->address );
 
         $a = $addresses[0];
-        ok($retAuthor = $a->author );
-        ok($retAuthor->id );
-        ok($retAuthor->name );
-        is('Z', $retAuthor->name);
+        ok($retAuthor = $a->author); // dynamic model getter
+        $this->assertNotNull($retAuthor->id);
+        $this->assertNotNull($retAuthor->name);
+        $this->assertEquals('Z', $retAuthor->name);
         $this->assertResultSuccess($author->delete());
     }
 }
