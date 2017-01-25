@@ -675,12 +675,12 @@ class BaseCollection
 
     public function toArray()
     {
-        return array_map(function ($item) { return $item->toArray(); });
+        return array_map(function ($item) { return $item->toArray(); }, $this->items());
     }
 
     public function toInflatedArray()
     {
-        return array_map(function ($item) { return $item->toInflatedArray(); });
+        return array_map(function ($item) { return $item->toInflatedArray(); }, $this->items());
     }
 
     public function toXml()
@@ -812,10 +812,10 @@ class BaseCollection
     public function join($target, $type = 'LEFT', $alias = null, $relationId = null)
     {
         $this->explictSelect = true;
-        $query = $this->getCurrentReadQuery();
 
         // for models and schemas join
         if ($target instanceof BaseModel || $target instanceof SchemaBase) {
+            $query = $this->getCurrentReadQuery();
             $table = $target->getTable();
 
             /* XXX: should get selected column names by default, if not get all column names */
@@ -864,16 +864,22 @@ class BaseCollection
             }
 
             return $joinExpr;
-        } else {
-            // For table name join
-            $joinExpr = $query->join($target, $type);
-            if ($alias) {
-                $joinExpr->as($alias);
-            }
-
-            return $joinExpr;
         }
+        return $this->joinTable($target, $type, $alias);
     }
+
+
+    public function joinTable($table, $type = 'LEFT', $alias = null)
+    {
+        $query = $this->getCurrentReadQuery();
+        $joinExpr = $query->join($table, $type);
+        if ($alias) {
+            $joinExpr->as($alias);
+        }
+        return $joinExpr;
+    }
+
+
 
     /**
      * Override QueryBuilder->where method,
