@@ -248,6 +248,7 @@ class BaseModelClassFactory
                     return [
                         "\$collection = new \\{$foreignCollectionClass};",
                         "\$collection->where()->equal(\"{$foreignColumn}\", \$this->{$selfColumn});",
+                        "\$collection->setPresetVars([ \"{$foreignColumn}\" => \$this->{$selfColumn} ]);",
                         "return \$collection;",
                     ];
                 });
