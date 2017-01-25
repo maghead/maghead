@@ -720,7 +720,7 @@ abstract class BaseModel implements Serializable
             //        'author_books' => [ 'created_on' => date('c') ],
             //        'title' => 'Book Title',
             //    );
-            $collection->setPostCreate(function ($record, $args) use ($sSchema, $rId, $middleRelation, $foreignRelation, $value) {
+            $collection->setAfterCreate(function ($record, $args) use ($sSchema, $rId, $middleRelation, $foreignRelation, $value) {
                 // arguments for creating middle-relationship record
                 $a = array(
                     $foreignRelation['self_column'] => $record->getValue($foreignRelation['foreign_column']),  // 2nd relation model id

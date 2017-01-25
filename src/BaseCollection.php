@@ -738,7 +738,7 @@ class BaseCollection
         return false;
     }
 
-    public function setPostCreate(callable $cb)
+    public function setAfterCreate(callable $cb)
     {
         $this->_postCreate = $cb;
     }
