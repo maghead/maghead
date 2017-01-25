@@ -771,7 +771,7 @@ abstract class BaseModel implements Serializable
     public function asCollection()
     {
         $class = static::COLLECTION_CLASS;
-        return new $class();
+        return $class::fromArray([$this]);
     }
 
     /**
