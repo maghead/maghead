@@ -22,7 +22,6 @@ class AuthorAddressModelTest extends ModelTestCase
     {
         $author = Author::createAndLoad(['name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ]);
         $this->assertNotFalse($author);
-
         for ($i = 0 ; $i < 10 ; $i++) {
             $address = Address::createAndLoad([
                 'author_id' => $author->id,
@@ -30,6 +29,8 @@ class AuthorAddressModelTest extends ModelTestCase
             ]);
             $this->assertNotFalse($address);
         }
+        $addresses = $author->fetchAddresses();
+        $this->assertCount(10, $addresses);
     }
 
     /**

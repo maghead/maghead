@@ -96,7 +96,7 @@ class BaseRepo
      * @return BaseModel
      */
     // PHP 5.6 doesn't support static abstract
-    static protected function _stmFetch(PDOStatement $stm, array $args)
+    static protected function _stmFetchOne(PDOStatement $stm, array $args)
     {
         $stm->execute($args);
         $obj = $stm->fetch(PDO::FETCH_CLASS);
@@ -106,6 +106,19 @@ class BaseRepo
         // a state that enables it to be executed again.
         $stm->closeCursor();
         return $obj;
+    }
+
+    /**
+     * Fetch all record.
+     *
+     * @param array condition array
+     * @return BaseModel
+     */
+    // PHP 5.6 doesn't support static abstract
+    static protected function _stmFetchAll(PDOStatement $stm, array $args)
+    {
+        $stm->execute($args);
+        return $stm->fetchAll(PDO::FETCH_CLASS);
     }
 
     /**

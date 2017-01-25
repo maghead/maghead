@@ -3,14 +3,26 @@ namespace Maghead\Schema;
 
 class PDOStatementCodeGen
 {
-    public static function generateFetch(string $propertyName, string $constName, string $class, string $args)
+
+    public static function generateFetchAll(string $propertyName, string $constName, string $class, string $args)
     {
         return [
             "if (!\$this->{$propertyName}) {",
             "    \$this->{$propertyName} = \$this->read->prepare(self::$constName);",
             "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$class}');",
             "}",
-            "return static::_stmFetch(\$this->{$propertyName}, $args);",
+            "return static::_stmFetchAll(\$this->{$propertyName}, $args);",
+        ];
+    }
+
+    public static function generateFetchOne(string $propertyName, string $constName, string $class, string $args)
+    {
+        return [
+            "if (!\$this->{$propertyName}) {",
+            "    \$this->{$propertyName} = \$this->read->prepare(self::$constName);",
+            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$class}');",
+            "}",
+            "return static::_stmFetchOne(\$this->{$propertyName}, $args);",
         ];
     }
 

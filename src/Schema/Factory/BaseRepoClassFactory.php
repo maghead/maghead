@@ -129,7 +129,7 @@ class BaseRepoClassFactory
                 "   \$this->loadStm = \$this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",
                 "   \$this->loadStm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}');",
                 "}",
-                "return static::_stmFetch(\$this->loadStm, [\$pkId]);",
+                "return static::_stmFetchOne(\$this->loadStm, [\$pkId]);",
             ];
         });
 
@@ -151,7 +151,7 @@ class BaseRepoClassFactory
             $cTemplate->addConst($constName, $sql);
 
             $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use($schema, $columnName, $propertyName, $constName) {
-                return PDOStatementCodeGen::generateFetch(
+                return PDOStatementCodeGen::generateFetchOne(
                     $propertyName,
                     $constName,
                     $schema->getModelClass(),
@@ -194,15 +194,12 @@ class BaseRepoClassFactory
                     $constName = "FETCH_" . strtoupper($relKey) . "_SQL";
                     $cTemplate->addConst($constName, $sql);
 
-                    $cTemplate->addMethod('public', $methodName, ['BaseModel $record'], function() use ($rel, $propertyName, $constName) {
-                        $foreignSchema = $rel->newForeignSchema();
-                        $selfColumn    = $rel->getSelfColumn();
-                        return PDOStatementCodeGen::generateFetch(
+                    $selfColumn    = $rel->getSelfColumn();
+                    $cTemplate->addMethod('public', $methodName, ['BaseModel $record'],
+                        PDOStatementCodeGen::generateFetchOne(
                             $propertyName,
                             $constName,
-                            $foreignSchema->getModelClass(),
-                            "[\$record->$selfColumn]");
-                    });
+                            $foreignSchema->getModelClass(), "[\$record->$selfColumn]"));
                     break;
                 case Relationship::HAS_MANY:
                     $relName = ucfirst(Inflector::camelize($relKey));
@@ -210,9 +207,20 @@ class BaseRepoClassFactory
                     $propertyName = 'fetch'. $relName .'Stm';
                     $cTemplate->addProtectedProperty($propertyName);
 
-                    $constName = "FETCH_" . strtoupper($relKey) . "_SQL";
-                    // $cTemplate->addConst($constName, $sql);
+                    $foreignSchema = $rel->newForeignSchema();
+                    $query = $foreignSchema->newSelectQuery(); // foreign key
+                    $query->where()->equal($rel->getForeignColumn(), new ParamMarker());
+                    $sql = $query->toSql($readQueryDriver, new ArgumentArray);
 
+                    $constName = "FETCH_" . strtoupper($relKey) . "_SQL";
+                    $cTemplate->addConst($constName, $sql);
+
+                    $selfColumn = $rel->getSelfColumn();
+                    $cTemplate->addMethod('public', $methodName, ['BaseModel $record'],
+                        PDOStatementCodeGen::generateFetchAll(
+                            $propertyName,
+                            $constName,
+                            $foreignSchema->getModelClass(), "[\$record->$selfColumn]"));
 
 
                     break;

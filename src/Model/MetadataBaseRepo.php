@@ -57,7 +57,7 @@ class MetadataBaseRepo
            $this->loadStm = $this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);
            $this->loadStm->setFetchMode(PDO::FETCH_CLASS, 'Maghead\Model\Metadata');
         }
-        return static::_stmFetch($this->loadStm, [$pkId]);
+        return static::_stmFetchOne($this->loadStm, [$pkId]);
     }
     public function loadByName($value)
     {
@@ -65,7 +65,7 @@ class MetadataBaseRepo
             $this->loadByNameStm = $this->read->prepare(self::LOAD_BY_NAME_SQL);
             $this->loadByNameStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
         }
-        return static::_stmFetch($this->loadByNameStm, [':name' => $value ]);
+        return static::_stmFetchOne($this->loadByNameStm, [':name' => $value ]);
     }
     public function loadByValue($value)
     {
@@ -73,7 +73,7 @@ class MetadataBaseRepo
             $this->loadByValueStm = $this->read->prepare(self::LOAD_BY_VALUE_SQL);
             $this->loadByValueStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
         }
-        return static::_stmFetch($this->loadByValueStm, [':value' => $value ]);
+        return static::_stmFetchOne($this->loadByValueStm, [':value' => $value ]);
     }
     public function deleteByPrimaryKey($pkId)
     {

@@ -12,12 +12,12 @@ use Maghead\ConnectionManager;
 use Maghead\Schema\PDOStatementCodeGen;
 use Doctrine\Common\Inflector\Inflector;
 
-// used for SQL generator
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\Universal\Query\DeleteQuery;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\ArgumentArray;
+
 use CodeGen\Statement\RequireStatement;
 use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
@@ -222,12 +222,14 @@ class BaseModelClassFactory
         foreach ($schema->getRelations() as $relKey => $rel) {
             switch($rel['type']) {
                 case Relationship::HAS_ONE:
+                case Relationship::HAS_MANY:
                 case Relationship::BELONGS_TO:
                 $relName = ucfirst(Inflector::camelize($relKey));
                 $methodName = 'fetch'. $relName;
                 $repoMethodName = 'fetch'. $relName . 'Of';
                 $cTemplate->addMethod('public', $methodName, [],
                     "return static::defaultRepo()->{$repoMethodName}(\$this);");
+                break;
             }
         }
 

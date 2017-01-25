@@ -13,5 +13,4 @@ class BelongsTo extends Relationship
     {
         return $this->data['self_column'];
     }
-
 }
