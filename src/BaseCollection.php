@@ -643,7 +643,7 @@ class BaseCollection
     }
 
     /**
-     * Create model object.
+     * Create a new model object.
      *
      * @return object BaseModel
      */
@@ -675,24 +675,12 @@ class BaseCollection
 
     public function toArray()
     {
-        return array_map(function ($item) {
-                            return $item->toArray();
-                        }, array_filter($this->items(), function ($item) {
-                                return true;
-                                // FIXME:
-                                // return $item->currentUserCan($item->getCurrentUser(), 'read');
-                            }));
+        return array_map(function ($item) { return $item->toArray(); });
     }
 
     public function toInflatedArray()
     {
-        return array_map(function ($item) {
-                            return $item->toInflatedArray();
-                        }, array_filter($this->items(), function ($item) {
-                                return true;
-                                // FIXME:
-                                // return $item->currentUserCan($item->getCurrentUser(), 'read');
-                            }));
+        return array_map(function ($item) { return $item->toInflatedArray(); });
     }
 
     public function toXml()
