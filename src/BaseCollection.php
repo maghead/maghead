@@ -14,9 +14,11 @@ use SQLBuilder\Universal\Query\UpdateQuery;
 use SQLBuilder\Universal\Query\DeleteQuery;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
-use Maghead\Schema\SchemaLoader;
 use SerializerKit\XmlSerializer;
 use Symfony\Component\Yaml\Yaml;
+
+use Maghead\Schema\SchemaLoader;
+use Maghead\Schema\SchemaBase;
 
 defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
 
@@ -799,10 +801,9 @@ class BaseCollection
      *
      * For model/collection objects, we should convert it to table name
      *
-     *
      * Usage:
      *
-     *       $collection->join( new Author, 'LEFT', 'a' ); // left join with alias 'a'
+     *       $collection->join(new Author, 'LEFT', 'a' ); // left join with alias 'a'
      *       $collection->join('authors'); // left join without alias
      *
      *       $collection->join( new Author, 'LEFT' , 'a' )
@@ -822,7 +823,7 @@ class BaseCollection
         $query = $this->getCurrentReadQuery();
 
         // for models and schemas join
-        if (is_object($target)) {
+        if ($target instanceof BaseModel || $target instanceof SchemaBase) {
             $table = $target->getTable();
 
             /* XXX: should get selected column names by default, if not get all column names */
@@ -831,7 +832,7 @@ class BaseCollection
             $joinAlias = $alias ?: $table;
 
             if (!empty($columns)) {
-                $select = array();
+                $select = [];
                 foreach ($columns as $name) {
                     // Select alias.column as alias_column
                     $select[ $joinAlias.'.'.$name ] = $joinAlias.'_'.$name;

@@ -639,13 +639,11 @@ abstract class BaseModel implements Serializable
         if (!isset($this->$selfColumn)) {
             return;
         }
-        // throw new Exception("The value of $selfColumn of " . get_class($this) . ' is not defined.');
 
         $sValue = $this->$selfColumn;
 
         $collection = $relation->getForeignCollection();
-        $collection->where()
-            ->equal($collection->getAlias().'.'.$fColumn, $sValue); // where 'm' is the default alias.
+        $collection->where()->equal($collection->getAlias().'.'.$fColumn, $sValue); // where 'm' is the default alias.
 
         // For if we need to create relational records 
         // though collection object, we need to pre-set 
