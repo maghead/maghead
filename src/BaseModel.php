@@ -693,18 +693,15 @@ abstract class BaseModel implements Serializable
             // eg. author_books
             $sColumn = $middleRelation['foreign_column'];
             $sSchema = $middleRelation->newForeignSchema();
-            $spSchema = SchemaLoader::load($sSchema->getSchemaProxyClass());
 
-            $foreignRelation = $spSchema->getRelation($rId2);
+            $foreignRelation = $sSchema->getRelation($rId2);
             if (!$foreignRelation) {
                 throw new InvalidArgumentException("second level relationship of many-to-many $rId2 is empty.");
             }
 
             $fSchema = $foreignRelation->newForeignSchema();
             $fColumn = $foreignRelation['foreign_column'];
-            $fpSchema = SchemaLoader::load($fSchema->getSchemaProxyClass());
-
-            $collection = $fpSchema->newCollection();
+            $collection = $fSchema->newCollection();
 
             /*
                 * join middle relation ship
