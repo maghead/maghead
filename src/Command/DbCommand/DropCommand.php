@@ -18,9 +18,9 @@ class DropCommand extends BaseCommand
 
     public function execute()
     {
-        $configLoader = $this->getConfigLoader(true);
+        $config = $this->getConfig();
         $dsId = $this->getCurrentDataSourceId();
-        $ds = $configLoader->getDataSource($dsId);
+        $ds = $config->getDataSource($dsId);
 
         $dsnParser = new DSNParser();
         $dsn = $dsnParser->parse($ds['dsn']);

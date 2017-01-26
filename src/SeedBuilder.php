@@ -49,7 +49,7 @@ class SeedBuilder
         throw new InvalidArgumentException('Invalid seed script name');
     }
 
-    public function buildConfigSeeds(ConfigLoader $config)
+    public function buildConfigSeeds(Config $config)
     {
         if ($seeds = $config->getSeedScripts()) {
             foreach ($seeds as $seed) {

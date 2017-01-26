@@ -52,17 +52,17 @@ DOC;
     {
         $options = $this->options;
         $logger = $this->logger;
-        $configLoader = $this->getConfigLoader(true);
+        $config = $this->getConfig();
 
         $id = $this->getCurrentDataSourceId();
 
         $logger->debug('Finding schema classes...');
-        $schemas = SchemaUtils::findSchemasByArguments($configLoader, func_get_args(), $this->logger);
+        $schemas = SchemaUtils::findSchemasByArguments($config, func_get_args(), $this->logger);
 
         $logger->debug('Initialize schema builder...');
 
         if ($output = $this->options->output) {
-            $dataSourceConfig = $configLoader->getDataSource($id);
+            $dataSourceConfig = $config->getDataSource($id);
             $driverType = $dataSourceConfig['driver'];
 
             switch ($driverType) {
@@ -112,8 +112,8 @@ DOC;
             if ($this->options->basedata) {
                 $seedBuilder = new SeedBuilder($this->logger);
                 $seedBuilder->build(new SchemaCollection($schemas));
-                if ($configLoader) {
-                    $seedBuilder->buildConfigSeeds($configLoader);
+                if ($config) {
+                    $seedBuilder->buildConfigSeeds($config);
                 }
             }
 

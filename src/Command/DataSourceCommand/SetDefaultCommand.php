@@ -20,9 +20,9 @@ class SetDefaultCommand extends BaseCommand
     public function execute($defaultDataSource)
     {
         // force loading data source
-        $configLoader = $this->getConfigLoader(true);
+        $config = $this->getConfig();
 
-        $dataSources = $configLoader->getDataSources();
+        $dataSources = $config->getDataSources();
 
         if (!in_array($defaultDataSource, array_keys($dataSources))) {
             $this->logger->error("Undefined data source ID: $defaultDataSource");
@@ -30,11 +30,9 @@ class SetDefaultCommand extends BaseCommand
             return false;
         }
 
-        $config = $configLoader->getConfigStash();
         $config['data_source']['default'] = $defaultDataSource;
 
-        $configLoader->setConfigStash($config);
-        $configLoader->writeToSymbol();
+        $configLoader->writeToSymbol($config);
 
         return true;
     }

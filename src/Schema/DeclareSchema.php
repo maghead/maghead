@@ -83,7 +83,8 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         // if the primary key is not define, we should append the default primary key => id
         // AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY
         if (false === $this->primaryKey) {
-            if ($config = ConfigLoader::getInstance()) {
+            $configLoader = ConfigLoader::getInstance();
+            if ($config = $configLoader->getCurrentConfig()) {
                 if ($config->hasAutoId() && !isset($this->columns['id'])) {
                     $this->insertAutoIdPrimaryColumn();
                 }

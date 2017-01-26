@@ -31,10 +31,10 @@ class CleanCommand extends BaseCommand
     {
         $logger = $this->getLogger();
 
-        $config = $this->getConfigLoader();
+        $config = $this->getConfig();
 
         $this->logger->debug('Finding schemas...');
-        $schemas = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
+        $schemas = SchemaUtils::findSchemasByArguments($config, func_get_args(), $this->logger);
 
         foreach ($schemas as $schema) {
             $this->logger->info('Cleaning schema '.get_class($schema));

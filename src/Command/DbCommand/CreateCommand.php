@@ -20,9 +20,9 @@ class CreateCommand extends BaseCommand
 
     public function execute()
     {
-        $configLoader = $this->getConfigLoader(true);
+        $config = $this->getConfig();
         $dsId = $this->getCurrentDataSourceId();
-        $ds = $configLoader->getDataSource($dsId);
+        $ds = $config->getDataSource($dsId);
 
         if (!isset($ds['dsn'])) {
             throw new Exception("Attribute 'dsn' undefined in data source settings.");

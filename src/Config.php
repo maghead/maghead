@@ -167,7 +167,7 @@ class Config implements ArrayAccess
         return '\\Maghead\\BaseCollection';
     }
 
-    public function getStash()
+    public function & getStash()
     {
         return $this->stash;
     }

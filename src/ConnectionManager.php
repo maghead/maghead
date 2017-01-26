@@ -4,6 +4,7 @@ namespace Maghead;
 
 use Exception;
 use PDOException;
+use InvalidArgumentException;
 use PDO;
 use ArrayAccess;
 use Maghead\DSN\DSN;

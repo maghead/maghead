@@ -14,22 +14,26 @@ class BaseCommand extends Command
     /**
      * @var ConfigLoader
      */
+    protected $configLoader;
+
     protected $config;
 
     public function prepare()
     {
         // softly load the config file.
-        $this->config = ConfigLoader::getInstance();
-        $this->config->loadFromSymbol(true); // force loading
+        $this->configLoader = ConfigLoader::getInstance();
+        $this->config = $this->configLoader->loadFromSymbol(true); // force loading
         $bootstrap = new Bootstrap($this->config);
         $bootstrap->init();
     }
 
-    public function getConfigLoader($required = true)
+    public function getConfig()
     {
         if (!$this->config) {
-            $this->config = ConfigLoader::getInstance();
-            $this->config->loadFromSymbol(true); // force loading
+            $this->configLoader = ConfigLoader::getInstance();
+            $this->config = $this->configLoader->loadFromSymbol(true); // force loading
+            $bootstrap = new Bootstrap($this->config);
+            $bootstrap->init();
         }
 
         return $this->config;
@@ -41,7 +45,7 @@ class BaseCommand extends Command
         $self = $this;
         $opts->add('D|data-source:', 'specify data source id')
             ->validValues(function () use ($self) {
-                if ($config = $self->getConfigLoader()) {
+                if ($config = $self->getConfig()) {
                     return $config->getDataSourceIds();
                 }
 
@@ -73,6 +77,6 @@ class BaseCommand extends Command
 
     public function findSchemasByArguments(array $arguments)
     {
-        return SchemaUtils::findSchemasByArguments($this->getConfigLoader(), $arguments, $this->logger);
+        return SchemaUtils::findSchemasByArguments($this->getConfig(), $arguments, $this->logger);
     }
 }

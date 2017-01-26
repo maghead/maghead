@@ -44,12 +44,12 @@ class StatusCommand extends BaseCommand
     public function execute()
     {
         $logger = $this->getLogger();
-        $config = $this->getConfigLoader();
+        $config = $this->getConfig();
         $this->logger->debug('Finding schemas...');
 
         $actionLogger = new ActionLogger(STDERR);
 
-        $schemas = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
+        $schemas = SchemaUtils::findSchemasByArguments($config, func_get_args(), $this->logger);
         foreach ($schemas as $schema) {
             if ($this->logger->isVerbose()) {
                 $actionLog = $actionLogger->newAction(get_class($schema), get_class($schema));

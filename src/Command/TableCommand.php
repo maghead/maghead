@@ -27,7 +27,7 @@ class TableCommand extends BaseCommand
     public function execute()
     {
         $tables = func_get_args();
-        $configLoader = $this->getConfigLoader(true);
+        $config = $this->getConfig(true);
 
         $dataSource = $this->getCurrentDataSourceId();
         $conn = $this->getCurrentConnection();

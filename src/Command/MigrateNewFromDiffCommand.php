@@ -16,7 +16,7 @@ class MigrateNewFromDiffCommand extends MigrateBaseCommand
     public function execute($taskName)
     {
         $dsId = $this->getCurrentDataSourceId();
-        $config = $this->getConfigLoader(true);
+        $config = $this->getConfig();
 
         $this->logger->info('Loading schema objects...');
         $finder = new SchemaFinder();

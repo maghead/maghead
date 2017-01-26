@@ -5,23 +5,25 @@ use Maghead\Schema\SchemaUtils;
 
 class SchemaUtilsTest extends PHPUnit_Framework_TestCase
 {
+    public $config;
+
     public $loader;
 
     public function setUp()
     {
         $this->loader = new ConfigLoader;
-        $this->loader->loadFromSymbol(true); // force loading
+        $this->config = $this->loader->loadFromSymbol(true); // force loading
 
-        $bootstrap = new Bootstrap($this->loader);
+        $bootstrap = new Bootstrap($this->config);
         $bootstrap->init();
     }
 
     public function testFindSchemasByClassNames()
     {
-        $paths = $this->loader->getSchemaPaths();
+        $paths = $this->config->getSchemaPaths();
         $this->assertNotEmpty($paths);
         $this->assertTrue(is_array($paths));
-        $schemas = SchemaUtils::findSchemasByArguments($this->loader, array('TestApp\\Model\\UserSchema'));
+        $schemas = SchemaUtils::findSchemasByArguments($this->config, array('TestApp\\Model\\UserSchema'));
         $this->assertNotEmpty($paths);
     }
 }

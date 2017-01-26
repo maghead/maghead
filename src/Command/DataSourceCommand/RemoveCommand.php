@@ -19,14 +19,12 @@ class RemoveCommand extends BaseCommand
     public function execute($dataSourceId)
     {
         // force loading data source
-        $configLoader = $this->getConfigLoader(true);
+        $config = $this->getConfig();
 
-        $config = $configLoader->getConfigStash();
-        unset($config['data_source']['nodes'][$dataSourceId]);
+        $stash = $config->getStash();
+        unset($stash['data_source']['nodes'][$dataSourceId]);
 
-        $configLoader->setConfigStash($config);
-        $configLoader->writeToSymbol();
-
+        $configLoader->writeToSymbol($config);
         return true;
     }
 }

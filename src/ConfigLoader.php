@@ -103,6 +103,11 @@ class ConfigLoader
         return $this->currentConfig = new Config(self::compile($sourceFile, $force));
     }
 
+    public function getCurrentConfig()
+    {
+        return $this->currentConfig;
+    }
+
     /**
      *
      */

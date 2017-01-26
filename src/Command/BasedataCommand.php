@@ -17,8 +17,9 @@ class BasedataCommand extends BaseCommand
     {
         $options = $this->options;
         $logger = $this->logger;
+        $config = $this->getConfig();
 
-        $classes = SchemaUtils::findSchemasByArguments($this->getConfigLoader(), func_get_args(), $this->logger);
+        $classes = SchemaUtils::findSchemasByArguments($config, func_get_args(), $this->logger);
 
         SchemaUtils::printSchemaClasses($classes, $this->logger);
 
@@ -27,7 +28,7 @@ class BasedataCommand extends BaseCommand
 
         $seedBuilder = new SeedBuilder($this->logger);
         $seedBuilder->build($collection);
-        $seedBuilder->buildConfigSeeds($this->getConfigLoader());
+        $seedBuilder->buildConfigSeeds($config);
 
         $this->logger->info('Done');
     }

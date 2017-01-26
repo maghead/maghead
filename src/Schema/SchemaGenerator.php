@@ -12,6 +12,7 @@ use Maghead\Schema\Factory\BaseCollectionClassFactory;
 use Maghead\Schema\Factory\CollectionClassFactory;
 use Maghead\Schema\Factory\ModelClassFactory;
 use Maghead\Schema\Factory\SchemaProxyClassFactory;
+use Maghead\Config;
 
 /**
  * Builder for building static schema class file.
@@ -22,9 +23,9 @@ class SchemaGenerator
 
     protected $forceUpdate = false;
 
-    public function __construct(ConfigLoader $config)
+    public function __construct(Config $config)
     {
-        $this->config = $config; // ConfigLoader::getInstance();
+        $this->config = $config;
     }
 
     public function setForceUpdate($force = true)

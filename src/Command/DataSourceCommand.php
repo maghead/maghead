@@ -25,8 +25,8 @@ class DataSourceCommand extends BaseCommand
 
     public function execute()
     {
-        $configLoader = $this->getConfigLoader(true);
-        $dataSources = $configLoader->getDataSources();
+        $config = $this->getConfig(true);
+        $dataSources = $config->getDataSources();
         foreach ($dataSources as $id => $config) {
             if ($this->options->verbose) {
                 $this->logger->writeln(sprintf('%-10s %s', $id, $config['dsn']));

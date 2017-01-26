@@ -31,7 +31,7 @@ class AddCommand extends BaseCommand
     public function execute($dataSourceId, $dsnStr)
     {
         // force loading data source
-        $configLoader = $this->getConfigLoader(true);
+        $config = $this->getConfig();
 
         // The data source array to be added to the config array
         $dataSource = array();
@@ -65,12 +65,9 @@ class AddCommand extends BaseCommand
             $dataSource['connection_options'] = [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'];
         }
 
-        $config = $configLoader->getConfigStash();
         $config['data_source']['nodes'][$dataSourceId] = $dataSource;
 
-        $configLoader->setConfigStash($config);
-        $configLoader->writeToSymbol();
-
+        $this->configLoader->writeToSymbol($config);
         return true;
     }
 }

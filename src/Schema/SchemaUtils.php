@@ -3,7 +3,7 @@
 namespace Maghead\Schema;
 
 use CLIFramework\Logger;
-use Maghead\ConfigLoader;
+use Maghead\Config;
 use Maghead\ClassUtils;
 use ReflectionObject;
 
@@ -136,21 +136,21 @@ class SchemaUtils
     }
 
     /**
-     * @param ConfigLoader $loader
+     *
+     * @param Config       $config
      * @param Logger       $logger
      */
-    public static function findSchemasByConfigLoader(ConfigLoader $loader, Logger $logger = null)
+    public static function findSchemasByConfigLoader(Config $config, Logger $logger = null)
     {
         // load class from class map
-        if ($classMap = $loader->getClassMap()) {
+        if ($classMap = $config->getClassMap()) {
             foreach ($classMap as $file => $class) {
                 if (!is_integer($file) && is_string($file)) {
                     require $file;
                 }
             }
         }
-        $paths = $loader->getSchemaPaths();
-
+        $paths = $config->getSchemaPaths();
         return self::findSchemasByPaths($paths, $logger);
     }
 
@@ -159,7 +159,7 @@ class SchemaUtils
      *
      * @return array schema objects
      */
-    public static function findSchemasByArguments(ConfigLoader $loader, array $args, Logger $logger = null)
+    public static function findSchemasByArguments(Config $config, array $args, Logger $logger = null)
     {
         $classes = array_filter($args, function ($class) {
             return class_exists($class, true);
@@ -171,7 +171,7 @@ class SchemaUtils
         $paths = array_filter($args, 'file_exists');
 
         if (empty($paths)) {
-            $paths = $loader->getSchemaPaths();
+            $paths = $config->getSchemaPaths();
         }
 
         if (!empty($paths)) {
@@ -180,7 +180,7 @@ class SchemaUtils
         }
 
         // load class from class map
-        if ($classMap = $loader->getClassMap()) {
+        if ($classMap = $config->getClassMap()) {
             foreach ($classMap as $file => $class) {
                 if (is_numeric($file)) {
                     continue;

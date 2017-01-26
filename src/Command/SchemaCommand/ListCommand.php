@@ -30,14 +30,14 @@ class ListCommand extends BaseCommand
         $options = $this->getOptions();
 
         $this->logger->debug('Loading config');
-        $loader = $this->getConfigLoader(true);
+        $config = $this->getConfig();
 
         $this->logger->debug('Initializing schema generator...');
-        $generator = new SchemaGenerator($loader, $logger);
+        $generator = new SchemaGenerator($config, $logger);
 
         $args = func_get_args();
         $classes = Utils::findSchemasByArguments(
-            $loader,
+            $config,
             $args,
             $this->logger);
 
