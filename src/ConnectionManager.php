@@ -205,6 +205,10 @@ class ConnectionManager implements ArrayAccess
      */
     public function getConnection($sourceId)
     {
+        if ($sourceId === 'default') {
+            $sourceId = $this->defaultDataSourceId;
+        }
+        // use cached connection objects
         if (isset($this->conns[$sourceId])) {
             return $this->conns[$sourceId];
         }
