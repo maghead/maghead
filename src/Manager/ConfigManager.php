@@ -7,6 +7,7 @@ use Maghead\ConfigLoader;
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;
 use PDO;
+use InvalidArgumentException;
 
 class ConfigManager
 {
@@ -17,10 +18,25 @@ class ConfigManager
         $this->config = $config;
     }
 
+
+    public function setDefaultNode($nodeId)
+    {
+        $keys = array_keys($this->config['data_source']['nodes']);
+        if (in_array($nodeId, $keys)) {
+            $this->config['data_source']['default'] = $nodeId;
+        } else {
+            throw new InvalidArgumentException("Node $nodeId doesn't exist.");
+        }
+    }
+
+    public function removeNode($nodeId)
+    {
+        unset($this->config['data_source']['nodes'][$nodeId]);
+    }
+
     public function addNode($nodeId, $dsnstr, $opts = array())
     {
-        $dsnParser = new DSNParser();
-        $dsn = $dsnParser->parse($dsnstr);
+        $dsn = DSNParser::parse($dsnstr);
 
         // The data source array to be added to the config array
         $node = [];

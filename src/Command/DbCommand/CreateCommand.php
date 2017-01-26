@@ -28,8 +28,7 @@ class CreateCommand extends BaseCommand
             throw new Exception("Attribute 'dsn' undefined in data source settings.");
         }
 
-        $dsnParser = new DSNParser();
-        $dsn = $dsnParser->parse($ds['dsn']);
+        $dsn = DSNParser::parse($ds['dsn']);
 
         $dbName = $dsn->getAttribute('dbname');
 

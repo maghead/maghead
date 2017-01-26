@@ -22,8 +22,7 @@ class DropCommand extends BaseCommand
         $dsId = $this->getCurrentDataSourceId();
         $ds = $config->getDataSource($dsId);
 
-        $dsnParser = new DSNParser();
-        $dsn = $dsnParser->parse($ds['dsn']);
+        $dsn = DSNParser::parse($ds['dsn']);
 
         $dbName = $dsn->getAttribute('dbname');
 

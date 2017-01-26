@@ -23,8 +23,7 @@ class DSNParserTest extends PHPUnit_Framework_TestCase
      */
     public function testParse($dsn)
     {
-        $parser = new DSNParser;
-        $dsnObject = $parser->parse($dsn);
+        $dsnObject = DSNParser::parse($dsn);
         $this->assertNotNull($dsnObject);
     }
 }

@@ -77,9 +77,7 @@ class Connection extends PDO
         if ($this->dsn) {
             return $this->dsn;
         }
-        $parser = new DSNParser();
-
-        return $this->dsn = $parser->parse($this->config['dsn']);
+        return $this->dsn = DSNParser::parse($this->config['dsn']);
     }
 
     public function __clone()
