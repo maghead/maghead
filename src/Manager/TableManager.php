@@ -12,11 +12,17 @@ class TableManager
 {
     protected $conn;
 
+    /**
+     * @var Maghead\SqlBuilder\BaseBuilder
+     */
     protected $builder;
 
+    /**
+     * @var CLIFramework\Logger
+     */
     protected $logger;
 
-    public function __construct(Connection $conn, BaseBuilder $builder, Logger $logger = null)
+    public function __construct(Connection $conn, BaseBuilder $builder, Logger $logger)
     {
         $this->conn = $conn;
         $this->builder = $builder;
@@ -25,6 +31,8 @@ class TableManager
 
     /**
      * Remove schemas from database.
+     *
+     * @param Maghead\Schema\Schema
      */
     public function remove(array $schemas)
     {
@@ -44,6 +52,11 @@ class TableManager
         }
     }
 
+    /**
+     * Build tables from schema objects.
+     *
+     * @param DeclareSchema[] $schemas
+     */
     public function build(array $schemas)
     {
         if ($sqls = $this->builder->prepare()) {

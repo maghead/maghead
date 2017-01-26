@@ -10,6 +10,7 @@ use Maghead\Schema\SchemaGenerator;
 use Maghead\Schema\DeclareSchema;
 use Maghead\BaseCollection;
 use Maghead\Result;
+use Maghead\Bootstrap;
 use Maghead\PDOExceptionPrinter;
 use SQLBuilder\Driver\BaseDriver;
 use PHPUnit_Framework_TestCase;
@@ -54,9 +55,11 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $configStash = $this->config->getConfigStash();
         $cnofigStash['schema']['auto_id'] = true;
 
-        // free and override default connection
         $this->connManager = ConnectionManager::getInstance();
-        $this->connManager->init($this->config);
+        $this->connManager->free();
+
+        $bootstrap = new Bootstrap($this->config);
+        $bootstrap->loadDataSources(ConnectionManager::getInstance());
 
         // $config = self::createNeutralConfigLoader();
         $this->logger = new Logger();

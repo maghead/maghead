@@ -4,101 +4,83 @@ namespace Maghead;
 
 use Maghead\SqlBuilder\BaseBuilder;
 use Maghead\Schema\SchemaCollection;
+use Maghead\Schema\SchemaFinder;
 use CLIFramework\Logger;
+
+use ConfigKit\ConfigCompiler;
 use PDOException;
+use Exception;
+use ArrayAccess;
 
 class Bootstrap
 {
-    protected $conn;
+    protected $config;
 
-    protected $queryDriver;
-
-    protected $builder;
-
-    protected $logger;
-
-    public function __construct(Connection $conn, BaseBuilder $builder = null, Logger $logger = null)
+    public function __construct(ConfigLoader $config)
     {
-        $this->conn = $conn;
-        $this->queryDriver = $conn->getQueryDriver();
-        if (!$builder) {
-            $builder = SqlBuilder::create($this->queryDriver);
-        }
-        $this->builder = $builder;
+        $this->config = $config;
+    }
 
-        if (!$logger) {
-            $c = ServiceContainer::getInstance();
-            $logger ?: $c['logger'];
+    public function loadDataSources(ConnectionManager $connectionManager)
+    {
+        foreach ($this->config->getDataSources() as $nodeId => $dsConfig) {
+            $connectionManager->addDataSource($nodeId, $dsConfig);
         }
-        $this->logger = $logger;
+        if ($nodeId = $this->config->getDefaultDataSourceId()) {
+            $connectionManager->setDefaultDataSourceId($nodeId);
+        }
     }
 
     /**
-     * Remove schemas from database.
+     * Run bootstrap script if it's defined in the config.
+     * This is used for the command-line app.
      */
-    public function remove(array $schemas)
+    protected function loadBootstrap()
     {
-        if ($sqls = $this->builder->prepare()) {
-            $this->executeStatements($sqls);
-        }
-
-        foreach ($schemas as $schema) {
-            $sqls = (array) $this->builder->dropTable($schema);
-            if (!empty($sqls)) {
-                $this->executeStatements($sqls);
+        if (isset($this->config['bootstrap'])) {
+            foreach ((array) $this->config['bootstrap'] as $bootstrap) {
+                require_once $bootstrap;
             }
         }
+    }
 
-        if ($sqls = $this->builder->finalize()) {
-            $this->executeStatements($sqls);
+    /**
+     * load external schema loader.
+     */
+    protected function loadExternalSchemaLoader()
+    {
+        if (isset($this->config['schema']['loader'])) {
+            require_once $this->config['schema']['loader'];
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function loadSchemaFromFinder()
+    {
+        // Load default schema loader
+        $paths = $this->config->getSchemaPaths();
+        if (!empty($paths)) {
+            $finder = new SchemaFinder($paths);
+            $finder->find();
         }
     }
 
-    public function build(array $schemas)
+    protected function loadSchemaLoader()
     {
-        if ($sqls = $this->builder->prepare()) {
-            $this->executeStatements($sqls);
-        }
-        foreach ($schemas as $schema) {
-            $sqls = $this->builder->buildTable($schema);
-            if (!empty($sqls)) {
-                $this->executeStatements($sqls);
-            }
-        }
-        foreach ($schemas as $schema) {
-            $sqls = $this->builder->buildIndex($schema);
-            if (!empty($sqls)) {
-                $this->executeStatements($sqls);
-            }
-        }
-        if ($sqls = $this->builder->finalize()) {
-            $this->executeStatements($sqls);
+        if (!$this->loadExternalSchemaLoader()) {
+            $this->loadSchemaFromFinder();
         }
     }
 
-    public function seed(array $schemas, ConfigLoader $config = null)
+    public function init()
     {
-        $seedBuilder = new SeedBuilder($this->logger);
-        $seedBuilder->build(new SchemaCollection($schemas));
-        if ($config) {
-            $seedBuilder->buildConfigSeeds($config);
-        }
-    }
-
-    protected function executeStatements(array $sqls)
-    {
-        foreach ($sqls as $sql) {
-            $this->executeStatement($sql);
-        }
-    }
-
-    protected function executeStatement($sql)
-    {
-        try {
-            $this->logger->debug($sql);
-            $this->conn->query($sql);
-        } catch (PDOException $e) {
-            PDOExceptionPrinter::show($e, $sql, [], $this->logger);
+        $this->loadDataSources(ConnectionManager::getInstance());
+        if (php_sapi_name() == "cli") {
+            $this->loadBootstrap();
+            $this->loadSchemaLoader();
         }
     }
 }

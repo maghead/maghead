@@ -46,6 +46,10 @@ class ConnectionManager implements ArrayAccess
 {
     const DEFAULT_DS = 'default';
 
+
+    protected $defaultDataSourceId;
+
+
     /**
      * @var Maghead\ConfigLoader
      */
@@ -178,6 +182,11 @@ class ConnectionManager implements ArrayAccess
         return $config['driver'];
     }
 
+    public function setDefaultDataSourceId($nodeId)
+    {
+        $this->defaultDataSourceId = $nodeId;
+    }
+
     /**
      * Create connection.
      *
@@ -196,10 +205,6 @@ class ConnectionManager implements ArrayAccess
      */
     public function getConnection($sourceId)
     {
-        if ($sourceId === 'default' && $this->config) {
-            $sourceId = $this->config->getDefaultDataSourceId();
-        }
-        // use cached connection objects
         if (isset($this->conns[$sourceId])) {
             return $this->conns[$sourceId];
         }
@@ -223,14 +228,7 @@ class ConnectionManager implements ArrayAccess
      */
     public function getDefaultConnection()
     {
-        // backward compatible
-        if (!$this->config) {
-            return $this->getConnection('default');
-        }
-
-        $id = $this->config->getDefaultDataSourceId();
-
-        return $this->getConnection($id);
+        return $this->getConnection($this->defaultDataSourceId ?: 'default');
     }
 
     /**
