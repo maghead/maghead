@@ -320,7 +320,7 @@ abstract class BaseModel implements Serializable
      *
      * @return string the mixin class name.
      */
-    public function findMixinMethodClass($m)
+    static public function findMixinMethodClass($m)
     {
         foreach (static::$mixin_classes as $mixinClass) {
             // if we found it, just call it and return the result. 
@@ -382,7 +382,7 @@ abstract class BaseModel implements Serializable
         }
 
         // then it's the mixin methods
-        if ($mClass = $this->findMixinMethodClass($m)) {
+        if ($mClass = static::findMixinMethodClass($m)) {
             return $this->invokeMixinClassMethod($mClass, $m, $a);
         }
 
