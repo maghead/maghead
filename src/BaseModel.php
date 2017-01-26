@@ -61,8 +61,6 @@ abstract class BaseModel implements Serializable
 
     public $usingDataSource;
 
-    public $selected;
-
     protected $_schema;
 
     public static $_cacheInstance;
@@ -71,23 +69,6 @@ abstract class BaseModel implements Serializable
      * @var array Mixin classes are emtpy. (MixinDeclareSchema)
      * */
     public static $mixin_classes = array();
-
-    // TODO: remove this
-    public function select($sels)
-    {
-        if (is_array($sels)) {
-            $this->selected = $sels;
-        } else {
-            $this->selected = func_get_args();
-        }
-
-        return $this;
-    }
-
-    public function getSelected()
-    {
-        return $this->selected;
-    }
 
     /**
      * Get the RuntimeColumn objects from RuntimeSchema object.

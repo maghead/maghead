@@ -216,6 +216,7 @@ class ConnectionManager implements ArrayAccess
             throw new UndefinedDataSourceException("data source $sourceId not found.");
         }
         // Only for MySQl
+        // TODO: Move to MySQLConnector
         // $conn->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
         return $this->conns[ $sourceId ] = Connection::create($this->datasources[$sourceId]);
     }
