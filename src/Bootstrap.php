@@ -78,7 +78,7 @@ class Bootstrap
     public function init()
     {
         $this->loadDataSources(ConnectionManager::getInstance());
-        if (php_sapi_name() == "cli") {
+        if (PHP_SAPI === "cli") {
             $this->loadBootstrap();
             $this->loadSchemaLoader();
         }

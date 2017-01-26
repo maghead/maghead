@@ -85,7 +85,7 @@ class BaseModelClassFactory
             'READ_SOURCE_ID'     => $schema->getReadSourceId(),
             'WRITE_SOURCE_ID'    => $schema->getWriteSourceId(),
             'PRIMARY_KEY'        => $schema->primaryKey,
-            'TABLE_ALIAS'              => 'm',
+            'TABLE_ALIAS'        => 'm',
         ));
 
         $cTemplate->addProtectedProperty('table', $schema->getTable());
