@@ -25,14 +25,9 @@ With the simple schema design, you can define your model schema very easily and
 you can even embed closure in your schema classes.
 
 
-See also
-
-<div style="width:425px" id="__ss_12638921"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/c9s/maghead-the-fast-orm-for-php" title="Maghead: The Fast ORM for PHP" target="_blank">Maghead: The Fast ORM for PHP</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12638921" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/c9s" target="_blank">Yo-An Lin</a> </div> </div>
-
-
 Automatic Migration Demonstration
 --------------------------------
-<img src="https://raw.github.com/c9s/Maghead/master/assets/images/migration.gif" width="600"/>
+<img src="https://raw.github.com/maghead/maghead/master/assets/images/migration.gif" width="600"/>
 
 Feature
 -------
