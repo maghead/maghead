@@ -33,8 +33,6 @@ use Maghead\Schema\SchemaFinder;
  *
  * $config->load();
  * $config->init();
- *
- * $config->initForBuild();  // for build command.
  */
 class ConfigLoader
     implements ArrayAccess
@@ -50,8 +48,6 @@ class ConfigLoader
     protected $classMap = array();
 
     public $symbolFilename = '.lazy.yml';
-
-    public $loaded = false;
 
     public function loadFromSymbol($force = false)
     {
@@ -89,12 +85,6 @@ class ConfigLoader
     public function loadFromArray(array $config)
     {
         $this->config = $config;
-        $this->loaded = true;
-    }
-
-    public function setLoaded($loaded = true)
-    {
-        $this->loaded = $loaded;
     }
 
     /**
@@ -206,7 +196,6 @@ class ConfigLoader
     public function loadFromFile($sourceFile)
     {
         $this->config = self::compile($sourceFile);
-        $this->loaded = true;
     }
 
     /**
@@ -216,11 +205,6 @@ class ConfigLoader
      */
     public function load($arg, $force = false)
     {
-        // should we load config file force ?
-        if ($force !== true && $this->loaded === true) {
-            throw new Exception('Can not load config. Config is already loaded.');
-        }
-
         if ($arg === null || is_bool($arg)) {
             $arg = $this->symbolFilename;
         }
@@ -239,16 +223,6 @@ class ConfigLoader
             throw new Exception('data_source is missing, please update your config file.');
         }
         */
-        $this->loaded = true;
-    }
-
-    /**
-     * unload config and stash.
-     */
-    public function unload()
-    {
-        $this->loaded = false;
-        $this->config = null;
     }
 
     public function setConfigStash(array $stash)
@@ -259,42 +233,6 @@ class ConfigLoader
     public function getConfigStash()
     {
         return $this->config;
-    }
-
-    /**
-     * 1. inject config into data source
-     * 2. load bootstrap
-     * 3. load external schema loader.
-     */
-    public function init()
-    {
-        if ($this->loaded) {
-            $this->loadDataSources();
-        } else {
-            throw new Exception('Can not initialize config: Config is not loaded.');
-        }
-    }
-
-    public function isLoaded()
-    {
-        return $this->loaded;
-    }
-
-    public function initForBuild()
-    {
-        if (!$this->loaded) {
-            throw new Exception('Can not initialize config: Config is not loaded.');
-        }
-        $this->loadDataSources();
-        $this->loadBootstrap();
-        if (!$this->loadExternalSchemaLoader()) {
-            // Load default schema loader
-            $paths = $this->getSchemaPaths();
-            if (!empty($paths)) {
-                $finder = new SchemaFinder($paths);
-                $finder->find();
-            }
-        }
     }
 
     public static function getInstance()
@@ -342,16 +280,6 @@ class ConfigLoader
         }
 
         return array();
-    }
-
-    /**
-     * load data sources to connection manager.
-     */
-    protected function loadDataSources()
-    {
-        // load data source into connection manager
-        $manager = ConnectionManager::getInstance();
-        $manager->init($this);
     }
 
     public function getClassMap()

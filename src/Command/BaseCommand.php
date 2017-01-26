@@ -30,9 +30,6 @@ class BaseCommand extends Command
         if (!$this->config) {
             $this->config = ConfigLoader::getInstance();
             $this->config->loadFromSymbol(true); // force loading
-            if (!$this->config->isLoaded() && $required) {
-                throw new RuntimeException("ConfigLoader did not loaded any config file. Can't initialize the settings.");
-            }
         }
 
         return $this->config;

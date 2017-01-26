@@ -10,12 +10,4 @@ class ConfigLoaderTest extends PHPUnit_Framework_TestCase
         $config->setDefaultDataSourceId('mysql');
         $this->assertEquals('mysql', $config->getDefaultDataSourceId());
     }
-
-
-    public function testSetConfigStash()
-    {
-        $config = new ConfigLoader;
-        $config->setLoaded(true);
-        $config->setConfigStash(array( 'schema' => array( 'auto_id' => true ) ));
-    }
 }

@@ -34,7 +34,7 @@ class SchemaGenerator
 
     protected function getBaseModelClass()
     {
-        if ($this->config && $this->config->loaded) {
+        if ($this->config) {
             return $this->config->getBaseModelClass();
         }
 
@@ -43,7 +43,7 @@ class SchemaGenerator
 
     protected function getBaseCollectionClass()
     {
-        if ($this->config && $this->config->loaded) {
+        if ($this->config) {
             return $this->config->getBaseCollectionClass();
         }
 
