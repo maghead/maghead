@@ -859,7 +859,7 @@ abstract class BaseModel implements Serializable
     /**
      * flush internal cache, in php memory.
      */
-    public function flushCache()
+    public function flushInternalCache()
     {
         $this->_cache = array();
     }

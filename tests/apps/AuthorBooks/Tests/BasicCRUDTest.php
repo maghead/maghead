@@ -275,7 +275,7 @@ class BasicCRUDTest extends ModelTestCase
         ]);
 
         // retrieve books from relationshipt
-        $author->flushCache();
+        $author->flushInternalCache();
         $books = $author->books;
         $this->assertEquals(3, $books->size() , 'We have 3 books' );
 
