@@ -66,15 +66,6 @@ class TableManager
         }
     }
 
-    public function seed(array $schemas, ConfigLoader $config = null)
-    {
-        $seedBuilder = new SeedBuilder($this->logger);
-        $seedBuilder->build(new SchemaCollection($schemas));
-        if ($config) {
-            $seedBuilder->buildConfigSeeds($config);
-        }
-    }
-
     protected function executeStatements(array $sqls)
     {
         foreach ($sqls as $sql) {

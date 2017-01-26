@@ -110,7 +110,11 @@ DOC;
             $tableManager = new TableManager($conn, $sqlBuilder, $this->logger);
             $tableManager->build($schemas);
             if ($this->options->basedata) {
-                $tableManager->seed($schemas, $configLoader);
+                $seedBuilder = new SeedBuilder($this->logger);
+                $seedBuilder->build(new SchemaCollection($schemas));
+                if ($configLoader) {
+                    $seedBuilder->buildConfigSeeds($configLoader);
+                }
             }
 
             $time = time();
