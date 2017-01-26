@@ -8,6 +8,7 @@ use ArrayAccess;
 use PDO;
 use Maghead\DSN\DSN;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Dumper;
 use Maghead\Schema\SchemaFinder;
 
 /**
@@ -51,20 +52,25 @@ class ConfigLoader
 
     public $symbolFilename = '.lazy.yml';
 
+    static $inlineLevel = 4;
+
+    static $indentSpaces = 2;
+
     protected $currentConfig;
 
-    static public function writeToSymbol(Config $config)
+    static public function writeToSymbol(Config $config, $targetFile = null)
     {
-        if (!file_exists(self::ANCHOR_FILENAME)) {
-            throw new Exception('symbol link '.self::ANCHOR_FILENAME.' does not exist.');
+        if (!$targetFile) {
+            if (!file_exists(self::ANCHOR_FILENAME)) {
+                throw new Exception('symbol link '.self::ANCHOR_FILENAME.' does not exist.');
+            }
+            $targetFile = readlink(self::ANCHOR_FILENAME);
         }
-
-        $targetFile = readlink(self::ANCHOR_FILENAME);
-        if ($targetFile === false || !file_exists($targetFile)) {
+        if (!$targetFile || !file_exists($targetFile)) {
             throw new Exception('Missing target config file. incorrect symbol link.');
         }
 
-        $yaml = Yaml::dump($config->getStash(), $inlineLevel = 4, $indentSpaces = 2, $exceptionOnInvalidType = true);
+        $yaml = Yaml::dump($config->stash, self::$inlineLevel, self::$indentSpaces);
         if (false === file_put_contents($targetFile, "---\n".$yaml)) {
             throw new Exception("YAML config update failed: $targetFile");
         }

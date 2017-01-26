@@ -1,0 +1,40 @@
+---
+schema:
+  paths:
+    - tests
+data_source:
+  default: master
+  nodes:
+    sqlite:
+      dsn: 'sqlite::memory:'
+      query_options: { quote_table: true }
+      driver: sqlite
+      user: null
+      pass: null
+      connection_options: {  }
+    mysql:
+      dsn: 'mysql:host=localhost;dbname=testing'
+      user: root
+      driver: mysql
+      pass: null
+      query_options: {  }
+      connection_options: { 1002: 'SET NAMES utf8' }
+    pgsql:
+      dsn: 'pgsql:host=localhost;dbname=testing'
+      user: postgres
+      driver: pgsql
+      pass: null
+      query_options: {  }
+      connection_options: {  }
+    shard1:
+      driver: mysql
+      host: localhost
+      database: shard1
+      dsn: 'mysql:host=localhost;dbname=shard1'
+      connection_options: { 1002: 'SET NAMES utf8' }
+    shard2:
+      driver: mysql
+      host: localhost
+      database: shard2
+      dsn: 'mysql:host=localhost;dbname=shard2'
+      connection_options: { 1002: 'SET NAMES utf8' }

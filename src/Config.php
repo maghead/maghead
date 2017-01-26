@@ -6,7 +6,7 @@ use ArrayAccess;
 
 class Config implements ArrayAccess
 {
-    protected $stash = [];
+    public $stash = [];
 
     protected $classMap = [];
 
