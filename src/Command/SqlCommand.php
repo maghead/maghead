@@ -6,12 +6,12 @@ use CLIFramework\Logger;
 use Maghead\Metadata;
 use Maghead\Schema;
 use Maghead\SqlBuilder\SqlBuilder;
-use Maghead\Bootstrap;
 use Maghead\ConnectionManager;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 use Maghead\Schema\SchemaUtils;
+use Maghead\Manager\TableManager;
 use Exception;
 
 class SqlCommand extends BaseCommand
@@ -107,10 +107,10 @@ DOC;
                 'clean' => $options->clean,
             ]);
 
-            $bootstrap = new Bootstrap($conn, $sqlBuilder, $this->logger);
-            $bootstrap->build($schemas);
+            $tableManager = new TableManager($conn, $sqlBuilder, $this->logger);
+            $tableManager->build($schemas);
             if ($this->options->basedata) {
-                $bootstrap->seed($schemas, $configLoader);
+                $tableManager->seed($schemas, $configLoader);
             }
 
             $time = time();

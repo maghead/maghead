@@ -8,7 +8,7 @@ use Maghead\SqlBuilder\SqlBuilder;
 use Maghead\TableParser\TableParser;
 use Maghead\Schema\SchemaGenerator;
 use Maghead\Schema\SchemaCollection;
-use Maghead\Bootstrap;
+use Maghead\Manager\TableManager;
 
 abstract class ModelTestCase extends BaseTestCase
 {
@@ -20,7 +20,7 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected $sqlBuilder;
 
-    protected $bootstrap;
+    protected $tableManager;
 
     public function setUp()
     {
@@ -62,9 +62,10 @@ abstract class ModelTestCase extends BaseTestCase
             });
         }
 
-        $this->sqlBuilder = SqlBuilder::create($this->queryDriver, array('rebuild' => $rebuild));
-        $this->bootstrap = new Bootstrap($this->conn, $this->sqlBuilder, $this->logger);
-        $this->bootstrap->build($schemas);
+        $this->sqlBuilder = SqlBuilder::create($this->queryDriver, ['rebuild' => $rebuild]);
+
+        $this->tableManager = new TableManager($this->conn, $this->sqlBuilder, $this->logger);
+        $this->tableManager->build($schemas);
 
         if ($rebuild && $basedata) {
             $seeder = new SeedBuilder($this->logger);
@@ -75,12 +76,12 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected function dropSchemaTables($schemas)
     {
-        $this->bootstrap->remove($schemas);
+        $this->tableManager->remove($schemas);
     }
 
     protected function buildSchemaTables(array $schemas)
     {
-        $this->bootstrap->build($schemas);
+        $this->tableManager->build($schemas);
     }
 
     public function testClasses()
