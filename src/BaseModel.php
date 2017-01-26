@@ -901,30 +901,6 @@ abstract class BaseModel implements Serializable
         $this->_cache = array();
     }
 
-    public static function getCacheInstance()
-    {
-        if (self::$_cacheInstance) {
-            return self::$_cacheInstance;
-        }
-
-        return self::$_cacheInstance = ConfigLoader::getInstance()->getCacheInstance();
-    }
-
-    private function getCache($key)
-    {
-        if ($cache = self::getCacheInstance()) {
-            return $cache->get($this->getCachePrefix().$key);
-        }
-    }
-
-    private function setCache($key, $val, $ttl = 0)
-    {
-        if ($cache = self::getCacheInstance()) {
-            $cache->set($this->getCachePrefix().$key, $val, $ttl);
-        }
-
-        return $val;
-    }
 
     /**
      * Used by ActionKit
