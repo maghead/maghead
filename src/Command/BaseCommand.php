@@ -7,6 +7,7 @@ use Maghead\ConfigLoader;
 use Maghead\Schema\SchemaUtils;
 use Maghead\ConnectionManager;
 use RuntimeException;
+use Maghead\Bootstrap;
 
 class BaseCommand extends Command
 {
@@ -20,9 +21,8 @@ class BaseCommand extends Command
         // softly load the config file.
         $this->config = ConfigLoader::getInstance();
         $this->config->loadFromSymbol(true); // force loading
-        if ($this->config->isLoaded()) {
-            $this->config->initForBuild();
-        }
+        $bootstrap = new Bootstrap($this->config);
+        $bootstrap->init();
     }
 
     public function getConfigLoader($required = true)

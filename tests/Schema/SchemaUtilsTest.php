@@ -1,5 +1,7 @@
 <?php
 use Maghead\ConfigLoader;
+use Maghead\Bootstrap;
+use Maghead\Schema\SchemaUtils;
 
 class SchemaUtilsTest extends PHPUnit_Framework_TestCase
 {
@@ -9,7 +11,9 @@ class SchemaUtilsTest extends PHPUnit_Framework_TestCase
     {
         $this->loader = new ConfigLoader;
         $this->loader->loadFromSymbol(true); // force loading
-        $this->loader->initForBuild();
+
+        $bootstrap = new Bootstrap($this->loader);
+        $bootstrap->init();
     }
 
     public function testFindSchemasByClassNames()
@@ -17,7 +21,7 @@ class SchemaUtilsTest extends PHPUnit_Framework_TestCase
         $paths = $this->loader->getSchemaPaths();
         $this->assertNotEmpty($paths);
         $this->assertTrue(is_array($paths));
-        $schemas = Maghead\Schema\SchemaUtils::findSchemasByArguments($this->loader, array('TestApp\\Model\\UserSchema'));
+        $schemas = SchemaUtils::findSchemasByArguments($this->loader, array('TestApp\\Model\\UserSchema'));
         $this->assertNotEmpty($paths);
     }
 }

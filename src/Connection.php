@@ -2,10 +2,12 @@
 
 namespace Maghead;
 
-use SQLBuilder\Driver\PDODriverFactory;
-use SQLBuilder\Raw;
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;
+
+use SQLBuilder\Driver\PDODriverFactory;
+use SQLBuilder\Raw;
+
 use PDO;
 
 class Connection extends PDO

@@ -13,10 +13,9 @@ class ServiceContainer extends Container
         $this['config_loader'] = function ($c) {
             $config = ConfigLoader::getInstance();
             $config->loadFromSymbol(true); // force loading
-            if ($config->isLoaded()) {
-                $config->initForBuild();
-            }
 
+            $bootstrap = new Bootstrap($config);
+            $bootstrap->init();
             return $config;
         };
 

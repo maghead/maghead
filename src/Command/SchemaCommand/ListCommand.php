@@ -5,13 +5,14 @@ namespace Maghead\Command\SchemaCommand;
 use Maghead\ConfigLoader;
 use Maghead\Schema\SchemaGenerator;
 use Maghead\Utils;
+use Maghead\Command\BaseCommand;
 use CLIFramework\Command;
 use ReflectionClass;
 
 /**
  * $ lazy build-schema path/to/Schema path/to/SchemaDir.
  */
-class ListCommand extends Command
+class ListCommand extends BaseCommand
 {
     public function usage()
     {
@@ -29,9 +30,7 @@ class ListCommand extends Command
         $options = $this->getOptions();
 
         $this->logger->debug('Loading config');
-        $loader = ConfigLoader::getInstance();
-        $loader->loadFromSymbol(true);
-        $loader->initForBuild();
+        $loader = $this->getConfigLoader(true);
 
         $this->logger->debug('Initializing schema generator...');
         $generator = new SchemaGenerator($loader, $logger);
