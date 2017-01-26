@@ -15,6 +15,9 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
+        if (file_exists(self::TEST_CONFIG)) {
+            unlink(self::TEST_CONFIG);
+        }
     }
 
     public function testAddNodeWithoutOptions()
