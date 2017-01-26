@@ -47,7 +47,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         }
 
         // The config loader is used to initialize connection manager
-        $this->config = $config = ConfigLoader::loadFromSymbol(true);
+        $configLoader = ConfigLoader::getInstance();
+        $this->config = $config = $configLoader->loadFromSymbol(true);
         $config->setDefaultDataSourceId($this->getDataSource());
         $config['schema']['auto_id'] = true;
 
