@@ -5,7 +5,7 @@ namespace Maghead\Schema\Factory;
 use ClassTemplate\ClassFile;
 use Maghead\ConnectionManager;
 use Maghead\Schema\DeclareSchema;
-use Maghead\Schema\PDOStatementCodeGen;
+use Maghead\Schema\Relationship\Relationship;
 use Doctrine\Common\Inflector\Inflector;
 use ReflectionClass;
 
@@ -20,10 +20,10 @@ use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
 
-use Maghead\Schema\CodeGenSettingsParser;
-use Maghead\Schema\AnnotatedBlock;
-use Maghead\Schema\MethodBlockParser;
-use Maghead\Schema\Relationship\Relationship;
+use Maghead\Generator\AnnotatedBlock;
+use Maghead\Generator\PDOStatementGenerator;
+use Maghead\Generator\CodeGenSettingsParser;
+use Maghead\Generator\MethodBlockParser;
 
 
 /**
@@ -151,7 +151,7 @@ class BaseRepoClassFactory
             $cTemplate->addConst($constName, $sql);
 
             $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use($schema, $columnName, $propertyName, $constName) {
-                return PDOStatementCodeGen::generateFetchOne(
+                return PDOStatementGenerator::generateFetchOne(
                     $propertyName,
                     $constName,
                     $schema->getModelClass(),
@@ -171,7 +171,7 @@ class BaseRepoClassFactory
         $cTemplate->addMethod('public',
             'deleteByPrimaryKey',
             ['$pkId'], 
-            PDOStatementCodeGen::generateExecute('deleteStm', 'DELETE_BY_PRIMARY_KEY_SQL', "[\$pkId]")
+            PDOStatementGenerator::generateExecute('deleteStm', 'DELETE_BY_PRIMARY_KEY_SQL', "[\$pkId]")
         );
 
         foreach ($schema->getRelations() as $relKey => $rel) {
@@ -196,7 +196,7 @@ class BaseRepoClassFactory
 
                     $selfColumn    = $rel->getSelfColumn();
                     $cTemplate->addMethod('public', $methodName, ['BaseModel $record'],
-                        PDOStatementCodeGen::generateFetchOne(
+                        PDOStatementGenerator::generateFetchOne(
                             $propertyName,
                             $constName,
                             $foreignSchema->getModelClass(), "[\$record->$selfColumn]"));
@@ -217,7 +217,7 @@ class BaseRepoClassFactory
 
                     $selfColumn = $rel->getSelfColumn();
                     $cTemplate->addMethod('public', $methodName, ['BaseModel $record'],
-                        PDOStatementCodeGen::generateFetchAll(
+                        PDOStatementGenerator::generateFetchAll(
                             $propertyName,
                             $constName,
                             $foreignSchema->getModelClass(), "[\$record->$selfColumn]"));

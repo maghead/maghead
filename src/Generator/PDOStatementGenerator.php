@@ -1,7 +1,7 @@
 <?php
-namespace Maghead\Schema;
+namespace Maghead\Generator;
 
-class PDOStatementCodeGen
+class PDOStatementGenerator
 {
 
     public static function generateFetchAll(string $propertyName, string $constName, string $class, string $args)

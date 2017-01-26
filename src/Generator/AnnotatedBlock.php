@@ -1,5 +1,5 @@
 <?php
-namespace Maghead\Schema;
+namespace Maghead\Generator;
 
 class AnnotatedBlock
 {

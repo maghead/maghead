@@ -10,8 +10,9 @@ use ClassTemplate\ClassFile;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\ConnectionManager;
-use Maghead\Schema\PDOStatementCodeGen;
 use Doctrine\Common\Inflector\Inflector;
+
+use Maghead\Generator\PDOStatementGenerator;
 
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\Universal\Query\DeleteQuery;
