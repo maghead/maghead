@@ -181,16 +181,6 @@ class BaseRepoClassFactory
             $propertyName = "fetch{$relName}Stm";
             $constName = "FETCH_" . strtoupper($relKey) . "_SQL";
 
-
-            switch($rel['type']) {
-                case Relationship::HAS_ONE:
-                case Relationship::BELONGS_TO:
-                case Relationship::HAS_MANY:
-                    $cTemplate->addProtectedProperty($propertyName);
-                    break;
-                default;
-            }
-
             switch($rel['type']) {
 
                 case Relationship::HAS_ONE:
@@ -200,7 +190,10 @@ class BaseRepoClassFactory
                     $query->where()->equal($rel->getForeignColumn(), new ParamMarker());
                     $query->limit(1); // Since it's a belongs to relationship, there is only one record.
                     $sql = $query->toSql($readQueryDriver, new ArgumentArray);
+
                     $cTemplate->addConst($constName, $sql);
+                    $cTemplate->addProtectedProperty($propertyName);
+
                     $selfColumn    = $rel->getSelfColumn();
                     $cTemplate->addMethod('public', $methodName, ['BaseModel $record'],
                         PDOStatementGenerator::generateFetchOne(
@@ -213,7 +206,10 @@ class BaseRepoClassFactory
                     $query = $foreignSchema->newSelectQuery(); // foreign key
                     $query->where()->equal($rel->getForeignColumn(), new ParamMarker());
                     $sql = $query->toSql($readQueryDriver, new ArgumentArray);
+
                     $cTemplate->addConst($constName, $sql);
+                    $cTemplate->addProtectedProperty($propertyName);
+
                     $selfColumn = $rel->getSelfColumn();
                     $cTemplate->addMethod('public', $methodName, ['BaseModel $record'],
                         PDOStatementGenerator::generateFetchAll(
