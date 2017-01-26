@@ -68,7 +68,7 @@ class BuildConfCommand extends \CLIFramework\Command
 
         // make master config link
         $loader = ConfigLoader::getInstance();
-        $cleanup = [$loader->symbolFilename, '.lazy.php', '.lazy.yml'];
+        $cleanup = [ConfigLoader::ANCHOR_FILENAME, '.lazy.php', '.lazy.yml'];
         foreach ($cleanup as $symlink) {
             if (file_exists($symlink)) {
                 $this->logger->debug('Cleaning up symbol link: '.$symlink);
@@ -76,8 +76,8 @@ class BuildConfCommand extends \CLIFramework\Command
             }
         }
 
-        $this->logger->info('Creating symbol link: '.$loader->symbolFilename.' -> '.$configFile);
-        if (cross_symlink($configFile, $loader->symbolFilename) === false) {
+        $this->logger->info('Creating symbol link: '.ConfigLoader::ANCHOR_FILENAME.' -> '.$configFile);
+        if (cross_symlink($configFile, ConfigLoader::ANCHOR_FILENAME) === false) {
             $this->logger->error('Config linking failed.');
         }
         $this->logger->info('Done');

@@ -3,6 +3,7 @@
 namespace Maghead\Command\DataSourceCommand;
 
 use Maghead\Command\BaseCommand;
+use Maghead\Manager\ConfigManager;
 use Maghead\DSN\DSNParser;
 use PDO;
 
@@ -32,42 +33,15 @@ class AddCommand extends BaseCommand
     {
         // force loading data source
         $config = $this->getConfig();
-
-        // The data source array to be added to the config array
-        $dataSource = array();
-
-        $dsnParser = new DSNParser();
-        $dsn = $dsnParser->parse($dsnStr);
-
-        $dataSource['driver'] = $dsn->getDriver();
-        if ($host = $this->options->host) {
-            $dsn->setAttribute('host', $host);
-            $dataSource['host'] = $host;
-        }
-        if ($port = $this->options->port) {
-            $dsn->setAttribute('port', $port);
-            $dataSource['port'] = $port;
-        }
-        // mysql only attribute
-        if ($dbname = $dsn->getAttribute('dbname')) {
-            $dataSource['database'] = $dbname;
-        }
-        if ($user = $this->options->user) {
-            $dataSource['user'] = $user;
-        }
-        if ($password = $this->options->password) {
-            $dataSource['pass'] = $password;
-        }
-        $dataSource['dsn'] = $dsn->__toString();
-
-        if ($dsn->getDriver() == 'mysql') {
-            $this->logger->debug('Setting connection options: PDO::MYSQL_ATTR_INIT_COMMAND');
-            $dataSource['connection_options'] = [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'];
-        }
-
-        $config['data_source']['nodes'][$dataSourceId] = $dataSource;
-
-        $this->configLoader->writeToSymbol($config);
+        $manager = new ConfigManager($config);
+        $manager->addNode($dataSourceId, $dsnStr, [
+            'host' => $this->options->host,
+            'port' => $this->options->port,
+            'dbname' => $this->options->dbname,
+            'user' => $this->options->user,
+            'password' => $this->options->password,
+        ]);
+        $manager->save();
         return true;
     }
 }

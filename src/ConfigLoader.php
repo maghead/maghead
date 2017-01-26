@@ -50,8 +50,6 @@ class ConfigLoader
 
     const ANCHOR_FILENAME = '.lazy.yml';
 
-    public $symbolFilename = '.lazy.yml';
-
     static $inlineLevel = 4;
 
     static $indentSpaces = 2;
