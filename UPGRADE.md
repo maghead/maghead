@@ -52,6 +52,11 @@ UPGRADE TO 4.0.x
 
 18. `BaseModel::find` is removed.
 
+### ConfigLoader
+
+1. ConfigLoader::loadFromFile -> ConfigLoader::loadFile as a static method and 
+    return `Config` object.
+
 
 UPGRADE TO 2.0
 ======================
