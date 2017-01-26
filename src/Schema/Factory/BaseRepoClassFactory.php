@@ -176,24 +176,31 @@ class BaseRepoClassFactory
 
         foreach ($schema->getRelations() as $relKey => $rel) {
 
+            $relName = ucfirst(Inflector::camelize($relKey));
+            $methodName = "fetch{$relName}Of";
+            $propertyName = "fetch{$relName}Stm";
+            $constName = "FETCH_" . strtoupper($relKey) . "_SQL";
+
 
             switch($rel['type']) {
                 case Relationship::HAS_ONE:
                 case Relationship::BELONGS_TO:
-                    $relName = ucfirst(Inflector::camelize($relKey));
-                    $methodName = 'fetch'. $relName. 'Of';
-                    $propertyName = 'fetch'. $relName .'Stm';
+                case Relationship::HAS_MANY:
                     $cTemplate->addProtectedProperty($propertyName);
+                    break;
+                default;
+            }
 
+            switch($rel['type']) {
+
+                case Relationship::HAS_ONE:
+                case Relationship::BELONGS_TO:
                     $foreignSchema = $rel->newForeignSchema();
                     $query = $foreignSchema->newSelectQuery(); // foreign key
                     $query->where()->equal($rel->getForeignColumn(), new ParamMarker());
                     $query->limit(1); // Since it's a belongs to relationship, there is only one record.
                     $sql = $query->toSql($readQueryDriver, new ArgumentArray);
-
-                    $constName = "FETCH_" . strtoupper($relKey) . "_SQL";
                     $cTemplate->addConst($constName, $sql);
-
                     $selfColumn    = $rel->getSelfColumn();
                     $cTemplate->addMethod('public', $methodName, ['BaseModel $record'],
                         PDOStatementGenerator::generateFetchOne(
@@ -202,19 +209,11 @@ class BaseRepoClassFactory
                             $foreignSchema->getModelClass(), "[\$record->$selfColumn]"));
                     break;
                 case Relationship::HAS_MANY:
-                    $relName = ucfirst(Inflector::camelize($relKey));
-                    $methodName = 'fetch'. $relName. 'Of';
-                    $propertyName = 'fetch'. $relName .'Stm';
-                    $cTemplate->addProtectedProperty($propertyName);
-
                     $foreignSchema = $rel->newForeignSchema();
                     $query = $foreignSchema->newSelectQuery(); // foreign key
                     $query->where()->equal($rel->getForeignColumn(), new ParamMarker());
                     $sql = $query->toSql($readQueryDriver, new ArgumentArray);
-
-                    $constName = "FETCH_" . strtoupper($relKey) . "_SQL";
                     $cTemplate->addConst($constName, $sql);
-
                     $selfColumn = $rel->getSelfColumn();
                     $cTemplate->addMethod('public', $methodName, ['BaseModel $record'],
                         PDOStatementGenerator::generateFetchAll(
