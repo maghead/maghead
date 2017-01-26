@@ -14,19 +14,12 @@ use ArrayAccess;
 
 class Bootstrap
 {
-    protected $config;
-
-    public function __construct(Config $config)
+    static public function loadDataSources(Config $config, ConnectionManager $connectionManager)
     {
-        $this->config = $config;
-    }
-
-    public function loadDataSources(ConnectionManager $connectionManager)
-    {
-        foreach ($this->config->getDataSources() as $nodeId => $dsConfig) {
+        foreach ($config->getDataSources() as $nodeId => $dsConfig) {
             $connectionManager->addDataSource($nodeId, $dsConfig);
         }
-        if ($nodeId = $this->config->getDefaultDataSourceId()) {
+        if ($nodeId = $config->getDefaultDataSourceId()) {
             $connectionManager->setDefaultDataSourceId($nodeId);
         }
     }
@@ -35,10 +28,10 @@ class Bootstrap
      * Run bootstrap script if it's defined in the config.
      * This is used for the command-line app.
      */
-    protected function loadBootstrap()
+    static protected function loadBootstrap($config)
     {
-        if (isset($this->config['bootstrap'])) {
-            foreach ((array) $this->config['bootstrap'] as $bootstrap) {
+        if (isset($config['bootstrap'])) {
+            foreach ((array) $config['bootstrap'] as $bootstrap) {
                 require_once $bootstrap;
             }
         }
@@ -47,10 +40,10 @@ class Bootstrap
     /**
      * load external schema loader.
      */
-    protected function loadExternalSchemaLoader()
+    static protected function loadExternalSchemaLoader($config)
     {
-        if (isset($this->config['schema']['loader'])) {
-            require_once $this->config['schema']['loader'];
+        if (isset($config['schema']['loader'])) {
+            require_once $config['schema']['loader'];
 
             return true;
         }
@@ -58,29 +51,29 @@ class Bootstrap
         return false;
     }
 
-    protected function loadSchemaFromFinder()
+    static protected function loadSchemaFromFinder($config)
     {
         // Load default schema loader
-        $paths = $this->config->getSchemaPaths();
+        $paths = $config->getSchemaPaths();
         if (!empty($paths)) {
             $finder = new SchemaFinder($paths);
             $finder->find();
         }
     }
 
-    protected function loadSchemaLoader()
+    static protected function loadSchemaLoader($config)
     {
-        if (!$this->loadExternalSchemaLoader()) {
-            $this->loadSchemaFromFinder();
+        if (!self::loadExternalSchemaLoader($config)) {
+            self::loadSchemaFromFinder($config);
         }
     }
 
-    public function init()
+    static public function run(Config $config)
     {
-        $this->loadDataSources(ConnectionManager::getInstance());
+        self::loadDataSources($config, ConnectionManager::getInstance());
         if (PHP_SAPI === "cli") {
-            $this->loadBootstrap();
-            $this->loadSchemaLoader();
+            self::loadBootstrap($config);
+            self::loadSchemaLoader($config);
         }
     }
 }

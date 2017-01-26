@@ -55,8 +55,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->connManager = ConnectionManager::getInstance();
         $this->connManager->free();
 
-        $bootstrap = new Bootstrap($this->config);
-        $bootstrap->loadDataSources(ConnectionManager::getInstance());
+        Bootstrap::loadDataSources($this->config, ConnectionManager::getInstance());
 
         // $config = self::createNeutralConfigLoader();
         $this->logger = new Logger();
