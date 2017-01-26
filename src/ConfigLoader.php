@@ -47,15 +47,13 @@ class ConfigLoader
      */
     protected $classMap = array();
 
-
-
     const ANCHOR_FILENAME = '.lazy.yml';
 
     public $symbolFilename = '.lazy.yml';
 
+    protected $currentConfig;
 
-
-    static public function writeToSymbol($config)
+    static public function writeToSymbol(Config $config)
     {
         if (!file_exists(self::ANCHOR_FILENAME)) {
             throw new Exception('symbol link '.self::ANCHOR_FILENAME.' does not exist.');
@@ -66,7 +64,7 @@ class ConfigLoader
             throw new Exception('Missing target config file. incorrect symbol link.');
         }
 
-        $yaml = Yaml::dump($config, $inlineLevel = 4, $indentSpaces = 2, $exceptionOnInvalidType = true);
+        $yaml = Yaml::dump($config->getStash(), $inlineLevel = 4, $indentSpaces = 2, $exceptionOnInvalidType = true);
         if (false === file_put_contents($targetFile, "---\n".$yaml)) {
             throw new Exception("YAML config update failed: $targetFile");
         }
@@ -78,7 +76,7 @@ class ConfigLoader
     /**
      * This is used when running command line application 
      */
-    static public function loadFromSymbol($force = false)
+    public function loadFromSymbol($force = false)
     {
         if (file_exists(self::ANCHOR_FILENAME)) {
             return self::loadFromFile(realpath(self::ANCHOR_FILENAME), $force);
@@ -90,9 +88,9 @@ class ConfigLoader
      *
      * @param array $config
      */
-    static public function loadFromArray(array $config)
+    public function loadFromArray(array $config)
     {
-        return new Config(self::preprocessConfig($config));
+        return $this->currentConfig = new Config(self::preprocessConfig($config));
     }
 
     /**
@@ -100,9 +98,9 @@ class ConfigLoader
      *
      * @param string $file
      */
-    static public function loadFromFile($sourceFile, $force = false)
+    public function loadFromFile($sourceFile, $force = false)
     {
-        return new Config(self::compile($sourceFile, $force));
+        return $this->currentConfig = new Config(self::compile($sourceFile, $force));
     }
 
     /**
@@ -222,8 +220,10 @@ class ConfigLoader
     public static function getInstance()
     {
         static $instance;
-
-        return $instance ? $instance : $instance = new self();
+        if ($instance) {
+            return $instance;
+        }
+        return $instance = new self();
     }
 
     /**
