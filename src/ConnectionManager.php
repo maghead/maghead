@@ -8,24 +8,6 @@ use PDO;
 use ArrayAccess;
 use Maghead\DSN\DSN;
 
-class SQLQueryException extends Exception
-{
-    public $args = array();
-
-    public $sql;
-
-    public function __construct($dsId, $sql, $args, Exception $e)
-    {
-        parent::__construct('SQL Query Error at "'.$dsId.'" data source, Message: '.$e->getMessage(), 0, $e);
-        $this->sql = $sql;
-        $this->args = $args;
-    }
-}
-
-class UndefinedDataSourceException extends Exception
-{
-}
-
 /**
  * Connection Manager.
  *
@@ -213,7 +195,7 @@ class ConnectionManager implements ArrayAccess
             return $this->conns[$sourceId];
         }
         if (!isset($this->datasources[ $sourceId ])) {
-            throw new UndefinedDataSourceException("data source $sourceId not found.");
+            throw new InvalidArgumentException("data source $sourceId not found.");
         }
         // Only for MySQl
         // TODO: Move to MySQLConnector
