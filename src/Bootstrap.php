@@ -16,7 +16,7 @@ class Bootstrap
 {
     protected $config;
 
-    public function __construct(ConfigLoader $config)
+    public function __construct(Config $config)
     {
         $this->config = $config;
     }
