@@ -47,29 +47,26 @@ class ConfigLoader
      */
     protected $classMap = array();
 
+
+
+    const ANCHOR_FILENAME = '.lazy.yml';
+
     public $symbolFilename = '.lazy.yml';
 
-    public function loadFromSymbol($force = false)
-    {
-        if (file_exists($this->symbolFilename)) {
-            return $this->load(realpath($this->symbolFilename), $force);
-        } elseif (file_exists('.lazy.php')) {
-            return $this->load(realpath('.lazy.php'), $force);
-        }
-    }
 
-    public function writeToSymbol()
+
+    static public function writeToSymbol($config)
     {
-        if (!file_exists($this->symbolFilename)) {
-            throw new Exception('symbol link '.$this->symbolFilename.' does not exist.');
+        if (!file_exists(self::ANCHOR_FILENAME)) {
+            throw new Exception('symbol link '.self::ANCHOR_FILENAME.' does not exist.');
         }
 
-        $targetFile = readlink($this->symbolFilename);
+        $targetFile = readlink(self::ANCHOR_FILENAME);
         if ($targetFile === false || !file_exists($targetFile)) {
             throw new Exception('Missing target config file. incorrect symbol link.');
         }
 
-        $yaml = Yaml::dump($this->config, $inlineLevel = 4, $indentSpaces = 2, $exceptionOnInvalidType = true);
+        $yaml = Yaml::dump($config, $inlineLevel = 4, $indentSpaces = 2, $exceptionOnInvalidType = true);
         if (false === file_put_contents($targetFile, "---\n".$yaml)) {
             throw new Exception("YAML config update failed: $targetFile");
         }
@@ -77,14 +74,51 @@ class ConfigLoader
         return true;
     }
 
+
+    /**
+     * This is used when running command line application 
+     */
+    static public function loadFromSymbol($force = false)
+    {
+        if (file_exists(self::ANCHOR_FILENAME)) {
+            return self::loadFromFile(realpath(self::ANCHOR_FILENAME), $force);
+        }
+    }
+
     /**
      * Load config from array directly.
      *
      * @param array $config
      */
-    public function loadFromArray(array $config)
+    static public function loadFromArray(array $config)
     {
-        $this->config = $config;
+        return new Config(self::preprocessConfig($config));
+    }
+
+    /**
+     * Load config from the YAML config file...
+     *
+     * @param string $file
+     */
+    static public function loadFromFile($sourceFile, $force = false)
+    {
+        return new Config(self::compile($sourceFile, $force));
+    }
+
+    /**
+     *
+     */
+    public static function compile($sourceFile, $force = false)
+    {
+        $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
+        if ($force || ConfigCompiler::test($sourceFile, $compiledFile)) {
+            $config = ConfigCompiler::parse($sourceFile);
+            $config = self::preprocessConfig($config);
+            ConfigCompiler::write($compiledFile, $config);
+            return $config;
+        } else {
+            return require $compiledFile;
+        }
     }
 
     /**
@@ -174,56 +208,6 @@ class ConfigLoader
         return $dbconfig;
     }
 
-    public static function compile($sourceFile, $force = false)
-    {
-        $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
-        if ($force || ConfigCompiler::test($sourceFile, $compiledFile)) {
-            $config = ConfigCompiler::parse($sourceFile);
-            $config = self::preprocessConfig($config);
-            ConfigCompiler::write($compiledFile, $config);
-
-            return $config;
-        } else {
-            return require $compiledFile;
-        }
-    }
-
-    /**
-     * Load config from the YAML config file...
-     *
-     * @param string $file
-     */
-    public function loadFromFile($sourceFile)
-    {
-        $this->config = self::compile($sourceFile);
-    }
-
-    /**
-     * Load configuration.
-     *
-     * @param mixed $arg config file.
-     */
-    public function load($arg, $force = false)
-    {
-        if ($arg === null || is_bool($arg)) {
-            $arg = $this->symbolFilename;
-        }
-
-        if ((is_string($arg) && file_exists($arg)) || $arg === true) {
-            $this->loadFromFile($arg);
-        } elseif (is_array($arg)) {
-            $this->config = self::preprocessConfig($arg);
-        } else {
-            throw new Exception('unknown config format.');
-        }
-
-        // XXX: validate config structure if we are migrating to new major version with incompatible changes
-        /*
-        if (!isset($this->config['data_source'])) {
-            throw new Exception('data_source is missing, please update your config file.');
-        }
-        */
-    }
 
     public function setConfigStash(array $stash)
     {
