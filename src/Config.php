@@ -2,7 +2,9 @@
 
 namespace Maghead;
 
-class Config
+use ArrayAccess;
+
+class Config implements ArrayAccess
 {
     protected $stash = [];
 
@@ -173,5 +175,28 @@ class Config
     public function setStash(array $config)
     {
         $this->stash = $config;
+    }
+
+    /******************************
+     * Implements interface of ArrayAccess
+     ******************************/
+    public function & offsetGet($offset)
+    {
+        return $this->stash[ $offset ];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->stash[ $offset ] = $value;
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->stash[$offset]);
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->stash[$offset]);
     }
 }
