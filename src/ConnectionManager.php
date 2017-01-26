@@ -323,26 +323,6 @@ class ConnectionManager implements ArrayAccess
         $this->close($name);
     }
 
-    /**
-     * get pdo connetion and make a query.
-     *
-     * @param string $sql SQL statement
-     */
-    public function query($dsId, $sql)
-    {
-        return $this->getConnection($dsId)->query($sql);
-    }
-
-    public function prepareAndExecute($dsId, $sql, array $args = array())
-    {
-        $conn = $this->getConnection($dsId);
-        try {
-            return $conn->prepareAndExecute($sql, $args);
-        } catch (PDOException $e) {
-            throw new SQLQueryException($dsId, $sql, $args, $e);
-        }
-    }
-
     public function __destruct()
     {
         $this->free();
