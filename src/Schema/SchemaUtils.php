@@ -140,7 +140,7 @@ class SchemaUtils
      * @param Config       $config
      * @param Logger       $logger
      */
-    public static function findSchemasByConfigLoader(Config $config, Logger $logger = null)
+    public static function findSchemasByConfig(Config $config, Logger $logger = null)
     {
         // load class from class map
         if ($classMap = $config->getClassMap()) {
