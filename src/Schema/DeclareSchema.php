@@ -6,7 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use ReflectionObject;
 use Maghead\ConfigLoader;
-use Maghead\ClassUtils;
+use Maghead\Utils\ClassUtils;
 use Maghead\Schema\Column\AutoIncrementPrimaryKeyColumn;
 use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Utils;
 
 use Exception;
 use ReflectionClass;

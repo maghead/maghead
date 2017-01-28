@@ -2,7 +2,7 @@
 
 namespace Maghead\Testing;
 
-use Maghead\ClassUtils;
+use Maghead\Utils\ClassUtils;
 use Maghead\SeedBuilder;
 use Maghead\SqlBuilder\SqlBuilder;
 use Maghead\TableParser\TableParser;

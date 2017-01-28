@@ -2,7 +2,7 @@
 
 namespace Maghead\Schema;
 
-use Maghead\ClassUtils;
+use Maghead\Utils\ClassUtils;
 
 /**
  * Schema loader actually catches 
