@@ -161,9 +161,7 @@ class SchemaUtils
      */
     public static function findSchemasByArguments(Config $config, array $args, Logger $logger = null)
     {
-        $classes = array_filter($args, function ($class) {
-            return class_exists($class, true);
-        });
+        $classes = ClassUtils::filterExistingClasses($args);
         if (!empty($classes)) {
             return ClassUtils::schema_classes_to_objects(array_unique($classes));
         }

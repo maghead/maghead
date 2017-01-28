@@ -30,6 +30,15 @@ class ClassUtils
         }, $classes);
     }
 
+
+    public static function filterExistingClasses(array $classes)
+    {
+        return array_filter($classes, function ($class) {
+            return class_exists($class, true);
+        });
+    }
+
+
     public static function schema_classes_to_objects(array $classes)
     {
         $classes = self::filterSchemaClasses($classes);
