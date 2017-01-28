@@ -45,7 +45,7 @@ abstract class ModelTestCase extends BaseTestCase
             $basedata = false;
         }
 
-        $schemas = ClassUtils::schema_classes_to_objects($this->getModels());
+        $schemas = ClassUtils::instantiateSchemaClasses($this->getModels());
 
         if (false === $this->schemaHasBeenBuilt) {
             $g = new SchemaGenerator($this->config);

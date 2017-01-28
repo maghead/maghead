@@ -45,12 +45,6 @@ class ClassUtils
         return self::instantiateSchemaClasses($classes);
     }
 
-    public static function schema_classes_to_objects(array $classes)
-    {
-        $classes = self::filterSchemaClasses($classes);
-        return self::instantiateSchemaClasses($classes);
-    }
-
     /**
      * Filter non-dynamic schema declare classes.
      *
