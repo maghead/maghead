@@ -35,7 +35,7 @@ use CodeGen\Raw;
  * - Mutable values should be generated as propertes.
  * - Immutable values should be generated as constants.
  */
-class BaseModelClassFactory
+class BaseModelClassGenerator
 {
     public static function create(DeclareSchema $schema, $baseClass)
     {

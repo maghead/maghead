@@ -14,7 +14,7 @@ function php_var_export($obj)
     return $ser->encode($obj);
 }
 
-class SchemaProxyClassFactory
+class SchemaProxyClassGenerator
 {
     public static function create(DeclareSchema $schema)
     {

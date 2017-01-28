@@ -5,7 +5,7 @@ namespace Maghead\Schema\Factory;
 use ClassTemplate\ClassFile;
 use Maghead\Schema\DeclareSchema;
 
-class CollectionClassFactory
+class CollectionClassGenerator
 {
     public static function create(DeclareSchema $schema)
     {

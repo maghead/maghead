@@ -29,7 +29,7 @@ use Maghead\Generator\MethodBlockParser;
 /**
  * Base Repo class generator.
  */
-class BaseRepoClassFactory
+class BaseRepoClassGenerator
 {
 
     public static function create(DeclareSchema $schema, $baseClass)
