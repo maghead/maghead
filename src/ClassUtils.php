@@ -13,18 +13,27 @@ class ClassUtils
     {
         $classes = get_declared_classes();
 
-        return self::filter_schema_classes($classes);
+        return self::filterSchemaClasses($classes);
+    }
+
+    public static function filterDeclareSchemaClasses(array $classes)
+    {
+        return array_filter(function ($class) {
+              return is_subclass_of($class, 'Maghead\Schema\DeclareSchema', true);
+        }, $classes);
+    }
+
+    public static function instantiateSchemaClasses(array $classes)
+    {
+        return array_map(function ($class) {
+            return new $class();
+        }, $classes);
     }
 
     public static function schema_classes_to_objects(array $classes)
     {
-        $classes = array_filter($classes, function ($class) {
-            return is_subclass_of($class, 'Maghead\\Schema\\DeclareSchema', true);
-        });
-
-        return array_map(function ($class) {
-            return new $class();
-        }, $classes);
+        $classes = self::filterSchemaClasses($classes);
+        return self::instantiateSchemaClasses($classes);
     }
 
     /**
@@ -32,7 +41,7 @@ class ClassUtils
      *
      * @param string[] $classes class list.
      */
-    public static function filter_schema_classes(array $classes)
+    public static function filterSchemaClasses(array $classes)
     {
         $list = array();
         foreach ($classes as $class) {
