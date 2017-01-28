@@ -132,7 +132,7 @@ class SchemaUtils
             $finder->load();
         }
 
-        return SchemaLoader::findDeclaredSchemas();
+        return SchemaLoader::loadDeclaredSchemas();
     }
 
     /**
@@ -161,13 +161,10 @@ class SchemaUtils
      */
     public static function findSchemasByArguments(Config $config, array $args, Logger $logger = null)
     {
-        $classes = ClassUtils::filterExistingClasses($args);
-        if (!empty($classes)) {
-            return ClassUtils::schema_classes_to_objects(array_unique($classes));
-        }
+        $classes = ClassUtils::argumentsToSchemaObjects($args);
 
+        // filter file path argumets
         $paths = array_filter($args, 'file_exists');
-
         if (empty($paths)) {
             $paths = $config->getSchemaPaths();
         }
@@ -186,7 +183,7 @@ class SchemaUtils
                 require_once $file;
             }
         }
-
-        return SchemaLoader::findDeclaredSchemas();
+        return SchemaLoader::loadDeclaredSchemas();
     }
+
 }

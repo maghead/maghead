@@ -34,7 +34,7 @@ class SchemaLoader
      */
     public static function loadSchemaTableMap()
     {
-        $schemas = self::findDeclaredSchemas();
+        $schemas = self::loadDeclaredSchemas();
 
         return SchemaUtils::buildSchemaMap($schemas);
     }
@@ -44,7 +44,7 @@ class SchemaLoader
      *
      * @return array Schema objects
      */
-    public static function findDeclaredSchemas()
+    public static function loadDeclaredSchemas()
     {
         return SchemaUtils::expandSchemaClasses(
             ClassUtils::get_declared_schema_classes()

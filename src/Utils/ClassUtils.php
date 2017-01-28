@@ -37,6 +37,13 @@ class ClassUtils
         });
     }
 
+    public static function argumentsToSchemaObjects(array $args)
+    {
+        $classes = ClassUtils::filterExistingClasses($args);
+        $classes = array_unique($classes);
+        $classes = ClassUtils::filterSchemaClasses($classes);
+        return self::instantiateSchemaClasses($classes);
+    }
 
     public static function schema_classes_to_objects(array $classes)
     {
