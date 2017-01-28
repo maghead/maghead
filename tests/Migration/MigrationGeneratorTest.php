@@ -4,7 +4,6 @@ use Maghead\Console;
 use Maghead\Migration\MigrationRunner;
 use Maghead\Schema\SchemaFinder;
 use Maghead\Testing\ModelTestCase;
-use Maghead\ConnectionManager;
 
 /**
  * @group migration

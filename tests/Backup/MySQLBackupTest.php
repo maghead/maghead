@@ -1,7 +1,6 @@
 <?php
 use Maghead\Testing\ModelTestCase;
 use Maghead\Backup\MySQLBackup;
-use Maghead\ConnectionManager;
 use Maghead\Connection;
 
 class MySQLBackupTest extends ModelTestCase

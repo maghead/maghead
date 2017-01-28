@@ -1,5 +1,4 @@
 <?php
-use Maghead\ConnectionManager;
 use Maghead\Manager\MetadataManager;
 use Maghead\Model\MetadataSchema;
 use Maghead\Testing\ModelTestCase;

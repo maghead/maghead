@@ -1,7 +1,6 @@
 <?php
 use Maghead\Testing\BaseTestCase;
 use Maghead\TableParser\TableParser;
-use Maghead\ConnectionManager;
 
 class TableParserTest extends BaseTestCase
 {

@@ -4,7 +4,6 @@ use SQLBuilder\Driver\PDOSQLiteDriver;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use Maghead\TableParser\SqliteTableParser;
 use Maghead\TableParser\MysqlTableParser;
-use Maghead\ConnectionManager;
 
 class MysqlTableParserTest extends BaseTestCase
 {

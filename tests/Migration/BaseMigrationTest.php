@@ -1,7 +1,6 @@
 <?php
 use SQLBuilder\Column;
 use SQLBuilder\Driver\PDODriverFactory;
-use Maghead\ConnectionManager;
 use Maghead\Migration\Migration;
 
 class AddCellphoneMigration extends Migration

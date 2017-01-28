@@ -1,6 +1,5 @@
 <?php
 use Maghead\ConfigLoader;
-use Maghead\ConnectionManager;
 use CLIFramework\Logger;
 use Maghead\Testing\ModelTestCase;
 use \Maghead\Schema\SchemaGenerator;
