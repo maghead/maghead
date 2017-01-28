@@ -8,6 +8,7 @@ use Maghead\SqlBuilder\SqlBuilder;
 use Maghead\TableParser\TableParser;
 use Maghead\Schema\SchemaGenerator;
 use Maghead\Schema\SchemaCollection;
+use Maghead\Schema\SchemaUtils;
 use Maghead\Manager\TableManager;
 
 abstract class ModelTestCase extends BaseTestCase
@@ -45,7 +46,7 @@ abstract class ModelTestCase extends BaseTestCase
             $basedata = false;
         }
 
-        $schemas = ClassUtils::instantiateSchemaClasses($this->getModels());
+        $schemas = SchemaUtils::instantiateSchemaClasses($this->getModels());
 
         if (false === $this->schemaHasBeenBuilt) {
             $g = new SchemaGenerator($this->config);

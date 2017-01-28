@@ -47,7 +47,7 @@ class SchemaLoader
     public static function loadDeclaredSchemas()
     {
         return SchemaUtils::expandSchemaClasses(
-            ClassUtils::get_declared_schema_classes()
+            SchemaUtils::getLoadedDeclareSchemaClasses()
         );
     }
 }
