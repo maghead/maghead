@@ -1,16 +1,17 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Manager;
 
 use ArrayAccess;
 use IteratorAggregate;
 use Maghead\TableParser\TableParser;
+use Maghead\ConnectionManager;
 use SQLBuilder\Driver\BaseDriver;
 use ArrayIterator;
 use PDO;
 
 /**
- * TODO: Extract the key-value storage methods into a KeyValueSchema to 
+ * TODO: Extract the key-value storage methods into a KeyValueSchema to
  *       generalize the key-value store usecase.
  */
 class Metadata
