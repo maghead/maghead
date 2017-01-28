@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\Schema\Factory;
+namespace Maghead\Generator\Schema;
 
 use ClassTemplate\ClassFile;
 use Maghead\Schema\DeclareSchema;

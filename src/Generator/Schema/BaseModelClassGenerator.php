@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\Schema\Factory;
+namespace Maghead\Generator\Schema;
 
 use ReflectionClass;
 use ReflectionMethod;

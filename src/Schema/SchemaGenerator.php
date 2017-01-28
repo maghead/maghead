@@ -6,12 +6,12 @@ use RuntimeException;
 use Maghead\ConfigLoader;
 use ClassTemplate\ClassFile;
 use Maghead\Schema;
-use Maghead\Schema\Factory\BaseModelClassGenerator;
-use Maghead\Schema\Factory\BaseRepoClassGenerator;
-use Maghead\Schema\Factory\BaseCollectionClassGenerator;
-use Maghead\Schema\Factory\CollectionClassGenerator;
-use Maghead\Schema\Factory\ModelClassGenerator;
-use Maghead\Schema\Factory\SchemaProxyClassGenerator;
+use Maghead\Generator\Schema\BaseModelClassGenerator;
+use Maghead\Generator\Schema\BaseRepoClassGenerator;
+use Maghead\Generator\Schema\BaseCollectionClassGenerator;
+use Maghead\Generator\Schema\CollectionClassGenerator;
+use Maghead\Generator\Schema\ModelClassGenerator;
+use Maghead\Generator\Schema\SchemaProxyClassGenerator;
 use Maghead\Config;
 
 /**
