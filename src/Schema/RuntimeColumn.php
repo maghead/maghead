@@ -5,7 +5,7 @@ namespace Maghead\Schema;
 use DateTime;
 use Maghead\Deflator;
 use Maghead\Inflator;
-use Maghead\ArrayUtils;
+use Maghead\Utils\ArrayUtils;
 use Maghead\Utils;
 use Maghead\BaseModel;
 use Exception;

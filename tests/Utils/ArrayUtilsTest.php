@@ -1,4 +1,5 @@
 <?php
+use Maghead\Utils\ArrayUtils;
 
 class ArrayUtilsTest extends PHPUnit_Framework_TestCase
 {
@@ -9,13 +10,13 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
             'a' => 'b',
             '0' => '1',
         );
-        ok( Maghead\ArrayUtils::is_assoc_array($a) );
+        ok( ArrayUtils::is_assoc_array($a) );
 
         $a = array( 
             'foo' => 'b',
             'bar' => '1',
         );
-        ok( Maghead\ArrayUtils::is_assoc_array($a) );
+        ok( ArrayUtils::is_assoc_array($a) );
     }
 
     public function testIndexedArrayCheck()
@@ -24,20 +25,20 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
             0 => 'foo',
             1 => 'bar',
         );
-        ok( Maghead\ArrayUtils::is_indexed_array($a));
+        ok( ArrayUtils::is_indexed_array($a));
 
         $a = array( 
             'a' => 'foo',
             1 => 'bar',
         );
-        not_ok( Maghead\ArrayUtils::is_indexed_array( $a ));
+        not_ok( ArrayUtils::is_indexed_array( $a ));
 
 
         $a = array(
             'a' => 'foo',
             1 => 'bar',
         );
-        not_ok( Maghead\ArrayUtils::is_indexed_array($a));
+        not_ok( ArrayUtils::is_indexed_array($a));
     }
 }
 
