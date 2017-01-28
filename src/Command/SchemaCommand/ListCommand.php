@@ -4,7 +4,7 @@ namespace Maghead\Command\SchemaCommand;
 
 use Maghead\ConfigLoader;
 use Maghead\Schema\SchemaGenerator;
-use Maghead\Utils;
+use Maghead\Schema\SchemaUtils;
 use Maghead\Command\BaseCommand;
 use CLIFramework\Command;
 use ReflectionClass;
@@ -36,7 +36,7 @@ class ListCommand extends BaseCommand
         $generator = new SchemaGenerator($config, $logger);
 
         $args = func_get_args();
-        $classes = Utils::findSchemasByArguments(
+        $classes = SchemaUtils::findSchemasByArguments(
             $config,
             $args,
             $this->logger);
