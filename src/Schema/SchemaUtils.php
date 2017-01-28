@@ -129,7 +129,7 @@ class SchemaUtils
     {
         if ($paths && !empty($paths)) {
             $finder = new SchemaFinder($paths, $logger);
-            $finder->load();
+            $finder->find();
         }
 
         return SchemaLoader::loadDeclaredSchemas();
