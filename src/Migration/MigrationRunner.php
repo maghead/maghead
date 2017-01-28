@@ -2,7 +2,7 @@
 
 namespace Maghead\Migration;
 
-use Maghead\Metadata;
+use Maghead\Manager\MetadataManager;
 use Maghead\ConnectionManager;
 use Maghead\Connection;
 use Maghead\ServiceContainer;
@@ -62,20 +62,20 @@ class MigrationRunner
 
     public function getLastMigrationId(Connection $conn, BaseDriver $driver)
     {
-        $meta = new Metadata($conn, $driver);
+        $meta = new MetadataManager($conn, $driver);
 
         return $meta['migration'] ?: 0;
     }
 
     public function resetMigrationId(Connection $conn, BaseDriver $driver)
     {
-        $metadata = new Metadata($conn, $driver);
+        $metadata = new MetadataManager($conn, $driver);
         $metadata['migration'] = 0;
     }
 
     public function updateLastMigrationId(Connection $conn, BaseDriver $driver, $id)
     {
-        $metadata = new Metadata($conn, $driver);
+        $metadata = new MetadataManager($conn, $driver);
         $lastId = $metadata['migration'];
         $metadata['migration'] = $id;
     }

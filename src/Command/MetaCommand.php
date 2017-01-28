@@ -2,7 +2,7 @@
 
 namespace Maghead\Command;
 
-use Maghead\Metadata;
+use Maghead\Manager\MetadataManager;
 
 class MetaCommand extends BaseCommand
 {
@@ -27,7 +27,7 @@ class MetaCommand extends BaseCommand
 
         $args = func_get_args();
         if (empty($args)) {
-            $meta = new Metadata($conn, $queryDriver);
+            $meta = new MetadataManager($conn, $queryDriver);
             printf("%26s | %-20s\n", 'Key', 'Value');
             printf("%s\n", str_repeat('=', 50));
             foreach ($meta as $key => $value) {
@@ -35,13 +35,13 @@ class MetaCommand extends BaseCommand
             }
         } elseif (count($args) == 1) {
             $key = $args[0];
-            $meta = new Metadata($conn, $queryDriver);
+            $meta = new MetadataManager($conn, $queryDriver);
             $value = $meta[$key];
             $this->logger->info("$key = $value");
         } elseif (count($args) == 2) {
             list($key, $value) = $args;
             $this->logger->info("Setting meta $key to $value.");
-            $meta = new Metadata($conn, $queryDriver);
+            $meta = new MetadataManager($conn, $queryDriver);
             $meta[$key] = $value;
         }
     }

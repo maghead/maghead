@@ -3,7 +3,7 @@
 namespace Maghead\Command;
 
 use CLIFramework\Logger;
-use Maghead\Metadata;
+use Maghead\Manager\MetadataManager;
 use Maghead\Schema;
 use Maghead\SqlBuilder\SqlBuilder;
 use Maghead\ConnectionManager;
@@ -119,7 +119,7 @@ DOC;
 
             $time = time();
             $logger->info("Setting migration timestamp to $time");
-            $metadata = new Metadata($conn, $driver);
+            $metadata = new MetadataManager($conn, $driver);
 
             // update migration timestamp
             $metadata['migration'] = $time;

@@ -14,8 +14,7 @@ use PDO;
  * TODO: Extract the key-value storage methods into a KeyValueSchema to
  *       generalize the key-value store usecase.
  */
-class Metadata
-    implements ArrayAccess, IteratorAggregate
+class MetadataManager implements ArrayAccess, IteratorAggregate
 {
     /**
      * @var PDO PDO connection object

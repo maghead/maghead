@@ -2,7 +2,7 @@
 
 namespace Maghead\Command;
 
-use Maghead\Metadata;
+use Maghead\Manager\MetadataManager;
 
 class VersionCommand extends BaseCommand
 {
@@ -24,7 +24,7 @@ class VersionCommand extends BaseCommand
     public function execute()
     {
         $dsId = $this->options->{'data-source'} ?: 'default';
-        $meta = new Metadata($dsId);
+        $meta = new MetadataManager($dsId);
         $this->logger->info('database version: '.$meta['version']);
     }
 }
