@@ -68,10 +68,10 @@ class Bootstrap
         }
     }
 
-    static public function run(Config $config)
+    static public function run(Config $config, $connectOnly = false)
     {
         self::loadDataSources($config, ConnectionManager::getInstance());
-        if (PHP_SAPI === "cli") {
+        if (PHP_SAPI === "cli" && !$connectOnly) {
             self::loadBootstrap($config);
             self::loadSchemaLoader($config);
         }

@@ -4,11 +4,9 @@ namespace Maghead;
 
 use ConfigKit\ConfigCompiler;
 use Exception;
-use ArrayAccess;
 use PDO;
 use Maghead\DSN\DSN;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Yaml\Dumper;
 use Maghead\Schema\SchemaFinder;
 
 /**

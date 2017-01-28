@@ -3,6 +3,7 @@
 namespace Maghead;
 
 use ArrayAccess;
+use Exception;
 
 class Config implements ArrayAccess
 {
