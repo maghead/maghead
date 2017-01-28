@@ -1,5 +1,6 @@
 <?php
 namespace TestApp\Model;
+
 use Maghead\Schema;
 
 class TableSchema extends Schema
@@ -17,14 +18,14 @@ class TableSchema extends Schema
 
         $this->column('columns')
             ->json();
-            ;
+        ;
 
         $this->column('rows')
             ->text()
-            ->inflator(function($value) {
+            ->inflator(function ($value) {
                 return json_decode($value);
             })
-            ->deflator(function($value) {
+            ->deflator(function ($value) {
                 return json_encode($value);
             })
             ;

@@ -34,5 +34,4 @@ class UserModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
     }
-
 }

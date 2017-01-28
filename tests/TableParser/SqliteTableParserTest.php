@@ -11,7 +11,7 @@ class SqliteTableParserTest extends PHPUnit_Framework_TestCase
         $pdo->query('CREATE TABLE foo ( id integer primary key autoincrement, name varchar(12), phone varchar(32) unique , address text not null );');
         $pdo->query('CREATE TABLE bar ( id integer primary key autoincrement, confirmed boolean default false, content blob );');
 
-        $parser = new SqliteTableParser($pdo,new PDOSQLiteDriver($pdo));
+        $parser = new SqliteTableParser($pdo, new PDOSQLiteDriver($pdo));
         $tables = $parser->getTables();
 
         $this->assertNotEmpty($tables);
@@ -30,9 +30,8 @@ class SqliteTableParserTest extends PHPUnit_Framework_TestCase
         $id = $schema->getColumn('id');
         $this->assertNotNull($id);
         $this->assertTrue($id->autoIncrement);
-        $this->assertEquals('INT',$id->type);
-        $this->assertEquals('int',$id->isa);
+        $this->assertEquals('INT', $id->type);
+        $this->assertEquals('int', $id->isa);
         $this->assertTrue($id->primary);
     }
 }
-

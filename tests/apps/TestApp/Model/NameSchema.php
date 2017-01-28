@@ -1,12 +1,12 @@
 <?php
 namespace TestApp\Model;
+
 use Maghead\Schema;
 
 class NameSchema extends Schema
 {
     public function schema()
     {
-
         $this->column('id')
             ->integer()
             ->primary()
@@ -24,16 +24,16 @@ class NameSchema extends Schema
 
         $this->column('address')
             ->varchar(64)
-            ->validator( function($val,$args) {
+            ->validator(function ($val, $args) {
                 if (preg_match('/fuck/', $val)) {
                     return array( false , "Please don't" );
                 }
                 return array( true , "Good" );
             })
-            ->filter(function($val, $args) {
+            ->filter(function ($val, $args) {
                 return str_replace('John', 'XXXX', $val);
             })
-            ->default( function() {
+            ->default(function () {
                 return 'Default Address';
             })
             ->varchar(256);
@@ -42,11 +42,11 @@ class NameSchema extends Schema
             ->varchar(12)
             ->required()
             ->index()
-            ->validValues( array( 'Taiwan' , 'Taipei' , 'Tokyo' ));
+            ->validValues(array( 'Taiwan' , 'Taipei' , 'Tokyo' ));
 
         $this->column('type')
             ->varchar(24)
-            ->validValues(function() {
+            ->validValues(function () {
                 return array(
                     /* description => value */
                     'Type Name A' => 'type-a',
@@ -60,16 +60,16 @@ class NameSchema extends Schema
         $this->column('date')
             ->date()
             ->isa('DateTime')
-            ->deflator( function($val) {
+            ->deflator(function ($val) {
                 if ($val instanceof \DateTime) {
                     return $val->format('Y-m-d');
                 } elseif (is_integer($val)) {
-                    return strftime( '%Y-%m-%d' , $val );
+                    return strftime('%Y-%m-%d', $val);
                 }
                 return $val;
             })
-            ->inflator(function($val) { 
-                return new \DateTime( $val );
+            ->inflator(function ($val) {
+                return new \DateTime($val);
             });
 
         $this->seeds('TestSeed');

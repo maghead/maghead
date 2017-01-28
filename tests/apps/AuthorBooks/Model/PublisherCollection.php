@@ -7,9 +7,6 @@ namespace AuthorBooks\Model;
 
 use AuthorBooks\Model\PublisherCollectionBase;
 
-class PublisherCollection  extends PublisherCollectionBase {
-
-
-
+class PublisherCollection extends PublisherCollectionBase
+{
 }
-

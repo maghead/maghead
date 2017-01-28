@@ -3,8 +3,6 @@ use Maghead\DSN\DSNParser;
 
 class DSNParserTest extends PHPUnit_Framework_TestCase
 {
-
-
     public function dsnProvider()
     {
         return [
@@ -27,4 +25,3 @@ class DSNParserTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($dsnObject);
     }
 }
-

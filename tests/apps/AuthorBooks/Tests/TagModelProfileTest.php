@@ -1,5 +1,6 @@
 <?php
 namespace AuthorBooks\Tests;
+
 use SQLBuilder\Raw;
 use Maghead\Testing\ModelProfileTestCase;
 use AuthorBooks\Model\Book;

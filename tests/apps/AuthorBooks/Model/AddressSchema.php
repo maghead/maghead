@@ -1,5 +1,6 @@
 <?php
 namespace AuthorBooks\Model;
+
 use Maghead\Schema;
 
 class AddressSchema extends Schema

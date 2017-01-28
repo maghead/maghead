@@ -8,7 +8,7 @@ class AddCellphoneMigration extends Migration
 {
     public function upgrade()
     {
-        $this->addColumn('foo', function($column) {
+        $this->addColumn('foo', function ($column) {
             $column->name('cellphone')
                 ->type('varchar(128)')
                 ->default('(none)')
@@ -48,4 +48,3 @@ class MigrationTest extends ModelTestCase
         ob_end_clean();
     }
 }
-

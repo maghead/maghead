@@ -3,21 +3,21 @@ use Maghead\CollectionFilter\CollectionFilter;
 use TestApp\Model\PostCollection;
 use TestApp\Model\Post;
 
-function dumpExpr($expr, $level = 0) {
+function dumpExpr($expr, $level = 0)
+{
     echo str_repeat(' ', $level) , get_class($expr) , ": " , $expr->op[0], $expr->op[1] , $expr->op[2] , "\n";
-    if ( $expr->childs ) {
-        foreach($expr->childs as $child) {
+    if ($expr->childs) {
+        foreach ($expr->childs as $child) {
             dumpExpr($child, $level + 1);
         }
     }
-
 }
 
 /**
  * Generate SQL statement like this:
  *
- * SELECT m.title, m.content, m.status, m.id FROM posts m  WHERE status = 
- * published AND status = draft AND content like %foo% AND content like 
+ * SELECT m.title, m.content, m.status, m.id FROM posts m  WHERE status =
+ * published AND status = draft AND content like %foo% AND content like
  * %bar% AND created_on BETWEEN '2011-01-01' AND '2011-12-30'
  *
  */
@@ -28,7 +28,7 @@ class CollectionFilterTest extends PHPUnit_Framework_TestCase
         return;
         /*
         $post = new Post;
-        $ret = $post->create([ 
+        $ret = $post->create([
             'title' => 'title content',
             'content' => 'foo bar',
             'status' => 'published',
@@ -41,10 +41,10 @@ class CollectionFilterTest extends PHPUnit_Framework_TestCase
 
         $filter->defineEqual('status', [ 'published', 'draft' ]);
         $filter->defineContains('content');
-        $filter->defineRange('created_on', CollectionFilter::String );
-        $filter->defineInSet('created_by', CollectionFilter::Integer );
+        $filter->defineRange('created_on', CollectionFilter::String);
+        $filter->defineInSet('created_by', CollectionFilter::Integer);
 
-        $collection = $filter->apply([ 
+        $collection = $filter->apply([
             'status' => ['published','draft'],
             'content' => ['foo', 'bar'],
             'created_on' => [ '2011-01-01', '2011-12-30' ],
@@ -52,7 +52,7 @@ class CollectionFilterTest extends PHPUnit_Framework_TestCase
         ]);
         ok($collection);
 
-        ok( $collection->toSql());
+        ok($collection->toSql());
         // echo $collection->toSql();
 
         /*
@@ -71,4 +71,3 @@ class CollectionFilterTest extends PHPUnit_Framework_TestCase
         */
     }
 }
-

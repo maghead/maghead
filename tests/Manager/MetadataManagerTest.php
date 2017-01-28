@@ -6,7 +6,6 @@ use Maghead\Testing\ModelTestCase;
 
 class MetadataManagerTest extends ModelTestCase
 {
-
     public function getModels()
     {
         return [
@@ -24,8 +23,8 @@ class MetadataManagerTest extends ModelTestCase
         $metadata['version'] = 2;
         $this->assertEquals(2, $metadata['version']);
 
-        $this->assertEquals(2,$metadata->getVersion());
-        foreach ($metadata as $key => $value ) {
+        $this->assertEquals(2, $metadata->getVersion());
+        foreach ($metadata as $key => $value) {
             $this->assertTrue(!is_numeric($key));
             $this->assertNotNull($value);
         }

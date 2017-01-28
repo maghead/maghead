@@ -14,9 +14,10 @@ class TableModelTest extends ModelTestCase
     /**
      * @basedata false
      */
-    public function testCreate() {
+    public function testCreate()
+    {
         $table = new Table;
-        $ret = $table->create(array( 
+        $ret = $table->create(array(
             'columns' => array('c1', 'c2'),
             'rows' => array(
                 array('foo', 'bar')

@@ -1,5 +1,6 @@
 <?php
 namespace TestApp\Model;
+
 use Maghead\Schema;
 
 class WineCategorySchema extends Schema

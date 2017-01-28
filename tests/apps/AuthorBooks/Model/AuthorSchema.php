@@ -1,5 +1,6 @@
 <?php
 namespace AuthorBooks\Model;
+
 use Maghead\Schema;
 
 class AuthorSchema extends Schema
@@ -19,7 +20,7 @@ class AuthorSchema extends Schema
         $this->column('account_brief')
             ->label('Account Brief')
             ->virtual()
-            ->inflator(function($value,$record) {
+            ->inflator(function ($value, $record) {
                 return $record->name . '(' . $record->email . ')';
             });
 
@@ -44,6 +45,6 @@ class AuthorSchema extends Schema
 
         $this->many('author_books', 'AuthorBooks\Model\AuthorBookSchema', 'author_id', 'id');
 
-        $this->manyToMany('books', 'author_books' , 'book');
+        $this->manyToMany('books', 'author_books', 'book');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 namespace TestApp\Model;
+
 use Maghead\BaseModel;
 use Maghead\Schema;
 

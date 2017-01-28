@@ -7,10 +7,6 @@ namespace TestApp\Model;
 
 use TestApp\Model\TableBase;
 
-class Table  extends TableBase {
-
-
-
-
+class Table extends TableBase
+{
 }
-

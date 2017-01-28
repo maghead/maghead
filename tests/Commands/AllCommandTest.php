@@ -1,8 +1,10 @@
 <?php
 use CLIFramework\Testing\CommandTestCase;
+
 class AllCommandsTest extends CommandTestCase
 {
-    public function setupApplication() {
+    public function setupApplication()
+    {
         return new Maghead\Console;
     }
 
@@ -14,13 +16,13 @@ class AllCommandsTest extends CommandTestCase
 
     public function testCommands()
     {
-        ok( $this->app->createCommand('Maghead\Command\BuildConfCommand') );
-        ok( $this->app->createCommand('Maghead\Command\SchemaCommand\BuildCommand') );
-        ok( $this->app->createCommand('Maghead\Command\BasedataCommand') );
-        ok( $this->app->createCommand('Maghead\Command\InitCommand') );
-        ok( $this->app->createCommand('Maghead\Command\MigrateCommand') );
-        ok( $this->app->createCommand('Maghead\Command\SchemaCommand') );
-        ok( $this->app->createCommand('Maghead\Command\DiffCommand') );
+        ok($this->app->createCommand('Maghead\Command\BuildConfCommand'));
+        ok($this->app->createCommand('Maghead\Command\SchemaCommand\BuildCommand'));
+        ok($this->app->createCommand('Maghead\Command\BasedataCommand'));
+        ok($this->app->createCommand('Maghead\Command\InitCommand'));
+        ok($this->app->createCommand('Maghead\Command\MigrateCommand'));
+        ok($this->app->createCommand('Maghead\Command\SchemaCommand'));
+        ok($this->app->createCommand('Maghead\Command\DiffCommand'));
     }
 
 
@@ -80,7 +82,4 @@ class AllCommandsTest extends CommandTestCase
         // $this->app->run(array('lazy','migrate','up'));
         // $this->app->run(array('lazy','migrate','down'));
     }
-
-
 }
-

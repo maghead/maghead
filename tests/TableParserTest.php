@@ -5,8 +5,8 @@ use Maghead\ConnectionManager;
 
 class TableParserTest extends BaseTestCase
 {
-
-    public function getModels() {
+    public function getModels()
+    {
         return [
             new \AuthorBooks\Model\AuthorSchema,
             new \AuthorBooks\Model\AddressSchema,
@@ -26,7 +26,7 @@ class TableParserTest extends BaseTestCase
         foreach ($tables as $table) {
             $this->assertNotNull($table);
 
-            $schema = $parser->reverseTableSchema( $table );
+            $schema = $parser->reverseTableSchema($table);
             $this->assertNotNull($schema);
 
             $columns = $schema->getColumns();
@@ -34,4 +34,3 @@ class TableParserTest extends BaseTestCase
         }
     }
 }
-

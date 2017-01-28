@@ -15,7 +15,7 @@ class RelationshipTest extends PHPUnit_Framework_TestCase
         ));
         ok($r);
         ok(isset($r['type']));
-        is( Relationship::HAS_MANY , $r['type'] );
+        is(Relationship::HAS_MANY, $r['type']);
 
         $schema = $r->newForeignSchema();
         ok($schema);
@@ -24,4 +24,3 @@ class RelationshipTest extends PHPUnit_Framework_TestCase
         ok($model);
     }
 }
-

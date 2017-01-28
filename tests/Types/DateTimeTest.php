@@ -9,4 +9,3 @@ class MagheadDateTimeTest extends PHPUnit_Framework_TestCase
         ok($dateTime->__toString());
     }
 }
-

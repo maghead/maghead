@@ -7,10 +7,6 @@ namespace TestApp\Model;
 
 use TestApp\Model\TableCollectionBase;
 
-class TableCollection  extends TableCollectionBase {
-
-
-
-
+class TableCollection extends TableCollectionBase
+{
 }
-

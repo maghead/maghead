@@ -7,9 +7,6 @@ namespace AuthorBooks\Model;
 
 use AuthorBooks\Model\AuthorBookCollectionBase;
 
-class AuthorBookCollection  extends AuthorBookCollectionBase {
-
-
-
+class AuthorBookCollection extends AuthorBookCollectionBase
+{
 }
-

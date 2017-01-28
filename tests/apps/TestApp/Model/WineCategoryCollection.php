@@ -1,7 +1,6 @@
 <?php
 namespace TestApp\Model;
 
-class WineCategoryCollection  extends \TestApp\Model\WineCategoryCollectionBase {
-
-
+class WineCategoryCollection extends \TestApp\Model\WineCategoryCollectionBase
+{
 }

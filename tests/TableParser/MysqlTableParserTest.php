@@ -42,7 +42,7 @@ class MysqlTableParserTest extends BaseTestCase
 
         $column = $schema->getColumn('val');
         $this->assertNotNull($column);
-        $this->assertSame(['a','b','c'],$column->set);
+        $this->assertSame(['a','b','c'], $column->set);
     }
 
     public function testReverseSchemaWithStringEnum()
@@ -56,7 +56,7 @@ class MysqlTableParserTest extends BaseTestCase
 
         $column = $schema->getColumn('val');
         $this->assertNotNull($column);
-        $this->assertSame(['ON','OFF','PENDING'],$column->enum);
+        $this->assertSame(['ON','OFF','PENDING'], $column->enum);
     }
 
     public function testReverseSchemaAndCompare()
@@ -81,4 +81,3 @@ class MysqlTableParserTest extends BaseTestCase
         $this->assertNotNull($schema);
     }
 }
-

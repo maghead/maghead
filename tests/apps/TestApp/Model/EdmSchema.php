@@ -1,5 +1,6 @@
 <?php
 namespace TestApp\Model;
+
 use Maghead\Schema;
 use SQLBuilder\Raw;
 
@@ -38,4 +39,3 @@ class EdmSchema extends Schema
             ;
     }
 }
-

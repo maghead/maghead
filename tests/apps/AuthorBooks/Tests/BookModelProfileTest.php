@@ -1,5 +1,6 @@
 <?php
 namespace AuthorBooks\Tests;
+
 use SQLBuilder\Raw;
 use Maghead\Testing\ModelProfileTestCase;
 use AuthorBooks\Model\Book;
@@ -102,7 +103,6 @@ class BookModelProfileTest extends ModelProfileTestCase
         for ($i = 0 ; $i < $this->N; $i++) {
             $b2->load([ 'isbn' => $uuid ]);
         }
-
     }
 
 
@@ -121,6 +121,5 @@ class BookModelProfileTest extends ModelProfileTestCase
                 'isbn' => "123123123$i",
             ));
         }
-
     }
 }

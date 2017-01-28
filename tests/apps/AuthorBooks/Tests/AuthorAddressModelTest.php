@@ -90,7 +90,7 @@ class AuthorAddressModelTest extends ModelTestCase
         $this->assertNotNull($address->author->getId());
         $this->assertEquals($author->id, $address->author->id);
 
-        $address = Address::createAndLoad(array( 
+        $address = Address::createAndLoad(array(
             'author_id' => $author->id,
             'address' => 'Taiwan Taipei II',
         ));
@@ -111,7 +111,7 @@ class AuthorAddressModelTest extends ModelTestCase
 
         ok($addresses[0]->id);
         ok($addresses[1]->id);
-        $this->assertCount(2 , $addresses);
+        $this->assertCount(2, $addresses);
     }
 
 
@@ -130,9 +130,9 @@ class AuthorAddressModelTest extends ModelTestCase
 
         $this->assertNotNull($address->id);
         $this->assertNotNull($address->author_id);
-        $this->assertEquals( $author->id, $address->author_id );
+        $this->assertEquals($author->id, $address->author_id);
 
-        $this->assertEquals('farfaraway' , $address->address);
+        $this->assertEquals('farfaraway', $address->address);
         $this->assertResultSuccess($address->delete());
         $this->assertResultSuccess($author->delete());
     }
@@ -150,11 +150,11 @@ class AuthorAddressModelTest extends ModelTestCase
         $author->addresses->createAndAppend(['address' => 'Harvard']);
         $author->addresses->createAndAppend(['address' => 'Harvard II']);
 
-        $this->assertEquals(2, $author->addresses->size() , 'just two item' );
+        $this->assertEquals(2, $author->addresses->size(), 'just two item');
 
         $addresses = $author->addresses->items();
         $this->assertCount(2, $addresses);
-        $this->assertEquals( 'Harvard' , $addresses[0]->address );
+        $this->assertEquals('Harvard', $addresses[0]->address);
 
         $a = $addresses[0];
         ok($retAuthor = $a->author); // dynamic model getter

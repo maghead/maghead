@@ -19,14 +19,14 @@ class CollectionTest extends ModelTestCase
     public function testCollectionGroupBy()
     {
         $name = new Name;
-        for($i = 0 ; $i < 5 ; $i++) {
+        for ($i = 0 ; $i < 5 ; $i++) {
             $ret = $name->create(array( 'name' => 'Foo', 'address' => 'Addr1', 'country' => 'Taiwan' ));
             $this->assertResultSuccess($ret);
         }
 
         $names = new NameCollection;
         $names->setSelect('name')->where()
-            ->equal('name','Foo');
+            ->equal('name', 'Foo');
         $names->groupBy(['name','address']);
 
         $this->assertCollectionSize(1, $names);
@@ -36,7 +36,4 @@ class CollectionTest extends ModelTestCase
 
         is('Foo', $items[0]->name);
     }
-
-
 }
-

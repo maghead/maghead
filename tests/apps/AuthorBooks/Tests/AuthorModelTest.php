@@ -19,7 +19,7 @@ class AuthorModelTest extends ModelTestCase
         ];
     }
 
-    public function tearDown() 
+    public function tearDown()
     {
         // Clean up all author records
         $authors = new AuthorCollection;
@@ -31,7 +31,7 @@ class AuthorModelTest extends ModelTestCase
     public function testLoadByEmail()
     {
         $author = new Author;
-        $this->assertNotFalse($author = Author::createAndLoad(array( 
+        $this->assertNotFalse($author = Author::createAndLoad(array(
             'name' => 'FooBar',
             'email' => 'timcook@apple.com',
             'identity' => 'a',
@@ -48,7 +48,7 @@ class AuthorModelTest extends ModelTestCase
     public function testCollection()
     {
         $author = new Author;
-        $this->assertNotFalse($author = Author::createAndLoad(array( 
+        $this->assertNotFalse($author = Author::createAndLoad(array(
             'name' => 'FooBar',
             'email' => 'a@a',
             'identity' => 'a',
@@ -56,7 +56,7 @@ class AuthorModelTest extends ModelTestCase
         )));
         $collection = $author->asCollection();
         $this->assertNotNull($collection);
-        $this->assertInstanceOf('Maghead\BaseCollection',$collection);
+        $this->assertInstanceOf('Maghead\BaseCollection', $collection);
         $this->assertResultSuccess($author->delete());
     }
 
@@ -66,11 +66,11 @@ class AuthorModelTest extends ModelTestCase
         $author = new Author;
 
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');
-        foreach( $author->getColumnNames() as $n ) {
+        foreach ($author->getColumnNames() as $n) {
             // $this->assertContains($n, $names);
 
-            $this->assertTrue( in_array( $n , $names ));
-            $column = $author->getColumn( $n );
+            $this->assertTrue(in_array($n, $names));
+            $column = $author->getColumn($n);
             $this->assertInstanceOf('Maghead\Schema\RuntimeColumn', $column);
         }
 
@@ -80,15 +80,15 @@ class AuthorModelTest extends ModelTestCase
         $columns = $author->getColumns(true); // with virtual column
         $this->assertCount(8, $columns);
 
-        $this->assertEquals('authors', $author->getTable() );
-        $this->assertEquals('Author', $author->getLabel() );
-        $this->assertInstanceOf('AuthorBooks\Model\AuthorCollection', $author->newCollection() );
+        $this->assertEquals('authors', $author->getTable());
+        $this->assertEquals('Author', $author->getLabel());
+        $this->assertInstanceOf('AuthorBooks\Model\AuthorCollection', $author->newCollection());
     }
 
     /**
      * @basedata false
      */
-    public function testBooleanCondition() 
+    public function testBooleanCondition()
     {
         $a = new Author;
         $ret = Author::create(array(
@@ -117,7 +117,7 @@ class AuthorModelTest extends ModelTestCase
 
         $authors = new AuthorCollection;
         $authors->where()
-                ->equal( 'confirmed', true);
+                ->equal('confirmed', true);
         $ret = $authors->fetch();
         $this->assertInstanceOf('Maghead\Result', $ret);
         $this->assertCollectionSize(1, $authors);
@@ -138,9 +138,9 @@ class AuthorModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $author = Author::load($ret->key);
 
-        $this->assertEquals('Pedro',$author->getName());
-        $this->assertEquals('pedro@gmail.com',$author->getEmail());
-        $this->assertEquals(true,$author->isConfirmed());
+        $this->assertEquals('Pedro', $author->getName());
+        $this->assertEquals('pedro@gmail.com', $author->getEmail());
+        $this->assertEquals(true, $author->isConfirmed());
     }
 
     /**
@@ -161,7 +161,7 @@ class AuthorModelTest extends ModelTestCase
         $a = new Author;
         $ret = Author::create(array());
         $this->assertResultFail($ret);
-        like('/Empty arguments/' , $ret->message );
+        like('/Empty arguments/', $ret->message);
     }
 
 
@@ -194,11 +194,11 @@ class AuthorModelTest extends ModelTestCase
         $ret = Author::create(array());
         $this->assertResultFail($ret);
         ok($ret->message);
-        like('/Empty arguments/' , $ret->message );
+        like('/Empty arguments/', $ret->message);
     }
 
     /**
-     * Basic CRUD Test 
+     * Basic CRUD Test
      */
     public function testBasicCRUDOperations()
     {
@@ -208,22 +208,22 @@ class AuthorModelTest extends ModelTestCase
         $ret = Author::create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->assertResultSuccess($ret);
         $author = Author::load($ret->key);
-        ok( $id = $ret->key );
-        $this->assertEquals('Foo', $author->name );
-        $this->assertEquals('foo@google.com', $author->email );
-
-        $author = Author::load( $id );
-        $this->assertNotFalse($author);
-        $this->assertEquals($id , $author->id );
+        ok($id = $ret->key);
         $this->assertEquals('Foo', $author->name);
         $this->assertEquals('foo@google.com', $author->email);
-        $this->assertEquals(false , $author->isConfirmed() );
+
+        $author = Author::load($id);
+        $this->assertNotFalse($author);
+        $this->assertEquals($id, $author->id);
+        $this->assertEquals('Foo', $author->name);
+        $this->assertEquals('foo@google.com', $author->email);
+        $this->assertEquals(false, $author->isConfirmed());
 
         $author = Author::load(array( 'name' => 'Foo' ));
         $this->assertNotFalse($author);
-        $this->assertEquals($id , $author->id );
-        $this->assertEquals('Foo', $author->name );
-        $this->assertEquals('foo@google.com', $author->email );
+        $this->assertEquals($id, $author->id);
+        $this->assertEquals('Foo', $author->name);
+        $this->assertEquals('foo@google.com', $author->email);
         $this->assertFalse($author->isConfirmed());
 
         $ret = $author->update(array('name' => 'Bar'));
@@ -240,7 +240,7 @@ class AuthorModelTest extends ModelTestCase
     public function testMixinMethods()
     {
         $author = new Author;
-        $ret = Author::create(array( 
+        $ret = Author::create(array(
             'name' => 'testMixinMethods',
             'email' => 'test.user@gmail.com',
             'identity' => 'zz3',
@@ -255,7 +255,7 @@ class AuthorModelTest extends ModelTestCase
     public function testToArray()
     {
         $author = new Author;
-        $ret = Author::create(array( 
+        $ret = Author::create(array(
             'name' => 'testToArray',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
@@ -268,10 +268,10 @@ class AuthorModelTest extends ModelTestCase
         $this->assertArrayHasKey('identity', $array);
     }
 
-    public function testToArrayWithFields() 
+    public function testToArrayWithFields()
     {
         $author = new Author;
-        $ret = Author::create(array( 
+        $ret = Author::create(array(
             'name' => 'testToArray',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
@@ -290,7 +290,7 @@ class AuthorModelTest extends ModelTestCase
     public function testRelationshipWithPredefinedConditions()
     {
         $author = new Author;
-        $ret = Author::create(array( 
+        $ret = Author::create(array(
             'name' => 'Address Testing',
             'email' => 'tom@address',
             'identity' => 'tom-has-two-addresses',
@@ -346,17 +346,17 @@ class AuthorModelTest extends ModelTestCase
 
         $id = $author->id;
 
-        $this->assertResultSuccess($author->update(array( 'name' => 'I' )) );
-        is($id , $author->id );
-        is('I', $author->name );
+        $this->assertResultSuccess($author->update(array( 'name' => 'I' )));
+        is($id, $author->id);
+        is('I', $author->name);
 
         $ret = $author->update(array( 'name' => null ));
         $this->assertResultSuccess($ret);
-        $this->assertEquals($id , $author->id);
+        $this->assertEquals($id, $author->id);
         $this->assertNull($author->name, 'updated name should be null');
 
         $author = Author::load($id);
-        $this->assertEquals($id , $author->id);
+        $this->assertEquals($id, $author->id);
         $this->assertNull($author->name, 'loaded name should be null');
     }
 

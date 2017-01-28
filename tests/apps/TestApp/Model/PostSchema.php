@@ -1,5 +1,6 @@
 <?php
 namespace TestApp\Model;
+
 use Maghead\Schema;
 
 class PostSchema extends Schema
@@ -25,4 +26,3 @@ class PostSchema extends Schema
             ->integer();
     }
 }
-

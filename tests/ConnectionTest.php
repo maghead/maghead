@@ -11,4 +11,3 @@ class ConnectionTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('SQLBuilder\Driver\PDOSQLiteDriver', $driver);
     }
 }
-

@@ -1,5 +1,6 @@
 <?php
 namespace AuthorBooks\Model;
+
 use Maghead\Schema;
 
 class PublisherSchema extends Schema
@@ -11,5 +12,3 @@ class PublisherSchema extends Schema
             ->varchar(128);
     }
 }
-
-

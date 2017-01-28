@@ -5,7 +5,7 @@ class SchemaCollectionTest extends PHPUnit_Framework_TestCase
 {
     public function testCountable()
     {
-        $collection = new SchemaCollection([ 
+        $collection = new SchemaCollection([
             '\TestApp\Model\UserSchema',
             '\TestApp\Model\IDNumberSchema',
             '\TestApp\Model\NameSchema',
@@ -18,9 +18,9 @@ class SchemaCollectionTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(8, $collection->count());
     }
 
-    public function testEvaluate() 
+    public function testEvaluate()
     {
-        $c = new SchemaCollection([ 
+        $c = new SchemaCollection([
             '\TestApp\Model\UserSchema',
             '\TestApp\Model\IDNumberSchema',
             '\TestApp\Model\NameSchema',
@@ -41,9 +41,9 @@ class SchemaCollectionTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    public function testFilter() 
+    public function testFilter()
     {
-        $c = new SchemaCollection([ 
+        $c = new SchemaCollection([
             '\TestApp\Model\UserSchema',
             '\TestApp\Model\IDNumberSchema',
             '\TestApp\Model\NameSchema',
@@ -56,7 +56,7 @@ class SchemaCollectionTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(8, count($c));
 
-        $rc = $c->evaluate()->filter(function($schema) {
+        $rc = $c->evaluate()->filter(function ($schema) {
             return $schema instanceof \AuthorBooks\Model\BookSchema;
         });
         $this->assertEquals(1, count($rc));
@@ -66,4 +66,3 @@ class SchemaCollectionTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(4, count($expanded));
     }
 }
-

@@ -5,18 +5,16 @@ use Maghead\Schema\Comparator\ConsolePrinter;
 use Maghead\Schema\ColumnDiff;
 use SQLBuilder\Driver\BaseDriver;
 
-class NeutralDriver extends BaseDriver {
-
+class NeutralDriver extends BaseDriver
+{
     public function quoteIdentifier($identifier)
     {
         return $identifier;
     }
-
 }
 
 class ComparatorTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testBasicComparison()
     {
         $before = new DeclareSchema;
@@ -80,4 +78,3 @@ class ComparatorTest extends \PHPUnit_Framework_TestCase
         ok($printer);
     }
 }
-

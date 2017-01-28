@@ -1,5 +1,6 @@
 <?php
 namespace TestApp\Model;
+
 use Maghead\Schema\DeclareSchema;
 
 class IDNumberSchema extends DeclareSchema
@@ -11,6 +12,3 @@ class IDNumberSchema extends DeclareSchema
             ->validator('TW\\IDNumberValidator');
     }
 }
-
-
-

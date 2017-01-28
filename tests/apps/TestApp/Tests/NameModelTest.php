@@ -13,7 +13,7 @@ class NameModelTest extends ModelTestCase
 
     public function nameDataProvider()
     {
-        return array( 
+        return array(
             array(array(
                 'name' => '中文',
                 'country' => 'Tokyo',
@@ -32,7 +32,7 @@ class NameModelTest extends ModelTestCase
     public function booleanNullTestDataProvider()
     {
         return array(
-              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => NULL ) ),
+              array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => null ) ),
               array( array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '' ) ),
         );
     }
@@ -131,7 +131,7 @@ class NameModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
 
         $name = Name::defaultRepo()->load($ret->key);
-        is('XXXX' , $name->address , 'Should be canonicalized' );
+        is('XXXX', $name->address, 'Should be canonicalized');
     }
 
     public function testBooleanFromStringZero()
@@ -140,7 +140,7 @@ class NameModelTest extends ModelTestCase
 
         /** confirmed will be cast to true **/
         $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ));
-        $this->assertResultSuccess( $ret );
+        $this->assertResultSuccess($ret);
         $n = Name::defaultRepo()->load($ret->key);
 
         $this->assertNotFalse($n);
@@ -164,7 +164,7 @@ class NameModelTest extends ModelTestCase
          */
         $ret = $n->create(array( 'name' => false , 'country' => 'Type' ));
         $this->assertResultFail($ret);
-        ok(! $n->id );
+        ok(! $n->id);
     }
 
     public function testModelColumnDefaultValueBuilder()
@@ -174,26 +174,26 @@ class NameModelTest extends ModelTestCase
         $this->assertNotEmpty($ret->validations);
         $this->assertTrue(isset($ret->validations['address']));
         $this->assertTrue($ret->validations['address']['valid']);
-        ok( $vlds = $ret->getSuccessValidations() );
+        ok($vlds = $ret->getSuccessValidations());
         $this->assertCount(1, $vlds);
 
         $name = Name::defaultRepo()->load($ret->key);
-        ok( $name->id );
-        ok( $name->address );
+        ok($name->id);
+        ok($name->address);
 
         $ret = $name->create(array(  'name' => 'Foo', 'address' => 'fuck' , 'country' => 'Tokyo' ));
-        ok( $ret->validations );
+        ok($ret->validations);
 
-        foreach( $ret->getErrorValidations() as $vld ) {
+        foreach ($ret->getErrorValidations() as $vld) {
             $this->assertFalse($vld['valid']);
-            $this->assertEquals('Please don\'t',  $vld['message']);
+            $this->assertEquals('Please don\'t', $vld['message']);
         }
     }
 
     public function testLoadFromContstructor()
     {
         $name = new Name;
-        $name = Name::createAndLoad(array( 
+        $name = Name::createAndLoad(array(
             'name' => 'John',
             'country' => 'Taiwan',
             'type' => 'type-a',
@@ -202,7 +202,7 @@ class NameModelTest extends ModelTestCase
         $this->assertNotNull($name->id);
 
         $name2 = Name::defaultRepo()->load($name->id);
-        $this->assertEquals($name2->id , $name->id);
+        $this->assertEquals($name2->id, $name->id);
     }
 
     /**
@@ -211,7 +211,7 @@ class NameModelTest extends ModelTestCase
     public function testValidValueBuilder()
     {
         $name = new \TestApp\Model\Name;
-        $ret = $name->create(array( 
+        $ret = $name->create(array(
             'name' => 'John',
             'country' => 'Taiwan',
             'type' => 'type-a',
@@ -242,9 +242,9 @@ class NameModelTest extends ModelTestCase
     public function testDeflator()
     {
         $n = new \TestApp\Model\Name;
-        $n = Name::createAndLoad(array( 
-            'name' => 'Deflator Test' , 
-            'country' => 'Tokyo', 
+        $n = Name::createAndLoad(array(
+            'name' => 'Deflator Test' ,
+            'country' => 'Tokyo',
             'confirmed' => '0',
             'date' => '2011-01-01'
         ));
@@ -253,7 +253,7 @@ class NameModelTest extends ModelTestCase
         $d = $n->getDate();
         $this->assertNotNull($d);
         $this->assertInstanceOf('DateTime', $d);
-        $this->assertEquals('20110101' , $d->format( 'Ymd' ));
+        $this->assertEquals('20110101', $d->format('Ymd'));
 
         $ret = $n->delete();
         $this->assertResultSuccess($ret);
@@ -278,16 +278,16 @@ class NameModelTest extends ModelTestCase
      */
     public function testFromArray($args)
     {
-        $instance = \TestApp\Model\Name::fromArray(array( 
+        $instance = \TestApp\Model\Name::fromArray(array(
             $args
         ));
-        $this->assertInstanceOf( 'TestApp\Model\Name' ,  $instance);
+        $this->assertInstanceOf('TestApp\Model\Name', $instance);
 
-        $collection = \TestApp\Model\NameCollection::fromArray(array( 
+        $collection = \TestApp\Model\NameCollection::fromArray(array(
             $args,
             $args,
         ));
-        $this->assertInstanceOf('TestApp\Model\NameCollection' , $collection);
+        $this->assertInstanceOf('TestApp\Model\NameCollection', $collection);
     }
 
     /**
@@ -306,11 +306,11 @@ class NameModelTest extends ModelTestCase
         $this->assertNotFalse($n);
 
         $array = $n->toArray();
-        $this->assertTrue(is_string( $array['date']));
+        $this->assertTrue(is_string($array['date']));
 
         $d = $n->getDate(); // inflated
-        $this->assertInstanceOf('DateTime' , $d);
-        $this->assertEquals('20110101' , $d->format('Ymd'));
+        $this->assertInstanceOf('DateTime', $d);
+        $this->assertEquals('20110101', $d->format('Ymd'));
         $this->successfulDelete($n);
     }
 }

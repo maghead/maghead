@@ -5,22 +5,22 @@ class InflatorTest extends PHPUnit_Framework_TestCase
 {
     public function testBooleanFalse()
     {
-        $this->assertFalse(Inflator::inflate( '0', 'bool'));
+        $this->assertFalse(Inflator::inflate('0', 'bool'));
     }
 
     public function testBooleanTrue()
     {
-        $this->assertTrue(Inflator::inflate( '1', 'bool' ) );
+        $this->assertTrue(Inflator::inflate('1', 'bool'));
     }
 
     public function testFloat()
     {
-        is(1.1 , Inflator::inflate( '1.1', 'float' ));
+        is(1.1, Inflator::inflate('1.1', 'float'));
     }
 
     public function testJson()
     {
-        $this->assertEquals((object) [ 'foo' => 1 ], Inflator::inflate(json_encode([ 'foo' => 1 ]), 'json' ));
+        $this->assertEquals((object) [ 'foo' => 1 ], Inflator::inflate(json_encode([ 'foo' => 1 ]), 'json'));
     }
 
     public function dateStringProvider()
@@ -38,7 +38,6 @@ class InflatorTest extends PHPUnit_Framework_TestCase
      */
     public function testDateTime($datestr)
     {
-        $this->assertInstanceOf('DateTime', Inflator::inflate($datestr, 'DateTime' ) );
+        $this->assertInstanceOf('DateTime', Inflator::inflate($datestr, 'DateTime'));
     }
 }
-

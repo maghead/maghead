@@ -1,7 +1,8 @@
 <?php
 namespace StoreApp\Model;
+
 use StoreApp\Model\StoreBase;
-class Store
-    extends StoreBase
+
+class Store extends StoreBase
 {
 }

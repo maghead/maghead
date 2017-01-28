@@ -33,18 +33,18 @@ class SchemaGeneratorTest extends ModelTestCase
                 $this->syntaxTest($file);
             }
 
-            if ( $classMap = $g->generate(array($schema)) ) {
-                foreach( $classMap as $class => $file ) {
+            if ($classMap = $g->generate(array($schema))) {
+                foreach ($classMap as $class => $file) {
                     ok($class);
                     ok($file);
-                    path_ok($file,$file);
+                    path_ok($file, $file);
                     // $this->syntaxTest($file);
                     require_once $file;
                 }
             }
 
             $pk = $schema->findPrimaryKey();
-            $this->assertNotNull($pk, "Find primary key from " . get_class($schema) );
+            $this->assertNotNull($pk, "Find primary key from " . get_class($schema));
 
             $model = $schema->newModel();
             $this->assertNotNull($model);
@@ -54,8 +54,9 @@ class SchemaGeneratorTest extends ModelTestCase
         }
     }
 
-    public function syntaxTest($file) {
-        $this->expectOutputRegex('/^No syntax errors detected/' );
+    public function syntaxTest($file)
+    {
+        $this->expectOutputRegex('/^No syntax errors detected/');
         system("php -l $file");
     }
 }

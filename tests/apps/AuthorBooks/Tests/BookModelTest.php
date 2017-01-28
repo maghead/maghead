@@ -1,5 +1,6 @@
 <?php
 namespace AuthorBooks\Tests;
+
 use SQLBuilder\Raw;
 use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Book;
@@ -63,46 +64,49 @@ class BookModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
     }
 
-    public function testTraitMethods() {
+    public function testTraitMethods()
+    {
         $b = new Book ;
         $this->assertSame(['link1', 'link2'], $b->getLinks());
         $this->assertSame(['store1', 'store2'], $b->getStores());
     }
 
-    public function testInterface() {
+    public function testInterface()
+    {
         $this->assertInstanceOf('TestApp\ModelInterface\EBookInterface', new Book);
     }
 
-    public function testLoadOrCreate() {
+    public function testLoadOrCreate()
+    {
         $results = [];
         $b = new Book;
 
         $ret = $b->create(array( 'title' => 'Should Not Load This' ));
-        $this->assertResultSuccess( $ret );
+        $this->assertResultSuccess($ret);
         $results[] = $ret;
         $b = Book::defaultRepo()->load($ret->key);
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
-        $this->assertResultSuccess( $ret );
+        $this->assertResultSuccess($ret);
         $results[] = $ret;
         $b = Book::defaultRepo()->load($ret->key);
 
         $id = $b->id;
         ok($id);
 
-        $b = $b->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
+        $b = $b->loadOrCreate(array( 'title' => 'LoadOrCreateTest'  ), 'title');
         $this->assertEquals($id, $b->id, 'is the same ID');
 
         $b2 = new Book ;
-        $b2 = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest'  ) , 'title' );
-        $this->assertEquals($id,$b2->id);
+        $b2 = $b2->loadOrCreate(array( 'title' => 'LoadOrCreateTest'  ), 'title');
+        $this->assertEquals($id, $b2->id);
 
-        $b2 = $b2->loadOrCreate( array( 'title' => 'LoadOrCreateTest2'  ) , 'title' );
-        $this->assertNotEquals($id, $b2->id , 'we should create anther one'); 
+        $b2 = $b2->loadOrCreate(array( 'title' => 'LoadOrCreateTest2'  ), 'title');
+        $this->assertNotEquals($id, $b2->id, 'we should create anther one');
 
         $b3 = new Book ;
-        $b3 = $b3->loadOrCreate( array( 'title' => 'LoadOrCreateTest3'  ) , 'title' );
-        $this->assertNotNull($id, $b3->id , 'we should create anther one'); 
+        $b3 = $b3->loadOrCreate(array( 'title' => 'LoadOrCreateTest3'  ), 'title');
+        $this->assertNotNull($id, $b3->id, 'we should create anther one');
 
         $b3 = Book::defaultRepo()->load($b3->getKey());
         $b3->delete();
@@ -111,7 +115,7 @@ class BookModelTest extends ModelTestCase
     public function testTypeConstraint()
     {
         $book = new Book ;
-        $ret = Book::create(array( 
+        $ret = Book::create(array(
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',
             'view' => '""',  /* cast this to null or empty */
@@ -130,7 +134,7 @@ class BookModelTest extends ModelTestCase
             'title' => 'book title',
             'view' => 0,
         ));
-        $this->assertEquals(0 , $book->view);
+        $this->assertEquals(0, $book->view);
 
         $ret = $book->update([
             'view' => new Raw('view + 1')
@@ -138,7 +142,7 @@ class BookModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
 
         $book = Book::load($book->id);
-        $this->assertEquals(1 , $book->view );
+        $this->assertEquals(1, $book->view);
 
         $book->update([
             'view' => new Raw('view + 3')
@@ -153,7 +157,7 @@ class BookModelTest extends ModelTestCase
         $date = new DateTime;
         $book = Book::createAndLoad([ 'title' => 'Create With Time' , 'view' => 0, 'published_at' => $date ]);
         $this->assertInstanceOf('DateTime', $book->getPublishedAt());
-        $this->assertEquals('00-00-00 00-00-00',$date->diff($book->getPublishedAt())->format('%Y-%M-%D %H-%I-%S'));
+        $this->assertEquals('00-00-00 00-00-00', $date->diff($book->getPublishedAt())->format('%Y-%M-%D %H-%I-%S'));
     }
 
 
@@ -196,14 +200,12 @@ class BookModelTest extends ModelTestCase
 
         // verify update
         $book = Book::load($book->id);
-        $this->assertEquals(1,  $book->view);
+        $this->assertEquals(1, $book->view);
 
         $ret = $book->update(array( 'view'  => new Raw('view + 1') ));
         $this->assertResultSuccess($ret);
 
         $book = Book::load($book->id);
-        $this->assertEquals(2,  $book->view);
+        $this->assertEquals(2, $book->view);
     }
 }
-
-

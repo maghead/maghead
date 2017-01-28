@@ -1,5 +1,6 @@
 <?php
 namespace StoreApp\Model;
+
 use Maghead\Schema\DeclareSchema;
 
 class StoreSchema extends DeclareSchema
@@ -14,6 +15,3 @@ class StoreSchema extends DeclareSchema
             ->required();
     }
 }
-
-
-

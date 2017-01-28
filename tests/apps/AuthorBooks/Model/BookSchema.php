@@ -1,10 +1,10 @@
 <?php
 namespace AuthorBooks\Model;
+
 use Maghead\Schema;
 
 class BookSchema extends Schema
 {
-
     public function schema()
     {
         $this->column('title')
@@ -42,7 +42,7 @@ class BookSchema extends Schema
         $this->column('published_at')
             ->isa('DateTime')
             ->timestamp()
-            ->default(function() {
+            ->default(function () {
                 return new \DateTime;
             })
             ;
@@ -52,12 +52,12 @@ class BookSchema extends Schema
         $this->helper('Flag', ['is_selled','Selled', false]);
 
 
-        /** 
-         * Column: author => Author class 
+        /**
+         * Column: author => Author class
          *
          * $book->publisher->name;
          **/
-        $this->belongsTo('publisher','AuthorBooks\Model\PublisherSchema', 'id', 'publisher_id');
+        $this->belongsTo('publisher', 'AuthorBooks\Model\PublisherSchema', 'id', 'publisher_id');
 
         /**
          * accessor , mapping self.id => BookAuthors.book_id
@@ -74,12 +74,11 @@ class BookSchema extends Schema
 
 
         /**
-         * get BookAuthor.author 
+         * get BookAuthor.author
          */
-        $this->manyToMany('authors', 'book_authors', 'author' )
-            ->filter(function($collection) {
-                return $collection; 
+        $this->manyToMany('authors', 'book_authors', 'author')
+            ->filter(function ($collection) {
+                return $collection;
             });
     }
-
 }

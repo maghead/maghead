@@ -2,10 +2,7 @@
 
 class TestLogger
 {
-	function __call($m,$a)
-	{
-
-	}
+    public function __call($m, $a)
+    {
+    }
 }
-
-

@@ -1,5 +1,6 @@
 <?php
 namespace AuthorBooks\Model;
+
 use Maghead\Schema;
 
 class AuthorBookSchema extends Schema
@@ -21,18 +22,16 @@ class AuthorBookSchema extends Schema
                 ->timestamp()
                 ;
 
-        $this->belongsTo('book','Book')
+        $this->belongsTo('book', 'Book')
             ->by('book_id')
             ->onDelete('CASCADE')
             ->onUpdate('CASCADE')
             ;
 
-        $this->belongsTo('author','Author')
+        $this->belongsTo('author', 'Author')
             ->by('author_id')
             ->onDelete('CASCADE')
             ->onUpdate('CASCADE')
             ;
     }
 }
-
-

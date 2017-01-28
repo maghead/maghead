@@ -1,5 +1,6 @@
 <?php
 namespace PageApp\Model;
+
 use Maghead\Schema\DeclareSchema;
 
 class PageSchema extends DeclareSchema
@@ -12,6 +13,3 @@ class PageSchema extends DeclareSchema
         $this->mixin('LocalizeMixinSchema');
     }
 }
-
-
-

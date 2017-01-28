@@ -2,10 +2,9 @@
 
 class RuntimeSchemaTest extends PHPUnit_Framework_TestCase
 {
-
     public function schemaProxyProvider()
     {
-        return array( 
+        return array(
             array('AuthorBooks\Model\AuthorSchemaProxy'),
             array('AuthorBooks\Model\BookSchemaProxy'),
             array('AuthorBooks\Model\AuthorBookSchemaProxy'),
@@ -20,7 +19,7 @@ class RuntimeSchemaTest extends PHPUnit_Framework_TestCase
     {
         $schema = new $proxyClass;
         ok($schema);
-        foreach( $schema->getColumns() as $name => $column ) {
+        foreach ($schema->getColumns() as $name => $column) {
             ok($name);
             ok($column);
             ok($column->name);
@@ -38,13 +37,9 @@ class RuntimeSchemaTest extends PHPUnit_Framework_TestCase
     {
         $schema = new $proxyClass;
         ok($schema);
-        foreach( $schema as $name => $column ) {
+        foreach ($schema as $name => $column) {
             ok(is_string($name));
             ok($column);
         }
     }
-
-
-
 }
-

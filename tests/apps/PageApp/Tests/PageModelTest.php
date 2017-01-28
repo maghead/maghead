@@ -5,14 +5,14 @@ use PageApp\Model\PageCollection;
 
 class PageModelTest extends ModelTestCase
 {
-
     public function getModels()
     {
         return [new \PageApp\Model\PageSchema];
     }
 
 
-    public function testCreate() {
+    public function testCreate()
+    {
         $page = new Page;
         $ret = $page->create([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
         $this->assertResultSuccess($ret);
@@ -24,7 +24,8 @@ class PageModelTest extends ModelTestCase
     }
 
 
-    public function testSaveRevision() {
+    public function testSaveRevision()
+    {
         $page = Page::createAndLoad([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
 
         $pageRev1 = $page->saveWithRevision();
@@ -47,7 +48,8 @@ class PageModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
     }
 
-    public function testRevisionRelationship() {
+    public function testRevisionRelationship()
+    {
         $page = Page::createAndLoad([ 'title' => 'Book I' ,'brief' => 'Root reivision' ]);
 
         $pageRev1 = $page->saveWithRevision();
@@ -67,8 +69,4 @@ class PageModelTest extends ModelTestCase
         $ret = $page->delete();
         $this->assertResultSuccess($ret);
     }
-
-
-
 }
-

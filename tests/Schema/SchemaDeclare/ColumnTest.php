@@ -11,10 +11,9 @@ class ColumnTest extends PHPUnit_Framework_TestCase
             ->integer()
             ->autoIncrement()
             ->notNull();
-        $this->assertEquals('foo',$column->name);
+        $this->assertEquals('foo', $column->name);
         $this->assertTrue($column->primary);
-        $this->assertEquals('int',$column->type);
+        $this->assertEquals('int', $column->type);
         $this->assertTrue($column->notNull);
     }
 }
-

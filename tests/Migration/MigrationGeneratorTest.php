@@ -13,7 +13,10 @@ class MigrationGeneratorTest extends ModelTestCase
 {
     public $onlyDriver = 'mysql';
 
-    public function getModels() { return array(); }
+    public function getModels()
+    {
+        return array();
+    }
 
     public function testGenerator()
     {
@@ -21,17 +24,17 @@ class MigrationGeneratorTest extends ModelTestCase
         $this->conn->query('CREATE TABLE users (id integer NOT NULL PRIMARY KEY);');
 
         $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'tests/migrations');
-        $this->assertEquals('20120901_CreateUser.php',$generator->generateFilename('CreateUser','20120901'));
+        $this->assertEquals('20120901_CreateUser.php', $generator->generateFilename('CreateUser', '20120901'));
 
-        list($class,$path) = $generator->generate('UpdateUser','20120902');
+        list($class, $path) = $generator->generate('UpdateUser', '20120902');
         // this requires timezone = asia/taipei
         $this->assertEquals('UpdateUser_1346515200', $class);
         $this->assertFileExists($path);
-        $this->assertEquals('tests/migrations/20120902_UpdateUser.php',$path);
+        $this->assertEquals('tests/migrations/20120902_UpdateUser.php', $path);
         unlink($path);
     }
 
-    public function testMigrationByDiff() 
+    public function testMigrationByDiff()
     {
         $this->conn->query('DROP TABLE IF EXISTS users');
         $this->conn->query('DROP TABLE IF EXISTS test');
@@ -47,7 +50,7 @@ class MigrationGeneratorTest extends ModelTestCase
 
         $finder = new SchemaFinder;
         $finder->find();
-        list($class,$path) = $generator->generateWithDiff('DiffMigration', $this->getDriverType(), [ "users" => new TestApp\Model\UserSchema ], '20120101');
+        list($class, $path) = $generator->generateWithDiff('DiffMigration', $this->getDriverType(), [ "users" => new TestApp\Model\UserSchema ], '20120101');
         require_once $path;
         ok($class::getId());
 
@@ -61,7 +64,7 @@ class MigrationGeneratorTest extends ModelTestCase
         $runner->resetMigrationId($this->conn, $this->queryDriver);
         $runner->load('tests/migrations_testing');
 
-        // XXX: PHPUnit can't run this test in separated unit test since 
+        // XXX: PHPUnit can't run this test in separated unit test since
         // there is a bug of serializing the global array, this assertion will get 5 instead of the expected 1.
         $scripts = $runner->loadMigrationScripts();
         $this->assertNotEmpty($scripts);
@@ -75,4 +78,3 @@ class MigrationGeneratorTest extends ModelTestCase
         $this->conn->query('DROP TABLE IF EXISTS users');
     }
 }
-

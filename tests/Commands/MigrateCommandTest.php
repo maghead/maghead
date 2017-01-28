@@ -13,7 +13,4 @@ class MigrateCommandsTest extends CommandTestCase
     {
         $this->app->run(array('lazy','migrate','status'));
     }
-
-
 }
-

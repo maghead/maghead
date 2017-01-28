@@ -46,13 +46,12 @@ class XMLExporterTest extends ModelTestCase
 
         $author = new Author;
         $ret = Author::create(array(
-            'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' 
+            'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z'
         ));
         $this->assertResultSuccess($ret);
 
         $exporter = new XMLExporter;
         $exporter->exportCollection(new BookCollection);
-
     }
 
 
@@ -74,7 +73,7 @@ class XMLExporterTest extends ModelTestCase
         $author->addresses->create([ 'address' => 'san francisco' ]);
 
 
-        $book = Book::createAndLoad([ 
+        $book = Book::createAndLoad([
             'title' => 'Run & Skate',
             'published_at' => '2012-01-01 00:00:00',
             'updated_on' => '2012-01-01 00:00:00',
@@ -89,7 +88,7 @@ class XMLExporterTest extends ModelTestCase
         ]);
 
 
-        $book = Book::createAndLoad([ 
+        $book = Book::createAndLoad([
             'title' => 'Run & Skate II',
             'updated_on' => '2012-01-01 00:00:00',
             'created_on' => '2012-01-01 00:00:00',
