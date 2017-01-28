@@ -440,7 +440,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     protected function _classnameToTable()
     {
-        return ClassUtils::convertClassToTableName($this->getModelName());
+        return self::convertClassToTableName($this->getModelName());
     }
 
     /**

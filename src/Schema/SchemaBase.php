@@ -5,6 +5,8 @@ namespace Maghead\Schema;
 use RuntimeException;
 use InvalidArgumentException;
 use Exception;
+use Maghead\Exception\TableNameConversionException;
+use Doctrine\Common\Inflector\Inflector;
 
 abstract class SchemaBase
 {
@@ -208,4 +210,23 @@ abstract class SchemaBase
 
         return $schemas;
     }
+
+
+    static public function convertClassToTableName($class)
+    {
+        if (preg_match('/(\w+?)(?:Model)?$/', $class, $reg)) {
+            if (count($reg) < 2) {
+                throw new Exception("Can not parse model name: $class");
+            }
+            // convert BlahBlah to blah_blah
+            $table = $reg[1];
+            $table = Inflector::tableize($table);
+
+            return Inflector::pluralize($table);
+        } else {
+            throw new TableNameConversionException("Table name convert error: $class", $class);
+        }
+    }
+
+
 }

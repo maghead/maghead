@@ -5,7 +5,6 @@ namespace Maghead\Utils;
 use Exception;
 use ReflectionClass;
 use Doctrine\Common\Inflector\Inflector;
-use Maghead\Exception\TableNameConversionException;
 
 class ClassUtils
 {
@@ -74,26 +73,4 @@ class ClassUtils
         return $list;
     }
 
-    public static function convertClassToTableName($class)
-    {
-        if (preg_match('/(\w+?)(?:Model)?$/', $class, $reg)) {
-            if (count($reg) < 2) {
-                throw new Exception("Can not parse model name: $class");
-            }
-
-            /* convert BlahBlah to blah_blah */
-            /*
-            $table =  strtolower( preg_replace( 
-                '/(\B[A-Z])/e' , 
-                "'_'.strtolower('$1')" , 
-                $table ) );
-            */
-            $table = $reg[1];
-            $table = Inflector::tableize($table);
-
-            return Inflector::pluralize($table);
-        } else {
-            throw new TableNameConversionException("Table name convert error: $class", $class);
-        }
-    }
 }
