@@ -259,7 +259,7 @@ abstract class BaseModel implements Serializable
      *
      * @return Result operation result (success or error)
      */
-    public function update(array $args, $options = array())
+    public function update(array $args)
     {
         // Check if we get primary key value
         // here we allow users to specifty primary key value from arguments if the record is not loaded.
