@@ -8,6 +8,9 @@ use InvalidArgumentException;
 use PDO;
 use ArrayAccess;
 use Maghead\DSN\DSN;
+use Maghead\Connection;
+use Maghead\ConfigLoader;
+use Maghead\Config;
 
 /**
  * Connection Manager.
