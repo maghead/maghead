@@ -35,7 +35,6 @@ class MigrateUpgradeCommand extends MigrateBaseCommand
 
         $dsId = $this->getCurrentDataSourceId();
         $runner = new MigrationRunner($this->logger, $dsId);
-        $runner->load($this->options->{'script-dir'});
         $this->logger->info("Performing upgrade over data source: $dsId...");
         $runner->runUpgrade($connection, $driver);
         $this->logger->info('Done.');

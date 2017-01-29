@@ -26,7 +26,6 @@ class MigrateStatusCommand extends MigrateBaseCommand
         $driver = $connectionManager->getQueryDriver($dsId);
 
         $runner = new MigrationRunner($this->logger, $dsId);
-        $runner->load($this->options->{'script-dir'} ?: 'db/migrations');
         $scripts = $runner->getUpgradeScripts($conn, $driver);
         $count = count($scripts);
         $this->logger->info('Found '.$count.($count > 1 ? ' migration scripts' : ' migration script').' to be executed.');

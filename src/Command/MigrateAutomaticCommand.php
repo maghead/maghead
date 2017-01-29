@@ -3,6 +3,7 @@
 namespace Maghead\Command;
 
 use Maghead\Migration\MigrationRunner;
+use Maghead\Migration\MigrationLoader;
 use Maghead\Migration\AutomaticMigration;
 use Maghead\Schema\SchemaLoader;
 use Maghead\ServiceContainer;

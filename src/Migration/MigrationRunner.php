@@ -39,25 +39,7 @@ class MigrationRunner
      */
     public function load($directory)
     {
-        if (!file_exists($directory)) {
-            return array();
-        }
-        $loaded = array();
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($directory), RecursiveIteratorIterator::CHILD_FIRST
-        );
-        foreach ($iterator as $path) {
-            if ($path->isFile() && $path->getExtension() === 'php') {
-                $code = file_get_contents($path);
-                if (preg_match('#Migration#', $code)) {
-                    $this->logger->debug("Loading migration script: $path");
-                    require_once $path;
-                    $loaded[] = $path;
-                }
-            }
-        }
-
-        return $loaded;
+        return MigrationLoader::findIn($directory);
     }
 
     public function getLastMigrationId(Connection $conn, BaseDriver $driver)
@@ -82,27 +64,7 @@ class MigrationRunner
 
     public function loadMigrationScripts()
     {
-        $classes = get_declared_classes();
-        $classes = array_filter($classes, function ($class) {
-            return is_a($class, 'Maghead\\Migration\\Migration', true)
-                && $class != 'Maghead\\Migration\\Migration';
-        });
-
-        // sort class with timestamp suffix
-        usort($classes, function ($a, $b) {
-            if (preg_match('#_(\d+)$#', $a, $regsA) && preg_match('#_(\d+)$#', $b, $regsB)) {
-                list($aId, $bId) = array($regsA[1], $regsB[1]);
-                if ($aId == $bId) {
-                    return 0;
-                }
-
-                return $aId < $bId ? -1 : 1;
-            }
-
-            return 0;
-        });
-
-        return $classes;
+        return MigrationLoader::getDeclaredMigrationScripts();
     }
 
     /**
@@ -116,8 +78,7 @@ class MigrationRunner
     {
         $lastMigrationId = $this->getLastMigrationId($conn, $driver);
         $this->logger->debug("Found last migration id: $lastMigrationId");
-        $scripts = $this->loadMigrationScripts();
-
+        $scripts = MigrationLoader::getDeclaredMigrationScripts();
         return array_filter($scripts, function ($class) use ($lastMigrationId) {
             $id = $class::getId();
 
@@ -127,7 +88,7 @@ class MigrationRunner
 
     public function getDowngradeScripts(Connection $conn, BaseDriver $driver)
     {
-        $scripts = $this->loadMigrationScripts();
+        $scripts = MigrationLoader::getDeclaredMigrationScripts();
         $lastMigrationId = $this->getLastMigrationId($conn, $driver);
 
         return array_filter($scripts, function ($class) use ($lastMigrationId) {

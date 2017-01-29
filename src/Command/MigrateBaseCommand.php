@@ -2,8 +2,11 @@
 
 namespace Maghead\Command;
 
+use Maghead\Migration\MigrationLoader;
+
 class MigrateBaseCommand extends BaseCommand
 {
+
     public function options($opts)
     {
         parent::options($opts);
@@ -12,4 +15,12 @@ class MigrateBaseCommand extends BaseCommand
             ;
         $opts->add('b|backup', 'Backup database before running migration script.');
     }
+
+
+    public function prepare()
+    {
+        parent::prepare();
+        MigrationLoader::findIn($this->options->{'script-dir'} ?: 'db/migrations');
+    }
+
 }

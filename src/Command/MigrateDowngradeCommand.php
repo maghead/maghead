@@ -34,8 +34,8 @@ class MigrateDowngradeCommand extends MigrateBaseCommand
         }
 
         $dsId = $this->getCurrentDataSourceId();
+
         $runner = new MigrationRunner($this->logger, $dsId);
-        $runner->load($this->options->{'script-dir'} ?: 'db/migrations');
         $this->logger->info("Performing downgrade over data source: $dsId...");
         $runner->runDowngrade($connection, $driver);
         $this->logger->info('Done.');
