@@ -3,7 +3,7 @@
 namespace Maghead\Generator\Schema;
 
 use ClassTemplate\ClassFile;
-use Maghead\ConnectionManager;
+use Maghead\Manager\ConnectionManager;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
 use Doctrine\Common\Inflector\Inflector;

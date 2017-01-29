@@ -6,7 +6,7 @@ use CLIFramework\Logger;
 use Maghead\Manager\MetadataManager;
 use Maghead\Schema;
 use Maghead\SqlBuilder\SqlBuilder;
-use Maghead\ConnectionManager;
+use Maghead\Manager\ConnectionManager;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;

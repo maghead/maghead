@@ -26,6 +26,7 @@ use Maghead\Schema\RuntimeColumn;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Exception\MissingPrimaryKeyException;
 use Maghead\Exception\QueryException;
+use Maghead\Manager\ConnectionManager;
 use Maghead\Connection;
 use SerializerKit\XmlSerializer;
 use ActionKit;

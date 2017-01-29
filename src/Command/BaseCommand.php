@@ -5,7 +5,7 @@ namespace Maghead\Command;
 use CLIFramework\Command;
 use Maghead\ConfigLoader;
 use Maghead\Schema\SchemaUtils;
-use Maghead\ConnectionManager;
+use Maghead\Manager\ConnectionManager;
 use RuntimeException;
 use Maghead\Bootstrap;
 

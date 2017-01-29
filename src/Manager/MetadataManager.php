@@ -5,7 +5,7 @@ namespace Maghead\Manager;
 use ArrayAccess;
 use IteratorAggregate;
 use Maghead\TableParser\TableParser;
-use Maghead\ConnectionManager;
+use Maghead\Manager\ConnectionManager;
 use SQLBuilder\Driver\BaseDriver;
 use ArrayIterator;
 use PDO;

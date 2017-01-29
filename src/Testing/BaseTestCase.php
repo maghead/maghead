@@ -2,7 +2,7 @@
 
 namespace Maghead\Testing;
 
-use Maghead\ConnectionManager;
+use Maghead\Manager\ConnectionManager;
 use Maghead\SqlBuilder\SqlBuilder;
 use Maghead\BaseModel;
 use Maghead\ConfigLoader;

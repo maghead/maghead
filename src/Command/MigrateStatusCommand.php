@@ -3,7 +3,7 @@
 namespace Maghead\Command;
 
 use Maghead\Migration\MigrationRunner;
-use Maghead\ConnectionManager;
+use Maghead\Manager\ConnectionManager;
 
 class MigrateStatusCommand extends MigrateBaseCommand
 {

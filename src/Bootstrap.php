@@ -5,6 +5,7 @@ namespace Maghead;
 use Maghead\SqlBuilder\BaseBuilder;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\SchemaFinder;
+use Maghead\Manager\ConnectionManager;
 use CLIFramework\Logger;
 
 use ConfigKit\ConfigCompiler;

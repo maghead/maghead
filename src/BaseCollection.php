@@ -19,6 +19,7 @@ use Symfony\Component\Yaml\Yaml;
 
 use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\SchemaBase;
+use Maghead\Manager\ConnectionManager;
 
 defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
 

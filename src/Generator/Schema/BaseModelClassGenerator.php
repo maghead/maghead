@@ -9,7 +9,7 @@ use InvalidArgumentException;
 use ClassTemplate\ClassFile;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
-use Maghead\ConnectionManager;
+use Maghead\Manager\ConnectionManager;
 use Doctrine\Common\Inflector\Inflector;
 
 use Maghead\Generator\PDOStatementGenerator;

@@ -3,7 +3,7 @@
 namespace Maghead\Migration;
 
 use Maghead\Manager\MetadataManager;
-use Maghead\ConnectionManager;
+use Maghead\Manager\ConnectionManager;
 use Maghead\Connection;
 use Maghead\ServiceContainer;
 use GetOptionKit\OptionResult;

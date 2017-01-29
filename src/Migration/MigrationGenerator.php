@@ -116,7 +116,7 @@ class MigrationGenerator
 
     public function generateWithDiff($taskName, $dataSourceId, array $schemas, $time = null)
     {
-        $connectionManager = \Maghead\ConnectionManager::getInstance();
+        $connectionManager = \Maghead\Manager\ConnectionManager::getInstance();
         $connection = $connectionManager->getConnection($dataSourceId);
         $driver = $connectionManager->getQueryDriver($dataSourceId);
 
