@@ -62,11 +62,6 @@ class MigrationRunner
         $metadata['migration'] = $id;
     }
 
-    public function loadMigrationScripts()
-    {
-        return MigrationLoader::getDeclaredMigrationScripts();
-    }
-
     /**
      * Each data source has it's own migration timestamp,
      * we use the data source ID to get the migration timestamp 
