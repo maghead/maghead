@@ -34,14 +34,6 @@ class MigrationRunner
         $this->dataSourceIds = (array) $dsIds;
     }
 
-    /**
-     * Load migration script from specific directory.
-     */
-    public function load($directory)
-    {
-        return MigrationLoader::findIn($directory);
-    }
-
     public function getLastMigrationId(Connection $conn, BaseDriver $driver)
     {
         $meta = new MetadataManager($conn, $driver);
