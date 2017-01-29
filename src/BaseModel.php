@@ -42,9 +42,17 @@ abstract class BaseModel implements Serializable
 {
     use ActionCreators;
 
-
     public static $yamlExtension;
+
     public static $yamlEncoding = YAML_UTF8_ENCODING;
+
+    public static $connectionManager;
+
+    /**
+     * @var array Mixin classes are emtpy. (MixinDeclareSchema)
+     * */
+    public static $mixin_classes = array();
+
 
     const SCHEMA_PROXY_CLASS = '';
 
@@ -66,10 +74,6 @@ abstract class BaseModel implements Serializable
 
     public static $_cacheInstance;
 
-    /**
-     * @var array Mixin classes are emtpy. (MixinDeclareSchema)
-     * */
-    public static $mixin_classes = array();
 
     /**
      * Get the RuntimeColumn objects from RuntimeSchema object.
@@ -431,8 +435,7 @@ abstract class BaseModel implements Serializable
      */
     public function dbQuery($dsId, $sql)
     {
-        $connManager = ConnectionManager::getInstance();
-        $conn = $connManager->getConnection($dsId);
+        $conn = static::$connectionManager->getConnection($dsId);
         if (!$conn) {
             throw new RuntimeException("data source $dsId is not defined.");
         }
@@ -457,8 +460,7 @@ abstract class BaseModel implements Serializable
             $dsId = $this->readSourceId;
         }
 
-        $connManager = ConnectionManager::getInstance();
-        $conn = $connManager->getConnection($dsId);
+        $conn = static::$connectionManager->getConnection($dsId);
         $stm = $conn->prepare($sql);
         $stm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
         $stm->execute($args);
@@ -934,7 +936,7 @@ abstract class BaseModel implements Serializable
      */
     static public function defaultRepo()
     {
-        $connManager = ConnectionManager::getInstance();
+        $connManager = static::$connectionManager;
         $write = $connManager->getConnection(static::WRITE_SOURCE_ID);
         $read  = $connManager->getConnection(static::READ_SOURCE_ID);
         return static::createRepo($write, $read);
@@ -949,7 +951,7 @@ abstract class BaseModel implements Serializable
      */
     static public function repo($write = null, $read = null)
     {
-        $connManager = ConnectionManager::getInstance();
+        $connManager = static::$connectionManager;
         if (!$read) {
             if (!$write) {
                 return static::defaultRepo();

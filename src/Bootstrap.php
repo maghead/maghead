@@ -15,16 +15,6 @@ use ArrayAccess;
 
 class Bootstrap
 {
-    static public function loadDataSources(Config $config, ConnectionManager $connectionManager)
-    {
-        foreach ($config->getDataSources() as $nodeId => $dsConfig) {
-            $connectionManager->addDataSource($nodeId, $dsConfig);
-        }
-        if ($nodeId = $config->getDefaultDataSourceId()) {
-            $connectionManager->setDefaultDataSourceId($nodeId);
-        }
-    }
-
     /**
      * Run bootstrap script if it's defined in the config.
      * This is used for the command-line app.
@@ -69,9 +59,28 @@ class Bootstrap
         }
     }
 
+    static public function setupDataSources(Config $config, ConnectionManager $connectionManager)
+    {
+        foreach ($config->getDataSources() as $nodeId => $dsConfig) {
+            $connectionManager->addDataSource($nodeId, $dsConfig);
+        }
+        if ($nodeId = $config->getDefaultDataSourceId()) {
+            $connectionManager->setDefaultDataSourceId($nodeId);
+        }
+    }
+
+
+    static public function setupGlobalVars(Config $config, ConnectionManager $connectionManager)
+    {
+        BaseModel::$connectionManager = $connectionManager;
+        BaseCollection::$connectionManager = $connectionManager;
+    }
+
     static public function run(Config $config, $connectOnly = false)
     {
-        self::loadDataSources($config, ConnectionManager::getInstance());
+        $connectionManager = ConnectionManager::getInstance();
+        self::setupDataSources($config, $connectionManager);
+        self::setupGlobalVars($config, $connectionManager);
         if (PHP_SAPI === "cli" && !$connectOnly) {
             self::loadBootstrap($config);
             self::loadSchemaLoader($config);

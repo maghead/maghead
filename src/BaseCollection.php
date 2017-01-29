@@ -36,6 +36,8 @@ class BaseCollection
 
     public static $jsonOptions = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP;
 
+    public static $connectionManager;
+
     protected $_lastSql;
 
     protected $_vars;
@@ -78,6 +80,7 @@ class BaseCollection
     protected $preferredTable;
 
     public $selected;
+
 
     /**
      * $this->defaultOrdering = array( 
@@ -197,7 +200,7 @@ class BaseCollection
     // Because it's used in BaseModel class too
     public function getQueryDriver($dsId)
     {
-        return ConnectionManager::getInstance()->getQueryDriver($dsId);
+        return static::$connectionManager->getQueryDriver($dsId);
     }
 
     protected function getWriteQueryDriver()
@@ -227,7 +230,7 @@ class BaseCollection
     {
         $dsId = static::getSchema()->getReadSourceId();
 
-        $conn = ConnectionManager::getInstance()->getConnection($dsId);
+        $conn = static::$connectionManager->getConnection($dsId);
         $driver = $conn->getQueryDriver();
 
         $q = new SelectQuery();
@@ -287,7 +290,7 @@ class BaseCollection
     {
         /* fetch by current query */
         $dsId = static::getSchema()->getReadSourceId();
-        $conn = ConnectionManager::getInstance()->getConnection($dsId);
+        $conn = static::$connectionManager->getConnection($dsId);
         $driver = $conn->getQueryDriver();
         $arguments = new ArgumentArray();
         $this->_lastSql = $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
@@ -299,7 +302,7 @@ class BaseCollection
     public function sql()
     {
         $dsId = static::getSchema()->getReadSourceId();
-        $conn = ConnectionManager::getInstance()->getConnection($dsId);
+        $conn = static::$connectionManager->getConnection($dsId);
         $driver = $conn->getQueryDriver();
         $arguments = new ArgumentArray();
         $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
@@ -317,8 +320,7 @@ class BaseCollection
     {
         $dsId = static::getSchema()->getReadSourceId();
 
-        $conn = ConnectionManager::getInstance()
-                    ->getConnection($dsId);
+        $conn = static::$connectionManager->getConnection($dsId);
 
         $driver = $conn->getQueryDriver();
 
@@ -470,7 +472,7 @@ class BaseCollection
         $schema = static::getSchema();
         $dsId = $schema->getWriteSourceId();
 
-        $conn = ConnectionManager::getInstance()->getConnection($dsId);
+        $conn = static::$connectionManager->getConnection($dsId);
         $driver = $conn->getQueryDriver();
 
         $query = new DeleteQuery();
@@ -503,7 +505,7 @@ class BaseCollection
         $schema = static::getSchema();
         $dsId = $schema->getWriteSourceId();
 
-        $conn = ConnectionManager::getInstance()->getConnection($dsId);
+        $conn = static::$connectionManager->getConnection($dsId);
         $driver = $conn->getQueryDriver();
 
         $query = new UpdateQuery();
@@ -642,7 +644,7 @@ class BaseCollection
         if (!$dsId) {
             $dsId = static::getSchema()->getReadSourceId();
         }
-        $this->handle = ConnectionManager::getInstance()->getConnection($dsId)->prepareAndExecute($sql, $args);
+        $this->handle = static::$connectionManager->getConnection($dsId)->prepareAndExecute($sql, $args);
     }
 
     /**
