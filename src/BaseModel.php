@@ -362,7 +362,7 @@ abstract class BaseModel implements Serializable
     protected function invokeAllMixinMethods($m, $a)
     {
         foreach (static::$mixin_classes as $mixinClass) {
-            // if we found it, just call it and return the result. 
+            // If we found it, just call it and return the result. 
             if (method_exists($mixinClass, $m)) {
                 call_user_func_array(array($mixinClass, $m), array_merge(array($this), $a));
             }
@@ -370,13 +370,9 @@ abstract class BaseModel implements Serializable
     }
 
     /**
-     * To support static operation methods like ::create, ::update, we 
-     * can not define methods with the same name, so that 
-     * we dispatch these methods from the magic method __call.
-     *
      * __call method is slower than normal method, because there are
-     * one more method table to look up. you should call `create` method
-     * if you need a better performance.
+     * one more method table to look up. you should call methods directly
+     * if you need better performance.
      */
     public function __call($m, $a)
     {
@@ -386,7 +382,6 @@ abstract class BaseModel implements Serializable
             return call_user_func_array(array($schema, $m), $a);
         }
 
-        // then it's the mixin methods
         if ($mClass = static::findMixinMethodClass($m)) {
             return $this->invokeMixinClassMethod($mClass, $m, $a);
         }
