@@ -44,9 +44,12 @@ class AccessorGenerator
                 case "DateTime":
                     return [
                         "if (\$val instanceof DateTime) {",
-                        "   if (\$driver instanceof PDOMySQLDriver) {",
-                        "        return \$val->format('Y-m-d H:i:s');",
-                        "    }",
+                        // FIXME: the deflator requires QueryDriver to deflate
+                        // the object because the format may vary based on
+                        // different driver type.
+                        // "   if (\$driver instanceof PDOMySQLDriver) {",
+                        // "        return \$val->format('Y-m-d H:i:s');",
+                        // "    }",
                         "",
                         "    return \$val->format(DateTime::ATOM);",
                         "}",
