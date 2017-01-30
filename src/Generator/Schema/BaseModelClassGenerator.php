@@ -6,13 +6,13 @@ use ReflectionClass;
 use ReflectionMethod;
 use InvalidArgumentException;
 
-use ClassTemplate\ClassFile;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Manager\ConnectionManager;
 use Doctrine\Common\Inflector\Inflector;
 
 use Maghead\Generator\PDOStatementGenerator;
+use Maghead\Generator\AccessorGenerator;
 
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\Universal\Query\DeleteQuery;
@@ -20,6 +20,7 @@ use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\ArgumentArray;
 
+use ClassTemplate\ClassFile;
 use CodeGen\Statement\RequireStatement;
 use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
@@ -73,8 +74,11 @@ class BaseModelClassGenerator
         $cTemplate->useClass('Maghead\\Inflator');
         $cTemplate->useClass('SQLBuilder\\Bind');
         $cTemplate->useClass('SQLBuilder\\ArgumentArray');
-        $cTemplate->useClass('PDO');
         $cTemplate->useClass('SQLBuilder\\Universal\\Query\\InsertQuery');
+        $cTemplate->useClass('SQLBuilder\\Driver\\BaseDriver');
+        $cTemplate->useClass('SQLBuilder\\Driver\\PDOMySQLDriver');
+        $cTemplate->useClass('PDO');
+        $cTemplate->useClass('DateTime');
 
         $cTemplate->addConsts(array(
             'SCHEMA_CLASS'       => get_class($schema),
@@ -136,43 +140,24 @@ class BaseModelClassGenerator
 
 
             if ($schema->enableColumnAccessors) {
+                $booleanAccessor = false;
                 if (preg_match('/^is[A-Z]/', $propertyName)) {
+                    $booleanAccessor = true;
                     $accessorMethodName = $propertyName;
                 } else if ($column->isa === "bool") {
                     // for column names like "is_confirmed", don't prepend another "is" prefix to the accessor name.
+                    $booleanAccessor = true;
                     $accessorMethodName = 'is'.ucfirst($propertyName);
                 } else {
                     $accessorMethodName = 'get'.ucfirst($propertyName);
                 }
+                AccessorGenerator::generateGetterAccessor($cTemplate, $column, $accessorMethodName, $propertyName);
 
-                $cTemplate->addMethod('public', $accessorMethodName, [], function() use ($column, $columnName, $propertyName) {
-                    if ($column->get('inflator')) {
-                        return [
-                            "if (\$c = \$this->getSchema()->getColumn(\"$columnName\")) {",
-                            "     return \$c->inflate(\$this->{$columnName}, \$this);",
-                            "}",
-                            "return \$this->{$columnName};",
-                        ];
-                    }
-                    if ($column->isa === "int") {
-                        return ["return intval(\$this->{$columnName});"];
-                    } else if ($column->isa === "str") {
-                        return ["return \$this->{$columnName};"];
-                    } else if ($column->isa === "bool") {
-                        return [
-                            "\$value = \$this->{$columnName};",
-                            "if (\$value === '' || \$value === null) {",
-                            "   return null;",
-                            "}",
-                            "return boolval(\$value);",
-                        ];
-                    } else if ($column->isa === "float") {
-                        return ["return floatval(\$this->{$columnName});"];
-                    } else if ($column->isa === "json") {
-                        return ["return json_decode(\$this->{$columnName});"];
-                    }
-                    return ["return Inflator::inflate(\$this->{$columnName}, '{$column->isa}');"];
-                });
+                /*
+                if (!$booleanAccessor) {
+                    AccessorGenerator::generateSetterAccessor($cTemplate, $column, 'set'.ucfirst($propertyName), $propertyName);
+                }
+                */
             }
         }
 

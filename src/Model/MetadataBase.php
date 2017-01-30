@@ -6,8 +6,11 @@ use Maghead\Result;
 use Maghead\Inflator;
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
-use PDO;
 use SQLBuilder\Universal\Query\InsertQuery;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\PDOMySQLDriver;
+use PDO;
+use DateTime;
 use Maghead\BaseModel;
 class MetadataBase
     extends BaseModel
