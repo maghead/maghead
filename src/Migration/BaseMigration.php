@@ -9,7 +9,7 @@ use SQLBuilder\Driver\BaseDriver;
 use Maghead\Console;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\DynamicSchemaDeclare;
-use Maghead\SqlBuilder\SqlBuilder;
+use Maghead\TableBuilder\TableBuilder;
 use Maghead\ServiceContainer;
 use CLIFramework\Logger;
 use PDO;
@@ -33,7 +33,7 @@ class BaseMigration
     protected $logger;
 
     /**
-     * @var Maghead\SqlBuilder\BaseBuilder
+     * @var Maghead\TableBuilder\BaseBuilder
      */
     protected $builder;
 
@@ -46,7 +46,7 @@ class BaseMigration
             $logger = $c['logger'] ?: Console::getInstance()->getLogger();
         }
         $this->logger = $logger;
-        $this->builder = SqlBuilder::create($driver);
+        $this->builder = TableBuilder::create($driver);
     }
 
     /**

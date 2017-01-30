@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\SqlBuilder;
+namespace Maghead\TableBuilder;
 
 use Maghead\Schema;
 use Maghead\Schema\SchemaInterface;

@@ -5,7 +5,7 @@ namespace Maghead\Command;
 use CLIFramework\Logger;
 use Maghead\Manager\MetadataManager;
 use Maghead\Schema;
-use Maghead\SqlBuilder\SqlBuilder;
+use Maghead\TableBuilder\TableBuilder;
 use Maghead\Manager\ConnectionManager;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
@@ -80,7 +80,7 @@ DOC;
                 break;
             }
 
-            $sqlBuilder = SqlBuilder::create($driver, [
+            $sqlBuilder = TableBuilder::create($driver, [
                 'rebuild' => $options->rebuild,
                 'clean' => $options->clean,
             ]);
@@ -102,7 +102,7 @@ DOC;
             $conn = $connectionManager->getConnection($id);
             $driver = $connectionManager->getQueryDriver($id);
 
-            $sqlBuilder = SqlBuilder::create($driver, [
+            $sqlBuilder = TableBuilder::create($driver, [
                 'rebuild' => $options->rebuild,
                 'clean' => $options->clean,
             ]);

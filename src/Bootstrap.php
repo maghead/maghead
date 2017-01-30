@@ -2,7 +2,7 @@
 
 namespace Maghead;
 
-use Maghead\SqlBuilder\BaseBuilder;
+use Maghead\TableBuilder\BaseBuilder;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\SchemaFinder;
 use Maghead\Manager\ConnectionManager;

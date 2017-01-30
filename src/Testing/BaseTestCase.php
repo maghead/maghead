@@ -3,7 +3,7 @@
 namespace Maghead\Testing;
 
 use Maghead\Manager\ConnectionManager;
-use Maghead\SqlBuilder\SqlBuilder;
+use Maghead\TableBuilder\TableBuilder;
 use Maghead\BaseModel;
 use Maghead\ConfigLoader;
 use Maghead\Schema\SchemaGenerator;
@@ -197,7 +197,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     protected function buildSchemaTable(PDO $conn, BaseDriver $driver, DeclareSchema $schema, array $options = ['rebuild' => true])
     {
-        $builder = SqlBuilder::create($driver, $options);
+        $builder = TableBuilder::create($driver, $options);
         $sqls = array_filter(array_merge($builder->prepare(), $builder->build($schema), $builder->finalize()));
         foreach ($sqls as $sql) {
             $conn->query($sql);

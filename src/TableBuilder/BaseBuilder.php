@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\SqlBuilder;
+namespace Maghead\TableBuilder;
 
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;

@@ -2,7 +2,7 @@
 
 namespace Maghead\Manager;
 
-use Maghead\SqlBuilder\BaseBuilder;
+use Maghead\TableBuilder\BaseBuilder;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Connection;
 use Maghead\PDOExceptionPrinter;
@@ -14,7 +14,7 @@ class TableManager
     protected $conn;
 
     /**
-     * @var Maghead\SqlBuilder\BaseBuilder
+     * @var Maghead\TableBuilder\BaseBuilder
      */
     protected $builder;
 

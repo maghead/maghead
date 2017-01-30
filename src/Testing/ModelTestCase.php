@@ -4,7 +4,7 @@ namespace Maghead\Testing;
 
 use Maghead\Utils\ClassUtils;
 use Maghead\SeedBuilder;
-use Maghead\SqlBuilder\SqlBuilder;
+use Maghead\TableBuilder\TableBuilder;
 use Maghead\TableParser\TableParser;
 use Maghead\Schema\SchemaGenerator;
 use Maghead\Schema\SchemaCollection;
@@ -63,7 +63,7 @@ abstract class ModelTestCase extends BaseTestCase
             });
         }
 
-        $this->sqlBuilder = SqlBuilder::create($this->queryDriver, ['rebuild' => $rebuild]);
+        $this->sqlBuilder = TableBuilder::create($this->queryDriver, ['rebuild' => $rebuild]);
 
         $this->tableManager = new TableManager($this->conn, $this->sqlBuilder, $this->logger);
         $this->tableManager->build($schemas);

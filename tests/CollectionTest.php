@@ -1,5 +1,5 @@
 <?php
-use Maghead\SqlBuilder;
+use Maghead\TableBuilder;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\Author;

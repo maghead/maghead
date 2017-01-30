@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\SqlBuilder;
+namespace Maghead\TableBuilder;
 
 use Exception;
 use SQLBuilder\Driver\BaseDriver;
@@ -8,7 +8,7 @@ use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 
-class SqlBuilder
+class TableBuilder
 {
     public static function create(BaseDriver $driver, array $options = array())
     {

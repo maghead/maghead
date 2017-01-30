@@ -61,7 +61,7 @@ class MetadataManager implements ArrayAccess, IteratorAggregate
         // this will be needed for the compatibility of the older version lazyrecord.
         if (!in_array('__meta__', $tables)) {
             $schema = new \Maghead\Model\MetadataSchema();
-            $builder = \Maghead\SqlBuilder\SqlBuilder::create($this->driver);
+            $builder = \Maghead\TableBuilder\TableBuilder::create($this->driver);
             $sqls = $builder->build($schema);
             foreach ($sqls as $sql) {
                 $this->connection->query($sql);
