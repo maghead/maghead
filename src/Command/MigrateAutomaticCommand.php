@@ -51,6 +51,7 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
             }
         }
 
+        // TODO: this could be refactored with MigrationManager
         $this->logger->info("Performing automatic upgrade over data source: $dsId");
 
         $tableSchemas = SchemaLoader::loadSchemaTableMap();
