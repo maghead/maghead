@@ -5,6 +5,8 @@ namespace Maghead\Command;
 use Maghead\Migration\MigrationRunner;
 use Maghead\Migration\MigrationLoader;
 use Maghead\Migration\AutomaticMigration;
+use Maghead\Manager\MigrationManager;
+
 use Maghead\Schema\SchemaLoader;
 use Maghead\ServiceContainer;
 use Maghead\Backup\MySQLBackup;
@@ -49,11 +51,26 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
             }
         }
 
-        $runner = new MigrationRunner($this->logger, $dsId);
         $this->logger->info("Performing automatic upgrade over data source: $dsId");
 
         $tableSchemas = SchemaLoader::loadSchemaTableMap();
-        $runner->runUpgradeAutomatically($conn, $driver, $tableSchemas, $this->options);
+        $script = new AutomaticMigration($conn, $driver, $this->logger, $this->options);
+        try {
+            $this->logger->info('Begining transaction...');
+            $conn->beginTransaction();
+
+            // where to find the schema?
+            $script->upgrade($tableSchemas);
+
+            $this->logger->info('Committing...');
+            $conn->commit();
+        } catch (Exception $e) {
+            $this->logger->error('Exception was thrown: '.$e->getMessage());
+            $this->logger->warn('Rolling back ...');
+            $conn->rollback();
+            $this->logger->warn('Recovered, escaping...');
+            throw $e;
+        }
         $this->logger->info('Done.');
     }
 }

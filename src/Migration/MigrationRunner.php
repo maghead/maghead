@@ -9,29 +9,21 @@ use Maghead\ServiceContainer;
 use GetOptionKit\OptionResult;
 use CLIFramework\Logger;
 use SQLBuilder\Driver\BaseDriver;
+
 use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 class MigrationRunner
 {
+    protected $scripts;
+
     protected $logger;
 
-    protected $dataSourceIds = array();
-
-    protected $connectionManager;
-
-    public function __construct(Logger $logger = null, $dsIds)
+    public function __construct(array $scripts, Logger $logger)
     {
-        if (!$logger) {
-            $c = ServiceContainer::getInstance();
-            $logger = $c['logger'];
-        }
+        $this->scripts = $scripts;
         $this->logger = $logger;
-        $this->connectionManager = ConnectionManager::getInstance();
-
-        // XXX: get data source id list from config loader
-        $this->dataSourceIds = (array) $dsIds;
     }
 
     public function getLastMigrationId(Connection $conn, BaseDriver $driver)
@@ -59,41 +51,65 @@ class MigrationRunner
      * we use the data source ID to get the migration timestamp 
      * and filter the migration script.
      *
-     * @param string $dsId
+     * @return file[] scripts
      */
     public function getUpgradeScripts(Connection $conn, BaseDriver $driver)
     {
-        $lastMigrationId = $this->getLastMigrationId($conn, $driver);
-        $this->logger->debug("Found last migration id: $lastMigrationId");
-        $scripts = MigrationLoader::getDeclaredMigrationScripts();
-        return array_filter($scripts, function ($class) use ($lastMigrationId) {
+        $meta = new MetadataManager($conn, $driver);
+        $timestamp = $meta['migration'] ?: 0;
+
+        $scripts = array_filter($this->scripts, function ($class) use ($timestamp) {
             $id = $class::getId();
 
-            return $id > $lastMigrationId;
+            return $id > $timestamp;
         });
+        usort($scripts, function($a, $b) {
+            return $a::getId() <=> $b::getId();
+        });
+        return $scripts;
     }
 
     public function getDowngradeScripts(Connection $conn, BaseDriver $driver)
     {
-        $scripts = MigrationLoader::getDeclaredMigrationScripts();
-        $lastMigrationId = $this->getLastMigrationId($conn, $driver);
+        $meta = new MetadataManager($conn, $driver);
+        $timestamp = $meta['migration'] ?: 0;
 
-        return array_filter($scripts, function ($class) use ($lastMigrationId) {
+        $scripts = array_filter($this->scripts, function ($class) use ($timestamp) {
             $id = $class::getId();
 
-            return $id <= $lastMigrationId;
+            return $id <= $timestamp;
         });
+        usort($scripts, function($a, $b) {
+            return $b::getId() <=> $a::getId();
+        });
+        return $scripts;
     }
+
 
     /**
      * Run downgrade scripts.
      */
-    public function runDowngrade(Connection $conn, BaseDriver $driver, array $scripts = null, $steps = 1)
+    public function runDowngrade(Connection $conn, BaseDriver $driver, $steps = 1)
     {
-        if (!$scripts) {
-            $scripts = $this->getDowngradeScripts($conn, $driver);
+        $meta = new MetadataManager($conn, $driver);
+        $timestamp = $meta['migration'] ?: 0;
+        $scripts = $this->getDowngradeScripts($conn, $driver);
+
+        if ($steps) {
+            $scripts = array_slice($scripts, 0, $steps);
         }
+
+        if (count($scripts) == 0) {
+            $this->logger->info('No migration script found.');
+            return;
+        }
+
         $this->logger->info('Found '.count($scripts).' migration scripts to run downgrade!');
+
+        foreach ($scripts as $idx => $cls) {
+            $this->logger->info("{$idx}. $cls::upgrade");
+        }
+
         while ($steps--) {
             // downgrade a migration one at one time.
             if ($script = array_pop($scripts)) {
@@ -112,17 +128,25 @@ class MigrationRunner
     /**
      * Run upgrade scripts.
      */
-    public function runUpgrade(Connection $conn, BaseDriver $driver, array $scripts = null)
+    public function runUpgrade(Connection $conn, BaseDriver $driver, $steps = 0)
     {
-        if (!$scripts) {
-            $scripts = $this->getUpgradeScripts($conn, $driver);
-            if (count($scripts) == 0) {
-                $this->logger->info('No migration script found.');
+        $scripts = $this->getUpgradeScripts($conn, $driver);
 
-                return;
-            }
+        if ($steps) {
+            $scripts = array_slice($scripts, 0, $steps);
         }
+
+        if (count($scripts) == 0) {
+            $this->logger->info('No migration script found.');
+            return;
+        }
+
         $this->logger->info('Found '.count($scripts).' migration scripts to run upgrade!');
+
+        foreach ($scripts as $idx => $cls) {
+            $this->logger->info("{$idx}. $cls::downgrade");
+        }
+
         try {
             $this->logger->info('Begining transaction...');
             $conn->beginTransaction();
@@ -138,27 +162,6 @@ class MigrationRunner
             $this->logger->error('Rolling back ...');
             $conn->rollback();
             $this->logger->error('Recovered, escaping...');
-            throw $e;
-        }
-    }
-
-    public function runUpgradeAutomatically(Connection $conn, BaseDriver $driver, array $schemas, OptionResult $options = null)
-    {
-        $script = new AutomaticMigration($conn, $driver, $this->logger, $options);
-        try {
-            $this->logger->info('Begining transaction...');
-            $conn->beginTransaction();
-
-            // where to find the schema?
-            $script->upgrade($schemas);
-
-            $this->logger->info('Committing...');
-            $conn->commit();
-        } catch (Exception $e) {
-            $this->logger->error('Exception was thrown: '.$e->getMessage());
-            $this->logger->warn('Rolling back ...');
-            $conn->rollback();
-            $this->logger->warn('Recovered, escaping...');
             throw $e;
         }
     }

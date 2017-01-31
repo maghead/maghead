@@ -3,6 +3,7 @@
 namespace Maghead\Command;
 
 use Maghead\Migration\MigrationRunner;
+use Maghead\Migration\MigrationLoader;
 use Maghead\Manager\ConnectionManager;
 
 class MigrateStatusCommand extends MigrateBaseCommand
@@ -25,7 +26,9 @@ class MigrateStatusCommand extends MigrateBaseCommand
         $conn = $connectionManager->getConnection($dsId);
         $driver = $connectionManager->getQueryDriver($dsId);
 
-        $runner = new MigrationRunner($this->logger, $dsId);
+        $scripts = MigrationLoader::getDeclaredMigrationScripts();
+
+        $runner = new MigrationRunner($scripts, $this->logger);
         $scripts = $runner->getUpgradeScripts($conn, $driver);
         $count = count($scripts);
         $this->logger->info('Found '.$count.($count > 1 ? ' migration scripts' : ' migration script').' to be executed.');

@@ -59,15 +59,16 @@ class MigrationGeneratorTest extends ModelTestCase
         $column = $userSchema->getColumn('account');
         */
 
-        // run migration
-        $runner = new MigrationRunner($this->logger, $this->getDriverType());
-        $runner->resetMigrationId($this->conn, $this->queryDriver);
-
         MigrationLoader::findIn('tests/migrations_testing');
 
         // XXX: PHPUnit can't run this test in separated unit test since
         // there is a bug of serializing the global array, this assertion will get 5 instead of the expected 1.
         $scripts = MigrationLoader::getDeclaredMigrationScripts();
+
+        // run migration
+        $runner = new MigrationRunner($scripts, $this->logger);
+        $runner->resetMigrationId($this->conn, $this->queryDriver);
+
 
 
         $this->assertNotEmpty($scripts);

@@ -2,7 +2,8 @@
 
 namespace Maghead\Command;
 
-use Maghead\Migration\MigrationRunner;
+use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\MigrationManager;
 
 class MigrateDowngradeCommand extends MigrateBaseCommand
 {
@@ -18,26 +19,33 @@ class MigrateDowngradeCommand extends MigrateBaseCommand
 
     public function execute()
     {
-        $connection = $this->getCurrentConnection();
-        $driver = $this->getCurrentQueryDriver();
-        if ($this->options->backup) {
-            if (!$driver instanceof PDOMySQLDriver) {
-                $this->logger->error('backup is only supported for MySQL');
 
-                return false;
+        $connectionManager = ConnectionManager::getInstance();
+        $migrationManager = new MigrationManager($connectionManager, $this->logger);
+        if ($dsId = $this->getCurrentDataSourceId()) {
+
+            /*
+            if ($this->options->backup) {
+                $connection = $this->getCurrentConnection();
+                if (!$driver instanceof PDOMySQLDriver) {
+                    $this->logger->error('backup is only supported for MySQL');
+
+                    return false;
+                }
+                $this->logger->info('Backing up database...');
+                $backup = new MySQLBackup();
+                if ($dbname = $backup->incrementalBackup($connection)) {
+                    $this->logger->info("Backup at $dbname");
+                }
             }
-            $this->logger->info('Backing up database...');
-            $backup = new MySQLBackup();
-            if ($dbname = $backup->incrementalBackup($connection)) {
-                $this->logger->info("Backup at $dbname");
-            }
+            */
+
+            $migrationManager->downgrade([$dsId], 1);
+
+        } else {
+
+            $migrationManager->downgrade();
+
         }
-
-        $dsId = $this->getCurrentDataSourceId();
-
-        $runner = new MigrationRunner($this->logger, $dsId);
-        $this->logger->info("Performing downgrade over data source: $dsId...");
-        $runner->runDowngrade($connection, $driver);
-        $this->logger->info('Done.');
     }
 }

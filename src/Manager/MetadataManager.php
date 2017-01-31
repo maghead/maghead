@@ -124,7 +124,7 @@ class MetadataManager implements ArrayAccess, IteratorAggregate
      */
     public function getAttribute($key)
     {
-        $stm = $this->connection->prepare('select * from __meta__ where name = :name');
+        $stm = $this->connection->prepare('SELECT * FROM __meta__ WHERE name = :name');
         $stm->execute(array(':name' => $key));
         $data = $stm->fetch(PDO::FETCH_OBJ);
 
