@@ -33,6 +33,7 @@ class UseCommand extends Command
         $args->add('file')
             ->isa('file')
             ->glob('*.yml')
+            ->optional()
             ;
     }
 
@@ -60,7 +61,7 @@ class UseCommand extends Command
         }
 
         if (!$configFile) {
-            throw new Exception('config file is required.');
+            throw new Exception('default config file was not found, however config file is required.');
         }
 
         $this->logger->info("Building config from $configFile");
