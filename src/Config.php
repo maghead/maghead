@@ -21,8 +21,8 @@ class Config implements ArrayAccess
      */
     public function getBootstrap()
     {
-        if (isset($this->stash['bootstrap'])) {
-            return (array) $this->stash['bootstrap'];
+        if (isset($this->stash['cli']['bootstrap'])) {
+            return (array) $this->stash['cli']['bootstrap'];
         }
     }
 

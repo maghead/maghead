@@ -1,6 +1,6 @@
 ---
-bootstrap:
-  - tests/bootstrap.php
+cli:
+  bootstrap: tests/bootstrap.php
 schema:
   auto_id: true
   base_model: \Maghead\BaseModel

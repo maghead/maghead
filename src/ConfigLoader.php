@@ -9,30 +9,6 @@ use Maghead\DSN\DSN;
 use Symfony\Component\Yaml\Yaml;
 use Maghead\Schema\SchemaFinder;
 
-/**
- * Available config key:.
- *
- * schema
- * schema.paths = [ dirpath , path, ... ]
- *
- * seeds = [ script path ]
- * data_source
- * data_source{ ds id } = { 
- *      dsn => ..., 
- *      user => , 
- *      pass => 
- *      connection_options => { ... pdo connection options },
- *      query_options => { 
- *          quote_column => true,
- *          quote_table => true,
- *      }
- * }
- *
- * bootstrap = [ script path, script path ]
- *
- * $config->load();
- * $config->init();
- */
 class ConfigLoader
 {
     /**
@@ -80,7 +56,7 @@ class ConfigLoader
     public function loadFromSymbol($force = false)
     {
         if (file_exists(self::ANCHOR_FILENAME)) {
-            return self::loadFromFile(realpath(self::ANCHOR_FILENAME), $force);
+            return $this->loadFromFile(realpath(self::ANCHOR_FILENAME), $force);
         }
     }
 
@@ -109,9 +85,6 @@ class ConfigLoader
         return $this->currentConfig;
     }
 
-    /**
-     *
-     */
     public static function compile($sourceFile, $force = false)
     {
         $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
