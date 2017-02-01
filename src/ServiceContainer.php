@@ -12,7 +12,7 @@ class ServiceContainer extends Container
     {
         $this['config'] = function ($c) {
             $config = ConfigLoader::loadFromSymbol(true); // force loading
-            Bootstrap::run($config);
+            Bootstrap::setup($config);
             return $config;
         };
 

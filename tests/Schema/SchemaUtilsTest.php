@@ -10,7 +10,7 @@ class SchemaUtilsTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->config = ConfigLoader::loadFromSymbol(true); // force loading
-        Bootstrap::run($this->config);
+        Bootstrap::setup($this->config);
     }
 
     public function testFindSchemasByClassNames()

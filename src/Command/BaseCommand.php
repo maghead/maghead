@@ -23,7 +23,7 @@ class BaseCommand extends Command
         // softly load the config file.
         $this->configLoader = ConfigLoader::getInstance();
         $this->config = $this->configLoader->loadFromSymbol(true); // force loading
-        Bootstrap::run($this->config);
+        Bootstrap::setup($this->config);
     }
 
     public function getConfig()
@@ -31,7 +31,7 @@ class BaseCommand extends Command
         if (!$this->config) {
             $this->configLoader = ConfigLoader::getInstance();
             $this->config = $this->configLoader->loadFromSymbol(true); // force loading
-            Bootstrap::run($this->config);
+            Bootstrap::setup($this->config);
         }
 
         return $this->config;

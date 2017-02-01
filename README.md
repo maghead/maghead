@@ -119,7 +119,7 @@ use Maghead\ConfigLoader;
 use Maghead\Bootstrap;
 
 $config = ConfigLoader::loadFromFile('db/config/database.yml');
-Bootstrap::run($config, true); // setup connection manager
+Bootstrap::setup($config, true); // setup connection manager
 ```
 
 

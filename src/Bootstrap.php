@@ -76,7 +76,7 @@ class Bootstrap
         BaseCollection::$connectionManager = $connectionManager;
     }
 
-    static public function run(Config $config, $connectOnly = false)
+    static public function setup(Config $config, $connectOnly = false)
     {
         $connectionManager = ConnectionManager::getInstance();
         self::setupDataSources($config, $connectionManager);
