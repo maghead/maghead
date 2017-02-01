@@ -27,9 +27,9 @@ class ConfigLoader
 
     const ANCHOR_FILENAME = '.lazy.yml';
 
-    static $inlineLevel = 4;
+    static public $inlineLevel = 4;
 
-    static $indentSpaces = 2;
+    static public $indentSpaces = 2;
 
     protected $currentConfig;
 
