@@ -1,8 +1,7 @@
 <?php
-use Maghead\ConfigLoader;
 use CLIFramework\Logger;
 use Maghead\Testing\ModelTestCase;
-use \Maghead\Schema\SchemaGenerator;
+use Maghead\Schema\SchemaGenerator;
 
 class SchemaGeneratorTest extends ModelTestCase
 {
@@ -26,18 +25,14 @@ class SchemaGeneratorTest extends ModelTestCase
         foreach ($schemas as $schema) {
             if ($result = $g->generateCollectionClass($schema)) {
                 list($class, $file) = $result;
-                ok($class);
-                ok($file);
                 path_ok($file);
                 $this->syntaxTest($file);
             }
 
             if ($classMap = $g->generate(array($schema))) {
                 foreach ($classMap as $class => $file) {
-                    ok($class);
-                    ok($file);
                     path_ok($file, $file);
-                    // $this->syntaxTest($file);
+                    $this->syntaxTest($file);
                     require_once $file;
                 }
             }

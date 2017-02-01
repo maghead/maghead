@@ -158,7 +158,7 @@ class MigrationRunner
             $this->logger->info('Begining transaction...');
             $this->conn->beginTransaction();
             foreach ($scripts as $script) {
-                $migration = new $script($this->conn, $driver, $this->logger);
+                $migration = new $script($this->conn, $this->driver, $this->logger);
                 $migration->upgrade();
                 $this->updateLastMigrationTimestamp($script::getId());
             }

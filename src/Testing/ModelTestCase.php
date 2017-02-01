@@ -2,6 +2,9 @@
 
 namespace Maghead\Testing;
 
+use Maghead\ConfigLoader;
+use Maghead\Bootstrap;
+use Maghead\Manager\ConnectionManager;
 use Maghead\Utils\ClassUtils;
 use Maghead\SeedBuilder;
 use Maghead\TableBuilder\TableBuilder;
@@ -29,7 +32,7 @@ abstract class ModelTestCase extends BaseTestCase
             return $this->markTestSkipped("{$this->onlyDriver} only");
         }
 
-        $this->prepareConnection();
+        parent::setUp();
 
         // Ensure that we use the correct default data source ID
         $this->assertEquals($this->getDataSource(), $this->config->getDefaultDataSourceId());

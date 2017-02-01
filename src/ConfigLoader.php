@@ -26,7 +26,7 @@ class ConfigLoader
 
     static public $indentSpaces = 2;
 
-    protected $currentConfig;
+    static public $currentConfig;
 
     static public function writeToSymbol(Config $config, $targetFile = null)
     {
@@ -52,10 +52,10 @@ class ConfigLoader
     /**
      * This is used when running command line application 
      */
-    public function loadFromSymbol($force = false)
+    static public function loadFromSymbol($force = false)
     {
         if (file_exists(self::ANCHOR_FILENAME)) {
-            return $this->loadFromFile(realpath(self::ANCHOR_FILENAME), $force);
+            return self::loadFromFile(realpath(self::ANCHOR_FILENAME), $force);
         }
     }
 
@@ -64,9 +64,9 @@ class ConfigLoader
      *
      * @param array $config
      */
-    public function loadFromArray(array $config)
+    static public function loadFromArray(array $config)
     {
-        return $this->currentConfig = new Config(self::preprocessConfig($config));
+        return self::$currentConfig = new Config(self::preprocessConfig($config));
     }
 
     /**
@@ -74,14 +74,14 @@ class ConfigLoader
      *
      * @param string $file
      */
-    public function loadFromFile($sourceFile, $force = false)
+    static public function loadFromFile($sourceFile, $force = false)
     {
-        return $this->currentConfig = new Config(self::compile($sourceFile, $force));
+        return self::$currentConfig = new Config(self::compile($sourceFile, $force));
     }
 
-    public function getCurrentConfig()
+    static public function getCurrentConfig()
     {
-        return $this->currentConfig;
+        return self::$currentConfig;
     }
 
     public static function compile($sourceFile, $force = false)

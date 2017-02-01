@@ -145,6 +145,11 @@ class Config implements ArrayAccess
                     ? $this->stash['schema']['paths'] : null;
     }
 
+    public function setAutoId($enabled = true)
+    {
+        $this->stash['schema']['auto_id'] = $enabled;
+    }
+
     public function hasAutoId()
     {
         return isset($this->stash['schema']['auto_id']) ? true : false;

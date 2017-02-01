@@ -53,6 +53,9 @@ class BaseModelClassGenerator
         $writeQueryDriver = $writeConnection->getQueryDriver();
 
         $primaryKey = $schema->primaryKey;
+        if (!$primaryKey) {
+            throw new \Exception("PrimaryKey not found.");
+        }
 
         $cTemplate = new ClassFile($schema->getBaseModelClass());
 

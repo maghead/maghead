@@ -26,9 +26,9 @@ class MigrationGeneratorTest extends ModelTestCase
         $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'tests/migrations');
         $this->assertEquals('20120901_CreateUser.php', $generator->generateFilename('CreateUser', '20120901'));
 
-        list($class, $path) = $generator->generate('UpdateUser', '20120902');
+        list($scriptClass, $path) = $generator->generate('UpdateUser', '20120902');
         // this requires timezone = asia/taipei
-        $this->assertEquals('UpdateUser_1346515200', $class);
+        $this->assertEquals('UpdateUser_1346515200', $scriptClass);
         $this->assertFileExists($path);
         $this->assertEquals('tests/migrations/20120902_UpdateUser.php', $path);
         unlink($path);
@@ -50,9 +50,9 @@ class MigrationGeneratorTest extends ModelTestCase
 
         $finder = new SchemaFinder;
         $finder->find();
-        list($class, $path) = $generator->generateWithDiff('DiffMigration', $this->getDriverType(), [ "users" => new TestApp\Model\UserSchema ], '20120101');
+        list($scriptClass, $path) = $generator->generateWithDiff('DiffMigration', $this->getDriverType(), [ "users" => new TestApp\Model\UserSchema ], '20120101');
         require_once $path;
-        ok($class::getId());
+        ok($scriptClass::getId());
 
         /*
         $userSchema = new TestApp\Model\UserSchema;
@@ -66,15 +66,14 @@ class MigrationGeneratorTest extends ModelTestCase
         $scripts = MigrationLoader::getDeclaredMigrationScripts();
 
         // run migration
-        $runner = new MigrationRunner($this->conn, $this->queryDriver, $this->logger, $scripts);
+        $runner = new MigrationRunner($this->conn, $this->queryDriver, $this->logger, [$scriptClass]);
         $runner->resetMigrationTimestamp();
-
 
         $this->assertNotEmpty($scripts);
         // $this->assertCount(1, $scripts);
 
         // $this->expectOutputRegex('#DiffMigration_1325347200#');
-        $runner->runUpgrade($this->conn, $this->queryDriver, [$class]);
+        $runner->runUpgrade();
 
         # echo file_get_contents($path);
         unlink($path);

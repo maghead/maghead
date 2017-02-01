@@ -46,17 +46,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             return $this->markTestSkipped('pdo extension is required for model testing');
         }
 
-        // The config loader is used to initialize connection manager
-        $configLoader = ConfigLoader::getInstance();
-        $this->config = $config = $configLoader->loadFromSymbol(true);
-        $config->setDefaultDataSourceId($this->getDataSource());
-        $config['schema']['auto_id'] = true;
-
         $this->connManager = ConnectionManager::getInstance();
-        $this->connManager->free();
-
-        Bootstrap::setupDataSources($this->config, ConnectionManager::getInstance());
-        Bootstrap::setupGlobalVars($this->config, ConnectionManager::getInstance());
 
         // $config = self::createNeutralConfigLoader();
         $this->logger = new Logger();
@@ -68,7 +58,21 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         if ($this->onlyDriver !== null && $this->getDataSource() != $this->onlyDriver) {
             return $this->markTestSkipped("{$this->onlyDriver} only");
         }
+
+        // Always reset config from symbol file
+        $this->config = $config = ConfigLoader::loadFromSymbol(true);
+        $config->setDefaultDataSourceId($this->getDataSource());
+        $config->setAutoId();
+
+        Bootstrap::setupDataSources($this->config, $this->connManager);
+        Bootstrap::setupGlobalVars($this->config, $this->connManager);
+
         $this->prepareConnection();
+    }
+
+    public function tearDown()
+    {
+        $this->connManager->free();
     }
 
     protected function prepareConnection()
