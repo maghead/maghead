@@ -197,26 +197,6 @@ Setting migration timestamp to 1347439779
 Done. 1 schema tables were generated into data source 'default'.
 ```
 
-### Writing Application Code
-
-Now you can write your application code,
-But first you need to write your maghead config loader code:
-
-```
-$ vim app.php
-```
-
-```php
-require 'vendor/autoload.php';
-$config = new Maghead\ConfigLoader;
-$config->load( __DIR__ . '/db/config/database.yml');
-$config->init();
-```
-
-The `init` method initializes data sources to ConnectionManager, but it won't
-create connection unless you need to operate your models.
-
-
 ### Sample Code Of Operating The User Model Object
 
 Now append your application code to the end of `app.php` file:

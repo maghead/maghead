@@ -10,9 +10,8 @@ class ServiceContainer extends Container
 {
     public function __construct()
     {
-        $this['config_loader'] = function ($c) {
-            $config = ConfigLoader::getInstance();
-            $config->loadFromSymbol(true); // force loading
+        $this['config'] = function ($c) {
+            $config = ConfigLoader::loadFromSymbol(true); // force loading
             Bootstrap::run($config);
             return $config;
         };
@@ -23,7 +22,7 @@ class ServiceContainer extends Container
 
         $this['schema_finder'] = function ($c) {
             $finder = new SchemaFinder();
-            $finder->paths = $c['config_loader']->getSchemaPaths() ?: [];
+            $finder->paths = $c['config']->getSchemaPaths() ?: [];
 
             return $finder;
         };

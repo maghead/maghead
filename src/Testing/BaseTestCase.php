@@ -47,8 +47,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         }
 
         $this->connManager = ConnectionManager::getInstance();
-
-        // $config = self::createNeutralConfigLoader();
         $this->logger = new Logger();
         $this->logger->setQuiet();
     }
@@ -164,15 +162,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         } else {
             throw new Exception("Can't create data source config from $driver.");
         }
-    }
-
-    public static function createNeutralConfigLoader()
-    {
-        $config = ConfigLoader::getInstance();
-        $config->loaded = true;
-        $config->setConfigStash(array('schema' => array('auto_id' => true)));
-
-        return $config;
     }
 
     public function setConfig(ConfigLoader $config)

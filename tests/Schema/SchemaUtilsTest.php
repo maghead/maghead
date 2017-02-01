@@ -7,12 +7,9 @@ class SchemaUtilsTest extends PHPUnit_Framework_TestCase
 {
     public $config;
 
-    public $loader;
-
     public function setUp()
     {
-        $this->loader = new ConfigLoader;
-        $this->config = $this->loader->loadFromSymbol(true); // force loading
+        $this->config = ConfigLoader::loadFromSymbol(true); // force loading
         Bootstrap::run($this->config);
     }
 

@@ -22,8 +22,7 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
 
     public function testSetDefaultNode()
     {
-        $loader = new ConfigLoader;
-        $config = $loader->loadFromFile(self::TEST_CONFIG);
+        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG);
         $manager = new ConfigManager($config);
         $manager->setDefaultNode('mysql');
         $ret = $manager->save(self::TEST_CONFIG);
@@ -36,16 +35,14 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSetDefaultInexistNode()
     {
-        $loader = new ConfigLoader;
-        $config = $loader->loadFromFile(self::TEST_CONFIG);
+        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG);
         $manager = new ConfigManager($config);
         $manager->setDefaultNode('foo');
     }
 
     public function testRemoveNode()
     {
-        $loader = new ConfigLoader;
-        $config = $loader->loadFromFile(self::TEST_CONFIG);
+        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG);
         $manager = new ConfigManager($config);
         $manager->removeNode('sqlite');
         $manager->removeNode('mysql');
@@ -56,8 +53,7 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
 
     public function testAddNodeWithOptions()
     {
-        $loader = new ConfigLoader;
-        $config = $loader->loadFromFile(self::TEST_CONFIG);
+        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG);
         $manager = new ConfigManager($config);
         $manager->addNode('shard1', 'mysql', [
             'host' => 'localhost',
@@ -72,8 +68,7 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
 
     public function testAddNodeWithoutOptions()
     {
-        $loader = new ConfigLoader;
-        $config = $loader->loadFromFile(self::TEST_CONFIG);
+        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG);
         $manager = new ConfigManager($config);
         $manager->addNode('shard1', 'mysql:host=localhost;dbname=shard1');
         $manager->addNode('shard2', 'mysql:host=localhost;dbname=shard2');
