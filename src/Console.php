@@ -31,8 +31,7 @@ class Console extends Application
         /*
          * Command for building config file.
          */
-        $this->command('build-conf', 'Maghead\\Command\\BuildConfCommand');
-        $this->command('conf',       'Maghead\\Command\\BuildConfCommand');
+        $this->command('use');
         $this->command('init-conf',  'Maghead\\Command\\InitConfCommand');
 
         $this->command('schema'); // the schema command builds all schema files and shows a diff after building new schema

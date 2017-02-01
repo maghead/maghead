@@ -16,7 +16,7 @@ class AllCommandsTest extends CommandTestCase
 
     public function testCommands()
     {
-        ok($this->app->createCommand('Maghead\Command\BuildConfCommand'));
+        ok($this->app->createCommand('Maghead\Command\UseCommand'));
         ok($this->app->createCommand('Maghead\Command\SchemaCommand\BuildCommand'));
         ok($this->app->createCommand('Maghead\Command\BasedataCommand'));
         ok($this->app->createCommand('Maghead\Command\InitCommand'));

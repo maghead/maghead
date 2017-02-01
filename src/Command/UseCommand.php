@@ -4,6 +4,7 @@ namespace Maghead\Command;
 
 use Exception;
 use Maghead\ConfigLoader;
+use CLIFramework\Command;
 
 function cross_symlink($sourcePath, $targetPath)
 {
@@ -14,11 +15,11 @@ function cross_symlink($sourcePath, $targetPath)
     }
 }
 
-class BuildConfCommand extends \CLIFramework\Command
+class UseCommand extends Command
 {
     public function brief()
     {
-        return 'Build configuration file.';
+        return 'Build and use configuration file.';
     }
 
     public function options($opts)

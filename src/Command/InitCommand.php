@@ -25,7 +25,7 @@ class InitCommand extends Command
         $this->mkpath('db/migration');
         $command = $this->createCommand('Maghead\\Command\\InitConfCommand');
         $command->execute();
-        $command = $this->createCommand('Maghead\\Command\\BuildConfCommand');
+        $command = $this->createCommand('Maghead\\Command\\UseCommand');
         $command->execute('db/config/database.yml');
     }
 }
