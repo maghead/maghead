@@ -5,6 +5,7 @@ use Maghead\Manager\MetadataManager;
 use Maghead\Manager\ConnectionManager;
 use Maghead\Migration\MigrationLoader;
 use Maghead\Migration\MigrationRunner;
+use Maghead\Migration\AutomaticMigration;
 use Maghead\Connection;
 use Maghead\ServiceContainer;
 use GetOptionKit\OptionResult;

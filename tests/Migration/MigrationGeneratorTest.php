@@ -67,7 +67,7 @@ class MigrationGeneratorTest extends ModelTestCase
 
         // run migration
         $runner = new MigrationRunner($scripts, $this->logger);
-        $runner->resetMigrationId($this->conn, $this->queryDriver);
+        $runner->resetMigrationTimestamp($this->conn, $this->queryDriver);
 
 
 

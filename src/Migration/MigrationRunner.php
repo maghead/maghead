@@ -14,6 +14,11 @@ use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
+/**
+ * MigrationScript Runner
+ *
+ * The instance should only be for one connection to simplify the APIs.
+ */
 class MigrationRunner
 {
     protected $scripts;
@@ -26,20 +31,20 @@ class MigrationRunner
         $this->logger = $logger;
     }
 
-    public function getLastMigrationId(Connection $conn, BaseDriver $driver)
+    public function getLastMigrationTimestamp(Connection $conn, BaseDriver $driver)
     {
         $meta = new MetadataManager($conn, $driver);
 
         return $meta['migration'] ?: 0;
     }
 
-    public function resetMigrationId(Connection $conn, BaseDriver $driver)
+    public function resetMigrationTimestamp(Connection $conn, BaseDriver $driver)
     {
         $metadata = new MetadataManager($conn, $driver);
         $metadata['migration'] = 0;
     }
 
-    public function updateLastMigrationId(Connection $conn, BaseDriver $driver, $id)
+    public function updateLastMigrationTimestamp(Connection $conn, BaseDriver $driver, $id)
     {
         $metadata = new MetadataManager($conn, $driver);
         $lastId = $metadata['migration'];
@@ -118,7 +123,7 @@ class MigrationRunner
                 $migration->downgrade();
                 if ($nextScript = end($scripts)) {
                     $id = $nextScript::getId();
-                    $this->updateLastMigrationId($conn, $driver, $id);
+                    $this->updateLastMigrationTimestamp($conn, $driver, $id);
                     $this->logger->info("Updated migration timestamp to $id.");
                 }
             }
@@ -153,7 +158,7 @@ class MigrationRunner
             foreach ($scripts as $script) {
                 $migration = new $script($conn, $driver, $this->logger);
                 $migration->upgrade();
-                $this->updateLastMigrationId($conn, $driver, $script::getId());
+                $this->updateLastMigrationTimestamp($conn, $driver, $script::getId());
             }
             $this->logger->info('Committing...');
             $conn->commit();
