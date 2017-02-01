@@ -107,6 +107,22 @@ In the above config file, the `auto_id` means an id column with auto-increment
 integer primary key is automatically inserted into every schema class, so you
 don't need to declare an primary key id column in your every schema file.
 
+### Bootstraping the environment for your application
+
+Here is the simplest bootstraping code:
+
+```
+<?php
+require 'vendor/autoload.php';
+
+use Maghead\ConfigLoader;
+use Maghead\Bootstrap;
+
+$config = ConfigLoader::loadFromFile('db/config/database.yml');
+Bootstrap::run($config, true); // setup connection manager
+```
+
+
 ### Writing Model Schema
 
 Next, write your model schema file:
