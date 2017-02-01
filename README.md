@@ -24,7 +24,6 @@ YAML to pure PHP code to improve the performance of config loading.
 With the simple schema design, you can define your model schema very easily and
 you can even embed closure in your schema classes.
 
-
 Automatic Migration Demonstration
 --------------------------------
 <img src="https://raw.github.com/maghead/maghead/master/assets/images/migration.gif" width="600"/>
@@ -71,7 +70,7 @@ your database settings.
 
 
 ```sh
-composer require maghead/maghead "^3"
+composer require maghead/maghead "4.0.x-dev"
 ```
 
 If you prefer something new, you can require "dev-master"
@@ -91,10 +90,10 @@ then you should provide your schema path in following format:
 
 ```yaml
 ---
-bootstrap:
-- vendor/autoload.php   # load the classloader from composer.
+cli:
+    bootstrap: vendor/autoload.php  # for command-line app, load the classloader from composer.
 schema:
-  auto_id: 1
+  auto_id: 1  # enable automatic primary key (auto increment unsigned int)
   paths:
     - src/    # where you store the schema class files.
 data_sources:
@@ -107,7 +106,6 @@ data_sources:
 In the above config file, the `auto_id` means an id column with auto-increment
 integer primary key is automatically inserted into every schema class, so you
 don't need to declare an primary key id column in your every schema file.
-
 
 ### Writing Model Schema
 
