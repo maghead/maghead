@@ -42,8 +42,9 @@ class MigrationManager
             $driver = $conn->getQueryDriver();
 
             $scripts = MigrationLoader::getDeclaredMigrationScripts();
-            $runner = new MigrationRunner($scripts, $this->logger);
-            $runner->runUpgrade($conn, $driver);
+
+            $runner = new MigrationRunner($conn, $driver, $this->logger, $scripts);
+            $runner->runUpgrade();
 
             $this->logger->info("node $id is successfully migrated.");
         }
@@ -60,7 +61,8 @@ class MigrationManager
             $driver = $conn->getQueryDriver();
 
             $scripts = MigrationLoader::getDeclaredMigrationScripts();
-            $runner = new MigrationRunner($scripts, $this->logger);
+
+            $runner = new MigrationRunner($conn, $driver, $this->logger, $scripts);
             $runner->runDowngrade($conn, $driver);
 
             $this->logger->info("node $id is successfully migrated.");

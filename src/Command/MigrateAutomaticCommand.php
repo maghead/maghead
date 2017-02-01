@@ -2,7 +2,6 @@
 
 namespace Maghead\Command;
 
-use Maghead\Migration\MigrationRunner;
 use Maghead\Migration\MigrationLoader;
 use Maghead\Migration\AutomaticMigration;
 use Maghead\Manager\MigrationManager;

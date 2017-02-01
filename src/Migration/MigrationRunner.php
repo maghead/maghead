@@ -15,9 +15,9 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 /**
- * MigrationScript Runner
+ * MigrationScript Runner.
  *
- * The instance should only be for one connection to simplify the APIs.
+ * The instance should only be used for one connection to simplify the APIs.
  */
 class MigrationRunner
 {
@@ -25,30 +25,36 @@ class MigrationRunner
 
     protected $logger;
 
-    public function __construct(array $scripts, Logger $logger)
+    protected $conn;
+
+    protected $driver;
+
+    protected $metadata;
+
+    public function __construct(Connection $conn, BaseDriver $driver, Logger $logger, array $scripts)
     {
-        $this->scripts = $scripts;
+        $this->conn = $conn;
+        $this->driver = $driver;
         $this->logger = $logger;
+        $this->scripts = $scripts;
+
+        $this->metadata = new MetadataManager($conn, $driver);
     }
 
-    public function getLastMigrationTimestamp(Connection $conn, BaseDriver $driver)
+    public function getLastMigrationTimestamp()
     {
-        $meta = new MetadataManager($conn, $driver);
-
-        return $meta['migration'] ?: 0;
+        return $this->metadata['migration'] ?: 0;
     }
 
-    public function resetMigrationTimestamp(Connection $conn, BaseDriver $driver)
+    public function resetMigrationTimestamp()
     {
-        $metadata = new MetadataManager($conn, $driver);
-        $metadata['migration'] = 0;
+        $this->metadata['migration'] = 0;
     }
 
-    public function updateLastMigrationTimestamp(Connection $conn, BaseDriver $driver, $id)
+    public function updateLastMigrationTimestamp($timestamp)
     {
-        $metadata = new MetadataManager($conn, $driver);
-        $lastId = $metadata['migration'];
-        $metadata['migration'] = $id;
+        $lastId = $this->metadata['migration'];
+        $this->metadata['migration'] = $timestamp;
     }
 
     /**
@@ -58,10 +64,9 @@ class MigrationRunner
      *
      * @return file[] scripts
      */
-    public function getUpgradeScripts(Connection $conn, BaseDriver $driver)
+    public function getUpgradeScripts()
     {
-        $meta = new MetadataManager($conn, $driver);
-        $timestamp = $meta['migration'] ?: 0;
+        $timestamp = $this->getLastMigrationTimestamp();
 
         $scripts = array_filter($this->scripts, function ($class) use ($timestamp) {
             $id = $class::getId();
@@ -74,10 +79,9 @@ class MigrationRunner
         return $scripts;
     }
 
-    public function getDowngradeScripts(Connection $conn, BaseDriver $driver)
+    public function getDowngradeScripts()
     {
-        $meta = new MetadataManager($conn, $driver);
-        $timestamp = $meta['migration'] ?: 0;
+        $timestamp = $this->getLastMigrationTimestamp();
 
         $scripts = array_filter($this->scripts, function ($class) use ($timestamp) {
             $id = $class::getId();
@@ -94,11 +98,10 @@ class MigrationRunner
     /**
      * Run downgrade scripts.
      */
-    public function runDowngrade(Connection $conn, BaseDriver $driver, $steps = 1)
+    public function runDowngrade($steps = 1)
     {
-        $meta = new MetadataManager($conn, $driver);
-        $timestamp = $meta['migration'] ?: 0;
-        $scripts = $this->getDowngradeScripts($conn, $driver);
+        $timestamp = $this->getLastMigrationTimestamp();
+        $scripts = $this->getDowngradeScripts();
 
         if ($steps) {
             $scripts = array_slice($scripts, 0, $steps);
@@ -119,11 +122,11 @@ class MigrationRunner
             // downgrade a migration one at one time.
             if ($script = array_pop($scripts)) {
                 $this->logger->info("Running {$script}::downgrade");
-                $migration = new $script($conn, $driver, $this->logger);
+                $migration = new $script($this->conn, $this->driver, $this->logger);
                 $migration->downgrade();
                 if ($nextScript = end($scripts)) {
                     $id = $nextScript::getId();
-                    $this->updateLastMigrationTimestamp($conn, $driver, $id);
+                    $this->updateLastMigrationTimestamp($id);
                     $this->logger->info("Updated migration timestamp to $id.");
                 }
             }
@@ -133,10 +136,9 @@ class MigrationRunner
     /**
      * Run upgrade scripts.
      */
-    public function runUpgrade(Connection $conn, BaseDriver $driver, $steps = 0)
+    public function runUpgrade($steps = 0)
     {
-        $scripts = $this->getUpgradeScripts($conn, $driver);
-
+        $scripts = $this->getUpgradeScripts();
         if ($steps) {
             $scripts = array_slice($scripts, 0, $steps);
         }
@@ -154,18 +156,18 @@ class MigrationRunner
 
         try {
             $this->logger->info('Begining transaction...');
-            $conn->beginTransaction();
+            $this->conn->beginTransaction();
             foreach ($scripts as $script) {
-                $migration = new $script($conn, $driver, $this->logger);
+                $migration = new $script($this->conn, $driver, $this->logger);
                 $migration->upgrade();
-                $this->updateLastMigrationTimestamp($conn, $driver, $script::getId());
+                $this->updateLastMigrationTimestamp($script::getId());
             }
             $this->logger->info('Committing...');
-            $conn->commit();
+            $this->conn->commit();
         } catch (Exception $e) {
             $this->logger->error(get_class($e).' was thrown: '.$e->getMessage());
             $this->logger->error('Rolling back ...');
-            $conn->rollback();
+            $this->conn->rollback();
             $this->logger->error('Recovered, escaping...');
             throw $e;
         }

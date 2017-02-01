@@ -28,8 +28,9 @@ class MigrateStatusCommand extends MigrateBaseCommand
 
         $scripts = MigrationLoader::getDeclaredMigrationScripts();
 
-        $runner = new MigrationRunner($scripts, $this->logger);
-        $scripts = $runner->getUpgradeScripts($conn, $driver);
+        $runner = new MigrationRunner($conn, $driver, $this->logger, $scripts);
+        $scripts = $runner->getUpgradeScripts();
+
         $count = count($scripts);
         $this->logger->info('Found '.$count.($count > 1 ? ' migration scripts' : ' migration script').' to be executed.');
         foreach ($scripts as $script) {

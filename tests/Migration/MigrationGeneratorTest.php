@@ -66,9 +66,8 @@ class MigrationGeneratorTest extends ModelTestCase
         $scripts = MigrationLoader::getDeclaredMigrationScripts();
 
         // run migration
-        $runner = new MigrationRunner($scripts, $this->logger);
-        $runner->resetMigrationTimestamp($this->conn, $this->queryDriver);
-
+        $runner = new MigrationRunner($this->conn, $this->queryDriver, $this->logger, $scripts);
+        $runner->resetMigrationTimestamp();
 
 
         $this->assertNotEmpty($scripts);
