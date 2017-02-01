@@ -25,11 +25,6 @@ class ConfigLoader
      */
     protected $config;
 
-    /**
-     * @var array class map
-     */
-    protected $classMap = array();
-
     const ANCHOR_FILENAME = '.lazy.yml';
 
     static $inlineLevel = 4;
