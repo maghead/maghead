@@ -24,7 +24,7 @@ before_script:
   - psql -c "create database testing;" -U postgres
   - mysql -uroot -e "create database testing charset utf8;"
   - cp -v db/config/database.travis-ci.yml db/config/database.yml
-  - php bin/maghead build-conf -f db/config/database.yml
+  - php bin/maghead use -f db/config/database.yml
   # - php bin/maghead db create -D=$DB
   - php bin/maghead schema build -f
   - php bin/maghead schema build Maghead\\Model\\MetadataSchema
