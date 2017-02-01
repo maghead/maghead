@@ -4,7 +4,7 @@ services:
 php:
 - 7.0
 - 7.1
-# - hhvm
+- hhvm
 env:
   - DB=mysql                         # only database tests against mysql
   - DB=sqlite    # only database tests against postgresql
@@ -12,7 +12,6 @@ env:
 addons:
   postgresql: "9.3"
 install:
-  - rm -rf vendor/corneltek/serializerkit
   - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - phpenv config-add tests/php.ini
   - phpenv rehash
