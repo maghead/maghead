@@ -22,13 +22,13 @@ class ConfigLoader
 {
     const ANCHOR_FILENAME = '.lazy.yml';
 
-    static public $inlineLevel = 4;
+    public static $inlineLevel = 4;
 
-    static public $indentSpaces = 2;
+    public static $indentSpaces = 2;
 
-    static public $currentConfig;
+    public static $currentConfig;
 
-    static public function writeToSymbol(Config $config, $targetFile = null)
+    public static function writeToSymbol(Config $config, $targetFile = null)
     {
         if (!$targetFile) {
             if (!file_exists(self::ANCHOR_FILENAME)) {
@@ -50,9 +50,9 @@ class ConfigLoader
 
 
     /**
-     * This is used when running command line application 
+     * This is used when running command line application
      */
-    static public function loadFromSymbol($force = false)
+    public static function loadFromSymbol($force = false)
     {
         if (file_exists(self::ANCHOR_FILENAME)) {
             return self::loadFromFile(realpath(self::ANCHOR_FILENAME), $force);
@@ -64,7 +64,7 @@ class ConfigLoader
      *
      * @param array $config
      */
-    static public function loadFromArray(array $config)
+    public static function loadFromArray(array $config)
     {
         return self::$currentConfig = new Config(self::preprocessConfig($config));
     }
@@ -74,12 +74,12 @@ class ConfigLoader
      *
      * @param string $file
      */
-    static public function loadFromFile($sourceFile, $force = false)
+    public static function loadFromFile($sourceFile, $force = false)
     {
         return self::$currentConfig = new Config(self::compile($sourceFile, $force));
     }
 
-    static public function getCurrentConfig()
+    public static function getCurrentConfig()
     {
         return self::$currentConfig;
     }
