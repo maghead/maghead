@@ -9,6 +9,15 @@ use Maghead\DSN\DSN;
 use Symfony\Component\Yaml\Yaml;
 use Maghead\Schema\SchemaFinder;
 
+/**
+ * ConfigLoader provides methods for loading the config file.
+ *
+ * We made ConfigLoader with instance methods because we have to save the
+ * latest loaded config object for DeclareSchema to check some configuration
+ * values.
+ *
+ * You may use ConfigLoader::getInstance() to get the singleton instance.
+ */
 class ConfigLoader
 {
     /**
