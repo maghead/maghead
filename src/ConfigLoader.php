@@ -20,11 +20,6 @@ use Maghead\Schema\SchemaFinder;
  */
 class ConfigLoader
 {
-    /**
-     * The stashed config.
-     */
-    protected $config;
-
     const ANCHOR_FILENAME = '.lazy.yml';
 
     static public $inlineLevel = 4;
