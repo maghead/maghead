@@ -1,7 +1,6 @@
 Maghead
 ==========
 
-[![works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
 [![Build Status](https://travis-ci.org/maghead/maghead.svg?branch=master)](https://travis-ci.org/maghead/maghead)
 [![Coverage Status](https://img.shields.io/coveralls/maghead/maghead.svg)](https://coveralls.io/r/maghead/maghead)
 [![Latest Stable Version](https://poser.pugx.org/maghead/maghead/v/stable.svg)](https://packagist.org/packages/maghead/maghead) 
@@ -11,6 +10,8 @@ Maghead
 [![Latest Unstable Version](https://poser.pugx.org/maghead/maghead/v/unstable.svg)](https://packagist.org/packages/maghead/maghead) 
 [![License](https://poser.pugx.org/maghead/maghead/license.svg)](https://packagist.org/packages/maghead/maghead)
 [![Join the chat at https://gitter.im/c9s/maghead](https://badges.gitter.im/c9s/maghead.svg)](https://gitter.im/c9s/maghead?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+[![Works On My Machine](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
 [![Made in Taiwan](https://img.shields.io/badge/made%20in-taiwan-green.svg)](README.md)
 
 Maghead is an open-source Object-Relational Mapping (ORM) for PHP7.
