@@ -119,7 +119,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         }
     }
 
-
     public function getDriverType()
     {
         return getenv('DB') ?: $this->driver;
@@ -153,40 +152,9 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         }
     }
 
-    public static function createDataSourceConfig($driver)
-    {
-        if ($dsn = self::getDSN($driver)) {
-            $config = array('dsn' => $dsn);
-            $user = self::getDatabaseUser($driver);
-            $pass = self::getDatabasePassword($driver);
-            $config['user'] = $user;
-            $config['pass'] = $pass;
-
-            return $config;
-        } elseif (self::getDatabaseName($driver)) {
-            return [
-                'driver' => $driver,
-                'database' => self::getDatabaseName($driver),
-                'user' => self::getDatabaseUser($driver),
-                'pass' => self::getDatabasePassword($driver),
-            ];
-        } else {
-            throw new Exception("Can't create data source config from $driver.");
-        }
-    }
-
     public function setConfig(ConfigLoader $config)
     {
         $this->config = $config;
-    }
-
-    protected function registerDataSource($driverType)
-    {
-        if ($dataSource = self::createDataSourceConfig($driverType)) {
-            $this->connManager->addDataSource($driverType, $dataSource);
-        } else {
-            $this->markTestSkipped("Data source for $driverType is undefined");
-        }
     }
 
     /**

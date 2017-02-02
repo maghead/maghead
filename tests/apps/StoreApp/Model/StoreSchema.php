@@ -12,6 +12,10 @@ class StoreSchema extends DeclareSchema
 
         $this->column('code')
             ->varchar(12)
-            ->required();
+            ->required()
+            ->findable()
+            ;
+
+        $this->setGlobalTable(true);
     }
 }

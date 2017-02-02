@@ -54,6 +54,14 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public $onUpdate;
 
     /**
+     * @var boolean 
+     *
+     * This is used in sharded environment. By default every table is
+     * local table.
+     */
+    public $isGlobalTable = false;
+
+    /**
      * Constructor of declare schema.
      *
      * The constructor calls `build` method to build the schema information.
@@ -693,6 +701,12 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
 
         return $this;
     }
+
+    public function setGlobalTable($yes = true)
+    {
+        $this->isGlobalTable = $yes;
+    }
+
 
     protected function getCurrentSchemaClass()
     {
