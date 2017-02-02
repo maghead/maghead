@@ -28,14 +28,14 @@ abstract class ModelTestCase extends BaseTestCase
 
     public function setUp()
     {
-        if ($this->onlyDriver !== null && $this->getDataSource() != $this->onlyDriver) {
+        if ($this->onlyDriver !== null && $this->getDefaultDataSourceId() != $this->onlyDriver) {
             return $this->markTestSkipped("{$this->onlyDriver} only");
         }
 
         parent::setUp();
 
         // Ensure that we use the correct default data source ID
-        $this->assertEquals($this->getDataSource(), $this->config->getDefaultDataSourceId());
+        $this->assertEquals($this->getDefaultDataSourceId(), $this->config->getDefaultDataSourceId());
         $this->assertInstanceOf('SQLBuilder\\Driver\\BaseDriver', $this->queryDriver, 'QueryDriver object OK');
 
         // Rebuild means rebuild the database for new tests

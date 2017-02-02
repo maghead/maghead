@@ -51,16 +51,35 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->logger->setQuiet();
     }
 
+    public function getDefaultDataSourceId()
+    {
+        if ($this->dataSource) {
+            return $this->dataSource;
+        }
+
+        return $this->getDriverType();
+    }
+
+    /**
+     * by default we load the config from symbolic file. (this will be created
+     * by the bootstrap script)
+     */
+    protected function loadConfig()
+    {
+        $config = ConfigLoader::loadFromSymbol(true);
+        $config->setDefaultDataSourceId($this->getDefaultDataSourceId());
+        $config->setAutoId();
+        return $config;
+    }
+
     public function setUp()
     {
-        if ($this->onlyDriver !== null && $this->getDataSource() != $this->onlyDriver) {
+        if ($this->onlyDriver !== null && $this->getDefaultDataSourceId() != $this->onlyDriver) {
             return $this->markTestSkipped("{$this->onlyDriver} only");
         }
 
         // Always reset config from symbol file
-        $this->config = $config = ConfigLoader::loadFromSymbol(true);
-        $config->setDefaultDataSourceId($this->getDataSource());
-        $config->setAutoId();
+        $this->config = $this->loadConfig();
 
         Bootstrap::setupDataSources($this->config, $this->connManager);
         Bootstrap::setupGlobalVars($this->config, $this->connManager);
@@ -77,37 +96,29 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     {
         if (!$this->conn) {
             try {
-                $this->conn = $this->connManager->getConnection($this->getDataSource());
+                $this->conn = $this->connManager->getConnection($this->getDefaultDataSourceId());
             } catch (PDOException $e) {
                 if ($this->allowConnectionFailure) {
                     $this->markTestSkipped(
                         sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
-                            $this->getDataSource(),
+                            $this->getDefaultDataSourceId(),
                             $e->getMessage(),
-                            var_export($this->config->getDataSource($this->getDataSource()), true)
+                            var_export($this->config->getDefaultDataSourceId($this->getDefaultDataSourceId()), true)
                         ));
 
                     return;
                 }
                 echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
-                    $this->getDataSource(),
+                    $this->getDefaultDataSourceId(),
                     $e->getMessage(),
-                    var_export($this->config->getDataSource($this->getDataSource()), true)
+                    var_export($this->config->getDefaultDataSourceId($this->getDefaultDataSourceId()), true)
                 );
                 throw $e;
             }
-            $this->queryDriver = $this->connManager->getQueryDriver($this->getDataSource());
+            $this->queryDriver = $this->connManager->getQueryDriver($this->getDefaultDataSourceId());
         }
     }
 
-    public function getDataSource()
-    {
-        if ($this->dataSource) {
-            return $this->dataSource;
-        }
-
-        return $this->getDriverType();
-    }
 
     public function getDriverType()
     {
