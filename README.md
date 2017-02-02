@@ -12,6 +12,9 @@ Maghead
 [![License](https://poser.pugx.org/maghead/maghead/license.svg)](https://packagist.org/packages/maghead/maghead)
 [![Join the chat at https://gitter.im/c9s/maghead](https://badges.gitter.im/c9s/maghead.svg)](https://gitter.im/c9s/maghead?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+![Made in Taiwan](https://img.shields.io/badge/made%20in-taiwan-green.svg)
+
+
 Maghead is an open-source Object-Relational Mapping (ORM) for PHP7.
 
 Maghead uses code generator to generate static code, which reduces runtime
