@@ -81,8 +81,15 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         if ($this->dataSource) {
             return $this->dataSource;
         }
-
         return $this->getCurrentDriverType();
+    }
+
+    /**
+     * By overriding the DB environment variable, we can test specific test suites.
+     */
+    protected function getCurrentDriverType()
+    {
+        return getenv('DB') ?: $this->driver;
     }
 
     /**
@@ -99,7 +106,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        if ($this->onlyDriver !== null && $this->getDefaultDataSourceId() != $this->onlyDriver) {
+        if ($this->onlyDriver !== null && $this->getCurrentDriverType() != $this->onlyDriver) {
             return $this->markTestSkipped("{$this->onlyDriver} only");
         }
 
@@ -137,7 +144,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
                     sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
                         $connId,
                         $e->getMessage(),
-                        var_export($this->config->getDefaultDataSourceId($connId), true)
+                        var_export($this->config->getDataSource($connId), true)
                     ));
 
                 return;
@@ -145,16 +152,12 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
                 $connId,
                 $e->getMessage(),
-                var_export($this->config->getDefaultDataSourceId($connId), true)
+                var_export($this->config->getDataSource($connId), true)
             );
             throw $e;
         }
     }
 
-    protected function getCurrentDriverType()
-    {
-        return getenv('DB') ?: $this->driver;
-    }
 
     /**
      * @return array[] class map
