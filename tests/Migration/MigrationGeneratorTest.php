@@ -11,7 +11,7 @@ use Maghead\Testing\ModelTestCase;
  */
 class MigrationGeneratorTest extends ModelTestCase
 {
-    public $onlyDriver = 'mysql';
+    protected $onlyDriver = 'mysql';
 
     const MIGRATION_SCRIPT_DIR = 'tests/migrations';
 

@@ -28,7 +28,7 @@ use Maghead\Testing\ModelTestCase;
  */
 class MigrationTest extends ModelTestCase
 {
-    public $onlyDriver = 'mysql';
+    protected $onlyDriver = 'mysql';
 
     public function getModels()
     {

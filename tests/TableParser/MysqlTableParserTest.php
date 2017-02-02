@@ -7,7 +7,7 @@ use Maghead\TableParser\MysqlTableParser;
 
 class MysqlTableParserTest extends BaseTestCase
 {
-    public $onlyDriver = 'mysql';
+    protected $onlyDriver = 'mysql';
 
     public function testReferenceQuery()
     {

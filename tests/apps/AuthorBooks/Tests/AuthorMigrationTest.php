@@ -16,7 +16,7 @@ use GetOptionKit\OptionCollection;
 
 class AuthorMigrationTest extends ModelTestCase
 {
-    public $onlyDriver = 'mysql';
+    protected $onlyDriver = 'mysql';
 
     public function getModels()
     {

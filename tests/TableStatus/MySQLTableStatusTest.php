@@ -5,7 +5,7 @@ use AuthorBooks\Model\AuthorSchema;
 
 class MySQLTableStatusTest extends ModelTestCase
 {
-    public $onlyDriver = 'mysql';
+    protected $onlyDriver = 'mysql';
 
     public function getModels()
     {

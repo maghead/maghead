@@ -5,7 +5,7 @@ use Maghead\Connection;
 
 class MySQLBackupTest extends ModelTestCase
 {
-    public $onlyDriver = 'mysql';
+    protected $onlyDriver = 'mysql';
 
     public function getModels()
     {
