@@ -1,0 +1,22 @@
+<?php
+use SQLBuilder\Universal\Syntax\Column;
+use SQLBuilder\Universal\Query\AlterTableQuery;
+use SQLBuilder\Universal\Query\CreateTableQuery;
+use SQLBuilder\Universal\Query\UpdateTableQuery;
+use SQLBuilder\Universal\Query\DeleteTableQuery;
+use SQLBuilder\Universal\Query\InsertTableQuery;
+use SQLBuilder\Universal\Query\CreateIndexQuery;
+use SQLBuilder\Universal\Query\UnionQuery;
+use SQLBuilder\Bind;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Literal;
+class UpdateUser_1346515200
+    extends Maghead\Migration\Migration
+{
+    public function upgrade()
+    {
+    }
+    public function downgrade()
+    {
+    }
+}

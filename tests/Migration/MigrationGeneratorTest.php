@@ -13,9 +13,20 @@ class MigrationGeneratorTest extends ModelTestCase
 {
     public $onlyDriver = 'mysql';
 
+    const MIGRATION_SCRIPT_DIR = 'tests/migrations';
+
     public function getModels()
     {
-        return array();
+        return [];
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        if (! file_exists(self::MIGRATION_SCRIPT_DIR)) {
+            mkdir(self::MIGRATION_SCRIPT_DIR);
+        }
     }
 
     public function testGenerator()
@@ -23,14 +34,16 @@ class MigrationGeneratorTest extends ModelTestCase
         $this->conn->query('DROP TABLE IF EXISTS users;');
         $this->conn->query('CREATE TABLE users (id integer NOT NULL PRIMARY KEY);');
 
-        $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'tests/migrations');
+        $generator = new MigrationGenerator($this->logger, self::MIGRATION_SCRIPT_DIR);
         $this->assertEquals('20120901_CreateUser.php', $generator->generateFilename('CreateUser', '20120901'));
 
         list($scriptClass, $path) = $generator->generate('UpdateUser', '20120902');
-        // this requires timezone = asia/taipei
+        // this requires timezone = Asia/Taipei
+
         $this->assertEquals('UpdateUser_1346515200', $scriptClass);
         $this->assertFileExists($path);
         $this->assertEquals('tests/migrations/20120902_UpdateUser.php', $path);
+        $this->assertFileEquals('tests/migrations/20120902_UpdateUser.php.expected', $path);
         unlink($path);
     }
 
@@ -40,11 +53,7 @@ class MigrationGeneratorTest extends ModelTestCase
         $this->conn->query('DROP TABLE IF EXISTS test');
         $this->conn->query('CREATE TABLE users (account VARCHAR(128) UNIQUE)');
 
-        if (! file_exists('tests/migrations_testing')) {
-            mkdir('tests/migrations_testing');
-        }
-
-        $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'tests/migrations_testing');
+        $generator = new MigrationGenerator($this->logger, self::MIGRATION_SCRIPT_DIR);
 
         ok(class_exists('TestApp\Model\UserSchema', true));
 
