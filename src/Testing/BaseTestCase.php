@@ -21,11 +21,18 @@ use Exception;
 
 abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
-    public $driver = 'sqlite';
 
-    public $dataSource;
+    /**
+     * @var string $driver name
+     *
+     * This is used for filtering test cases for specific database driver. e.g. sqlite, mysql, pgsql... etc
+     */
+    protected $driver = 'sqlite';
 
-    public $onlyDriver;
+    protected $dataSource;
+
+    protected $onlyDriver;
+
 
     protected $connManager;
 
@@ -33,10 +40,18 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * @var Maghead\Connection
+     *
+     * The default connection object.
      */
     protected $conn;
 
+    /**
+     * @var Maghead\QueryDriver
+     *
+     * The query driver object of the default connection.
+     */
     protected $queryDriver;
+
 
     public function __construct($name = null, array $data = array(), $dataName = '')
     {
@@ -51,7 +66,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->logger->setQuiet();
     }
 
-    public function getDefaultDataSourceId()
+    protected function getDefaultDataSourceId()
     {
         if ($this->dataSource) {
             return $this->dataSource;
@@ -84,7 +99,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         Bootstrap::setupDataSources($this->config, $this->connManager);
         Bootstrap::setupGlobalVars($this->config, $this->connManager);
 
-        $this->prepareConnection();
+        $this->setupDefaultConnection();
     }
 
     public function tearDown()
@@ -92,41 +107,43 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->connManager->free();
     }
 
-    protected function prepareConnection()
+
+    protected function setupDefaultConnection()
     {
         if (!$this->conn) {
-            try {
-                $this->conn = $this->connManager->getConnection($this->getDefaultDataSourceId());
-            } catch (PDOException $e) {
-                if ($this->allowConnectionFailure) {
-                    $this->markTestSkipped(
-                        sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
-                            $this->getDefaultDataSourceId(),
-                            $e->getMessage(),
-                            var_export($this->config->getDefaultDataSourceId($this->getDefaultDataSourceId()), true)
-                        ));
-
-                    return;
-                }
-                echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
-                    $this->getDefaultDataSourceId(),
-                    $e->getMessage(),
-                    var_export($this->config->getDefaultDataSourceId($this->getDefaultDataSourceId()), true)
-                );
-                throw $e;
-            }
-            $this->queryDriver = $this->connManager->getQueryDriver($this->getDefaultDataSourceId());
+            $this->conn = $this->setupConnection($this->getDefaultDataSourceId());
+            $this->queryDriver = $this->conn->getQueryDriver();
         }
     }
 
-    public function getCurrentDriverType()
+    protected function setupConnection(string $connId)
     {
-        return getenv('DB') ?: $this->driver;
+        try {
+            // Create the default connection
+            return $this->connManager->getConnection($connId);
+        } catch (PDOException $e) {
+            if ($this->allowConnectionFailure) {
+                $this->markTestSkipped(
+                    sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
+                        $connId,
+                        $e->getMessage(),
+                        var_export($this->config->getDefaultDataSourceId($connId), true)
+                    ));
+
+                return;
+            }
+            echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
+                $connId,
+                $e->getMessage(),
+                var_export($this->config->getDefaultDataSourceId($connId), true)
+            );
+            throw $e;
+        }
     }
 
-    public function setConfig(ConfigLoader $config)
+    protected function getCurrentDriverType()
     {
-        $this->config = $config;
+        return getenv('DB') ?: $this->driver;
     }
 
     /**
@@ -185,6 +202,11 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     {
         return $this->config;
     }
+
+
+    // ==========================================================
+    // Assertion Methods
+    // ==========================================================
 
     public function assertTableExists(PDO $conn, $tableName)
     {
