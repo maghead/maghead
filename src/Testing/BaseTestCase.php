@@ -21,7 +21,6 @@ use Exception;
 
 abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
-
     /**
      * @var string $driver name
      *
@@ -29,8 +28,19 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     protected $driver = 'sqlite';
 
+    /**
+     * @var string
+     *
+     * The data source id for creating default connection.
+     */
     protected $dataSource;
 
+
+    /**
+     * @var string
+     *
+     * This is used for filtering test cases for specific database driver. e.g. sqlite, mysql, pgsql... etc
+     */
     protected $onlyDriver;
 
 

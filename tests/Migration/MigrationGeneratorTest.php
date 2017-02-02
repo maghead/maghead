@@ -61,7 +61,7 @@ class MigrationGeneratorTest extends ModelTestCase
         $finder->find();
 
         list($scriptClass, $path) = $generator->generateWithDiff('DiffMigration',
-            $this->getDriverType(),
+            $this->getCurrentDriverType(),
             [ "users" => new TestApp\Model\UserSchema ],
             '20120101');
 
