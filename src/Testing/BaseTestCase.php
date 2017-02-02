@@ -57,7 +57,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             return $this->dataSource;
         }
 
-        return $this->getDriverType();
+        return $this->getCurrentDriverType();
     }
 
     /**
@@ -119,37 +119,9 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         }
     }
 
-    public function getDriverType()
+    public function getCurrentDriverType()
     {
         return getenv('DB') ?: $this->driver;
-    }
-
-    public static function getDSN($driver)
-    {
-        if ($dsn = getenv('DB_'.strtoupper($driver).'_DSN')) {
-            return $dsn;
-        }
-    }
-
-    public static function getDatabaseName($driver)
-    {
-        if ($name = getenv('DB_'.strtoupper($driver).'_NAME')) {
-            return $name;
-        }
-    }
-
-    public static function getDatabaseUser($driver)
-    {
-        if ($user = getenv('DB_'.strtoupper($driver).'_USER')) {
-            return $user;
-        }
-    }
-
-    public static function getDatabasePassword($driver)
-    {
-        if ($pass = getenv('DB_'.strtoupper($driver).'_PASS')) {
-            return $pass;
-        }
     }
 
     public function setConfig(ConfigLoader $config)
