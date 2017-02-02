@@ -11,9 +11,7 @@ Maghead
 [![Latest Unstable Version](https://poser.pugx.org/maghead/maghead/v/unstable.svg)](https://packagist.org/packages/maghead/maghead) 
 [![License](https://poser.pugx.org/maghead/maghead/license.svg)](https://packagist.org/packages/maghead/maghead)
 [![Join the chat at https://gitter.im/c9s/maghead](https://badges.gitter.im/c9s/maghead.svg)](https://gitter.im/c9s/maghead?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 ![Made in Taiwan](https://img.shields.io/badge/made%20in-taiwan-green.svg)
-
 
 Maghead is an open-source Object-Relational Mapping (ORM) for PHP7.
 
@@ -26,6 +24,8 @@ YAML to pure PHP code to improve the performance of config loading.
 
 With the simple schema design, you can define your model schema very easily and
 you can even embed closure in your schema classes.
+
+How fast is it? [See the benchmark for more details](https://github.com/c9s/forked-php-orm-benchmark).
 
 Automatic Migration Demonstration
 --------------------------------
