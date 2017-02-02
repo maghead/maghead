@@ -1,7 +1,7 @@
 <?php
 use CLIFramework\Logger;
 use Maghead\Testing\ModelTestCase;
-use Maghead\Schema\SchemaGenerator;
+use Maghead\Generator\Schema\SchemaGenerator;
 
 class SchemaGeneratorTest extends ModelTestCase
 {

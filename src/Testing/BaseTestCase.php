@@ -6,7 +6,7 @@ use Maghead\Manager\ConnectionManager;
 use Maghead\TableBuilder\TableBuilder;
 use Maghead\BaseModel;
 use Maghead\ConfigLoader;
-use Maghead\Schema\SchemaGenerator;
+use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\DeclareSchema;
 use Maghead\BaseCollection;
 use Maghead\Result;

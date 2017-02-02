@@ -1,11 +1,14 @@
 <?php
 
-namespace Maghead\Schema;
+namespace Maghead\Generator\Schema;
 
 use RuntimeException;
 use Maghead\ConfigLoader;
 use ClassTemplate\ClassFile;
 use Maghead\Schema;
+use Maghead\Schema\SchemaInterface;
+use Maghead\Schema\DeclareSchema;
+use Maghead\Schema\SchemaBase;
 use Maghead\Generator\Schema\BaseModelClassGenerator;
 use Maghead\Generator\Schema\BaseRepoClassGenerator;
 use Maghead\Generator\Schema\BaseCollectionClassGenerator;

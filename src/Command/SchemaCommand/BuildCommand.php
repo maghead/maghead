@@ -3,7 +3,7 @@
 namespace Maghead\Command\SchemaCommand;
 
 use Maghead\Command\BaseCommand;
-use Maghead\Schema\SchemaGenerator;
+use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\SchemaUtils;
 
 /**

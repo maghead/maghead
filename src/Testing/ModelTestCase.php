@@ -9,7 +9,7 @@ use Maghead\Utils\ClassUtils;
 use Maghead\SeedBuilder;
 use Maghead\TableBuilder\TableBuilder;
 use Maghead\TableParser\TableParser;
-use Maghead\Schema\SchemaGenerator;
+use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Manager\TableManager;

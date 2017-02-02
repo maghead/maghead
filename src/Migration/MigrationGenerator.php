@@ -41,7 +41,7 @@ class MigrationGenerator
      */
     protected function getTemplateDirs()
     {
-        $refl = new ReflectionClass('Maghead\Schema\SchemaGenerator');
+        $refl = new ReflectionClass('Maghead\Generator\Schema\SchemaGenerator');
         $path = $refl->getFilename();
 
         return dirname($path).DIRECTORY_SEPARATOR.'Templates';
