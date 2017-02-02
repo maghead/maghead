@@ -11,7 +11,7 @@ Maghead
 [![Latest Unstable Version](https://poser.pugx.org/maghead/maghead/v/unstable.svg)](https://packagist.org/packages/maghead/maghead) 
 [![License](https://poser.pugx.org/maghead/maghead/license.svg)](https://packagist.org/packages/maghead/maghead)
 [![Join the chat at https://gitter.im/c9s/maghead](https://badges.gitter.im/c9s/maghead.svg)](https://gitter.im/c9s/maghead?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Made in Taiwan](https://img.shields.io/badge/made%20in-taiwan-green.svg?style=flat-square)](README.md)
+[![Made in Taiwan](https://img.shields.io/badge/made%20in-taiwan-green.svg)](README.md)
 
 Maghead is an open-source Object-Relational Mapping (ORM) for PHP7.
 
