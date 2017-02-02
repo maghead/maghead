@@ -116,7 +116,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         Bootstrap::setupDataSources($this->config, $this->connManager);
         Bootstrap::setupGlobalVars($this->config, $this->connManager);
 
-        $this->setupDefaultConnection();
+        $this->prepareConnections();
     }
 
     public function tearDown()
@@ -125,9 +125,15 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     }
 
 
+    protected function prepareConnections()
+    {
+        $this->setupDefaultConnection();
+    }
+
+
     protected function setupDefaultConnection()
     {
-        if (!$this->conn) {
+        if (!$this->conn && $this->getDefaultDataSourceId()) {
             $this->conn = $this->setupConnection($this->getDefaultDataSourceId());
             $this->queryDriver = $this->conn->getQueryDriver();
         }

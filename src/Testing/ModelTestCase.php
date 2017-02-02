@@ -50,33 +50,52 @@ abstract class ModelTestCase extends BaseTestCase
         }
 
         $schemas = SchemaUtils::instantiateSchemaClasses($this->getModels());
-
-        if (false === $this->schemaHasBeenBuilt) {
-            $g = new SchemaGenerator($this->config);
-            $g->setForceUpdate(true);
-            $g->generate($schemas);
-            $this->schemaHasBeenBuilt = true;
+        if (! $this->schemaHasBeenBuilt) {
+            $this->prepareSchemaFiles($schemas);
         }
 
+        // TODO: get connection from user specific properties
+        // 1. with default connection only.
+        // 2. with multiple connections
+        $this->prepareTables($this->conn, $this->queryDriver, $schemas, $rebuild);
+
+        if ($rebuild && $basedata) {
+            $this->prepareBaseData($schemas);
+        }
+    }
+
+    protected function prepareBaseData($schemas)
+    {
+        $seeder = new SeedBuilder($this->logger);
+        $seeder->build(new SchemaCollection($schemas));
+        $seeder->buildConfigSeeds($this->config);
+    }
+
+    protected function prepareTables($conn, $queryDriver, array $schemas, bool $rebuild)
+    {
         if ($rebuild === false) {
-            $tableParser = TableParser::create($this->conn, $this->queryDriver, $this->config);
+            $tableParser = TableParser::create($conn, $queryDriver, $this->config);
             $tables = $tableParser->getTables();
             $schemas = array_filter($schemas, function ($schema) use ($tables) {
                 return !in_array($schema->getTable(), $tables);
             });
         }
 
-        $this->sqlBuilder = TableBuilder::create($this->queryDriver, ['rebuild' => $rebuild]);
-
-        $this->tableManager = new TableManager($this->conn, $this->sqlBuilder, $this->logger);
+        // Build table from schema
+        $sqlBuilder = TableBuilder::create($queryDriver, ['rebuild' => $rebuild]);
+        $this->tableManager = new TableManager($conn, $sqlBuilder, $this->logger);
         $this->tableManager->build($schemas);
-
-        if ($rebuild && $basedata) {
-            $seeder = new SeedBuilder($this->logger);
-            $seeder->build(new SchemaCollection($schemas));
-            $seeder->buildConfigSeeds($this->config);
-        }
     }
+
+    protected function prepareSchemaFiles(array $schemas)
+    {
+        $g = new SchemaGenerator($this->config);
+        $g->setForceUpdate(true);
+        $g->generate($schemas);
+        $this->schemaHasBeenBuilt = true;
+    }
+
+
 
     protected function dropSchemaTables($schemas)
     {
