@@ -1,0 +1,28 @@
+<?php
+use SQLBuilder\Universal\Syntax\Column;
+use SQLBuilder\Universal\Query\AlterTableQuery;
+use SQLBuilder\Universal\Query\CreateTableQuery;
+use SQLBuilder\Universal\Query\UpdateTableQuery;
+use SQLBuilder\Universal\Query\DeleteTableQuery;
+use SQLBuilder\Universal\Query\InsertTableQuery;
+use SQLBuilder\Universal\Query\CreateIndexQuery;
+use SQLBuilder\Universal\Query\UnionQuery;
+use SQLBuilder\Bind;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Literal;
+class DiffMigration_1325347200
+    extends Maghead\Migration\Migration
+{
+    public function upgrade()
+    {
+        $this->query('ALTER TABLE `users` MODIFY COLUMN `account` varchar(128) NOT NULL');
+        $this->query('ALTER TABLE `users` ADD COLUMN `id` int UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT');
+        $this->query('ALTER TABLE `users` ADD COLUMN `password` varchar(256)');
+    }
+    public function downgrade()
+    {
+        $this->query('ALTER TABLE `users` MODIFY COLUMN `account` varchar(128) NULL');
+        $this->query('ALTER TABLE `users` DROP COLUMN `id`');
+        $this->query('ALTER TABLE `users` DROP COLUMN `password`');
+    }
+}

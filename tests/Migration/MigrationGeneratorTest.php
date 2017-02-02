@@ -59,32 +59,29 @@ class MigrationGeneratorTest extends ModelTestCase
 
         $finder = new SchemaFinder;
         $finder->find();
-        list($scriptClass, $path) = $generator->generateWithDiff('DiffMigration', $this->getDriverType(), [ "users" => new TestApp\Model\UserSchema ], '20120101');
+
+        list($scriptClass, $path) = $generator->generateWithDiff('DiffMigration',
+            $this->getDriverType(),
+            [ "users" => new TestApp\Model\UserSchema ],
+            '20120101');
+
+        $this->assertFileExists('tests/migrations/20120101_DiffMigration.php.expected', $path);
+
         require_once $path;
-        ok($scriptClass::getId());
 
-        /*
-        $userSchema = new TestApp\Model\UserSchema;
-        $column = $userSchema->getColumn('account');
-        */
+        // Convert date string into timestamp
+        $this->assertEquals('1325347200', $scriptClass::getId());
 
-        MigrationLoader::findIn('tests/migrations_testing');
+        MigrationLoader::findIn(self::MIGRATION_SCRIPT_DIR);
 
-        // XXX: PHPUnit can't run this test in separated unit test since
-        // there is a bug of serializing the global array, this assertion will get 5 instead of the expected 1.
         $scripts = MigrationLoader::getDeclaredMigrationScripts();
+        $this->assertNotEmpty($scripts);
 
         // run migration
         $runner = new MigrationRunner($this->conn, $this->queryDriver, $this->logger, [$scriptClass]);
         $runner->resetMigrationTimestamp();
-
-        $this->assertNotEmpty($scripts);
-        // $this->assertCount(1, $scripts);
-
-        // $this->expectOutputRegex('#DiffMigration_1325347200#');
         $runner->runUpgrade();
 
-        # echo file_get_contents($path);
         unlink($path);
         $this->conn->query('DROP TABLE IF EXISTS users');
     }
