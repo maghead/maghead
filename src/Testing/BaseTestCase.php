@@ -139,6 +139,9 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @return Maghead\Connection
+     */
     protected function setupConnection(string $connId)
     {
         try {
@@ -155,7 +158,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
                 return;
             }
-            echo sprintf("Can not connect to database by data source '%s' message:'%s' config:'%s'",
+            fprintf(STDERR, "Can not connect to database by data source '%s' message:'%s' config:'%s'",
                 $connId,
                 $e->getMessage(),
                 var_export($this->config->getDataSource($connId), true)
