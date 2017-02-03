@@ -32,15 +32,9 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      * @var string
      *
      * The data source id for creating default connection.
+     * by default, $this->driver will be the default data source.
      */
-    protected $dataSource;
-
-
-    /**
-     * Define this to support multiple connection
-     */
-    protected $dataSources = [];
-
+    protected $defaultDataSource;
 
 
     /**
@@ -61,10 +55,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      * The default connection object.
      */
     protected $conn;
-
-
-    protected $conns = [];
-
 
     /**
      * @var Maghead\QueryDriver
@@ -89,8 +79,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     protected function getDefaultDataSourceId()
     {
-        if ($this->dataSource) {
-            return $this->dataSource;
+        if ($this->defaultDataSource) {
+            return $this->defaultDataSource;
         }
         return $this->getCurrentDriverType();
     }
@@ -138,9 +128,6 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     protected function prepareConnections()
     {
         $this->setupDefaultConnection();
-        foreach ($this->connManager->getDataSourceIdList() as $dsId) {
-
-        }
     }
 
     protected function getDefaultConnection()

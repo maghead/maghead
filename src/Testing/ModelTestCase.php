@@ -16,9 +16,14 @@ use Maghead\Manager\TableManager;
 
 abstract class ModelTestCase extends BaseTestCase
 {
-    public $schemaHasBeenBuilt = false;
+    /**
+     * Define this to support multiple connection
+     */
+    protected $requiredDataSources = [];
 
-    public $schemaClasses = array();
+    protected $schemaHasBeenBuilt = false;
+
+    protected $schemaClasses = [];
 
     protected $allowConnectionFailure = false;
 

@@ -26,7 +26,6 @@ class ConnectionManager implements ArrayAccess
 {
     const DEFAULT_DS = 'default';
 
-
     protected $defaultDataSourceId;
 
     /**
@@ -197,7 +196,7 @@ class ConnectionManager implements ArrayAccess
      */
     public function getDefaultConnection()
     {
-        return $this->getConnection($this->defaultDataSourceId ?: 'default');
+        return $this->getConnection($this->defaultDataSourceId ?: self::DEFAULT_DS);
     }
 
     /**
