@@ -21,7 +21,7 @@ abstract class ModelTestCase extends BaseTestCase
     /**
      * Define this to support multiple connection
      */
-    protected $requiredDataSources = [];
+    protected $requiredDataSources;
 
     protected $schemaHasBeenBuilt = false;
 
@@ -57,15 +57,25 @@ abstract class ModelTestCase extends BaseTestCase
             $this->prepareSchemaFiles($schemas);
         }
 
-        // TODO: get connection from user specific properties
-        // 1. with default connection only.
-        // 2. with multiple connections
-        $this->prepareTables($this->conn, $this->queryDriver, $schemas, $rebuild);
+        if ($this->requiredDataSources) {
+            foreach ($this->requiredDataSources as $nodeId) {
+                $conn = $this->connManager->getConnection($nodeId);
+                $this->prepareDatabase($conn, $conn->getQueryDriver(), $schemas, $rebuild, $basedata);
+            }
+        } else {
+            $this->prepareDatabase($this->conn, $this->queryDriver, $schemas, $rebuild, $basedata);
+        }
+    }
 
+    protected function prepareDatabase(Connection $conn, BaseDriver $queryDriver, array $schemas, bool $rebuild, bool $basedata)
+    {
+        $this->prepareTables($conn, $queryDriver, $schemas, $rebuild);
         if ($rebuild && $basedata) {
             $this->prepareBaseData($schemas);
         }
     }
+
+
 
     protected function prepareBaseData($schemas)
     {

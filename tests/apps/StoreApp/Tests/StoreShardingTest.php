@@ -12,6 +12,8 @@ class StoreShardingTest extends ModelTestCase
 {
     protected $defaultDataSource = 'node1';
 
+    protected $requiredDataSources = ['node1', 'node2', 'node3'];
+
     public function getModels()
     {
         return [new StoreSchema, new OrderSchema];
@@ -48,8 +50,18 @@ class StoreShardingTest extends ModelTestCase
                         'dsn' => 'sqlite::memory:',
                         'query_options' => ['quote_table' => true],
                         'driver' => 'sqlite',
-                        'user' => NULL,
-                        'pass' => NULL,
+                        'connection_options' => [],
+                    ],
+                    'node2' => [
+                        'dsn' => 'sqlite::memory:',
+                        'query_options' => ['quote_table' => true],
+                        'driver' => 'sqlite',
+                        'connection_options' => [],
+                    ],
+                    'node3' => [
+                        'dsn' => 'sqlite::memory:',
+                        'query_options' => ['quote_table' => true],
+                        'driver' => 'sqlite',
                         'connection_options' => [],
                     ],
                 ],
