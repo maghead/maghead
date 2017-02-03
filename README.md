@@ -14,9 +14,9 @@ Maghead
 [![Works On My Machine](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
 [![Made in Taiwan](https://img.shields.io/badge/made%20in-taiwan-green.svg)](README.md)
 
-Maghead is an open-source Object-Relational Mapping (ORM) for PHP7.
+Maghead is an open-source Object-Relational Mapping (ORM) designed for PHP7.
 
-Maghead uses code generator to generate static code, which reduces runtime
+Maghead uses static code generator to generate static classes that maps to the database records and methods, which reduces runtime
 costs, therefore it's pretty lightweight and fast.
 
 Maghead is not like Propel ORM or Eloquent ORM, it doesn't use ugly XML as its schema or
