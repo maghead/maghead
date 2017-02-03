@@ -37,6 +37,13 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
 
     /**
+     * Define this to support multiple connection
+     */
+    protected $dataSources = [];
+
+
+
+    /**
      * @var string
      *
      * This is used for filtering test cases for specific database driver. e.g. sqlite, mysql, pgsql... etc
@@ -54,6 +61,10 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      * The default connection object.
      */
     protected $conn;
+
+
+    protected $conns = [];
+
 
     /**
      * @var Maghead\QueryDriver
@@ -124,12 +135,21 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->connManager->free();
     }
 
-
     protected function prepareConnections()
     {
         $this->setupDefaultConnection();
+        foreach ($this->connManager->getDataSourceIdList() as $dsId) {
+
+        }
     }
 
+    protected function getDefaultConnection()
+    {
+        if (!$this->conn) {
+            throw new Exception("The test case didn't setup the default connection.");
+        }
+        return $this->conn;
+    }
 
     protected function setupDefaultConnection()
     {

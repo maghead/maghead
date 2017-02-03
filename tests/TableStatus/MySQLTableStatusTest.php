@@ -14,14 +14,16 @@ class MySQLTableStatusTest extends ModelTestCase
 
     public function testQuerySummary()
     {
-        $status = new MySQLTableStatus($this->conn, $this->queryDriver);
+        $conn = $this->getDefaultConnection();
+        $status = new MySQLTableStatus($conn, $conn->getQueryDriver());
         $summary = $status->querySummary(['authors']);
         $this->assertNotEmpty($summary);
     }
 
     public function testQueryDetails()
     {
-        $status = new MySQLTableStatus($this->conn, $this->queryDriver);
+        $conn = $this->getDefaultConnection();
+        $status = new MySQLTableStatus($conn, $conn->getQueryDriver());
         $summary = $status->queryDetails(['authors']);
         $this->assertNotEmpty($summary);
     }

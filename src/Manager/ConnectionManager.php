@@ -9,8 +9,6 @@ use PDO;
 use ArrayAccess;
 use Maghead\DSN\DSN;
 use Maghead\Connection;
-use Maghead\ConfigLoader;
-use Maghead\Config;
 
 /**
  * Connection Manager.
@@ -23,10 +21,6 @@ use Maghead\Config;
  *    $result = $conn->query( );
  *    $stm = $conn->prepare( );
  *    $stm->execute( );
- *
- *    foreach( $connManager as $dataSourceId => $dataSourceConfig ) {
- *
- *    }
  */
 class ConnectionManager implements ArrayAccess
 {
@@ -34,12 +28,6 @@ class ConnectionManager implements ArrayAccess
 
 
     protected $defaultDataSourceId;
-
-
-    /**
-     * @var Maghead\ConfigLoader
-     */
-    private $config;
 
     /**
      * @var array contains data source configurations
@@ -50,16 +38,6 @@ class ConnectionManager implements ArrayAccess
      * @var PDOConnection[] contains PDO connection objects.
      */
     protected $conns = array();
-
-    public function init(ConfigLoader $config)
-    {
-        $this->config = $config;
-        $this->datasources = [];
-        $this->conns = [];
-        foreach ($config->getDataSources() as $sourceId => $ds) {
-            $this->addDataSource($sourceId, $ds);
-        }
-    }
 
     /**
      * Check if we have connected already.

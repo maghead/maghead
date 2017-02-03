@@ -11,19 +11,21 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReferenceQuery()
     {
+        $conn = $this->getDefaultConnection();
+
         $schema = new \AuthorBooks\Model\AuthorSchema;
         $this->updateSchemaFiles($schema);
-        $this->buildSchemaTable($this->conn, $this->queryDriver, $schema);
+        $this->buildSchemaTable($conn, $conn->getQueryDriver(), $schema);
 
         $schema = new \AuthorBooks\Model\BookSchema;
         $this->updateSchemaFiles($schema);
-        $this->buildSchemaTable($this->conn, $this->queryDriver, $schema);
+        $this->buildSchemaTable($conn, $conn->getQueryDriver(), $schema);
 
         $schema = new \AuthorBooks\Model\AuthorBookSchema;
         $this->updateSchemaFiles($schema);
-        $this->buildSchemaTable($this->conn, $this->queryDriver, $schema);
+        $this->buildSchemaTable($conn, $conn->getQueryDriver(), $schema);
 
-        $parser = new MysqlTableParser($this->conn, $this->queryDriver);
+        $parser = new MysqlTableParser($conn, $conn->getQueryDriver());
         $references = $parser->queryReferences('books');
         $this->assertNotEmpty($references);
         $this->assertEquals('publishers', $references['publisher_id']->table);
@@ -32,10 +34,12 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReverseSchemaWithStringSet()
     {
-        $this->conn->query("DROP TABLE IF EXISTS t1");
-        $this->conn->query("CREATE TABLE t1 (val set('a','b','c') );");
+        $conn = $this->getDefaultConnection();
 
-        $parser = new MysqlTableParser($this->conn, $this->queryDriver);
+        $conn->query("DROP TABLE IF EXISTS t1");
+        $conn->query("CREATE TABLE t1 (val set('a','b','c') );");
+
+        $parser = new MysqlTableParser($conn, $conn->getQueryDriver());
         $schema = $parser->reverseTableSchema('t1');
         $this->assertNotNull($schema);
 
@@ -46,10 +50,12 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReverseSchemaWithStringEnum()
     {
-        $this->conn->query("DROP TABLE IF EXISTS t1");
-        $this->conn->query("CREATE TABLE t1 (val enum('ON','OFF','PENDING') );");
+        $conn = $this->getDefaultConnection();
 
-        $parser = new MysqlTableParser($this->conn, $this->queryDriver);
+        $conn->query("DROP TABLE IF EXISTS t1");
+        $conn->query("CREATE TABLE t1 (val enum('ON','OFF','PENDING') );");
+
+        $parser = new MysqlTableParser($conn, $conn->getQueryDriver());
         $schema = $parser->reverseTableSchema('t1');
         $this->assertNotNull($schema);
 
@@ -60,19 +66,23 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReverseSchemaAndCompare()
     {
+        $conn = $this->getDefaultConnection();
+
         $schema = new \AuthorBooks\Model\AuthorSchema;
         $this->updateSchemaFiles($schema);
-        $this->buildSchemaTable($this->conn, $this->queryDriver, $schema);
-        $parser = new MysqlTableParser($this->conn, $this->queryDriver);
+        $this->buildSchemaTable($conn, $conn->getQueryDriver(), $schema);
+        $parser = new MysqlTableParser($conn, $conn->getQueryDriver());
         $parser->reverseTableSchema('authors');
     }
 
     public function testGetTables()
     {
-        $this->conn->query("DROP TABLE IF EXISTS t1");
-        $this->conn->query("CREATE TABLE t1 (val enum('a','b','c') );");
+        $conn = $this->getDefaultConnection();
 
-        $parser = new MysqlTableParser($this->conn, $this->queryDriver);
+        $conn->query("DROP TABLE IF EXISTS t1");
+        $conn->query("CREATE TABLE t1 (val enum('a','b','c') );");
+
+        $parser = new MysqlTableParser($conn, $conn->getQueryDriver());
         $tables = $parser->getTables();
         $this->assertNotEmpty($tables);
 
