@@ -25,10 +25,6 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected $schemaClasses = [];
 
-    protected $allowConnectionFailure = false;
-
-    protected $sqlBuilder;
-
     protected $tableManager;
 
     public function setUp()
@@ -99,8 +95,6 @@ abstract class ModelTestCase extends BaseTestCase
         $g->generate($schemas);
         $this->schemaHasBeenBuilt = true;
     }
-
-
 
     protected function dropSchemaTables($schemas)
     {

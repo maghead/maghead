@@ -56,6 +56,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     protected $conn;
 
+    protected $allowConnectionFailure = false;
+
     /**
      * @var Maghead\QueryDriver
      *
