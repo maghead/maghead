@@ -3,6 +3,7 @@
 namespace Maghead\Testing;
 
 use Maghead\ConfigLoader;
+use Maghead\Connection;
 use Maghead\Bootstrap;
 use Maghead\Manager\ConnectionManager;
 use Maghead\Utils\ClassUtils;
@@ -13,6 +14,7 @@ use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Manager\TableManager;
+use SQLBuilder\Driver\BaseDriver;
 
 abstract class ModelTestCase extends BaseTestCase
 {
@@ -72,7 +74,7 @@ abstract class ModelTestCase extends BaseTestCase
         $seeder->buildConfigSeeds($this->config);
     }
 
-    protected function prepareTables($conn, $queryDriver, array $schemas, bool $rebuild)
+    protected function prepareTables(Connection $conn, BaseDriver $queryDriver, array $schemas, bool $rebuild)
     {
         if ($rebuild === false) {
             $tableParser = TableParser::create($conn, $queryDriver, $this->config);
