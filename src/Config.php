@@ -11,6 +11,12 @@ class Config implements ArrayAccess
 
     protected $classMap = [];
 
+
+    const DEFAULT_BASE_COLLECTION_CLASS = '\\Maghead\\BaseCollection';
+
+    const DEFAULT_BASE_MODEL_CLASS = '\\Maghead\\BaseModel';
+
+
     public function __construct(array $stash)
     {
         $this->stash = $stash;
@@ -71,12 +77,13 @@ class Config implements ArrayAccess
             return array_keys($this->stash['data_source']['nodes']);
         }
 
-        return array();
+        return [];
     }
 
     public function getDefaultDataSource()
     {
         $id = $this->getDefaultDataSourceId();
+
         if (isset($this->stash['data_source']['nodes'][$id])) {
             return $this->stash['data_source']['nodes'][$id];
         }
@@ -161,7 +168,7 @@ class Config implements ArrayAccess
             return $this->stash['schema']['base_model'];
         }
 
-        return '\\Maghead\\BaseModel';
+        return self::DEFAULT_BASE_MODEL_CLASS;
     }
 
     public function getBaseCollectionClass()
@@ -170,7 +177,7 @@ class Config implements ArrayAccess
             return $this->stash['schema']['base_collection'];
         }
 
-        return '\\Maghead\\BaseCollection';
+        return self::DEFAULT_BASE_COLLECTION_CLASS;
     }
 
     public function & getStash()

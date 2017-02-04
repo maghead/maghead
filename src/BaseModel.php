@@ -369,7 +369,7 @@ abstract class BaseModel implements Serializable
         }
     }
 
-    public function __callStatic($method, $args)
+    static public function __callStatic($method, $args)
     {
         $repo = static::defaultRepo();
         return call_user_func_array([$repo, $method], $args);

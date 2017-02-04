@@ -46,6 +46,8 @@ TODO
 - [ ] Generate setter methods on BaseModel.
 - [ ] Setter should deflate the value from the value.
 
+- [ ] Refactor Connection create functions to different Connector.
+
 - [ ] Sharding Support
     - [x] Support node config definition
     - [ ] Support shard rule config definition

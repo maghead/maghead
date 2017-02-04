@@ -23,26 +23,24 @@ class StoreShardingTest extends ModelTestCase
     {
         $config = ConfigLoader::loadFromArray([
             'cli' => ['bootstrap' => 'vendor/autoload.php'],
-            'schema' => array (
-                    'auto_id' => true,
-                    'base_model' => '\\Maghead\\BaseModel',
-                    'base_collection' => '\\Maghead\\BaseCollection',
-                    'paths' => 
-                    array (
-                    0 => 'tests',
-                    ),
-                ),
-            'cache' => array (
-                'class' => 'Maghead\\Cache\\Memcache',
-                'servers' => 
-                array (
-                0 => 
-                array (
-                    'host' => 'localhost',
-                    'port' => 11211,
-                ),
-                ),
-            ),
+            'schema' => [
+                'auto_id' => true,
+                'base_model' => '\\Maghead\\BaseModel',
+                'base_collection' => '\\Maghead\\BaseCollection',
+                'paths' => ['tests'],
+            ],
+            'sharding' => [
+                'rules' => [
+                    'store_id' => [
+                        // shard by hash
+                        'hash' => [
+                            'node1' => 'node1',
+                            'node2' => 'node2',
+                            'node3' => 'node3',
+                        ],
+                    ],
+                ],
+            ],
             'data_source' => [
                 'default' => 'node1',
                 'nodes' => [
@@ -122,7 +120,6 @@ class StoreShardingTest extends ModelTestCase
         }
 
         // all orders ready
-        
     }
 
 
