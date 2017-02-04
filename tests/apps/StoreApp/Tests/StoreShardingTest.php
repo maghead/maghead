@@ -12,7 +12,7 @@ class StoreShardingTest extends ModelTestCase
 {
     protected $defaultDataSource = 'node1';
 
-    protected $requiredDataSources = ['node1', 'node2', 'node3'];
+    protected $requiredDataSources = ['node1', 'node1_2', 'node2', 'node2_2'];
 
     public function getModels()
     {
@@ -30,21 +30,58 @@ class StoreShardingTest extends ModelTestCase
                 'paths' => ['tests'],
             ],
             'sharding' => [
-                'rules' => [
-                    'store_id' => [
-                        // shard by hash
+                'mappings' => [
+                    // shard by hash
+                    'M_store_id' => [
+                        'tables' => ['orders'], // This is something that we will define in the schema.
+                        'key' => 'store_id',
                         'hash' => [
-                            'node1' => 'node1',
-                            'node2' => 'node2',
-                            'node3' => 'node3',
+                            'target1' => 'group-1',
+                            'target2' => 'group-2',
+                        ],
+                    ],
+                    'M_created_at' => [
+                        'key' => 'created_at',
+                        'tables' => ['orders'], // This is something that we will define in the schema.
+                        'range' => [
+                            'group-1' => [ 'min' => 0, 'max' => 10000 ],
+                            'group-2' => [ 'min' => 10001, 'max' => 20000 ],
+                        ]
+                    ],
+                ],
+                // Shards pick servers from nodes config, HA groups
+                'groups' => [
+                    'group1' => [
+                        'write' => [
+                          'node1_2' => ['weight' => 0.1],
+                        ],
+                        'read' => [
+                          'node1'   =>  ['weight' => 0.1],
+                          'node1_2' => ['weight' => 0.1],
+                        ],
+                    ],
+                    'group2' => [
+                        'write' => [
+                          'node2_2' => ['weight' => 0.1],
+                        ],
+                        'read' => [
+                          'node2'   =>  ['weight' => 0.1],
+                          'node2_2' => ['weight' => 0.1],
                         ],
                     ],
                 ],
             ],
+            // data source is defined for different data source connection.
             'data_source' => [
                 'default' => 'node1',
                 'nodes' => [
                     'node1' => [
+                        'dsn' => 'sqlite::memory:',
+                        'query_options' => ['quote_table' => true],
+                        'driver' => 'sqlite',
+                        'connection_options' => [],
+                    ],
+                    'node1_2' => [
                         'dsn' => 'sqlite::memory:',
                         'query_options' => ['quote_table' => true],
                         'driver' => 'sqlite',
@@ -56,7 +93,7 @@ class StoreShardingTest extends ModelTestCase
                         'driver' => 'sqlite',
                         'connection_options' => [],
                     ],
-                    'node3' => [
+                    'node2_2' => [
                         'dsn' => 'sqlite::memory:',
                         'query_options' => ['quote_table' => true],
                         'driver' => 'sqlite',
