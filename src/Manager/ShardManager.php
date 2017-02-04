@@ -25,7 +25,6 @@ class ShardManager
     {
         $this->config = $config;
         $this->shardingConfig = $config['sharding'];
-        var_dump( $this->shardingConfig );
         $this->connectionManager = $connectionManager;
     }
 
