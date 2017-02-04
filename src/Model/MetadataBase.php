@@ -49,6 +49,14 @@ class MetadataBase
     {
         return new \Maghead\Model\MetadataBaseRepo($write, $read);
     }
+    public function loadByName($value)
+    {
+        return static::defaultRepo()->loadByName($value);
+    }
+    public function loadByValue($value)
+    {
+        return static::defaultRepo()->loadByValue($value);
+    }
     public function getKeyName()
     {
         return 'id';

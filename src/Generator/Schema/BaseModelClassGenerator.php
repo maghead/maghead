@@ -162,6 +162,17 @@ class BaseModelClassGenerator
                 }
                 */
             }
+
+            // Generate findable proxy methods
+            if ($column->findable) {
+                $findMethodName = 'loadBy'.ucfirst(Inflector::camelize($columnName));
+                $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use ($findMethodName) {
+                    // Call BaseRepo methods on defaultRepo
+                    return ["return static::defaultRepo()->{$findMethodName}(\$value);"];
+                });
+            }
+
+
         }
 
         $cTemplate->addMethod('public', 'getKeyName', [], function() use ($primaryKey) {
