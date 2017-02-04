@@ -369,6 +369,12 @@ abstract class BaseModel implements Serializable
         }
     }
 
+    public function __callStatic($method, $args)
+    {
+        $repo = static::defaultRepo();
+        return call_user_func_array([$repo, $method], $args);
+    }
+
     /**
      * __call method is slower than normal method, because there are
      * one more method table to look up. you should call methods directly
