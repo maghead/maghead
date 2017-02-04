@@ -47,6 +47,28 @@ TODO
 - [ ] Setter should deflate the value from the value.
 
 - [ ] Sharding Support
+    - [x] Support node config definition
+    - [ ] Support shard rule config definition
+    - [ ] Shard method
+        - [ ] Shard by Hash
+        - [ ] Shard by Range
+    - [ ] Rename "default" config to "master".
+    - [ ] Rename "getDefaultConnection" to "getMasterConnection".
+    - [ ] Global Table behaviour
+        - [ ] Spread Create method
+            - Create records across different shards.
+        - [ ] Spread Update method
+            - Update records across different shards.
+        - [ ] Spread Delete method
+            - Delete records across different shards.
+    - [ ] Sharded Table behaviour
+        - [ ] Select shard to insert.
+        - [ ] Select shard to update.
+        - [ ] Select shard to delete.
+
+    - [ ] QueryDispatcher
+        - [ ] Given a query, return Repo objects with different connections and
+              run queries on these nodes.
 
     $shards = Book::shards(); // returns Shards of the model.
 
@@ -61,13 +83,9 @@ TODO
     $order = Order::shards()->find('569f21d7-fcad-49bf-99dd-795be631f984');
 
 
-
-
 - [ ] Move CRUD operation from modal class to ModelActions class.
-- [ ] Add connection parameter to all the CRUD methods
+- [x] Add connection parameter to all the CRUD methods
 - [ ] Add setter type signature support to the class method generator.
 - [ ] Validate isa type when setting value via setter method.
 - [ ] ??? Remove typeConstraint checking from modal method code.
-- [ ] Support node definition
-- [ ] QueryDispatcher
 
