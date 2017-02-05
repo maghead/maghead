@@ -57,7 +57,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     public $onUpdate;
 
     /**
-     * @var boolean 
+     * @var boolean
      *
      * This is used in sharded environment. By default every table is
      * local table.
@@ -387,7 +387,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         $this->collectionInterfaceClasses[] = $iface;
     }
 
-    /** 
+    /**
      * @return string[]
      */
     public function getModelTraitClasses()
@@ -395,7 +395,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         return $this->modelTraitClasses;
     }
 
-    /** 
+    /**
      * @return string[]
      */
     public function getCollectionTraitClasses()
@@ -1013,6 +1013,4 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         $query->select('*');
         return $query;
     }
-
-
 }

@@ -36,7 +36,7 @@ class Connection extends PDO
     /**
      * @var SQLBuilder\Driver\BaseDriver
      */
-    private $queryDriver; 
+    private $queryDriver;
 
     public static function create(array $config)
     {
@@ -50,7 +50,7 @@ class Connection extends PDO
     public function prepareAndExecute($sql, array $args = array())
     {
         $stm = $this->prepare($sql);
-        $stm->execute($args); // $success 
+        $stm->execute($args); // $success
         return $stm;
     }
 

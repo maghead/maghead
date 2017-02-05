@@ -5,8 +5,7 @@ namespace Maghead\Schema;
 use IteratorAggregate;
 use ArrayIterator;
 
-class RuntimeSchema extends BaseSchema
-    implements SchemaInterface, IteratorAggregate
+class RuntimeSchema extends BaseSchema implements SchemaInterface, IteratorAggregate
 {
     public $modelClass;
 
@@ -72,7 +71,9 @@ class RuntimeSchema extends BaseSchema
 
     public function getRenderableColumnNames()
     {
-        return array_map(function ($column) { return $column->name; }, array_filter($this->columns, function ($column) {
+        return array_map(function ($column) {
+            return $column->name;
+        }, array_filter($this->columns, function ($column) {
             return $column->renderable !== false;
         }));
     }

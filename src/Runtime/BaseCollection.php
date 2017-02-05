@@ -27,8 +27,7 @@ defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
 /**
  * base collection class.
  */
-class BaseCollection
-    implements
+class BaseCollection implements
     ArrayAccess,
     Countable,
     IteratorAggregate
@@ -87,7 +86,7 @@ class BaseCollection
 
 
     /**
-     * $this->defaultOrdering = array( 
+     * $this->defaultOrdering = array(
      *    array( 'id', 'desc' ),
      *    array( 'name', 'desc' ),
      * );.
@@ -125,11 +124,11 @@ class BaseCollection
     /**
      * This method will be overrided by code gen.
      */
-    static public function getSchema()
+    public static function getSchema()
     {
         if ($this->_schema) {
             return $this->_schema;
-        } else if (@constant('static::SCHEMA_PROXY_CLASS')) {
+        } elseif (@constant('static::SCHEMA_PROXY_CLASS')) {
             return $this->_schema = SchemaLoader::load(static::SCHEMA_PROXY_CLASS);
         }
         throw new RuntimeException('schema is not defined in '.get_class($this));
@@ -149,7 +148,7 @@ class BaseCollection
     }
 
     /**
-     * Free cached row data and result handle, 
+     * Free cached row data and result handle,
      * But still keep the same query.
      *
      * @return $this
@@ -237,7 +236,7 @@ class BaseCollection
         if ($this->repo) {
             return $this->repo;
         }
-        return static::masterRepo(); // my repo 
+        return static::masterRepo(); // my repo
     }
 
     public function createReadQuery()
@@ -275,12 +274,12 @@ class BaseCollection
         $alias = $this->_alias;
 
         return array_map(function ($name) use ($alias, $driver) {
-                return $alias.'.'.$driver->quoteIdentifier($name);
+            return $alias.'.'.$driver->quoteIdentifier($name);
         }, static::getSchema()->getColumnNames());
     }
 
     /**
-     * prepare data handle, call fetch method to read data from database, and 
+     * prepare data handle, call fetch method to read data from database, and
      * catch the handle.
      *
      * Which calls doFetch() to do a query operation.
@@ -331,7 +330,7 @@ class BaseCollection
 
 
     /**
-     * Get current selected item size 
+     * Get current selected item size
      * by using php function `count`.
      *
      * @return int size
@@ -676,12 +675,16 @@ class BaseCollection
 
     public function toArray()
     {
-        return array_map(function ($item) { return $item->toArray(); }, $this->items());
+        return array_map(function ($item) {
+            return $item->toArray();
+        }, $this->items());
     }
 
     public function toInflatedArray()
     {
-        return array_map(function ($item) { return $item->toInflatedArray(); }, $this->items());
+        return array_map(function ($item) {
+            return $item->toInflatedArray();
+        }, $this->items());
     }
 
     public function toXml()
@@ -711,7 +714,7 @@ class BaseCollection
     }
 
     /**
-     * Create new record or relationship record, 
+     * Create new record or relationship record,
      * and append the record into _rows list.
      *
      * @param array $args Arguments for creating record
@@ -943,14 +946,14 @@ class BaseCollection
 
     /**
      * When cloning collection object,
-     * The resources will be free, and the 
+     * The resources will be free, and the
      * query builder will be cloned.
      */
     public function __clone()
     {
         $this->free();
 
-        // if we have readQuery object, we should clone the query object 
+        // if we have readQuery object, we should clone the query object
         // for the new collection object.
         if ($this->_query) {
             $this->_query = clone $this->_query;

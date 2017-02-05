@@ -6,4 +6,3 @@ interface Hasher
 {
     public function hash($key);
 }
-

@@ -130,7 +130,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
     /**
      * Canonicalize a value before updating or creating.
      *
-     * The canonicalize handler takes the original value ($value), current 
+     * The canonicalize handler takes the original value ($value), current
      * record ($record) and the arguments ($args)
      *
      * @param mixed     $value
@@ -249,7 +249,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         return true;
     }
 
-    /** 
+    /**
      * deflate value.
      *
      * @param mixed $value

@@ -26,8 +26,6 @@ use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
 
-
-
 /**
  * Base Model class generator.
  *
@@ -65,7 +63,7 @@ class BaseModelClassGenerator
         // If the user pre-loaded the schema proxy file by the user himself,
         // then this line will cause error.
         //
-        // By design, users shouldn't use the schema proxy class, it 
+        // By design, users shouldn't use the schema proxy class, it
         // should be only used by model/collection class.
         $schemaProxyFileName = $schema->getModelName() . 'SchemaProxy.php';
         $cTemplate->prependStatement(new RequireOnceStatement(
@@ -97,10 +95,10 @@ class BaseModelClassGenerator
 
         $cTemplate->addProtectedProperty('table', $schema->getTable());
 
-        $cTemplate->addStaticVar('column_names',  $schema->getColumnNames());
+        $cTemplate->addStaticVar('column_names', $schema->getColumnNames());
         $cTemplate->addStaticVar('mixin_classes', array_reverse($schema->getMixinSchemaClasses()));
 
-        $cTemplate->addStaticMethod('public', 'getSchema', [], function() use ($schema) {
+        $cTemplate->addStaticMethod('public', 'getSchema', [], function () use ($schema) {
             return [
                 "static \$schema;",
                 "if (\$schema) {",
@@ -116,7 +114,7 @@ class BaseModelClassGenerator
             }
         }
 
-        $cTemplate->addStaticMethod('public', 'createRepo', ['$write', '$read'], function() use ($schema) {
+        $cTemplate->addStaticMethod('public', 'createRepo', ['$write', '$read'], function () use ($schema) {
             return "return new \\{$schema->getBaseRepoClass()}(\$write, \$read);";
         });
 
@@ -136,7 +134,7 @@ class BaseModelClassGenerator
             $propertyName = Inflector::camelize($columnName);
             $properties[] = [$columnName, $propertyName];
 
-            $cTemplate->addPublicProperty($columnName, NULL);
+            $cTemplate->addPublicProperty($columnName, null);
 
 
             if ($schema->enableColumnAccessors) {
@@ -144,7 +142,7 @@ class BaseModelClassGenerator
                 if (preg_match('/^is[A-Z]/', $propertyName)) {
                     $booleanAccessor = true;
                     $accessorMethodName = $propertyName;
-                } else if ($column->isa === "bool") {
+                } elseif ($column->isa === "bool") {
                     // for column names like "is_confirmed", don't prepend another "is" prefix to the accessor name.
                     $booleanAccessor = true;
                     $accessorMethodName = 'is'.ucfirst($propertyName);
@@ -163,62 +161,60 @@ class BaseModelClassGenerator
             // Generate findable proxy methods
             if ($column->findable) {
                 $findMethodName = 'loadBy'.ucfirst(Inflector::camelize($columnName));
-                $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use ($findMethodName) {
+                $cTemplate->addMethod('public', $findMethodName, ['$value'], function () use ($findMethodName) {
                     // Call BaseRepo methods on masterRepo
                     return ["return static::masterRepo()->{$findMethodName}(\$value);"];
                 });
             }
-
-
         }
 
-        $cTemplate->addMethod('public', 'getKeyName', [], function() use ($primaryKey) {
+        $cTemplate->addMethod('public', 'getKeyName', [], function () use ($primaryKey) {
             return "return " . var_export($primaryKey, true) . ';' ;
         });
 
-        $cTemplate->addMethod('public', 'getKey', [], function() use ($primaryKey) {
-            return 
+        $cTemplate->addMethod('public', 'getKey', [], function () use ($primaryKey) {
+            return
                 "return \$this->{$primaryKey};"
             ;
         });
 
-        $cTemplate->addMethod('public', 'hasKey', [], function() use ($primaryKey) {
-            return 
+        $cTemplate->addMethod('public', 'hasKey', [], function () use ($primaryKey) {
+            return
                 "return isset(\$this->{$primaryKey});"
             ;
         });
 
-        $cTemplate->addMethod('public', 'setKey', ['$key'], function() use ($primaryKey) {
-            return 
+        $cTemplate->addMethod('public', 'setKey', ['$key'], function () use ($primaryKey) {
+            return
                 "return \$this->{$primaryKey} = \$key;"
             ;
         });
 
-        $cTemplate->addMethod('public', 'getData', [], function() use ($properties) {
-            return 
-                'return [' . join(", ", array_map(function($p) {
+        $cTemplate->addMethod('public', 'getData', [], function () use ($properties) {
+            return
+                'return [' . join(", ", array_map(function ($p) {
                     list($columnName, $propertyName) = $p;
                     return "\"$columnName\" => \$this->{$columnName}";
                 }, $properties)) . '];'
             ;
         });
 
-        $cTemplate->addMethod('public', 'setData', ['array $data'], function() use ($properties) {
-            return array_map(function($p) {
-                    list($columnName, $propertyName) = $p;
-                    return "if (array_key_exists(\"{$columnName}\", \$data)) { \$this->{$columnName} = \$data[\"{$columnName}\"]; }";
-                }, $properties);
+        $cTemplate->addMethod('public', 'setData', ['array $data'], function () use ($properties) {
+            return array_map(function ($p) {
+                list($columnName, $propertyName) = $p;
+                return "if (array_key_exists(\"{$columnName}\", \$data)) { \$this->{$columnName} = \$data[\"{$columnName}\"]; }";
+            }, $properties);
         });
 
-        $cTemplate->addMethod('public', 'clear', [], function() use ($properties) {
-            return array_map(function($p) {
-                    list($columnName, $propertyName) = $p;
-                    return "\$this->{$columnName} = NULL;";
-                }, $properties);
+        $cTemplate->addMethod('public', 'clear', [], function () use ($properties) {
+            return array_map(function ($p) {
+                list($columnName, $propertyName) = $p;
+                return "\$this->{$columnName} = NULL;";
+            }, $properties);
         });
 
         foreach ($schema->getRelations() as $relKey => $rel) {
-            switch($rel['type']) {
+            switch ($rel['type']) {
                 case Relationship::HAS_ONE:
                 case Relationship::HAS_MANY:
                 case Relationship::BELONGS_TO:
@@ -234,7 +230,7 @@ class BaseModelClassGenerator
             $relName = ucfirst(Inflector::camelize($relKey));
             $methodName = 'get'. $relName;
 
-            switch($rel['type']) {
+            switch ($rel['type']) {
                 case Relationship::HAS_MANY:
 
                 $foreignSchema = $rel->newForeignSchema();
@@ -243,7 +239,7 @@ class BaseModelClassGenerator
                 $foreignColumn = $rel->getForeignColumn();
                 $selfColumn = $rel->getSelfColumn();
 
-                $cTemplate->addMethod('public', $methodName, [], function() use ($foreignCollectionClass, $foreignColumn, $selfColumn) {
+                $cTemplate->addMethod('public', $methodName, [], function () use ($foreignCollectionClass, $foreignColumn, $selfColumn) {
                     return [
                         "\$collection = new \\{$foreignCollectionClass};",
                         "\$collection->where()->equal(\"{$foreignColumn}\", \$this->{$selfColumn});",
@@ -259,7 +255,7 @@ class BaseModelClassGenerator
 
 
                 // assemble the join query with the collection class string
-                $cTemplate->addMethod('public', $methodName, [], function() use ($schema, $relName, $relKey, $rel) {
+                $cTemplate->addMethod('public', $methodName, [], function () use ($schema, $relName, $relKey, $rel) {
                     $junctionRelKey = $rel['relation_junction'];
                     $junctionRel = $schema->getRelation($junctionRelKey);
                     if (!$junctionRel) {

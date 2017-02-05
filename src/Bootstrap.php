@@ -21,7 +21,7 @@ class Bootstrap
      * Run bootstrap script if it's defined in the config.
      * This is used for the command-line app.
      */
-    static protected function loadBootstrap($config)
+    protected static function loadBootstrap($config)
     {
         if (isset($config['bootstrap'])) {
             foreach ((array) $config['bootstrap'] as $bootstrap) {
@@ -33,7 +33,7 @@ class Bootstrap
     /**
      * load external schema loader.
      */
-    static protected function loadExternalSchemaLoader($config)
+    protected static function loadExternalSchemaLoader($config)
     {
         if (isset($config['schema']['loader'])) {
             require_once $config['schema']['loader'];
@@ -44,7 +44,7 @@ class Bootstrap
         return false;
     }
 
-    static protected function loadSchemaFromFinder($config)
+    protected static function loadSchemaFromFinder($config)
     {
         // Load default schema loader
         $paths = $config->getSchemaPaths();
@@ -54,14 +54,14 @@ class Bootstrap
         }
     }
 
-    static protected function loadSchemaLoader($config)
+    protected static function loadSchemaLoader($config)
     {
         if (!self::loadExternalSchemaLoader($config)) {
             self::loadSchemaFromFinder($config);
         }
     }
 
-    static public function setupDataSources(Config $config, ConnectionManager $connectionManager)
+    public static function setupDataSources(Config $config, ConnectionManager $connectionManager)
     {
         foreach ($config->getDataSources() as $nodeId => $dsConfig) {
             $connectionManager->addDataSource($nodeId, $dsConfig);
@@ -72,13 +72,13 @@ class Bootstrap
     }
 
 
-    static public function setupGlobalVars(Config $config, ConnectionManager $connectionManager)
+    public static function setupGlobalVars(Config $config, ConnectionManager $connectionManager)
     {
         BaseModel::$connectionManager = $connectionManager;
         BaseCollection::$connectionManager = $connectionManager;
     }
 
-    static public function setup(Config $config)
+    public static function setup(Config $config)
     {
         $connectionManager = ConnectionManager::getInstance();
 
@@ -93,7 +93,7 @@ class Bootstrap
      * Setup environment for command-line application
      * This could be an override method from Bootstrap class.
      */
-    static public function setupForCLI(Config $config)
+    public static function setupForCLI(Config $config)
     {
         self::setup($config);
         self::loadBootstrap($config);

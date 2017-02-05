@@ -9,7 +9,7 @@ class Inflator
 {
     public static $inflators = array();
 
-    /** 
+    /**
      * provide a custom inflator for data type.
      */
     public static function register($isa, $inflator)

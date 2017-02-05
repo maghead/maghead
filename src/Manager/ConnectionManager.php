@@ -16,7 +16,7 @@ use Maghead\Connection;
  *    $connManager = ConnectionManager::getInstance();
  *    $conn = $connManager->create( '{{id}}', '' );
  *
- *    $conn = $connManager->default(); // return PDO connection object 
+ *    $conn = $connManager->default(); // return PDO connection object
  *
  *    $result = $conn->query( );
  *    $stm = $conn->prepare( );
@@ -159,10 +159,10 @@ class ConnectionManager implements ArrayAccess
      *          'mysql:host=hostname;dbname=defaultDbName',
      *          'username',
      *          'password',
-     *          array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8") 
-     *    ); 
+     *          array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")
+     *    );
      *
-     *    $dbh = new Connection('pgsql:dbname=$dbname; host=$host; username=$username; password=$password'); 
+     *    $dbh = new Connection('pgsql:dbname=$dbname; host=$host; username=$username; password=$password');
      *    $pdo = new Connection( 'sqlite::memory:', null, null, array(PDO::ATTR_PERSISTENT => true) );
      *                     sqlite2:mydb.sq2
      */

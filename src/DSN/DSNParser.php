@@ -9,11 +9,11 @@ use Exception;
  */
 class DSNParser
 {
-    static public function parse($dsn)
+    public static function parse($dsn)
     {
         if (preg_match('/^(\w+):/', $dsn, $matches)) {
             $driver = $matches[1];
-        } else if (preg_match('/^(\w+)$/', $dsn, $matches)) {
+        } elseif (preg_match('/^(\w+)$/', $dsn, $matches)) {
             return new DSN($dsn, [], [], '');
         } else {
             throw new Exception("Invalid DSN string: $dsn");

@@ -41,7 +41,7 @@ class UseCommand extends Command
     {
         /*
          * $ lazy bulid-conf config/lazy.yml phifty/config/lazy.yml
-         * 
+         *
          * build/lazy/config.php   # is generated
          */
         if (!$configFile && $this->options->{'search'}) {

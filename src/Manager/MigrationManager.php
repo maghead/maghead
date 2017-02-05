@@ -15,7 +15,6 @@ use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-
 /**
  * Top layer API for migration
  */
@@ -101,7 +100,5 @@ class MigrationManager
 
             $this->logger->info("node $id is successfully migrated.");
         }
-
     }
-
 }

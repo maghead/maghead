@@ -1,5 +1,6 @@
 <?php
 namespace Maghead\Exception;
+
 use RuntimeException;
 use Exception;
 use Maghead\Runtime\BaseModel;

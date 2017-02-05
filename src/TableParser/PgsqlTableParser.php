@@ -13,7 +13,9 @@ class PgsqlTableParser extends BaseTableParser
         $stm = $this->connection->query('SELECT table_name FROM information_schema.tables WHERE table_schema = \'public\';');
         $rows = $stm->fetchAll(PDO::FETCH_NUM);
 
-        return array_map(function ($row) { return $row[0]; }, $rows);
+        return array_map(function ($row) {
+            return $row[0];
+        }, $rows);
     }
 
     public function reverseTableSchema($table, $referenceSchema = null)
@@ -47,7 +49,7 @@ class PgsqlTableParser extends BaseTableParser
          *          SELECT c.oid
          *          FROM pg_catalog.pg_class c
          *              LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
-         *          WHERE c.relname ~ '^(books)$'  
+         *          WHERE c.relname ~ '^(books)$'
          *              AND pg_catalog.pg_table_is_visible(c.oid)
          *      )
          *  ;

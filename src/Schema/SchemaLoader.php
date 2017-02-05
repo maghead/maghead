@@ -5,7 +5,7 @@ namespace Maghead\Schema;
 use Maghead\Utils\ClassUtils;
 
 /**
- * Schema loader actually catches 
+ * Schema loader actually catches
  * schema object instances by schema class name.
  */
 class SchemaLoader

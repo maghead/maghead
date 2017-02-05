@@ -1,6 +1,3 @@
 <?php
 
 namespace Maghead\Schema;
-
-
-

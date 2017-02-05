@@ -15,7 +15,7 @@ When exporting a collection, we need to collected the foreign records in a Map
 
 That would cause memory usage issue (too many model objects)
 
-We should also consider the object construction in the import process, we 
+We should also consider the object construction in the import process, we
 should share the same record class in the same collection section.
 
 
@@ -104,7 +104,7 @@ class XMLExporter
         return $dom;
     }
 
-    protected function appendRecord(DOMDocument $dom, DOMElement $root, BaseModel $record, SchemaInterface $schema = null,  $recursive = true)
+    protected function appendRecord(DOMDocument $dom, DOMElement $root, BaseModel $record, SchemaInterface $schema = null, $recursive = true)
     {
         if (!$schema) {
             $schema = $record->getSchema();

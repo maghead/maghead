@@ -88,7 +88,7 @@ abstract class BaseModel implements Serializable
 
     public function unsetPrimaryKey()
     {
-        $this->setKey(NULL);
+        $this->setKey(null);
     }
 
     public function getDataLabelField()
@@ -130,14 +130,14 @@ abstract class BaseModel implements Serializable
     /**
      * An alias for BaseRepo::loadByKeys
      */
-    static protected function loadByKeys(array $args, $byKeys = null)
+    protected static function loadByKeys(array $args, $byKeys = null)
     {
         return static::masterRepo()->loadByKeys($args, $byKeys);
     }
 
     /**
-     * Create or update an record by checking 
-     * the existence from the $byKeys array 
+     * Create or update an record by checking
+     * the existence from the $byKeys array
      * that you defined.
      *
      * If the record exists, then the record should be updated.
@@ -181,7 +181,7 @@ abstract class BaseModel implements Serializable
      *
      * @param array $args
      */
-    static public function create(array $args)
+    public static function create(array $args)
     {
         return static::masterRepo()->create($args);
     }
@@ -189,7 +189,7 @@ abstract class BaseModel implements Serializable
     /**
      * Create and return the created record.
      */
-    static public function createAndLoad(array $args)
+    public static function createAndLoad(array $args)
     {
         $repo = static::masterRepo();
         $ret = $repo->create($args);
@@ -202,22 +202,22 @@ abstract class BaseModel implements Serializable
     /**
      * find() is an alias method of masterRepo->find
      */
-    static public function load($arg)
+    public static function load($arg)
     {
         return static::masterRepo()->load($arg);
     }
 
-    static public function loadByPrimaryKey($arg)
+    public static function loadByPrimaryKey($arg)
     {
         return static::masterRepo()->loadByPrimaryKey($arg);
     }
 
-    static public function loadWith($args)
+    public static function loadWith($args)
     {
         return static::masterRepo()->loadWith($args);
     }
 
-    static public function loadForUpdate($args)
+    public static function loadForUpdate($args)
     {
         return static::masterRepo()->loadForUpdate($args);
     }
@@ -278,7 +278,7 @@ abstract class BaseModel implements Serializable
      *
      * @param array $args
      */
-    static public function rawCreate(array $args)
+    public static function rawCreate(array $args)
     {
         return static::masterRepo()->rawCreate($args);
     }
@@ -310,10 +310,10 @@ abstract class BaseModel implements Serializable
      *
      * @return string the mixin class name.
      */
-    static public function findMixinMethodClass($m)
+    public static function findMixinMethodClass($m)
     {
         foreach (static::$mixin_classes as $mixinClass) {
-            // if we found it, just call it and return the result. 
+            // if we found it, just call it and return the result.
             if (method_exists($mixinClass, $m)) {
                 return $mixinClass;
             }
@@ -347,14 +347,14 @@ abstract class BaseModel implements Serializable
     protected function invokeAllMixinMethods($m, $a)
     {
         foreach (static::$mixin_classes as $mixinClass) {
-            // If we found it, just call it and return the result. 
+            // If we found it, just call it and return the result.
             if (method_exists($mixinClass, $m)) {
                 call_user_func_array(array($mixinClass, $m), array_merge(array($this), $a));
             }
         }
     }
 
-    static public function __callStatic($method, $args)
+    public static function __callStatic($method, $args)
     {
         $repo = static::masterRepo();
         return call_user_func_array([$repo, $method], $args);
@@ -622,8 +622,8 @@ abstract class BaseModel implements Serializable
         $collection = $relation->getForeignCollection();
         $collection->where()->equal($collection->getAlias().'.'.$fColumn, $sValue); // where 'm' is the default alias.
 
-        // For if we need to create relational records 
-        // though collection object, we need to pre-set 
+        // For if we need to create relational records
+        // though collection object, we need to pre-set
         // the relational record id.
         $collection->setPresetVars([$fColumn => $sValue]);
         $this->setInternalCache($cacheKey, $collection);
@@ -639,7 +639,7 @@ abstract class BaseModel implements Serializable
             $relation = static::getSchema()->getRelation($key);
         }
 
-        switch($relation['type']) {
+        switch ($relation['type']) {
             case Relationship::HAS_ONE:
                 return $this->fetchHasOne($key);
                 break;
@@ -812,7 +812,7 @@ abstract class BaseModel implements Serializable
      */
     protected function inflateColumnValue($n)
     {
-        $value = property_exists($this, $n) ? $this->$n : NULL;
+        $value = property_exists($this, $n) ? $this->$n : null;
         if ($c = static::getSchema()->getColumn($n)) {
             return $c->inflate($value, $this);
         }
@@ -826,12 +826,12 @@ abstract class BaseModel implements Serializable
         return new $class();
     }
 
-    static public function getSchema()
+    public static function getSchema()
     {
         // This is not static property becase different model loads different schema objects.
         if ($this->_schema) {
             return $this->_schema;
-        } else if (constant('static::SCHEMA_PROXY_CLASS')) {
+        } elseif (constant('static::SCHEMA_PROXY_CLASS')) {
             if ($this->_schema = SchemaLoader::load(static::SCHEMA_PROXY_CLASS)) {
                 return $this->_schema;
             }
@@ -928,7 +928,7 @@ abstract class BaseModel implements Serializable
     /**
      * Create a record object from array.
      */
-    static public function fromArray(array $array)
+    public static function fromArray(array $array)
     {
         $record = new static;
         $record->setData($array);

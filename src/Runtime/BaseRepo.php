@@ -98,7 +98,7 @@ class BaseRepo
      * @return BaseModel
      */
     // PHP 5.6 doesn't support static abstract
-    static protected function _stmFetchOne(PDOStatement $stm, array $args)
+    protected static function _stmFetchOne(PDOStatement $stm, array $args)
     {
         $stm->execute($args);
         $obj = $stm->fetch(PDO::FETCH_CLASS);
@@ -117,7 +117,7 @@ class BaseRepo
      * @return BaseModel
      */
     // PHP 5.6 doesn't support static abstract
-    static protected function _stmFetchAll(PDOStatement $stm, array $args)
+    protected static function _stmFetchAll(PDOStatement $stm, array $args)
     {
         $stm->execute($args);
         return $stm->fetchAll(PDO::FETCH_CLASS);
@@ -176,7 +176,7 @@ class BaseRepo
         $record = null;
         if ($pk && isset($args[$pk])) {
             return $this->loadByPrimaryKey($args[$pk]);
-        } else if ($byKeys) {
+        } elseif ($byKeys) {
             $conds = [];
             foreach ((array) $byKeys as $k) {
                 if (array_key_exists($k, $args)) {
@@ -344,22 +344,22 @@ class BaseRepo
 
 
     /**
-     * Method for creating new record, which is called from 
+     * Method for creating new record, which is called from
      * static::create and $record->create.
      *
-     * 1. create method calls beforeCreate to 
+     * 1. create method calls beforeCreate to
      * trigger events or filter arguments.
      *
-     * 2. it runs filterArrayWithColumns method to filter 
+     * 2. it runs filterArrayWithColumns method to filter
      * arguments with column definitions.
      *
      * 3. use currentUserCan method to check permission.
      *
-     * 4. get column definitions and run filters, default value 
-     *    builders, canonicalizer, type constraint checkers to build 
+     * 4. get column definitions and run filters, default value
+     *    builders, canonicalizer, type constraint checkers to build
      *    a new arguments.
      *
-     * 5. use these new arguments to build a SQL query with 
+     * 5. use these new arguments to build a SQL query with
      *    SQLBuilder\QueryBuilder.
      *
      * 6. insert SQL into data source (write)
@@ -392,7 +392,7 @@ class BaseRepo
         $conn = $this->write;
         $driver = $conn->getQueryDriver();
 
-        // Just a note: Exceptions should be used for exceptional conditions; things you 
+        // Just a note: Exceptions should be used for exceptional conditions; things you
         // don't expect to happen. Validating input isn't very exceptional.
 
         $args = $this->beforeCreate($args);
@@ -415,7 +415,7 @@ class BaseRepo
             }
 
             // if type constraint is on, check type,
-            // if not, we should try to cast the type of value, 
+            // if not, we should try to cast the type of value,
             // if type casting is fail, we should throw an exception.
 
             // short alias for argument value.
@@ -590,10 +590,10 @@ class BaseRepo
      *   (object) {
      *       valid: boolean valid or invalid
      *       field: string field name
-     *       message: 
+     *       message:
      *   }
      */
-    static public function _validateColumn(RuntimeColumn $column, $val, array $args, $record)
+    public static function _validateColumn(RuntimeColumn $column, $val, array $args, $record)
     {
         // check for requried columns
         if ($column->required && ($val === '' || $val === null)) {
@@ -642,7 +642,7 @@ class BaseRepo
                  * Validate for Options
                  * "Label" => "Value",
                  * "Group" => array( "Label" => "Value" )
-                
+
                  * Order with key => value
                  *    value => label
                  */
@@ -712,7 +712,7 @@ class BaseRepo
     /**
      * Trigger method for "before creating new record".
      *
-     * By overriding this method, you can modify the 
+     * By overriding this method, you can modify the
      * arguments that is passed to the query builder.
      *
      * Remember to return the arguments back.
@@ -756,6 +756,5 @@ class BaseRepo
 
     public function afterUpdate(array $args)
     {
-
     }
 }

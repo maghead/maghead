@@ -212,7 +212,7 @@ abstract class BaseSchema
     }
 
 
-    static public function convertClassToTableName($class)
+    public static function convertClassToTableName($class)
     {
         if (preg_match('/(\w+?)(?:Model)?$/', $class, $reg)) {
             if (count($reg) < 2) {
@@ -227,6 +227,4 @@ abstract class BaseSchema
             throw new TableNameConversionException("Table name convert error: $class", $class);
         }
     }
-
-
 }

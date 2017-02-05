@@ -19,7 +19,7 @@ class MigrationLoader
      *
      * @return path[]
      */
-    static public function findIn($directory)
+    public static function findIn($directory)
     {
         if (!file_exists($directory)) {
             return array();
@@ -44,7 +44,7 @@ class MigrationLoader
     }
 
 
-    static public function sortMigrationScripts(array $classes)
+    public static function sortMigrationScripts(array $classes)
     {
         // sort class with timestamp suffix
         usort($classes, function ($a, $b) {
@@ -68,7 +68,7 @@ class MigrationLoader
      *
      * @return className[]
      */
-    static public function getDeclaredMigrationScripts()
+    public static function getDeclaredMigrationScripts()
     {
         $classes = get_declared_classes();
         $classes = array_filter($classes, function ($class) {

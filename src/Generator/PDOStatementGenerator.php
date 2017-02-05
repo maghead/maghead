@@ -3,13 +3,11 @@ namespace Maghead\Generator;
 
 class PDOStatementGenerator
 {
-
     public static function generateReadPrepare(string $sql)
     {
         return [
             "return \$this->read->prepare(" . var_export($sql, true) . ");",
         ];
-
     }
 
 

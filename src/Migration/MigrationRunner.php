@@ -59,7 +59,7 @@ class MigrationRunner
 
     /**
      * Each data source has it's own migration timestamp,
-     * we use the data source ID to get the migration timestamp 
+     * we use the data source ID to get the migration timestamp
      * and filter the migration script.
      *
      * @return file[] scripts
@@ -73,7 +73,7 @@ class MigrationRunner
 
             return $id > $timestamp;
         });
-        usort($scripts, function($a, $b) {
+        usort($scripts, function ($a, $b) {
             return $a::getId() <=> $b::getId();
         });
         return $scripts;
@@ -88,7 +88,7 @@ class MigrationRunner
 
             return $id <= $timestamp;
         });
-        usort($scripts, function($a, $b) {
+        usort($scripts, function ($a, $b) {
             return $b::getId() <=> $a::getId();
         });
         return $scripts;

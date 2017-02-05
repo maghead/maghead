@@ -57,7 +57,7 @@ class SchemaGenerator
 
     /**
      * This method checks the exising schema file and the generated class file mtime.
-     * If the schema file is newer or the forceUpdate flag is specified, then 
+     * If the schema file is newer or the forceUpdate flag is specified, then
      * the generated class files should be updated.
      *
      * @param ClassTemplate\ClassFile $cTemplate
@@ -127,7 +127,7 @@ class SchemaGenerator
      *
      * @param string $directory The schema class directory.
      * @param ClassTemplate\ClassFile class template object.
-     * @param bool $overwrite Overwrite class file. 
+     * @param bool $overwrite Overwrite class file.
      *
      * @return array
      */

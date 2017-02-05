@@ -19,7 +19,6 @@ class MigrateDowngradeCommand extends MigrateBaseCommand
 
     public function execute()
     {
-
         $connectionManager = ConnectionManager::getInstance();
         $migrationManager = new MigrationManager($connectionManager, $this->logger);
         if ($dsId = $this->getCurrentDataSourceId()) {
@@ -41,11 +40,8 @@ class MigrateDowngradeCommand extends MigrateBaseCommand
             */
 
             $migrationManager->downgrade([$dsId], 1);
-
         } else {
-
             $migrationManager->downgrade();
-
         }
     }
 }

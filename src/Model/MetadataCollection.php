@@ -2,6 +2,6 @@
 
 namespace Maghead\Model;
 
-class MetadataCollection  extends \Maghead\Model\MetadataCollectionBase
+class MetadataCollection extends \Maghead\Model\MetadataCollectionBase
 {
 }

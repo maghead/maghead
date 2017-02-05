@@ -66,7 +66,7 @@ class SqliteTableParser extends BaseTableParser
             $type = $columnDef->type;
             $typeInfo = TypeInfoParser::parseTypeInfo($type, $this->driver);
 
-            // if the reference schema is given, and the type is similar 
+            // if the reference schema is given, and the type is similar
             // we should just apply the type from schema.
             // if ($referenceSchema) { }
 

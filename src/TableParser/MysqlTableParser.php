@@ -15,7 +15,9 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
         $stm = $this->connection->query('show tables;');
         $rows = $stm->fetchAll(PDO::FETCH_NUM);
 
-        return array_map(function ($row) { return $row[0]; }, $rows);
+        return array_map(function ($row) {
+            return $row[0];
+        }, $rows);
     }
 
     public function reverseTableSchema($table, $referenceSchema = null)
@@ -151,7 +153,7 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                     // syntactical oddity for a function, having no trailing
                     // pair of parentheses. That's according to the SQL
                     // standard.
-                    // 
+                    //
                     // @see http://dba.stackexchange.com/questions/63548/difference-between-now-and-current-timestamp
                     if (strtolower($default) == 'current_timestamp') {
                         // XXX: NOW() will be converted into current_timestamp

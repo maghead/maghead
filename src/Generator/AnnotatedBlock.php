@@ -9,13 +9,14 @@ class AnnotatedBlock
 
     public $range;
 
-    public function __construct($id, array $lines = [], array $range = null) {
+    public function __construct($id, array $lines = [], array $range = null)
+    {
         $this->id = $id;
         $this->lines = $lines;
         $this->range = $range;
     }
 
-    static public function apply(array $elements, array $settings)
+    public static function apply(array $elements, array $settings)
     {
         $body = [];
         foreach ($elements as $el) {

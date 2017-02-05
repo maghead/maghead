@@ -1,5 +1,6 @@
 <?php
 namespace Maghead\Generator;
+
 use ReflectionMethod;
 
 class MethodBlockParser
@@ -7,7 +8,7 @@ class MethodBlockParser
     /**
      * parseMethod doesn't return block mapping, it returns the lines and blocks in sequence.
      */
-    static public function parseElements(ReflectionMethod $method, $tag)
+    public static function parseElements(ReflectionMethod $method, $tag)
     {
         $methodFile = $method->getFilename();
         $startLine = $method->getStartLine();
@@ -19,7 +20,7 @@ class MethodBlockParser
         $numberOfLines = count($methodLines);
 
         $indent = 0;
-        if (preg_match('/^(\s+)/',$methodLines[0], $m)) {
+        if (preg_match('/^(\s+)/', $methodLines[0], $m)) {
             $indent = strlen($m[0]);
         }
 
@@ -45,6 +46,5 @@ class MethodBlockParser
             }
         }
         return $blocks;
-
     }
 }

@@ -3,7 +3,7 @@ namespace Maghead\Generator;
 
 class CodeGenSettingsParser
 {
-    static public function parse($comment)
+    public static function parse($comment)
     {
         $settings = [];
         preg_match_all('/@codegen (\w+)(?:\s*=\s*(\S+))?$/m', $comment, $allMatches);

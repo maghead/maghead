@@ -28,7 +28,7 @@ class MetadataManager implements ArrayAccess, IteratorAggregate
 
     /**
      * Users can store different metadata in the different data sources.
-     * This constructor requires the first parameter to be the data source Id to 
+     * This constructor requires the first parameter to be the data source Id to
      * initialize the metadata object.
      *
      * @param string $dsId
@@ -221,7 +221,7 @@ class MetadataManager implements ArrayAccess, IteratorAggregate
     /**
      * Get iterator for the key-value pair data.
      *
-     * Please note this method does not cache the meta data, if you call 
+     * Please note this method does not cache the meta data, if you call
      * this method, this method will do another SQL query to fetch all the attribute
      *
      * @return ArrayIterator

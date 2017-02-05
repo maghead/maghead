@@ -25,7 +25,7 @@ class BaseCollectionClassGenerator
         }
         $cTemplate->extendClass('\\'.$baseCollectionClass);
 
-        $cTemplate->addStaticMethod('public', 'getSchema', [], function() use ($schema) {
+        $cTemplate->addStaticMethod('public', 'getSchema', [], function () use ($schema) {
             return [
                 "static \$schema;",
                 "if (\$schema) {",

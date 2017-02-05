@@ -40,7 +40,7 @@ class SqliteTableDefinitionParser
 {
     /**
      *  @var int
-     *  
+     *
      *  The default buffer offset
      */
     public $p = 0;

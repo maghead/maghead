@@ -9,7 +9,7 @@ trait RepoFactoryTrait
      *
      * @return \Maghead\Runtime\BaseRepo
      */
-    static public function masterRepo()
+    public static function masterRepo()
     {
         $connManager = static::$connectionManager;
         $write = $connManager->getConnection(static::WRITE_SOURCE_ID);
@@ -24,7 +24,7 @@ trait RepoFactoryTrait
      * @param string|Connection $read
      * @return Maghead\Runtime\BaseRepo
      */
-    static public function repo($write = null, $read = null)
+    public static function repo($write = null, $read = null)
     {
         $connManager = static::$connectionManager;
         if (!$read) {
@@ -45,7 +45,7 @@ trait RepoFactoryTrait
      * @param \Maghead\Connection $read
      * @return \Maghead\Runtime\BaseRepo
      */
-    static public function createRepo($write, $read)
+    public static function createRepo($write, $read)
     {
         return new BaseRepo($write, $read);
     }

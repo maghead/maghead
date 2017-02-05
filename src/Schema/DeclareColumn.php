@@ -120,7 +120,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
 
     /**
      * provide localized columns.
-     * 
+     *
      * @param string[] $locales
      */
     public function localize(array $locales)
@@ -198,7 +198,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
 
         $this->attributes['refer'] = $schemaClass;
 
-        // get the primary key from the refered schema 
+        // get the primary key from the refered schema
         if (get_class($this->schema) === ltrim($schemaClass, '\\')) {
             $schema = $this->schema;
         } else {

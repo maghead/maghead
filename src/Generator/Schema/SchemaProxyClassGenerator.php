@@ -46,8 +46,8 @@ class SchemaProxyClassGenerator
         $cTemplate->addPublicProperty('writeSourceId', $schemaArray['write_data_source']);
         $cTemplate->addPublicProperty('relations', array());
 
-        $cTemplate->addStaticVar('column_hash',  array_fill_keys($schema->getColumnNames(), 1));
-        $cTemplate->addStaticVar('mixin_classes',  array_reverse($schema->getMixinSchemaClasses()));
+        $cTemplate->addStaticVar('column_hash', array_fill_keys($schema->getColumnNames(), 1));
+        $cTemplate->addStaticVar('mixin_classes', array_reverse($schema->getMixinSchemaClasses()));
 
         $constructor = $cTemplate->addMethod('public', '__construct', []);
         if (!empty($schemaArray['relations'])) {

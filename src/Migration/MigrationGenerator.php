@@ -148,7 +148,7 @@ class MigrationGenerator
                 continue;
             }
 
-            // revsersed schema 
+            // revsersed schema
             $b = $parser->reverseTableSchema($table, $a);
 
             $diffs = $comparator->compare($b, $a);

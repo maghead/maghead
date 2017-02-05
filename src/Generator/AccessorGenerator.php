@@ -24,10 +24,9 @@ use CodeGen\Raw;
 
 class AccessorGenerator
 {
-
-    static public function generateSetterAccessor(ClassFile $cTemplate, DeclareColumn $column, string $accessorName, string $propertyName)
+    public static function generateSetterAccessor(ClassFile $cTemplate, DeclareColumn $column, string $accessorName, string $propertyName)
     {
-        $cTemplate->addMethod('public', $accessorName, ['$val'], function() use ($column, $propertyName) {
+        $cTemplate->addMethod('public', $accessorName, ['$val'], function () use ($column, $propertyName) {
             $columnName = $column->name;
             if ($column->get('deflator')) {
                 return [
@@ -62,9 +61,9 @@ class AccessorGenerator
         });
     }
 
-    static public function generateGetterAccessor(ClassFile $cTemplate, DeclareColumn $column, string $accessorName, string $propertyName)
+    public static function generateGetterAccessor(ClassFile $cTemplate, DeclareColumn $column, string $accessorName, string $propertyName)
     {
-        $cTemplate->addMethod('public', $accessorName, [], function() use ($column, $propertyName) {
+        $cTemplate->addMethod('public', $accessorName, [], function () use ($column, $propertyName) {
             $columnName = $column->name;
             if ($column->get('inflator')) {
                 return [
@@ -76,9 +75,9 @@ class AccessorGenerator
             }
             if ($column->isa === "int") {
                 return ["return intval(\$this->{$columnName});"];
-            } else if ($column->isa === "str") {
+            } elseif ($column->isa === "str") {
                 return ["return \$this->{$columnName};"];
-            } else if ($column->isa === "bool") {
+            } elseif ($column->isa === "bool") {
                 return [
                     "\$value = \$this->{$columnName};",
                     "if (\$value === '' || \$value === null) {",
@@ -86,9 +85,9 @@ class AccessorGenerator
                     "}",
                     "return boolval(\$value);",
                 ];
-            } else if ($column->isa === "float") {
+            } elseif ($column->isa === "float") {
                 return ["return floatval(\$this->{$columnName});"];
-            } else if ($column->isa === "json") {
+            } elseif ($column->isa === "json") {
                 return ["return json_decode(\$this->{$columnName});"];
             }
             return ["return Inflator::inflate(\$this->{$columnName}, '{$column->isa}');"];

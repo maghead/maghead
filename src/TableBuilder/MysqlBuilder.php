@@ -75,7 +75,7 @@ class MysqlBuilder extends BaseBuilder
      * Override buildColumnSql to support inline reference.
      *
      *  MySQL Syntax:
-     *  
+     *
      *      reference_definition:
      *      REFERENCES tbl_name (index_col_name,...)
      *          [MATCH FULL | MATCH PARTIAL | MATCH SIMPLE]

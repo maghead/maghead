@@ -95,14 +95,14 @@ class MySQLTableStatus
     {
         $dbName = $this->connection->query('SELECT database();')->fetchColumn();
         /*
-        SELECT 
+        SELECT
             CONCAT(table_schema, '.', table_name),
             CONCAT(ROUND(table_rows / 1000000, 2), 'M') AS rows,
             CONCAT(ROUND(data_length / ( 1024 * 1024 * 1024 ), 2), 'G') AS data,
             CONCAT(ROUND(index_length / ( 1024 * 1024 * 1024 ), 2), 'G') AS idx,
             CONCAT(ROUND(( data_length + index_length ) / ( 1024 * 1024 * 1024 ), 2), 'G') AS total_size,
             ROUND(index_length / data_length, 2) AS idxfrac
-            FROM information_schema.TABLES 
+            FROM information_schema.TABLES
             WHERE table_schema = 'bossnet' ORDER  BY data_length + index_length DESC LIMIT  10;
         */
         $query = $this->createStatusDetailQuery();

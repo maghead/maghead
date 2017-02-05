@@ -25,13 +25,11 @@ use Maghead\Generator\PDOStatementGenerator;
 use Maghead\Generator\CodeGenSettingsParser;
 use Maghead\Generator\MethodBlockParser;
 
-
 /**
  * Base Repo class generator.
  */
 class BaseRepoClassGenerator
 {
-
     public static function create(DeclareSchema $schema, $baseClass)
     {
         $readFrom = $schema->getReadSourceId();
@@ -51,7 +49,7 @@ class BaseRepoClassGenerator
         // If the user pre-loaded the schema proxy file by the user himself,
         // then this line will cause error.
         //
-        // By design, users shouldn't use the schema proxy class, it 
+        // By design, users shouldn't use the schema proxy class, it
         // should be only used by model/collection class.
         $schemaProxyFileName = $schema->getModelName() . 'SchemaProxy.php';
         $cTemplate->prependStatement(new RequireOnceStatement(
@@ -80,14 +78,14 @@ class BaseRepoClassGenerator
         ));
 
         $cTemplate->addProtectedProperty('table', $schema->getTable());
-        $cTemplate->addStaticVar('columnNames',  $schema->getColumnNames());
-        $cTemplate->addStaticVar('columnHash',  array_fill_keys($schema->getColumnNames(), 1));
+        $cTemplate->addStaticVar('columnNames', $schema->getColumnNames());
+        $cTemplate->addStaticVar('columnHash', array_fill_keys($schema->getColumnNames(), 1));
         $cTemplate->addStaticVar('mixinClasses', array_reverse($schema->getMixinSchemaClasses()));
 
         $cTemplate->addProtectedProperty('loadStm');
         $cTemplate->addProtectedProperty('deleteStm');
 
-        $cTemplate->addStaticMethod('public', 'getSchema', [], function() use ($schema) {
+        $cTemplate->addStaticMethod('public', 'getSchema', [], function () use ($schema) {
             return [
                 "static \$schema;",
                 "if (\$schema) {",
@@ -122,7 +120,7 @@ class BaseRepoClassGenerator
         $loadByPrimaryKeySql = $loadByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $loadByPrimaryKeySql);
 
-        $cTemplate->addMethod('public', 'loadByPrimaryKey', ['$pkId'], function() use ($schema) {
+        $cTemplate->addMethod('public', 'loadByPrimaryKey', ['$pkId'], function () use ($schema) {
             return [
                 "if (!\$this->loadStm) {",
                 "   \$this->loadStm = \$this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",
@@ -132,11 +130,11 @@ class BaseRepoClassGenerator
             ];
         });
 
-        $cTemplate->addMethod('public', 'prepareRead', ['$sql'], function() use ($schema) {
+        $cTemplate->addMethod('public', 'prepareRead', ['$sql'], function () use ($schema) {
             return "return \$this->read->prepare(\$sql);";
         });
 
-        $cTemplate->addMethod('public', 'prepareWrite', ['$sql'], function() use ($schema) {
+        $cTemplate->addMethod('public', 'prepareWrite', ['$sql'], function () use ($schema) {
             return "return \$this->write->prepare(\$sql);";
         });
 
@@ -157,7 +155,7 @@ class BaseRepoClassGenerator
             $constName = 'LOAD_BY_' . strtoupper($columnName) . '_SQL';
             $cTemplate->addConst($constName, $sql);
 
-            $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use($schema, $columnName, $propertyName, $constName) {
+            $cTemplate->addMethod('public', $findMethodName, ['$value'], function () use ($schema, $columnName, $propertyName, $constName) {
                 return PDOStatementGenerator::generateFetchOne(
                     $propertyName,
                     $constName,
@@ -171,24 +169,23 @@ class BaseRepoClassGenerator
         $arguments = new ArgumentArray();
         $deleteQuery = new DeleteQuery();
         $deleteQuery->delete($schema->getTable());
-        $deleteQuery->where()->equal($schema->primaryKey,  new ParamMarker($schema->primaryKey));
+        $deleteQuery->where()->equal($schema->primaryKey, new ParamMarker($schema->primaryKey));
         $deleteQuery->limit(1);
         $deleteByPrimaryKeySql = $deleteQuery->toSql($writeQueryDriver, $arguments);
         $cTemplate->addConst('DELETE_BY_PRIMARY_KEY_SQL', $deleteByPrimaryKeySql);
         $cTemplate->addMethod('public',
             'deleteByPrimaryKey',
-            ['$pkId'], 
+            ['$pkId'],
             PDOStatementGenerator::generateExecute('deleteStm', 'DELETE_BY_PRIMARY_KEY_SQL', "[\$pkId]")
         );
 
         foreach ($schema->getRelations() as $relKey => $rel) {
-
             $relName = ucfirst(Inflector::camelize($relKey));
             $methodName = "fetch{$relName}Of";
             $propertyName = "fetch{$relName}Stm";
             $constName = "FETCH_" . strtoupper($relKey) . "_SQL";
 
-            switch($rel['type']) {
+            switch ($rel['type']) {
 
                 case Relationship::HAS_ONE:
                 case Relationship::BELONGS_TO:

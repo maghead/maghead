@@ -6,7 +6,6 @@ use Maghead\Migration\MigrationLoader;
 
 class MigrateBaseCommand extends BaseCommand
 {
-
     public function options($opts)
     {
         parent::options($opts);
@@ -22,5 +21,4 @@ class MigrateBaseCommand extends BaseCommand
         parent::prepare();
         MigrationLoader::findIn($this->options->{'script-dir'} ?: 'db/migrations');
     }
-
 }

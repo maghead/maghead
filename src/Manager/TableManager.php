@@ -9,7 +9,7 @@ use Maghead\PDOExceptionPrinter;
 use CLIFramework\Logger;
 use PDOException;
 
-class TableManager 
+class TableManager
 {
     protected $conn;
 

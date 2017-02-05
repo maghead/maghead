@@ -44,14 +44,14 @@ class ConfigManager
 
         if ($host = $dsn->getHost()) {
             $node['host'] = $host;
-        } else if (isset($opts['host'])) {
+        } elseif (isset($opts['host'])) {
             $node['host'] = $opts['host'];
             $dsn->setAttribute('host', $opts['host']);
         }
 
         if ($port = $dsn->getPort()) {
             $node['port'] = $port;
-        } else if (isset($opts['port'])) {
+        } elseif (isset($opts['port'])) {
             $node['port'] = $opts['port'];
             $dsn->setAttribute('port', $opts['port']);
         }
@@ -59,7 +59,7 @@ class ConfigManager
         // MySQL only attribute
         if ($dbname = $dsn->getAttribute('dbname')) {
             $node['database'] = $dbname;
-        } else if (isset($opts['dbname'])) {
+        } elseif (isset($opts['dbname'])) {
             $node['database'] = $opts['dbname'];
             $dsn->setAttribute('dbname', $opts['dbname']);
         }
@@ -86,5 +86,4 @@ class ConfigManager
     {
         return ConfigLoader::writeToSymbol($this->config, $file);
     }
-
 }

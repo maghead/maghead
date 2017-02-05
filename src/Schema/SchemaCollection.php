@@ -89,7 +89,9 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
 
     public function getClasses()
     {
-        return array_map(function ($a) { return get_class($a); }, $this->schemas);
+        return array_map(function ($a) {
+            return get_class($a);
+        }, $this->schemas);
     }
 
     public function getBuildableSchemas()
