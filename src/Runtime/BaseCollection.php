@@ -94,6 +94,7 @@ class BaseCollection
      */
     protected $defaultOrdering = array();
 
+    protected $repo;
 
     /**
      * Basically we won't create mass collection objects in one time.
@@ -102,6 +103,11 @@ class BaseCollection
     public function __construct()
     {
         // $this->_query = $this->createReadQuery();
+    }
+
+    public function setRepo(BaseRepo $repo)
+    {
+        $this->repo = $repo;
     }
 
 
@@ -226,9 +232,17 @@ class BaseCollection
         $this->preferredTable = $tableName;
     }
 
+    protected function getCurrentRepo()
+    {
+        if ($this->repo) {
+            return $this->repo;
+        }
+        return static::masterRepo(); // my repo 
+    }
+
     public function createReadQuery()
     {
-        $repo = static::masterRepo(); // my repo 
+        $repo = $this->getCurrentRepo();
         $conn = $repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
@@ -287,7 +301,7 @@ class BaseCollection
      */
     public function fetch()
     {
-        $repo = static::masterRepo(); // my repo 
+        $repo = $this->getCurrentRepo();
         $conn = $repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
@@ -305,7 +319,7 @@ class BaseCollection
 
     public function sql()
     {
-        $repo = static::masterRepo(); // my repo 
+        $repo = $this->getCurrentRepo();
         $conn = $repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
@@ -341,7 +355,7 @@ class BaseCollection
      */
     public function count()
     {
-        $repo = static::masterRepo(); // my repo 
+        $repo = $this->getCurrentRepo();
         $conn = $repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
@@ -468,7 +482,7 @@ class BaseCollection
     public function delete()
     {
         $schema = static::getSchema();
-        $repo = static::masterRepo(); // my repo 
+        $repo = $this->getCurrentRepo();
         $conn = $repo->getWriteConnection();
         $driver = $conn->getQueryDriver();
 
@@ -501,7 +515,7 @@ class BaseCollection
     {
         $schema = static::getSchema();
 
-        $repo = static::masterRepo(); // my repo 
+        $repo = $this->getCurrentRepo();
         $conn = $repo->getWriteConnection();
         $driver = $conn->getQueryDriver();
 
@@ -758,11 +772,11 @@ class BaseCollection
      */
     public function toSql()
     {
-        /* fetch by current query */
-        $query = $this->getCurrentQuery();
-        $dsId = static::getSchema()->getReadSourceId();
-        $conn = static::$connectionManager->getConnection($dsId);
+        $repo = $this->getCurrentRepo();
+        $conn = $repo->getReadConnection();
         $driver = $conn->getQueryDriver();
+
+        $query = $this->getCurrentQuery();
         $arguments = new ArgumentArray();
         $sql = $query->toSql($driver, $arguments);
 
