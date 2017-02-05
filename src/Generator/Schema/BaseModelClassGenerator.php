@@ -167,8 +167,8 @@ class BaseModelClassGenerator
             if ($column->findable) {
                 $findMethodName = 'loadBy'.ucfirst(Inflector::camelize($columnName));
                 $cTemplate->addMethod('public', $findMethodName, ['$value'], function() use ($findMethodName) {
-                    // Call BaseRepo methods on defaultRepo
-                    return ["return static::defaultRepo()->{$findMethodName}(\$value);"];
+                    // Call BaseRepo methods on masterRepo
+                    return ["return static::masterRepo()->{$findMethodName}(\$value);"];
                 });
             }
 
@@ -229,7 +229,7 @@ class BaseModelClassGenerator
                 $methodName = 'fetch'. $relName;
                 $repoMethodName = 'fetch'. $relName . 'Of';
                 $cTemplate->addMethod('public', $methodName, [],
-                    "return static::defaultRepo()->{$repoMethodName}(\$this);");
+                    "return static::masterRepo()->{$repoMethodName}(\$this);");
                 break;
             }
 

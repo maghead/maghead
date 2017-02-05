@@ -36,7 +36,7 @@ TODO
           connection.
     - [x] Add `::repo($write)` ($read = $write)
     - [x] Add `::repo()` (using default connections)
-    - [x] Add `::defaultRepo()` (using default connections)
+    - [x] Add `::masterRepo()` (using default connections)
     - [x] Move `find*` method to Repo class.
     - [x] Move `create` method to Repo class.
     - [x] Move `delete` method to Repo class.

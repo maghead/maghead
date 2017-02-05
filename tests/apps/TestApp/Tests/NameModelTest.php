@@ -66,7 +66,7 @@ class NameModelTest extends ModelTestCase
         $n = new Name;
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
-        $n = Name::defaultRepo()->load($ret->key);
+        $n = Name::masterRepo()->load($ret->key);
         $this->assertFalse($n->isConfirmed());
     }
 
@@ -81,7 +81,7 @@ class NameModelTest extends ModelTestCase
         $ret = $n->create($args);
         $this->assertResultSuccess($ret);
 
-        $n = Name::defaultRepo()->load($ret->key);
+        $n = Name::masterRepo()->load($ret->key);
         $this->assertNull($n->isConfirmed());
 
         $n = Name::load($n->id);
@@ -130,7 +130,7 @@ class NameModelTest extends ModelTestCase
         $ret = $name->create(array('name' => 'Foo' , 'country' => 'Taiwan' , 'address' => 'John'));
         $this->assertResultSuccess($ret);
 
-        $name = Name::defaultRepo()->load($ret->key);
+        $name = Name::masterRepo()->load($ret->key);
         is('XXXX', $name->address, 'Should be canonicalized');
     }
 
@@ -141,7 +141,7 @@ class NameModelTest extends ModelTestCase
         /** confirmed will be cast to true **/
         $ret = $n->create(array( 'name' => 'Foo' , 'country' => 'Tokyo', 'confirmed' => '0' ));
         $this->assertResultSuccess($ret);
-        $n = Name::defaultRepo()->load($ret->key);
+        $n = Name::masterRepo()->load($ret->key);
 
         $this->assertNotFalse($n);
         $this->assertNotNull($n->id);
@@ -177,7 +177,7 @@ class NameModelTest extends ModelTestCase
         ok($vlds = $ret->getSuccessValidations());
         $this->assertCount(1, $vlds);
 
-        $name = Name::defaultRepo()->load($ret->key);
+        $name = Name::masterRepo()->load($ret->key);
         ok($name->id);
         ok($name->address);
 
@@ -201,7 +201,7 @@ class NameModelTest extends ModelTestCase
         $this->assertNotFalse($name);
         $this->assertNotNull($name->id);
 
-        $name2 = Name::defaultRepo()->load($name->id);
+        $name2 = Name::masterRepo()->load($name->id);
         $this->assertEquals($name2->id, $name->id);
     }
 
@@ -218,7 +218,7 @@ class NameModelTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $name = Name::defaultRepo()->load($ret->key);
+        $name = Name::masterRepo()->load($ret->key);
         $this->assertEquals('Type Name A', $name->display('type'));
 
         $xml = $name->toXml();

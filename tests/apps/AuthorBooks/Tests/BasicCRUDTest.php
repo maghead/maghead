@@ -100,12 +100,12 @@ class BasicCRUDTest extends ModelTestCase
         $ret = $b->create(array( 'title' => 'Should Create, not load this' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
-        $b = Book::defaultRepo()->load($ret->key);
+        $b = Book::masterRepo()->load($ret->key);
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
-        $b = Book::defaultRepo()->load($ret->key);
+        $b = Book::masterRepo()->load($ret->key);
 
         $id = $b->id;
         $this->assertNotNull($id);
@@ -170,7 +170,7 @@ class BasicCRUDTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
-        $author = Author::defaultRepo()->load($ret->key);
+        $author = Author::masterRepo()->load($ret->key);
 
         $ret = $author->update(array('id' => new Raw('id + 3') ));
         $this->assertResultSuccess($ret);
@@ -228,7 +228,7 @@ class BasicCRUDTest extends ModelTestCase
         $ret = Author::create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
         $this->assertResultSuccess($ret);
 
-        $author = Author::defaultRepo()->load($ret->key);
+        $author = Author::masterRepo()->load($ret->key);
 
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer
@@ -262,7 +262,7 @@ class BasicCRUDTest extends ModelTestCase
             'book_id' => $book->id,
         ));
         $this->assertResultSuccess($ret);
-        $ab = AuthorBook::defaultRepo()->load($ret->key);
+        $ab = AuthorBook::masterRepo()->load($ret->key);
 
         $this->assertNotFalse($book = Book::createAndLoad(array( 'title' => 'Book II' )));
         $ab = AuthorBook::createAndLoad([
@@ -376,7 +376,7 @@ class BasicCRUDTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $book = Book::defaultRepo()->load($ret->key);
+        $book = Book::masterRepo()->load($ret->key);
 
         $this->assertEquals(0, $book->view);
         $ret = $book->update([
@@ -384,7 +384,7 @@ class BasicCRUDTest extends ModelTestCase
         ]);
         $this->assertResultSuccess($ret);
 
-        $book = Book::defaultRepo()->load($ret->key);
+        $book = Book::masterRepo()->load($ret->key);
         $this->assertEquals(1, $book->view);
 
         $ret = $book->update([
@@ -392,7 +392,7 @@ class BasicCRUDTest extends ModelTestCase
         ]);
         $this->assertResultSuccess($ret);
 
-        $book = Book::defaultRepo()->load($ret->key);
+        $book = Book::masterRepo()->load($ret->key);
         $this->assertResultSuccess($ret);
         $this->assertEquals(4, $book->view);
         $this->assertResultSuccess($book->delete());
@@ -408,11 +408,11 @@ class BasicCRUDTest extends ModelTestCase
         $b = new \AuthorBooks\Model\Book ;
         $ret = $b->create(array( 'title' => 'Zero number inflator' , 'view' => 0 ));
         $this->assertResultSuccess($ret);
-        $b = Book::defaultRepo()->load($ret->key);
+        $b = Book::masterRepo()->load($ret->key);
         $this->assertNotNull($b->id);
         $this->assertEquals(0, $b->view);
 
-        $found = Book::defaultRepo()->load($ret->key);
+        $found = Book::masterRepo()->load($ret->key);
         $this->assertNotFalse($found);
         $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
         $this->assertEquals(0, $found->view);

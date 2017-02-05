@@ -26,7 +26,7 @@ class TagModelProfileTest extends ModelProfileTestCase
      */
     public function testProfileCodeGenOverrideCreate()
     {
-        $repo = Tag::defaultRepo();
+        $repo = Tag::masterRepo();
         for ($i = 0 ; $i < $this->N; $i++) {
             $repo->create(array('title' => uniqid()));
         }

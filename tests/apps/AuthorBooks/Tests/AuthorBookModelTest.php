@@ -66,7 +66,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true, $ret);
 
-        $a = Author::defaultRepo()->load($ret->key);
+        $a = Author::masterRepo()->load($ret->key);
 
         $this->assertTrue($a->isConfirmed());
 
@@ -140,7 +140,7 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'id',
         ));
         $this->assertResultSuccess($ret);
-        $author = Author::defaultRepo()->load($ret->key);
+        $author = Author::masterRepo()->load($ret->key);
 
         ok($v = $author->getColumn('account_brief')); // virtual colun
         $this->assertTrue($v->virtual);
@@ -213,7 +213,7 @@ class AuthorBookModelTest extends ModelTestCase
         $ret = Author::create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->resultOK(true, $ret);
         ok($id = $ret->key);
-        $author = Author::defaultRepo()->load($ret->key);
+        $author = Author::masterRepo()->load($ret->key);
         $this->assertEquals('Foo', $author->name);
         $this->assertEquals('foo@google.com', $author->email);
 
@@ -251,7 +251,7 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'zz3',
         ));
         result_ok($ret);
-        $author = Author::defaultRepo()->load($ret->key);
+        $author = Author::masterRepo()->load($ret->key);
         $ret = $author->update(array('id' => new Raw('id + 3') ));
         result_ok($ret);
     }
@@ -266,7 +266,7 @@ class AuthorBookModelTest extends ModelTestCase
         ));
         $this->resultOK(true, $ret);
 
-        $author = Author::defaultRepo()->load($ret->key);
+        $author = Author::masterRepo()->load($ret->key);
         $id = $author->id;
 
         $ret = $author->update(array( 'name' => 'I' ));
@@ -295,36 +295,36 @@ class AuthorBookModelTest extends ModelTestCase
             'identity' => 'zz3',
         ]);
         $this->assertResultSuccess($ret);
-        $author = Author::defaultRepo()->load($ret->key);
+        $author = Author::masterRepo()->load($ret->key);
 
         $ab = new AuthorBook;
         $book = new \AuthorBooks\Model\Book;
 
         $ret = Book::create(array( 'title' => 'Book I' ));
         $this->assertResultSuccess($ret);
-        $book = Book::defaultRepo()->load($ret->key);
+        $book = Book::masterRepo()->load($ret->key);
 
         $ret = $ab->create([
             'author_id' => $author->id,
             'book_id' => $book->id,
         ]);
         $this->assertResultSuccess($ret);
-        $ab = AuthorBook::defaultRepo()->load($ret->key);
+        $ab = AuthorBook::masterRepo()->load($ret->key);
 
         $ret = Book::create(array( 'title' => 'Book II' ));
         $this->assertResultSuccess($ret);
-        $book = Book::defaultRepo()->load($ret->key);
+        $book = Book::masterRepo()->load($ret->key);
 
         $ret = $ab->create([
             'author_id' => $author->id,
             'book_id' => $book->id,
         ]);
         $this->assertResultSuccess($ret);
-        $ab = AuthorBook::defaultRepo()->load($ret->key);
+        $ab = AuthorBook::masterRepo()->load($ret->key);
 
         $ret = Book::create(array( 'title' => 'Book III' ));
         $this->assertResultSuccess($ret);
-        $book = Book::defaultRepo()->load($ret->key);
+        $book = Book::masterRepo()->load($ret->key);
 
         $ret = $ab->create(array(
             'author_id' => $author->id,

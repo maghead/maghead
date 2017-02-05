@@ -51,11 +51,11 @@ class MetadataBase
     }
     public function loadByName($value)
     {
-        return static::defaultRepo()->loadByName($value);
+        return static::masterRepo()->loadByName($value);
     }
     public function loadByValue($value)
     {
-        return static::defaultRepo()->loadByValue($value);
+        return static::masterRepo()->loadByValue($value);
     }
     public function getKeyName()
     {

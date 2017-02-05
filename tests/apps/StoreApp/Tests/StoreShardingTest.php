@@ -146,7 +146,7 @@ class StoreShardingTest extends ModelTestCase
 
         $orderData = $this->orderDataProvider();
         foreach ($orderData[0] as $storeCode => $ordersData) {
-            $store = Store::defaultRepo()->loadByCode($storeCode);
+            $store = Store::masterRepo()->loadByCode($storeCode);
 
             // create orders
             foreach ($ordersData as $orderData) {

@@ -30,7 +30,7 @@ class BookModelProfileTest extends ModelProfileTestCase
             'subtitle' => 'subtitle',
             'isbn' => $uuid = uniqid(),
         ]);
-        $repo = Book::defaultRepo();
+        $repo = Book::masterRepo();
         for ($i = 0 ; $i < $this->N; $i++) {
             $repo->loadByIsbn($uuid);
         }
@@ -80,7 +80,7 @@ class BookModelProfileTest extends ModelProfileTestCase
             'subtitle' => 'subtitle',
             'isbn' => $uuid = uniqid(),
         ]);
-        $bookRepo = Book::defaultRepo();
+        $bookRepo = Book::masterRepo();
         for ($i = 0 ; $i < $this->N; $i++) {
             $bookRepo->loadByPrimaryKey($b->id);
         }

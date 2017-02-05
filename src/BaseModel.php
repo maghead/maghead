@@ -134,7 +134,7 @@ abstract class BaseModel implements Serializable
      */
     static protected function loadByKeys(array $args, $byKeys = null)
     {
-        return static::defaultRepo()->loadByKeys($args, $byKeys);
+        return static::masterRepo()->loadByKeys($args, $byKeys);
     }
 
     /**
@@ -153,7 +153,7 @@ abstract class BaseModel implements Serializable
         if ($this->hasKey()) {
             return $this->update($args);
         }
-        return static::defaultRepo()->create($args);
+        return static::masterRepo()->create($args);
     }
 
 
@@ -166,7 +166,7 @@ abstract class BaseModel implements Serializable
      */
     public function loadOrCreate(array $args, $byKeys = null)
     {
-        $repo = static::defaultRepo();
+        $repo = static::masterRepo();
         $record = $repo->loadByKeys($args, $byKeys);
         if ($record) {
             return $record;
@@ -185,7 +185,7 @@ abstract class BaseModel implements Serializable
      */
     static public function create(array $args)
     {
-        return static::defaultRepo()->create($args);
+        return static::masterRepo()->create($args);
     }
 
     /**
@@ -193,7 +193,7 @@ abstract class BaseModel implements Serializable
      */
     static public function createAndLoad(array $args)
     {
-        $repo = static::defaultRepo();
+        $repo = static::masterRepo();
         $ret = $repo->create($args);
         if ($ret->error) {
             return false;
@@ -215,26 +215,26 @@ abstract class BaseModel implements Serializable
     }
 
     /**
-     * find() is an alias method of defaultRepo->find
+     * find() is an alias method of masterRepo->find
      */
     static public function load($arg)
     {
-        return static::defaultRepo()->load($arg);
+        return static::masterRepo()->load($arg);
     }
 
     static public function loadByPrimaryKey($arg)
     {
-        return static::defaultRepo()->loadByPrimaryKey($arg);
+        return static::masterRepo()->loadByPrimaryKey($arg);
     }
 
     static public function loadWith($args)
     {
-        return static::defaultRepo()->loadWith($args);
+        return static::masterRepo()->loadWith($args);
     }
 
     static public function loadForUpdate($args)
     {
-        return static::defaultRepo()->loadForUpdate($args);
+        return static::masterRepo()->loadForUpdate($args);
     }
 
     /**
@@ -245,7 +245,7 @@ abstract class BaseModel implements Serializable
     public function delete()
     {
         $key = $this->getKey();
-        $repo = static::defaultRepo();
+        $repo = static::masterRepo();
         $repo->beforeDelete($this);
         $repo->deleteByPrimaryKey($key);
         $repo->afterDelete($this);
@@ -267,7 +267,7 @@ abstract class BaseModel implements Serializable
         if (!$key) {
             return Result::failure('Record is not loaded, Can not update record.', array('args' => $args));
         }
-        $ret = static::defaultRepo()->updateByPrimaryKey($key, $args);
+        $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
         $this->setData($args);
         return $ret;
     }
@@ -283,7 +283,7 @@ abstract class BaseModel implements Serializable
         if (!$key) {
             return Result::failure('Record is not loaded, Can not update record.', array('args' => $args));
         }
-        $ret = static::defaultRepo()->rawUpdateByPrimaryKey($key, $args);
+        $ret = static::masterRepo()->rawUpdateByPrimaryKey($key, $args);
         $this->setData($args);
         return $ret;
     }
@@ -295,7 +295,7 @@ abstract class BaseModel implements Serializable
      */
     static public function rawCreate(array $args)
     {
-        return static::defaultRepo()->rawCreate($args);
+        return static::masterRepo()->rawCreate($args);
     }
 
     /**
@@ -310,9 +310,9 @@ abstract class BaseModel implements Serializable
         $key = $this->getKey();
         $data = $this->getData();
         if ($key) {
-            return static::defaultRepo()->updateByPrimaryKey($key, $data);
+            return static::masterRepo()->updateByPrimaryKey($key, $data);
         }
-        return static::defaultRepo()->create($data);
+        return static::masterRepo()->create($data);
     }
 
 
@@ -371,7 +371,7 @@ abstract class BaseModel implements Serializable
 
     static public function __callStatic($method, $args)
     {
-        $repo = static::defaultRepo();
+        $repo = static::masterRepo();
         return call_user_func_array([$repo, $method], $args);
     }
 
@@ -931,11 +931,11 @@ abstract class BaseModel implements Serializable
     // =========================== REPO METHODS ===========================
 
     /**
-     * defaultRepo method creates the Repo instance class with the default data source IDs
+     * masterRepo method creates the Repo instance class with the default data source IDs
      *
      * @return BaseRepo
      */
-    static public function defaultRepo()
+    static public function masterRepo()
     {
         $connManager = static::$connectionManager;
         $write = $connManager->getConnection(static::WRITE_SOURCE_ID);
@@ -955,7 +955,7 @@ abstract class BaseModel implements Serializable
         $connManager = static::$connectionManager;
         if (!$read) {
             if (!$write) {
-                return static::defaultRepo();
+                return static::masterRepo();
             } else {
                 $read = $write;
             }

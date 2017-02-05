@@ -84,12 +84,12 @@ class BookModelTest extends ModelTestCase
         $ret = $b->create(array( 'title' => 'Should Not Load This' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
-        $b = Book::defaultRepo()->load($ret->key);
+        $b = Book::masterRepo()->load($ret->key);
 
         $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
-        $b = Book::defaultRepo()->load($ret->key);
+        $b = Book::masterRepo()->load($ret->key);
 
         $id = $b->id;
         ok($id);
@@ -108,7 +108,7 @@ class BookModelTest extends ModelTestCase
         $b3 = $b3->loadOrCreate(array( 'title' => 'LoadOrCreateTest3'  ), 'title');
         $this->assertNotNull($id, $b3->id, 'we should create anther one');
 
-        $b3 = Book::defaultRepo()->load($b3->getKey());
+        $b3 = Book::masterRepo()->load($b3->getKey());
         $b3->delete();
     }
 
