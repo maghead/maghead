@@ -16,8 +16,8 @@ class AuthorBookModelTest extends ModelTestCase
     {
         return [
             new AuthorSchema,
-            new \AuthorBooks\Model\AuthorBookSchema,
-            new \AuthorBooks\Model\BookSchema,
+            new AuthorBookSchema,
+            new BookSchema,
         ];
     }
 

@@ -272,33 +272,30 @@ class AuthorCollectionTest extends ModelTestCase
 
     public function testFilter()
     {
-        $book = new \AuthorBooks\Model\Book;
-        $results = array();
-        $this->assertResultSuccess($results[] = Book::create(array( 'title' => 'My Book I' )));
-        $this->assertResultSuccess($results[] = Book::create(array( 'title' => 'My Book II' )));
-        $this->assertResultSuccess($results[] = Book::create(array( 'title' => 'Perl Programming' )));
-        $this->assertResultSuccess($results[] = Book::create(array( 'title' => 'My Book IV' )));
+        $book = new Book;
+        $results = [];
+        $this->assertResultSuccess($results[] = Book::create([ 'title' => 'My Book I' ]));
+        $this->assertResultSuccess($results[] = Book::create([ 'title' => 'My Book II' ]));
+        $this->assertResultSuccess($results[] = Book::create([ 'title' => 'Perl Programming' ]));
+        $this->assertResultSuccess($results[] = Book::create([ 'title' => 'My Book IV' ]));
 
-        $books = new \AuthorBooks\Model\BookCollection;
-        $books->fetch();
-        count_ok(4, $books);
+        $books = new BookCollection;
+        $this->assertCount(4, $books);
 
         $perlBooks = $books->filter(function ($item) {
             return $item->title == 'Perl Programming';
         });
 
-        ok($perlBooks);
-        is(1, $perlBooks->size());
-        count_ok(1, $perlBooks->items());
+        $this->assertEquals(1, $perlBooks->size());
+        $this->assertCount(1, $perlBooks->items());
 
         foreach ($results as $result) {
-            ok($result->key);
-            $record = Book::load($result->id);
-            $record->delete();
+            $this->assertNotNull($result->key);
+            Book::deleteByPrimaryKey($result->id);
         }
 
         $someBooks = $books->splice(0, 2);
-        is(2, count($someBooks));
+        $this->assertCount(2, $someBooks);
     }
 
     public function testCollectionExporter()
