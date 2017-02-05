@@ -24,6 +24,7 @@ class MetadataBase
     const WRITE_SOURCE_ID = 'default';
     const PRIMARY_KEY = 'id';
     const TABLE_ALIAS = 'm';
+    const SHARD_MAPPING_ID = NULL;
     public static $column_names = array (
       0 => 'id',
       1 => 'name',

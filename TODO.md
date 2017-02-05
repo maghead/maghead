@@ -58,7 +58,7 @@ TODO
     - [ ] Shard method
         - [ ] Shard by Hash
         - [ ] Shard by Range
-    - [ ] Rename "default" config to "master".
+    - [x] Rename "default" config to "master".
     - [ ] Global Table behaviour
         - [ ] Spread Create method
             - Create records across different shards.

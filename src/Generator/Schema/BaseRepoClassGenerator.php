@@ -76,6 +76,7 @@ class BaseRepoClassGenerator
             'PRIMARY_KEY'        => $schema->primaryKey,
             'TABLE_ALIAS'        => 'm',
         ));
+        $cTemplate->addConst('SHARD_MAPPING_ID', $schema->shardMapping);
 
         $cTemplate->addProtectedProperty('table', $schema->getTable());
         $cTemplate->addStaticVar('columnNames', $schema->getColumnNames());

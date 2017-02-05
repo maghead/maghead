@@ -93,6 +93,9 @@ class BaseModelClassGenerator
             'TABLE_ALIAS'        => 'm',
         ));
 
+        $cTemplate->addConst('SHARD_MAPPING_ID', $schema->shardMapping);
+
+
         $cTemplate->addProtectedProperty('table', $schema->getTable());
 
         $cTemplate->addStaticVar('column_names', $schema->getColumnNames());
