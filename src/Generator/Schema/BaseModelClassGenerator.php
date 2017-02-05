@@ -96,9 +96,6 @@ class BaseModelClassGenerator
         ));
 
         $cTemplate->addProtectedProperty('table', $schema->getTable());
-        $cTemplate->addPublicProperty('readSourceId', $schema->getReadSourceId() ?: 'default');
-        $cTemplate->addPublicProperty('writeSourceId', $schema->getWriteSourceId() ?: 'default');
-
 
         $cTemplate->addStaticVar('column_names',  $schema->getColumnNames());
         $cTemplate->addStaticVar('mixin_classes', array_reverse($schema->getMixinSchemaClasses()));
