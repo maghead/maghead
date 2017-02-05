@@ -1,5 +1,6 @@
 <?php
 namespace Maghead\Model;
+
 require_once __DIR__ . '/MetadataSchemaProxy.php';
 use Maghead\Schema\SchemaLoader;
 use Maghead\Result;
@@ -10,39 +11,64 @@ use SQLBuilder\ArgumentArray;
 use PDO;
 use SQLBuilder\Universal\Query\InsertQuery;
 use Maghead\Runtime\BaseRepo;
+
 class MetadataBaseRepo
     extends BaseRepo
 {
+
     const SCHEMA_CLASS = 'Maghead\\Model\\MetadataSchema';
+
     const SCHEMA_PROXY_CLASS = 'Maghead\\Model\\MetadataSchemaProxy';
+
     const COLLECTION_CLASS = 'Maghead\\Model\\MetadataCollection';
+
     const MODEL_CLASS = 'Maghead\\Model\\Metadata';
+
     const TABLE = '__meta__';
+
     const READ_SOURCE_ID = 'default';
+
     const WRITE_SOURCE_ID = 'default';
+
     const PRIMARY_KEY = 'id';
+
     const TABLE_ALIAS = 'm';
+
+    const SHARD_MAPPING_ID = NULL;
+
     const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = ? LIMIT 1';
+
     const LOAD_BY_NAME_SQL = 'SELECT * FROM __meta__ WHERE name = :name LIMIT 1';
+
     const LOAD_BY_VALUE_SQL = 'SELECT * FROM __meta__ WHERE value = :value LIMIT 1';
+
     const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ?';
+
     public static $columnNames = array (
       0 => 'id',
       1 => 'name',
       2 => 'value',
     );
+
     public static $columnHash = array (
       'id' => 1,
       'name' => 1,
       'value' => 1,
     );
+
     public static $mixinClasses = array (
     );
+
     protected $table = '__meta__';
+
     protected $loadStm;
+
     protected $deleteStm;
+
     protected $loadByNameStm;
+
     protected $loadByValueStm;
+
     public static function getSchema()
     {
         static $schema;
@@ -51,6 +77,7 @@ class MetadataBaseRepo
         }
         return $schema = new \Maghead\Model\MetadataSchemaProxy;
     }
+
     public function loadByPrimaryKey($pkId)
     {
         if (!$this->loadStm) {
@@ -59,14 +86,17 @@ class MetadataBaseRepo
         }
         return static::_stmFetchOne($this->loadStm, [$pkId]);
     }
+
     public function prepareRead($sql)
     {
         return $this->read->prepare($sql);
     }
+
     public function prepareWrite($sql)
     {
         return $this->write->prepare($sql);
     }
+
     public function loadByName($value)
     {
         if (!$this->loadByNameStm) {
@@ -75,6 +105,7 @@ class MetadataBaseRepo
         }
         return static::_stmFetchOne($this->loadByNameStm, [':name' => $value ]);
     }
+
     public function loadByValue($value)
     {
         if (!$this->loadByValueStm) {
@@ -83,6 +114,7 @@ class MetadataBaseRepo
         }
         return static::_stmFetchOne($this->loadByValueStm, [':value' => $value ]);
     }
+
     public function deleteByPrimaryKey($pkId)
     {
         if (!$this->deleteStm) {
