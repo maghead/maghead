@@ -3,6 +3,7 @@
 namespace Maghead\Command\DataSourceCommand;
 
 use Maghead\Command\BaseCommand;
+use Maghead\Manager\ConfigManager;
 use PDO;
 
 class SetMasterCommand extends BaseCommand
@@ -17,23 +18,14 @@ class SetMasterCommand extends BaseCommand
         $args->add('datasource');
     }
 
-    public function execute($defaultDataSource)
+    public function execute($newMaster)
     {
         // force loading data source
         $config = $this->getConfig();
 
-        $dataSources = $config->getDataSources();
-
-        if (!in_array($defaultDataSource, array_keys($dataSources))) {
-            $this->logger->error("Undefined data source ID: $defaultDataSource");
-
-            return false;
-        }
-
-        $config['data_source']['master'] = $defaultDataSource;
-
-        $configLoader->writeToSymbol($config);
-
+        $manager = new ConfigManager($config);
+        $manager->setMasterNode($newMaster);
+        $manager->save();
         return true;
     }
 }
