@@ -199,19 +199,6 @@ abstract class BaseModel implements Serializable
         return $repo->loadByPrimaryKey($ret->key);
     }
 
-    public function setPreferredTable($tableName)
-    {
-        $this->table = $tableName;
-    }
-
-    /**
-     * We kept getTable() as dynamic that way we can change the table name.
-     */
-    public function getTable()
-    {
-        return $this->table ?: static::TABLE;
-    }
-
     /**
      * find() is an alias method of masterRepo->find
      */

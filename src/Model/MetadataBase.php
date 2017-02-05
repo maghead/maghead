@@ -32,8 +32,6 @@ class MetadataBase
     public static $mixin_classes = array (
     );
     protected $table = '__meta__';
-    public $readSourceId = 'default';
-    public $writeSourceId = 'default';
     public $id;
     public $name;
     public $value;
