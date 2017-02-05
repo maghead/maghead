@@ -250,10 +250,10 @@ class AuthorBookModelTest extends ModelTestCase
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
         $author = Author::masterRepo()->load($ret->key);
         $ret = $author->update(array('id' => new Raw('id + 3') ));
-        result_ok($ret);
+        $this->assertResultSuccess($ret);
     }
 
     public function testUpdateNull()

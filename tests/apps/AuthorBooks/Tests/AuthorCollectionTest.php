@@ -274,10 +274,10 @@ class AuthorCollectionTest extends ModelTestCase
     {
         $book = new \AuthorBooks\Model\Book;
         $results = array();
-        result_ok($results[] = Book::create(array( 'title' => 'My Book I' )));
-        result_ok($results[] = Book::create(array( 'title' => 'My Book II' )));
-        result_ok($results[] = Book::create(array( 'title' => 'Perl Programming' )));
-        result_ok($results[] = Book::create(array( 'title' => 'My Book IV' )));
+        $this->assertResultSuccess($results[] = Book::create(array( 'title' => 'My Book I' )));
+        $this->assertResultSuccess($results[] = Book::create(array( 'title' => 'My Book II' )));
+        $this->assertResultSuccess($results[] = Book::create(array( 'title' => 'Perl Programming' )));
+        $this->assertResultSuccess($results[] = Book::create(array( 'title' => 'My Book IV' )));
 
         $books = new \AuthorBooks\Model\BookCollection;
         $books->fetch();
