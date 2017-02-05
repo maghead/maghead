@@ -5,9 +5,12 @@ namespace Maghead\Schema;
 use Exception;
 use InvalidArgumentException;
 use ReflectionObject;
+use ReflectionClass;
 use Maghead\ConfigLoader;
+use Maghead\Config;
 use Maghead\Utils\ClassUtils;
 use Maghead\Schema\Column\AutoIncrementPrimaryKeyColumn;
+use Maghead\Schema\Column\UUIDPrimaryKeyColumn;
 use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\ParamMarker;
@@ -94,11 +97,39 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         // AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY
         if (false === $this->primaryKey) {
             if ($config = ConfigLoader::getCurrentConfig()) {
-                if ($config->hasAutoId() && !isset($this->columns['id'])) {
-                    $this->insertAutoIdPrimaryColumn();
+                if ($config->hasAutoId()) {
+                    $this->tryInsertPrimaryKeyColumn($config);
                 }
             }
         }
+    }
+
+    protected function tryInsertPrimaryKeyColumn(Config $config)
+    {
+        $column = null;
+        $columnClass = null;
+        $columnName = 'id';
+        if ($config->hasAutoIdConfig()) {
+            if ($cls = $config->getAutoIdColumnClass()) {
+                $columnClass = $cls;
+            }
+            if ($n = $config->getAutoIdColumnName()) {
+                $columnName = $n;
+            }
+        }
+        if (isset($this->columns[$columnName])) {
+            throw new Exception("Column '{$columnName}' is already defined in the schema.");
+        }
+
+        if ($columnClass) {
+            $refClass = new ReflectionClass($columnClass);
+            $column = $refClass->newInstanceArgs([$this, $columnName]);
+        } else {
+            $column = new AutoIncrementPrimaryKeyColumn($this, $columnName, 'integer');
+        }
+        $this->primaryKey = $column->name;
+        $this->insertColumn($column);
+        return $column;
     }
 
     public function schema()
@@ -217,21 +248,6 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     {
         array_unshift($this->columnNames, $column->name);
         $this->columns = [$column->name => $column] + $this->columns;
-    }
-
-    /**
-     * Insert a primary key column with auto increment.
-     *
-     * @param string $name       default to 'id'
-     * @param string $columnType 'int', 'smallint', 'bigint' ...
-     */
-    protected function insertAutoIdPrimaryColumn($name = 'id', $columnType = 'integer')
-    {
-        $column = new AutoIncrementPrimaryKeyColumn($this, $name, $columnType);
-        $this->primaryKey = $column->name;
-        $this->insertColumn($column);
-
-        return $column;
     }
 
     /**

@@ -15,6 +15,7 @@ class Config implements ArrayAccess
 
     const DEFAULT_BASE_MODEL_CLASS = '\\Maghead\\Runtime\\BaseModel';
 
+    const DEFAULT_AUTO_ID_COLUMN_CLASS = '\\Maghead\\Schema\\Column\\AutoIncrementPrimaryKeyColumn';
 
     public function __construct(array $stash)
     {
@@ -157,7 +158,45 @@ class Config implements ArrayAccess
 
     public function hasAutoId()
     {
-        return isset($this->stash['schema']['auto_id']) ? true : false;
+        return isset($this->stash['schema']['auto_id']);
+    }
+
+
+    public function getAutoIdColumnName()
+    {
+        if (is_array($this->stash['schema']['auto_id'])) {
+            if (isset($this->stash['schema']['auto_id']['name'])) {
+                return $this->stash['schema']['auto_id']['name'];
+            }
+        }
+        return 'id';
+    }
+
+    public function hasAutoIdConfig()
+    {
+        return is_array($this->stash['schema']['auto_id']);
+    }
+
+    public function getAutoIdColumnClass()
+    {
+        if (is_array($this->stash['schema']['auto_id'])) {
+            if (isset($this->stash['schema']['auto_id']['class'])) {
+                return $this->stash['schema']['auto_id']['class'];
+            }
+        }
+        // Alternative class '\Maghead\Schema\Column\UUIDPrimaryKeyColumn';
+        return self::DEFAULT_AUTO_ID_COLUMN_CLASS;
+    }
+
+    public function getAutoIdColumnParams()
+    {
+        if (is_array($this->stash['schema']['auto_id'])) {
+            if (isset($this->stash['schema']['auto_id']['params'])) {
+                return $this->stash['schema']['auto_id']['params'];
+            }
+        }
+        // Alternative class '\Maghead\Schema\Column\UUIDPrimaryKeyColumn';
+        return self::DEFAULT_AUTO_ID_COLUMN_CLASS;
     }
 
     public function getBaseModelClass()
