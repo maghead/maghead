@@ -32,6 +32,8 @@ class BaseCollection
     Countable,
     IteratorAggregate
 {
+    use RepoFactoryTrait;
+
     public static $yamlExtension;
 
     public static $jsonOptions = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP;

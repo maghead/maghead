@@ -2,7 +2,7 @@
 
 namespace Maghead\Runtime;
 
-trait ActionCreators
+trait ActionCreatorTrait
 {
     public function asCreateAction(array $args = array(), array $options = array())
     {
