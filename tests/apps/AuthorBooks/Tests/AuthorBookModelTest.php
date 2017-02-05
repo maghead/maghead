@@ -1,10 +1,13 @@
 <?php
 use Maghead\Testing\ModelTestCase;
-use AuthorBooks\Model\Author;
-use AuthorBooks\Model\Book;
-use AuthorBooks\Model\AuthorBook;
-use AuthorBooks\Model\AuthorBookSchema;
-use AuthorBooks\Model\AuthorCollection;
+use AuthorBooks\Model\{
+    Author,
+    AuthorCollection,
+    AuthorSchema,
+    Book,
+    BookSchema,
+    AuthorBook,
+    AuthorBookSchema};
 use SQLBuilder\Raw;
 
 class AuthorBookModelTest extends ModelTestCase
@@ -12,7 +15,7 @@ class AuthorBookModelTest extends ModelTestCase
     public function getModels()
     {
         return [
-            new \AuthorBooks\Model\AuthorSchema,
+            new AuthorSchema,
             new \AuthorBooks\Model\AuthorBookSchema,
             new \AuthorBooks\Model\BookSchema,
         ];
