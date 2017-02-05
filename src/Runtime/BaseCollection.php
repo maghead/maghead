@@ -352,7 +352,7 @@ class BaseCollection
         }
 
         // when selecting count(*), we dont' use groupBys or order by
-        $q->clearOrderBy();
+        $q->removeOrderBy();
         $q->removeGroupBy();
 
         $arguments = new ArgumentArray();
