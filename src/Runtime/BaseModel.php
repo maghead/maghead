@@ -914,7 +914,6 @@ abstract class BaseModel implements Serializable
     }
 
 
-
     // Serializable interface methods
     // ===============================
     public function serialize()
@@ -930,7 +929,7 @@ abstract class BaseModel implements Serializable
     /**
      * Create a record object from array.
      */
-    public static function fromArray(array $array)
+    static public function fromArray(array $array)
     {
         $record = new static;
         $record->setData($array);

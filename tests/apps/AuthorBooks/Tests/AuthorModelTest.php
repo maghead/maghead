@@ -126,9 +126,22 @@ class AuthorModelTest extends ModelTestCase
         $authors->delete();
     }
 
+    public function testSerialize()
+    {
+        $author = Author::createAndLoad([
+            'name' => 'Pedro',
+            'email' => 'pedro@gmail.com',
+            'identity' => 'id',
+            'confirmed' => true,
+        ]);
+        $str = serialize($author);
+        $author2 = unserialize($str);
+        $this->assertEquals($author->getData(), $author2->getData());
+        $this->assertEquals($author->getKey(), $author2->getKey());
+    }
+
     public function testAccessor()
     {
-        $author = new Author;
         $ret = Author::create([
             'name' => 'Pedro',
             'email' => 'pedro@gmail.com',
@@ -359,7 +372,6 @@ class AuthorModelTest extends ModelTestCase
         $this->assertEquals($id, $author->id);
         $this->assertNull($author->name, 'loaded name should be null');
     }
-
 
     public function testMigrationRename()
     {
