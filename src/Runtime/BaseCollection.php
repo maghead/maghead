@@ -351,15 +351,16 @@ class BaseCollection
             $q->setWhere($this->where);
         }
 
-        // when selecting count(*), we dont' use groupBys or order by
+        // When selecting count(*), we don't care group by and order by
         $q->removeOrderBy();
         $q->removeGroupBy();
 
         $arguments = new ArgumentArray();
         $sql = $q->toSql($driver, $arguments);
 
-        return (int) $conn->prepareAndExecute($sql, $arguments->toArray())
-                    ->fetchColumn();
+        $stm = $conn->prepare($sql);
+        $stm->execute($arguments->toArray());
+        return (int) $stm->fetchColumn();
     }
 
     /**
