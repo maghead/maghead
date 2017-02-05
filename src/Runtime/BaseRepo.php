@@ -228,7 +228,7 @@ class BaseRepo
         $query = new UpdateQuery();
 
         $validationError = false;
-        $validationResults = array();
+        $validationResults = [];
 
         $args = $this->beforeUpdate($args);
         if ($args === false) {
@@ -503,11 +503,11 @@ class BaseRepo
         }
 
         if (false === $stm->execute($arguments->toArray())) {
-            return Result::failure('Record create failed.', array(
+            return Result::failure('Record create failed.', [
                 'validations' => $validationResults,
                 'args' => $args,
                 'sql' => $sql,
-            ));
+            ]);
         }
 
         $key = null;
