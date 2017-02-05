@@ -3,7 +3,7 @@ schema:
   paths:
     - tests
 data_source:
-  default: master
+  master: master
   nodes:
     sqlite:
       dsn: 'sqlite::memory:'

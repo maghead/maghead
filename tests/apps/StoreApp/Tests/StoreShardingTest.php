@@ -16,7 +16,10 @@ class StoreShardingTest extends ModelTestCase
 
     public function getModels()
     {
-        return [new StoreSchema, new OrderSchema];
+        return [
+            new StoreSchema,
+            new OrderSchema
+        ];
     }
 
     protected function loadConfig()
@@ -73,7 +76,7 @@ class StoreShardingTest extends ModelTestCase
             ],
             // data source is defined for different data source connection.
             'data_source' => [
-                'default' => 'node1',
+                'master' => 'node1',
                 'nodes' => [
                     'node1' => [
                         'dsn' => 'sqlite::memory:',
@@ -102,7 +105,7 @@ class StoreShardingTest extends ModelTestCase
                 ],
             ],
         ]);
-        // $config->setDefaultDataSourceId('sqlite');
+        // $config->setMasterDataSourceId('sqlite');
         // $config->setAutoId();
         return $config;
     }
@@ -155,10 +158,6 @@ class StoreShardingTest extends ModelTestCase
                 $this->assertResultSuccess($ret);
             }
         }
-
         // all orders ready
     }
-
-
-
 }

@@ -88,18 +88,17 @@ class Config implements ArrayAccess
         }
     }
 
-    public function setDefaultDataSourceId($id)
+    public function setMasterDataSourceId($id)
     {
-        $this->stash['data_source']['default'] = $id;
+        $this->stash['data_source']['master'] = $id;
     }
 
     public function getMasterDataSourceId()
     {
-        if (isset($this->stash['data_source']['default'])) {
-            return $this->stash['data_source']['default'];
+        if (isset($this->stash['data_source']['master'])) {
+            return $this->stash['data_source']['master'];
         }
-
-        return 'default';
+        throw new Exception('master data source is undefined.');
     }
 
     public function getSeedScripts()

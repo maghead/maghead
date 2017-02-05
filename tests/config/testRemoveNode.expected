@@ -3,7 +3,7 @@ schema:
   paths:
     - tests
 data_source:
-  default: master
+  master: master
   nodes:
     pgsql:
       dsn: 'pgsql:host=localhost;dbname=testing'

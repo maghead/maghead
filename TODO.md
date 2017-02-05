@@ -54,11 +54,11 @@ TODO
     - [x] Add basic shard dispatcher base on Flexihash
     - [x] Add "prepare" method generator for Repo classes.
     - [x] Use repo class in BaseCollection
+    - [x] Rename "getDefaultConnection" to "getMasterConnection".
     - [ ] Shard method
         - [ ] Shard by Hash
         - [ ] Shard by Range
     - [ ] Rename "default" config to "master".
-    - [ ] Rename "getDefaultConnection" to "getMasterConnection".
     - [ ] Global Table behaviour
         - [ ] Spread Create method
             - Create records across different shards.

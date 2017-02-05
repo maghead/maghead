@@ -60,7 +60,7 @@ class ShardManagerTest extends ModelTestCase
             ],
             // data source is defined for different data source connection.
             'data_source' => [
-                'default' => 'node1',
+                'master' => 'node1',
                 'nodes' => [
                     'node1' => [
                         'dsn' => 'sqlite::memory:',

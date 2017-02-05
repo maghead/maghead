@@ -110,8 +110,11 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         if ($this->writeSourceId) {
             return $this->writeSourceId;
         }
+        return 'default';
+        /*
         $config = ConfigLoader::getCurrentConfig();
         return $config->getMasterDataSourceId();
+         */
     }
 
     public function getReadSourceId()
@@ -119,8 +122,11 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         if ($this->readSourceId) {
             return $this->readSourceId;
         }
+        return 'default';
+        /*
         $config = ConfigLoader::getCurrentConfig();
         return $config->getMasterDataSourceId();
+        */
     }
 
     public function getColumns($includeVirtual = false)

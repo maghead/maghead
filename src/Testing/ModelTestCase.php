@@ -37,7 +37,7 @@ abstract class ModelTestCase extends BaseTestCase
 
         parent::setUp();
 
-        // Ensure that we use the correct default data source ID
+        // Ensure that we use the correct master data source ID
         $this->assertEquals($this->getMasterDataSourceId(), $this->config->getMasterDataSourceId());
         $this->assertInstanceOf('SQLBuilder\\Driver\\BaseDriver', $this->queryDriver, 'QueryDriver object OK');
 

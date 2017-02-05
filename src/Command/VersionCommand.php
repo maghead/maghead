@@ -23,7 +23,7 @@ class VersionCommand extends BaseCommand
 
     public function execute()
     {
-        $dsId = $this->options->{'data-source'} ?: 'default';
+        $dsId = $this->options->{'data-source'} ?: $this->config->getMasterDataSourceId();
         $meta = new MetadataManager($dsId);
         $this->logger->info('database version: '.$meta['version']);
     }

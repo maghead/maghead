@@ -102,7 +102,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     protected function loadConfig()
     {
         $config = ConfigLoader::loadFromSymbol(true);
-        $config->setDefaultDataSourceId($this->getMasterDataSourceId());
+        $config->setMasterDataSourceId($this->getMasterDataSourceId());
         $config->setAutoId();
         return $config;
     }

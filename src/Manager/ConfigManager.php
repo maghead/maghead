@@ -19,14 +19,13 @@ class ConfigManager
     }
 
 
-    public function setDefaultNode($nodeId)
+    public function setMasterNode($nodeId)
     {
         $keys = array_keys($this->config['data_source']['nodes']);
-        if (in_array($nodeId, $keys)) {
-            $this->config['data_source']['default'] = $nodeId;
-        } else {
+        if (!in_array($nodeId, $keys)) {
             throw new InvalidArgumentException("Node $nodeId doesn't exist.");
         }
+        $this->config['data_source']['master'] = $nodeId;
     }
 
     public function removeNode($nodeId)

@@ -12,7 +12,7 @@ cache:
   servers:
     - { host: localhost, port: 11211 }
 data_source:
-  default: sqlite
+  master: sqlite
   nodes:
     sqlite:
       dsn: 'sqlite:tests.db'

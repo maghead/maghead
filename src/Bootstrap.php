@@ -67,7 +67,7 @@ class Bootstrap
             $connectionManager->addDataSource($nodeId, $dsConfig);
         }
         if ($nodeId = $config->getMasterDataSourceId()) {
-            $connectionManager->setDefaultDataSourceId($nodeId);
+            $connectionManager->setMasterDataSourceId($nodeId);
         }
     }
 

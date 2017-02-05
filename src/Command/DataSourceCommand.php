@@ -20,7 +20,7 @@ class DataSourceCommand extends BaseCommand
     {
         $this->command('add');
         $this->command('remove');
-        $this->command('set-default');
+        $this->command('set-master');
     }
 
     public function execute()

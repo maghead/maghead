@@ -145,7 +145,7 @@ class ConnectionManager implements ArrayAccess
         return $config['driver'];
     }
 
-    public function setDefaultDataSourceId($nodeId)
+    public function setMasterDataSourceId($nodeId)
     {
         $this->defaultDataSourceId = $nodeId;
     }

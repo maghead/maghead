@@ -5,16 +5,16 @@ namespace Maghead\Command\DataSourceCommand;
 use Maghead\Command\BaseCommand;
 use PDO;
 
-class SetDefaultCommand extends BaseCommand
+class SetMasterCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'set default data source for PDO connections.';
+        return 'set master data source for PDO connections.';
     }
 
     public function arguments($args)
     {
-        $args->add('default-datasource');
+        $args->add('datasource');
     }
 
     public function execute($defaultDataSource)
@@ -30,7 +30,7 @@ class SetDefaultCommand extends BaseCommand
             return false;
         }
 
-        $config['data_source']['default'] = $defaultDataSource;
+        $config['data_source']['master'] = $defaultDataSource;
 
         $configLoader->writeToSymbol($config);
 
