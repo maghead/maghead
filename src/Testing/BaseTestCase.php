@@ -79,7 +79,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->logger->setQuiet();
     }
 
-    protected function getDefaultDataSourceId()
+    protected function getMasterDataSourceId()
     {
         if ($this->defaultDataSource) {
             return $this->defaultDataSource;
@@ -102,7 +102,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     protected function loadConfig()
     {
         $config = ConfigLoader::loadFromSymbol(true);
-        $config->setDefaultDataSourceId($this->getDefaultDataSourceId());
+        $config->setDefaultDataSourceId($this->getMasterDataSourceId());
         $config->setAutoId();
         return $config;
     }
@@ -142,8 +142,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     protected function setupDefaultConnection()
     {
-        if (!$this->conn && $this->getDefaultDataSourceId()) {
-            $this->conn = $this->setupConnection($this->getDefaultDataSourceId());
+        if (!$this->conn && $this->getMasterDataSourceId()) {
+            $this->conn = $this->setupConnection($this->getMasterDataSourceId());
             $this->queryDriver = $this->conn->getQueryDriver();
         }
     }

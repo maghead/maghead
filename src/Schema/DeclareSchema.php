@@ -111,7 +111,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
             return $this->writeSourceId;
         }
         $config = ConfigLoader::getCurrentConfig();
-        return $config->getDefaultDataSourceId();
+        return $config->getMasterDataSourceId();
     }
 
     public function getReadSourceId()
@@ -120,7 +120,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
             return $this->readSourceId;
         }
         $config = ConfigLoader::getCurrentConfig();
-        return $config->getDefaultDataSourceId();
+        return $config->getMasterDataSourceId();
     }
 
     public function getColumns($includeVirtual = false)

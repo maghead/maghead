@@ -79,9 +79,9 @@ class Config implements ArrayAccess
         return [];
     }
 
-    public function getDefaultDataSource()
+    public function getMasterDataSource()
     {
-        $id = $this->getDefaultDataSourceId();
+        $id = $this->getMasterDataSourceId();
 
         if (isset($this->stash['data_source']['nodes'][$id])) {
             return $this->stash['data_source']['nodes'][$id];
@@ -93,7 +93,7 @@ class Config implements ArrayAccess
         $this->stash['data_source']['default'] = $id;
     }
 
-    public function getDefaultDataSourceId()
+    public function getMasterDataSourceId()
     {
         if (isset($this->stash['data_source']['default'])) {
             return $this->stash['data_source']['default'];

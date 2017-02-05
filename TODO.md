@@ -52,8 +52,8 @@ TODO
     - [x] Support node config definition
     - [x] Support shard mapping config definition
     - [x] Add basic shard dispatcher base on Flexihash
-    - [ ] Add "prepare" method generator for Repo classes.
-    - [ ] Repo class for BaseCollection
+    - [x] Add "prepare" method generator for Repo classes.
+    - [x] Use repo class in BaseCollection
     - [ ] Shard method
         - [ ] Shard by Hash
         - [ ] Shard by Range
