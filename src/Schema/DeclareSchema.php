@@ -107,12 +107,20 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
 
     public function getWriteSourceId()
     {
-        return $this->writeSourceId ?: 'default';
+        if ($this->writeSourceId) {
+            return $this->writeSourceId;
+        }
+        $config = ConfigLoader::getCurrentConfig();
+        return $config->getDefaultDataSourceId();
     }
 
     public function getReadSourceId()
     {
-        return $this->readSourceId ?: 'default';
+        if ($this->readSourceId) {
+            return $this->readSourceId;
+        }
+        $config = ConfigLoader::getCurrentConfig();
+        return $config->getDefaultDataSourceId();
     }
 
     public function getColumns($includeVirtual = false)
