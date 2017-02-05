@@ -8,7 +8,7 @@ use ClassTemplate\ClassFile;
 use Maghead\Schema;
 use Maghead\Schema\SchemaInterface;
 use Maghead\Schema\DeclareSchema;
-use Maghead\Schema\SchemaBase;
+use Maghead\Schema\BaseSchema;
 use Maghead\Generator\Schema\BaseModelClassGenerator;
 use Maghead\Generator\Schema\BaseRepoClassGenerator;
 use Maghead\Generator\Schema\BaseCollectionClassGenerator;

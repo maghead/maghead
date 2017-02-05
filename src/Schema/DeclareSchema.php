@@ -18,7 +18,7 @@ use Maghead\Schema\Relationship\HasMany;
 use Maghead\Schema\Relationship\HasOne;
 use Maghead\Schema\Relationship\BelongsTo;
 
-class DeclareSchema extends SchemaBase implements SchemaInterface
+class DeclareSchema extends BaseSchema implements SchemaInterface
 {
     public $enableColumnAccessors = true;
 

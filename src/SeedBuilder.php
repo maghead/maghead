@@ -3,7 +3,7 @@
 namespace Maghead;
 
 use CLIFramework\Logger;
-use Maghead\Schema\SchemaBase;
+use Maghead\Schema\BaseSchema;
 use Maghead\Schema\SchemaCollection;
 use InvalidArgumentException;
 
@@ -16,7 +16,7 @@ class SeedBuilder
         $this->logger = $logger;
     }
 
-    public function buildSchemaSeeds(SchemaBase $schema)
+    public function buildSchemaSeeds(BaseSchema $schema)
     {
         if (method_exists($schema, 'bootstrap')) {
             if ($modelClass = $schema->getModelClass()) {

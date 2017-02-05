@@ -8,7 +8,7 @@ use Exception;
 use Maghead\Exception\TableNameConversionException;
 use Doctrine\Common\Inflector\Inflector;
 
-abstract class SchemaBase
+abstract class BaseSchema
 {
     public $table;
 

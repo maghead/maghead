@@ -19,7 +19,7 @@ use SerializerKit\XmlSerializer;
 use Symfony\Component\Yaml\Yaml;
 
 use Maghead\Schema\SchemaLoader;
-use Maghead\Schema\SchemaBase;
+use Maghead\Schema\BaseSchema;
 use Maghead\Manager\ConnectionManager;
 
 defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
@@ -816,7 +816,7 @@ class BaseCollection
         $this->explictSelect = true;
 
         // for models and schemas join
-        if ($target instanceof BaseModel || $target instanceof SchemaBase) {
+        if ($target instanceof BaseModel || $target instanceof BaseSchema) {
             $query = $this->getCurrentQuery();
             $table = $target->getTable();
 
