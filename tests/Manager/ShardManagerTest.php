@@ -124,6 +124,20 @@ class ShardManagerTest extends ModelTestCase
     {
         $repo = $dispatcher->dispatchWrite('3d221024-eafd-11e6-a53b-3c15c2cb5a5a');
         $this->assertInstanceOf('Maghead\\BaseRepo', $repo);
+        $this->assertInstanceOf('StoreApp\\Model\\StoreRepo', $repo);
+        return $repo;
     }
+
+
+    /**
+     * @depends testDispatchWrite
+     */
+    public function testWriteRepo($repo)
+    {
+        $ret = $repo->create([ 'name' => 'My Store', 'code' => 'MS001' ]);
+        $this->assertResultSuccess($ret);
+    }
+
+
 
 }
