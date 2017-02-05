@@ -10,7 +10,7 @@ class SetMasterCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'set master data source for PDO connections.';
+        return 'Set master data source for PDO connections.';
     }
 
     public function arguments($args)

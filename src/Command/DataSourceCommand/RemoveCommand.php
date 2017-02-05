@@ -3,28 +3,28 @@
 namespace Maghead\Command\DataSourceCommand;
 
 use Maghead\Command\BaseCommand;
+use Maghead\Manager\ConfigManager;
 
 class RemoveCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'Remove data source from config file.';
+        return 'Remove node from config file.';
     }
 
     public function arguments($args)
     {
-        $args->add('data-source-id');
+        $args->add('node-id');
     }
 
-    public function execute($dataSourceId)
+    public function execute($nodeId)
     {
         // force loading data source
         $config = $this->getConfig();
 
-        $stash = $config->getStash();
-        unset($stash['data_source']['nodes'][$dataSourceId]);
+        $manager = new ConfigManager($config);
+        $manager->save();
 
-        $configLoader->writeToSymbol($config);
         return true;
     }
 }
