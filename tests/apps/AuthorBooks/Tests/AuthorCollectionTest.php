@@ -298,6 +298,44 @@ class AuthorCollectionTest extends ModelTestCase
         $this->assertCount(2, $someBooks);
     }
 
+    public function testCollectionDeleteUnconfirmedAuthors()
+    {
+        // Create confirmed authors
+        foreach (range(1, 5) as $i) {
+            $ret = Author::create([
+                'name' => 'Foo-' . $i,
+                'email' => 'foo@foo' . $i,
+                'identity' => 'foo' . $i,
+                'confirmed' => true,
+            ]);
+            $this->assertResultSuccess($ret);
+        }
+
+        $ret = Author::create([
+            'name' => 'SHOULD BE DELETED',
+            'email' => 'bar01@foo',
+            'identity' => 'bar01',
+            'confirmed' => false,
+        ]);
+        $this->assertResultSuccess($ret);
+
+        $ret = Author::create([
+            'name' => 'SHOULD BE DELETED',
+            'email' => 'bar02@foo',
+            'identity' => 'bar02',
+            'confirmed' => false,
+        ]);
+        $this->assertResultSuccess($ret);
+
+        $authors = new AuthorCollection;
+        $authors->where()->is('confirmed', false);
+        $authors->delete();
+
+        $authors = new AuthorCollection;
+        $this->assertCount(5, $authors);
+    }
+
+
     public function testCollectionExporter()
     {
         foreach (range(1, 10) as $i) {

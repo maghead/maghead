@@ -487,7 +487,9 @@ class BaseCollection implements
 
         $query = new DeleteQuery();
         $query->from($this->getTable());
-        $query->setWhere(clone $this->getCurrentQuery()->getWhere());
+        if ($this->where) {
+            $query->setWhere($this->where);
+        }
 
         $arguments = new ArgumentArray();
         $sql = $query->toSql($driver, $arguments);
@@ -519,7 +521,9 @@ class BaseCollection implements
         $driver = $conn->getQueryDriver();
 
         $query = new UpdateQuery();
-        $query->setWhere(clone $this->getCurrentQuery()->getWhere());
+        if ($this->where) {
+            $query->setWhere($this->where);
+        }
         $query->update($this->getTable());
         $query->set($data);
 
