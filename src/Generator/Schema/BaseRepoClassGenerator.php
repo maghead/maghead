@@ -122,7 +122,6 @@ class BaseRepoClassGenerator
         $loadByPrimaryKeySql = $loadByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $loadByPrimaryKeySql);
 
-
         $cTemplate->addMethod('public', 'loadByPrimaryKey', ['$pkId'], function() use ($schema) {
             return [
                 "if (!\$this->loadStm) {",
@@ -131,6 +130,14 @@ class BaseRepoClassGenerator
                 "}",
                 "return static::_stmFetchOne(\$this->loadStm, [\$pkId]);",
             ];
+        });
+
+        $cTemplate->addMethod('public', 'prepareRead', ['$sql'], function() use ($schema) {
+            return "return \$this->read->prepare(\$sql);";
+        });
+
+        $cTemplate->addMethod('public', 'prepareWrite', ['$sql'], function() use ($schema) {
+            return "return \$this->write->prepare(\$sql);";
         });
 
         foreach ($schema->getColumns() as $column) {

@@ -50,7 +50,10 @@ TODO
 
 - [ ] Sharding Support
     - [x] Support node config definition
-    - [ ] Support shard rule config definition
+    - [x] Support shard mapping config definition
+    - [x] Add basic shard dispatcher base on Flexihash
+    - [ ] Add "prepare" method generator for Repo classes.
+    - [ ] Repo class for BaseCollection
     - [ ] Shard method
         - [ ] Shard by Hash
         - [ ] Shard by Range

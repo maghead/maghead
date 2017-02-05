@@ -4,6 +4,16 @@ namespace Maghead\Generator;
 class PDOStatementGenerator
 {
 
+    public static function generateReadPrepare(string $sql)
+    {
+        return [
+            "return \$this->read->prepare(" . var_export($sql, true) . ");",
+        ];
+
+    }
+
+
+
     public static function generateFetchAll(string $propertyName, string $constName, string $class, string $args)
     {
         return [

@@ -59,6 +59,14 @@ class MetadataBaseRepo
         }
         return static::_stmFetchOne($this->loadStm, [$pkId]);
     }
+    public function prepareRead($sql)
+    {
+        return $this->read->prepare($sql);
+    }
+    public function prepareWrite($sql)
+    {
+        return $this->write->prepare($sql);
+    }
     public function loadByName($value)
     {
         if (!$this->loadByNameStm) {

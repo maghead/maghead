@@ -89,7 +89,7 @@ class AuthorCollectionTest extends ModelTestCase
 
         $clone = clone $authors;
         $this->assertTrue($clone !== $authors);
-        $this->assertNotSame($clone->getCurrentReadQuery(), $authors->getCurrentReadQuery());
+        $this->assertNotSame($clone->getCurrentQuery(), $authors->getCurrentQuery());
     }
 
     public function testCloneWithQuery()
@@ -107,7 +107,7 @@ class AuthorCollectionTest extends ModelTestCase
         $this->assertEquals(1, $addresses->size());
 
         $sql1 = $addresses->toSQL();
-        
+
         $clone = clone $addresses;
         $sql2 = $clone->toSQL();
 

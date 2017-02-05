@@ -44,7 +44,7 @@ class BaseCollection
 
     protected $_vars;
 
-    protected $_readQuery;
+    protected $_query;
 
     /**
      * @var PDOStatement handle
@@ -92,12 +92,25 @@ class BaseCollection
      */
     protected $defaultOrdering = array();
 
+
+    /**
+     * Basically we won't create mass collection objects in one time.
+     * Therefore we can prepare more stuff here.
+     */
+    public function __construct()
+    {
+        // $this->_query = $this->createReadQuery();
+    }
+
+
+    /**
+     * TODO: The iterator method here could be replaced with Generator iterator by inherits different class or Trait.
+     */
     public function getIterator()
     {
         if (!$this->_rows) {
             $this->_rows = $this->readRows();
         }
-
         return new ArrayIterator($this->_rows);
     }
 
@@ -114,9 +127,9 @@ class BaseCollection
         throw new RuntimeException('schema is not defined in '.get_class($this));
     }
 
-    public function getCurrentReadQuery()
+    public function getCurrentQuery()
     {
-        return $this->_readQuery ? $this->_readQuery : $this->_readQuery = $this->createReadQuery();
+        return $this->_query ? $this->_query : $this->_query = $this->createReadQuery();
     }
 
     public function getRows()
@@ -148,7 +161,7 @@ class BaseCollection
      */
     public function __call($m, $a)
     {
-        $q = $this->getCurrentReadQuery();
+        $q = $this->getCurrentQuery();
         if (method_exists($q, $m)) {
             return call_user_func_array(array($q, $m), $a);
         }
@@ -196,23 +209,6 @@ class BaseCollection
         if ($this->selected) {
             return $this->selected;
         }
-    }
-
-    // TODO: maybe we should move this method into RuntimeSchema.
-    // Because it's used in BaseModel class too
-    public function getQueryDriver($dsId)
-    {
-        return static::$connectionManager->getQueryDriver($dsId);
-    }
-
-    protected function getWriteQueryDriver()
-    {
-        return $this->getQueryDriver(static::getSchema()->getWriteSourceId());
-    }
-
-    protected function getReadQueryDriver()
-    {
-        return $this->getQueryDriver(static::getSchema()->getReadSourceId());
     }
 
     public function getTable()
@@ -295,7 +291,7 @@ class BaseCollection
         $conn = static::$connectionManager->getConnection($dsId);
         $driver = $conn->getQueryDriver();
         $arguments = new ArgumentArray();
-        $this->_lastSql = $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
+        $this->_lastSql = $sql = $this->getCurrentQuery()->toSql($driver, $arguments);
         $this->_vars = $vars = $arguments->toArray();
         $this->handle = $conn->prepareAndExecute($sql, $vars);
         return Result::success('Updated', array('sql' => $sql));
@@ -307,7 +303,7 @@ class BaseCollection
         $conn = static::$connectionManager->getConnection($dsId);
         $driver = $conn->getQueryDriver();
         $arguments = new ArgumentArray();
-        $sql = $this->getCurrentReadQuery()->toSql($driver, $arguments);
+        $sql = $this->getCurrentQuery()->toSql($driver, $arguments);
         $args = $arguments->toArray();
         return [$sql, $args];
     }
@@ -326,7 +322,7 @@ class BaseCollection
 
         $driver = $conn->getQueryDriver();
 
-        $q = clone $this->getCurrentReadQuery();
+        $q = clone $this->getCurrentQuery();
         $q->setSelect('COUNT(distinct m.id)'); // Override current select.
 
         // when selecting count(*), we dont' use groupBys or order by
@@ -374,7 +370,7 @@ class BaseCollection
      */
     public function limit($number)
     {
-        $this->getCurrentReadQuery()->limit($number);
+        $this->getCurrentQuery()->limit($number);
 
         return $this;
     }
@@ -386,7 +382,7 @@ class BaseCollection
      */
     public function offset($number)
     {
-        $this->getCurrentReadQuery()->offset($number);
+        $this->getCurrentQuery()->offset($number);
 
         return $this;
     }
@@ -479,7 +475,7 @@ class BaseCollection
 
         $query = new DeleteQuery();
         $query->from($this->getTable());
-        $query->setWhere(clone $this->getCurrentReadQuery()->getWhere());
+        $query->setWhere(clone $this->getCurrentQuery()->getWhere());
 
         $arguments = new ArgumentArray();
         $sql = $query->toSql($driver, $arguments);
@@ -511,7 +507,7 @@ class BaseCollection
         $driver = $conn->getQueryDriver();
 
         $query = new UpdateQuery();
-        $query->setWhere(clone $this->getCurrentReadQuery()->getWhere());
+        $query->setWhere(clone $this->getCurrentQuery()->getWhere());
         $query->update($this->getTable());
         $query->set($data);
 
@@ -779,9 +775,10 @@ class BaseCollection
     public function toSql()
     {
         /* fetch by current query */
-        $query = $this->getCurrentReadQuery();
-        $dsId = $this->getSchema()->getReadSourceId();
-        $driver = $this->getQueryDriver($dsId);
+        $query = $this->getCurrentQuery();
+        $dsId = static::getSchema()->getReadSourceId();
+        $conn = static::$connectionManager->getConnection($dsId);
+        $driver = $conn->getQueryDriver();
         $arguments = new ArgumentArray();
         $sql = $query->toSql($driver, $arguments);
 
@@ -790,7 +787,7 @@ class BaseCollection
         foreach($arguments as $name => $value) {
             $sql = preg_replace( "/$name\b/", $value, $sql );
         }
-         */
+        */
         return $sql;
     }
 
@@ -822,7 +819,7 @@ class BaseCollection
 
         // for models and schemas join
         if ($target instanceof BaseModel || $target instanceof SchemaBase) {
-            $query = $this->getCurrentReadQuery();
+            $query = $this->getCurrentQuery();
             $table = $target->getTable();
 
             /* XXX: should get selected column names by default, if not get all column names */
@@ -879,7 +876,7 @@ class BaseCollection
     public function joinTable($table, $alias = null, $type = 'LEFT')
     {
         $this->explictSelect = true;
-        $query = $this->getCurrentReadQuery();
+        $query = $this->getCurrentQuery();
         return $query->join($table, $alias, $type);
     }
 
@@ -892,7 +889,7 @@ class BaseCollection
     public function where(array $args = null)
     {
         $this->setExplictSelect(true);
-        $query = $this->getCurrentReadQuery();
+        $query = $this->getCurrentQuery();
         if ($args && is_array($args)) {
             return $query->where($args);
         }
@@ -921,7 +918,7 @@ class BaseCollection
     public function reset()
     {
         $this->free();
-        $this->_readQuery = null;
+        $this->_query = null;
         $this->_vars = null;
         $this->_lastSQL = null;
 
@@ -972,8 +969,8 @@ class BaseCollection
 
         // if we have readQuery object, we should clone the query object 
         // for the new collection object.
-        if ($this->_readQuery) {
-            $this->_readQuery = clone $this->_readQuery;
+        if ($this->_query) {
+            $this->_query = clone $this->_query;
         }
     }
 
