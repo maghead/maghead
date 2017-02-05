@@ -11,9 +11,9 @@ class Config implements ArrayAccess
 
     protected $classMap = [];
 
-    const DEFAULT_BASE_COLLECTION_CLASS = '\\Maghead\\BaseCollection';
+    const DEFAULT_BASE_COLLECTION_CLASS = '\\Maghead\\Runtime\\BaseCollection';
 
-    const DEFAULT_BASE_MODEL_CLASS = '\\Maghead\\BaseModel';
+    const DEFAULT_BASE_MODEL_CLASS = '\\Maghead\\Runtime\\BaseModel';
 
 
     public function __construct(array $stash)

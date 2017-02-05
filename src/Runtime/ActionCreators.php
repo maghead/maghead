@@ -1,6 +1,6 @@
 <?php
-namespace Maghead;
 
+namespace Maghead\Runtime;
 
 trait ActionCreators
 {

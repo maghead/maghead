@@ -6,6 +6,8 @@ use Maghead\TableBuilder\BaseBuilder;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\SchemaFinder;
 use Maghead\Manager\ConnectionManager;
+use Maghead\Runtime\BaseModel;
+use Maghead\Runtime\BaseCollection;
 use CLIFramework\Logger;
 
 use ConfigKit\ConfigCompiler;

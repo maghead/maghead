@@ -1,7 +1,7 @@
 <?php
 namespace TestApp\Model;
 
-use Maghead\BaseModel;
+use Maghead\Runtime\BaseModel;
 use Maghead\Schema;
 
 class WineSchema extends Schema

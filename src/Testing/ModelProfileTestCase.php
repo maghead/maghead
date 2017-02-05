@@ -2,7 +2,7 @@
 
 namespace Maghead\Testing;
 
-use Maghead\Result;
+use Maghead\Runtime\Result;
 use XHProfRuns_Default;
 
 class ModelProfileTestCase extends ModelTestCase

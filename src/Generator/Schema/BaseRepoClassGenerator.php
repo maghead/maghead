@@ -60,7 +60,7 @@ class BaseRepoClassGenerator
 
         $cTemplate->useClass('Maghead\\Schema\\SchemaLoader');
         $cTemplate->useClass('Maghead\\Result');
-        $cTemplate->useClass('Maghead\\BaseModel');
+        $cTemplate->useClass('Maghead\\Runtime\\BaseModel');
         $cTemplate->useClass('Maghead\\Inflator');
         $cTemplate->useClass('SQLBuilder\\Bind');
         $cTemplate->useClass('SQLBuilder\\ArgumentArray');
@@ -110,7 +110,7 @@ class BaseRepoClassGenerator
         // parse codegen settings from schema doc comment string
         $codegenSettings = CodeGenSettingsParser::parse($schemaDocComment);
         if (!empty($codegenSettings)) {
-            $reflectionRepo = new ReflectionClass('Maghead\\BaseRepo');
+            $reflectionRepo = new ReflectionClass('Maghead\\Runtime\\BaseRepo');
             $createMethod = $reflectionRepo->getMethod('create');
             $elements = MethodBlockParser::parseElements($createMethod, 'codegenBlock');
             $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], AnnotatedBlock::apply($elements, $codegenSettings));

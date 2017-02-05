@@ -1,10 +1,11 @@
 <?php
+use Maghead\Runtime\CollectionPager;
 
 class CollectionPagerTest extends PHPUnit_Framework_TestCase
 {
     public function testCollectionPager()
     {
-        $pager = new Maghead\CollectionPager(range(1, 200), 1, 10);
+        $pager = new CollectionPager(range(1, 200), 1, 10);
         $items = $pager->items();
         is(1, $items[0]);
         is(2, $items[1]);

@@ -2,12 +2,12 @@
 
 namespace Maghead\Importer;
 
-use Maghead\BaseModel;
+use Maghead\Runtime\BaseModel;
 
 class CSVImporter
 {
     /**
-     * @var Maghead\BaseModel
+     * @var Maghead\Runtime\BaseModel
      */
     protected $model;
 

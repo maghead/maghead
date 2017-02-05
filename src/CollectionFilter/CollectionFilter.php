@@ -4,7 +4,7 @@ namespace Maghead\CollectionFilter;
 
 use Closure;
 use Exception;
-use Maghead\BaseCollection;
+use Maghead\Runtime\BaseCollection;
 
 class CollectionFilter
 {

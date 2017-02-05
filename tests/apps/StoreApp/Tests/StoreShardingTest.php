@@ -25,7 +25,7 @@ class StoreShardingTest extends ModelTestCase
             'cli' => ['bootstrap' => 'vendor/autoload.php'],
             'schema' => [
                 'auto_id' => true,
-                'base_model' => '\\Maghead\\BaseModel',
+                'base_model' => '\\Maghead\\Runtime\\BaseModel',
                 'base_collection' => '\\Maghead\\BaseCollection',
                 'paths' => ['tests'],
             ],

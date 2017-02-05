@@ -20,8 +20,8 @@ class ShardManagerTest extends ModelTestCase
             'cli' => ['bootstrap' => 'vendor/autoload.php'],
             'schema' => [
                 'auto_id' => true,
-                'base_model' => '\\Maghead\\BaseModel',
-                'base_collection' => '\\Maghead\\BaseCollection',
+                'base_model' => '\\Maghead\\Runtime\\BaseModel',
+                'base_collection' => '\\Maghead\\Runtime\\BaseCollection',
                 'paths' => ['tests'],
             ],
             'sharding' => [
@@ -114,7 +114,7 @@ class ShardManagerTest extends ModelTestCase
     public function testDispatchRead($dispatcher)
     {
         $repo = $dispatcher->dispatchRead('3d221024-eafd-11e6-a53b-3c15c2cb5a5a');
-        $this->assertInstanceOf('Maghead\\BaseRepo', $repo);
+        $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo);
     }
 
     /**
@@ -123,7 +123,7 @@ class ShardManagerTest extends ModelTestCase
     public function testDispatchWrite($dispatcher)
     {
         $repo = $dispatcher->dispatchWrite('3d221024-eafd-11e6-a53b-3c15c2cb5a5a');
-        $this->assertInstanceOf('Maghead\\BaseRepo', $repo);
+        $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo);
         $this->assertInstanceOf('StoreApp\\Model\\StoreRepo', $repo);
         return $repo;
     }

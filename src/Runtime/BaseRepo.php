@@ -1,5 +1,7 @@
 <?php
-namespace Maghead;
+
+namespace Maghead\Runtime;
+
 use PDOException;
 use PDOStatement;
 use PDO;
@@ -23,7 +25,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
 
 use Maghead\Connection;
-use Maghead\Result\OperationError;
+use Maghead\Runtime\Result\OperationError;
 use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\RuntimeColumn;
 use Maghead\Schema\Relationship\Relationship;

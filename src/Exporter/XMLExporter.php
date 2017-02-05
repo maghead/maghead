@@ -2,8 +2,8 @@
 
 namespace Maghead\Exporter;
 
-use Maghead\BaseModel;
-use Maghead\BaseCollection;
+use Maghead\Runtime\BaseModel;
+use Maghead\Runtime\BaseCollection;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Schema\SchemaInterface;
 use DOMDocument;

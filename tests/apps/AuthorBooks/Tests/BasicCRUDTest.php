@@ -1,7 +1,7 @@
 <?php
 use SQLBuilder\Raw;
 use Maghead\Testing\ModelTestCase;
-use Maghead\Result;
+use Maghead\Runtime\Result;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\Address;
 use AuthorBooks\Model\Book;
@@ -132,7 +132,7 @@ class BasicCRUDTest extends ModelTestCase
     public function testRepoWithDataSourceId()
     {
         $repo = Book::repo('default');
-        $this->assertInstanceOf('Maghead\BaseRepo', $repo);
+        $this->assertInstanceOf('Maghead\Runtime\BaseRepo', $repo);
     }
 
 
@@ -310,7 +310,7 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertEquals('Harvard', $addresses[0]->address);
 
         $a = $addresses[0];
-        $this->assertInstanceOf('Maghead\BaseModel', $retAuthor = $a->author);
+        $this->assertInstanceOf('Maghead\Runtime\BaseModel', $retAuthor = $a->author);
         $this->assertEquals('Z', $retAuthor->name);
         $ret = $author->delete();
         $this->assertResultSuccess($ret);
@@ -345,7 +345,7 @@ class BasicCRUDTest extends ModelTestCase
             'address' => 'Taiwan Taipei',
         ));
         $this->assertNotFalse($address);
-        $this->assertInstanceOf('Maghead\BaseModel', $address->author);
+        $this->assertInstanceOf('Maghead\Runtime\BaseModel', $address->author);
         $this->assertEquals($author->id, $address->author->id);
 
         $ret = $address->create(array(
@@ -356,7 +356,7 @@ class BasicCRUDTest extends ModelTestCase
 
         // xxx: provide getAddresses() method generator
         $addresses = $author->addresses;
-        $this->assertInstanceOf('Maghead\BaseCollection', $addresses);
+        $this->assertInstanceOf('Maghead\Runtime\BaseCollection', $addresses);
 
         $items = $addresses->items();
         $this->assertNotEmpty($items);

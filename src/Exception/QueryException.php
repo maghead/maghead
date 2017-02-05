@@ -2,7 +2,7 @@
 namespace Maghead\Exception;
 use RuntimeException;
 use Exception;
-use Maghead\BaseModel;
+use Maghead\Runtime\BaseModel;
 
 class QueryException extends RuntimeException
 {

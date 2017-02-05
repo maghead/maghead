@@ -11,7 +11,7 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use PDO;
 use DateTime;
-use Maghead\BaseModel;
+use Maghead\Runtime\BaseModel;
 class MetadataBase
     extends BaseModel
 {

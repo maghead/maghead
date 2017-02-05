@@ -1,6 +1,6 @@
 <?php
 namespace Maghead\Model;
-use Maghead\BaseCollection;
+use Maghead\Runtime\BaseCollection;
 class MetadataCollectionBase
     extends BaseCollection
 {

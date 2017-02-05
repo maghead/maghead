@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Runtime;
 
 use Exception;
 use RuntimeException;
@@ -20,7 +20,7 @@ use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
-use Maghead\Result\OperationError;
+use Maghead\Runtime\Result\OperationError;
 use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\RuntimeColumn;
 use Maghead\Schema\Relationship\Relationship;
@@ -416,7 +416,7 @@ abstract class BaseModel implements Serializable
 
         // for relationship record
         $val = $this->get($name);
-        if ($val && $val instanceof \Maghead\BaseModel) {
+        if ($val && $val instanceof \Maghead\Runtime\BaseModel) {
             return $val->dataLabel();
         }
     }
@@ -575,7 +575,7 @@ abstract class BaseModel implements Serializable
      * Dynamically create a model object with the relationship key for HAS-ONE relationship.
      *
      * @param string $key
-     * @return \Maghead\BaseModel
+     * @return \Maghead\Runtime\BaseModel
      */
     protected function fetchHasOne($key)
     {
@@ -598,7 +598,7 @@ abstract class BaseModel implements Serializable
      * Dynamically create a model object with the relationship key for BELONGS-TO relationship.
      *
      * @param string $key
-     * @return \Maghead\BaseModel
+     * @return \Maghead\Runtime\BaseModel
      */
     protected function fetchBelongsTo($key)
     {
@@ -735,7 +735,7 @@ abstract class BaseModel implements Serializable
     /**
      * Return the collection object of current model object.
      *
-     * @return Maghead\BaseCollection
+     * @return Maghead\Runtime\BaseCollection
      */
     public function asCollection()
     {
@@ -948,7 +948,7 @@ abstract class BaseModel implements Serializable
      *
      * @param string|Connection $write
      * @param string|Connection $read
-     * @return Maghead\BaseRepo
+     * @return Maghead\Runtime\BaseRepo
      */
     static public function repo($write = null, $read = null)
     {

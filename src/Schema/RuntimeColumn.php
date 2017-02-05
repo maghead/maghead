@@ -7,7 +7,7 @@ use Maghead\Deflator;
 use Maghead\Inflator;
 use Maghead\Utils\ArrayUtils;
 use Maghead\Utils;
-use Maghead\BaseModel;
+use Maghead\Runtime\BaseModel;
 use Exception;
 use ArrayIterator;
 use IteratorAggregate;

@@ -3,7 +3,7 @@
 namespace Maghead\Schema\Relationship;
 
 use SQLBuilder\Universal\Syntax\Conditions;
-use Maghead\BaseCollection;
+use Maghead\Runtime\BaseCollection;
 use LogicException;
 use ArrayAccess;
 use IteratorAggregate;
@@ -84,7 +84,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
      *
      * This method is only for many-to-many relationship object.
      *
-     * @return Maghead\BaseCollection The foreign foreign collection.
+     * @return Maghead\Runtime\BaseCollection The foreign foreign collection.
      */
     public function newForeignForeignCollection($junctionRelation)
     {

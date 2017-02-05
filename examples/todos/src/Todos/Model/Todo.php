@@ -1,6 +1,6 @@
 <?php
 namespace Todos\Model;
-use Maghead\BaseModel;
+use Maghead\Runtime\BaseModel;
 
 class Todo extends BaseModel 
 {

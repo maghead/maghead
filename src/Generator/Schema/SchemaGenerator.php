@@ -14,6 +14,7 @@ use Maghead\Generator\Schema\BaseRepoClassGenerator;
 use Maghead\Generator\Schema\BaseCollectionClassGenerator;
 use Maghead\Generator\Schema\CollectionClassGenerator;
 use Maghead\Generator\Schema\ModelClassGenerator;
+use Maghead\Generator\Schema\RepoClassGenerator;
 use Maghead\Generator\Schema\SchemaProxyClassGenerator;
 use Maghead\Config;
 
@@ -42,7 +43,7 @@ class SchemaGenerator
             return $this->config->getBaseModelClass();
         }
 
-        return 'Maghead\BaseModel';
+        return 'Maghead\Runtime\BaseModel';
     }
 
     protected function getBaseCollectionClass()
@@ -51,7 +52,7 @@ class SchemaGenerator
             return $this->config->getBaseCollectionClass();
         }
 
-        return 'Maghead\BaseCollection';
+        return 'Maghead\Runtime\BaseCollection';
     }
 
     /**
@@ -82,7 +83,7 @@ class SchemaGenerator
     }
 
     /**
-     * Generate modal class file, overwrite by default.
+     * Generate modal class file, don't overwrite by default.
      *
      * @param Schema $schema
      * @param bool   $force  = true
@@ -90,6 +91,19 @@ class SchemaGenerator
     public function generateModelClass(DeclareSchema $schema)
     {
         $cTemplate = ModelClassGenerator::create($schema);
+
+        return $this->updateClassFile($cTemplate, $schema, false); // do not overwrite
+    }
+
+    /**
+     * Generate repo class file, don't overwrite by default.
+     *
+     * @param Schema $schema
+     * @param bool   $force  = true
+     */
+    public function generateRepoClass(DeclareSchema $schema)
+    {
+        $cTemplate = RepoClassGenerator::create($schema);
 
         return $this->updateClassFile($cTemplate, $schema, false); // do not overwrite
     }
@@ -134,7 +148,7 @@ class SchemaGenerator
         // always update schema proxy and base classes
         $cTemplates[] = SchemaProxyClassGenerator::create($schema);
         $cTemplates[] = BaseModelClassGenerator::create($schema, $this->getBaseModelClass());
-        $cTemplates[] = BaseRepoClassGenerator::create($schema, 'Maghead\\BaseRepo');
+        $cTemplates[] = BaseRepoClassGenerator::create($schema, 'Maghead\\Runtime\\BaseRepo');
         $cTemplates[] = BaseCollectionClassGenerator::create($schema, $this->getBaseCollectionClass());
         foreach ($cTemplates as $cTemplate) {
             if ($result = $this->updateClassFile($cTemplate, $schema, true)) {
@@ -148,6 +162,10 @@ class SchemaGenerator
             $classMap[ $className ] = $classFile;
         }
         if ($result = $this->generateModelClass($schema)) {
+            list($className, $classFile) = $result;
+            $classMap[ $className ] = $classFile;
+        }
+        if ($result = $this->generateRepoClass($schema)) {
             list($className, $classFile) = $result;
             $classMap[ $className ] = $classFile;
         }

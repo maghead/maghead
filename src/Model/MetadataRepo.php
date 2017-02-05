@@ -2,13 +2,13 @@
 namespace Maghead\Model;
 require_once __DIR__ . '/MetadataSchemaProxy.php';
 use Maghead\Schema\SchemaLoader;
-use Maghead\Result;
+use Maghead\Runtime\Result;
 use Maghead\Inflator;
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use PDO;
 use SQLBuilder\Universal\Query\InsertQuery;
-use Maghead\BaseRepo;
+use Maghead\Runtime\BaseRepo;
 class MetadataRepo
     extends BaseRepo
 {

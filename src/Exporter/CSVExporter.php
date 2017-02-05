@@ -2,7 +2,7 @@
 
 namespace Maghead\Exporter;
 
-use Maghead\BaseCollection;
+use Maghead\Runtime\BaseCollection;
 use PDOStatement;
 use PDO;
 

@@ -4,12 +4,12 @@ namespace Maghead\Testing;
 
 use Maghead\Manager\ConnectionManager;
 use Maghead\TableBuilder\TableBuilder;
-use Maghead\BaseModel;
+use Maghead\Runtime\BaseModel;
 use Maghead\ConfigLoader;
 use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\DeclareSchema;
-use Maghead\BaseCollection;
-use Maghead\Result;
+use Maghead\Runtime\BaseCollection;
+use Maghead\Runtime\Result;
 use Maghead\Bootstrap;
 use Maghead\PDOExceptionPrinter;
 use SQLBuilder\Driver\BaseDriver;
@@ -285,12 +285,12 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     public function assertInstanceOfModel(BaseModel $record)
     {
-        $this->assertInstanceOf('Maghead\BaseModel', $record);
+        $this->assertInstanceOf('Maghead\Runtime\BaseModel', $record);
     }
 
     public function assertInstanceOfCollection(BaseCollection $collection)
     {
-        $this->assertInstanceOf('Maghead\BaseCollection', $collection);
+        $this->assertInstanceOf('Maghead\Runtime\BaseCollection', $collection);
     }
 
     public function assertCollectionSize($size, BaseCollection $collection, $message = null)

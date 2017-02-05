@@ -9,7 +9,7 @@ use SQLBuilder\Universal\Syntax\Constraint;
 use Maghead\Schema\DynamicSchemaDeclare;
 use Maghead\Schema\SchemaInterface;
 use Maghead\Schema\Relationship\Relationship;
-use Maghead\BaseModel;
+use Maghead\Runtime\BaseModel;
 use Maghead\Schema\DeclareColumn;
 
 abstract class BaseBuilder

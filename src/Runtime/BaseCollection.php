@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Runtime;
 
 use PDO;
 use RuntimeException;
@@ -426,7 +426,7 @@ class BaseCollection
     /**
      * Get items.
      *
-     * @return Maghead\BaseModel[]
+     * @return Maghead\Runtime\BaseModel[]
      */
     public function items()
     {
