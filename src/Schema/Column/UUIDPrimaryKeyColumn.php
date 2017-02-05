@@ -8,9 +8,11 @@ use Maghead\Schema\DeclareSchema;
 class UUIDPrimaryKeyColumn extends DeclareColumn
 {
     /**
-     * TODO: the best type for UUID in mysql is BINARY(36).
+     * BINARY(16) is the best column type for UUID.
+     *
+     * @see http://mysqlserverteam.com/storing-uuid-values-in-mysql-tables/
      */
-    public function __construct(DeclareSchema $schema, $name = 'uuid', $type = 'binary', $length = 36)
+    public function __construct(DeclareSchema $schema, $name = 'uuid', $type = 'BINARY', $length = 16)
     {
         parent::__construct($schema, $name);
         $this->type($type)
