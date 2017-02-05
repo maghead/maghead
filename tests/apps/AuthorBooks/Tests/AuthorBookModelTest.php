@@ -244,7 +244,6 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testUpdateRaw()
     {
-        $author = new Author;
         $ret = Author::create(array(
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -258,24 +257,23 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testUpdateNull()
     {
-        $author = new Author;
         $ret = Author::create(array(
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
-        $this->resultOK(true, $ret);
+        $this->assertResultSuccess($ret);
 
         $author = Author::masterRepo()->load($ret->key);
         $id = $author->id;
 
         $ret = $author->update(array( 'name' => 'I' ));
-        $this->resultOK(true, $ret);
+        $this->assertResultSuccess($ret);
         $this->assertEquals($id, $author->id);
         $this->assertEquals('I', $author->name);
 
         $ret = $author->update(array('name' => null));
-        $this->resultOK(true, $ret);
+        $this->assertResultSuccess($ret);
         $this->assertEquals($id, $author->id);
         $this->assertEquals(null, $author->name);
 
@@ -288,7 +286,6 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testJoin()
     {
-        $author = new Author;
         $ret = Author::create([
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
@@ -297,14 +294,13 @@ class AuthorBookModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $author = Author::masterRepo()->load($ret->key);
 
-        $ab = new AuthorBook;
-        $book = new \AuthorBooks\Model\Book;
+        $book = new Book;
 
         $ret = Book::create(array( 'title' => 'Book I' ));
         $this->assertResultSuccess($ret);
         $book = Book::masterRepo()->load($ret->key);
 
-        $ret = $ab->create([
+        $ret = AuthorBook::create([
             'author_id' => $author->id,
             'book_id' => $book->id,
         ]);
