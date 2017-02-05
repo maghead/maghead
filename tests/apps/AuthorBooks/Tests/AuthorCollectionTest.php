@@ -355,6 +355,7 @@ class AuthorCollectionTest extends ModelTestCase
         $exporter->exportCollection(new AuthorCollection);
         fclose($fp);
 
+        // Clean up
         $authors = new AuthorCollection;
         $authors->delete();
 
@@ -362,6 +363,9 @@ class AuthorCollectionTest extends ModelTestCase
         $importer = new CSVImporter(new Author);
         $importer->importResource($fp);
         fclose($fp);
+
+        $authors = new AuthorCollection;
+        $this->assertCount(10, $authors);
     }
 
 
