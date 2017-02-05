@@ -183,6 +183,7 @@ abstract class BaseModel implements Serializable
      */
     public static function create(array $args)
     {
+        // if (static::SHARD_MAPPING_ID
         return static::masterRepo()->create($args);
     }
 

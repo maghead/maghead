@@ -131,7 +131,7 @@ class SchemaGenerator
      *
      * @return array
      */
-    protected function writeClassTemplateToPath(ClassFile $cTemplate, $filepath)
+    protected function writeClassTemplateToPath(ClassFile $cTemplate, string $filepath)
     {
         if (false === file_put_contents($filepath, $cTemplate->render())) {
             throw RuntimeException("Can not write file $filepath");

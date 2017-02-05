@@ -372,7 +372,7 @@ class BaseRepo
      */
     public function create(array $args)
     {
-        if (empty($args) || $args === null) {
+        if (empty($args)) {
             return Result::failure('Empty arguments');
         }
 
@@ -501,6 +501,7 @@ class BaseRepo
                 $this->_preparedCreateStms[$cacheKey] = $stm;
             }
         }
+
         if (false === $stm->execute($arguments->toArray())) {
             return Result::failure('Record create failed.', array(
                 'validations' => $validationResults,
