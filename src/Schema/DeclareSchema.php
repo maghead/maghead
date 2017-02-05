@@ -741,7 +741,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         return $this;
     }
 
-    public function shardBy($mappingId)
+    public function shardBy(string $mappingId)
     {
         $this->shardMapping = $mappingId;
 
