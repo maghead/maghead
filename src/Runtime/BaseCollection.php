@@ -226,9 +226,8 @@ class BaseCollection
 
     public function createReadQuery()
     {
-        $dsId = static::getSchema()->getReadSourceId();
-
-        $conn = static::$connectionManager->getConnection($dsId);
+        $repo = static::masterRepo(); // my repo 
+        $conn = $repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
         $q = new SelectQuery();
@@ -286,10 +285,10 @@ class BaseCollection
      */
     public function fetch()
     {
-        /* fetch by current query */
-        $dsId = static::getSchema()->getReadSourceId();
-        $conn = static::$connectionManager->getConnection($dsId);
+        $repo = static::masterRepo(); // my repo 
+        $conn = $repo->getReadConnection();
         $driver = $conn->getQueryDriver();
+
         $arguments = new ArgumentArray();
         $this->_lastSql = $sql = $this->getCurrentQuery()->toSql($driver, $arguments);
         $this->_vars = $vars = $arguments->toArray();
@@ -299,9 +298,10 @@ class BaseCollection
 
     public function sql()
     {
-        $dsId = static::getSchema()->getReadSourceId();
-        $conn = static::$connectionManager->getConnection($dsId);
+        $repo = static::masterRepo(); // my repo 
+        $conn = $repo->getReadConnection();
         $driver = $conn->getQueryDriver();
+
         $arguments = new ArgumentArray();
         $sql = $this->getCurrentQuery()->toSql($driver, $arguments);
         $args = $arguments->toArray();
@@ -316,10 +316,8 @@ class BaseCollection
      */
     public function queryCount()
     {
-        $dsId = static::getSchema()->getReadSourceId();
-
-        $conn = static::$connectionManager->getConnection($dsId);
-
+        $repo = static::masterRepo(); // my repo 
+        $conn = $repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
         $q = clone $this->getCurrentQuery();
@@ -468,9 +466,8 @@ class BaseCollection
     public function delete()
     {
         $schema = static::getSchema();
-        $dsId = $schema->getWriteSourceId();
-
-        $conn = static::$connectionManager->getConnection($dsId);
+        $repo = static::masterRepo(); // my repo 
+        $conn = $repo->getWriteConnection();
         $driver = $conn->getQueryDriver();
 
         $query = new DeleteQuery();
@@ -501,9 +498,9 @@ class BaseCollection
     public function update(array $data)
     {
         $schema = static::getSchema();
-        $dsId = $schema->getWriteSourceId();
 
-        $conn = static::$connectionManager->getConnection($dsId);
+        $repo = static::masterRepo(); // my repo 
+        $conn = $repo->getWriteConnection();
         $driver = $conn->getQueryDriver();
 
         $query = new UpdateQuery();
@@ -628,21 +625,6 @@ class BaseCollection
         $collection->setRecords(array_filter($this->_rows, $cb));
 
         return $collection;
-    }
-
-    /**
-     * Load Collection from a SQL query statement.
-     *
-     * @param string $sql
-     * @param array  $args
-     * @param string $dsId
-     */
-    public function loadQuery($sql, array $args = array(), $dsId = null)
-    {
-        if (!$dsId) {
-            $dsId = static::getSchema()->getReadSourceId();
-        }
-        $this->handle = static::$connectionManager->getConnection($dsId)->prepareAndExecute($sql, $args);
     }
 
     /**
