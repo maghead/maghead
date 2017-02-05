@@ -191,8 +191,7 @@ class AuthorCollectionTest extends ModelTestCase
         $authors2 = new AuthorCollection;
         $authors2->where()
                 ->like('name', 'Foo');
-        $count = $authors2->queryCount();
-        $this->assertEquals(20, $count);
+        $this->assertCount(20, $authors2);
 
         $authors = new AuthorCollection;
         $authors->where()->like('name', 'Foo');

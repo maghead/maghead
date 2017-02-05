@@ -315,13 +315,31 @@ class BaseCollection
         return [$sql, $args];
     }
 
+
+    /**
+     * Get current selected item size 
+     * by using php function `count`.
+     *
+     * @return int size
+     */
+    public function size()
+    {
+        if ($this->_rows) {
+            return count($this->_rows);
+        }
+        $this->_rows = $this->readRows();
+        return count($this->_rows);
+    }
+
     /**
      * Clone current read query and apply select to count(*)
      * So that we can use the same conditions to query item count.
      *
+     * This method implements the Countable interface.
+     *
      * @return int
      */
-    public function queryCount()
+    public function count()
     {
         $repo = static::masterRepo(); // my repo 
         $conn = $repo->getReadConnection();
@@ -342,33 +360,6 @@ class BaseCollection
 
         return (int) $conn->prepareAndExecute($sql, $arguments->toArray())
                     ->fetchColumn();
-    }
-
-    /**
-     * Get current selected item size 
-     * by using php function `count`.
-     *
-     * @return int size
-     */
-    public function size()
-    {
-        if ($this->_rows) {
-            return count($this->_rows);
-        }
-        $this->_rows = $this->readRows();
-        return count($this->_rows);
-    }
-
-    /**
-     * This method implements the Countable interface.
-     */
-    public function count()
-    {
-        if ($this->_rows) {
-            return count($this->_rows);
-        }
-        $this->_rows = $this->readRows();
-        return count($this->_rows);
     }
 
     /**
