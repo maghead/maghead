@@ -54,9 +54,6 @@ abstract class BaseModel implements Serializable
      * */
     public static $mixin_classes = array();
 
-
-    const SCHEMA_PROXY_CLASS = '';
-
     protected $_data = array();
 
     protected $_cache = array();
@@ -845,10 +842,10 @@ abstract class BaseModel implements Serializable
 
     static public function getSchema()
     {
+        // This is not static property becase different model loads different schema objects.
         if ($this->_schema) {
             return $this->_schema;
-        } elseif (@constant('static::SCHEMA_PROXY_CLASS')) {
-            // the SCHEMA_PROXY_CLASS is from the *Base.php file.
+        } else if (constant('static::SCHEMA_PROXY_CLASS')) {
             if ($this->_schema = SchemaLoader::load(static::SCHEMA_PROXY_CLASS)) {
                 return $this->_schema;
             }
