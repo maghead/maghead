@@ -78,7 +78,7 @@ class Bootstrap
         BaseCollection::$connectionManager = $connectionManager;
     }
 
-    static public function setup(Config $config, $connectOnly = false)
+    static public function setup(Config $config)
     {
         $connectionManager = ConnectionManager::getInstance();
 
@@ -87,9 +87,16 @@ class Bootstrap
 
         self::setupDataSources($config, $connectionManager);
         self::setupGlobalVars($config, $connectionManager);
-        if (PHP_SAPI === "cli" && !$connectOnly) {
-            self::loadBootstrap($config);
-            self::loadSchemaLoader($config);
-        }
+    }
+
+    /**
+     * Setup environment for command-line application
+     * This could be an override method from Bootstrap class.
+     */
+    static public function setupForCLI(Config $config)
+    {
+        self::setup($config);
+        self::loadBootstrap($config);
+        self::loadSchemaLoader($config);
     }
 }

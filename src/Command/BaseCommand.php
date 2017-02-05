@@ -22,16 +22,16 @@ class BaseCommand extends Command
     {
         // softly load the config file.
         $this->configLoader = ConfigLoader::getInstance();
-        $this->config = $this->configLoader->loadFromSymbol(true); // force loading
-        Bootstrap::setup($this->config);
+        $this->config = ConfigLoader::loadFromSymbol(true); // force loading
+        Bootstrap::setupForCLI($this->config);
     }
 
     public function getConfig()
     {
         if (!$this->config) {
             $this->configLoader = ConfigLoader::getInstance();
-            $this->config = $this->configLoader->loadFromSymbol(true); // force loading
-            Bootstrap::setup($this->config);
+            $this->config = ConfigLoader::loadFromSymbol(true); // force loading
+            Bootstrap::setupForCLI($this->config);
         }
 
         return $this->config;
