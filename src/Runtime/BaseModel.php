@@ -43,7 +43,7 @@ abstract class BaseModel implements Serializable
     use ActionCreatorTrait;
     use RepoFactoryTrait;
 
-    public static $yamlExtension;
+    public static $yamlExtension = false;
 
     public static $yamlEncoding = YAML_UTF8_ENCODING;
 
@@ -796,7 +796,6 @@ abstract class BaseModel implements Serializable
     public function toYaml()
     {
         $data = $this->getData();
-        self::$yamlExtension = extension_loaded('yaml');
         if (self::$yamlExtension) {
             return yaml_emit($data, YAML_UTF8_ENCODING);
         }

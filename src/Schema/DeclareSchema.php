@@ -702,7 +702,7 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
         return $this;
     }
 
-    public function setGlobalTable($yes = true)
+    public function globalTable($yes = true)
     {
         $this->isGlobalTable = $yes;
     }

@@ -16,6 +16,6 @@ class StoreSchema extends DeclareSchema
             ->findable()
             ;
 
-        $this->setGlobalTable(true);
+        $this->globalTable();
     }
 }

@@ -81,6 +81,10 @@ class Bootstrap
     static public function setup(Config $config, $connectOnly = false)
     {
         $connectionManager = ConnectionManager::getInstance();
+
+        // TODO: this could be moved to Environment class.
+        BaseModel::$yamlExtension = extension_loaded('yaml');
+
         self::setupDataSources($config, $connectionManager);
         self::setupGlobalVars($config, $connectionManager);
         if (PHP_SAPI === "cli" && !$connectOnly) {
