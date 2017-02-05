@@ -25,29 +25,29 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     /**
      * @var string[]
      */
-    public $modelTraitClasses = array();
+    public $modelTraitClasses = [];
 
     /**
      * @var string[]
      */
-    public $collectionTraitClasses = array();
+    public $collectionTraitClasses = [];
 
     /**
      * @var string[]
      */
-    public $modelInterfaceClasses = array();
+    public $modelInterfaceClasses = [];
 
     /**
      * @var string[]
      */
-    public $collectionInterfaceClasses = array();
+    public $collectionInterfaceClasses = [];
 
     /**
      * @var array[string indexName] = CreateIndexQuery
      *
      * Indexes
      */
-    public $indexes = array();
+    public $indexes = [];
 
     public $onDelete;
 

@@ -28,11 +28,10 @@ trait RepoFactoryTrait
     {
         $connManager = static::$connectionManager;
         if (!$read) {
-            if (!$write) {
-                return static::masterRepo();
-            } else {
+            if ($write) {
                 $read = $write;
             }
+            return static::masterRepo();
         }
         $writeConn = is_string($write) ? $connManager->getConnection($write) : $write;
         $readConn = is_string($read) ? $connManager->getConnection($read) : $read;

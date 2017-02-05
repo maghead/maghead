@@ -14,11 +14,11 @@ abstract class BaseSchema
 
     public $label;
 
-    public $columns = array();
+    public $columns = [];
 
-    public $columnNames = array();
+    public $columnNames = [];
 
-    public $relations = array();
+    public $relations = [];
 
     public $primaryKey;
 
@@ -26,11 +26,11 @@ abstract class BaseSchema
 
     public $writeSourceId = 'default';
 
-    public $mixinSchemaClasses = array();
+    public $mixinSchemaClasses = [];
 
-    public $mixinSchemas = array();
+    public $mixinSchemas = [];
 
-    public $seeds = array();
+    public $seeds = [];
 
     protected $_namespace;
 
