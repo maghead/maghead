@@ -12,6 +12,7 @@ use ArrayIterator;
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\Universal\Query\UpdateQuery;
 use SQLBuilder\Universal\Query\DeleteQuery;
+use SQLBuilder\Universal\Traits\WhereTrait;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
 use SerializerKit\XmlSerializer;
@@ -33,6 +34,7 @@ class BaseCollection
     IteratorAggregate
 {
     use RepoFactoryTrait;
+    use WhereTrait;
 
     public static $yamlExtension;
 
@@ -289,6 +291,11 @@ class BaseCollection
         $conn = $repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
+        $query = $this->getCurrentQuery();
+        if ($this->where) {
+            $query->setWhere($this->where);
+        }
+
         $arguments = new ArgumentArray();
         $this->_lastSql = $sql = $this->getCurrentQuery()->toSql($driver, $arguments);
         $this->_vars = $vars = $arguments->toArray();
@@ -322,6 +329,9 @@ class BaseCollection
 
         $q = clone $this->getCurrentQuery();
         $q->setSelect('COUNT(distinct m.id)'); // Override current select.
+        if ($this->where) {
+            $q->setWhere($this->where);
+        }
 
         // when selecting count(*), we dont' use groupBys or order by
         $q->clearOrderBy();
@@ -863,21 +873,6 @@ class BaseCollection
     }
 
 
-
-    /**
-     * Override QueryBuilder->where method,
-     * to enable explict selection.
-     */
-    public function where(array $args = null)
-    {
-        $this->setExplictSelect(true);
-        $query = $this->getCurrentQuery();
-        if ($args && is_array($args)) {
-            return $query->where($args);
-        }
-
-        return $query->where();
-    }
 
     public function add(BaseModel $record)
     {

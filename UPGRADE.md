@@ -52,6 +52,8 @@ UPGRADE TO 4.0.x
 
 18. `BaseModel::find` is removed.
 
+19. `BaseCollection::loadQuery` method is now deprecated.
+
 ### ConfigLoader
 
 1. ConfigLoader::loadFromFile -> ConfigLoader::loadFile as a static method and 
