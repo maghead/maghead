@@ -61,6 +61,8 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
      */
     public $isGlobalTable = false;
 
+    public $shardMapping;
+
     /**
      * Constructor of declare schema.
      *
@@ -705,6 +707,15 @@ class DeclareSchema extends SchemaBase implements SchemaInterface
     public function globalTable($yes = true)
     {
         $this->isGlobalTable = $yes;
+
+        return $this;
+    }
+
+    public function shardBy($mappingId)
+    {
+        $this->shardMapping = $mappingId;
+
+        return $this;
     }
 
 
