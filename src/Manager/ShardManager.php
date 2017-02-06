@@ -47,7 +47,7 @@ class ShardManager
     public function getShardMapping(string $mappingId) : ShardMapping
     {
         if (!isset($this->shardingConfig['mappings'][$mappingId])) {
-            throw new LogicException("MappingId $mappingId is undefined.");
+            throw new LogicException("MappingId '$mappingId' is undefined.");
         }
         return new ShardMapping($this->shardingConfig['mappings'][$mappingId]);
     }
