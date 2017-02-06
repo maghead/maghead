@@ -52,8 +52,9 @@ class ShardManager
         return new ShardMapping($this->shardingConfig['mappings'][$mappingId]);
     }
 
-    public function getShards(ShardMapping $mapping)
+    public function getShards(string $mappingId)
     {
+        $mapping = $this->getShardMapping($mappingId);
         $config = $mapping->selectShards($this->shardingConfig['shards']);
         $shards = [];
         foreach ($config as $shardId => $shardConfig) {
@@ -67,7 +68,7 @@ class ShardManager
     public function createShardDispatcher(string $mappingId)
     {
         $mapping = $this->getShardMapping($mappingId);
-        $shards = $this->getShards($mapping);
+        $shards = $this->getShards($mappingId);
         $hasher = new FlexihashHasher($mapping);
         return new ShardDispatcher($hasher, $shards);
     }
