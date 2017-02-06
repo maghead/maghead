@@ -6,7 +6,7 @@ use Exception;
 
 class ShardMapping
 {
-    protected $mapping;
+    protected $config;
 
     const RANGE = 0;
 
@@ -14,7 +14,7 @@ class ShardMapping
 
     public function __construct(array $mapping)
     {
-        $this->mapping = $mapping;
+        $this->config = $mapping;
     }
 
     /**
@@ -24,12 +24,24 @@ class ShardMapping
      */
     public function getShardType()
     {
-        if (isset($mapping['hash'])) {
+        if (isset($this->config['hash'])) {
             return self::HASH;
-        } else if (isset($mapping['range'])) {
+        } else if (isset($this->config['range'])) {
             return self::RANGE;
         }
     }
+
+
+    public function getHash()
+    {
+        return $this->config['hash'];
+    }
+
+    public function getRange()
+    {
+        return $this->config['range'];
+    }
+
 
     /**
      * Return the ID of the related shards.
@@ -38,10 +50,10 @@ class ShardMapping
      */
     public function getShardIds()
     {
-        if (isset($this->mapping['hash'])) {
-            return array_values($this->mapping['hash']);
-        } else if (isset($this->mapping['range'])) {
-            return array_keys($this->mapping['range']);
+        if (isset($this->config['hash'])) {
+            return array_values($this->config['hash']);
+        } else if (isset($this->config['range'])) {
+            return array_keys($this->config['range']);
         }
         throw new Exception('hash / range is undefined.');
     }
@@ -63,5 +75,4 @@ class ShardMapping
         }
         return $shards;
     }
-
 }

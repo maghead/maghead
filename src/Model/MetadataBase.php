@@ -38,7 +38,7 @@ class MetadataBase
 
     const SHARD_MAPPING_ID = NULL;
 
-    const GLOBAL_TABLE = false;
+    const GLOBAL_TABLE = NULL;
 
     public static $column_names = array (
       0 => 'id',

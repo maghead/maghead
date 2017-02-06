@@ -13,13 +13,10 @@ class ShardDispatcher
 
     protected $shards;
 
-    protected $repoClass;
-
-    public function __construct(Hasher $hasher, array $shards, string $repoClass)
+    public function __construct(Hasher $hasher, array $shards)
     {
         $this->hasher = $hasher;
         $this->shards = $shards;
-        $this->repoClass = $repoClass;
     }
 
     public function dispatch($key)

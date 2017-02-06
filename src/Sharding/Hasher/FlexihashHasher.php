@@ -3,6 +3,7 @@
 namespace Maghead\Sharding\Hasher;
 
 use Flexihash\Flexihash;
+use Maghead\Sharding\ShardMapping;
 
 class FlexihashHasher implements Hasher
 {
@@ -10,11 +11,15 @@ class FlexihashHasher implements Hasher
 
     protected $hash;
 
-    public function __construct(array $mapping)
+    protected $hashBy;
+
+    public function __construct(ShardMapping $mapping)
     {
         $this->mapping = $mapping;
+        $this->hashBy = $mapping->getHash();
+
         $this->hash = new Flexihash;
-        $this->hash->addTargets(array_keys($mapping['hash']));
+        $this->hash->addTargets(array_keys($this->hashBy));
     }
 
     /**
@@ -25,6 +30,6 @@ class FlexihashHasher implements Hasher
     public function hash($key)
     {
         $target = $this->hash->lookup($key);
-        return $this->mapping['hash'][$target];
+        return $this->hashBy[$target];
     }
 }

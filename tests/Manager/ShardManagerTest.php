@@ -2,6 +2,8 @@
 use Maghead\Testing\ModelTestCase;
 use Maghead\Manager\ShardManager;
 use Maghead\ConfigLoader;
+use StoreApp\Model\{Store, StoreSchema};
+
 
 class ShardManagerTest extends ModelTestCase
 {
@@ -103,7 +105,7 @@ class ShardManagerTest extends ModelTestCase
     public function testCreateShardDispatcher()
     {
         $shardManager = new ShardManager($this->config, $this->connManager);
-        $dispatcher = $shardManager->createShardDispatcher('M_store_id', 'StoreApp\\Model\\StoreRepo');
+        $dispatcher = $shardManager->createShardDispatcher('M_store_id');
         $this->assertNotNull($dispatcher);
         return $dispatcher;
     }
@@ -113,8 +115,12 @@ class ShardManagerTest extends ModelTestCase
      */
     public function testDispatchRead($dispatcher)
     {
-        $repo = $dispatcher->dispatchRead('3d221024-eafd-11e6-a53b-3c15c2cb5a5a');
+        $shard = $dispatcher->dispatch('3d221024-eafd-11e6-a53b-3c15c2cb5a5a');
+        $this->assertInstanceOf('Maghead\\Sharding\\Shard', $shard);
+
+        $repo = $shard->createRepo('StoreApp\\Model\\StoreRepo');
         $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo);
+        $this->assertInstanceOf('StoreApp\\Model\\StoreRepo', $repo);
     }
 
     /**
@@ -122,7 +128,10 @@ class ShardManagerTest extends ModelTestCase
      */
     public function testDispatchWrite($dispatcher)
     {
-        $repo = $dispatcher->dispatchWrite('3d221024-eafd-11e6-a53b-3c15c2cb5a5a');
+        $shard = $dispatcher->dispatch('3d221024-eafd-11e6-a53b-3c15c2cb5a5a');
+        $this->assertInstanceOf('Maghead\\Sharding\\Shard', $shard);
+
+        $repo = $shard->createRepo('StoreApp\\Model\\StoreRepo');
         $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo);
         $this->assertInstanceOf('StoreApp\\Model\\StoreRepo', $repo);
         return $repo;

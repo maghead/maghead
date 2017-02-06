@@ -36,7 +36,7 @@ class MetadataBaseRepo
 
     const SHARD_MAPPING_ID = NULL;
 
-    const GLOBAL_TABLE = false;
+    const GLOBAL_TABLE = NULL;
 
     const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = ? LIMIT 1';
 

@@ -64,15 +64,11 @@ class ShardManager
         return $shards;
     }
 
-    public function createShardDispatcher(string $mappingId, string $repoClass)
+    public function createShardDispatcher(string $mappingId)
     {
         $mapping = $this->getShardMapping($mappingId);
-        if (!isset($mapping['hash'])) {
-            throw new Exception("sharding method is not supported.");
-        }
         $shards = $this->getShards($mapping);
         $hasher = new FlexihashHasher($mapping);
-        $dispatcher = new ShardDispatcher($hasher, $shards, $repoClass);
-        return $dispatcher;
+        return new ShardDispatcher($hasher, $shards);
     }
 }
