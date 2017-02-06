@@ -32,12 +32,12 @@ class ShardMapping
     }
 
 
-    public function getHash()
+    public function getHashBy()
     {
         return $this->config['hash'];
     }
 
-    public function getRange()
+    public function getRangeBy()
     {
         return $this->config['range'];
     }

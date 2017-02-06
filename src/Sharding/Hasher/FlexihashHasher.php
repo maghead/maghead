@@ -16,7 +16,7 @@ class FlexihashHasher implements Hasher
     public function __construct(ShardMapping $mapping)
     {
         $this->mapping = $mapping;
-        $this->hashBy = $mapping->getHash();
+        $this->hashBy = $mapping->getHashBy();
 
         $this->hash = new Flexihash;
         $this->hash->addTargets(array_keys($this->hashBy));
