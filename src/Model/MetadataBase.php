@@ -26,6 +26,8 @@ class MetadataBase
 
     const MODEL_CLASS = 'Maghead\\Model\\Metadata';
 
+    const REPO_CLASS = 'Maghead\\Model\\MetadataBaseRepo';
+
     const TABLE = '__meta__';
 
     const READ_SOURCE_ID = 'default';

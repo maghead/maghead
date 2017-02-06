@@ -206,8 +206,8 @@ abstract class BaseModel implements Serializable
 
             $shards = static::shards();
             foreach ($shards as $shardId => $shard) {
-                // $shard->repo( );
-                // $results[$groupId] = static::repo($shard->getReadConnection(), $conn)->create($args);
+                $repo = $shard->createRepo(static::REPO_CLASS);
+                $repo->create($args);
                 // TODO: Check error, log and retry
             }
             return $ret;

@@ -86,6 +86,7 @@ class BaseModelClassGenerator
             'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),
             'COLLECTION_CLASS'   => $schema->getCollectionClass(),
             'MODEL_CLASS'        => $schema->getModelClass(),
+            'REPO_CLASS'         => $schema->getBaseRepoClass(),
             'TABLE'              => $schema->getTable(),
             'READ_SOURCE_ID'     => $schema->getReadSourceId(),
             'WRITE_SOURCE_ID'    => $schema->getWriteSourceId(),
