@@ -94,7 +94,7 @@ class BaseModelClassGenerator
         ));
 
         $cTemplate->addConst('SHARD_MAPPING_ID', $schema->shardMapping);
-
+        $cTemplate->addConst('GLOBAL_TABLE', $schema->globalTable);
 
         $cTemplate->addProtectedProperty('table', $schema->getTable());
 

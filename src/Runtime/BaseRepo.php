@@ -209,6 +209,8 @@ class BaseRepo
         $stm = $conn->prepare($sql);
         $stm->execute($arguments->toArray());
         return Result::success('Updated', [
+            'key' => $kVal,
+            'keyName' => static::PRIMARY_KEY,
             'sql' => $sql,
             'type' => Result::TYPE_UPDATE,
         ]);
@@ -335,6 +337,7 @@ class BaseRepo
 
         return Result::success('Updated successfully', array(
             'key' => $kVal,
+            'keyName' => static::PRIMARY_KEY,
             'sql' => $sql,
             'args' => $args,
             'type' => Result::TYPE_UPDATE,
@@ -522,6 +525,7 @@ class BaseRepo
         // collect debug info
         return Result::success('Record created.', [
             'key' => $key,
+            'keyName' => static::PRIMARY_KEY,
             'sql' => $sql,
             'args' => $args,
             'binds' => $arguments,
@@ -562,6 +566,7 @@ class BaseRepo
         }
         return Result::success('Create success', [
             'key' => $key,
+            'keyName' => static::PRIMARY_KEY,
             'sql' => $sql,
             'type' => Result::TYPE_CREATE,
         ]);

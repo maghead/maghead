@@ -48,6 +48,52 @@ class ShardManager
         return $this->shardingConfig['groups'];
     }
 
+    protected function getMappingGroups(array $mapping)
+    {
+        $gIds = [];
+        if (isset($mapping['hash'])) {
+            $gIds = array_values($mapping['hash']);
+        } else if (isset($mapping['range'])) {
+            $gIds = array_keys($mapping['range']);
+        }
+        $groups = [];
+        foreach ($gIds as $gId) {
+            $groups[$gId] = $this->shardingConfig['groups'][$gId];
+        }
+        return $groups;
+    }
+
+
+
+    public function getMappingReadNodes($mappingId)
+    {
+        $groups = $this->getMappingGroups($mappingId);
+        $conns = [];
+        foreach ($groups as $gId => $group) {
+            $conns[$gId] = $this->connectionManager->getConnection(array_rand($group['read']));
+        }
+        return $conns;
+    }
+
+    public function getShardGroups()
+    {
+        $groups = [];
+        foreach ($gIds as $gId) {
+            $group = $this->shardingConfig['groups'][$gId];
+        }
+        return $groups;
+    }
+
+    public function getMappingWriteNodes($mappingId)
+    {
+        $groups = $this->getMappingGroups($mappingId);
+        $conns = [];
+        foreach ($groups as $gId => $group) {
+            $conns[$gId] = $this->connectionManager->getConnection(array_rand($group['write']));
+        }
+        return $conns;
+    }
+
     public function createShardDispatcher(string $mappingId, string $repoClass)
     {
         $mapping = $this->getMapping($mappingId);

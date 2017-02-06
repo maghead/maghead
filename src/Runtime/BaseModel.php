@@ -20,13 +20,14 @@ use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
-use Maghead\Runtime\Result\OperationError;
 use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\RuntimeColumn;
 use Maghead\Schema\Relationship\Relationship;
+use Maghead\ConfigLoader;
 use Maghead\Exception\MissingPrimaryKeyException;
 use Maghead\Exception\QueryException;
 use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\ShardManager;
 use Maghead\Connection;
 use SerializerKit\XmlSerializer;
 use ActionKit;
@@ -176,6 +177,17 @@ abstract class BaseModel implements Serializable
         return $repo->loadByPrimaryKey($ret->key);
     }
 
+
+    public static function shards()
+    {
+        // Get shard nodes of this table.
+        $config = ConfigLoader::getCurrentConfig();
+        $shardManager = new ShardManager($config, ConnectionManager::getInstance());
+        $mapping = $shardManager->getMapping(static::SHARD_MAPPING_ID);
+        return $shardManager->getMappingWriteNodes($mapping);
+    }
+
+
     /**
      * create method
      *
@@ -183,7 +195,24 @@ abstract class BaseModel implements Serializable
      */
     public static function create(array $args)
     {
-        // if (static::SHARD_MAPPING_ID
+        /*
+        if (static::GLOBAL_TABLE) {
+            $results = [];
+            $results['master'] = $ret = static::masterRepo()->create($args);
+
+            // Update primary key
+            if (!isset($args[$ret->keyName])) {
+                $args[$ret->keyName] = $ret->key;
+            }
+
+            $conns = static::shards();
+            foreach ($conns as $groupId => $conn) {
+                $results[$groupId] = static::repo($conn, $conn)->create($args);
+                // TODO: Check error, log and retry
+            }
+            return $ret;
+        }
+        */
         return static::masterRepo()->create($args);
     }
 
