@@ -183,8 +183,8 @@ abstract class BaseModel implements Serializable
         // Get shard nodes of this table.
         $config = ConfigLoader::getCurrentConfig();
         $shardManager = new ShardManager($config, ConnectionManager::getInstance());
-        $mapping = $shardManager->getMapping(static::SHARD_MAPPING_ID);
-        return $shardManager->getMappingWriteNodes($mapping);
+        $mapping = $shardManager->getShardMapping(static::SHARD_MAPPING_ID);
+        return $shardManager->getShards($mapping);
     }
 
 
@@ -195,7 +195,6 @@ abstract class BaseModel implements Serializable
      */
     public static function create(array $args)
     {
-        /*
         if (static::GLOBAL_TABLE) {
             $results = [];
             $results['master'] = $ret = static::masterRepo()->create($args);
@@ -205,15 +204,16 @@ abstract class BaseModel implements Serializable
                 $args[$ret->keyName] = $ret->key;
             }
 
-            $conns = static::shards();
-            foreach ($conns as $groupId => $conn) {
-                $results[$groupId] = static::repo($conn, $conn)->create($args);
+            $shards = static::shards();
+            foreach ($shards as $shardId => $shard) {
+                // $shard->repo( );
+                // $results[$groupId] = static::repo($shard->getReadConnection(), $conn)->create($args);
                 // TODO: Check error, log and retry
             }
             return $ret;
+        } else {
+            return static::masterRepo()->create($args);
         }
-        */
-        return static::masterRepo()->create($args);
     }
 
     /**

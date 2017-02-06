@@ -58,6 +58,7 @@ TODO
     - [ ] Shard method
         - [ ] Shard by Hash
         - [ ] Shard by Range
+    - [ ] Shard::createRepo() return a repo object with read/write connection.
     - [x] Rename "default" config to "master".
     - [ ] Global Table behaviour
         - [ ] Spread Create method

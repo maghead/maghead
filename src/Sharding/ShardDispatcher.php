@@ -9,47 +9,22 @@ use Exception;
 
 class ShardDispatcher
 {
-    // protected $mapping;
-
     protected $hasher;
 
-    protected $groups;
+    protected $shards;
 
     protected $repoClass;
 
-    protected $connectionManager;
-
-    public function __construct(ConnectionManager $connectionManager, Hasher $hasher, array $groups, string $repoClass)
+    public function __construct(Hasher $hasher, array $shards, string $repoClass)
     {
-        $this->connectionManager = $connectionManager;
         $this->hasher = $hasher;
-        // $this->mapping = $mapping;
-        $this->groups = $groups;
+        $this->shards = $shards;
         $this->repoClass = $repoClass;
-        // $this->manager = $manager;
     }
 
-    public function dispatchRead($key)
+    public function dispatch($key)
     {
-        $targetGroupId = $this->hasher->hash($key);
-        if (!isset($this->groups[$targetGroupId])) {
-            throw new Exception("Group $targetGroupId is not defined.");
-        }
-        $nodes = $this->groups[$targetGroupId]['read'];
-        $nodeId = array_rand($nodes); // any node could be used for read
-        $read = $this->connectionManager->getConnection($nodeId);
-        return new $this->repoClass($read, $read);
-    }
-
-    public function dispatchWrite($key)
-    {
-        $targetGroupId = $this->hasher->hash($key);
-        if (!isset($this->groups[$targetGroupId])) {
-            throw new Exception("Group $targetGroupId is not defined.");
-        }
-        $writeNodes = $this->groups[$targetGroupId]['write'];
-        $writeNodeId = array_rand($writeNodes); // any node could be used for read
-        $write = $this->connectionManager->getConnection($writeNodeId);
-        return new $this->repoClass($write, $write);
+        $shardId = $this->hasher->hash($key);
+        return $this->shards[$shardId];
     }
 }

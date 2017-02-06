@@ -57,12 +57,15 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     public $onUpdate;
 
     /**
-     * @var boolean
+     * @var string 
+     *
+     * shard mapping Id
      *
      * This is used in sharded environment. By default every table is
      * local table.
+     *
      */
-    public $globalTable = false;
+    public $globalTable;
 
     public $shardMapping;
 
@@ -734,9 +737,10 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         return $this;
     }
 
-    public function globalTable($yes = true)
+    public function globalTable(string $mappingId)
     {
-        $this->globalTable = $yes;
+        $this->globalTable = true;
+        $this->shardMapping = $mappingId;
 
         return $this;
     }

@@ -16,6 +16,6 @@ class StoreSchema extends DeclareSchema
             ->findable()
             ;
 
-        $this->globalTable();
+        $this->globalTable("M_store_id"); // global table on the shards of M_store_id
     }
 }

@@ -39,21 +39,21 @@ class StoreShardingTest extends ModelTestCase
                         'tables' => ['orders'], // This is something that we will define in the schema.
                         'key' => 'store_id',
                         'hash' => [
-                            'target1' => 'group-1',
-                            'target2' => 'group-2',
+                            'target1' => 'group1',
+                            'target2' => 'group2',
                         ],
                     ],
                     'M_created_at' => [
                         'key' => 'created_at',
                         'tables' => ['orders'], // This is something that we will define in the schema.
                         'range' => [
-                            'group-1' => [ 'min' => 0, 'max' => 10000 ],
-                            'group-2' => [ 'min' => 10001, 'max' => 20000 ],
+                            'group1' => [ 'min' => 0, 'max' => 10000 ],
+                            'group2' => [ 'min' => 10001, 'max' => 20000 ],
                         ]
                     ],
                 ],
                 // Shards pick servers from nodes config, HA groups
-                'groups' => [
+                'shards' => [
                     'group1' => [
                         'write' => [
                           'node1_2' => ['weight' => 0.1],

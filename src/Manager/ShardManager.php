@@ -4,6 +4,8 @@ namespace Maghead\Manager;
 
 use Maghead\Sharding\Hasher\FlexihashHasher;
 use Maghead\Sharding\ShardDispatcher;
+use Maghead\Sharding\ShardMapping;
+use Maghead\Sharding\Shard;
 use Maghead\Manager\ConnectionManager;
 use Maghead\Config;
 
@@ -26,82 +28,51 @@ class ShardManager
         $this->config = $config;
         $this->shardingConfig = $config['sharding'];
         $this->connectionManager = $connectionManager;
+
     }
 
-    public function getMappings()
+    public function getMappingsConfig()
     {
         if (isset($this->shardingConfig['mappings'])) {
             return $this->shardingConfig['mappings'];
         }
     }
 
-    public function getMapping($mappingId)
+    public function hasShardMapping(string $mappingId)
+    {
+        return isset($this->shardingConfig['mappings']);
+    }
+
+
+    public function getShardMapping(string $mappingId) : ShardMapping
     {
         if (!isset($this->shardingConfig['mappings'][$mappingId])) {
             throw new LogicException("MappingId $mappingId is undefined.");
         }
-        return $this->shardingConfig['mappings'][$mappingId];
+        return new ShardMapping($this->shardingConfig['mappings'][$mappingId]);
     }
 
-    public function getGroupDefinitions()
+    public function getShards(ShardMapping $mapping)
     {
-        return $this->shardingConfig['groups'];
-    }
-
-    protected function getMappingGroups(array $mapping)
-    {
-        $gIds = [];
-        if (isset($mapping['hash'])) {
-            $gIds = array_values($mapping['hash']);
-        } else if (isset($mapping['range'])) {
-            $gIds = array_keys($mapping['range']);
+        $config = $mapping->selectShards($this->shardingConfig['shards']);
+        $shards = [];
+        foreach ($config as $shardId => $shardConfig) {
+            // Wrap shard config into objects.
+            $shard = new Shard($shardId, $shardConfig, $this->connectionManager);
+            $shards[ $shardId ] = $shard;
         }
-        $groups = [];
-        foreach ($gIds as $gId) {
-            $groups[$gId] = $this->shardingConfig['groups'][$gId];
-        }
-        return $groups;
-    }
-
-
-
-    public function getMappingReadNodes($mappingId)
-    {
-        $groups = $this->getMappingGroups($mappingId);
-        $conns = [];
-        foreach ($groups as $gId => $group) {
-            $conns[$gId] = $this->connectionManager->getConnection(array_rand($group['read']));
-        }
-        return $conns;
-    }
-
-    public function getShardGroups()
-    {
-        $groups = [];
-        foreach ($gIds as $gId) {
-            $group = $this->shardingConfig['groups'][$gId];
-        }
-        return $groups;
-    }
-
-    public function getMappingWriteNodes($mappingId)
-    {
-        $groups = $this->getMappingGroups($mappingId);
-        $conns = [];
-        foreach ($groups as $gId => $group) {
-            $conns[$gId] = $this->connectionManager->getConnection(array_rand($group['write']));
-        }
-        return $conns;
+        return $shards;
     }
 
     public function createShardDispatcher(string $mappingId, string $repoClass)
     {
-        $mapping = $this->getMapping($mappingId);
+        $mapping = $this->getShardMapping($mappingId);
         if (!isset($mapping['hash'])) {
             throw new Exception("sharding method is not supported.");
         }
+        $shards = $this->getShards($mapping);
         $hasher = new FlexihashHasher($mapping);
-        $dispatcher = new ShardDispatcher($this->connectionManager, $hasher, $this->shardingConfig['groups'], $repoClass);
+        $dispatcher = new ShardDispatcher($hasher, $shards, $repoClass);
         return $dispatcher;
     }
 }
