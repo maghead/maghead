@@ -67,11 +67,13 @@ TODO
             - Update records across different shards.
         - [ ] Spread Delete method
             - Delete records across different shards.
-    - [ ] Sharded Table behaviour
-        - [ ] Select shard to insert.
-        - [ ] Select shard to update.
-        - [ ] Select shard to delete.
-
+    - [ ] Extract SQL building method for create (insertion)
+    - [ ] Extract SQL building method for update
+    - [ ] Extract SQL building method for delete
+    - [ ] Map SQL and arguments to QueryWorker and then reduce the result...
+    - [x] ShardDispatcher
+        - [x] Select shard for write
+        - [x] Select shard for read.
     - [ ] QueryDispatcher
         - [ ] Given a query, return Repo objects with different connections and
               run queries on these nodes.

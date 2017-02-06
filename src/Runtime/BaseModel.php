@@ -203,6 +203,7 @@ abstract class BaseModel implements Serializable
             }
 
             // TODO: Check error, log and retry,
+            // TODO: MAP QUERY WORKER
             // support global transaction
             $shards = static::shards();
             foreach ($shards as $shardId => $shard) {
