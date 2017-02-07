@@ -55,10 +55,9 @@ TODO
     - [x] Add "prepare" method generator for Repo classes.
     - [x] Use repo class in BaseCollection
     - [x] Rename "getDefaultConnection" to "getMasterConnection".
-    - [ ] Shard method
-        - [ ] Shard by Hash
-        - [ ] Shard by Range
-    - [ ] Shard::createRepo() return a repo object with read/write connection.
+    - [x] Shard method
+    - [x] Shard by Hash
+    - [x] Shard::createRepo() return a repo object with read/write connection.
     - [x] Rename "default" config to "master".
     - [ ] Global Table behaviour
         - [ ] Spread Create method
@@ -77,6 +76,12 @@ TODO
     - [ ] QueryDispatcher
         - [ ] Given a query, return Repo objects with different connections and
               run queries on these nodes.
+
+    - [ ] QueryMapper
+        - gearman extension <https://github.com/wcgallego/pecl-gearman/>
+
+    - [ ] Shard by Range
+    - [ ] Virtual Shards (by using larger key space)
 
     $shards = Book::shards(); // returns Shards of the model.
 
