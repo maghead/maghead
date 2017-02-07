@@ -99,9 +99,9 @@ class BaseCollection implements
      * Basically we won't create mass collection objects in one time.
      * Therefore we can prepare more stuff here.
      */
-    public function __construct()
+    public function __construct(BaseRepo $repo = null)
     {
-        // $this->_query = $this->createReadQuery();
+        $this->repo = $repo;
     }
 
     public function setRepo(BaseRepo $repo)
