@@ -3,7 +3,6 @@
 namespace Maghead\Runtime;
 
 use Exception;
-use RuntimeException;
 use InvalidArgumentException;
 use BadMethodCallException;
 use PDO;
@@ -455,7 +454,7 @@ abstract class BaseModel implements Serializable
     {
         $conn = static::$connectionManager->getConnection($dsId);
         if (!$conn) {
-            throw new RuntimeException("data source $dsId is not defined.");
+            throw new Exception("data source $dsId is not defined.");
         }
 
         return $conn->query($sql);
@@ -869,7 +868,7 @@ abstract class BaseModel implements Serializable
             }
             throw new Exception('Can not load '.static::SCHEMA_PROXY_CLASS);
         }
-        throw new RuntimeException('schema is not defined in '.get_class($this));
+        throw new Exception('schema is not defined in '.get_class($this));
     }
 
     /***************************************
