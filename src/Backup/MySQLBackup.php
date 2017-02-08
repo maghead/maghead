@@ -43,17 +43,17 @@ class MySQLBackup
      * alternate the dbname,
      * and then create a new connection base on new DSN.
      */
-    public function incrementalBackup(Connection $conn, array $config)
+    public function incrementalBackup(Connection $conn, array $source)
     {
-        $destConfig = $config;
-        $destDSN = DSNParser::parse($destConfig['dsn']);
+        $dest = $source;
+        $destDSN = DSNParser::parse($dest['dsn']);
 
         $newdb = $destDSN->getAttribute('dbname').'_'.date('Ymd_Hi');
         $destDSN->setAttribute('dbname', $newdb);
-        $destConfig['dsn'] = $destDSN->__toString();
+        $dest['dsn'] = $destDSN->__toString();
 
         $conn->query("CREATE DATABASE IF NOT EXISTS {$newdb} CHARSET utf8");
-        if ($this->backup($config, $destConfig)) {
+        if ($this->backup($source, $dest)) {
             return $newdb;
         }
         return false;
@@ -71,10 +71,10 @@ class MySQLBackup
         ?: ini_get('mysqli.default_socket')
         ?: ini_get('mysql.default_socket');
     */
-    public function backup(array $sourceConfig, array $destConfig)
+    public function backup(array $source, array $dest)
     {
-        $dumpCommand = $this->mysqldump.' '.$this->formatCommandParameters($sourceConfig);
-        $mysqlCommand = $this->mysql.' '.$this->formatCommandParameters($destConfig);
+        $dumpCommand = $this->mysqldump.' '.$this->formatCommandParameters($source);
+        $mysqlCommand = $this->mysql.' '.$this->formatCommandParameters($dest);
         $command = $dumpCommand.' | '.$mysqlCommand;
         $lastline = system($command, $ret);
 
