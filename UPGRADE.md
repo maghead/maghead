@@ -60,6 +60,10 @@ UPGRADE TO 4.0.x
     return `Config` object.
 
 
+Gearman
+
+    phpbrew ext install github:wcgallego/pecl-gearman
+
 UPGRADE TO 2.0
 ======================
 

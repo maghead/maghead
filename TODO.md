@@ -78,7 +78,13 @@ TODO
               run queries on these nodes.
 
     - [ ] QueryMapper
-        - gearman extension <https://github.com/wcgallego/pecl-gearman/>
+        - [ ] Gearman
+            - gearman extension <https://github.com/wcgallego/pecl-gearman/>
+        - [ ] Pthread Query Mapper
+            - [ ] PDO connection ctor extractor method (extract connection parameters to array)
+            - [ ] Create pthread worker with the connection parameters
+            - [ ] Provide query method to query SQL
+            - [ ] Merge result.
 
     - [ ] Shard by Range
     - [ ] Virtual Shards (by using larger key space)

@@ -72,6 +72,9 @@ class Connection extends PDO
         $this->config = $config;
     }
 
+    /**
+     *
+     */
     public function getDSN()
     {
         if ($this->dsn) {
