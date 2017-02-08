@@ -15,31 +15,32 @@ class MySQLBackupTest extends ModelTestCase
     public function testIncrementalBackup()
     {
         $backup = new MySQLBackup;
-        if ($createdDB = $backup->incrementalBackup($this->conn)) {
-            // FIXME:
-            $this->conn->query("DROP DATABASE IF EXISTS $createdDB");
-        }
-    }
 
-    public function testBackupToDatabase()
-    {
-        $backup = new MySQLBackup;
-        $backup->backupToDatabase($this->conn, 'backup_test2', true);
+        $ds = $this->connManager->getDataSource($this->getMasterDataSourceId());
+        if ($newdb = $backup->incrementalBackup($this->conn, $ds)) {
+            $this->conn->query("DROP DATABASE IF EXISTS {$newdb}");
+        }
     }
 
     public function testBackup()
     {
         $this->conn->query('DROP DATABASE IF EXISTS backup_test');
         $this->conn->query('CREATE DATABASE IF NOT EXISTS backup_test CHARSET utf8;');
-        $dest = Connection::create([
+
+        $source = [
+            'driver' => 'mysql',
             'dsn' => 'mysql:host=localhost;dbname=backup_test',
             'user' => 'root',
             'pass' => null,
-            'connection_options' => [
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-            ]
-        ]);
+        ];
+        $dest = [
+            'driver' => 'mysql',
+            'dsn' => 'mysql:host=localhost;dbname=mysql',
+            'user' => 'root',
+            'pass' => null,
+        ];
         $backup = new MySQLBackup;
-        $backup->backup($this->conn, $dest);
+        $backup->backup($source, $dest);
+        $this->conn->query('DROP DATABASE IF EXISTS backup_test');
     }
 }

@@ -9,6 +9,7 @@ use PDO;
 use ArrayAccess;
 use Maghead\DSN\DSN;
 use Maghead\Connection;
+use Maghead\Connector\PDOMySQLConnector;
 
 /**
  * Connection Manager.
@@ -166,22 +167,20 @@ class ConnectionManager implements ArrayAccess
      *    $pdo = new Connection( 'sqlite::memory:', null, null, array(PDO::ATTR_PERSISTENT => true) );
      *                     sqlite2:mydb.sq2
      */
-    public function getConnection($sourceId)
+    public function getConnection($nodeId)
     {
-        if ($sourceId === 'default') {
-            $sourceId = $this->defaultDataSourceId;
+        if ($nodeId === 'default') {
+            $nodeId = $this->defaultDataSourceId;
         }
         // use cached connection objects
-        if (isset($this->conns[$sourceId])) {
-            return $this->conns[$sourceId];
+        if (isset($this->conns[$nodeId])) {
+            return $this->conns[$nodeId];
         }
-        if (!isset($this->datasources[ $sourceId ])) {
-            throw new InvalidArgumentException("data source $sourceId not found.");
+        if (!isset($this->datasources[$nodeId])) {
+            throw new InvalidArgumentException("data source {$nodeId} not found.");
         }
-        // Only for MySQl
-        // TODO: Move to MySQLConnector
-        // $conn->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
-        return $this->conns[ $sourceId ] = Connection::create($this->datasources[$sourceId]);
+        $config = $this->datasources[$nodeId];
+        return $this->conns[$nodeId] = Connection::create($config);
     }
 
     public function get($dsId)

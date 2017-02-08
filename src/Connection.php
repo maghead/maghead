@@ -4,7 +4,7 @@ namespace Maghead;
 
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;
-
+use Maghead\Connector\PDOMySQLConnector;
 use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\Raw;
 
@@ -15,7 +15,7 @@ class Connection extends PDO
     /**
      * @var array
      */
-    protected $config;
+    public $config;
 
     /**
      * @var string
@@ -40,8 +40,10 @@ class Connection extends PDO
 
     public static function create(array $config)
     {
+        if ($config['driver'] === 'mysql') {
+            return PDOMySQLConnector::connect($config['dsn'], $config['user'], $config['pass']);
+        }
         $connection = new self($config['dsn'], $config['user'], $config['pass'], $config['connection_options']);
-        $connection->config = $config;
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // TODO: can we make this optional ?
         return $connection;
@@ -62,18 +64,8 @@ class Connection extends PDO
         return $this->queryDriver = PDODriverFactory::create($this);
     }
 
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    public function setConfig(array $config)
-    {
-        $this->config = $config;
-    }
-
     /**
-     *
+     * @return Maghead\DSN object
      */
     public function getDSN()
     {

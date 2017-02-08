@@ -3,24 +3,28 @@
 namespace Maghead\Backup;
 
 use Maghead\Connection;
-use Exception;
+use Maghead\DSN\DSNParser;
 use LogicException;
 use DateTime;
 
 class MySQLBackup
 {
-    protected $mysqldump = 'mysqldump';
+    protected $mysqldump;
 
-    protected $mysql = 'mysql';
+    protected $mysql;
 
-    public function __construct()
+    public function __construct($mysql = 'mysql', $mysqldump = 'mysqldump')
     {
+        $this->mysql = $mysql;
+        $this->mysqldump = $mysqldump;
     }
 
-    protected function formatCommandParameters(Connection $conn)
+    /**
+     * Given a config array, return the command line parameters
+     */
+    protected function formatCommandParameters(array $config)
     {
-        $dsn = $conn->getDSN();
-        $config = $conn->getConfig();
+        $dsn = DSNParser::parse($config['dsn']);
         $parameters = ['--default-character-set=utf8'];
         if (isset($config['user'])) {
             $parameters[] = '-u'.$config['user'];
@@ -30,46 +34,29 @@ class MySQLBackup
         }
         if ($dbname = $dsn->getAttribute('dbname')) {
             $parameters[] = $dbname;
-        } else {
-            throw new Exception('dbname attribute is required.');
         }
-
-        return $parameters;
+        return implode(' ', $parameters);
     }
 
-    public function incrementalBackup(Connection $source)
+    /**
+     * Get the DSN from the current connection object,
+     * alternate the dbname,
+     * and then create a new connection base on new DSN.
+     */
+    public function incrementalBackup(Connection $conn, array $config)
     {
-        $newDSN = clone $source->getDSN();
-        $dbname = $newDSN->getAttribute('dbname');
-        $now = new DateTime();
-        $dbname .= '_'.$now->format('Ymd_Hi');
-        $source->query('CREATE DATABASE IF NOT EXISTS '.$dbname.' CHARSET utf8');
-        if ($this->backupToDatabase($source, $dbname, false)) {
-            return $dbname;
-        }
+        $destConfig = $config;
+        $destDSN = DSNParser::parse($destConfig['dsn']);
 
+        $newdb = $destDSN->getAttribute('dbname').'_'.date('Ymd_Hi');
+        $destDSN->setAttribute('dbname', $newdb);
+        $destConfig['dsn'] = $destDSN->__toString();
+
+        $conn->query("CREATE DATABASE IF NOT EXISTS {$newdb} CHARSET utf8");
+        if ($this->backup($config, $destConfig)) {
+            return $newdb;
+        }
         return false;
-    }
-
-    public function backupToDatabase(Connection $source, $databaseName, $dropAndCreate = false)
-    {
-        $newDSN = clone $source->getDSN();
-        if ($newDSN->getAttribute('dbname') == $databaseName) {
-            throw new LogicException('Backup to the same database.');
-        }
-
-        if ($dropAndCreate) {
-            $source->query('DROP DATABASE IF EXISTS '.$databaseName);
-            $source->query('CREATE DATABASE IF NOT EXISTS '.$databaseName.' CHARSET utf8');
-        }
-
-        // Create new dest database connection
-        $newConfig = $source->getConfig();
-        $newDSN->setAttribute('dbname', $databaseName);
-        $newConfig['dsn'] = $newDSN->__toString();
-        $dest = Connection::create($newConfig);
-
-        return $this->backup($source, $dest);
     }
 
     /*
@@ -83,13 +70,11 @@ class MySQLBackup
     $socket = ini_get('pdo_mysql.default_socket')
         ?: ini_get('mysqli.default_socket')
         ?: ini_get('mysql.default_socket');
-
-
     */
-    public function backup(Connection $source, Connection $dest)
+    public function backup(array $sourceConfig, array $destConfig)
     {
-        $dumpCommand = $this->mysqldump.' '.implode(' ', $this->formatCommandParameters($source));
-        $mysqlCommand = $this->mysql.' '.implode(' ', $this->formatCommandParameters($dest));
+        $dumpCommand = $this->mysqldump.' '.$this->formatCommandParameters($sourceConfig);
+        $mysqlCommand = $this->mysql.' '.$this->formatCommandParameters($destConfig);
         $command = $dumpCommand.' | '.$mysqlCommand;
         $lastline = system($command, $ret);
 
