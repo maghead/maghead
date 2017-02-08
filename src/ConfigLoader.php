@@ -169,13 +169,22 @@ class ConfigLoader
             }
 
             if (!isset($config['query_options'])) {
-                $config['query_options'] = array();
+                $config['query_options'] = [];
             }
 
             if (!isset($config['connection_options'])) {
-                $config['connection_options'] = array();
+                $config['connection_options'] = [];
             }
 
+            $opts = [];
+            foreach ($config['connection_options'] as $key => $val) {
+                if (is_numeric($key)) {
+                    $opts[$key] = $val;
+                } else {
+                    $opts[constant($key)] = $val;
+                }
+            }
+            $config['connection_options'] = $opts; // new connect options
             if ('mysql' === $config['driver']) {
                 $config['connection_options'][ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
             }

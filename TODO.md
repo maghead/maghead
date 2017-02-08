@@ -59,6 +59,18 @@ TODO
     - [x] Shard by Hash
     - [x] Shard::createRepo() return a repo object with read/write connection.
     - [x] Rename "default" config to "master".
+    - [x] ShardDispatcher
+        - [x] Select shard for write
+        - [x] Select shard for read.
+
+    - [ ] PDO connection ctor extractor method (extract connection parameters to array)
+    - [ ] QueryMapper
+        - [ ] Gearman
+            - gearman extension <https://github.com/wcgallego/pecl-gearman/>
+        - [ ] Pthread Query Mapper
+            - [ ] Create pthread worker with the connection parameters
+            - [ ] Provide query method to query SQL
+            - [ ] Merge result.
     - [ ] Global Table behaviour
         - [ ] Spread Create method
             - Create records across different shards.
@@ -70,21 +82,9 @@ TODO
     - [ ] Extract SQL building method for update
     - [ ] Extract SQL building method for delete
     - [ ] Map SQL and arguments to QueryWorker and then reduce the result...
-    - [x] ShardDispatcher
-        - [x] Select shard for write
-        - [x] Select shard for read.
     - [ ] QueryDispatcher
         - [ ] Given a query, return Repo objects with different connections and
               run queries on these nodes.
-
-    - [ ] QueryMapper
-        - [ ] Gearman
-            - gearman extension <https://github.com/wcgallego/pecl-gearman/>
-        - [ ] Pthread Query Mapper
-            - [ ] PDO connection ctor extractor method (extract connection parameters to array)
-            - [ ] Create pthread worker with the connection parameters
-            - [ ] Provide query method to query SQL
-            - [ ] Merge result.
 
     - [ ] Shard by Range
     - [ ] Virtual Shards (by using larger key space)
