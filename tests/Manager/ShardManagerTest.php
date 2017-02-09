@@ -101,6 +101,12 @@ class ShardManagerTest extends ModelTestCase
         $this->assertNotEmpty($mapping);
     }
 
+    public function testGetShards()
+    {
+        $shardManager = new ShardManager($this->config, $this->connManager);
+        $shards = $shardManager->getShards('M_store_id');
+        $this->assertNotEmpty($shards);
+    }
 
     public function testCreateShardDispatcher()
     {

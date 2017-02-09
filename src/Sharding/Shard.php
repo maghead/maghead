@@ -30,6 +30,16 @@ class Shard
         $this->balancer = $balancer ?: new RandBalancer;
     }
 
+    public function getReadNode()
+    {
+        return $this->balancer->select($this->config['read']);
+    }
+
+    public function getWriteNode()
+    {
+        return $this->balancer->select($this->config['write']);
+    }
+
     /**
      * @return \Maghead\Connection
      */
@@ -59,6 +69,4 @@ class Shard
         $write = $this->getWriteConnection();
         return new $repoClass($write, $read);
     }
-
-
 }
