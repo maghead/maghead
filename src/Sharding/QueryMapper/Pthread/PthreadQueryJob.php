@@ -10,7 +10,7 @@ class PthreadQueryJob extends Threaded {
 
     protected $args;
 
-    protected $rows;
+    protected $result;
 
     public function __construct(string $sql, string $args)
     {
@@ -25,16 +25,16 @@ class PthreadQueryJob extends Threaded {
         $args = unserialize($this->args);
         $stm->execute($args);
         $rows = $stm->fetchAll();
-        $this->rows = serialize($rows);
+        $this->result = serialize($rows);
     }
 
-    public function getRows()
+    public function getResult()
     {
-        return unserialize($this->rows);
+        return $this->result;
     }
 
     public function isGarbage() : bool
     {
-        return $this->rows;
+        return $this->result ? true : false;
     }
 }

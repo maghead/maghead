@@ -5,6 +5,9 @@ use Maghead\ConfigLoader;
 use StoreApp\Model\{Store, StoreSchema};
 
 
+/**
+ * @group sharding
+ */
 class ShardManagerTest extends ModelTestCase
 {
     protected $defaultDataSource = 'node1';

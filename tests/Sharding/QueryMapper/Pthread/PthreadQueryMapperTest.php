@@ -75,15 +75,13 @@ class PthreadQueryMapperTest extends ModelTestCase
         $query->from('orders');
 
         $mapper = new PthreadQueryMapper($this->connManager);
-        $mapper->map($shards, 'StoreApp\Model\OrderRepo', $query);
-        /*
-        // this causes segmentation fault.
+        $results = $mapper->map($shards, 'StoreApp\Model\OrderRepo', $query);
+        // FIXME: this causes segmentation fault when running all test cases
         $total = 0;
         foreach ($results as $nodeId => $rows) {
             $total += intval($rows[0]['amount']);
         }
         $this->assertEquals(1200, $total);
-         */
     }
 
     protected function loadConfig()
