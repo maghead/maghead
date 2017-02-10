@@ -9,7 +9,7 @@ class TableModelTest extends ModelTestCase
 {
     public function getModels()
     {
-        return [new TestApp\Model\TableSchema);
+        return [new \TestApp\Model\TableSchema];
     }
 
     /**
