@@ -19,7 +19,7 @@ before_script:
   - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini ; fi
   # - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   # phpenv config-add doesn't work
-  - phpenv config-add travis/php.ini
+  - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then phpenv config-add travis/php.ini ; fi
   - if [[ "$DB" == "pgsql" ]]; then psql -c "create database testing;" -U postgres ; fi
   - if [[ "$DB" == "mysql" ]]; then mysql -uroot -e "create database testing charset utf8;" ; fi
   - cp -v db/config/database.travis-ci.yml db/config/database.yml
