@@ -1,6 +1,9 @@
 <?php
 use Maghead\Utils;
 
+/**
+ * @group utils
+ */
 class UtilsTest extends PHPUnit_Framework_TestCase
 {
     public function testEvaluateFunction()
