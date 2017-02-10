@@ -1,6 +1,9 @@
 <?php
 use Maghead\Inflator;
 
+/**
+ * @group hydrate
+ */
 class InflatorTest extends PHPUnit_Framework_TestCase
 {
     public function testBooleanFalse()
