@@ -7,8 +7,9 @@ use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use Maghead\Manager\ConnectionManager;
+use Maghead\Sharding\QueryMapper\QueryMapper;
 
-class PthreadQueryMapper
+class PthreadQueryMapper implements QueryMapper
 {
     protected $connectionManager;
 
