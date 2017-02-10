@@ -1,6 +1,9 @@
 <?php
 use Maghead\DSN\DSNParser;
 
+/**
+ * @group dsn
+ */
 class DSNParserTest extends PHPUnit_Framework_TestCase
 {
     public function dsnProvider()
