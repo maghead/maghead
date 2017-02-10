@@ -62,15 +62,17 @@ TODO
     - [x] ShardDispatcher
         - [x] Select shard for write
         - [x] Select shard for read.
-
-    - [ ] PDO connection ctor extractor method (extract connection parameters to array)
-    - [ ] QueryMapper
+    - [x] PDO connection ctor extractor method (extract connection parameters to array)
+        - Used DS to create worker connection
+    - [x] QueryMapper
         - [ ] Gearman
             - gearman extension <https://github.com/wcgallego/pecl-gearman/>
-        - [ ] Pthread Query Mapper
-            - [ ] Create pthread worker with the connection parameters
-            - [ ] Provide query method to query SQL
-            - [ ] Merge result.
+        - [x] Pthread Query Mapper
+            - [x] Create pthread worker with the connection parameters
+            - [x] Provide query method to query SQL
+            - [x] Merge result.
+    - [ ] Different QueryMapper
+        - [ ] BroadcastQuery // do actions without reading anything
     - [ ] Global Table behaviour
         - [ ] Spread Create method
             - Create records across different shards.

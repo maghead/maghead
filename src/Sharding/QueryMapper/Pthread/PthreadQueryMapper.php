@@ -63,7 +63,7 @@ class PthreadQueryMapper implements QueryMapper
     {
         $nodeIds = [];
         foreach ($shards as $shard) {
-            $nodeIds[] = $shard->getReadNode();
+            $nodeIds[] = $shard->selectReadNode();
         }
         return $nodeIds;
     }

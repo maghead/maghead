@@ -30,12 +30,12 @@ class Shard
         $this->balancer = $balancer ?: new RandBalancer;
     }
 
-    public function getReadNode()
+    public function selectReadNode()
     {
         return $this->balancer->select($this->config['read']);
     }
 
-    public function getWriteNode()
+    public function selectWriteNode()
     {
         return $this->balancer->select($this->config['write']);
     }
@@ -43,7 +43,7 @@ class Shard
     /**
      * @return \Maghead\Connection
      */
-    public function getReadConnection()
+    public function selectReadConnection()
     {
         $nodeId = $this->balancer->select($this->config['read']);
         return $this->connectionManager->getConnection($nodeId);
@@ -52,7 +52,7 @@ class Shard
     /**
      * @return \Maghead\Connection
      */
-    public function getWriteConnection()
+    public function selectWriteConnection()
     {
         $nodeId = $this->balancer->select($this->config['write']);
         return $this->connectionManager->getConnection($nodeId);
@@ -65,8 +65,8 @@ class Shard
      */
     public function createRepo(string $repoClass)
     {
-        $read = $this->getReadConnection();
-        $write = $this->getWriteConnection();
+        $read = $this->selectReadConnection();
+        $write = $this->selectWriteConnection();
         return new $repoClass($write, $read);
     }
 }
