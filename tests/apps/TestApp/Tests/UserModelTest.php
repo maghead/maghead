@@ -3,10 +3,11 @@ use TestApp\Model\User;
 use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Book;
 
+/**
+ * @group app
+ */
 class UserModelTest extends ModelTestCase
 {
-    public $driver = 'sqlite';
-
     public function getModels()
     {
         return array(
@@ -20,13 +21,11 @@ class UserModelTest extends ModelTestCase
      */
     public function testRefer()
     {
-        $user = new User;
-        $ret = $user->create(array( 'account' => 'c9s' ));
+        $ret = User::create([ 'account' => 'c9s' ]);
         $this->assertResultSuccess($ret);
 
         $user = User::masterRepo()->load($ret->key);
-        ok($user);
-
+        $this->assertNotNull($user);
         $ret = Book::create(array(
             'title' => 'Programming Perl',
             'subtitle' => 'Way Way to Roman',
