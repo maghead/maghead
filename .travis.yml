@@ -12,7 +12,6 @@ env:
 addons:
   postgresql: "9.3"
 install:
-  - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - phpenv config-add tests/php.ini
   - phpenv rehash
   - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
