@@ -376,6 +376,9 @@ class AuthorModelTest extends ModelTestCase
         $this->assertNull($author->name, 'loaded name should be null');
     }
 
+    /**
+     * @group migration
+     */
     public function testMigrationRename()
     {
         if ($this->queryDriver instanceof SQLiteDriver) {
