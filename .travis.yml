@@ -22,12 +22,12 @@ before_script:
   - psql -c "create database testing;" -U postgres
   - mysql -uroot -e "create database testing charset utf8;"
   - cp -v db/config/database.travis-ci.yml db/config/database.yml
-  - php bin/maghead use -f db/config/database.yml
+  - bin/maghead use -f db/config/database.yml
   # - php bin/maghead db create -D=$DB
-  - php bin/maghead schema build -f
-  - php bin/maghead schema build Maghead\\Model\\MetadataSchema
-  - php bin/maghead schema build -f src # build meta model class
-  - php bin/maghead sql --rebuild -D=$DB
+  - bin/maghead schema build -f
+  - bin/maghead schema build Maghead\\Model\\MetadataSchema
+  - bin/maghead schema build -f src # build meta model class
+  - bin/maghead sql --rebuild -D=$DB
 script:
   - phpunit -c phpunit.xml.dist
 after_success:
