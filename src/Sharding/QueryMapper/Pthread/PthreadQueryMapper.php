@@ -13,6 +13,8 @@ class PthreadQueryMapper implements QueryMapper
 {
     protected $connectionManager;
 
+    protected $workers = [];
+
     public function __construct(ConnectionManager $connectionManager)
     {
         $this->connectionManager = $connectionManager;
@@ -21,27 +23,25 @@ class PthreadQueryMapper implements QueryMapper
     public function map(array $shards, string $repoClass, SelectQuery $query)
     {
         $nodeIds = $this->selectNodes($shards);
-        $workers = $this->start($nodeIds);
-        $jobs = $this->send($workers, $query);
-        $this->wait($workers);
+        $this->start($nodeIds);
+        $jobs = $this->send($query);
+        $this->wait();
         return $this->mergeJobsResults($jobs);
     }
 
     protected function start(array $nodeIds)
     {
-        $workers = [];
         foreach ($nodeIds as $nodeId) {
             $ds = $this->connectionManager->getDataSource($nodeId);
-            $workers[$nodeId] = $w = new PthreadQueryWorker($ds['dsn'], $ds['user'], $ds['pass'], $ds['connection_options']);
+            $this->workers[$nodeId] = $w = new PthreadQueryWorker($ds['dsn'], $ds['user'], $ds['pass'], $ds['connection_options']);
             $w->start();
         }
-        return $workers;
     }
 
-    protected function send(array $workers, $query)
+    protected function send($query)
     {
         $jobs = [];
-        foreach ($workers as $nodeId => $worker) {
+        foreach ($this->workers as $nodeId => $worker) {
             // For different connection, we have different query driver to build the sql statement.
             $conn = $this->connectionManager->getConnection($nodeId);
             $args = new ArgumentArray;
@@ -52,9 +52,9 @@ class PthreadQueryMapper implements QueryMapper
         return $jobs;
     }
 
-    protected function wait(array $workers)
+    protected function wait()
     {
-        foreach ($workers as $worker) {
+        foreach ($this->workers as $worker) {
             $worker->join();
         }
     }
