@@ -6,7 +6,6 @@ use PDO;
 use stdClass;
 use Maghead\Schema\DeclareSchema;
 use SQLBuilder\Raw;
-# use Maghead\Inflector;
 use Doctrine\Common\Inflector\Inflector;
 
 class MysqlTableParser extends BaseTableParser implements ReferenceParser
