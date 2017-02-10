@@ -2,6 +2,9 @@
 use SQLBuilder\Driver\PDOSQLiteDriver;
 use Maghead\TableParser\SqliteTableParser;
 
+/**
+ * @group table-parser
+ */
 class SqliteTableParserTest extends PHPUnit_Framework_TestCase
 {
     public function testSQLiteTableParser()

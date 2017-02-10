@@ -5,6 +5,10 @@ use SQLBuilder\Driver\PDOMySQLDriver;
 use Maghead\TableParser\SqliteTableParser;
 use Maghead\TableParser\MysqlTableParser;
 
+/**
+ * @group mysql
+ * @group table-parser
+ */
 class MysqlTableParserTest extends BaseTestCase
 {
     protected $onlyDriver = 'mysql';

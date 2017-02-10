@@ -20,6 +20,7 @@ function dumpExpr($expr, $level = 0)
  * published AND status = draft AND content like %foo% AND content like
  * %bar% AND created_on BETWEEN '2011-01-01' AND '2011-12-30'
  *
+ * @group collection
  */
 class CollectionFilterTest extends PHPUnit_Framework_TestCase
 {

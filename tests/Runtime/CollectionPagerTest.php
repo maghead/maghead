@@ -1,6 +1,9 @@
 <?php
 use Maghead\Runtime\CollectionPager;
 
+/**
+ * @group collection
+ */
 class CollectionPagerTest extends PHPUnit_Framework_TestCase
 {
     public function testCollectionPager()

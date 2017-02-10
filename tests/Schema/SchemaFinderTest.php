@@ -5,6 +5,9 @@ use Maghead\Schema\SchemaFinder;
 use Maghead\Schema\SchemaLoader;
 use PHPUnit_Framework_TestCase;
 
+/**
+ * @group schema
+ */
 class SchemaFinderTest extends PHPUnit_Framework_TestCase
 {
     public function testSchemaFinder()

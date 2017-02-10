@@ -2,7 +2,10 @@
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\DeclareColumn;
 
-class ColumnTest extends PHPUnit_Framework_TestCase
+/**
+ * @group schema
+ */
+class DeclareColumnTest extends PHPUnit_Framework_TestCase
 {
     public function test()
     {

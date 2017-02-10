@@ -1,6 +1,9 @@
 <?php
 use Maghead\TableParser\SqliteTableDefinitionParser;
 
+/**
+ * @group table-parser
+ */
 class SqliteTableDefinitionParserTest extends PHPUnit_Framework_TestCase
 {
     public function testUnsignedInt()

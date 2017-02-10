@@ -3,6 +3,9 @@ use Maghead\ConfigLoader;
 use Maghead\Bootstrap;
 use Maghead\Schema\SchemaUtils;
 
+/**
+ * @group schema
+ */
 class SchemaUtilsTest extends PHPUnit_Framework_TestCase
 {
     public $config;

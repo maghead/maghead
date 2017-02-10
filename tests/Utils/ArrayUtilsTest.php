@@ -1,6 +1,9 @@
 <?php
 use Maghead\Utils\ArrayUtils;
 
+/**
+ * @group utils
+ */
 class ArrayUtilsTest extends PHPUnit_Framework_TestCase
 {
     public function testAssocArrayCheck()

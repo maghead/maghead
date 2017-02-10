@@ -9,6 +9,9 @@ use TestApp\Model\NameSchema;
 use TestApp\Model\Name;
 use TestApp\Model\NameCollection;
 
+/**
+ * @group collection
+ */
 class CollectionTest extends ModelTestCase
 {
     public function getModels()

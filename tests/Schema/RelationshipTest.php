@@ -2,6 +2,9 @@
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
 
+/**
+ * @group schema
+ */
 class RelationshipTest extends PHPUnit_Framework_TestCase
 {
     public function testRelationshipOperation()

@@ -3,6 +3,10 @@ use CLIFramework\Logger;
 use Maghead\Testing\ModelTestCase;
 use Maghead\Generator\Schema\SchemaGenerator;
 
+/**
+ * @group schema
+ * @group generator
+ */
 class SchemaGeneratorTest extends ModelTestCase
 {
     public function getModels()

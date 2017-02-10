@@ -2,6 +2,9 @@
 use Maghead\Testing\BaseTestCase;
 use Maghead\TableParser\TableParser;
 
+/**
+ * @group table-parser
+ */
 class TableParserTest extends BaseTestCase
 {
     public function getModels()

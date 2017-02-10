@@ -1,41 +1,42 @@
 <?php
+use Maghead\Deflator;
 
 class DeflatorTest extends PHPUnit_Framework_TestCase
 {
     public function testInt()
     {
-        is(1, Maghead\Deflator::deflate('1', 'int'));
+        $this->assertEquals(1, Deflator::deflate('1', 'int'));
     }
 
     public function testDatetime()
     {
         $d = new DateTime;
-        $dstr = Maghead\Deflator::deflate($d, 'DateTime');
-        is($d->format(DateTime::ATOM), $dstr);
-        is(null, Maghead\Deflator::deflate('', 'DateTime'));
-        is(null, Maghead\Deflator::deflate(null, 'DateTime'));
+        $dstr = Deflator::deflate($d, 'DateTime');
+        $this->assertEquals($d->format(DateTime::ATOM), $dstr);
+        $this->assertEquals(null, Deflator::deflate('', 'DateTime'));
+        $this->assertEquals(null, Deflator::deflate(null, 'DateTime'));
     }
 
     public function testFloat()
     {
-        is(1.1, Maghead\Deflator::deflate('1.1', 'float'));
+        $this->assertEquals(1.1, Deflator::deflate('1.1', 'float'));
     }
 
     public function testStr()
     {
-        is('1', Maghead\Deflator::deflate(1, 'str'));
-        is('1.1', Maghead\Deflator::deflate(1.1, 'str'));
+        $this->assertEquals('1', Deflator::deflate(1, 'str'));
+        $this->assertEquals('1.1', Deflator::deflate(1.1, 'str'));
     }
 
     public function testBool()
     {
-        is(1, Maghead\Deflator::deflate(1.1, 'bool'));
-        is(0, Maghead\Deflator::deflate(0, 'bool'));
-        is(null, Maghead\Deflator::deflate(null, 'bool'));
-        is(false, Maghead\Deflator::deflate('', 'bool'));
-        is(false, Maghead\Deflator::deflate('0', 'bool'));
-        is(true, Maghead\Deflator::deflate('1', 'bool'));
-        is(true, Maghead\Deflator::deflate('true', 'bool'));
-        is(false, Maghead\Deflator::deflate('false', 'bool'));
+        $this->assertEquals(1, Deflator::deflate(1.1, 'bool'));
+        $this->assertEquals(0, Deflator::deflate(0, 'bool'));
+        $this->assertEquals(null, Deflator::deflate(null, 'bool'));
+        $this->assertEquals(false, Deflator::deflate('', 'bool'));
+        $this->assertEquals(false, Deflator::deflate('0', 'bool'));
+        $this->assertEquals(true, Deflator::deflate('1', 'bool'));
+        $this->assertEquals(true, Deflator::deflate('true', 'bool'));
+        $this->assertEquals(false, Deflator::deflate('false', 'bool'));
     }
 }

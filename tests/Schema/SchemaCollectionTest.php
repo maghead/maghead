@@ -1,6 +1,9 @@
 <?php
 use Maghead\Schema\SchemaCollection;
 
+/**
+ * @group schema
+ */
 class SchemaCollectionTest extends PHPUnit_Framework_TestCase
 {
     public function testCountable()

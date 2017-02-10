@@ -15,7 +15,7 @@ class InflatorTest extends PHPUnit_Framework_TestCase
 
     public function testFloat()
     {
-        is(1.1, Inflator::inflate('1.1', 'float'));
+        $this->assertEquals(1.1, Inflator::inflate('1.1', 'float'));
     }
 
     public function testJson()

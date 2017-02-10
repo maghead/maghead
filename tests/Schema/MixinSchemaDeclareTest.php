@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group schema
+ */
 class MixinDeclareSchemaTest extends PHPUnit_Framework_TestCase
 {
     public function testCallMixinSchemaDirectly()
