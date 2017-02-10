@@ -2,7 +2,6 @@ language: php
 services:
 - memcached
 php:
-- 7.0
 - 7.1
 - hhvm
 env:
@@ -16,7 +15,8 @@ install:
   - travis_retry composer require "satooshi/php-coveralls" "^1" --no-update --dev
   - travis_retry composer install
 before_script:
-  - if [[ $TRAVIS_PHP_VERSION =~ '^7' ]]; then echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini ; fi
+  - echo $TRAVIS_PHP_VERSION
+  - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini ; fi
   # - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   # phpenv config-add doesn't work
   - phpenv config-add travis/php.ini
