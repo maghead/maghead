@@ -4,7 +4,6 @@ namespace Maghead\Utils;
 
 use Exception;
 use ReflectionClass;
-use Doctrine\Common\Inflector\Inflector;
 
 class ClassUtils
 {
