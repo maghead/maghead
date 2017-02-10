@@ -6,7 +6,8 @@ use PDO;
 use stdClass;
 use Maghead\Schema\DeclareSchema;
 use SQLBuilder\Raw;
-use Maghead\Inflector;
+# use Maghead\Inflector;
+use Doctrine\Common\Inflector\Inflector;
 
 class MysqlTableParser extends BaseTableParser implements ReferenceParser
 {
@@ -108,7 +109,7 @@ class MysqlTableParser extends BaseTableParser implements ReferenceParser
                 CURRENT_TIMESTAMP(), NOW(), LOCALTIME, LOCALTIME(),
                 LOCALTIMESTAMP, and LOCALTIMESTAMP().
                 */
-                $extraAttributes['OnUpdate'.Inflector::getInstance()->camelize(strtolower($matches[1]))] = true;
+                $extraAttributes['OnUpdate'.Inflector::camelize(strtolower($matches[1]))] = true;
             } elseif (preg_match('/VIRTUAL GENERATED/i', $row['Extra'])) {
                 $extraAttributes['VirtualGenerated'] = true;
             } elseif (preg_match('/VIRTUAL STORED/i', $row['Extra'])) {
