@@ -13,14 +13,14 @@ addons:
   postgresql: "9.3"
 install:
   - phpenv rehash
-  # - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  # - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - travis_retry composer require "satooshi/php-coveralls" "^1" --no-update --dev
   - travis_retry composer install
 before_script:
-  - phpenv config-add tests/php.ini
-  - psql -c "create database testing;" -U postgres
-  - mysql -uroot -e "create database testing charset utf8;"
+  - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  # - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  # - phpenv config-add tests/php.ini
+  - if [[ "$DB" == "pgsql" ]]; then psql -c "create database testing;" -U postgres ; fi
+  - if [[ "$DB" == "mysql" ]]; then mysql -uroot -e "create database testing charset utf8;" ; fi
   - cp -v db/config/database.travis-ci.yml db/config/database.yml
   - bin/maghead use -f db/config/database.yml
   # - php bin/maghead db create -D=$DB
