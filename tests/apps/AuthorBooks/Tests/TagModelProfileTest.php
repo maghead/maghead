@@ -12,6 +12,7 @@ use XHProfRuns_Default;
 
 /**
  * @group profile
+ * @group app
  */
 class TagModelProfileTest extends ModelProfileTestCase
 {

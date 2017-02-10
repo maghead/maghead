@@ -8,6 +8,10 @@ use StoreApp\Model\Order;
 use StoreApp\Model\OrderSchema;
 use StoreApp\Model\OrderCollection;
 
+/**
+ * @group app
+ * @group sharding
+ */
 class StoreShardingTest extends ModelTestCase
 {
     protected $defaultDataSource = 'node1';

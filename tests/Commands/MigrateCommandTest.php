@@ -2,6 +2,9 @@
 use CLIFramework\Testing\CommandTestCase;
 use Maghead\Console;
 
+/**
+ * @group command
+ */
 class MigrateCommandsTest extends CommandTestCase
 {
     public function setupApplication()
@@ -9,8 +12,8 @@ class MigrateCommandsTest extends CommandTestCase
         return new Console;
     }
 
-    public function testMigrateCommand()
+    public function testMigrateStatusCommand()
     {
-        $this->app->run(array('lazy','migrate','status'));
+        $this->app->run(array('maghead','migrate','status'));
     }
 }

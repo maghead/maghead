@@ -10,6 +10,7 @@ use XHProfRuns_Default;
 
 /**
  * @group profile
+ * @group app
  */
 class BookModelProfileTest extends ModelProfileTestCase
 {

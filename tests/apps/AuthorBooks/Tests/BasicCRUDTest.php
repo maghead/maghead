@@ -12,6 +12,8 @@ use AuthorBooks\Model\AuthorBook;
  *   1. Author
  *   2. Book
  *   3. Address
+ *
+ * @group app
  */
 class BasicCRUDTest extends ModelTestCase
 {

@@ -6,6 +6,9 @@ use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorCollection;
 use Maghead\Exporter\XMLExporter;
 
+/**
+ * @group app
+ */
 class XMLExporterTest extends ModelTestCase
 {
     public function getModels()

@@ -8,6 +8,9 @@ use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Driver\PDOPgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 
+/**
+ * @group app
+ */
 class AuthorModelTest extends ModelTestCase
 {
     public function getModels()

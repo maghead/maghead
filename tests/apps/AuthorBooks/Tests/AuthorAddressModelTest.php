@@ -5,6 +5,9 @@ use AuthorBooks\Model\AuthorSchema;
 use AuthorBooks\Model\Address;
 use AuthorBooks\Model\AddressSchema;
 
+/**
+ * @group app
+ */
 class AuthorAddressModelTest extends ModelTestCase
 {
     public function getModels()

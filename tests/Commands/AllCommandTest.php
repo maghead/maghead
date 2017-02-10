@@ -1,6 +1,9 @@
 <?php
 use CLIFramework\Testing\CommandTestCase;
 
+/**
+ * @group command
+ */
 class AllCommandsTest extends CommandTestCase
 {
     public function setupApplication()

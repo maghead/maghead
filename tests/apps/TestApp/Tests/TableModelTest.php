@@ -2,13 +2,14 @@
 use Maghead\Testing\ModelTestCase;
 use TestApp\Model\Table;
 
+/**
+ * @group app
+ */
 class TableModelTest extends ModelTestCase
 {
-    public $driver = 'sqlite';
-
     public function getModels()
     {
-        return array('TestApp\\Model\\TableSchema');
+        return [new TestApp\Model\TableSchema);
     }
 
     /**
@@ -19,9 +20,9 @@ class TableModelTest extends ModelTestCase
         $table = new Table;
         $ret = $table->create(array(
             'columns' => array('c1', 'c2'),
-            'rows' => array(
-                array('foo', 'bar')
-            ),
+            'rows' => [
+                ['foo', 'bar'],
+            ],
         ));
         $this->assertResultSuccess($ret, 'Table Create results success');
         $table = Table::masterRepo()->load($ret->key);

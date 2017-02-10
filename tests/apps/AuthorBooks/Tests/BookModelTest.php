@@ -10,6 +10,9 @@ use AuthorBooks\Model\AuthorSchema;
 use AuthorBooks\Model\AuthorBookSchema;
 use DateTime;
 
+/**
+ * @group app
+ */
 class BookModelTest extends ModelTestCase
 {
     public function getModels()

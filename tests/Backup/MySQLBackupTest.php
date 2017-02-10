@@ -3,6 +3,9 @@ use Maghead\Testing\ModelTestCase;
 use Maghead\Backup\MySQLBackup;
 use Maghead\Connection;
 
+/**
+ * @group mysql
+ */
 class MySQLBackupTest extends ModelTestCase
 {
     protected $onlyDriver = 'mysql';

@@ -1,13 +1,17 @@
 <?php
 use Maghead\Testing\ModelTestCase;
 use PageApp\Model\Page;
+use PageApp\Model\PageSchema;
 use PageApp\Model\PageCollection;
 
+/**
+ * @group app
+ */
 class PageModelTest extends ModelTestCase
 {
     public function getModels()
     {
-        return [new \PageApp\Model\PageSchema];
+        return [new PageSchema];
     }
 
 

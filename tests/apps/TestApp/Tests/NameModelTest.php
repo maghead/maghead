@@ -2,13 +2,14 @@
 use Maghead\Testing\ModelTestCase;
 use TestApp\Model\Name;
 
+/**
+ * @group app
+ */
 class NameModelTest extends ModelTestCase
 {
-    public $driver = 'sqlite';
-
     public function getModels()
     {
-        return array('TestApp\Model\\NameSchema');
+        return [new \TestApp\Model\NameSchema];
     }
 
     public function nameDataProvider()

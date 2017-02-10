@@ -22,6 +22,9 @@ class AuthorFactory
     }
 }
 
+/**
+ * @group app
+ */
 class AuthorCollectionTest extends ModelTestCase
 {
     public function getModels()

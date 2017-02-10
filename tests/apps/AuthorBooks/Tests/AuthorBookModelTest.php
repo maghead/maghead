@@ -10,6 +10,9 @@ use AuthorBooks\Model\{
     AuthorBookSchema};
 use SQLBuilder\Raw;
 
+/**
+ * @group app
+ */
 class AuthorBookModelTest extends ModelTestCase
 {
     public function getModels()

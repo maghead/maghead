@@ -12,13 +12,13 @@ env:
 addons:
   postgresql: "9.3"
 install:
-  - phpenv config-add tests/php.ini
   - phpenv rehash
   # - echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   # - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - travis_retry composer require "satooshi/php-coveralls" "^1" --no-update --dev
   - travis_retry composer install
 before_script:
+  - phpenv config-add tests/php.ini
   - psql -c "create database testing;" -U postgres
   - mysql -uroot -e "create database testing charset utf8;"
   - cp -v db/config/database.travis-ci.yml db/config/database.yml

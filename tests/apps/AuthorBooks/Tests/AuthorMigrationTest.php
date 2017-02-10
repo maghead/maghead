@@ -14,6 +14,10 @@ use Maghead\Migration\AutomaticMigration;
 use GetOptionKit\OptionResult;
 use GetOptionKit\OptionCollection;
 
+/**
+ * @group app
+ * @group mysql
+ */
 class AuthorMigrationTest extends ModelTestCase
 {
     protected $onlyDriver = 'mysql';
@@ -22,8 +26,6 @@ class AuthorMigrationTest extends ModelTestCase
     {
         return [];
     }
-
-
 
     public function testImportSchema()
     {
