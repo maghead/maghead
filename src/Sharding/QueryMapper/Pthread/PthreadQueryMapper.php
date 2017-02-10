@@ -18,36 +18,58 @@ class PthreadQueryMapper implements QueryMapper
         $this->connectionManager = $connectionManager;
     }
 
-
     public function map(array $shards, string $repoClass, SelectQuery $query)
     {
-        $nodeIds = [];
-        foreach ($shards as $shard) {
-            $nodeIds[] = $shard->getReadNode();
-        }
+        $nodeIds = $this->getNodeIds($shards);
+        $workers = $this->start($nodeIds);
+        $jobs = $this->send($workers, $query);
+        $this->wait($workers);
+        return $this->mergeJobsResults($jobs);
+    }
 
+    protected function start(array $nodeIds)
+    {
         $workers = [];
         foreach ($nodeIds as $nodeId) {
             $ds = $this->connectionManager->getDataSource($nodeId);
             $workers[$nodeId] = $w = new PthreadQueryWorker($ds['dsn'], $ds['user'], $ds['pass'], $ds['connection_options']);
             $w->start();
         }
+        return $workers;
+    }
 
+    protected function send(array $workers, $query)
+    {
         $jobs = [];
-        foreach ($nodeIds as $nodeId) {
-            $worker = $workers[$nodeId];
+        foreach ($workers as $nodeId => $worker) {
+            // For different connection, we have different query driver to build the sql statement.
             $conn = $this->connectionManager->getConnection($nodeId);
             $args = new ArgumentArray;
             $sql = $query->toSql($conn->getQueryDriver(), $args);
             $jobs[$nodeId] = $job = new PthreadQueryJob($sql, serialize($args->toArray()));
             $worker->stack($job);
         }
+        return $jobs;
+    }
 
-        foreach ($nodeIds as $nodeId) {
-            $worker = $workers[$nodeId];
+    protected function wait(array $workers)
+    {
+        foreach ($workers as $worker) {
             $worker->join();
         }
+    }
 
+    protected function getNodeIds(array $shards)
+    {
+        $nodeIds = [];
+        foreach ($shards as $shard) {
+            $nodeIds[] = $shard->getReadNode();
+        }
+        return $nodeIds;
+    }
+
+    protected function mergeJobsResults(array $jobs)
+    {
         $results = [];
         foreach ($jobs as $nodeId => $job) {
             $results[$nodeId] = $job->getRows();
