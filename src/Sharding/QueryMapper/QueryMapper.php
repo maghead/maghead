@@ -9,6 +9,8 @@ interface QueryMapper
 {
     /**
      * The map method map the select query
+     *
+     * @return array[shardId][]
      */
     public function map(array $shards, string $repoClass, SelectQuery $query);
 }
