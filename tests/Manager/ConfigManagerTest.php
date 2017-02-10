@@ -3,6 +3,9 @@ use Maghead\Manager\ConfigManager;
 use Maghead\Config;
 use Maghead\ConfigLoader;
 
+/**
+ * @group manager
+ */
 class ConfigManagerTest extends PHPUnit_Framework_TestCase
 {
     const TEST_CONFIG = 'tests/.database.config.yml';

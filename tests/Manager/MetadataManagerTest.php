@@ -3,6 +3,9 @@ use Maghead\Manager\MetadataManager;
 use Maghead\Model\MetadataSchema;
 use Maghead\Testing\ModelTestCase;
 
+/**
+ * @group manager
+ */
 class MetadataManagerTest extends ModelTestCase
 {
     public function getModels()

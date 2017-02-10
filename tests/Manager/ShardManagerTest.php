@@ -7,6 +7,7 @@ use StoreApp\Model\{Store, StoreSchema};
 
 /**
  * @group sharding
+ * @group manager
  */
 class ShardManagerTest extends ModelTestCase
 {
