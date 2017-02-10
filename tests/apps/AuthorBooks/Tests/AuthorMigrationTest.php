@@ -17,6 +17,7 @@ use GetOptionKit\OptionCollection;
 /**
  * @group app
  * @group mysql
+ * @group migration
  */
 class AuthorMigrationTest extends ModelTestCase
 {
