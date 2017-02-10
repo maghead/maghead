@@ -1,6 +1,9 @@
 <?php
 use Maghead\Deflator;
 
+/**
+ * @group hydrate
+ */
 class DeflatorTest extends PHPUnit_Framework_TestCase
 {
     public function testInt()
