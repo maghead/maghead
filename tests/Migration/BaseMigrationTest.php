@@ -2,6 +2,7 @@
 use SQLBuilder\Column;
 use SQLBuilder\Driver\PDODriverFactory;
 use Maghead\Migration\Migration;
+use Maghead\Testing\ModelTestCase;
 
 class AddCellphoneMigration extends Migration
 {
@@ -21,7 +22,6 @@ class AddCellphoneMigration extends Migration
     }
 }
 
-use Maghead\Testing\ModelTestCase;
 
 /**
  * @group migration
