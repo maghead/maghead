@@ -28,9 +28,9 @@ class PthreadQueryJob extends Threaded {
         $this->result = serialize($rows);
     }
 
-    public function getResult()
+    public function getRows()
     {
-        return $this->result;
+        return unserialize($this->result);
     }
 
     public function isGarbage() : bool

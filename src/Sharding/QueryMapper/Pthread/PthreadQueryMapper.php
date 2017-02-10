@@ -49,7 +49,7 @@ class PthreadQueryMapper
 
         $results = [];
         foreach ($jobs as $nodeId => $job) {
-            $results[$nodeId] = unserialize($job->getResult());
+            $results[$nodeId] = $job->getRows();
         }
         return $results;
     }
