@@ -25,7 +25,9 @@
         "corneltek/cascading-attribute": "^1.2",
         "pimple/pimple": "^3.0",
         "cypresslab/gitelephant": "^1.0",
-        "flexihash/flexihash": "^2.0"
+        "flexihash/flexihash": "^2.0",
+        "psr/log": "^1.0",
+        "monolog/monolog": "^1.22"
     },
     "require-dev": {
         "corneltek/phpunit-testmore": "dev-master"
