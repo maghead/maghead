@@ -75,7 +75,7 @@ class PthreadQueryMapperTest extends ModelTestCase
         $query->from('orders');
 
         $mapper = new PthreadQueryMapper($this->connManager);
-        $results = $mapper->map($shards, 'StoreApp\Model\OrderRepo', $query);
+        $results = $mapper->map($shards, $query);
 
         $total = 0;
         foreach ($results as $nodeId => $rows) {

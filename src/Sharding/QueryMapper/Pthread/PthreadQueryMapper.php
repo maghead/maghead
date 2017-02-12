@@ -20,7 +20,7 @@ class PthreadQueryMapper implements QueryMapper
         $this->connectionManager = $connectionManager;
     }
 
-    public function map(array $shards, string $repoClass, SelectQuery $query)
+    public function map(array $shards, SelectQuery $query)
     {
         $nodeIds = $this->selectNodes($shards);
         $this->start($nodeIds);
