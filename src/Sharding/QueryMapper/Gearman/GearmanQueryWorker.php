@@ -42,21 +42,18 @@ class GearmanQueryWorker
         $this->logger->info("Received job: " . $job->handle());
 
         $workload = $job->workload();
-        $workload_size = $job->workloadSize();
+        $workloadSize = $job->workloadSize();
 
-        $this->logger->info("Workload: $workload ($workload_size)");
+        $this->logger->info("Workload: $workload ($workloadSize)");
 
-        # This status loop is not needed, just showing how it works
-        for ($x = 0; $x < $workload_size; $x++)
+        for ($x = 0; $x < $workloadSize; $x++)
         {
-            $this->logger->debug("Sending status: $x/$workload_size complete");
-            $job->sendStatus($x, $workload_size);
+            $this->logger->debug("Sending status: $x/$workloadSize complete");
+            $job->sendStatus($x, $workloadSize);
         }
 
         $result = strrev($workload);
         $this->logger->debug("Result: $result");
-
-        # Return what we want to send back to the client.
         return $result;
     }
 
