@@ -3,7 +3,6 @@
 namespace Maghead\Sharding\QueryMapper\Pthread;
 
 use SQLBuilder\Universal\Query\CreateDatabaseQuery;
-use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use Maghead\Manager\ConnectionManager;
@@ -20,7 +19,7 @@ class PthreadQueryMapper implements QueryMapper
         $this->connectionManager = $connectionManager;
     }
 
-    public function map(array $shards, SelectQuery $query)
+    public function map(array $shards, $query)
     {
         $nodeIds = $this->selectNodes($shards);
         $this->start($nodeIds);

@@ -12,5 +12,5 @@ interface QueryMapper
      *
      * @return array[shardId][]
      */
-    public function map(array $shards, SelectQuery $query);
+    public function map(array $shards, $query);
 }
