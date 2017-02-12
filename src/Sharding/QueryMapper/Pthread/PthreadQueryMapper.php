@@ -21,7 +21,7 @@ class PthreadQueryMapper implements QueryMapper
 
     public function map(array $shards, $query)
     {
-        $nodeIds = $this->selectNodes($shards);
+        $nodeIds = $this->selectReadNodes($shards);
         $this->start($nodeIds);
         $jobs = $this->send($query);
         $this->wait();
@@ -58,11 +58,11 @@ class PthreadQueryMapper implements QueryMapper
         }
     }
 
-    protected function selectNodes(array $shards)
+    protected function selectReadNodes(array $shards)
     {
         $nodeIds = [];
-        foreach ($shards as $shard) {
-            $nodeIds[] = $shard->selectReadNode();
+        foreach ($shards as $shardId => $shard) {
+            $nodeIds[$shardId] = $shard->selectReadNode();
         }
         return $nodeIds;
     }
