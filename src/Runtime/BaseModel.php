@@ -182,7 +182,7 @@ abstract class BaseModel implements Serializable
         // Get shard nodes of this table.
         $config = ConfigLoader::getCurrentConfig();
         $shardManager = new ShardManager($config, ConnectionManager::getInstance());
-        return $shardManager->getShards(static::SHARD_MAPPING_ID);
+        return $shardManager->getShardsOf(static::SHARD_MAPPING_ID);
     }
 
     /**

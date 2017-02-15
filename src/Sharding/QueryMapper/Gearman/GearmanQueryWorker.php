@@ -9,17 +9,41 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\ErrorLogHandler;
 
+use SQLBuilder\Universal\Query\SelectQuery;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Driver\BaseDriver;
+
+use Maghead\Config;
+use Maghead\ConfigLoader;
+use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\ShardManager;
+
+use PDO;
+
 class GearmanQueryWorker
 {
+    const PROVIDE_FUNCTION = "query";
+
+    protected $config;
+
+    protected $connectionManager;
+
     protected $worker;
 
     protected $logger;
 
-    public function __construct(GearmanWorker $worker = null, Logger $logger = null)
+    private $shardManager;
+
+    public function __construct(Config $config, ConnectionManager $connectionManager, GearmanWorker $worker = null, Logger $logger = null)
     {
+        $this->config = $config;
+        $this->connectionManager = $connectionManager;
+
         $this->logger = $logger ?: self::createDefaultLogger();
         $this->worker = $worker ?: self::createDefaultGearmanWorker();
-        $this->worker->addFunction("reverse", [$this, 'work']);
+        $this->worker->addFunction(self::PROVIDE_FUNCTION, [$this, 'work']);
+
+        $this->shardManager = new ShardManager($this->config, $this->connectionManager);
     }
 
     static protected function createDefaultLogger()
@@ -37,24 +61,41 @@ class GearmanQueryWorker
         return $worker;
     }
 
-    public function work($job)
+    public function work(GearmanJob $job)
     {
         $this->logger->info("Received job: " . $job->handle());
 
         $workload = $job->workload();
         $workloadSize = $job->workloadSize();
-
         $this->logger->info("Workload: $workload ($workloadSize)");
 
-        for ($x = 0; $x < $workloadSize; $x++)
-        {
-            $this->logger->debug("Sending status: $x/$workloadSize complete");
-            $job->sendStatus($x, $workloadSize);
-        }
+        $queryJob = unserialize($workload);
 
-        $result = strrev($workload);
-        $this->logger->debug("Result: $result");
-        return $result;
+        $this->logger->debug("Loading shard {$queryJob->shardId}");
+        $shard = $this->shardManager->getShard($queryJob->shardId);
+
+        $nodeId = $shard->selectReadNode();
+        $this->logger->debug("Selected read node {$nodeId} from shard {$queryJob->shardId}");
+
+        $this->logger->debug("Getting the connection of {$nodeId}");
+        $conn = $this->connectionManager->getConnection($nodeId);
+
+        $driver = $conn->getQueryDriver();
+
+        $query = $queryJob->query;
+        $args = new ArgumentArray;
+        $sql = $query->toSql($driver, $args);
+
+        $this->logger->debug("SQL: {$sql}");
+
+        $stm = $conn->prepare($sql);
+        $stm->execute( $args->toArray() );
+        $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+        /*
+        $job->sendStatus($x, $workloadSize);
+        */
+        return serialize([ $nodeId => $rows ]);
     }
 
     public function run()
@@ -62,7 +103,7 @@ class GearmanQueryWorker
         $this->logger->info("Gearman worker is running...");
         while ($this->worker->work()) {
             if ($this->worker->returnCode() != GEARMAN_SUCCESS) {
-                $this->logger->addError("Error: " . $this->worker->returnCode());
+                $this->logger->error("Error: " . $this->worker->returnCode());
                 break;
             }
         }

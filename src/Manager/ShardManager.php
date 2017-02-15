@@ -52,7 +52,17 @@ class ShardManager
         return new ShardMapping($this->shardingConfig['mappings'][$mappingId]);
     }
 
-    public function getShards(string $mappingId)
+
+    public function getShard($shardId)
+    {
+        $shards = $this->shardingConfig['shards'];
+        if (!isset($shards[$shardId])) {
+            throw new Exception("Shard '{$shardId}' is undefined.");
+        }
+        return new Shard($shardId, $shards[$shardId], $this->connectionManager);
+    }
+
+    public function getShardsOf(string $mappingId)
     {
         $mapping = $this->getShardMapping($mappingId);
         $config = $mapping->selectShards($this->shardingConfig['shards']);
@@ -65,10 +75,10 @@ class ShardManager
         return $shards;
     }
 
-    public function createShardDispatcher(string $mappingId)
+    public function createShardDispatcherOf(string $mappingId)
     {
         $mapping = $this->getShardMapping($mappingId);
-        $shards = $this->getShards($mappingId);
+        $shards = $this->getShardsOf($mappingId);
         $hasher = new FlexihashHasher($mapping);
         return new ShardDispatcher($hasher, $shards);
     }

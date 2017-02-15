@@ -1,7 +1,10 @@
 <?php
 
 namespace Maghead\Sharding\QueryMapper\Gearman;
+
 use GearmanClient;
+use GearmanTask;
+use StdClass;
 
 class GearmanQueryMapper
 {
@@ -10,6 +13,12 @@ class GearmanQueryMapper
     public function __construct(GearmanClient $client = null)
     {
         $this->client = $client ?: self::createDefaultGearmanClient();
+
+        // Setup handler functions
+        $this->client->setCreatedCallback([$this, 'handleCreated']);
+        $this->client->setStatusCallback([$this, 'handleStatus']);
+        $this->client->setCompleteCallback([$this, 'handleComplete']);
+        $this->client->setFailCallback([$this, 'handleFail']);
     }
 
     static protected function createDefaultGearmanClient()
@@ -19,14 +28,56 @@ class GearmanQueryMapper
         return $client;
     }
 
-    protected function map(array $shards, $query)
+
+    public function handleCreated(GearmanTask $task) {
+
+    }
+
+    public function handleStatus(GearmanTask $task)
     {
-        $results = [];
+
+    }
+
+    public function handleComplete(GearmanTask $task, StdClass $context)
+    {
+        $code = $task->returnCode();
+        $context->results[$task->unique()] = [
+            "handle" => $task->jobHandle(),
+            "data" => unserialize($task->data()),
+            "code" => $code,
+        ];
+    }
+
+    public function handleFail(GearmanTask $task)
+    {
+
+    }
+
+    public function map(array $shards, $query)
+    {
+
+        $context = new StdClass;
+        $context->results = [];
+
+        $tasks = [];
         // Send job to each shard.
         foreach ($shards as $shardId => $shard) {
-            $result = $this->client->doNormal("reverse", "Hello!");
-            // $results[ ];
+            $job = new GearmanQueryJob($shardId, $query);
+            $tasks[] = $this->client->addTask("query", serialize($job), $context, $shardId);
         }
-        return $results;
+
+        if (! $this->client->runTasks()) {
+            echo "ERROR " . $this->client->error() . "\n";
+            exit;
+        }
+
+        var_dump($context);
+
+        /*
+        foreach ($context as $shardId => $result) {
+            var_dump($result);
+        }
+         */
+        return $context;
     }
 }

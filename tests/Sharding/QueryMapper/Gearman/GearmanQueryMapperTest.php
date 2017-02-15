@@ -1,18 +1,17 @@
 <?php
 use SQLBuilder\Universal\Query\SelectQuery;
 use Maghead\Testing\ModelTestCase;
-use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryMapper;
-use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryWorker;
+use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryMapper;
 use Maghead\ConfigLoader;
 use Maghead\Manager\ShardManager;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 
+
 /**
- * @group pthread
  * @group sharding
  */
-class PthreadQueryMapperTest extends ModelTestCase
+class GearmanQueryMapperTest extends ModelTestCase
 {
     protected $defaultDataSource = 'node1';
 
@@ -28,60 +27,28 @@ class PthreadQueryMapperTest extends ModelTestCase
 
     public function setUp()
     {
-        if (!extension_loaded('pthreads')) {
-            return $this->markTestSkipped('require pthreads extension with zts');
+        if (!extension_loaded('gearman')) {
+            return $this->markTestSkipped('require gearman extension');
         }
         parent::setUp();
     }
 
-    public function testPthreadQueryWorkerStartThenShutdown()
-    {
-        $w = new PthreadQueryWorker('sqlite::memory:');
-        $w->start();
-        $w->shutdown();
-    }
-
-    public function testJoinJobResults()
+    public function testGearmanQueryMapper()
     {
         $shardManager = new ShardManager($this->config, $this->connManager);
-
         $mapping = $shardManager->getShardMapping('M_store_id');
-
         $shards = $shardManager->getShardsOf('M_store_id');
         $this->assertNotEmpty($shards);
-
-        $dispatcher = $shardManager->createShardDispatcherOf('M_store_id');
-
-        $g1 = $shards['group1'];
-        $repo1 = $g1->createRepo('StoreApp\\Model\\OrderRepo');
-        $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo1);
-
-        $g2 = $shards['group2'];
-        $repo2 = $g2->createRepo('StoreApp\\Model\\OrderRepo');
-        $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo2);
-
-        $ret = $repo1->create(['store_id' => 1 , 'amount' => 200]);
-        $this->assertResultSuccess($ret);
-        $o1 = $repo1->loadByPrimaryKey($ret->key);
-        $this->assertNotNull($o1);
-
-        $ret = $repo2->create(['store_id' => 2 , 'amount' => 1000]);
-        $this->assertResultSuccess($ret);
-        $o2 = $repo2->loadByPrimaryKey($ret->key);
-        $this->assertNotNull($o2);
 
         $query = new SelectQuery;
         $query->select(['SUM(amount)' => 'amount']);
         $query->from('orders');
+        // $query->where()->equal('store_id', [2,3,4]);
 
-        $mapper = new PthreadQueryMapper($this->connManager);
-        $results = $mapper->map($shards, $query);
-
-        $total = 0;
-        foreach ($results as $nodeId => $rows) {
-            $total += intval($rows[0]['amount']);
-        }
-        $this->assertEquals(1200, $total);
+        $client = new GearmanClient;
+        $client->addServer();
+        $mapper = new GearmanQueryMapper($client);
+        $mapper->map($shards, $query);
     }
 
     protected function loadConfig()
@@ -161,4 +128,5 @@ class PthreadQueryMapperTest extends ModelTestCase
         ]);
         return $config;
     }
+
 }
