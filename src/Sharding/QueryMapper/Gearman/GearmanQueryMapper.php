@@ -48,7 +48,7 @@ class GearmanQueryMapper
     public function handleComplete(GearmanTask $task, StdClass $context)
     {
         $code = $task->returnCode();
-        $context->results[$task->unique()] = [
+        $context->mapResults[$task->unique()] = [
             "handle" => $task->jobHandle(),
             "data" => unserialize($task->data()),
             "code" => $code,
@@ -58,9 +58,8 @@ class GearmanQueryMapper
 
     public function map(array $shards, $query)
     {
-
         $context = new StdClass;
-        $context->results = [];
+        $context->mapResults = [];
 
         $tasks = [];
         // Send job to each shard.
@@ -74,7 +73,7 @@ class GearmanQueryMapper
         }
 
         $results = [];
-        foreach ($context->results as $shardId => $result) {
+        foreach ($context->mapResults as $shardId => $result) {
             $results = array_merge($results, $result['data']);
         }
         return $results;
