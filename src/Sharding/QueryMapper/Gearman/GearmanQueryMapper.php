@@ -4,6 +4,7 @@ namespace Maghead\Sharding\QueryMapper\Gearman;
 
 use GearmanClient;
 use GearmanTask;
+use RuntimeException;
 use StdClass;
 
 class GearmanQueryMapper
@@ -67,16 +68,12 @@ class GearmanQueryMapper
         }
 
         if (! $this->client->runTasks()) {
-            echo "ERROR " . $this->client->error() . "\n";
-            exit;
+            throw new RuntimeException("ERROR: " . $this->client->error());
         }
-        // var_dump($context);
 
         $results = [];
         foreach ($context->results as $shardId => $result) {
             $results = array_merge($results, $result['data']);
-            // $results[$shardId]
-            // var_dump($result);
         }
         return $results;
     }
