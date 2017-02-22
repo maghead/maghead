@@ -70,14 +70,14 @@ class GearmanQueryMapper
             echo "ERROR " . $this->client->error() . "\n";
             exit;
         }
-
         // var_dump($context);
 
-        /*
-        foreach ($context as $shardId => $result) {
-            var_dump($result);
+        $results = [];
+        foreach ($context->results as $shardId => $result) {
+            $results = array_merge($results, $result['data']);
+            // $results[$shardId]
+            // var_dump($result);
         }
-         */
-        return $context;
+        return $results;
     }
 }

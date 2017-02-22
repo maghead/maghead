@@ -55,6 +55,7 @@ class GearmanQueryMapperTest extends ModelTestCase
             // create a log channel
             $logger = new Logger('query-worker');
             $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::ERROR));
+            // $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::DEBUG));
             $worker = new GearmanQueryWorker($config, ConnectionManager::getInstance(), null, $logger);
             $worker->run();
             exit(0);
@@ -80,15 +81,38 @@ class GearmanQueryMapperTest extends ModelTestCase
         $shards = $shardManager->getShardsOf('M_store_id');
         $this->assertNotEmpty($shards);
 
+
+        $dispatcher = $shardManager->createShardDispatcherOf('M_store_id');
+
+        $g1 = $shards['group1'];
+        $repo1 = $g1->createRepo('StoreApp\\Model\\OrderRepo');
+        $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo1);
+
+        $g2 = $shards['group2'];
+        $repo2 = $g2->createRepo('StoreApp\\Model\\OrderRepo');
+        $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo2);
+
+        $ret = $repo1->create(['store_id' => 1, 'amount' => 200]);
+        $this->assertResultSuccess($ret);
+        $o1 = $repo1->loadByPrimaryKey($ret->key);
+        $this->assertNotNull($o1);
+
+        $ret = $repo2->create(['store_id' => 2, 'amount' => 1000]);
+        $this->assertResultSuccess($ret);
+        $o2 = $repo2->loadByPrimaryKey($ret->key);
+        $this->assertNotNull($o2);
+
         $query = new SelectQuery;
         $query->select(['SUM(amount)' => 'amount']);
         $query->from('orders');
-        // $query->where()->equal('store_id', [2,3,4]);
+        $query->where()->in('store_id', [1,2]);
 
         $client = new GearmanClient;
         $client->addServer();
         $mapper = new GearmanQueryMapper($client);
-        $mapper->map($shards, $query);
+        $res = $mapper->map($shards, $query);
+        $this->assertEquals(1000, $res['node2'][0]['amount']);
+        $this->assertEquals(200, $res['node1'][0]['amount']);
     }
 
     protected function loadConfig()
@@ -117,20 +141,18 @@ class GearmanQueryMapperTest extends ModelTestCase
                 'shards' => [
                     'group1' => [
                         'write' => [
-                          'node1_2' => ['weight' => 0.1],
+                          'node1' => ['weight' => 0.1],
                         ],
                         'read' => [
                           'node1'   =>  ['weight' => 0.1],
-                          'node1_2' => ['weight' => 0.1],
                         ],
                     ],
                     'group2' => [
                         'write' => [
-                          'node2_2' => ['weight' => 0.1],
+                          'node2' => ['weight' => 0.1],
                         ],
                         'read' => [
                           'node2'   =>  ['weight' => 0.1],
-                          'node2_2' => ['weight' => 0.1],
                         ],
                     ],
                 ],
@@ -145,19 +167,7 @@ class GearmanQueryMapperTest extends ModelTestCase
                         'driver' => 'sqlite',
                         'connection_options' => [],
                     ],
-                    'node1_2' => [
-                        'dsn' => 'sqlite:node1.sqlite',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
                     'node2' => [
-                        'dsn' => 'sqlite:node2.sqlite',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                    'node2_2' => [
                         'dsn' => 'sqlite:node2.sqlite',
                         'query_options' => ['quote_table' => true],
                         'driver' => 'sqlite',
@@ -168,5 +178,4 @@ class GearmanQueryMapperTest extends ModelTestCase
         ]);
         return $config;
     }
-
 }
