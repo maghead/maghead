@@ -72,10 +72,12 @@ class GearmanQueryMapper
             throw new RuntimeException("ERROR: " . $this->client->error());
         }
 
-        $results = [];
+        $mapResults = [];
         foreach ($context->mapResults as $shardId => $result) {
-            $results = array_merge($results, $result['data']);
+            foreach ($result['data'] as $nodeId => $data) {
+                $mapResults[$nodeId] = $data;
+            }
         }
-        return $results;
+        return $mapResults;
     }
 }
