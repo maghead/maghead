@@ -71,7 +71,7 @@ class GearmanQueryMapper
             exit;
         }
 
-        var_dump($context);
+        // var_dump($context);
 
         /*
         foreach ($context as $shardId => $result) {

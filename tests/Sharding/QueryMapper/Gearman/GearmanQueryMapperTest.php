@@ -7,6 +7,13 @@ use Maghead\Manager\ShardManager;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 
+// used by worker
+use Monolog\Logger;
+use Maghead\Bootstrap;
+use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryWorker;
+use Maghead\Manager\ConnectionManager;
+use Monolog\Handler\ErrorLogHandler;
+
 
 /**
  * @group sharding
@@ -25,12 +32,45 @@ class GearmanQueryMapperTest extends ModelTestCase
         ];
     }
 
+    protected $processId;
+
     public function setUp()
     {
         if (!extension_loaded('gearman')) {
             return $this->markTestSkipped('require gearman extension');
         }
-        parent::setUp();
+
+        $this->processId = pcntl_fork();
+        if ($this->processId === -1) {
+            die('could not fork');
+        } else if ($this->processId) {
+            // we are the parent
+            // pcntl_wait($status); // Protect against Zombie children
+            parent::setUp();
+        } else {
+            // we are the child
+            // create worker here.
+            Bootstrap::setup($config = $this->loadConfig(), true); // setup connection manager
+
+            // create a log channel
+            $logger = new Logger('query-worker');
+            $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::ERROR));
+            $worker = new GearmanQueryWorker($config, ConnectionManager::getInstance(), null, $logger);
+            $worker->run();
+            exit(0);
+        }
+    }
+
+    public function tearDown()
+    {
+        if ($this->processId) {
+            parent::tearDown();
+            // Send kill signal to the forked process
+            posix_kill($this->processId, SIGUSR1);
+
+            // Wait for children process exits
+            pcntl_wait($status); // Protect against Zombie children
+        }
     }
 
     public function testGearmanQueryMapper()
