@@ -54,8 +54,11 @@ class GearmanQueryMapperTest extends ModelTestCase
 
             // create a log channel
             $logger = new Logger('query-worker');
-            $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::ERROR));
-            // $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::DEBUG));
+            if (getenv('DEBUG')) {
+                $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::DEBUG));
+            } else {
+                $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::ERROR));
+            }
             $worker = new GearmanQueryWorker($config, ConnectionManager::getInstance(), null, $logger);
             $worker->run();
             exit(0);
