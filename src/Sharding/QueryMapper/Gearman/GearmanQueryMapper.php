@@ -30,13 +30,19 @@ class GearmanQueryMapper
     }
 
 
-    public function handleCreated(GearmanTask $task) {
-
+    public function handleCreated(GearmanTask $task)
+    {
+        // XXX:
     }
 
     public function handleStatus(GearmanTask $task)
     {
+        // XXX:
+    }
 
+    public function handleFail(GearmanTask $task)
+    {
+        // XXX:
     }
 
     public function handleComplete(GearmanTask $task, StdClass $context)
@@ -49,10 +55,6 @@ class GearmanQueryMapper
         ];
     }
 
-    public function handleFail(GearmanTask $task)
-    {
-
-    }
 
     public function map(array $shards, $query)
     {
