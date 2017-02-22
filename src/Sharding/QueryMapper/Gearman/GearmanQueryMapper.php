@@ -69,7 +69,8 @@ class GearmanQueryMapper
         }
 
         if (! $this->client->runTasks()) {
-            throw new RuntimeException("ERROR: " . $this->client->error());
+            $err = $this->client->error();
+            throw new RuntimeException("ERROR: {$err}");
         }
 
         $mapResults = [];
