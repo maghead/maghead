@@ -60,9 +60,55 @@ UPGRADE TO 4.0.x
     return `Config` object.
 
 
+### Sharding
+
 Gearman
 
     phpbrew ext install github:wcgallego/pecl-gearman
+
+
+## Reference
+
+Consistent Hash
+
+- chash extension <https://code.google.com/archive/p/chash/source/default/source>
+
+TiDB
+
+- How we build tidb <https://pingcap.github.io/blog/2016/10/17/how-we-build-tidb/>
+
+MariaDB
+
+- MaxScale <https://mariadb.com/products/mariadb-maxscale>
+
+HBase + Phoenix
+
+- Phoenix hbase <https://www.infoq.com/news/2013/01/Phoenix-HBase-SQL>
+- Data aggregation in hbase <https://www.panaseer.com/2016/04/11/data-aggregation-in-hbase/>
+
+Doctrine
+
+- <http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/index.html>
+- <http://doctrine.readthedocs.io/en/latest/en/manual/unit-testing.html>
+- <http://doctrine.readthedocs.io/en/latest/en/manual/dql-doctrine-query-language.html#indexby-keyword>
+
+Load Balancing
+
+- <https://github.com/WMSPanel/load-balancer/blob/master/load-balancer/nimble_lb.php>
+- Nginx 4 load balancing <https://www.nginx.com/resources/glossary/layer-4-load-balancing/>
+
+Sphinx Document
+
+- <http://www.sphinx-doc.org/en/1.5.1/theming.html>
+- <http://www.sphinx-doc.org/en/1.5.1/rest.html>
+- <http://thomas-cokelaer.info/tutorials/sphinx/rest_syntax.html>
+- <http://openalea.gforge.inria.fr/doc/openalea/doc/_build/html/source/sphinx/rest_syntax.html>
+
+
+
+
+
+
 
 UPGRADE TO 2.0
 ======================
