@@ -10,6 +10,9 @@ use Maghead\Manager\ConnectionManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Config;
 
+use Maghead\DSN\DSNParser;
+use Maghead\DSN\DSN;
+
 use LogicException;
 use Exception;
 use ArrayIterator;
@@ -34,12 +37,17 @@ class ChunkManager
 
     public function initChunks(ShardMapping $shardMapping, $numberOfChunks = 32)
     {
+        // Get the dbname from master datasource
+        $masterDs = $this->connectionManager->getMasterDataSource();
+        $dsn = DSNParser::parse($masterDs['dsn']);
+        $dbname = $dsn->getDbname();
+
         // Get shards use in this mapping
         $shardIds = $shardMapping->getShardIds();
         $numberOfChunksPerShard = intdiv($numberOfChunks, count($shardIds));
 
-        $chunkIdList = array_map(function($chunkId) {
-            return "chunk_{$chunkId}";
+        $chunkIdList = array_map(function($chunkId) use ($dbname) {
+            return "{$dbname}_{$chunkId}";
         }, range(0, $numberOfChunks));
 
         $shardChunks = [];

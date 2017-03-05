@@ -20,6 +20,9 @@ class DatabaseManagerTest extends ModelTestCase
 
         $this->assertNotEmpty($ds);
 
+        // free the connection
+        $conn = null;
+
         $dbManager->drop($this->getMasterDataSourceId(), 'test_aaa');
     }
 }
