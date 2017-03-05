@@ -10,6 +10,7 @@ use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\Driver\PDOSQLiteDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\CreateDatabaseQuery;
+use SQLBuilder\Universal\Query\DropDatabaseQuery;
 
 class DatabaseManager
 {
@@ -20,7 +21,24 @@ class DatabaseManager
         $this->connectionManager = $connectionManager;
     }
 
-    public function create($nodeId, $dbname)
+    public function drop($nodeId, $dbname)
+    {
+        $ds = $this->connectionManager->getDataSource($nodeId);
+        $dsn = DSNParser::parse($ds['dsn']);
+        switch ($ds['driver']) {
+        case 'sqlite':
+            if (file_exists($dbname)) {
+                unlink($dbname);
+            }
+            return;
+        case 'pgsql':
+        case 'mysql':
+            return $this->dropServerDatabase($dsn, $ds, $dbname);
+        }
+
+    }
+
+    public function create(string $nodeId, string $dbname)
     {
         $ds = $this->connectionManager->getDataSource($nodeId);
         $dsn = DSNParser::parse($ds['dsn']);
@@ -30,13 +48,24 @@ class DatabaseManager
             return $this->createSqliteDatabase($dsn, $ds, $dbname);
         case 'pgsql':
         case 'mysql':
-            return $this->createMysqlDatabase($dsn, $ds, $dbname);
+            return $this->createServerDatabase($dsn, $ds, $dbname);
         }
     }
 
-    protected function createMysqlDatabase(DSN $dsn, $ds, $dbname)
+    protected function dropServerDatabase(DSN $dsn, array $ds, string $dbname)
     {
-        $dbName = $dsn->getAttribute('dbname');
+        $dsn->removeAttribute('dbname');
+        $ds['dsn'] = $dsn->__toString();
+        $conn = Connection::connect($ds);
+        $q = new DropDatabaseQuery($dbname);
+        $queryDriver = PDODriverFactory::create($conn);
+        $sql = $q->toSql($queryDriver, new ArgumentArray());
+        var_dump($sql);
+        $conn->query($sql);
+    }
+
+    protected function createServerDatabase(DSN $dsn, array $ds, string $dbname)
+    {
         $dsn->removeAttribute('dbname');
         $ds['dsn'] = $dsn->__toString();
         $conn = Connection::connect($ds);
@@ -56,14 +85,9 @@ class DatabaseManager
         return [$conn, $ds];
     }
 
-    protected function createSqliteDatabase(DSN $dsn, $ds, $dbname)
+    protected function createSqliteDatabase(DSN $dsn, array $ds, string $dbname)
     {
         $ds['dsn'] = "sqlite:$dbname";
         return [Connection::connect($ds), $ds];
     }
-
-
 }
-
-
-
