@@ -3,7 +3,7 @@ use SQLBuilder\Universal\Query\SelectQuery;
 use Maghead\Testing\ModelTestCase;
 use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryMapper;
 use Maghead\ConfigLoader;
-use Maghead\Manager\ShardManager;
+use Maghead\Sharding\Manager\ShardManager;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 
@@ -84,14 +84,13 @@ class GearmanQueryMapperTest extends ModelTestCase
         $shards = $shardManager->getShardsOf('M_store_id');
         $this->assertNotEmpty($shards);
 
-
         $dispatcher = $shardManager->createShardDispatcherOf('M_store_id');
 
-        $g1 = $shards['group1'];
+        $g1 = $shards['s1'];
         $repo1 = $g1->createRepo('StoreApp\\Model\\OrderRepo');
         $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo1);
 
-        $g2 = $shards['group2'];
+        $g2 = $shards['s2'];
         $repo2 = $g2->createRepo('StoreApp\\Model\\OrderRepo');
         $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo2);
 
@@ -134,15 +133,19 @@ class GearmanQueryMapperTest extends ModelTestCase
                     'M_store_id' => [
                         'tables' => ['orders'], // This is something that we will define in the schema.
                         'key' => 'store_id',
+                        'chunks' => [
+                            'c1' => ['shard' => 's1'],
+                            'c2' => ['shard' => 's2'],
+                        ],
                         'hash' => [
-                            'target1' => 'group1',
-                            'target2' => 'group2',
+                            'target1' => 'c1',
+                            'target2' => 'c2',
                         ],
                     ],
                 ],
                 // Shards pick servers from nodes config, HA groups
                 'shards' => [
-                    'group1' => [
+                    's1' => [
                         'write' => [
                           'node1' => ['weight' => 0.1],
                         ],
@@ -150,7 +153,7 @@ class GearmanQueryMapperTest extends ModelTestCase
                           'node1'   =>  ['weight' => 0.1],
                         ],
                     ],
-                    'group2' => [
+                    's2' => [
                         'write' => [
                           'node2' => ['weight' => 0.1],
                         ],
@@ -160,6 +163,8 @@ class GearmanQueryMapperTest extends ModelTestCase
                     ],
                 ],
             ],
+
+
             // data source is defined for different data source connection.
             'data_source' => [
                 'master' => 'node1',

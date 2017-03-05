@@ -1,9 +1,8 @@
 <?php
 use Maghead\Testing\ModelTestCase;
-use Maghead\Manager\ShardManager;
+use Maghead\Sharding\Manager\ShardManager;
 use Maghead\ConfigLoader;
 use StoreApp\Model\{Store, StoreSchema};
-
 
 /**
  * @group sharding
@@ -36,15 +35,19 @@ class ShardManagerTest extends ModelTestCase
                     'M_store_id' => [
                         'tables' => ['orders'], // This is something that we will define in the schema.
                         'key' => 'store_id',
+                        'chunks' => [
+                            'c1' => ['shard' => 's1'],
+                            'c2' => ['shard' => 's2'],
+                        ],
                         'hash' => [
-                            'target1' => 'group1',
-                            'target2' => 'group2',
+                            'target1' => 'c1',
+                            'target2' => 'c2',
                         ],
                     ],
                 ],
                 // Shards pick servers from nodes config, HA groups
                 'shards' => [
-                    'group1' => [
+                    's1' => [
                         'write' => [
                           'node1_2' => ['weight' => 0.1],
                         ],
@@ -53,7 +56,7 @@ class ShardManagerTest extends ModelTestCase
                           'node1_2' => ['weight' => 0.1],
                         ],
                     ],
-                    'group2' => [
+                    's2' => [
                         'write' => [
                           'node2_2' => ['weight' => 0.1],
                         ],
@@ -156,10 +159,6 @@ class ShardManagerTest extends ModelTestCase
         $ret = $repo->create([ 'name' => 'My Store', 'code' => 'MS001' ]);
         $this->assertResultSuccess($ret);
     }
-
-
-
-
 
     public function testRequiredField()
     {

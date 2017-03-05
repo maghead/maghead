@@ -26,7 +26,7 @@ use Maghead\ConfigLoader;
 use Maghead\Exception\MissingPrimaryKeyException;
 use Maghead\Exception\QueryException;
 use Maghead\Manager\ConnectionManager;
-use Maghead\Manager\ShardManager;
+use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Connection;
 use SerializerKit\XmlSerializer;
 use ActionKit;

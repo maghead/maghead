@@ -41,24 +41,29 @@ class StoreShardingTest extends ModelTestCase
                     // shard by hash
                     'M_store_id' => [
                         'tables' => ['orders'], // This is something that we will define in the schema.
+                        'shards' => [ 's1', 's2' ],
                         'key' => 'store_id',
+                        'chunks' => [
+                            'c1' => [ 'shard' => 's1' ],
+                            'c2' => [ 'shard' => 's2' ],
+                        ],
                         'hash' => [
-                            'target1' => 'group1',
-                            'target2' => 'group2',
+                            'target1' => 'c1',
+                            'target2' => 'c2',
                         ],
                     ],
                     'M_created_at' => [
                         'key' => 'created_at',
                         'tables' => ['orders'], // This is something that we will define in the schema.
                         'range' => [
-                            'group1' => [ 'min' => 0, 'max' => 10000 ],
-                            'group2' => [ 'min' => 10001, 'max' => 20000 ],
+                            's1' => [ 'min' => 0, 'max' => 10000 ],
+                            's2' => [ 'min' => 10001, 'max' => 20000 ],
                         ]
                     ],
                 ],
                 // Shards pick servers from nodes config, HA groups
                 'shards' => [
-                    'group1' => [
+                    's1' => [
                         'write' => [
                           'node1_2' => ['weight' => 0.1],
                         ],
@@ -67,7 +72,7 @@ class StoreShardingTest extends ModelTestCase
                           'node1_2' => ['weight' => 0.1],
                         ],
                     ],
-                    'group2' => [
+                    's2' => [
                         'write' => [
                           'node2_2' => ['weight' => 0.1],
                         ],

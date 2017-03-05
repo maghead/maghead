@@ -4,6 +4,15 @@ namespace Maghead\Sharding;
 
 use Exception;
 
+
+/**
+ * config structure:
+ *
+ *    chunks: [
+ *       chunkId => [ shard  => shardId, dbname => dbname ]
+ *    ]
+ *    shards: string[]
+ */
 class ShardMapping
 {
     protected $config;
@@ -31,6 +40,22 @@ class ShardMapping
         }
     }
 
+    /**
+     * Get the defined chunks in this mapping.
+     */
+    public function getChunks()
+    {
+        return $this->config['chunks'];
+    }
+
+    /**
+     * Get shards used in this mapping.
+     */
+    public function getShards()
+    {
+        return $this->config['shards'];
+    }
+
 
     public function getHashBy()
     {
@@ -48,30 +73,44 @@ class ShardMapping
      *
      * @return string[]
      */
-    public function getShardIds()
+    public function getTargetIds()
     {
         if (isset($this->config['hash'])) {
-            return array_values($this->config['hash']);
+            return $this->config['hash'];
         } else if (isset($this->config['range'])) {
             return array_keys($this->config['range']);
         }
         throw new Exception('hash / range is undefined.');
     }
 
+    public function resolveChunk($chunkId)
+    {
+        if (!isset($this->config['chunks'][$chunkId])) {
+            throw new Exception("Chunk {$chunkId} is not defined.");
+        }
+        return $this->config['chunks'][$chunkId];
+    }
+
+
     /**
-     * Select shards by keys
+     * Select shards by the given shard collection.
      *
      * @return Shard[string shardId]
      */
     public function selectShards(array $availableShards)
     {
-        $ids = $this->getShardIds();
+        // TODO: check shard method and use different selection method here
+        $targetIds = $this->getTargetIds();
         $shards = [];
-        foreach ($ids as $id) {
-            if (!isset($availableShards[$id])) {
-                throw new Exception("Shard '$id' is not defined in available shards.");
+        foreach ($targetIds as $targetId => $chunkId) {
+            $chunk = $this->resolveChunk($chunkId);
+            $shardId = $chunk['shard'];
+
+            // Use shardId instead of chunkId
+            if (!isset($availableShards[$shardId])) {
+                throw new Exception("Shard '$shardId' is not defined in available shards.");
             }
-            $shards[$id] = $availableShards[$id];
+            $shards[$shardId] = $availableShards[$shardId];
         }
         return $shards;
     }

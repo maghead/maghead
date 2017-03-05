@@ -16,7 +16,7 @@ use SQLBuilder\Driver\BaseDriver;
 use Maghead\Config;
 use Maghead\ConfigLoader;
 use Maghead\Manager\ConnectionManager;
-use Maghead\Manager\ShardManager;
+use Maghead\Sharding\Manager\ShardManager;
 
 use PDO;
 
