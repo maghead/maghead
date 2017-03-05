@@ -1,6 +1,7 @@
 <?php
 namespace Maghead\Connector;
 use Maghead\Connection;
+use Maghead\DSN\DSNParser;
 use PDO;
 
 /*
@@ -45,6 +46,16 @@ class PDOMySQLConnector
         PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
         PDO::MYSQL_ATTR_INIT_COMMAND       => 'SET NAMES utf8',
     ];
+
+
+    public static function connectServerOnly($dsn, $user, $pass)
+    {
+        $newdsn = DSNParser::parse($dsn);
+        $newdsn->removeDBName();
+        $dsn = $newdsn->__toString();
+        return new Connection($dsn, $user, $pass, static::$defaultOptions);
+    }
+
 
     public static function connect($dsn, $user, $pass)
     {

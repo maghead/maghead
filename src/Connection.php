@@ -38,7 +38,7 @@ class Connection extends PDO
      */
     private $queryDriver;
 
-    public static function create(array $config)
+    public static function connect(array $config)
     {
         if ($config['driver'] === 'mysql') {
             return PDOMySQLConnector::connect($config['dsn'], $config['user'], $config['pass']);

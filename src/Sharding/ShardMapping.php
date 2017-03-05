@@ -15,15 +15,30 @@ use Exception;
  */
 class ShardMapping
 {
+    protected $id;
+
+    protected $key;
+
+    protected $shardIds;
+
+    protected $chunks;
+
+    protected $targets;
+
     protected $config;
 
     const RANGE = 0;
 
     const HASH = 1;
 
-    public function __construct(array $mapping)
+    public function __construct($id, $key, array $shardIds, array $chunks, array $targets, array $config)
     {
-        $this->config = $mapping;
+        $this->id = $id;
+        $this->key = $key;
+        $this->shardIds = $shardIds;
+        $this->chunks = $chunks;
+        $this->targets = $targets;
+        $this->config = $config;
     }
 
     /**
@@ -45,15 +60,17 @@ class ShardMapping
      */
     public function getChunks()
     {
-        return $this->config['chunks'];
+        return $this->chunks;
     }
 
     /**
      * Get shards used in this mapping.
+     *
+     * @return string[]
      */
-    public function getShards()
+    public function getShardIds()
     {
-        return $this->config['shards'];
+        return $this->shardIds;
     }
 
 
@@ -90,7 +107,6 @@ class ShardMapping
         }
         return $this->config['chunks'][$chunkId];
     }
-
 
     /**
      * Select shards by the given shard collection.

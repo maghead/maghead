@@ -176,11 +176,19 @@ class ConnectionManager implements ArrayAccess
         if (isset($this->conns[$nodeId])) {
             return $this->conns[$nodeId];
         }
+        return $this->conns[$nodeId] = $this->connect($nodeId);
+    }
+
+    public function connect($nodeId)
+    {
+        if ($nodeId === 'default') {
+            $nodeId = $this->defaultDataSourceId;
+        }
         if (!isset($this->datasources[$nodeId])) {
             throw new InvalidArgumentException("data source {$nodeId} not found.");
         }
         $config = $this->datasources[$nodeId];
-        return $this->conns[$nodeId] = Connection::create($config);
+        return Connection::connect($config);
     }
 
     public function get($dsId)

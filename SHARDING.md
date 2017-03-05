@@ -255,7 +255,16 @@ a new chunk list will be allocated in the shard mapping config:
         ],
     ],
 
-The chunk manager then will create the database schema on each chunk.
+The chunk manager will then create the database schema on each chunk.
+
+Here is the steps of creating a new chunk:
+
+1. Get shards from the shard mapping
+2. recaluclate the chunks for expanding chunks.
+3. For each new chunk, we give it a new dbname.
+4. Get the connection DSN from the shard.
+5. For each connection, create the database.
+6. Run schema initializer on each connection.
 
 ### Spliting Chunks
 

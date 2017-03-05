@@ -116,6 +116,11 @@ class DSN implements ArrayAccess
         return $this->getAttribute('port');
     }
 
+    public function removeDBName()
+    {
+        return $this->removeAttribute('dbname');
+    }
+
     public function getDBName()
     {
         return $this->getAttribute('dbname');
