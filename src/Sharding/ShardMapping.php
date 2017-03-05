@@ -27,9 +27,10 @@ class ShardMapping
 
     protected $extra;
 
-    const RANGE = 0;
+    // Shard method
+    const RANGE = 1;
 
-    const HASH = 1;
+    const HASH = 2;
 
     public function __construct($id, $key, array $shardIds, array $chunks, array $targets, array $extra = [])
     {
