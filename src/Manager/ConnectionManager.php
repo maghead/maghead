@@ -11,18 +11,6 @@ use Maghead\DSN\DSN;
 use Maghead\Connection;
 use Maghead\Connector\PDOMySQLConnector;
 
-/**
- * Connection Manager.
- *
- *    $connManager = ConnectionManager::getInstance();
- *    $conn = $connManager->create( '{{id}}', '' );
- *
- *    $conn = $connManager->default(); // return PDO connection object
- *
- *    $result = $conn->query( );
- *    $stm = $conn->prepare( );
- *    $stm->execute( );
- */
 class ConnectionManager implements ArrayAccess
 {
     const DEFAULT_DS = 'default';
@@ -125,6 +113,11 @@ class ConnectionManager implements ArrayAccess
         if (isset($this->datasources[ $id ])) {
             return $this->datasources[ $id ];
         }
+    }
+
+    public function getMasterDataSource()
+    {
+        return $this->getDataSource($this->defaultDataSourceId ?: self::DEFAULT_DS);
     }
 
     /**
