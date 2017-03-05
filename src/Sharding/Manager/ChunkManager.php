@@ -35,7 +35,21 @@ class ChunkManager
         $this->shardManager = $shardManager ?: new ShardManager($config, $connectionManager);
     }
 
-    public function initChunks(ShardMapping $shardMapping, $numberOfChunks = 32)
+    public function removeChunks(ShardMapping $mapping)
+    {
+        $dbManager = new DatabaseManager($this->connectionManager);
+        $chunks = $mapping->getChunks();
+        foreach ($chunks as $chunkId => $chunk) {
+            $shardId = $chunk['shard'];
+
+            // get shard from the chunk
+            $shard = $this->shardManager->getShard($shardId);
+            $nodeId = $shard->selectWriteNode();
+            $dbManager->drop($nodeId, $chunkId);
+        }
+    }
+
+    public function initChunks(ShardMapping $mapping, $numberOfChunks = 32)
     {
         // Get the dbname from master datasource
         $masterDs = $this->connectionManager->getMasterDataSource();
@@ -43,10 +57,14 @@ class ChunkManager
         $dbname = $dsn->getDatabaseName();
 
         // Get shards use in this mapping
-        $shardIds = $shardMapping->getShardIds();
+        $shardIds = $mapping->getShardIds();
         $numberOfChunksPerShard = intdiv($numberOfChunks, count($shardIds));
 
         $chunkIdList = array_map(function($chunkId) use ($dbname) {
+            // special string used by sqlite
+            if ($dbname === ":memory:") {
+                return "chunk_{$chunkId}";
+            }
             return "{$dbname}_{$chunkId}";
         }, range(0, $numberOfChunks));
 
@@ -77,6 +95,9 @@ class ChunkManager
                 $dbManager->drop($writeNodeId, $chunkId);
             }
         }
+        $mapping->setChunks($chunks);
+
+        // TODO: re-scale targets
         return $chunks;
     }
 }

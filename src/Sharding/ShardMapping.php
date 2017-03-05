@@ -63,6 +63,11 @@ class ShardMapping
         return $this->chunks;
     }
 
+    public function setChunks(array $chunks)
+    {
+        $this->chunks = $chunks;
+    }
+
     /**
      * Get shards used in this mapping.
      *
@@ -131,9 +136,5 @@ class ShardMapping
         return $shards;
     }
 
-    public function toArray()
-    {
-
-    }
 
 }

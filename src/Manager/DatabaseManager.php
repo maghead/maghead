@@ -21,22 +21,6 @@ class DatabaseManager
         $this->connectionManager = $connectionManager;
     }
 
-    public function drop($nodeId, $dbname)
-    {
-        $ds = $this->connectionManager->getDataSource($nodeId);
-        $dsn = DSNParser::parse($ds['dsn']);
-        switch ($ds['driver']) {
-        case 'sqlite':
-            if (file_exists($dbname)) {
-                unlink($dbname);
-            }
-            return;
-        case 'pgsql':
-        case 'mysql':
-            return $this->dropServerDatabase($dsn, $ds, $dbname);
-        }
-
-    }
 
     public function create(string $nodeId, string $dbname)
     {
@@ -50,6 +34,23 @@ class DatabaseManager
         case 'mysql':
             return $this->createServerDatabase($dsn, $ds, $dbname);
         }
+    }
+
+    public function drop($nodeId, $dbname)
+    {
+        $ds = $this->connectionManager->getDataSource($nodeId);
+        $dsn = DSNParser::parse($ds['dsn']);
+        switch ($ds['driver']) {
+        case 'sqlite':
+            if (file_exists("{$dbname}.sqlite")) {
+                unlink("{$dbname}.sqlite");
+            }
+            return;
+        case 'pgsql':
+        case 'mysql':
+            return $this->dropServerDatabase($dsn, $ds, $dbname);
+        }
+
     }
 
     protected function dropServerDatabase(DSN $dsn, array $ds, string $dbname)
@@ -87,7 +88,7 @@ class DatabaseManager
 
     protected function createSqliteDatabase(DSN $dsn, array $ds, string $dbname)
     {
-        $ds['dsn'] = "sqlite:$dbname";
+        $ds['dsn'] = "sqlite:{$dbname}.sqlite";
         return [Connection::connect($ds), $ds];
     }
 }
