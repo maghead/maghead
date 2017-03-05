@@ -40,7 +40,7 @@ class ChunkManager
         // Get the dbname from master datasource
         $masterDs = $this->connectionManager->getMasterDataSource();
         $dsn = DSNParser::parse($masterDs['dsn']);
-        $dbname = $dsn->getDbname();
+        $dbname = $dsn->getDatabaseName();
 
         // Get shards use in this mapping
         $shardIds = $shardMapping->getShardIds();
