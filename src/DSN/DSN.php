@@ -135,4 +135,22 @@ class DSN implements ArrayAccess
     {
         return $this->originalDSN;
     }
+
+    public function getDatabaseName()
+    {
+        if ($dbname = $this->getDBName()) {
+            return $dbname;
+        }
+        // Parse the dbname from the DSN string
+        if (!isset($this->arguments[0])) {
+            throw new Exception("Can't find database name from the DSN string.");
+        }
+        $arg0 = $this->arguments[0];
+        $file = basename($arg0);
+        $parts = explode('.', $file);
+        return $parts[0];
+    }
+
+
+
 }
