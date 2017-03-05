@@ -36,7 +36,7 @@ class DatabaseManager
         }
     }
 
-    public function drop($nodeId, $dbname)
+    public function drop(string $nodeId, string $dbname)
     {
         $ds = $this->connectionManager->getDataSource($nodeId);
         $dsn = DSNParser::parse($ds['dsn']);

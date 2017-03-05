@@ -136,5 +136,14 @@ class ShardMapping
         return $shards;
     }
 
+    public function toArray()
+    {
+        $conf = $this->extra;
+        $conf['key'] = $this->key;
+        $conf['shards'] = $this->shardIds;
+        $conf['chunks'] = $this->chunks;
+        $conf['targets'] = $this->targets;
+        return $conf;
+    }
 
 }
