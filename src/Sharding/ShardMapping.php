@@ -25,20 +25,20 @@ class ShardMapping
 
     protected $targets;
 
-    protected $config;
+    protected $extra;
 
     const RANGE = 0;
 
     const HASH = 1;
 
-    public function __construct($id, $key, array $shardIds, array $chunks, array $targets, array $config)
+    public function __construct($id, $key, array $shardIds, array $chunks, array $targets, array $extra = [])
     {
         $this->id = $id;
         $this->key = $key;
         $this->shardIds = $shardIds;
         $this->chunks = $chunks;
         $this->targets = $targets;
-        $this->config = $config;
+        $this->extra = $extra;
     }
 
     /**
@@ -48,9 +48,9 @@ class ShardMapping
      */
     public function getShardType()
     {
-        if (isset($this->config['hash'])) {
+        if (isset($this->extra['hash'])) {
             return self::HASH;
-        } else if (isset($this->config['range'])) {
+        } else if (isset($this->extra['range'])) {
             return self::RANGE;
         }
     }
@@ -76,12 +76,12 @@ class ShardMapping
 
     public function getHashBy()
     {
-        return $this->config['hash'];
+        return $this->extra['hash'];
     }
 
     public function getRangeBy()
     {
-        return $this->config['range'];
+        return $this->extra['range'];
     }
 
 
@@ -92,10 +92,10 @@ class ShardMapping
      */
     public function getTargetIds()
     {
-        if (isset($this->config['hash'])) {
-            return $this->config['hash'];
-        } else if (isset($this->config['range'])) {
-            return array_keys($this->config['range']);
+        if (isset($this->extra['hash'])) {
+            return $this->extra['hash'];
+        } else if (isset($this->extra['range'])) {
+            return array_keys($this->extra['range']);
         }
         throw new Exception('hash / range is undefined.');
     }
@@ -130,4 +130,10 @@ class ShardMapping
         }
         return $shards;
     }
+
+    public function toArray()
+    {
+
+    }
+
 }

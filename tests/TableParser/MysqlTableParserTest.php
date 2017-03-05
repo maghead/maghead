@@ -15,7 +15,7 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReferenceQuery()
     {
-        $conn = $this->getDefaultConnection();
+        $conn = $this->getMasterConnection();
 
         $schema = new \AuthorBooks\Model\AuthorSchema;
         $this->updateSchemaFiles($schema);
@@ -38,7 +38,7 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReverseSchemaWithStringSet()
     {
-        $conn = $this->getDefaultConnection();
+        $conn = $this->getMasterConnection();
 
         $conn->query("DROP TABLE IF EXISTS t1");
         $conn->query("CREATE TABLE t1 (val set('a','b','c') );");
@@ -54,7 +54,7 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReverseSchemaWithStringEnum()
     {
-        $conn = $this->getDefaultConnection();
+        $conn = $this->getMasterConnection();
 
         $conn->query("DROP TABLE IF EXISTS t1");
         $conn->query("CREATE TABLE t1 (val enum('ON','OFF','PENDING') );");
@@ -70,7 +70,7 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testReverseSchemaAndCompare()
     {
-        $conn = $this->getDefaultConnection();
+        $conn = $this->getMasterConnection();
 
         $schema = new \AuthorBooks\Model\AuthorSchema;
         $this->updateSchemaFiles($schema);
@@ -81,7 +81,7 @@ class MysqlTableParserTest extends BaseTestCase
 
     public function testGetTables()
     {
-        $conn = $this->getDefaultConnection();
+        $conn = $this->getMasterConnection();
 
         $conn->query("DROP TABLE IF EXISTS t1");
         $conn->query("CREATE TABLE t1 (val enum('a','b','c') );");

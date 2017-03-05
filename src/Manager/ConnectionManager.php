@@ -201,7 +201,7 @@ class ConnectionManager implements ArrayAccess
      *
      * @return string 'default'
      */
-    public function getDefaultConnection()
+    public function getMasterConnection()
     {
         return $this->getConnection($this->defaultDataSourceId ?: self::DEFAULT_DS);
     }

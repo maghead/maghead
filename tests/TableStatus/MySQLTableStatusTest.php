@@ -18,7 +18,7 @@ class MySQLTableStatusTest extends ModelTestCase
 
     public function testQuerySummary()
     {
-        $conn = $this->getDefaultConnection();
+        $conn = $this->getMasterConnection();
         $status = new MySQLTableStatus($conn, $conn->getQueryDriver());
         $summary = $status->querySummary(['authors']);
         $this->assertNotEmpty($summary);
@@ -26,7 +26,7 @@ class MySQLTableStatusTest extends ModelTestCase
 
     public function testQueryDetails()
     {
-        $conn = $this->getDefaultConnection();
+        $conn = $this->getMasterConnection();
         $status = new MySQLTableStatus($conn, $conn->getQueryDriver());
         $summary = $status->queryDetails(['authors']);
         $this->assertNotEmpty($summary);

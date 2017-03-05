@@ -98,7 +98,7 @@ Sphinx Document
     - [x] Add basic shard dispatcher base on Flexihash
     - [x] Add "prepare" method generator for Repo classes.
     - [x] Use repo class in BaseCollection
-    - [x] Rename "getDefaultConnection" to "getMasterConnection".
+    - [x] Rename "getMasterConnection" to "getMasterConnection".
     - [x] Shard method
     - [x] Shard by Hash
     - [x] Shard::createRepo() return a repo object with read/write connection.

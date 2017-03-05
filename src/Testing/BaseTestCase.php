@@ -132,7 +132,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->setupDefaultConnection();
     }
 
-    protected function getDefaultConnection()
+    protected function getMasterConnection()
     {
         if (!$this->conn) {
             throw new Exception("The test case didn't setup the default connection.");
