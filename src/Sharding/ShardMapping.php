@@ -102,10 +102,10 @@ class ShardMapping
 
     public function resolveChunk($chunkId)
     {
-        if (!isset($this->config['chunks'][$chunkId])) {
+        if (!isset($this->chunks[$chunkId])) {
             throw new Exception("Chunk {$chunkId} is not defined.");
         }
-        return $this->config['chunks'][$chunkId];
+        return $this->chunks[$chunkId];
     }
 
     /**
