@@ -61,7 +61,6 @@ class DatabaseManager
         $q = new DropDatabaseQuery($dbname);
         $queryDriver = PDODriverFactory::create($conn);
         $sql = $q->toSql($queryDriver, new ArgumentArray());
-        var_dump($sql);
         $conn->query($sql);
     }
 
