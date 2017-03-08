@@ -49,7 +49,10 @@ class ChunkManager
         }
     }
 
-    public function initChunks(ShardMapping $mapping, $numberOfChunks = 32)
+    /**
+     * Initialize chunks for one shard mapping.
+     */
+    public function initChunks(ShardMapping $mapping, $numberOfChunks = 4)
     {
         // Get the dbname from master datasource
         $masterDs = $this->connectionManager->getMasterDataSource();
