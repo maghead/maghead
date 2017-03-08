@@ -1,18 +1,18 @@
 <?php
+use SQLBuilder\Universal\Query\SelectQuery;
 use Maghead\Testing\ModelTestCase;
+use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryMapper;
+use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryWorker;
 use Maghead\ConfigLoader;
-use StoreApp\Model\Store;
-use StoreApp\Model\StoreCollection;
-use StoreApp\Model\StoreSchema;
-use StoreApp\Model\Order;
-use StoreApp\Model\OrderSchema;
-use StoreApp\Model\OrderCollection;
+use Maghead\Sharding\Manager\ShardManager;
+use Maghead\Sharding\Manager\ChunkManager;
+use StoreApp\Model\{Store, StoreSchema, StoreRepo};
+use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 
 /**
- * @group app
  * @group sharding
  */
-class StoreShardingTest extends ModelTestCase
+class ChunkManagerTest extends ModelTestCase
 {
     protected $defaultDataSource = 'node1';
 
@@ -20,10 +20,34 @@ class StoreShardingTest extends ModelTestCase
 
     public function getModels()
     {
-        return [
-            new StoreSchema,
-            new OrderSchema
-        ];
+        return [new \StoreApp\Model\StoreSchema];
+    }
+
+    public function testChunkInit()
+    {
+        $shardManager = new ShardManager($this->config, $this->connManager);
+
+        $mapping = $shardManager->getShardMapping('M_store_id');
+        $this->assertNotEmpty($mapping);
+
+        $chunkManager = new ChunkManager($this->config, $this->connManager);
+        $chunks = $chunkManager->initChunks($mapping, 32);
+
+        foreach ($chunks as $chunkId => $chunk) {
+            $this->assertStringMatchesFormat('chunk_%i', $chunkId);
+            $this->assertNotNull($chunk['shard']);
+            $this->assertStringMatchesFormat('sqlite:chunk_%i.sqlite',$chunk['dsn']);
+        }
+
+        $chunkManager->removeChunks($mapping);
+    }
+
+
+
+
+    public function testChunkExpand()
+    {
+
     }
 
     protected function loadConfig()
@@ -33,21 +57,13 @@ class StoreShardingTest extends ModelTestCase
             'schema' => [
                 'auto_id' => true,
                 'base_model' => '\\Maghead\\Runtime\\BaseModel',
-                'base_collection' => '\\Maghead\\BaseCollection',
+                'base_collection' => '\\Maghead\\Runtime\\BaseCollection',
                 'paths' => ['tests'],
             ],
             'sharding' => [
                 'mappings' => [
                     // shard by hash
                     'M_store_id' => \StoreApp\Model\StoreShardMapping::config(),
-                    'M_created_at' => [
-                        'key' => 'created_at',
-                        'tables' => ['orders'], // This is something that we will define in the schema.
-                        'range' => [
-                            's1' => [ 'min' => 0, 'max' => 10000 ],
-                            's2' => [ 'min' => 10001, 'max' => 20000 ],
-                        ]
-                    ],
                 ],
                 // Shards pick servers from nodes config, HA groups
                 'shards' => [
@@ -102,59 +118,6 @@ class StoreShardingTest extends ModelTestCase
                 ],
             ],
         ]);
-        // $config->setMasterDataSourceId('sqlite');
-        // $config->setAutoId();
         return $config;
-    }
-
-    public function orderDataProvider()
-    {
-        $orders = [];
-        $orders['TW001'] = [
-            [ 'amount' => 100 ],
-            [ 'amount' => 100 ],
-            [ 'amount' => 100 ],
-            [ 'amount' => 100 ],
-        ];
-        $orders['TW002'] = [
-            [ 'amount' => 10 ],
-            [ 'amount' => 10 ],
-            [ 'amount' => 10 ],
-            [ 'amount' => 10 ],
-        ];
-        return [$orders];
-    }
-
-    public function storeDataProvider()
-    {
-        $stores = [];
-        $stores[] = [ 'code' => 'TW001', 'name' => '天仁茗茶 01' ];
-        $stores[] = [ 'code' => 'TW002', 'name' => '天仁茗茶 02' ];
-        $stores[] = [ 'code' => 'TW003', 'name' => '天仁茗茶 03' ];
-        return [[$stores]];
-    }
-
-    /**
-     * @dataProvider storeDataProvider
-     */
-    public function testCreateStoresGlobally($storeArgs)
-    {
-        foreach ($storeArgs as $args) {
-            $ret = Store::create($args);
-            $this->assertResultSuccess($ret);
-        }
-
-        $orderData = $this->orderDataProvider();
-        foreach ($orderData[0] as $storeCode => $ordersData) {
-            $store = Store::masterRepo()->loadByCode($storeCode);
-
-            // create orders
-            foreach ($ordersData as $orderData) {
-                $orderData['store_id'] = $store->id;
-                $ret = Order::create($orderData);
-                $this->assertResultSuccess($ret);
-            }
-        }
-        // all orders ready
     }
 }

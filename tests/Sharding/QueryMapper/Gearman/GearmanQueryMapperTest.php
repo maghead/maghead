@@ -130,19 +130,7 @@ class GearmanQueryMapperTest extends ModelTestCase
             'sharding' => [
                 'mappings' => [
                     // shard by hash
-                    'M_store_id' => [
-                        'tables' => ['orders'], // This is something that we will define in the schema.
-                        'key' => 'store_id',
-                        'shards' => ['s1', 's2'],
-                        'chunks' => [
-                            'c1' => ['shard' => 's1'],
-                            'c2' => ['shard' => 's2'],
-                        ],
-                        'hash' => [
-                            'target1' => 'c1',
-                            'target2' => 'c2',
-                        ],
-                    ],
+                    'M_store_id' => \StoreApp\Model\StoreShardMapping::config(),
                 ],
                 // Shards pick servers from nodes config, HA groups
                 'shards' => [
