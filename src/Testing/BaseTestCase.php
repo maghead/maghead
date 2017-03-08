@@ -58,6 +58,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     protected $allowConnectionFailure = false;
 
+    protected $freeConnections = true;
+
     /**
      * @var Maghead\QueryDriver
      *
@@ -124,7 +126,13 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        $this->connManager->free();
+        if ($this->freeConnections) {
+            $this->connManager->free();
+        }
+    }
+
+    public static function tearDownAfterClass()
+    {
     }
 
     protected function prepareConnections()
