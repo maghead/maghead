@@ -7,25 +7,14 @@ use Maghead\ConfigLoader;
 use Maghead\Sharding\Manager\ShardManager;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderSchema, OrderRepo};
+use StoreApp\StoreTestCase;
 
 /**
  * @group pthread
  * @group sharding
  */
-class PthreadQueryMapperTest extends ModelTestCase
+class PthreadQueryMapperTest extends StoreTestCase
 {
-    protected $defaultDataSource = 'node1';
-
-    protected $requiredDataSources = ['node1','node2'];
-
-    public function getModels()
-    {
-        return [
-            new StoreSchema,
-            new OrderSchema,
-        ];
-    }
-
     public function setUp()
     {
         if (!extension_loaded('pthreads')) {
@@ -83,77 +72,5 @@ class PthreadQueryMapperTest extends ModelTestCase
             $total += intval($rows[0]['amount']);
         }
         $this->assertEquals(1200, $total);
-    }
-
-    protected function loadConfig()
-    {
-        $config = ConfigLoader::loadFromArray([
-            'cli' => ['bootstrap' => 'vendor/autoload.php'],
-            'schema' => [
-                'auto_id' => true,
-                'base_model' => '\\Maghead\\Runtime\\BaseModel',
-                'base_collection' => '\\Maghead\\Runtime\\BaseCollection',
-                'paths' => ['tests'],
-            ],
-            'sharding' => [
-                'mappings' => [
-                    // shard by hash
-                    'M_store_id' => \StoreApp\Model\StoreShardMapping::config(),
-                ],
-                // Shards pick servers from nodes config, HA groups
-                'shards' => [
-                    's1' => [
-                        'write' => [
-                          'node1_2' => ['weight' => 0.1],
-                        ],
-                        'read' => [
-                          'node1'   =>  ['weight' => 0.1],
-                          'node1_2' => ['weight' => 0.1],
-                        ],
-                    ],
-                    's2' => [
-                        'write' => [
-                          'node2_2' => ['weight' => 0.1],
-                        ],
-                        'read' => [
-                          'node2'   =>  ['weight' => 0.1],
-                          'node2_2' => ['weight' => 0.1],
-                        ],
-                    ],
-                ],
-            ],
-
-            // data source is defined for different data source connection.
-            'data_source' => [
-                'master' => 'node1',
-                'nodes' => [
-                    'node1' => [
-                        'dsn' => 'sqlite:node1.sqlite',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                    'node1_2' => [
-                        'dsn' => 'sqlite:node1.sqlite',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                    'node2' => [
-                        'dsn' => 'sqlite:node2.sqlite',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                    'node2_2' => [
-                        'dsn' => 'sqlite:node2.sqlite',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                ],
-            ],
-        ]);
-        return $config;
     }
 }

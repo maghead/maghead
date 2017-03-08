@@ -3,91 +3,15 @@ use Maghead\Testing\ModelTestCase;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\ConfigLoader;
 use StoreApp\Model\{Store, StoreSchema};
+use StoreApp\StoreTestCase;
 
 /**
  * @group sharding
  * @group manager
  */
-class ShardManagerTest extends ModelTestCase
+class ShardManagerTest extends StoreTestCase
 {
-    protected $defaultDataSource = 'node1';
-
-    protected $requiredDataSources = ['node1', 'node1_2', 'node2', 'node2_2'];
-
-    public function getModels()
-    {
-        return [new \StoreApp\Model\StoreSchema];
-    }
-
-    protected function loadConfig()
-    {
-        $config = ConfigLoader::loadFromArray([
-            'cli' => ['bootstrap' => 'vendor/autoload.php'],
-            'schema' => [
-                'auto_id' => true,
-                'base_model' => '\\Maghead\\Runtime\\BaseModel',
-                'base_collection' => '\\Maghead\\Runtime\\BaseCollection',
-                'paths' => ['tests'],
-            ],
-            'sharding' => [
-                'mappings' => [
-                    'M_store_id' => \StoreApp\Model\StoreShardMapping::config(),
-                ],
-                // Shards pick servers from nodes config, HA groups
-                'shards' => [
-                    's1' => [
-                        'write' => [
-                          'node1_2' => ['weight' => 0.1],
-                        ],
-                        'read' => [
-                          'node1'   =>  ['weight' => 0.1],
-                          'node1_2' => ['weight' => 0.1],
-                        ],
-                    ],
-                    's2' => [
-                        'write' => [
-                          'node2_2' => ['weight' => 0.1],
-                        ],
-                        'read' => [
-                          'node2'   =>  ['weight' => 0.1],
-                          'node2_2' => ['weight' => 0.1],
-                        ],
-                    ],
-                ],
-            ],
-            // data source is defined for different data source connection.
-            'data_source' => [
-                'master' => 'node1',
-                'nodes' => [
-                    'node1' => [
-                        'dsn' => 'sqlite::memory:',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                    'node1_2' => [
-                        'dsn' => 'sqlite::memory:',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                    'node2' => [
-                        'dsn' => 'sqlite::memory:',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                    'node2_2' => [
-                        'dsn' => 'sqlite::memory:',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                ],
-            ],
-        ]);
-        return $config;
-    }
+    protected $freeConnections = false;
 
     public function testGetMappingById()
     {
@@ -138,7 +62,6 @@ class ShardManagerTest extends ModelTestCase
         return $repo;
     }
 
-
     /**
      * @depends testDispatchWrite
      */
@@ -150,15 +73,13 @@ class ShardManagerTest extends ModelTestCase
 
     public function testRequiredField()
     {
-        $store = new Store;
-        $ret = $store->create([ 'name' => 'testapp', 'code' => 'testapp' ]);
+        $ret = Store::create([ 'name' => 'testapp2', 'code' => 'testapp2' ]);
         $this->assertResultSuccess($ret);
     }
 
     public function testCreateWithRequiredFieldNull()
     {
-        $store = new Store;
-        $ret = $store->create([ 'name' => 'testapp', 'code' => null ]);
+        $ret = Store::create([ 'name' => 'testapp', 'code' => null ]);
         $this->assertResultFail($ret);
     }
 
@@ -174,6 +95,4 @@ class ShardManagerTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $this->assertEquals('testapp 2', $store->name);
     }
-
-
 }

@@ -14,9 +14,9 @@ use StoreApp\Model\OrderCollection;
  */
 class StoreShardingTest extends ModelTestCase
 {
-    protected $defaultDataSource = 'node1';
+    protected $defaultDataSource = 'node_master';
 
-    protected $requiredDataSources = ['node1', 'node1_2', 'node2', 'node2_2'];
+    protected $requiredDataSources = ['node_master','node1', 'node2'];
 
     public function getModels()
     {
@@ -53,54 +53,24 @@ class StoreShardingTest extends ModelTestCase
                 'shards' => [
                     's1' => [
                         'write' => [
-                          'node1_2' => ['weight' => 0.1],
+                          'node1' => ['weight' => 0.1],
                         ],
                         'read' => [
                           'node1'   =>  ['weight' => 0.1],
-                          'node1_2' => ['weight' => 0.1],
                         ],
                     ],
                     's2' => [
                         'write' => [
-                          'node2_2' => ['weight' => 0.1],
+                          'node2' => ['weight' => 0.1],
                         ],
                         'read' => [
                           'node2'   =>  ['weight' => 0.1],
-                          'node2_2' => ['weight' => 0.1],
                         ],
                     ],
                 ],
             ],
             // data source is defined for different data source connection.
-            'data_source' => [
-                'master' => 'node1',
-                'nodes' => [
-                    'node1' => [
-                        'dsn' => 'sqlite::memory:',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                    'node1_2' => [
-                        'dsn' => 'sqlite::memory:',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                    'node2' => [
-                        'dsn' => 'sqlite::memory:',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                    'node2_2' => [
-                        'dsn' => 'sqlite::memory:',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                ],
-            ],
+            'data_source' => \StoreApp\Config::memory_data_source(),
         ]);
         // $config->setMasterDataSourceId('sqlite');
         // $config->setAutoId();

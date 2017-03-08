@@ -29,6 +29,7 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected $tableManager;
 
+
     public function setUp()
     {
         if ($this->onlyDriver !== null && $this->getMasterDataSourceId() != $this->onlyDriver) {

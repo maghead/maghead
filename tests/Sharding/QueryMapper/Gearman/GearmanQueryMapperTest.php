@@ -13,25 +13,14 @@ use Maghead\Bootstrap;
 use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryWorker;
 use Maghead\Manager\ConnectionManager;
 use Monolog\Handler\ErrorLogHandler;
+use StoreApp\StoreTestCase;
 
 
 /**
  * @group sharding
  */
-class GearmanQueryMapperTest extends ModelTestCase
+class GearmanQueryMapperTest extends StoreTestCase
 {
-    protected $defaultDataSource = 'node1';
-
-    protected $requiredDataSources = ['node1','node2'];
-
-    public function getModels()
-    {
-        return [
-            new StoreSchema,
-            new OrderSchema,
-        ];
-    }
-
     protected $processId;
 
     public function setUp()
@@ -50,6 +39,8 @@ class GearmanQueryMapperTest extends ModelTestCase
         } else {
             // we are the child
             // create worker here.
+            $connManager = ConnectionManager::getInstance();
+            $connManager->free();
             Bootstrap::setup($config = $this->loadConfig(), true); // setup connection manager
 
             // create a log channel
@@ -59,7 +50,7 @@ class GearmanQueryMapperTest extends ModelTestCase
             } else {
                 $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::ERROR));
             }
-            $worker = new GearmanQueryWorker($config, ConnectionManager::getInstance(), null, $logger);
+            $worker = new GearmanQueryWorker($config, $connManager, null, $logger);
             $worker->run();
             exit(0);
         }
@@ -115,64 +106,5 @@ class GearmanQueryMapperTest extends ModelTestCase
         $res = $mapper->map($shards, $query);
         $this->assertEquals(1000, $res['node2'][0]['amount']);
         $this->assertEquals(200, $res['node1'][0]['amount']);
-    }
-
-    protected function loadConfig()
-    {
-        $config = ConfigLoader::loadFromArray([
-            'cli' => ['bootstrap' => 'vendor/autoload.php'],
-            'schema' => [
-                'auto_id' => true,
-                'base_model' => '\\Maghead\\Runtime\\BaseModel',
-                'base_collection' => '\\Maghead\\Runtime\\BaseCollection',
-                'paths' => ['tests'],
-            ],
-            'sharding' => [
-                'mappings' => [
-                    // shard by hash
-                    'M_store_id' => \StoreApp\Model\StoreShardMapping::config(),
-                ],
-                // Shards pick servers from nodes config, HA groups
-                'shards' => [
-                    's1' => [
-                        'write' => [
-                          'node1' => ['weight' => 0.1],
-                        ],
-                        'read' => [
-                          'node1'   =>  ['weight' => 0.1],
-                        ],
-                    ],
-                    's2' => [
-                        'write' => [
-                          'node2' => ['weight' => 0.1],
-                        ],
-                        'read' => [
-                          'node2'   =>  ['weight' => 0.1],
-                        ],
-                    ],
-                ],
-            ],
-
-
-            // data source is defined for different data source connection.
-            'data_source' => [
-                'master' => 'node1',
-                'nodes' => [
-                    'node1' => [
-                        'dsn' => 'sqlite:node1.sqlite',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                    'node2' => [
-                        'dsn' => 'sqlite:node2.sqlite',
-                        'query_options' => ['quote_table' => true],
-                        'driver' => 'sqlite',
-                        'connection_options' => [],
-                    ],
-                ],
-            ],
-        ]);
-        return $config;
     }
 }

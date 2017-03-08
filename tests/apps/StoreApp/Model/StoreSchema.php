@@ -16,6 +16,8 @@ class StoreSchema extends DeclareSchema
             ->findable()
             ;
 
+        $this->writeTo('node_master');
+        $this->readFrom('node_master');
         $this->globalTable("M_store_id"); // global table on the shards of M_store_id
     }
 }
