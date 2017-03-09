@@ -5,6 +5,8 @@ namespace Maghead\Sharding;
 use ArrayAccess;
 use IteratorAggregate;
 use ArrayIterator;
+use Maghead\Sharding\Hasher\FlexihashHasher;
+use Maghead\Sharding\Hasher\Hasher;
 
 class ShardCollection implements ArrayAccess, IteratorAggregate
 {
@@ -46,5 +48,13 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
     public function offsetUnset($name)
     {
         unset($this->shards[$name]);
+    }
+
+    public function createDispatcher(Hasher $hasher = null)
+    {
+        if (!$hasher) {
+            $hasher = new FlexihashHasher($this->mapping);
+        }
+        return new ShardDispatcher($this->mapping, $hasher, $this);
     }
 }
