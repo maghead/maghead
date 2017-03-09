@@ -53,7 +53,7 @@ class MetadataManagerTest extends ModelTestCase
         $metadata['name'] = 'c9s';
         $metas = new Maghead\Model\MetadataCollection;
         foreach ($metas as $meta) {
-            ok($meta);
+            $this->assertNotNull($meta);
         }
     }
 }

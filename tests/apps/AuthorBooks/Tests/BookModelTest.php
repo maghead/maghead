@@ -50,12 +50,10 @@ class BookModelTest extends ModelTestCase
         $b = Book::createAndLoad([ 'title' => 'Test Book' ]);
 
         $schema = $b->getSchema();
-        ok($schema);
-
         $cA = $schema->getColumn('is_hot');
         $cB = $schema->getColumn('is_selled');
-        ok($cA);
-        ok($cB);
+        $this->assertInstanceOf('Maghead\\Schema\\RuntimeColumn',$cA);
+        $this->assertInstanceOf('Maghead\\Schema\\RuntimeColumn',$cB);
 
         $ret = $b->update([ 'is_hot' => true ]);
         $this->assertResultSuccess($ret);
@@ -95,7 +93,7 @@ class BookModelTest extends ModelTestCase
         $b = Book::masterRepo()->load($ret->key);
 
         $id = $b->id;
-        ok($id);
+        $this->assertNotNull($id);
 
         $b = $b->loadOrCreate(array( 'title' => 'LoadOrCreateTest'  ), 'title');
         $this->assertEquals($id, $b->id, 'is the same ID');

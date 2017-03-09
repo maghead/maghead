@@ -78,6 +78,5 @@ class ComparatorTest extends \PHPUnit\Framework\TestCase
     public function testPrinter($diffs)
     {
         $printer = new ConsolePrinter($diffs);
-        ok($printer);
     }
 }

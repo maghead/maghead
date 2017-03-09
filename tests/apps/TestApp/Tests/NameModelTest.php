@@ -132,7 +132,7 @@ class NameModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
 
         $name = Name::masterRepo()->load($ret->key);
-        is('XXXX', $name->address, 'Should be canonicalized');
+        $this->assertEquals('XXXX', $name->address, 'Should be canonicalized');
     }
 
     public function testBooleanFromStringZero()
@@ -165,7 +165,7 @@ class NameModelTest extends ModelTestCase
          */
         $ret = $n->create(array( 'name' => false , 'country' => 'Type' ));
         $this->assertResultFail($ret);
-        ok(! $n->id);
+        $this->assertNull($n->id);
     }
 
     public function testModelColumnDefaultValueBuilder()
@@ -175,15 +175,15 @@ class NameModelTest extends ModelTestCase
         $this->assertNotEmpty($ret->validations);
         $this->assertTrue(isset($ret->validations['address']));
         $this->assertTrue($ret->validations['address']['valid']);
-        ok($vlds = $ret->getSuccessValidations());
+        $this->assertNotNull($vlds = $ret->getSuccessValidations());
         $this->assertCount(1, $vlds);
 
         $name = Name::masterRepo()->load($ret->key);
-        ok($name->id);
-        ok($name->address);
+        $this->assertNotNull($name->id);
+        $this->assertNotNull($name->address);
 
         $ret = $name->create(array(  'name' => 'Foo', 'address' => 'fuck' , 'country' => 'Tokyo' ));
-        ok($ret->validations);
+        $this->assertNotNull($ret->validations);
 
         foreach ($ret->getErrorValidations() as $vld) {
             $this->assertFalse($vld['valid']);

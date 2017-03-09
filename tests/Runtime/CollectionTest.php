@@ -37,6 +37,6 @@ class CollectionTest extends ModelTestCase
 
         $this->assertNotEmpty($items);
 
-        is('Foo', $items[0]->name);
+        $this->assertEquals('Foo', $items[0]->name);
     }
 }

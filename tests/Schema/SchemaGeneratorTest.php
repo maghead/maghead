@@ -29,13 +29,13 @@ class SchemaGeneratorTest extends ModelTestCase
         foreach ($schemas as $schema) {
             if ($result = $g->generateCollectionClass($schema)) {
                 list($class, $file) = $result;
-                path_ok($file);
+                $this->assertFileExists($file);
                 $this->syntaxTest($file);
             }
 
             if ($classMap = $g->generate(array($schema))) {
                 foreach ($classMap as $class => $file) {
-                    path_ok($file, $file);
+                    $this->assertFileExists($file);
                     $this->syntaxTest($file);
                     require_once $file;
                 }

@@ -10,24 +10,24 @@ class CollectionPagerTest extends PHPUnit\Framework\TestCase
     {
         $pager = new CollectionPager(range(1, 200), 1, 10);
         $items = $pager->items();
-        is(1, $items[0]);
-        is(2, $items[1]);
+        $this->assertEquals(1, $items[0]);
+        $this->assertEquals(2, $items[1]);
 
         $pager->next();
         $items = $pager->items();
-        is(11, $items[0]);
-        is(12, $items[1]);
+        $this->assertEquals(11, $items[0]);
+        $this->assertEquals(12, $items[1]);
 
         $pager->next();
         $items = $pager->items();
-        is(21, $items[0]);
-        is(22, $items[1]);
+        $this->assertEquals(21, $items[0]);
+        $this->assertEquals(22, $items[1]);
 
         $pager->previous();
         $items = $pager->items();
-        is(11, $items[0]);
-        is(12, $items[1]);
+        $this->assertEquals(11, $items[0]);
+        $this->assertEquals(12, $items[1]);
 
-        is(20, $pager->pages());
+        $this->assertEquals(20, $pager->pages());
     }
 }

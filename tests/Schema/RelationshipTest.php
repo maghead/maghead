@@ -16,14 +16,13 @@ class RelationshipTest extends PHPUnit\Framework\TestCase
                 'foreign_column' => "author_id",
                 'foreign_schema' => "AuthorBooks\Model\AddressSchema",
         ));
-        ok($r);
-        ok(isset($r['type']));
-        is(Relationship::HAS_MANY, $r['type']);
+        $this->assertTrue(isset($r['type']));
+        $this->assertEquals(Relationship::HAS_MANY, $r['type']);
 
         $schema = $r->newForeignSchema();
-        ok($schema);
+        $this->assertInstanceOf('Maghead\\Schema\\DeclareSchema', $schema);
 
         $model = $r->newForeignModel();
-        ok($model);
+        $this->assertInstanceOf('Maghead\\Runtime\\BaseModel', $model);
     }
 }

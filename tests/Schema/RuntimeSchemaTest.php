@@ -7,12 +7,12 @@ class RuntimeSchemaTest extends PHPUnit\Framework\TestCase
 {
     public function schemaProxyProvider()
     {
-        return array(
-            array('AuthorBooks\Model\AuthorSchemaProxy'),
-            array('AuthorBooks\Model\BookSchemaProxy'),
-            array('AuthorBooks\Model\AuthorBookSchemaProxy'),
-            array('TestApp\Model\NameSchemaProxy'),
-        );
+        return [
+            ['AuthorBooks\\Model\\AuthorSchemaProxy'],
+            ['AuthorBooks\\Model\\BookSchemaProxy'],
+            ['AuthorBooks\\Model\\AuthorBookSchemaProxy'],
+            ['TestApp\Model\\NameSchemaProxy'],
+        ];
     }
 
     /**
@@ -21,15 +21,13 @@ class RuntimeSchemaTest extends PHPUnit\Framework\TestCase
     public function testSchemaProxyClassMethods($proxyClass)
     {
         $schema = new $proxyClass;
-        ok($schema);
         foreach ($schema->getColumns() as $name => $column) {
-            ok($name);
-            ok($column);
-            ok($column->name);
-            ok($schema->getColumn($name));
+            $this->assertNotNull($column);
+            $this->assertNotNull($column->name);
+            $this->assertNotNull($schema->getColumn($name));
         }
-        ok($schema->getTable());
-        ok($schema->getLabel());
+        $this->assertNotNull($schema->getTable());
+        $this->assertNotNull($schema->getLabel());
     }
 
 
@@ -39,10 +37,9 @@ class RuntimeSchemaTest extends PHPUnit\Framework\TestCase
     public function testSchemaIteration($proxyClass)
     {
         $schema = new $proxyClass;
-        ok($schema);
         foreach ($schema as $name => $column) {
-            ok(is_string($name));
-            ok($column);
+            $this->assertTrue(is_string($name));
+            $this->assertNotNull($column);
         }
     }
 }
