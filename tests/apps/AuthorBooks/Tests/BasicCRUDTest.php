@@ -290,10 +290,10 @@ class BasicCRUDTest extends ModelTestCase
         }
 
         $this->assertCount(3, array_keys($bookTitles));
-        ok($bookTitles[ 'Book I' ]);
-        ok($bookTitles[ 'Book II' ]);
-        ok($bookTitles[ 'Book III' ]);
-        ok(! isset($bookTitles[ 'Book I Ex' ]));
+        $this->assertNotNull($bookTitles[ 'Book I' ]);
+        $this->assertNotNull($bookTitles[ 'Book II' ]);
+        $this->assertNotNull($bookTitles[ 'Book III' ]);
+        $this->assertFalse(isset($bookTitles[ 'Book I Ex' ]));
         $author->delete();
     }
 

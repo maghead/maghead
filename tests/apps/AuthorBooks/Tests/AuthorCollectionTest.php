@@ -56,10 +56,8 @@ class AuthorCollectionTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         foreach ($results as $result) {
             $id = $result->id;
-            ok($id);
-
+            $this->assertNotNull($id);
             $this->assertTrue(isset($pairs[$id]));
-            like('/Hack/', $pairs[$id]);
             $address = Address::load($result->id);
             $address->delete();
         }
@@ -114,21 +112,20 @@ class AuthorCollectionTest extends ModelTestCase
         $clone = clone $addresses;
         $sql2 = $clone->toSQL();
 
-        is($sql1, $sql2);
-        is(1, $clone->size());
+        $this->assertEquals($sql1, $sql2);
+        $this->assertEquals(1, $clone->size());
 
         $clone->free();
         $clone->where()
             ->equal('address', 'Hack');
-        is(0, $clone->size());
+        $this->assertEquals(0, $clone->size());
     }
 
     public function testIterator()
     {
         $authors = new AuthorCollection;
-        ok($authors);
         foreach ($authors as $a) {
-            ok($a->id);
+            $this->assertNotNull($a->id);
         }
     }
 
@@ -156,7 +153,7 @@ class AuthorCollectionTest extends ModelTestCase
         $authors->where()
                 ->equal('confirmed', false);
         $ret = $authors->fetch();
-        ok($ret);
+        $this->assertResultSuccess($ret);
         $this->assertEquals(1, $authors->size());
 
 
@@ -164,7 +161,7 @@ class AuthorCollectionTest extends ModelTestCase
         $authors->where()
                 ->equal('confirmed', true);
         $ret = $authors->fetch();
-        ok($ret);
+        $this->assertResultSuccess($ret);
         $this->assertEquals(1, $authors->size());
     }
 
@@ -204,7 +201,7 @@ class AuthorCollectionTest extends ModelTestCase
 
         $this->assertTrue(is_array($items));
         foreach ($items as $item) {
-            ok($item->id);
+            $this->assertNotNull($item->id);
             $this->assertInstanceOf('AuthorBooks\Model\Author', $item);
 
             $ret = $item->delete();
@@ -227,7 +224,7 @@ class AuthorCollectionTest extends ModelTestCase
         $authors->join(new \AuthorBooks\Model\Address, 'LEFT', 'a');
         $authors->fetch();
         $sql = $authors->toSQL();
-        like('/LEFT JOIN addresses AS a ON \(m.id = a.author_id\)/', $sql);
+        $this->assertRegExp('/LEFT JOIN addresses AS a ON \(m.id = a.author_id\)/', $sql);
     }
 
     public function testJoinWithAliasAndRelationId()
@@ -240,13 +237,13 @@ class AuthorCollectionTest extends ModelTestCase
         $authors->join(new \AuthorBooks\Model\Address, 'LEFT', 'a', 'addresses');
         $authors->fetch();
         $sql = $authors->toSQL();
-        ok($sql, $sql);
+        $this->assertEquals($sql, $sql);
 
         $size = $authors->size();
         $this->assertEquals(2, $size);
         foreach ($authors as $a) {
-            ok($a->a_address);
-            ok($a->a_id);
+            $this->assertNotNull($a->a_address);
+            $this->assertNotNull($a->a_id);
         }
     }
 
@@ -259,7 +256,7 @@ class AuthorCollectionTest extends ModelTestCase
         $authors->join(new \AuthorBooks\Model\Address, 'LEFT', 'a');
         $authors->fetch();
         $sql = $authors->toSQL();
-        ok($sql);
+        $this->assertNotNull($sql);
     }
 
     /**
@@ -382,7 +379,7 @@ class AuthorCollectionTest extends ModelTestCase
                 'identity' => 'foo' . $i,
                 'confirmed' => true,
             ));
-            ok($author->isConfirmed(), 'is true');
+            $this->assertTrue($author->isConfirmed(), 'is true');
         }
 
 
@@ -391,27 +388,26 @@ class AuthorCollectionTest extends ModelTestCase
                 ->equal('confirmed', true);
 
         foreach ($authors as $author) {
-            ok($author->isConfirmed());
+            $this->assertTrue($author->isConfirmed());
         }
-        is(10, $authors->size());
+        $this->assertEquals(10, $authors->size());
 
         /* page 1, 10 per page */
         $pager = $authors->pager(1, 10);
-        ok($pager);
 
         $pager = $authors->pager();
-        ok($pager);
-        ok($pager->items());
+        $this->assertNotNull($pager->items());
+        $this->assertCount(10, $pager->items());
+
 
         $array = $authors->toArray();
-        ok($array[0]);
-        ok($array[9]);
+        $this->assertNotNull($array[0]);
+        $this->assertNotNull($array[9]);
 
-        ok($authors->items());
-        is(10, count($authors->items()));
+        $this->assertCount(10, $authors->items());
         foreach ($authors as $a) {
             $ret = $a->delete();
-            ok($ret->success);
+            $this->assertResultSuccess($ret);
         }
     }
 }

@@ -106,18 +106,18 @@ class AuthorBookModelTest extends ModelTestCase
         $author = new Author;
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');
         foreach ($author->getColumnNames() as $n) {
-            ok(in_array($n, $names));
-            ok($author->getColumn($n));
+            $this->assertTrue(in_array($n, $names));
+            $this->assertNotNull($author->getColumn($n));
         }
 
         $columns = $author->getColumns();
         $this->assertCount(7, $columns);
 
         $columns = $author->getColumns(true); // with virtual column
-        count_ok(8, $columns);
+        $this->assertCount(8, $columns);
 
-        ok('authors', $author->getTable());
-        ok('Author', $author->getLabel());
+        $this->assertEquals('authors', $author->getTable());
+        $this->assertEquals('Author', $author->getLabel());
 
         $this->assertInstanceOf('AuthorBooks\Model\AuthorCollection', $author->newCollection());
     }
@@ -129,8 +129,8 @@ class AuthorBookModelTest extends ModelTestCase
     {
         $author = new Author;
         $collection = $author->asCollection();
-        ok($collection);
-        isa_ok('\AuthorBooks\Model\AuthorCollection', $collection);
+        $this->assertNotNull($collection);
+        $this->assertInstanceOf('\AuthorBooks\Model\AuthorCollection', $collection);
     }
 
 
@@ -148,16 +148,16 @@ class AuthorBookModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $author = Author::masterRepo()->load($ret->key);
 
-        ok($v = $author->getColumn('account_brief')); // virtual colun
+        $this->assertNotNull($v = $author->getColumn('account_brief')); // virtual colun
         $this->assertTrue($v->virtual);
 
         $columns = $author->getSchema()->getColumns();
 
-        ok(! isset($columns['account_brief']));
+        $this->assertFalse(isset($columns['account_brief']));
 
         $this->assertEquals('Pedro(pedro@gmail.com)', $author->account_brief);
 
-        ok($display = $author->display('account_brief'));
+        $this->assertNotNull($display = $author->display('account_brief'));
         $authors = new AuthorCollection;
     }
 
@@ -167,20 +167,18 @@ class AuthorBookModelTest extends ModelTestCase
     public function testSchema()
     {
         $author = new Author;
-        ok($author->getSchema());
+        $this->assertNotNull($author->getSchema());
 
         $columnMap = $author->getSchema()->getColumns();
 
-        ok(isset($columnMap['confirmed']));
-        ok(isset($columnMap['identity']));
-        ok(isset($columnMap['name']));
-
-        ok($author::SCHEMA_PROXY_CLASS);
+        $this->assertTrue(isset($columnMap['confirmed']));
+        $this->assertTrue(isset($columnMap['identity']));
+        $this->assertTrue(isset($columnMap['name']));
 
         $columnMap = $author->getColumns();
 
-        ok(isset($columnMap['identity']));
-        ok(isset($columnMap['name']));
+        $this->assertTrue(isset($columnMap['identity']));
+        $this->assertTrue(isset($columnMap['name']));
     }
 
 
@@ -190,7 +188,7 @@ class AuthorBookModelTest extends ModelTestCase
         $author = new Author;
         $ret = Author::create(array());
         $this->assertResultFail($ret);
-        is('Empty arguments', $ret->message);
+        $this->assertEquals('Empty arguments', $ret->message);
     }
 
 
@@ -350,9 +348,9 @@ class AuthorBookModelTest extends ModelTestCase
         }
 
         $this->assertCount(3, array_keys($bookTitles));
-        ok($bookTitles['Book I']);
-        ok($bookTitles['Book II' ]);
-        ok($bookTitles['Book III']);
+        $this->assertNotNull($bookTitles['Book I']);
+        $this->assertNotNull($bookTitles['Book II' ]);
+        $this->assertNotNull($bookTitles['Book III']);
     }
 
 
@@ -429,19 +427,19 @@ class AuthorBookModelTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $author = Author::load($ret->key);
 
-        ok(
+        $this->assertNotNull(
             $book = $author->books->create(array(
                 'title' => 'Programming Perl I',
                 'author_books' => ['created_on' => '2010-01-01'],
             ))
         );
-        ok($book->id);
+        $this->assertNotNull($book->id);
         $this->assertEquals('Programming Perl I', $book->title);
 
         $this->assertEquals(1, $author->books->size());
         $this->assertEquals(1, $author->author_books->size());
-        ok($author->author_books[0]);
-        ok($author->author_books[0]->created_on);
+        $this->assertNotNull($author->author_books[0]);
+        $this->assertNotNull($author->author_books[0]->created_on);
         $this->assertEquals('2010-01-01', $author->author_books[0]->getCreatedOn()->format('Y-m-d'));
 
         $author->books[] = array(
@@ -476,34 +474,34 @@ class AuthorBookModelTest extends ModelTestCase
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer
         // ok( is_string( $author->getValue('id') ) );
-        ok($author->getId());
+        $this->assertNotNull($author->getId());
 
         $book = $author->books->create(array( 'title' => 'Book Test' ));
-        ok($book);
-        ok($book->id, 'book is created');
+        $this->assertNotNull($book);
+        $this->assertNotNull($book->id, 'book is created');
 
         $ret = $book->delete();
-        ok($ret->success);
+        $this->assertTrue($ret->success);
 
         $ab = new \AuthorBooks\Model\AuthorBook;
         $book = new \AuthorBooks\Model\Book;
 
         // should not include this
-        ok($book = Book::createAndLoad(array( 'title' => 'Book I Ex' )));
-        ok($book = Book::createAndLoad(array( 'title' => 'Book I' )));
+        $this->assertNotNull($book = Book::createAndLoad(array( 'title' => 'Book I Ex' )));
+        $this->assertNotNull($book = Book::createAndLoad(array( 'title' => 'Book I' )));
 
-        ok($ab = AuthorBook::createAndLoad(array(
+        $this->assertNotNull($ab = AuthorBook::createAndLoad(array(
             'author_id' => $author->id,
             'book_id' => $book->id,
         )));
 
-        ok($book = Book::createAndLoad(array( 'title' => 'Book II' )));
+        $this->assertNotNull($book = Book::createAndLoad(array( 'title' => 'Book II' )));
         $ab->create(array(
             'author_id' => $author->id,
             'book_id' => $book->id,
         ));
 
-        ok($book = Book::createAndLoad(array( 'title' => 'Book III' )));
+        $this->assertNotNull($book = Book::createAndLoad(array( 'title' => 'Book III' )));
         $ab = AuthorBook::createAndLoad(array(
             'author_id' => $author->id,
             'book_id' => $book->id,
@@ -521,11 +519,11 @@ class AuthorBookModelTest extends ModelTestCase
             $item->delete();
         }
 
-        count_ok(3, array_keys($bookTitles));
-        ok($bookTitles[ 'Book I' ]);
-        ok($bookTitles[ 'Book II' ]);
-        ok($bookTitles[ 'Book III' ]);
-        ok(! isset($bookTitles[ 'Book I Ex' ]));
+        $this->assertCount(3, array_keys($bookTitles));
+        $this->assertNotNull($bookTitles[ 'Book I' ]);
+        $this->assertNotNull($bookTitles[ 'Book II' ]);
+        $this->assertNotNull($bookTitles[ 'Book III' ]);
+        $this->assertFalse(isset($bookTitles[ 'Book I Ex' ]));
 
         $author->delete();
     }

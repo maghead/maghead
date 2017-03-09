@@ -177,7 +177,7 @@ class AuthorModelTest extends ModelTestCase
         $a = new Author;
         $ret = Author::create(array());
         $this->assertResultFail($ret);
-        like('/Empty arguments/', $ret->message);
+        $this->assertRegExp('/Empty arguments/', $ret->message);
     }
 
 
@@ -209,8 +209,7 @@ class AuthorModelTest extends ModelTestCase
         $author = new Author;
         $ret = Author::create(array());
         $this->assertResultFail($ret);
-        ok($ret->message);
-        like('/Empty arguments/', $ret->message);
+        $this->assertRegExp('/Empty arguments/', $ret->message);
     }
 
     /**
@@ -224,7 +223,7 @@ class AuthorModelTest extends ModelTestCase
         $ret = Author::create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->assertResultSuccess($ret);
         $author = Author::load($ret->key);
-        ok($id = $ret->key);
+        $this->assertNotNull($id = $ret->key);
         $this->assertEquals('Foo', $author->name);
         $this->assertEquals('foo@google.com', $author->email);
 
@@ -265,7 +264,7 @@ class AuthorModelTest extends ModelTestCase
         $author = Author::load($ret->key);
         $age = $author->getAge();
         $this->assertInstanceOf('DateInterval', $age);
-        ok($age->format('%s seconds'));
+        $this->assertStringMatchesFormat('%i seconds', $age->format('%s seconds'));
     }
 
     public function testToArray()
@@ -363,8 +362,8 @@ class AuthorModelTest extends ModelTestCase
         $id = $author->id;
 
         $this->assertResultSuccess($author->update(array( 'name' => 'I' )));
-        is($id, $author->id);
-        is('I', $author->name);
+        $this->assertEquals($id, $author->id);
+        $this->assertEquals('I', $author->name);
 
         $ret = $author->update(array( 'name' => null ));
         $this->assertResultSuccess($ret);
