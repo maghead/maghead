@@ -122,7 +122,7 @@ abstract class ModelTestCase extends BaseTestCase
     public function testClasses()
     {
         foreach ($this->getModels() as $class) {
-            class_ok($class);
+            $this->assertTrue(class_exists($class, true));
         }
     }
 }

@@ -325,11 +325,11 @@ abstract class BaseTestCase extends TestCase
     {
         $this->assertNotNull($ret);
         if ($ret->success === $expect) {
-            ok($ret->success, $ret->message);
+            $this->assertTrue($ret->success, $ret->message);
         } else {
             var_dump($ret->sql);
             echo $ret->exception;
-            ok($ret->success);
+            $this->assertTrue($ret->success, $ret->message);
         }
     }
 }
