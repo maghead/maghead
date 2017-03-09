@@ -5,7 +5,7 @@ use AuthorBooks\Model\AuthorSchema;
 /**
  * @group schema
  */
-class SchemaDeclareTest extends PHPUnit_Framework_TestCase
+class SchemaDeclareTest extends PHPUnit\Framework\TestCase
 {
     public function testRuntimeSchemaConstruction()
     {

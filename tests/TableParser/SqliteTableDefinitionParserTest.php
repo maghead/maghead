@@ -4,7 +4,7 @@ use Maghead\TableParser\SqliteTableDefinitionParser;
 /**
  * @group table-parser
  */
-class SqliteTableDefinitionParserTest extends PHPUnit_Framework_TestCase
+class SqliteTableDefinitionParserTest extends PHPUnit\Framework\TestCase
 {
     public function testUnsignedInt()
     {

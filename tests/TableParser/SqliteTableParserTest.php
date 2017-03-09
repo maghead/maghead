@@ -5,7 +5,7 @@ use Maghead\TableParser\SqliteTableParser;
 /**
  * @group table-parser
  */
-class SqliteTableParserTest extends PHPUnit_Framework_TestCase
+class SqliteTableParserTest extends PHPUnit\Framework\TestCase
 {
     public function testSQLiteTableParser()
     {

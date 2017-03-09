@@ -3,7 +3,7 @@
 /**
  * @group schema
  */
-class MixinDeclareSchemaTest extends PHPUnit_Framework_TestCase
+class MixinDeclareSchemaTest extends PHPUnit\Framework\TestCase
 {
     public function testCallMixinSchemaDirectly()
     {

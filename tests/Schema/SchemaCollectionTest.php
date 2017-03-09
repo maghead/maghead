@@ -4,7 +4,7 @@ use Maghead\Schema\SchemaCollection;
 /**
  * @group schema
  */
-class SchemaCollectionTest extends PHPUnit_Framework_TestCase
+class SchemaCollectionTest extends PHPUnit\Framework\TestCase
 {
     public function testCountable()
     {

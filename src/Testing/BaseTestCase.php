@@ -13,13 +13,13 @@ use Maghead\Runtime\Result;
 use Maghead\Bootstrap;
 use Maghead\PDOExceptionPrinter;
 use SQLBuilder\Driver\BaseDriver;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use CLIFramework\Logger;
 use PDO;
 use PDOException;
 use Exception;
 
-abstract class BaseTestCase extends PHPUnit_Framework_TestCase
+abstract class BaseTestCase extends TestCase
 {
     /**
      * @var string $driver name

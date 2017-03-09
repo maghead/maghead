@@ -4,7 +4,7 @@ use Maghead\Utils;
 /**
  * @group utils
  */
-class UtilsTest extends PHPUnit_Framework_TestCase
+class UtilsTest extends PHPUnit\Framework\TestCase
 {
     public function testEvaluateFunction()
     {

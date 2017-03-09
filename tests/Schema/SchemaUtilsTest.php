@@ -6,7 +6,7 @@ use Maghead\Schema\SchemaUtils;
 /**
  * @group schema
  */
-class SchemaUtilsTest extends PHPUnit_Framework_TestCase
+class SchemaUtilsTest extends PHPUnit\Framework\TestCase
 {
     public $config;
 

@@ -3,7 +3,7 @@ use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryJob;
 use SQLBuilder\Universal\Query\SelectQuery;
 
 
-class GearmanQueryJobTest extends PHPUnit_Framework_TestCase
+class GearmanQueryJobTest extends PHPUnit\Framework\TestCase
 {
     public function testJobSerialization()
     {

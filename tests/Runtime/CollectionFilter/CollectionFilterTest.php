@@ -22,7 +22,7 @@ function dumpExpr($expr, $level = 0)
  *
  * @group collection
  */
-class CollectionFilterTest extends PHPUnit_Framework_TestCase
+class CollectionFilterTest extends PHPUnit\Framework\TestCase
 {
     public function test()
     {

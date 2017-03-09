@@ -5,7 +5,7 @@ use Maghead\Schema\Relationship\Relationship;
 /**
  * @group schema
  */
-class RelationshipTest extends PHPUnit_Framework_TestCase
+class RelationshipTest extends PHPUnit\Framework\TestCase
 {
     public function testRelationshipOperation()
     {

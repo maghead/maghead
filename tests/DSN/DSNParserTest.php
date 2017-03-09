@@ -4,7 +4,7 @@ use Maghead\DSN\DSNParser;
 /**
  * @group dsn
  */
-class DSNParserTest extends PHPUnit_Framework_TestCase
+class DSNParserTest extends PHPUnit\Framework\TestCase
 {
     public function dsnProvider()
     {

@@ -3,12 +3,12 @@ namespace Maghead\Schema;
 
 use Maghead\Schema\SchemaFinder;
 use Maghead\Schema\SchemaLoader;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group schema
  */
-class SchemaFinderTest extends PHPUnit_Framework_TestCase
+class SchemaFinderTest extends TestCase
 {
     public function testSchemaFinder()
     {

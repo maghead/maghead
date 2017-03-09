@@ -4,7 +4,7 @@ use Maghead\Inflator;
 /**
  * @group hydrate
  */
-class InflatorTest extends PHPUnit_Framework_TestCase
+class InflatorTest extends PHPUnit\Framework\TestCase
 {
     public function testBooleanFalse()
     {

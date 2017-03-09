@@ -6,7 +6,7 @@ use Maghead\ConfigLoader;
 /**
  * @group manager
  */
-class ConfigManagerTest extends PHPUnit_Framework_TestCase
+class ConfigManagerTest extends PHPUnit\Framework\TestCase
 {
     const TEST_CONFIG = 'tests/.database.config.yml';
 

@@ -16,7 +16,7 @@ class NeutralDriver extends BaseDriver
 /**
  * @group schema
  */
-class ComparatorTest extends \PHPUnit_Framework_TestCase
+class ComparatorTest extends \PHPUnit\Framework\TestCase
 {
     public function testBasicComparison()
     {

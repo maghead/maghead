@@ -5,7 +5,7 @@ use Maghead\Schema\DeclareColumn;
 /**
  * @group schema
  */
-class DeclareColumnTest extends PHPUnit_Framework_TestCase
+class DeclareColumnTest extends PHPUnit\Framework\TestCase
 {
     public function test()
     {

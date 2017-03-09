@@ -3,7 +3,7 @@
 /**
  * @group schema
  */
-class RuntimeSchemaTest extends PHPUnit_Framework_TestCase
+class RuntimeSchemaTest extends PHPUnit\Framework\TestCase
 {
     public function schemaProxyProvider()
     {
