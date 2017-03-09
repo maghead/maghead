@@ -228,7 +228,7 @@ abstract class BaseModel implements Serializable
             if (isset($args[$shardKeyName])) {
                 $shardKey = $args[$shardKeyName];
             } else {
-                // $shardKey = // $mapping->generateKey();
+                $shardKey = // $mapping->generateKey();
             }
 
             // Generate an UUID
