@@ -23,6 +23,11 @@ use Maghead\Schema\Relationship\BelongsTo;
 
 class DeclareSchema extends BaseSchema implements SchemaInterface
 {
+    /**
+     * The defualt data source ID needs to be "default" and to be resolved in
+     * the runtime because these node IDs will be compiled into the schema
+     * files.
+     */
     const DEFAULT_DATASOURCE_ID = 'default';
 
 
