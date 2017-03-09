@@ -118,13 +118,6 @@ Sphinx Document
         - [x] Update reducer extension to convert string values.
     - [ ] BroadcastQuery
         - Broadcast SQL statement to all shards.
-    - [ ] Global Table behaviour
-        - [ ] Spread Create method
-            - Create records across different shards.
-        - [ ] Spread Update method
-            - Update records across different shards.
-        - [ ] Spread Delete method
-            - Delete records across different shards.
     - [ ] Extract SQL building method for create (insertion)
     - [ ] Extract SQL building method for update
     - [ ] Extract SQL building method for delete
@@ -148,12 +141,54 @@ Sphinx Document
 
     $order = Order::shards()->find('569f21d7-fcad-49bf-99dd-795be631f984');
 
+    - [ ] Global Table behaviour
+        - [ ] Spread Create method
+            - Create records across different shards.
+        - [ ] Spread Update method
+            - Update records across different shards.
+        - [ ] Spread Delete method
+            - Delete records across different shards.
+
+
 
 - [ ] Move CRUD operation from modal class to ModelActions class.
 - [x] Add connection parameter to all the CRUD methods
 - [ ] Add setter type signature support to the class method generator.
 - [ ] Validate isa type when setting value via setter method.
 - [ ] ??? Remove typeConstraint checking from modal method code.
+
+
+
+
+## CRUD Operations
+
+### Global Table CRUD Operations
+
+#### Create operation on global tables
+
+To create a new record on the global table, the repository will first find the
+master node to insert the record to get the primary key of the record.
+
+The second step will be: inserting the newly created record with primary key
+into all shards used by the shard mapping defined in the schema.
+
+#### Update operation on global tables
+
+To update a record on the global table, the repository will first find the
+master node to update the record with the primary key.
+
+The second step will be: updating the record with new values by primary key in
+all shards used by the shard mapping defined in the schema.
+
+#### Delete operation on global tables
+
+To delete a record on the global table, the repository will first find the
+master node to insert the record to get the primary key of the record.
+
+The second step will be: delete all records existed in all shards used by the
+shard mapping defined in the schema.
+
+
 
 ## Shard Mapping
 
