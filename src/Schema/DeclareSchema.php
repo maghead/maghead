@@ -23,6 +23,9 @@ use Maghead\Schema\Relationship\BelongsTo;
 
 class DeclareSchema extends BaseSchema implements SchemaInterface
 {
+    const DEFAULT_DATASOURCE_ID = 'default';
+
+
     public $enableColumnAccessors = true;
 
     /**
@@ -144,11 +147,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         if ($this->writeSourceId) {
             return $this->writeSourceId;
         }
-        return 'default';
-        /*
-        $config = ConfigLoader::getCurrentConfig();
-        return $config->getMasterDataSourceId();
-         */
+        return self::DEFAULT_DATASOURCE_ID;
     }
 
     public function getReadSourceId()
@@ -156,11 +155,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         if ($this->readSourceId) {
             return $this->readSourceId;
         }
-        return 'default';
-        /*
-        $config = ConfigLoader::getCurrentConfig();
-        return $config->getMasterDataSourceId();
-        */
+        return self::DEFAULT_DATASOURCE_ID;
     }
 
     public function getColumns($includeVirtual = false)
