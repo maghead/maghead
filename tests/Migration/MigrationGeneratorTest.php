@@ -55,7 +55,7 @@ class MigrationGeneratorTest extends ModelTestCase
 
         $generator = new MigrationGenerator($this->logger, self::MIGRATION_SCRIPT_DIR);
 
-        ok(class_exists('TestApp\Model\UserSchema', true));
+        $this->assertTrue(class_exists('TestApp\Model\UserSchema', true));
 
         $finder = new SchemaFinder;
         $finder->find();
