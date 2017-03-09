@@ -29,9 +29,7 @@
         "psr/log": "^1.0",
         "monolog/monolog": "^1.22"
     },
-    "require-dev": {
-        "corneltek/phpunit-testmore": "dev-master"
-    },
+    "require-dev": { },
     "suggest": { "ext-xarray": "*" },
     "bin": [
         "bin/maghead"
