@@ -240,7 +240,14 @@ related shard mapping ID:
 
     $shards = $shardManager->getShardsOf('M_store_id');
 
-ShardManager provides one factory method to help you create the shard dispatcher.
+The returned `$shards` is a `Maghead\Sharding\ShardCollection` instance.
+
+To create the shard dispatcher, simply invoke `createDispatcher` on the shard
+collection instance:
+
+    $dispatcher = $shards->createDispatcher();
+
+ShardManager also provides one factory method to help you create the shard dispatcher.
 To create the shard dispatcher, you need to pass the shard mapping ID to return
 the dispatcher that dispatches the shard node for specific sharding rule, e.g.:
 
