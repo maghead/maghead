@@ -7,6 +7,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use Maghead\Manager\ConnectionManager;
 use Maghead\Sharding\QueryMapper\QueryMapper;
+use Maghead\Sharding\ShardCollection;
 
 class PthreadQueryMapper implements QueryMapper
 {
@@ -19,7 +20,7 @@ class PthreadQueryMapper implements QueryMapper
         $this->connectionManager = $connectionManager;
     }
 
-    public function map(array $shards, $query)
+    public function map(ShardCollection $shards, $query)
     {
         $nodeIds = $this->selectReadNodes($shards);
         $this->start($nodeIds);
@@ -58,7 +59,7 @@ class PthreadQueryMapper implements QueryMapper
         }
     }
 
-    protected function selectReadNodes(array $shards)
+    protected function selectReadNodes(ShardCollection $shards)
     {
         $nodeIds = [];
         foreach ($shards as $shardId => $shard) {

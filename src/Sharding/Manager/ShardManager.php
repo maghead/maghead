@@ -5,6 +5,7 @@ use Maghead\Sharding\Hasher\FlexihashHasher;
 use Maghead\Sharding\ShardDispatcher;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Shard;
+use Maghead\Sharding\ShardCollection;
 use Maghead\Manager\ConnectionManager;
 use Maghead\Config;
 
@@ -78,7 +79,7 @@ class ShardManager
             $shard = new Shard($shardId, $shardConfig, $this->connectionManager);
             $shards[ $shardId ] = $shard;
         }
-        return $shards;
+        return new ShardCollection($shards);
     }
 
     public function createShardDispatcherOf(string $mappingId)

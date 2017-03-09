@@ -6,6 +6,7 @@ use GearmanClient;
 use GearmanTask;
 use RuntimeException;
 use StdClass;
+use Maghead\Sharding\ShardCollection;
 
 class GearmanQueryMapper
 {
@@ -56,7 +57,7 @@ class GearmanQueryMapper
     }
 
 
-    public function map(array $shards, $query)
+    public function map(ShardCollection $shards, $query)
     {
         $context = new StdClass;
         $context->mapResults = [];

@@ -2,8 +2,8 @@
 
 namespace Maghead\Sharding\QueryMapper;
 
-use SQLBuilder\Universal\Query\SelectQuery;
-use SQLBuilder\ArgumentArray;
+use SQLBuilder\ToSqlInterface;
+use Maghead\Sharding\ShardCollection;
 
 interface QueryMapper
 {
@@ -12,5 +12,5 @@ interface QueryMapper
      *
      * @return array[shardId][]
      */
-    public function map(array $shards, $query);
+    public function map(ShardCollection $shards, $query);
 }

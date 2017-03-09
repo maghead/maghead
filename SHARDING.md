@@ -158,38 +158,6 @@ Sphinx Document
 - [ ] ??? Remove typeConstraint checking from modal method code.
 
 
-
-
-## CRUD Operations
-
-### Global Table CRUD Operations
-
-#### Create operation on global tables
-
-To create a new record on the global table, the repository will first find the
-master node to insert the record to get the primary key of the record.
-
-The second step will be: inserting the newly created record with primary key
-into all shards used by the shard mapping defined in the schema.
-
-#### Update operation on global tables
-
-To update a record on the global table, the repository will first find the
-master node to update the record with the primary key.
-
-The second step will be: updating the record with new values by primary key in
-all shards used by the shard mapping defined in the schema.
-
-#### Delete operation on global tables
-
-To delete a record on the global table, the repository will first find the
-master node to insert the record to get the primary key of the record.
-
-The second step will be: delete all records existed in all shards used by the
-shard mapping defined in the schema.
-
-
-
 ## Shard Mapping
 
 A shard mapping defines how do we allocate data on different shards.
@@ -245,6 +213,81 @@ A shard mapping config looks like this:
     ],
 
 By default, the 'chunks' list is empty. So you have to create chunks first.
+
+
+## Iterating shards of a Model
+
+    $shards = Book::shards(); // returns Shards of the model.
+    foreach ($shards as $shardId => $shard) {
+        $shard; // instance of Maghead\Sharding\Shard
+    }
+
+
+## Shard Manager
+
+Shard Manager manages the connections to shards. the connections used by shards
+are defined in the `data_source` section in the config file.
+
+To create the shard manager, you need two arguments: Config object and
+ConnectionManager instance.
+
+    use Maghead\Sharding\Manager\ShardManager;
+
+    $shardManager = new ShardManager($config, $connectionManager);
+
+To get the shards used by one shard mapping, simply call `getShardsOf` with the
+related shard mapping ID:
+
+    $shards = $shardManager->getShardsOf('M_store_id');
+
+ShardManager provides one factory method to help you create the shard dispatcher.
+To create the shard dispatcher, you need to pass the shard mapping ID to return
+the dispatcher that dispatches the shard node for specific sharding rule, e.g.:
+
+    $dispatcher = $shardManager->createShardDispatcherOf('M_store_id');
+
+
+
+
+
+## CRUD Operations
+
+### Global Table CRUD Operations
+
+#### Create operation on global tables
+
+To create a new record on the global table, the repository will first find the
+master node to insert the record to get the primary key of the record.
+
+The second step will be: inserting the newly created record with primary key
+into all shards used by the shard mapping defined in the schema.
+
+The API is the same as when the ORM doesn't use sharding:
+
+    $ret = Store::create([ 'name' => 'Shop III', 'code' => 'BS001' ]);
+
+#### Update operation on global tables
+
+To update a record on the global table, the repository will first find the
+master node to update the record with the primary key.
+
+The second step will be: updating the record with new values by primary key in
+all shards used by the shard mapping defined in the schema.
+
+The API is the same as when the ORM doesn't use sharding:
+
+    $ret = $store->update([ 'code' => 'BS002' ]);
+
+#### Delete operation on global tables
+
+To delete a record on the global table, the repository will first find the
+master node to insert the record to get the primary key of the record.
+
+The second step will be: delete all records existed in all shards used by the
+shard mapping defined in the schema.
+
+
+## Chunks
 
 ### Creating Chunks
 

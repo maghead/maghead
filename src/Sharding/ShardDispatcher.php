@@ -6,6 +6,8 @@ use Maghead\Manager\ConnectionManager;
 use Maghead\Manager\ShardManager;
 use Maghead\Sharding\Hasher\Hasher;
 use Maghead\Sharding\ShardMapping;
+use Maghead\Sharding\ShardCollection;
+use Maghead\Sharding\Shard;
 use Exception;
 
 class ShardDispatcher
@@ -16,7 +18,7 @@ class ShardDispatcher
 
     protected $mapping;
 
-    public function __construct(ShardMapping $mapping, Hasher $hasher, array $shards)
+    public function __construct(ShardMapping $mapping, Hasher $hasher, ShardCollection $shards)
     {
         $this->mapping = $mapping;
         $this->hasher = $hasher;

@@ -73,7 +73,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
      * local table.
      *
      */
-    public $globalTable;
+    public $globalTable = false;
 
     public $shardMapping;
 
@@ -737,7 +737,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         return $this;
     }
 
-    public function globalTable(string $mappingId)
+    public function globalTable($mappingId)
     {
         $this->globalTable = true;
         $this->shardMapping = $mappingId;
@@ -745,7 +745,12 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         return $this;
     }
 
-    public function shardBy(string $mappingId)
+    /**
+     * Define the shard mapping ID used for sharding.
+     *
+     * @param string $mappingId
+     */
+    public function shardBy($mappingId)
     {
         $this->shardMapping = $mappingId;
 

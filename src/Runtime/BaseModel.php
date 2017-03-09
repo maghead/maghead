@@ -177,8 +177,16 @@ abstract class BaseModel implements Serializable
     }
 
 
-    public static function shards()
+    /**
+     * Return the shards used by this model.
+     *
+     * @return Maghead\Sharding\Shard[]
+     */
+    public static function shards(ShardManager $shardManager = null)
     {
+        if ($shardManager) {
+            return $shardManager->getShardsOf(static::SHARD_MAPPING_ID);
+        }
         // Get shard nodes of this table.
         $config = ConfigLoader::getCurrentConfig();
         $shardManager = new ShardManager($config, ConnectionManager::getInstance());
@@ -211,6 +219,12 @@ abstract class BaseModel implements Serializable
             }
             return $ret;
         } else if (static::SHARD_MAPPING_ID) {
+            // Generate an UUID
+
+            // Select shards by the key
+
+
+
 
         } else {
             return static::masterRepo()->create($args);
