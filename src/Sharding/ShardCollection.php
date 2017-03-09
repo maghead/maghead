@@ -7,6 +7,7 @@ use IteratorAggregate;
 use ArrayIterator;
 use Maghead\Sharding\Hasher\FlexihashHasher;
 use Maghead\Sharding\Hasher\Hasher;
+use Ramsey\Uuid\Uuid;
 
 class ShardCollection implements ArrayAccess, IteratorAggregate
 {
@@ -18,6 +19,30 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
     {
         $this->shards = $shards;
         $this->mapping = $mapping;
+    }
+
+
+    /**
+     * A simple UUID generator base on Ramsey's implementation.
+     */
+    public function generateUUID()
+    {
+        // See https://github.com/ramsey/uuid/wiki/Ramsey%5CUuid-Cookbook
+        if ($keyGenerator = $this->mapping->getKeyGenerator()) {
+            switch ($keyGenerator) {
+                case "uuid-v1":
+                    return Uuid::uuid1();
+                case "uuid-v4":
+                    return Uuid::uuid4();
+                    /*
+                case "uuid-v3":
+                    return Uuid::uuid3(Uuid::NAMESPACE_DNS, 'php.net');
+                case "uuid-v5":
+                    return Uuid::uuid5(Uuid::NAMESPACE_DNS, 'php.net');
+                     */
+            }
+        }
+        return Uuid::uuid4();
     }
 
     public function getMapping()

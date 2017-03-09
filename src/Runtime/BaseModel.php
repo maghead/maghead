@@ -219,6 +219,18 @@ abstract class BaseModel implements Serializable
             }
             return $ret;
         } else if (static::SHARD_MAPPING_ID) {
+            $shards = static::shards();
+            $mapping = $shards->getMapping();
+            $shardKeyName = $mapping->getKey();
+
+            // If the shard is already defined, 
+            // then we can dispatch
+            if (isset($args[$shardKeyName])) {
+                $shardKey = $args[$shardKeyName];
+            } else {
+                // $shardKey = // $mapping->generateKey();
+            }
+
             // Generate an UUID
 
             // Select shards by the key

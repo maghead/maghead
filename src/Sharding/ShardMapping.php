@@ -42,6 +42,24 @@ class ShardMapping
         $this->extra = $extra;
     }
 
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    public function hasKeyGenerator()
+    {
+        return isset($this->extra['key_generator']);
+    }
+
+    public function getKeyGenerator()
+    {
+        if (isset($this->extra['key_generator'])) {
+            return $this->extra['key_generator'];
+        }
+    }
+
+
     /**
      * Return the type of this shard mapping.
      *
