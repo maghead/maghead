@@ -28,7 +28,6 @@ class ShardManager
         $this->config = $config;
         $this->shardingConfig = $config['sharding'];
         $this->connectionManager = $connectionManager;
-
     }
 
     public function getMappingsConfig()
@@ -79,7 +78,7 @@ class ShardManager
             $shard = new Shard($shardId, $shardConfig, $this->connectionManager);
             $shards[ $shardId ] = $shard;
         }
-        return new ShardCollection($shards);
+        return new ShardCollection($shards, $mapping);
     }
 
     public function createShardDispatcherOf(string $mappingId)

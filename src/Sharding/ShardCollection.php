@@ -10,9 +10,17 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
 {
     protected $shards;
 
-    public function __construct(array $shards)
+    protected $mapping;
+
+    public function __construct(array $shards, ShardMapping $mapping = null)
     {
         $this->shards = $shards;
+        $this->mapping = $mapping;
+    }
+
+    public function getMapping()
+    {
+        return $this->mapping;
     }
 
     public function getIterator()
