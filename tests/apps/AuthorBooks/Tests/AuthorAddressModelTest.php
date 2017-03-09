@@ -107,13 +107,12 @@ class AuthorAddressModelTest extends ModelTestCase
         $items = $addresses->items();
         $this->assertNotEmpty($items);
 
-        ok($addresses[0]);
-        ok($addresses[1]);
-        ok(! isset($addresses[2]));
-        ok(! @$addresses[2]);
+        $this->assertNotNull($addresses[0]);
+        $this->assertNotNull($addresses[1]);
+        $this->assertFalse(isset($addresses[2]));
 
-        ok($addresses[0]->id);
-        ok($addresses[1]->id);
+        $this->assertNotNull($addresses[0]->id);
+        $this->assertNotNull($addresses[1]->id);
         $this->assertCount(2, $addresses);
     }
 
@@ -160,7 +159,7 @@ class AuthorAddressModelTest extends ModelTestCase
         $this->assertEquals('Harvard', $addresses[0]->address);
 
         $a = $addresses[0];
-        ok($retAuthor = $a->author); // dynamic model getter
+        $this->assertNotNull($retAuthor = $a->author); // dynamic model getter
         $this->assertNotNull($retAuthor->id);
         $this->assertNotNull($retAuthor->name);
         $this->assertEquals('Z', $retAuthor->name);

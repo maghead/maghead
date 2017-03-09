@@ -85,15 +85,15 @@ class AuthorBookModelTest extends ModelTestCase
         $authors->where()
                 ->equal('confirmed', false);
         $ret = $authors->fetch();
-        ok($ret);
-        is(1, $authors->size());
+        $this->assertResultSuccess($ret);
+        $this->assertEquals(1, $authors->size());
 
         $authors = new \AuthorBooks\Model\AuthorCollection;
         $authors->where()
                 ->equal('confirmed', true);
         $ret = $authors->fetch();
-        ok($ret);
-        is(1, $authors->size());
+        $this->assertResultSuccess($ret);
+        $this->assertEquals(1, $authors->size());
         $authors->delete();
     }
 
@@ -205,20 +205,20 @@ class AuthorBookModelTest extends ModelTestCase
         $this->assertFalse($a2);
 
         $ret = Author::create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
-        ok($ret->success);
+        $this->assertTrue($ret->success);
 
         $a2 = Author::load($ret->key);
-        ok($a2->id);
+        $this->assertNotNull($a2->id);
 
         $ret = Author::create(array( 'xxx' => true, 'name' => 'long string \'` long string' , 'email' => 'email2' , 'identity' => 'id2' ));
-        ok($ret->success);
+        $this->assertTrue($ret->success);
 
         $a2 = Author::load($ret->key);
-        ok($a2->id);
+        $this->assertNotNull($a2->id);
 
         $ret = Author::create(array( 'name' => 'Foo' , 'email' => 'foo@google.com' , 'identity' => 'foo' ));
         $this->resultOK(true, $ret);
-        ok($id = $ret->key);
+        $this->assertNotNull($id = $ret->key);
         $author = Author::masterRepo()->load($ret->key);
         $this->assertEquals('Foo', $author->name);
         $this->assertEquals('foo@google.com', $author->email);
