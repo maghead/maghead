@@ -673,6 +673,43 @@ class BaseRepo
     }
 
 
+    /**
+     * PDO::exec — Execute an SQL statement and return the number of affected rows
+     *
+     * @return int
+     */
+    public function exec($sql)
+    {
+        return $this->write->exec($sql);
+    }
+
+    /**
+     * Execute write query to the db.
+     *
+     * Return the result of PDOStatement::execute method.
+     *
+     * @return bool
+     */
+    public function write($sql, $args)
+    {
+        $stm = $this->write->prepare($sql, $args);
+        return $stm->execute($args);
+    }
+
+    /**
+     * Execute a query on the read connection.
+     *
+     * @return PDOStatement object
+     */
+    public function query($sql, $args)
+    {
+        $stm = $this->read->prepare($sql, $args);
+        $stm->execute($args);
+        return $stm;
+    }
+
+
+
 
 
     // ================= Locks =====================
@@ -711,6 +748,7 @@ class BaseRepo
             $this->write->query('UNLOCK TABLES');
         }
     }
+
 
 
     // ================= TRIGGER METHODS ===================
