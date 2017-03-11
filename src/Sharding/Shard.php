@@ -5,6 +5,7 @@ namespace Maghead\Sharding;
 use Maghead\Sharding\Balancer\RandBalancer;
 use Maghead\Manager\ConnectionManager;
 use Maghead\Runtime\BaseRepo;
+use SQLBuilder\Universal\UUIDQuery;
 
 class Shard
 {
@@ -15,6 +16,10 @@ class Shard
      */
     protected $id;
 
+    protected $readServers;
+
+    protected $writeServers;
+
     /**
      * @var array
      *
@@ -24,20 +29,22 @@ class Shard
 
     public function __construct($id, array $config, ConnectionManager $connectionManager, Balancer $balancer = null)
     {
-        $this->id = $id;
-        $this->config = $config;
+        $this->id           = $id;
+        $this->config       = $config;
+        $this->readServers  = $config['read'];
+        $this->writeServers = $config['write'];
         $this->connectionManager = $connectionManager;
         $this->balancer = $balancer ?: new RandBalancer;
     }
 
     public function selectReadNode()
     {
-        return $this->balancer->select($this->config['read']);
+        return $this->balancer->select($this->readServers);
     }
 
     public function selectWriteNode()
     {
-        return $this->balancer->select($this->config['write']);
+        return $this->balancer->select($this->writeServers);
     }
 
     /**
@@ -45,7 +52,7 @@ class Shard
      */
     public function selectReadConnection()
     {
-        $nodeId = $this->balancer->select($this->config['read']);
+        $nodeId = $this->balancer->select($this->readServers);
         return $this->connectionManager->getConnection($nodeId);
     }
 
@@ -54,8 +61,22 @@ class Shard
      */
     public function selectWriteConnection()
     {
-        $nodeId = $this->balancer->select($this->config['write']);
+        $nodeId = $this->balancer->select($this->writeServers);
         return $this->connectionManager->getConnection($nodeId);
+    }
+
+    /**
+     * Query UUID from the database.
+     *
+     * @return string
+     */
+    public function queryUUID()
+    {
+        $write  = $this->selectWriteConnection();
+        $query  = new UUIDQuery;
+        $driver = $write->getQueryDriver();
+        $sql    = $query->toSql($driver, new ArgumentArray);
+        return $write->query($sql)->fetchColumn(0);
     }
 
 
@@ -75,8 +96,9 @@ class Shard
      */
     public function createRepo(string $repoClass)
     {
-        $read = $this->selectReadConnection();
-        $write = $this->selectWriteConnection();
-        return new $repoClass($write, $read);
+        return new $repoClass(
+            $this->selectWriteConnection(),
+            $this->selectReadConnection()
+        );
     }
 }

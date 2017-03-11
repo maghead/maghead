@@ -127,19 +127,6 @@ class StoreShardingTest extends ModelTestCase
     }
 
 
-    /**
-     * @rebuild false
-     * @depends testCreateStoresGlobally
-     */
-    public function testInsertOrderFromShardCollectionDispatch()
-    {
-        $store = Store::masterRepo()->loadByCode('TW002');
-        $this->assertNotFalse($store, 'load store by code');
-        $ret = Order::shards()->dispatch($store->id)
-            ->repo('StoreApp\\Model\\OrderRepo')
-            ->create([ 'store_id' => $store->id, 'amount' => 20 ]);
-        $this->assertResultSuccess($ret);
-    }
 
     /**
      * @rebuild false
@@ -157,5 +144,29 @@ class StoreShardingTest extends ModelTestCase
                 $this->assertResultSuccess($ret);
             }
         }
+    }
+
+    /**
+     * @rebuild false
+     * @depends testCreateStoresGlobally
+     */
+    public function testInsertOrderFromShardCollectionDispatch()
+    {
+        $store = Store::masterRepo()->loadByCode('TW002');
+        $this->assertNotFalse($store, 'load store by code');
+        $ret = Order::shards()->dispatch($store->id)
+            ->repo('StoreApp\\Model\\OrderRepo')
+            ->create([ 'store_id' => $store->id, 'amount' => 20 ]);
+        $this->assertResultSuccess($ret);
+    }
+
+    /**
+     * @rebuild false
+     * @depends testInsertOrderFromShardCollectionDispatch
+     */
+    public function testFindOrderWithSharding()
+    {
+        $store = Store::masterRepo()->loadByCode('TW002');
+        $this->assertNotFalse($store, 'load store by code');
     }
 }

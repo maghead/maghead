@@ -214,8 +214,7 @@ abstract class BaseModel implements Serializable
             // TODO: insert into shards: support global transaction
             $shards = static::shards();
             foreach ($shards as $shardId => $shard) {
-                $repo = $shard->createRepo(static::REPO_CLASS);
-                $results[$shardId] = $repo->create($args);
+                $results[$shardId] = $shard->createRepo(static::REPO_CLASS)->create($args);
             }
             return $ret;
         } else if (static::SHARD_MAPPING_ID) {
@@ -240,6 +239,7 @@ abstract class BaseModel implements Serializable
             return static::masterRepo()->create($args);
         }
     }
+
 
     /**
      * Create and return the created record.
