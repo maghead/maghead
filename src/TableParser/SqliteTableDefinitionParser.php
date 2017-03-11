@@ -391,6 +391,9 @@ class SqliteTableDefinitionParser
 
     protected function tryParseIndexColumns()
     {
+        if ($this->metEnd()) {
+            return;
+        }
         $c = $this->cur();
         if ($c == '(') {
             $this->advance();
@@ -464,7 +467,7 @@ class SqliteTableDefinitionParser
     }
 
     public static $intTypes = ['INT', 'INTEGER', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT', 'BIG INT', 'INT2', 'INT8'];
-    public static $textTypes = ['CHARACTER', 'VARCHAR', 'VARYING CHARACTER', 'NCHAR', 'NATIVE CHARACTER', 'NVARCHAR', 'TEXT', 'CLOB'];
+    public static $textTypes = ['CHARACTER', 'VARCHAR', 'VARYING CHARACTER', 'NCHAR', 'NATIVE CHARACTER', 'NVARCHAR', 'TEXT', 'BLOB', 'BINARY'];
     public static $numericTypes = ['NUMERIC', 'DECIMAL', 'BOOLEAN', 'DATE', 'DATETIME', 'TIMESTAMP'];
 
     protected function consume($token, $typeName)

@@ -7,6 +7,26 @@ use Maghead\TableParser\SqliteTableParser;
  */
 class SqliteTableParserTest extends PHPUnit\Framework\TestCase
 {
+
+
+
+    public function testParsingQuotedIdentifier()
+    {
+        $conn = new PDO('sqlite::memory:');
+        $defsql = "CREATE TABLE foo (`uuid` BINARY(16) NOT NULL PRIMARY KEY, NAME varchar(12))";
+        $conn->query($defsql);
+
+        $parser = new SqliteTableParser($conn, new PDOSQLiteDriver($conn));
+        $tables = $parser->getTables();
+
+        $sql = $parser->getTableSql('foo');
+        $this->assertEquals($defsql, $sql);
+        $columns = $parser->parseTableSql('foo');
+        $this->assertNotEmpty($columns);
+        var_dump($columns);
+    }
+
+
     public function testSQLiteTableParser()
     {
         $pdo = new PDO('sqlite::memory:');
