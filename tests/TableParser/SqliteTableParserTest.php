@@ -13,7 +13,7 @@ class SqliteTableParserTest extends PHPUnit\Framework\TestCase
     public function testParsingQuotedIdentifier()
     {
         $conn = new PDO('sqlite::memory:');
-        $defsql = "CREATE TABLE foo (`uuid` BINARY(16) NOT NULL PRIMARY KEY, NAME varchar(12))";
+        $defsql = "CREATE TABLE foo (`uuid` BINARY(16) NOT NULL PRIMARY KEY, `name` varchar(12))";
         $conn->query($defsql);
 
         $parser = new SqliteTableParser($conn, new PDOSQLiteDriver($conn));
@@ -21,9 +21,21 @@ class SqliteTableParserTest extends PHPUnit\Framework\TestCase
 
         $sql = $parser->getTableSql('foo');
         $this->assertEquals($defsql, $sql);
-        $columns = $parser->parseTableSql('foo');
+        $result = $parser->parseTableSql('foo');
+        $columns = $result->columns;
+
+        list($uuid, $name) = $columns;
+
         $this->assertNotEmpty($columns);
-        var_dump($columns);
+        $this->assertCount(2, $columns);
+        $this->assertEquals('uuid', $uuid->name);
+        $this->assertEquals('BINARY', $uuid->type);
+        $this->assertEquals(16, $uuid->length);
+        $this->assertTrue($uuid->primary);
+
+        $this->assertEquals('name', $name->name);
+        $this->assertEquals('VARCHAR', $name->type);
+        $this->assertEquals(12, $name->length);
     }
 
 
