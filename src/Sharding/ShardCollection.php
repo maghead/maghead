@@ -16,10 +16,13 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
 
     protected $mapping;
 
-    public function __construct(array $shards, ShardMapping $mapping = null)
+    protected $repoClass;
+
+    public function __construct(array $shards, ShardMapping $mapping = null, $repoClass = null)
     {
         $this->shards = $shards;
         $this->mapping = $mapping;
+        $this->repoClass = $repoClass;
     }
 
 
@@ -103,5 +106,16 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
             $hasher = new FlexihashHasher($this->mapping);
         }
         return new ShardDispatcher($this->mapping, $hasher, $this);
+    }
+
+
+    public function __call($method, $args)
+    {
+        $results = [];
+        foreach ($this->shards as $shardId => $shard) {
+            $repo = $shard->createRepo($this->repoClass);
+            $results[$shardId] = call_user_func_array([$repo, $method], $args);
+        }
+        return $results;
     }
 }
