@@ -1,11 +1,12 @@
 <?php
 use Maghead\Testing\BaseTestCase;
+use Maghead\Testing\ModelTestCase;
 use Maghead\TableParser\TableParser;
 
 /**
  * @group table-parser
  */
-class TableParserTest extends BaseTestCase
+class TableParserTest extends ModelTestCase
 {
     public function getModels()
     {
@@ -17,22 +18,27 @@ class TableParserTest extends BaseTestCase
         ];
     }
 
+
+    public function tableNameProvider()
+    {
+        $models = $this->getModels();
+        return array_map(function($schema) {
+            return [$schema->getTable()];
+        }, $models);
+    }
+
+
     /**
-     * @dataProvider driverTypeDataProvider
+     * @dataProvider tableNameProvider
      */
-    public function testTableParserFor($driverType)
+    public function testTableParserFor($table)
     {
         $parser = TableParser::create($this->conn, $this->queryDriver);
-        $tables = $parser->getTables();
-        $this->assertNotNull($tables);
-        foreach ($tables as $table) {
-            $this->assertNotNull($table);
+        $schema = $parser->reverseTableSchema($table);
+        $this->assertNotNull($schema);
+        $this->assertInstanceOf('Maghead\\Schema\\DeclareSchema', $schema);
 
-            $schema = $parser->reverseTableSchema($table);
-            $this->assertNotNull($schema);
-
-            $columns = $schema->getColumns();
-            $this->assertNotEmpty($columns);
-        }
+        $columns = $schema->getColumns();
+        $this->assertNotEmpty($columns);
     }
 }

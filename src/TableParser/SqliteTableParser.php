@@ -27,25 +27,23 @@ class SqliteTableParser extends BaseTableParser
 
     public function getTableSql($table)
     {
-        $stm = $this->connection->query("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = '$table'");
-        // $stm = $this->connection->query("PRAGMA table_info($table)");
-        if ($row = $stm->fetch(PDO::FETCH_OBJ)) {
-            return $row->sql;
+        $stm = $this->connection->query("SELECT * FROM sqlite_master WHERE type = 'table' AND name = '$table'");
+        $row = $stm->fetch(PDO::FETCH_ASSOC);
+        if ($row === false) {
+            throw new Exception("Can't get sql from sqlite_master.");
         }
+        return $row['sql'];
     }
 
     public function parseTableSql($table)
     {
         $sql = $this->getTableSql($table);
-        if ($sql && preg_match('#`?(\w+)`?\s*\((.*)\)#ism', $sql, $regs)) {
-            $columns = array();
-            $name = $regs[1];
-            $columnstr = $regs[2];
-            $parser = new SqliteTableDefinitionParser($columnstr);
-            $tableDef = $parser->parseColumnDefinitions();
-
-            return $tableDef;
+        if (!preg_match('#`?(\w+)`?\s*\((.*)\)#ism', $sql, $matches)) {
+            throw new Exception("Can't parse sqlite table schema.");
         }
+        list($matched, $name, $columnstr) = $matches;
+        $parser = new SqliteTableDefinitionParser($columnstr);
+        return $parser->parseColumnDefinitions();
     }
 
     public function reverseTableSchema($table, $referenceSchema = null)
