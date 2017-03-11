@@ -194,7 +194,7 @@ abstract class BaseModel implements Serializable
     }
 
     /**
-     * create method
+     * This static create method supports sharding.
      *
      * @param array $args
      */
@@ -209,9 +209,9 @@ abstract class BaseModel implements Serializable
                 $args[$ret->keyName] = $ret->key;
             }
 
-            // TODO: Check error, log and retry,
-            // TODO: MAP QUERY WORKER
-            // support global transaction
+            // TODO: insert into shards: Check error, log and retry,
+            // TODO: insert into shards: Use MAP QUERY WORKER to support async.
+            // TODO: insert into shards: support global transaction
             $shards = static::shards();
             foreach ($shards as $shardId => $shard) {
                 $repo = $shard->createRepo(static::REPO_CLASS);

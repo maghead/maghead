@@ -319,7 +319,7 @@ a new chunk list will be allocated in the shard mapping config:
 
     'M_store_id' => [
         'tables' => ['orders'], // This is something that we will define in the schema.
-        'key' => 'store_id',
+        'key'    => 'store_id',
         'shards' => [ 's1', 's2' ],
         'chunks' => [
             'c1' => ['shard' => 's1', 'dbname' => 'db_c1'], // the dbname may override the dbname in the DSN of the shard.
