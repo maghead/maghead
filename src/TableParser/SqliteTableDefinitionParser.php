@@ -322,7 +322,7 @@ class SqliteTableDefinitionParser
      */
     protected function currentWindow($window = 32)
     {
-        return var_export(substr($this->str, $this->p, $window) . '...', true)."\n";
+        return var_export(substr($this->str, $this->p, $window) . '...', true)." FROM '{$this->str}'\n";
     }
 
     protected function metEnd()
