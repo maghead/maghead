@@ -58,6 +58,16 @@ class Shard
         return $this->connectionManager->getConnection($nodeId);
     }
 
+
+    /**
+     * Alias method for createRepo.
+     */
+    public function repo(string $repoClass)
+    {
+        return $this->createRepo($repoClass);
+    }
+
+
     /**
      * Create repo object from the selected nodes
      *

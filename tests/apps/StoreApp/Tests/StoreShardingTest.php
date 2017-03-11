@@ -5,6 +5,7 @@ use StoreApp\Model\Store;
 use StoreApp\Model\StoreCollection;
 use StoreApp\Model\StoreSchema;
 use StoreApp\Model\Order;
+use StoreApp\Model\OrderRepo;
 use StoreApp\Model\OrderSchema;
 use StoreApp\Model\OrderCollection;
 
@@ -17,6 +18,8 @@ class StoreShardingTest extends ModelTestCase
     protected $defaultDataSource = 'node_master';
 
     protected $requiredDataSources = ['node_master','node1', 'node2'];
+
+    protected $freeConnections = false;
 
     public function getModels()
     {
@@ -81,18 +84,24 @@ class StoreShardingTest extends ModelTestCase
     {
         $orders = [];
         $orders['TW001'] = [
-            [ 'amount' => 100 ],
-            [ 'amount' => 100 ],
-            [ 'amount' => 100 ],
-            [ 'amount' => 100 ],
+            [ 'amount' => 100, 'paid' => false ],
+            [ 'amount' => 100, 'paid' => false ],
+            [ 'amount' => 100, 'paid' => false ],
+            [ 'amount' => 100, 'paid' => false ],
         ];
         $orders['TW002'] = [
-            [ 'amount' => 10 ],
-            [ 'amount' => 10 ],
-            [ 'amount' => 10 ],
-            [ 'amount' => 10 ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
         ];
-        return [$orders];
+        $orders['TW003'] = [
+            [ 'amount' => 1000, 'paid' => false ],
+            [ 'amount' => 1000, 'paid' => false ],
+            [ 'amount' => 1000, 'paid' => false ],
+            [ 'amount' => 1000, 'paid' => false ],
+        ];
+        return [[$orders]];
     }
 
     public function storeDataProvider()
@@ -104,6 +113,8 @@ class StoreShardingTest extends ModelTestCase
         return [[$stores]];
     }
 
+
+
     /**
      * @dataProvider storeDataProvider
      */
@@ -113,18 +124,38 @@ class StoreShardingTest extends ModelTestCase
             $ret = Store::create($args);
             $this->assertResultSuccess($ret);
         }
+    }
 
-        $orderData = $this->orderDataProvider();
-        foreach ($orderData[0] as $storeCode => $ordersData) {
+
+    /**
+     * @rebuild false
+     * @depends testCreateStoresGlobally
+     */
+    public function testInsertOrderFromShardCollectionDispatch()
+    {
+        $store = Store::masterRepo()->loadByCode('TW002');
+        $this->assertNotFalse($store, 'load store by code');
+        $ret = Order::shards()->dispatch($store->id)
+            ->repo('StoreApp\\Model\\OrderRepo')
+            ->create([ 'store_id' => $store->id, 'amount' => 20 ]);
+        $this->assertResultSuccess($ret);
+    }
+
+    /**
+     * @rebuild false
+     * @depends testCreateStoresGlobally
+     * @dataProvider orderDataProvider
+     */
+    public function testInsertOrderIntoShards($orderArgsList)
+    {
+        foreach ($orderArgsList as $storeCode => $storeOrderArgsList) {
             $store = Store::masterRepo()->loadByCode($storeCode);
-
-            // create orders
-            foreach ($ordersData as $orderData) {
-                $orderData['store_id'] = $store->id;
-                $ret = Order::create($orderData);
+            $this->assertNotFalse($store, 'load store by code');
+            foreach ($storeOrderArgsList as $orderArgs) {
+                $orderArgs['store_id'] = $store->id;
+                $ret = Order::create($orderArgs);
                 $this->assertResultSuccess($ret);
             }
         }
-        // all orders ready
     }
 }

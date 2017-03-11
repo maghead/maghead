@@ -95,6 +95,12 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
         unset($this->shards[$name]);
     }
 
+    public function dispatch($key, Hasher $hasher = null)
+    {
+        $dispatcher = $this->createDispatcher($hasher);
+        return $dispatcher->dispatch($key);
+    }
+
     public function createDispatcher(Hasher $hasher = null)
     {
         if (!$hasher) {

@@ -79,6 +79,7 @@ abstract class BaseTestCase extends TestCase
         $this->connManager = ConnectionManager::getInstance();
         $this->logger = new Logger();
         $this->logger->setQuiet();
+        $this->config = $this->loadConfig();
     }
 
     protected function getMasterDataSourceId()
@@ -128,6 +129,7 @@ abstract class BaseTestCase extends TestCase
     {
         if ($this->freeConnections) {
             $this->connManager->free();
+            $this->conn = null;
         }
     }
 

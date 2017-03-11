@@ -131,8 +131,12 @@ Sphinx Document
 
     $shards = Book::shards(); // returns Shards of the model.
 
-    // Dispatch to one repository by $key and create the record in the repository.
-    Order::shards()->dispatch($key)->create($args);
+    - [ ] Implement dispatch method on ShardCollection to support the following use case:
+
+        // Dispatch to one repository by $key and create the record in the repository.
+        Order::shards()->dispatch($key)->createRepo('StoreRepo')->create($args);
+
+        The use case above dispatch the shard before BaseModel::create method dispatch the shard.
 
     // Automatically dispatch the repository by the "key" defined in $args.
     Order::shards()->create($args);
@@ -156,6 +160,11 @@ Sphinx Document
 - [ ] Add setter type signature support to the class method generator.
 - [ ] Validate isa type when setting value via setter method.
 - [ ] ??? Remove typeConstraint checking from modal method code.
+
+
+
+
+
 
 
 ## Shard Mapping

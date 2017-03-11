@@ -16,5 +16,15 @@ class OrderSchema extends DeclareSchema
         $this->column('amount')
             ->integer()
             ->required();
+
+        $this->column('paid_amount')
+            ->integer()
+            ->default(0);
+
+        $this->column('paid')
+            ->boolean()
+            ->default(false);
+
+        $this->shardBy("M_store_id");
     }
 }
