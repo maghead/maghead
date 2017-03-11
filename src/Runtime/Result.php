@@ -65,6 +65,8 @@ class Result
 
     public $debugInfo = array();
 
+    public $shard;
+
     public function __construct($success, $message)
     {
         $this->success = $success;
