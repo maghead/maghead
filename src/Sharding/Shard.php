@@ -38,22 +38,39 @@ class Shard
         $this->balancer = $balancer ?: new RandBalancer;
     }
 
+    /**
+     * Add a read node for the list.
+     *
+     * @param string $nodeId
+     * @param array $config
+     */
     public function addReadNode($nodeId, array $config)
     {
         $this->readServers[$nodeId] = $config;
     }
 
+    /**
+     * Add a write node for the list.
+     *
+     * @param string $nodeId
+     * @param array $config
+     */
     public function addWriteNode($nodeId, array $config)
     {
         $this->writeServers[$nodeId] = $config;
     }
 
-
+    /**
+     * @return string the node Id for read.
+     */
     public function selectReadNode()
     {
         return $this->balancer->select($this->readServers);
     }
 
+    /**
+     * @return string the node Id for write.
+     */
     public function selectWriteNode()
     {
         return $this->balancer->select($this->writeServers);
