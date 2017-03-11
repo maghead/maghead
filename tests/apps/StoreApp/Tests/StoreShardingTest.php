@@ -146,6 +146,21 @@ class StoreShardingTest extends ModelTestCase
         }
     }
 
+
+    /**
+     * @rebuild false
+     * @depends testCreateStoresGlobally
+     */
+    public function testShardQueryUUID()
+    {
+        $store = Store::masterRepo()->loadByCode('TW002');
+        $this->assertNotFalse($store, 'load store by code');
+        $shard = Order::shards()->dispatch($store->id);
+        $this->assertInstanceOf('Maghead\\Sharding\\Shard', $shard);
+        $uuid = $shard->queryUUID();
+        $this->assertNotNull($uuid);
+    }
+
     /**
      * @rebuild false
      * @depends testCreateStoresGlobally

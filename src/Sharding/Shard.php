@@ -5,7 +5,8 @@ namespace Maghead\Sharding;
 use Maghead\Sharding\Balancer\RandBalancer;
 use Maghead\Manager\ConnectionManager;
 use Maghead\Runtime\BaseRepo;
-use SQLBuilder\Universal\UUIDQuery;
+use SQLBuilder\Universal\Query\UUIDQuery;
+use SQLBuilder\ArgumentArray;
 
 class Shard
 {
@@ -31,11 +32,22 @@ class Shard
     {
         $this->id           = $id;
         $this->config       = $config;
-        $this->readServers  = $config['read'];
-        $this->writeServers = $config['write'];
+        $this->readServers  = isset($config['read']) ? $config['read'] : [];
+        $this->writeServers = isset($config['write']) ? $config['write'] : [];
         $this->connectionManager = $connectionManager;
         $this->balancer = $balancer ?: new RandBalancer;
     }
+
+    public function addReadNode($nodeId, array $config)
+    {
+        $this->readServers[$nodeId] = $config;
+    }
+
+    public function addWriteNode($nodeId, array $config)
+    {
+        $this->writeServers[$nodeId] = $config;
+    }
+
 
     public function selectReadNode()
     {
