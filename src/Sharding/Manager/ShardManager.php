@@ -68,7 +68,7 @@ class ShardManager
         return $this->shardingConfig['shards'];
     }
 
-    public function getShardsOf(string $mappingId)
+    public function getShardsOf($mappingId, $repoClass = null)
     {
         $mapping = $this->getShardMapping($mappingId);
         $config = $mapping->selectShards($this->getAvailableShards());
@@ -78,7 +78,7 @@ class ShardManager
             $shard = new Shard($shardId, $shardConfig, $this->connectionManager);
             $shards[ $shardId ] = $shard;
         }
-        return new ShardCollection($shards, $mapping);
+        return new ShardCollection($shards, $mapping, $repoClass);
     }
 
     public function createShardDispatcherOf(string $mappingId)
