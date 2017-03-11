@@ -190,7 +190,7 @@ abstract class BaseModel implements Serializable
         // Get shard nodes of this table.
         $config = ConfigLoader::getCurrentConfig();
         $shardManager = new ShardManager($config, ConnectionManager::getInstance());
-        return $shardManager->getShardsOf(static::SHARD_MAPPING_ID);
+        return $shardManager->getShardsOf(static::SHARD_MAPPING_ID, static::REPO_CLASS);
     }
 
     /**
@@ -230,14 +230,13 @@ abstract class BaseModel implements Serializable
                 // Generate an UUID
                 $shardKey = $shards->generateUUID();
             }
-
             $dispatcher = $shards->createDispatcher();
             $shard = $dispatcher->dispatch($shardKey);
-            $repo = $shard->createRepo(static::REPO_CLASS);
-            return $repo->create($args);
-        } else {
-            return static::masterRepo()->create($args);
+            $ret = $shard->createRepo(static::REPO_CLASS)->create($args);
+            $ret->shard = $shard;
+            return $ret;
         }
+        return static::masterRepo()->create($args);
     }
 
 
