@@ -116,6 +116,22 @@ Sphinx Document
             - [x] Provide query method to query SQL
             - [x] Merge result.
         - [x] Update reducer extension to convert string values.
+
+
+    - [x] Implement shards() factory method on model class:
+
+        $shards = Book::shards(); // returns Shards of the model.
+
+    - [x] Implement dispatch method on ShardCollection to support the following use case:
+
+        // Dispatch to one repository by $key and create the record in the repository.
+        Order::shards()->dispatch($key)->repo(StoreRepo::class)->create($args);
+
+        The use case above dispatch the shard before BaseModel::create method dispatch the shard.
+
+        $order = Order::shards()->loadByPrimaryKey(77890);
+        $order = Order::shards()->loadByPrimaryKey('569f21d7-fcad-49bf-99dd-795be631f984');
+
     - [ ] BroadcastQuery
         - Broadcast SQL statement to all shards.
     - [ ] Extract SQL building method for create (insertion)
@@ -126,24 +142,6 @@ Sphinx Document
         - [ ] Given a query, return Repo objects with different connections and
               run queries on these nodes.
 
-    - [ ] Shard by Range
-    - [ ] Virtual Shards (by using larger key space)
-
-    $shards = Book::shards(); // returns Shards of the model.
-
-    - [ ] Implement dispatch method on ShardCollection to support the following use case:
-
-        // Dispatch to one repository by $key and create the record in the repository.
-        Order::shards()->dispatch($key)->createRepo('StoreRepo')->create($args);
-
-        The use case above dispatch the shard before BaseModel::create method dispatch the shard.
-
-    // Automatically dispatch the repository by the "key" defined in $args.
-    Order::shards()->create($args);
-
-    $order = Order::shards()->find(77890);
-
-    $order = Order::shards()->find('569f21d7-fcad-49bf-99dd-795be631f984');
 
     - [ ] Global Table behaviour
         - [ ] Spread Create method
@@ -153,6 +151,9 @@ Sphinx Document
         - [ ] Spread Delete method
             - Delete records across different shards.
 
+    - Extra
+        - [ ] Shard by Range
+        - [ ] Virtual Shards (by using larger key space)
 
 
 - [ ] Move CRUD operation from modal class to ModelActions class.
