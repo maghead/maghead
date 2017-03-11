@@ -27,6 +27,16 @@ class TableParserTest extends ModelTestCase
         }, $models);
     }
 
+    public function testGetTables()
+    {
+        $parser = TableParser::create($this->conn, $this->queryDriver);
+        $this->assertSame([
+            'authors',
+            'addresses',
+            'author_books',
+            'books',
+        ], $parser->getTables());
+    }
 
     /**
      * @dataProvider tableNameProvider
