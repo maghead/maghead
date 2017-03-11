@@ -72,6 +72,7 @@ class Shard
      */
     public function queryUUID()
     {
+        // TODO: check if the database platform supports UUID generator
         $write  = $this->selectWriteConnection();
         $query  = new UUIDQuery;
         $driver = $write->getQueryDriver();
