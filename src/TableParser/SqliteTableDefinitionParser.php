@@ -317,9 +317,12 @@ class SqliteTableDefinitionParser
         return $tableConstraints;
     }
 
-    protected function currentWindow($window = 20)
+    /**
+     * return the current buffer window
+     */
+    protected function currentWindow($window = 32)
     {
-        return '=>'.substr($this->str, $this->p, $window)."....\n";
+        return var_export(substr($this->str, $this->p, $window) . '...', true)."\n";
     }
 
     protected function metEnd()
