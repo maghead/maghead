@@ -25,13 +25,13 @@ class UUIDPrimaryKeyColumn extends DeclareColumn
         $this->default(function($record, $args) {
             return \Ramsey\Uuid\Uuid::uuid4()->getBytes();
         });
-        $this->deflate(function($val) {
+        $this->deflator(function($val) {
             if ($val instanceof \Ramsey\Uuid\Uuid) {
                 return $val->getBytes();
             }
             return $val;
         });
-        $this->inflate(function($val) {
+        $this->inflator(function($val) {
             return \Ramsey\Uuid\Uuid::fromBytes($val);
         });
     }

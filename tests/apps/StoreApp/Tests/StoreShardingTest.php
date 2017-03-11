@@ -167,6 +167,25 @@ class StoreShardingTest extends ModelTestCase
      * @rebuild false
      * @depends testCreateStoresGlobally
      */
+    public function testOrderUUIDDeflator()
+    {
+        $store = Store::masterRepo()->loadByCode('TW002');
+        $this->assertNotFalse($store, 'load store by code');
+        $repo = Order::shards()->dispatch($store->id)->repo(OrderRepo::class);
+
+        $ret = $repo->create([ 'store_id' => $store->id, 'amount' => 20 ]);
+        $this->assertResultSuccess($ret);
+
+        $order = $repo->loadByPrimaryKey($ret->key);
+        $this->assertNotNull($order);
+        $this->assertNotNull($order->uuid);
+        $this->assertInstanceOf('Ramsey\Uuid\Uuid', $order->getUuid(), 'returned uuid should be an UUID object.');
+    }
+
+    /**
+     * @rebuild false
+     * @depends testCreateStoresGlobally
+     */
     public function testInsertOrderFromShardCollectionDispatch()
     {
         $store = Store::masterRepo()->loadByCode('TW002');
