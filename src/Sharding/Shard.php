@@ -15,7 +15,7 @@ class Shard
      *
      * the id of the shard.
      */
-    protected $id;
+    public $id;
 
     protected $readServers;
 
