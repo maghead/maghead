@@ -515,14 +515,15 @@ class BaseRepo
 
         // For integer primary key, we should convert it to intval
         $key = null;
-        if (isset($args[static::PRIMARY_KEY])) {
-            $key = $args[static::PRIMARY_KEY];
-        } else {
-            $primaryKey = $schema->getColumn(static::PRIMARY_KEY);
-            if ($driver instanceof PDOPgSQLDriver) {
-                $key = $primaryKey->typeCast($stm->fetchColumn());
+        if ($primaryKey = $schema->getColumn(static::PRIMARY_KEY)) {
+            if (isset($args[static::PRIMARY_KEY])) {
+                $key = $primaryKey->typeCast($args[static::PRIMARY_KEY]);
             } else {
-                $key = $primaryKey->typeCast($conn->lastInsertId());
+                if ($driver instanceof PDOPgSQLDriver) {
+                    $key = $primaryKey->typeCast($stm->fetchColumn());
+                } else {
+                    $key = $primaryKey->typeCast($conn->lastInsertId());
+                }
             }
         }
 

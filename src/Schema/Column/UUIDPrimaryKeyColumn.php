@@ -35,7 +35,4 @@ class UUIDPrimaryKeyColumn extends DeclareColumn
             return \Ramsey\Uuid\Uuid::fromBytes($val);
         });
     }
-
-
-
 }
