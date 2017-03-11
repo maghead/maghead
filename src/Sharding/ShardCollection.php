@@ -8,6 +8,7 @@ use ArrayIterator;
 use Maghead\Sharding\Hasher\FlexihashHasher;
 use Maghead\Sharding\Hasher\Hasher;
 use Ramsey\Uuid\Uuid;
+use SQLBuilder\Universal\UUIDQuery;
 
 class ShardCollection implements ArrayAccess, IteratorAggregate
 {
@@ -49,6 +50,20 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
         }
         return Uuid::uuid4();
     }
+
+
+    protected function queryUUID()
+    {
+        $shardId = array_rand($this->shards);
+        $shard = $this->shards[$shardId];
+        $conn = $shard->selectWriteConnection();
+        $query = new UUIDQuery;
+        $driver = $conn->getQueryDriver();
+        $sql = $query->toSql($driver, new ArgumentArray);
+        return $conn->query($sql)->fetchColumn(0);
+    }
+
+
 
     public function getMapping()
     {

@@ -228,16 +228,14 @@ abstract class BaseModel implements Serializable
             if (isset($args[$shardKeyName])) {
                 $shardKey = $args[$shardKeyName];
             } else {
-                $shardKey = // $mapping->generateKey();
+                // Generate an UUID
+                $shardKey = $shards->generateUUID();
             }
 
-            // Generate an UUID
-
-            // Select shards by the key
-
-
-
-
+            $dispatcher = $shards->createDispatcher();
+            $shard = $dispatcher->dispatch($shardKey);
+            $repo = $shard->createRepo(static::REPO_CLASS);
+            return $repo->create($args);
         } else {
             return static::masterRepo()->create($args);
         }
