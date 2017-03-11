@@ -142,10 +142,8 @@ class StoreShardingTest extends ModelTestCase
                 $orderArgs['store_id'] = $store->id;
                 $ret = Order::create($orderArgs);
                 $this->assertResultSuccess($ret);
-
                 $this->assertNotNull($ret->shard);
-
-                printf("Order #%d in Shard %s\n",$ret->id, $ret->shard->id); 
+                // printf("Order %s in Shard %s\n", Ramsey\Uuid\Uuid::fromBytes($ret->key), $ret->shard->id); 
             }
         }
     }

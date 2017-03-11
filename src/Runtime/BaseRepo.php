@@ -411,7 +411,7 @@ class BaseRepo
         foreach ($schema->columns as $n => $c) {
             // if column is required (can not be empty)
             //   and default is defined.
-            if (!$c->primary && (!isset($args[$n]) || !$args[$n])) {
+            if (!isset($args[$n]) || !$args[$n]) {
                 if ($val = $c->getDefaultValue(null, $args)) {
                     $args[$n] = $val;
                 }
@@ -513,11 +513,17 @@ class BaseRepo
             ]);
         }
 
+        // For integer primary key, we should convert it to intval
         $key = null;
-        if ($driver instanceof PDOPgSQLDriver) {
-            $key = intval($stm->fetchColumn());
+        if (isset($args[static::PRIMARY_KEY])) {
+            $key = $args[static::PRIMARY_KEY];
         } else {
-            $key = intval($conn->lastInsertId());
+            $primaryKey = $schema->getColumn(static::PRIMARY_KEY);
+            if ($driver instanceof PDOPgSQLDriver) {
+                $key = $primaryKey->typeCast($stm->fetchColumn());
+            } else {
+                $key = $primaryKey->typeCast($conn->lastInsertId());
+            }
         }
 
         $this->afterCreate($origArgs);
