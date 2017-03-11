@@ -21,6 +21,19 @@ class UUIDPrimaryKeyColumn extends DeclareColumn
             ->notNull()
             ->primary()
             ;
+
+        $this->default(function($record, $args) {
+            return \Ramsey\Uuid\Uuid::uuid4()->getBytes();
+        });
+        $this->deflate(function($val) {
+            if ($val instanceof \Ramsey\Uuid\Uuid) {
+                return $val->getBytes();
+            }
+            return $val;
+        });
+        $this->inflate(function($val) {
+            return \Ramsey\Uuid\Uuid::fromBytes($val);
+        });
     }
 
 

@@ -9,20 +9,7 @@ class OrderSchema extends DeclareSchema
 {
     public function schema()
     {
-        $this->column('uuid', 'Maghead\\Schema\\Column\\UUIDPrimaryKeyColumn')
-            ->default(function($record, $args) {
-                return \Ramsey\Uuid\Uuid::uuid4()->getBytes();
-            })
-            ->deflate(function($val) {
-                if ($val instanceof \Ramsey\Uuid\Uuid) {
-                    return $val->getBytes();
-                }
-                return $val;
-            })
-            ->inflate(function($val) {
-                return \Ramsey\Uuid\Uuid::fromBytes($val);
-            });
-            ;
+        $this->column('uuid', 'Maghead\\Schema\\Column\\UUIDPrimaryKeyColumn');
 
         $this->column('store_id')
             ->integer()
