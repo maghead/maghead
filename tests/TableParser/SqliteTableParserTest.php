@@ -9,7 +9,6 @@ class SqliteTableParserTest extends PHPUnit\Framework\TestCase
 {
 
 
-
     public function testParsingQuotedIdentifier()
     {
         $conn = new PDO('sqlite::memory:');

@@ -30,12 +30,15 @@ class TableParserTest extends ModelTestCase
     public function testGetTables()
     {
         $parser = TableParser::create($this->conn, $this->queryDriver);
-        $this->assertSame([
+        $expTables = [
             'authors',
             'addresses',
             'author_books',
             'books',
-        ], $parser->getTables());
+        ];
+        foreach ($expTables as $t) {
+            $this->assertContains($t, $parser->getTables());
+        }
     }
 
     /**
