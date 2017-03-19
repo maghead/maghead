@@ -213,7 +213,7 @@ abstract class BaseModel implements Serializable
             // TODO: insert into shards: Check error, log and retry,
             // TODO: insert into shards: Use MAP QUERY WORKER to support async.
             // TODO: insert into shards: support global transaction
-            static::mapShards(function($repo) use ($args) {
+            static::shardsMap(function($repo) use ($args) {
                 return $repo->create($args);
             });
             return $ret;
@@ -230,11 +230,12 @@ abstract class BaseModel implements Serializable
                 // Generate an UUID
                 $shardKey = $shards->generateUUID();
             }
-            $dispatcher = $shards->createDispatcher();
-            $shard = $dispatcher->dispatch($shardKey);
-            $ret = $shard->createRepo(static::REPO_CLASS)->create($args);
-            $ret->shard = $shard;
-            return $ret;
+
+            return static::shardExecute($shardKey, function($repo, $shard) use ($args) {
+                $ret = $repo->create($args);
+                $ret->shard = $shard;
+                return $ret;
+            });
         }
         return static::masterRepo()->create($args);
     }
@@ -319,7 +320,7 @@ abstract class BaseModel implements Serializable
             $repo->deleteByPrimaryKey($key);
             $repo->afterDelete($this);
 
-            static::mapShards(function($repo) use ($key) {
+            static::shardsMap(function($repo) use ($key) {
                 return $repo->deleteByPrimaryKey($key);
             });
 
@@ -359,7 +360,7 @@ abstract class BaseModel implements Serializable
             $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
             $this->setData($args);
 
-            $mapResults = static::mapShards(function($repo) use ($key, $args) {
+            $mapResults = static::shardsMap(function($repo) use ($key, $args) {
                 return $repo->updateByPrimaryKey($key, $args);
             });
             return $ret;
@@ -530,9 +531,12 @@ abstract class BaseModel implements Serializable
      *
      * This method runs the operation in sync mode.
      *
+     * shardsMap returns the result of each shard. the returned value can be
+     * anything.
+     *
      * @return array mapResults
      */
-    public static function mapShards($callback)
+    public static function shardsMap($callback)
     {
         $mapResults = [];
         $shards = static::shards();
@@ -543,9 +547,19 @@ abstract class BaseModel implements Serializable
         return $mapResults;
     }
 
-
-
-
+    /**
+     * Route a function call to a shard by using the given shard key.
+     *
+     * @return mixed result
+     */
+    public static function shardExecute($shardKey, $callback)
+    {
+        $shards = static::shards();
+        $dispatcher = $shards->createDispatcher();
+        $shard = $dispatcher->dispatch($shardKey);
+        $repo = $shard->createRepo(static::REPO_CLASS);
+        return $callback($repo, $shard);
+    }
 
     /**
      * get pdo connetion and make a query.
