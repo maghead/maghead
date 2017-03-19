@@ -202,7 +202,8 @@ abstract class BaseModel implements Serializable
     {
         if (static::GLOBAL_TABLE) {
             $results = [];
-            $results['master'] = $ret = static::masterRepo()->create($args);
+
+            $ret = static::masterRepo()->create($args);
 
             // Update primary key
             if (!isset($args[$ret->keyName])) {
@@ -241,7 +242,9 @@ abstract class BaseModel implements Serializable
 
 
     /**
-     * Create and return the created record.
+     * Create and return the created record from the master repository.
+     *
+     * @return BaseModel
      */
     public static function createAndLoad(array $args)
     {
@@ -284,6 +287,25 @@ abstract class BaseModel implements Serializable
     public function delete()
     {
         $key = $this->getKey();
+
+        if (static::GLOBAL_TABLE) {
+
+            $repo = static::masterRepo();
+            $repo->beforeDelete($this);
+            $repo->deleteByPrimaryKey($key);
+            $repo->afterDelete($this);
+
+            $shards = static::shards();
+            foreach ($shards as $shardId => $shard) {
+                $results[$shardId] = $shard->createRepo(static::REPO_CLASS)->deleteByPrimaryKey($key);
+            }
+            return Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
+
+        } else if (static::SHARD_MAPPING_ID) {
+
+
+        }
+
         $repo = static::masterRepo();
         $repo->beforeDelete($this);
         $repo->deleteByPrimaryKey($key);
@@ -306,9 +328,29 @@ abstract class BaseModel implements Serializable
         if (!$key) {
             return Result::failure('Record is not loaded, Can not update record.', array('args' => $args));
         }
-        $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
-        $this->setData($args);
-        return $ret;
+
+        if (static::GLOBAL_TABLE) {
+
+            $results = [];
+            $results['master'] = $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
+            $this->setData($args);
+
+            // update records in shards
+            $shards = static::shards();
+            foreach ($shards as $shardId => $shard) {
+                $results[$shardId] = $shard->createRepo(static::REPO_CLASS)->updateByPrimaryKey($key, $args);
+            }
+            return $ret;
+
+        } else if (static::SHARD_MAPPING_ID) {
+
+            // FIXME
+
+        } else {
+            $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
+            $this->setData($args);
+            return $ret;
+        }
     }
 
     /**

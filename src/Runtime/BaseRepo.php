@@ -176,7 +176,7 @@ class BaseRepo
         $record = null;
         if ($pk && isset($args[$pk])) {
             return $this->loadByPrimaryKey($args[$pk]);
-        } elseif ($byKeys) {
+        } else if ($byKeys) {
             $conds = [];
             foreach ((array) $byKeys as $k) {
                 if (array_key_exists($k, $args)) {

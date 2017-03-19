@@ -25,7 +25,7 @@ class StoreShardingTest extends ModelTestCase
     {
         return [
             new StoreSchema,
-            new OrderSchema
+            new OrderSchema,
         ];
     }
 
@@ -114,11 +114,31 @@ class StoreShardingTest extends ModelTestCase
     }
 
 
-
     /**
      * @dataProvider storeDataProvider
      */
-    public function testCreateStoresGlobally($storeArgs)
+    public function testStoreGlobalCRUD($storeArgs)
+    {
+        foreach ($storeArgs as $args) {
+            $ret = Store::create($args);
+            $this->assertResultSuccess($ret);
+
+            $store = Store::loadByPrimaryKey($ret->key);
+            $this->assertNotNull($store);
+
+            $ret = $store->update([ 'name' => $args['name'] . ' U' ]);
+            $this->assertResultSuccess($ret);
+
+            $ret = $store->delete();
+            $this->assertResultSuccess($ret);
+        }
+    }
+
+    /**
+     * @depends testStoreGlobalCRUD
+     * @dataProvider storeDataProvider
+     */
+    public function testStoreGlobalCreate($storeArgs)
     {
         foreach ($storeArgs as $args) {
             $ret = Store::create($args);
@@ -127,31 +147,38 @@ class StoreShardingTest extends ModelTestCase
     }
 
 
-
     /**
      * @rebuild false
-     * @depends testCreateStoresGlobally
+     * @depends testStoreGlobalCreate
      * @dataProvider orderDataProvider
      */
-    public function testInsertOrderIntoShards($orderArgsList)
+    public function testOrderCRUDInShards($orderArgsList)
     {
+        $orders = [];
         foreach ($orderArgsList as $storeCode => $storeOrderArgsList) {
             $store = Store::masterRepo()->loadByCode($storeCode);
             $this->assertNotFalse($store, 'load store by code');
+
             foreach ($storeOrderArgsList as $orderArgs) {
                 $orderArgs['store_id'] = $store->id;
                 $ret = Order::create($orderArgs);
                 $this->assertResultSuccess($ret);
                 $this->assertNotNull($ret->shard);
+
+                $orders[] = $ret->args;
                 // printf("Order %s in Shard %s\n", Ramsey\Uuid\Uuid::fromBytes($ret->key), $ret->shard->id); 
             }
         }
+        return $orders;
     }
+
+
+
 
 
     /**
      * @rebuild false
-     * @depends testCreateStoresGlobally
+     * @depends testStoreGlobalCreate
      */
     public function testShardQueryUUID()
     {
@@ -165,7 +192,7 @@ class StoreShardingTest extends ModelTestCase
 
     /**
      * @rebuild false
-     * @depends testCreateStoresGlobally
+     * @depends testStoreGlobalCreate
      */
     public function testOrderUUIDDeflator()
     {
@@ -184,19 +211,26 @@ class StoreShardingTest extends ModelTestCase
 
     /**
      * @rebuild false
-     * @depends testCreateStoresGlobally
+     * @depends testStoreGlobalCreate
      */
     public function testInsertOrderFromShardCollectionDispatch()
     {
         $store = Store::masterRepo()->loadByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
+
         $ret = Order::shards()->dispatch($store->id)
             ->repo(OrderRepo::class)
-            ->create([ 'store_id' => $store->id, 'amount' => 20 ]);
+            ->create([
+                'store_id' => $store->id,
+                'amount' => 20,
+            ]);
+
         $this->assertResultSuccess($ret);
         $this->assertNotNull($ret->key);
         return $ret;
     }
+
+
 
     /**
      * @rebuild false
