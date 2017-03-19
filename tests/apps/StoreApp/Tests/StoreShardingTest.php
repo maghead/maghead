@@ -161,7 +161,7 @@ class StoreShardingTest extends ModelTestCase
 
             foreach ($storeOrderArgsList as $orderArgs) {
                 $orderArgs['store_id'] = $store->id;
-                $ret = Order::create($orderArgs);
+                $ret = Order::create($orderArgs); // should dispatch the shards by the store_id
                 $this->assertResultSuccess($ret);
                 $this->assertNotNull($ret->shard);
 
@@ -171,10 +171,6 @@ class StoreShardingTest extends ModelTestCase
         }
         return $orders;
     }
-
-
-
-
 
     /**
      * @rebuild false
@@ -213,7 +209,7 @@ class StoreShardingTest extends ModelTestCase
      * @rebuild false
      * @depends testStoreGlobalCreate
      */
-    public function testInsertOrderFromShardCollectionDispatch()
+    public function testInsertOrderByShardCollectionDispatch()
     {
         $store = Store::masterRepo()->loadByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
@@ -234,13 +230,14 @@ class StoreShardingTest extends ModelTestCase
 
     /**
      * @rebuild false
-     * @depends testInsertOrderFromShardCollectionDispatch
+     * @depends testInsertOrderByShardCollectionDispatch
      */
-    public function testFindOrderByPrimaryKeyWithSharding($ret)
+    public function testFindOrderByPrimaryKeyWithSharding($orderRet)
     {
         $store = Store::masterRepo()->loadByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
-        $results = Order::shards()->loadByPrimaryKey($ret->key);
+        $order = Order::loadByPrimaryKey($orderRet->key);
+        $this->assertNotNull($order);
         // var_dump($results);
     }
 }

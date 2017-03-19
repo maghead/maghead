@@ -213,10 +213,9 @@ abstract class BaseModel implements Serializable
             // TODO: insert into shards: Check error, log and retry,
             // TODO: insert into shards: Use MAP QUERY WORKER to support async.
             // TODO: insert into shards: support global transaction
-            $shards = static::shards();
-            foreach ($shards as $shardId => $shard) {
-                $results[$shardId] = $shard->createRepo(static::REPO_CLASS)->create($args);
-            }
+            static::mapShards(function($repo) use ($args) {
+                return $repo->create($args);
+            });
             return $ret;
         } else if (static::SHARD_MAPPING_ID) {
             $shards = static::shards();
@@ -261,21 +260,46 @@ abstract class BaseModel implements Serializable
      */
     public static function load($arg)
     {
+        if (static::GLOBAL_TABLE) {
+        } else if (static::SHARD_MAPPING_ID) {
+        } else {
+        }
         return static::masterRepo()->load($arg);
     }
 
     public static function loadByPrimaryKey($arg)
     {
+        if (static::GLOBAL_TABLE) {
+
+        } else if (static::SHARD_MAPPING_ID) {
+
+        } else {
+
+        }
         return static::masterRepo()->loadByPrimaryKey($arg);
     }
 
     public static function loadWith($args)
     {
+        if (static::GLOBAL_TABLE) {
+
+        } else if (static::SHARD_MAPPING_ID) {
+
+        } else {
+
+        }
         return static::masterRepo()->loadWith($args);
     }
 
     public static function loadForUpdate($args)
     {
+        if (static::GLOBAL_TABLE) {
+
+        } else if (static::SHARD_MAPPING_ID) {
+
+        } else {
+
+        }
         return static::masterRepo()->loadForUpdate($args);
     }
 
@@ -295,14 +319,15 @@ abstract class BaseModel implements Serializable
             $repo->deleteByPrimaryKey($key);
             $repo->afterDelete($this);
 
-            $shards = static::shards();
-            foreach ($shards as $shardId => $shard) {
-                $results[$shardId] = $shard->createRepo(static::REPO_CLASS)->deleteByPrimaryKey($key);
-            }
+            static::mapShards(function($repo) use ($key) {
+                return $repo->deleteByPrimaryKey($key);
+            });
+
             return Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
 
         } else if (static::SHARD_MAPPING_ID) {
 
+            // FIXME
 
         }
 
@@ -331,26 +356,23 @@ abstract class BaseModel implements Serializable
 
         if (static::GLOBAL_TABLE) {
 
-            $results = [];
-            $results['master'] = $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
+            $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
             $this->setData($args);
 
-            // update records in shards
-            $shards = static::shards();
-            foreach ($shards as $shardId => $shard) {
-                $results[$shardId] = $shard->createRepo(static::REPO_CLASS)->updateByPrimaryKey($key, $args);
-            }
+            $mapResults = static::mapShards(function($repo) use ($key, $args) {
+                return $repo->updateByPrimaryKey($key, $args);
+            });
             return $ret;
 
         } else if (static::SHARD_MAPPING_ID) {
 
             // FIXME
 
-        } else {
-            $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
-            $this->setData($args);
-            return $ret;
         }
+
+        $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
+        $this->setData($args);
+        return $ret;
     }
 
     /**
@@ -501,6 +523,28 @@ abstract class BaseModel implements Serializable
             return $val->dataLabel();
         }
     }
+
+
+    /**
+     * Map an operation over the repository on each shard.
+     *
+     * This method runs the operation in sync mode.
+     *
+     * @return array mapResults
+     */
+    public static function mapShards($callback)
+    {
+        $mapResults = [];
+        $shards = static::shards();
+        foreach ($shards as $shardId => $shard) {
+            $repo = $shard->createRepo(static::REPO_CLASS);
+            $mapResults[$shardId] = $callback($repo);
+        }
+        return $mapResults;
+    }
+
+
+
 
 
     /**
