@@ -119,11 +119,11 @@ class BaseRepoClassGenerator
 
 
         $arguments = new ArgumentArray();
-        $loadByPrimaryKeyQuery = $schema->newFindByPrimaryKeyQuery();
-        $loadByPrimaryKeySql = $loadByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
-        $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $loadByPrimaryKeySql);
+        $findByPrimaryKeyQuery = $schema->newFindByPrimaryKeyQuery();
+        $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
+        $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
 
-        $cTemplate->addMethod('public', 'loadByPrimaryKey', ['$pkId'], function () use ($schema) {
+        $cTemplate->addMethod('public', 'findByPrimaryKey', ['$pkId'], function () use ($schema) {
             return [
                 "if (!\$this->loadStm) {",
                 "   \$this->loadStm = \$this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);",

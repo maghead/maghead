@@ -130,16 +130,16 @@ abstract class BaseModel implements Serializable
     }
 
     /**
-     * An alias for BaseRepo::loadByKeys
+     * An alias for BaseRepo::findByKeys
      */
-    protected static function loadByKeys(array $args, $byKeys = null)
+    protected static function findByKeys(array $args, $byKeys = null)
     {
         if (static::SHARD_MAPPING_ID) {
             return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg, $byKeys) {
-                return $repo->loadByKeys($args, $byKeys);
+                return $repo->findByKeys($args, $byKeys);
             });
         }
-        return static::masterRepo()->loadByKeys($args, $byKeys);
+        return static::masterRepo()->findByKeys($args, $byKeys);
     }
 
     /**
@@ -172,7 +172,7 @@ abstract class BaseModel implements Serializable
     public function loadOrCreate(array $args, $byKeys = null)
     {
         $repo = static::masterRepo();
-        $record = $repo->loadByKeys($args, $byKeys);
+        $record = $repo->findByKeys($args, $byKeys);
         if ($record) {
             return $record;
         }
@@ -180,7 +180,7 @@ abstract class BaseModel implements Serializable
         if ($ret->error) {
             return false;
         }
-        return $repo->loadByPrimaryKey($ret->key);
+        return $repo->findByPrimaryKey($ret->key);
     }
 
 
@@ -260,7 +260,7 @@ abstract class BaseModel implements Serializable
         if ($ret->error) {
             return false;
         }
-        return $repo->loadByPrimaryKey($ret->key);
+        return $repo->findByPrimaryKey($ret->key);
     }
 
     /**
@@ -276,14 +276,14 @@ abstract class BaseModel implements Serializable
         return static::masterRepo()->load($arg);
     }
 
-    public static function loadByPrimaryKey($arg)
+    public static function findByPrimaryKey($arg)
     {
         if (static::SHARD_MAPPING_ID) {
             return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg) {
-                return $repo->loadByPrimaryKey($arg);
+                return $repo->findByPrimaryKey($arg);
             });
         }
-        return static::masterRepo()->loadByPrimaryKey($arg);
+        return static::masterRepo()->findByPrimaryKey($arg);
     }
 
     public static function loadWith($args)
@@ -824,7 +824,7 @@ abstract class BaseModel implements Serializable
                 if ($ret->error) {
                     throw new Exception("$junctionRelKey record create failed.");
                 }
-                return $middleRecord::loadByPrimaryKey($ret->key);
+                return $middleRecord::findByPrimaryKey($ret->key);
             });
             $this->setInternalCache($cacheKey, $collection);
             return $collection;

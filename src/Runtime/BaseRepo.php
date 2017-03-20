@@ -170,12 +170,12 @@ class BaseRepo
         return $stm->fetch(PDO::FETCH_CLASS);
     }
 
-    public function loadByKeys(array $args, $byKeys = null)
+    public function findByKeys(array $args, $byKeys = null)
     {
         $pk = static::PRIMARY_KEY;
         $record = null;
         if ($pk && isset($args[$pk])) {
-            return $this->loadByPrimaryKey($args[$pk]);
+            return $this->findByPrimaryKey($args[$pk]);
         } else if ($byKeys) {
             $conds = [];
             foreach ((array) $byKeys as $k) {
@@ -193,7 +193,7 @@ class BaseRepo
         if (is_array($arg)) {
             return $this->loadWith($arg);
         }
-        return $this->loadByPrimaryKey($arg);
+        return $this->findByPrimaryKey($arg);
     }
 
     public function rawUpdateByPrimaryKey($kVal, array $args)
@@ -237,7 +237,7 @@ class BaseRepo
             return Result::failure('Update failed', [ 'args' => $args ]);
         }
 
-        $record = $this->loadByPrimaryKey($kVal);
+        $record = $this->findByPrimaryKey($kVal);
 
         $arguments = new ArgumentArray();
 

@@ -87,12 +87,12 @@ class GearmanQueryMapperTest extends StoreTestCase
 
         $ret = $repo1->create(['store_id' => 1, 'amount' => 200]);
         $this->assertResultSuccess($ret);
-        $o1 = $repo1->loadByPrimaryKey($ret->key);
+        $o1 = $repo1->findByPrimaryKey($ret->key);
         $this->assertNotNull($o1);
 
         $ret = $repo2->create(['store_id' => 2, 'amount' => 1000]);
         $this->assertResultSuccess($ret);
-        $o2 = $repo2->loadByPrimaryKey($ret->key);
+        $o2 = $repo2->findByPrimaryKey($ret->key);
         $this->assertNotNull($o2);
 
         $query = new SelectQuery;

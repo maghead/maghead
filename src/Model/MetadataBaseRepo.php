@@ -44,7 +44,7 @@ class MetadataBaseRepo
 
     const LOAD_BY_VALUE_SQL = 'SELECT * FROM __meta__ WHERE value = :value LIMIT 1';
 
-    const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ? LIMIT 1';
+    const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ?';
 
     public static $columnNames = array (
       0 => 'id',
@@ -80,7 +80,7 @@ class MetadataBaseRepo
         return $schema = new \Maghead\Model\MetadataSchemaProxy;
     }
 
-    public function loadByPrimaryKey($pkId)
+    public function findByPrimaryKey($pkId)
     {
         if (!$this->loadStm) {
            $this->loadStm = $this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);

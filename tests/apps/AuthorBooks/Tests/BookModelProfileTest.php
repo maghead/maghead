@@ -83,7 +83,7 @@ class BookModelProfileTest extends ModelProfileTestCase
         ]);
         $bookRepo = Book::masterRepo();
         for ($i = 0 ; $i < $this->N; $i++) {
-            $bookRepo->loadByPrimaryKey($b->id);
+            $bookRepo->findByPrimaryKey($b->id);
         }
     }
 

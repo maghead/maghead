@@ -123,7 +123,7 @@ class StoreShardingTest extends ModelTestCase
             $ret = Store::create($args);
             $this->assertResultSuccess($ret);
 
-            $store = Store::loadByPrimaryKey($ret->key);
+            $store = Store::findByPrimaryKey($ret->key);
             $this->assertNotNull($store);
 
             $ret = $store->update([ 'name' => $args['name'] . ' U' ]);
@@ -199,7 +199,7 @@ class StoreShardingTest extends ModelTestCase
         $ret = $repo->create([ 'store_id' => $store->id, 'amount' => 20 ]);
         $this->assertResultSuccess($ret);
 
-        $order = $repo->loadByPrimaryKey($ret->key);
+        $order = $repo->findByPrimaryKey($ret->key);
         $this->assertNotNull($order);
         $this->assertNotNull($order->uuid);
         $this->assertInstanceOf('Ramsey\Uuid\Uuid', $order->getUuid(), 'returned uuid should be an UUID object.');
@@ -236,7 +236,7 @@ class StoreShardingTest extends ModelTestCase
     {
         $store = Store::masterRepo()->loadByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
-        $order = Order::loadByPrimaryKey($orderRet->key);
+        $order = Order::findByPrimaryKey($orderRet->key);
         $this->assertNotNull($order);
         // var_dump($results);
     }
