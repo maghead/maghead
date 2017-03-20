@@ -146,7 +146,7 @@ class BaseRepoClassGenerator
                 continue;
             }
             $columnName = $column->name;
-            $findMethodName = 'loadBy'.ucfirst(Inflector::camelize($columnName));
+            $findMethodName = 'findBy'.ucfirst(Inflector::camelize($columnName));
             $propertyName = $findMethodName . 'Stm';
             $cTemplate->addProtectedProperty($propertyName);
 

@@ -40,11 +40,11 @@ class AuthorModelTest extends ModelTestCase
             'identity' => 'a',
             'confirmed' => false,
         )));
-        $timCook = Author::masterRepo()->loadByEmail('timcook@apple.com');
+        $timCook = Author::masterRepo()->findByEmail('timcook@apple.com');
         $this->assertNotNull($timCook);
         /*
-        $timCook = Author::repo('master')->loadByEmail('timcook@apple.com');
-        $timCook = Author::repo('slave')->loadByEmail('timcook@apple.com');
+        $timCook = Author::repo('master')->findByEmail('timcook@apple.com');
+        $timCook = Author::repo('slave')->findByEmail('timcook@apple.com');
         */
     }
 

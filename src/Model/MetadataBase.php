@@ -73,14 +73,14 @@ class MetadataBase
         return new \Maghead\Model\MetadataBaseRepo($write, $read);
     }
 
-    public function loadByName($value)
+    public function findByName($value)
     {
-        return static::masterRepo()->loadByName($value);
+        return static::masterRepo()->findByName($value);
     }
 
-    public function loadByValue($value)
+    public function findByValue($value)
     {
-        return static::masterRepo()->loadByValue($value);
+        return static::masterRepo()->findByValue($value);
     }
 
     public function getKeyName()

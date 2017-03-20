@@ -156,7 +156,7 @@ class StoreShardingTest extends ModelTestCase
     {
         $orders = [];
         foreach ($orderArgsList as $storeCode => $storeOrderArgsList) {
-            $store = Store::masterRepo()->loadByCode($storeCode);
+            $store = Store::masterRepo()->findByCode($storeCode);
             $this->assertNotFalse($store, 'load store by code');
 
             foreach ($storeOrderArgsList as $orderArgs) {
@@ -178,7 +178,7 @@ class StoreShardingTest extends ModelTestCase
      */
     public function testShardQueryUUID()
     {
-        $store = Store::masterRepo()->loadByCode('TW002');
+        $store = Store::masterRepo()->findByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
         $shard = Order::shards()->dispatch($store->id);
         $this->assertInstanceOf('Maghead\\Sharding\\Shard', $shard);
@@ -192,7 +192,7 @@ class StoreShardingTest extends ModelTestCase
      */
     public function testOrderUUIDDeflator()
     {
-        $store = Store::masterRepo()->loadByCode('TW002');
+        $store = Store::masterRepo()->findByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
         $repo = Order::shards()->dispatch($store->id)->repo(OrderRepo::class);
 
@@ -211,7 +211,7 @@ class StoreShardingTest extends ModelTestCase
      */
     public function testInsertOrderByShardCollectionDispatch()
     {
-        $store = Store::masterRepo()->loadByCode('TW002');
+        $store = Store::masterRepo()->findByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
 
         $ret = Order::shards()->dispatch($store->id)
@@ -234,7 +234,7 @@ class StoreShardingTest extends ModelTestCase
      */
     public function testFindOrderByPrimaryKeyWithSharding($orderRet)
     {
-        $store = Store::masterRepo()->loadByCode('TW002');
+        $store = Store::masterRepo()->findByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
         $order = Order::findByPrimaryKey($orderRet->key);
         $this->assertNotNull($order);

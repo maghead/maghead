@@ -44,7 +44,7 @@ class MetadataBaseRepo
 
     const LOAD_BY_VALUE_SQL = 'SELECT * FROM __meta__ WHERE value = :value LIMIT 1';
 
-    const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ? LIMIT 1';
+    const DELETE_BY_PRIMARY_KEY_SQL = 'DELETE FROM __meta__ WHERE id = ?';
 
     public static $columnNames = array (
       0 => 'id',
@@ -67,9 +67,9 @@ class MetadataBaseRepo
 
     protected $deleteStm;
 
-    protected $loadByNameStm;
+    protected $findByNameStm;
 
-    protected $loadByValueStm;
+    protected $findByValueStm;
 
     public static function getSchema()
     {
@@ -99,22 +99,22 @@ class MetadataBaseRepo
         return $this->write->prepare($sql);
     }
 
-    public function loadByName($value)
+    public function findByName($value)
     {
-        if (!$this->loadByNameStm) {
-            $this->loadByNameStm = $this->read->prepare(self::LOAD_BY_NAME_SQL);
-            $this->loadByNameStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
+        if (!$this->findByNameStm) {
+            $this->findByNameStm = $this->read->prepare(self::LOAD_BY_NAME_SQL);
+            $this->findByNameStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
         }
-        return static::_stmFetchOne($this->loadByNameStm, [':name' => $value ]);
+        return static::_stmFetchOne($this->findByNameStm, [':name' => $value ]);
     }
 
-    public function loadByValue($value)
+    public function findByValue($value)
     {
-        if (!$this->loadByValueStm) {
-            $this->loadByValueStm = $this->read->prepare(self::LOAD_BY_VALUE_SQL);
-            $this->loadByValueStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
+        if (!$this->findByValueStm) {
+            $this->findByValueStm = $this->read->prepare(self::LOAD_BY_VALUE_SQL);
+            $this->findByValueStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
         }
-        return static::_stmFetchOne($this->loadByValueStm, [':value' => $value ]);
+        return static::_stmFetchOne($this->findByValueStm, [':value' => $value ]);
     }
 
     public function deleteByPrimaryKey($pkId)

@@ -33,7 +33,7 @@ class BookModelProfileTest extends ModelProfileTestCase
         ]);
         $repo = Book::masterRepo();
         for ($i = 0 ; $i < $this->N; $i++) {
-            $repo->loadByIsbn($uuid);
+            $repo->findByIsbn($uuid);
         }
     }
 
