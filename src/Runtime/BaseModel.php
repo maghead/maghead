@@ -286,14 +286,14 @@ abstract class BaseModel implements Serializable
         return static::masterRepo()->findByPrimaryKey($arg);
     }
 
-    public static function loadWith($args)
+    public static function findWith($args)
     {
         if (static::SHARD_MAPPING_ID) {
             return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg) {
-                return $repo->loadWith($arg);
+                return $repo->findWith($arg);
             });
         }
-        return static::masterRepo()->loadWith($args);
+        return static::masterRepo()->findWith($args);
     }
 
     public static function loadForUpdate($args)
@@ -691,7 +691,7 @@ abstract class BaseModel implements Serializable
         }
         $sValue = $this->$selfColumn;
         $model = $relation->newForeignModel();
-        $record = $model::loadWith(array($fColumn => $sValue));
+        $record = $model::findWith(array($fColumn => $sValue));
         $this->setInternalCache($cacheKey, $record);
         return $record;
     }
@@ -714,7 +714,7 @@ abstract class BaseModel implements Serializable
         }
         $sValue = $this->$selfColumn;
         $model = $foreignSchema->newModel();
-        $record = $model::loadWith([$foreignColumn => $sValue]);
+        $record = $model::findWith([$foreignColumn => $sValue]);
         $this->setInternalCache($cacheKey, $record);
         return $record;
     }

@@ -128,7 +128,7 @@ class BaseRepo
      *
      * @param array $args
      */
-    public function loadWith(array $args)
+    public function findWith(array $args)
     {
         $schema = $this->getSchema();
         $query = new SelectQuery();
@@ -183,7 +183,7 @@ class BaseRepo
                     $conds[$k] = $args[$k];
                 }
             }
-            return $this->loadWith($conds);
+            return $this->findWith($conds);
         }
         throw new MissingPrimaryKeyException('primary key is not defined.');
     }
@@ -191,7 +191,7 @@ class BaseRepo
     public function load($arg)
     {
         if (is_array($arg)) {
-            return $this->loadWith($arg);
+            return $this->findWith($arg);
         }
         return $this->findByPrimaryKey($arg);
     }
