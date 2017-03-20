@@ -542,7 +542,7 @@ abstract class BaseModel implements Serializable
         $shards = static::shards();
         foreach ($shards as $shardId => $shard) {
             $repo = $shard->createRepo(static::REPO_CLASS);
-            $mapResults[$shardId] = $callback($repo);
+            $mapResults[$shardId] = $callback($repo, $shard);
         }
         return $mapResults;
     }
