@@ -27,6 +27,8 @@ use Maghead\Exception\MissingPrimaryKeyException;
 use Maghead\Exception\QueryException;
 use Maghead\Manager\ConnectionManager;
 use Maghead\Sharding\Manager\ShardManager;
+use Maghead\Sharding\Shard;
+use Maghead\Sharding\ShardCollection;
 use Maghead\Connection;
 use SerializerKit\XmlSerializer;
 use ActionKit;
@@ -132,6 +134,11 @@ abstract class BaseModel implements Serializable
      */
     protected static function loadByKeys(array $args, $byKeys = null)
     {
+        if (static::SHARD_MAPPING_ID) {
+            return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg, $byKeys) {
+                return $repo->loadByKeys($args, $byKeys);
+            });
+        }
         return static::masterRepo()->loadByKeys($args, $byKeys);
     }
 
@@ -213,7 +220,7 @@ abstract class BaseModel implements Serializable
             // TODO: insert into shards: Check error, log and retry,
             // TODO: insert into shards: Use MAP QUERY WORKER to support async.
             // TODO: insert into shards: support global transaction
-            static::shardsMap(function($repo) use ($args) {
+            static::shards()->map(function($repo) use ($args) {
                 return $repo->create($args);
             });
             return $ret;
@@ -231,7 +238,7 @@ abstract class BaseModel implements Serializable
                 $shardKey = $shards->generateUUID();
             }
 
-            return static::shardExecute($shardKey, function($repo, $shard) use ($args) {
+            return static::shards()->locateAndExecute($shardKey, function($repo, $shard) use ($args) {
                 $ret = $repo->create($args);
                 $ret->shard = $shard;
                 return $ret;
@@ -261,45 +268,41 @@ abstract class BaseModel implements Serializable
      */
     public static function load($arg)
     {
-        if (static::GLOBAL_TABLE) {
-        } else if (static::SHARD_MAPPING_ID) {
-        } else {
+        if (static::SHARD_MAPPING_ID) {
+            return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg) {
+                return $repo->load($arg);
+            });
         }
         return static::masterRepo()->load($arg);
     }
 
     public static function loadByPrimaryKey($arg)
     {
-        if (static::GLOBAL_TABLE) {
-
-        } else if (static::SHARD_MAPPING_ID) {
-
-        } else {
-
+        if (static::SHARD_MAPPING_ID) {
+            return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg) {
+                return $repo->loadByPrimaryKey($arg);
+            });
         }
         return static::masterRepo()->loadByPrimaryKey($arg);
     }
 
     public static function loadWith($args)
     {
-        if (static::GLOBAL_TABLE) {
-
-        } else if (static::SHARD_MAPPING_ID) {
-
-        } else {
-
+        if (static::SHARD_MAPPING_ID) {
+            return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg) {
+                return $repo->loadWith($arg);
+            });
         }
         return static::masterRepo()->loadWith($args);
     }
 
     public static function loadForUpdate($args)
     {
-        if (static::GLOBAL_TABLE) {
-
-        } else if (static::SHARD_MAPPING_ID) {
-
-        } else {
-
+        if (static::SHARD_MAPPING_ID) {
+            return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg) {
+                // FIXME: the update should commit the transation on the same connection.
+                return $repo->loadForUpdate($arg);
+            });
         }
         return static::masterRepo()->loadForUpdate($args);
     }
@@ -319,17 +322,13 @@ abstract class BaseModel implements Serializable
             $repo->beforeDelete($this);
             $repo->deleteByPrimaryKey($key);
             $repo->afterDelete($this);
-
-            static::shardsMap(function($repo) use ($key) {
+            static::shards()->map(function($repo) use ($key) {
                 return $repo->deleteByPrimaryKey($key);
             });
-
             return Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
 
         } else if (static::SHARD_MAPPING_ID) {
-
             // FIXME
-
         }
 
         $repo = static::masterRepo();
@@ -360,7 +359,7 @@ abstract class BaseModel implements Serializable
             $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
             $this->setData($args);
 
-            $mapResults = static::shardsMap(function($repo) use ($key, $args) {
+            $mapResults = static::shards()->map(function($repo) use ($key, $args) {
                 return $repo->updateByPrimaryKey($key, $args);
             });
             return $ret;
@@ -523,42 +522,6 @@ abstract class BaseModel implements Serializable
         if ($val && $val instanceof \Maghead\Runtime\BaseModel) {
             return $val->dataLabel();
         }
-    }
-
-
-    /**
-     * Map an operation over the repository on each shard.
-     *
-     * This method runs the operation in sync mode.
-     *
-     * shardsMap returns the result of each shard. the returned value can be
-     * anything.
-     *
-     * @return array mapResults
-     */
-    public static function shardsMap($callback)
-    {
-        $mapResults = [];
-        $shards = static::shards();
-        foreach ($shards as $shardId => $shard) {
-            $repo = $shard->createRepo(static::REPO_CLASS);
-            $mapResults[$shardId] = $callback($repo, $shard);
-        }
-        return $mapResults;
-    }
-
-    /**
-     * Route a function call to a shard by using the given shard key.
-     *
-     * @return mixed result
-     */
-    public static function shardExecute($shardKey, $callback)
-    {
-        $shards = static::shards();
-        $dispatcher = $shards->createDispatcher();
-        $shard = $dispatcher->dispatch($shardKey);
-        $repo = $shard->createRepo(static::REPO_CLASS);
-        return $callback($repo, $shard);
     }
 
     /**

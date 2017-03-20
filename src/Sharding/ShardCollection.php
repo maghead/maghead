@@ -108,7 +108,6 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
         return new ShardDispatcher($this->mapping, $hasher, $this);
     }
 
-
     public function __call($method, $args)
     {
         $results = [];
@@ -117,5 +116,52 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
             $results[$shardId] = call_user_func_array([$repo, $method], $args);
         }
         return $results;
+    }
+
+    public function first($callback)
+    {
+        foreach ($this->shards as $shardId => $shard) {
+            $repo = $shard->createRepo($this->repoClass);
+            if ($ret = $callback($repo, $shard)) {
+                return $ret;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Map an operation over the repository on each shard.
+     *
+     * This method runs the operation in sync mode.
+     *
+     * shardsMap returns the result of each shard. the returned value can be
+     * anything.
+     *
+     * @return array mapResults
+     */
+    public function map($callback)
+    {
+        $mapResults = [];
+        foreach ($this->shards as $shardId => $shard) {
+            $repo = $shard->createRepo($this->repoClass);
+            $mapResults[$shardId] = $callback($repo, $shard);
+        }
+        return $mapResults;
+    }
+
+    /**
+     * Route a function call to a shard by using the given shard key.
+     *
+     * Locate a shard by the sharding key, and execute the callback.
+     *
+     * @return mixed result.
+     */
+    public function locateAndExecute($shardKey, $callback)
+    {
+        $dispatcher = $this->createDispatcher();
+        $shard = $dispatcher->dispatch($shardKey);
+        $repo = $shard->createRepo($this->repoClass);
+        return $callback($repo, $shard);
     }
 }
