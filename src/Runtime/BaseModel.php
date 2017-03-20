@@ -547,58 +547,6 @@ abstract class BaseModel implements Serializable
     }
 
     /**
-     * Load record from an sql query.
-     *
-     * @param string $sql  sql statement
-     * @param array  $args
-     * @param string $dsId data source id
-     *
-     *     $result = $record->loadQuery( 'select * from ....', array( ... ) , 'master' );
-     *
-     * @return Result
-     */
-    public function loadQuery($sql, array $args = array(), $dsId = null)
-    {
-        if (!$dsId) {
-            $dsId = $this->readSourceId;
-        }
-
-        $conn = static::$connectionManager->getConnection($dsId);
-        $stm = $conn->prepare($sql);
-        $stm->setFetchMode(PDO::FETCH_CLASS, get_class($this));
-        $stm->execute($args);
-        if (false === ($data = $stm->fetch(PDO::FETCH_CLASS))) {
-            return Result::failure('Data load failed.', array(
-                'sql'  => $sql,
-                'args' => $args,
-            ));
-        }
-        $this->setData($data);
-        return Result::success('Data loaded', array(
-            'key'  => $this->getKey(),
-            'sql' => $sql,
-        ));
-    }
-
-    /**
-     * We should move this method into connection manager.
-     *
-     * @return PDOStatement
-     */
-    public function dbPrepareAndExecute(PDO $conn, $sql, array $args = array())
-    {
-        $stm = $conn->prepare($sql);
-        $stm->execute($args);
-
-        return $stm;
-    }
-
-    public function getSchemaProxyClass()
-    {
-        return static::SCHEMA_PROXY_CLASS;
-    }
-
-    /**
      * Get inflate value.
      *
      * @param string $name Column name
