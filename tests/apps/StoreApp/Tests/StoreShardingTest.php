@@ -209,7 +209,7 @@ class StoreShardingTest extends ModelTestCase
      * @rebuild false
      * @depends testStoreGlobalCreate
      */
-    public function testInsertOrderByShardCollectionDispatch()
+    public function testInsertOrder()
     {
         $store = Store::masterRepo()->findByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
@@ -227,17 +227,16 @@ class StoreShardingTest extends ModelTestCase
     }
 
 
-
     /**
      * @rebuild false
-     * @depends testInsertOrderByShardCollectionDispatch
+     * @depends testInsertOrder
      */
-    public function testFindOrderByPrimaryKeyWithSharding($orderRet)
+    public function testFindOrderByPrimaryKey($orderRet)
     {
-        $store = Store::masterRepo()->findByCode('TW002');
-        $this->assertNotFalse($store, 'load store by code');
         $order = Order::findByPrimaryKey($orderRet->key);
         $this->assertNotNull($order);
-        // var_dump($results);
+        $this->assertInstanceOf('Maghead\\Runtime\\BaseModel', $order);
+        $this->assertEquals($orderRet->key, $order->getKey());
+        $this->assertEquals($orderRet->key, $order->uuid, 'key is uuid');
     }
 }
