@@ -63,9 +63,11 @@ class Result
 
     public $exception;
 
-    public $debugInfo = array();
+    public $debugInfo;
 
     public $shard;
+
+    public $subResults;
 
     public function __construct($success, $message)
     {

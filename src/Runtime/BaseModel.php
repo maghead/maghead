@@ -208,8 +208,6 @@ abstract class BaseModel implements Serializable
     public static function create(array $args)
     {
         if (static::GLOBAL_TABLE) {
-            $results = [];
-
             $ret = static::masterRepo()->create($args);
 
             // Update primary key
@@ -220,11 +218,12 @@ abstract class BaseModel implements Serializable
             // TODO: insert into shards: Check error, log and retry,
             // TODO: insert into shards: Use MAP QUERY WORKER to support async.
             // TODO: insert into shards: support global transaction
-            static::shards()->map(function($repo) use ($args) {
+            $ret->subResults = static::shards()->map(function($repo) use ($args) {
                 return $repo->create($args);
             });
             return $ret;
         } else if (static::SHARD_MAPPING_ID) {
+
             $shards = static::shards();
             $mapping = $shards->getMapping();
             $shardKeyName = $mapping->getKey();
@@ -359,7 +358,7 @@ abstract class BaseModel implements Serializable
             $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
             $this->setData($args);
 
-            $mapResults = static::shards()->map(function($repo) use ($key, $args) {
+            $ret->subResults = static::shards()->map(function($repo) use ($key, $args) {
                 return $repo->updateByPrimaryKey($key, $args);
             });
             return $ret;

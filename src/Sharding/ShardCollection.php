@@ -129,6 +129,24 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
         return null;
     }
 
+    /**
+     * locateBy method locates the shard by the given callback.
+     *
+     * the shard will be returned if the callback return true
+     *
+     * @return Maghead\Sharding\Shard
+     */
+    public function locateBy($callback)
+    {
+        foreach ($this->shards as $shardId => $shard) {
+            $repo = $shard->createRepo($this->repoClass);
+            if ($callback($repo, $shard)) {
+                return $shard;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * Map an operation over the repository on each shard.
