@@ -388,7 +388,12 @@ abstract class BaseModel implements Serializable
 
         } else if (static::SHARD_MAPPING_ID) {
 
-            // FIXME
+            if (!$this->repo) {
+                throw new LogicException("property repo is not defined. be sure to load the repo for the model.");
+            }
+            $ret = $this->repo->updateByPrimaryKey($key, $args);
+            $this->setData($args);
+            return $ret;
 
         }
 

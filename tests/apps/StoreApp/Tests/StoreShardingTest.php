@@ -238,5 +238,22 @@ class StoreShardingTest extends ModelTestCase
         $this->assertInstanceOf('Maghead\\Runtime\\BaseModel', $order);
         $this->assertEquals($orderRet->key, $order->getKey());
         $this->assertEquals($orderRet->key, $order->uuid, 'key is uuid');
+        return $orderRet;
+    }
+
+    /**
+     * @rebuild false
+     * @depends testFindOrderByPrimaryKey
+     */
+    public function testUpdateOrderAmount($orderRet)
+    {
+        $order = Order::findByPrimaryKey($orderRet->key);
+        $ret = $order->update([ 'amount' => 9999 ]);
+        $this->assertResultSuccess($ret);
+        $this->assertEquals(9999, $order->amount);
+        $this->assertNotNull($order->repo, 'BaseModel should be have the repo object.');
+
+        $order2 = Order::findByPrimaryKey($order->getKey());
+        $this->assertEquals(9999, $order2->amount);
     }
 }
