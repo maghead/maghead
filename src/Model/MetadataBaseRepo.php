@@ -103,18 +103,24 @@ class MetadataBaseRepo
     {
         if (!$this->findByNameStm) {
             $this->findByNameStm = $this->read->prepare(self::LOAD_BY_NAME_SQL);
-            $this->findByNameStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
+            $this->findByNameStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata', [$this]);
         }
-        return static::_stmFetchOne($this->findByNameStm, [':name' => $value ]);
+        $this->findByNameStm->execute([':name' => $value ]);
+        $obj = $this->findByNameStm->fetch();
+        $this->findByNameStm->closeCursor();
+        return $obj;
     }
 
     public function findByValue($value)
     {
         if (!$this->findByValueStm) {
             $this->findByValueStm = $this->read->prepare(self::LOAD_BY_VALUE_SQL);
-            $this->findByValueStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata');
+            $this->findByValueStm->setFetchMode(PDO::FETCH_CLASS, '\Maghead\Model\Metadata', [$this]);
         }
-        return static::_stmFetchOne($this->findByValueStm, [':value' => $value ]);
+        $this->findByValueStm->execute([':value' => $value ]);
+        $obj = $this->findByValueStm->fetch();
+        $this->findByValueStm->closeCursor();
+        return $obj;
     }
 
     public function deleteByPrimaryKey($pkId)

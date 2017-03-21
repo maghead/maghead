@@ -17,9 +17,11 @@ class PDOStatementGenerator
         return [
             "if (!\$this->{$propertyName}) {",
             "    \$this->{$propertyName} = \$this->read->prepare(self::$constName);",
-            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$class}');",
+            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$class}', [\$this]);",
             "}",
-            "return static::_stmFetchAll(\$this->{$propertyName}, $args);",
+            "\$this->{$propertyName}->execute($args);",
+            // "return \$this->{$propertyName}->fetchAll(PDO::FETCH_CLASS);",
+            "return \$this->{$propertyName}->fetchAll();",
         ];
     }
 
@@ -28,9 +30,13 @@ class PDOStatementGenerator
         return [
             "if (!\$this->{$propertyName}) {",
             "    \$this->{$propertyName} = \$this->read->prepare(self::$constName);",
-            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$class}');",
+            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$class}', [\$this]);",
             "}",
-            "return static::_stmFetchOne(\$this->{$propertyName}, $args);",
+            "\$this->{$propertyName}->execute($args);",
+            // "return \$this->{$propertyName}->fetch(PDO::FETCH_CLASS);",
+            "\$obj = \$this->{$propertyName}->fetch();",
+            "\$this->{$propertyName}->closeCursor();",
+            "return \$obj;",
         ];
     }
 

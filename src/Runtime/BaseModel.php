@@ -74,6 +74,10 @@ abstract class BaseModel implements Serializable
 
     public static $_cacheInstance;
 
+    public function __construct()
+    {
+
+    }
 
     /**
      * Get the RuntimeColumn objects from RuntimeSchema object.

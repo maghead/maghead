@@ -141,7 +141,7 @@ class BaseRepo
         $arguments = new ArgumentArray();
         $sql = $query->toSql($driver, $arguments);
         $stm = $conn->prepare($sql);
-        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS);
+        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS , [$this]);
         $stm->execute($arguments->toArray());
         return $stm->fetch(PDO::FETCH_CLASS);
     }
@@ -165,7 +165,7 @@ class BaseRepo
         $arguments = new ArgumentArray();
         $sql = $query->toSql($driver, $arguments);
         $stm = $conn->prepare($sql);
-        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS);
+        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this]);
         $stm->execute($arguments->toArray());
         return $stm->fetch(PDO::FETCH_CLASS);
     }
