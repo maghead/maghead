@@ -194,6 +194,7 @@ abstract class BaseModel implements Serializable
      */
     public function loadOrCreate(array $args, $byKeys = null)
     {
+        // FIXME: sharding
         $repo = static::masterRepo();
         $record = $repo->findByKeys($args, $byKeys);
         if ($record) {
@@ -434,6 +435,7 @@ abstract class BaseModel implements Serializable
      */
     public static function rawCreate(array $args)
     {
+        // FIXME: Update this implementation for sharding
         return static::masterRepo()->rawCreate($args);
     }
 
@@ -448,12 +450,17 @@ abstract class BaseModel implements Serializable
     {
         $key = $this->getKey();
         $data = $this->getData();
-        if ($key) {
-            return static::masterRepo()->updateByPrimaryKey($key, $data);
-        }
-        return static::masterRepo()->create($data);
-    }
 
+        $repo = $this->repo;
+        if (!$repo) {
+            $repo = static::masterRepo();
+        }
+        if ($key) {
+            return $repo->updateByPrimaryKey($key, $data);
+        }
+        // FIXME: fix me for sharding
+        return $repo->create($data);
+    }
 
     // ============================ MIXIN METHODS ===========================
 
