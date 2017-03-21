@@ -80,6 +80,19 @@ abstract class BaseModel implements Serializable
      */
     public $repo;
 
+    /**
+     * When using multiple repositories, we have to know the repository where
+     * the record came from for updating the record to the same repository later.
+     *
+     * $repo will be given from the ctor args in the PDO::setFetchMode call.
+     *
+     * @code
+     *
+     *  $book = Book::repo($write, $read)->find(1);
+     *  $book->update(...);
+     *
+     * @endcode
+     */
     public function __construct(BaseRepo $repo = null)
     {
         $this->repo = $repo;
