@@ -231,7 +231,7 @@ class StoreShardingTest extends ModelTestCase
      * @rebuild false
      * @depends testInsertOrder
      */
-    public function testFindOrderByPrimaryKey($orderRet)
+    public function testFindOrderByPrimaryKeyInTheShard($orderRet)
     {
         $order = Order::findByPrimaryKey($orderRet->key);
         $this->assertNotNull($order);
@@ -243,9 +243,9 @@ class StoreShardingTest extends ModelTestCase
 
     /**
      * @rebuild false
-     * @depends testFindOrderByPrimaryKey
+     * @depends testFindOrderByPrimaryKeyInTheShard
      */
-    public function testUpdateOrderAmount($orderRet)
+    public function testOrderAmountUpdateShouldUpdateToTheSameRepository($orderRet)
     {
         $order = Order::findByPrimaryKey($orderRet->key);
         $ret = $order->update([ 'amount' => 9999 ]);
