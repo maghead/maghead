@@ -344,13 +344,22 @@ abstract class BaseModel implements Serializable
             $repo->beforeDelete($this);
             $repo->deleteByPrimaryKey($key);
             $repo->afterDelete($this);
-            static::shards()->map(function($repo) use ($key) {
+            $ret = Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
+            $ret->subResults = static::shards()->map(function($repo) use ($key) {
                 return $repo->deleteByPrimaryKey($key);
             });
-            return Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
+            return $ret;
 
         } else if (static::SHARD_MAPPING_ID) {
-            // FIXME
+
+            if (!$this->repo) {
+                throw new LogicException("property repo is not defined. be sure to load the repo for the model.");
+            }
+            $repo = $this->repo;
+            $repo->beforeDelete($this);
+            $repo->deleteByPrimaryKey($key);
+            $repo->afterDelete($this);
+            return Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
         }
 
         $repo = static::masterRepo();

@@ -255,5 +255,26 @@ class StoreShardingTest extends ModelTestCase
 
         $order2 = Order::findByPrimaryKey($order->getKey());
         $this->assertEquals(9999, $order2->amount);
+
+        return $orderRet;
     }
+
+
+
+    /**
+     * @rebuild false
+     * @depends testOrderAmountUpdateShouldUpdateToTheSameRepository
+     */
+    public function testOrderDeleteShouldDeleteToTheSameRepo($orderRet)
+    {
+        // reload the order from the repo
+        $order = Order::findByPrimaryKey($orderRet->key);
+        $ret = $order->delete();
+        $this->assertResultSuccess($ret);
+
+        $order2 = Order::findByPrimaryKey($orderRet->key);
+        $this->assertNull($order2);
+    }
+
+
 }
