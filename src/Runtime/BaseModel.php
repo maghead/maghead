@@ -603,9 +603,9 @@ abstract class BaseModel implements Serializable
     public function __isset($name)
     {
         return property_exists($this, $name)
-            || isset(static::getSchema()->columns[$name])
-            || $this->getSchema()->getRelation($name)
-            ;
+                || isset(static::getSchema()->columns[$name])
+                || static::getSchema()->getRelation($name)
+                ;
     }
 
     /**
