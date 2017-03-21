@@ -74,9 +74,15 @@ abstract class BaseModel implements Serializable
 
     public static $_cacheInstance;
 
-    public function __construct()
-    {
+    /**
+     * when reading records from repository, 
+     * this property will be assigned through the ctor args in the PDO::setFetchMode call.
+     */
+    public $repo;
 
+    public function __construct(BaseRepo $repo = null)
+    {
+        $this->repo = $repo;
     }
 
     /**
