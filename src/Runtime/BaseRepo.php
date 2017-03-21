@@ -98,7 +98,7 @@ class BaseRepo
      * @return BaseModel
      */
     // PHP 5.6 doesn't support static abstract
-    protected static function _stmFetchOne(PDOStatement $stm, array $args)
+    protected static function _stmFetchOne($stm, $args)
     {
         $stm->execute($args);
         $obj = $stm->fetch(PDO::FETCH_CLASS);
@@ -117,7 +117,7 @@ class BaseRepo
      * @return BaseModel
      */
     // PHP 5.6 doesn't support static abstract
-    protected static function _stmFetchAll(PDOStatement $stm, array $args)
+    protected static function _stmFetchAll($stm, $args)
     {
         $stm->execute($args);
         return $stm->fetchAll(PDO::FETCH_CLASS);
