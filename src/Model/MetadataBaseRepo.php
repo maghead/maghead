@@ -86,7 +86,10 @@ class MetadataBaseRepo
            $this->loadStm = $this->read->prepare(self::FIND_BY_PRIMARY_KEY_SQL);
            $this->loadStm->setFetchMode(PDO::FETCH_CLASS, 'Maghead\Model\Metadata', [$this]);
         }
-        return static::_stmFetchOne($this->loadStm, [$pkId]);
+        $this->loadStm->execute([ $pkId ]);
+        $obj = $this->loadStm->fetch();
+        $this->loadStm->closeCursor();
+        return $obj;
     }
 
     public function prepareRead($sql)

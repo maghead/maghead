@@ -33,7 +33,6 @@ class PDOStatementGenerator
             "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$class}', [\$this]);",
             "}",
             "\$this->{$propertyName}->execute($args);",
-            // "return \$this->{$propertyName}->fetch(PDO::FETCH_CLASS);",
             "\$obj = \$this->{$propertyName}->fetch();",
             "\$this->{$propertyName}->closeCursor();",
             "return \$obj;",
