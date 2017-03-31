@@ -18,7 +18,7 @@ class ConnectionManager implements ArrayAccess
     protected $masterNodeId;
 
     /**
-     * @var array contains data source configurations
+     * @var array contains node configurations
      */
     protected $nodeConfigurations = array();
 
@@ -31,7 +31,7 @@ class ConnectionManager implements ArrayAccess
      * Check if we have connected already.
      *
      * @param PDO    $conn pdo connection.
-     * @param string $id   data source id.
+     * @param string $id   node source id.
      */
     public function has($id)
     {
@@ -42,7 +42,7 @@ class ConnectionManager implements ArrayAccess
      * Add connection.
      *
      * @param Connection $conn pdo connection
-     * @param string     $id   data source id
+     * @param string     $id   node source id
      */
     public function add(Connection $conn, $id = 'default')
     {
@@ -53,12 +53,12 @@ class ConnectionManager implements ArrayAccess
     }
 
     /**
-     * Add custom data source:.
+     * Add custom node config
      *
      * source config:
      *
-     * @param string $id     data source id
-     * @param string $config data source config
+     * @param string $id     node id
+     * @param string $config node config
      */
     public function addNode($id, array $config)
     {
@@ -94,7 +94,7 @@ class ConnectionManager implements ArrayAccess
     }
 
     /**
-     * Return datasource id(s).
+     * Return node id(s).
      *
      * @return array key list
      */
@@ -120,6 +120,11 @@ class ConnectionManager implements ArrayAccess
         return $this->getNodeConfig($this->masterNodeId ?: self::DEFAULT_DS);
     }
 
+    public function setMasterNodeId($nodeId)
+    {
+        $this->masterNodeId = $nodeId;
+    }
+
     /**
      * Get SQLBuilder\QueryDriver by data source id.
      *
@@ -139,10 +144,6 @@ class ConnectionManager implements ArrayAccess
         return $config['driver'];
     }
 
-    public function setMasterNodeId($nodeId)
-    {
-        $this->masterNodeId = $nodeId;
-    }
 
     /**
      * Create connection.
@@ -278,9 +279,6 @@ class ConnectionManager implements ArrayAccess
         return $this->getConnection($name);
     }
 
-    /**
-     *
-     */
     public function offsetUnset($name)
     {
         $this->close($name);
