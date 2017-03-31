@@ -55,7 +55,7 @@ class ChunkManager
     public function initChunks(ShardMapping $mapping, $numberOfChunks = 4)
     {
         // Get the dbname from master datasource
-        $masterDs = $this->connectionManager->getMasterDataSource();
+        $masterDs = $this->connectionManager->getMasterNodeConfig();
         $dsn = DSNParser::parse($masterDs['dsn']);
         $dbname = $dsn->getDatabaseName();
 
