@@ -19,8 +19,8 @@ class MigrateUpgradeCommand extends MigrateBaseCommand
 
     public function execute()
     {
-        $connectionManager = DataSourceManager::getInstance();
-        $migrationManager = new MigrationManager($connectionManager, $this->logger);
+        $dataSourceManager = DataSourceManager::getInstance();
+        $migrationManager = new MigrationManager($dataSourceManager, $this->logger);
         if ($dsId = $this->getCurrentDataSourceId()) {
 
             /*

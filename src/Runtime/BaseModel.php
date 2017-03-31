@@ -49,7 +49,7 @@ abstract class BaseModel implements Serializable
 
     public static $yamlEncoding = YAML_UTF8_ENCODING;
 
-    public static $connectionManager;
+    public static $dataSourceManager;
 
     /**
      * @var array Mixin classes are emtpy. (MixinDeclareSchema)
@@ -581,7 +581,7 @@ abstract class BaseModel implements Serializable
      */
     public function dbQuery($dsId, $sql)
     {
-        $conn = static::$connectionManager->getConnection($dsId);
+        $conn = static::$dataSourceManager->getConnection($dsId);
         if (!$conn) {
             throw new Exception("data source $dsId is not defined.");
         }

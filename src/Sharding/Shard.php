@@ -28,13 +28,13 @@ class Shard
      */
     protected $config;
 
-    public function __construct($id, array $config, DataSourceManager $connectionManager, Balancer $balancer = null)
+    public function __construct($id, array $config, DataSourceManager $dataSourceManager, Balancer $balancer = null)
     {
         $this->id           = $id;
         $this->config       = $config;
         $this->readServers  = isset($config['read']) ? $config['read'] : [];
         $this->writeServers = isset($config['write']) ? $config['write'] : [];
-        $this->connectionManager = $connectionManager;
+        $this->dataSourceManager = $dataSourceManager;
         $this->balancer = $balancer ?: new RandBalancer;
     }
 
@@ -82,7 +82,7 @@ class Shard
     public function selectReadConnection()
     {
         $nodeId = $this->balancer->select($this->readServers);
-        return $this->connectionManager->getConnection($nodeId);
+        return $this->dataSourceManager->getConnection($nodeId);
     }
 
     /**
@@ -91,7 +91,7 @@ class Shard
     public function selectWriteConnection()
     {
         $nodeId = $this->balancer->select($this->writeServers);
-        return $this->connectionManager->getConnection($nodeId);
+        return $this->dataSourceManager->getConnection($nodeId);
     }
 
     /**

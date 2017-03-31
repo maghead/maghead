@@ -24,20 +24,20 @@ class ChunkManager
 
     protected $config;
 
-    protected $connectionManager;
+    protected $dataSourceManager;
 
     protected $shardManager;
 
-    public function __construct(Config $config, DataSourceManager $connectionManager, ShardManager $shardManager = null)
+    public function __construct(Config $config, DataSourceManager $dataSourceManager, ShardManager $shardManager = null)
     {
         $this->config = $config;
-        $this->connectionManager = $connectionManager;
-        $this->shardManager = $shardManager ?: new ShardManager($config, $connectionManager);
+        $this->dataSourceManager = $dataSourceManager;
+        $this->shardManager = $shardManager ?: new ShardManager($config, $dataSourceManager);
     }
 
     public function removeChunks(ShardMapping $mapping)
     {
-        $dbManager = new DatabaseManager($this->connectionManager);
+        $dbManager = new DatabaseManager($this->dataSourceManager);
         $chunks = $mapping->getChunks();
         foreach ($chunks as $chunkId => $chunk) {
             $shardId = $chunk['shard'];
@@ -55,7 +55,7 @@ class ChunkManager
     public function initChunks(ShardMapping $mapping, $numberOfChunks = 4)
     {
         // Get the dbname from master datasource
-        $masterDs = $this->connectionManager->getMasterNodeConfig();
+        $masterDs = $this->dataSourceManager->getMasterNodeConfig();
         $dsn = DSNParser::parse($masterDs['dsn']);
         $dbname = $dsn->getDatabaseName();
 
@@ -83,7 +83,7 @@ class ChunkManager
             }
         }
 
-        $dbManager = new DatabaseManager($this->connectionManager);
+        $dbManager = new DatabaseManager($this->dataSourceManager);
         foreach ($shardChunks as $shardId => $chunkIds) {
             foreach ($chunkIds as $chunkId) {
                 // get shard from the chunk

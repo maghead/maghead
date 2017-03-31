@@ -20,24 +20,24 @@ use RecursiveIteratorIterator;
  */
 class MigrationManager
 {
-    protected $connectionManager;
+    protected $dataSourceManager;
 
     protected $logger;
 
-    public function __construct(DataSourceManager $connectionManager, Logger $logger)
+    public function __construct(DataSourceManager $dataSourceManager, Logger $logger)
     {
-        $this->connectionManager = $connectionManager;
+        $this->dataSourceManager = $dataSourceManager;
         $this->logger = $logger;
     }
 
     public function upgrade(array $ids = null, $steps = 1)
     {
         if (!$ids) {
-            $ids = $this->connectionManager->getNodeIds();
+            $ids = $this->dataSourceManager->getNodeIds();
         }
         foreach ($ids as $id) {
             $this->logger->info("Performing upgrade on node $id");
-            $conn = $this->connectionManager->getConnection($id);
+            $conn = $this->dataSourceManager->getConnection($id);
             $driver = $conn->getQueryDriver();
 
             $scripts = MigrationLoader::getDeclaredMigrationScripts();
@@ -52,11 +52,11 @@ class MigrationManager
     public function downgrade(array $ids = null, $steps = 1)
     {
         if (!$ids) {
-            $ids = $this->connectionManager->getNodeIds();
+            $ids = $this->dataSourceManager->getNodeIds();
         }
         foreach ($ids as $id) {
             $this->logger->info("Performing downgrade on node $id");
-            $conn = $this->connectionManager->getConnection($id);
+            $conn = $this->dataSourceManager->getConnection($id);
             $driver = $conn->getQueryDriver();
 
             $scripts = MigrationLoader::getDeclaredMigrationScripts();
@@ -71,13 +71,13 @@ class MigrationManager
     public function upgradeAutomatically(array $ids = null, array $schemas, OptionResult $options = null)
     {
         if (!$ids) {
-            $ids = $this->connectionManager->getNodeIds();
+            $ids = $this->dataSourceManager->getNodeIds();
         }
 
         foreach ($ids as $id) {
             $this->logger->info("Performing automatic upgrade on node $id");
 
-            $conn = $this->connectionManager->getConnection($id);
+            $conn = $this->dataSourceManager->getConnection($id);
             $driver = $conn->getQueryDriver();
 
             $script = new AutomaticMigration($conn, $driver, $this->logger, $options);

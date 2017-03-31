@@ -15,7 +15,7 @@ class DatabaseManagerTest extends ModelTestCase
 
     public function testCreateDB()
     {
-        $dbManager = new DatabaseManager($this->connManager);
+        $dbManager = new DatabaseManager($this->dataSourceManager);
         list($conn, $ds) = $dbManager->create($this->getMasterDataSourceId(), 'test_aaa');
 
         $this->assertNotEmpty($ds);

@@ -22,9 +22,9 @@ class MigrateStatusCommand extends MigrateBaseCommand
     {
         $dsId = $this->getCurrentDataSourceId();
 
-        $connectionManager = DataSourceManager::getInstance();
-        $conn = $connectionManager->getConnection($dsId);
-        $driver = $connectionManager->getQueryDriver($dsId);
+        $dataSourceManager = DataSourceManager::getInstance();
+        $conn = $dataSourceManager->getConnection($dsId);
+        $driver = $dataSourceManager->getQueryDriver($dsId);
 
         $scripts = MigrationLoader::getDeclaredMigrationScripts();
 

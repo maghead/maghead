@@ -60,17 +60,17 @@ class BaseCommand extends Command
     public function getCurrentQueryDriver()
     {
         $dataSource = $this->getCurrentDataSourceId();
-        $connectionManager = DataSourceManager::getInstance();
+        $dataSourceManager = DataSourceManager::getInstance();
 
-        return $connectionManager->getQueryDriver($dataSource);
+        return $dataSourceManager->getQueryDriver($dataSource);
     }
 
     public function getCurrentConnection()
     {
         $dataSource = $this->getCurrentDataSourceId();
-        $connectionManager = DataSourceManager::getInstance();
+        $dataSourceManager = DataSourceManager::getInstance();
 
-        return $connectionManager->getConnection($dataSource);
+        return $dataSourceManager->getConnection($dataSource);
     }
 
     public function findSchemasByArguments(array $arguments)

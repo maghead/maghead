@@ -11,9 +11,9 @@ trait RepoFactoryTrait
      */
     public static function masterRepo()
     {
-        $connManager = static::$connectionManager;
-        $write = $connManager->getConnection(static::WRITE_SOURCE_ID);
-        $read  = $connManager->getConnection(static::READ_SOURCE_ID);
+        $dataSourceManager = static::$dataSourceManager;
+        $write = $dataSourceManager->getConnection(static::WRITE_SOURCE_ID);
+        $read  = $dataSourceManager->getConnection(static::READ_SOURCE_ID);
         return static::createRepo($write, $read);
     }
 
@@ -26,15 +26,15 @@ trait RepoFactoryTrait
      */
     public static function repo($write = null, $read = null)
     {
-        $connManager = static::$connectionManager;
+        $dataSourceManager = static::$dataSourceManager;
         if (!$read) {
             if ($write) {
                 $read = $write;
             }
             return static::masterRepo();
         }
-        $writeConn = is_string($write) ? $connManager->getConnection($write) : $write;
-        $readConn = is_string($read) ? $connManager->getConnection($read) : $read;
+        $writeConn = is_string($write) ? $dataSourceManager->getConnection($write) : $write;
+        $readConn = is_string($read) ? $dataSourceManager->getConnection($read) : $read;
         return static::createRepo($writeConn, $readConn);
     }
 

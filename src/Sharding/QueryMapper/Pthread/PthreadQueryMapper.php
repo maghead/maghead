@@ -11,13 +11,13 @@ use Maghead\Sharding\ShardCollection;
 
 class PthreadQueryMapper implements QueryMapper
 {
-    protected $connectionManager;
+    protected $dataSourceManager;
 
     protected $workers = [];
 
-    public function __construct(DataSourceManager $connectionManager)
+    public function __construct(DataSourceManager $dataSourceManager)
     {
-        $this->connectionManager = $connectionManager;
+        $this->dataSourceManager = $dataSourceManager;
     }
 
     public function map(ShardCollection $shards, $query)
@@ -32,7 +32,7 @@ class PthreadQueryMapper implements QueryMapper
     protected function start(array $nodeIds)
     {
         foreach ($nodeIds as $nodeId) {
-            $ds = $this->connectionManager->getNodeConfig($nodeId);
+            $ds = $this->dataSourceManager->getNodeConfig($nodeId);
             $this->workers[$nodeId] = $w = new PthreadQueryWorker($ds['dsn'], $ds['user'], $ds['pass'], $ds['connection_options']);
             $w->start();
         }
@@ -43,7 +43,7 @@ class PthreadQueryMapper implements QueryMapper
         $jobs = [];
         foreach ($this->workers as $nodeId => $worker) {
             // For different connection, we have different query driver to build the sql statement.
-            $conn = $this->connectionManager->getConnection($nodeId);
+            $conn = $this->dataSourceManager->getConnection($nodeId);
             $args = new ArgumentArray;
             $sql = $query->toSql($conn->getQueryDriver(), $args);
             $jobs[$nodeId] = $job = new PthreadQueryJob($sql, serialize($args->toArray()));

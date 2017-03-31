@@ -26,7 +26,7 @@ class GearmanQueryWorker
 
     protected $config;
 
-    protected $connectionManager;
+    protected $dataSourceManager;
 
     protected $worker;
 
@@ -34,16 +34,16 @@ class GearmanQueryWorker
 
     private $shardManager;
 
-    public function __construct(Config $config, DataSourceManager $connectionManager, GearmanWorker $worker = null, Logger $logger = null)
+    public function __construct(Config $config, DataSourceManager $dataSourceManager, GearmanWorker $worker = null, Logger $logger = null)
     {
         $this->config = $config;
-        $this->connectionManager = $connectionManager;
+        $this->dataSourceManager = $dataSourceManager;
 
         $this->logger = $logger ?: self::createDefaultLogger();
         $this->worker = $worker ?: self::createDefaultGearmanWorker();
         $this->worker->addFunction(self::PROVIDE_FUNCTION, [$this, 'work']);
 
-        $this->shardManager = new ShardManager($this->config, $this->connectionManager);
+        $this->shardManager = new ShardManager($this->config, $this->dataSourceManager);
     }
 
     static protected function createDefaultLogger()
@@ -78,7 +78,7 @@ class GearmanQueryWorker
         $this->logger->debug("Selected read node {$nodeId} from shard {$queryJob->shardId}");
 
         $this->logger->debug("Getting the connection of {$nodeId}");
-        $conn = $this->connectionManager->getConnection($nodeId);
+        $conn = $this->dataSourceManager->getConnection($nodeId);
 
         $driver = $conn->getQueryDriver();
 

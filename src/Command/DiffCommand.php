@@ -24,9 +24,9 @@ class DiffCommand extends BaseCommand
 
         $dsId = $this->getCurrentDataSourceId();
 
-        $connectionManager = \Maghead\Manager\DataSourceManager::getInstance();
-        $conn = $connectionManager->getConnection($dsId);
-        $driver = $connectionManager->getQueryDriver($dsId);
+        $dataSourceManager = \Maghead\Manager\DataSourceManager::getInstance();
+        $conn = $dataSourceManager->getConnection($dsId);
+        $driver = $dataSourceManager->getQueryDriver($dsId);
 
         $this->logger->info('Performing comparison...');
 

@@ -14,17 +14,17 @@ use SQLBuilder\Universal\Query\DropDatabaseQuery;
 
 class DatabaseManager
 {
-    protected $connectionManager;
+    protected $dataSourceManager;
 
-    public function __construct(DataSourceManager $connectionManager)
+    public function __construct(DataSourceManager $dataSourceManager)
     {
-        $this->connectionManager = $connectionManager;
+        $this->dataSourceManager = $dataSourceManager;
     }
 
 
     public function create(string $nodeId, string $dbname)
     {
-        $ds = $this->connectionManager->getNodeConfig($nodeId);
+        $ds = $this->dataSourceManager->getNodeConfig($nodeId);
         $dsn = DSNParser::parse($ds['dsn']);
         switch ($ds['driver']) {
         case 'sqlite':
@@ -38,7 +38,7 @@ class DatabaseManager
 
     public function drop(string $nodeId, string $dbname)
     {
-        $ds = $this->connectionManager->getNodeConfig($nodeId);
+        $ds = $this->dataSourceManager->getNodeConfig($nodeId);
         $dsn = DSNParser::parse($ds['dsn']);
         switch ($ds['driver']) {
         case 'sqlite':

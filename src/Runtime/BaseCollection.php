@@ -39,7 +39,7 @@ class BaseCollection implements
 
     public static $jsonOptions = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP;
 
-    public static $connectionManager;
+    public static $dataSourceManager;
 
     protected $_lastSql;
 

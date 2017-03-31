@@ -39,8 +39,8 @@ class GearmanQueryMapperTest extends StoreTestCase
         } else {
             // we are the child
             // create worker here.
-            $connManager = DataSourceManager::getInstance();
-            $connManager->free();
+            $dataSourceManager = DataSourceManager::getInstance();
+            $dataSourceManager->free();
             Bootstrap::setup($config = $this->loadConfig(), true); // setup connection manager
 
             // create a log channel
@@ -50,7 +50,7 @@ class GearmanQueryMapperTest extends StoreTestCase
             } else {
                 $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::ERROR));
             }
-            $worker = new GearmanQueryWorker($config, $connManager, null, $logger);
+            $worker = new GearmanQueryWorker($config, $dataSourceManager, null, $logger);
             $worker->run();
             exit(0);
         }
@@ -70,7 +70,7 @@ class GearmanQueryMapperTest extends StoreTestCase
 
     public function testGearmanQueryMapper()
     {
-        $shardManager = new ShardManager($this->config, $this->connManager);
+        $shardManager = new ShardManager($this->config, $this->dataSourceManager);
         $mapping = $shardManager->getShardMapping('M_store_id');
         $shards = $shardManager->getShardsOf('M_store_id');
         $this->assertNotEmpty($shards);

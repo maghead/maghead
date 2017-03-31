@@ -16,12 +16,12 @@ class ChunkManagerTest extends StoreTestCase
 {
     public function testChunkInit()
     {
-        $shardManager = new ShardManager($this->config, $this->connManager);
+        $shardManager = new ShardManager($this->config, $this->dataSourceManager);
 
         $mapping = $shardManager->getShardMapping('M_store_id');
         $this->assertNotEmpty($mapping);
 
-        $chunkManager = new ChunkManager($this->config, $this->connManager);
+        $chunkManager = new ChunkManager($this->config, $this->dataSourceManager);
         $chunks = $chunkManager->initChunks($mapping, 32);
 
         foreach ($chunks as $chunkId => $chunk) {

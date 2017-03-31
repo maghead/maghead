@@ -60,7 +60,7 @@ abstract class ModelTestCase extends BaseTestCase
 
         if ($this->requiredDataSources) {
             foreach ($this->requiredDataSources as $nodeId) {
-                $conn = $this->connManager->getConnection($nodeId);
+                $conn = $this->dataSourceManager->getConnection($nodeId);
                 $this->prepareDatabase($conn, $conn->getQueryDriver(), $schemas, $rebuild, $basedata);
             }
         } else {

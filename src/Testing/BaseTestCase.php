@@ -45,7 +45,7 @@ abstract class BaseTestCase extends TestCase
     protected $onlyDriver;
 
 
-    protected $connManager;
+    protected $dataSourceManager;
 
     protected $config;
 
@@ -76,7 +76,7 @@ abstract class BaseTestCase extends TestCase
             return $this->markTestSkipped('pdo extension is required for model testing');
         }
 
-        $this->connManager = DataSourceManager::getInstance();
+        $this->dataSourceManager = DataSourceManager::getInstance();
         $this->logger = new Logger();
         $this->logger->setQuiet();
         $this->config = $this->loadConfig();
@@ -119,8 +119,8 @@ abstract class BaseTestCase extends TestCase
         // Always reset config from symbol file
         $this->config = $this->loadConfig();
 
-        Bootstrap::setupDataSources($this->config, $this->connManager);
-        Bootstrap::setupGlobalVars($this->config, $this->connManager);
+        Bootstrap::setupDataSources($this->config, $this->dataSourceManager);
+        Bootstrap::setupGlobalVars($this->config, $this->dataSourceManager);
 
         $this->prepareConnections();
     }
@@ -128,7 +128,7 @@ abstract class BaseTestCase extends TestCase
     public function tearDown()
     {
         if ($this->freeConnections) {
-            $this->connManager->free();
+            $this->dataSourceManager->free();
             $this->conn = null;
         }
     }
@@ -165,7 +165,7 @@ abstract class BaseTestCase extends TestCase
     {
         try {
             // Create the default connection
-            return $this->connManager->getConnection($connId);
+            return $this->dataSourceManager->getConnection($connId);
         } catch (PDOException $e) {
             if ($this->allowConnectionFailure) {
                 $this->markTestSkipped(

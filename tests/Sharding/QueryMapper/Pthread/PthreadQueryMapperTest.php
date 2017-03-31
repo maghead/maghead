@@ -32,7 +32,7 @@ class PthreadQueryMapperTest extends StoreTestCase
 
     public function testJoinJobResults()
     {
-        $shardManager = new ShardManager($this->config, $this->connManager);
+        $shardManager = new ShardManager($this->config, $this->dataSourceManager);
 
         $mapping = $shardManager->getShardMapping('M_store_id');
 
@@ -64,7 +64,7 @@ class PthreadQueryMapperTest extends StoreTestCase
         $query->select(['SUM(amount)' => 'amount']);
         $query->from('orders');
 
-        $mapper = new PthreadQueryMapper($this->connManager);
+        $mapper = new PthreadQueryMapper($this->dataSourceManager);
         $results = $mapper->map($shards, $query);
 
         $total = 0;

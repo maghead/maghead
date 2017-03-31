@@ -19,11 +19,11 @@ class AllocateShard
 {
     protected $config;
 
-    protected $connectionManager;
+    protected $dataSourceManager;
 
-    public function __construct(Config $config, ConnectionManager $connectionManager)
+    public function __construct(Config $config, ConnectionManager $dataSourceManager)
     {
         $this->config = $config;
-        $this->connectionManager = $connectionManager;
+        $this->dataSourceManager = $dataSourceManager;
     }
 }

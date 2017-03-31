@@ -119,7 +119,7 @@ ConnectionManager instance.
 
     use Maghead\Sharding\Manager\ShardManager;
 
-    $shardManager = new ShardManager($config, $connectionManager);
+    $shardManager = new ShardManager($config, $dataSourceManager);
 
 To get the shards used by one shard mapping, simply call `getShardsOf` with the
 related shard mapping ID:

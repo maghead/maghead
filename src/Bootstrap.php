@@ -61,32 +61,32 @@ class Bootstrap
         }
     }
 
-    public static function setupDataSources(Config $config, DataSourceManager $connectionManager)
+    public static function setupDataSources(Config $config, DataSourceManager $dataSourceManager)
     {
         foreach ($config->getDataSources() as $nodeId => $dsConfig) {
-            $connectionManager->addNode($nodeId, $dsConfig);
+            $dataSourceManager->addNode($nodeId, $dsConfig);
         }
         if ($nodeId = $config->getMasterDataSourceId()) {
-            $connectionManager->setMasterNodeId($nodeId);
+            $dataSourceManager->setMasterNodeId($nodeId);
         }
     }
 
 
-    public static function setupGlobalVars(Config $config, DataSourceManager $connectionManager)
+    public static function setupGlobalVars(Config $config, DataSourceManager $dataSourceManager)
     {
-        BaseModel::$connectionManager = $connectionManager;
-        BaseCollection::$connectionManager = $connectionManager;
+        BaseModel::$dataSourceManager = $dataSourceManager;
+        BaseCollection::$dataSourceManager = $dataSourceManager;
     }
 
     public static function setup(Config $config)
     {
-        $connectionManager = DataSourceManager::getInstance();
+        $dataSourceManager = DataSourceManager::getInstance();
 
         // TODO: this could be moved to Environment class.
         BaseModel::$yamlExtension = extension_loaded('yaml');
 
-        self::setupDataSources($config, $connectionManager);
-        self::setupGlobalVars($config, $connectionManager);
+        self::setupDataSources($config, $dataSourceManager);
+        self::setupGlobalVars($config, $dataSourceManager);
     }
 
     /**

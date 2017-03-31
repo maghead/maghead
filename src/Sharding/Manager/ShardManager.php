@@ -21,13 +21,13 @@ class ShardManager
 
     protected $shardingConfig;
 
-    protected $connectionManager;
+    protected $dataSourceManager;
 
-    public function __construct(Config $config, DataSourceManager $connectionManager)
+    public function __construct(Config $config, DataSourceManager $dataSourceManager)
     {
         $this->config = $config;
         $this->shardingConfig = $config['sharding'];
-        $this->connectionManager = $connectionManager;
+        $this->dataSourceManager = $dataSourceManager;
     }
 
     public function getMappingsConfig()
@@ -60,7 +60,7 @@ class ShardManager
         if (!isset($shards[$shardId])) {
             throw new Exception("Shard '{$shardId}' is undefined.");
         }
-        return new Shard($shardId, $shards[$shardId], $this->connectionManager);
+        return new Shard($shardId, $shards[$shardId], $this->dataSourceManager);
     }
 
     public function getAvailableShards()
@@ -75,7 +75,7 @@ class ShardManager
         $shards = [];
         foreach ($config as $shardId => $shardConfig) {
             // Wrap shard config into objects.
-            $shard = new Shard($shardId, $shardConfig, $this->connectionManager);
+            $shard = new Shard($shardId, $shardConfig, $this->dataSourceManager);
             $shards[ $shardId ] = $shard;
         }
         return new ShardCollection($shards, $mapping, $repoClass);
