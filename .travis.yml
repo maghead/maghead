@@ -5,14 +5,15 @@ php:
 - 7.0
 - hhvm
 env:
-  - DB=mysql                         # only database tests against mysql
-  - DB=sqlite    # only database tests against postgresql
+  - DB=mysql     # mysql database tests only
+  - DB=sqlite    # pgsql database tests only
   - DB=pgsql
 addons:
   postgresql: "9.3"
 before_install:
 - sudo apt-get update -qq -y
 - sudo apt-get install -y mysql-utilities
+# https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/#repo-qg-apt-repo-manual-setup
 install:
 - phpenv rehash
 - travis_retry composer require "satooshi/php-coveralls" "^1" --no-update --dev
