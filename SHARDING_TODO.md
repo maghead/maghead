@@ -1,11 +1,16 @@
 # Sharding TODO
 
-
 ## Config improvement
 
-- [ ] Add instances definitions for command-line operations.
+- [ ] Add instances definitions to config class.
+- [ ] Add instances connection support to ConnectionManager.
 - [ ] Use mongodb for centralized shared config (load instance definitions and shard definitions)
 
+## Shard Operations
+
+- [ ] Allocate Shard
+- [ ] Clone Shard
+- [ ] Prune Shard
 
 ## Storage Optimization
 
