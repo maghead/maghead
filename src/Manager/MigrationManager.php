@@ -33,7 +33,7 @@ class MigrationManager
     public function upgrade(array $ids = null, $steps = 1)
     {
         if (!$ids) {
-            $ids = $this->connectionManager->getDataSourceIdList();
+            $ids = $this->connectionManager->getNodeIdList();
         }
         foreach ($ids as $id) {
             $this->logger->info("Performing upgrade on node $id");
@@ -52,7 +52,7 @@ class MigrationManager
     public function downgrade(array $ids = null, $steps = 1)
     {
         if (!$ids) {
-            $ids = $this->connectionManager->getDataSourceIdList();
+            $ids = $this->connectionManager->getNodeIdList();
         }
         foreach ($ids as $id) {
             $this->logger->info("Performing downgrade on node $id");
@@ -71,7 +71,7 @@ class MigrationManager
     public function upgradeAutomatically(array $ids = null, array $schemas, OptionResult $options = null)
     {
         if (!$ids) {
-            $ids = $this->connectionManager->getDataSourceIdList();
+            $ids = $this->connectionManager->getNodeIdList();
         }
 
         foreach ($ids as $id) {

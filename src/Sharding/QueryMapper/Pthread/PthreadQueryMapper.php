@@ -32,7 +32,7 @@ class PthreadQueryMapper implements QueryMapper
     protected function start(array $nodeIds)
     {
         foreach ($nodeIds as $nodeId) {
-            $ds = $this->connectionManager->getDataSource($nodeId);
+            $ds = $this->connectionManager->getNodeConfig($nodeId);
             $this->workers[$nodeId] = $w = new PthreadQueryWorker($ds['dsn'], $ds['user'], $ds['pass'], $ds['connection_options']);
             $w->start();
         }

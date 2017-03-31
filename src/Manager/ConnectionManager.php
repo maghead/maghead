@@ -98,7 +98,7 @@ class ConnectionManager implements ArrayAccess
      *
      * @return array key list
      */
-    public function getDataSourceIdList()
+    public function getNodeIdList()
     {
         return array_keys($this->datasources);
     }
@@ -108,7 +108,7 @@ class ConnectionManager implements ArrayAccess
      *
      * @return array
      */
-    public function getDataSource($id)
+    public function getNodeConfig($id)
     {
         if (isset($this->datasources[ $id ])) {
             return $this->datasources[ $id ];
@@ -117,7 +117,7 @@ class ConnectionManager implements ArrayAccess
 
     public function getMasterDataSource()
     {
-        return $this->getDataSource($this->defaultDataSourceId ?: self::DEFAULT_DS);
+        return $this->getNodeConfig($this->defaultDataSourceId ?: self::DEFAULT_DS);
     }
 
     /**
@@ -134,7 +134,7 @@ class ConnectionManager implements ArrayAccess
 
     public function getDriverType($id)
     {
-        $config = $this->getDataSource($id);
+        $config = $this->getNodeConfig($id);
 
         return $config['driver'];
     }

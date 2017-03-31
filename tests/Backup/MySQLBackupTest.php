@@ -19,7 +19,7 @@ class MySQLBackupTest extends ModelTestCase
     {
         $backup = new MySQLBackup;
 
-        $ds = $this->connManager->getDataSource($this->getMasterDataSourceId());
+        $ds = $this->connManager->getNodeConfig($this->getMasterDataSourceId());
         if ($newdb = $backup->incrementalBackup($this->conn, $ds)) {
             $this->conn->query("DROP DATABASE IF EXISTS {$newdb}");
         }

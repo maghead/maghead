@@ -24,7 +24,7 @@ class DatabaseManager
 
     public function create(string $nodeId, string $dbname)
     {
-        $ds = $this->connectionManager->getDataSource($nodeId);
+        $ds = $this->connectionManager->getNodeConfig($nodeId);
         $dsn = DSNParser::parse($ds['dsn']);
         switch ($ds['driver']) {
         case 'sqlite':
@@ -38,7 +38,7 @@ class DatabaseManager
 
     public function drop(string $nodeId, string $dbname)
     {
-        $ds = $this->connectionManager->getDataSource($nodeId);
+        $ds = $this->connectionManager->getNodeConfig($nodeId);
         $dsn = DSNParser::parse($ds['dsn']);
         switch ($ds['driver']) {
         case 'sqlite':
