@@ -127,7 +127,11 @@ class ConfigLoader
     public static function preprocessConfig(array $config)
     {
         if (isset($config['data_source']['nodes'])) {
-            $config['data_source']['nodes'] = self::preprocessDataSourceConfig($config['data_source']['nodes']);
+            $config['data_source']['nodes'] = self::preprocessNodeConfig($config['data_source']['nodes']);
+        }
+
+        if (isset($config['instance'])) {
+            $config['instance'] = self::preprocessNodeConfig($config['instance']);
         }
 
         return $config;
@@ -138,7 +142,7 @@ class ConfigLoader
      *
      * @param array PHP array from yaml config file
      */
-    public static function preprocessDataSourceConfig(array $dbconfig)
+    private static function preprocessNodeConfig(array $dbconfig)
     {
         foreach ($dbconfig as &$config) {
             if (!isset($config['driver'])) {
