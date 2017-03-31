@@ -33,7 +33,7 @@ class DataSourceManager extends ConnectionManager
      */
     public function connect($nodeId)
     {
-        if ($nodeId === 'default') {
+        if ($nodeId === self::DEFAULT_MASTER_NODE_ID) {
             $nodeId = $this->masterNodeId;
         }
         return parent::connect($nodeId);
@@ -44,7 +44,7 @@ class DataSourceManager extends ConnectionManager
      */
     public function getConnection($nodeId)
     {
-        if ($nodeId === 'default') {
+        if ($nodeId === self::DEFAULT_MASTER_NODE_ID) {
             $nodeId = $this->masterNodeId;
         }
         return parent::getConnection($nodeId);
