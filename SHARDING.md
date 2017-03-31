@@ -155,6 +155,8 @@ Clone an existing shard on the same instance.
 
 Before cloning the shard, be sure to have the mysql instance defined in the config.
 
+The ShardCloning operation uses mysqldbcopy to copy the database.
+
 ### Pruning Shard
 
 Prune all rows that doesn't belong to the shard.
