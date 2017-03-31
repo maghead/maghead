@@ -44,6 +44,20 @@ Sphinx Document
 
 
 
+
+## Instance
+
+To define your database instance connections, simply define:
+
+```
+instance:
+  local:
+    dsn: 'mysql:host=localhost'
+    user: root
+```
+
+Please note that the instance definition doesn't include database name.
+
 ## Shard Mapping
 
 A shard mapping defines how do we allocate data on different shards.
