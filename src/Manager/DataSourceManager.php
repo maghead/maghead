@@ -13,13 +13,13 @@ use Maghead\Connector\PDOMySQLConnector;
 
 class DataSourceManager extends ConnectionManager
 {
-    const DEFAULT_DS = 'default';
+    const DEFAULT_MASTER_NODE_ID = 'default';
 
     protected $masterNodeId;
 
     public function getMasterNodeConfig()
     {
-        return $this->getNodeConfig($this->masterNodeId ?: self::DEFAULT_DS);
+        return $this->getNodeConfig($this->masterNodeId ?: self::DEFAULT_MASTER_NODE_ID);
     }
 
     public function setMasterNodeId($nodeId)
@@ -57,7 +57,7 @@ class DataSourceManager extends ConnectionManager
      */
     public function getMasterConnection()
     {
-        return $this->getConnection($this->masterNodeId ?: self::DEFAULT_DS);
+        return $this->getConnection($this->masterNodeId ?: self::DEFAULT_MASTER_NODE_ID);
     }
 
     /**
