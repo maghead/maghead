@@ -10,6 +10,9 @@ env:
   - DB=pgsql
 addons:
   postgresql: "9.3"
+before_install:
+  - apt-get update -qq -y
+  - apt-get install -y mysql-utilities
 install:
   - phpenv rehash
   - travis_retry composer require "satooshi/php-coveralls" "^1" --no-update --dev
