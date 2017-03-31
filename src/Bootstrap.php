@@ -5,7 +5,7 @@ namespace Maghead;
 use Maghead\TableBuilder\BaseBuilder;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\SchemaFinder;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Runtime\BaseModel;
 use Maghead\Runtime\BaseCollection;
 use CLIFramework\Logger;
@@ -61,7 +61,7 @@ class Bootstrap
         }
     }
 
-    public static function setupDataSources(Config $config, ConnectionManager $connectionManager)
+    public static function setupDataSources(Config $config, DataSourceManager $connectionManager)
     {
         foreach ($config->getDataSources() as $nodeId => $dsConfig) {
             $connectionManager->addNode($nodeId, $dsConfig);
@@ -72,7 +72,7 @@ class Bootstrap
     }
 
 
-    public static function setupGlobalVars(Config $config, ConnectionManager $connectionManager)
+    public static function setupGlobalVars(Config $config, DataSourceManager $connectionManager)
     {
         BaseModel::$connectionManager = $connectionManager;
         BaseCollection::$connectionManager = $connectionManager;
@@ -80,7 +80,7 @@ class Bootstrap
 
     public static function setup(Config $config)
     {
-        $connectionManager = ConnectionManager::getInstance();
+        $connectionManager = DataSourceManager::getInstance();
 
         // TODO: this could be moved to Environment class.
         BaseModel::$yamlExtension = extension_loaded('yaml');

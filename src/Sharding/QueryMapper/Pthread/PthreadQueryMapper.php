@@ -5,7 +5,7 @@ namespace Maghead\Sharding\QueryMapper\Pthread;
 use SQLBuilder\Universal\Query\CreateDatabaseQuery;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\PDOMySQLDriver;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Sharding\QueryMapper\QueryMapper;
 use Maghead\Sharding\ShardCollection;
 
@@ -15,7 +15,7 @@ class PthreadQueryMapper implements QueryMapper
 
     protected $workers = [];
 
-    public function __construct(ConnectionManager $connectionManager)
+    public function __construct(DataSourceManager $connectionManager)
     {
         $this->connectionManager = $connectionManager;
     }

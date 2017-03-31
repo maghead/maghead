@@ -6,7 +6,7 @@ use Maghead\Sharding\Hasher\FlexihashHasher;
 use Maghead\Sharding\ShardDispatcher;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Shard;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Config;
 
@@ -28,7 +28,7 @@ class ChunkManager
 
     protected $shardManager;
 
-    public function __construct(Config $config, ConnectionManager $connectionManager, ShardManager $shardManager = null)
+    public function __construct(Config $config, DataSourceManager $connectionManager, ShardManager $shardManager = null)
     {
         $this->config = $config;
         $this->connectionManager = $connectionManager;

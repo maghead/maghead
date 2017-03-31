@@ -2,7 +2,7 @@
 
 namespace Maghead\Sharding;
 
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\ShardManager;
 use Maghead\Sharding\Hasher\Hasher;
 use Maghead\Sharding\ShardMapping;

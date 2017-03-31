@@ -6,7 +6,7 @@ use Maghead\Sharding\ShardDispatcher;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Shard;
 use Maghead\Sharding\ShardCollection;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Config;
 
 use LogicException;
@@ -23,7 +23,7 @@ class ShardManager
 
     protected $connectionManager;
 
-    public function __construct(Config $config, ConnectionManager $connectionManager)
+    public function __construct(Config $config, DataSourceManager $connectionManager)
     {
         $this->config = $config;
         $this->shardingConfig = $config['sharding'];

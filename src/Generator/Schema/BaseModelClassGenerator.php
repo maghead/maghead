@@ -8,7 +8,7 @@ use InvalidArgumentException;
 
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Doctrine\Common\Inflector\Inflector;
 
 use Maghead\Generator\PDOStatementGenerator;
@@ -43,11 +43,11 @@ class BaseModelClassGenerator
         $writeTo  = $schema->getWriteSourceId();
 
         // get read connection
-        $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
+        $readConnection = DataSourceManager::getInstance()->getConnection($readFrom);
         $readQueryDriver = $readConnection->getQueryDriver();
 
         // get write connection
-        $writeConnection = ConnectionManager::getInstance()->getConnection($writeTo);
+        $writeConnection = DataSourceManager::getInstance()->getConnection($writeTo);
         $writeQueryDriver = $writeConnection->getQueryDriver();
 
         $primaryKey = $schema->primaryKey;

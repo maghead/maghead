@@ -3,7 +3,7 @@
 namespace Maghead\Sharding;
 
 use Maghead\Sharding\Balancer\RandBalancer;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Runtime\BaseRepo;
 use SQLBuilder\Universal\Query\UUIDQuery;
 use SQLBuilder\ArgumentArray;
@@ -28,7 +28,7 @@ class Shard
      */
     protected $config;
 
-    public function __construct($id, array $config, ConnectionManager $connectionManager, Balancer $balancer = null)
+    public function __construct($id, array $config, DataSourceManager $connectionManager, Balancer $balancer = null)
     {
         $this->id           = $id;
         $this->config       = $config;

@@ -3,7 +3,7 @@
 namespace Maghead\Generator\Schema;
 
 use ClassTemplate\ClassFile;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
 use Doctrine\Common\Inflector\Inflector;
@@ -35,10 +35,10 @@ class BaseRepoClassGenerator
         $readFrom = $schema->getReadSourceId();
         $writeTo  = $schema->getWriteSourceId();
 
-        $readConnection = ConnectionManager::getInstance()->getConnection($readFrom);
+        $readConnection = DataSourceManager::getInstance()->getConnection($readFrom);
         $readQueryDriver = $readConnection->getQueryDriver();
 
-        $writeConnection = ConnectionManager::getInstance()->getConnection($writeTo);
+        $writeConnection = DataSourceManager::getInstance()->getConnection($writeTo);
         $writeQueryDriver = $writeConnection->getQueryDriver();
 
         $cTemplate = new ClassFile($schema->getBaseRepoClass());

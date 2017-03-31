@@ -2,7 +2,7 @@
 
 namespace Maghead\Testing;
 
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\TableBuilder\TableBuilder;
 use Maghead\Runtime\BaseModel;
 use Maghead\ConfigLoader;
@@ -76,7 +76,7 @@ abstract class BaseTestCase extends TestCase
             return $this->markTestSkipped('pdo extension is required for model testing');
         }
 
-        $this->connManager = ConnectionManager::getInstance();
+        $this->connManager = DataSourceManager::getInstance();
         $this->logger = new Logger();
         $this->logger->setQuiet();
         $this->config = $this->loadConfig();

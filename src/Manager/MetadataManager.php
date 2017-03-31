@@ -5,7 +5,7 @@ namespace Maghead\Manager;
 use ArrayAccess;
 use IteratorAggregate;
 use Maghead\TableParser\TableParser;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use SQLBuilder\Driver\BaseDriver;
 use ArrayIterator;
 use PDO;
@@ -42,7 +42,7 @@ class MetadataManager implements ArrayAccess, IteratorAggregate
 
     public static function createWithDataSource($dsId)
     {
-        $connm = ConnectionManager::getInstance();
+        $connm = DataSourceManager::getInstance();
         $connection = $connm->getConnection($dsId);
         $driver = $connm->getQueryDriver($dsId);
 

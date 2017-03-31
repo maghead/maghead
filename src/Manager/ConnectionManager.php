@@ -13,10 +13,6 @@ use Maghead\Connector\PDOMySQLConnector;
 
 class ConnectionManager implements ArrayAccess
 {
-    const DEFAULT_DS = 'default';
-
-    protected $masterNodeId;
-
     /**
      * @var array contains node configurations
      */
@@ -115,16 +111,6 @@ class ConnectionManager implements ArrayAccess
         }
     }
 
-    public function getMasterNodeConfig()
-    {
-        return $this->getNodeConfig($this->masterNodeId ?: self::DEFAULT_DS);
-    }
-
-    public function setMasterNodeId($nodeId)
-    {
-        $this->masterNodeId = $nodeId;
-    }
-
     /**
      * Get SQLBuilder\QueryDriver by data source id.
      *
@@ -163,10 +149,6 @@ class ConnectionManager implements ArrayAccess
      */
     public function getConnection($nodeId)
     {
-        if ($nodeId === 'default') {
-            $nodeId = $this->masterNodeId;
-        }
-        // use cached connection objects
         if (isset($this->conns[$nodeId])) {
             return $this->conns[$nodeId];
         }
@@ -175,9 +157,6 @@ class ConnectionManager implements ArrayAccess
 
     public function connect($nodeId)
     {
-        if ($nodeId === 'default') {
-            $nodeId = $this->masterNodeId;
-        }
         if (!isset($this->nodeConfigurations[$nodeId])) {
             throw new InvalidArgumentException("data source {$nodeId} not found.");
         }
@@ -188,16 +167,6 @@ class ConnectionManager implements ArrayAccess
     public function get($dsId)
     {
         return $this->getConnection($dsId);
-    }
-
-    /**
-     * Get default data source id.
-     *
-     * @return string 'default'
-     */
-    public function getMasterConnection()
-    {
-        return $this->getConnection($this->masterNodeId ?: self::DEFAULT_DS);
     }
 
     /**

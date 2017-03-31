@@ -25,7 +25,7 @@ use Maghead\Schema\Relationship\Relationship;
 use Maghead\ConfigLoader;
 use Maghead\Exception\MissingPrimaryKeyException;
 use Maghead\Exception\QueryException;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Shard;
 use Maghead\Sharding\ShardCollection;
@@ -220,7 +220,7 @@ abstract class BaseModel implements Serializable
         }
         // Get shard nodes of this table.
         $config = ConfigLoader::getCurrentConfig();
-        $shardManager = new ShardManager($config, ConnectionManager::getInstance());
+        $shardManager = new ShardManager($config, DataSourceManager::getInstance());
         return $shardManager->getShardsOf(static::SHARD_MAPPING_ID, static::REPO_CLASS);
     }
 

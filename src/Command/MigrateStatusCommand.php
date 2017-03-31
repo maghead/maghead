@@ -4,7 +4,7 @@ namespace Maghead\Command;
 
 use Maghead\Migration\MigrationRunner;
 use Maghead\Migration\MigrationLoader;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 
 class MigrateStatusCommand extends MigrateBaseCommand
 {
@@ -22,7 +22,7 @@ class MigrateStatusCommand extends MigrateBaseCommand
     {
         $dsId = $this->getCurrentDataSourceId();
 
-        $connectionManager = ConnectionManager::getInstance();
+        $connectionManager = DataSourceManager::getInstance();
         $conn = $connectionManager->getConnection($dsId);
         $driver = $connectionManager->getQueryDriver($dsId);
 

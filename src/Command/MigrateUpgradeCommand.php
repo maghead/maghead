@@ -2,7 +2,7 @@
 
 namespace Maghead\Command;
 
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\MigrationManager;
 
 class MigrateUpgradeCommand extends MigrateBaseCommand
@@ -19,7 +19,7 @@ class MigrateUpgradeCommand extends MigrateBaseCommand
 
     public function execute()
     {
-        $connectionManager = ConnectionManager::getInstance();
+        $connectionManager = DataSourceManager::getInstance();
         $migrationManager = new MigrationManager($connectionManager, $this->logger);
         if ($dsId = $this->getCurrentDataSourceId()) {
 

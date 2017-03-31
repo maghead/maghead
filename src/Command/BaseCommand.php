@@ -5,7 +5,7 @@ namespace Maghead\Command;
 use CLIFramework\Command;
 use Maghead\ConfigLoader;
 use Maghead\Schema\SchemaUtils;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use RuntimeException;
 use Maghead\Bootstrap;
 
@@ -60,7 +60,7 @@ class BaseCommand extends Command
     public function getCurrentQueryDriver()
     {
         $dataSource = $this->getCurrentDataSourceId();
-        $connectionManager = ConnectionManager::getInstance();
+        $connectionManager = DataSourceManager::getInstance();
 
         return $connectionManager->getQueryDriver($dataSource);
     }
@@ -68,7 +68,7 @@ class BaseCommand extends Command
     public function getCurrentConnection()
     {
         $dataSource = $this->getCurrentDataSourceId();
-        $connectionManager = ConnectionManager::getInstance();
+        $connectionManager = DataSourceManager::getInstance();
 
         return $connectionManager->getConnection($dataSource);
     }

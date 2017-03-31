@@ -5,7 +5,7 @@ namespace Maghead\Testing;
 use Maghead\ConfigLoader;
 use Maghead\Connection;
 use Maghead\Bootstrap;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Utils\ClassUtils;
 use Maghead\SeedBuilder;
 use Maghead\TableBuilder\TableBuilder;

@@ -20,7 +20,7 @@ use Symfony\Component\Yaml\Yaml;
 
 use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\BaseSchema;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 
 defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
 

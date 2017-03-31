@@ -6,7 +6,7 @@ use CLIFramework\Logger;
 use Maghead\Manager\MetadataManager;
 use Maghead\Schema;
 use Maghead\TableBuilder\TableBuilder;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
@@ -98,7 +98,7 @@ DOC;
 
             $this->logger->warn('Warning: seeding is not supported when using --output option.');
         } else {
-            $connectionManager = ConnectionManager::getInstance();
+            $connectionManager = DataSourceManager::getInstance();
             $conn = $connectionManager->getConnection($id);
             $driver = $connectionManager->getQueryDriver($id);
 

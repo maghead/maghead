@@ -5,7 +5,7 @@ namespace Maghead\Generator;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\DeclareColumn;
 use Maghead\Schema\Relationship\Relationship;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 
 use Doctrine\Common\Inflector\Inflector;
 

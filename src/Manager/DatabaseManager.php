@@ -16,7 +16,7 @@ class DatabaseManager
 {
     protected $connectionManager;
 
-    public function __construct(ConnectionManager $connectionManager)
+    public function __construct(DataSourceManager $connectionManager)
     {
         $this->connectionManager = $connectionManager;
     }

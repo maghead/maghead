@@ -1,5 +1,5 @@
 <?php
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Testing\ModelTestCase;
 

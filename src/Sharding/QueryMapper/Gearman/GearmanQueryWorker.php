@@ -15,7 +15,7 @@ use SQLBuilder\Driver\BaseDriver;
 
 use Maghead\Config;
 use Maghead\ConfigLoader;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Sharding\Manager\ShardManager;
 
 use PDO;
@@ -34,7 +34,7 @@ class GearmanQueryWorker
 
     private $shardManager;
 
-    public function __construct(Config $config, ConnectionManager $connectionManager, GearmanWorker $worker = null, Logger $logger = null)
+    public function __construct(Config $config, DataSourceManager $connectionManager, GearmanWorker $worker = null, Logger $logger = null)
     {
         $this->config = $config;
         $this->connectionManager = $connectionManager;

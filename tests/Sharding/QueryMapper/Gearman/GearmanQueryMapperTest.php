@@ -11,7 +11,7 @@ use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 use Monolog\Logger;
 use Maghead\Bootstrap;
 use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryWorker;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Monolog\Handler\ErrorLogHandler;
 use StoreApp\StoreTestCase;
 
@@ -39,7 +39,7 @@ class GearmanQueryMapperTest extends StoreTestCase
         } else {
             // we are the child
             // create worker here.
-            $connManager = ConnectionManager::getInstance();
+            $connManager = DataSourceManager::getInstance();
             $connManager->free();
             Bootstrap::setup($config = $this->loadConfig(), true); // setup connection manager
 

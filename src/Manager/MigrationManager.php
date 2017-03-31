@@ -2,7 +2,7 @@
 namespace Maghead\Manager;
 
 use Maghead\Manager\MetadataManager;
-use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\Migration\MigrationLoader;
 use Maghead\Migration\MigrationRunner;
 use Maghead\Migration\AutomaticMigration;
@@ -24,7 +24,7 @@ class MigrationManager
 
     protected $logger;
 
-    public function __construct(ConnectionManager $connectionManager, Logger $logger)
+    public function __construct(DataSourceManager $connectionManager, Logger $logger)
     {
         $this->connectionManager = $connectionManager;
         $this->logger = $logger;
