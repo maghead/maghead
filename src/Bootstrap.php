@@ -21,11 +21,11 @@ class Bootstrap
      * Run bootstrap script if it's defined in the config.
      * This is used for the command-line app.
      */
-    protected static function loadBootstrap($config)
+    protected static function loadBootstrapScripts($config)
     {
-        if (isset($config['bootstrap'])) {
-            foreach ((array) $config['bootstrap'] as $bootstrap) {
-                require_once $bootstrap;
+        if ($scripts = $config->getBootstrapScripts()) {
+            foreach ($scripts as $script) {
+                require_once $script;
             }
         }
     }
@@ -96,7 +96,7 @@ class Bootstrap
     public static function setupForCLI(Config $config)
     {
         self::setup($config);
-        self::loadBootstrap($config);
+        self::loadBootstrapScripts($config);
         self::loadSchemaLoader($config);
     }
 }

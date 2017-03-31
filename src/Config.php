@@ -25,10 +25,12 @@ class Config implements ArrayAccess
     /**
      * run bootstrap code.
      */
-    public function getBootstrap()
+    public function getBootstrapScripts()
     {
         if (isset($this->stash['cli']['bootstrap'])) {
             return (array) $this->stash['cli']['bootstrap'];
+        } else if (isset($this->stash['bootstrap'])) {
+            return (array) $this->stash['bootstrap'];
         }
     }
 
@@ -46,6 +48,10 @@ class Config implements ArrayAccess
     {
         return $this->classMap;
     }
+
+
+
+
 
     public function removeDataSource($dataSourceId)
     {
