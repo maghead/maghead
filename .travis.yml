@@ -11,12 +11,12 @@ env:
 addons:
   postgresql: "9.3"
 before_install:
-  - apt-get update -qq -y
-  - apt-get install -y mysql-utilities
+- sudo apt-get update -qq -y
+- sudo apt-get install -y mysql-utilities
 install:
-  - phpenv rehash
-  - travis_retry composer require "satooshi/php-coveralls" "^1" --no-update --dev
-  - travis_retry composer install
+- phpenv rehash
+- travis_retry composer require "satooshi/php-coveralls" "^1" --no-update --dev
+- travis_retry composer install
 before_script:
   - echo $TRAVIS_PHP_VERSION
   - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini ; fi
