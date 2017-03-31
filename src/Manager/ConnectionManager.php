@@ -15,12 +15,12 @@ class ConnectionManager implements ArrayAccess
 {
     const DEFAULT_DS = 'default';
 
-    protected $defaultDataSourceId;
+    protected $masterNodeId;
 
     /**
      * @var array contains data source configurations
      */
-    protected $datasources = array();
+    protected $nodeConfigurations = array();
 
     /**
      * @var PDOConnection[] contains PDO connection objects.
@@ -60,7 +60,7 @@ class ConnectionManager implements ArrayAccess
      * @param string $id     data source id
      * @param string $config data source config
      */
-    public function addDataSource($id, array $config)
+    public function addNode($id, array $config)
     {
         if (!isset($config['connection_options'])) {
             $config['connection_options'] = array();
@@ -80,17 +80,17 @@ class ConnectionManager implements ArrayAccess
                 $config['driver'] = $driver;
             }
         }
-        $this->datasources[ $id ] = $config;
+        $this->nodeConfigurations[ $id ] = $config;
     }
 
-    public function hasDataSource($id = 'default')
+    public function hasNode($id = 'default')
     {
-        return isset($this->datasources[ $id ]);
+        return isset($this->nodeConfigurations[ $id ]);
     }
 
-    public function removeDataSource($id)
+    public function removeNode($id)
     {
-        unset($this->datasource[$id]);
+        unset($this->nodeConfigurations[$id]);
     }
 
     /**
@@ -100,7 +100,7 @@ class ConnectionManager implements ArrayAccess
      */
     public function getNodeIdList()
     {
-        return array_keys($this->datasources);
+        return array_keys($this->nodeConfigurations);
     }
 
     /**
@@ -110,14 +110,14 @@ class ConnectionManager implements ArrayAccess
      */
     public function getNodeConfig($id)
     {
-        if (isset($this->datasources[ $id ])) {
-            return $this->datasources[ $id ];
+        if (isset($this->nodeConfigurations[ $id ])) {
+            return $this->nodeConfigurations[ $id ];
         }
     }
 
     public function getMasterNodeConfig()
     {
-        return $this->getNodeConfig($this->defaultDataSourceId ?: self::DEFAULT_DS);
+        return $this->getNodeConfig($this->masterNodeId ?: self::DEFAULT_DS);
     }
 
     /**
@@ -141,7 +141,7 @@ class ConnectionManager implements ArrayAccess
 
     public function setMasterNodeId($nodeId)
     {
-        $this->defaultDataSourceId = $nodeId;
+        $this->masterNodeId = $nodeId;
     }
 
     /**
@@ -163,7 +163,7 @@ class ConnectionManager implements ArrayAccess
     public function getConnection($nodeId)
     {
         if ($nodeId === 'default') {
-            $nodeId = $this->defaultDataSourceId;
+            $nodeId = $this->masterNodeId;
         }
         // use cached connection objects
         if (isset($this->conns[$nodeId])) {
@@ -175,12 +175,12 @@ class ConnectionManager implements ArrayAccess
     public function connect($nodeId)
     {
         if ($nodeId === 'default') {
-            $nodeId = $this->defaultDataSourceId;
+            $nodeId = $this->masterNodeId;
         }
-        if (!isset($this->datasources[$nodeId])) {
+        if (!isset($this->nodeConfigurations[$nodeId])) {
             throw new InvalidArgumentException("data source {$nodeId} not found.");
         }
-        $config = $this->datasources[$nodeId];
+        $config = $this->nodeConfigurations[$nodeId];
         return Connection::connect($config);
     }
 
@@ -196,7 +196,7 @@ class ConnectionManager implements ArrayAccess
      */
     public function getMasterConnection()
     {
-        return $this->getConnection($this->defaultDataSourceId ?: self::DEFAULT_DS);
+        return $this->getConnection($this->masterNodeId ?: self::DEFAULT_DS);
     }
 
     /**
@@ -240,8 +240,8 @@ class ConnectionManager implements ArrayAccess
     public function free()
     {
         $this->closeAll();
-        $this->datasources = array();
-        $this->conns = array();
+        $this->nodeConfigurations = [];
+        $this->conns = [];
     }
 
     /**

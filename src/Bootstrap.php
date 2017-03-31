@@ -64,7 +64,7 @@ class Bootstrap
     public static function setupDataSources(Config $config, ConnectionManager $connectionManager)
     {
         foreach ($config->getDataSources() as $nodeId => $dsConfig) {
-            $connectionManager->addDataSource($nodeId, $dsConfig);
+            $connectionManager->addNode($nodeId, $dsConfig);
         }
         if ($nodeId = $config->getMasterDataSourceId()) {
             $connectionManager->setMasterNodeId($nodeId);
