@@ -15,4 +15,4 @@ fi
 echo "deb http://repo.mysql.com/apt/ubuntu/ precise mysql-utilities-1.5" >> /etc/apt/sources.list.d/mysql.list
 echo "deb http://repo.mysql.com/apt/ubuntu/ precise connector-python-2.0" >> /etc/apt/sources.list.d/mysql.list
 apt-get update -qq -y
-apt-get install -y mysql-utilities
+apt-get install -y --force-yes mysql-utilities
