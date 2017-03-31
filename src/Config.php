@@ -71,15 +71,6 @@ class Config implements ArrayAccess
         return array();
     }
 
-    public function getDataSourceIds()
-    {
-        if (isset($this->stash['data_source']['nodes'])) {
-            return array_keys($this->stash['data_source']['nodes']);
-        }
-
-        return [];
-    }
-
     public function getMasterDataSource()
     {
         $id = $this->getMasterDataSourceId();
