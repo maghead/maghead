@@ -9,7 +9,9 @@
 #
 #    deb http://repo.mysql.com/apt/ubuntu/ precise mysql-utilities-1.5
 apt-key adv --keyserver pgp.mit.edu --recv-keys 5072E1F5
-mv -v /etc/apt/sources.list.d/mysql.list /etc/apt/sources.list.d/mysql.list.bak
+if [[ -e /etc/apt/sources.list.d/mysql.list ]] ; then
+    mv -v /etc/apt/sources.list.d/mysql.list /etc/apt/sources.list.d/mysql.list.bak
+fi
 echo "deb http://repo.mysql.com/apt/ubuntu/ precise mysql-utilities-1.5" >> /etc/apt/sources.list.d/mysql.list
 echo "deb http://repo.mysql.com/apt/ubuntu/ precise connector-python-2.0" >> /etc/apt/sources.list.d/mysql.list
 apt-get update -qq -y
