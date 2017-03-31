@@ -264,7 +264,33 @@ the dispatcher that dispatches the shard node for specific sharding rule, e.g.:
     $dispatcher = $shardManager->createShardDispatcherOf('M_store_id');
 
 
+## Shard Operations
 
+### Allocating Shard
+
+Create an empty shard with the corresponding schema.
+
+    maghead shard allocate [instanceId] [new nodeId]
+
+### Cloning Shard
+
+Clone an existing shard on the same instance.
+
+    maghead shard clone [instanceId] [nodeId] [new nodeId] 
+
+Before cloning the shard, be sure to have the mysql instance defined in the config.
+
+### Pruning Shard
+
+Prune all rows that doesn't belong to the shard.
+
+    maghead shard prune nodeId
+
+### Splitting Shard
+
+Splitting shard involves Shard Cloning and Shard Pruning.
+
+    maghead shard split [instanceId] [nodeId] [new nodeId] 
 
 
 ## CRUD Operations
