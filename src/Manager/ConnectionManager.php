@@ -98,7 +98,7 @@ class ConnectionManager implements ArrayAccess
      *
      * @return array key list
      */
-    public function getNodeIdList()
+    public function getNodeIds()
     {
         return array_keys($this->nodeConfigurations);
     }
