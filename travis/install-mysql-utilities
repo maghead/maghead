@@ -12,3 +12,4 @@
 apt-key adv --keyserver pgp.mit.edu --recv-keys 5072E1F5
 echo "deb http://repo.mysql.com/apt/ubuntu/ precise mysql-utilities-1.5" >> /etc/apt/sources.list.d/mysql.list
 apt-get update -qq -y
+apt-get install -y mysql-utilities
