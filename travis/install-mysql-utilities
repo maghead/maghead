@@ -1,0 +1,14 @@
+#!/bin/bash
+# - sudo apt-get install -y mysql-utilities
+# https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/#repo-qg-apt-repo-manual-setup
+#
+# sudo apt-key adv --keyserver pgp.mit.edu --recv-keys 5072E1F5 
+# cat > /etc/apt/sources.list.d/mysql.list
+#    deb http://repo.mysql.com/apt/{debian|ubuntu}/ {jessie|wheezy|precise|trusty|utopic|vivid} {mysql-5.6|mysql-5.7|workbench-6.2|utilities-1.4|connector-python-2.0}
+#
+# travis uses: mysql Ver 14.14 Distrib 5.5.53, for debian-linux-gnu (x86_64) using readline 6.2
+#
+#    deb http://repo.mysql.com/apt/ubuntu/ precise mysql-utilities-1.5
+apt-key adv --keyserver pgp.mit.edu --recv-keys 5072E1F5
+echo "deb http://repo.mysql.com/apt/ubuntu/ precise mysql-utilities-1.5" >> /etc/apt/sources.list.d/mysql.list
+apt-get update -qq -y
