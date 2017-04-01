@@ -97,38 +97,6 @@ class ConfigLoader
         }
     }
 
-    /**
-     * Convert data source config to DSN object.
-     *
-     * @param array data source config
-     *
-     * @return Maghead\DSN\DSN
-     */
-    public static function buildDSNObject(array $config)
-    {
-        // Build DSN connection string for PDO
-        $dsn = new DSN($config['driver']);
-        foreach (array('database', 'dbname') as $key) {
-            if (isset($config[$key])) {
-                $dsn->setAttribute('dbname', $config[$key]);
-                break;
-            }
-        }
-
-        if (isset($config['unix_socket'])) {
-            $dsn->setAttribute('unix_socket', $config['unix_socket']);
-        } else {
-            if (isset($config['host'])) {
-                $dsn->setAttribute('host', $config['host']);
-            }
-            if (isset($config['port'])) {
-                $dsn->setAttribute('port', $config['port']);
-            }
-        }
-
-        return $dsn;
-    }
-
     public static function preprocessConfig(array $config)
     {
         if (isset($config['data_source']['nodes'])) {
@@ -166,20 +134,20 @@ class ConfigLoader
                 $config['unix_socket'] = $config['socket'];
             }
 
-            if (isset($config['password']) && $config['password']) {
-                $config['pass'] = $config['password'];
+            if (isset($config['pass']) && $config['pass']) {
+                $config['password'] = $config['pass'];
             }
             if (!isset($config['user'])) {
                 $config['user'] = null;
             }
-            if (!isset($config['pass'])) {
-                $config['pass'] = null;
+            if (!isset($config['password'])) {
+                $config['password'] = null;
             }
 
             // build dsn string for PDO
             if (!isset($config['dsn'])) {
                 // Build DSN connection string for PDO
-                $dsn = self::buildDSNObject($config);
+                $dsn = DSN::create($config);
                 $config['dsn'] = $dsn->__toString();
             }
 

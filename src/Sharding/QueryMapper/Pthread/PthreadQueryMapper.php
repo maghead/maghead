@@ -33,7 +33,7 @@ class PthreadQueryMapper implements QueryMapper
     {
         foreach ($nodeIds as $nodeId) {
             $ds = $this->dataSourceManager->getNodeConfig($nodeId);
-            $this->workers[$nodeId] = $w = new PthreadQueryWorker($ds['dsn'], $ds['user'], $ds['pass'], $ds['connection_options']);
+            $this->workers[$nodeId] = $w = new PthreadQueryWorker($ds['dsn'], $ds['user'], $ds['password'], $ds['connection_options']);
             $w->start();
         }
     }

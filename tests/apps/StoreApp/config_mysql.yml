@@ -12,7 +12,7 @@ instance:
     dsn: 'mysql:host=localhost'
     user: root
     driver: mysql
-    pass: null
+    password: null
     query_options: {  }
     connection_options:
       1002: 'SET NAMES utf8'
@@ -43,25 +43,25 @@ data_source:
       driver: sqlite
       connection_options: {  }
       user: null
-      pass: null
+      password: null
     node1:
       dsn: 'mysql:host=localhost;dbname=s1'
       user: root
       driver: mysql
-      pass: null
+      password: null
       query_options: {  }
       connection_options: { 1002: 'SET NAMES utf8' }
     node2:
       dsn: 'mysql:host=localhost;dbname=s2'
       user: root
       driver: mysql
-      pass: null
+      password: null
       query_options: {  }
       connection_options: { 1002: 'SET NAMES utf8' }
     node3:
       dsn: 'mysql:host=localhost;dbname=s3'
       user: root
       driver: mysql
-      pass: null
+      password: null
       query_options: {  }
       connection_options: { 1002: 'SET NAMES utf8' }

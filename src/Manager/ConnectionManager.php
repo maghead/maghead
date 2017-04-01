@@ -71,8 +71,8 @@ class ConnectionManager implements ArrayAccess
         if (!isset($config['user'])) {
             $config['user'] = null;
         }
-        if (!isset($config['pass'])) {
-            $config['pass'] = null;
+        if (!isset($config['password'])) {
+            $config['password'] = null;
         }
         if (!isset($config['query_options'])) {
             $config['query_options'] = array();

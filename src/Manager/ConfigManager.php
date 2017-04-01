@@ -77,7 +77,9 @@ class ConfigManager
             $node['user'] = $opts['user'];
         }
         if (isset($opts['password'])) {
-            $node['pass'] = $opts['password'];
+            $node['password'] = $opts['password'];
+        } else if (isset($opts['pass'])) {
+            $node['password'] = $opts['pass'];
         }
 
         $node['dsn'] = $dsn->__toString();

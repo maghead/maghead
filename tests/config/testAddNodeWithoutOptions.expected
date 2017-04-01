@@ -10,20 +10,20 @@ data_source:
       query_options: { quote_table: true }
       driver: sqlite
       user: null
-      pass: null
+      password: null
       connection_options: {  }
     mysql:
       dsn: 'mysql:host=localhost;dbname=testing'
       user: root
       driver: mysql
-      pass: null
+      password: null
       query_options: {  }
       connection_options: { 1002: 'SET NAMES utf8' }
     pgsql:
       dsn: 'pgsql:host=localhost;dbname=testing'
       user: postgres
       driver: pgsql
-      pass: null
+      password: null
       query_options: {  }
       connection_options: {  }
     shard1:

@@ -38,15 +38,13 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
      */
     public function testSetDefaultInexistNode()
     {
-        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG);
-        $manager = new ConfigManager($config);
+        $manager = new ConfigManager(self::TEST_CONFIG);
         $manager->setMasterNode('foo');
     }
 
     public function testRemoveNode()
     {
-        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG);
-        $manager = new ConfigManager($config);
+        $manager = new ConfigManager(self::TEST_CONFIG);
         $manager->removeNode('sqlite');
         $manager->removeNode('mysql');
         $ret = $manager->save(self::TEST_CONFIG);
@@ -56,8 +54,7 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
 
     public function testAddNodeWithOptions()
     {
-        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG);
-        $manager = new ConfigManager($config);
+        $manager = new ConfigManager(self::TEST_CONFIG);
         $manager->addNode('shard1', 'mysql', [
             'host' => 'localhost',
             'dbname' => 'shard1',

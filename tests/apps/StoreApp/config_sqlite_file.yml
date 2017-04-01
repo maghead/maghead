@@ -53,7 +53,7 @@ data_source:
       driver: sqlite
       connection_options: []
       user: ~
-      pass: ~
+      password: ~
     node1:
       dsn: sqlite:node1.sqlite
       query_options:
@@ -61,7 +61,7 @@ data_source:
       driver: sqlite
       connection_options: []
       user: ~
-      pass: ~
+      password: ~
     node2:
       dsn: sqlite:node2.sqlite
       query_options:
@@ -69,4 +69,4 @@ data_source:
       driver: sqlite
       connection_options: []
       user: ~
-      pass: ~
+      password: ~
