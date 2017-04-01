@@ -20,6 +20,7 @@ sharding:
       shards:
       - s1
       - s2
+      - s3
       chunks:
         c1:
           shard: s1
@@ -42,6 +43,13 @@ sharding:
           weight: 0.100000
       read:
         node2:
+          weight: 0.100000
+    s3:
+      write:
+        node3:
+          weight: 0.100000
+      read:
+        node3:
           weight: 0.100000
 data_source:
   master: node_master
