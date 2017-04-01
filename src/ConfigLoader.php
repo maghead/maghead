@@ -114,11 +114,16 @@ class ConfigLoader
                 break;
             }
         }
-        if (isset($config['host'])) {
-            $dsn->setAttribute('host', $config['host']);
-        }
-        if (isset($config['port'])) {
-            $dsn->setAttribute('port', $config['port']);
+
+        if (isset($config['unix_socket'])) {
+            $dsn->setAttribute('unix_socket', $config['unix_socket']);
+        } else {
+            if (isset($config['host'])) {
+                $dsn->setAttribute('host', $config['host']);
+            }
+            if (isset($config['port'])) {
+                $dsn->setAttribute('port', $config['port']);
+            }
         }
 
         return $dsn;

@@ -6,6 +6,9 @@ use Exception;
 
 /**
  * DataSourceName class provides a basic DSN parser.
+ *
+ * @see http://php.net/manual/en/ref.pdo-pgsql.connection.php
+ * @see http://php.net/manual/en/ref.pdo-mysql.connection.php
  */
 class DSNParser
 {

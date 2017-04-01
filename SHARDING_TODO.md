@@ -4,11 +4,19 @@
 
 - [x] Add instances definitions to config class.
 - [x] Add instances connection support to ConnectionManager.
+- [ ] Add instance app user setup config
+
+        setup:
+          app_user:
+            user: myapp
+            pass: myapp
+
 - [ ] Use mongodb for centralized shared config (load instance definitions and shard definitions)
 
 ## Shard Operations
 
 - [x] Allocate Shard
+- [x] Remove Shard
 - [ ] CloneShard (use mysqldbcopy)
   - [ ] Convert DSN into command string
 
@@ -17,8 +25,6 @@
     mysqldbcopy --source=root@localhost:/opt/local/var/run/mysql56/mysqld.sock \
                 --destination=root@localhost:/opt/local/var/run/mysql56/mysqld.sock \
                 shade_src:shade_dst
-
-
 
 
 - [ ] Split Shard
