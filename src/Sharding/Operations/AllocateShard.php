@@ -47,18 +47,15 @@ class AllocateShard
     public function allocate($instanceId, $newNodeId, $dbName = null)
     {
         // TODO: Add a special instanceID for sqlite support
+        if (!$dbName) {
+            $dbName = $newNodeId;
+        }
         $conn = $this->connectionManager->connectInstance($instanceId);
         $queryDriver = $conn->getQueryDriver();
 
         // create new database for the new shard.
         $dbManager = new DatabaseManager($conn);
-        if (!$dbName) {
-            $dbName = $newNodeId;
-        }
         $dbManager->create($dbName);
-
-
-        $nodeConfig = $this->connectionManager->getNodeConfig($instanceId);
 
         // Update DSN with the new dbname (works for mysql and pgsql)
         $dsn = DSNParser::parse($nodeConfig['dsn']);

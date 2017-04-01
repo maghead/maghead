@@ -144,7 +144,8 @@ class ConfigLoader
      */
     private static function preprocessNodeConfig(array $dbconfig)
     {
-        foreach ($dbconfig as &$config) {
+        $newconfig = [];
+        foreach ($dbconfig as $nodeId => $config) {
             if (!isset($config['driver'])) {
                 list($driverType) = explode(':', $config['dsn'], 2);
                 $config['driver'] = $driverType;
@@ -192,9 +193,11 @@ class ConfigLoader
             if ('mysql' === $config['driver']) {
                 $config['connection_options'][ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
             }
+
+            $newconfig[$nodeId] = $config;
         }
 
-        return $dbconfig;
+        return $newconfig;
     }
 
 
