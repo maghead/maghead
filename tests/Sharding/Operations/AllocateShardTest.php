@@ -1,11 +1,18 @@
 <?php
 use Maghead\Testing\ModelTestCase;
+use Maghead\ConfigLoader;
+use StoreApp\Model\{Store, StoreSchema, StoreRepo};
+use StoreApp\Model\{Order, OrderSchema, OrderRepo};
+use StoreApp\StoreTestCase;
 
-class AllocateShardTest extends ModelTestCase
+/**
+ * @group sharding
+ */
+class AllocateShardTest extends StoreTestCase
 {
-    public function models()
+    public function config()
     {
-        return [];
+        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml");
     }
 
     public function testAllocateShard()

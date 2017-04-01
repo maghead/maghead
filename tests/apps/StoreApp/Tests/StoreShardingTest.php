@@ -31,53 +31,7 @@ class StoreShardingTest extends ModelTestCase
 
     protected function config()
     {
-        $config = ConfigLoader::loadFromArray([
-            'cli' => ['bootstrap' => 'vendor/autoload.php'],
-            'schema' => [
-                'auto_id' => true,
-                'base_model' => '\\Maghead\\Runtime\\BaseModel',
-                'base_collection' => '\\Maghead\\BaseCollection',
-                'paths' => ['tests'],
-            ],
-            'sharding' => [
-                'mappings' => [
-                    // shard by hash
-                    'M_store_id' => \StoreApp\Model\StoreShardMapping::config(),
-                    'M_created_at' => [
-                        'key' => 'created_at',
-                        'tables' => ['orders'], // This is something that we will define in the schema.
-                        'range' => [
-                            's1' => [ 'min' => 0, 'max' => 10000 ],
-                            's2' => [ 'min' => 10001, 'max' => 20000 ],
-                        ]
-                    ],
-                ],
-                // Shards pick servers from nodes config, HA groups
-                'shards' => [
-                    's1' => [
-                        'write' => [
-                          'node1' => ['weight' => 0.1],
-                        ],
-                        'read' => [
-                          'node1'   =>  ['weight' => 0.1],
-                        ],
-                    ],
-                    's2' => [
-                        'write' => [
-                          'node2' => ['weight' => 0.1],
-                        ],
-                        'read' => [
-                          'node2'   =>  ['weight' => 0.1],
-                        ],
-                    ],
-                ],
-            ],
-            // data source is defined for different data source connection.
-            'data_source' => \StoreApp\Config::memory_data_source(),
-        ]);
-        // $config->setMasterDataSourceId('sqlite');
-        // $config->setAutoId();
-        return $config;
+        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml");
     }
 
     public function orderDataProvider()
@@ -253,10 +207,12 @@ class StoreShardingTest extends ModelTestCase
 
         $ret = $order->update([ 'amount' => 9999 ]);
         $this->assertResultSuccess($ret);
-        $this->assertEquals(9999, $order->amount);
+        $this->assertEquals(9999, $order->amount, 'update amount to 9999');
         $this->assertNotNull($order->repo, 'BaseModel should be have the repo object.');
 
         $order2 = Order::findByPrimaryKey($order->getKey());
+        $this->assertNotNull($order2, "found order 2");
+        $this->assertNotNull($order2->repo, "found order 2 repo");
         $this->assertEquals(9999, $order2->amount);
 
         return $orderRet;
@@ -272,6 +228,9 @@ class StoreShardingTest extends ModelTestCase
     {
         // reload the order from the repo
         $order = Order::findByPrimaryKey($orderRet->key);
+        $this->assertNotNull($order, "found order");
+        $this->assertNotNull($order->repo, "found order repo");
+
         $ret = $order->delete();
         $this->assertResultSuccess($ret);
 

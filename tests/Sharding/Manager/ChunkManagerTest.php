@@ -33,9 +33,6 @@ class ChunkManagerTest extends StoreTestCase
         $chunkManager->removeChunks($mapping);
     }
 
-
-
-
     public function testChunkExpand()
     {
 
@@ -43,17 +40,7 @@ class ChunkManagerTest extends StoreTestCase
 
     protected function config()
     {
-        $config = ConfigLoader::loadFromArray([
-            'cli' => ['bootstrap' => 'vendor/autoload.php'],
-            'schema' => [
-                'auto_id' => true,
-                'base_model' => '\\Maghead\\Runtime\\BaseModel',
-                'base_collection' => '\\Maghead\\Runtime\\BaseCollection',
-                'paths' => ['tests'],
-            ],
-            'sharding' => \StoreApp\Config::sharding(),
-            'data_source' => \StoreApp\Config::memory_data_source(),
-        ]);
-        return $config;
+        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_memory.yml");
+        // return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml");
     }
 }
