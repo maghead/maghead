@@ -16,6 +16,10 @@ use Maghead\Utils;
  */
 class AllocateShardTest extends StoreTestCase
 {
+    protected $defaultDataSource = 'node_master';
+
+    protected $requiredDataSources = ['node_master', 'node1', 'node2', 'node3'];
+
     protected $onlyDriver = 'mysql';
 
     protected $freeConnections = false;
