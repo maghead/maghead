@@ -13,11 +13,16 @@ class ConfigManager
 {
     protected $config;
 
-    public function __construct(Config $config)
+    public function __construct($arg)
     {
-        $this->config = $config;
+        if (is_string($arg)) {
+            $this->config = ConfigLoader::loadFromFile($arg);
+        } else if ($arg instanceof Config) {
+            $this->config = $arg;
+        } else {
+            throw new InvalidArgumentException("Constructor argument need to be a valid config path or a config object.");
+        }
     }
-
 
     public function setMasterNode($nodeId)
     {
@@ -33,14 +38,18 @@ class ConfigManager
         unset($this->config['data_source']['nodes'][$nodeId]);
     }
 
-    public function addNode($nodeId, $dsnstr, $opts = array())
+    public function addNodeConfig($nodeId, array $nodeConfig)
     {
-        $dsn = DSNParser::parse($dsnstr);
+        $this->config['data_source']['nodes'][$nodeId] = $nodeConfig;
+    }
+
+    public function addNode($nodeId, $dsnArg, $opts = array())
+    {
+        $dsn = DSNParser::parse($dsnArg);
 
         // The data source array to be added to the config array
         $node = [];
         $node['driver'] = $dsn->getDriver();
-
 
         if ($host = $dsn->getHost()) {
             $node['host'] = $host;
@@ -84,6 +93,7 @@ class ConfigManager
 
     public function save($file = null)
     {
-        return ConfigLoader::writeToSymbol($this->config, $file);
+        $f = $file ?: $this->config->file;
+        return ConfigLoader::writeToSymbol($this->config, $f);
     }
 }

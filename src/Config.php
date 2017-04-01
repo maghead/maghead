@@ -9,6 +9,8 @@ class Config implements ArrayAccess
 {
     public $stash = [];
 
+    public $file;
+
     protected $classMap = [];
 
     const DEFAULT_BASE_COLLECTION_CLASS = '\\Maghead\\Runtime\\BaseCollection';
@@ -17,9 +19,10 @@ class Config implements ArrayAccess
 
     const DEFAULT_AUTO_ID_COLUMN_CLASS = '\\Maghead\\Schema\\Column\\AutoIncrementPrimaryKeyColumn';
 
-    public function __construct(array $stash)
+    public function __construct(array $stash, $file = null)
     {
         $this->stash = $stash;
+        $this->file = $file;
     }
 
     /**

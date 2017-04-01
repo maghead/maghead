@@ -44,6 +44,13 @@ abstract class BaseTestCase extends TestCase
      */
     protected $onlyDriver;
 
+    /**
+     * @var string
+     *
+     * This is used for skipping specific database driver such as sqlite...
+     */
+    protected $skipDriver;
+
 
     protected $dataSourceManager;
 
@@ -112,8 +119,12 @@ abstract class BaseTestCase extends TestCase
 
     public function setUp()
     {
-        if ($this->onlyDriver !== null && $this->getCurrentDriverType() != $this->onlyDriver) {
+        if ($this->onlyDriver !== null && $this->getCurrentDriverType() !== $this->onlyDriver) {
             return $this->markTestSkipped("{$this->onlyDriver} only");
+        }
+
+        if ($this->skipDriver !== null && $this->getCurrentDriverType() === $this->skipDriver) {
+            return $this->markTestSkipped("Skip {$this->skipDriver}");
         }
 
         // Always reset config from symbol file

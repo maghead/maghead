@@ -14,6 +14,7 @@ use StoreApp\StoreTestCase;
  */
 class ChunkManagerTest extends StoreTestCase
 {
+    /*
     public function testChunkInit()
     {
         $shardManager = new ShardManager($this->config, $this->dataSourceManager);
@@ -37,6 +38,7 @@ class ChunkManagerTest extends StoreTestCase
     {
 
     }
+    */
 
     protected function config()
     {

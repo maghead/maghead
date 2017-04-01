@@ -76,7 +76,7 @@ class ConfigLoader
      */
     public static function loadFromFile($sourceFile, $force = false)
     {
-        return self::$currentConfig = new Config(self::compile($sourceFile, $force));
+        return self::$currentConfig = new Config(self::compile($sourceFile, $force), $sourceFile);
     }
 
     public static function getCurrentConfig()

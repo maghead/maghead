@@ -3,15 +3,15 @@
 namespace Maghead\Command;
 
 use CLIFramework\Logger;
-use Maghead\Manager\MetadataManager;
 use Maghead\Schema;
 use Maghead\TableBuilder\TableBuilder;
+use Maghead\Manager\MetadataManager;
 use Maghead\Manager\DataSourceManager;
+use Maghead\Manager\TableManager;
+use Maghead\Schema\SchemaUtils;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
-use Maghead\Schema\SchemaUtils;
-use Maghead\Manager\TableManager;
 use Exception;
 
 class SqlCommand extends BaseCommand

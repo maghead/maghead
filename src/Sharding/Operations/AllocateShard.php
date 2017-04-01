@@ -7,16 +7,27 @@ use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Shard;
 use Maghead\Sharding\ShardCollection;
 use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\DatabaseManager;
+use Maghead\Manager\DataSourceManager;
+use Maghead\Manager\ConfigManager;
+use Maghead\Manager\MetadataManager;
+use Maghead\Manager\TableManager;
 use Maghead\Config;
+use Maghead\Schema;
+use Maghead\Schema\SchemaUtils;
+use Maghead\TableBuilder\TableBuilder;
 
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;
+
+use CLIFramework\Logger;
 
 /**
  * Given an instance ID:
  * 1. Connect to the instance
  * 2. Create a database
  * 3. Initialize the db schema
+ * 4. Add node to the data source
  */
 class AllocateShard
 {
@@ -24,23 +35,51 @@ class AllocateShard
 
     protected $connectionManager;
 
-    public function __construct(Config $config, ConnectionManager $connectionManager = null)
+    public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->connectionManager = $connectionManager ?: new ConnectionManager($config->getInstances());
+        $this->connectionManager = new ConnectionManager($config->getInstances());
     }
 
-    public function allocateOn($instanceId, $newNodeId)
+    public function allocate($instanceId, $newNodeId, $dbName = null)
     {
-        $conn = $this->connectionManager->connect($instanceId);
+        // TODO: Add a special instanceID for sqlite support
+        $conn = $this->connectionManager->connectInstance($instanceId);
+        $queryDriver = $conn->getQueryDriver();
 
-        // $dbManager = new DatabaseManager($this->connectionManager);
+        // create new database for the new shard.
+        $dbManager = new DatabaseManager($conn);
+        if (!$dbName) {
+            $dbName = $newNodeId;
+        }
+        $dbManager->create($dbName);
 
-        // Get the dbname from master datasource
-        /*
-        $masterDs = $this->dataSourceManager->getMasterNodeConfig();
-        $dsn = DSNParser::parse($masterDs['dsn']);
-        $dbname = $dsn->getDatabaseName();
-        */
+
+        $nodeConfig = $this->connectionManager->getNodeConfig($instanceId);
+
+        // Update DSN with the new dbname (works for mysql and pgsql)
+        $dsn = DSNParser::parse($nodeConfig['dsn']);
+        $dsn->setAttribute('dbname', $dbName);
+        $nodeConfig['dsn'] = $dsn->__toString();
+        $this->config->addDataSource($newNodeId, $nodeConfig);
+
+        $this->connectionManager->addNode($newNodeId, $nodeConfig);
+
+        // Setup shard schema
+        $conn = $this->connectionManager->connect($newNodeId);
+        $logger = new Logger;
+        $logger->setQuiet();
+        $schemas = SchemaUtils::findSchemasByConfig($this->config, $logger);
+
+        $sqlBuilder = TableBuilder::create($queryDriver, [
+            'rebuild' => true,
+            'clean' => false,
+        ]);
+        $tableManager = new TableManager($conn, $sqlBuilder, $logger);
+        $tableManager->build($schemas);
+
+        // Allocate MetadataManager to update migration timestamp
+        $metadata = new MetadataManager($conn, $queryDriver);
+        $metadata['migration'] = time();
     }
 }

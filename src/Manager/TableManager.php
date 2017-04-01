@@ -30,6 +30,7 @@ class TableManager
         $this->logger = $logger;
     }
 
+
     /**
      * Remove schemas from database.
      *
