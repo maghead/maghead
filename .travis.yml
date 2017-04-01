@@ -3,7 +3,7 @@ services:
 - memcached
 php:
 - 7.0
-- hhvm
+# - hhvm
 env:
   - DB=mysql     # mysql database tests only
   - DB=sqlite    # pgsql database tests only
