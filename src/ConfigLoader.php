@@ -156,6 +156,11 @@ class ConfigLoader
                 $config['user'] = $config['username'];
             }
 
+            // alias socket to unix_socket
+            if (isset($config['socket'])) {
+                $config['unix_socket'] = $config['socket'];
+            }
+
             if (isset($config['password']) && $config['password']) {
                 $config['pass'] = $config['password'];
             }
