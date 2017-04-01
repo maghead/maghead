@@ -6,68 +6,62 @@ schema:
   base_model: \Maghead\Runtime\BaseModel
   base_collection: \Maghead\Runtime\BaseCollection
   paths:
-  - tests
+    - tests
 instance:
   local:
     dsn: 'mysql:host=localhost'
     user: root
+    driver: mysql
+    pass: null
+    query_options: {  }
+    connection_options:
+      1002: 'SET NAMES utf8'
 sharding:
   mappings:
     M_store_id:
-      tables:
-      - orders
+      tables: [orders]
       key: store_id
-      shards:
-      - s1
-      - s2
-      - s3
-      chunks:
-        c1:
-          shard: s1
-        c2:
-          shard: s2
-      hash:
-        target1: c1
-        target2: c2
+      shards: [s1, s2, s3]
+      chunks: { c1: { shard: s1 }, c2: { shard: s2 } }
+      hash: { target1: c1, target2: c2 }
   shards:
     s1:
-      write:
-        node1:
-          weight: 0.100000
-      read:
-        node1:
-          weight: 0.100000
+      write: { node1: { weight: 0.1 } }
+      read: { node1: { weight: 0.1 } }
     s2:
-      write:
-        node2:
-          weight: 0.100000
-      read:
-        node2:
-          weight: 0.100000
+      write: { node2: { weight: 0.1 } }
+      read: { node2: { weight: 0.1 } }
     s3:
-      write:
-        node3:
-          weight: 0.100000
-      read:
-        node3:
-          weight: 0.100000
+      write: { node3: { weight: 0.1 } }
+      read: { node3: { weight: 0.1 } }
 data_source:
   master: node_master
   nodes:
     node_master:
-      dsn: sqlite:node_master.sqlite
-      query_options:
-        quote_table: true
+      dsn: 'sqlite:node_master.sqlite'
+      query_options: { quote_table: true }
       driver: sqlite
-      connection_options: []
-      user: ~
-      pass: ~
+      connection_options: {  }
+      user: null
+      pass: null
     node1:
       dsn: 'mysql:host=localhost;dbname=s1'
       user: root
+      driver: mysql
+      pass: null
+      query_options: {  }
+      connection_options: { 1002: 'SET NAMES utf8' }
     node2:
       dsn: 'mysql:host=localhost;dbname=s2'
       user: root
+      driver: mysql
+      pass: null
+      query_options: {  }
+      connection_options: { 1002: 'SET NAMES utf8' }
     node3:
       dsn: 'mysql:host=localhost;dbname=s3'
       user: root
+      driver: mysql
+      pass: null
+      query_options: {  }
+      connection_options: { 1002: 'SET NAMES utf8' }
