@@ -69,18 +69,18 @@ class AllocateShard
         $this->connectionManager->addNode($newNodeId, $nodeConfig);
 
         // Setup shard schema
-        $conn = $this->connectionManager->connect($newNodeId);
+        $dbConn = $this->connectionManager->connect($newNodeId);
         $schemas = SchemaUtils::findSchemasByConfig($this->config, $this->logger);
 
         $sqlBuilder = TableBuilder::create($queryDriver, [
             'rebuild' => true,
             'clean' => false,
         ]);
-        $tableManager = new TableManager($conn, $sqlBuilder, $this->logger);
+        $tableManager = new TableManager($dbConn, $sqlBuilder, $this->logger);
         $tableManager->build($schemas);
 
         // Allocate MetadataManager to update migration timestamp
-        $metadata = new MetadataManager($conn, $queryDriver);
+        $metadata = new MetadataManager($dbConn, $queryDriver);
         $metadata['migration'] = time();
     }
 }
