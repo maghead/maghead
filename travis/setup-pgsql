@@ -1,0 +1,5 @@
+#!/bin/bash
+psql -c "create database testing;" -U postgres
+psql -c "create database s1;" -U postgres
+psql -c "create database s2;" -U postgres
+psql -c "create database s3;" -U postgres
