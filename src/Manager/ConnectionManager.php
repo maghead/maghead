@@ -86,9 +86,9 @@ class ConnectionManager implements ArrayAccess
         $this->nodeConfigurations[ $id ] = $config;
     }
 
-    public function hasNode($id = 'default')
+    public function hasNode($nodeId)
     {
-        return isset($this->nodeConfigurations[ $id ]);
+        return isset($this->nodeConfigurations[$nodeId]);
     }
 
     public function removeNode($id)
