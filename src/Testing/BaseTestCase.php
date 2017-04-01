@@ -74,7 +74,6 @@ abstract class BaseTestCase extends TestCase
      */
     protected $queryDriver;
 
-
     public function __construct($name = null, array $data = array(), $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
@@ -129,7 +128,6 @@ abstract class BaseTestCase extends TestCase
 
         // Always reset config from symbol file
         $this->config = $this->config();
-
         Bootstrap::setupDataSources($this->config, $this->dataSourceManager);
         Bootstrap::setupGlobalVars($this->config, $this->dataSourceManager);
 
@@ -140,6 +138,7 @@ abstract class BaseTestCase extends TestCase
     {
         if ($this->freeConnections) {
             $this->dataSourceManager->free();
+            $this->dataSourceManager->clean();
             $this->conn = null;
         }
     }

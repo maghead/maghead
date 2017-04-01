@@ -32,8 +32,11 @@ abstract class ModelTestCase extends BaseTestCase
 
     public function setUp()
     {
-        if ($this->onlyDriver !== null && $this->getMasterDataSourceId() != $this->onlyDriver) {
-            return $this->markTestSkipped("{$this->onlyDriver} only");
+        if ($this->onlyDriver !== null && $this->getCurrentDriverType() !== $this->onlyDriver) {
+            return $this->markTestSkipped("{$this->onlyDriver} only. ");
+        }
+        if ($this->skipDriver !== null && $this->getCurrentDriverType() === $this->skipDriver) {
+            return $this->markTestSkipped("Skip {$this->skipDriver}");
         }
 
         parent::setUp();

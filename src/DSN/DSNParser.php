@@ -19,7 +19,7 @@ class DSNParser
         } elseif (preg_match('/^(\w+)$/', $dsn, $matches)) {
             return new DSN($dsn, [], [], '');
         } else {
-            throw new Exception("Invalid DSN string: $dsn");
+            throw new Exception("Invalid DSN string: '$dsn'");
         }
         $reststr = preg_replace('/^\w+:/', '', $dsn);
         $attributes = [];

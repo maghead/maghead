@@ -1,5 +1,5 @@
 #!/bin/bash
-mysql -uroot -e "create database testing charset utf8;"
-mysql -uroot -e "create database s1 charset utf8;"
-mysql -uroot -e "create database s2 charset utf8;"
-mysql -uroot -e "create database s3 charset utf8;"
+mysql -uroot -e "create database if not exists testing charset utf8;"
+mysql -uroot -e "create database if not exists s1 charset utf8;"
+mysql -uroot -e "create database if not exists s2 charset utf8;"
+mysql -uroot -e "create database if not exists s3 charset utf8;"

@@ -180,7 +180,8 @@ class ConnectionManager implements ArrayAccess
     public function connect($nodeId)
     {
         if (!isset($this->nodeConfigurations[$nodeId])) {
-            throw new InvalidArgumentException("data source {$nodeId} not found.");
+            $nodeIds = join(', ', array_keys($this->nodeConfigurations)) ?: '{none}';
+            throw new InvalidArgumentException("data source {$nodeId} not found, valid nodes are {$nodeIds}");
         }
         $config = $this->nodeConfigurations[$nodeId];
         return Connection::connect($config);
@@ -225,16 +226,6 @@ class ConnectionManager implements ArrayAccess
         }
     }
 
-    /**
-     * free connections,
-     * reset data sources.
-     */
-    public function free()
-    {
-        $this->closeAll();
-        $this->nodeConfigurations = [];
-        $this->conns = [];
-    }
 
     /**
      * ArrayAccess interface.
@@ -279,4 +270,21 @@ class ConnectionManager implements ArrayAccess
     {
         $this->free();
     }
+
+    /**
+     * free connections,
+     * reset data sources.
+     */
+    public function free()
+    {
+        $this->closeAll();
+        $this->conns = [];
+    }
+
+
+    public function clean()
+    {
+        $this->nodeConfigurations = [];
+    }
+
 }

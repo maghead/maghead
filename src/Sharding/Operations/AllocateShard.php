@@ -57,6 +57,9 @@ class AllocateShard
         $dbManager = new DatabaseManager($conn);
         $dbManager->create($dbName);
 
+        // create a new node config from the instance node config.
+        $nodeConfig = $this->connectionManager->getNodeConfig($instanceId);
+
         // Update DSN with the new dbname (works for mysql and pgsql)
         $dsn = DSNParser::parse($nodeConfig['dsn']);
         $dsn->setAttribute('dbname', $dbName);

@@ -38,12 +38,12 @@ data_source:
   master: node_master
   nodes:
     node_master:
-      dsn: 'sqlite:node_master.sqlite'
-      query_options: { quote_table: true }
-      driver: sqlite
-      connection_options: {  }
-      user: null
+      dsn: 'mysql:host=localhost;dbname=testing'
+      driver: mysql
+      user: root
       password: null
+      query_options: { }
+      connection_options: { 1002: 'SET NAMES utf8' }
     node1:
       dsn: 'mysql:host=localhost;dbname=s1'
       user: root
