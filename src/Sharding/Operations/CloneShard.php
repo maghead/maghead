@@ -75,6 +75,24 @@ class CloneShard
 
         $srcNode = $this->dataSourceManager->getNodeConfig($srcNodeId);
 
+        // TODO: support --rpl and --rpl-user
+        // To copy one or more databases from a master to a slave, you can use the following command to copy the databases. Use the master as the source and the slave as the destination:
+        //
+        //     shell> mysqldbcopy --source=root@localhost:3310 \
+        //        --destination=root@localhost:3311 test123 \
+        //        --rpl=master \
+        //        --rpl-user=rpl
+        //
+        // To copy a database from one slave to another attached to the same master, you can use the following command using the slave with the database to be copied as the source and the slave where the database needs to copied to as the destination:
+        //
+        // shell> mysqldbcopy --source=root@localhost:3311 \
+        //    --destination=root@localhost:3312 test123 --rpl=slave \
+        //    --rpl-user=rpl
+        //
+        // TODO: support --multiprocess option
+        //
+        // @see https://dev.mysql.com/doc/mysql-utilities/1.5/en/mysqldbcopy.html
+
         $args = [Utils::findBin('mysqldbcopy')];
         $args[] = '--source';
         $args[] = $this->buildParam($srcNode);
