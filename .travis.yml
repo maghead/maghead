@@ -33,7 +33,7 @@ before_script:
   - bin/maghead sql --rebuild -D=$DB
 script:
   - phpunit --version
-  - phpunit --debug -c phpunit.xml.dist
+  - phpunit -c phpunit.xml.dist
 after_success:
   - php vendor/bin/coveralls -v
 matrix:
