@@ -8,7 +8,7 @@ use AuthorBooks\Model\Book;
  */
 class UserModelTest extends ModelTestCase
 {
-    public function getModels()
+    public function models()
     {
         return array(
             new \TestApp\Model\UserSchema,

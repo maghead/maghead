@@ -14,7 +14,7 @@ use TestApp\Model\NameCollection;
  */
 class CollectionTest extends ModelTestCase
 {
-    public function getModels()
+    public function models()
     {
         return [new \TestApp\Model\NameSchema];
     }

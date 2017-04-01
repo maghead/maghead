@@ -53,7 +53,7 @@ abstract class ModelTestCase extends BaseTestCase
             $basedata = false;
         }
 
-        $schemas = SchemaUtils::instantiateSchemaClasses($this->getModels());
+        $schemas = SchemaUtils::instantiateSchemaClasses($this->models());
         if (! $this->schemaHasBeenBuilt) {
             $this->prepareSchemaFiles($schemas);
         }
@@ -121,7 +121,7 @@ abstract class ModelTestCase extends BaseTestCase
 
     public function testClasses()
     {
-        foreach ($this->getModels() as $class) {
+        foreach ($this->models() as $class) {
             $this->assertTrue(class_exists($class, true));
         }
     }

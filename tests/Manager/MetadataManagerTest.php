@@ -8,7 +8,7 @@ use Maghead\Testing\ModelTestCase;
  */
 class MetadataManagerTest extends ModelTestCase
 {
-    public function getModels()
+    public function models()
     {
         return [
             new MetadataSchema,

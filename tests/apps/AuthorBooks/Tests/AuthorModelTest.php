@@ -13,7 +13,7 @@ use SQLBuilder\Driver\SQLiteDriver;
  */
 class AuthorModelTest extends ModelTestCase
 {
-    public function getModels()
+    public function models()
     {
         return [
             new \AuthorBooks\Model\AuthorSchema,

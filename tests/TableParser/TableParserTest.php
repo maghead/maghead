@@ -8,7 +8,7 @@ use Maghead\TableParser\TableParser;
  */
 class TableParserTest extends ModelTestCase
 {
-    public function getModels()
+    public function models()
     {
         return [
             new \AuthorBooks\Model\AuthorSchema,
@@ -21,7 +21,7 @@ class TableParserTest extends ModelTestCase
 
     public function tableNameProvider()
     {
-        $models = $this->getModels();
+        $models = $this->models();
         return array_map(function($schema) {
             return [$schema->getTable()];
         }, $models);

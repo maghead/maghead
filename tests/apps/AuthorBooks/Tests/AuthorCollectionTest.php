@@ -27,7 +27,7 @@ class AuthorFactory
  */
 class AuthorCollectionTest extends ModelTestCase
 {
-    public function getModels()
+    public function models()
     {
         return [
             new \AuthorBooks\Model\AuthorSchema,

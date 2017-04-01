@@ -10,7 +10,7 @@ use AuthorBooks\Model\AddressSchema;
  */
 class AuthorAddressModelTest extends ModelTestCase
 {
-    public function getModels()
+    public function models()
     {
         return array(
             new AuthorSchema,

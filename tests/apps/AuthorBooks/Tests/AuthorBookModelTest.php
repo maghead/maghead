@@ -15,7 +15,7 @@ use SQLBuilder\Raw;
  */
 class AuthorBookModelTest extends ModelTestCase
 {
-    public function getModels()
+    public function models()
     {
         return [
             new AuthorSchema,

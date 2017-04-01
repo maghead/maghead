@@ -9,7 +9,7 @@ use Maghead\Generator\Schema\SchemaGenerator;
  */
 class SchemaGeneratorTest extends ModelTestCase
 {
-    public function getModels()
+    public function models()
     {
         return [
             new \TestApp\Model\UserSchema,
@@ -24,7 +24,7 @@ class SchemaGeneratorTest extends ModelTestCase
     {
         $g = new SchemaGenerator($this->config, $this->logger);
         $g->setForceUpdate(true);
-        $schemas = $this->getModels();
+        $schemas = $this->models();
 
         foreach ($schemas as $schema) {
             if ($result = $g->generateCollectionClass($schema)) {

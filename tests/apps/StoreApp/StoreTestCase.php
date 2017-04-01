@@ -16,7 +16,7 @@ abstract class StoreTestCase extends ModelTestCase
 
     protected $requiredDataSources = ['node_master', 'node1', 'node2'];
 
-    public function getModels()
+    public function models()
     {
         return [new StoreSchema, new OrderSchema];
     }

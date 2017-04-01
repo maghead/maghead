@@ -15,7 +15,7 @@ class MigrationGeneratorTest extends ModelTestCase
 
     const MIGRATION_SCRIPT_DIR = 'tests/migrations';
 
-    public function getModels()
+    public function models()
     {
         return [];
     }

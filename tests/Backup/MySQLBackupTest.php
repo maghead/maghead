@@ -10,7 +10,7 @@ class MySQLBackupTest extends ModelTestCase
 {
     protected $onlyDriver = 'mysql';
 
-    public function getModels()
+    public function models()
     {
         return [];
     }

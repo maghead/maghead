@@ -21,7 +21,7 @@ class StoreShardingTest extends ModelTestCase
 
     protected $freeConnections = false;
 
-    public function getModels()
+    public function models()
     {
         return [
             new StoreSchema,

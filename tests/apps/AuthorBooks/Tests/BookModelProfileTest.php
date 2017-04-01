@@ -14,7 +14,7 @@ use XHProfRuns_Default;
  */
 class BookModelProfileTest extends ModelProfileTestCase
 {
-    public function getModels()
+    public function models()
     {
         return array(new BookSchema);
     }

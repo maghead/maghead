@@ -16,7 +16,7 @@ use XHProfRuns_Default;
  */
 class TagModelProfileTest extends ModelProfileTestCase
 {
-    public function getModels()
+    public function models()
     {
         return [new TagSchema];
     }

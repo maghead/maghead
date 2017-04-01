@@ -7,7 +7,7 @@ use TestApp\Model\Table;
  */
 class TableModelTest extends ModelTestCase
 {
-    public function getModels()
+    public function models()
     {
         return [new \TestApp\Model\TableSchema];
     }
