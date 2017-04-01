@@ -17,8 +17,8 @@
 
 - [x] Allocate Shard
 - [x] Remove Shard
-- [ ] CloneShard (use mysqldbcopy)
-  - [ ] Convert DSN into command string
+- [x] CloneShard (use mysqldbcopy)
+  - [x] Convert DSN into command string
 
     mysqldbcopy --source=user:pass@host:port:socket --destination=user:pass@host:port:socket orig_db:new_db
 
@@ -26,9 +26,8 @@
                 --destination=root@localhost:/opt/local/var/run/mysql56/mysqld.sock \
                 shade_src:shade_dst
 
-
-- [ ] Split Shard
 - [ ] Prune Shard
+- [ ] Split Shard
 
 ## Storage Optimization
 
