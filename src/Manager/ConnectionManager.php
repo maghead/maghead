@@ -24,7 +24,6 @@ class ConnectionManager implements ArrayAccess
      */
     protected $conns = [];
 
-
     public function __construct(array $nodeConfigurations = [])
     {
         $this->nodeConfigurations = $nodeConfigurations;
@@ -37,9 +36,9 @@ class ConnectionManager implements ArrayAccess
      * @param PDO    $conn pdo connection.
      * @param string $id   node source id.
      */
-    public function has($id)
+    public function has($nodeId)
     {
-        return isset($this->conns[$id]);
+        return isset($this->conns[$nodeId]);
     }
 
     /**
@@ -48,12 +47,12 @@ class ConnectionManager implements ArrayAccess
      * @param Connection $conn pdo connection
      * @param string     $id   node source id
      */
-    public function add(Connection $conn, $id = 'default')
+    public function add(string $nodeId, Connection $conn)
     {
-        if (isset($this->conns[ $id ])) {
-            throw new Exception("$id connection is already defined.");
+        if (isset($this->conns[$nodeId])) {
+            throw new Exception("$nodeId connection is already defined.");
         }
-        $this->conns[ $id ] = $conn;
+        $this->conns[$nodeId] = $conn;
     }
 
     /**
