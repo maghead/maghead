@@ -29,7 +29,7 @@ class StoreShardingTest extends ModelTestCase
         ];
     }
 
-    protected function loadConfig()
+    protected function config()
     {
         $config = ConfigLoader::loadFromArray([
             'cli' => ['bootstrap' => 'vendor/autoload.php'],

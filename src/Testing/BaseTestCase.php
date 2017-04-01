@@ -79,7 +79,7 @@ abstract class BaseTestCase extends TestCase
         $this->dataSourceManager = DataSourceManager::getInstance();
         $this->logger = new Logger();
         $this->logger->setQuiet();
-        $this->config = $this->loadConfig();
+        $this->config = $this->config();
     }
 
     protected function getMasterDataSourceId()
@@ -102,7 +102,7 @@ abstract class BaseTestCase extends TestCase
      * by default we load the config from symbolic file. (this will be created
      * by the bootstrap script)
      */
-    protected function loadConfig()
+    protected function config()
     {
         $config = ConfigLoader::loadFromSymbol(true);
         $config->setMasterDataSourceId($this->getMasterDataSourceId());
@@ -117,7 +117,7 @@ abstract class BaseTestCase extends TestCase
         }
 
         // Always reset config from symbol file
-        $this->config = $this->loadConfig();
+        $this->config = $this->config();
 
         Bootstrap::setupDataSources($this->config, $this->dataSourceManager);
         Bootstrap::setupGlobalVars($this->config, $this->dataSourceManager);

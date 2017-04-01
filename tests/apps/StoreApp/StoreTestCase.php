@@ -21,7 +21,7 @@ abstract class StoreTestCase extends ModelTestCase
         return [new StoreSchema, new OrderSchema];
     }
 
-    protected function loadConfig()
+    protected function config()
     {
         $config = ConfigLoader::loadFromArray([
             'cli' => ['bootstrap' => 'vendor/autoload.php'],

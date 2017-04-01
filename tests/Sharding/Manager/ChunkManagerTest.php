@@ -41,7 +41,7 @@ class ChunkManagerTest extends StoreTestCase
 
     }
 
-    protected function loadConfig()
+    protected function config()
     {
         $config = ConfigLoader::loadFromArray([
             'cli' => ['bootstrap' => 'vendor/autoload.php'],
