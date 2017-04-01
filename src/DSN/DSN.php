@@ -161,6 +161,34 @@ class DSN implements ArrayAccess
         return $parts[0];
     }
 
+    public static function create(array $config)
+    {
+        // Build DSN connection string for PDO
+        $dsn = new self($config['driver']);
+        foreach (array('database', 'dbname') as $key) {
+            if (isset($config[$key])) {
+                $dsn->setAttribute('dbname', $config[$key]);
+                break;
+            }
+        }
+
+        if (isset($config['charset'])) {
+            $dsn->setAttribute('charset', $config['charset']);
+        }
+
+        if (isset($config['unix_socket'])) {
+            $dsn->setAttribute('unix_socket', $config['unix_socket']);
+        } else {
+            if (isset($config['host'])) {
+                $dsn->setAttribute('host', $config['host']);
+            }
+            if (isset($config['port'])) {
+                $dsn->setAttribute('port', $config['port']);
+            }
+        }
+
+        return $dsn;
+    }
 
 
 }
