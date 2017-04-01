@@ -248,6 +248,9 @@ class StoreShardingTest extends ModelTestCase
     public function testOrderAmountUpdateShouldUpdateToTheSameRepository($orderRet)
     {
         $order = Order::findByPrimaryKey($orderRet->key);
+        $this->assertNotNull($order, "found order");
+        $this->assertNotNull($order->repo, "found order repo");
+
         $ret = $order->update([ 'amount' => 9999 ]);
         $this->assertResultSuccess($ret);
         $this->assertEquals(9999, $order->amount);

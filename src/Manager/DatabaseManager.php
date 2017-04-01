@@ -24,33 +24,26 @@ class DatabaseManager
 
     public function create(string $nodeId, string $dbname)
     {
-        $ds = $this->connectionManager->getNodeConfig($nodeId);
-        $dsn = DSNParser::parse($ds['dsn']);
-        switch ($ds['driver']) {
-        case 'sqlite':
+        $nodeConfig = $this->connectionManager->getNodeConfig($nodeId);
+        $dsn = DSNParser::parse($nodeConfig['dsn']);
+        if ($nodeConfig['driver'] === "sqlite") {
             // we simply create a new PDO connection with the given dbname.
-            return $this->createSqliteDatabase($dsn, $ds, $dbname);
-        case 'pgsql':
-        case 'mysql':
-            return $this->createServerDatabase($dsn, $ds, $dbname);
+            return $this->createSqliteDatabase($dsn, $nodeConfig, $dbname);
         }
+        return $this->createServerDatabase($nodeId, $dbname);
     }
 
     public function drop(string $nodeId, string $dbname)
     {
-        $ds = $this->connectionManager->getNodeConfig($nodeId);
-        $dsn = DSNParser::parse($ds['dsn']);
-        switch ($ds['driver']) {
-        case 'sqlite':
+        $nodeConfig = $this->connectionManager->getNodeConfig($nodeId);
+        $dsn = DSNParser::parse($nodeConfig['dsn']);
+        if ($nodeConfig['driver'] === "sqlite") {
             if (file_exists("{$dbname}.sqlite")) {
                 unlink("{$dbname}.sqlite");
             }
             return;
-        case 'pgsql':
-        case 'mysql':
-            return $this->dropServerDatabase($nodeId, $dbname);
         }
-
+        return $this->dropServerDatabase($nodeId, $dbname);
     }
 
     protected function dropServerDatabase($nodeId, string $dbname)
@@ -64,11 +57,18 @@ class DatabaseManager
 
     protected function createServerDatabase($nodeId, string $dbname)
     {
+        $nodeConfig = $this->connectionManager->getNodeConfig($nodeId);
         $conn = $this->connectionManager->connectInstance($nodeId);
+
+        // create new data source config
+        $dsn = DSNParser::parse($nodeConfig['dsn']);
+        $dsn->setAttribute('dbname', $dbname);
+        $nodeConfig['dsn'] = $dsn->__toString();
+
         $q = new CreateDatabaseQuery($dbname);
         $q->ifNotExists();
-        if (isset($ds['charset'])) {
-            $q->characterSet($ds['charset']);
+        if (isset($nodeConfig['charset'])) {
+            $q->characterSet($nodeConfig['charset']);
         } else {
             $q->characterSet('utf8');
         }
@@ -76,12 +76,12 @@ class DatabaseManager
         $queryDriver = PDODriverFactory::create($conn);
         $sql = $q->toSql($queryDriver, new ArgumentArray());
         $conn->query($sql);
-        return [$conn, $ds];
+        return [$conn, $nodeConfig];
     }
 
-    protected function createSqliteDatabase(DSN $dsn, array $ds, string $dbname)
+    protected function createSqliteDatabase(DSN $dsn, array $nodeConfig, string $dbname)
     {
-        $ds['dsn'] = "sqlite:{$dbname}.sqlite";
-        return [Connection::connect($ds), $ds];
+        $nodeConfig['dsn'] = "sqlite:{$dbname}.sqlite";
+        return [Connection::connect($nodeConfig), $nodeConfig];
     }
 }
