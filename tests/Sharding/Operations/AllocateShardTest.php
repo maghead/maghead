@@ -21,7 +21,7 @@ class AllocateShardTest extends StoreTestCase
 
     public function testAllocateShard()
     {
-        $o = new AllocateShard($this->config);
+        $o = new AllocateShard($this->config, $this->logger);
         $o->allocate('local', 't1');
     }
 }

@@ -35,9 +35,12 @@ class AllocateShard
 
     protected $connectionManager;
 
-    public function __construct(Config $config)
+    protected $logger;
+
+    public function __construct(Config $config, $logger)
     {
         $this->config = $config;
+        $this->logger = $logger;
         $this->connectionManager = new ConnectionManager($config->getInstances());
     }
 
@@ -67,15 +70,13 @@ class AllocateShard
 
         // Setup shard schema
         $conn = $this->connectionManager->connect($newNodeId);
-        $logger = new Logger;
-        $logger->setQuiet();
-        $schemas = SchemaUtils::findSchemasByConfig($this->config, $logger);
+        $schemas = SchemaUtils::findSchemasByConfig($this->config, $this->logger);
 
         $sqlBuilder = TableBuilder::create($queryDriver, [
             'rebuild' => true,
             'clean' => false,
         ]);
-        $tableManager = new TableManager($conn, $sqlBuilder, $logger);
+        $tableManager = new TableManager($conn, $sqlBuilder, $this->logger);
         $tableManager->build($schemas);
 
         // Allocate MetadataManager to update migration timestamp
