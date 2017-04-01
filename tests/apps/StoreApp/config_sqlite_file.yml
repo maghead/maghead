@@ -7,6 +7,10 @@ schema:
   base_collection: \Maghead\Runtime\BaseCollection
   paths:
   - tests
+instance:
+  local:
+    dsn: 'mysql:host=localhost'
+    user: root
 sharding:
   mappings:
     M_store_id:

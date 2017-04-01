@@ -11,6 +11,10 @@ cache:
   class: Maghead\Cache\Memcache
   servers:
     - { host: localhost, port: 11211 }
+instance:
+  local:
+    dsn: 'mysql:host=localhost'
+    user: root
 data_source:
   master: sqlite
   nodes:
