@@ -113,6 +113,11 @@ class Config implements ArrayAccess
         }
     }
 
+    public function getInstances()
+    {
+        return $this->stash['instance'];
+    }
+
     /**
      * get data source by data source id.
      *

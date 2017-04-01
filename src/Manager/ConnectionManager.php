@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use PDO;
 use ArrayAccess;
 use Maghead\DSN\DSN;
+use Maghead\DSN\DSNParser;
 use Maghead\Connection;
 use Maghead\Connector\PDOMySQLConnector;
 
@@ -16,12 +17,19 @@ class ConnectionManager implements ArrayAccess
     /**
      * @var array contains node configurations
      */
-    protected $nodeConfigurations = array();
+    protected $nodeConfigurations;
 
     /**
      * @var PDOConnection[] contains PDO connection objects.
      */
-    protected $conns = array();
+    protected $conns = [];
+
+
+    public function __construct(array $nodeConfigurations = [])
+    {
+        $this->nodeConfigurations = $nodeConfigurations;
+    }
+
 
     /**
      * Check if we have connected already.
@@ -153,6 +161,21 @@ class ConnectionManager implements ArrayAccess
             return $this->conns[$nodeId];
         }
         return $this->conns[$nodeId] = $this->connect($nodeId);
+    }
+
+    /**
+     * Connection to the instance without the dbname in the dsn string
+     *
+     * @param string $nodeId
+     * @return Connection
+     */
+    public function connectInstance($nodeId)
+    {
+        $config = $this->nodeConfigurations[$nodeId];
+        $dsn = DSNParser::parse($config['dsn']);
+        $dsn->removeAttribute('dbname');
+        $config['dsn'] = $dsn->__toString();
+        return Connection::connect($config);
     }
 
     public function connect($nodeId)

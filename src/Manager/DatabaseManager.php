@@ -14,17 +14,17 @@ use SQLBuilder\Universal\Query\DropDatabaseQuery;
 
 class DatabaseManager
 {
-    protected $dataSourceManager;
+    protected $connectionManager;
 
-    public function __construct(DataSourceManager $dataSourceManager)
+    public function __construct(ConnectionManager $connectionManager)
     {
-        $this->dataSourceManager = $dataSourceManager;
+        $this->connectionManager = $connectionManager;
     }
 
 
     public function create(string $nodeId, string $dbname)
     {
-        $ds = $this->dataSourceManager->getNodeConfig($nodeId);
+        $ds = $this->connectionManager->getNodeConfig($nodeId);
         $dsn = DSNParser::parse($ds['dsn']);
         switch ($ds['driver']) {
         case 'sqlite':
@@ -38,7 +38,7 @@ class DatabaseManager
 
     public function drop(string $nodeId, string $dbname)
     {
-        $ds = $this->dataSourceManager->getNodeConfig($nodeId);
+        $ds = $this->connectionManager->getNodeConfig($nodeId);
         $dsn = DSNParser::parse($ds['dsn']);
         switch ($ds['driver']) {
         case 'sqlite':
@@ -48,29 +48,23 @@ class DatabaseManager
             return;
         case 'pgsql':
         case 'mysql':
-            return $this->dropServerDatabase($dsn, $ds, $dbname);
+            return $this->dropServerDatabase($nodeId, $dbname);
         }
 
     }
 
-    protected function dropServerDatabase(DSN $dsn, array $ds, string $dbname)
+    protected function dropServerDatabase($nodeId, string $dbname)
     {
-        $dsn->removeAttribute('dbname');
-        $ds['dsn'] = $dsn->__toString();
-        $conn = Connection::connect($ds);
+        $conn = $this->connectionManager->connectInstance($nodeId);
         $q = new DropDatabaseQuery($dbname);
         $queryDriver = PDODriverFactory::create($conn);
         $sql = $q->toSql($queryDriver, new ArgumentArray());
         $conn->query($sql);
     }
 
-    protected function createServerDatabase(DSN $dsn, array $ds, string $dbname)
+    protected function createServerDatabase($nodeId, string $dbname)
     {
-        $dsn->removeAttribute('dbname');
-        $ds['dsn'] = $dsn->__toString();
-        $conn = Connection::connect($ds);
-
-
+        $conn = $this->connectionManager->connectInstance($nodeId);
         $q = new CreateDatabaseQuery($dbname);
         $q->ifNotExists();
         if (isset($ds['charset'])) {
