@@ -31,12 +31,3 @@ data_source:
     pgsql:
       dsn: 'pgsql:host=localhost;dbname=testing'
       user: postgres
-    s1:
-      dsn: 'mysql:host=localhost;dbname=s1'
-      user: root
-    s2:
-      dsn: 'mysql:host=localhost;dbname=s2'
-      user: root
-    s3:
-      dsn: 'mysql:host=localhost;dbname=s3'
-      user: root

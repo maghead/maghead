@@ -12,6 +12,8 @@ use Maghead\Sharding\Operations\AllocateShard;
  */
 class AllocateShardTest extends StoreTestCase
 {
+    public $onlyDriver = 'mysql';
+
     public function config()
     {
         return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_mysql.yml");
