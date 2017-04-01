@@ -24,11 +24,19 @@ data_source:
       # dsn: 'sqlite::memory:'
       query_options: { quote_column: true, quote_table: true }
     mysql:
-      dsn: 'mysql:host=127.0.0.1;dbname=testing'
+      dsn: 'mysql:host=localhost;dbname=testing'
       user: root
-      pass: null
       # create database testing charset utf8;
       # grant all privileges on testing.* to testing@localhost identified by 'testing';
     pgsql:
       dsn: 'pgsql:host=localhost;dbname=testing'
       user: postgres
+    s1:
+      dsn: 'mysql:host=localhost;dbname=s1'
+      user: root
+    s2:
+      dsn: 'mysql:host=localhost;dbname=s2'
+      user: root
+    s3:
+      dsn: 'mysql:host=localhost;dbname=s3'
+      user: root
