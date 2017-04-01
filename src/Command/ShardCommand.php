@@ -4,18 +4,19 @@ namespace Maghead\Command;
 
 use CLIFramework\Command;
 
-class DbCommand extends BaseCommand
+class ShardCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'database related commands.';
+        return 'shard related commands.';
     }
 
     public function init()
     {
-        $this->command('create');
-        $this->command('recreate');
-        $this->command('drop');
+        $this->command('allocate');
+        $this->command('clone');
+        $this->command('prune');
+        $this->command('split');
     }
 
     public function execute()

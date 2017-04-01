@@ -54,7 +54,7 @@ class BaseCommand extends Command
 
     public function getCurrentDataSourceId()
     {
-        return $this->options->{'data-source'} ?: 'default';
+        return $this->options->{'data-source'} ?: $this->getConfig()->getMasterDataSourceId();
     }
 
     public function getCurrentQueryDriver()

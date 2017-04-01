@@ -42,6 +42,7 @@ class Console extends Application
         $this->command('meta');
         $this->command('version');
         $this->command('db');
+        $this->command('shard');
         $this->command('data-source');
         $this->command('table');
         $this->command('index');
