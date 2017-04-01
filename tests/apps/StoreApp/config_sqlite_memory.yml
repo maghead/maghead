@@ -1,0 +1,68 @@
+---
+cli:
+  bootstrap: vendor/autoload.php
+schema:
+  auto_id: true
+  base_model: \Maghead\Runtime\BaseModel
+  base_collection: \Maghead\BaseCollection
+  paths:
+  - tests
+sharding:
+  mappings:
+    M_store_id:
+      tables:
+      - orders
+      key: store_id
+      shards:
+      - s1
+      - s2
+      chunks:
+        c1:
+          shard: s1
+        c2:
+          shard: s2
+      hash:
+        target1: c1
+        target2: c2
+  shards:
+    s1:
+      write:
+        node1:
+          weight: 0.100000
+      read:
+        node1:
+          weight: 0.100000
+    s2:
+      write:
+        node2:
+          weight: 0.100000
+      read:
+        node2:
+          weight: 0.100000
+data_source:
+  master: node_master
+  nodes:
+    node_master:
+      dsn: 'sqlite::memory:'
+      query_options:
+        quote_table: true
+      driver: sqlite
+      connection_options: []
+      user: ~
+      pass: ~
+    node1:
+      dsn: 'sqlite::memory:'
+      query_options:
+        quote_table: true
+      driver: sqlite
+      connection_options: []
+      user: ~
+      pass: ~
+    node2:
+      dsn: 'sqlite::memory:'
+      query_options:
+        quote_table: true
+      driver: sqlite
+      connection_options: []
+      user: ~
+      pass: ~
