@@ -23,18 +23,6 @@ abstract class StoreTestCase extends ModelTestCase
 
     protected function config()
     {
-        $config = ConfigLoader::loadFromArray([
-            'cli' => ['bootstrap' => 'vendor/autoload.php'],
-            'schema' => [
-                'auto_id' => true,
-                'base_model' => '\\Maghead\\Runtime\\BaseModel',
-                'base_collection' => '\\Maghead\\Runtime\\BaseCollection',
-                'paths' => ['tests'],
-            ],
-            'sharding' => \StoreApp\Config::sharding(),
-            // 'data_source' => \StoreApp\Config::memory_data_source(),
-            'data_source' => \StoreApp\Config::data_source(),
-        ]);
-        return $config;
+        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml");
     }
 }

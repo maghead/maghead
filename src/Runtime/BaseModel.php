@@ -907,7 +907,7 @@ abstract class BaseModel implements Serializable
         if (self::$yamlExtension) {
             return yaml_emit($data, YAML_UTF8_ENCODING);
         }
-        return file_put_contents($yamlFile, "---\n".Yaml::dump($data, $inline = true, $exceptionOnInvalidType = true));
+        return "---\n".Yaml::dump($data, $inline = true, $exceptionOnInvalidType = true);
     }
 
 
