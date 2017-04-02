@@ -48,15 +48,6 @@ class PDOMySQLConnector
     ];
 
 
-    public static function connectServerOnly($dsn, $user, $pass)
-    {
-        $newdsn = DSNParser::parse($dsn);
-        $newdsn->removeDBName();
-        $dsn = $newdsn->__toString();
-        return new Connection($dsn, $user, $pass, static::$defaultOptions);
-    }
-
-
     public static function connect($dsn, $user, $pass)
     {
         return new Connection($dsn, $user, $pass, static::$defaultOptions);

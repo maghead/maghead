@@ -36,32 +36,45 @@ sharding:
       read: { node3: { weight: 0.1 } }
 data_source:
   master: node_master
-  nodes:
-    node_master:
-      dsn: 'mysql:host=localhost;dbname=testing'
+  clusters:
+    cluster1:
       driver: mysql
       user: root
       password: null
       query_options: { }
       connection_options: { 1002: 'SET NAMES utf8' }
-    node1:
-      dsn: 'mysql:host=localhost;dbname=s1'
-      user: root
+      read: [{ host: localhost, dsn: '...' }]
+      write: [ 'localhost' ]
+  nodes:
+    node_master:
       driver: mysql
+      user: root
+      password: null
+      database: testing
+      dsn: 'mysql:host=localhost;dbname=testing'
+      query_options: { }
+      connection_options: { 1002: 'SET NAMES utf8' }
+    node1:
+      driver: mysql
+      user: root
+      database: s1
       password: null
       query_options: {  }
+      dsn: 'mysql:host=localhost;dbname=s1'
       connection_options: { 1002: 'SET NAMES utf8' }
     node2:
       dsn: 'mysql:host=localhost;dbname=s2'
       user: root
       driver: mysql
       password: null
+      database: s2
       query_options: {  }
       connection_options: { 1002: 'SET NAMES utf8' }
     node3:
-      dsn: 'mysql:host=localhost;dbname=s3'
-      user: root
       driver: mysql
+      user: root
       password: null
+      database: s3
       query_options: {  }
+      dsn: 'mysql:host=localhost;dbname=s3'
       connection_options: { 1002: 'SET NAMES utf8' }

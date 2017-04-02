@@ -172,7 +172,7 @@ class ConnectionManager implements ArrayAccess
     {
         $config = $this->nodeConfigurations[$nodeId];
         $dsn = DSNParser::parse($config['dsn']);
-        $dsn->removeAttribute('dbname'); // works for pgsql and mysql only
+        $dsn->removeDBName(); // works for pgsql and mysql only
         $config['dsn'] = $dsn->__toString();
         return Connection::connect($config);
     }
