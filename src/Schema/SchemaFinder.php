@@ -17,16 +17,9 @@ class SchemaFinder
 {
     protected $paths = array();
 
-    protected $logger;
-
-    public function __construct(array $paths = array(), Logger $logger = null)
+    public function __construct(array $paths = array())
     {
         $this->paths = $paths;
-        if (!$logger) {
-            $c = ServiceContainer::getInstance();
-            $logger = $c['logger'];
-        }
-        $this->logger = $logger;
     }
 
     public function in($path)
@@ -41,13 +34,9 @@ class SchemaFinder
 
     public function findByPaths(array $paths)
     {
-        $this->logger->debug('Finding schemas in ('.implode(', ', $paths).')');
-
         $files = array();
         foreach ($paths as $path) {
-            $this->logger->debug('Finding schemas in '.$path);
             if (is_file($path)) {
-                $this->logger->debug('Loading schema: '.$path);
                 require_once $path;
                 $files[] = $path;
             } elseif (is_dir($path)) {
@@ -59,7 +48,6 @@ class SchemaFinder
                 );
                 foreach ($rii as $fi) {
                     if (substr($fi->getFilename(), -10) == 'Schema.php') {
-                        $this->logger->debug('Loading schema: '.$fi->getPathname());
                         require_once $fi->getPathname();
                         $files[] = $path;
                     }

@@ -126,10 +126,10 @@ class SchemaUtils
         return $list;
     }
 
-    public static function findSchemasByPaths(array $paths = null, Logger $logger = null)
+    public static function findSchemasByPaths(array $paths = null)
     {
         if ($paths && !empty($paths)) {
-            $finder = new SchemaFinder($paths, $logger);
+            $finder = new SchemaFinder($paths);
             $finder->find();
         }
 
@@ -137,11 +137,11 @@ class SchemaUtils
     }
 
     /**
+     * Use the given config object to load schema files.
      *
      * @param Config       $config
-     * @param Logger       $logger
      */
-    public static function findSchemasByConfig(Config $config, Logger $logger = null)
+    public static function findSchemasByConfig(Config $config)
     {
         // load class from class map
         if ($classMap = $config->getClassMap()) {
@@ -152,7 +152,7 @@ class SchemaUtils
             }
         }
         $paths = $config->getSchemaPaths();
-        return self::findSchemasByPaths($paths, $logger);
+        return self::findSchemasByPaths($paths);
     }
 
     /**
@@ -160,7 +160,7 @@ class SchemaUtils
      *
      * @return array schema objects
      */
-    public static function findSchemasByArguments(Config $config, array $args, Logger $logger = null)
+    public static function findSchemasByArguments(Config $config, array $args)
     {
         $classes = self::argumentsToSchemaObjects($args);
 

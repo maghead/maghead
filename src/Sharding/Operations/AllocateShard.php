@@ -37,7 +37,7 @@ class AllocateShard
 
     protected $logger;
 
-    public function __construct(Config $config, $logger)
+    public function __construct(Config $config, Logger $logger)
     {
         $this->config = $config;
         $this->logger = $logger;
@@ -70,6 +70,8 @@ class AllocateShard
 
         // Setup shard schema
         $dbConn = $this->connectionManager->connect($newNodeId);
+
+        // TODO: get the related schema of the shard mapping
         $schemas = SchemaUtils::findSchemasByConfig($this->config, $this->logger);
 
         $sqlBuilder = TableBuilder::create($queryDriver, [
