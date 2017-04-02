@@ -65,9 +65,6 @@ class AllocateShardTest extends StoreTestCase
         $o->remove('t2');
     }
 
-    /**
-     * @rebuild false
-     */
     public function testPruneShard()
     {
         $o = new AllocateShard($this->config, $this->logger);
