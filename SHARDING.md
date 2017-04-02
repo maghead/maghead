@@ -159,7 +159,20 @@ the dispatcher that dispatches the shard node for specific sharding rule, e.g.:
 
 Create an empty shard with the corresponding schema.
 
-    maghead shard allocate [instanceId] [new nodeId]
+    maghead shard allocate --mapping [mappingIds] \
+                           --instance [instanceId]
+                           [new nodeId]
+
+To use the allocate operation:
+
+
+    $config = ConfigLoader::loadFromFile('.../config.yml');
+    $o = new AllocateShard($config, $logger);
+    $o->allocate('local', 't1', 'M_store_id');
+
+Where `local` is the instance ID, `t1` is the node ID for the new shard, and
+`M_store_id` is the shard mapping ID defined in the config file.
+
 
 ### Cloning Shard
 
