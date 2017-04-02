@@ -2,7 +2,8 @@ language: php
 services:
 - memcached
 php:
-- 7.0
+- "7.0"
+- "7.1"
 # - hhvm
 env:
   - DB=mysql     # mysql database tests only
