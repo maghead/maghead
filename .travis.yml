@@ -15,7 +15,7 @@ before_install:
 - sudo sh travis/install-mysql-utilities
 install:
 - phpenv rehash
-- travis_retry composer require "satooshi/php-coveralls" "^1" --no-update --dev
+- travis_retry composer require "satooshi/php-coveralls" "~1" --no-update
 - travis_retry composer install
 before_script:
   - echo $TRAVIS_PHP_VERSION
