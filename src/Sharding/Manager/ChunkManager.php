@@ -21,7 +21,6 @@ use IteratorAggregate;
 
 class ChunkManager
 {
-
     protected $config;
 
     protected $dataSourceManager;
@@ -63,7 +62,7 @@ class ChunkManager
         $shardIds = $mapping->getShardIds();
         $numberOfChunksPerShard = intdiv($numberOfChunks, count($shardIds));
 
-        $chunkIdList = array_map(function($chunkId) use ($dbname) {
+        $chunkIdList = array_map(function ($chunkId) use ($dbname) {
             // special string used by sqlite
             if ($dbname === ":memory:") {
                 return "chunk_{$chunkId}";

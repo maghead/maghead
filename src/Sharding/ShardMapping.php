@@ -4,7 +4,6 @@ namespace Maghead\Sharding;
 
 use Exception;
 
-
 /**
  * config structure:
  *
@@ -69,7 +68,7 @@ class ShardMapping
     {
         if (isset($this->extra['hash'])) {
             return self::HASH;
-        } else if (isset($this->extra['range'])) {
+        } elseif (isset($this->extra['range'])) {
             return self::RANGE;
         }
     }
@@ -118,7 +117,7 @@ class ShardMapping
     {
         if (isset($this->extra['hash'])) {
             return $this->extra['hash'];
-        } else if (isset($this->extra['range'])) {
+        } elseif (isset($this->extra['range'])) {
             return array_keys($this->extra['range']);
         }
         throw new Exception('hash / range is undefined.');
@@ -164,5 +163,4 @@ class ShardMapping
         $conf['targets'] = $this->targets;
         return $conf;
     }
-
 }

@@ -8,5 +8,4 @@ class RandBalancer implements Balancer
     {
         return array_rand($nodes);
     }
-
 }

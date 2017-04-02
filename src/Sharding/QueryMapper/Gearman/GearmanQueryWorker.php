@@ -46,7 +46,7 @@ class GearmanQueryWorker
         $this->shardManager = new ShardManager($this->config, $this->dataSourceManager);
     }
 
-    static protected function createDefaultLogger()
+    protected static function createDefaultLogger()
     {
         $logger = new Logger('query_worker');
         $logger->pushHandler(new StreamHandler('query_worker.log', Logger::INFO));
@@ -54,7 +54,7 @@ class GearmanQueryWorker
         return $logger;
     }
 
-    static protected function createDefaultGearmanWorker()
+    protected static function createDefaultGearmanWorker()
     {
         $worker = new GearmanWorker();
         $worker->addServer();
@@ -89,7 +89,7 @@ class GearmanQueryWorker
         $this->logger->debug("SQL: {$sql}");
 
         $stm = $conn->prepare($sql);
-        $stm->execute( $args->toArray() );
+        $stm->execute($args->toArray());
         $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
 
         /*

@@ -74,7 +74,7 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
         return new ArrayIterator($this->shards);
     }
     
-    public function offsetSet($name,$value)
+    public function offsetSet($name, $value)
     {
         $this->shards[ $name ] = $value;
     }

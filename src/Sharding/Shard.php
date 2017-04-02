@@ -11,7 +11,7 @@ use SQLBuilder\ArgumentArray;
 class Shard
 {
     /**
-     * @var string 
+     * @var string
      *
      * the id of the shard.
      */

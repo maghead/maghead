@@ -23,7 +23,7 @@ class GearmanQueryMapper
         $this->client->setFailCallback([$this, 'handleFail']);
     }
 
-    static protected function createDefaultGearmanClient()
+    protected static function createDefaultGearmanClient()
     {
         $client = new GearmanClient;
         $client->addServer();

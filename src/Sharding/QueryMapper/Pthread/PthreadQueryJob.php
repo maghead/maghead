@@ -4,8 +4,8 @@ namespace Maghead\Sharding\QueryMapper\Pthread;
 
 use Threaded;
 
-class PthreadQueryJob extends Threaded {
-
+class PthreadQueryJob extends Threaded
+{
     protected $sql;
 
     protected $args;
