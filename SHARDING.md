@@ -165,10 +165,12 @@ Create an empty shard with the corresponding schema.
 
 To use the allocate operation:
 
-
     $config = ConfigLoader::loadFromFile('.../config.yml');
     $o = new AllocateShard($config, $logger);
     $o->allocate('local', 't1', 'M_store_id');
+
+The above command allocate a new node `t1` on `local` instance and initialize
+the schemas related to the shard mapping.
 
 Where `local` is the instance ID, `t1` is the node ID for the new shard, and
 `M_store_id` is the shard mapping ID defined in the config file.
@@ -178,17 +180,37 @@ Where `local` is the instance ID, `t1` is the node ID for the new shard, and
 
 Clone an existing shard on the same instance.
 
-    maghead shard clone [instanceId] [nodeId] [new nodeId] 
+    maghead shard clone --instance [instanceId] \
+                        --source [sourceNodeID] \
+                        [newNodeId]
+
 
 Before cloning the shard, be sure to have the mysql instance defined in the config.
 
 The ShardCloning operation uses mysqldbcopy to copy the database.
 
+To clone a shard in PHP code:
+
+    $config = ConfigLoader::loadFromFile('.../config.yml');
+    $o = new CloneShard($config, $logger);
+    $o->setDropFirst(true);
+    $o->clone('node_master', 't2');
+
+The above code clones `node_master` to node `t2`.
+
 ### Pruning Shard
 
 Prune all rows that doesn't belong to the shard.
 
-    maghead shard prune nodeId
+    maghead shard prune --mapping [mappingId] nodeId
+
+Shard pruning finds all schema related to the shard mapping, and then iterate
+each collection to prune the rows that does not belong to the shard itself.
+
+    $config = ConfigLoader::loadFromFile('.../config.yml');
+    $o = new PruneShard($config, $logger);
+    $o->prune('t1', 'M_store_id');
+
 
 ### Splitting Shard
 

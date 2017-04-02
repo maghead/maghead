@@ -50,14 +50,13 @@ class CloneShard
         $this->dropFirst = $enabled;
     }
 
-    public function clone($srcNodeId, $newNodeId, $dbName = null)
+    public function clone($instanceId, $srcNodeId, $newNodeId)
     {
-        // create a new node with the new dbname
-        if (!$dbName) {
-            $dbName = $newNodeId;
-        }
+        // setup the database name.
+        $dbName = $newNodeId;
 
-        $newNodeConfig = $this->dataSourceManager->getNodeConfig($srcNodeId);
+        // Create the node config from the instance node config.
+        $newNodeConfig = $this->connectionManager->getNodeConfig($instanceId);
         if (!$newNodeConfig) {
             throw new RuntimeException("Node config of '$srcNodeId' is undefined.");
         }
