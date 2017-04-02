@@ -11,6 +11,7 @@ use Maghead\DSN\DSN;
 use Maghead\DSN\DSNParser;
 use Maghead\Connection;
 use Maghead\Connector\PDOMySQLConnector;
+use Maghead\Connector\PDOConnector;
 
 class ConnectionManager implements ArrayAccess
 {
@@ -184,7 +185,7 @@ class ConnectionManager implements ArrayAccess
             throw new InvalidArgumentException("data source {$nodeId} not found, valid nodes are {$nodeIds}");
         }
         $config = $this->nodeConfigurations[$nodeId];
-        return Connection::connect($config);
+        return PDOConnector::connect($config);
     }
 
     public function get($dsId)

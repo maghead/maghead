@@ -14,8 +14,12 @@ class PDOConnector
 
     public static function connect(array $config)
     {
-        $c = new Connection($config['dsn'], $config['user'], $config['pass'], static::$defaultOptions);
-        $c->config = $config;
-        return $c;
+        if ($config['driver'] === 'mysql') {
+            return PDOMySQLConnector::connect($config['dsn'], $config['user'], $config['password']);
+        }
+        $connection = new Connection($config['dsn'], $config['user'], $config['password'], $config['connection_options']);
+        $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // TODO: can we make this optional ?
+        return $connection;
     }
 }

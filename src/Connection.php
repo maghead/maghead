@@ -38,17 +38,6 @@ class Connection extends PDO
      */
     private $queryDriver;
 
-    public static function connect(array $config)
-    {
-        if ($config['driver'] === 'mysql') {
-            return PDOMySQLConnector::connect($config['dsn'], $config['user'], $config['password']);
-        }
-        $connection = new self($config['dsn'], $config['user'], $config['password'], $config['connection_options']);
-        $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // TODO: can we make this optional ?
-        return $connection;
-    }
-
     public function prepareAndExecute($sql, array $args = array())
     {
         $stm = $this->prepare($sql);
