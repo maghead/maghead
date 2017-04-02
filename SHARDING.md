@@ -215,10 +215,9 @@ each collection to prune the rows that does not belong to the shard itself.
 
 Splitting shard involves Shard Cloning and Shard Pruning.
 
-    maghead shard split [instanceId] [nodeId] [new nodeId] 
-
-
-
+    maghead shard split --instance [instanceId]
+                        --source [nodeId]
+                        [new nodeId]
 
 
 ## CRUD Operations

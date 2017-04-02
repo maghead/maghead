@@ -22,8 +22,8 @@ sharding:
       tables: [orders]
       key: store_id
       shards: [s1, s2, s3]
-      chunks: { c1: { shard: s1 }, c2: { shard: s2 } }
-      hash: { target1: c1, target2: c2 }
+      chunks: { c1: { shard: s1 }, c2: { shard: s2 }, c3: { shard: s3 } }
+      hash: { target1: c1, target2: c2, target3: c3 }
   shards:
     s1:
       write: { node1: { weight: 0.1 } }

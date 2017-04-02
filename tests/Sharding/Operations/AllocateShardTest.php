@@ -5,10 +5,7 @@ use StoreApp\Model\{Store, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 use StoreApp\StoreTestCase;
 
-use Maghead\Sharding\Operations\AllocateShard;
-use Maghead\Sharding\Operations\CloneShard;
-use Maghead\Sharding\Operations\RemoveShard;
-
+use Maghead\Sharding\Operations\{AllocateShard, CloneShard, RemoveShard, PruneShard};
 use Maghead\Utils;
 
 /**
@@ -23,6 +20,15 @@ class AllocateShardTest extends StoreTestCase
     protected $onlyDriver = 'mysql';
 
     protected $freeConnections = false;
+
+    public function models()
+    {
+        return [
+            new StoreSchema,
+            new OrderSchema,
+        ];
+    }
+
 
     public function config()
     {
@@ -41,6 +47,7 @@ class AllocateShardTest extends StoreTestCase
         $o->remove('t1');
     }
 
+
     /**
      * @depends testAllocateShard
      * @rebuild false
@@ -56,5 +63,30 @@ class AllocateShardTest extends StoreTestCase
 
         $o = new RemoveShard($this->config, $this->logger);
         $o->remove('t2');
+    }
+
+    /**
+     * @rebuild false
+     */
+    public function testPruneShard()
+    {
+        $o = new AllocateShard($this->config, $this->logger);
+        $o->allocate('local', 's4', 'M_store_id');
+
+        // TODO: insert store and order data
+        foreach ($this->storeDataProvider() as $args) {
+            call_user_func_array([$this,'assertInsertStores'], $args);
+        }
+
+        foreach ($this->orderDataProvider() as $args) {
+            call_user_func_array([$this,'assertInsertOrders'], $args);
+        }
+
+        // Run prune
+        // $o = new PruneShard($this->config, $this->logger);
+        // $o->prune('t1', 'M_store_id');
+
+        $o = new RemoveShard($this->config, $this->logger);
+        $o->remove('s4');
     }
 }

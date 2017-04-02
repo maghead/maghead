@@ -82,5 +82,7 @@ class AllocateShard
         // Allocate MetadataManager to update migration timestamp
         $metadata = new MetadataManager($dbConn, $queryDriver);
         $metadata['migration'] = time();
+
+        // XXX: modify the shard mapping config
     }
 }

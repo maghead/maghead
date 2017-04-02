@@ -37,7 +37,7 @@ class CloneShard
 
     protected $dropFirst = false;
 
-    public function __construct(Config $config, $logger)
+    public function __construct(Config $config, Logger $logger)
     {
         $this->config = $config;
         $this->logger = $logger;
