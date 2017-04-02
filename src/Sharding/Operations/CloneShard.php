@@ -50,7 +50,7 @@ class CloneShard
         $this->dropFirst = $enabled;
     }
 
-    public function clone($instanceId, $srcNodeId, $newNodeId)
+    public function clone($instanceId, $newNodeId, $srcNodeId)
     {
         // setup the database name.
         $dbName = $newNodeId;

@@ -194,9 +194,9 @@ To clone a shard in PHP code:
     $config = ConfigLoader::loadFromFile('.../config.yml');
     $o = new CloneShard($config, $logger);
     $o->setDropFirst(true);
-    $o->clone('node_master', 't2');
+    $o->clone('local', 't2', 'node_master');
 
-The above code clones `node_master` to node `t2`.
+The above code creates a new node `t2` and copy the data from `node_master`.
 
 ### Pruning Shard
 
@@ -210,7 +210,6 @@ each collection to prune the rows that does not belong to the shard itself.
     $config = ConfigLoader::loadFromFile('.../config.yml');
     $o = new PruneShard($config, $logger);
     $o->prune('t1', 'M_store_id');
-
 
 ### Splitting Shard
 

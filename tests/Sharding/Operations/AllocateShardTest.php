@@ -52,7 +52,7 @@ class AllocateShardTest extends StoreTestCase
         }
         $o = new CloneShard($this->config, $this->logger);
         $o->setDropFirst(true);
-        $o->clone('local', 'node_master', 't2');
+        $o->clone('local', 't2', 'node_master');
 
         $o = new RemoveShard($this->config, $this->logger);
         $o->remove('t2');
