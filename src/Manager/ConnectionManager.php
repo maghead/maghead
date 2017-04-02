@@ -175,7 +175,7 @@ class ConnectionManager implements ArrayAccess
         $dsn = DSNParser::parse($config['dsn']);
         $dsn->removeDBName(); // works for pgsql and mysql only
         $config['dsn'] = $dsn->__toString();
-        return Connection::connect($config);
+        return PDOConnector::connect($config);
     }
 
     public function connect($nodeId)
