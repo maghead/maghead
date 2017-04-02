@@ -238,6 +238,17 @@ class SchemaUtils
         return $list;
     }
 
+    /**
+     * Given a list of schema object,
+     * return the schema objects that are defined with shard mapping
+     */
+    public static function filterShardMappingSchemas($mappingId, array $schemas)
+    {
+        return array_filter($schemas, function(DeclareSchema $s) use ($mappingId) {
+            return $s->shardMapping == $mappingId;
+        });
+    }
+
     public static function filterDeclareSchemaClasses(array $classes)
     {
         return array_filter(function ($class) {

@@ -44,12 +44,10 @@ class AllocateShard
         $this->connectionManager = new ConnectionManager($config->getInstances());
     }
 
-    public function allocate($instanceId, $newNodeId, $dbName = null)
+    public function allocate($instanceId, $newNodeId, $mappingId)
     {
         // TODO: Add a special instanceID for sqlite support
-        if (!$dbName) {
-            $dbName = $newNodeId;
-        }
+        $dbName = $newNodeId;
         $conn = $this->connectionManager->connectInstance($instanceId);
         $queryDriver = $conn->getQueryDriver();
 
@@ -71,8 +69,8 @@ class AllocateShard
         // Setup shard schema
         $dbConn = $this->connectionManager->connect($newNodeId);
 
-        // TODO: get the related schema of the shard mapping
         $schemas = SchemaUtils::findSchemasByConfig($this->config, $this->logger);
+        $schemas = SchemaUtils::filterShardMappingSchemas($mappingId, $schemas);
 
         $sqlBuilder = TableBuilder::create($queryDriver, [
             'rebuild' => true,
