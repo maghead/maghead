@@ -43,8 +43,10 @@ data_source:
       password: null
       query_options: { }
       connection_options: { 1002: 'SET NAMES utf8' }
-      read: [{ host: localhost, dsn: '...' }]
-      write: [ 'localhost' ]
+      read:
+      - localhost
+      write:
+      - localhost
   nodes:
     node_master:
       driver: mysql

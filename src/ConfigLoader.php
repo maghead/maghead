@@ -133,10 +133,12 @@ class ConfigLoader
             if (isset($config['socket'])) {
                 $config['unix_socket'] = $config['socket'];
             }
-
+            // alias pass to pasword
             if (isset($config['pass']) && $config['pass']) {
                 $config['password'] = $config['pass'];
             }
+
+            // predefined nulls
             if (!isset($config['user'])) {
                 $config['user'] = null;
             }
@@ -144,11 +146,38 @@ class ConfigLoader
                 $config['password'] = null;
             }
 
+            // if the read server list is defined,
+            // compile the dsn for that node.
+            if (isset($config['read'])) {
+                $readNodes = [];
+                // Cast the server list.
+                $serverAddresses = (array) $config['read'];
+                foreach ($serverAddresses as $serverAddress) {
+                    $c = $config;
+                    $c['host'] = $serverAddress;
+                    $c['dsn'] = DSN::create($c)->__toString();
+                    $readNodes[] = $c;
+                }
+                $config['read'] = $readNodes;
+            }
+            if (isset($config['write'])) {
+                $writeNodes = [];
+                // Cast the server list.
+                $serverAddresses = (array) $config['write'];
+                foreach ($serverAddresses as $serverAddress) {
+                    $c = $config;
+                    $c['host'] = $serverAddress;
+                    $c['dsn'] = DSN::create($c)->__toString();
+                    $writeNodes[] = $c;
+                }
+                $config['write'] = $writeNodes;
+            }
+
             // build dsn string for PDO
+            // if the DSN is not defined, compile the information into dsn if possible.
             if (!isset($config['dsn'])) {
                 // Build DSN connection string for PDO
-                $dsn = DSN::create($config);
-                $config['dsn'] = $dsn->__toString();
+                $config['dsn'] = DSN::create($config)->__toString();
             }
 
             if (!isset($config['query_options'])) {
