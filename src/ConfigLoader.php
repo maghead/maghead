@@ -175,9 +175,11 @@ class ConfigLoader
 
             // build dsn string for PDO
             // if the DSN is not defined, compile the information into dsn if possible.
-            if (!isset($config['dsn'])) {
-                // Build DSN connection string for PDO
-                $config['dsn'] = DSN::create($config)->__toString();
+            if (!isset($config['write']) && !isset($config['read'])) {
+                if (!isset($config['dsn'])) {
+                    // Build DSN connection string for PDO
+                    $config['dsn'] = DSN::create($config)->__toString();
+                }
             }
 
             if (!isset($config['query_options'])) {
