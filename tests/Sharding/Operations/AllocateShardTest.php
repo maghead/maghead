@@ -57,6 +57,9 @@ class AllocateShardTest extends StoreTestCase
         if (false === Utils::findBin('mysqldbcopy')) {
             return $this->markTestSkipped('mysql-utilities is not installed.');
         }
+
+        $this->expectOutputRegex('/Copying data/');
+
         $o = new CloneShard($this->config, $this->logger);
         $o->setDropFirst(true);
         $o->clone('local', 't2', 'node_master');
