@@ -129,16 +129,18 @@ class CloneShard
     {
         $param = $nodeConfig['user'];
 
-        $dsn = DSNParser::parse($nodeConfig['dsn']);
-        if ($host = $dsn->getHost()) {
-            $nodeConfig['host'] = $host;
-        }
-        if ($port = $dsn->getPort()) {
-            $nodeConfig['port'] = $port;
-        }
-
-        if ($socket = $dsn->getUnixSocket()) {
-            $nodeConfig['unix_socket'] = $socket;
+        // rebuild the node config if we have the dsn
+        if (isset($nodeConfig['dsn'])) {
+            $dsn = DSNParser::parse($nodeConfig['dsn']);
+            if ($host = $dsn->getHost()) {
+                $nodeConfig['host'] = $host;
+            }
+            if ($port = $dsn->getPort()) {
+                $nodeConfig['port'] = $port;
+            }
+            if ($socket = $dsn->getUnixSocket()) {
+                $nodeConfig['unix_socket'] = $socket;
+            }
         }
 
 
