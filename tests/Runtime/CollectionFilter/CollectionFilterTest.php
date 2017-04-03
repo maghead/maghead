@@ -1,7 +1,9 @@
 <?php
 use Maghead\CollectionFilter\CollectionFilter;
+use Maghead\Testing\ModelTestCase;
 use TestApp\Model\PostCollection;
 use TestApp\Model\Post;
+use TestApp\Model\PostSchema;
 
 function dumpExpr($expr, $level = 0)
 {
@@ -22,24 +24,24 @@ function dumpExpr($expr, $level = 0)
  *
  * @group collection
  */
-class CollectionFilterTest extends PHPUnit\Framework\TestCase
+class CollectionFilterTest extends ModelTestCase
 {
+
+
+    public function models()
+    {
+        return [new PostSchema];
+    }
+
     public function test()
     {
-        return;
-        /*
-        $post = new Post;
-        $ret = $post->create([
+        $ret = Post::create([
             'title' => 'title content',
             'content' => 'foo bar',
             'status' => 'published',
         ]);
-        ok($post->id, $ret);
-        */
         $posts = new PostCollection;
         $filter = new CollectionFilter($posts);
-        ok($filter);
-
         $filter->defineEqual('status', [ 'published', 'draft' ]);
         $filter->defineContains('content');
         $filter->defineRange('created_on', CollectionFilter::String);
@@ -51,9 +53,7 @@ class CollectionFilterTest extends PHPUnit\Framework\TestCase
             'created_on' => [ '2011-01-01', '2011-12-30' ],
             'created_by' => [1,2,3,4],
         ]);
-        ok($collection);
-
-        ok($collection->toSql());
+        // ok($collection->toSql());
         // echo $collection->toSql();
 
         /*

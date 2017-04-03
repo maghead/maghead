@@ -76,7 +76,8 @@ class MysqlTableParserTest extends BaseTestCase
         $this->updateSchemaFiles($schema);
         $this->buildSchemaTable($conn, $conn->getQueryDriver(), $schema);
         $parser = new MysqlTableParser($conn, $conn->getQueryDriver());
-        $parser->reverseTableSchema('authors');
+        $schema2 = $parser->reverseTableSchema('authors');
+        $this->assertInstanceOf('Maghead\\Schema\\DeclareSchema', $schema2);
     }
 
     public function testGetTables()
