@@ -77,6 +77,8 @@ class ComparatorTest extends \PHPUnit\Framework\TestCase
      */
     public function testPrinter($diffs)
     {
+        $this->expectOutputRegex("/removed|added/");
         $printer = new ConsolePrinter($diffs);
+        $printer->output();
     }
 }
