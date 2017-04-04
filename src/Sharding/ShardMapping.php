@@ -14,31 +14,28 @@ use Exception;
  */
 class ShardMapping
 {
-    protected $id;
+    public $id;
 
-    protected $key;
+    public $key;
 
-    protected $shardIds;
+    public $shardIds;
 
-    protected $chunks;
+    public $chunks;
 
-    protected $targets;
-
-    protected $extra;
+    public $extra;
 
     // Shard method
     const RANGE = 1;
 
     const HASH = 2;
 
-    public function __construct($id, $key, array $shardIds, array $chunks, array $targets, array $extra = [])
+    public function __construct($id, $key, array $shardIds, array $chunks, array $extra = [])
     {
-        $this->id = $id;
-        $this->key = $key;
+        $this->id       = $id;
+        $this->key      = $key;
         $this->shardIds = $shardIds;
-        $this->chunks = $chunks;
-        $this->targets = $targets;
-        $this->extra = $extra;
+        $this->chunks   = $chunks;
+        $this->extra    = $extra;
     }
 
     public function getKey()
@@ -71,6 +68,11 @@ class ShardMapping
         } elseif (isset($this->extra['range'])) {
             return self::RANGE;
         }
+    }
+
+    public function getChunk($chunkId)
+    {
+        return $this->chunks[$chunkId];
     }
 
     /**
@@ -123,14 +125,6 @@ class ShardMapping
         throw new Exception('hash / range is undefined.');
     }
 
-    public function resolveChunk($chunkId)
-    {
-        if (!isset($this->chunks[$chunkId])) {
-            throw new Exception("Chunk {$chunkId} is not defined.");
-        }
-        return $this->chunks[$chunkId];
-    }
-
     /**
      * Select shards by the given shard collection.
      *
@@ -139,10 +133,8 @@ class ShardMapping
     public function selectShards(array $availableShards)
     {
         // TODO: check shard method and use different selection method here
-        $targetIds = $this->getTargetIds();
         $shards = [];
-        foreach ($targetIds as $targetId => $chunkId) {
-            $chunk = $this->resolveChunk($chunkId);
+        foreach ($this->chunks as $chunkId => $chunk) {
             $shardId = $chunk['shard'];
 
             // Use shardId instead of chunkId
@@ -160,7 +152,6 @@ class ShardMapping
         $conf['key'] = $this->key;
         $conf['shards'] = $this->shardIds;
         $conf['chunks'] = $this->chunks;
-        $conf['targets'] = $this->targets;
         return $conf;
     }
 }

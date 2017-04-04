@@ -50,7 +50,7 @@ class ShardManager
         }
 
         $conf = $this->shardingConfig['mappings'][$mappingId];
-        return new ShardMapping($mappingId, $conf['key'], $conf['shards'], $conf['chunks'], $conf['hash'], $conf);
+        return new ShardMapping($mappingId, $conf['key'], $conf['shards'], $conf['chunks'], $conf);
     }
 
 

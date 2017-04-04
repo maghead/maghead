@@ -11,15 +11,11 @@ class FlexihashHasher implements Hasher
 
     protected $hash;
 
-    protected $hashBy;
-
     public function __construct(ShardMapping $mapping)
     {
         $this->mapping = $mapping;
-        $this->hashBy = $mapping->getHashBy();
-
         $this->hash = new Flexihash;
-        $this->hash->addTargets(array_keys($this->hashBy));
+        $this->hash->addTargets(array_keys($mapping->chunks));
     }
 
     /**
@@ -29,7 +25,6 @@ class FlexihashHasher implements Hasher
      */
     public function hash($key)
     {
-        $target = $this->hash->lookup($key);
-        return $this->hashBy[$target];
+        return $this->hash->lookup($key);
     }
 }
