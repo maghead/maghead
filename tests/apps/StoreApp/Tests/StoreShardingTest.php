@@ -17,11 +17,9 @@ class StoreShardingTest extends ModelTestCase
 {
     protected $defaultDataSource = 'node_master';
 
-    protected $requiredDataSources = ['node_master','node1', 'node2'];
+    protected $requiredDataSources = ['node_master','node1', 'node2', 'node3'];
 
-    protected $driverOnly = 'sqlite';
-
-    protected $freeConnections = false;
+    protected $driverOnly = 'mysql';
 
     public function models()
     {
@@ -33,7 +31,8 @@ class StoreShardingTest extends ModelTestCase
 
     protected function config()
     {
-        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml", true);
+        // return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml", true);
+        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_mysql.yml", true);
     }
 
     public function orderDataProvider()

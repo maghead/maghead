@@ -42,12 +42,9 @@ data_source:
       user: root
       password: null
       database: testing
+      host: localhost
       query_options: { }
       connection_options: { 1002: 'SET NAMES utf8' }
-      read:
-      - localhost
-      write:
-      - localhost
     node1:
       driver: mysql
       host: localhost
