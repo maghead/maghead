@@ -61,6 +61,7 @@ class AllocateShard
         // Update DSN with the new dbname (works for mysql and pgsql)
         $dsn = DSNParser::parse($nodeConfig['dsn']);
         $dsn->setAttribute('dbname', $dbName);
+        $nodeConfig['database'] = $dbName;
         $nodeConfig['dsn'] = $dsn->__toString();
         $this->config->addDataSource($newNodeId, $nodeConfig);
 

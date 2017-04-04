@@ -198,6 +198,12 @@ To clone a shard in PHP code:
 
 The above code creates a new node `t2` and copy the data from `node_master`.
 
+### Moving Shard
+
+Move a shard to an instance:
+
+    maghead shard move --instance [instanceId] nodeId
+
 ### Pruning Shard
 
 Prune all rows that doesn't belong to the shard.
