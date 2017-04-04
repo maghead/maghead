@@ -15,12 +15,15 @@ class PthreadQueryWorker extends Worker
 
     protected $connectOptions;
 
-    public function __construct(string $dsn, $username = null, $password = null, array $connectOptions = [])
+    public function __construct(string $dsn, $username = null, $password = null, $connectOptions = [])
     {
         $this->dsn = $dsn;
         $this->username = $username;
         $this->password = $password;
-        $this->connectOptions = $connectOptions;
+
+        // When in pthread environment, the Array comes from outside will be
+        // Volitle object, we need to cast the object into array.
+        $this->connectOptions = (array) $connectOptions;
     }
 
     public function connect()

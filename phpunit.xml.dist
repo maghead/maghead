@@ -50,8 +50,17 @@
       <exclude suffix="Test.php">tests/Commands</exclude>
     </testsuite>
 
+
     <testsuite name="Model">
       <directory suffix="Test.php">tests/ModelTest</directory>
+    </testsuite>
+
+    <testsuite name="Sharding">
+      <directory suffix="Test.php">tests/Sharding</directory>
+    </testsuite>
+
+    <testsuite name="Runtime">
+      <directory suffix="Test.php">tests/Runtime</directory>
     </testsuite>
 
     <testsuite name="PageApp">
