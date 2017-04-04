@@ -19,8 +19,6 @@ class AllocateShardTest extends StoreTestCase
 
     protected $onlyDriver = 'mysql';
 
-    protected $freeConnections = false;
-
     public function models()
     {
         return [
