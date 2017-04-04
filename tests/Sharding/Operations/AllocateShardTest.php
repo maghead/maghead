@@ -26,26 +26,4 @@ class AllocateShardTest extends StoreTestCase
         $o = new RemoveShard($this->config, $this->logger);
         $o->remove('t1');
     }
-
-    public function testPruneShard()
-    {
-        $o = new AllocateShard($this->config, $this->logger);
-        $o->allocate('local', 's4', 'M_store_id');
-
-        // TODO: insert store and order data
-        foreach ($this->storeDataProvider() as $args) {
-            call_user_func_array([$this,'assertInsertStores'], $args);
-        }
-
-        foreach ($this->orderDataProvider() as $args) {
-            call_user_func_array([$this,'assertInsertOrders'], $args);
-        }
-
-        // Run prune
-        // $o = new PruneShard($this->config, $this->logger);
-        // $o->prune('t1', 'M_store_id');
-
-        $o = new RemoveShard($this->config, $this->logger);
-        $o->remove('s4');
-    }
 }
