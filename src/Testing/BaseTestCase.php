@@ -85,7 +85,6 @@ abstract class BaseTestCase extends TestCase
         $this->dataSourceManager = DataSourceManager::getInstance();
         $this->logger = new Logger();
         $this->logger->setQuiet();
-        $this->config = $this->config();
     }
 
     protected function getMasterDataSourceId()

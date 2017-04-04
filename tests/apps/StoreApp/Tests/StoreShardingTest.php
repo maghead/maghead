@@ -19,7 +19,7 @@ class StoreShardingTest extends ModelTestCase
 
     protected $requiredDataSources = ['node_master','node1', 'node2', 'node3'];
 
-    protected $onlyDriver = 'mysql';
+    protected $skipDriver = 'pgsql';
 
     public function models()
     {
@@ -31,42 +31,62 @@ class StoreShardingTest extends ModelTestCase
 
     protected function config()
     {
+        $driver = $this->getCurrentDriverType();
         // return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml", true);
-        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_mysql.yml", true);
+        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_{$driver}.yml", true);
     }
+
+    public static $stores = [
+        [ 'code' => 'TW001', 'name' => '天仁茗茶 01' ],
+        [ 'code' => 'TW002', 'name' => '天仁茗茶 02' ],
+        [ 'code' => 'TW003', 'name' => '天仁茗茶 03' ],
+    ];
+
+    public static $orders = [
+        'TW001' => [
+            [ 'amount' => 100, 'paid' => false ],
+            [ 'amount' => 100, 'paid' => false ],
+            [ 'amount' => 100, 'paid' => false ],
+            [ 'amount' => 100, 'paid' => false ],
+        ],
+        'TW002' => [
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+        ],
+        'TW003' => [
+            [ 'amount' => 1000, 'paid' => false ],
+            [ 'amount' => 1000, 'paid' => false ],
+            [ 'amount' => 1000, 'paid' => false ],
+            [ 'amount' => 1000, 'paid' => false ],
+        ]
+    ];
 
     public function orderDataProvider()
     {
-        $orders = [];
-        $orders['TW001'] = [
-            [ 'amount' => 100, 'paid' => false ],
-            [ 'amount' => 100, 'paid' => false ],
-            [ 'amount' => 100, 'paid' => false ],
-            [ 'amount' => 100, 'paid' => false ],
-        ];
-        $orders['TW002'] = [
-            [ 'amount' => 10, 'paid' => false ],
-            [ 'amount' => 10, 'paid' => false ],
-            [ 'amount' => 10, 'paid' => false ],
-            [ 'amount' => 10, 'paid' => false ],
-        ];
-        $orders['TW003'] = [
-            [ 'amount' => 1000, 'paid' => false ],
-            [ 'amount' => 1000, 'paid' => false ],
-            [ 'amount' => 1000, 'paid' => false ],
-            [ 'amount' => 1000, 'paid' => false ],
-        ];
-        return [[$orders]];
+        return [[static::$orders]];
     }
 
     public function storeDataProvider()
     {
-        $stores = [];
-        $stores[] = [ 'code' => 'TW001', 'name' => '天仁茗茶 01' ];
-        $stores[] = [ 'code' => 'TW002', 'name' => '天仁茗茶 02' ];
-        $stores[] = [ 'code' => 'TW003', 'name' => '天仁茗茶 03' ];
-        return [[$stores]];
+        return [[static::$stores]];
     }
+
+
+    public function assertCreateStore($args)
+    {
+        $ret = Store::create($args);
+        $this->assertResultSuccess($ret);
+    }
+
+    public function assertCreateOrder($args)
+    {
+        $ret = Order::create($args); // should dispatch the shards by the store_id
+        $this->assertResultSuccess($ret);
+        $this->assertNotNull($ret->shard);
+    }
+
 
 
     /**
@@ -90,25 +110,14 @@ class StoreShardingTest extends ModelTestCase
     }
 
     /**
-     * @depends testStoreGlobalCRUD
-     * @dataProvider storeDataProvider
-     */
-    public function testStoreGlobalCreate($storeArgs)
-    {
-        foreach ($storeArgs as $args) {
-            $ret = Store::create($args);
-            $this->assertResultSuccess($ret);
-        }
-    }
-
-
-    /**
-     * @rebuild false
-     * @depends testStoreGlobalCreate
      * @dataProvider orderDataProvider
      */
     public function testOrderCRUDInShards($orderArgsList)
     {
+        foreach (static::$stores as $args) {
+            $this->assertCreateStore($args);
+        }
+
         $orders = [];
         foreach ($orderArgsList as $storeCode => $storeOrderArgsList) {
             $store = Store::masterRepo()->findByCode($storeCode);
@@ -127,12 +136,11 @@ class StoreShardingTest extends ModelTestCase
         return $orders;
     }
 
-    /**
-     * @rebuild false
-     * @depends testStoreGlobalCreate
-     */
     public function testShardQueryUUID()
     {
+        foreach (static::$stores as $args) {
+            $this->assertCreateStore($args);
+        }
         $store = Store::masterRepo()->findByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
         $shard = Order::shards()->dispatch($store->id);
@@ -141,12 +149,12 @@ class StoreShardingTest extends ModelTestCase
         $this->assertNotNull($uuid);
     }
 
-    /**
-     * @rebuild false
-     * @depends testStoreGlobalCreate
-     */
     public function testOrderUUIDDeflator()
     {
+        foreach (static::$stores as $args) {
+            $this->assertCreateStore($args);
+        }
+
         $store = Store::masterRepo()->findByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
         $repo = Order::shards()->dispatch($store->id)->repo(OrderRepo::class);
@@ -160,12 +168,12 @@ class StoreShardingTest extends ModelTestCase
         $this->assertInstanceOf('Ramsey\Uuid\Uuid', $order->getUuid(), 'returned uuid should be an UUID object.');
     }
 
-    /**
-     * @rebuild false
-     * @depends testStoreGlobalCreate
-     */
     public function testInsertOrder()
     {
+        foreach (static::$stores as $args) {
+            $this->assertCreateStore($args);
+        }
+
         $store = Store::masterRepo()->findByCode('TW002');
         $this->assertNotFalse($store, 'load store by code');
 
