@@ -13,19 +13,7 @@ use Maghead\Utils;
  */
 class AllocateShardTest extends StoreTestCase
 {
-    protected $defaultDataSource = 'node_master';
-
-    protected $requiredDataSources = ['node_master', 'node1', 'node2', 'node3'];
-
     protected $onlyDriver = 'mysql';
-
-    public function models()
-    {
-        return [
-            new StoreSchema,
-            new OrderSchema,
-        ];
-    }
 
     /**
      * @rebuild false
@@ -37,27 +25,6 @@ class AllocateShardTest extends StoreTestCase
 
         $o = new RemoveShard($this->config, $this->logger);
         $o->remove('t1');
-    }
-
-
-    /**
-     * @depends testAllocateShard
-     * @rebuild false
-     */
-    public function testCloneShard()
-    {
-        if (false === Utils::findBin('mysqldbcopy')) {
-            return $this->markTestSkipped('mysql-utilities is not installed.');
-        }
-
-        $this->expectOutputRegex('/Copying data/');
-
-        $o = new CloneShard($this->config, $this->logger);
-        $o->setDropFirst(true);
-        $o->clone('local', 't2', 'node_master');
-
-        $o = new RemoveShard($this->config, $this->logger);
-        $o->remove('t2');
     }
 
     public function testPruneShard()
