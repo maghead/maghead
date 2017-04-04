@@ -195,14 +195,14 @@ class ConfigLoader
             $readNodes = [];
             // Cast the server list.
             foreach ($readServers as $serverAddress) {
-                $c = $config;
+                $c = array_merge($config, []);
                 $c['host'] = $serverAddress;
                 $readNodes[] = DSN::updateDSN($c);
             }
 
             $writeNodes = [];
             foreach ($writeServers as $serverAddress) {
-                $c = $config;
+                $c = array_merge($config, []);
                 $c['host'] = $serverAddress;
                 $writeNodes[] = DSN::updateDSN($c);
             }
