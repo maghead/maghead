@@ -582,10 +582,6 @@ abstract class BaseModel implements Serializable
     public function dbQuery($dsId, $sql)
     {
         $conn = static::$dataSourceManager->getConnection($dsId);
-        if (!$conn) {
-            throw new Exception("data source $dsId is not defined.");
-        }
-
         return $conn->query($sql);
     }
 

@@ -42,12 +42,45 @@ class DataSourceManager extends ConnectionManager
     /**
      * @override
      */
+    public function connectRead($nodeId)
+    {
+        if ($nodeId === self::DEFAULT_MASTER_NODE_ID) {
+            $nodeId = $this->masterNodeId;
+        }
+        return parent::connectRead($nodeId);
+    }
+
+    /**
+     * @override
+     */
     public function getConnection($nodeId)
     {
         if ($nodeId === self::DEFAULT_MASTER_NODE_ID) {
             $nodeId = $this->masterNodeId;
         }
         return parent::getConnection($nodeId);
+    }
+
+    /**
+     * @override
+     */
+    public function getReadConnection($nodeId)
+    {
+        if ($nodeId === self::DEFAULT_MASTER_NODE_ID) {
+            $nodeId = $this->masterNodeId;
+        }
+        return parent::getReadConnection($nodeId);
+    }
+
+    /**
+     * @override
+     */
+    public function getWriteConnection($nodeId)
+    {
+        if ($nodeId === self::DEFAULT_MASTER_NODE_ID) {
+            $nodeId = $this->masterNodeId;
+        }
+        return parent::getWriteConnection($nodeId);
     }
 
     /**

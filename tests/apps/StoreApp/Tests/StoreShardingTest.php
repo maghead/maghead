@@ -32,7 +32,6 @@ class StoreShardingTest extends ModelTestCase
     protected function config()
     {
         $driver = $this->getCurrentDriverType();
-        // return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml", true);
         return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_{$driver}.yml", true);
     }
 

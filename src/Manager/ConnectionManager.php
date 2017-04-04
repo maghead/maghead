@@ -25,6 +25,11 @@ class ConnectionManager implements ArrayAccess
      */
     protected $conns = [];
 
+    /**
+     * @var PDOConnection[] contains PDO connection object for read only purpose.
+     */
+    protected $reads = [];
+
     public function __construct(array $nodeConfigurations = [])
     {
         $this->nodeConfigurations = $nodeConfigurations;
@@ -163,6 +168,23 @@ class ConnectionManager implements ArrayAccess
         return $this->conns[$nodeId] = $this->connect($nodeId);
     }
 
+
+    public function getReadConnection($nodeId)
+    {
+        if (isset($this->reads[$nodeId])) {
+            return $this->reads[$nodeId];
+        }
+        return $this->reads[$nodeId] = $this->connectRead($nodeId);
+    }
+
+    public function getWriteConnection($nodeId)
+    {
+        if (isset($this->conns[$nodeId])) {
+            return $this->conns[$nodeId];
+        }
+        return $this->conns[$nodeId] = $this->connectWrite($nodeId);
+    }
+
     /**
      * Connection to the instance without the dbname in the dsn string
      *
@@ -178,6 +200,36 @@ class ConnectionManager implements ArrayAccess
         return PDOConnector::connect($config);
     }
 
+    public function connectRead($nodeId)
+    {
+        if (!isset($this->nodeConfigurations[$nodeId])) {
+            $nodeIds = join(', ', array_keys($this->nodeConfigurations)) ?: '{none}';
+            throw new InvalidArgumentException("data source {$nodeId} not found, valid nodes are {$nodeIds}");
+        }
+        $config = $this->nodeConfigurations[$nodeId];
+        if (isset($config['read'])) {
+            // Implement a load balancer
+            $idx = array_rand($config['read']);
+            return PDOConnector::connect($config['read'][$idx]);
+        }
+        return PDOConnector::connect($config);
+    }
+
+    public function connectWrite($nodeId)
+    {
+        if (!isset($this->nodeConfigurations[$nodeId])) {
+            $nodeIds = join(', ', array_keys($this->nodeConfigurations)) ?: '{none}';
+            throw new InvalidArgumentException("data source {$nodeId} not found, valid nodes are {$nodeIds}");
+        }
+        $config = $this->nodeConfigurations[$nodeId];
+        if (isset($config['write'])) {
+            // Implement a load balancer
+            $idx = array_rand($config['write']);
+            return PDOConnector::connect($config['write'][$idx]);
+        }
+        return PDOConnector::connect($config);
+    }
+
     public function connect($nodeId)
     {
         if (!isset($this->nodeConfigurations[$nodeId])) {
@@ -185,6 +237,10 @@ class ConnectionManager implements ArrayAccess
             throw new InvalidArgumentException("data source {$nodeId} not found, valid nodes are {$nodeIds}");
         }
         $config = $this->nodeConfigurations[$nodeId];
+        if (isset($config['write'])) {
+            $idx = array_rand($config['write']);
+            return PDOConnector::connect($config['write'][$idx]);
+        }
         return PDOConnector::connect($config);
     }
 
