@@ -169,7 +169,7 @@ class DSN implements ArrayAccess
     public static function createForWrite(array $config)
     {
         // extend from the read server
-        if ($config['write']) {
+        if (isset($config['write'])) {
             $idx = array_rand($config['write']);
             $read = $config['write'][$idx];
             $c = array_merge($config, $read);
@@ -186,7 +186,7 @@ class DSN implements ArrayAccess
     public static function createForRead(array $config)
     {
         // extend from the read server
-        if ($config['read']) {
+        if (isset($config['read'])) {
             $idx = array_rand($config['read']);
             $read = $config['read'][$idx];
             $c = array_merge($config, $read);

@@ -5,6 +5,18 @@ use PHPUnit\Framework\TestCase;
 class ConfigLoaderTest extends TestCase
 {
 
+    public function testNodeConfigNormalization()
+    {
+        $c = ConfigLoader::normalizeNodeConfig([
+            'dsn' => 'mysql:host=localhost;dbname=testing',
+            'user' => 'root',
+        ]);
+        $this->assertArrayHasKey('host', $c);
+        $this->assertArrayHasKey('user', $c);
+        $this->assertArrayHasKey('database', $c);
+    }
+
+
     public function testDsnStringArePreCompiled()
     {
         $config = ConfigLoader::loadFromFile('tests/apps/StoreApp/config_mysql.yml');
@@ -18,6 +30,7 @@ class ConfigLoaderTest extends TestCase
 
     protected function assertNodeConfig(array $nodeConfig)
     {
+        $this->assertNotNull($nodeConfig['driver']);
         if (isset($nodeConfig['read'])) {
             foreach ($nodeConfig['read'] as $r) {
                 $this->assertArrayHasKey('dsn', $r, 'should have read config dsn');

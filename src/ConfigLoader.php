@@ -6,6 +6,7 @@ use ConfigKit\ConfigCompiler;
 use Exception;
 use PDO;
 use Maghead\DSN\DSN;
+use Maghead\DSN\DSNParser;
 use Symfony\Component\Yaml\Yaml;
 use Maghead\Schema\SchemaFinder;
 
@@ -100,11 +101,11 @@ class ConfigLoader
     public static function preprocessConfig(array $config)
     {
         if (isset($config['data_source']['nodes'])) {
-            $config['data_source']['nodes'] = self::preprocessNodeConfigArray($config['data_source']['nodes']);
+            $config['data_source']['nodes'] = self::normalizeNodeConfigArray($config['data_source']['nodes']);
         }
 
         if (isset($config['instance'])) {
-            $config['instance'] = self::preprocessNodeConfigArray($config['instance']);
+            $config['instance'] = self::normalizeNodeConfigArray($config['instance']);
         }
 
         return $config;
@@ -117,17 +118,30 @@ class ConfigLoader
         return $nodeConfig;
     }
 
-    private static function preprocessNodeConfig(array $config)
+    public static function normalizeNodeConfig(array $config)
     {
-        $dsn = isset($config['dsn'])
-            ? DSN::create($config)
-            : null;
-
-        // rewrite config
-        if (!isset($config['driver']) && $dsn) {
-            $config['driver'] = $dsn->getDriver();
+        // if DSN is defined, then we use the DSN to update the node config
+        $dsn = null;
+        if (isset($config['dsn'])) {
+            $dsn = DSNParser::parse($config['dsn']);
+            if (!isset($config['driver'])) {
+                $config['driver'] = $dsn->getDriver();
+            }
+            if ($host = $dsn->getHost()) {
+                $config['host'] = $host;
+            }
+            if ($port = $dsn->getPort()) {
+                $config['port'] = $port;
+            }
+            if ($socket = $dsn->getUnixSocket()) {
+                $config['unix_socket'] = $socket;
+            }
+            if ($db = $dsn->getDatabaseName()) {
+                $config['database'] = $db;
+            }
         }
 
+        // rewrite config
         // compatible keys for username and password
         if (isset($config['username']) && $config['username']) {
             $config['user'] = $config['username'];
@@ -173,14 +187,6 @@ class ConfigLoader
             $config['write'] = $writeNodes;
         }
 
-        // build dsn string for PDO
-        // if the DSN is not defined, compile the information into dsn if possible.
-        if (!isset($config['write']) && !isset($config['read'])) {
-            if (!isset($config['dsn'])) {
-                // Build DSN connection string for PDO
-                $config['dsn'] = DSN::create($config)->__toString();
-            }
-        }
 
         if (!isset($config['query_options'])) {
             $config['query_options'] = [];
@@ -203,6 +209,13 @@ class ConfigLoader
             $config['connection_options'][ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
         }
 
+        // build dsn string for PDO
+        // if the DSN is not defined, compile the information into dsn if possible.
+        if (!isset($config['write']) && !isset($config['read'])) {
+            if (!isset($config['dsn'])) {
+                $config = self::updateDSN($config);
+            }
+        }
         return $config;
     }
 
@@ -211,11 +224,11 @@ class ConfigLoader
      *
      * @param array PHP array from yaml config file
      */
-    private static function preprocessNodeConfigArray(array $dbconfig)
+    public static function normalizeNodeConfigArray(array $dbconfig)
     {
         $newconfig = [];
         foreach ($dbconfig as $nodeId => $config) {
-            $newconfig[$nodeId] = self::preprocessNodeConfig($config);
+            $newconfig[$nodeId] = self::normalizeNodeConfig($config);
         }
         return $newconfig;
     }
