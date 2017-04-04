@@ -19,6 +19,8 @@ class StoreShardingTest extends ModelTestCase
 
     protected $requiredDataSources = ['node_master','node1', 'node2'];
 
+    protected $driverOnly = 'sqlite';
+
     protected $freeConnections = false;
 
     public function models()
