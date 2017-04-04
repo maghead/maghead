@@ -162,39 +162,6 @@ class DSN implements ArrayAccess
         return $parts[0];
     }
 
-    /**
-     * Create a DSN object for write purpose.
-     *
-     * @return Maghead\DSN\DSN the created DSN object.
-     */
-    public static function createForWrite(array $config)
-    {
-        // extend from the read server
-        if (isset($config['write'])) {
-            $idx = array_rand($config['write']);
-            $read = $config['write'][$idx];
-            $c = array_merge($config, $read);
-            return static::create($c);
-        }
-        return static::create($config);
-    }
-
-    /**
-     * Create a DSN object for read purpose.
-     *
-     * @return Maghead\DSN\DSN the created DSN object.
-     */
-    public static function createForRead(array $config)
-    {
-        // extend from the read server
-        if (isset($config['read'])) {
-            $idx = array_rand($config['read']);
-            $read = $config['read'][$idx];
-            $c = array_merge($config, $read);
-            return static::create($c);
-        }
-        return static::create($config);
-    }
 
     /**
      * Convert a node config into a DSN object.

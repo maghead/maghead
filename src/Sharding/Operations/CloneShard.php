@@ -151,16 +151,8 @@ class CloneShard
     {
         // rebuild the node config if we have the dsn
         if (isset($nodeConfig['write'])) {
-            $dsn = DSN::createForWrite($nodeConfig);
-            if ($host = $dsn->getHost()) {
-                $nodeConfig['host'] = $host;
-            }
-            if ($port = $dsn->getPort()) {
-                $nodeConfig['port'] = $port;
-            }
-            if ($socket = $dsn->getUnixSocket()) {
-                $nodeConfig['unix_socket'] = $socket;
-            }
+            $idx = array_rand($nodeConfig['write']);
+            return $this->buildParam($nodeConfig['write'][$idx]);
         }
         return $this->buildParam($nodeConfig);
     }
@@ -169,16 +161,8 @@ class CloneShard
     {
         // rebuild the node config if we have the dsn
         if (isset($nodeConfig['read'])) {
-            $dsn = DSN::createForRead($nodeConfig);
-            if ($host = $dsn->getHost()) {
-                $nodeConfig['host'] = $host;
-            }
-            if ($port = $dsn->getPort()) {
-                $nodeConfig['port'] = $port;
-            }
-            if ($socket = $dsn->getUnixSocket()) {
-                $nodeConfig['unix_socket'] = $socket;
-            }
+            $idx = array_rand($nodeConfig['read']);
+            return $this->buildParam($nodeConfig['read'][$idx]);
         }
         return $this->buildParam($nodeConfig);
     }
