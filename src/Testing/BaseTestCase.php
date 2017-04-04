@@ -177,7 +177,7 @@ abstract class BaseTestCase extends TestCase
             $conn = $this->dataSourceManager->getWriteConnection($connId);
 
             if ($this->getCurrentDriverType() === 'sqlite') {
-                $this->dataSourceManager->sync($connId);
+                $this->dataSourceManager->shareWrite($connId); // this is for sqlite:memory
             }
 
             return $conn;

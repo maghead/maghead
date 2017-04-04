@@ -71,7 +71,7 @@ class ConnectionManager implements ArrayAccess
      *
      * @param string $nodeId
      */
-    public function sync($nodeId)
+    public function shareWrite($nodeId)
     {
         if (isset($this->conns[$nodeId])) {
             // copy write connection to read connection
