@@ -136,7 +136,7 @@ class ConfigLoader
             if ($socket = $dsn->getUnixSocket()) {
                 $config['unix_socket'] = $socket;
             }
-            if ($db = $dsn->getDatabaseName()) {
+            if ($db = $dsn->getDBName()) {
                 $config['database'] = $db;
             }
         }
@@ -164,28 +164,6 @@ class ConfigLoader
             $config['password'] = null;
         }
 
-        // if the read server list is defined,
-        // compile the dsn for that node.
-        if (isset($config['read'])) {
-            $readNodes = [];
-            // Cast the server list.
-            $serverAddresses = (array) $config['read'];
-            foreach ($serverAddresses as $serverAddress) {
-                $c = array_merge($config, ['host' => $serverAddress]);
-                $readNodes[] = self::updateDSN($c);
-            }
-            $config['read'] = $readNodes;
-        }
-        if (isset($config['write'])) {
-            $writeNodes = [];
-            // Cast the server list.
-            $serverAddresses = (array) $config['write'];
-            foreach ($serverAddresses as $serverAddress) {
-                $c = array_merge($config, [ 'host' => $serverAddress ]);
-                $writeNodes[] = self::updateDSN($c);
-            }
-            $config['write'] = $writeNodes;
-        }
 
 
         if (!isset($config['query_options'])) {
@@ -207,6 +185,34 @@ class ConfigLoader
         $config['connection_options'] = $opts; // new connect options
         if ('mysql' === $config['driver']) {
             $config['connection_options'][ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
+        }
+
+
+        // Expand read/write node config
+        // compile the dsn for that node.
+        if (isset($config['read']) && isset($config['write'])) {
+            $readServers = (array) $config['read'];
+            $writeServers = (array) $config['write'];
+
+            unset($config['read']);
+            unset($config['write']);
+
+            $readNodes = [];
+            // Cast the server list.
+            foreach ($readServers as $serverAddress) {
+                $c = array_merge($config, ['host' => $serverAddress]);
+                $readNodes[] = self::updateDSN($c);
+            }
+
+
+            $writeNodes = [];
+            foreach ($writeServers as $serverAddress) {
+                $c = array_merge($config, [ 'host' => $serverAddress ]);
+                $writeNodes[] = self::updateDSN($c);
+            }
+
+            $config['read'] = $readNodes;
+            $config['write'] = $writeNodes;
         }
 
         // build dsn string for PDO

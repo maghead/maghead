@@ -29,6 +29,11 @@
 - [ ] Prune Shard
 - [ ] Split Shard
 
+## Instance Management Commands
+
+- [ ] instance add
+- [ ] instance remove
+
 ## Storage Optimization
 
 - [ ] Paritions per shard

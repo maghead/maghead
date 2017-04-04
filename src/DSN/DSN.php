@@ -3,6 +3,7 @@
 namespace Maghead\DSN;
 
 use ArrayAccess;
+use Exception;
 
 /**
  * Data object for DSN information.

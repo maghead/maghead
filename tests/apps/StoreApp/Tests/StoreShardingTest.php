@@ -31,7 +31,7 @@ class StoreShardingTest extends ModelTestCase
 
     protected function config()
     {
-        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml");
+        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml", true);
     }
 
     public function orderDataProvider()

@@ -94,10 +94,10 @@ class CloneShard
 
         $args = [Utils::findBin('mysqldbcopy')];
         $args[] = '--source';
-        $args[] = $this->buildParam($srcNode);
+        $args[] = $this->buildSourceParam($srcNode);
 
         $args[] = '--destination';
-        $args[] = $this->buildParam($newNodeConfig);
+        $args[] = $this->buildDestParam($newNodeConfig);
 
         if ($this->dropFirst) {
             $args[] = '--drop-first';
@@ -107,6 +107,8 @@ class CloneShard
         $command = implode(' ', $args);
 
         $this->logger->debug("Performing: $command");
+
+        var_dump($command);
 
         // $lastLine = exec($command, $output, $retval);
         $lastLine = system($command, $retval);
@@ -127,11 +129,28 @@ class CloneShard
 
     protected function buildParam(array $nodeConfig)
     {
+        // var_dump($nodeConfig);
         $param = $nodeConfig['user'];
+        if (isset($nodeConfig['password'])) {
+            $param .= ":" . $nodeConfig['portword'];
+        }
+        if (isset($nodeConfig['host'])) {
+            $param .= "@" . $nodeConfig['host'];
+        }
+        if (isset($nodeConfig['port'])) {
+            $param .= ":" . $nodeConfig['port'];
+        }
+        if (isset($nodeConfig['unix_socket'])) {
+            $param .= ":" . $nodeConfig['unix_socket'];
+        }
+        return $param;
+    }
 
+    protected function buildDestParam(array $nodeConfig)
+    {
         // rebuild the node config if we have the dsn
         if (isset($nodeConfig['dsn'])) {
-            $dsn = DSNParser::parse($nodeConfig['dsn']);
+            $dsn = DSN::createForWrite($nodeConfig);
             if ($host = $dsn->getHost()) {
                 $nodeConfig['host'] = $host;
             }
@@ -142,21 +161,26 @@ class CloneShard
                 $nodeConfig['unix_socket'] = $socket;
             }
         }
+        return $this->buildParam($nodeConfig);
+    }
 
+    protected function buildSourceParam(array $nodeConfig)
+    {
 
-        if (isset($nodeConfig['password'])) {
-            $param .= ":" . $nodeConfig['portword'];
+        // rebuild the node config if we have the dsn
+        if (isset($nodeConfig['dsn'])) {
+            $dsn = DSN::createForRead($nodeConfig);
+            if ($host = $dsn->getHost()) {
+                $nodeConfig['host'] = $host;
+            }
+            if ($port = $dsn->getPort()) {
+                $nodeConfig['port'] = $port;
+            }
+            if ($socket = $dsn->getUnixSocket()) {
+                $nodeConfig['unix_socket'] = $socket;
+            }
         }
-        if (isset($nodeConfig['host'])) {
-            $param .= "@" . $nodeConfig['host'];
-        }
-
-        if (isset($nodeConfig['port'])) {
-            $param .= ":" . $nodeConfig['port'];
-        }
-        if (isset($nodeConfig['unix_socket'])) {
-            $param .= ":" . $nodeConfig['unix_socket'];
-        }
-        return $param;
+        var_dump( $nodeConfig );
+        return $this->buildParam($nodeConfig);
     }
 }

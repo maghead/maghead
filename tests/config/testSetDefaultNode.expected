@@ -16,6 +16,8 @@ data_source:
       dsn: 'mysql:host=localhost;dbname=testing'
       user: root
       driver: mysql
+      host: localhost
+      database: testing
       password: null
       query_options: {  }
       connection_options: { 1002: 'SET NAMES utf8' }
@@ -23,6 +25,8 @@ data_source:
       dsn: 'pgsql:host=localhost;dbname=testing'
       user: postgres
       driver: pgsql
+      host: localhost
+      database: testing
       password: null
       query_options: {  }
       connection_options: {  }

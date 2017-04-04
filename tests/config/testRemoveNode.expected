@@ -9,6 +9,8 @@ data_source:
       dsn: 'pgsql:host=localhost;dbname=testing'
       user: postgres
       driver: pgsql
+      host: localhost
+      database: testing
       password: null
       query_options: {  }
       connection_options: {  }

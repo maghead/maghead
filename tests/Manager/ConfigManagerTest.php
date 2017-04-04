@@ -25,11 +25,13 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
 
     public function testSetDefaultNode()
     {
-        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG);
+        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG, true);
         $manager = new ConfigManager($config);
         $manager->setMasterNode('mysql');
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
+
+        // copy(self::TEST_CONFIG, 'tests/config/testSetDefaultNode.expected');
         $this->assertFileEquals('tests/config/testSetDefaultNode.expected', self::TEST_CONFIG);
     }
 
@@ -49,6 +51,8 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
         $manager->removeNode('mysql');
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
+
+        // copy(self::TEST_CONFIG, 'tests/config/testRemoveNode.expected');
         $this->assertFileEquals('tests/config/testRemoveNode.expected', self::TEST_CONFIG);
     }
 
@@ -63,17 +67,21 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
         ]);
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
+
+        // copy(self::TEST_CONFIG, 'tests/config/testAddNodeWithOptions.expected');
         $this->assertFileEquals('tests/config/testAddNodeWithOptions.expected', self::TEST_CONFIG);
     }
 
     public function testAddNodeWithoutOptions()
     {
-        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG);
+        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG, true);
         $manager = new ConfigManager($config);
         $manager->addNode('shard1', 'mysql:host=localhost;dbname=shard1');
         $manager->addNode('shard2', 'mysql:host=localhost;dbname=shard2');
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
+
+        // copy(self::TEST_CONFIG, 'tests/config/testAddNodeWithoutOptions.expected');
         $this->assertFileEquals('tests/config/testAddNodeWithoutOptions.expected', self::TEST_CONFIG);
     }
 }
