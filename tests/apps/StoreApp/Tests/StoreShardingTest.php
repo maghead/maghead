@@ -19,7 +19,7 @@ class StoreShardingTest extends ModelTestCase
 
     protected $requiredDataSources = ['node_master','node1', 'node2', 'node3'];
 
-    protected $driverOnly = 'mysql';
+    protected $onlyDriver = 'mysql';
 
     public function models()
     {
