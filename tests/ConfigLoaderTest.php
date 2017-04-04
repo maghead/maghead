@@ -19,7 +19,7 @@ class ConfigLoaderTest extends TestCase
 
     public function testDsnStringArePreCompiled()
     {
-        $config = ConfigLoader::loadFromFile('tests/apps/StoreApp/config_mysql.yml', true);
+        $config = ConfigLoader::loadFromFile('tests/apps/StoreApp/config/mysql.yml', true);
         $this->assertNotNull($config);
         $nodes = $config['data_source']['nodes'];
         $this->assertNotEmpty($nodes);

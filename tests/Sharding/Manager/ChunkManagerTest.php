@@ -42,7 +42,7 @@ class ChunkManagerTest extends StoreTestCase
 
     protected function config()
     {
-        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_memory.yml");
+        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config/sqlite_memory.yml");
         // return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml");
     }
 }

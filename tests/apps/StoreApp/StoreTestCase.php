@@ -56,7 +56,7 @@ abstract class StoreTestCase extends ModelTestCase
     protected function config()
     {
         $driver = $this->getCurrentDriverType();
-        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_{$driver}.yml", true);
+        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config/{$driver}.yml", true);
     }
 
     public function orderDataProvider()
@@ -81,7 +81,6 @@ abstract class StoreTestCase extends ModelTestCase
         $this->assertResultSuccess($ret);
         $this->assertNotNull($ret->shard);
     }
-
 
     public function assertInsertStores(array $storeArgs)
     {

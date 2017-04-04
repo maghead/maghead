@@ -4,50 +4,55 @@ cli:
 schema:
   auto_id: true
   base_model: \Maghead\Runtime\BaseModel
-  base_collection: \Maghead\BaseCollection
+  base_collection: \Maghead\Runtime\BaseCollection
   paths:
   - tests
 instance:
   local:
     dsn: 'mysql:host=localhost'
+    driver: mysql
+    host: localhost
     user: root
 sharding:
   mappings:
     M_store_id:
-      tables:
-      - orders
       key: store_id
-      shards:
-      - s1
-      - s2
+      shards: [s1, s2, s3]
       chunks:
-        c1:
-          shard: s1
-        c2:
-          shard: s2
+        c1: { shard: s1 }
+        c2: { shard: s2 }
+        c3: { shard: s3 }
       hash:
         target1: c1
         target2: c2
+        target3: c3
   shards:
     s1:
       write:
         node1:
-          weight: 0.100000
+          weight: 1
       read:
         node1:
-          weight: 0.100000
+          weight: 1
     s2:
       write:
         node2:
-          weight: 0.100000
+          weight: 1
       read:
         node2:
-          weight: 0.100000
+          weight: 1
+    s3:
+      write:
+        node3:
+          weight: 1
+      read:
+        node3:
+          weight: 1
 data_source:
   master: node_master
   nodes:
     node_master:
-      dsn: 'sqlite::memory:'
+      dsn: sqlite:node_master.sqlite
       query_options:
         quote_table: true
       driver: sqlite
@@ -55,7 +60,7 @@ data_source:
       user: ~
       password: ~
     node1:
-      dsn: 'sqlite::memory:'
+      dsn: sqlite:node1.sqlite
       query_options:
         quote_table: true
       driver: sqlite
@@ -63,7 +68,15 @@ data_source:
       user: ~
       password: ~
     node2:
-      dsn: 'sqlite::memory:'
+      dsn: sqlite:node2.sqlite
+      query_options:
+        quote_table: true
+      driver: sqlite
+      connection_options: []
+      user: ~
+      password: ~
+    node3:
+      dsn: sqlite:node3.sqlite
       query_options:
         quote_table: true
       driver: sqlite
