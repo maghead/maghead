@@ -33,10 +33,10 @@ before_script:
   - bin/maghead schema build -f src # build meta model class
   - bin/maghead sql --rebuild -D=$DB
 script:
-  - phpunit --version
-  - phpunit -c phpunit.xml.dist
+- phpunit --version
+- phpunit --debug --configuration phpunit.xml.dist
 after_success:
-  - php vendor/bin/coveralls -v
+- php vendor/bin/coveralls -v
 matrix:
   fast_finish: true
   allow_failures:
