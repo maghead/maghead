@@ -16,18 +16,11 @@ instance:
 sharding:
   mappings:
     M_store_id:
-      tables:
-      - orders
       key: store_id
-      shards:
-      - s1
-      - s2
-      - s3
+      shards: [s1, s2, s3]
       chunks:
-        c1:
-          shard: s1
-        c2:
-          shard: s2
+        c1: { shard: s1 }
+        c2: { shard: s2 }
       hash:
         target1: c1
         target2: c2
