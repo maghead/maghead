@@ -57,7 +57,7 @@ class AllocateShardTest extends StoreTestCase
             return $this->markTestSkipped('mysql-utilities is not installed.');
         }
 
-        // $this->expectOutputRegex('/Copying data/');
+        $this->expectOutputRegex('/Copying data/');
 
         $o = new CloneShard($this->config, $this->logger);
         $o->setDropFirst(true);

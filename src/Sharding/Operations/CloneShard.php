@@ -13,6 +13,7 @@ use Maghead\Manager\ConfigManager;
 use Maghead\Manager\MetadataManager;
 use Maghead\Manager\TableManager;
 use Maghead\Config;
+use Maghead\ConfigLoader;
 use Maghead\Schema;
 use Maghead\Schema\SchemaUtils;
 use Maghead\TableBuilder\TableBuilder;
@@ -149,7 +150,7 @@ class CloneShard
     protected function buildDestParam(array $nodeConfig)
     {
         // rebuild the node config if we have the dsn
-        if (isset($nodeConfig['dsn'])) {
+        if (isset($nodeConfig['write'])) {
             $dsn = DSN::createForWrite($nodeConfig);
             if ($host = $dsn->getHost()) {
                 $nodeConfig['host'] = $host;
@@ -166,9 +167,8 @@ class CloneShard
 
     protected function buildSourceParam(array $nodeConfig)
     {
-
         // rebuild the node config if we have the dsn
-        if (isset($nodeConfig['dsn'])) {
+        if (isset($nodeConfig['read'])) {
             $dsn = DSN::createForRead($nodeConfig);
             if ($host = $dsn->getHost()) {
                 $nodeConfig['host'] = $host;
@@ -180,7 +180,6 @@ class CloneShard
                 $nodeConfig['unix_socket'] = $socket;
             }
         }
-        var_dump( $nodeConfig );
         return $this->buildParam($nodeConfig);
     }
 }

@@ -229,5 +229,10 @@ class DSN implements ArrayAccess
         return $dsn;
     }
 
+    public static function updateDSN(array $nodeConfig)
+    {
+        $nodeConfig['dsn'] = DSN::create($nodeConfig)->__toString();
+        return $nodeConfig;
+    }
 
 }

@@ -111,7 +111,6 @@ class ConfigLoader
         return $config;
     }
 
-
     private static function updateDSN(array $nodeConfig)
     {
         $nodeConfig['dsn'] = DSN::create($nodeConfig)->__toString();
@@ -163,13 +162,9 @@ class ConfigLoader
         if (!isset($config['password'])) {
             $config['password'] = null;
         }
-
-
-
         if (!isset($config['query_options'])) {
             $config['query_options'] = [];
         }
-
         if (!isset($config['connection_options'])) {
             $config['connection_options'] = [];
         }
@@ -200,15 +195,16 @@ class ConfigLoader
             $readNodes = [];
             // Cast the server list.
             foreach ($readServers as $serverAddress) {
-                $c = array_merge($config, ['host' => $serverAddress]);
-                $readNodes[] = self::updateDSN($c);
+                $c = $config;
+                $c['host'] = $serverAddress;
+                $readNodes[] = DSN::updateDSN($c);
             }
-
 
             $writeNodes = [];
             foreach ($writeServers as $serverAddress) {
-                $c = array_merge($config, [ 'host' => $serverAddress ]);
-                $writeNodes[] = self::updateDSN($c);
+                $c = $config;
+                $c['host'] = $serverAddress;
+                $writeNodes[] = DSN::updateDSN($c);
             }
 
             $config['read'] = $readNodes;
@@ -219,11 +215,12 @@ class ConfigLoader
         // if the DSN is not defined, compile the information into dsn if possible.
         if (!isset($config['write']) && !isset($config['read'])) {
             if (!isset($config['dsn'])) {
-                $config = self::updateDSN($config);
+                $config = DSN::updateDSN($config);
             }
         }
         return $config;
     }
+
 
     /**
      * This method is used for compiling config array.
