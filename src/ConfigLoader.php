@@ -100,11 +100,107 @@ class ConfigLoader
     public static function preprocessConfig(array $config)
     {
         if (isset($config['data_source']['nodes'])) {
-            $config['data_source']['nodes'] = self::preprocessNodeConfig($config['data_source']['nodes']);
+            $config['data_source']['nodes'] = self::preprocessNodeConfigArray($config['data_source']['nodes']);
         }
 
         if (isset($config['instance'])) {
-            $config['instance'] = self::preprocessNodeConfig($config['instance']);
+            $config['instance'] = self::preprocessNodeConfigArray($config['instance']);
+        }
+
+        return $config;
+    }
+
+
+    private static function updateDSN(array $nodeConfig)
+    {
+        $nodeConfig['dsn'] = DSN::create($nodeConfig)->__toString();
+        return $nodeConfig;
+    }
+
+    private static function preprocessNodeConfig(array $config)
+    {
+        $dsn = isset($config['dsn'])
+            ? DSN::create($config)
+            : null;
+
+        // rewrite config
+        if (!isset($config['driver']) && $dsn) {
+            $config['driver'] = $dsn->getDriver();
+        }
+
+        // compatible keys for username and password
+        if (isset($config['username']) && $config['username']) {
+            $config['user'] = $config['username'];
+        }
+
+        // alias socket to unix_socket
+        if (isset($config['socket'])) {
+            $config['unix_socket'] = $config['socket'];
+        }
+        // alias pass to pasword
+        if (isset($config['pass'])) {
+            $config['password'] = $config['pass'];
+        }
+
+        // predefined nulls
+        if (!isset($config['user'])) {
+            $config['user'] = null;
+        }
+        if (!isset($config['password'])) {
+            $config['password'] = null;
+        }
+
+        // if the read server list is defined,
+        // compile the dsn for that node.
+        if (isset($config['read'])) {
+            $readNodes = [];
+            // Cast the server list.
+            $serverAddresses = (array) $config['read'];
+            foreach ($serverAddresses as $serverAddress) {
+                $c = array_merge($config, ['host' => $serverAddress]);
+                $readNodes[] = self::updateDSN($c);
+            }
+            $config['read'] = $readNodes;
+        }
+        if (isset($config['write'])) {
+            $writeNodes = [];
+            // Cast the server list.
+            $serverAddresses = (array) $config['write'];
+            foreach ($serverAddresses as $serverAddress) {
+                $c = array_merge($config, [ 'host' => $serverAddress ]);
+                $writeNodes[] = self::updateDSN($c);
+            }
+            $config['write'] = $writeNodes;
+        }
+
+        // build dsn string for PDO
+        // if the DSN is not defined, compile the information into dsn if possible.
+        if (!isset($config['write']) && !isset($config['read'])) {
+            if (!isset($config['dsn'])) {
+                // Build DSN connection string for PDO
+                $config['dsn'] = DSN::create($config)->__toString();
+            }
+        }
+
+        if (!isset($config['query_options'])) {
+            $config['query_options'] = [];
+        }
+
+        if (!isset($config['connection_options'])) {
+            $config['connection_options'] = [];
+        }
+
+        $opts = [];
+        foreach ($config['connection_options'] as $key => $val) {
+            if (is_numeric($key)) {
+                $opts[$key] = $val;
+            } else {
+                $opts[constant($key)] = $val;
+            }
+        }
+        $config['connection_options'] = $opts; // new connect options
+        if ('mysql' === $config['driver']) {
+            $config['connection_options'][ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
         }
 
         return $config;
@@ -115,97 +211,12 @@ class ConfigLoader
      *
      * @param array PHP array from yaml config file
      */
-    private static function preprocessNodeConfig(array $dbconfig)
+    private static function preprocessNodeConfigArray(array $dbconfig)
     {
         $newconfig = [];
         foreach ($dbconfig as $nodeId => $config) {
-            if (!isset($config['driver'])) {
-                list($driverType) = explode(':', $config['dsn'], 2);
-                $config['driver'] = $driverType;
-            }
-
-            // compatible keys for username and password
-            if (isset($config['username']) && $config['username']) {
-                $config['user'] = $config['username'];
-            }
-
-            // alias socket to unix_socket
-            if (isset($config['socket'])) {
-                $config['unix_socket'] = $config['socket'];
-            }
-            // alias pass to pasword
-            if (isset($config['pass']) && $config['pass']) {
-                $config['password'] = $config['pass'];
-            }
-
-            // predefined nulls
-            if (!isset($config['user'])) {
-                $config['user'] = null;
-            }
-            if (!isset($config['password'])) {
-                $config['password'] = null;
-            }
-
-            // if the read server list is defined,
-            // compile the dsn for that node.
-            if (isset($config['read'])) {
-                $readNodes = [];
-                // Cast the server list.
-                $serverAddresses = (array) $config['read'];
-                foreach ($serverAddresses as $serverAddress) {
-                    $c = $config;
-                    $c['host'] = $serverAddress;
-                    $c['dsn'] = DSN::create($c)->__toString();
-                    $readNodes[] = $c;
-                }
-                $config['read'] = $readNodes;
-            }
-            if (isset($config['write'])) {
-                $writeNodes = [];
-                // Cast the server list.
-                $serverAddresses = (array) $config['write'];
-                foreach ($serverAddresses as $serverAddress) {
-                    $c = $config;
-                    $c['host'] = $serverAddress;
-                    $c['dsn'] = DSN::create($c)->__toString();
-                    $writeNodes[] = $c;
-                }
-                $config['write'] = $writeNodes;
-            }
-
-            // build dsn string for PDO
-            // if the DSN is not defined, compile the information into dsn if possible.
-            if (!isset($config['write']) && !isset($config['read'])) {
-                if (!isset($config['dsn'])) {
-                    // Build DSN connection string for PDO
-                    $config['dsn'] = DSN::create($config)->__toString();
-                }
-            }
-
-            if (!isset($config['query_options'])) {
-                $config['query_options'] = [];
-            }
-
-            if (!isset($config['connection_options'])) {
-                $config['connection_options'] = [];
-            }
-
-            $opts = [];
-            foreach ($config['connection_options'] as $key => $val) {
-                if (is_numeric($key)) {
-                    $opts[$key] = $val;
-                } else {
-                    $opts[constant($key)] = $val;
-                }
-            }
-            $config['connection_options'] = $opts; // new connect options
-            if ('mysql' === $config['driver']) {
-                $config['connection_options'][ PDO::MYSQL_ATTR_INIT_COMMAND ] = 'SET NAMES utf8';
-            }
-
-            $newconfig[$nodeId] = $config;
+            $newconfig[$nodeId] = self::preprocessNodeConfig($config);
         }
-
         return $newconfig;
     }
 
