@@ -10,6 +10,8 @@ schema:
 instance:
   local:
     dsn: 'mysql:host=localhost'
+    driver: mysql
+    host: localhost
     user: root
 sharding:
   mappings:
