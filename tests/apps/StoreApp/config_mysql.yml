@@ -9,9 +9,9 @@ schema:
     - tests
 instance:
   local:
-    dsn: 'mysql:host=localhost'
-    user: root
     driver: mysql
+    host: localhost
+    user: root
     password: null
     query_options: {  }
     connection_options:
@@ -36,36 +36,28 @@ sharding:
       read: { node3: { weight: 0.1 } }
 data_source:
   master: node_master
-  clusters:
-    cluster1:
-      driver: mysql
-      user: root
-      password: null
-      query_options: { }
-      connection_options: { 1002: 'SET NAMES utf8' }
-      read:
-      - localhost
-      write:
-      - localhost
   nodes:
     node_master:
       driver: mysql
       user: root
       password: null
       database: testing
-      dsn: 'mysql:host=localhost;dbname=testing'
       query_options: { }
       connection_options: { 1002: 'SET NAMES utf8' }
+      read:
+      - localhost
+      write:
+      - localhost
     node1:
       driver: mysql
+      host: localhost
       user: root
-      database: s1
       password: null
+      database: s1
       query_options: {  }
-      dsn: 'mysql:host=localhost;dbname=s1'
       connection_options: { 1002: 'SET NAMES utf8' }
     node2:
-      dsn: 'mysql:host=localhost;dbname=s2'
+      host: localhost
       user: root
       driver: mysql
       password: null
@@ -74,9 +66,9 @@ data_source:
       connection_options: { 1002: 'SET NAMES utf8' }
     node3:
       driver: mysql
+      host: localhost
       user: root
       password: null
       database: s3
       query_options: {  }
-      dsn: 'mysql:host=localhost;dbname=s3'
       connection_options: { 1002: 'SET NAMES utf8' }
