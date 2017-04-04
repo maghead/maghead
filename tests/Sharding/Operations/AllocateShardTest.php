@@ -27,11 +27,6 @@ class AllocateShardTest extends StoreTestCase
         ];
     }
 
-    public function config()
-    {
-        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_mysql.yml", true);
-    }
-
     /**
      * @rebuild false
      */
