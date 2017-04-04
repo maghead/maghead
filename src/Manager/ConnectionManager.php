@@ -21,7 +21,7 @@ class ConnectionManager implements ArrayAccess
     protected $nodeConfigurations;
 
     /**
-     * @var PDOConnection[] contains PDO connection objects.
+     * @var PDOConnection[] contains PDO connection objects (write)
      */
     protected $conns = [];
 
@@ -53,13 +53,32 @@ class ConnectionManager implements ArrayAccess
      * @param Connection $conn pdo connection
      * @param string     $id   node source id
      */
-    public function add(string $nodeId, Connection $conn)
+    public function add($nodeId, Connection $conn)
     {
         if (isset($this->conns[$nodeId])) {
             throw new Exception("$nodeId connection is already defined.");
         }
         $this->conns[$nodeId] = $conn;
     }
+
+
+    /**
+     * Share a write connection to the read-only connection.
+     *
+     * This method is used for sharing write connection (in-memory) to the read-only connection for testing.
+     *
+     * Note: this method shouldn't be used by application.
+     *
+     * @param string $nodeId
+     */
+    public function sync($nodeId)
+    {
+        if (isset($this->conns[$nodeId])) {
+            // copy write connection to read connection
+            $this->reads[$nodeId] = $this->conns[$nodeId];
+        }
+    }
+
 
     /**
      * Add custom node config
@@ -267,10 +286,8 @@ class ConnectionManager implements ArrayAccess
      */
     public function close($sourceId)
     {
-        if (isset($this->conns[$sourceId])) {
-            $this->conns[$sourceId] = null;
-            unset($this->conns[$sourceId]);
-        }
+        unset($this->conns[$sourceId]);
+        unset($this->reads[$sourceId]);
     }
 
     /**
@@ -336,6 +353,7 @@ class ConnectionManager implements ArrayAccess
     {
         $this->closeAll();
         $this->conns = [];
+        $this->reads = [];
     }
 
 

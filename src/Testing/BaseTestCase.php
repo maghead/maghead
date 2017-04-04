@@ -174,7 +174,14 @@ abstract class BaseTestCase extends TestCase
     {
         try {
             // Create the default connection
-            return $this->dataSourceManager->getConnection($connId);
+            $conn = $this->dataSourceManager->getWriteConnection($connId);
+
+            if ($this->getCurrentDriverType() === 'sqlite') {
+                $this->dataSourceManager->sync($connId);
+            }
+
+            return $conn;
+
         } catch (PDOException $e) {
             if ($this->allowConnectionFailure) {
                 $this->markTestSkipped(
