@@ -71,14 +71,12 @@ class GearmanQueryWorker
 
         $queryJob = unserialize($workload);
 
+        $shardId = $queryJob->shardId;
+
         $this->logger->debug("Loading shard {$queryJob->shardId}");
         $shard = $this->shardManager->getShard($queryJob->shardId);
 
-        $nodeId = $shard->selectReadNode();
-        $this->logger->debug("Selected read node {$nodeId} from shard {$queryJob->shardId}");
-
-        $this->logger->debug("Getting the connection of {$nodeId}");
-        $conn = $this->dataSourceManager->getConnection($nodeId);
+        $conn = $this->dataSourceManager->getReadConnection($queryJob->shardId);
 
         $driver = $conn->getQueryDriver();
 
@@ -95,7 +93,7 @@ class GearmanQueryWorker
         /*
         $job->sendStatus($x, $workloadSize);
         */
-        return serialize([ $nodeId => $rows ]);
+        return serialize([ $shardId => $rows ]);
     }
 
     public function run()

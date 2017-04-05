@@ -115,20 +115,14 @@ class ShardMapping
      *
      * @return Shard[string shardId]
      */
-    public function selectShards(array $availableShards)
+    public function selectShards()
     {
-        // TODO: check shard method and use different selection method here
         $shards = [];
         foreach ($this->chunks as $chunkId => $chunk) {
             $shardId = $chunk['shard'];
-
-            // Use shardId instead of chunkId
-            if (!isset($availableShards[$shardId])) {
-                throw new Exception("Shard '$shardId' is not defined in available shards.");
-            }
-            $shards[$shardId] = $availableShards[$shardId];
+            $shards[$shardId] = true;
         }
-        return $shards;
+        return array_keys($shards);
     }
 
     public function toArray()

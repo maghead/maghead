@@ -13,67 +13,14 @@ class Shard
     /**
      * @var string
      *
-     * the id of the shard.
+     * the id of the shard/node.
      */
     public $id;
 
-    protected $readServers;
-
-    protected $writeServers;
-
-    /**
-     * @var array
-     *
-     * the config of the shard.
-     */
-    protected $config;
-
-    public function __construct($id, array $config, DataSourceManager $dataSourceManager, Balancer $balancer = null)
+    public function __construct($id, DataSourceManager $dataSourceManager)
     {
         $this->id           = $id;
-        $this->config       = $config;
-        $this->readServers  = isset($config['read']) ? $config['read'] : [];
-        $this->writeServers = isset($config['write']) ? $config['write'] : [];
         $this->dataSourceManager = $dataSourceManager;
-        $this->balancer = $balancer ?: new RandBalancer;
-    }
-
-    /**
-     * Add a read node for the list.
-     *
-     * @param string $nodeId
-     * @param array $config
-     */
-    public function addReadNode($nodeId, array $config)
-    {
-        $this->readServers[$nodeId] = $config;
-    }
-
-    /**
-     * Add a write node for the list.
-     *
-     * @param string $nodeId
-     * @param array $config
-     */
-    public function addWriteNode($nodeId, array $config)
-    {
-        $this->writeServers[$nodeId] = $config;
-    }
-
-    /**
-     * @return string the node Id for read.
-     */
-    public function selectReadNode()
-    {
-        return $this->balancer->select($this->readServers);
-    }
-
-    /**
-     * @return string the node Id for write.
-     */
-    public function selectWriteNode()
-    {
-        return $this->balancer->select($this->writeServers);
     }
 
     /**
@@ -81,8 +28,7 @@ class Shard
      */
     public function selectReadConnection()
     {
-        $nodeId = $this->balancer->select($this->readServers);
-        return $this->dataSourceManager->getReadConnection($nodeId);
+        return $this->dataSourceManager->getReadConnection($this->id);
     }
 
     /**
@@ -90,8 +36,7 @@ class Shard
      */
     public function selectWriteConnection()
     {
-        $nodeId = $this->balancer->select($this->writeServers);
-        return $this->dataSourceManager->getWriteConnection($nodeId);
+        return $this->dataSourceManager->getWriteConnection($this->id);
     }
 
     /**

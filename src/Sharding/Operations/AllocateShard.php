@@ -84,6 +84,10 @@ class AllocateShard
         $metadata = new MetadataManager($dbConn, $queryDriver);
         $metadata['migration'] = time();
 
-        // XXX: modify the shard mapping config
+        // TODO: modify the shard mapping config
+        // 1. add the shard server config in sharding.shards, default to read [ node ], write [ node ]
+        // 2. add the shard server ID to the chunk list in the shard mapping.
+        $shardCluster = [
+        ];
     }
 }

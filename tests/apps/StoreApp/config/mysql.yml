@@ -21,21 +21,11 @@ sharding:
     M_store_id:
       key: store_id
       hash: true
-      shards: [s1, s2, s3]
+      shards: [node1, node2, node3]
       chunks:
-        c1: { shard: s1 }
-        c2: { shard: s2 }
-        c3: { shard: s3 }
-  shards:
-    s1:
-      write: { node1: { weight: 1 } }
-      read: { node1: { weight: 1 } }
-    s2:
-      write: { node2: { weight: 1 } }
-      read: { node2: { weight: 1 } }
-    s3:
-      write: { node3: { weight: 1 } }
-      read: { node3: { weight: 1 } }
+        c1: { shard: node1 }
+        c2: { shard: node2 }
+        c3: { shard: node3 }
 data_source:
   master: node_master
   nodes:

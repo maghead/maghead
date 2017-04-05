@@ -22,18 +22,17 @@ class PthreadQueryMapper implements QueryMapper
 
     public function map(ShardCollection $shards, $query)
     {
-        $nodeIds = $this->selectReadNodes($shards);
-        $this->start($nodeIds);
+        $this->start($shards);
         $jobs = $this->send($query);
         $this->wait();
         return $this->mergeJobsResults($jobs);
     }
 
-    protected function start(array $nodeIds)
+    protected function start($shards)
     {
-        foreach ($nodeIds as $nodeId) {
-            $ds = $this->dataSourceManager->getNodeConfig($nodeId);
-            $this->workers[$nodeId] = $w = new PthreadQueryWorker($ds['dsn'], $ds['user'], $ds['password'], $ds['connection_options']);
+        foreach ($shards as $shardId => $shard) {
+            $ds = $this->dataSourceManager->getNodeConfig($shardId);
+            $this->workers[$shardId] = $w = new PthreadQueryWorker($ds['dsn'], $ds['user'], $ds['password'], $ds['connection_options']);
             $w->start();
         }
     }
@@ -57,15 +56,6 @@ class PthreadQueryMapper implements QueryMapper
         foreach ($this->workers as $worker) {
             $worker->join();
         }
-    }
-
-    protected function selectReadNodes(ShardCollection $shards)
-    {
-        $nodeIds = [];
-        foreach ($shards as $shardId => $shard) {
-            $nodeIds[$shardId] = $shard->selectReadNode();
-        }
-        return $nodeIds;
     }
 
     protected function mergeJobsResults(array $jobs)
