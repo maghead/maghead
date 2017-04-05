@@ -7,6 +7,7 @@ use StoreApp\StoreTestCase;
 
 use Maghead\Sharding\Operations\{AllocateShard, CloneShard, RemoveShard, PruneShard};
 use Maghead\Utils;
+use Maghead\Bootstrap;
 
 /**
  * @group sharding
@@ -19,6 +20,8 @@ class PruneShardTest extends StoreTestCase
     {
         $o = new AllocateShard($this->config, $this->logger);
         $o->allocate('local', 's4', 'M_store_id');
+
+        Bootstrap::setupDataSources($this->config, $this->dataSourceManager);
 
         // TODO: insert store and order data
         foreach ($this->storeDataProvider() as $args) {

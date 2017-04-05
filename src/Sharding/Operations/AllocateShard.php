@@ -6,6 +6,7 @@ use Maghead\Sharding\ShardDispatcher;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Shard;
 use Maghead\Sharding\ShardCollection;
+use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Manager\ConnectionManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Manager\DataSourceManager;
@@ -42,6 +43,7 @@ class AllocateShard
         $this->config = $config;
         $this->logger = $logger;
         $this->connectionManager = new ConnectionManager($config->getInstances());
+        $this->dataSourceManager = new DataSourceManager($config->getDataSources());
     }
 
     public function allocate($instanceId, $newNodeId, $mappingId)
@@ -87,7 +89,7 @@ class AllocateShard
         // TODO: modify the shard mapping config
         // 1. add the shard server config in sharding.shards, default to read [ node ], write [ node ]
         // 2. add the shard server ID to the chunk list in the shard mapping.
-        $shardCluster = [
-        ];
+        $chunkId = 'c' . count($this->config->stash['sharding']['mappings'][$mappingId]['chunks']);
+        $this->config->stash['sharding']['mappings'][$mappingId]['chunks'][$chunkId] = [ 'shard' => $newNodeId ];
     }
 }
