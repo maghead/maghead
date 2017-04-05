@@ -111,21 +111,6 @@ class ShardMapping
 
 
     /**
-     * Return the ID of the related shards.
-     *
-     * @return string[]
-     */
-    public function getTargetIds()
-    {
-        if (isset($this->extra['hash'])) {
-            return $this->extra['hash'];
-        } elseif (isset($this->extra['range'])) {
-            return array_keys($this->extra['range']);
-        }
-        throw new Exception('hash / range is undefined.');
-    }
-
-    /**
      * Select shards by the given shard collection.
      *
      * @return Shard[string shardId]
