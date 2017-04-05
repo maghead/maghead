@@ -19,8 +19,14 @@ class ShardManager
 {
     protected $config;
 
+    /**
+     * config of ".sharding"
+     */
     protected $shardingConfig;
 
+    /**
+     * @var DataSourceManager this is used for selecting read/write nodes.
+     */
     protected $dataSourceManager;
 
     public function __construct(Config $config, DataSourceManager $dataSourceManager)
@@ -76,7 +82,7 @@ class ShardManager
         foreach ($config as $shardId => $shardConfig) {
             // Wrap shard config into objects.
             $shard = new Shard($shardId, $shardConfig, $this->dataSourceManager);
-            $shards[ $shardId ] = $shard;
+            $shards[$shardId] = $shard;
         }
         return new ShardCollection($shards, $mapping, $repoClass);
     }
