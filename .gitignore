@@ -6,3 +6,4 @@ build/
 db/config/*.php
 /phpunit.xml
 *.sqlite
+*.log
