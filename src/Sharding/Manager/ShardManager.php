@@ -61,12 +61,12 @@ class ShardManager
     }
 
 
-    public function getShard($shardId)
+    public function getShard($shardId) : Shard
     {
         return new Shard($shardId, $this->dataSourceManager);
     }
 
-    public function getShardsOf($mappingId, $repoClass = null)
+    public function getShardsOf($mappingId, $repoClass = null) : ShardCollection
     {
         $mapping = $this->getShardMapping($mappingId);
         $shardIds = $mapping->selectShards();
@@ -77,7 +77,7 @@ class ShardManager
         return new ShardCollection($shards, $mapping, $repoClass);
     }
 
-    public function createShardDispatcherOf(string $mappingId)
+    public function createShardDispatcherOf(string $mappingId) : ShardDispatcher
     {
         $mapping = $this->getShardMapping($mappingId);
         $shards = $this->getShardsOf($mappingId);
