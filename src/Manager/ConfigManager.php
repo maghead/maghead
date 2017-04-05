@@ -64,6 +64,7 @@ class ConfigManager
             $node['port'] = $opts['port'];
             $dsn->setAttribute('port', $opts['port']);
         }
+
         if ($socket = $dsn->getUnixSocket()) {
             $node['unix_socket'] = $socket;
         }

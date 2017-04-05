@@ -153,6 +153,12 @@ class ConfigLoader
         // alias pass to pasword
         if (isset($config['pass'])) {
             $config['password'] = $config['pass'];
+            unset($config['pass']);
+        }
+
+        if (isset($config['dbname'])) {
+            $config['database'] = $config['dbname'];
+            unset($config['dbname']);
         }
 
         // predefined nulls
