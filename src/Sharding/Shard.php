@@ -82,7 +82,7 @@ class Shard
     public function selectReadConnection()
     {
         $nodeId = $this->balancer->select($this->readServers);
-        return $this->dataSourceManager->getConnection($nodeId);
+        return $this->dataSourceManager->getReadConnection($nodeId);
     }
 
     /**
@@ -91,7 +91,7 @@ class Shard
     public function selectWriteConnection()
     {
         $nodeId = $this->balancer->select($this->writeServers);
-        return $this->dataSourceManager->getConnection($nodeId);
+        return $this->dataSourceManager->getWriteConnection($nodeId);
     }
 
     /**
