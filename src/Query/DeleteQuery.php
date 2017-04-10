@@ -1,4 +1,5 @@
 <?php
+
 namespace Maghead\Query;
 
 use SQLBuilder\Universal\Query\DeleteQuery as BaseQuery;
@@ -18,7 +19,6 @@ class DeleteQuery
     public function __construct(BaseRepo $repo = null)
     {
         $this->repo = $repo;
-        parent::__construct();
     }
 
     public function execute()

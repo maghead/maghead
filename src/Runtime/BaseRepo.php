@@ -16,12 +16,10 @@ use ArrayAccess;
 
 use Maghead\Query\SelectQuery;
 use Maghead\Query\DeleteQuery;
+use Maghead\Query\UpdateQuery;
 
 use SQLBuilder\ToSqlInterface;
-use SQLBuilder\Universal\Query\UpdateQuery;
 use SQLBuilder\Universal\Query\InsertQuery;
-
-
 
 use SQLBuilder\Driver\PDOPgSQLDriver;
 use SQLBuilder\Driver\PDOMySQLDriver;
@@ -780,9 +778,18 @@ class BaseRepo
     public function delete()
     {
         $query = new DeleteQuery($this);
-        $query->from(static::TABLE, 'm'); // main table alias
+        $query->from(static::TABLE); // main table alias
         return $query;
     }
+
+    public function update($data = null)
+    {
+        $query = new UpdateQuery($this);
+        $query->update(static::TABLE);
+        $query->set($data);
+        return $query;
+    }
+
 
 
     // ================= Locks =====================

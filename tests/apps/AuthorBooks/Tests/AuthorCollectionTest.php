@@ -72,6 +72,38 @@ class AuthorCollectionTest extends ModelTestCase
         $this->assertCount(2, $books);
     }
 
+
+    public function testRepoDeleteQueryWithEqualCondition()
+    {
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 1' ]));
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 2' ]));
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 3' ]));
+
+        $q = Book::masterRepo()->delete();
+        $ret = $q->where()->equal('title', 'Book 1')->execute(); // This tests the fallback method dispatch on condition class.
+        $this->assertTrue($ret);
+
+        $books = Book::masterRepo()->select()->fetch();
+        $this->assertCount(2, $books);
+    }
+
+
+    public function testRepoUpdateQueryWithoutCondition()
+    {
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 1' ]));
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 2' ]));
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 3' ]));
+
+        $ret = Book::masterRepo()->update([ 'title' => 'Updated' ])->execute();
+        $this->assertTrue($ret);
+
+        $titles = Book::masterRepo()->select('DISTINCT title')->fetchColumn(0);
+        $this->assertCount(1, $titles);
+        foreach ($titles as $title) {
+            $this->assertEquals('Updated', $title);
+        }
+    }
+
     public function testRepoFetchColumn()
     {
         $this->assertResultSuccess(Book::create([ 'title' => 'Book 1' ]));

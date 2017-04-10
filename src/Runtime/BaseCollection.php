@@ -537,8 +537,6 @@ class BaseCollection implements
      */
     public function update(array $data)
     {
-        $schema = static::getSchema();
-
         $repo = $this->getCurrentRepo();
         $conn = $repo->getWriteConnection();
         $driver = $conn->getQueryDriver();
