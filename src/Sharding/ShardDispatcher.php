@@ -25,6 +25,24 @@ class ShardDispatcher
         $this->shards = $shards;
     }
 
+
+    /**
+     * Dispatches the key and return the shard Id of the key
+     *
+     * @param string $key
+     * @return string shard Id
+     */
+    public function dispatchId($key)
+    {
+        $chunkId = $this->hasher->hash($key);
+        $chunk   = $this->mapping->chunks[$chunkId];
+        return $chunk['shard'];
+    }
+
+
+    /**
+     * Return the shard object.
+     */
     public function dispatch($key)
     {
         $chunkId = $this->hasher->hash($key);

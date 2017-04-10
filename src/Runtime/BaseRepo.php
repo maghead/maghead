@@ -704,18 +704,84 @@ class BaseRepo
     }
 
     /**
-     * Execute a query on the read connection.
+     * Executes a query on the read connection and fetch the column from the result.
      *
-     * @return PDOStatement object
+     * @param SelectQuery $query
+     * @param ArgumentArray $args
+     *
+     * @return any[] Return the mixed values in an array.
      */
-    public function query($sql, $args)
+    public function fetchQueryColumn(SelectQuery $query, ArgumentArray $args = null)
     {
-        $stm = $this->read->prepare($sql, $args);
-        $stm->execute($args);
-        return $stm;
+        $driver = $this->read->getQueryDriver();
+        $arguments = $args ?: new ArgumentArray;
+        $sql = $query->toSql($driver, $arguments);
+        $stm = $this->read->prepare($sql);
+        $stm->execute($arguments->toArray());
+        return $stm->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
+    /**
+     * Executes a query on the read connection 
+     * and return the collection with the current repo object and the current stm object.
+     *
+     * @param SelectQuery $query
+     * @param ArgumentArray $args
+     *
+     * @return Maghead\Runtime\BaseCollection
+     */
+    public function fetchQuery(SelectQuery $query, ArgumentArray $args = null)
+    {
+        $driver = $this->read->getQueryDriver();
+        $arguments = $args ?: new ArgumentArray;
+        $sql = $query->toSql($driver, $arguments);
 
+        $stm = $this->read->prepare($sql);
+        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS , [$this]);
+        $stm->execute($arguments->toArray());
+
+        $cls = static::COLLECTION_CLASS;
+        // Create collection object with the current repo and the current PDOStatement
+        return new $cls($this, $stm);
+    }
+
+    /**
+     * Executes a query on the read connection and return the result in one
+     * collection object.
+     *
+     * @return Maghead\Runtime\BaseCollection object
+     */
+    public function fetch($sql, $args = null)
+    {
+        if ($sql instanceof SelectQuery) {
+            return $this->fetchQuery($sql, $args);
+        } else if (is_string($sql)) {
+            $stm = $this->read->prepare($sql, $args);
+            $stm->execute($args);
+            $cls = static::COLLECTION_CLASS;
+            return new $cls($this, $stm);
+        } else {
+            throw new InvalidArgumentException("fetch method require \$sql to be SelectQuery or SQL string.");
+        }
+    }
+
+    /**
+     * Execute a query on the read connection.
+     *
+     * @return any[] Return any type of value in one array.
+     */
+    public function fetchColumn($sql, $args = null)
+    {
+        if ($sql instanceof SelectQuery) {
+            return $this->fetchQueryColumn($sql, $args);
+        } else if (is_string($sql)) {
+            $stm = $this->read->prepare($sql, $args);
+            $stm->execute($args);
+            return $stm->fetchAll(PDO::FETCH_COLUMN, 0);
+        } else {
+            throw new InvalidArgumentException("fetchColumn method require \$sql to be SelectQuery or SQL string.");
+        }
+    }
 
 
 

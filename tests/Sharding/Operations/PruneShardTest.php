@@ -23,18 +23,14 @@ class PruneShardTest extends StoreTestCase
 
         Bootstrap::setupDataSources($this->config, $this->dataSourceManager);
 
-        // TODO: insert store and order data
-        foreach ($this->storeDataProvider() as $args) {
-            call_user_func_array([$this,'assertInsertStores'], $args);
-        }
+        $this->assertInsertStores(static::$stores);
+        $this->assertInsertOrders(static::$orders);
 
-        foreach ($this->orderDataProvider() as $args) {
-            call_user_func_array([$this,'assertInsertOrders'], $args);
-        }
-
-        // Run prune
-        // $o = new PruneShard($this->config, $this->logger);
-        // $o->prune('t1', 'M_store_id');
+        $o = new PruneShard($this->config, $this->logger);
+        $o->prune('node1', 'M_store_id');
+        $o->prune('node2', 'M_store_id');
+        $o->prune('node3', 'M_store_id');
+        $o->prune('s4', 'M_store_id');
 
         $o = new RemoveShard($this->config, $this->logger);
         $o->remove('s4');

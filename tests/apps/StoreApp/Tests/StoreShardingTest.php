@@ -115,7 +115,6 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
         return $ret;
     }
 
-
     /**
      * @rebuild false
      * @depends testInsertOrder

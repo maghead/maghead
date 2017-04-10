@@ -6,6 +6,7 @@ use Maghead\Sharding\ShardDispatcher;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Shard;
 use Maghead\Sharding\ShardCollection;
+use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Manager\ConnectionManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Manager\DataSourceManager;
@@ -42,43 +43,39 @@ class PruneShard
 
     public function prune($nodeId, $mappingId)
     {
-        // TODO: Add a special instanceID for sqlite support
-        $dbName = $newNodeId;
-        $conn = $this->connectionManager->connectInstance($instanceId);
+        $conn = $this->dataSourceManager->connect($nodeId);
         $queryDriver = $conn->getQueryDriver();
-
-        // create new database for the new shard.
-        $dbManager = new DatabaseManager($conn);
-        $dbManager->create($dbName);
-
-        // create a new node config from the instance node config.
-        $nodeConfig = $this->connectionManager->getNodeConfig($instanceId);
-
-        // Update DSN with the new dbname (works for mysql and pgsql)
-        $dsn = DSNParser::parse($nodeConfig['dsn']);
-        $dsn->setAttribute('dbname', $dbName);
-        $nodeConfig['database'] = $dbName;
-        $nodeConfig['dsn'] = $dsn->__toString();
-
-        $this->config->addDataSource($newNodeId, $nodeConfig);
-
-        $this->connectionManager->addNode($newNodeId, $nodeConfig);
-
-        // Setup shard schema
-        $dbConn = $this->connectionManager->connect($newNodeId);
 
         $schemas = SchemaUtils::findSchemasByConfig($this->config, $this->logger);
         $schemas = SchemaUtils::filterShardMappingSchemas($mappingId, $schemas);
 
-        $sqlBuilder = TableBuilder::create($queryDriver, [
-            'rebuild' => true,
-            'clean' => false,
-        ]);
-        $tableManager = new TableManager($dbConn, $sqlBuilder, $this->logger);
-        $tableManager->build($schemas);
+        $shardManager = new ShardManager($this->config, $this->dataSourceManager);
+        $shardMapping = $shardManager->getShardMapping($mappingId);
+        $shardKey = $shardMapping->getKey();
 
-        // Allocate MetadataManager to update migration timestamp
-        $metadata = new MetadataManager($dbConn, $queryDriver);
-        $metadata['migration'] = time();
+        $shardDispatcher = $shardManager->createShardDispatcherOf($mappingId);
+
+        foreach ($schemas as $schema) {
+            if ($schema->globalTable) {
+                continue;
+            }
+
+            $collection = $schema->newCollection();
+            $q = $collection->asQuery();
+            $q->setSelect("DISTINCT {$shardKey}");
+
+            $repo = $collection->repo($conn, $conn);
+            $keys = $repo->fetchColumn($q);
+            $shardKeys = array_filter($keys, function($key) use ($shardDispatcher, $nodeId) {
+                return $shardDispatcher->dispatchId($key) == $nodeId;
+            });
+
+            // TODO: remove the keys that maps to other nodes.
+            /*
+            echo ($schema->getTable()), "\n";
+            var_dump($keys);
+            var_dump($shardKeys);
+             */
+        }
     }
 }

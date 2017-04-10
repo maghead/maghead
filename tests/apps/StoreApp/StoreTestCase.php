@@ -84,7 +84,7 @@ abstract class StoreTestCase extends ModelTestCase
 
     public function assertInsertStores(array $storeArgs)
     {
-        foreach ($storeArgs as $code => $args) {
+        foreach ($storeArgs as $args) {
             $ret = Store::create($args);
             $this->assertResultSuccess($ret);
         }

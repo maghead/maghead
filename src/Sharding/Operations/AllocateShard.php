@@ -89,7 +89,7 @@ class AllocateShard
         // TODO: modify the shard mapping config
         // 1. add the shard server config in sharding.shards, default to read [ node ], write [ node ]
         // 2. add the shard server ID to the chunk list in the shard mapping.
-        $chunkId = 'c' . count($this->config->stash['sharding']['mappings'][$mappingId]['chunks']);
-        $this->config->stash['sharding']['mappings'][$mappingId]['chunks'][$chunkId] = [ 'shard' => $newNodeId ];
+        $this->config->stash['sharding']['mappings'][$mappingId]['chunks'][$newNodeId] = [ 'shard' => $newNodeId ];
+        $this->config->stash['sharding']['mappings'][$mappingId]['shards'][] = $newNodeId;
     }
 }

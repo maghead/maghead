@@ -63,6 +63,56 @@ class AuthorCollectionTest extends ModelTestCase
         }
     }
 
+
+    public function testRepoFetch()
+    {
+        $this->assertResultSuccess(Book::create(array( 'title' => 'My Book I' )));
+        $this->assertResultSuccess(Book::create(array( 'title' => 'My Book II' )));
+        $q = BookCollection::asQuery();
+        $books = Book::masterRepo()->fetch($q);
+        $this->assertCount(2, $books);
+    }
+
+    public function testRepoFetchColumn()
+    {
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 1' ]));
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 2' ]));
+
+        // create one book with duplicated title
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 2' ]));
+
+        $q = BookCollection::asQuery();
+        $q->setSelect('DISTINCT title');
+        $titles = Book::masterRepo()->fetchColumn($q);
+        $this->assertCount(2, $titles);
+
+        foreach ($titles as $title) {
+            $this->assertStringMatchesFormat('Book %i', $title);
+        }
+    }
+
+
+    public function testRepoFetchQueryColumn()
+    {
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 1' ]));
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 2' ]));
+
+        // create one book with duplicated title
+        $this->assertResultSuccess(Book::create([ 'title' => 'Book 2' ]));
+
+        $q = BookCollection::asQuery();
+        $q->setSelect('DISTINCT title');
+        $titles = Book::masterRepo()->fetchQueryColumn($q);
+        $this->assertCount(2, $titles);
+
+        foreach ($titles as $title) {
+            $this->assertStringMatchesFormat('Book %i', $title);
+        }
+    }
+
+
+
+
     public function testCollectionReset()
     {
         $book = new Book;

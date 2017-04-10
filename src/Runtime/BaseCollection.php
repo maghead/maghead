@@ -3,6 +3,7 @@
 namespace Maghead\Runtime;
 
 use PDO;
+use PDOStatement;
 use RuntimeException;
 use Exception;
 use ArrayAccess;
@@ -99,9 +100,10 @@ class BaseCollection implements
      * Basically we won't create mass collection objects in one time.
      * Therefore we can prepare more stuff here.
      */
-    public function __construct(BaseRepo $repo = null)
+    public function __construct(BaseRepo $repo = null, PDOStatement $stm = null)
     {
         $this->repo = $repo;
+        $this->handle = $stm;
     }
 
     public function setRepo(BaseRepo $repo)
@@ -239,20 +241,38 @@ class BaseCollection implements
         return static::masterRepo(); // my repo
     }
 
+
+    /**
+     * Create a SelectQuery bases on the collection definition.
+     *
+     * @return SelectQuery
+     */
+    public static function asQuery()
+    {
+        $q = new SelectQuery();
+        $q->from(static::TABLE, 'm'); // main table alias
+        $q->select('*'); // default selection
+        return $q;
+    }
+
+    /**
+     * Create a SelectQuery bases on the collection definition.
+     *
+     * @return SelectQuery
+     */
     public function createReadQuery()
     {
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getReadConnection();
-        $driver = $conn->getQueryDriver();
-
         $q = new SelectQuery();
-
-        // Read from class consts
         $q->from($this->getTable(), $this->_alias); // main table alias
 
         if ($selection = $this->getSelected()) {
             $q->select($selection);
         } else {
+            // Need the driver instance to quote the field names
+            $repo = $this->getCurrentRepo();
+            $conn = $repo->getReadConnection();
+            $driver = $conn->getQueryDriver();
+
             $q->select($this->explictSelect
                 ? $this->getExplicitColumnSelect($driver)
                 : $this->_alias.'.*');
@@ -343,6 +363,24 @@ class BaseCollection implements
         $this->_rows = $this->readRows();
         return count($this->_rows);
     }
+
+    public function distinct($field)
+    {
+        $repo = $this->getCurrentRepo();
+        $conn = $repo->getReadConnection();
+        $driver = $conn->getQueryDriver();
+
+        $q = clone $this->getCurrentQuery();
+        $q->setSelect("DISTINCT $field"); // Override current select.
+
+        $arguments = new ArgumentArray();
+        $sql = $q->toSql($driver, $arguments);
+
+        $stm = $conn->prepare($sql);
+        $stm->execute($arguments->toArray());
+        return $stm->fetchAll(PDO::FETCH_COLUMN, 0);
+    }
+
 
     /**
      * Clone current read query and apply select to count(*)

@@ -8,7 +8,6 @@ class BookSchema extends Schema
     public function schema()
     {
         $this->column('title')
-            ->unique()
             ->varchar(128);
 
         $this->index('idx_book_title_subtitle', [ 'title', 'subtitle' ]);
@@ -17,6 +16,7 @@ class BookSchema extends Schema
             ->varchar(256);
 
         $this->column('isbn')
+            ->unique()
             ->varchar(128)
             ->immutable()
             ->findable()
