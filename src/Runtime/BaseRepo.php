@@ -14,10 +14,15 @@ use ArrayIterator;
 use Serializable;
 use ArrayAccess;
 
-use SQLBuilder\Universal\Query\SelectQuery;
+use Maghead\Query\SelectQuery;
+use Maghead\Query\DeleteQuery;
+
+use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Universal\Query\UpdateQuery;
-use SQLBuilder\Universal\Query\DeleteQuery;
 use SQLBuilder\Universal\Query\InsertQuery;
+
+
+
 use SQLBuilder\Driver\PDOPgSQLDriver;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Bind;
@@ -691,7 +696,7 @@ class BaseRepo
     }
 
     /**
-     * Execute write query to the db.
+     * Execute plain SQL query in the write connection.
      *
      * Return the result of PDOStatement::execute method.
      *
@@ -704,25 +709,42 @@ class BaseRepo
     }
 
     /**
-     * Executes a query on the read connection and fetch the column from the result.
+     * Execute a delete query in the repo.
+     *
+     * This method executes PDOStatement::execute and return the result directly.
+     *
+     * @return bool
+     *
+     */
+    public function execute(ToSqlInterface $query)
+    {
+        $driver = $this->write->getQueryDriver();
+        $arguments = new ArgumentArray;
+        $sql = $query->toSql($driver, $arguments);
+        $stm = $this->write->prepare($sql);
+        return $stm->execute($arguments->toArray());
+    }
+
+    /**
+     * Executes a select query in the read connection and fetch the column from the result.
      *
      * @param SelectQuery $query
      * @param ArgumentArray $args
      *
      * @return any[] Return the mixed values in an array.
      */
-    public function fetchQueryColumn(SelectQuery $query, ArgumentArray $args = null)
+    public function fetchColumn(SelectQuery $query, $column = 0 )
     {
         $driver = $this->read->getQueryDriver();
-        $arguments = $args ?: new ArgumentArray;
+        $arguments = new ArgumentArray;
         $sql = $query->toSql($driver, $arguments);
         $stm = $this->read->prepare($sql);
         $stm->execute($arguments->toArray());
-        return $stm->fetchAll(PDO::FETCH_COLUMN, 0);
+        return $stm->fetchAll(PDO::FETCH_COLUMN, $column);
     }
 
     /**
-     * Executes a query on the read connection 
+     * Executes a select query in the read connection 
      * and return the collection with the current repo object and the current stm object.
      *
      * @param SelectQuery $query
@@ -730,10 +752,10 @@ class BaseRepo
      *
      * @return Maghead\Runtime\BaseCollection
      */
-    public function fetchQuery(SelectQuery $query, ArgumentArray $args = null)
+    public function fetch(SelectQuery $query)
     {
         $driver = $this->read->getQueryDriver();
-        $arguments = $args ?: new ArgumentArray;
+        $arguments = new ArgumentArray;
         $sql = $query->toSql($driver, $arguments);
 
         $stm = $this->read->prepare($sql);
@@ -745,44 +767,22 @@ class BaseRepo
         return new $cls($this, $stm);
     }
 
-    /**
-     * Executes a query on the read connection and return the result in one
-     * collection object.
-     *
-     * @return Maghead\Runtime\BaseCollection object
-     */
-    public function fetch($sql, $args = null)
+
+    // ================= QUERY METHODS =============
+    public function select($sel = '*')
     {
-        if ($sql instanceof SelectQuery) {
-            return $this->fetchQuery($sql, $args);
-        } else if (is_string($sql)) {
-            $stm = $this->read->prepare($sql, $args);
-            $stm->execute($args);
-            $cls = static::COLLECTION_CLASS;
-            return new $cls($this, $stm);
-        } else {
-            throw new InvalidArgumentException("fetch method require \$sql to be SelectQuery or SQL string.");
-        }
+        $query = new SelectQuery($this);
+        $query->from(static::TABLE, 'm'); // main table alias
+        $query->setSelect($sel); // default selection
+        return $query;
     }
 
-    /**
-     * Execute a query on the read connection.
-     *
-     * @return any[] Return any type of value in one array.
-     */
-    public function fetchColumn($sql, $args = null)
+    public function delete()
     {
-        if ($sql instanceof SelectQuery) {
-            return $this->fetchQueryColumn($sql, $args);
-        } else if (is_string($sql)) {
-            $stm = $this->read->prepare($sql, $args);
-            $stm->execute($args);
-            return $stm->fetchAll(PDO::FETCH_COLUMN, 0);
-        } else {
-            throw new InvalidArgumentException("fetchColumn method require \$sql to be SelectQuery or SQL string.");
-        }
+        $query = new DeleteQuery($this);
+        $query->from(static::TABLE, 'm'); // main table alias
+        return $query;
     }
-
 
 
     // ================= Locks =====================

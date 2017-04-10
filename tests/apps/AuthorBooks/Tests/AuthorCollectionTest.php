@@ -68,8 +68,7 @@ class AuthorCollectionTest extends ModelTestCase
     {
         $this->assertResultSuccess(Book::create(array( 'title' => 'My Book I' )));
         $this->assertResultSuccess(Book::create(array( 'title' => 'My Book II' )));
-        $q = BookCollection::asQuery();
-        $books = Book::masterRepo()->fetch($q);
+        $books = Book::masterRepo()->select('*')->fetch();
         $this->assertCount(2, $books);
     }
 
@@ -81,16 +80,13 @@ class AuthorCollectionTest extends ModelTestCase
         // create one book with duplicated title
         $this->assertResultSuccess(Book::create([ 'title' => 'Book 2' ]));
 
-        $q = BookCollection::asQuery();
-        $q->setSelect('DISTINCT title');
-        $titles = Book::masterRepo()->fetchColumn($q);
+        $titles = Book::masterRepo()->select('DISTINCT title')->fetchColumn(0);
         $this->assertCount(2, $titles);
 
         foreach ($titles as $title) {
             $this->assertStringMatchesFormat('Book %i', $title);
         }
     }
-
 
     public function testRepoFetchQueryColumn()
     {
@@ -100,9 +96,7 @@ class AuthorCollectionTest extends ModelTestCase
         // create one book with duplicated title
         $this->assertResultSuccess(Book::create([ 'title' => 'Book 2' ]));
 
-        $q = BookCollection::asQuery();
-        $q->setSelect('DISTINCT title');
-        $titles = Book::masterRepo()->fetchQueryColumn($q);
+        $titles = Book::masterRepo()->select('DISTINCT title')->fetchColumn(0);
         $this->assertCount(2, $titles);
 
         foreach ($titles as $title) {

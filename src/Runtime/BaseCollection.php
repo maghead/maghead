@@ -241,20 +241,6 @@ class BaseCollection implements
         return static::masterRepo(); // my repo
     }
 
-
-    /**
-     * Create a SelectQuery bases on the collection definition.
-     *
-     * @return SelectQuery
-     */
-    public static function asQuery()
-    {
-        $q = new SelectQuery();
-        $q->from(static::TABLE, 'm'); // main table alias
-        $q->select('*'); // default selection
-        return $q;
-    }
-
     /**
      * Create a SelectQuery bases on the collection definition.
      *
@@ -518,18 +504,17 @@ class BaseCollection implements
 
     public function delete()
     {
-        $schema = static::getSchema();
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getWriteConnection();
-        $driver = $conn->getQueryDriver();
-
         $query = new DeleteQuery();
         $query->from($this->getTable());
         if ($this->where) {
             $query->setWhere($this->where);
         }
 
-        $arguments = new ArgumentArray();
+        $arguments = new ArgumentArray;
+
+        $repo = $this->getCurrentRepo();
+        $conn = $repo->getWriteConnection();
+        $driver = $conn->getQueryDriver();
         $sql = $query->toSql($driver, $arguments);
 
         try {

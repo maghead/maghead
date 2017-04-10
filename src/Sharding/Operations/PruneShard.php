@@ -61,7 +61,9 @@ class PruneShard
             }
 
             $collection = $schema->newCollection();
-            $q = $collection->asQuery();
+
+            /*
+            $q = $collection::asQuery();
             $q->setSelect("DISTINCT {$shardKey}");
 
             $repo = $collection->repo($conn, $conn);
@@ -69,6 +71,9 @@ class PruneShard
             $shardKeys = array_filter($keys, function($key) use ($shardDispatcher, $nodeId) {
                 return $shardDispatcher->dispatchId($key) == $nodeId;
             });
+            $collection->where()->in($shardKey, $shardKeys);
+            $collection->delete();
+             */
 
             // TODO: remove the keys that maps to other nodes.
             /*
