@@ -44,6 +44,10 @@ class PruneShard
     public function prune($nodeId, $mappingId)
     {
         $conn = $this->dataSourceManager->connect($nodeId);
+        if (!$conn) {
+            throw new InvalidArgumentException("Data source $nodeId doesn't exist");
+        }
+
         $queryDriver = $conn->getQueryDriver();
 
         $schemas = SchemaUtils::findSchemasByConfig($this->config, $this->logger);
@@ -60,27 +64,20 @@ class PruneShard
                 continue;
             }
 
-            $collection = $schema->newCollection();
+            $repo = $schema->newRepo($conn, $conn);
 
-            /*
-            $q = $collection::asQuery();
-            $q->setSelect("DISTINCT {$shardKey}");
+            $q = $repo->select("DISTINCT {$shardKey}");
+            $keys = $q->fetchColumn(0);
 
-            $repo = $collection->repo($conn, $conn);
-            $keys = $repo->fetchColumn($q);
-            $shardKeys = array_filter($keys, function($key) use ($shardDispatcher, $nodeId) {
-                return $shardDispatcher->dispatchId($key) == $nodeId;
+            $excludedShardKeys = array_filter($keys, function($key) use ($shardDispatcher, $nodeId) {
+                return $shardDispatcher->dispatchId($key) != $nodeId;
             });
-            $collection->where()->in($shardKey, $shardKeys);
-            $collection->delete();
-             */
 
-            // TODO: remove the keys that maps to other nodes.
-            /*
-            echo ($schema->getTable()), "\n";
-            var_dump($keys);
-            var_dump($shardKeys);
-             */
+            if (!empty($excludedShardKeys)) {
+                $q = $repo->delete();
+                $q->where()->in($shardKey, $excludedShardKeys);
+                $q->execute();
+            }
         }
     }
 }
