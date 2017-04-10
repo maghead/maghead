@@ -109,6 +109,12 @@ abstract class BaseSchema
         return $this->getModelClass().'SchemaProxy';
     }
 
+    public function newRepo($write = null, $read = null)
+    {
+        $class = $this->getModelClass();
+        return $class::repo($write, $read);
+    }
+
     public function newModel()
     {
         $class = $this->getModelClass();
