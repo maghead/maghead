@@ -767,6 +767,10 @@ class BaseRepo
 
 
     // ================= QUERY METHODS =============
+
+    /**
+     * @return Maghead\Query\SelectQuery
+     */
     public function select($sel = '*')
     {
         $query = new SelectQuery($this);
@@ -775,6 +779,9 @@ class BaseRepo
         return $query;
     }
 
+    /**
+     * @return Maghead\Query\DeleteQuery
+     */
     public function delete()
     {
         $query = new DeleteQuery($this);
@@ -782,6 +789,9 @@ class BaseRepo
         return $query;
     }
 
+    /**
+     * @return Maghead\Query\UpdateQuery
+     */
     public function update($data = null)
     {
         $query = new UpdateQuery($this);
