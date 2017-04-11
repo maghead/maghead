@@ -149,30 +149,6 @@ class BaseRepo
         return $stm->fetch(PDO::FETCH_CLASS);
     }
 
-    public function loadForUpdate(array $args)
-    {
-        $schema = $this->getSchema();
-        $query = new SelectQuery();
-        $query->select('*');
-        $query->from($this->getTable(), $this->getAlias());
-        $query->forUpdate();
-
-        $conn = $this->read;
-        $driver = $conn->getQueryDriver();
-
-        if (!$driver instanceof PDOMySQLDriver) {
-            throw new Exception("The current driver doesn't support SELECT ... FOR UPDATE");
-        }
-
-        $query->where($args);
-        $arguments = new ArgumentArray();
-        $sql = $query->toSql($driver, $arguments);
-        $stm = $conn->prepare($sql);
-        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this]);
-        $stm->execute($arguments->toArray());
-        return $stm->fetch(PDO::FETCH_CLASS);
-    }
-
     public function findByKeys(array $args, $byKeys = null)
     {
         $pk = static::PRIMARY_KEY;
@@ -198,6 +174,31 @@ class BaseRepo
         }
         return $this->findByPrimaryKey($arg);
     }
+
+    public function loadForUpdate(array $args)
+    {
+        $schema = $this->getSchema();
+        $query = new SelectQuery();
+        $query->select('*');
+        $query->from($this->getTable(), $this->getAlias());
+        $query->forUpdate();
+
+        $conn = $this->read;
+        $driver = $conn->getQueryDriver();
+
+        if (!$driver instanceof PDOMySQLDriver) {
+            throw new Exception("The current driver doesn't support SELECT ... FOR UPDATE");
+        }
+
+        $query->where($args);
+        $arguments = new ArgumentArray();
+        $sql = $query->toSql($driver, $arguments);
+        $stm = $conn->prepare($sql);
+        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this]);
+        $stm->execute($arguments->toArray());
+        return $stm->fetch(PDO::FETCH_CLASS);
+    }
+
 
     public function rawUpdateByPrimaryKey($kVal, array $args)
     {
