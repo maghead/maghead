@@ -26,14 +26,14 @@
                 --destination=root@localhost:/opt/local/var/run/mysql56/mysqld.sock \
                 shade_src:shade_dst
 
-- [ ] Prune Shard
+- [x] Prune Shard
 
     - [x] Iterate schemas
-    - [ ] Prune collection with the sharding key.
-        - [ ] Get the shard key
-        - [ ] Query distinct values from collection.
-        - [ ] Calculate shard Id on each value.
-        - [ ] For each value, remove the rows that don't belong to the shard.
+    - [x] Prune collection with the sharding key.
+        - [x] Get the shard key
+        - [x] Query distinct values from collection.
+        - [x] Calculate shard Id on each value.
+        - [x] For each value, remove the rows that don't belong to the shard.
 
 - [ ] Split Shard
 
