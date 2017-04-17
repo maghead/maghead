@@ -23,7 +23,7 @@ class FlexihashHasher implements Hasher
      *
      * @return string group id.
      */
-    public function hash($key)
+    public function lookup($key)
     {
         return $this->hash->lookup($key);
     }
