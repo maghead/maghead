@@ -5,6 +5,39 @@ namespace Maghead\Sharding\Hasher;
 use Flexihash\Flexihash;
 use Maghead\Sharding\ShardMapping;
 
+class HashRange
+{
+    public $hasher;
+
+    public $from;
+
+    public $to;
+
+    public function __construct(Hasher $hasher, $from, $to)
+    {
+        $this->hasher = $hasher;
+        $this->from = $from;
+        $this->to = $to;
+    }
+
+    public function in($key)
+    {
+        $index = $this->hasher->hash($key);
+        $keyFrom = $this->from['key'];
+        if ($index <= $keyFrom) {
+            return false;
+        }
+
+        if (isset($this->to['key'])) {
+            $keyTo = $this->to['key'];
+            if ($index > $keyTo) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
 class FastHasher implements Hasher
 {
     protected $mapping;
@@ -77,7 +110,6 @@ class FastHasher implements Hasher
      */
     public function lookupRange($target)
     {
-        // var_dump($this->buckets);
         ksort($this->buckets, SORT_REGULAR);
         $index = $this->hash($target);
 
@@ -85,15 +117,19 @@ class FastHasher implements Hasher
         $lastKey = null;
         foreach ($this->buckets as $key => $nodeId) {
             if ($key > $index) {
-                return [
-                    ['key'=> $lastKey, 'node' => $lastNode],
-                    ['key' => $key, 'node' => $nodeId],
-                ];
+                return new HashRange($this,
+                    ['key' => $lastKey, 'node' => $lastNode],
+                    ['key' => $key,     'node' => $nodeId]
+                );
             }
             $lastNode = $nodeId;
             $lastKey = $key;
         }
-        return [['key'=> $lastKey, 'node' => $lastNode], null];
+
+        return new HashRange($this,
+            ['key' => $lastKey, 'node' => $lastNode],
+            null
+        );
     }
 
     public function lookup($key)
