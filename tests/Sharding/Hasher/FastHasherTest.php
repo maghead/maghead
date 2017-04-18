@@ -16,17 +16,18 @@ class FastHasherTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-
-    public function testLookup()
+    public function testKeysOf()
     {
         $hasher = new FastHasher($this->mapping);
+        $indexes = $hasher->keysOf('c1');
+        $this->assertEquals([1591159457], $indexes);
 
-        $testKey = crc32(30);
-        $this->assertEquals(2473281379, $testKey);
+    }
 
-        $n = $hasher->lookup(30);
-        $this->assertEquals('c3', $n);
 
+    public function testGetBuckets()
+    {
+        $hasher = new FastHasher($this->mapping);
         $buckets = $hasher->getBuckets();
         $this->assertEquals([
             1591159457 => 'c1',
@@ -35,38 +36,72 @@ class FastHasherTest extends \PHPUnit\Framework\TestCase
         ], $buckets);
     }
 
-    /**
-     * @depends testLookup
-     */
-    public function testLookupRange()
+
+
+    public function lookupKeyProvider()
     {
-        $hasher = new FastHasher($this->mapping);
-        $range = $hasher->lookupRange('c2.5');
-        $this->assertEquals([
-            'key' => 1591159457,
-            'node' => 'c1',
-        ] , $range->from);
-
-        $this->assertEquals([
-            'key' => 2967030669,
-            'node' => 'c3',
-        ] , $range->to);
-
-        return $range;
+        return [
+            [30, 2473281379,   'c3'],
+            [40, 3693793700,   'c1'],
+        ];
     }
 
 
+
     /**
-     * @depends testLookupRange
+     * @dataProvider lookupKeyProvider
      */
-    public function testRangeIn($range)
+    public function testLookup($key, $hash, $node)
     {
-        $this->assertTrue($range->in('c2.5'));
+        $hasher = new FastHasher($this->mapping);
+        $h = $hasher->hash($key);
+        $this->assertEquals($hash, $h);
 
-        // should not include 'from'
-        $this->assertFalse($range->in('c1'));
+        $n = $hasher->lookup($key);
+        $this->assertEquals($node, $n);
+    }
 
-        // should include 'to'
-        $this->assertTrue($range->in('c3'));
+
+    public function rangeTestDataProvider()
+    {
+        return [
+            /* newNode, nextNode, from, index */
+            ['c2.5', 'c3', 1591159457, 1921809152], // migrate c3 to c2.5 with range 1591159457 ~ 1921809152
+            ['c4', 'c1', 0, 784195118], // migrate c3 to c2.5 with range 1591159457 ~ 1921809152
+        ];
+    }
+
+    /**
+     * As the shard split action runner,
+     * I want to lookup the range between the key of the new target and the previous target
+     * So that we can migrate the data from the existing node to the new node.
+     *
+     * @dataProvider rangeTestDataProvider
+     * @depends testLookup
+     */
+    public function testLookupRange($newNode, $nextNode, $from, $index)
+    {
+        $hasher = new FastHasher($this->mapping);
+        $range = $hasher->lookupRange($newNode);
+        $this->assertNotNull($range, 'always return range');
+        $this->assertInstanceOf('Maghead\Sharding\Hasher\HashRange', $range);
+        $this->assertEquals($from, $range->from);
+        $this->assertEquals($index, $range->index);
+
+        $n = $hasher->lookup($newNode);
+        $this->assertEquals($nextNode, $n, 'the next should be c3');
+
+        // then we can migrate data 
+        // from "c3" where $from < $key <= $index 
+        // to "c2.5"
+        return $range;
+    }
+
+    public function testRangeIn()
+    {
+        $hasher = new FastHasher($this->mapping);
+        $range = $hasher->lookupRange('c2.5');
+        $this->assertTrue($range->in('c2.5'), 'index itself should be included.');
+        $this->assertFalse($range->in('c1'), 'should not include "from"');
     }
 }

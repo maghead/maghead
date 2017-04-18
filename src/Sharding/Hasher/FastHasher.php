@@ -9,30 +9,31 @@ class HashRange
 {
     public $hasher;
 
+    /**
+     * @var string $target the new target.
+     */
+    public $target;
+
+    public $index;
+
     public $from;
 
-    public $to;
-
-    public function __construct(Hasher $hasher, $from, $to)
+    public function __construct(Hasher $hasher, $target, $index, $from)
     {
         $this->hasher = $hasher;
+        $this->target = $target;
+        $this->index = $index;
         $this->from = $from;
-        $this->to = $to;
     }
 
     public function in($key)
     {
         $index = $this->hasher->hash($key);
-        $keyFrom = $this->from['key'];
-        if ($index <= $keyFrom) {
+        if ($index <= $this->from) {
             return false;
         }
-
-        if (isset($this->to['key'])) {
-            $keyTo = $this->to['key'];
-            if ($index > $keyTo) {
-                return false;
-            }
+        if ($index > $this->index) {
+            return false;
         }
         return true;
     }
@@ -52,25 +53,21 @@ class FastHasher implements Hasher
         $this->addTargets(array_keys($mapping->chunks));
     }
 
-    public function addTargets($targets, $numberOfReplica = 1)
+    public function addTargets($targets)
     {
         foreach ($targets as $target) {
-            for ($i = 0; $i < $numberOfReplica; $i++) {
-                $index = $this->hash($target);
-                $this->buckets[$index] = $target;
-                $this->targetIndexes[$target][] = $index;
-            }
-        }
-        ksort($this->buckets, SORT_REGULAR);
-    }
-
-    public function addTarget($target, $numberOfReplica = 1)
-    {
-        for ($i = 0; $i < $numberOfReplica; $i++) {
             $index = $this->hash($target);
             $this->buckets[$index] = $target;
             $this->targetIndexes[$target][] = $index;
         }
+        ksort($this->buckets, SORT_REGULAR);
+    }
+
+    public function addTarget($target)
+    {
+        $index = $this->hash($target);
+        $this->buckets[$index] = $target;
+        $this->targetIndexes[$target][] = $index;
         ksort($this->buckets, SORT_REGULAR);
     }
 
@@ -85,7 +82,7 @@ class FastHasher implements Hasher
      *
      * @return number[]
      */
-    public function indexesOf($target)
+    public function keysOf($target)
     {
         if (isset($this->targetIndexes[$target])) {
             return $this->targetIndexes[$target];
@@ -113,23 +110,14 @@ class FastHasher implements Hasher
         ksort($this->buckets, SORT_REGULAR);
         $index = $this->hash($target);
 
-        $lastNode = null;
-        $lastKey = null;
+        $from = 0;
         foreach ($this->buckets as $key => $nodeId) {
             if ($key > $index) {
-                return new HashRange($this,
-                    ['key' => $lastKey, 'node' => $lastNode],
-                    ['key' => $key,     'node' => $nodeId]
-                );
+                return new HashRange($this, $target, $index, $from);
             }
-            $lastNode = $nodeId;
-            $lastKey = $key;
+            $from = $key;
         }
-
-        return new HashRange($this,
-            ['key' => $lastKey, 'node' => $lastNode],
-            null
-        );
+        return new HashRange($this, $target, $index, $from);
     }
 
     public function lookup($key)
@@ -140,5 +128,8 @@ class FastHasher implements Hasher
                 return $value;
             }
         }
+        reset($this->buckets);
+        $first = current($this->buckets);
+        return $first;
     }
 }

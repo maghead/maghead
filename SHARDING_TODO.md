@@ -37,6 +37,8 @@
 
 - [ ] Split Shard
 
+    - [x] Implement a consistent hash
+
 ## Instance Management Commands
 
 - [ ] instance add
