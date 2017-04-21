@@ -6,7 +6,7 @@ instance:
   local:
     dsn: 'pgsql:host=localhost'
     user: postgres
-data_source:
+databases:
   master:
     dsn: 'pgsql:host=localhost;dbname=testing'
     user: postgres

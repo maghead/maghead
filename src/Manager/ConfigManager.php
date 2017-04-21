@@ -26,21 +26,21 @@ class ConfigManager
 
     public function setMasterNode($nodeId)
     {
-        $keys = array_keys($this->config['data_source']);
+        $keys = array_keys($this->config['databases']);
         if (!in_array($nodeId, $keys)) {
             throw new InvalidArgumentException("Node $nodeId doesn't exist.");
         }
-        $this->config['data_source']['master'] = $nodeId;
+        $this->config['databases']['master'] = $nodeId;
     }
 
     public function removeNode($nodeId)
     {
-        unset($this->config['data_source'][$nodeId]);
+        unset($this->config['databases'][$nodeId]);
     }
 
     public function addNodeConfig($nodeId, array $nodeConfig)
     {
-        $this->config['data_source'][$nodeId] = $nodeConfig;
+        $this->config['databases'][$nodeId] = $nodeConfig;
     }
 
     public function addNode($nodeId, $dsnArg, $opts = array())
@@ -94,7 +94,7 @@ class ConfigManager
                 $node['connection_options'] = [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'];
             break;
         }
-        $this->config['data_source'][$nodeId] = $node;
+        $this->config['databases'][$nodeId] = $node;
     }
 
     public function save($file = null)

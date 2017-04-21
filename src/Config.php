@@ -58,12 +58,12 @@ class Config implements ArrayAccess
 
     public function removeDataSource($dataSourceId)
     {
-        unset($this->stash['data_source'][ $dataSourceId ]);
+        unset($this->stash['databases'][ $dataSourceId ]);
     }
 
     public function addDataSource($dataSourceId, array $config)
     {
-        $this->stash['data_source'][ $dataSourceId ] = $config;
+        $this->stash['databases'][ $dataSourceId ] = $config;
     }
 
     /**
@@ -73,8 +73,8 @@ class Config implements ArrayAccess
      */
     public function getDataSources()
     {
-        if (isset($this->stash['data_source'])) {
-            return $this->stash['data_source'];
+        if (isset($this->stash['databases'])) {
+            return $this->stash['databases'];
         }
 
         return array();
@@ -84,8 +84,8 @@ class Config implements ArrayAccess
     {
         $id = $this->getMasterDataSourceId();
 
-        if (isset($this->stash['data_source'][$id])) {
-            return $this->stash['data_source'][$id];
+        if (isset($this->stash['databases'][$id])) {
+            return $this->stash['databases'][$id];
         }
     }
 
@@ -120,8 +120,8 @@ class Config implements ArrayAccess
      */
     public function getDataSource($sourceId)
     {
-        if (isset($this->stash['data_source'][$sourceId])) {
-            return $this->stash['data_source'][$sourceId];
+        if (isset($this->stash['databases'][$sourceId])) {
+            return $this->stash['databases'][$sourceId];
         }
         throw new Exception("data source $sourceId is not defined.");
     }

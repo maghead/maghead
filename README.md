@@ -100,7 +100,7 @@ schema:
   auto_id: 1  # enable automatic primary key (auto increment unsigned int)
   paths:
     - src/    # where you store the schema class files.
-data_sources:
+databases:
   default: master
   nodes:
     master:
@@ -804,7 +804,7 @@ SELECT m.title, m.content, m.status, m.created_on, m.created_by, m.id FROM posts
 ## Setting up QueryDriver for SQL syntax
  
 ```php
-$driver = Maghead\QueryDriver::getInstance('data_source_id');
+$driver = Maghead\QueryDriver::getInstance('databases_id');
 $driver->configure('driver','pgsql');
 $driver->configure('quote_column',true);
 $driver->configure('quote_table',true);

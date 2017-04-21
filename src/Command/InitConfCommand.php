@@ -55,7 +55,7 @@ schema:
   #  Customize your schema paths
   # paths:
   # - src
-data_source:
+databases:
   master:
     driver: $driver
     database: $dbName

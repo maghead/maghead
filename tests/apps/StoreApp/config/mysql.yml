@@ -26,7 +26,7 @@ sharding:
         c1: { shard: node1 }
         c2: { shard: node2 }
         c3: { shard: node3 }
-data_source:
+databases:
   master:
     driver: mysql
     user: root

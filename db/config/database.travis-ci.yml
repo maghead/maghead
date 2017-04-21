@@ -15,7 +15,7 @@ instance:
   local:
     dsn: 'mysql:host=localhost'
     user: root
-data_source:
+databases:
   master:
     dsn: 'sqlite:tests.db'
     # dsn: 'pgsql:dbname=lazy_test'

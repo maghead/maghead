@@ -15,7 +15,7 @@ instance:
   local:
     dsn: 'mysql:host=localhost'
     user: root
-data_source:
+databases:
   master:
     dsn: 'sqlite::memory:'
     query_options: { quote_column: true, quote_table: true }

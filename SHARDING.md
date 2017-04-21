@@ -126,7 +126,7 @@ By default, the 'chunks' list is empty. So you have to create chunks first.
 ## Shard Manager
 
 Shard Manager manages the connections to shards. the connections used by shards
-are defined in the `data_source` section in the config file.
+are defined in the `databases` section in the config file.
 
 To create the shard manager, you need two arguments: Config object and
 ConnectionManager instance.

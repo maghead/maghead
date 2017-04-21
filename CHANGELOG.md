@@ -30,7 +30,7 @@ Changes
 - Changed data source config to the structure below (backward compatible change):
 
 ```yml
-data_source:
+databases:
   default: master
   nodes:
     master:

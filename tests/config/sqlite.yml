@@ -5,7 +5,7 @@ schema:
 instance:
   local:
     dsn: 'sqlite::memory:'
-data_source:
+databases:
   master:
     dsn: 'sqlite::memory:'
     query_options: { quote_table: true }

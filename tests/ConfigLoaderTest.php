@@ -21,7 +21,7 @@ class ConfigLoaderTest extends TestCase
     {
         $config = ConfigLoader::loadFromFile('tests/apps/StoreApp/config/mysql.yml', true);
         $this->assertNotNull($config);
-        $nodes = $config['data_source'];
+        $nodes = $config['databases'];
         $this->assertNotEmpty($nodes);
         foreach ($nodes as $nodeConfig) {
             $this->assertNodeConfig($nodeConfig, 'node config');

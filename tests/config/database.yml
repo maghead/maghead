@@ -2,7 +2,7 @@
 schema:
   paths:
     - tests
-data_source:
+databases:
   master:
     dsn: 'sqlite::memory:'
     query_options: { quote_table: true }
