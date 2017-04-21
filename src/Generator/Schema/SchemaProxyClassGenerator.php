@@ -42,8 +42,8 @@ class SchemaProxyClassGenerator
         $cTemplate->addPublicProperty('primaryKey', $schema->getPrimaryKey());
         $cTemplate->addPublicProperty('columnNamesIncludeVirtual', $schema->getColumnNames(true));
         $cTemplate->addPublicProperty('label', $schemaArray['label']);
-        $cTemplate->addPublicProperty('readSourceId', $schemaArray['read_data_source']);
-        $cTemplate->addPublicProperty('writeSourceId', $schemaArray['write_data_source']);
+        $cTemplate->addPublicProperty('readSourceId', $schemaArray['read_id']);
+        $cTemplate->addPublicProperty('writeSourceId', $schemaArray['write_id']);
         $cTemplate->addPublicProperty('relations', array());
 
         $cTemplate->addStaticVar('column_hash', array_fill_keys($schema->getColumnNames(), 1));

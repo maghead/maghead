@@ -338,8 +338,8 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
             'model_class' => $this->getModelClass(),
             'collection_class' => $this->getCollectionClass(),
             'relations' => $this->relations,
-            'read_data_source' => $this->readSourceId,
-            'write_data_source' => $this->writeSourceId,
+            'read_id' => $this->readSourceId,
+            'write_id' => $this->writeSourceId,
         );
     }
 
