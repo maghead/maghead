@@ -194,9 +194,9 @@ To clone a shard in PHP code:
     $config = ConfigLoader::loadFromFile('.../config.yml');
     $o = new CloneShard($config, $logger);
     $o->setDropFirst(true);
-    $o->clone('local', 't2', 'node_master');
+    $o->clone('local', 't2', 'master');
 
-The above code creates a new node `t2` and copy the data from `node_master`.
+The above code creates a new node `t2` and copy the data from `master`.
 
 ### Moving Shard
 

@@ -3,7 +3,6 @@
 namespace Maghead\Generator\Schema;
 
 use RuntimeException;
-use Maghead\ConfigLoader;
 use ClassTemplate\ClassFile;
 use Maghead\Schema;
 use Maghead\Schema\SchemaInterface;

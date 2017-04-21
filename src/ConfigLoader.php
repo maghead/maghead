@@ -100,8 +100,8 @@ class ConfigLoader
 
     public static function preprocessConfig(array $config)
     {
-        if (isset($config['data_source']['nodes'])) {
-            $config['data_source']['nodes'] = self::normalizeNodeConfigArray($config['data_source']['nodes']);
+        if (isset($config['data_source'])) {
+            $config['data_source'] = self::normalizeNodeConfigArray($config['data_source']);
         }
 
         if (isset($config['instance'])) {

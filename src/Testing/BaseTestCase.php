@@ -89,10 +89,7 @@ abstract class BaseTestCase extends TestCase
 
     protected function getMasterDataSourceId()
     {
-        if ($this->defaultDataSource) {
-            return $this->defaultDataSource;
-        }
-        return $this->getCurrentDriverType();
+        return 'master';
     }
 
     /**
@@ -109,9 +106,14 @@ abstract class BaseTestCase extends TestCase
      */
     protected function config()
     {
-        // TODO: load config from file
-        $config = ConfigLoader::loadFromSymbol(true);
-        $config->setMasterDataSourceId($this->getMasterDataSourceId());
+        $driverType = $this->getCurrentDriverType();
+        $configFile = "tests/config/{$driverType}.yml";
+
+        if (!file_exists($configFile)) {
+            throw new InvalidArgumentException("$configFile doesn't exist.");
+        }
+
+        $config = ConfigLoader::loadFromFile($configFile);
         $config->setAutoId();
         return $config;
     }
@@ -149,7 +151,7 @@ abstract class BaseTestCase extends TestCase
 
     protected function prepareConnections()
     {
-        $this->setupDefaultConnection();
+        $this->setupMasterConnection();
     }
 
     protected function getMasterConnection()
@@ -160,7 +162,7 @@ abstract class BaseTestCase extends TestCase
         return $this->conn;
     }
 
-    protected function setupDefaultConnection()
+    protected function setupMasterConnection()
     {
         if (!$this->conn && $this->getMasterDataSourceId()) {
             $this->conn = $this->setupConnection($this->getMasterDataSourceId());
@@ -178,7 +180,8 @@ abstract class BaseTestCase extends TestCase
             $conn = $this->dataSourceManager->getWriteConnection($connId);
 
             if ($this->getCurrentDriverType() === 'sqlite') {
-                $this->dataSourceManager->shareWrite($connId); // this is for sqlite:memory
+                // This is for sqlite:memory, copy the connection object to another connection ID.
+                $this->dataSourceManager->shareWrite($connId);
             }
 
             return $conn;

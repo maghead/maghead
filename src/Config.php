@@ -58,12 +58,12 @@ class Config implements ArrayAccess
 
     public function removeDataSource($dataSourceId)
     {
-        unset($this->stash['data_source']['nodes'][ $dataSourceId ]);
+        unset($this->stash['data_source'][ $dataSourceId ]);
     }
 
     public function addDataSource($dataSourceId, array $config)
     {
-        $this->stash['data_source']['nodes'][ $dataSourceId ] = $config;
+        $this->stash['data_source'][ $dataSourceId ] = $config;
     }
 
     /**
@@ -73,8 +73,8 @@ class Config implements ArrayAccess
      */
     public function getDataSources()
     {
-        if (isset($this->stash['data_source']['nodes'])) {
-            return $this->stash['data_source']['nodes'];
+        if (isset($this->stash['data_source'])) {
+            return $this->stash['data_source'];
         }
 
         return array();
@@ -84,22 +84,14 @@ class Config implements ArrayAccess
     {
         $id = $this->getMasterDataSourceId();
 
-        if (isset($this->stash['data_source']['nodes'][$id])) {
-            return $this->stash['data_source']['nodes'][$id];
+        if (isset($this->stash['data_source'][$id])) {
+            return $this->stash['data_source'][$id];
         }
-    }
-
-    public function setMasterDataSourceId($id)
-    {
-        $this->stash['data_source']['master'] = $id;
     }
 
     public function getMasterDataSourceId()
     {
-        if (isset($this->stash['data_source']['master'])) {
-            return $this->stash['data_source']['master'];
-        }
-        throw new Exception('master data source is undefined.');
+        return 'master';
     }
 
     public function getSeedScripts()
@@ -128,8 +120,8 @@ class Config implements ArrayAccess
      */
     public function getDataSource($sourceId)
     {
-        if (isset($this->stash['data_source']['nodes'][$sourceId])) {
-            return $this->stash['data_source']['nodes'][$sourceId];
+        if (isset($this->stash['data_source'][$sourceId])) {
+            return $this->stash['data_source'][$sourceId];
         }
         throw new Exception("data source $sourceId is not defined.");
     }

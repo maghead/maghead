@@ -26,9 +26,9 @@ class MetadataBaseRepo
 
     const TABLE = '__meta__';
 
-    const READ_SOURCE_ID = 'default';
+    const READ_SOURCE_ID = 'master';
 
-    const WRITE_SOURCE_ID = 'default';
+    const WRITE_SOURCE_ID = 'master';
 
     const PRIMARY_KEY = 'id';
 

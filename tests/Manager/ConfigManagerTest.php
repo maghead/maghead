@@ -23,27 +23,6 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
         }
     }
 
-    public function testSetDefaultNode()
-    {
-        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG, true);
-        $manager = new ConfigManager($config);
-        $manager->setMasterNode('mysql');
-        $ret = $manager->save(self::TEST_CONFIG);
-        $this->assertTrue($ret);
-
-        // copy(self::TEST_CONFIG, 'tests/fixtures/config/testSetDefaultNode.expected');
-        $this->assertFileEquals('tests/fixtures/config/testSetDefaultNode.expected', self::TEST_CONFIG);
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testSetDefaultInexistNode()
-    {
-        $manager = new ConfigManager(self::TEST_CONFIG);
-        $manager->setMasterNode('foo');
-    }
-
     public function testRemoveNode()
     {
         $manager = new ConfigManager(self::TEST_CONFIG);

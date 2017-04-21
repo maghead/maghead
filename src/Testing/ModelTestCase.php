@@ -79,8 +79,6 @@ abstract class ModelTestCase extends BaseTestCase
         }
     }
 
-
-
     protected function prepareBaseData($schemas)
     {
         $seeder = new SeedBuilder($this->logger);

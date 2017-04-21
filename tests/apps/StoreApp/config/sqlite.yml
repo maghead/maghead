@@ -24,37 +24,35 @@ sharding:
         c2: { shard: node2 }
         c3: { shard: node3 }
 data_source:
-  master: node_master
-  nodes:
-    node_master:
-      dsn: sqlite:node_master.sqlite
-      query_options:
-        quote_table: true
-      driver: sqlite
-      connection_options: []
-      user: ~
-      password: ~
-    node1:
-      dsn: sqlite:node1.sqlite
-      query_options:
-        quote_table: true
-      driver: sqlite
-      connection_options: []
-      user: ~
-      password: ~
-    node2:
-      dsn: sqlite:node2.sqlite
-      query_options:
-        quote_table: true
-      driver: sqlite
-      connection_options: []
-      user: ~
-      password: ~
-    node3:
-      dsn: sqlite:node3.sqlite
-      query_options:
-        quote_table: true
-      driver: sqlite
-      connection_options: []
-      user: ~
-      password: ~
+  master:
+    dsn: sqlite:master.sqlite
+    query_options:
+      quote_table: true
+    driver: sqlite
+    connection_options: []
+    user: ~
+    password: ~
+  node1:
+    dsn: sqlite:node1.sqlite
+    query_options:
+      quote_table: true
+    driver: sqlite
+    connection_options: []
+    user: ~
+    password: ~
+  node2:
+    dsn: sqlite:node2.sqlite
+    query_options:
+      quote_table: true
+    driver: sqlite
+    connection_options: []
+    user: ~
+    password: ~
+  node3:
+    dsn: sqlite:node3.sqlite
+    query_options:
+      quote_table: true
+    driver: sqlite
+    connection_options: []
+    user: ~
+    password: ~

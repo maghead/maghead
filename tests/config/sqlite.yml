@@ -1,0 +1,11 @@
+---
+schema:
+  paths:
+    - tests
+instance:
+  local:
+    dsn: 'sqlite::memory:'
+data_source:
+  master:
+    dsn: 'sqlite::memory:'
+    query_options: { quote_table: true }

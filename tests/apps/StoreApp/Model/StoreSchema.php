@@ -17,8 +17,8 @@ class StoreSchema extends DeclareSchema
             ;
 
         // This will be default to the master node ID
-        // $this->writeTo('node_master');
-        // $this->readFrom('node_master');
+        // $this->writeTo('master');
+        // $this->readFrom('master');
         $this->globalTable("M_store_id"); // global table on the shards of M_store_id
     }
 }

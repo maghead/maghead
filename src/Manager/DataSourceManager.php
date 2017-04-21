@@ -13,7 +13,7 @@ use Maghead\Connector\PDOMySQLConnector;
 
 class DataSourceManager extends ConnectionManager
 {
-    const DEFAULT_MASTER_NODE_ID = 'default';
+    const DEFAULT_MASTER_NODE_ID = 'master';
 
     protected $masterNodeId;
 
@@ -27,66 +27,10 @@ class DataSourceManager extends ConnectionManager
         $this->masterNodeId = $nodeId;
     }
 
-
     /**
-     * @override
-     */
-    public function connect($nodeId)
-    {
-        if ($nodeId === self::DEFAULT_MASTER_NODE_ID) {
-            $nodeId = $this->masterNodeId;
-        }
-        return parent::connect($nodeId);
-    }
-
-    /**
-     * @override
-     */
-    public function connectRead($nodeId)
-    {
-        if ($nodeId === self::DEFAULT_MASTER_NODE_ID) {
-            $nodeId = $this->masterNodeId;
-        }
-        return parent::connectRead($nodeId);
-    }
-
-    /**
-     * @override
-     */
-    public function getConnection($nodeId)
-    {
-        if ($nodeId === self::DEFAULT_MASTER_NODE_ID) {
-            $nodeId = $this->masterNodeId;
-        }
-        return parent::getConnection($nodeId);
-    }
-
-    /**
-     * @override
-     */
-    public function getReadConnection($nodeId)
-    {
-        if ($nodeId === self::DEFAULT_MASTER_NODE_ID) {
-            $nodeId = $this->masterNodeId;
-        }
-        return parent::getReadConnection($nodeId);
-    }
-
-    /**
-     * @override
-     */
-    public function getWriteConnection($nodeId)
-    {
-        if ($nodeId === self::DEFAULT_MASTER_NODE_ID) {
-            $nodeId = $this->masterNodeId;
-        }
-        return parent::getWriteConnection($nodeId);
-    }
-
-    /**
-     * Get default data source id.
+     * Get master data source id.
      *
-     * @return string 'default'
+     * @return string 'master'
      */
     public function getMasterConnection()
     {

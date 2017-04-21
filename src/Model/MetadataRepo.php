@@ -18,8 +18,8 @@ class MetadataRepo extends BaseRepo
     const COLLECTION_CLASS = 'Maghead\\Model\\MetadataCollection';
     const MODEL_CLASS = 'Maghead\\Model\\Metadata';
     const TABLE = '__meta__';
-    const READ_SOURCE_ID = 'default';
-    const WRITE_SOURCE_ID = 'default';
+    const READ_SOURCE_ID = 'master';
+    const WRITE_SOURCE_ID = 'master';
     const PRIMARY_KEY = 'id';
     const TABLE_ALIAS = 'm';
     const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = ? LIMIT 1';

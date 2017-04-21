@@ -1,0 +1,12 @@
+---
+schema:
+  paths:
+    - tests
+instance:
+  local:
+    dsn: 'mysql:host=localhost'
+    user: root
+data_source:
+  master:
+    dsn: 'mysql:host=localhost;dbname=testing'
+    user: root

@@ -27,37 +27,35 @@ sharding:
         c2: { shard: node2 }
         c3: { shard: node3 }
 data_source:
-  master: node_master
-  nodes:
-    node_master:
-      driver: mysql
-      user: root
-      password: null
-      database: testing
-      host: localhost
-      query_options: { }
-      connection_options: { 1002: 'SET NAMES utf8' }
-    node1:
-      driver: mysql
-      host: localhost
-      user: root
-      password: null
-      database: s1
-      query_options: {  }
-      connection_options: { 1002: 'SET NAMES utf8' }
-    node2:
-      host: localhost
-      user: root
-      driver: mysql
-      password: null
-      database: s2
-      query_options: {  }
-      connection_options: { 1002: 'SET NAMES utf8' }
-    node3:
-      driver: mysql
-      host: localhost
-      user: root
-      password: null
-      database: s3
-      query_options: {  }
-      connection_options: { 1002: 'SET NAMES utf8' }
+  master:
+    driver: mysql
+    user: root
+    password: null
+    database: testing
+    host: localhost
+    query_options: { }
+    connection_options: { 1002: 'SET NAMES utf8' }
+  node1:
+    driver: mysql
+    host: localhost
+    user: root
+    password: null
+    database: s1
+    query_options: {  }
+    connection_options: { 1002: 'SET NAMES utf8' }
+  node2:
+    host: localhost
+    user: root
+    driver: mysql
+    password: null
+    database: s2
+    query_options: {  }
+    connection_options: { 1002: 'SET NAMES utf8' }
+  node3:
+    driver: mysql
+    host: localhost
+    user: root
+    password: null
+    database: s3
+    query_options: {  }
+    connection_options: { 1002: 'SET NAMES utf8' }

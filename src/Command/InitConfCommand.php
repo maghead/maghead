@@ -56,13 +56,11 @@ schema:
   # paths:
   # - src
 data_source:
-  default: master
-  nodes:
-    master:
-      driver: $driver
-      database: $dbName
-      user: $user
-      pass: $password
+  master:
+    driver: $driver
+    database: $dbName
+    user: $user
+    pass: $password
 EOS;
         if (file_put_contents($configFile, $content) !== false) {
             $logger->info("Config file is generated: $configFile");

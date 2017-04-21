@@ -12,9 +12,9 @@ use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 
 abstract class StoreTestCase extends ModelTestCase
 {
-    protected $defaultDataSource = 'node_master';
+    protected $defaultDataSource = 'master';
 
-    protected $requiredDataSources = ['node_master', 'node1', 'node2', 'node3'];
+    protected $requiredDataSources = ['master', 'node1', 'node2', 'node3'];
 
     protected $skipDriver = 'pgsql';
 

@@ -22,9 +22,9 @@ abstract class BaseSchema
 
     public $primaryKey;
 
-    public $readSourceId = 'default';
+    public $readSourceId = 'master';
 
-    public $writeSourceId = 'default';
+    public $writeSourceId = 'master';
 
     public $mixinSchemaClasses = [];
 

@@ -42,6 +42,7 @@ class BaseCommand extends Command
         parent::options($opts);
         $self = $this;
         $opts->add('D|data-source:', 'specify data source id')
+            ->defaultValue('master')
             ->validValues(function () use ($self) {
                 if ($config = $self->getConfig()) {
                     return array_keys($config->getDataSources());
@@ -54,7 +55,7 @@ class BaseCommand extends Command
 
     public function getCurrentDataSourceId()
     {
-        return $this->options->{'data-source'} ?: $this->getConfig()->getMasterDataSourceId();
+        return $this->options->{'data-source'} ?: 'master';
     }
 
     public function getCurrentQueryDriver()
