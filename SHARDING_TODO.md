@@ -70,8 +70,6 @@
 - [ ] Setter should deflate the value from the value.
 - [x] Refactor Connection create functions to different Connector.
 
-
-
 - [ ] Move CRUD operation from modal class to ModelActions class.
 - [x] Add connection parameter to all the CRUD methods
 - [ ] Add setter type signature support to the class method generator.

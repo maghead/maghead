@@ -59,6 +59,12 @@ UPGRADE TO 4.0.x
 1. ConfigLoader::loadFromFile -> ConfigLoader::loadFile as a static method and 
     return `Config` object.
 
+2. Simplify `data_source` config by assumming the default node is "master".
+
+        databases:
+          master:
+            dsn: ...
+
 
 
 UPGRADE TO 2.0
@@ -73,3 +79,5 @@ WIP
 
 - Rebuild `SQLBuilder\Universal\SelectQuery` from Relationship with the `filter` and `where`.
 - Add a test case for relationship with custom where conditions, filter and order by and group by.
+
+// vim:sw=2:ts=2:sts=2:
