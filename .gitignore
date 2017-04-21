@@ -7,3 +7,5 @@ db/config/*.php
 /phpunit.xml
 *.sqlite
 *.log
+tests/.database.config.php
+tests/config/.database.config.php

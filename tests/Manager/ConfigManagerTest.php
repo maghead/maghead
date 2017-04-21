@@ -8,11 +8,11 @@ use Maghead\ConfigLoader;
  */
 class ConfigManagerTest extends PHPUnit\Framework\TestCase
 {
-    const TEST_CONFIG = 'tests/.database.config.yml';
+    const TEST_CONFIG = 'tests/config/.database.config.yml';
 
     public function setUp()
     {
-        copy('tests/database.yml', self::TEST_CONFIG);
+        copy('tests/config/database.yml', self::TEST_CONFIG);
         parent::setUp();
     }
 
@@ -31,8 +31,8 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
 
-        // copy(self::TEST_CONFIG, 'tests/config/testSetDefaultNode.expected');
-        $this->assertFileEquals('tests/config/testSetDefaultNode.expected', self::TEST_CONFIG);
+        // copy(self::TEST_CONFIG, 'tests/fixtures/config/testSetDefaultNode.expected');
+        $this->assertFileEquals('tests/fixtures/config/testSetDefaultNode.expected', self::TEST_CONFIG);
     }
 
     /**
@@ -52,8 +52,8 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
 
-        // copy(self::TEST_CONFIG, 'tests/config/testRemoveNode.expected');
-        $this->assertFileEquals('tests/config/testRemoveNode.expected', self::TEST_CONFIG);
+        // copy(self::TEST_CONFIG, 'tests/fixtures/config/testRemoveNode.expected');
+        $this->assertFileEquals('tests/fixtures/config/testRemoveNode.expected', self::TEST_CONFIG);
     }
 
     public function testAddNodeWithOptions()
@@ -68,8 +68,8 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
 
-        // copy(self::TEST_CONFIG, 'tests/config/testAddNodeWithOptions.expected');
-        $this->assertFileEquals('tests/config/testAddNodeWithOptions.expected', self::TEST_CONFIG);
+        // copy(self::TEST_CONFIG, 'tests/fixtures/config/testAddNodeWithOptions.expected');
+        $this->assertFileEquals('tests/fixtures/config/testAddNodeWithOptions.expected', self::TEST_CONFIG);
     }
 
     public function testAddNodeWithoutOptions()
@@ -81,7 +81,7 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
 
-        // copy(self::TEST_CONFIG, 'tests/config/testAddNodeWithoutOptions.expected');
-        $this->assertFileEquals('tests/config/testAddNodeWithoutOptions.expected', self::TEST_CONFIG);
+        // copy(self::TEST_CONFIG, 'tests/fixtures/config/testAddNodeWithoutOptions.expected');
+        $this->assertFileEquals('tests/fixtures/config/testAddNodeWithoutOptions.expected', self::TEST_CONFIG);
     }
 }

@@ -109,6 +109,7 @@ abstract class BaseTestCase extends TestCase
      */
     protected function config()
     {
+        // TODO: load config from file
         $config = ConfigLoader::loadFromSymbol(true);
         $config->setMasterDataSourceId($this->getMasterDataSourceId());
         $config->setAutoId();
