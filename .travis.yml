@@ -12,7 +12,7 @@ env:
 addons:
   postgresql: "9.3"
 before_install:
-- sudo sh travis/install-mysql-utilities
+- if [[ "$DB" == "mysql" ]]; then sudo sh travis/install-mysql-utilities ; fi
 install:
 - phpenv rehash
 - travis_retry composer require "satooshi/php-coveralls" "~1" --no-update
