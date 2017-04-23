@@ -37,7 +37,7 @@ class ConfigLoader
             }
             $targetFile = readlink(self::ANCHOR_FILENAME);
         }
-        if (!$targetFile || !file_exists($targetFile)) {
+        if (!$targetFile && !file_exists($targetFile)) {
             throw new Exception('Missing target config file. incorrect symbol link.');
         }
 
