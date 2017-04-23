@@ -24,15 +24,6 @@ class ConfigManager
         }
     }
 
-    public function setMasterNode($nodeId)
-    {
-        $keys = array_keys($this->config['databases']);
-        if (!in_array($nodeId, $keys)) {
-            throw new InvalidArgumentException("Node $nodeId doesn't exist.");
-        }
-        $this->config['databases']['master'] = $nodeId;
-    }
-
     public function removeNode($nodeId)
     {
         unset($this->config['databases'][$nodeId]);

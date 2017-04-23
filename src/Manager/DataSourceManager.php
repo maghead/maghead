@@ -22,11 +22,6 @@ class DataSourceManager extends ConnectionManager
         return $this->getNodeConfig($this->masterNodeId ?: self::DEFAULT_MASTER_NODE_ID);
     }
 
-    public function setMasterNodeId($nodeId)
-    {
-        $this->masterNodeId = $nodeId;
-    }
-
     /**
      * Get master data source id.
      *
