@@ -12,7 +12,7 @@ class ConfigWriter
 {
     const ANCHOR_FILENAME = '.lazy.yml';
 
-    public static $inlineLevel = 4;
+    public static $inlineLevel = 5;
 
     public static $indentSpaces = 2;
 
