@@ -275,6 +275,20 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     }
 
     /**
+     * Find the local primary key.
+     *
+     * A local primary is: integer type with auto-increment attribute.
+     */
+    public function findLocalPrimaryKey()
+    {
+        foreach ($this->columns as $name => $c) {
+            if ($c->primary && $c->isa === "int" && $c->autoIncrement) {
+                return $name;
+            }
+        }
+    }
+
+    /**
      * Find primary key column object from columns.
      *
      * This method will be called after building schema information to save the
