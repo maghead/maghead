@@ -129,7 +129,7 @@ class ShardMapping
 
     public function toArray()
     {
-        $conf = $this->extra;
+        $conf = $this->extra; // this will copy the extra array.
         $conf['key'] = $this->key;
         $conf['shards'] = $this->shardIds;
         $conf['chunks'] = $this->chunks;
