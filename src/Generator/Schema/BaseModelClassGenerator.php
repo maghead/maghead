@@ -94,9 +94,14 @@ class BaseModelClassGenerator
             'TABLE_ALIAS'        => 'm',
         ));
 
+        $cTemplate->addConst('GLOBAL_PRIMARY_KEY', $schema->findGlobalPrimaryKey());
+        $cTemplate->addConst('LOCAL_PRIMARY_KEY', $schema->findLocalPrimaryKey());
+
+        // Sharding related constants
         $cTemplate->addConst('SHARD_MAPPING_ID', $schema->shardMapping);
         $cTemplate->addConst('GLOBAL_TABLE', $schema->globalTable);
 
+        // TODO: can be removed now.
         $cTemplate->addProtectedProperty('table', $schema->getTable());
 
         $cTemplate->addStaticVar('column_names', $schema->getColumnNames());

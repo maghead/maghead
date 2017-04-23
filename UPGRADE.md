@@ -70,6 +70,8 @@ UPGRADE TO 4.0.x
     $this->column('uuid', 'uuid');
 
 
+
+
 UPGRADE TO 2.0
 ======================
 
