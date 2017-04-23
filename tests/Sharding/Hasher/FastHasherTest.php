@@ -9,30 +9,31 @@ class FastHasherTest extends \PHPUnit\Framework\TestCase
 
     public function setUp()
     {
-        $this->mapping = new ShardMapping('mapping_store_id', 'store_id', ['s1', 's2', 's3'], [
-            'c1' => 's1',
-            'c2' => 's2',
-            'c3' => 's3',
+        $this->mapping = new ShardMapping('mapping_store_id', 'store_id', ['node1', 'node2', 'node3'], [
+            536870912  =>  [ "shard" =>  "node1" ],
+            1073741824 =>  [ "shard" =>  "node1" ],
+            1610612736 =>  [ "shard" =>  "node1" ],
+            2147483648 =>  [ "shard" =>  "node2" ],
+            2684354560 =>  [ "shard" =>  "node2" ],
+            3221225472 =>  [ "shard" =>  "node2" ],
+            3758096384 =>  [ "shard" =>  "node3" ],
+            4294967296 =>  [ "shard" =>  "node3" ],
         ]);
     }
-
-    public function testKeysOf()
-    {
-        $hasher = new FastHasher($this->mapping);
-        $indexes = $hasher->keysOf('c1');
-        $this->assertEquals([1591159457], $indexes);
-
-    }
-
 
     public function testGetBuckets()
     {
         $hasher = new FastHasher($this->mapping);
         $buckets = $hasher->getBuckets();
         $this->assertEquals([
-            1591159457 => 'c1',
-            2967030669 => 'c3',
-            3353246491 => 'c2',
+            536870912  => 536870912,
+            1073741824 => 1073741824,
+            1610612736 => 1610612736,
+            2147483648 => 2147483648,
+            2684354560 => 2684354560,
+            3221225472 => 3221225472,
+            3758096384 => 3758096384,
+            4294967296 => 4294967296,
         ], $buckets);
     }
 
@@ -41,8 +42,8 @@ class FastHasherTest extends \PHPUnit\Framework\TestCase
     public function lookupKeyProvider()
     {
         return [
-            [30, 2473281379,   'c3'],
-            [40, 3693793700,   'c1'],
+            [30, 2473281379,   2684354560],
+            [40, 3693793700,   3758096384],
         ];
     }
 
@@ -66,8 +67,8 @@ class FastHasherTest extends \PHPUnit\Framework\TestCase
     {
         return [
             /* newNode, nextNode, from, index */
-            ['c2.5', 'c3', 1591159457, 1921809152], // migrate c3 to c2.5 with range 1591159457 ~ 1921809152
-            ['c4', 'c1', 0, 784195118], // migrate c3 to c2.5 with range 1591159457 ~ 1921809152
+            ['c2.5', 2147483648, 1610612736, 1921809152], // migrate c3 to c2.5 with range 1591159457 ~ 1921809152
+            ['c4', 1073741824, 536870912, 784195118], // migrate c3 to c2.5 with range 1591159457 ~ 1921809152
         ];
     }
 

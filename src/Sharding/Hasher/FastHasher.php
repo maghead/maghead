@@ -50,15 +50,10 @@ class FastHasher implements Hasher
     public function __construct(ShardMapping $mapping)
     {
         $this->mapping = $mapping;
-        $this->addTargets(array_keys($mapping->chunks));
-    }
-
-    public function addTargets($targets)
-    {
-        foreach ($targets as $target) {
-            $index = $this->hash($target);
-            $this->buckets[$index] = $target;
-            $this->targetIndexes[$target][] = $index;
+        // register chunk index directly
+        foreach ($mapping->chunks as $index => $target) {
+            $this->buckets[$index] = $index;
+            $this->targetIndexes[$index][] = $index;
         }
         ksort($this->buckets, SORT_REGULAR);
     }
@@ -96,19 +91,6 @@ class FastHasher implements Hasher
         return $this->buckets;
     }
 
-
-    /**
-     * Returns the indexes of the target
-     *
-     * @return number[]
-     */
-    public function keysOf($target)
-    {
-        if (isset($this->targetIndexes[$target])) {
-            return $this->targetIndexes[$target];
-        }
-        return false;
-    }
 
     /**
      * Hash the key
