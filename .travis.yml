@@ -3,12 +3,17 @@ services:
 - memcached
 php:
 - "7.0"
-# - "7.1"
+- "7.1"
 # - hhvm
 env:
   - DB=mysql     # mysql database tests only
   - DB=sqlite    # pgsql database tests only
   - DB=pgsql
+matrix:
+  fast_finish: true
+  allow_failures:
+  - php: "hhvm"
+  - php: "7.1"
 addons:
   postgresql: "9.3"
 before_install:
@@ -37,10 +42,6 @@ script:
 - phpunit --debug --configuration phpunit.xml.dist
 after_success:
 - php vendor/bin/coveralls -v
-matrix:
-  fast_finish: true
-  allow_failures:
-  - php: hhvm
 # matrix:
 #   exclude:
 #     - php: hhvm
