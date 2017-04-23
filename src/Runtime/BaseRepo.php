@@ -167,6 +167,14 @@ class BaseRepo
         throw new MissingPrimaryKeyException('primary key is not defined.');
     }
 
+    /**
+     * inserts the record into the repository but local keys will be removed before the insertion.
+     */
+    public function import(BaseRecord $record)
+    {
+        // $record->removeLocalKey();
+    }
+
     public function load($arg)
     {
         if (is_array($arg)) {

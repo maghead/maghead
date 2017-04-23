@@ -80,6 +80,8 @@ abstract class BaseModel implements Serializable
      */
     public $repo;
 
+
+
     /**
      * When using multiple repositories, we have to know the repository where
      * the record came from for updating the record to the same repository later.
@@ -633,6 +635,28 @@ abstract class BaseModel implements Serializable
      * This will be overrided by child model class.
      */
     abstract public function setData(array $data);
+
+
+    /**
+     * getKey() will be generated in base classes.
+     */
+    public abstract function getKey();
+
+    /**
+     * hasKey() will be generated in base classes.
+     */
+    public abstract function hasKey();
+
+    /**
+     * setKey() will be generated in base classes.
+     */
+    public abstract function setKey($key);
+
+    /**
+     * getKeyName() will be generated in base classes.
+     */
+    public abstract function getKeyName();
+
 
     /**
      * Do we have this column ?
