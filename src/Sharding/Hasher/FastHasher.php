@@ -63,9 +63,29 @@ class FastHasher implements Hasher
         ksort($this->buckets, SORT_REGULAR);
     }
 
+    /**
+     * Add a target into the buckets.
+     *
+     * @param string $target
+     * @return integer hash index
+     */
     public function addTarget($target)
     {
         $index = $this->hash($target);
+        $this->buckets[$index] = $target;
+        $this->targetIndexes[$target][] = $index;
+        ksort($this->buckets, SORT_REGULAR);
+        return $index;
+    }
+
+    /**
+     * Add a target into the buckets using pre-computed index.
+     *
+     * @param integer $index
+     * @param string $target
+     */
+    public function addIndexedTarget($index, $target)
+    {
         $this->buckets[$index] = $target;
         $this->targetIndexes[$target][] = $index;
         ksort($this->buckets, SORT_REGULAR);
