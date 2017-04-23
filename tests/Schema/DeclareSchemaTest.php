@@ -28,9 +28,26 @@ class LocalPrimaryKeySchema extends DeclareSchema
     }
 }
 
+class GlobalPrimaryKeySchema extends DeclareSchema
+{
+    public function schema()
+    {
+        $this->column('uuid', 'Maghead\\Schema\\Column\\UUIDPrimaryKeyColumn');
+    }
+}
+
 
 class DeclareSchemaTest extends TestCase
 {
+
+    public function testFindGlobalPrimaryKey()
+    {
+        $schema = new GlobalPrimaryKeySchema;
+        $key = $schema->findGlobalPrimaryKey();
+        $this->assertNotNull($key);
+        $this->assertEquals('uuid', $key);
+    }
+
     public function testFindLocalPrimaryKeyFailed()
     {
         $schema = new NoLocalPrimaryKeySchema;

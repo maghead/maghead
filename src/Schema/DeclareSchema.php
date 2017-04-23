@@ -284,7 +284,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     public function findGlobalPrimaryKey()
     {
         foreach ($this->columns as $name => $c) {
-            if ($c->primary && $c->isa === "str" && !$c->autoIncrement) {
+            if ($c->primary && $c->isa === "str" && $c->notNull && !$c->autoIncrement) {
                 return $name;
             }
         }
