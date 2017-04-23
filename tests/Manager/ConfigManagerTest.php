@@ -38,7 +38,7 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
     public function testAddNodeWithOptions()
     {
         $manager = new ConfigManager(self::TEST_CONFIG);
-        $manager->addNode('shard1', 'mysql', [
+        $manager->addDatabase('shard1', 'mysql', [
             'host' => 'localhost',
             'dbname' => 'shard1',
             'user' => 'c9s',
@@ -55,8 +55,8 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
     {
         $config = ConfigLoader::loadFromFile(self::TEST_CONFIG, true);
         $manager = new ConfigManager($config);
-        $manager->addNode('shard1', 'mysql:host=localhost;dbname=shard1');
-        $manager->addNode('shard2', 'mysql:host=localhost;dbname=shard2');
+        $manager->addDatabase('shard1', 'mysql:host=localhost;dbname=shard1');
+        $manager->addDatabase('shard2', 'mysql:host=localhost;dbname=shard2');
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
 

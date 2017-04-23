@@ -29,12 +29,12 @@ class ConfigManager
         unset($this->config['databases'][$nodeId]);
     }
 
-    public function addNodeConfig($nodeId, array $nodeConfig)
+    public function addDatabaseConfig($nodeId, array $nodeConfig)
     {
         $this->config['databases'][$nodeId] = $nodeConfig;
     }
 
-    public function addNode($nodeId, $dsnArg, $opts = array())
+    public function addDatabase($nodeId, $dsnArg, $opts = array())
     {
         $dsn = DSNParser::parse($dsnArg);
 

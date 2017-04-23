@@ -34,7 +34,7 @@ class AddCommand extends BaseCommand
         // force loading data source
         $config = $this->getConfig();
         $manager = new ConfigManager($config);
-        $manager->addNode($dataSourceId, $dsnStr, [
+        $manager->addDatabase($dataSourceId, $dsnStr, [
             'host' => $this->options->host,
             'port' => $this->options->port,
             'dbname' => $this->options->dbname,
