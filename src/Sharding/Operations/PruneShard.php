@@ -74,9 +74,9 @@ class PruneShard
             });
 
             if (!empty($excludedShardKeys)) {
-                $q = $repo->delete();
-                $q->where()->in($shardKey, $excludedShardKeys);
-                $q->execute();
+                $delete = $repo->delete();
+                $delete->where()->in($shardKey, $excludedShardKeys);
+                $delete->execute();
             }
         }
     }
