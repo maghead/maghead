@@ -41,37 +41,5 @@ class ChunkManagerTest extends StoreTestCase
         $targetShard = 'shard1';
         $chunkManager = new ChunkManager($this->config, $this->dataSourceManager);
         $chunkManager->move($this->mapping, $chunkIndex, $targetShard);
-        /*
-        $this->assertTrue(isset($chunks[ChunkManager::HASH_RANGE]));
-        $this->assertNotNull($chunks[ChunkManager::HASH_RANGE]);
-        $this->assertCount($numberOfChunks, $chunks);
-         */
     }
-
-
-    /*
-    public function testChunkInit()
-    {
-        $shardManager = new ShardManager($this->config, $this->dataSourceManager);
-
-        $mapping = $shardManager->getShardMapping('M_store_id');
-        $this->assertNotEmpty($mapping);
-
-        $chunkManager = new ChunkManager($this->config, $this->dataSourceManager);
-        $chunks = $chunkManager->initChunks($mapping, 32);
-
-        foreach ($chunks as $chunkId => $chunk) {
-            $this->assertStringMatchesFormat('chunk_%i', $chunkId);
-            $this->assertNotNull($chunk['shard']);
-            $this->assertStringMatchesFormat('sqlite:chunk_%i.sqlite',$chunk['dsn']);
-        }
-
-        $chunkManager->removeChunks($mapping);
-    }
-
-    public function testChunkExpand()
-    {
-
-    }
-    */
 }

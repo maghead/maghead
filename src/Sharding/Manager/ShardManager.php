@@ -95,6 +95,7 @@ class ShardManager
     {
         $mapping = $this->getShardMapping($mappingId);
         $shards = $this->getShardsOf($mappingId);
-        return new ShardDispatcher($mapping, new FlexihashHasher($mapping), $shards);
+        // return new ShardDispatcher($mapping, new FlexihashHasher($mapping), $shards);
+        return new ShardDispatcher($mapping, new FastHasher($mapping), $shards);
     }
 }

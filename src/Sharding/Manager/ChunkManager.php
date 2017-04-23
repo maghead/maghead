@@ -88,11 +88,11 @@ class ChunkManager
 
     public function move(ShardMapping $mapping, $chunkIndex, $targetShard)
     {
-
+        // TODO: implement chunk move
     }
 
     public function split(ShardMapping $mapping, $chunkIndex, $targetShard)
     {
-
+        // TODO: implement chunk split
     }
 }
