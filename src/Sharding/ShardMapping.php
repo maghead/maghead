@@ -70,9 +70,11 @@ class ShardMapping
         }
     }
 
-    public function getChunk($chunkId)
+    public function getChunk($chunkIndex)
     {
-        return $this->chunks[$chunkId];
+        if (isset($this->chunks[$chunkIndex])) {
+            return $this->chunks[$chunkIndex];
+        }
     }
 
     /**

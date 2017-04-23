@@ -14,6 +14,41 @@ use StoreApp\StoreTestCase;
  */
 class ChunkManagerTest extends StoreTestCase
 {
+    protected $shardManager;
+
+    protected $mapping;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->shardManager = new ShardManager($this->config, $this->dataSourceManager);
+        $this->mapping = $this->shardManager->getShardMapping('M_store_id');
+    }
+
+    public function testChunkDistribute()
+    {
+        $numberOfChunks = 32;
+        $chunkManager = new ChunkManager($this->config, $this->dataSourceManager);
+        $chunks = $chunkManager->distribute($this->mapping, $numberOfChunks);
+        $this->assertTrue(isset($chunks[ChunkManager::HASH_RANGE]));
+        $this->assertNotNull($chunks[ChunkManager::HASH_RANGE]);
+        $this->assertCount($numberOfChunks, $chunks);
+    }
+
+    public function testChunkMove()
+    {
+        $chunkIndex = ChunkManager::HASH_RANGE;
+        $targetShard = 'shard1';
+        $chunkManager = new ChunkManager($this->config, $this->dataSourceManager);
+        $chunkManager->move($this->mapping, $chunkIndex, $targetShard);
+        /*
+        $this->assertTrue(isset($chunks[ChunkManager::HASH_RANGE]));
+        $this->assertNotNull($chunks[ChunkManager::HASH_RANGE]);
+        $this->assertCount($numberOfChunks, $chunks);
+         */
+    }
+
+
     /*
     public function testChunkInit()
     {
@@ -39,10 +74,4 @@ class ChunkManagerTest extends StoreTestCase
 
     }
     */
-
-    protected function config()
-    {
-        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config/sqlite_memory.yml");
-        // return ConfigLoader::loadFromFile("tests/apps/StoreApp/config_sqlite_file.yml");
-    }
 }

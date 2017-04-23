@@ -27,6 +27,11 @@ class ChunkManager
 
     protected $shardManager;
 
+    /**
+     * @var integer The default hash range 4294967296 = 2 ** 32
+     */
+    const HASH_RANGE = 4294967296;
+
     public function __construct(Config $config, DataSourceManager $dataSourceManager, ShardManager $shardManager = null)
     {
         $this->config = $config;
@@ -34,72 +39,60 @@ class ChunkManager
         $this->shardManager = $shardManager ?: new ShardManager($config, $dataSourceManager);
     }
 
-    public function removeChunks(ShardMapping $mapping)
+    /**
+     * Compute the distribution by the given shard mapping
+     *
+     * @return array distribution info
+     */
+    public function computeDistribution(ShardMapping $mapping, $numberOfChunks = 32, $range = 4294967296)
     {
-        $dbManager = new DatabaseManager($this->dataSourceManager);
-        $chunks = $mapping->getChunks();
-        foreach ($chunks as $chunkId => $chunk) {
-            $shardId = $chunk['shard'];
-
-            // get shard from the chunk
-            $shard = $this->shardManager->getShard($shardId);
-            $nodeId = $shard->selectWriteNode();
-            $dbManager->drop($nodeId, $chunkId);
-        }
+        $shardIds = $mapping->getShardIds();
+        $chunksPerShard = intval(ceil($numberOfChunks / count($shardIds)));
+        $rangePerChunk = intval(ceil($range / $numberOfChunks));
+        return [
+            "hashRange" => self::HASH_RANGE,
+            "numberOfChunks" => $numberOfChunks,
+            "rangePerChunk"  => $rangePerChunk,
+            "chunksPerShard" => $chunksPerShard,
+            "shards"         => $shardIds,
+        ];
     }
 
     /**
-     * Initialize chunks for one shard mapping.
+     * Distribute the chunks.
+     *
      */
-    public function initChunks(ShardMapping $mapping, $numberOfChunks = 4)
+    public function distribute(ShardMapping $mapping, $numberOfChunks = 32)
     {
-        // Get the dbname from master datasource
-        $masterDs = $this->dataSourceManager->getMasterNodeConfig();
-        $dsn = DSNParser::parse($masterDs['dsn']);
-        $dbname = $dsn->getDatabaseName();
-
-        // Get shards use in this mapping
         $shardIds = $mapping->getShardIds();
-        $numberOfChunksPerShard = intdiv($numberOfChunks, count($shardIds));
+        $chunksPerShard = intval(ceil($numberOfChunks / count($shardIds)));
+        $rangePerChunk = intval(ceil(self::HASH_RANGE / $numberOfChunks));
 
-        $chunkIdList = array_map(function ($chunkId) use ($dbname) {
-            // special string used by sqlite
-            if ($dbname === ":memory:") {
-                return "chunk_{$chunkId}";
-            }
-            return "{$dbname}_{$chunkId}";
-        }, range(0, $numberOfChunks));
-
-        $shardChunks = [];
-
-        // the chunks that will override the shard mapping config.
         $chunks = [];
+        $r = 0;
         foreach ($shardIds as $shardId) {
-            $shardChunkIds = array_splice($chunkIdList, $numberOfChunksPerShard);
-            $shardChunks[ $shardId ] = $shardChunkIds;
-            foreach ($shardChunkIds as $chunkId) {
-                $chunks[$chunkId] = ['shard' => $shardId];
-            }
-        }
-
-        $dbManager = new DatabaseManager($this->dataSourceManager);
-        foreach ($shardChunks as $shardId => $chunkIds) {
-            foreach ($chunkIds as $chunkId) {
-                // get shard from the chunk
-                $shard = $this->shardManager->getShard($shardId);
-                $writeNodeId = $shard->selectWriteNode();
-
-                // create the db for chunks over the shard
-                list($conn, $newds) = $dbManager->create($writeNodeId, $chunkId);
-
-                $chunks[$chunkId]['dsn'] = $newds['dsn'];
-
-                $dbManager->drop($writeNodeId, $chunkId);
+            for ($i = 0 ; $i < $chunksPerShard; $i++) {
+                $r += $rangePerChunk;
+                if ($r + $rangePerChunk > self::HASH_RANGE) {
+                    $r = self::HASH_RANGE;
+                }
+                $chunks[$r] = [ 'shard' => $shardId ];
+                if ($r + $rangePerChunk > self::HASH_RANGE) {
+                    break;
+                }
             }
         }
         $mapping->setChunks($chunks);
-
-        // TODO: re-scale targets
         return $chunks;
+    }
+
+    public function move(ShardMapping $mapping, $chunkIndex, $targetShard)
+    {
+
+    }
+
+    public function split(ShardMapping $mapping, $chunkIndex, $targetShard)
+    {
+
     }
 }

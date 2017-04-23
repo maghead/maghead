@@ -20,9 +20,9 @@ sharding:
       hash: true
       shards: [node1, node2, node3]
       chunks:
-        c1: { shard: node1 }
-        c2: { shard: node2 }
-        c3: { shard: node3 }
+      - { shard: node1 }
+      - { shard: node2 }
+      - { shard: node3 }
 databases:
   master:
     dsn: sqlite:master.sqlite

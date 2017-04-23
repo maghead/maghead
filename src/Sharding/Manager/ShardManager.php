@@ -2,6 +2,7 @@
 namespace Maghead\Sharding\Manager;
 
 use Maghead\Sharding\Hasher\FlexihashHasher;
+use Maghead\Sharding\Hasher\FastHasher;
 use Maghead\Sharding\ShardDispatcher;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Shard;
@@ -18,6 +19,9 @@ use IteratorAggregate;
 
 class ShardManager
 {
+    /**
+     * @var Maghead\Config
+     */
     protected $config;
 
     /**
@@ -36,6 +40,16 @@ class ShardManager
         $this->shardingConfig = $config['sharding'];
         $this->dataSourceManager = $dataSourceManager;
     }
+
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function getDataSourceManager()
+    {
+        return $this->dataSourceManager;
+    }
+
 
     public function getMappingsConfig()
     {
