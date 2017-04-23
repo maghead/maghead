@@ -6,6 +6,7 @@ use ArrayAccess;
 use IteratorAggregate;
 use ArrayIterator;
 use Maghead\Sharding\Hasher\FlexihashHasher;
+use Maghead\Sharding\Hasher\FastHasher;
 use Maghead\Sharding\Hasher\Hasher;
 use Ramsey\Uuid\Uuid;
 use SQLBuilder\Universal\Query\UUIDQuery;
@@ -103,7 +104,8 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
     public function createDispatcher(Hasher $hasher = null)
     {
         if (!$hasher) {
-            $hasher = new FlexihashHasher($this->mapping);
+            $hasher = new FastHasher($this->mapping);
+            // $hasher = new FlexihashHasher($this->mapping);
         }
         return new ShardDispatcher($this->mapping, $hasher, $this);
     }
