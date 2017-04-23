@@ -65,6 +65,9 @@ UPGRADE TO 4.0.x
           master:
             dsn: ...
 
+- Added columnClassAlias to DeclareSchema, so that we can define uuid column by using:
+
+    $this->column('uuid', 'uuid');
 
 
 UPGRADE TO 2.0
