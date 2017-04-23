@@ -21,6 +21,7 @@
         "corneltek/validationkit": "^1",
         "symfony/yaml": "^2.8",
         "doctrine/inflector": "~1.0",
+        "twig/twig": "1.32.x",
         "corneltek/configkit": "^1",
         "corneltek/cascading-attribute": "^1.2",
         "pimple/pimple": "^3.0",
@@ -29,7 +30,9 @@
         "monolog/monolog": "^1.22",
         "ramsey/uuid": "^3.5"
     },
-    "require-dev": { },
+    "require-dev": {
+        "flexihash/flexihash": "~2"
+    },
     "suggest": { "ext-xarray": "*" },
     "bin": [
         "bin/maghead"
