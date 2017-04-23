@@ -261,7 +261,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
      * This method will be called after building schema information to save the
      * primary key name
      *
-     * @return string primary key
+     * @return string the identity of the key
      */
     public function findPrimaryKey()
     {
@@ -275,9 +275,27 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     }
 
     /**
+     * Find the global primary key (UUID key)
+     *
+     * A global primary key is: binary(32) in string type without auto-increment.
+     *
+     * @return string the identity of the key.
+     */
+    public function findGlobalPrimaryKey()
+    {
+        foreach ($this->columns as $name => $c) {
+            if ($c->primary && $c->isa === "str" && !$c->autoIncrement) {
+                return $name;
+            }
+        }
+    }
+
+    /**
      * Find the local primary key.
      *
      * A local primary is: integer type with auto-increment attribute.
+     *
+     * @return string the identity of the key.
      */
     public function findLocalPrimaryKey()
     {
