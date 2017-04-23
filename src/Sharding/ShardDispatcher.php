@@ -32,13 +32,19 @@ class ShardDispatcher
      * @param string $key
      * @return string shard Id
      */
-    public function dispatchId($key)
+    public function dispatchShard($key)
     {
         $chunkId = $this->hasher->lookup($key);
         $chunk   = $this->mapping->chunks[$chunkId];
         return $chunk['shard'];
     }
 
+    public function dispatchChunk($key)
+    {
+        $chunkIndex = $this->hasher->lookup($key);
+        $chunk      = $this->mapping->chunks[$chunkIndex];
+        return new Chunk($chunkIndex, $chunk);
+    }
 
     /**
      * Return the shard object.
