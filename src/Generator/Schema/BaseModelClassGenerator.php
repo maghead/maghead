@@ -42,14 +42,6 @@ class BaseModelClassGenerator
         $readFrom = $schema->getReadSourceId();
         $writeTo  = $schema->getWriteSourceId();
 
-        // get read connection
-        $readConnection = DataSourceManager::getInstance()->getConnection($readFrom);
-        $readQueryDriver = $readConnection->getQueryDriver();
-
-        // get write connection
-        $writeConnection = DataSourceManager::getInstance()->getConnection($writeTo);
-        $writeQueryDriver = $writeConnection->getQueryDriver();
-
         $primaryKey = $schema->primaryKey;
         if (!$primaryKey) {
             throw new \Exception("PrimaryKey is required to be defined in the schema " . get_class($schema));
