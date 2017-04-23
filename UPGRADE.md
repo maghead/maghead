@@ -69,7 +69,7 @@ UPGRADE TO 4.0.x
 
     $this->column('uuid', 'uuid');
 
-
+- Added DeclareSchema::enableHiddenPrimaryKey option for schemas that don't need primary key column.
 
 
 UPGRADE TO 2.0
