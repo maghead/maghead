@@ -5,6 +5,7 @@ use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryWorker;
 use Maghead\ConfigLoader;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Manager\ChunkManager;
+use Maghead\Sharding\Manager\ConfigManager;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 use StoreApp\StoreTestCase;
