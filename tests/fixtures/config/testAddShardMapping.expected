@@ -9,7 +9,6 @@ schema:
     - tests
 instance:
   local:
-    dsn: 'mysql:host=localhost'
     driver: mysql
     host: localhost
     user: root
@@ -17,6 +16,7 @@ instance:
     query_options: {  }
     connection_options:
       1002: 'SET NAMES utf8'
+    dsn: 'mysql:host=localhost'
 sharding:
   mappings:
     M_store_id:
@@ -37,34 +37,42 @@ sharding:
         4294967296: { shard: node3 }
 databases:
   master:
-    dsn: 'sqlite:master.sqlite'
-    query_options:
-      quote_table: true
-    driver: sqlite
-    connection_options: {  }
-    user: null
+    driver: mysql
+    user: root
     password: null
+    database: testing
+    host: localhost
+    query_options: {  }
+    connection_options:
+      1002: 'SET NAMES utf8'
+    dsn: 'mysql:dbname=testing;host=localhost'
   node1:
-    dsn: 'sqlite:node1.sqlite'
-    query_options:
-      quote_table: true
-    driver: sqlite
-    connection_options: {  }
-    user: null
+    driver: mysql
+    host: localhost
+    user: root
     password: null
+    database: s1
+    query_options: {  }
+    connection_options:
+      1002: 'SET NAMES utf8'
+    dsn: 'mysql:dbname=s1;host=localhost'
   node2:
-    dsn: 'sqlite:node2.sqlite'
-    query_options:
-      quote_table: true
-    driver: sqlite
-    connection_options: {  }
-    user: null
+    host: localhost
+    user: root
+    driver: mysql
     password: null
+    database: s2
+    query_options: {  }
+    connection_options:
+      1002: 'SET NAMES utf8'
+    dsn: 'mysql:dbname=s2;host=localhost'
   node3:
-    dsn: 'sqlite:node3.sqlite'
-    query_options:
-      quote_table: true
-    driver: sqlite
-    connection_options: {  }
-    user: null
+    driver: mysql
+    host: localhost
+    user: root
     password: null
+    database: s3
+    query_options: {  }
+    connection_options:
+      1002: 'SET NAMES utf8'
+    dsn: 'mysql:dbname=s3;host=localhost'
