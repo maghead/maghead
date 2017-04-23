@@ -5,7 +5,6 @@ namespace Maghead\Sharding;
 use ArrayAccess;
 use IteratorAggregate;
 use ArrayIterator;
-use Maghead\Sharding\Hasher\FlexihashHasher;
 use Maghead\Sharding\Hasher\FastHasher;
 use Maghead\Sharding\Hasher\Hasher;
 use Ramsey\Uuid\Uuid;
@@ -105,7 +104,6 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
     {
         if (!$hasher) {
             $hasher = new FastHasher($this->mapping);
-            // $hasher = new FlexihashHasher($this->mapping);
         }
         return new ShardDispatcher($this->mapping, $hasher, $this);
     }

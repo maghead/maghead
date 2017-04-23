@@ -2,7 +2,6 @@
 
 namespace Maghead\Sharding\Manager;
 
-use Maghead\Sharding\Hasher\FlexihashHasher;
 use Maghead\Sharding\ShardDispatcher;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Shard;

@@ -2,7 +2,6 @@
 
 namespace Maghead\Sharding\Hasher;
 
-use Flexihash\Flexihash;
 use Maghead\Sharding\ShardMapping;
 
 class HashRange
