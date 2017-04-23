@@ -38,6 +38,10 @@ class MetadataBase
 
     const TABLE_ALIAS = 'm';
 
+    const GLOBAL_PRIMARY_KEY = NULL;
+
+    const LOCAL_PRIMARY_KEY = 'id';
+
     const SHARD_MAPPING_ID = NULL;
 
     const GLOBAL_TABLE = false;

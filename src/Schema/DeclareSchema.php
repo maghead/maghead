@@ -84,6 +84,8 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
 
     public $shardMapping;
 
+    var $enableHiddenPrimaryKey = true;
+
     /**
      * Constructor of declare schema.
      *
@@ -113,11 +115,10 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
 
         // if the primary key is not define, we should append the default primary key => id
         // AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY
-        if (false === $this->primaryKey) {
-            if ($config = ConfigLoader::getCurrentConfig()) {
-                if ($config->hasAutoId()) {
-                    $this->tryInsertPrimaryKeyColumn($config);
-                }
+        $config = ConfigLoader::getCurrentConfig();
+        if (false === $this->primaryKey && $this->enableHiddenPrimaryKey) {
+            if ($config && $config->hasAutoId()) {
+                $this->tryInsertPrimaryKeyColumn($config);
             }
         }
     }
