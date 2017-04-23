@@ -7,6 +7,7 @@ use ReflectionMethod;
 use InvalidArgumentException;
 
 use Maghead\Schema\DeclareSchema;
+use Maghead\Exception\SchemaRelatedException;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Manager\DataSourceManager;
 use Doctrine\Common\Inflector\Inflector;
@@ -26,6 +27,11 @@ use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
 
+class PrimaryKeyColumnMissing extends SchemaRelatedException
+{
+
+}
+
 /**
  * Base Model class generator.
  *
@@ -44,7 +50,7 @@ class BaseModelClassGenerator
 
         $primaryKey = $schema->primaryKey;
         if (!$primaryKey) {
-            throw new \Exception("PrimaryKey is required to be defined in the schema " . get_class($schema));
+            throw new PrimaryKeyColumnMissing($schema, "PrimaryKey is required to be defined in the schema.");
         }
 
         $cTemplate = new ClassFile($schema->getBaseModelClass());

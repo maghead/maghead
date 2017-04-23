@@ -23,8 +23,6 @@ use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\RuntimeColumn;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\ConfigLoader;
-use Maghead\Exception\MissingPrimaryKeyException;
-use Maghead\Exception\QueryException;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Shard;
