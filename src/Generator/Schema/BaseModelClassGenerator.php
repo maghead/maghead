@@ -52,7 +52,7 @@ class BaseModelClassGenerator
 
         $primaryKey = $schema->primaryKey;
         if (!$primaryKey) {
-            throw new \Exception("PrimaryKey not found.");
+            throw new \Exception("PrimaryKey is required to be defined in the schema " . get_class($schema));
         }
 
         $cTemplate = new ClassFile($schema->getBaseModelClass());
@@ -198,6 +198,7 @@ class BaseModelClassGenerator
                 "return \$this->{$primaryKey} = \$key;"
             ;
         });
+
 
         $cTemplate->addMethod('public', 'getData', [], function () use ($properties) {
             return
