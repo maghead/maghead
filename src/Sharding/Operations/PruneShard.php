@@ -70,7 +70,7 @@ class PruneShard
             $keys = $q->fetchColumn(0);
 
             $excludedShardKeys = array_filter($keys, function($key) use ($shardDispatcher, $nodeId) {
-                return $shardDispatcher->dispatchId($key) != $nodeId;
+                return $shardDispatcher->dispatchShard($key) != $nodeId;
             });
 
             if (!empty($excludedShardKeys)) {
