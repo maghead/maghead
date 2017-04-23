@@ -12,9 +12,9 @@ class Chunk
 
     public function __construct($index, array $config)
     {
-        $this->index = $index;
+        $this->index  = $index;
         $this->config = $config;
-        $this->shard = $config['shard'];
+        $this->shard  = $config['shard'];
     }
 
     public function getShard()
