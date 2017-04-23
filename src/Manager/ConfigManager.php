@@ -24,7 +24,7 @@ class ConfigManager
         }
     }
 
-    public function removeNode($nodeId)
+    public function removeDatabase($nodeId)
     {
         unset($this->config['databases'][$nodeId]);
     }

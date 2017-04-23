@@ -26,8 +26,8 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
     public function testRemoveNode()
     {
         $manager = new ConfigManager(self::TEST_CONFIG);
-        $manager->removeNode('sqlite');
-        $manager->removeNode('mysql');
+        $manager->removeDatabase('sqlite');
+        $manager->removeDatabase('mysql');
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
 
