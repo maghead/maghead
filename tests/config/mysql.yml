@@ -14,4 +14,17 @@ instance:
 databases:
   master:
     dsn: 'mysql:host=localhost;dbname=testing'
+    host: localhost
+    user: root
+  node1:
+    dsn: 'mysql:host=localhost;dbname=s1'
+    host: localhost
+    user: root
+  node2:
+    dsn: 'mysql:host=localhost;dbname=s2'
+    host: localhost
+    user: root
+  node3:
+    dsn: 'mysql:host=localhost;dbname=s3'
+    host: localhost
     user: root

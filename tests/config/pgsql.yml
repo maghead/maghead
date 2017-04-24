@@ -15,3 +15,18 @@ databases:
   master:
     dsn: 'pgsql:host=localhost;dbname=testing'
     user: postgres
+  node1:
+    dsn: 'pgsql:host=localhost'
+    user: postgres
+    host: localhost
+    database: s1
+  node2:
+    dsn: 'pgsql:host=localhost'
+    user: postgres
+    host: localhost
+    database: s2
+  node3:
+    dsn: 'pgsql:host=localhost'
+    user: postgres
+    host: localhost
+    database: s3

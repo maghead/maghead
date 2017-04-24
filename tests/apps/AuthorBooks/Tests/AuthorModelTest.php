@@ -13,6 +13,8 @@ use SQLBuilder\Driver\SQLiteDriver;
  */
 class AuthorModelTest extends ModelTestCase
 {
+    protected $requiredDataSources = ['master', 'node1', 'node2', 'node3'];
+
     public function models()
     {
         return [
@@ -283,15 +285,33 @@ class AuthorModelTest extends ModelTestCase
         $this->assertArrayHasKey('identity', $array);
     }
 
+    public function testRepoMove()
+    {
+        $ret = Author::masterRepo()->create([
+            'name' => 'move',
+            'email' => 'm@m.com',
+            'identity' => 'to_move',
+        ]);
+        $this->assertResultSuccess($ret);
+
+        $author = Author::masterRepo()->load($ret->key);
+        $this->assertNotNull($author);
+
+        $repo2 = Author::repo('node2');
+        $ret = $author->move($repo2);
+        $this->assertResultSuccess($ret);
+    }
+
     public function testToArrayWithFields()
     {
-        $author = new Author;
         $ret = Author::create(array(
             'name' => 'testToArray',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
         ));
         $this->assertResultSuccess($ret);
+
+        $author = Author::load($ret->key);
         $array = $author->toArray([ 'name', 'email' ]);
 
         $this->assertArrayHasKey('name', $array);
