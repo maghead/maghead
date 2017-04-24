@@ -21,6 +21,11 @@ use Maghead\Schema\Relationship\HasMany;
 use Maghead\Schema\Relationship\HasOne;
 use Maghead\Schema\Relationship\BelongsTo;
 
+use Maghead\Exception\SchemaRelatedException;
+
+class ShardMappingMissingException extends SchemaRelatedException { }
+class ShardKeyMissingException extends SchemaRelatedException { }
+
 class DeclareSchema extends BaseSchema implements SchemaInterface
 {
     /**
@@ -330,6 +335,20 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
 
         return false;
     }
+
+    public function getShardKey()
+    {
+        $config = ConfigLoader::getCurrentConfig();
+        if (!isset($config['sharding']['mappings'][$this->shardMapping])) {
+            throw new ShardMappingMissingException($this, "shard mapping '{$this->shardMapping}' is missing.");
+        }
+        $mapping = $config['sharding']['mappings'][$this->shardMapping];
+        if (!isset($mapping['key'])) {
+            throw new ShardKeyMissingException($this, "The shard key of '{$this->shardMapping}' is missing.");
+        }
+        return $mapping['key'];
+    }
+
 
     public function export()
     {
