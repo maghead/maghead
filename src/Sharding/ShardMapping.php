@@ -70,7 +70,23 @@ class ShardMapping
         }
     }
 
-    public function getChunk($chunkIndex)
+    /**
+     * load the chunk object.
+     */
+    public function loadChunk($chunkIndex)
+    {
+        $indexFrom = 0;
+        foreach ($this->chunks as $i => $c) {
+            if ($i === $chunkIndex) {
+                break;
+            }
+            $indexFrom = $i;
+        }
+        $config = $this->chunks[$chunkIndex]; // get the chunk config.
+        return new Chunk($chunkIndex, $indexFrom, $config);
+    }
+
+    public function getChunkConfig($chunkIndex)
     {
         if (isset($this->chunks[$chunkIndex])) {
             return $this->chunks[$chunkIndex];

@@ -48,20 +48,7 @@ class ShardManagerTest extends StoreTestCase
     /**
      * @depends testCreateShardDispatcher
      */
-    public function testDispatchRead($dispatcher)
-    {
-        $shard = $dispatcher->dispatch('3d221024-eafd-11e6-a53b-3c15c2cb5a5a');
-        $this->assertInstanceOf('Maghead\\Sharding\\Shard', $shard);
-
-        $repo = $shard->createRepo('StoreApp\\Model\\StoreRepo');
-        $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo);
-        $this->assertInstanceOf('StoreApp\\Model\\StoreRepo', $repo);
-    }
-
-    /**
-     * @depends testCreateShardDispatcher
-     */
-    public function testDispatchWrite($dispatcher)
+    public function testDispatcherCreateRepo($dispatcher)
     {
         $shard = $dispatcher->dispatch('3d221024-eafd-11e6-a53b-3c15c2cb5a5a');
         $this->assertInstanceOf('Maghead\\Sharding\\Shard', $shard);
@@ -73,7 +60,21 @@ class ShardManagerTest extends StoreTestCase
     }
 
     /**
-     * @depends testDispatchWrite
+     * @depends testCreateShardDispatcher
+     */
+    public function testDispatchLoadChunk($dispatcher)
+    {
+        $chunk = $dispatcher->dispatchChunk('3d221024-eafd-11e6-a53b-3c15c2cb5a5a');
+        $this->assertInstanceOf('Maghead\\Sharding\\Chunk', $chunk);
+        $this->assertEquals(4294967296, $chunk->index);
+        $this->assertEquals(3758096384, $chunk->from);
+        $this->assertSame([
+            'shard' => 'node3',
+        ], $chunk->config);
+    }
+
+    /**
+     * @depends testDispatcherCreateRepo
      */
     public function testWriteRepo($repo)
     {

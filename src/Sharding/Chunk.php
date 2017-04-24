@@ -6,13 +6,16 @@ class Chunk
 {
     public $index;
 
+    public $from;
+
     public $config;
 
     protected $shard;
 
-    public function __construct($index, array $config)
+    public function __construct($index, $from, array $config)
     {
         $this->index  = $index;
+        $this->from   = $from;
         $this->config = $config;
         $this->shard  = $config['shard'];
     }

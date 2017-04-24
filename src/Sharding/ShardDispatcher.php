@@ -42,8 +42,7 @@ class ShardDispatcher
     public function dispatchChunk($key)
     {
         $chunkIndex = $this->hasher->lookup($key);
-        $chunk      = $this->mapping->chunks[$chunkIndex];
-        return new Chunk($chunkIndex, $chunk);
+        return $this->mapping->loadChunk($chunkIndex);
     }
 
     /**
