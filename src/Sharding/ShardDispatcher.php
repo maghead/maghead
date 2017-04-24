@@ -5,6 +5,7 @@ namespace Maghead\Sharding;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\ShardManager;
 use Maghead\Sharding\Hasher\Hasher;
+use Maghead\Sharding\Hasher\FastHasher;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\ShardCollection;
 use Maghead\Sharding\Shard;
@@ -18,10 +19,10 @@ class ShardDispatcher
 
     protected $mapping;
 
-    public function __construct(ShardMapping $mapping, Hasher $hasher, ShardCollection $shards)
+    public function __construct(ShardMapping $mapping, ShardCollection $shards, Hasher $hasher = null)
     {
         $this->mapping = $mapping;
-        $this->hasher = $hasher;
+        $this->hasher = $hasher ?: new FastHasher($mapping);
         $this->shards = $shards;
     }
 

@@ -3,6 +3,7 @@ use SQLBuilder\Universal\Query\SelectQuery;
 use Maghead\Testing\ModelTestCase;
 use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryMapper;
 use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryWorker;
+use Maghead\Sharding\ShardDispatcher;
 use Maghead\ConfigLoader;
 use Maghead\Sharding\Manager\ShardManager;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
@@ -40,7 +41,7 @@ class PthreadQueryMapperTest extends StoreTestCase
 
         $this->assertNotEmpty($shards);
 
-        $dispatcher = $shardManager->createShardDispatcherOf('M_store_id');
+        $dispatcher = new ShardDispatcher($mapping, $shards);
 
         $g1 = $shards['node1'];
         $repo1 = $g1->createRepo('StoreApp\\Model\\OrderRepo');

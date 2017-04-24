@@ -147,12 +147,6 @@ collection instance:
 
     $dispatcher = $shards->createDispatcher();
 
-ShardManager also provides one factory method to help you create the shard dispatcher.
-To create the shard dispatcher, you need to pass the shard mapping ID to return
-the dispatcher that dispatches the shard node for specific sharding rule, e.g.:
-
-    $dispatcher = $shardManager->createShardDispatcherOf('M_store_id');
-
 ## Shard Operations
 
 ### Allocating Shard

@@ -1,6 +1,7 @@
 <?php
 use Maghead\Testing\ModelTestCase;
 use Maghead\Sharding\Manager\ShardManager;
+use Maghead\Sharding\ShardDispatcher;
 use Maghead\ConfigLoader;
 use StoreApp\Model\{Store, StoreSchema};
 use StoreApp\StoreTestCase;
@@ -39,8 +40,9 @@ class ShardManagerTest extends StoreTestCase
     public function testCreateShardDispatcher()
     {
         $shardManager = new ShardManager($this->config, $this->dataSourceManager);
+        $mapping = $shardManager->getShardMapping('M_store_id');
         $shards = $shardManager->getShardsOf('M_store_id');
-        $dispatcher = $shardManager->createShardDispatcherOf('M_store_id');
+        $dispatcher = new ShardDispatcher($mapping, $shards);
         $this->assertNotNull($dispatcher);
         return $dispatcher;
     }

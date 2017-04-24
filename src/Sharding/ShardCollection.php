@@ -102,10 +102,7 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
 
     public function createDispatcher(Hasher $hasher = null)
     {
-        if (!$hasher) {
-            $hasher = new FastHasher($this->mapping);
-        }
-        return new ShardDispatcher($this->mapping, $hasher, $this);
+        return new ShardDispatcher($this->mapping, $this, $hasher);
     }
 
     public function __call($method, $args)

@@ -105,7 +105,8 @@ class ChunkManager
         $schemas = SchemaUtils::filterShardMappingSchemas($mapping->id, $schemas);
 
         $shardKey = $mapping->getKey();
-        $shardDispatcher = $this->shardManager->createShardDispatcherOf($mapping->id);
+        $shards = $this->shardManager->getShardsOf($mapping->id);
+        $shardDispatcher = new ShardDispatcher($mapping, $shards);
 
         // get shard Id of the chunk
         $srcConn = $this->dataSourceManager->getWriteConnection($shardId);

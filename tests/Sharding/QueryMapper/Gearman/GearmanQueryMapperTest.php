@@ -4,6 +4,7 @@ use Maghead\Testing\ModelTestCase;
 use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryMapper;
 use Maghead\ConfigLoader;
 use Maghead\Sharding\Manager\ShardManager;
+use Maghead\Sharding\ShardDispatcher;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 
@@ -75,7 +76,7 @@ class GearmanQueryMapperTest extends StoreTestCase
         $shards = $shardManager->getShardsOf('M_store_id');
         $this->assertNotEmpty($shards);
 
-        $dispatcher = $shardManager->createShardDispatcherOf('M_store_id');
+        $dispatcher = new ShardDispatcher($mapping, $shards);
 
         $g1 = $shards['node1'];
         $repo1 = $g1->createRepo('StoreApp\\Model\\OrderRepo');

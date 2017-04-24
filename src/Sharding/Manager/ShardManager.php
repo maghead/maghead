@@ -90,11 +90,4 @@ class ShardManager
         }
         return new ShardCollection($shards, $mapping, $repoClass);
     }
-
-    public function createShardDispatcherOf(string $mappingId) : ShardDispatcher
-    {
-        $mapping = $this->getShardMapping($mappingId);
-        $shards = $this->getShardsOf($mappingId);
-        return new ShardDispatcher($mapping, new FastHasher($mapping), $shards);
-    }
 }

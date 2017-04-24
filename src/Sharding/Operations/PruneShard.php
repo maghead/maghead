@@ -55,9 +55,11 @@ class PruneShard
         $schemas = SchemaUtils::filterShardMappingSchemas($mappingId, $schemas);
 
         $shardManager = new ShardManager($this->config, $this->dataSourceManager);
-        $shardMapping = $shardManager->getShardMapping($mappingId);
-        $shardKey = $shardMapping->getKey();
-        $shardDispatcher = $shardManager->createShardDispatcherOf($mappingId);
+        $mapping = $shardManager->getShardMapping($mappingId);
+        $shardKey = $mapping->getKey();
+
+        $shards = $shardManager->getShardsOf($mapping->id);
+        $shardDispatcher = new ShardDispatcher($mapping, $shards);
 
         foreach ($schemas as $schema) {
             if ($schema->globalTable) {
