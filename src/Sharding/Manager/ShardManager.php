@@ -69,7 +69,7 @@ class ShardManager
         return new Shard($shardId, $this->dataSourceManager);
     }
 
-    public function getShardCollectionOf($mappingId, $repoClass = null) : ShardCollection
+    public function loadShardCollectionOf($mappingId, $repoClass = null) : ShardCollection
     {
         $mapping = $this->loadShardMapping($mappingId);
         $shardIds = $mapping->getShardIds();

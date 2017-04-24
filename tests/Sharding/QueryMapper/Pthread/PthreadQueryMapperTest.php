@@ -37,7 +37,7 @@ class PthreadQueryMapperTest extends StoreTestCase
 
         $mapping = $shardManager->loadShardMapping('M_store_id');
 
-        $shards = $shardManager->getShardCollectionOf('M_store_id');
+        $shards = $shardManager->loadShardCollectionOf('M_store_id');
 
         $this->assertNotEmpty($shards);
 

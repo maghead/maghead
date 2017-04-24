@@ -24,7 +24,7 @@ class ShardManagerTest extends StoreTestCase
     public function testGetShards()
     {
         $shardManager = new ShardManager($this->config, $this->dataSourceManager);
-        $shards = $shardManager->getShardCollectionOf('M_store_id');
+        $shards = $shardManager->loadShardCollectionOf('M_store_id');
         $this->assertInstanceOf('Maghead\\Sharding\\ShardCollection', $shards);
         $this->assertNotEmpty($shards);
     }
@@ -32,7 +32,7 @@ class ShardManagerTest extends StoreTestCase
     public function testCreateShardDispatcherFromShardCollection()
     {
         $shardManager = new ShardManager($this->config, $this->dataSourceManager);
-        $shards = $shardManager->getShardCollectionOf('M_store_id');
+        $shards = $shardManager->loadShardCollectionOf('M_store_id');
         $dispatcher = $shards->createDispatcher();
         $this->assertNotNull($dispatcher);
     }
@@ -41,7 +41,7 @@ class ShardManagerTest extends StoreTestCase
     {
         $shardManager = new ShardManager($this->config, $this->dataSourceManager);
         $mapping = $shardManager->loadShardMapping('M_store_id');
-        $shards = $shardManager->getShardCollectionOf('M_store_id');
+        $shards = $shardManager->loadShardCollectionOf('M_store_id');
         $dispatcher = new ShardDispatcher($mapping, $shards);
         $this->assertNotNull($dispatcher);
         return $dispatcher;

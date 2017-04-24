@@ -73,7 +73,7 @@ class GearmanQueryMapperTest extends StoreTestCase
     {
         $shardManager = new ShardManager($this->config, $this->dataSourceManager);
         $mapping = $shardManager->loadShardMapping('M_store_id');
-        $shards = $shardManager->getShardCollectionOf('M_store_id');
+        $shards = $shardManager->loadShardCollectionOf('M_store_id');
         $this->assertNotEmpty($shards);
 
         $dispatcher = new ShardDispatcher($mapping, $shards);

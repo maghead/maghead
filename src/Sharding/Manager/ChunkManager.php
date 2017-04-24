@@ -105,7 +105,7 @@ class ChunkManager
         $schemas = SchemaUtils::filterShardMappingSchemas($mapping->id, $schemas);
 
         $shardKey = $mapping->getKey();
-        $shards = $this->shardManager->getShardCollectionOf($mapping->id);
+        $shards = $this->shardManager->loadShardCollectionOf($mapping->id);
         $shardDispatcher = new ShardDispatcher($mapping, $shards);
 
         // get shard Id of the chunk
