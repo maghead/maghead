@@ -339,6 +339,12 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     public function getShardKey()
     {
         $config = ConfigLoader::getCurrentConfig();
+
+        // If sharding is not enabled, don't throw exception.
+        if (!isset($config['sharding'])) {
+            return null;
+        }
+
         if (!isset($config['sharding']['mappings'][$this->shardMapping])) {
             throw new ShardMappingMissingException($this, "shard mapping '{$this->shardMapping}' is missing.");
         }
