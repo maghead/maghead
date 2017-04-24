@@ -16,6 +16,7 @@ abstract class StoreTestCase extends ModelTestCase
 
     protected $requiredDataSources = ['master', 'node1', 'node2', 'node3'];
 
+    // FIXME: pgsql doesn't support UUID binary(32), need to find a way to support it.
     protected $skipDriver = 'pgsql';
 
     public static $stores = [
