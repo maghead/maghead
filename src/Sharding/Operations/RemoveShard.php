@@ -36,7 +36,7 @@ class RemoveShard
 
     protected $logger;
 
-    public function __construct(Config $config, $logger)
+    public function __construct(Config $config, Logger $logger)
     {
         $this->config = $config;
         $this->logger = $logger;
