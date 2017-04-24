@@ -2,10 +2,14 @@
 .onion/
 .lazy.*
 *SchemaProxy.php
-build/
-db/config/*.php
+/build/
+/db/config/*.php
 /phpunit.xml
 *.sqlite
 *.log
 tests/.database.config.php
 tests/config/.database.config.php
+/src/Model/MetadataBaseRepo.php
+/db/migrations
+/tests/tmp
+/tests/config/*.php
