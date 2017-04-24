@@ -75,6 +75,19 @@ class ShardMapping
         }
     }
 
+    public function partition(array $hashes)
+    {
+        sort($hashes);
+
+        $partitions = [];
+        foreach ($this->chunks as $x => $c) {
+            while (count($hashes) && $hashes[0] < $x) {
+                $partitions[$x][] = array_shift($hashes);
+            }
+        }
+        return $partitions;
+    }
+
     /**
      * Insert a chunk into the chunk index.
      *
@@ -87,7 +100,7 @@ class ShardMapping
             throw new InvalidArgumentException("$chunkIndex should be less than {Chunk::HASH_RANGE}");
         }
         $this->chunks[$chunkIndex] = ['shard' => $shardId];
-        return $this->loadChunk($chunkIndex);
+        ksort($this->chunks, SORT_REGULAR);
     }
 
     /**

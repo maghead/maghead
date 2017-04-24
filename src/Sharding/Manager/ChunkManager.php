@@ -111,6 +111,8 @@ class ChunkManager
             $srcRepo = $srcShard->createRepo($schema->getRepoClass());
             $dstRepo = $dstShard->createRepo($schema->getRepoClass());
 
+            // var_dump( $srcRepo->fetchDistinctShardKeys() );
+
             // In the chunk
             $keys = array_filter($srcRepo->fetchDistinctShardKeys(), function($k) use ($shardDispatcher, $chunk) {
                 $index = $shardDispatcher->hash($k);
@@ -130,8 +132,19 @@ class ChunkManager
         return $moved;
     }
 
-    public function split($chunkIndex, $targetShard, array $schemas)
+    public function split($chunkIndex, $n = 2)
     {
         $chunk = $this->mapping->loadChunk($chunkIndex);
+        $range = $chunk->index - $chunk->from;
+        $delta = intval(ceil($range / $n));
+
+        $indexes = [];
+        $index = $chunk->from;
+        while (--$n) {
+            $index += $delta;
+            $this->mapping->insertChunk($index, $chunk->shardId);
+            $indexes[] = $index;
+        }
+        return $indexes;
     }
 }

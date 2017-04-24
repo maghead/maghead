@@ -81,4 +81,43 @@ class ChunkManagerTest extends StoreTestCase
             $this->assertInstanceOf('Maghead\\Runtime\\BaseModel', $o);
         }
     }
+
+    public function testChunkSplit()
+    {
+        $chunkManager = new ChunkManager($this->mapping);
+        $this->assertCount(8, $this->mapping->chunks);
+        $indexes = $chunkManager->split(1073741824);
+        $this->assertCount(1, $indexes);
+        $this->assertEquals(805306368, $indexes[0]);
+        $this->assertCount(9, $this->mapping->chunks);
+    }
+
+    public function testChunkSplitAndMove()
+    {
+        $this->assertInsertStores(static::$stores);
+        $this->assertInsertOrders(static::$orders);
+
+        $repo = Order::repo('node1');
+        $orders = $repo->select()->fetch();
+        $this->assertCount(6, $orders);
+
+        $chunkManager = new ChunkManager($this->mapping);
+        $this->assertCount(8, $this->mapping->chunks);
+        $indexes = $chunkManager->split(536870912, 12);
+        $this->assertCount(11, $indexes);
+
+        // shard keys: 2, 6
+        $shardKeys = [450215437, 498629140];
+        $this->assertSame([
+            492131673 => [ 450215437 ],
+            536870912 => [ 498629140 ],
+        ], $this->mapping->partition($shardKeys));
+        $this->assertCount(19, $this->mapping->chunks);
+
+        $schemas = SchemaUtils::findSchemasByConfig($this->config);
+        foreach ($indexes as $index) {
+            $rets = $chunkManager->move($index, 'node3', $schemas);
+            $this->assertResultsSuccess($rets);
+        }
+    }
 }
