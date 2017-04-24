@@ -15,6 +15,7 @@ use SQLBuilder\Universal\Query\DeleteQuery;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\ArgumentArray;
+
 use CodeGen\Statement\RequireStatement;
 use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
@@ -24,6 +25,8 @@ use Maghead\Generator\AnnotatedBlock;
 use Maghead\Generator\PDOStatementGenerator;
 use Maghead\Generator\CodeGenSettingsParser;
 use Maghead\Generator\MethodBlockParser;
+
+use Maghead\ConfigLoader;
 
 /**
  * Base Repo class generator.
@@ -79,6 +82,12 @@ class BaseRepoClassGenerator
 
         $cTemplate->addConst('SHARD_MAPPING_ID', $schema->shardMapping);
         $cTemplate->addConst('GLOBAL_TABLE', $schema->globalTable);
+        if ($schema->shardMapping) {
+            $cTemplate->addConst('SHARD_KEY', $schema->getShardKey());
+        } else {
+            $cTemplate->addConst('SHARD_KEY', null);
+        }
+
 
         $cTemplate->addProtectedProperty('table', $schema->getTable());
         $cTemplate->addStaticVar('columnNames', $schema->getColumnNames());
