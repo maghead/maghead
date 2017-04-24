@@ -90,12 +90,6 @@ class ShardMapping
         return new Chunk($chunkIndex, $indexFrom, $config['shard'], $this->dataSourceManager);
     }
 
-    public function getChunkConfig($chunkIndex)
-    {
-        if (isset($this->chunks[$chunkIndex])) {
-            return $this->chunks[$chunkIndex];
-        }
-    }
 
     /**
      * Get the defined chunks in this mapping.
