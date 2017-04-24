@@ -362,6 +362,13 @@ abstract class BaseTestCase extends TestCase
         $this->assertNotEmpty($data, $message ?: 'Record loaded');
     }
 
+    public function assertResultsSuccess(array $rets, $message = null)
+    {
+        foreach ($rets as $ret) {
+            $this->assertResultSuccess($ret, $message);
+        }
+    }
+
     public function assertResultSuccess(Result $ret, $message = null)
     {
         if ($ret->error === true) {
