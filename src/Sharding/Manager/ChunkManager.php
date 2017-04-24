@@ -123,6 +123,9 @@ class ChunkManager
             // In the chunk
             $keys = array_filter($srcRepo->fetchDistinctShardKeys(), function($k) use ($shardDispatcher, $chunk) {
                 $index = $shardDispatcher->hash($k);
+
+                // echo "key($k) -> index($index): {$chunk->from} < {$index} && {$index} <= {$chunk->index} \n";
+
                 return $chunk->from < $index && $index <= $chunk->index;
             });
 

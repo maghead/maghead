@@ -54,13 +54,16 @@ class ChunkManagerTest extends StoreTestCase
         $targetNode = 'node2';
         $chunkManager = new ChunkManager($this->config, $this->dataSourceManager, $this->shardManager);
         $rets = $chunkManager->move($this->mapping, 536870912, $targetNode);
+        $this->assertCount(4, $rets);
         $this->assertResultsSuccess($rets);
 
         $rets = $chunkManager->move($this->mapping, 1073741824, $targetNode);
         $this->assertResultsSuccess($rets);
+        $this->assertCount(0, $rets);
 
         $rets = $chunkManager->move($this->mapping, 1610612736, $targetNode);
         $this->assertResultsSuccess($rets);
+        $this->assertCount(0, $rets);
 
         // Make sure all node1 orders are moved to node2
         $repo = Order::repo('node1');
