@@ -64,7 +64,7 @@ class ShardManager
         return new ShardMapping($mappingId, $this->shardingConfig['mappings'][$mappingId], $this->dataSourceManager);
     }
 
-    public function laodShard($shardId) : Shard
+    public function loadShard($shardId) : Shard
     {
         return new Shard($shardId, $this->dataSourceManager);
     }
