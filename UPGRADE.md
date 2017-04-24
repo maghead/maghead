@@ -71,6 +71,8 @@ UPGRADE TO 4.0.x
 
 - Added DeclareSchema::enableHiddenPrimaryKey option for schemas that don't need primary key column.
 
+- Added BaseRepo::move(BaseRepo $target) method for moving records.
+
 
 UPGRADE TO 2.0
 ======================
