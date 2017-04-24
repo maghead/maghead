@@ -74,7 +74,7 @@ class GearmanQueryWorker
         $shardId = $queryJob->shardId;
 
         $this->logger->debug("Loading shard {$queryJob->shardId}");
-        $shard = $this->shardManager->getShard($queryJob->shardId);
+        $shard = $this->shardManager->loadShard($queryJob->shardId);
 
         $conn = $this->dataSourceManager->getReadConnection($queryJob->shardId);
 
