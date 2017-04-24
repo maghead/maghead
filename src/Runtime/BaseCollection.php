@@ -319,6 +319,7 @@ class BaseCollection implements
         $this->_lastSql = $sql = $this->getCurrentQuery()->toSql($driver, $arguments);
         $this->_vars = $vars = $arguments->toArray();
         $this->handle = $conn->prepareAndExecute($sql, $vars);
+        $this->handle->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this->repo]);
         return Result::success('Updated', array('sql' => $sql));
     }
 
@@ -382,8 +383,10 @@ class BaseCollection implements
         $conn = $repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
+        $key = static::PRIMARY_KEY;
+
         $q = clone $this->getCurrentQuery();
-        $q->setSelect('COUNT(distinct m.id)'); // Override current select.
+        $q->setSelect("COUNT(DISTINCT $key)"); // Override current select.
         if ($this->where) {
             $q->setWhere($this->where);
         }
@@ -477,7 +480,7 @@ class BaseCollection implements
             $this->prepareHandle();
         }
 
-        return $this->handle->fetchObject(static::MODEL_CLASS);
+        return $this->handle->fetch(PDO::FETCH_CLASS);
     }
 
     /**
@@ -499,7 +502,7 @@ class BaseCollection implements
             throw new RuntimeException(get_class($this).':'.$this->_result->message);
         }
         // Use fetch all
-        return $this->handle->fetchAll(PDO::FETCH_CLASS, static::MODEL_CLASS);
+        return $this->handle->fetchAll(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this->repo]);
     }
 
     public function delete()
