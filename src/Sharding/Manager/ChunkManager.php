@@ -21,27 +21,19 @@ use IteratorAggregate;
 
 class ChunkManager
 {
+    protected $mapping;
+
     protected $config;
-
-    protected $dataSourceManager;
-
-    protected $shardManager;
 
     /**
      * @var integer The default hash range 4294967296 = 2 ** 32
      */
     const HASH_RANGE = 4294967296;
 
-    public function __construct(Config $config, DataSourceManager $dataSourceManager, ShardManager $shardManager = null)
+    public function __construct(Config $config, ShardMapping $mapping)
     {
         $this->config = $config;
-        $this->dataSourceManager = $dataSourceManager;
-        $this->shardManager = $shardManager ?: new ShardManager($config, $dataSourceManager);
-
-        /*
-        $this->connectionManager = new ConnectionManager($config->getInstances());
-        $this->dataSourceManager = new DataSourceManager($config->getDataSources());
-        */
+        $this->mapping = $mapping;
     }
 
     /**
@@ -49,9 +41,9 @@ class ChunkManager
      *
      * @return array distribution info
      */
-    public function computeDistribution(ShardMapping $mapping, $numberOfChunks = 32, $range = 4294967296)
+    public function computeDistribution($numberOfChunks = 32, $range = 4294967296)
     {
-        $shardIds = $mapping->getShardIds();
+        $shardIds = $this->mapping->getShardIds();
         $chunksPerShard = intval(ceil($numberOfChunks / count($shardIds)));
         $rangePerChunk = intval(ceil($range / $numberOfChunks));
         return [
@@ -67,9 +59,9 @@ class ChunkManager
      * Distribute the chunks.
      *
      */
-    public function distribute(ShardMapping $mapping, $numberOfChunks = 32)
+    public function distribute($numberOfChunks = 32)
     {
-        $shardIds = $mapping->getShardIds();
+        $shardIds = $this->mapping->getShardIds();
         $chunksPerShard = intval(ceil($numberOfChunks / count($shardIds)));
         $rangePerChunk = intval(ceil(self::HASH_RANGE / $numberOfChunks));
 
@@ -87,32 +79,34 @@ class ChunkManager
                 }
             }
         }
-        $mapping->setChunks($chunks);
+        $this->mapping->setChunks($chunks);
         return $chunks;
     }
 
     /**
      * Move a chunk
      */
-    public function move(ShardMapping $mapping, $chunkIndex, $targetShard)
+    public function move($chunkIndex, $targetShardId)
     {
-        $chunk = $mapping->loadChunk($chunkIndex);
+        $chunk = $this->mapping->loadChunk($chunkIndex);
         $shardId = $chunk->getShardId();
-        if ($targetShard === $shardId) {
-            throw new InvalidArgumentException("$targetShard == $shardId");
+        if ($targetShardId === $shardId) {
+            throw new InvalidArgumentException("$targetShardId == $shardId");
         }
-        // var_dump($chunk);
+
+        $shard = $chunk->loadShard();
 
         $schemas = SchemaUtils::findSchemasByConfig($this->config);
-        $schemas = SchemaUtils::filterShardMappingSchemas($mapping->id, $schemas);
+        $schemas = SchemaUtils::filterShardMappingSchemas($this->mapping->id, $schemas);
 
-        $shardKey = $mapping->getKey();
-        $shards = $this->shardManager->loadShardCollectionOf($mapping->id);
-        $shardDispatcher = new ShardDispatcher($mapping, $shards);
+        $shardKey = $this->mapping->getKey();
+
+        $shards = $this->mapping->loadShardCollection();
+        $shardDispatcher = $shards->createDispatcher();
 
         // get shard Id of the chunk
-        $srcConn = $this->dataSourceManager->getWriteConnection($shardId);
-        $dstConn = $this->dataSourceManager->getWriteConnection($targetShard);
+        $srcShard = $shards[$shardId];
+        $dstShard = $shards[$targetShardId];
 
         $moved = [];
         foreach ($schemas as $schema) {
@@ -120,8 +114,8 @@ class ChunkManager
                 continue;
             }
 
-            $srcRepo = $schema->newRepo($srcConn);
-            $dstRepo = $schema->newRepo($dstConn);
+            $srcRepo = $srcShard->createRepo($schema->getRepoClass());
+            $dstRepo = $dstShard->createRepo($schema->getRepoClass());
 
             // In the chunk
             $keys = array_filter($srcRepo->fetchDistinctShardKeys(), function($k) use ($shardDispatcher, $chunk) {

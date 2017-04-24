@@ -2,6 +2,7 @@
 
 namespace Maghead\Sharding;
 
+use LogicException;
 use ArrayAccess;
 use IteratorAggregate;
 use ArrayIterator;
@@ -83,12 +84,12 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
     {
         return isset($this->shards[ $name ]);
     }
-    
+
     public function offsetGet($name)
     {
         return $this->shards[ $name ];
     }
-    
+
     public function offsetUnset($name)
     {
         unset($this->shards[$name]);
@@ -107,6 +108,9 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
 
     public function __call($method, $args)
     {
+        if (!$this->repoClass) {
+            throw new LogicException("To support shard map, you need to pass Repo class.");
+        }
         $results = [];
         foreach ($this->shards as $shardId => $shard) {
             $repo = $shard->createRepo($this->repoClass);
@@ -117,6 +121,9 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
 
     public function first($callback)
     {
+        if (!$this->repoClass) {
+            throw new LogicException("To support shard map, you need to pass Repo class.");
+        }
         foreach ($this->shards as $shardId => $shard) {
             $repo = $shard->createRepo($this->repoClass);
             if ($ret = $callback($repo, $shard)) {
@@ -135,6 +142,9 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
      */
     public function locateBy($callback)
     {
+        if (!$this->repoClass) {
+            throw new LogicException("To support shard map, you need to pass Repo class.");
+        }
         foreach ($this->shards as $shardId => $shard) {
             $repo = $shard->createRepo($this->repoClass);
             if ($callback($repo, $shard)) {
@@ -157,6 +167,9 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
      */
     public function map($callback)
     {
+        if (!$this->repoClass) {
+            throw new LogicException("To support shard map, you need to pass Repo class.");
+        }
         $mapResults = [];
         foreach ($this->shards as $shardId => $shard) {
             $repo = $shard->createRepo($this->repoClass);
@@ -174,6 +187,9 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
      */
     public function locateAndExecute($shardKey, $callback)
     {
+        if (!$this->repoClass) {
+            throw new LogicException("To support shard map, you need to pass Repo class.");
+        }
         $dispatcher = $this->createDispatcher();
         $shard = $dispatcher->dispatch($shardKey);
         $repo = $shard->createRepo($this->repoClass);

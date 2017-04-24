@@ -72,11 +72,6 @@ class ShardManager
     public function loadShardCollectionOf($mappingId, $repoClass = null) : ShardCollection
     {
         $mapping = $this->loadShardMapping($mappingId);
-        $shardIds = $mapping->getShardIds();
-        $shards = [];
-        foreach ($shardIds as $shardId) {
-            $shards[$shardId] = new Shard($shardId, $this->dataSourceManager);
-        }
-        return new ShardCollection($shards, $mapping, $repoClass);
+        return $mapping->loadShardCollectionOf($repoClass);
     }
 }

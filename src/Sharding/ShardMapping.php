@@ -6,12 +6,12 @@ use Exception;
 use Maghead\Manager\DataSourceManager;
 
 /**
- * config structure:
+ * shard mapping structure:
  *
+ *    shards: [ s1, s2, 3 ]
  *    chunks: [
- *       chunkId => [ shard  => shardId, dbname => dbname ]
+ *       chunkId => [ shard  => shardId ]
  *    ]
- *    shards: string[]
  */
 class ShardMapping
 {
@@ -134,6 +134,25 @@ class ShardMapping
         return $this->config['range'];
     }
 
+    public function loadShardCollection() : ShardCollection
+    {
+        $shardIds = $this->getShardIds();
+        $shards = [];
+        foreach ($shardIds as $shardId) {
+            $shards[$shardId] = new Shard($shardId, $this->dataSourceManager);
+        }
+        return new ShardCollection($shards, $this);
+    }
+
+    public function loadShardCollectionOf($repoClass) : ShardCollection
+    {
+        $shardIds = $this->getShardIds();
+        $shards = [];
+        foreach ($shardIds as $shardId) {
+            $shards[$shardId] = new Shard($shardId, $this->dataSourceManager);
+        }
+        return new ShardCollection($shards, $this, $repoClass);
+    }
 
     /**
      * Select shards by the given shard collection.
