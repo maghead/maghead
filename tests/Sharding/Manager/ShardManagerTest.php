@@ -17,7 +17,7 @@ class ShardManagerTest extends StoreTestCase
     public function testGetMappingById()
     {
         $shardManager = new ShardManager($this->config, $this->dataSourceManager);
-        $mapping = $shardManager->getShardMapping('M_store_id');
+        $mapping = $shardManager->loadShardMapping('M_store_id');
         $this->assertNotEmpty($mapping);
     }
 
@@ -40,7 +40,7 @@ class ShardManagerTest extends StoreTestCase
     public function testCreateShardDispatcher()
     {
         $shardManager = new ShardManager($this->config, $this->dataSourceManager);
-        $mapping = $shardManager->getShardMapping('M_store_id');
+        $mapping = $shardManager->loadShardMapping('M_store_id');
         $shards = $shardManager->getShardsOf('M_store_id');
         $dispatcher = new ShardDispatcher($mapping, $shards);
         $this->assertNotNull($dispatcher);

@@ -29,13 +29,13 @@ class ShardMapping
 
     const HASH = 2;
 
-    public function __construct($id, $key, array $shardIds, array $chunks, array $extra = [])
+    public function __construct($id, array $conf)
     {
         $this->id       = $id;
-        $this->key      = $key;
-        $this->shardIds = $shardIds;
-        $this->chunks   = $chunks;
-        $this->extra    = $extra;
+        $this->key      = $conf['key'];
+        $this->shardIds = $conf['shards'];
+        $this->chunks   = $conf['chunks'];
+        $this->extra    = $conf;
     }
 
     public function getKey()
@@ -113,7 +113,10 @@ class ShardMapping
      */
     public function getShardIds()
     {
-        return $this->shardIds;
+        if ($this->shardIds) {
+            return $this->shardIds;
+        }
+        return $this->getUsingShardIds();
     }
 
 
@@ -133,12 +136,11 @@ class ShardMapping
      *
      * @return Shard[string shardId]
      */
-    public function selectShards()
+    public function getUsingShardIds()
     {
         $shards = [];
-        foreach ($this->chunks as $chunkId => $chunk) {
-            $shardId = $chunk['shard'];
-            $shards[$shardId] = true;
+        foreach ($this->chunks as $chunkIndex => $chunk) {
+            $shards[$chunk['shard']][] = $chunkIndex;
         }
         return array_keys($shards);
     }

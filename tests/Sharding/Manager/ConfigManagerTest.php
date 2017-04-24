@@ -24,7 +24,7 @@ class ShardConfigManagerTest extends StoreTestCase
     {
         parent::setUp();
         $this->shardManager = new ShardManager($this->config, $this->dataSourceManager);
-        $this->mapping = $this->shardManager->getShardMapping('M_store_id');
+        $this->mapping = $this->shardManager->loadShardMapping('M_store_id');
 
         if (file_exists(self::TEST_CONFIG)) {
             unlink(self::TEST_CONFIG);

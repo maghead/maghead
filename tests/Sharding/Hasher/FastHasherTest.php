@@ -9,15 +9,19 @@ class FastHasherTest extends \PHPUnit\Framework\TestCase
 
     public function setUp()
     {
-        $this->mapping = new ShardMapping('mapping_store_id', 'store_id', ['node1', 'node2', 'node3'], [
-            536870912  =>  [ "shard" =>  "node1" ],
-            1073741824 =>  [ "shard" =>  "node1" ],
-            1610612736 =>  [ "shard" =>  "node1" ],
-            2147483648 =>  [ "shard" =>  "node2" ],
-            2684354560 =>  [ "shard" =>  "node2" ],
-            3221225472 =>  [ "shard" =>  "node2" ],
-            3758096384 =>  [ "shard" =>  "node3" ],
-            4294967296 =>  [ "shard" =>  "node3" ],
+        $this->mapping = new ShardMapping('mapping_store_id', [
+            'key' => 'store_id',
+            'shards' => ['node1', 'node2', 'node3'],
+            'chunks' => [
+                536870912  =>  [ "shard" =>  "node1" ],
+                1073741824 =>  [ "shard" =>  "node1" ],
+                1610612736 =>  [ "shard" =>  "node1" ],
+                2147483648 =>  [ "shard" =>  "node2" ],
+                2684354560 =>  [ "shard" =>  "node2" ],
+                3221225472 =>  [ "shard" =>  "node2" ],
+                3758096384 =>  [ "shard" =>  "node3" ],
+                4294967296 =>  [ "shard" =>  "node3" ],
+            ]
         ]);
     }
 

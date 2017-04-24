@@ -50,30 +50,20 @@ class ShardManager
         return $this->dataSourceManager;
     }
 
-
-    public function getMappingsConfig()
-    {
-        if (isset($this->shardingConfig['mappings'])) {
-            return $this->shardingConfig['mappings'];
-        }
-    }
-
     public function hasShardMapping(string $mappingId)
     {
         return isset($this->shardingConfig['mappings']);
     }
 
 
-    public function getShardMapping(string $mappingId) : ShardMapping
+    public function loadShardMapping(string $mappingId) : ShardMapping
     {
         if (!isset($this->shardingConfig['mappings'][$mappingId])) {
             throw new LogicException("MappingId '$mappingId' is undefined.");
         }
 
-        $conf = $this->shardingConfig['mappings'][$mappingId];
-        return new ShardMapping($mappingId, $conf['key'], $conf['shards'], $conf['chunks'], $conf);
+        return new ShardMapping($mappingId, $this->shardingConfig['mappings'][$mappingId]);
     }
-
 
     public function getShard($shardId) : Shard
     {
@@ -82,8 +72,8 @@ class ShardManager
 
     public function getShardsOf($mappingId, $repoClass = null) : ShardCollection
     {
-        $mapping = $this->getShardMapping($mappingId);
-        $shardIds = $mapping->selectShards();
+        $mapping = $this->loadShardMapping($mappingId);
+        $shardIds = $mapping->getShardIds();
         $shards = [];
         foreach ($shardIds as $shardId) {
             $shards[$shardId] = new Shard($shardId, $this->dataSourceManager);
