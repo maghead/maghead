@@ -6,6 +6,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use InvalidArgumentException;
 
+use Maghead\ConfigLoader;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Exception\SchemaRelatedException;
 use Maghead\Schema\Relationship\Relationship;
@@ -90,8 +91,12 @@ class BaseModelClassGenerator
         $cTemplate->addConst('LOCAL_PRIMARY_KEY', $schema->findLocalPrimaryKey());
 
         // Sharding related constants
-        $cTemplate->addConst('SHARD_MAPPING_ID', $schema->shardMapping);
-        $cTemplate->addConst('GLOBAL_TABLE', $schema->globalTable);
+        // If sharding is not enabled, don't throw exception.
+        $config = ConfigLoader::getCurrentConfig();
+        if (isset($config['sharding'])) {
+            $cTemplate->addConst('SHARD_MAPPING_ID', $schema->shardMapping);
+            $cTemplate->addConst('GLOBAL_TABLE', $schema->globalTable);
+        }
 
         // TODO: can be removed now.
         $cTemplate->addProtectedProperty('table', $schema->getTable());

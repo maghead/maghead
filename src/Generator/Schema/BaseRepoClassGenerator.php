@@ -80,14 +80,16 @@ class BaseRepoClassGenerator
             'TABLE_ALIAS'        => 'm',
         ));
 
-        $cTemplate->addConst('SHARD_MAPPING_ID', $schema->shardMapping);
-        $cTemplate->addConst('GLOBAL_TABLE', $schema->globalTable);
-        if ($schema->shardMapping) {
-            $cTemplate->addConst('SHARD_KEY', $schema->getShardKey());
-        } else {
-            $cTemplate->addConst('SHARD_KEY', null);
-        }
 
+        $config = ConfigLoader::getCurrentConfig();
+
+        // Sharding related constants
+        // If sharding is not enabled, don't throw exception.
+        if (isset($config['sharding'])) {
+            $cTemplate->addConst('SHARD_MAPPING_ID', $schema->shardMapping);
+            $cTemplate->addConst('GLOBAL_TABLE', $schema->globalTable);
+            $cTemplate->addConst('SHARD_KEY', $schema->getShardKey());
+        }
 
         $cTemplate->addProtectedProperty('table', $schema->getTable());
         $cTemplate->addStaticVar('columnNames', $schema->getColumnNames());

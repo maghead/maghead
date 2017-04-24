@@ -73,6 +73,11 @@ abstract class BaseModel implements Serializable
     public $repo;
 
 
+    const SHARD_MAPPING_ID = null;
+
+    const GLOBAL_TABLE = null;
+
+    const SHARD_KEY = null;
 
     /**
      * When using multiple repositories, we have to know the repository where

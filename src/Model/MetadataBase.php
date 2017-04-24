@@ -38,10 +38,6 @@ class MetadataBase
 
     const LOCAL_PRIMARY_KEY = 'id';
 
-    const SHARD_MAPPING_ID = NULL;
-
-    const GLOBAL_TABLE = false;
-
     public static $column_names = array (
       0 => 'id',
       1 => 'name',

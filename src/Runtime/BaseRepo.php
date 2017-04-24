@@ -57,6 +57,12 @@ class BaseRepo
 
     protected $_preparedCreateStms = [];
 
+    const SHARD_MAPPING_ID = null;
+
+    const GLOBAL_TABLE = null;
+
+    const SHARD_KEY = null;
+
     use RepoShardTrait;
 
     public function __construct(Connection $write, Connection $read = null)
