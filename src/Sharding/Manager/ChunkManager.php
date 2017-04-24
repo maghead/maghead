@@ -5,6 +5,7 @@ namespace Maghead\Sharding\Manager;
 use Maghead\Sharding\ShardDispatcher;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Shard;
+use Maghead\Sharding\Chunk;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Config;
@@ -23,10 +24,6 @@ class ChunkManager
 {
     protected $mapping;
 
-    /**
-     * @var integer The default hash range 4294967296 = 2 ** 32
-     */
-    const HASH_RANGE = 4294967296;
 
     public function __construct(ShardMapping $mapping)
     {
@@ -44,7 +41,7 @@ class ChunkManager
         $chunksPerShard = intval(ceil($numberOfChunks / count($shardIds)));
         $rangePerChunk = intval(ceil($range / $numberOfChunks));
         return [
-            "hashRange" => self::HASH_RANGE,
+            "hashRange" => Chunk::HASH_RANGE,
             "numberOfChunks" => $numberOfChunks,
             "rangePerChunk"  => $rangePerChunk,
             "chunksPerShard" => $chunksPerShard,
@@ -60,18 +57,18 @@ class ChunkManager
     {
         $shardIds = $this->mapping->getShardIds();
         $chunksPerShard = intval(ceil($numberOfChunks / count($shardIds)));
-        $rangePerChunk = intval(ceil(self::HASH_RANGE / $numberOfChunks));
+        $rangePerChunk = intval(ceil(Chunk::HASH_RANGE / $numberOfChunks));
 
         $chunks = [];
         $r = 0;
         foreach ($shardIds as $shardId) {
             for ($i = 0 ; $i < $chunksPerShard; $i++) {
                 $r += $rangePerChunk;
-                if ($r + $rangePerChunk > self::HASH_RANGE) {
-                    $r = self::HASH_RANGE;
+                if ($r + $rangePerChunk > Chunk::HASH_RANGE) {
+                    $r = Chunk::HASH_RANGE;
                 }
                 $chunks[$r] = [ 'shard' => $shardId ];
-                if ($r + $rangePerChunk > self::HASH_RANGE) {
+                if ($r + $rangePerChunk > Chunk::HASH_RANGE) {
                     break;
                 }
             }

@@ -3,6 +3,7 @@
 namespace Maghead\Sharding;
 
 use Exception;
+use InvalidArgumentException;
 use Maghead\Manager\DataSourceManager;
 
 /**
@@ -73,6 +74,15 @@ class ShardMapping
             return self::RANGE;
         }
     }
+
+    public function insertChunk($chunkIndex, array $config)
+    {
+        if ($chunkIndex > Chunk::HASH_RANGE) {
+            throw new InvalidArgumentException("$chunkIndex should be less than {Chunk::HASH_RANGE}");
+        }
+        $this->chunks[$chunkIndex] = $config;
+    }
+
 
     /**
      * load the chunk object.

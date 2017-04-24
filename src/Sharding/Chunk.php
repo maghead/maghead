@@ -15,6 +15,11 @@ class Chunk
     private $dataSourceManager;
 
     /**
+     * @var integer The default hash range 4294967296 = 2 ** 32
+     */
+    const HASH_RANGE = 4294967296;
+
+    /**
      * @param nubmer $index the chunk index
      * @param nubmer $from the index starts from. This number is less than $index.
      * @param string $shard the shard ID

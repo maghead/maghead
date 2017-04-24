@@ -3,6 +3,7 @@ use Maghead\ConfigLoader;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Manager\ChunkManager;
 use Maghead\Sharding\Manager\ConfigManager;
+use Maghead\Sharding\Chunk;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 use StoreApp\StoreTestCase;
@@ -43,8 +44,8 @@ class ShardConfigManagerTest extends StoreTestCase
         $numberOfChunks = 8;
         $chunkManager = new ChunkManager($this->mapping);
         $chunks = $chunkManager->distribute($numberOfChunks);
-        $this->assertTrue(isset($chunks[ChunkManager::HASH_RANGE]));
-        $this->assertNotNull($chunks[ChunkManager::HASH_RANGE]);
+        $this->assertTrue(isset($chunks[Chunk::HASH_RANGE]));
+        $this->assertNotNull($chunks[Chunk::HASH_RANGE]);
         $this->assertCount($numberOfChunks, $chunks);
 
         $configManager = new ConfigManager($this->config);
