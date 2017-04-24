@@ -23,16 +23,13 @@ class ChunkManager
 {
     protected $mapping;
 
-    protected $config;
-
     /**
      * @var integer The default hash range 4294967296 = 2 ** 32
      */
     const HASH_RANGE = 4294967296;
 
-    public function __construct(Config $config, ShardMapping $mapping)
+    public function __construct(ShardMapping $mapping)
     {
-        $this->config = $config;
         $this->mapping = $mapping;
     }
 
@@ -86,7 +83,7 @@ class ChunkManager
     /**
      * Move a chunk
      */
-    public function move($chunkIndex, $targetShardId)
+    public function move($chunkIndex, $targetShardId, array $schemas)
     {
         $chunk = $this->mapping->loadChunk($chunkIndex);
         $shardId = $chunk->getShardId();
@@ -96,7 +93,7 @@ class ChunkManager
 
         $shard = $chunk->loadShard();
 
-        $schemas = SchemaUtils::findSchemasByConfig($this->config);
+        // we only care about the schemas related to the current shard mapping
         $schemas = SchemaUtils::filterShardMappingSchemas($this->mapping->id, $schemas);
 
         $shardKey = $this->mapping->getKey();
@@ -138,8 +135,7 @@ class ChunkManager
         return $moved;
     }
 
-
-    public function split(ShardMapping $mapping, $chunkIndex, $targetShard)
+    public function split($chunkIndex, $targetShard, array $schemas)
     {
         // TODO: implement chunk split
     }
