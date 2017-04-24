@@ -39,6 +39,72 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
         }
     }
 
+    public function testRepoDuplicate()
+    {
+        foreach (static::$stores as $args) {
+            $this->assertCreateStore($args);
+        }
+
+        $store = Store::masterRepo()->findByCode('TW001');
+        $this->assertNotFalse($store, 'load store by code');
+
+        $repo1 = Order::repo('node1');
+        $this->assertNotNull($repo1);
+
+        $args = [
+            'store_id' => $store->id,
+            'amount' => 1000,
+        ];
+        $ret = $repo1->create($args);
+        $this->assertResultSuccess($ret);
+
+        $order = $repo1->findByPrimaryKey($ret->key);
+        $this->assertNotNull($order);
+
+        $repo2 = Order::repo('node2');
+        $this->assertNotNull($repo2);
+
+        $this->assertNotSame($repo1->getWriteConnection(), $repo2->getWriteConnection());
+        $ret = $order->duplicate($repo2);
+        $this->assertResultSuccess($ret);
+    }
+
+    public function testRepoImport()
+    {
+        foreach (static::$stores as $args) {
+            $this->assertCreateStore($args);
+        }
+
+        $store = Store::masterRepo()->findByCode('TW001');
+        $this->assertNotFalse($store, 'load store by code');
+
+        $repo1 = Order::repo('node1');
+        $this->assertNotNull($repo1);
+
+        $args = [
+            'store_id' => $store->id,
+            'amount' => 1000,
+        ];
+        $ret = $repo1->create($args);
+        $this->assertResultSuccess($ret);
+
+        $order = $repo1->findByPrimaryKey($ret->key);
+        $this->assertNotNull($order);
+
+        $repo2 = Order::repo('node2');
+        $this->assertNotNull($repo2);
+
+        $this->assertNotSame($repo1->getWriteConnection(), $repo2->getWriteConnection());
+        $ret = $order->import($repo2);
+        $this->assertResultSuccess($ret);
+
+        $order = $repo2->findByPrimaryKey($ret->key);
+        $this->assertNotNull($order);
+
+        $order = $repo1->findByPrimaryKey($ret->key);
+        $this->assertNotNull($order);
+    }
+
     public function testRepoMove()
     {
         foreach (static::$stores as $args) {

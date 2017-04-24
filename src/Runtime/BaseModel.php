@@ -364,7 +364,60 @@ abstract class BaseModel implements Serializable
         return Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
     }
 
+    /**
+     * Imports the current record to the target repository.
+     * This method will keep all the primary keys for the created record.
+     *
+     * @param BaseRepo $target The target repository.
+     * @return Result
+     */
+    public function import(BaseRepo $target)
+    {
+        // just a simple check
+        if ($this->repo === $target) {
+            throw new InvalidArgumentException("You can't move the record to the same repo.");
+        }
+        $args = $this->getData();
+        return $target->create($args);
+    }
 
+
+    /**
+     * Duplicates the current record to the target repository.
+     *
+     * This method actually creates the current record in the target
+     * repository, and then deletes the current instance.
+     *
+     * Note: This method removes the local primary key (int + auto_increment) and global primar key (uuid keys)
+     *
+     * @param BaseRepo $target The target repository.
+     * @return Result
+     */
+    public function duplicate(BaseRepo $target)
+    {
+        // just a simple check
+        if ($this->repo === $target) {
+            throw new InvalidArgumentException("You can't move the record to the same repo.");
+        }
+        $new = clone $this;
+        $new->removeLocalPrimaryKey();
+        $new->removeGlobalPrimaryKey();
+        $args = $new->getData();
+        return $target->create($args);
+    }
+
+    /**
+     * Moves the current record to the target repository.
+     *
+     * This method actually creates the current record in the target
+     * repository, and then deletes the current instance.
+     *
+     * The local primary key (int + auto_increment) will be removed in the new
+     * record to prevent the duplciated key issue.
+     *
+     * @param BaseRepo $target The target repository.
+     * @return Result
+     */
     public function move(BaseRepo $target)
     {
         // just a simple check
