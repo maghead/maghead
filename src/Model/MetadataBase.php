@@ -73,16 +73,6 @@ class MetadataBase
         return new \Maghead\Model\MetadataBaseRepo($write, $read);
     }
 
-    public function findByName($value)
-    {
-        return static::masterRepo()->findByName($value);
-    }
-
-    public function findByValue($value)
-    {
-        return static::masterRepo()->findByValue($value);
-    }
-
     public function getKeyName()
     {
         return 'id';
@@ -101,6 +91,25 @@ class MetadataBase
     public function setKey($key)
     {
         return $this->id = $key;
+    }
+
+    public function removeLocalPrimaryKey()
+    {
+        $this->id = null;
+    }
+
+    public function removeGlobalPrimaryKey()
+    {
+    }
+
+    public function findByName($value)
+    {
+        return static::masterRepo()->findByName($value);
+    }
+
+    public function findByValue($value)
+    {
+        return static::masterRepo()->findByValue($value);
     }
 
     public function getData()

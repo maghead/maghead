@@ -131,6 +131,49 @@ class BaseModelClassGenerator
             }
         }
 
+
+
+
+        $cTemplate->addMethod('public', 'getKeyName', [], function () use ($primaryKey) {
+            return "return " . var_export($primaryKey, true) . ';' ;
+        });
+
+        $cTemplate->addMethod('public', 'getKey', [], function () use ($primaryKey) {
+            return
+                "return \$this->{$primaryKey};"
+            ;
+        });
+
+        $cTemplate->addMethod('public', 'hasKey', [], function () use ($primaryKey) {
+            return
+                "return isset(\$this->{$primaryKey});"
+            ;
+        });
+
+        $cTemplate->addMethod('public', 'setKey', ['$key'], function () use ($primaryKey) {
+            return
+                "return \$this->{$primaryKey} = \$key;"
+            ;
+        });
+
+
+        $cTemplate->addMethod('public', 'removeLocalPrimaryKey', [], function () use ($schema) {
+            if ($key = $schema->findLocalPrimaryKey()) {
+                return "\$this->$key = null;";
+            }
+            return [];
+        });
+
+        $cTemplate->addMethod('public', 'removeGlobalPrimaryKey', [], function () use ($schema) {
+            if ($key = $schema->findGlobalPrimaryKey()) {
+                return "\$this->$key = null;";
+            }
+            return [];
+        });
+
+
+
+
         // Create column accessor
         $properties = [];
         foreach ($schema->getColumns(false) as $columnName => $column) {
@@ -171,29 +214,6 @@ class BaseModelClassGenerator
             }
         }
 
-        $cTemplate->addMethod('public', 'getKeyName', [], function () use ($primaryKey) {
-            return "return " . var_export($primaryKey, true) . ';' ;
-        });
-
-        $cTemplate->addMethod('public', 'getKey', [], function () use ($primaryKey) {
-            return
-                "return \$this->{$primaryKey};"
-            ;
-        });
-
-        $cTemplate->addMethod('public', 'hasKey', [], function () use ($primaryKey) {
-            return
-                "return isset(\$this->{$primaryKey});"
-            ;
-        });
-
-        $cTemplate->addMethod('public', 'setKey', ['$key'], function () use ($primaryKey) {
-            return
-                "return \$this->{$primaryKey} = \$key;"
-            ;
-        });
-
-
         $cTemplate->addMethod('public', 'getData', [], function () use ($properties) {
             return
                 'return [' . join(", ", array_map(function ($p) {
@@ -216,6 +236,7 @@ class BaseModelClassGenerator
                 return "\$this->{$columnName} = NULL;";
             }, $properties);
         });
+
 
         foreach ($schema->getRelations() as $relKey => $rel) {
             switch ($rel['type']) {
