@@ -42,11 +42,6 @@ class PruneShard
         $this->dataSourceManager = new DataSourceManager($config->getDataSources());
     }
 
-    private function getDistinctShardKeys(BaseRepo $repo, $shardKey)
-    {
-        return $repo->select("DISTINCT {$shardKey}")->fetchColumn(0);
-    }
-
     public function prune($nodeId, $mappingId)
     {
         $conn = $this->dataSourceManager->connect($nodeId);
@@ -71,7 +66,7 @@ class PruneShard
             }
 
             $repo = $schema->newRepo($conn, $conn);
-            $keys = $this->getDistinctShardKeys($repo, $shardKey);
+            $keys = $repo->fetchDistinctShardKeys();
             $migrationKeys = $shardDispatcher->filterMigrationKeys($nodeId, $keys);
 
             if (!empty($migrationKeys)) {
