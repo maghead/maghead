@@ -47,7 +47,9 @@ class ShardDispatcher
     }
 
     /**
-     * Return the shard object.
+     * Dispatch the key and return the shard object.
+     *
+     * @return Shard
      */
     public function dispatch($key)
     {
@@ -55,4 +57,24 @@ class ShardDispatcher
         $chunk   = $this->mapping->chunks[$chunkId];
         return $this->shards[$chunk['shard']];
     }
+
+    /**
+     * Find the keys that doens't belong to the shard.
+     *
+     * @param string $shardId the shard ID
+     * @param array $keys the keys in the chunk or shard.
+     * @return array keys will need to migrate.
+     */
+    public function filterMigrationKeys($shardId, array $keys)
+    {
+        $mkeys = [];
+        foreach ($keys as $key) {
+            if ($this->dispatchShard($key) !== $shardId) {
+                $mkeys[] = $key;
+            }
+        }
+        return $mkeys;
+    }
+
+
 }

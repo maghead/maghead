@@ -14,6 +14,7 @@ use Maghead\Manager\ConfigManager;
 use Maghead\Manager\MetadataManager;
 use Maghead\Manager\TableManager;
 use Maghead\Config;
+use Maghead\Runtime\BaseRepo;
 use Maghead\Schema;
 use Maghead\Schema\SchemaUtils;
 use Maghead\TableBuilder\TableBuilder;
@@ -41,6 +42,11 @@ class PruneShard
         $this->dataSourceManager = new DataSourceManager($config->getDataSources());
     }
 
+    private function getDistinctShardKeys(BaseRepo $repo, $shardKey)
+    {
+        return $repo->select("DISTINCT {$shardKey}")->fetchColumn(0);
+    }
+
     public function prune($nodeId, $mappingId)
     {
         $conn = $this->dataSourceManager->connect($nodeId);
@@ -65,17 +71,12 @@ class PruneShard
             }
 
             $repo = $schema->newRepo($conn, $conn);
+            $keys = $this->getDistinctShardKeys($repo, $shardKey);
+            $migrationKeys = $shardDispatcher->filterMigrationKeys($nodeId, $keys);
 
-            $q = $repo->select("DISTINCT {$shardKey}");
-            $keys = $q->fetchColumn(0);
-
-            $excludedShardKeys = array_filter($keys, function($key) use ($shardDispatcher, $nodeId) {
-                return $shardDispatcher->dispatchShard($key) != $nodeId;
-            });
-
-            if (!empty($excludedShardKeys)) {
+            if (!empty($migrationKeys)) {
                 $delete = $repo->delete();
-                $delete->where()->in($shardKey, $excludedShardKeys);
+                $delete->where()->in($shardKey, $migrationKeys);
                 $delete->execute();
             }
         }
