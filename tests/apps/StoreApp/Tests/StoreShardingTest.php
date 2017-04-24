@@ -168,13 +168,11 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
         return $orders;
     }
 
-
-
     /**
      * @rebuild false
      * @depends testOrderCRUDInShards
      */
-    public function testFetchShardKeys($orders)
+    public function testFetchDistinctShardKeys($orders)
     {
         $repos = [
             Order::repo('node1'),

@@ -55,9 +55,9 @@ class BaseRepo
      */
     protected $read;
 
-
     protected $_preparedCreateStms = [];
 
+    use RepoShardTrait;
 
     public function __construct(Connection $write, Connection $read = null)
     {
@@ -743,11 +743,7 @@ class BaseRepo
         return new $cls($this, $stm);
     }
 
-    public function fetchDistinctShardKeys()
-    {
-        $shardKey = static::SHARD_KEY;
-        return $this->select("DISTINCT {$shardKey}")->fetchColumn(0);
-    }
+
 
 
     // ================= QUERY METHODS =============
