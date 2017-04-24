@@ -135,10 +135,10 @@ ConnectionManager instance.
 
     $shardManager = new ShardManager($config, $dataSourceManager);
 
-To get the shards used by one shard mapping, simply call `getShardsOf` with the
+To get the shards used by one shard mapping, simply call `getShardCollectionOf` with the
 related shard mapping ID:
 
-    $shards = $shardManager->getShardsOf('M_store_id');
+    $shards = $shardManager->getShardCollectionOf('M_store_id');
 
 The returned `$shards` is a `Maghead\Sharding\ShardCollection` instance.
 

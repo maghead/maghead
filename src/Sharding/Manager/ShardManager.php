@@ -55,14 +55,13 @@ class ShardManager
         return isset($this->shardingConfig['mappings']);
     }
 
-
     public function loadShardMapping(string $mappingId) : ShardMapping
     {
         if (!isset($this->shardingConfig['mappings'][$mappingId])) {
             throw new LogicException("MappingId '$mappingId' is undefined.");
         }
 
-        return new ShardMapping($mappingId, $this->shardingConfig['mappings'][$mappingId]);
+        return new ShardMapping($mappingId, $this->shardingConfig['mappings'][$mappingId], $this->dataSourceManager);
     }
 
     public function getShard($shardId) : Shard
@@ -70,7 +69,7 @@ class ShardManager
         return new Shard($shardId, $this->dataSourceManager);
     }
 
-    public function getShardsOf($mappingId, $repoClass = null) : ShardCollection
+    public function getShardCollectionOf($mappingId, $repoClass = null) : ShardCollection
     {
         $mapping = $this->loadShardMapping($mappingId);
         $shardIds = $mapping->getShardIds();

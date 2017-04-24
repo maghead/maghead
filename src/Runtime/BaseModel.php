@@ -216,12 +216,12 @@ abstract class BaseModel implements Serializable
     public static function shards(ShardManager $shardManager = null)
     {
         if ($shardManager) {
-            return $shardManager->getShardsOf(static::SHARD_MAPPING_ID);
+            return $shardManager->getShardCollectionOf(static::SHARD_MAPPING_ID);
         }
         // Get shard nodes of this table.
         $config = ConfigLoader::getCurrentConfig();
         $shardManager = new ShardManager($config, DataSourceManager::getInstance());
-        return $shardManager->getShardsOf(static::SHARD_MAPPING_ID, static::REPO_CLASS);
+        return $shardManager->getShardCollectionOf(static::SHARD_MAPPING_ID, static::REPO_CLASS);
     }
 
     /**

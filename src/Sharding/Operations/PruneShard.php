@@ -58,7 +58,7 @@ class PruneShard
         $mapping = $shardManager->loadShardMapping($mappingId);
         $shardKey = $mapping->getKey();
 
-        $shards = $shardManager->getShardsOf($mapping->id);
+        $shards = $shardManager->getShardCollectionOf($mapping->id);
         $shardDispatcher = new ShardDispatcher($mapping, $shards);
 
         foreach ($schemas as $schema) {
