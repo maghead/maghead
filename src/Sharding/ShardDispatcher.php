@@ -30,6 +30,12 @@ class ShardDispatcher
         return $this->hasher;
     }
 
+
+    public function hash($key)
+    {
+        return $this->hasher->lookup($key);
+    }
+
     /**
      * Dispatches the key and return the shard Id of the key
      *
