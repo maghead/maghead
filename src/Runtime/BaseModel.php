@@ -8,6 +8,7 @@ use BadMethodCallException;
 use PDO;
 use PDOException;
 use ArrayIterator;
+use LogicException;
 use Serializable;
 use ArrayAccess;
 use SQLBuilder\Universal\Query\SelectQuery;
