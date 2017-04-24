@@ -386,7 +386,7 @@ class BaseCollection implements
         $key = static::PRIMARY_KEY;
 
         $q = clone $this->getCurrentQuery();
-        $q->setSelect("COUNT(DISTINCT $key)"); // Override current select.
+        $q->setSelect("COUNT(DISTINCT m.{$key})"); // Override current select.
         if ($this->where) {
             $q->setWhere($this->where);
         }
