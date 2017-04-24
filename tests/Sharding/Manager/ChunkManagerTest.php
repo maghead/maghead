@@ -6,8 +6,8 @@ use Maghead\ConfigLoader;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Manager\ChunkManager;
 use Maghead\Sharding\Manager\ConfigManager;
-use StoreApp\Model\{Store, StoreSchema, StoreRepo};
-use StoreApp\Model\{Order, OrderSchema, OrderRepo};
+use StoreApp\Model\{Store, StoreCollection, StoreSchema, StoreRepo};
+use StoreApp\Model\{Order, OrderCollection, OrderSchema, OrderRepo};
 use StoreApp\StoreTestCase;
 
 /**
@@ -38,9 +38,28 @@ class ChunkManagerTest extends StoreTestCase
 
     public function testChunkMove()
     {
-        $chunkIndex = ChunkManager::HASH_RANGE;
-        $targetShard = 'shard1';
-        $chunkManager = new ChunkManager($this->config, $this->dataSourceManager);
-        $chunkManager->move($this->mapping, $chunkIndex, $targetShard);
+        $this->assertInsertStores(static::$stores);
+        $this->assertInsertOrders(static::$orders);
+
+        // Make sure all node1 orders are moved to node2
+        $repo = Order::repo('node1');
+        $orders = $repo->select()->fetch();
+        $this->assertEquals(4, $orders->count());
+
+        $targetNode = 'node2';
+        $chunkManager = new ChunkManager($this->config, $this->dataSourceManager, $this->shardManager);
+        $rets = $chunkManager->move($this->mapping, 536870912, $targetNode);
+        $this->assertResultsSuccess($rets);
+
+        $rets = $chunkManager->move($this->mapping, 1073741824, $targetNode);
+        $this->assertResultsSuccess($rets);
+
+        $rets = $chunkManager->move($this->mapping, 1610612736, $targetNode);
+        $this->assertResultsSuccess($rets);
+
+        // Make sure all node1 orders are moved to node2
+        $repo = Order::repo('node1');
+        $orders = $repo->select()->fetch();
+        $this->assertEquals(0, $orders->count());
     }
 }

@@ -57,7 +57,6 @@ class PruneShard
         $shardManager = new ShardManager($this->config, $this->dataSourceManager);
         $shardMapping = $shardManager->getShardMapping($mappingId);
         $shardKey = $shardMapping->getKey();
-
         $shardDispatcher = $shardManager->createShardDispatcherOf($mappingId);
 
         foreach ($schemas as $schema) {

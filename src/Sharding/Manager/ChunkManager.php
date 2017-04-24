@@ -8,6 +8,7 @@ use Maghead\Sharding\Shard;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Config;
+use Maghead\Schema\SchemaUtils;
 
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;
@@ -36,6 +37,11 @@ class ChunkManager
         $this->config = $config;
         $this->dataSourceManager = $dataSourceManager;
         $this->shardManager = $shardManager ?: new ShardManager($config, $dataSourceManager);
+
+        /*
+        $this->connectionManager = new ConnectionManager($config->getInstances());
+        $this->dataSourceManager = new DataSourceManager($config->getDataSources());
+        */
     }
 
     /**
@@ -87,8 +93,51 @@ class ChunkManager
 
     public function move(ShardMapping $mapping, $chunkIndex, $targetShard)
     {
-        // TODO: implement chunk move
+        $chunk = $mapping->loadChunk($chunkIndex);
+        $shardId = $chunk->getShard();
+
+        if ($targetShard === $shardId) {
+            throw new InvalidArgumentException("$targetShard == $shardId");
+        }
+        // var_dump($chunk);
+
+        $schemas = SchemaUtils::findSchemasByConfig($this->config);
+        $schemas = SchemaUtils::filterShardMappingSchemas($mapping->id, $schemas);
+
+        $shardKey = $mapping->getKey();
+        $shardDispatcher = $this->shardManager->createShardDispatcherOf($mapping->id);
+
+        // get shard Id of the chunk
+        $srcConn = $this->dataSourceManager->getWriteConnection($shardId);
+        $dstConn = $this->dataSourceManager->getWriteConnection($targetShard);
+
+        $moved = [];
+        foreach ($schemas as $schema) {
+            if ($schema->globalTable) {
+                continue;
+            }
+
+            $srcRepo = $schema->newRepo($srcConn);
+            $dstRepo = $schema->newRepo($dstConn);
+
+            // In the chunk
+            $keys = array_filter($srcRepo->fetchDistinctShardKeys(), function($k) use ($shardDispatcher, $chunk) {
+                $index = $shardDispatcher->hash($k);
+                return $chunk->from < $index && $index <= $chunk->index;
+            });
+
+            if (!empty($keys)) {
+                $select = $srcRepo->select();
+                $select->where()->in($shardKey, $keys);
+                $records = $select->fetch();
+                foreach ($records as $record) {
+                    $moved[] = $record->move($dstRepo);
+                }
+            }
+        }
+        return $moved;
     }
+
 
     public function split(ShardMapping $mapping, $chunkIndex, $targetShard)
     {
