@@ -168,6 +168,37 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
         return $orders;
     }
 
+
+
+    /**
+     * @rebuild false
+     * @depends testOrderCRUDInShards
+     */
+    public function testFetchShardKeys($orders)
+    {
+        $repos = [
+            Order::repo('node1'),
+            Order::repo('node2'),
+            Order::repo('node3'),
+        ];
+        $keysList = array_map(function($repo) {
+            return $repo->fetchDistinctShardKeys();
+        }, $repos);
+
+        $keys = [];
+        foreach ($keysList as $list) {
+            $keys = array_merge($keys, $list);
+        }
+        $this->assertContains("2", $keys);
+        $this->assertContains("3", $keys);
+        $this->assertContains("1", $keys);
+    }
+
+
+
+
+
+
     public function testShardQueryUUID()
     {
         foreach (static::$stores as $args) {
@@ -220,6 +251,9 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
         $this->assertNotNull($ret->key);
         return $ret;
     }
+
+
+
 
     /**
      * @rebuild false
