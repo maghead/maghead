@@ -91,11 +91,13 @@ class ChunkManager
         return $chunks;
     }
 
+    /**
+     * Move a chunk
+     */
     public function move(ShardMapping $mapping, $chunkIndex, $targetShard)
     {
         $chunk = $mapping->loadChunk($chunkIndex);
-        $shardId = $chunk->getShard();
-
+        $shardId = $chunk->getShardId();
         if ($targetShard === $shardId) {
             throw new InvalidArgumentException("$targetShard == $shardId");
         }

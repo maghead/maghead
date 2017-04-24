@@ -2,14 +2,21 @@
 
 use Maghead\Sharding\Hasher\FastHasher;
 use Maghead\Sharding\ShardMapping;
+use Maghead\Manager\DataSourceManager;
 
-class FastHasherTest extends \PHPUnit\Framework\TestCase
+use StoreApp\StoreTestCase;
+
+/**
+ * @group sharding
+ */
+class FastHasherTest extends StoreTestCase
 {
     protected $mapping;
 
     public function setUp()
     {
-        $this->mapping = new ShardMapping('mapping_store_id', [
+        parent::setUp();
+        $this->mapping = new ShardMapping('M_store_id', [
             'key' => 'store_id',
             'shards' => ['node1', 'node2', 'node3'],
             'chunks' => [
@@ -22,7 +29,7 @@ class FastHasherTest extends \PHPUnit\Framework\TestCase
                 3758096384 =>  [ "shard" =>  "node3" ],
                 4294967296 =>  [ "shard" =>  "node3" ],
             ]
-        ]);
+        ], $this->dataSourceManager);
     }
 
     public function testGetBuckets()

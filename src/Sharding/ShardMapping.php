@@ -3,6 +3,7 @@
 namespace Maghead\Sharding;
 
 use Exception;
+use Maghead\Manager\DataSourceManager;
 
 /**
  * config structure:
@@ -22,20 +23,23 @@ class ShardMapping
 
     public $chunks;
 
-    public $extra;
+    protected $config;
 
     // Shard method
     const RANGE = 1;
 
     const HASH = 2;
 
-    public function __construct($id, array $conf)
+    protected $dataSourceManager;
+
+    public function __construct($id, array $conf, DataSourceManager $dataSourceManager)
     {
         $this->id       = $id;
         $this->key      = $conf['key'];
         $this->shardIds = $conf['shards'];
         $this->chunks   = $conf['chunks'];
-        $this->extra    = $conf;
+        $this->config    = $conf;
+        $this->dataSourceManager = $dataSourceManager;
     }
 
     public function getKey()
@@ -45,13 +49,13 @@ class ShardMapping
 
     public function hasKeyGenerator()
     {
-        return isset($this->extra['key_generator']);
+        return isset($this->config['key_generator']);
     }
 
     public function getKeyGenerator()
     {
-        if (isset($this->extra['key_generator'])) {
-            return $this->extra['key_generator'];
+        if (isset($this->config['key_generator'])) {
+            return $this->config['key_generator'];
         }
     }
 
@@ -63,9 +67,9 @@ class ShardMapping
      */
     public function getShardType()
     {
-        if (isset($this->extra['hash'])) {
+        if (isset($this->config['hash'])) {
             return self::HASH;
-        } elseif (isset($this->extra['range'])) {
+        } elseif (isset($this->config['range'])) {
             return self::RANGE;
         }
     }
@@ -83,7 +87,7 @@ class ShardMapping
             $indexFrom = $i;
         }
         $config = $this->chunks[$chunkIndex]; // get the chunk config.
-        return new Chunk($chunkIndex, $indexFrom, $config);
+        return new Chunk($chunkIndex, $indexFrom, $config['shard'], $this->dataSourceManager);
     }
 
     public function getChunkConfig($chunkIndex)
@@ -122,12 +126,12 @@ class ShardMapping
 
     public function getHashBy()
     {
-        return $this->extra['hash'];
+        return $this->config['hash'];
     }
 
     public function getRangeBy()
     {
-        return $this->extra['range'];
+        return $this->config['range'];
     }
 
 
@@ -147,7 +151,7 @@ class ShardMapping
 
     public function toArray()
     {
-        $conf = $this->extra; // this will copy the extra array.
+        $conf = $this->config; // this will copy the config array.
         $conf['key'] = $this->key;
         $conf['shards'] = $this->shardIds;
         $conf['chunks'] = $this->chunks;

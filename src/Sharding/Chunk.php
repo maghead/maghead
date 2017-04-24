@@ -2,26 +2,41 @@
 
 namespace Maghead\Sharding;
 
+use Maghead\Manager\DataSourceManager;
+
 class Chunk
 {
     public $index;
 
     public $from;
 
-    public $config;
+    public $shardId;
 
-    protected $shard;
+    private $dataSourceManager;
 
-    public function __construct($index, $from, array $config)
+    /**
+     * @param nubmer $index the chunk index
+     * @param nubmer $from the index starts from. This number is less than $index.
+     * @param string $shard the shard ID
+     */
+    public function __construct($index, $from, $shardId, DataSourceManager $dataSourceManager)
     {
         $this->index  = $index;
         $this->from   = $from;
-        $this->config = $config;
-        $this->shard  = $config['shard'];
+        $this->shardId  = $shardId;
+        $this->dataSourceManager = $dataSourceManager;
     }
 
-    public function getShard()
+    public function loadShard()
     {
-        return $this->shard;
+        return new Shard($this->shardId, $this->dataSourceManager);
+    }
+
+    /**
+     * Returns the shard ID
+     */
+    public function getShardId()
+    {
+        return $this->shardId;
     }
 }

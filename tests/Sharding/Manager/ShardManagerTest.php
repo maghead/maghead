@@ -70,9 +70,7 @@ class ShardManagerTest extends StoreTestCase
         $this->assertInstanceOf('Maghead\\Sharding\\Chunk', $chunk);
         $this->assertEquals(4294967296, $chunk->index);
         $this->assertEquals(3758096384, $chunk->from);
-        $this->assertSame([
-            'shard' => 'node3',
-        ], $chunk->config);
+        $this->assertEquals('node3', $chunk->shardId);
     }
 
     /**
