@@ -46,6 +46,11 @@ class ChunkManagerTest extends StoreTestCase
         $orders = $repo->select()->fetch();
         $this->assertEquals(4, $orders->count());
 
+        $orderIds = [];
+        foreach ($orders as $o) {
+            $orderIds[] = $o->getKey();
+        }
+
         $targetNode = 'node2';
         $chunkManager = new ChunkManager($this->config, $this->dataSourceManager, $this->shardManager);
         $rets = $chunkManager->move($this->mapping, 536870912, $targetNode);
@@ -61,5 +66,12 @@ class ChunkManagerTest extends StoreTestCase
         $repo = Order::repo('node1');
         $orders = $repo->select()->fetch();
         $this->assertEquals(0, $orders->count());
+
+        $repo2 = Order::repo('node2');
+        foreach ($orderIds as $oId) {
+            $o = $repo2->findByPrimaryKey($oId);
+            $this->assertNotFalse($o);
+            $this->assertInstanceOf('Maghead\\Runtime\\BaseModel', $o);
+        }
     }
 }
