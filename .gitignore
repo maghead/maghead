@@ -11,5 +11,6 @@ tests/.database.config.php
 tests/config/.database.config.php
 /src/Model/MetadataBaseRepo.php
 /db/migrations
+/tmp
 /tests/tmp
 /tests/config/*.php
