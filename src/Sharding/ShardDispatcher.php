@@ -25,6 +25,10 @@ class ShardDispatcher
         $this->shards = $shards;
     }
 
+    public function getHasher()
+    {
+        return $this->hasher;
+    }
 
     /**
      * Dispatches the key and return the shard Id of the key
