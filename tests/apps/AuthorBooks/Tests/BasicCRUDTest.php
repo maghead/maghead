@@ -131,13 +131,11 @@ class BasicCRUDTest extends ModelTestCase
         $this->successfulDelete($b3);
     }
 
-    public function testRepoWithDataSourceId()
+    public function testCreateRepoWithDataSourceId()
     {
-        $repo = Book::repo('default');
+        $repo = Book::repo('master');
         $this->assertInstanceOf('Maghead\Runtime\BaseRepo', $repo);
     }
-
-
 
     public function booleanTrueTestDataProvider()
     {
