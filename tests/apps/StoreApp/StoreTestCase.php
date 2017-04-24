@@ -22,6 +22,14 @@ abstract class StoreTestCase extends ModelTestCase
         [ 'code' => 'TW001', 'name' => '天仁茗茶 01' ],
         [ 'code' => 'TW002', 'name' => '天仁茗茶 02' ],
         [ 'code' => 'TW003', 'name' => '天仁茗茶 03' ],
+
+        [ 'code' => 'CC001', 'name' => 'Coco 01' ],
+        [ 'code' => 'CC002', 'name' => 'Coco 02' ],
+        [ 'code' => 'CC003', 'name' => 'Coco 03' ],
+
+        [ 'code' => 'D01', 'name' => 'D1' ],
+        [ 'code' => 'D02', 'name' => 'D2' ],
+        [ 'code' => 'D03', 'name' => 'D3' ],
     ];
 
     public static $orders = [
@@ -42,7 +50,43 @@ abstract class StoreTestCase extends ModelTestCase
             [ 'amount' => 1000, 'paid' => false ],
             [ 'amount' => 1000, 'paid' => false ],
             [ 'amount' => 1000, 'paid' => false ],
-        ]
+        ],
+        'CC001' => [
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+        ],
+        'CC002' => [
+            [ 'amount' => 20, 'paid' => false ],
+            [ 'amount' => 20, 'paid' => false ],
+            [ 'amount' => 20, 'paid' => false ],
+            [ 'amount' => 20, 'paid' => false ],
+            [ 'amount' => 20, 'paid' => false ],
+        ],
+        'CC003' => [
+            [ 'amount' => 50, 'paid' => false ],
+            [ 'amount' => 50, 'paid' => false ],
+        ],
+        'D01' => [
+            [ 'amount' => 20, 'paid' => false ],
+        ],
+        'D02' => [
+            [ 'amount' => 10, 'paid' => false ],
+            [ 'amount' => 10, 'paid' => false ],
+        ],
+        'D03' => [
+            [ 'amount' => 5, 'paid' => false ],
+            [ 'amount' => 5, 'paid' => false ],
+            [ 'amount' => 5, 'paid' => false ],
+            [ 'amount' => 5, 'paid' => false ],
+        ],
     ];
 
     public function models()

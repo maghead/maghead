@@ -132,6 +132,6 @@ class ChunkManager
 
     public function split($chunkIndex, $targetShard, array $schemas)
     {
-        // TODO: implement chunk split
+        $chunk = $this->mapping->loadChunk($chunkIndex);
     }
 }

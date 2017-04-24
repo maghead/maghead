@@ -6,6 +6,7 @@ use Maghead\ConfigLoader;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Manager\ChunkManager;
 use Maghead\Sharding\Manager\ConfigManager;
+use Maghead\Sharding\Chunk;
 use StoreApp\Model\{Store, StoreCollection, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderCollection, OrderSchema, OrderRepo};
 use StoreApp\StoreTestCase;
@@ -32,8 +33,8 @@ class ChunkManagerTest extends StoreTestCase
         $numberOfChunks = 32;
         $chunkManager = new ChunkManager($this->mapping);
         $chunks = $chunkManager->distribute($numberOfChunks);
-        $this->assertTrue(isset($chunks[ChunkManager::HASH_RANGE]));
-        $this->assertNotNull($chunks[ChunkManager::HASH_RANGE]);
+        $this->assertTrue(isset($chunks[Chunk::HASH_RANGE]));
+        $this->assertNotNull($chunks[Chunk::HASH_RANGE]);
         $this->assertCount($numberOfChunks, $chunks);
     }
 
@@ -45,7 +46,7 @@ class ChunkManagerTest extends StoreTestCase
         // Make sure all node1 orders are moved to node2
         $repo = Order::repo('node1');
         $orders = $repo->select()->fetch();
-        $this->assertEquals(4, $orders->count());
+        $this->assertEquals(6, $orders->count());
 
         $orderIds = [];
         foreach ($orders as $o) {
@@ -57,7 +58,7 @@ class ChunkManagerTest extends StoreTestCase
         $targetNode = 'node2';
         $chunkManager = new ChunkManager($this->mapping);
         $rets = $chunkManager->move(536870912, $targetNode, $schemas);
-        $this->assertCount(4, $rets);
+        $this->assertCount(6, $rets);
         $this->assertResultsSuccess($rets);
 
         $rets = $chunkManager->move(1073741824, $targetNode, $schemas);

@@ -75,14 +75,20 @@ class ShardMapping
         }
     }
 
-    public function insertChunk($chunkIndex, array $config)
+    /**
+     * Insert a chunk into the chunk index.
+     *
+     * @param number $chunkIndex
+     * @param string $shardId
+     */
+    public function insertChunk($chunkIndex, $shardId)
     {
         if ($chunkIndex > Chunk::HASH_RANGE) {
             throw new InvalidArgumentException("$chunkIndex should be less than {Chunk::HASH_RANGE}");
         }
-        $this->chunks[$chunkIndex] = $config;
+        $this->chunks[$chunkIndex] = ['shard' => $shardId];
+        return $this->loadChunk($chunkIndex);
     }
-
 
     /**
      * load the chunk object.
