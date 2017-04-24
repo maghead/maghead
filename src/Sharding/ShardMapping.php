@@ -129,11 +129,6 @@ class ShardMapping
         return $this->config['hash'];
     }
 
-    public function getRangeBy()
-    {
-        return $this->config['range'];
-    }
-
     public function loadShardCollection() : ShardCollection
     {
         $shardIds = $this->getShardIds();
