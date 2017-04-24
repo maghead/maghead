@@ -41,8 +41,8 @@ class ShardConfigManagerTest extends StoreTestCase
     public function testAddShardMapping()
     {
         $numberOfChunks = 8;
-        $chunkManager = new ChunkManager($this->config, $this->dataSourceManager);
-        $chunks = $chunkManager->distribute($this->mapping, $numberOfChunks);
+        $chunkManager = new ChunkManager($this->mapping);
+        $chunks = $chunkManager->distribute($numberOfChunks);
         $this->assertTrue(isset($chunks[ChunkManager::HASH_RANGE]));
         $this->assertNotNull($chunks[ChunkManager::HASH_RANGE]);
         $this->assertCount($numberOfChunks, $chunks);
