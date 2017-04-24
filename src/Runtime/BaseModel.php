@@ -52,9 +52,7 @@ abstract class BaseModel implements Serializable
     /**
      * @var array Mixin classes are emtpy. (MixinDeclareSchema)
      * */
-    public static $mixin_classes = array();
-
-    protected $_data = array();
+    public static $mixin_classes = [];
 
     protected $_cache = array();
 
@@ -63,10 +61,6 @@ abstract class BaseModel implements Serializable
     public $dataLabelField;
 
     public $dataValueField;
-
-    // static $schemaCache;
-
-    public $usingDataSource;
 
     protected $_schema;
 
@@ -384,7 +378,6 @@ abstract class BaseModel implements Serializable
         $this->delete();
         return $ret;
     }
-
 
 
     /**
