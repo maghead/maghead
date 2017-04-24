@@ -27,10 +27,7 @@ use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
 
-class PrimaryKeyColumnMissing extends SchemaRelatedException
-{
-
-}
+class PrimaryKeyColumnMissingException extends SchemaRelatedException { }
 
 /**
  * Base Model class generator.
@@ -50,7 +47,7 @@ class BaseModelClassGenerator
 
         $primaryKey = $schema->primaryKey;
         if (!$primaryKey) {
-            throw new PrimaryKeyColumnMissing($schema, "PrimaryKey is required to be defined in the schema.");
+            throw new PrimaryKeyColumnMissingException($schema, "PrimaryKey is required to be defined in the schema.");
         }
 
         $cTemplate = new ClassFile($schema->getBaseModelClass());
