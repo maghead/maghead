@@ -655,6 +655,11 @@ abstract class BaseModel implements Serializable
      */
     public abstract function getKeyName();
 
+    /*
+    public abstract function removeLocalPrimaryKey();
+
+    public abstract function removeGlobalPrimaryKey();
+    */
 
     /**
      * Do we have this column ?

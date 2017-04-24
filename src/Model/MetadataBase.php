@@ -2,17 +2,13 @@
 namespace Maghead\Model;
 
 require_once __DIR__ . '/MetadataSchemaProxy.php';
+use Maghead\Runtime\BaseModel;
 use Maghead\Schema\SchemaLoader;
 use Maghead\Result;
 use Maghead\Inflator;
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Universal\Query\InsertQuery;
-use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\PDOMySQLDriver;
-use PDO;
 use DateTime;
-use Maghead\Runtime\BaseModel;
 
 class MetadataBase
     extends BaseModel

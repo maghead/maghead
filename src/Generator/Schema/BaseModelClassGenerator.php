@@ -54,6 +54,7 @@ class BaseModelClassGenerator
         }
 
         $cTemplate = new ClassFile($schema->getBaseModelClass());
+        $cTemplate->extendClass('\\'.$baseClass);
 
         // Generate a require statement here to prevent spl autoload when
         // loading the model class.
@@ -73,10 +74,6 @@ class BaseModelClassGenerator
         $cTemplate->useClass('Maghead\\Inflator');
         $cTemplate->useClass('SQLBuilder\\Bind');
         $cTemplate->useClass('SQLBuilder\\ArgumentArray');
-        $cTemplate->useClass('SQLBuilder\\Universal\\Query\\InsertQuery');
-        $cTemplate->useClass('SQLBuilder\\Driver\\BaseDriver');
-        $cTemplate->useClass('SQLBuilder\\Driver\\PDOMySQLDriver');
-        $cTemplate->useClass('PDO');
         $cTemplate->useClass('DateTime');
 
         $cTemplate->addConsts(array(
@@ -126,7 +123,6 @@ class BaseModelClassGenerator
         });
 
 
-        $cTemplate->extendClass('\\'.$baseClass);
 
         // interfaces
         if ($ifs = $schema->getModelInterfaces()) {
