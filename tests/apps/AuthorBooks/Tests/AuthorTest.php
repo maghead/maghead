@@ -11,7 +11,7 @@ use SQLBuilder\Driver\SQLiteDriver;
 /**
  * @group app
  */
-class AuthorModelTest extends ModelTestCase
+class AuthorTest extends ModelTestCase
 {
     protected $requiredDataSources = ['master', 'node1', 'node2', 'node3'];
 
