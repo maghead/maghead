@@ -136,6 +136,34 @@ abstract class BaseTestCase extends TestCase
         $this->prepareConnections();
     }
 
+
+    /**
+     * skips the test case for the driver
+     *
+     * @param string $driver
+     */
+    protected function skipDrivers($driver)
+    {
+        $drivers = func_get_args();
+        if (in_array($this->getCurrentDriverType(), $drivers)) {
+            return $this->markTestSkipped("Skip drivers: " . join(',', $drivers));
+        }
+    }
+
+    /**
+     * run the test case only for the drivers
+     *
+     * @param string $driver
+     */
+    protected function forDrivers($driver)
+    {
+        $drivers = func_get_args();
+        if (!in_array($this->getCurrentDriverType(), $drivers)) {
+            return $this->markTestSkipped("only for drivers: " . join(',', $drivers));
+        }
+    }
+
+
     public function tearDown()
     {
         if ($this->freeConnections) {

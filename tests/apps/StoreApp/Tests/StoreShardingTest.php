@@ -15,6 +15,10 @@ use StoreApp\Model\OrderCollection;
  */
 class StoreShardingTest extends \StoreApp\StoreTestCase
 {
+
+
+
+
     /**
      * @dataProvider storeDataProvider
      */
@@ -33,6 +37,42 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
             $ret = $store->delete();
             $this->assertResultSuccess($ret);
         }
+    }
+
+    public function testRepoMove()
+    {
+        foreach (static::$stores as $args) {
+            $this->assertCreateStore($args);
+        }
+
+        $store = Store::masterRepo()->findByCode('TW001');
+        $this->assertNotFalse($store, 'load store by code');
+
+        $repo1 = Order::repo('node1');
+        $this->assertNotNull($repo1);
+
+        $args = [
+            'store_id' => $store->id,
+            'amount' => 1000,
+        ];
+        $ret = $repo1->create($args);
+        $this->assertResultSuccess($ret);
+
+        $order = $repo1->findByPrimaryKey($ret->key);
+        $this->assertNotNull($order);
+
+        $repo2 = Order::repo('node2');
+        $this->assertNotNull($repo2);
+
+        $this->assertNotSame($repo1->getWriteConnection(), $repo2->getWriteConnection());
+        $ret = $order->move($repo2);
+        $this->assertResultSuccess($ret);
+
+        $order = $repo2->findByPrimaryKey($ret->key);
+        $this->assertNotNull($order);
+
+        $orderShouldBeDeleted = $repo1->findByPrimaryKey($ret->key);
+        $this->assertFalse($orderShouldBeDeleted);
     }
 
     /**

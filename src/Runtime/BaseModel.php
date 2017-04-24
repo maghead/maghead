@@ -370,6 +370,23 @@ abstract class BaseModel implements Serializable
         return Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
     }
 
+
+    public function move(BaseRepo $target)
+    {
+        // just a simple check
+        if ($this->repo === $target) {
+            throw new InvalidArgumentException("You can't move the record to the same repo.");
+        }
+        $new = clone $this;
+        $new->removeLocalPrimaryKey();
+        $args = $new->getData();
+        $ret = $target->create($args);
+        $this->delete();
+        return $ret;
+    }
+
+
+
     /**
      * Update current record.
      *

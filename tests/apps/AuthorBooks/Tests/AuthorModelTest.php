@@ -349,19 +349,17 @@ class AuthorModelTest extends ModelTestCase
 
     public function testUpdateNull()
     {
-        $author = new Author;
-        $ret = Author::create(array(
+        $ret = Author::create([
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
             'identity' => 'zz3',
-        ));
+        ]);
         $this->assertResultSuccess($ret);
 
         $author = Author::load($ret->key);
 
         $id = $author->id;
-
-        $this->assertResultSuccess($author->update(array( 'name' => 'I' )));
+        $this->assertResultSuccess($author->update([ 'name' => 'I' ]));
         $this->assertEquals($id, $author->id);
         $this->assertEquals('I', $author->name);
 

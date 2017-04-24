@@ -28,10 +28,10 @@ trait RepoFactoryTrait
     {
         $dataSourceManager = static::$dataSourceManager;
         if (!$read) {
-            if ($write) {
-                $read = $write;
+            if (!$write) {
+                return static::masterRepo();
             }
-            return static::masterRepo();
+            $read = $write;
         }
         $writeConn = is_string($write) ? $dataSourceManager->getWriteConnection($write) : $write;
         $readConn = is_string($read) ? $dataSourceManager->getReadConnection($read) : $read;
