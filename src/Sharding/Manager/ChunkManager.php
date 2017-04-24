@@ -91,7 +91,6 @@ class ChunkManager
             throw new InvalidArgumentException("$targetShardId == $shardId");
         }
 
-        $shard = $chunk->loadShard();
 
         // we only care about the schemas related to the current shard mapping
         $schemas = SchemaUtils::filterShardMappingSchemas($this->mapping->id, $schemas);
@@ -102,11 +101,12 @@ class ChunkManager
         $shardDispatcher = $shards->createDispatcher();
 
         // get shard Id of the chunk
-        $srcShard = $shards[$shardId];
+        $srcShard = $chunk->loadShard();
         $dstShard = $shards[$targetShardId];
 
         $moved = [];
         foreach ($schemas as $schema) {
+            // skip schemas that is global table.
             if ($schema->globalTable) {
                 continue;
             }
@@ -118,9 +118,7 @@ class ChunkManager
             $keys = array_filter($srcRepo->fetchDistinctShardKeys(), function($k) use ($shardDispatcher, $chunk) {
                 $index = $shardDispatcher->hash($k);
 
-                // echo "key($k) -> index($index): {$chunk->from} < {$index} && {$index} <= {$chunk->index} \n";
-
-                return $chunk->from < $index && $index <= $chunk->index;
+                return $chunk->contains($index);
             });
 
             if (!empty($keys)) {

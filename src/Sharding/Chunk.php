@@ -27,6 +27,15 @@ class Chunk
         $this->dataSourceManager = $dataSourceManager;
     }
 
+    /**
+     * @param number $index hashed index
+     */
+    public function contains($index)
+    {
+        // echo "key($k) -> index($index): {$this->from} < {$index} && {$index} <= {$this->index} \n";
+        return $this->from < $index && $index <= $this->index;
+    }
+
     public function loadShard()
     {
         return new Shard($this->shardId, $this->dataSourceManager);
