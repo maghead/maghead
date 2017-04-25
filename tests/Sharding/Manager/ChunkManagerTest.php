@@ -92,6 +92,19 @@ class ChunkManagerTest extends StoreTestCase
         $this->assertCount(9, $this->mapping->chunks);
     }
 
+    public function testChunkClone()
+    {
+        $this->assertInsertStores(static::$stores);
+        $this->assertInsertOrders(static::$orders);
+
+        $chunkManager = new ChunkManager($this->mapping);
+        $this->assertCount(8, $this->mapping->chunks);
+
+        $schemas = SchemaUtils::findSchemasByConfig($this->config);
+        $rets = $chunkManager->clone(536870912, 'node2', $schemas);
+        $this->assertResultsSuccess($rets);
+    }
+
     public function testChunkSplitAndMove()
     {
         $this->assertInsertStores(static::$stores);

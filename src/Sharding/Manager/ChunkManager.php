@@ -183,9 +183,12 @@ class ChunkManager
         $select->where()->in($shardKey, $keys);
         $records = $select->fetch();
 
-        return array_map(function($record) use ($dstRepo) {
-            return $dstRepo->import($record);
-        }, $records);
+        $rets = [];
+        foreach ($records as $record) {
+            $rets[] = $dstRepo->import($record);
+        }
+
+        return $rets;
     }
 
 
