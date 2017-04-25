@@ -38,8 +38,7 @@ before_script:
   - bin/maghead schema build -f src # build meta model class
   - bin/maghead sql --rebuild -D=master
 script:
-- phpunit --version
-- phpunit --configuration phpunit.xml.dist
+- travis/run-phpunit
 - travis/run-examples
 after_success:
 - php vendor/bin/coveralls -v

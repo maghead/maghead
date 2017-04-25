@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 cd examples/todos
 php ../../bin/maghead use db/config/database.yml
 php ../../bin/maghead db create
