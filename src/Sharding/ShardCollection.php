@@ -100,7 +100,7 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
     public function dispatch($key)
     {
         if (!$this->dispatcher) {
-            $this->dispatcher = $this->createDispatcher($hasher);
+            $this->dispatcher = $this->createDispatcher();
         }
         return $this->dispatcher->dispatch($key);
     }
