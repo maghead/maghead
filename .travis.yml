@@ -40,7 +40,7 @@ before_script:
 script:
 - phpunit --version
 - phpunit --configuration phpunit.xml.dist
-- travis/test-examples
+- travis/run-examples
 after_success:
 - php vendor/bin/coveralls -v
 # matrix:
