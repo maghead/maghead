@@ -99,6 +99,13 @@ class BaseRepoClassGenerator
         $cTemplate->addProtectedProperty('loadStm');
         $cTemplate->addProtectedProperty('deleteStm');
 
+        $cTemplate->addMethod('public', 'free', [], function () use ($schema) {
+            return [
+                '$this->loadStm = null;',
+                '$this->deleteStm = null;',
+            ];
+        });
+
         $cTemplate->addStaticMethod('public', 'getSchema', [], function () use ($schema) {
             return [
                 "static \$schema;",
