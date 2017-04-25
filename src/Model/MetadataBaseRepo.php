@@ -59,10 +59,6 @@ class MetadataBaseRepo
 
     protected $table = '__meta__';
 
-    protected $loadStm;
-
-    protected $deleteStm;
-
     protected $findByNameStm;
 
     protected $findByValueStm;

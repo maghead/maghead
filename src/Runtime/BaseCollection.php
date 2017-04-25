@@ -99,7 +99,7 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
      */
     public function __construct(BaseRepo $repo = null, PDOStatement $stm = null)
     {
-        $this->repo = $repo;
+        $this->repo = $repo ?: static::masterRepo();
         $this->stm = $stm;
     }
 
@@ -107,15 +107,6 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
     {
         $this->repo = $repo;
     }
-
-    protected function getCurrentRepo()
-    {
-        if ($this->repo) {
-            return $this->repo;
-        }
-        return static::masterRepo(); // my repo
-    }
-
 
     public function getIterator()
     {
@@ -292,7 +283,7 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
             $q->select($selection);
         } else {
             // Need the driver instance to quote the field names
-            $repo = $this->getCurrentRepo();
+            $repo = $this->repo;
             $conn = $repo->getReadConnection();
             $driver = $conn->getQueryDriver();
 
@@ -322,8 +313,7 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
 
         $arguments = new ArgumentArray;
 
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getWriteConnection();
+        $conn = $this->repo->getWriteConnection();
         $driver = $conn->getQueryDriver();
         $sql = $query->toSql($driver, $arguments);
 
@@ -347,8 +337,7 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
      */
     public function update(array $data)
     {
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getWriteConnection();
+        $conn = $this->repo->getWriteConnection();
         $driver = $conn->getQueryDriver();
 
         $query = new UpdateQuery();
@@ -467,8 +456,7 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
      */
     public function toSql()
     {
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getReadConnection();
+        $conn = $this->repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
         $query = $this->getCurrentQuery();
@@ -607,8 +595,7 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
      */
     public function fetch()
     {
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getReadConnection();
+        $conn = $this->repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
         $query = $this->getCurrentQuery();
@@ -646,8 +633,7 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
      */
     public function queryCount()
     {
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getReadConnection();
+        $conn = $this->repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
         $key = static::PRIMARY_KEY;
@@ -673,8 +659,7 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
 
     public function distinct($field)
     {
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getReadConnection();
+        $conn = $this->repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
         $q = clone $this->getCurrentQuery();
@@ -890,8 +875,7 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
 
     public function sql()
     {
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getReadConnection();
+        $conn = $this->repo->getReadConnection();
         $driver = $conn->getQueryDriver();
 
         $arguments = new ArgumentArray();
