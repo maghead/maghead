@@ -595,15 +595,12 @@ abstract class BaseModel implements Serializable
         $key = $this->getKey();
         $data = $this->getData();
 
-        $repo = $this->repo;
-        if (!$repo) {
-            $repo = static::masterRepo();
-        }
+        // FIXME: remove immutable args
         if ($key) {
-            return $repo->updateByPrimaryKey($key, $data);
+            return $this->update($data);
         }
         // FIXME: fix me for sharding
-        return $repo->create($data);
+        return static::create($data);
     }
 
     // ============================ MIXIN METHODS ===========================

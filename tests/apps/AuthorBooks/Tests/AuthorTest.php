@@ -33,9 +33,21 @@ class AuthorTest extends ModelTestCase
         }
     }
 
+    public function testSave()
+    {
+        $this->assertNotFalse($author = Author::createAndLoad([
+            'name' => 'FooBar',
+            'email' => 'a@a',
+            'identity' => 'a',
+            'confirmed' => false,
+        ]));
+        $author->name = 'FooBarZoo';
+        $this->assertResultSuccess($author->save());
+        $this->assertEquals('FooBarZoo', $author->name);
+    }
+
     public function testLoadByEmail()
     {
-        $author = new Author;
         $this->assertNotFalse($author = Author::createAndLoad(array(
             'name' => 'FooBar',
             'email' => 'timcook@apple.com',
@@ -52,7 +64,6 @@ class AuthorTest extends ModelTestCase
 
     public function testCollection()
     {
-        $author = new Author;
         $this->assertNotFalse($author = Author::createAndLoad(array(
             'name' => 'FooBar',
             'email' => 'a@a',
