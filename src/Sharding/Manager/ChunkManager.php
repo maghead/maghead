@@ -93,9 +93,9 @@ class ChunkManager
         $schemas = SchemaUtils::filterShardMappingSchemas($this->mapping->id, $schemas);
 
         $shardKey = $this->mapping->getKey();
-
         $shards = $this->mapping->loadShardCollection();
         $shardDispatcher = $shards->createDispatcher();
+        $hasher = $shardDispatcher->getHasher();
 
         // get shard Id of the chunk
         $srcShard = $chunk->loadShard();
@@ -111,10 +111,10 @@ class ChunkManager
             $repoClass = $schema->getRepoClass();
             $srcRepo = $srcShard->repo($repoClass);
 
-            $keys = array_filter($srcRepo->fetchDistinctShardKeys(), function($k) use ($shardDispatcher, $chunk) {
-                $index = $shardDispatcher->hash($k);
+            $keys = array_filter($srcRepo->fetchDistinctShardKeys(), function($k) use ($hasher, $chunk) {
 
-                return $chunk->contains($index);
+                return $chunk->contains($hasher->hash($k));
+
             });
 
             if (!empty($keys)) {

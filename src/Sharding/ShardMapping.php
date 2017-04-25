@@ -5,6 +5,7 @@ namespace Maghead\Sharding;
 use Exception;
 use InvalidArgumentException;
 use Maghead\Manager\DataSourceManager;
+use Maghead\Sharding\Hasher\FastHasher;
 
 /**
  * shard mapping structure:
@@ -33,6 +34,11 @@ class ShardMapping
 
     protected $dataSourceManager;
 
+    /**
+     * @var Maghead\Sharding\Hasher\Hasher
+     */
+    protected $hasher;
+
     public function __construct($id, array $conf, DataSourceManager $dataSourceManager)
     {
         $this->id       = $id;
@@ -41,6 +47,9 @@ class ShardMapping
         $this->chunks   = $conf['chunks'];
         $this->config    = $conf;
         $this->dataSourceManager = $dataSourceManager;
+
+        // TODO: may be changed by config in future.
+        $this->hasher = new FastHasher($this);
     }
 
     public function getKey()
@@ -60,6 +69,10 @@ class ShardMapping
         }
     }
 
+    public function getHasher()
+    {
+        return $this->hasher;
+    }
 
     /**
      * Return the type of this shard mapping.

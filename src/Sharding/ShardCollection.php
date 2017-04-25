@@ -19,6 +19,8 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
 
     protected $repoClass;
 
+    private $dispatcher;
+
     public function __construct(array $shards, ShardMapping $mapping = null, $repoClass = null)
     {
         $this->shards = $shards;
@@ -95,15 +97,17 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
         unset($this->shards[$name]);
     }
 
-    public function dispatch($key, Hasher $hasher = null)
+    public function dispatch($key)
     {
-        $dispatcher = $this->createDispatcher($hasher);
-        return $dispatcher->dispatch($key);
+        if (!$this->dispatcher) {
+            $this->dispatcher = $this->createDispatcher($hasher);
+        }
+        return $this->dispatcher->dispatch($key);
     }
 
-    public function createDispatcher(Hasher $hasher = null)
+    public function createDispatcher()
     {
-        return new ShardDispatcher($this->mapping, $this, $hasher);
+        return new ShardDispatcher($this->mapping, $this);
     }
 
     public function __call($method, $args)
