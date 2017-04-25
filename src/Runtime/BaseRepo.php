@@ -279,18 +279,19 @@ class BaseRepo
                 continue;
             }
 
+            // FIXME check immutable 
             // if column is required (can not be empty) //   and default is defined.
             if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
                 return Result::failure("Value of $n is required.");
             }
 
             // TODO: Do not render immutable field in ActionKit
-            // XXX: calling ::save() might update the immutable columns
+            // FIXME: calling ::save() might update the immutable columns
             if ($c->immutable) {
                 continue;
-                // TODO: render as a validation results?
-                // continue;
+                // FIXME: raise the error
                 // return Result::failure( "You can not update $n column, which is immutable.", array('args' => $args));
+                // continue;
             }
 
             if ($args[$n] !== null && !is_array($args[$n]) && !$args[$n] instanceof Raw) {
@@ -639,7 +640,8 @@ class BaseRepo
             );
         }
 
-        // XXX: migrate this method to runtime column
+        // TODO: migrate this section to runtime column
+        // required variables: $record, $args, $val
         if ($validator = $column->validator) {
             if (is_callable($validator)) {
                 $ret = call_user_func($validator, $val, $args, $record);

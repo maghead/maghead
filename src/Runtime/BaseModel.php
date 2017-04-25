@@ -540,8 +540,47 @@ abstract class BaseModel implements Serializable
      */
     public static function rawCreate(array $args)
     {
-        // FIXME: Update this implementation for sharding
+        if (static::GLOBAL_TABLE) {
+            $ret = static::masterRepo()->rawCreate($args);
+
+            // Update primary key
+            if (!isset($args[$ret->keyName])) {
+                $args[$ret->keyName] = $ret->key;
+            }
+
+            // TODO: insert into shards: Check error, log and retry,
+            // TODO: insert into shards: Use MAP QUERY WORKER to support async.
+            // TODO: insert into shards: support global transaction
+            $ret->subResults = static::shards()->map(function ($repo) use ($args) {
+                return $repo->rawCreate($args);
+            });
+
+            return $ret;
+
+        } else if (static::SHARD_MAPPING_ID) {
+
+            $shards = static::shards();
+            $mapping = $shards->getMapping();
+            $shardKeyName = $mapping->getKey();
+
+            // If the shard is already defined,
+            // then we can dispatch
+            if (isset($args[$shardKeyName])) {
+                $shardKey = $args[$shardKeyName];
+            } else {
+                // Generate an UUID
+                $shardKey = $shards->generateUUID();
+            }
+
+            return static::shards()->locateAndExecute($shardKey, function ($repo, $shard) use ($args) {
+                $ret = $repo->rawCreate($args);
+                $ret->shard = $shard;
+                return $ret;
+            });
+        }
         return static::masterRepo()->rawCreate($args);
+
+
     }
 
     /**
