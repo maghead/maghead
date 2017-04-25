@@ -697,10 +697,22 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     public function mixin($class, array $options = array())
     {
         if (!class_exists($class, true)) {
-            $class = 'Maghead\\Schema\\Mixin\\'.$class;
-            if (!class_exists($class, true)) {
-                throw new Exception("Mixin class $class not found.");
+            $refl = new ReflectionObject($this);
+            $nslist = [];
+            $nslist[] = $refl->getNamespaceName();
+            $nslist[] = $refl->getNamespaceName() . '\\Mixin\\';
+            $nslist[] = 'Maghead\\Schema\\Mixin';
+            foreach ($nslist as $ns) {
+                $c = "{$ns}\\{$class}";
+                if (class_exists($c, true)) {
+                    $class = $c;
+                    break;
+                }
             }
+        }
+
+        if (!class_exists($class)) {
+            throw new Exception("Mixin class $class not found.");
         }
 
         $mixin = new $class($this, $options);
