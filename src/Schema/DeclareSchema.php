@@ -26,6 +26,38 @@ use Maghead\Exception\SchemaRelatedException;
 class ShardMappingMissingException extends SchemaRelatedException { }
 class ShardKeyMissingException extends SchemaRelatedException { }
 
+/**
+ * try resolves the class name if the class doesn't exist or can't be found via
+ * the registered spl class loader.
+ *
+ * @param array $defaultNsList The default namespace list for lookup the class.
+ * @param any $refObject The class name of the reference object will be used for lookup the class.
+ * @param array $refSubDirs The subdirectories to lookup on the namespace of the reference object.
+ *
+ * @return string The resolved class name, if it's not changed, the original
+ * class name will be returned.
+ */
+function resolveClass($class, array $defaultNsList = [], $refObject = null, array $refSubDirs = []) {
+    if (class_exists($class, true)) {
+        return $class;
+    }
+    $nslist = $defaultNsList;
+    if ($refObject) {
+        $refl = new ReflectionObject($refObject);
+        foreach ($refSubDirs as $subDir) {
+            array_unshift($nslist, $refl->getNamespaceName() . "\\$subDir\\");
+        }
+        array_unshift($nslist,$refl->getNamespaceName());
+    }
+    foreach ($nslist as $ns) {
+        $c = "{$ns}\\{$class}";
+        if (class_exists($c, true)) {
+            return $c;
+        }
+    }
+    return $class;
+}
+
 class DeclareSchema extends BaseSchema implements SchemaInterface
 {
     /**
@@ -697,20 +729,8 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     public function mixin($class, array $options = array())
     {
         if (!class_exists($class, true)) {
-            $refl = new ReflectionObject($this);
-            $nslist = [];
-            $nslist[] = $refl->getNamespaceName();
-            $nslist[] = $refl->getNamespaceName() . '\\Mixin\\';
-            $nslist[] = 'Maghead\\Schema\\Mixin';
-            foreach ($nslist as $ns) {
-                $c = "{$ns}\\{$class}";
-                if (class_exists($c, true)) {
-                    $class = $c;
-                    break;
-                }
-            }
+            $class = resolveClass($class, ['Maghead\\Schema\\Mixin'], $this, ['Mixin']);
         }
-
         if (!class_exists($class)) {
             throw new Exception("Mixin class $class not found.");
         }
