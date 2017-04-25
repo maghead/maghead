@@ -1,13 +1,13 @@
 <?php
 
-namespace Maghead\Query;
+namespace Maghead\Runtime\Query;
 
-use SQLBuilder\Universal\Query\UpdateQuery as BaseQuery;
+use SQLBuilder\Universal\Query\DeleteQuery as BaseQuery;
 use SQLBuilder\ArgumentArray;
 
 use Maghead\Runtime\BaseRepo;
 
-class UpdateQuery
+class DeleteQuery
     extends BaseQuery
     implements Executable
 {
@@ -21,6 +21,11 @@ class UpdateQuery
         $this->repo = $repo;
     }
 
+    /**
+     * Executes the query on the repository
+     *
+     * @return bool returns from PDOStatement::execute
+     */
     public function execute()
     {
         return $this->repo->execute($this);

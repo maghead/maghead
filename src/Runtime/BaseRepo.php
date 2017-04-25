@@ -14,9 +14,9 @@ use ArrayIterator;
 use Serializable;
 use ArrayAccess;
 
-use Maghead\Query\SelectQuery;
-use Maghead\Query\DeleteQuery;
-use Maghead\Query\UpdateQuery;
+use Maghead\Runtime\Query\SelectQuery;
+use Maghead\Runtime\Query\DeleteQuery;
+use Maghead\Runtime\Query\UpdateQuery;
 
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Universal\Query\InsertQuery;
@@ -792,7 +792,7 @@ class BaseRepo
     // ================= QUERY METHODS =============
 
     /**
-     * @return Maghead\Query\SelectQuery
+     * @return Maghead\Runtime\Query\SelectQuery
      */
     public function select($sel = '*')
     {
@@ -803,7 +803,7 @@ class BaseRepo
     }
 
     /**
-     * @return Maghead\Query\DeleteQuery
+     * @return Maghead\Runtime\Query\DeleteQuery
      */
     public function delete()
     {
@@ -813,7 +813,7 @@ class BaseRepo
     }
 
     /**
-     * @return Maghead\Query\UpdateQuery
+     * @return Maghead\Runtime\Query\UpdateQuery
      */
     public function update($data = null)
     {

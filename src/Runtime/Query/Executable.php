@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\Query;
+namespace Maghead\Runtime\Query;
 
 interface Executable {
 

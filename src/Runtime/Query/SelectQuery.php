@@ -1,5 +1,6 @@
 <?php
-namespace Maghead\Query;
+
+namespace Maghead\Runtime\Query;
 
 use SQLBuilder\Universal\Query\SelectQuery as BaseQuery;
 use SQLBuilder\ArgumentArray;
