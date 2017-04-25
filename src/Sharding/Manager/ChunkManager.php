@@ -108,12 +108,9 @@ class ChunkManager
                 continue;
             }
 
-            $srcRepo = $srcShard->createRepo($schema->getRepoClass());
-            $dstRepo = $dstShard->createRepo($schema->getRepoClass());
+            $repoClass = $schema->getRepoClass();
+            $srcRepo = $srcShard->repo($repoClass);
 
-            // var_dump( $srcRepo->fetchDistinctShardKeys() );
-
-            // In the chunk
             $keys = array_filter($srcRepo->fetchDistinctShardKeys(), function($k) use ($shardDispatcher, $chunk) {
                 $index = $shardDispatcher->hash($k);
 
@@ -121,6 +118,8 @@ class ChunkManager
             });
 
             if (!empty($keys)) {
+                $dstRepo = $dstShard->repo($repoClass);
+
                 $select = $srcRepo->select();
                 $select->where()->in($shardKey, $keys);
                 $records = $select->fetch();
