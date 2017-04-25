@@ -40,6 +40,8 @@ use Symfony\Component\Yaml\Yaml;
 
 class BaseRepo
 {
+    use RepoShardTrait;
+
     protected $table;
 
     protected $alias;
@@ -63,7 +65,6 @@ class BaseRepo
 
     const SHARD_KEY = null;
 
-    use RepoShardTrait;
 
     public function __construct(Connection $write, Connection $read = null)
     {
