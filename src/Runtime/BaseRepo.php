@@ -42,22 +42,38 @@ class BaseRepo
 {
     use RepoShardTrait;
 
+    /**
+     * @var string
+     */
     protected $table;
 
+    /**
+     * @var string
+     */
     protected $alias;
 
 
     /**
-     * @var Connection
+     * @var Maghead\Connection
      */
     protected $write;
 
     /**
-     * @var Connection
+     * @var Maghead\Connection
      */
     protected $read;
 
     protected $_preparedCreateStms = [];
+
+    /**
+     * @var PDOStatement
+     */
+    protected $loadStm;
+
+    /**
+     * @var PDOStatement
+     */
+    protected $deleteStm;
 
     const SHARD_MAPPING_ID = null;
 
@@ -90,11 +106,20 @@ class BaseRepo
         return $this->table ?: static::TABLE;
     }
 
+    /**
+     * Returns the current alias, if it's not set, a default TABLE_ALIAS will
+     * be returned.
+     */
     public function getAlias()
     {
         return $this->alias ?: static::TABLE_ALIAS;
     }
 
+    /**
+     * Replace the default alias.
+     *
+     * @param string $aliaa
+     */
     public function setAlias($alias)
     {
         $this->alias = $alias;
@@ -103,7 +128,7 @@ class BaseRepo
 
 
     /**
-     * load method loads one record from the repository with compound conditions.
+     * Load method loads one record from the repository with compound conditions.
      *
      * @param array $args
      */
@@ -117,11 +142,13 @@ class BaseRepo
         $conn = $this->read;
         $driver = $conn->getQueryDriver();
         $query->where($args);
+
         $arguments = new ArgumentArray();
         $sql = $query->toSql($driver, $arguments);
         $stm = $conn->prepare($sql);
         $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS , [$this]);
         $stm->execute($arguments->toArray());
+
         return $stm->fetch(PDO::FETCH_CLASS);
     }
 
@@ -162,24 +189,26 @@ class BaseRepo
     public function loadForUpdate(array $args)
     {
         $schema = $this->getSchema();
-        $query = new SelectQuery();
-        $query->select('*');
-        $query->from($this->getTable(), $this->getAlias());
-        $query->forUpdate();
-
-        $conn = $this->read;
         $driver = $conn->getQueryDriver();
 
         if (!$driver instanceof PDOMySQLDriver) {
             throw new Exception("The current driver doesn't support SELECT ... FOR UPDATE");
         }
 
+        $query = new SelectQuery();
+        $query->select('*');
+        $query->from($this->getTable(), $this->getAlias());
+        $query->forUpdate();
+        $conn = $this->read;
         $query->where($args);
+
         $arguments = new ArgumentArray();
+
         $sql = $query->toSql($driver, $arguments);
         $stm = $conn->prepare($sql);
         $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this]);
         $stm->execute($arguments->toArray());
+
         return $stm->fetch(PDO::FETCH_CLASS);
     }
 
@@ -188,6 +217,7 @@ class BaseRepo
     {
         $conn   = $this->write;
         $driver = $conn->getQueryDriver();
+
         $arguments = new ArgumentArray();
         $query = new UpdateQuery();
         $query->set($args);
@@ -196,6 +226,7 @@ class BaseRepo
         $sql = $query->toSql($driver, $arguments);
         $stm = $conn->prepare($sql);
         $stm->execute($arguments->toArray());
+
         return Result::success('Updated', [
             'key' => $kVal,
             'keyName' => static::PRIMARY_KEY,
@@ -701,10 +732,12 @@ class BaseRepo
      */
     public function execute(ToSqlInterface $query)
     {
-        $driver = $this->write->getQueryDriver();
         $arguments = new ArgumentArray;
+
+        $driver = $this->write->getQueryDriver();
         $sql = $query->toSql($driver, $arguments);
         $stm = $this->write->prepare($sql);
+
         return $stm->execute($arguments->toArray());
     }
 
@@ -745,8 +778,8 @@ class BaseRepo
         $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS , [$this]);
         $stm->execute($arguments->toArray());
 
-        $cls = static::COLLECTION_CLASS;
         // Create collection object with the current repo and the current PDOStatement
+        $cls = static::COLLECTION_CLASS;
         return new $cls($this, $stm);
     }
 
