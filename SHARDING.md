@@ -149,6 +149,12 @@ collection instance:
 
 ## Shard Operations
 
+### Defining Shard Mapping
+
+Create an empty shard with the corresponding schema.
+
+    maghead shard mapping create [mappingId] --hash --shards "s1,s2,s3" --chunks 32
+
 ### Allocating Shard
 
 Create an empty shard with the corresponding schema.
