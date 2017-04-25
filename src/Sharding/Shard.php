@@ -24,22 +24,6 @@ class Shard
     }
 
     /**
-     * @return \Maghead\Connection
-     */
-    public function selectReadConnection()
-    {
-        return $this->dataSourceManager->getReadConnection($this->id);
-    }
-
-    /**
-     * @return \Maghead\Connection
-     */
-    public function selectWriteConnection()
-    {
-        return $this->dataSourceManager->getWriteConnection($this->id);
-    }
-
-    /**
      * Query UUID from the database.
      *
      * @return string
@@ -47,7 +31,7 @@ class Shard
     public function queryUUID()
     {
         // TODO: check if the database platform supports UUID generator
-        $write  = $this->selectWriteConnection();
+        $write  = $this->dataSourceManager->getWriteConnection($this->id);
         $query  = new UUIDQuery;
         $driver = $write->getQueryDriver();
         $sql    = $query->toSql($driver, new ArgumentArray);
@@ -72,8 +56,8 @@ class Shard
     public function createRepo(string $repoClass)
     {
         return new $repoClass(
-            $this->selectWriteConnection(),
-            $this->selectReadConnection()
+            $this->dataSourceManager->getWriteConnection($this->id),
+            $this->dataSourceManager->getReadConnection($this->id)
         );
     }
 }
