@@ -946,5 +946,4 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
     {
         return $this->toSql();
     }
-
 }

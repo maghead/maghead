@@ -38,7 +38,4 @@ class PDOFetcher
         $stm->execute($args);
         return $stm->fetchAll($style);
     }
-
 }
-
-

@@ -68,7 +68,7 @@ abstract class BaseModel implements Serializable
     public static $_cacheInstance;
 
     /**
-     * when reading records from repository, 
+     * when reading records from repository,
      * this property will be assigned through the ctor args in the PDO::setFetchMode call.
      */
     public $repo;
@@ -158,7 +158,7 @@ abstract class BaseModel implements Serializable
     protected static function findByKeys(array $args, $byKeys = null)
     {
         if (static::SHARD_MAPPING_ID) {
-            return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg, $byKeys) {
+            return static::shards()->first(function (BaseRepo $repo, Shard $shard) use ($arg, $byKeys) {
                 return $repo->findByKeys($args, $byKeys);
             });
         }
@@ -242,17 +242,16 @@ abstract class BaseModel implements Serializable
             // TODO: insert into shards: Check error, log and retry,
             // TODO: insert into shards: Use MAP QUERY WORKER to support async.
             // TODO: insert into shards: support global transaction
-            $ret->subResults = static::shards()->map(function($repo) use ($args) {
+            $ret->subResults = static::shards()->map(function ($repo) use ($args) {
                 return $repo->create($args);
             });
             return $ret;
-        } else if (static::SHARD_MAPPING_ID) {
-
+        } elseif (static::SHARD_MAPPING_ID) {
             $shards = static::shards();
             $mapping = $shards->getMapping();
             $shardKeyName = $mapping->getKey();
 
-            // If the shard is already defined, 
+            // If the shard is already defined,
             // then we can dispatch
             if (isset($args[$shardKeyName])) {
                 $shardKey = $args[$shardKeyName];
@@ -261,7 +260,7 @@ abstract class BaseModel implements Serializable
                 $shardKey = $shards->generateUUID();
             }
 
-            return static::shards()->locateAndExecute($shardKey, function($repo, $shard) use ($args) {
+            return static::shards()->locateAndExecute($shardKey, function ($repo, $shard) use ($args) {
                 $ret = $repo->create($args);
                 $ret->shard = $shard;
                 return $ret;
@@ -292,7 +291,7 @@ abstract class BaseModel implements Serializable
     public static function load($arg)
     {
         if (static::SHARD_MAPPING_ID) {
-            return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg) {
+            return static::shards()->first(function (BaseRepo $repo, Shard $shard) use ($arg) {
                 return $repo->load($arg);
             });
         }
@@ -302,7 +301,7 @@ abstract class BaseModel implements Serializable
     public static function findByPrimaryKey($arg)
     {
         if (static::SHARD_MAPPING_ID) {
-            return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg) {
+            return static::shards()->first(function (BaseRepo $repo, Shard $shard) use ($arg) {
                 return $repo->findByPrimaryKey($arg);
             });
         }
@@ -312,7 +311,7 @@ abstract class BaseModel implements Serializable
     public static function findWith($args)
     {
         if (static::SHARD_MAPPING_ID) {
-            return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg) {
+            return static::shards()->first(function (BaseRepo $repo, Shard $shard) use ($arg) {
                 return $repo->findWith($arg);
             });
         }
@@ -322,7 +321,7 @@ abstract class BaseModel implements Serializable
     public static function loadForUpdate($args)
     {
         if (static::SHARD_MAPPING_ID) {
-            return static::shards()->first(function(BaseRepo $repo, Shard $shard) use ($arg) {
+            return static::shards()->first(function (BaseRepo $repo, Shard $shard) use ($arg) {
                 // FIXME: the update should commit the transation on the same connection.
                 return $repo->loadForUpdate($arg);
             });
@@ -330,13 +329,21 @@ abstract class BaseModel implements Serializable
         return static::masterRepo()->loadForUpdate($args);
     }
 
-    public function beforeDelete() { }
+    public function beforeDelete()
+    {
+    }
 
-    public function afterDelete() { }
+    public function afterDelete()
+    {
+    }
 
-    public function beforeUpdate($args) { }
+    public function beforeUpdate($args)
+    {
+    }
 
-    public function afterUpdate($args) { }
+    public function afterUpdate($args)
+    {
+    }
 
     /**
      * Delete current record, the record should be loaded already.
@@ -348,7 +355,6 @@ abstract class BaseModel implements Serializable
         $key = $this->getKey();
 
         if (static::GLOBAL_TABLE) {
-
             $repo = static::masterRepo();
 
             $this->beforeDelete();
@@ -356,13 +362,11 @@ abstract class BaseModel implements Serializable
             $this->afterDelete();
 
             $ret = Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
-            $ret->subResults = static::shards()->map(function($repo) use ($key) {
+            $ret->subResults = static::shards()->map(function ($repo) use ($key) {
                 return $repo->deleteByPrimaryKey($key);
             });
             return $ret;
-
-        } else if (static::SHARD_MAPPING_ID) {
-
+        } elseif (static::SHARD_MAPPING_ID) {
             if (!$this->repo) {
                 throw new LogicException("property repo is not defined. be sure to load the repo for the model.");
             }
@@ -471,13 +475,12 @@ abstract class BaseModel implements Serializable
         }
 
         if (static::GLOBAL_TABLE) {
-
             if ($a = $this->beforeUpdate($args)) {
                 $args = $a;
             }
 
             $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
-            $ret->subResults = static::shards()->map(function($repo) use ($key, $args) {
+            $ret->subResults = static::shards()->map(function ($repo) use ($key, $args) {
                 return $repo->updateByPrimaryKey($key, $args);
             });
 
@@ -486,9 +489,7 @@ abstract class BaseModel implements Serializable
             $this->afterUpdate($args);
 
             return $ret;
-
-        } else if (static::SHARD_MAPPING_ID) {
-
+        } elseif (static::SHARD_MAPPING_ID) {
             if (!$this->repo) {
                 throw new LogicException("property repo is not defined. be sure to load the repo for the model.");
             }
@@ -503,9 +504,7 @@ abstract class BaseModel implements Serializable
             $this->afterUpdate($args);
 
             return $ret;
-
         } else {
-
             if ($a = $this->beforeUpdate($args)) {
                 $args = $a;
             }
@@ -744,26 +743,26 @@ abstract class BaseModel implements Serializable
     /**
      * getKey() will be generated in base classes.
      */
-    public abstract function getKey();
+    abstract public function getKey();
 
     /**
      * hasKey() will be generated in base classes.
      */
-    public abstract function hasKey();
+    abstract public function hasKey();
 
     /**
      * setKey() will be generated in base classes.
      */
-    public abstract function setKey($key);
+    abstract public function setKey($key);
 
     /**
      * getKeyName() will be generated in base classes.
      */
-    public abstract function getKeyName();
+    abstract public function getKeyName();
 
-    public abstract function removeLocalPrimaryKey();
+    abstract public function removeLocalPrimaryKey();
 
-    public abstract function removeGlobalPrimaryKey();
+    abstract public function removeGlobalPrimaryKey();
 
     /**
      * Do we have this column ?

@@ -145,7 +145,7 @@ class BaseRepo
         $arguments = new ArgumentArray();
         $sql = $query->toSql($driver, $arguments);
         $stm = $conn->prepare($sql);
-        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS , [$this]);
+        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this]);
         $stm->execute($arguments->toArray());
 
         return $stm->fetch(PDO::FETCH_CLASS);
@@ -157,7 +157,7 @@ class BaseRepo
         $record = null;
         if ($pk && isset($args[$pk])) {
             return $this->findByPrimaryKey($args[$pk]);
-        } else if ($byKeys) {
+        } elseif ($byKeys) {
             $conds = [];
             foreach ((array) $byKeys as $k) {
                 if (array_key_exists($k, $args)) {
@@ -751,7 +751,7 @@ class BaseRepo
      *
      * @return any[] Return the mixed values in an array.
      */
-    public function fetchColumn(SelectQuery $query, $column = 0 )
+    public function fetchColumn(SelectQuery $query, $column = 0)
     {
         $driver = $this->read->getQueryDriver();
         $arguments = new ArgumentArray;
@@ -762,7 +762,7 @@ class BaseRepo
     }
 
     /**
-     * Executes a select query in the read connection 
+     * Executes a select query in the read connection
      * and return the collection with the current repo object and the current stm object.
      *
      * @param SelectQuery $query
@@ -777,7 +777,7 @@ class BaseRepo
         $sql = $query->toSql($driver, $arguments);
 
         $stm = $this->read->prepare($sql);
-        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS , [$this]);
+        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this]);
         $stm->execute($arguments->toArray());
 
         // Create collection object with the current repo and the current PDOStatement
