@@ -2,7 +2,6 @@
 
 namespace Maghead\Runtime;
 
-use PDOException;
 use PDOStatement;
 use PDO;
 

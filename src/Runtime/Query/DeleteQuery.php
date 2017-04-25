@@ -7,9 +7,7 @@ use SQLBuilder\ArgumentArray;
 
 use Maghead\Runtime\BaseRepo;
 
-class DeleteQuery
-    extends BaseQuery
-    implements Executable
+class DeleteQuery extends BaseQuery implements Executable
 {
     protected $repo;
 

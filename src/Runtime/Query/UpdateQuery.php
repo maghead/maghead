@@ -7,9 +7,7 @@ use SQLBuilder\ArgumentArray;
 
 use Maghead\Runtime\BaseRepo;
 
-class UpdateQuery
-    extends BaseQuery
-    implements Executable
+class UpdateQuery extends BaseQuery implements Executable
 {
     protected $repo;
 

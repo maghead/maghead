@@ -7,9 +7,7 @@ use SQLBuilder\ArgumentArray;
 
 use Maghead\Runtime\BaseRepo;
 
-class SelectQuery
-    extends BaseQuery
-    implements Fetchable
+class SelectQuery extends BaseQuery implements Fetchable
 {
     protected $repo;
 

@@ -2,10 +2,9 @@
 
 namespace Maghead\Runtime\Query;
 
-interface Fetchable {
-
+interface Fetchable
+{
     public function fetch();
 
     public function fetchColumn($column = 0);
-
 }

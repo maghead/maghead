@@ -2,10 +2,7 @@
 
 namespace Maghead\Runtime\Query;
 
-interface Executable {
-
+interface Executable
+{
     public function execute();
-
 }
-
-
