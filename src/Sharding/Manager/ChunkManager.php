@@ -24,7 +24,6 @@ class ChunkManager
 {
     protected $mapping;
 
-
     public function __construct(ShardMapping $mapping)
     {
         $this->mapping = $mapping;
@@ -51,7 +50,6 @@ class ChunkManager
 
     /**
      * Distribute the chunks.
-     *
      */
     public function distribute($numberOfChunks = 32)
     {
@@ -78,6 +76,27 @@ class ChunkManager
     }
 
     /**
+     * Moves the records by the given shard key to the dest repository
+     * progressively
+     *
+     * @param BaseRepo $srcRepo
+     * @param BaseRepo $dstRepo
+     * @param array $keys
+     * @return Result[]
+     */
+    protected function migrateRecordsProgressively(BaseRepo $srcRepo, BaseRepo $dstRepo, array $keys)
+    {
+        $shardKey = $this->mapping->getKey();
+        $select = $srcRepo->select();
+        $select->where()->in($shardKey, $keys);
+        $records = $select->fetch();
+        return array_map(function($record) use ($dstRepo) {
+            return $record->move($dstRepo);
+        }, $records);
+    }
+
+
+    /**
      * Move a chunk
      */
     public function move($chunkIndex, $targetShardId, array $schemas)
@@ -88,14 +107,12 @@ class ChunkManager
             throw new InvalidArgumentException("$targetShardId == $shardId");
         }
 
-
         // we only care about the schemas related to the current shard mapping
         $schemas = SchemaUtils::filterShardMappingSchemas($this->mapping->id, $schemas);
 
         $shardKey = $this->mapping->getKey();
         $shards = $this->mapping->loadShardCollection();
-        $shardDispatcher = $shards->createDispatcher();
-        $hasher = $shardDispatcher->getHasher();
+        $hasher = $this->mapping->getHasher();
 
         // get shard Id of the chunk
         $srcShard = $chunk->loadShard();
@@ -119,13 +136,8 @@ class ChunkManager
 
             if (!empty($keys)) {
                 $dstRepo = $dstShard->repo($repoClass);
-
-                $select = $srcRepo->select();
-                $select->where()->in($shardKey, $keys);
-                $records = $select->fetch();
-                foreach ($records as $record) {
-                    $moved[] = $record->move($dstRepo);
-                }
+                $rets = $this->migrateRecordsProgressively($srcRepo, $dstRepo, $keys);
+                $moved = array_merge($moved, $rets);
             }
         }
         return $moved;
