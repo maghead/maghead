@@ -1,6 +1,4 @@
 <?php
-require 'bootstrap.php';
-require 'Maghead/ConfigLoader.php';
 
 $dbLoader = new Maghead\ConfigLoader;
 $dbLoader->load( __DIR__ . '/.lazy.yml');
