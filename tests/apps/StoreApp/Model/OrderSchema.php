@@ -9,7 +9,7 @@ class OrderSchema extends DeclareSchema
 {
     public function schema()
     {
-        $this->column('uuid', 'Maghead\\Schema\\Column\\UUIDPrimaryKeyColumn');
+        $this->column('uuid', 'uuid-pk');
 
         $this->column('store_id')
             ->integer()

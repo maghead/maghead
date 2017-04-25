@@ -69,11 +69,13 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
      */
     const DEFAULT_DATASOURCE_ID = 'master';
 
-
     public static $columnClassAliases = [
-        'uuid' => '\\Maghead\\Schema\\Column\\UUIDPrimaryKeyColumn',
+        // we only define the short class names so users can override the
+        // implementation
+        'uuid'    => 'UUIDColumn',
+        'uuid-pk' => 'UUIDPrimaryKeyColumn',
+        'ai-pk'   => 'AutoIncrementPrimaryKeyColumn',
     ];
-
 
     public $enableColumnAccessors = true;
 
@@ -686,6 +688,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         if (isset(self::$columnClassAliases[$class])) {
             $class = self::$columnClassAliases[$class];
         }
+        $class = resolveClass($class, ['Maghead\\Schema\\Column'], $this, ['Column']);
         return $this->columns[$name] = new $class($this, $name);
     }
 

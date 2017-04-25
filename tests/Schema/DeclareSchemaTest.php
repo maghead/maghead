@@ -38,7 +38,7 @@ class GlobalPrimaryKeySchema extends DeclareSchema
 
     public function schema()
     {
-        $this->column('uuid', 'uuid');
+        $this->column('uuid', 'uuid-pk');
     }
 }
 
