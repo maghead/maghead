@@ -334,6 +334,10 @@ abstract class BaseModel implements Serializable
 
     public function afterDelete() { }
 
+    public function beforeUpdate($args) { }
+
+    public function afterUpdate($args) { }
+
     /**
      * Delete current record, the record should be loaded already.
      *
@@ -468,12 +472,19 @@ abstract class BaseModel implements Serializable
 
         if (static::GLOBAL_TABLE) {
 
-            $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
-            $this->setData($args);
+            if ($a = $this->beforeUpdate($args)) {
+                $args = $a;
+            }
 
+            $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
             $ret->subResults = static::shards()->map(function($repo) use ($key, $args) {
                 return $repo->updateByPrimaryKey($key, $args);
             });
+
+            $this->setData($args);
+
+            $this->afterUpdate($args);
+
             return $ret;
 
         } else if (static::SHARD_MAPPING_ID) {
@@ -481,15 +492,30 @@ abstract class BaseModel implements Serializable
             if (!$this->repo) {
                 throw new LogicException("property repo is not defined. be sure to load the repo for the model.");
             }
+
+            if ($a = $this->beforeUpdate($args)) {
+                $args = $a;
+            }
+
             $ret = $this->repo->updateByPrimaryKey($key, $args);
             $this->setData($args);
+
+            $this->afterUpdate($args);
+
             return $ret;
 
-        }
+        } else {
 
-        $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
-        $this->setData($args);
-        return $ret;
+            if ($a = $this->beforeUpdate($args)) {
+                $args = $a;
+            }
+
+            $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
+            $this->setData($args);
+            $this->afterUpdate($args);
+
+            return $ret;
+        }
     }
 
     /**

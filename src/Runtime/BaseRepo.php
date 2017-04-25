@@ -258,7 +258,6 @@ class BaseRepo
         $validationError = false;
         $validationResults = [];
 
-        $args = $this->beforeUpdate($args);
         if ($args === false) {
             return Result::failure('Update failed', [ 'args' => $args ]);
         }
@@ -267,7 +266,6 @@ class BaseRepo
 
         $arguments = new ArgumentArray();
 
-        // foreach mixin schema, run their beforeUpdate method,
         $args = array_intersect_key($args, array_flip($schema->columnNames));
 
         foreach ($schema->columns as $n => $c) {
@@ -359,7 +357,6 @@ class BaseRepo
 
         $stm = $conn->prepare($sql);
         $stm->execute($arguments->toArray());
-        $this->afterUpdate($origArgs);
 
         return Result::success('Updated successfully', array(
             'key' => $kVal,
@@ -893,18 +890,6 @@ class BaseRepo
      * @param array $args
      */
     public function afterCreate(array $args)
-    {
-    }
-
-    /**
-     * Trigger method for update
-     */
-    public function beforeUpdate(array $args)
-    {
-        return $args;
-    }
-
-    public function afterUpdate(array $args)
     {
     }
 }
