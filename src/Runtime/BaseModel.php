@@ -330,6 +330,10 @@ abstract class BaseModel implements Serializable
         return static::masterRepo()->loadForUpdate($args);
     }
 
+    public function beforeDelete() { }
+
+    public function afterDelete() { }
+
     /**
      * Delete current record, the record should be loaded already.
      *
@@ -342,9 +346,11 @@ abstract class BaseModel implements Serializable
         if (static::GLOBAL_TABLE) {
 
             $repo = static::masterRepo();
-            $repo->beforeDelete($this);
+
+            $this->beforeDelete();
             $repo->deleteByPrimaryKey($key);
-            $repo->afterDelete($this);
+            $this->afterDelete();
+
             $ret = Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
             $ret->subResults = static::shards()->map(function($repo) use ($key) {
                 return $repo->deleteByPrimaryKey($key);
@@ -356,17 +362,20 @@ abstract class BaseModel implements Serializable
             if (!$this->repo) {
                 throw new LogicException("property repo is not defined. be sure to load the repo for the model.");
             }
-            $repo = $this->repo;
-            $repo->beforeDelete($this);
-            $repo->deleteByPrimaryKey($key);
-            $repo->afterDelete($this);
+
+            $this->beforeDelete($this);
+            $this->repo->deleteByPrimaryKey($key);
+            $this->afterDelete($this);
+
             return Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
         }
 
         $repo = static::masterRepo();
-        $repo->beforeDelete($this);
+
+        $this->beforeDelete();
         $repo->deleteByPrimaryKey($key);
-        $repo->afterDelete($this);
+        $this->afterDelete();
+
         return Result::success('Record deleted', [ 'type' => Result::TYPE_DELETE ]);
     }
 
@@ -433,9 +442,9 @@ abstract class BaseModel implements Serializable
 
         $ret = $target->import($this);
 
-        $this->repo->beforeDelete($this);
+        $this->beforeDelete();
         $this->repo->deleteByPrimaryKey($this->getKey());
-        $this->repo->afterDelete($this);
+        $this->afterDelete();
 
         return $ret;
     }

@@ -897,17 +897,6 @@ class BaseRepo
     }
 
     /**
-     * Trigger method for delete
-     */
-    public function beforeDelete()
-    {
-    }
-
-    public function afterDelete()
-    {
-    }
-
-    /**
      * Trigger method for update
      */
     public function beforeUpdate(array $args)
