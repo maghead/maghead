@@ -134,8 +134,7 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
 
     public function selectAll()
     {
-        $dsId = static::getSchema()->getReadSourceId();
-        $driver = $this->getQueryDriver($dsId);
+        $driver = $this->repo->getReadConnection()->getQueryDriver();
         $this->explictSelect = true;
         $this->selected = $this->getExplicitColumnSelect($driver);
         return $this;
@@ -283,8 +282,7 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
             $q->select($selection);
         } else {
             // Need the driver instance to quote the field names
-            $repo = $this->repo;
-            $conn = $repo->getReadConnection();
+            $conn = $this->repo->getReadConnection();
             $driver = $conn->getQueryDriver();
 
             $q->select($this->explictSelect
@@ -311,23 +309,14 @@ class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
             $query->setWhere($this->where);
         }
 
-        $arguments = new ArgumentArray;
-
-        $conn = $this->repo->getWriteConnection();
-        $driver = $conn->getQueryDriver();
-        $sql = $query->toSql($driver, $arguments);
-
         try {
-            $this->stm = $conn->prepareAndExecute($sql, $arguments->toArray());
+            $success = $this->repo->execute($query);
         } catch (Exception $e) {
-            return Result::failure('Collection delete failed: '.$e->getMessage(), array(
-                'vars' => $arguments->toArray(),
-                'sql' => $sql,
+            return Result::failure('Collection delete failed: '.$e->getMessage(), [
                 'exception' => $e,
-            ));
+            ]);
         }
-
-        return Result::success('Deleted', array('sql' => $sql));
+        return Result::success('Deleted');
     }
 
     /**

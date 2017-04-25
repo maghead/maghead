@@ -135,7 +135,7 @@ class BaseRepo
     public function findWith(array $args)
     {
         $schema = $this->getSchema();
-        $query = new SelectQuery();
+        $query = new SelectQuery($this);
         $query->select('*');
         $query->from($this->getTable(), $this->getAlias());
 
@@ -203,7 +203,7 @@ class BaseRepo
             throw new Exception("The current driver doesn't support SELECT ... FOR UPDATE");
         }
 
-        $query = new SelectQuery();
+        $query = new SelectQuery($this);
         $query->select('*');
         $query->from($this->getTable(), $this->getAlias());
         $query->forUpdate();
@@ -226,7 +226,7 @@ class BaseRepo
         $driver = $conn->getQueryDriver();
 
         $arguments = new ArgumentArray();
-        $query = new UpdateQuery();
+        $query = new UpdateQuery($this);
         $query->set($args);
         $query->update($this->getTable());
         $query->where()->equal(static::PRIMARY_KEY, $kVal);
@@ -253,7 +253,7 @@ class BaseRepo
         $conn = $this->write;
         $driver = $conn->getQueryDriver();
 
-        $query = new UpdateQuery();
+        $query = new UpdateQuery($this);
 
         $validationError = false;
         $validationResults = [];
@@ -731,8 +731,7 @@ class BaseRepo
      *
      * This method executes PDOStatement::execute and return the result directly.
      *
-     * @return bool
-     *
+     * @return [bool, string sql, array args]
      */
     public function execute(ToSqlInterface $query)
     {
@@ -741,8 +740,8 @@ class BaseRepo
         $driver = $this->write->getQueryDriver();
         $sql = $query->toSql($driver, $arguments);
         $stm = $this->write->prepare($sql);
-
-        return $stm->execute($arguments->toArray());
+        $args = $arguments->toArray();
+        return $stm->execute($args);
     }
 
     /**

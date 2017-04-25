@@ -15,7 +15,7 @@ class SelectQuery
     /**
      * @param BaseRepo $repo The repo object is used for executing the query.
      */
-    public function __construct(BaseRepo $repo = null)
+    public function __construct(BaseRepo $repo)
     {
         $this->repo = $repo;
         parent::__construct();

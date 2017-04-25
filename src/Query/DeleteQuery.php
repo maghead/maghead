@@ -16,11 +16,16 @@ class DeleteQuery
     /**
      * @param BaseRepo $repo The repo object is used for executing the query.
      */
-    public function __construct(BaseRepo $repo = null)
+    public function __construct(BaseRepo $repo)
     {
         $this->repo = $repo;
     }
 
+    /**
+     * Executes the query on the repository
+     *
+     * @return bool returns from PDOStatement::execute
+     */
     public function execute()
     {
         return $this->repo->execute($this);
