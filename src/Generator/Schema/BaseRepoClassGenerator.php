@@ -96,9 +96,6 @@ class BaseRepoClassGenerator
         $cTemplate->addStaticVar('columnHash', array_fill_keys($schema->getColumnNames(), 1));
         $cTemplate->addStaticVar('mixinClasses', array_reverse($schema->getMixinSchemaClasses()));
 
-        $cTemplate->addProtectedProperty('loadStm');
-        $cTemplate->addProtectedProperty('deleteStm');
-
         $cTemplate->addMethod('public', 'free', [], function () use ($schema) {
             return [
                 '$this->loadStm = null;',
