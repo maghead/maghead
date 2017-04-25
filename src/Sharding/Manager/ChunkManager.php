@@ -6,6 +6,7 @@ use Maghead\Sharding\ShardDispatcher;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Shard;
 use Maghead\Sharding\Chunk;
+use Maghead\Sharding\Hasher\Hasher;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Config;
@@ -169,7 +170,7 @@ class ChunkManager
         return $indexes;
     }
 
-    protected function selectChunkKeys($repo, $chunk, $hasher)
+    protected function selectChunkKeys(BaseRepo $repo, Chunk $chunk, Hasher $hasher)
     {
         return array_filter($repo->fetchShardKeys(), function($k) use ($hasher, $chunk) {
             return $chunk->contains($hasher->hash($k));
