@@ -28,10 +28,7 @@ defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
 /**
  * base collection class.
  */
-class BaseCollection implements
-    ArrayAccess,
-    Countable,
-    IteratorAggregate
+class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
 {
     use RepoFactoryTrait;
     use WhereTrait;
@@ -51,14 +48,14 @@ class BaseCollection implements
     /**
      * @var PDOStatement handle
      */
-    protected $handle;
+    protected $stm;
 
     /**
-     * handle data for items.
+     * data for items.
      *
      * @var array
      */
-    protected $_rows = null;
+    protected $rows = null;
 
     /**
      * preset vars for creating.
@@ -103,7 +100,7 @@ class BaseCollection implements
     public function __construct(BaseRepo $repo = null, PDOStatement $stm = null)
     {
         $this->repo = $repo;
-        $this->handle = $stm;
+        $this->stm = $stm;
     }
 
     public function setRepo(BaseRepo $repo)
@@ -111,16 +108,24 @@ class BaseCollection implements
         $this->repo = $repo;
     }
 
+    protected function getCurrentRepo()
+    {
+        if ($this->repo) {
+            return $this->repo;
+        }
+        return static::masterRepo(); // my repo
+    }
 
-    /**
-     * TODO: The iterator method here could be replaced with Generator iterator by inherits different class or Trait.
-     */
+
     public function getIterator()
     {
-        if (!$this->_rows) {
-            $this->_rows = $this->readRows();
-        }
-        return new ArrayIterator($this->_rows);
+        $this->items();
+        return new ArrayIterator($this->rows);
+    }
+
+    public function setPreferredTable($tableName)
+    {
+        $this->preferredTable = $tableName;
     }
 
     /**
@@ -136,74 +141,6 @@ class BaseCollection implements
         throw new RuntimeException('schema is not defined in '.get_class($this));
     }
 
-    public function getCurrentQuery()
-    {
-        return $this->_query ? $this->_query : $this->_query = $this->createReadQuery();
-    }
-
-    public function getRows()
-    {
-        if ($this->_rows) {
-            return $this->_rows;
-        }
-        return $this->_rows = $this->readRows();
-    }
-
-    /**
-     * Free cached row data and result handle,
-     * But still keep the same query.
-     *
-     * @return $this
-     */
-    public function free()
-    {
-        $this->_rows = null;
-        $this->_result = null;
-        $this->handle = null;
-
-        return $this;
-    }
-
-    /**
-     * Dispatch undefined methods to SelectQuery object,
-     * To achieve mixin-like feature.
-     */
-    public function __call($m, $a)
-    {
-        $q = $this->getCurrentQuery();
-        if (method_exists($q, $m)) {
-            return call_user_func_array(array($q, $m), $a);
-        }
-        throw new Exception("Undefined method $m");
-    }
-
-    public function getAlias()
-    {
-        return $this->_alias;
-    }
-
-    public function setAlias($alias)
-    {
-        $this->_alias = $alias;
-
-        return $this;
-    }
-
-    public function setExplictSelect($boolean = true)
-    {
-        $this->explictSelect = $boolean;
-
-        return $this;
-    }
-
-    public function select($sels)
-    {
-        $this->explictSelect = true;
-        $this->selected = (array) $sels;
-
-        return $this;
-    }
-
     public function selectAll()
     {
         $dsId = static::getSchema()->getReadSourceId();
@@ -211,6 +148,16 @@ class BaseCollection implements
         $this->explictSelect = true;
         $this->selected = $this->getExplicitColumnSelect($driver);
         return $this;
+    }
+
+    // XXX: This might be used in other join statements.
+    public function getExplicitColumnSelect(BaseDriver $driver)
+    {
+        $alias = $this->_alias;
+
+        return array_map(function ($name) use ($alias, $driver) {
+            return $alias.'.'.$driver->quoteIdentifier($name);
+        }, static::getSchema()->getColumnNames());
     }
 
     public function getSelected()
@@ -228,180 +175,33 @@ class BaseCollection implements
         return static::TABLE;
     }
 
-    public function setPreferredTable($tableName)
+    public function setExplictSelect($boolean = true)
     {
-        $this->preferredTable = $tableName;
+        $this->explictSelect = $boolean;
+
+        return $this;
     }
 
-    protected function getCurrentRepo()
+    public function select($sels)
     {
-        if ($this->repo) {
-            return $this->repo;
-        }
-        return static::masterRepo(); // my repo
+        $this->explictSelect = true;
+        $this->selected = (array) $sels;
+
+        return $this;
     }
 
-    /**
-     * Create a SelectQuery bases on the collection definition.
-     *
-     * @return SelectQuery
-     */
-    public function createReadQuery()
+    public function getAlias()
     {
-        $q = new SelectQuery();
-        $q->from($this->getTable(), $this->_alias); // main table alias
-
-        if ($selection = $this->getSelected()) {
-            $q->select($selection);
-        } else {
-            // Need the driver instance to quote the field names
-            $repo = $this->getCurrentRepo();
-            $conn = $repo->getReadConnection();
-            $driver = $conn->getQueryDriver();
-
-            $q->select($this->explictSelect
-                ? $this->getExplicitColumnSelect($driver)
-                : $this->_alias.'.*');
-        }
-
-        // Setup Default Ordering.
-        if (!empty($this->defaultOrdering)) {
-            foreach ($this->defaultOrdering as $ordering) {
-                $q->orderBy($ordering[0], $ordering[1]);
-            }
-        }
-
-        return $q;
+        return $this->_alias;
     }
 
-    // xxx: this might be used in other join statements.
-    public function getExplicitColumnSelect(BaseDriver $driver)
+    public function setAlias($alias)
     {
-        $alias = $this->_alias;
+        $this->_alias = $alias;
 
-        return array_map(function ($name) use ($alias, $driver) {
-            return $alias.'.'.$driver->quoteIdentifier($name);
-        }, static::getSchema()->getColumnNames());
+        return $this;
     }
 
-    /**
-     * prepare data handle, call fetch method to read data from database, and
-     * catch the handle.
-     *
-     * Which calls doFetch() to do a query operation.
-     */
-    public function prepareHandle($force = false)
-    {
-        if (!$this->handle || $force) {
-            $this->_result = $this->fetch();
-        }
-
-        return $this->handle;
-    }
-
-    /**
-     * Build sql and Fetch from current query, make a query to database.
-     *
-     * @return OperationResult
-     */
-    public function fetch()
-    {
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getReadConnection();
-        $driver = $conn->getQueryDriver();
-
-        $query = $this->getCurrentQuery();
-        if ($this->where) {
-            $query->setWhere($this->where);
-        }
-
-        $arguments = new ArgumentArray();
-        $this->_lastSql = $sql = $this->getCurrentQuery()->toSql($driver, $arguments);
-        $this->_vars = $vars = $arguments->toArray();
-        $this->handle = $conn->prepareAndExecute($sql, $vars);
-        $this->handle->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this->repo]);
-        return Result::success('Updated', array('sql' => $sql));
-    }
-
-    public function sql()
-    {
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getReadConnection();
-        $driver = $conn->getQueryDriver();
-
-        $arguments = new ArgumentArray();
-        $sql = $this->getCurrentQuery()->toSql($driver, $arguments);
-        $args = $arguments->toArray();
-        return [$sql, $args];
-    }
-
-
-    /**
-     * Get current selected item size
-     * by using php function `count`.
-     *
-     * @return int size
-     */
-    public function size()
-    {
-        if ($this->_rows) {
-            return count($this->_rows);
-        }
-        $this->_rows = $this->readRows();
-        return count($this->_rows);
-    }
-
-    public function distinct($field)
-    {
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getReadConnection();
-        $driver = $conn->getQueryDriver();
-
-        $q = clone $this->getCurrentQuery();
-        $q->setSelect("DISTINCT $field"); // Override current select.
-
-        $arguments = new ArgumentArray();
-        $sql = $q->toSql($driver, $arguments);
-
-        $stm = $conn->prepare($sql);
-        $stm->execute($arguments->toArray());
-        return $stm->fetchAll(PDO::FETCH_COLUMN, 0);
-    }
-
-
-    /**
-     * Clone current read query and apply select to count(*)
-     * So that we can use the same conditions to query item count.
-     *
-     * This method implements the Countable interface.
-     *
-     * @return int
-     */
-    public function count()
-    {
-        $repo = $this->getCurrentRepo();
-        $conn = $repo->getReadConnection();
-        $driver = $conn->getQueryDriver();
-
-        $key = static::PRIMARY_KEY;
-
-        $q = clone $this->getCurrentQuery();
-        $q->setSelect("COUNT(DISTINCT m.{$key})"); // Override current select.
-        if ($this->where) {
-            $q->setWhere($this->where);
-        }
-
-        // When selecting count(*), we don't care group by and order by
-        $q->removeOrderBy();
-        $q->removeGroupBy();
-
-        $arguments = new ArgumentArray();
-        $sql = $q->toSql($driver, $arguments);
-
-        $stm = $conn->prepare($sql);
-        $stm->execute($arguments->toArray());
-        return (int) $stm->fetchColumn();
-    }
 
     /**
      * Query Limit for QueryBuilder.
@@ -454,56 +254,63 @@ class BaseCollection implements
      */
     public function pager($page = 1, $pageSize = 10)
     {
-        if (!$this->_rows) {
-            $this->rows = $this->readRows();
-        }
-        // Setup limit
-        return new CollectionPager($this->_rows, $page, $pageSize);
+        $this->items();
+        return new CollectionPager($this->rows, $page, $pageSize);
     }
 
     /**
-     * Get items.
+     * prepare data handle, call fetch method to read data from database, and
+     * catch the handle.
      *
-     * @return Maghead\Runtime\BaseModel[]
+     * Which calls doFetch() to do a query operation.
      */
-    public function items()
+    public function prepareHandle($force = false)
     {
-        if (!$this->_rows) {
-            $this->_rows = $this->readRows();
+        if (!$this->stm || $force) {
+            $this->_result = $this->fetch();
         }
-        return $this->_rows;
+
+        return $this->stm;
     }
 
-    public function fetchRow()
+    public function getCurrentQuery()
     {
-        if (!$this->handle) {
-            $this->prepareHandle();
-        }
-
-        return $this->handle->fetch(PDO::FETCH_CLASS);
+        return $this->_query ? $this->_query : $this->_query = $this->createReadQuery();
     }
 
     /**
-     * Read rows from database handle.
+     * Create a SelectQuery bases on the collection definition.
      *
-     * @return model_class[]
+     * @return SelectQuery
      */
-    protected function readRows()
+    public function createReadQuery()
     {
-        // initialize the connection handle object
-        if (!$this->handle) {
-            $this->prepareHandle();
+        $q = new SelectQuery();
+        $q->from($this->getTable(), $this->_alias); // main table alias
+
+        if ($selection = $this->getSelected()) {
+            $q->select($selection);
+        } else {
+            // Need the driver instance to quote the field names
+            $repo = $this->getCurrentRepo();
+            $conn = $repo->getReadConnection();
+            $driver = $conn->getQueryDriver();
+
+            $q->select($this->explictSelect
+                ? $this->getExplicitColumnSelect($driver)
+                : $this->_alias.'.*');
         }
 
-        if (!$this->handle) {
-            if ($this->_result->exception) {
-                throw $this->_result->exception;
+        // Setup Default Ordering.
+        if (!empty($this->defaultOrdering)) {
+            foreach ($this->defaultOrdering as $ordering) {
+                $q->orderBy($ordering[0], $ordering[1]);
             }
-            throw new RuntimeException(get_class($this).':'.$this->_result->message);
         }
-        // Use fetch all
-        return $this->handle->fetchAll(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this->repo]);
+
+        return $q;
     }
+
 
     public function delete()
     {
@@ -521,7 +328,7 @@ class BaseCollection implements
         $sql = $query->toSql($driver, $arguments);
 
         try {
-            $this->handle = $conn->prepareAndExecute($sql, $arguments->toArray());
+            $this->stm = $conn->prepareAndExecute($sql, $arguments->toArray());
         } catch (Exception $e) {
             return Result::failure('Collection delete failed: '.$e->getMessage(), array(
                 'vars' => $arguments->toArray(),
@@ -555,7 +362,7 @@ class BaseCollection implements
         $sql = $query->toSql($driver, $arguments);
 
         try {
-            $this->handle = $conn->prepareAndExecute($sql, $arguments->toArray());
+            $this->stm = $conn->prepareAndExecute($sql, $arguments->toArray());
         } catch (Exception $e) {
             return Result::failure('Collection update failed: '.$e->getMessage(), array(
                 'vars' => $arguments->toArray(),
@@ -569,177 +376,34 @@ class BaseCollection implements
 
     public function splice($pos, $count = null)
     {
-        if (!$this->_rows) {
-            $this->_rows = $this->readRows();
-        }
-        return array_splice($this->_rows, $pos, $count);
+        $this->items();
+        return array_splice($this->rows, $pos, $count);
     }
 
     public function first()
     {
-        if (!$this->_rows) {
-            $this->_rows = $this->readRows();
-        }
-
-        return !empty($this->_rows) ? $this->_rows[0] : null;
+        $this->items();
+        return !empty($this->rows) ? $this->rows[0] : null;
     }
 
     public function last()
     {
-        if (!$this->_rows) {
-            $this->_rows = $this->readRows();
-        }
-        return end($this->_rows);
+        $this->items();
+        return end($this->rows);
     }
 
     public function createAndAppend(array $args)
     {
         $record = $this->create($args);
         if ($record) {
-            return $this->_rows[] = $record;
+            return $this->rows[] = $record;
         }
         return false;
     }
 
 
-    /** array access interface */
-    public function offsetSet($name, $value)
-    {
-        if (!$this->_rows) {
-            $this->_rows = $this->readRows();
-        }
-        if (null === $name) {
-            // create from array
-            if (is_array($value)) {
-                $value = $this->create($value);
-            }
-        }
-        return $this->_rows[ $name ] = $value;
-    }
 
-    public function offsetExists($name)
-    {
-        if (!$this->_rows) {
-            $this->_rows = $this->readRows();
-        }
 
-        return isset($this->_rows[ $name ]);
-    }
-
-    public function offsetGet($name)
-    {
-        if (!$this->_rows) {
-            $this->_rows = $this->readRows();
-        }
-        if (isset($this->_rows[ $name ])) {
-            return $this->_rows[ $name ];
-        }
-    }
-
-    public function offsetUnset($name)
-    {
-        if (!$this->_rows) {
-            $this->_rows = $this->readRows();
-        }
-        unset($this->_rows[$name]);
-    }
-
-    public function each(callable $cb)
-    {
-        if (!$this->_rows) {
-            $this->_rows = $this->readRows();
-        }
-
-        $collection = new static();
-        $collection->setRecords(
-            array_map($cb, $this->_rows)
-        );
-
-        return $collection;
-    }
-
-    public function filter(callable $cb)
-    {
-        if (!$this->_rows) {
-            $this->_rows = $this->readRows();
-        }
-
-        $collection = new static();
-        $collection->setRecords(array_filter($this->_rows, $cb));
-
-        return $collection;
-    }
-
-    /**
-     * Create a new model object.
-     *
-     * @return object BaseModel
-     */
-    public function newModel()
-    {
-        return static::getSchema()->newModel();
-    }
-
-    /**
-     * Create a collection object from an data array.
-     */
-    public static function fromArray(array $list)
-    {
-        $collection = new static();
-        $schema = static::getSchema();
-        $records = [];
-        foreach ($list as $item) {
-            if ($item instanceof BaseModel) {
-                $records[] = $item;
-            } else {
-                $model = $schema->newModel();
-                $model->setData($item);
-                $records[] = $model;
-            }
-        }
-        $collection->setRecords($records);
-        return $collection;
-    }
-
-    public function toArray()
-    {
-        return array_map(function ($item) {
-            return $item->toArray();
-        }, $this->items());
-    }
-
-    public function toInflatedArray()
-    {
-        return array_map(function ($item) {
-            return $item->toInflatedArray();
-        }, $this->items());
-    }
-
-    public function toXml()
-    {
-        $list = $this->toArray();
-        $xml = new XmlSerializer();
-
-        return $xml->encode($list);
-    }
-
-    public function toJson()
-    {
-        $list = $this->toArray();
-
-        return json_encode($list, self::$jsonOptions);
-    }
-
-    public function toYaml()
-    {
-        $list = $this->toArray();
-        self::$yamlExtension = extension_loaded('yaml');
-        if (self::$yamlExtension) {
-            return yaml_emit($list, YAML_UTF8_ENCODING);
-        }
-
-        return file_put_contents($yamlFile, "---\n".Yaml::dump($list, $inline = true, $exceptionOnInvalidType = true));
-    }
 
     /**
      * Create new record or relationship record,
@@ -762,7 +426,7 @@ class BaseCollection implements
                 $middleRecord = call_user_func($this->_postCreate, $record, $args);
                 // $this->_postCreate($record,$args);
             }
-            $this->_rows[] = $record;
+            $this->rows[] = $record;
             return $record;
         }
         return false;
@@ -909,35 +573,247 @@ class BaseCollection implements
         return $query->join($table, $alias, $type);
     }
 
+    /**
+     * Get items.
+     *
+     * @return Maghead\Runtime\BaseModel[]
+     */
+    public function items()
+    {
+        if ($this->rows) {
+            return $this->rows;
+        }
+        return $this->rows = $this->fetchItems();
+    }
+
+    /**
+     * Read rows from database handle.
+     *
+     * @return model_class[]
+     */
+    protected function fetchItems()
+    {
+        // initialize the connection handle object
+        if (!$this->stm) {
+            $this->prepareHandle();
+        }
+        return $this->stm->fetchAll(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this->repo]);
+    }
+
+    /**
+     * Build sql and Fetch from current query, make a query to database.
+     *
+     * @return OperationResult
+     */
+    public function fetch()
+    {
+        $repo = $this->getCurrentRepo();
+        $conn = $repo->getReadConnection();
+        $driver = $conn->getQueryDriver();
+
+        $query = $this->getCurrentQuery();
+        if ($this->where) {
+            $query->setWhere($this->where);
+        }
+
+        $arguments = new ArgumentArray();
+        $this->_lastSql = $sql = $this->getCurrentQuery()->toSql($driver, $arguments);
+        $this->_vars = $vars = $arguments->toArray();
+        $this->stm = $conn->prepare($sql);
+        $this->stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this->repo]);
+        $this->stm->execute($vars);
+        return Result::success('Updated', array('sql' => $sql));
+    }
+
+    /**
+     * Count the current items
+     *
+     * @return number
+     */
+    public function count()
+    {
+        $this->items();
+        return count($this->rows);
+    }
+
+    /**
+     * Clone current read query and apply select to count(*)
+     * So that we can use the same conditions to query item count.
+     *
+     * This method implements the Countable interface.
+     *
+     * @return int
+     */
+    public function queryCount()
+    {
+        $repo = $this->getCurrentRepo();
+        $conn = $repo->getReadConnection();
+        $driver = $conn->getQueryDriver();
+
+        $key = static::PRIMARY_KEY;
+
+        $q = clone $this->getCurrentQuery();
+        $q->setSelect("COUNT(DISTINCT m.{$key})"); // Override current select.
+        if ($this->where) {
+            $q->setWhere($this->where);
+        }
+
+        // When selecting count(*), we don't care group by and order by
+        $q->removeOrderBy();
+        $q->removeGroupBy();
+
+        // TODO: use repo to execute query
+        $arguments = new ArgumentArray();
+        $sql = $q->toSql($driver, $arguments);
+
+        $stm = $conn->prepare($sql);
+        $stm->execute($arguments->toArray());
+        return (int) $stm->fetchColumn();
+    }
+
+    public function distinct($field)
+    {
+        $repo = $this->getCurrentRepo();
+        $conn = $repo->getReadConnection();
+        $driver = $conn->getQueryDriver();
+
+        $q = clone $this->getCurrentQuery();
+        $q->setSelect("DISTINCT $field"); // Override current select.
+
+        $arguments = new ArgumentArray();
+        $sql = $q->toSql($driver, $arguments);
+
+        $stm = $conn->prepare($sql);
+        $stm->execute($arguments->toArray());
+        return $stm->fetchAll(PDO::FETCH_COLUMN, 0);
+    }
+
+    /**
+     * Dispatch undefined methods to SelectQuery object,
+     * To achieve mixin-like feature.
+     */
+    public function __call($m, $a)
+    {
+        $q = $this->getCurrentQuery();
+        if (method_exists($q, $m)) {
+            return call_user_func_array(array($q, $m), $a);
+        }
+        throw new Exception("Undefined method $m");
+    }
+
+    /**
+     * When cloning collection object,
+     * The resources will be free, and the
+     * query builder will be cloned.
+     */
+    public function __clone()
+    {
+        $this->free();
+
+        // if we have readQuery object, we should clone the query object
+        // for the new collection object.
+        if ($this->_query) {
+            $this->_query = clone $this->_query;
+        }
+    }
 
 
     public function add(BaseModel $record)
     {
-        $this->_rows[] = $record;
+        $this->rows[] = $record;
     }
 
     /**
      * Set record objects.
      */
-    public function setRecords(array $records)
+    public function setRecords(array $rows)
     {
-        $this->_rows = $records;
+        $this->rows = $rows;
     }
 
     /**
-     * Free resources and reset query,arguments and data.
+     * Get current selected item size
+     * by using php function `count`.
      *
-     * @return $this
+     * @return int size
      */
-    public function reset()
+    public function size()
     {
-        $this->free();
-        $this->_query = null;
-        $this->_vars = null;
-        $this->_lastSQL = null;
-
-        return $this;
+        $this->items();
+        return count($this->rows);
     }
+
+    public function each(callable $cb)
+    {
+        if (!$this->rows) {
+            $this->rows = $this->fetchItems();
+        }
+
+        $collection = new static;
+        $collection->setRecords(array_map($cb, $this->rows));
+
+        return $collection;
+    }
+
+    public function filter(callable $cb)
+    {
+        if (!$this->rows) {
+            $this->rows = $this->fetchItems();
+        }
+
+        $collection = new static();
+        $collection->setRecords(array_filter($this->rows, $cb));
+
+        return $collection;
+    }
+
+
+
+    /** array access interface */
+    public function offsetSet($name, $value)
+    {
+        if (!$this->rows) {
+            $this->rows = $this->fetchItems();
+        }
+        if (null === $name) {
+            // create from array
+            if (is_array($value)) {
+                $value = $this->create($value);
+            }
+        }
+        return $this->rows[ $name ] = $value;
+    }
+
+    public function offsetExists($name)
+    {
+        if (!$this->rows) {
+            $this->rows = $this->fetchItems();
+        }
+
+        return isset($this->rows[ $name ]);
+    }
+
+    public function offsetGet($name)
+    {
+        if (!$this->rows) {
+            $this->rows = $this->fetchItems();
+        }
+        if (isset($this->rows[ $name ])) {
+            return $this->rows[ $name ];
+        }
+    }
+
+    public function offsetUnset($name)
+    {
+        if (!$this->rows) {
+            $this->rows = $this->fetchItems();
+        }
+        unset($this->rows[$name]);
+    }
+
+
+
+
 
     /**
      * Return pair array by columns.
@@ -972,24 +848,130 @@ class BaseCollection implements
         return $items;
     }
 
+    public function toArray()
+    {
+        return array_map(function ($item) {
+            return $item->toArray();
+        }, $this->items());
+    }
+
+    public function toInflatedArray()
+    {
+        return array_map(function ($item) {
+            return $item->toInflatedArray();
+        }, $this->items());
+    }
+
+    public function toXml()
+    {
+        $list = $this->toArray();
+        $xml = new XmlSerializer();
+
+        return $xml->encode($list);
+    }
+
+    public function toJson()
+    {
+        $list = $this->toArray();
+
+        return json_encode($list, self::$jsonOptions);
+    }
+
+    public function toYaml()
+    {
+        $list = $this->toArray();
+        self::$yamlExtension = extension_loaded('yaml');
+        if (self::$yamlExtension) {
+            return yaml_emit($list, YAML_UTF8_ENCODING);
+        }
+
+        return file_put_contents($yamlFile, "---\n".Yaml::dump($list, $inline = true, $exceptionOnInvalidType = true));
+    }
+
+    public function sql()
+    {
+        $repo = $this->getCurrentRepo();
+        $conn = $repo->getReadConnection();
+        $driver = $conn->getQueryDriver();
+
+        $arguments = new ArgumentArray();
+        $sql = $this->getCurrentQuery()->toSql($driver, $arguments);
+        $args = $arguments->toArray();
+        return [$sql, $args];
+    }
+
+
+
+
+
+
     /**
-     * When cloning collection object,
-     * The resources will be free, and the
-     * query builder will be cloned.
+     * Create a new model object.
+     *
+     * @return object BaseModel
      */
-    public function __clone()
+    public function newModel()
+    {
+        return static::getSchema()->newModel();
+    }
+
+    /**
+     * Create a collection object from an data array.
+     */
+    public static function fromArray(array $list)
+    {
+        $collection = new static();
+        $schema = static::getSchema();
+        $records = [];
+        foreach ($list as $item) {
+            if ($item instanceof BaseModel) {
+                $records[] = $item;
+            } else {
+                $model = $schema->newModel();
+                $model->setData($item);
+                $records[] = $model;
+            }
+        }
+        $collection->setRecords($records);
+        return $collection;
+    }
+
+
+    /**
+     * Free cached row data and result handle,
+     * But still keep the same query.
+     *
+     * @return $this
+     */
+    public function free()
+    {
+        $this->rows = null;
+        $this->_result = null;
+        if ($this->stm) {
+            $this->stm = null;
+        }
+        return $this;
+    }
+
+    /**
+     * Free resources and reset query,arguments and data.
+     *
+     * @return $this
+     */
+    public function reset()
     {
         $this->free();
+        $this->_query = null;
+        $this->_vars = null;
+        $this->_lastSQL = null;
 
-        // if we have readQuery object, we should clone the query object
-        // for the new collection object.
-        if ($this->_query) {
-            $this->_query = clone $this->_query;
-        }
+        return $this;
     }
+
 
     public function __toString()
     {
         return $this->toSql();
     }
+
 }
