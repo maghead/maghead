@@ -180,7 +180,7 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
             Order::repo('node3'),
         ];
         $keysList = array_map(function($repo) {
-            return $repo->fetchDistinctShardKeys();
+            return $repo->fetchShardKeys();
         }, $repos);
 
         $keys = [];

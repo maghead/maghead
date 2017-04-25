@@ -7,7 +7,7 @@ trait RepoShardTrait
     /**
      * Fetches the distinct shard key in the repo.
      */
-    public function fetchDistinctShardKeys()
+    public function fetchShardKeys()
     {
         $shardKey = static::SHARD_KEY;
         return $this->select("DISTINCT {$shardKey}")->fetchColumn(0);

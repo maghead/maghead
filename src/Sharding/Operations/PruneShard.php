@@ -67,7 +67,7 @@ class PruneShard
             }
 
             $repo = $schema->newRepo($conn, $conn);
-            $keys = $repo->fetchDistinctShardKeys();
+            $keys = $repo->fetchShardKeys();
             $migrationKeys = $shardDispatcher->filterMigrationKeys($nodeId, $keys);
 
             if (!empty($migrationKeys)) {
