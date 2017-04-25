@@ -1,0 +1,6 @@
+#!/bin/bash
+cd examples/todos
+php ../../bin/maghead use db/config/database.yml
+php ../../bin/maghead db create
+php ../../bin/maghead sql --rebuild --basedata
+php ../../bin/maghead schema build
