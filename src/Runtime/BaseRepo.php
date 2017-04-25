@@ -171,12 +171,19 @@ class BaseRepo
     }
 
     /**
-     * inserts the record into the repository but local keys will be removed before the insertion.
+     * Inserts the record into the repository but local keys will be removed
+     * before the insertion.
+     *
+     * @param BaseModel $record
      */
-    public function import(BaseRecord $record)
+    public function import(BaseModel $record)
     {
-        // $record->removeLocalKey();
+        $new = clone $record;
+        $new->removeLocalPrimaryKey();
+        $args = $new->getData();
+        return $this->create($args);
     }
+
 
     public function load($arg)
     {
