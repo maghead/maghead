@@ -1,6 +1,9 @@
 <?php
 namespace Todos\Model;
 
-class TodoCollection  extends \Todos\Model\TodoCollectionBase {
+use Todos\Model\TodoCollectionBase;
 
+class TodoCollection
+    extends TodoCollectionBase
+{
 }

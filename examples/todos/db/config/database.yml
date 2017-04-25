@@ -1,18 +1,16 @@
 ---
-bootstrap:
-  - bootstrap.php
 schema:
-#  Customize your schema paths
+  auto_id:
+    name: id
+    class: \Maghead\Schema\Column\UUIDPrimaryKeyColumn
+  # customize your schema paths
   paths:
     - src/
 databases:
-  default: master
-  nodes:
-    master:
-      driver: mysql
-      database: todos
-      user: root
-      pass: 123123
+  master:
+    driver: mysql
+    database: todos
+    user: root
     # slave:
     #   dsn: 'mysql:host=localhost;dbname=test'
     #   user: root

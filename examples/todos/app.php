@@ -1,22 +1,31 @@
 <?php
+require '../../vendor/autoload.php';
 
-$dbLoader = new Maghead\ConfigLoader;
-$dbLoader->load( __DIR__ . '/.lazy.yml');
-$dbLoader->init();
+use Maghead\ConfigLoader;
+use Maghead\Bootstrap;
 
-$todo = new Todos\Model\Todo;
-$ret = $todo->create(array( 
-    'title' => 'Sample A'
-));
+use Todos\Model\Todo;
 
-if( ! $ret->success )
-    echo $ret;
-echo $ret->message , "\n";
+$config = ConfigLoader::loadFromFile('db/config/database.yml');
+Bootstrap::setup($config);
 
-$todos = new Todos\Model\TodoCollection;
-foreach( $todos as $todo ) {
-    echo $todo->id , ' - ' , $todo->title, "\n";
+$titles = [
+    ['title' => 'Attend the design meeting'],
+    ['title' => 'Buy some fruits'],
+    ['title' => 'Fix the bugs'],
+];
+
+foreach ($titles as $title) {
+    $ret = Todo::create([
+        'title' => 'Attend the design meeting'
+    ]);
+    if ($ret->error) {
+        echo $ret->message , "\n";
+        var_dump($ret);
+    }
 }
 
-
-// for more details, please see documentation in doc/
+$todos = new Todos\Model\TodoCollection;
+foreach ($todos as $todo ) {
+    echo $todo->id , ' - ' , $todo->title, "\n";
+}
