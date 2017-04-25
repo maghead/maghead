@@ -430,11 +430,18 @@ abstract class BaseModel implements Serializable
         if ($this->repo === $target) {
             throw new InvalidArgumentException("You can't move the record to the same repo.");
         }
+
         $new = clone $this;
         $new->removeLocalPrimaryKey();
+
         $args = $new->getData();
+
         $ret = $target->create($args);
-        $this->delete();
+
+        $this->repo->beforeDelete($this);
+        $this->repo->deleteByPrimaryKey($this->getKey());
+        $this->repo->afterDelete($this);
+
         return $ret;
     }
 
