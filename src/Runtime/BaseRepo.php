@@ -188,6 +188,7 @@ class BaseRepo
 
     public function loadForUpdate(array $args)
     {
+        $conn = $this->read;
         $schema = $this->getSchema();
         $driver = $conn->getQueryDriver();
 
@@ -199,7 +200,6 @@ class BaseRepo
         $query->select('*');
         $query->from($this->getTable(), $this->getAlias());
         $query->forUpdate();
-        $conn = $this->read;
         $query->where($args);
 
         $arguments = new ArgumentArray();
