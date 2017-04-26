@@ -21,6 +21,7 @@ use Exception;
 use ArrayIterator;
 use Iterator;
 use IteratorAggregate;
+use InvalidArgumentException;
 
 class ChunkManager
 {
@@ -92,7 +93,7 @@ class ChunkManager
         $hasher = $this->mapping->getHasher();
 
         // get shard Id of the chunk
-        $srcShard = $chunk->loadShard();
+        $shard = $chunk->loadShard();
 
         $allRets = [];
 
@@ -103,11 +104,11 @@ class ChunkManager
             }
 
             $repoClass = $schema->getRepoClass();
-            $srcRepo = $srcShard->repo($repoClass);
+            $repo = $shard->repo($repoClass);
 
-            $keys = $this->selectChunkKeys($srcRepo, $chunk, $hasher);
+            $keys = $this->selectChunkKeys($repo, $chunk, $hasher);
             if (!empty($keys)) {
-                $rets = $callback($srcRepo, $repoClass, $keys);
+                $rets = $callback($repo, $repoClass, $keys);
                 $allRets = array_merge($allRets, $rets);
             }
         }
