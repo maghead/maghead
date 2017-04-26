@@ -125,7 +125,6 @@ class BaseModelClassGenerator
         });
 
 
-
         // interfaces
         if ($ifs = $schema->getModelInterfaces()) {
             foreach ($ifs as $iface) {
@@ -180,7 +179,7 @@ class BaseModelClassGenerator
         $properties = [];
         foreach ($schema->getColumns(false) as $columnName => $column) {
             $propertyName = Inflector::camelize($columnName);
-            $properties[] = [$columnName, $propertyName];
+            $properties[] = [$columnName, $propertyName, $column];
 
             $cTemplate->addPublicProperty($columnName, null);
 
@@ -215,6 +214,21 @@ class BaseModelClassGenerator
                 });
             }
         }
+
+
+        $cTemplate->addMethod('public', 'getAlterableData', [], function () use ($properties) {
+            $alterableProperties = array_filter($properties, function($p) {
+                list($columnName, $propertyName, $column) = $p;
+                return !$column->immutable;
+            });
+            return
+                'return [' . join(", ", array_map(function ($p) {
+                    list($columnName, $propertyName, $column) = $p;
+                    return "\"$columnName\" => \$this->{$columnName}";
+                }, $alterableProperties)) . '];'
+                ;
+        });
+
 
         $cTemplate->addMethod('public', 'getData', [], function () use ($properties) {
             return
