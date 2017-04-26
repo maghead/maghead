@@ -59,10 +59,9 @@ class CloneShard
             throw new RuntimeException("Node config of '$srcNodeId' is undefined.");
         }
 
-        // create a new DSN base on the source node config
-        $dsn = DSNParser::parse($newNodeConfig['dsn']);
-        $dsn->setAttribute('dbname', $dbName);
-        $newNodeConfig['dsn'] = $dsn->__toString();
+        // Create a new DSN base on the source node config
+        $newNodeConfig['database'] = $dbName;
+        $newNodeConfig = DSN::update($newNodeConfig);
 
         // add the new node to the config
         $this->config->addDataSource($newNodeId, $newNodeConfig);
