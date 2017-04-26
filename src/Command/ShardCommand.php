@@ -21,6 +21,7 @@ class ShardCommand extends BaseCommand
         $this->command('mapping');
         $this->command('allocate');
         $this->command('clone');
+        $this->command('prune');
         // $this->command('move');
     }
 

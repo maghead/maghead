@@ -60,6 +60,10 @@ class ShardDispatcher
     /**
      * Find the keys that doens't belong to the shard.
      *
+     * This API is not stable, might be removed in the future.
+     *
+     * @unstable 
+     *
      * @param string $shardId the shard ID
      * @param array $keys the keys in the chunk or shard.
      * @return array keys will need to migrate.

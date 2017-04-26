@@ -27,8 +27,8 @@ class CloneCommand extends BaseCommand
 
     public function arguments($args)
     {
-        $args->add('src-node');
-        $args->add('dest-node');
+        $args->add('src-shard');
+        $args->add('dest-shard');
     }
 
     public function execute($srcNode, $destNode)
