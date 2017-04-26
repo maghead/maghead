@@ -34,7 +34,6 @@ class AllocateCommand extends BaseCommand
     public function arguments($args)
     {
         $args->add('node-id');
-        $args->add('dsn');
     }
 
     public function execute($nodeId)
