@@ -101,6 +101,13 @@ class Config implements ArrayAccess
         }
     }
 
+    public function getShardingConfig()
+    {
+        if (isset($this->stash['sharding'])) {
+            return $this->stash['sharding'];
+        }
+    }
+
     public function getCacheConfig()
     {
         if (isset($this->stash['cache'])) {

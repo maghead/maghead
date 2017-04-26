@@ -46,6 +46,7 @@ class Console extends Application
         $this->command('data-source');
         $this->command('table');
         $this->command('index');
+        $this->command('shard');
     }
 
     public static function getInstance()

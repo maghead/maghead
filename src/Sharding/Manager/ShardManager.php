@@ -20,24 +20,22 @@ use IteratorAggregate;
 class ShardManager
 {
     /**
-     * @var Maghead\Config
-     */
-    protected $config;
-
-    /**
      * config of ".sharding"
      */
-    protected $shardingConfig;
+    protected $config;
 
     /**
      * @var DataSourceManager this is used for selecting read/write nodes.
      */
     protected $dataSourceManager;
 
-    public function __construct(Config $config, DataSourceManager $dataSourceManager)
+    public function __construct($config, DataSourceManager $dataSourceManager)
     {
-        $this->config = $config;
-        $this->shardingConfig = $config['sharding'];
+        if ($config instanceof Config) {
+            $this->config = $config->getShardingConfig();
+        } else {
+            $this->config = $config;
+        }
         $this->dataSourceManager = $dataSourceManager;
     }
 
@@ -52,16 +50,22 @@ class ShardManager
 
     public function hasShardMapping(string $mappingId)
     {
-        return isset($this->shardingConfig['mappings']);
+        return isset($this->config['mappings']);
+    }
+
+
+    public function addShardMapping(ShardMapping $mapping)
+    {
+        $this->config['mappings'][$mapping->id] = $mapping->toArray();
     }
 
     public function loadShardMapping(string $mappingId) : ShardMapping
     {
-        if (!isset($this->shardingConfig['mappings'][$mappingId])) {
+        if (!isset($this->config['mappings'][$mappingId])) {
             throw new LogicException("MappingId '$mappingId' is undefined.");
         }
 
-        return new ShardMapping($mappingId, $this->shardingConfig['mappings'][$mappingId], $this->dataSourceManager);
+        return new ShardMapping($mappingId, $this->config['mappings'][$mappingId], $this->dataSourceManager);
     }
 
     public function loadShard($shardId) : Shard
@@ -73,5 +77,10 @@ class ShardManager
     {
         $mapping = $this->loadShardMapping($mappingId);
         return $mapping->loadShardCollectionOf($repoClass);
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
     }
 }

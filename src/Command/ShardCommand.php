@@ -8,20 +8,24 @@ class ShardCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'shard related commands.';
+        return 'shard commands';
+    }
+
+    public function options($opts)
+    {
+        // $opts->add('v|verbose', 'Display verbose information');
     }
 
     public function init()
     {
-        $this->command('allocate');
-        $this->command('clone');
-        $this->command('prune');
-        $this->command('split');
+        $this->command('mapping');
+        // $this->command('allocate');
+        // $this->command('move');
     }
 
     public function execute()
     {
-        $cmd = $this->createCommand('CLIFramework\\Command\\HelpCommand');
-        $cmd->execute($this->getName());
+        $config = $this->getConfig(true);
+        // $this->logger->writeln(sprintf('%-10s %s', $id, $config['dsn']));
     }
 }
