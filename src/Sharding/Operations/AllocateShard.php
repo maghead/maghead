@@ -59,18 +59,14 @@ class AllocateShard
 
         // create a new node config from the instance node config.
         $nodeConfig = $this->connectionManager->getNodeConfig($instanceId);
-
-        // Update DSN with the new dbname (works for mysql and pgsql)
-        $dsn = DSNParser::parse($nodeConfig['dsn']);
-        $dsn->setAttribute('dbname', $dbName);
         $nodeConfig['database'] = $dbName;
-        $nodeConfig['dsn'] = $dsn->__toString();
+        $nodeConfig = DSN::update($nodeConfig);
         $this->config->addDataSource($newNodeId, $nodeConfig);
-
         $this->connectionManager->addNode($newNodeId, $nodeConfig);
 
         // Setup shard schema
         $dbConn = $this->connectionManager->connect($newNodeId);
+        $queryDriver = $dbConn->getQueryDriver();
 
         $schemas = SchemaUtils::findSchemasByConfig($this->config, $this->logger);
         $schemas = SchemaUtils::filterShardMappingSchemas($mappingId, $schemas);
