@@ -17,6 +17,7 @@ class AddCommand extends BaseCommand
     public function options($opts)
     {
         parent::options($opts);
+        $opts->add('create', 'invoke create database query');
         $opts->add('host:', 'host for database');
         $opts->add('port:', 'port for database');
         $opts->add('user:', 'user id for database connection');

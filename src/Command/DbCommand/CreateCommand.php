@@ -3,6 +3,8 @@
 namespace Maghead\Command\DbCommand;
 
 use Maghead\Command\BaseCommand;
+use Maghead\Manager\DatabaseManager;
+use Maghead\Manager\DataSourceManager;
 use Maghead\DSN\DSNParser;
 use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\Driver\PDOSQLiteDriver;
@@ -24,46 +26,30 @@ class CreateCommand extends BaseCommand
         $dsId = $nodeId ?: $this->getCurrentDataSourceId();
         $ds = $config->getDataSource($dsId);
 
+        if ($ds['driver'] === 'sqlite') {
+            $this->logger->error('Create database query is not supported by sqlite. ths sqlite database shall have been created.');
+            return true;
+        }
+
         if (!isset($ds['dsn'])) {
             throw new Exception("Attribute 'dsn' undefined in data source settings.");
         }
 
-        $dsn = DSNParser::parse($ds['dsn']);
+        $dataSourceManager = DataSourceManager::getInstance();
+        $conn = $dataSourceManager->connectInstance($dsId);
 
-        $dbName = $dsn->getAttribute('dbname');
+        $queryDriver = $conn->getQueryDriver();
 
-        $dsn->removeAttribute('dbname');
-
-        $this->logger->debug('Connection DSN: '.$dsn);
-
-        $pdo = new PDO($dsn, @$ds['user'], @$ds['pass'], @$ds['connection_options']);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $queryDriver = PDODriverFactory::create($pdo);
-
-        if ($queryDriver instanceof PDOSQLiteDriver) {
-            $this->logger->info('Create database query is not supported by sqlite. ths sqlite database shall have been created.');
-
-            return true;
-        }
-
-        $q = new CreateDatabaseQuery($dbName);
-        $q->ifNotExists();
-        if (isset($ds['charset'])) {
-            $q->characterSet($ds['charset']);
+        $dbManager = new DatabaseManager($conn);
+        list($ret, $sql) = $dbManager->create($ds['database'], [
+            'charset' => isset($ds['charset']) ? $ds['charset'] : null,
+        ]);
+        if ($ret) {
+            $this->logger->info("Succeed: $sql");
+            $this->logger->info('Database created successfully.');
         } else {
-            $q->characterSet('utf8');
+            $this->logger->info("Failed: $sql");
+            $this->logger->info("Failed to create database $dbName.");
         }
-
-        $sql = $q->toSql($queryDriver, new ArgumentArray());
-        $this->logger->info($sql);
-
-        if ($pdo->query($sql) === false) {
-            list($statusCode, $errorCode, $message) = $pdo->errorInfo();
-            $this->logger->error("$statusCode:$errorCode $message");
-
-            return false;
-        }
-        $this->logger->info('Database created successfully.');
     }
 }

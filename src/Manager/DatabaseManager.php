@@ -56,7 +56,8 @@ class DatabaseManager
             $q->characterSet('utf8');
         }
         $sql = $q->toSql($this->queryDriver, new ArgumentArray());
-        $this->connection->query($sql);
+        $ret = $this->connection->query($sql);
+        return [$ret, $sql];
     }
 
     public function drop(string $dbname)
@@ -64,6 +65,7 @@ class DatabaseManager
         $q = new DropDatabaseQuery($dbname);
         $q->ifExists();
         $sql = $q->toSql($this->queryDriver, new ArgumentArray());
-        $this->connection->query($sql);
+        $ret = $this->connection->query($sql);
+        return [$ret, $sql];
     }
 }
