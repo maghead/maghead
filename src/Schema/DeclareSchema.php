@@ -373,7 +373,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         $config = ConfigLoader::getCurrentConfig();
 
         // If sharding is not enabled, don't throw exception.
-        if (!isset($config['sharding'])) {
+        if (!isset($config['sharding']) || !$this->shardMapping) {
             return null;
         }
 
