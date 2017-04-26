@@ -45,7 +45,7 @@ databases:
     query_options: {  }
     connection_options:
       1002: 'SET NAMES utf8'
-    dsn: 'mysql:dbname=testing;host=localhost'
+    dsn: 'mysql:host=localhost;dbname=testing'
   node1:
     driver: mysql
     host: localhost
@@ -55,7 +55,7 @@ databases:
     query_options: {  }
     connection_options:
       1002: 'SET NAMES utf8'
-    dsn: 'mysql:dbname=s1;host=localhost'
+    dsn: 'mysql:host=localhost;dbname=s1'
   node2:
     host: localhost
     user: root
@@ -65,7 +65,7 @@ databases:
     query_options: {  }
     connection_options:
       1002: 'SET NAMES utf8'
-    dsn: 'mysql:dbname=s2;host=localhost'
+    dsn: 'mysql:host=localhost;dbname=s2'
   node3:
     driver: mysql
     host: localhost
@@ -75,4 +75,4 @@ databases:
     query_options: {  }
     connection_options:
       1002: 'SET NAMES utf8'
-    dsn: 'mysql:dbname=s3;host=localhost'
+    dsn: 'mysql:host=localhost;dbname=s3'
