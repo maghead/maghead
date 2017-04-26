@@ -149,6 +149,7 @@ class ShardMapping
     public function addShardId($shardId)
     {
         $this->shardIds[] = $shardId;
+        array_unique($this->shardIds);
     }
 
     public function removeShardId($shardId)
