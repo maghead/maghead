@@ -54,7 +54,8 @@
             "MetricApp\\": "tests/apps/MetricApp/",
             "PageApp\\": "tests/apps/PageApp/",
             "StoreApp\\": "tests/apps/StoreApp/",
-            "TestApp\\": "tests/apps/TestApp/"
+            "TestApp\\": "tests/apps/TestApp/",
+            "Todos\\": "examples/todos/src/Todos/"
         }
     }
 }

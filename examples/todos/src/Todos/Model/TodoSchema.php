@@ -12,6 +12,11 @@ class TodoSchema extends DeclareSchema
             ->varchar(128)
             ->required()
             ;
+
+        $this->column('done')
+            ->boolean()
+            ->default(false);
+
         $this->column('description')
             ->text();
 

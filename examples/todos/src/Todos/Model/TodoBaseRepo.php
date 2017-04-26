@@ -41,13 +41,15 @@ class TodoBaseRepo
     public static $columnNames = array (
       0 => 'id',
       1 => 'title',
-      2 => 'description',
-      3 => 'created_on',
+      2 => 'done',
+      3 => 'description',
+      4 => 'created_on',
     );
 
     public static $columnHash = array (
       'id' => 1,
       'title' => 1,
+      'done' => 1,
       'description' => 1,
       'created_on' => 1,
     );

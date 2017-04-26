@@ -5,27 +5,47 @@ use Maghead\ConfigLoader;
 use Maghead\Bootstrap;
 
 use Todos\Model\Todo;
+use Todos\Model\TodoCollection;
 
 $config = ConfigLoader::loadFromFile('db/config/database.yml');
 Bootstrap::setup($config);
 
+// Use delete query to delete the previous records
+Todo::repo()->delete()->execute();
+
+// same as ::repo("master") or ::repo()
+Todo::masterRepo()->delete()->execute();
+
 $titles = [
-    ['title' => 'Attend the design meeting'],
-    ['title' => 'Buy some fruits'],
-    ['title' => 'Fix the bugs'],
+    'Attend the design meeting',
+    'Buy some fruits',
+    'Fix the bugs',
 ];
 
 foreach ($titles as $title) {
-    $ret = Todo::create([
-        'title' => 'Attend the design meeting'
-    ]);
+    $ret = Todo::create([ 'title' => $title ]);
     if ($ret->error) {
         echo $ret->message , "\n";
         var_dump($ret);
     }
 }
 
-$todos = new Todos\Model\TodoCollection;
+$todos = new TodoCollection;
+$todos->first()->update([ 'done' => true ]);
+
+echo "### Finished todos:\n";
+$todos = new TodoCollection;
+$todos->where()->is('done', true);
 foreach ($todos as $todo ) {
-    echo $todo->id , ' - ' , $todo->title, "\n";
+    echo '- ' , $todo->title, "\n";
 }
+
+echo "### Waiting todos\n";
+$todos = new TodoCollection;
+$todos->where()->is('done', false);
+foreach ($todos as $todo ) {
+    echo '- ' , $todo->title, "\n";
+}
+
+
+
