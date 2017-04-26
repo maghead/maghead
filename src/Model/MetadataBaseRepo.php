@@ -34,6 +34,12 @@ class MetadataBaseRepo
 
     const TABLE_ALIAS = 'm';
 
+    const SHARD_MAPPING_ID = NULL;
+
+    const GLOBAL_TABLE = false;
+
+    const SHARD_KEY = NULL;
+
     const FIND_BY_PRIMARY_KEY_SQL = 'SELECT * FROM __meta__ WHERE id = ? LIMIT 1';
 
     const LOAD_BY_NAME_SQL = 'SELECT * FROM __meta__ WHERE name = :name LIMIT 1';
