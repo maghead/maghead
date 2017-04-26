@@ -45,8 +45,5 @@ trait RepoFactoryTrait
      * @param \Maghead\Connection $read
      * @return \Maghead\Runtime\BaseRepo
      */
-    public static function createRepo($write, $read)
-    {
-        return new BaseRepo($write, $read);
-    }
+    public abstract static function createRepo($write, $read);
 }
