@@ -107,7 +107,7 @@ class CloneShard
         // $lastLine = exec($command, $output, $retval);
         $lastLine = system($command, $retval);
         if (($retval != 0)) {
-            throw new RuntimeException("mysqldbcopy failed");
+            throw new RuntimeException("mysqldbcopy failed: $command");
         }
     }
 
