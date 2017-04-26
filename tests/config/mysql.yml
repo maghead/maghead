@@ -11,20 +11,50 @@ instance:
   local:
     dsn: 'mysql:host=localhost'
     user: root
+    driver: mysql
+    host: localhost
+    password: null
+    query_options: {  }
+    connection_options:
+      1002: 'SET NAMES utf8'
 databases:
   master:
     dsn: 'mysql:host=localhost;dbname=testing'
     host: localhost
     user: root
+    driver: mysql
+    database: testing
+    password: null
+    query_options: {  }
+    connection_options:
+      1002: 'SET NAMES utf8'
   node1:
     dsn: 'mysql:host=localhost;dbname=s1'
     host: localhost
     user: root
+    driver: mysql
+    database: s1
+    password: null
+    query_options: {  }
+    connection_options:
+      1002: 'SET NAMES utf8'
   node2:
     dsn: 'mysql:host=localhost;dbname=s2'
     host: localhost
     user: root
+    driver: mysql
+    database: s2
+    password: null
+    query_options: {  }
+    connection_options:
+      1002: 'SET NAMES utf8'
   node3:
     dsn: 'mysql:host=localhost;dbname=s3'
     host: localhost
     user: root
+    driver: mysql
+    database: s3
+    password: null
+    query_options: {  }
+    connection_options:
+      1002: 'SET NAMES utf8'
