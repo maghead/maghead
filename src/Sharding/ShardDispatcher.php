@@ -35,18 +35,10 @@ class ShardDispatcher
     }
 
     /**
-     * Dispatches the key and return the shard Id of the key
+     * Dispatch the key and return the related Chunk object
      *
-     * @param string $key
-     * @return string shard Id
+     * @return Chunk
      */
-    public function dispatchShard($key)
-    {
-        $chunkId = $this->hasher->lookup($key);
-        $chunk   = $this->mapping->chunks[$chunkId];
-        return $chunk['shard'];
-    }
-
     public function dispatchChunk($key)
     {
         $chunkIndex = $this->hasher->lookup($key);
@@ -76,7 +68,9 @@ class ShardDispatcher
     {
         $mkeys = [];
         foreach ($keys as $key) {
-            if ($this->dispatchShard($key) !== $shardId) {
+            $index = $this->hasher->lookup($key);
+            $chunk = $this->mapping->chunks[$index];
+            if ($chunk['shard'] !== $shardId) {
                 $mkeys[] = $key;
             }
         }

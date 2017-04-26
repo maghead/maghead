@@ -46,8 +46,6 @@ class PruneShard
             throw new InvalidArgumentException("Data source $nodeId doesn't exist");
         }
 
-        $queryDriver = $conn->getQueryDriver();
-
         $schemas = SchemaUtils::findSchemasByConfig($this->config);
         $schemas = SchemaUtils::filterShardMappingSchemas($mappingId, $schemas);
 
