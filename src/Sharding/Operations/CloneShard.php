@@ -33,8 +33,6 @@ use CLIFramework\Logger;
  *                      not use any table locks, lock-all = use table locks
  *                      but no transaction and no consistent read, snaphot
  *                      (default): consistent read using a single transaction.
- *
- * FIXME: there is an issue with foreign key.
  */
 class CloneShard
 {
