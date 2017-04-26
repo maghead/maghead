@@ -34,13 +34,13 @@ databases:
     driver: mysql
     host: localhost
     database: shard1
-    dsn: 'mysql:host=localhost;dbname=shard1'
     connection_options:
       1002: 'SET NAMES utf8'
+    dsn: 'mysql:host=localhost;dbname=shard1'
   shard2:
     driver: mysql
     host: localhost
     database: shard2
-    dsn: 'mysql:host=localhost;dbname=shard2'
     connection_options:
       1002: 'SET NAMES utf8'
+    dsn: 'mysql:host=localhost;dbname=shard2'

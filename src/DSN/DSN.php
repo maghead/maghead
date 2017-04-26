@@ -4,6 +4,7 @@ namespace Maghead\DSN;
 
 use ArrayAccess;
 use Exception;
+use PDO;
 
 /**
  * Data object for DSN information.
@@ -172,16 +173,6 @@ class DSN implements ArrayAccess
     {
         // Build DSN connection string for PDO
         $dsn = new self($config['driver']);
-        foreach (array('database', 'dbname') as $key) {
-            if (isset($config[$key])) {
-                $dsn->setAttribute('dbname', $config[$key]);
-                break;
-            }
-        }
-
-        if (isset($config['charset'])) {
-            $dsn->setAttribute('charset', $config['charset']);
-        }
 
         if (isset($config['unix_socket'])) {
             $dsn->setAttribute('unix_socket', $config['unix_socket']);
@@ -193,13 +184,61 @@ class DSN implements ArrayAccess
                 $dsn->setAttribute('port', $config['port']);
             }
         }
+
+        foreach (array('database', 'dbname') as $key) {
+            if (isset($config[$key])) {
+                $dsn->setAttribute('dbname', $config[$key]);
+                break;
+            }
+        }
+
+        if (isset($config['charset'])) {
+            $dsn->setAttribute('charset', $config['charset']);
+        }
+
+
         return $dsn;
     }
 
-    public static function updateDSN(array $nodeConfig)
+    public function toConfig()
+    {
+        $node = [];
+        $node['driver'] = $this->getDriver();
+
+        // Copy the configuration from DSN to node config
+        if ($host = $this->getHost()) {
+            $node['host'] = $host;
+        }
+
+        if ($port = $this->getPort()) {
+            $node['port'] = $port;
+        }
+        if ($socket = $this->getUnixSocket()) {
+            $node['unix_socket'] = $socket;
+        }
+        // MySQL/PgSQL only attribute
+        if ($dbname = $this->getAttribute('dbname')) {
+            $node['database'] = $dbname;
+        }
+
+        switch ($this->getDriver()) {
+            case 'mysql':
+                // $this->logger->debug('Setting connection options: PDO::MYSQL_ATTR_INIT_COMMAND');
+                $node['connection_options'] = [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'];
+            break;
+        }
+
+        return $node;
+    }
+
+    /**
+     * Update the DSN string base on the given node config.
+     *
+     * @return array the node config.
+     */
+    public static function update(array $nodeConfig)
     {
         $nodeConfig['dsn'] = DSN::create($nodeConfig)->__toString();
         return $nodeConfig;
     }
-
 }

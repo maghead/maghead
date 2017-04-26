@@ -181,14 +181,14 @@ class ConfigLoader
             foreach ($readServers as $serverAddress) {
                 $c = array_merge($config, []);
                 $c['host'] = $serverAddress;
-                $readNodes[] = DSN::updateDSN($c);
+                $readNodes[] = DSN::update($c);
             }
 
             $writeNodes = [];
             foreach ($writeServers as $serverAddress) {
                 $c = array_merge($config, []);
                 $c['host'] = $serverAddress;
-                $writeNodes[] = DSN::updateDSN($c);
+                $writeNodes[] = DSN::update($c);
             }
 
             $config['read'] = $readNodes;
@@ -199,7 +199,7 @@ class ConfigLoader
         // if the DSN is not defined, compile the information into dsn if possible.
         if (!isset($config['write']) && !isset($config['read'])) {
             if (!isset($config['dsn'])) {
-                $config = DSN::updateDSN($config);
+                $config = DSN::update($config);
             }
         }
         return $config;

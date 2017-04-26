@@ -32,10 +32,10 @@ databases:
     connection_options: {  }
   shard1:
     driver: mysql
-    host: localhost
-    database: shard1
-    user: c9s
-    password: '12341234'
-    dsn: 'mysql:host=localhost;dbname=shard1'
     connection_options:
       1002: 'SET NAMES utf8'
+    host: localhost
+    user: c9s
+    password: '12341234'
+    database: shard1
+    dsn: 'mysql:host=localhost;dbname=shard1'

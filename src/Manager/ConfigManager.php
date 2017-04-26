@@ -34,57 +34,28 @@ class ConfigManager
         $this->config['databases'][$nodeId] = $nodeConfig;
     }
 
-    public function addDatabase($nodeId, $dsnArg, $opts = array())
+    private function reconcileNodeConfigKeys(array $node)
+    {
+        if (isset($node['dbname'])) {
+            $node['database'] = $node['dbname'];
+            unset($node['dbname']);
+        }
+        if (isset($node['pass'])) {
+            $node['password'] = $node['pass'];
+            unset($node['pass']);
+        }
+        return $node;
+    }
+
+    public function addDatabase($nodeId, $dsnArg, array $opts = null)
     {
         $dsn = DSNParser::parse($dsnArg);
-
-        // The data source array to be added to the config array
-        $node = [];
-        $node['driver'] = $dsn->getDriver();
-
-        if ($host = $dsn->getHost()) {
-            $node['host'] = $host;
-        } elseif (isset($opts['host'])) {
-            $node['host'] = $opts['host'];
-            $dsn->setAttribute('host', $opts['host']);
+        $node = $dsn->toConfig();
+        if ($opts) {
+            $opts = $this->reconcileNodeConfigKeys($opts);
+            $node = array_merge($node, $opts);
         }
-
-        if ($port = $dsn->getPort()) {
-            $node['port'] = $port;
-        } elseif (isset($opts['port'])) {
-            $node['port'] = $opts['port'];
-            $dsn->setAttribute('port', $opts['port']);
-        }
-
-        if ($socket = $dsn->getUnixSocket()) {
-            $node['unix_socket'] = $socket;
-        }
-
-        // MySQL only attribute
-        if ($dbname = $dsn->getAttribute('dbname')) {
-            $node['database'] = $dbname;
-        } else if (isset($opts['dbname'])) {
-            $node['database'] = $opts['dbname'];
-            $dsn->setAttribute('dbname', $opts['dbname']);
-        }
-
-        if (isset($opts['user'])) {
-            $node['user'] = $opts['user'];
-        }
-        if (isset($opts['password'])) {
-            $node['password'] = $opts['password'];
-        } else if (isset($opts['pass'])) {
-            $node['password'] = $opts['pass'];
-        }
-
-        $node['dsn'] = $dsn->__toString();
-
-        switch ($dsn->getDriver()) {
-            case 'mysql':
-                // $this->logger->debug('Setting connection options: PDO::MYSQL_ATTR_INIT_COMMAND');
-                $node['connection_options'] = [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'];
-            break;
-        }
+        $node = DSN::update($node);
         $this->config['databases'][$nodeId] = $node;
         return $node;
     }
