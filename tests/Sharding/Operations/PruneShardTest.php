@@ -18,7 +18,7 @@ class PruneShardTest extends StoreTestCase
 
     public function testPruneShard()
     {
-        $o = new AllocateShard($this->config, $this->logger);
+        $o = new AllocateShard($this->config);
         $o->allocate('local', 's4', 'M_store_id');
 
         Bootstrap::setupDataSources($this->config, $this->dataSourceManager);
@@ -26,13 +26,13 @@ class PruneShardTest extends StoreTestCase
         $this->assertInsertStores(static::$stores);
         $this->assertInsertOrders(static::$orders);
 
-        $o = new PruneShard($this->config, $this->logger);
+        $o = new PruneShard($this->config);
         $o->prune('node1', 'M_store_id');
         $o->prune('node2', 'M_store_id');
         $o->prune('node3', 'M_store_id');
         $o->prune('s4', 'M_store_id');
 
-        $o = new RemoveShard($this->config, $this->logger);
+        $o = new RemoveShard($this->config);
         $o->remove('s4');
     }
 }

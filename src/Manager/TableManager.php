@@ -23,7 +23,7 @@ class TableManager
      */
     protected $logger;
 
-    public function __construct(Connection $conn, BaseBuilder $builder, Logger $logger)
+    public function __construct(Connection $conn, BaseBuilder $builder, Logger $logger = null)
     {
         $this->conn = $conn;
         $this->builder = $builder;
@@ -91,10 +91,16 @@ class TableManager
     protected function executeStatement($sql)
     {
         try {
-            $this->logger->debug($sql);
+            if ($this->logger) {
+                $this->logger->debug($sql);
+            }
             $this->conn->query($sql);
         } catch (PDOException $e) {
-            PDOExceptionPrinter::show($e, $sql, [], $this->logger);
+            if ($this->logger) {
+                PDOExceptionPrinter::show($e, $sql, [], $this->logger);
+            } else {
+                throw $e;
+            }
         }
     }
 }

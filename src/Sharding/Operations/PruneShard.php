@@ -32,12 +32,9 @@ class PruneShard
 
     protected $dataSourceManager;
 
-    protected $logger;
-
-    public function __construct(Config $config, Logger $logger)
+    public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->logger = $logger;
         $this->connectionManager = new ConnectionManager($config->getInstances());
         $this->dataSourceManager = new DataSourceManager($config->getDataSources());
     }
@@ -51,7 +48,7 @@ class PruneShard
 
         $queryDriver = $conn->getQueryDriver();
 
-        $schemas = SchemaUtils::findSchemasByConfig($this->config, $this->logger);
+        $schemas = SchemaUtils::findSchemasByConfig($this->config);
         $schemas = SchemaUtils::filterShardMappingSchemas($mappingId, $schemas);
 
         $shardManager = new ShardManager($this->config->getShardingConfig(), $this->dataSourceManager);

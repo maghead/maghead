@@ -36,11 +36,11 @@ class SqlCommand extends BaseCommand
     public function usage()
     {
         return <<<DOC
-lazy sql --data-source=mysql
+maghead sql master
 
-lazy sql --data-source=master --rebuild
+maghead sql --rebuild master
 
-lazy sql --data-source=master --clean
+maghead sql --clean master
 
 DOC;
     }
@@ -50,18 +50,18 @@ DOC;
         return 'build sql and insert into database.';
     }
 
-    public function execute()
+    public function execute($nodeId = null)
     {
         $options = $this->options;
         $logger = $this->logger;
         $config = $this->getConfig();
 
-        $id = $this->getCurrentDataSourceId();
+        $id = $nodeId ?: $this->getCurrentDataSourceId();
 
-        $logger->debug('Finding schema classes...');
+        $this->logger->debug('Finding schema classes...');
         $schemas = SchemaUtils::findSchemasByArguments($config, func_get_args(), $this->logger);
 
-        $logger->debug('Initialize schema builder...');
+        $this->logger->debug('Initialize schema builder...');
 
         if ($output = $this->options->output) {
             $dataSourceConfig = $config->getDataSource($id);

@@ -6,7 +6,8 @@ use Maghead\Command\BaseCommand;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\ConnectionManager;
-use Maghead\Manager\ConfigManager;
+use Maghead\Sharding\Manager\ConfigManager;
+use Maghead\Sharding\Manager\ShardManager;
 use Maghead\DSN\DSN;
 use PDO;
 use Exception;
@@ -37,15 +38,27 @@ class AllocateCommand extends BaseCommand
         $shardId = $nodeId;
         $config = $this->getConfig(true);
 
+        $dataSourceManager = DataSourceManager::getInstance();
+
         // Create the instance connection manager
         $connectionManager = new ConnectionManager($config->getInstances());
         $conn = $connectionManager->connectInstance($this->options->instance);
         $newnode = $connectionManager->getNodeConfig($this->options->instance);
         $newnode['database'] = $nodeId;
         $newnode = DSN::update($newnode);
+        $dataSourceManager->addNode($nodeId, $newnode);
+
+        $shardManager = new ShardManager($config, $dataSourceManager);
+        $mapping = $shardManager->loadShardMapping($this->options->mapping);
+        $mapping->addShardId($nodeId);
 
         $configManager = new ConfigManager($config);
+        $configManager->addShardMapping($mapping);
         $configManager->addDatabaseConfig($nodeId, $newnode);
-        var_dump($newnode);
+        $configManager->save();
+
+        // create the database
+        $create = $this->createCommand('Maghead\\Command\\DbCommand\\CreateCommand');
+        $create->execute($nodeId);
     }
 }

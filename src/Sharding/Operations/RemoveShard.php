@@ -34,12 +34,9 @@ class RemoveShard
 
     protected $dataSourceManager;
 
-    protected $logger;
-
-    public function __construct(Config $config, Logger $logger)
+    public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->logger = $logger;
         $this->connectionManager = new ConnectionManager($config->getInstances());
         $this->dataSourceManager = new DataSourceManager($config->getDataSources());
     }
@@ -47,15 +44,11 @@ class RemoveShard
     public function remove($nodeId)
     {
         $conn = $this->dataSourceManager->connectInstance($nodeId);
-        $queryDriver = $conn->getQueryDriver();
-
         $nodeConfig = $this->dataSourceManager->getNodeConfig($nodeId);
-        $dsn = DSNParser::parse($nodeConfig['dsn']);
-        $dbName = $dsn->getAttribute('dbname');
 
         // create new database for the new shard.
         $dbManager = new DatabaseManager($conn);
-        $dbManager->drop($dbName);
+        $dbManager->drop($nodeConfig['database']);
 
         $this->config->removeDataSource($nodeId);
         $this->dataSourceManager->removeNode($nodeId);
