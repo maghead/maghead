@@ -98,10 +98,10 @@ class AllocateShard
         $dbConnection = $this->dataSourceManager->connect($newNodeId);
         $this->buildTables($dbConnection, $mappingId, $schemas);
 
-        // TODO: modify the shard mapping config
-        // 1. add the shard server config in sharding.shards, default to read [ node ], write [ node ]
-        // 2. add the shard server ID to the chunk list in the shard mapping.
-        $this->config->stash['sharding']['mappings'][$mappingId]['chunks'][$newNodeId] = [ 'shard' => $newNodeId ];
-        $this->config->stash['sharding']['mappings'][$mappingId]['shards'][] = $newNodeId;
+        $shardManager = new ShardManager($this->config, $this->dataSourceManager);
+        $mapping = $shardManager->loadShardMapping($mappingId);
+        $mapping->addShardId($newNodeId);
+        $shardManager->addShardMapping($mapping);
+        $this->config->setShardingConfig($shardManager->getConfig());
     }
 }
