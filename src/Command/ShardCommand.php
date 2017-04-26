@@ -19,13 +19,13 @@ class ShardCommand extends BaseCommand
     public function init()
     {
         $this->command('mapping');
-        // $this->command('allocate');
+        $this->command('allocate');
         // $this->command('move');
     }
 
     public function execute()
     {
-        $config = $this->getConfig(true);
-        // $this->logger->writeln(sprintf('%-10s %s', $id, $config['dsn']));
+        $cmd = $this->createCommand('CLIFramework\\Command\\HelpCommand');
+        $cmd->execute($this->getName());
     }
 }

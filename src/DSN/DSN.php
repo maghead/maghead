@@ -200,6 +200,11 @@ class DSN implements ArrayAccess
         return $dsn;
     }
 
+    /**
+     * Convert DSN to node config
+     *
+     * @return array the node config.
+     */
     public function toConfig()
     {
         $node = [];

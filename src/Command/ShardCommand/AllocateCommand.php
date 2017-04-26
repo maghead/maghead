@@ -4,6 +4,10 @@ namespace Maghead\Command\ShardCommand;
 
 use Maghead\Command\BaseCommand;
 use Maghead\Manager\DatabaseManager;
+use Maghead\Manager\DataSourceManager;
+use Maghead\Manager\ConnectionManager;
+use Maghead\Manager\ConfigManager;
+use Maghead\DSN\DSN;
 use PDO;
 use Exception;
 
@@ -18,7 +22,8 @@ class AllocateCommand extends BaseCommand
     {
         parent::options($opts);
         $opts->add('mapping:', 'the shard mapping where the new shard will be added to.');
-        $opts->add('instance:', 'the instance id');
+        $opts->add('instance:', 'the instance id')
+            ->defaultValue('local');
     }
 
     public function arguments($args)
@@ -29,21 +34,18 @@ class AllocateCommand extends BaseCommand
 
     public function execute($nodeId)
     {
+        $shardId = $nodeId;
         $config = $this->getConfig(true);
-        $databaseManager = DatabaseManager::getInstance();
 
-        $conn = $databaseManager->connectInstance($this->options->instance);
+        // Create the instance connection manager
+        $connectionManager = new ConnectionManager($config->getInstances());
+        $conn = $connectionManager->connectInstance($this->options->instance);
+        $newnode = $connectionManager->getNodeConfig($this->options->instance);
+        $newnode['database'] = $nodeId;
+        $newnode = DSN::update($newnode);
 
         $configManager = new ConfigManager($config);
-        $nodeConfig = $configManager->addDatabase($nodeId, $dsnStr, [
-            'host'     => $this->options->host,
-            'port'     => $this->options->port,
-            'database' => $this->options->dbname,
-            'user'     => $this->options->user,
-            'password' => $this->options->password,
-        ]);
-
-        // $dsId = $this->getCurrentDataSourceId();
-        // $ds = $config->getDataSource($dsId);
+        $configManager->addDatabaseConfig($nodeId, $newnode);
+        var_dump($newnode);
     }
 }
