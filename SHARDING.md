@@ -96,7 +96,7 @@ The above operation select the read node from c1's shard `s1`. for read.
 And so, when dispatching a record, we select the chunk first, and then select
 the node for read/write on the related shard.
 
-A shard mapping config looks like this:
+A internal shard mapping config looks like this:
 
     'M_store_id' => [
         'key' => 'store_id',
