@@ -151,13 +151,17 @@ collection instance:
 
 ### Defining Shard Mapping
 
-Create an empty shard with the corresponding schema.
+To add a new shard mapping config:
 
-    maghead shard mapping create [mappingId] \
+    maghead shard mapping add [mappingId] \
             --key store_id \
             --hash \
             --shards "s1,s2,s3" \
             --chunks 32
+
+To remove a shard mapping config:
+
+    maghead shard mapping remove [mappingId]
 
 ### Allocating Shard
 
