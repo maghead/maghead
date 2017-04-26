@@ -13,7 +13,7 @@ class DropCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'create database bases on the current config.';
+        return 'drop database base on the database config.';
     }
 
     public function execute($nodeId = null)
