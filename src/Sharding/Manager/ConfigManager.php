@@ -13,6 +13,11 @@ class ConfigManager extends BaseConfigManager
         $this->config['sharding']['mappings'][$mapping->id] = $mapping->toArray();
     }
 
+    public function removeShardMappingById($mappingId)
+    {
+        unset($this->config['sharding']['mappings'][$mappingId]);
+    }
+
     public function removeShardMapping(ShardMapping $mapping)
     {
         unset($this->config['sharding']['mappings'][$mapping->id]);

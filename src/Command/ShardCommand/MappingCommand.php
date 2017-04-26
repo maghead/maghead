@@ -16,7 +16,8 @@ class MappingCommand extends BaseCommand
 
     public function init()
     {
-        $this->command('create');
+        $this->command('add');
+        $this->command('remove');
     }
 
     public function execute()

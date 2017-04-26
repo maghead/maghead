@@ -9,7 +9,7 @@ use Maghead\Sharding\Manager\ConfigManager;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Manager\DataSourceManager;
 
-class CreateCommand extends BaseCommand
+class AddCommand extends BaseCommand
 {
     public function brief()
     {
