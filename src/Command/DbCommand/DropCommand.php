@@ -16,10 +16,10 @@ class DropCommand extends BaseCommand
         return 'create database bases on the current config.';
     }
 
-    public function execute()
+    public function execute($nodeId = null)
     {
         $config = $this->getConfig();
-        $dsId = $this->getCurrentDataSourceId();
+        $dsId = $nodeId ?: $this->getCurrentDataSourceId();
         $ds = $config->getDataSource($dsId);
 
         $dsn = DSNParser::parse($ds['dsn']);
