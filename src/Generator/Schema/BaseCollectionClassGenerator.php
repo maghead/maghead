@@ -25,6 +25,10 @@ class BaseCollectionClassGenerator
         }
         $cTemplate->extendClass('\\'.$baseCollectionClass);
 
+        $cTemplate->addStaticMethod('public', 'createRepo', ['$write', '$read'], function () use ($schema) {
+            return "return new \\{$schema->getBaseRepoClass()}(\$write, \$read);";
+        });
+
         $cTemplate->addStaticMethod('public', 'getSchema', [], function () use ($schema) {
             return [
                 "static \$schema;",
