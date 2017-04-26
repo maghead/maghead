@@ -204,6 +204,9 @@ class SchemaUtils
 
     public static function getLoadedDeclareSchemaClasses()
     {
+        // Trigger spl to load metadata schema
+        class_exists('Maghead\\Model\\MetadataSchema', true);
+
         $classes = get_declared_classes();
 
         return self::filterSchemaClasses($classes);
