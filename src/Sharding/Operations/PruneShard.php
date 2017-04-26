@@ -28,14 +28,14 @@ class PruneShard
 {
     protected $config;
 
-    protected $connectionManager;
+    protected $instanceManager;
 
     protected $dataSourceManager;
 
     public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->connectionManager = new ConnectionManager($config->getInstances());
+        $this->instanceManager = new ConnectionManager($config->getInstances());
         $this->dataSourceManager = new DataSourceManager($config->getDataSources());
     }
 

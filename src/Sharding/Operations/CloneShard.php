@@ -30,19 +30,16 @@ class CloneShard
 {
     protected $config;
 
-    protected $connectionManager;
+    protected $instanceManager;
 
     protected $dataSourceManager;
 
-    protected $logger;
-
     protected $dropFirst = false;
 
-    public function __construct(Config $config, Logger $logger)
+    public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->logger = $logger;
-        $this->connectionManager = new ConnectionManager($config->getInstances());
+        $this->instanceManager = new ConnectionManager($config->getInstances());
         $this->dataSourceManager = new DataSourceManager($config->getDataSources());
     }
 
@@ -57,7 +54,7 @@ class CloneShard
         $dbName = $newNodeId;
 
         // Create the node config from the instance node config.
-        $newNodeConfig = $this->connectionManager->getNodeConfig($instanceId);
+        $newNodeConfig = $this->instanceManager->getNodeConfig($instanceId);
         if (!$newNodeConfig) {
             throw new RuntimeException("Node config of '$srcNodeId' is undefined.");
         }
@@ -106,10 +103,6 @@ class CloneShard
 
         $args[] = $this->getDB($srcNode) . ":" . $this->getDB($newNodeConfig);
         $command = implode(' ', $args);
-
-        $this->logger->debug("Performing: $command");
-
-        var_dump($command);
 
         // $lastLine = exec($command, $output, $retval);
         $lastLine = system($command, $retval);

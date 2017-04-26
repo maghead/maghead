@@ -30,23 +30,24 @@ class RemoveShard
 {
     protected $config;
 
-    protected $connectionManager;
+    protected $instanceManager;
 
     protected $dataSourceManager;
 
     public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->connectionManager = new ConnectionManager($config->getInstances());
+        $this->instanceManager = new ConnectionManager($config->getInstances());
         $this->dataSourceManager = new DataSourceManager($config->getDataSources());
     }
 
     public function remove($nodeId)
     {
+        // Connect to the instance that belongs to the node
         $conn = $this->dataSourceManager->connectInstance($nodeId);
         $nodeConfig = $this->dataSourceManager->getNodeConfig($nodeId);
 
-        // create new database for the new shard.
+        // Drop the database for the new shard.
         $dbManager = new DatabaseManager($conn);
         $dbManager->drop($nodeConfig['database']);
 

@@ -38,12 +38,12 @@ class AllocateShard
 {
     protected $config;
 
-    protected $connectionManager;
+    protected $instanceManager;
 
     public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->connectionManager = new ConnectionManager($config->getInstances());
+        $this->instanceManager = new ConnectionManager($config->getInstances());
         $this->dataSourceManager = new DataSourceManager($config->getDataSources());
     }
 
@@ -76,7 +76,7 @@ class AllocateShard
     {
         // 1. Connects to the instance
         // 2. Create a new database for the new shard wit the nodeId
-        $conn = $this->connectionManager->connectInstance($instanceId);
+        $conn = $this->instanceManager->connectInstance($instanceId);
         if ($this->dataSourceManager->hasNode($newNodeId)) {
             throw new InvalidArgumentException("Node $newNodeId is already defined.");
         }
@@ -85,7 +85,7 @@ class AllocateShard
         $dbManager->create($newNodeId);
 
         // 3. Create a new node config from the instance node config.
-        $nodeConfig = $this->connectionManager->getNodeConfig($instanceId);
+        $nodeConfig = $this->instanceManager->getNodeConfig($instanceId);
         $nodeConfig['database'] = $newNodeId;
         $nodeConfig = DSN::update($nodeConfig);
 
