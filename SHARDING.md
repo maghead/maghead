@@ -99,17 +99,19 @@ the node for read/write on the related shard.
 A shard mapping config looks like this:
 
     'M_store_id' => [
-        'tables' => ['orders'], // This is something that we will define in the schema.
         'key' => 'store_id',
         'shards' => [ 's1', 's2' ],
-        'chunks' => [
-            'c1' => ['shard' => 's1', 'dbname' => 'db_c1'], // the dbname may override the dbname in the DSN of the shard.
-            'c2' => ['shard' => 's1', 'dbname' => 'db_c2'],
-            'c3' => ['shard' => 's1', 'dbname' => 'db_c3'],
-            'c4' => ['shard' => 's2', 'dbname' => 'db_c4'],
-            'c5' => ['shard' => 's2', 'dbname' => 'db_c5'],
-        ],
         'method' => 'hash',
+        'chunks' => [
+            536870912  => [ 'shard' => 'node1'],
+            1073741824 => [ 'shard' => 'node1'],
+            1610612736 => [ 'shard' => 'node1'],
+            2147483648 => [ 'shard' => 'node2'],
+            2684354560 => [ 'shard' => 'node2'],
+            3221225472 => [ 'shard' => 'node2'],
+            3758096384 => [ 'shard' => 'node3'],
+            4294967296 => [ 'shard' => 'node3'],
+        ],
     ],
 
 By default, the 'chunks' list is empty. So you have to create chunks first.
@@ -167,14 +169,15 @@ To remove a shard mapping config:
 
 Create an empty shard with the corresponding schema.
 
-    maghead shard allocate --mapping [mappingIds] \
-                           --instance [instanceId]
-                           [new nodeId]
+    maghead shard allocate \
+        --mapping [mappingIds] \
+        --instance [instanceId] \
+        [shardId]
 
 To use the allocate operation:
 
     $config = ConfigLoader::loadFromFile('.../config.yml');
-    $o = new AllocateShard($config, $logger);
+    $o = new AllocateShard($config);
     $o->allocate('local', 't1', 'M_store_id');
 
 The above command allocate a new node `t1` on `local` instance and initialize
