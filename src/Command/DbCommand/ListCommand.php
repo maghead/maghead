@@ -1,14 +1,17 @@
 <?php
 
-namespace Maghead\Command;
+namespace Maghead\Command\DbCommand;
 
-use CLIFramework\Command;
+use Maghead\Command\BaseCommand;
+use Maghead\Manager\ConfigManager;
+use Maghead\DSN\DSNParser;
+use PDO;
 
-class DataSourceCommand extends BaseCommand
+class ListCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'data source related commands.';
+        return 'list databases';
     }
 
     public function options($opts)
@@ -16,22 +19,18 @@ class DataSourceCommand extends BaseCommand
         $opts->add('v|verbose', 'Display verbose information');
     }
 
-    public function init()
-    {
-        $this->command('add');
-        $this->command('remove');
-    }
-
     public function execute()
     {
+        // force loading data source
         $config = $this->getConfig(true);
-        $dataSources = $config->getDataSources();
-        foreach ($dataSources as $id => $config) {
+        $nodes = $config->getDataSources();
+        foreach ($nodes as $id => $config) {
             if ($this->options->verbose) {
                 $this->logger->writeln(sprintf('%-10s %s', $id, $config['dsn']));
             } else {
                 $this->logger->writeln($id);
             }
         }
+        return true;
     }
 }

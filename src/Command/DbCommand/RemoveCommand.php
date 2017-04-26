@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\Command\DataSourceCommand;
+namespace Maghead\Command\DbCommand;
 
 use Maghead\Command\BaseCommand;
 use Maghead\Manager\ConfigManager;
@@ -19,12 +19,11 @@ class RemoveCommand extends BaseCommand
 
     public function execute($nodeId)
     {
-        // force loading data source
-        $config = $this->getConfig();
+        $config = $this->getConfig(true);
 
         $manager = new ConfigManager($config);
+        $manager->removeDatabase($nodeId);
         $manager->save();
-
         return true;
     }
 }

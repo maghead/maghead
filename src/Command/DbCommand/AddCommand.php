@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\Command\DataSourceCommand;
+namespace Maghead\Command\DbCommand;
 
 use Maghead\Command\BaseCommand;
 use Maghead\Manager\ConfigManager;
@@ -11,7 +11,7 @@ class AddCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'Add data source to config file.';
+        return 'Add a database to the config file.';
     }
 
     public function options($opts)
@@ -25,23 +25,23 @@ class AddCommand extends BaseCommand
 
     public function arguments($args)
     {
-        $args->add('data-source-id');
+        $args->add('node-id');
         $args->add('dsn');
     }
 
-    public function execute($dataSourceId, $dsnStr)
+    public function execute($nodeId, $dsnStr)
     {
         // force loading data source
-        $config = $this->getConfig();
-        $manager = new ConfigManager($config);
-        $manager->addDatabase($dataSourceId, $dsnStr, [
+        $config = $this->getConfig(true);
+        $configManager = new ConfigManager($config);
+        $configManager->addDatabase($nodeId, $dsnStr, [
             'host' => $this->options->host,
             'port' => $this->options->port,
             'dbname' => $this->options->dbname,
             'user' => $this->options->user,
             'password' => $this->options->password,
         ]);
-        $manager->save();
+        $configManager->save();
         return true;
     }
 }
