@@ -22,8 +22,9 @@ class CreateCommand extends BaseCommand
 
     public function execute($nodeId = null)
     {
-        $config = $this->getConfig();
+        $config = $this->getConfig(true);
         $dsId = $nodeId ?: $this->getCurrentDataSourceId();
+
         $ds = $config->getDataSource($dsId);
 
         if ($ds['driver'] === 'sqlite') {
@@ -32,7 +33,10 @@ class CreateCommand extends BaseCommand
         }
 
         if (!isset($ds['dsn'])) {
-            throw new Exception("Attribute 'dsn' undefined in data source settings.");
+            throw new Exception("Attribute 'dsn' undefined in the config.");
+        }
+        if (!isset($ds['database'])) {
+            throw new Exception("Attribute 'database' is missing in the config.");
         }
 
         $dataSourceManager = DataSourceManager::getInstance();

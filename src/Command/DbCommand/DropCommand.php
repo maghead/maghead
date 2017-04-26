@@ -18,7 +18,7 @@ class DropCommand extends BaseCommand
 
     public function execute($nodeId = null)
     {
-        $config = $this->getConfig();
+        $config = $this->getConfig(true);
         $dsId = $nodeId ?: $this->getCurrentDataSourceId();
         $ds = $config->getDataSource($dsId);
 

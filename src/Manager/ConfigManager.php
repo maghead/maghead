@@ -63,7 +63,7 @@ class ConfigManager
         // MySQL only attribute
         if ($dbname = $dsn->getAttribute('dbname')) {
             $node['database'] = $dbname;
-        } elseif (isset($opts['dbname'])) {
+        } else if (isset($opts['dbname'])) {
             $node['database'] = $opts['dbname'];
             $dsn->setAttribute('dbname', $opts['dbname']);
         }
@@ -86,6 +86,7 @@ class ConfigManager
             break;
         }
         $this->config['databases'][$nodeId] = $node;
+        return $node;
     }
 
     public function save($file = null)

@@ -35,14 +35,19 @@ class AddCommand extends BaseCommand
         // force loading data source
         $config = $this->getConfig(true);
         $configManager = new ConfigManager($config);
-        $configManager->addDatabase($nodeId, $dsnStr, [
-            'host' => $this->options->host,
-            'port' => $this->options->port,
-            'dbname' => $this->options->dbname,
-            'user' => $this->options->user,
+        $nodeConfig = $configManager->addDatabase($nodeId, $dsnStr, [
+            'host'     => $this->options->host,
+            'port'     => $this->options->port,
+            'database' => $this->options->dbname,
+            'user'     => $this->options->user,
             'password' => $this->options->password,
         ]);
         $configManager->save();
+
+        if ($this->options->create) {
+            $cmd = $this->createCommand('Maghead\\Command\\DbCommand\\CreateCommand');
+            return $cmd->execute($nodeId, $nodeConfig);
+        }
         return true;
     }
 }

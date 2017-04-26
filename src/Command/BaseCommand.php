@@ -26,9 +26,9 @@ class BaseCommand extends Command
         Bootstrap::setupForCLI($this->config);
     }
 
-    public function getConfig()
+    public function getConfig($force = false)
     {
-        if (!$this->config) {
+        if (!$this->config || $force) {
             $this->configLoader = ConfigLoader::getInstance();
             $this->config = ConfigLoader::loadFromSymbol(true); // force loading
             Bootstrap::setupForCLI($this->config);
