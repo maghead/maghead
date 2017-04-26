@@ -37,7 +37,7 @@ use SerializerKit\XmlSerializer;
 use ActionKit;
 use Symfony\Component\Yaml\Yaml;
 
-class BaseRepo
+abstract class BaseRepo
 {
     use RepoShardTrait;
 
@@ -80,6 +80,10 @@ class BaseRepo
 
     const SHARD_KEY = null;
 
+    /**
+     * Unset immutable args
+     */
+    abstract protected function unsetImmutableArgs($args);
 
     public function __construct(Connection $write, Connection $read = null)
     {
@@ -244,6 +248,8 @@ class BaseRepo
     public function updateByPrimaryKey($kVal, array $args)
     {
         $schema = static::getSchema();
+
+        $args = $this->unsetImmutableArgs($args);
 
         // backup the arguments
         $origArgs = $args;

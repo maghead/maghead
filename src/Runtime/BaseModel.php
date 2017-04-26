@@ -771,6 +771,12 @@ abstract class BaseModel implements Serializable
     abstract public function getData();
 
     /**
+     * Get alterable data array
+     */
+    abstract public function getAlterableData();
+
+
+    /**
      * This will be overrided by child model class.
      */
     abstract public function setData(array $data);
