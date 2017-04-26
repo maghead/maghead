@@ -46,7 +46,7 @@ class AddCommand extends BaseCommand
 
         if ($this->options->create) {
             $cmd = $this->createCommand('Maghead\\Command\\DbCommand\\CreateCommand');
-            return $cmd->execute($nodeId, $nodeConfig);
+            return $cmd->execute($nodeId);
         }
         return true;
     }

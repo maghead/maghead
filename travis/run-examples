@@ -5,6 +5,6 @@ php ../../bin/maghead use db/config/database.yml
 php ../../bin/maghead db create
 # add testing2 database to the server
 php ../../bin/maghead db add --create --user root testing2 "mysql:host=localhost;dbname=testing2"
-php ../../bin/maghead db remove testing2
+php ../../bin/maghead db remove --drop testing2
 php ../../bin/maghead sql --rebuild --basedata
 php ../../bin/maghead schema build
