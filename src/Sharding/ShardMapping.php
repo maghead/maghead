@@ -146,6 +146,18 @@ class ShardMapping
         $this->chunks = $chunks;
     }
 
+    public function addShardId($shardId)
+    {
+        $this->shardIds[] = $shardId;
+    }
+
+    public function removeShardId($shardId)
+    {
+        if ($k = array_search($this->shardIds, $shardId)) {
+            unset($this->shardIds[$k]);
+        }
+    }
+
     /**
      * Get shards used in this mapping.
      *
