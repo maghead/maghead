@@ -40,6 +40,7 @@ class CleanCommand extends BaseCommand
             $this->logger->info('Cleaning schema '.get_class($schema));
             $paths = array();
             $paths[] = $schema->getRelatedClassPath($schema->getBaseModelClass());
+            $paths[] = $schema->getRelatedClassPath($schema->getBaseRepoClass());
             $paths[] = $schema->getRelatedClassPath($schema->getBaseCollectionClass());
             $paths[] = $schema->getRelatedClassPath($schema->getSchemaProxyClass());
 
