@@ -27,11 +27,11 @@ class CloneShardTest extends StoreTestCase
 
         $this->expectOutputRegex('/Copying data/');
 
-        $o = new CloneShard($this->config, $this->logger);
+        $o = new CloneShard($this->config);
         $o->setDropFirst(true);
         $o->clone('local', 't2', 'master');
 
-        $o = new RemoveShard($this->config, $this->logger);
+        $o = new RemoveShard($this->config);
         $o->remove('t2');
     }
 }

@@ -26,6 +26,16 @@ use RuntimeException;
 
 use CLIFramework\Logger;
 
+/**
+ * TODO:
+ *
+ *   --locking=LOCKING     choose the lock type for the operation: no-locks = do
+ *                      not use any table locks, lock-all = use table locks
+ *                      but no transaction and no consistent read, snaphot
+ *                      (default): consistent read using a single transaction.
+ *
+ * FIXME: there is an issue with foreign key.
+ */
 class CloneShard
 {
     protected $config;
@@ -54,7 +64,7 @@ class CloneShard
         $dbName = $newNodeId;
 
         // Create the node config from the instance node config.
-        $newNodeConfig = $this->instanceManager->getNodeConfig($instanceId);
+        $newNodeConfig = $this->dataSourceManager->getNodeConfig($srcNodeId);
         if (!$newNodeConfig) {
             throw new RuntimeException("Node config of '$srcNodeId' is undefined.");
         }
@@ -90,6 +100,9 @@ class CloneShard
         // @see https://dev.mysql.com/doc/mysql-utilities/1.5/en/mysqldbcopy.html
 
         $args = [Utils::findBin('mysqldbcopy')];
+        $args[] = '--verbose';
+        $args[] = '--new-storage-engine=InnoDB';
+        $args[] = '--default-storage-engine=InnoDB';
         $args[] = '--source';
         $args[] = $this->buildSourceParam($srcNode);
 
