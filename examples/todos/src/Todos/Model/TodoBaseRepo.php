@@ -96,6 +96,11 @@ class TodoBaseRepo
         return $this->write->prepare($sql);
     }
 
+    protected function unsetImmutableArgs($args)
+    {
+        return $args;
+    }
+
     public function deleteByPrimaryKey($pkId)
     {
         if (!$this->deleteStm) {

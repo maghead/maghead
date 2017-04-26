@@ -19,6 +19,11 @@ class TodoCollectionBase
 
     const PRIMARY_KEY = 'id';
 
+    public static function createRepo($write, $read)
+    {
+        return new \Todos\Model\TodoBaseRepo($write, $read);
+    }
+
     public static function getSchema()
     {
         static $schema;

@@ -136,6 +136,11 @@ class TodoBase
         return Inflator::inflate($this->created_on, 'DateTime');
     }
 
+    public function getAlterableData()
+    {
+        return ["id" => $this->id, "title" => $this->title, "done" => $this->done, "description" => $this->description, "created_on" => $this->created_on];
+    }
+
     public function getData()
     {
         return ["id" => $this->id, "title" => $this->title, "done" => $this->done, "description" => $this->description, "created_on" => $this->created_on];
