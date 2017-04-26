@@ -14,18 +14,18 @@ class AllCommandsTest extends CommandTestCase
     public function testConfCommand()
     {
         $this->expectOutputRegex('/Creating symbol/');
-        $this->app->run(array('lazy','build-conf','db/config/database.yml'));
+        $this->app->run(array('maghead','use','tests/config/mysql.yml'));
     }
 
     public function testCommands()
     {
-        ok($this->app->createCommand('Maghead\Command\UseCommand'));
-        ok($this->app->createCommand('Maghead\Command\SchemaCommand\BuildCommand'));
-        ok($this->app->createCommand('Maghead\Command\BasedataCommand'));
-        ok($this->app->createCommand('Maghead\Command\InitCommand'));
-        ok($this->app->createCommand('Maghead\Command\MigrateCommand'));
-        ok($this->app->createCommand('Maghead\Command\SchemaCommand'));
-        ok($this->app->createCommand('Maghead\Command\DiffCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Command\UseCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Command\SchemaCommand\BuildCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Command\BasedataCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Command\InitCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Command\MigrateCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Command\SchemaCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Command\DiffCommand'));
     }
 
 
@@ -35,7 +35,7 @@ class AllCommandsTest extends CommandTestCase
      */
     public function testSchemaCommand()
     {
-        $this->app->run(array('lazy','schema','build'));
+        $this->app->run(array('maghead','schema','build'));
     }
 
     /**
@@ -44,7 +44,7 @@ class AllCommandsTest extends CommandTestCase
     public function testListSchemaCommand()
     {
         $this->expectOutputRegex('/AuthorBooks\\\\Model\\\\AuthorSchema/');
-        $this->app->run(array('lazy','schema','list'));
+        $this->app->run(array('maghead','schema','list'));
     }
 
     /**
@@ -53,7 +53,7 @@ class AllCommandsTest extends CommandTestCase
     public function testSqlCommand()
     {
         $this->expectOutputRegex('/Done/');
-        $this->app->run(array('lazy','sql','--rebuild'));
+        $this->app->run(array('maghead','sql','--rebuild'));
     }
 
     /**
@@ -62,7 +62,7 @@ class AllCommandsTest extends CommandTestCase
     public function testDiffCommand()
     {
         $this->expectOutputRegex('//');
-        $this->app->run(array('lazy','diff'));
+        $this->app->run(array('maghead','diff'));
     }
 
     /**
@@ -71,7 +71,7 @@ class AllCommandsTest extends CommandTestCase
     public function testTableCommand()
     {
         $this->expectOutputRegex('//');
-        $this->app->run(array('lazy','table'));
+        $this->app->run(array('maghead','table'));
     }
 
 
@@ -81,8 +81,8 @@ class AllCommandsTest extends CommandTestCase
     public function testMigrateCommand()
     {
         $this->expectOutputRegex('/Found/');
-        $this->app->run(array('lazy','migrate','status'));
-        // $this->app->run(array('lazy','migrate','up'));
-        // $this->app->run(array('lazy','migrate','down'));
+        $this->app->run(array('maghead','migrate','status'));
+        // $this->app->run(array('maghead','migrate','up'));
+        // $this->app->run(array('maghead','migrate','down'));
     }
 }
