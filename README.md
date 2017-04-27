@@ -500,121 +500,7 @@ class AuthorSchema extends Schema
 }
 ```
 
-Documentation
-=============
-
-For the detailed content,  please take a look at the `doc/` directory.
-
-
-Contribution
-============
-
-Everybody can contribute to Maghead. You can just fork it, and send Pull
-Requests. 
-
-You have to follow PSR Coding Standards and provides unit tests
-as much as possible.
-
-
-Hacking
-=======
-
-
-Setting Up Environment
-----------------------
-
-Use Composer to install the dependency:
-
-    composer install --prefer-source
-
-To deploy a testing environment, you need to install dependent packages.
-
-Run script and make sure everything is fine:
-
-    php bin/maghead
-
-Database configuration is written in `phpunit.xml` file, the 
-following steps are based on the default configuration. you may also take a look at `.travis.yml` for example.
-
-### Unit Testing with MySQL database
-
-To test with mysql database:
-
-    mysql -uroot -p
-
-Enter the SQL to initialize a database:
-
-    create database testing charset utf8;
-    create user 'testing'@'localhost';
-    grant all privileges on testing.* to 'testing'@'localhost';
-
-    --- if you want password
-    grant all privileges on testing.* to 'testing'@'localhost' identified by 'testing';
-
-    --- if you want to remove password for root user
-    SET PASSWORD FOR root@localhost=PASSWORD('');
-
-    --- for mysql 5.7, you should run
-    SET PASSWORD FOR root@localhost='';
-
-### Unit Testing with PostgreSQL database
-
-
-To test with pgsql database, you need to prepare database:
-
-    sudo -u postgres createdb -E=utf8 testing
-
-If you want to use a separated user, use the command below to create the pgsql user:
-
-    sudo -u postgres createuser --no-createrole --no-superuser --no-password testing
-    sudo -u postgres createdb -E=utf8 --owner=testing testing
-
-If you've set password accidentally, remove user password by running the command below:
-
-    > alter role postgres password null;
-
-To connect pgsql with PDO, you need to configure your DSN for postgresql through socket like this:
-
-    pgsql:host=localhost;dbname=testing
-
-### Command-line testing
-
-To test sql builder from command-line, please copy the default testing config
-
-    $ cp db/config/database.testing.yml db/config/database.yml
-
-Customize your phpunit.xml configuration:
-
-    $ cp phpunit.xml.dist phpunit.xml
-
-Build config
-
-    $ php bin/maghead build-conf db/config/database.yml
-
-Build Schema files
-
-    php bin/maghead schema build
-
-We've already defined 3 data sources, they were named as 'mysql', 'pgsql', 'sqlite' , 
-now you can insert schema sqls into these data sources:
-
-    bin/maghead sql --rebuild -D=mysql
-    bin/maghead sql --rebuild -D=pgsql
-    bin/maghead sql --rebuild -D=sqlite
-
-### Run PHPUnit
-
-    $ phpunit
-
-### Profiling
-
-    $ phpunit --group profile
-
-
-
-
-Manipulating Schema Objects
-==============================
+### Manipulating Schema Objects
 
 To get the model class name from a schema:
 
@@ -637,17 +523,10 @@ foreach( $schema->getColumns() as $n => $c ) {
 }
 ```
 
-PROFILING
-==============
 
-    $ scripts/run-xhprof
 
-OR
-
-    $ phpunit -c phpunit-xhprof.xml
-    $ cd xhprof_html
-    $ php -S localhost:8888
 
 LICENSE
 ===============
-BSD License
+
+MIT License
