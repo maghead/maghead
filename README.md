@@ -10,7 +10,6 @@ Maghead
 [![Latest Unstable Version](https://poser.pugx.org/maghead/maghead/v/unstable.svg)](https://packagist.org/packages/maghead/maghead) 
 [![License](https://poser.pugx.org/maghead/maghead/license.svg)](https://packagist.org/packages/maghead/maghead)
 [![Join the chat at https://gitter.im/maghead/maghead](https://badges.gitter.im/maghead/maghead.svg)](https://gitter.im/maghead/maghead?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Works On My Machine](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
 [![Made in Taiwan](https://img.shields.io/badge/made%20in-taiwan-green.svg)](README.md)
 
@@ -63,8 +62,6 @@ Getting Started
 ---------------
 
 Please see the details on [Wiki](https://github.com/maghead/maghead/wiki)
-
-
 
 
 Schema
