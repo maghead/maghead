@@ -29,9 +29,7 @@ class CleanCommand extends BaseCommand
 
     public function execute()
     {
-        $logger = $this->getLogger();
-
-        $config = $this->getConfig();
+        $config = $this->getConfig(true);
 
         $this->logger->debug('Finding schemas...');
         $schemas = SchemaUtils::findSchemasByArguments($config, func_get_args(), $this->logger);
@@ -51,25 +49,6 @@ class CleanCommand extends BaseCommand
                 }
             }
         }
-
-        /*
-        $generator = new SchemaGenerator($config, $this->logger);
-        if ( $this->options->force ) {
-            $generator->setForceUpdate(true);
-        }
-        $classMap = $generator->generate($classes);
-         */
-
-        /*
-        foreach( $classMap as $class => $file ) {
-            $path = $file;
-            if ( strpos( $path , getcwd() ) === 0 ) {
-                $path = substr( $path , strlen(getcwd()) + 1 );
-            }
-            $logger->info($path);
-            // $logger->info(sprintf("%-32s",ltrim($class,'\\')) . " => $path",1);
-        }
-        */
-        $logger->info('Done');
+        $this->logger->info('Done');
     }
 }
