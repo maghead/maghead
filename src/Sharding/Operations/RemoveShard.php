@@ -6,6 +6,8 @@ use Maghead\Sharding\ShardDispatcher;
 use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Shard;
 use Maghead\Sharding\ShardCollection;
+use Maghead\Sharding\Manager\ShardManager;
+
 use Maghead\Manager\ConnectionManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Manager\DataSourceManager;
@@ -47,11 +49,21 @@ class RemoveShard
         $conn = $this->dataSourceManager->connectInstance($nodeId);
         $nodeConfig = $this->dataSourceManager->getNodeConfig($nodeId);
 
+        // TODO: migrate the chunks before removing the chunks
+
         // Drop the database for the new shard.
         $dbManager = new DatabaseManager($conn);
         $dbManager->drop($nodeConfig['database']);
 
         $this->config->removeDataSource($nodeId);
         $this->dataSourceManager->removeNode($nodeId);
+
+        $shardManager = new ShardManager($this->config, $this->dataSourceManager);
+        $mapping = $shardManager->loadShardMapping($mappingId);
+        $mapping->removeShardId($newNodeId);
+
+
+        $shardManager->addShardMapping($mapping);
+        $this->config->setShardingConfig($shardManager->getConfig());
     }
 }

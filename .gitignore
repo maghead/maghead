@@ -14,3 +14,5 @@ tests/config/.database.config.php
 /tmp
 /tests/tmp
 /tests/config/*.php
+src/Model/MetadataBase.php
+src/Model/MetadataCollectionBase.php
