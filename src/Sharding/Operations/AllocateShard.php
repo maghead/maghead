@@ -34,34 +34,22 @@ use InvalidArgumentException;
  * 3. Initialize the db schema
  * 4. Add node to the data source
  */
-class AllocateShard
+class AllocateShard extends BaseShardOperation
 {
-    protected $config;
-
-    protected $instanceManager;
-
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-        $this->instanceManager = new ConnectionManager($config->getInstances());
-        $this->dataSourceManager = new DataSourceManager($config->getDataSources());
-    }
 
     /**
      * Build the database tables with the given schemas (will be filtered)
      */
-    private function buildTables(Connection $conn, $mappingId, array $schemas)
+    private function buildTables($mappingId, Connection $conn, array $schemas)
     {
-        $driver = $conn->getQueryDriver();
-
         $schemas = SchemaUtils::filterShardMappingSchemas($mappingId, $schemas);
 
-        $sqlBuilder = TableBuilder::create($driver, [
+        $driver = $conn->getQueryDriver();
+
+        $tableManager = new TableManager($conn, [
             'rebuild' => true,
             'clean' => false,
         ]);
-
-        $tableManager = new TableManager($conn, $sqlBuilder);
         $tableManager->build($schemas);
 
         // Allocate MetadataManager to update migration timestamp
@@ -96,12 +84,11 @@ class AllocateShard
         // 5. Create shard tables
         $schemas = SchemaUtils::findSchemasByConfig($this->config);
         $dbConnection = $this->dataSourceManager->connect($newNodeId);
-        $this->buildTables($dbConnection, $mappingId, $schemas);
+        $this->buildTables($mappingId, $dbConnection, $schemas);
 
-        $shardManager = new ShardManager($this->config, $this->dataSourceManager);
-        $mapping = $shardManager->loadShardMapping($mappingId);
+        $mapping = $this->shardManager->loadShardMapping($mappingId);
         $mapping->addShardId($newNodeId);
-        $shardManager->addShardMapping($mapping);
-        $this->config->setShardingConfig($shardManager->getConfig());
+        $this->shardManager->addShardMapping($mapping);
+        $this->config->setShardingConfig($this->shardManager->getConfig());
     }
 }

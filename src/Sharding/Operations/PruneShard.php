@@ -24,21 +24,8 @@ use Maghead\DSN\DSN;
 
 use CLIFramework\Logger;
 
-class PruneShard
+class PruneShard extends BaseShardOperation
 {
-    protected $config;
-
-    protected $instanceManager;
-
-    protected $dataSourceManager;
-
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-        $this->instanceManager = new ConnectionManager($config->getInstances());
-        $this->dataSourceManager = new DataSourceManager($config->getDataSources());
-    }
-
     public function pruneShard(ShardMapping $mapping, Shard $shard)
     {
 
@@ -46,8 +33,7 @@ class PruneShard
 
     public function prune($mappingId, array $schemas, $nodeId = null)
     {
-        $shardManager = new ShardManager($this->config, $this->dataSourceManager);
-        $mapping = $shardManager->loadShardMapping($mappingId);
+        $mapping = $this->shardManager->loadShardMapping($mappingId);
 
         $shardKey = $mapping->getKey();
         $shards = $mapping->loadShardCollection();

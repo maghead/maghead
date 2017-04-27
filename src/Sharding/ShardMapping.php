@@ -154,7 +154,7 @@ class ShardMapping
 
     public function removeShardId($shardId)
     {
-        if ($k = array_search($this->shardIds, $shardId)) {
+        if ($k = array_search($shardId, $this->shardIds)) {
             unset($this->shardIds[$k]);
         }
     }

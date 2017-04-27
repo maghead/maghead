@@ -2,7 +2,7 @@
 
 namespace Maghead\Manager;
 
-use Maghead\TableBuilder\BaseBuilder;
+use Maghead\TableBuilder\TableBuilder;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Connection;
 use Maghead\PDOExceptionPrinter;
@@ -12,6 +12,8 @@ use PDOException;
 class TableManager
 {
     protected $conn;
+
+    protected $driver;
 
     /**
      * @var Maghead\TableBuilder\BaseBuilder
@@ -23,10 +25,11 @@ class TableManager
      */
     protected $logger;
 
-    public function __construct(Connection $conn, BaseBuilder $builder, Logger $logger = null)
+    public function __construct(Connection $conn, array $options = [], Logger $logger = null)
     {
         $this->conn = $conn;
-        $this->builder = $builder;
+        $this->driver = $conn->getQueryDriver();
+        $this->builder = TableBuilder::create($this->driver, $options);
         $this->logger = $logger;
     }
 

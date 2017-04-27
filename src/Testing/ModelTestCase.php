@@ -96,9 +96,7 @@ abstract class ModelTestCase extends BaseTestCase
             });
         }
 
-        // Build table from schema
-        $sqlBuilder = TableBuilder::create($queryDriver, ['rebuild' => $rebuild]);
-        $this->tableManager = new TableManager($conn, $sqlBuilder, $this->logger);
+        $this->tableManager = new TableManager($conn, ['rebuild' => $rebuild], $this->logger);
         $this->tableManager->build($schemas);
     }
 

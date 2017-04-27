@@ -104,13 +104,13 @@ DOC;
             $conn = $dataSourceManager->getConnection($id);
             $driver = $dataSourceManager->getQueryDriver($id);
 
-            $sqlBuilder = TableBuilder::create($driver, [
+            $tableManager = new TableManager($conn, [
                 'rebuild' => $options->rebuild,
                 'clean' => $options->clean,
-            ]);
+            ], $this->logger);
 
-            $tableManager = new TableManager($conn, $sqlBuilder, $this->logger);
             $tableManager->build($schemas);
+
             if ($this->options->basedata) {
                 $seedBuilder = new SeedBuilder($this->logger);
                 $seedBuilder->build(new SchemaCollection($schemas));

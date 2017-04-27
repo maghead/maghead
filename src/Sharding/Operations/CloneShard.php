@@ -34,22 +34,9 @@ use CLIFramework\Logger;
  *                      but no transaction and no consistent read, snaphot
  *                      (default): consistent read using a single transaction.
  */
-class CloneShard
+class CloneShard extends BaseShardOperation
 {
-    protected $config;
-
-    protected $instanceManager;
-
-    protected $dataSourceManager;
-
     protected $dropFirst = false;
-
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-        $this->instanceManager = new ConnectionManager($config->getInstances());
-        $this->dataSourceManager = new DataSourceManager($config->getDataSources());
-    }
 
     public function setDropFirst($enabled = true)
     {
