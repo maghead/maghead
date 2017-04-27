@@ -217,64 +217,6 @@ $result = $record->fooMethod(1,2,3,4);
 ```
 
 
-
-### Defining Model Relationship
-
-#### Belongs to
-
-`belongsTo(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name = 'id')`
-
-```php
-$this->belongsTo( 'author' , '\TestApp\AuthorSchema', 'id' , 'author_id' );
-$this->belongsTo( 'address' , '\TestApp\AddressSchema', 'address_id' );
-```
-
-#### Has One
-
-`one(accessor_name, self_column_name, foreign_schema_class_name, foreign_schema_column_name)`
-
-```php
-$this->one( 'author', 'author_id', '\TestApp\AuthorSchema' , 'id' );
-```
-
-#### Has Many
-
-`many(accessor_name, foreign_schema_class_name, foreign_schema_column_name, self_column_name )`
-
-```php
-$this->many( 'addresses', '\TestApp\AddressSchema', 'author_id', 'id');
-$this->many( 'author_books', '\TestApp\AuthorBookSchema', 'author_id', 'id');
-```
-
-To define many to many relationship:
-
-```php
-$this->manyToMany( 'books', 'author_books' , 'book' );
-```
-
-
-Usage:
-
-```php
-// has many
-$address = $author->addresses->create(array( 
-    'address' => 'farfaraway'
-));
-
-$address->delete();
-
-// create related address
-$author->addresses[] = array( 'address' => 'Harvard' );
-
-$addresses = $author->addresses->items();
-is( 'Harvard' , $addresses[0]->address );
-
-foreach( $author->addresses as $address ) {
-    echo $address->address , "\n";
-}
-```
-
-
 ### Do Some Preparation When Model Is Ready
 
 If you want to do something after the schmea is created into a database, you can define a
