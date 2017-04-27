@@ -39,16 +39,13 @@ class PruneShard
         $this->dataSourceManager = new DataSourceManager($config->getDataSources());
     }
 
-    public function prune($nodeId, $mappingId)
+    public function pruneShard(ShardMapping $mapping, Shard $shard)
     {
-        $conn = $this->dataSourceManager->connect($nodeId);
-        if (!$conn) {
-            throw new InvalidArgumentException("Data source $nodeId doesn't exist");
-        }
 
-        $schemas = SchemaUtils::findSchemasByConfig($this->config);
-        $schemas = SchemaUtils::filterShardMappingSchemas($mappingId, $schemas);
+    }
 
+    public function prune($mappingId, array $schemas, $nodeId = null)
+    {
         $shardManager = new ShardManager($this->config, $this->dataSourceManager);
         $mapping = $shardManager->loadShardMapping($mappingId);
 
@@ -56,19 +53,34 @@ class PruneShard
         $shards = $mapping->loadShardCollection();
         $shardDispatcher = $shards->createDispatcher();
 
-        foreach ($schemas as $schema) {
-            if ($schema->globalTable) {
+        // $schemas = SchemaUtils::findSchemasByConfig($this->config);
+        $schemas = SchemaUtils::filterShardMappingSchemas($mappingId, $schemas);
+
+        foreach ($shards as $shardId => $shard) {
+            if ($nodeId && $shard->id !== $nodeId) {
                 continue;
             }
 
-            $repo = $schema->newRepo($conn, $conn);
-            $keys = $repo->fetchShardKeys();
-            $migrationKeys = $shardDispatcher->filterMigrationKeys($nodeId, $keys);
+            $conn = $shard->getWriteConnection();
+            if (!$conn) {
+                throw new InvalidArgumentException("Data source $shardId doesn't exist");
+            }
 
-            if (!empty($migrationKeys)) {
-                $delete = $repo->delete();
-                $delete->where()->in($shardKey, $migrationKeys);
-                $delete->execute();
+
+            foreach ($schemas as $schema) {
+                if ($schema->globalTable) {
+                    continue;
+                }
+
+                $repo = $schema->newRepo($conn, $conn);
+                $keys = $repo->fetchShardKeys();
+                $migrationKeys = $shardDispatcher->filterMigrationKeys($shardId, $keys);
+
+                if (!empty($migrationKeys)) {
+                    $delete = $repo->delete();
+                    $delete->where()->in($shardKey, $migrationKeys);
+                    $delete->execute();
+                }
             }
         }
     }

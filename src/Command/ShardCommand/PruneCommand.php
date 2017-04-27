@@ -7,6 +7,7 @@ use PDO;
 use Exception;
 
 use Maghead\Sharding\Operations\PruneShard;
+use Maghead\Schema\SchemaUtils;
 use Maghead\ConfigWriter;
 
 class PruneCommand extends BaseCommand
@@ -31,8 +32,10 @@ class PruneCommand extends BaseCommand
     {
         $config = $this->getConfig(true);
 
+        $schemas = SchemaUtils::findSchemasByConfig($config);
+
         $o = new PruneShard($config);
-        $o->prune($shardId, $this->options->mapping);
+        $o->prune($this->options->mapping, $schemas, $shardId);
 
         ConfigWriter::write($config);
     }

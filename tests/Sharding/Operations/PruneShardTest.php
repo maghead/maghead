@@ -8,6 +8,7 @@ use StoreApp\StoreTestCase;
 use Maghead\Sharding\Operations\{AllocateShard, CloneShard, RemoveShard, PruneShard};
 use Maghead\Utils;
 use Maghead\Bootstrap;
+use Maghead\Schema\SchemaUtils;
 
 /**
  * @group sharding
@@ -19,20 +20,19 @@ class PruneShardTest extends StoreTestCase
     public function testPruneShard()
     {
         $o = new AllocateShard($this->config);
-        $o->allocate('local', 's4', 'M_store_id');
+        $o->allocate('M_store_id', 'local', 's4');
 
         Bootstrap::setupDataSources($this->config, $this->dataSourceManager);
 
         $this->assertInsertStores(static::$stores);
         $this->assertInsertOrders(static::$orders);
 
+        $schemas = SchemaUtils::findSchemasByConfig($this->config);
+
         $o = new PruneShard($this->config);
-        $o->prune('node1', 'M_store_id');
-        $o->prune('node2', 'M_store_id');
-        $o->prune('node3', 'M_store_id');
-        $o->prune('s4', 'M_store_id');
+        $o->prune('M_store_id', $schemas);
 
         $o = new RemoveShard($this->config);
-        $o->remove('s4');
+        $o->remove('M_store_id', 's4');
     }
 }

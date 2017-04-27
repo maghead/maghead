@@ -191,10 +191,7 @@ Where `local` is the instance ID, `t1` is the node ID for the new shard, and
 
 Clone an existing shard on the same instance.
 
-    maghead shard clone --instance [instanceId] \
-                        --source [sourceNodeID] \
-                        [newNodeId]
-
+    maghead shard clone --instance [instanceId] [source shard] [dest shard]
 
 Before cloning the shard, be sure to have the mysql instance defined in the config.
 
@@ -203,7 +200,7 @@ The ShardCloning operation uses mysqldbcopy to copy the database.
 To clone a shard in PHP code:
 
     $config = ConfigLoader::loadFromFile('.../config.yml');
-    $o = new CloneShard($config, $logger);
+    $o = new CloneShard($config);
     $o->setDropFirst(true);
     $o->clone('local', 't2', 'master');
 
@@ -219,23 +216,14 @@ Move a shard to an instance:
 
 Prune all rows that doesn't belong to the shard.
 
-    maghead shard prune --mapping [mappingId] nodeId
+    maghead shard prune --mapping [mappingId] [shard]
 
 Shard pruning finds all schema related to the shard mapping, and then iterate
 each collection to prune the rows that does not belong to the shard itself.
 
     $config = ConfigLoader::loadFromFile('.../config.yml');
     $o = new PruneShard($config, $logger);
-    $o->prune('t1', 'M_store_id');
-
-### Splitting Shard
-
-Splitting shard involves Shard Cloning and Shard Pruning.
-
-    maghead shard split --instance [instanceId]
-                        --source [nodeId]
-                        [new nodeId]
-
+    $o->prune('M_store_id', $schemas, 't1');
 
 ## CRUD Operations
 

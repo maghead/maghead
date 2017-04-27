@@ -41,7 +41,7 @@ class RemoveShard
         $this->dataSourceManager = new DataSourceManager($config->getDataSources());
     }
 
-    public function remove($nodeId)
+    public function remove($mappingId, $nodeId)
     {
         // Connect to the instance that belongs to the node
         $conn = $this->dataSourceManager->connectInstance($nodeId);

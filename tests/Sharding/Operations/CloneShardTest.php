@@ -29,9 +29,9 @@ class CloneShardTest extends StoreTestCase
 
         $o = new CloneShard($this->config);
         $o->setDropFirst(true);
-        $o->clone('local', 't2', 'master');
+        $o->clone('M_store_id', 'local', 't2', 'master');
 
         $o = new RemoveShard($this->config);
-        $o->remove('t2');
+        $o->remove('M_store_id', 't2');
     }
 }

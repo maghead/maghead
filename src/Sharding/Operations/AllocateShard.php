@@ -72,7 +72,7 @@ class AllocateShard
     /**
      * Allocates a new shard
      */
-    public function allocate($instanceId, $newNodeId, $mappingId)
+    public function allocate($mappingId, $instanceId, $newNodeId)
     {
         // 1. Connects to the instance
         // 2. Create a new database for the new shard wit the nodeId

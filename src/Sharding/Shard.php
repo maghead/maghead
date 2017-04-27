@@ -23,6 +23,17 @@ class Shard
         $this->dataSourceManager = $dataSourceManager;
     }
 
+
+    public function getWriteConnection()
+    {
+        return $this->dataSourceManager->getWriteConnection($this->id);
+    }
+
+    public function getReadConnection()
+    {
+        return $this->dataSourceManager->getReadConnection($this->id);
+    }
+
     /**
      * Query UUID from the database.
      *
@@ -37,6 +48,7 @@ class Shard
         $sql    = $query->toSql($driver, new ArgumentArray);
         return $write->query($sql)->fetchColumn(0);
     }
+
 
 
     /**
