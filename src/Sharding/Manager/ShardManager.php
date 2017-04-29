@@ -29,12 +29,13 @@ class ShardManager
      */
     protected $dataSourceManager;
 
-    public function __construct(Config $config, DataSourceManager $dataSourceManager)
+    public function __construct(Config $config, DataSourceManager $dataSourceManager = null)
     {
         $this->config = $config;
-        $this->dataSourceManager = $dataSourceManager;
+        $this->dataSourceManager = $dataSourceManager
+            ? $dataSourceManager
+            : new DataSourceManager($config->getDataSources());
     }
-
 
     /**
      * @codeCoverageIgnore
