@@ -23,6 +23,8 @@ class AddCommand extends BaseCommand
 
         $opts->add('k|key:', 'shard key');
 
+        $opts->add('master', 'set new chunks to master');
+
         $opts->add('s|shard+', 'shard id')
             ->defaultValue(function() {
                 $dataSourceManager = DataSourceManager::getInstance();
@@ -49,18 +51,33 @@ class AddCommand extends BaseCommand
 
         $dataSourceManager = DataSourceManager::getInstance();
 
-        $mapping = new ShardMapping($mappingId, [
+        $mappingConfig = [
             'key'    => $this->options->key,
             'hash'   => $this->options->hash,
-            'shards' => (array) $this->options->shard,
             'chunks' => [],
-        ], $dataSourceManager);
+        ];
+        if ($this->options->shard) {
+            $mappingConfig['shards'] = (array) $this->options->shard;
+        } else if ($this->options->master) {
+            $mappingConfig['shards'] = ['master'];
+        }
+
+        $mapping = new ShardMapping($mappingId, $mappingConfig, $dataSourceManager);
 
         $chunkManager = new ChunkManager($mapping);
         $chunkIndexes = $chunkManager->distribute($this->options->chunks);
 
-        var_dump($this->options->shard);
-        // var_dump($chunkIndexes);
+        // var_dump($this->options->shard);
+        $chunkGroups = [];
+        foreach ($chunkIndexes as $index => $chunk) {
+            $chunkGroups[ $chunk['shard'] ][] = $index;
+        }
+        foreach ($chunkGroups as $shardId => $chunkIndexes) {
+            $this->logger->info("Shard {$shardId}:");
+            foreach ($chunkIndexes as $chunkIndex) {
+                $this->logger->info("- Chunk: $chunkIndex");
+            }
+        }
 
         $configManager = new ConfigManager($config);
         $configManager->addShardMapping($mapping);
