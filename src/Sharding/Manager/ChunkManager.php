@@ -78,6 +78,11 @@ class ChunkManager
         return $chunks;
     }
 
+    protected function verifyChunk(Chunk $chunk, array $schemas, callable $callback)
+    {
+        // TODO: implement this.
+    }
+
     /**
      * process the chunk with the given callback.
      */

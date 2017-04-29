@@ -89,6 +89,5 @@ class AllocateShard extends BaseShardOperation
         $mapping = $this->shardManager->loadShardMapping($mappingId);
         $mapping->addShardId($newNodeId);
         $this->shardManager->addShardMapping($mapping);
-        $this->config->setShardingConfig($this->shardManager->getConfig());
     }
 }
