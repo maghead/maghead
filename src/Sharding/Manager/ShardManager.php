@@ -31,7 +31,7 @@ class ShardManager
 
     public function __construct(Config $config, DataSourceManager $dataSourceManager = null)
     {
-        $this->config = $config->getShardingConfig();
+        $this->config = $config;
         $this->dataSourceManager = $dataSourceManager
             ? $dataSourceManager
             : new DataSourceManager($config->getDataSources());
@@ -47,22 +47,22 @@ class ShardManager
 
     public function hasShardMapping(string $mappingId)
     {
-        return isset($this->config['mappings']);
+        return isset($this->config['sharding']['mappings']);
     }
 
 
     public function addShardMapping(ShardMapping $mapping)
     {
-        $this->config['mappings'][$mapping->id] = $mapping->toArray();
+        $this->config['sharding']['mappings'][$mapping->id] = $mapping->toArray();
     }
 
     public function loadShardMapping(string $mappingId) : ShardMapping
     {
-        if (!isset($this->config['mappings'][$mappingId])) {
+        if (!isset($this->config['sharding']['mappings'][$mappingId])) {
             throw new LogicException("MappingId '$mappingId' is undefined.");
         }
 
-        return new ShardMapping($mappingId, $this->config['mappings'][$mappingId], $this->dataSourceManager);
+        return new ShardMapping($mappingId, $this->config['sharding']['mappings'][$mappingId], $this->dataSourceManager);
     }
 
     public function loadShard($shardId) : Shard
