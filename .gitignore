@@ -9,11 +9,12 @@
 *.log
 tests/.database.config.php
 tests/config/.database.config.php
-/src/Model/MetadataBaseRepo.php
 /db/migrations
 /tmp
 /tests/tmp
 /tests/config/*.php
 src/Model/MetadataBase.php
 src/Model/MetadataCollectionBase.php
+src/Model/MetadataBaseRepo.php
 examples/todos/db/config/database.php
+/tests/migrations_testing/
