@@ -29,13 +29,9 @@ class ShardManager
      */
     protected $dataSourceManager;
 
-    public function __construct($config, DataSourceManager $dataSourceManager)
+    public function __construct(Config $config, DataSourceManager $dataSourceManager)
     {
-        if ($config instanceof Config) {
-            $this->config = $config->getShardingConfig();
-        } else {
-            $this->config = $config;
-        }
+        $this->config = $config;
         $this->dataSourceManager = $dataSourceManager;
     }
 
