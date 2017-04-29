@@ -31,7 +31,7 @@ class ShardManager
 
     public function __construct(Config $config, DataSourceManager $dataSourceManager = null)
     {
-        $this->config = $config;
+        $this->config = $config->getShardingConfig();
         $this->dataSourceManager = $dataSourceManager
             ? $dataSourceManager
             : new DataSourceManager($config->getDataSources());
