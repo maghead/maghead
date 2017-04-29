@@ -15,7 +15,7 @@ class ShardIDFactory
         return $list;
     }
 
-    public static function generateByIndexes($prefix, $indexes)
+    public static function generateByIndexes($prefix, array $indexes)
     {
         return array_map(function($x) use ($prefix) {
             return "{$prefix}{$x}";
