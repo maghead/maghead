@@ -1,7 +1,9 @@
-/vendor
+.hhconfig
 .onion/
 .lazy.*
+.php_cs.cache
 *SchemaProxy.php
+/vendor
 /build/
 /db/config/*.php
 /phpunit.xml
