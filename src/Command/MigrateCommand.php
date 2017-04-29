@@ -29,5 +29,7 @@ class MigrateCommand extends BaseCommand
 
     public function execute()
     {
+        $cmd = $this->createCommand('CLIFramework\\Command\\HelpCommand');
+        $cmd->execute($this->getName());
     }
 }

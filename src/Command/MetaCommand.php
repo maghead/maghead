@@ -14,9 +14,9 @@ class MetaCommand extends BaseCommand
     public function usage()
     {
         return
-              "\tlazy meta\n"
-            ."\tlazy meta [key] [value]\n"
-            ."\tlazy meta [key]\n";
+              "\tmaghead meta\n"
+            ."\tmaghead meta [key] [value]\n"
+            ."\tmaghead meta [key]\n";
     }
 
     public function execute()
