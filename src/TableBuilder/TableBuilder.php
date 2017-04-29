@@ -2,7 +2,7 @@
 
 namespace Maghead\TableBuilder;
 
-use Exception;
+use InvalidArgumentException;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
@@ -19,6 +19,6 @@ class TableBuilder
         } elseif ($driver instanceof SQLiteDriver) {
             return new SqliteBuilder($driver, $options);
         }
-        throw new Exception('Unsupported driver');
+        throw new InvalidArgumentException('Unsupported driver.');
     }
 }
