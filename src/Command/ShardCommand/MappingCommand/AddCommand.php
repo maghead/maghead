@@ -2,11 +2,12 @@
 
 namespace Maghead\Command\ShardCommand\MappingCommand;
 
-use Maghead\Command\BaseCommand;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Manager\ChunkManager;
 use Maghead\Sharding\Manager\ConfigManager;
 use Maghead\Sharding\ShardMapping;
+
+use Maghead\Command\BaseCommand;
 use Maghead\Manager\DataSourceManager;
 
 class AddCommand extends BaseCommand
@@ -18,15 +19,20 @@ class AddCommand extends BaseCommand
 
     public function options($opts)
     {
-        $opts->add('hash', 'hash based shard key')->defaultValue(true);
+        $opts->add('h|hash', 'hash based shard key')->defaultValue(true);
+
         $opts->add('k|key:', 'shard key');
-        $opts->add('shards:', 'shard ids')->defaultValue(function() {
-            $dataSourceManager = DataSourceManager::getInstance();
-            return join(',', array_filter($dataSourceManager->getNodeIds(), function($nodeId) {
-                return $nodeId !== 'master';
-            }));
-        });
-        $opts->add('chunks:', 'the number of chunks')->defaultValue(32);
+
+        $opts->add('s|shard+', 'shard id')
+            ->defaultValue(function() {
+                $dataSourceManager = DataSourceManager::getInstance();
+                return array_filter($dataSourceManager->getNodeIds(), function($nodeId) {
+                    return $nodeId !== 'master';
+                });
+            });
+
+        $opts->add('c|chunks:', 'the number of chunks')
+            ->defaultValue(32);
     }
 
     public function arguments($args)
@@ -46,12 +52,15 @@ class AddCommand extends BaseCommand
         $mapping = new ShardMapping($mappingId, [
             'key'    => $this->options->key,
             'hash'   => $this->options->hash,
-            'shards' => explode(',',$this->options->shards),
+            'shards' => (array) $this->options->shard,
             'chunks' => [],
         ], $dataSourceManager);
 
         $chunkManager = new ChunkManager($mapping);
-        $chunkManager->distribute($this->options->chunks);
+        $chunkIndexes = $chunkManager->distribute($this->options->chunks);
+
+        var_dump($this->options->shard);
+        // var_dump($chunkIndexes);
 
         $configManager = new ConfigManager($config);
         $configManager->addShardMapping($mapping);
