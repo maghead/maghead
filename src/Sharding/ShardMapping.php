@@ -172,7 +172,6 @@ class ShardMapping
         return $this->getUsingShardIds();
     }
 
-
     public function getHashBy()
     {
         return $this->config['hash'];
@@ -214,8 +213,8 @@ class ShardMapping
 
     public function toArray()
     {
-        $conf = $this->config; // this will copy the config array.
-        $conf['key'] = $this->key;
+        $conf           = $this->config; // this will copy the config array.
+        $conf['key']    = $this->key;
         $conf['shards'] = $this->shardIds;
         $conf['chunks'] = $this->chunks;
         return $conf;
