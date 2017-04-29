@@ -54,10 +54,8 @@ class Shard
      */
     public function fetchShardKeys(BaseRepo $repo)
     {
-        $key = $repo::SHARD_KEY;
-        return $repo->select("DISTINCT {$key}")->fetchColumn(0);
+        return $repo->fetchShardKeys();
     }
-
 
     /**
      * Alias method for createRepo.
