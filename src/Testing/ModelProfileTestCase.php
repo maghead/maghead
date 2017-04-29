@@ -5,6 +5,9 @@ namespace Maghead\Testing;
 use Maghead\Runtime\Result;
 use XHProfRuns_Default;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ModelProfileTestCase extends ModelTestCase
 {
     protected $N = 5000;

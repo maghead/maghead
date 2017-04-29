@@ -19,6 +19,9 @@ use PDO;
 use PDOException;
 use Exception;
 
+/**
+ * @codeCoverageIgnore
+ */
 abstract class BaseTestCase extends TestCase
 {
     /**

@@ -16,6 +16,9 @@ use Maghead\Schema\SchemaUtils;
 use Maghead\Manager\TableManager;
 use SQLBuilder\Driver\BaseDriver;
 
+/**
+ * @codeCoverageIgnore
+ */
 abstract class ModelTestCase extends BaseTestCase
 {
     /**
