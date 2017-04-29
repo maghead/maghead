@@ -45,6 +45,5 @@ class RemoveShard extends BaseShardOperation
         $mapping->removeShardId($nodeId);
 
         $this->shardManager->addShardMapping($mapping);
-        $this->config->setShardingConfig($this->shardManager->getConfig());
     }
 }
