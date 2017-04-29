@@ -49,6 +49,14 @@ class Shard
         return $write->query($sql)->fetchColumn(0);
     }
 
+    /**
+     * Fetches the distinct shard key from the repo.
+     */
+    public function fetchShardKeys(BaseRepo $repo)
+    {
+        $key = $repo::SHARD_KEY;
+        return $repo->select("DISTINCT {$key}")->fetchColumn(0);
+    }
 
 
     /**
