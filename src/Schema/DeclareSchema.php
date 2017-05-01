@@ -123,6 +123,10 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
 
     var $enableHiddenPrimaryKey = true;
 
+    public $table;
+
+    public $primaryKey;
+
     /**
      * Constructor of declare schema.
      *

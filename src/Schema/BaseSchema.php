@@ -18,8 +18,6 @@ abstract class BaseSchema
 
     const TABLE = null;
 
-    public $table;
-
     public $label;
 
     public $columns = [];
@@ -27,8 +25,6 @@ abstract class BaseSchema
     public $columnNames = [];
 
     public $relations = [];
-
-    public $primaryKey;
 
     public $readSourceId = 'master';
 
