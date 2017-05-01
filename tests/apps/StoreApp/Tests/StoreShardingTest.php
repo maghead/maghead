@@ -330,4 +330,21 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
         $this->assertEquals(1, $stats['node2']['rows']);
         $this->assertEquals(1, $stats['node3']['rows']);
     }
+
+    /**
+     * @rebuild false
+     * @depends testInsertOrder
+     */
+    public function testChunkObjects()
+    {
+        $mapping = $this->shardManager->loadShardMapping('M_store_id');
+        $shards = $mapping->loadShardCollection();
+        $this->assertInstanceOf('Maghead\\Sharding\\ShardCollection', $shards);
+
+        $chunks = $mapping->loadChunks();
+        $this->assertCount(8, $chunks);
+        foreach ($chunks as $i => $chunk) {
+            $this->assertInstanceOf('Maghead\\Sharding\\Chunk', $chunk);
+        }
+    }
 }

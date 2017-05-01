@@ -801,9 +801,8 @@ abstract class BaseRepo implements Countable
     public function count()
     {
         $pk = static::PRIMARY_KEY;
-        return $this->select("COUNT(m.{$pk})")->fetchColumn(0);
+        return $this->select("COUNT(m.{$pk})", "m")->fetchColumn(0);
     }
-
 
     // ================= QUERY METHODS =============
 
