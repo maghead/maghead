@@ -6,6 +6,29 @@ use Maghead\Manager\DataSourceManager;
 
 class Chunk
 {
+
+    /**
+     * @var integer The default hash range 4294967296 = 2 ** 32
+     */
+    const MAX_KEY = 4294967296;
+
+    const STATUS_OK = 1;
+
+    /**
+     * The chunk is current locked.
+     */
+    const STATUS_LOCKED = 1 << 1;
+
+    /**
+     * The chunk is currently migrating..
+     */
+    const STATUS_MIGRATING = 1 << 2;
+
+    /**
+     * The current is currently verifying..
+     */
+    const STATUS_VERIFYING = 1 << 3;
+
     public $index;
 
     public $from;
@@ -14,12 +37,8 @@ class Chunk
 
     private $dataSourceManager;
 
-    protected $status;
+    protected $status = self::STATUS_OK;
 
-    /**
-     * @var integer The default hash range 4294967296 = 2 ** 32
-     */
-    const HASH_RANGE = 4294967296;
 
     /**
      * @param nubmer $index the chunk index
@@ -34,13 +53,16 @@ class Chunk
         $this->dataSourceManager = $dataSourceManager;
     }
 
+    /**
+     * Set status of the chunk.
+     */
     public function setStatus($status)
     {
         $this->status = $status;
     }
 
     /**
-     * Get the status of the chunk.
+     * Get status of the chunk.
      */
     public function getStatus()
     {
