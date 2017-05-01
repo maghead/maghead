@@ -38,8 +38,11 @@ use ActionKit;
 use Symfony\Component\Yaml\Yaml;
 use Countable;
 
+use Maghead\Sharding\Traits\RepoShardTrait;
+
 abstract class BaseRepo implements Countable
 {
+    // Move this to Repo class Generator
     use RepoShardTrait;
 
     /**

@@ -331,6 +331,23 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
         $this->assertEquals(1, $stats['node3']['rows']);
     }
 
+    public function testRepoFetchShardKeyStats()
+    {
+        $this->assertInsertStores(static::$stores);
+        $this->assertInsertOrders(static::$orders);
+
+        $shards = Order::shards();
+        foreach ($shards as $shard) {
+            $repo = $shard->repo(OrderRepo::CLASS);
+            $stats = $repo->fetchShardKeyStats();
+            foreach ($stats as $stat) {
+                $this->assertInstanceOf('Maghead\\Sharding\\ShardKeyStat', $stat);
+                $this->assertNotNull($stat->shardKey);
+                $this->assertNotNull($stat->numberOfRows);
+            }
+        }
+    }
+
     /**
      * @rebuild false
      * @depends testInsertOrder
@@ -346,5 +363,8 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
         foreach ($chunks as $i => $chunk) {
             $this->assertInstanceOf('Maghead\\Sharding\\Chunk', $chunk);
         }
+
+
+
     }
 }
