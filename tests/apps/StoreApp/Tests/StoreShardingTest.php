@@ -326,10 +326,8 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
 
         $collector = new ShardStatsCollector($shards);
         $stats = $collector->collect(new OrderSchema);
-        $this->assertSame([
-            'node1' => [ 'rows' => 1 ],
-            'node2' => [ 'rows' => 1 ],
-            'node3' => [ 'rows' => 1 ],
-        ], $stats);
+        $this->assertEquals(1, $stats['node1']['rows']);
+        $this->assertEquals(1, $stats['node2']['rows']);
+        $this->assertEquals(1, $stats['node3']['rows']);
     }
 }

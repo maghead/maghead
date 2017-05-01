@@ -5,7 +5,6 @@ namespace Maghead\Sharding;
 use Maghead\Sharding\Shard;
 use Maghead\Schema\BaseSchema;
 
-
 class ShardStatsCollector
 {
     protected $shards;
@@ -21,7 +20,9 @@ class ShardStatsCollector
         $repoClass = $schema->getRepoClass();
         foreach ($this->shards as $shard) {
             $repo = $shard->repo($repoClass);
+            $startTime = microtime(true);
             $stats[$shard->id]['rows'] = count($repo);
+            $stats[$shard->id]['queryTime'] = microtime(true) - $startTime;
         }
         return $stats;
     }
