@@ -254,11 +254,14 @@ abstract class BaseModel implements Serializable
             // If the shard is already defined,
             // then we can dispatch
             if (isset($args[$shardKeyName])) {
+                // If it's primary key, we can generate an UUID for this.
+                // static::GLOBAL_PRIMARY_KEY
                 $shardKey = $args[$shardKeyName];
             } else {
-                // Generate an UUID
                 $shardKey = $shards->generateUUID();
             }
+
+            // throw new InvalidArgumentException("shard key '{$shardKeyName}' is not defined in the argument");
 
             return static::shards()->locateAndExecute($shardKey, function ($repo, $shard) use ($args) {
                 $ret = $repo->create($args);
@@ -682,6 +685,7 @@ abstract class BaseModel implements Serializable
         // special case for twig template
         throw new BadMethodCallException(get_class($this).": $m method not found.");
     }
+
 
 
     /**

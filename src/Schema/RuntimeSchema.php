@@ -40,11 +40,10 @@ class RuntimeSchema extends BaseSchema implements SchemaInterface, IteratorAggre
     public static function __set_state($array)
     {
         $schema = new self();
-        $schema->columnData = $array['column_data']; /* contains column names => column attribute array */
+        $schema->columnData  = $array['column_data']; /* contains column names => column attribute array */
         $schema->columnNames = $array['column_names']; /* column names array */
-        $schema->label = $array['label'];
-        $schema->modelClass = $array['model_class'];
-
+        $schema->label       = $array['label'];
+        $schema->modelClass  = $array['model_class'];
         return $schema;
     }
 
@@ -113,12 +112,12 @@ class RuntimeSchema extends BaseSchema implements SchemaInterface, IteratorAggre
 
     public function getModelName()
     {
-        return static::model_name;
+        return static::MODEL_NAME;
     }
 
     public function getNamespace()
     {
-        return static::model_namespace;
+        return static::MODEL_NAMEspace;
     }
 
     public function getModelClass()

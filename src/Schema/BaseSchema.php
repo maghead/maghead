@@ -36,6 +36,14 @@ abstract class BaseSchema
 
     protected $_modelName;
 
+    const PRIMARY_KEY = null;
+
+    const GLOBAL_PRIMARY_KEY = null;
+
+    const LOCAL_PRIMARY_KEY = null;
+
+    const TABLE = null;
+
     abstract public function getModelClass();
 
     public function getModelName()

@@ -318,6 +318,25 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     }
 
     /**
+     * Find primary key column object from columns.
+     *
+     * This method will be called after building schema information to save the
+     * primary key name
+     *
+     * @return DeclareColumn
+     */
+    public function findPrimaryKeyColumn()
+    {
+        foreach ($this->columns as $name => $column) {
+            if ($column->primary) {
+                return $column;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Find the global primary key (UUID key)
      *
      * A global primary key is: binary(32) in string type without auto-increment.
@@ -349,24 +368,6 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         }
     }
 
-    /**
-     * Find primary key column object from columns.
-     *
-     * This method will be called after building schema information to save the
-     * primary key name
-     *
-     * @return DeclareColumn
-     */
-    public function findPrimaryKeyColumn()
-    {
-        foreach ($this->columns as $name => $column) {
-            if ($column->primary) {
-                return $column;
-            }
-        }
-
-        return false;
-    }
 
     public function getShardKey()
     {

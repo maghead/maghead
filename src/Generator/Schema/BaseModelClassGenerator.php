@@ -74,21 +74,25 @@ class BaseModelClassGenerator
         $cTemplate->useClass('SQLBuilder\\ArgumentArray');
         $cTemplate->useClass('DateTime');
 
-        $cTemplate->addConsts(array(
-            'SCHEMA_CLASS'       => get_class($schema),
+        $cTemplate->addConsts([
             'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),
-            'COLLECTION_CLASS'   => $schema->getCollectionClass(),
-            'MODEL_CLASS'        => $schema->getModelClass(),
-            'REPO_CLASS'         => $schema->getBaseRepoClass(),
-            'TABLE'              => $schema->getTable(),
             'READ_SOURCE_ID'     => $schema->getReadSourceId(),
             'WRITE_SOURCE_ID'    => $schema->getWriteSourceId(),
-            'PRIMARY_KEY'        => $schema->primaryKey,
             'TABLE_ALIAS'        => 'm',
-        ));
+        ]);
 
+        $cTemplate->addConst('SCHEMA_CLASS',       get_class($schema));
+        $cTemplate->addConst('LABEL',              $schema->getLabel());
+        $cTemplate->addConst('MODEL_NAME',         $schema->getModelName());
+        $cTemplate->addConst('MODEL_NAMESPACE',    $schema->getNamespace());
+        $cTemplate->addConst('MODEL_CLASS',        $schema->getModelClass());
+        $cTemplate->addConst('REPO_CLASS',        $schema->getBaseRepoClass());
+        $cTemplate->addConst('COLLECTION_CLASS',   $schema->getCollectionClass());
+        $cTemplate->addConst('TABLE',              $schema->getTable());
+        $cTemplate->addConst('PRIMARY_KEY',        $schema->primaryKey);
         $cTemplate->addConst('GLOBAL_PRIMARY_KEY', $schema->findGlobalPrimaryKey());
-        $cTemplate->addConst('LOCAL_PRIMARY_KEY', $schema->findLocalPrimaryKey());
+        $cTemplate->addConst('LOCAL_PRIMARY_KEY',  $schema->findLocalPrimaryKey());
+
 
         // Sharding related constants
         // If sharding is not enabled, don't throw exception.
