@@ -10,6 +10,14 @@ use Doctrine\Common\Inflector\Inflector;
 
 abstract class BaseSchema
 {
+    const PRIMARY_KEY = null;
+
+    const GLOBAL_PRIMARY_KEY = null;
+
+    const LOCAL_PRIMARY_KEY = null;
+
+    const TABLE = null;
+
     public $table;
 
     public $label;
@@ -35,14 +43,6 @@ abstract class BaseSchema
     protected $_namespace;
 
     protected $_modelName;
-
-    const PRIMARY_KEY = null;
-
-    const GLOBAL_PRIMARY_KEY = null;
-
-    const LOCAL_PRIMARY_KEY = null;
-
-    const TABLE = null;
 
     abstract public function getModelClass();
 
@@ -228,17 +228,17 @@ abstract class BaseSchema
 
     public static function convertClassToTableName($class)
     {
-        if (preg_match('/(\w+?)(?:Model)?$/', $class, $reg)) {
-            if (count($reg) < 2) {
-                throw new Exception("Can not parse model name: $class");
-            }
-            // convert BlahBlah to blah_blah
-            $table = $reg[1];
-            $table = Inflector::tableize($table);
-
-            return Inflector::pluralize($table);
-        } else {
+        if (!preg_match('/(\w+?)(?:Model)?$/', $class, $reg)) {
             throw new TableNameConversionException("Table name convert error: $class", $class);
         }
+        if (count($reg) < 2) {
+            throw new Exception("Can not parse model name: $class");
+        }
+
+        // Convert BlahBlah to blah_blah
+        $table = $reg[1];
+        $table = Inflector::tableize($table);
+
+        return Inflector::pluralize($table);
     }
 }
