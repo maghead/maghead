@@ -9,6 +9,8 @@ use StoreApp\Model\OrderRepo;
 use StoreApp\Model\OrderSchema;
 use StoreApp\Model\OrderCollection;
 
+use Maghead\Sharding\ShardStatsCollector;
+
 /**
  * @group app
  * @group sharding
@@ -309,5 +311,25 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
 
         $order2 = Order::findByPrimaryKey($orderRet->key);
         $this->assertNull($order2);
+    }
+
+
+    /**
+     * @rebuild false
+     * @depends testInsertOrder
+     */
+    public function testShardStatsCollector()
+    {
+        $mapping = $this->shardManager->loadShardMapping('M_store_id');
+        $shards = $mapping->loadShardCollection();
+        $this->assertInstanceOf('Maghead\\Sharding\\ShardCollection', $shards);
+
+        $collector = new ShardStatsCollector($shards);
+        $stats = $collector->collect(new OrderSchema);
+        $this->assertSame([
+            'node1' => [ 'rows' => 1 ],
+            'node2' => [ 'rows' => 1 ],
+            'node3' => [ 'rows' => 1 ],
+        ], $stats);
     }
 }

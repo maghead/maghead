@@ -29,16 +29,25 @@ class Chunk
      */
     const STATUS_VERIFYING = 1 << 3;
 
+    /**
+     * @var number The main index of the chunk. indexes below this index number
+     *             should belongs to this Chunk.
+     */
     public $index;
 
+    /**
+     * @var number The index where the chunk from
+     */
     public $from;
 
+    /**
+     * @var string The ID of the shard
+     */
     public $shardId;
 
     private $dataSourceManager;
 
     protected $status = self::STATUS_OK;
-
 
     /**
      * @param nubmer $index the chunk index

@@ -25,6 +25,8 @@ class ShardMapping
 
     public $chunks;
 
+    protected $chunkObjects;
+
     protected $config;
 
     // Shard method
@@ -88,6 +90,11 @@ class ShardMapping
         }
     }
 
+    /**
+     * Partition hash items into the parition array.
+     *
+     * @param array $hashes
+     */
     public function partition(array $hashes)
     {
         sort($hashes);
@@ -117,7 +124,27 @@ class ShardMapping
     }
 
     /**
-     * load the chunk object.
+     * Loads Chunk objects and return the map array.
+     *
+     * @return Chunk[chunk index]
+     */
+    public function loadChunks()
+    {
+        $lastIndex = 0;
+        foreach ($this->chunks as $i => $c) {
+            if (!isset($this->chunkObjects[$i])) {
+                $this->chunkObjects[$i] = new Chunk($i, $lastIndex, $c['shard'], $this->dataSourceManager);
+            }
+            $lastIndex = $i;
+        }
+        return $this->chunkObjects;
+    }
+
+
+    /**
+     * Load the chunk object.
+     *
+     * @return Chunk
      */
     public function loadChunk($chunkIndex)
     {
@@ -129,7 +156,7 @@ class ShardMapping
             $indexFrom = $i;
         }
         $config = $this->chunks[$chunkIndex]; // get the chunk config.
-        return new Chunk($chunkIndex, $indexFrom, $config['shard'], $this->dataSourceManager);
+        return $this->chunkObjects[$chunkIndex] = new Chunk($chunkIndex, $indexFrom, $config['shard'], $this->dataSourceManager);
     }
 
 

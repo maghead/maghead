@@ -36,8 +36,9 @@ use Maghead\Exception\QueryException;
 use SerializerKit\XmlSerializer;
 use ActionKit;
 use Symfony\Component\Yaml\Yaml;
+use Countable;
 
-abstract class BaseRepo
+abstract class BaseRepo implements Countable
 {
     use RepoShardTrait;
 
@@ -795,16 +796,26 @@ abstract class BaseRepo
 
 
 
+    // Countable interface
+    // ==============================================
+    public function count()
+    {
+        $pk = static::PRIMARY_KEY;
+        return $this->select("COUNT(m.{$pk})")->fetchColumn(0);
+    }
+
 
     // ================= QUERY METHODS =============
+
+
 
     /**
      * @return Maghead\Runtime\Query\SelectQuery
      */
-    public function select($sel = '*')
+    public function select($sel = '*', $alias = 'm')
     {
         $query = new SelectQuery($this);
-        $query->from(static::TABLE, 'm'); // main table alias
+        $query->from(static::TABLE, $alias); // main table alias
         $query->setSelect($sel); // default selection
         return $query;
     }

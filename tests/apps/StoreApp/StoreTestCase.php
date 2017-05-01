@@ -19,6 +19,8 @@ abstract class StoreTestCase extends ModelTestCase
     // FIXME: pgsql doesn't support UUID binary(32), need to find a way to support it.
     protected $skipDriver = 'pgsql';
 
+    protected $shardManager;
+
     public static $stores = [
         [ 'code' => 'TW001', 'name' => '天仁茗茶 01' ],
         [ 'code' => 'TW002', 'name' => '天仁茗茶 02' ],
@@ -96,6 +98,12 @@ abstract class StoreTestCase extends ModelTestCase
             new StoreSchema,
             new OrderSchema,
         ];
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->shardManager = new ShardManager($this->config, $this->dataSourceManager);
     }
 
     protected function config()
