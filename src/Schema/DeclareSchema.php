@@ -70,8 +70,15 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     public static $columnClassAliases = [
         // we only define the short class names so users can override the
         // implementation
-        'uuid'    => 'UUIDColumn',
-        'uuid-pk' => 'UUIDPrimaryKeyColumn',
+        'uuid'           => 'UUIDColumn',
+        'uuid-pk'        => 'UUIDPrimaryKeyColumn',
+
+        'uuid-binary'    => 'UUIDColumn',
+        'uuid-binary-pk' => 'UUIDPrimaryKeyColumn',
+
+        'uuid-text'      => 'UUIDTextColumn',
+        'uuid-text-pk'   => 'UUIDTextPrimaryKeyColumn',
+
         'ai-pk'   => 'AutoIncrementPrimaryKeyColumn',
     ];
 
