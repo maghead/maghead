@@ -123,8 +123,18 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
 
     var $enableHiddenPrimaryKey = true;
 
+    /**
+     * The table name here is dynamic, could be overrided.
+     *
+     * @var string table name
+     */
     public $table;
 
+    /**
+     * Primary key name
+     *
+     * @var string primary key
+     */
     public $primaryKey;
 
     /**
