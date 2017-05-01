@@ -258,7 +258,13 @@ abstract class BaseModel implements Serializable
                 // static::GLOBAL_PRIMARY_KEY
                 $shardKey = $args[$shardKeyName];
             } else {
-                $shardKey = $shards->generateUUID();
+                $column = static::getSchema()->getColumn($shardKeyName);
+                if ($column->default) {
+                    $shardKey = $column->getDefaultValue(null, $args);
+                } else {
+                    // TODO: extract the key value builder to column
+                    $shardKey = $shards->generateUUID();
+                }
             }
 
             // throw new InvalidArgumentException("shard key '{$shardKeyName}' is not defined in the argument");
