@@ -7,6 +7,7 @@ use ReflectionClass;
 class DynamicSchemaDeclare extends DeclareSchema
 {
     public $model;
+
     public $modelClass;
 
     public function __construct($model = null)

@@ -7,12 +7,10 @@ use ArrayIterator;
 
 class RuntimeSchema extends BaseSchema implements SchemaInterface, IteratorAggregate
 {
-    public $modelClass;
-
     public $collectionClass;
 
     // columns array
-    public $columnData = array();
+    public $columnData = [];
 
     /**
      * @var array cached columns including virutal columns
@@ -43,7 +41,6 @@ class RuntimeSchema extends BaseSchema implements SchemaInterface, IteratorAggre
         $schema->columnData  = $array['column_data']; /* contains column names => column attribute array */
         $schema->columnNames = $array['column_names']; /* column names array */
         $schema->label       = $array['label'];
-        $schema->modelClass  = $array['model_class'];
         return $schema;
     }
 
@@ -117,7 +114,7 @@ class RuntimeSchema extends BaseSchema implements SchemaInterface, IteratorAggre
 
     public function getNamespace()
     {
-        return static::MODEL_NAMEspace;
+        return static::MODEL_NAMESPACE;
     }
 
     public function getModelClass()
