@@ -7,8 +7,6 @@ use ArrayIterator;
 
 class RuntimeSchema extends BaseSchema implements SchemaInterface, IteratorAggregate
 {
-    public $collectionClass;
-
     // columns array
     public $columnData = [];
 
