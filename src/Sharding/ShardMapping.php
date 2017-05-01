@@ -109,8 +109,8 @@ class ShardMapping
      */
     public function insertChunk($chunkIndex, $shardId)
     {
-        if ($chunkIndex > Chunk::HASH_RANGE) {
-            throw new InvalidArgumentException("$chunkIndex should be less than {Chunk::HASH_RANGE}");
+        if ($chunkIndex > Chunk::MAX_KEY) {
+            throw new InvalidArgumentException("$chunkIndex should be less than {Chunk::MAX_KEY}");
         }
         $this->chunks[$chunkIndex] = ['shard' => $shardId];
         ksort($this->chunks, SORT_REGULAR);

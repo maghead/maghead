@@ -44,8 +44,8 @@ class ShardConfigManagerTest extends StoreTestCase
         $numberOfChunks = 8;
         $chunkManager = new ChunkManager($this->mapping);
         $chunks = $chunkManager->distribute($numberOfChunks);
-        $this->assertTrue(isset($chunks[Chunk::HASH_RANGE]));
-        $this->assertNotNull($chunks[Chunk::HASH_RANGE]);
+        $this->assertTrue(isset($chunks[Chunk::MAX_KEY]));
+        $this->assertNotNull($chunks[Chunk::MAX_KEY]);
         $this->assertCount($numberOfChunks, $chunks);
 
         $configManager = new ConfigManager($this->config);

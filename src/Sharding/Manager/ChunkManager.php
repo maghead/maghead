@@ -43,7 +43,7 @@ class ChunkManager
         $chunksPerShard = intval(ceil($numberOfChunks / count($shardIds)));
         $rangePerChunk = intval(ceil($range / $numberOfChunks));
         return [
-            "hashRange" => Chunk::HASH_RANGE,
+            "hashRange" => Chunk::MAX_KEY,
             "numberOfChunks" => $numberOfChunks,
             "rangePerChunk"  => $rangePerChunk,
             "chunksPerShard" => $chunksPerShard,
@@ -58,18 +58,18 @@ class ChunkManager
     {
         $shardIds = $this->mapping->getShardIds();
         $chunksPerShard = intval(ceil($numberOfChunks / count($shardIds)));
-        $rangePerChunk = intval(ceil(Chunk::HASH_RANGE / $numberOfChunks));
+        $rangePerChunk = intval(ceil(Chunk::MAX_KEY / $numberOfChunks));
 
         $chunks = [];
         $r = 0;
         foreach ($shardIds as $shardId) {
             for ($i = 0 ; $i < $chunksPerShard; $i++) {
                 $r += $rangePerChunk;
-                if ($r + $rangePerChunk > Chunk::HASH_RANGE) {
-                    $r = Chunk::HASH_RANGE;
+                if ($r + $rangePerChunk > Chunk::MAX_KEY) {
+                    $r = Chunk::MAX_KEY;
                 }
                 $chunks[$r] = [ 'shard' => $shardId ];
-                if ($r + $rangePerChunk > Chunk::HASH_RANGE) {
+                if ($r + $rangePerChunk > Chunk::MAX_KEY) {
                     break;
                 }
             }
