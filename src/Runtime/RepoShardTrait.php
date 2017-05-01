@@ -12,4 +12,13 @@ trait RepoShardTrait
         $shardKey = static::SHARD_KEY;
         return $this->select("DISTINCT {$shardKey}")->fetchColumn(0);
     }
+
+    /**
+     * Fetch the 
+     */
+    public function fetchShardKeyStats()
+    {
+        $shardKey = static::SHARD_KEY;
+        return $this->select([$shardKey, "COUNT(DISTINCT {$shardKey})"])->groupBy($shardKey)->fetchAll();
+    }
 }

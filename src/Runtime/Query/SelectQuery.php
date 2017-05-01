@@ -22,7 +22,7 @@ class SelectQuery extends BaseQuery implements Fetchable
 
     public function fetch()
     {
-        return $this->repo->fetch($this);
+        return $this->repo->fetchCollection($this);
     }
 
     public function fetchColumn($column = 0)

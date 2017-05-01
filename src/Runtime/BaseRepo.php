@@ -735,7 +735,7 @@ abstract class BaseRepo implements Countable
     }
 
     /**
-     * Execute a delete query in the repo.
+     * Execute a query in the repo.
      *
      * This method executes PDOStatement::execute and return the result directly.
      *
@@ -744,13 +744,25 @@ abstract class BaseRepo implements Countable
     public function execute(ToSqlInterface $query)
     {
         $arguments = new ArgumentArray;
-
         $driver = $this->write->getQueryDriver();
         $sql = $query->toSql($driver, $arguments);
         $stm = $this->write->prepare($sql);
-        $args = $arguments->toArray();
-        return $stm->execute($args);
+        return $stm->execute($arguments->toArray());
     }
+
+    public function executeAndFetchAll(ToSqlInterface $query, $fetchMode = PDO::FETCH_OBJ)
+    {
+        $arguments = new ArgumentArray;
+        $driver = $this->write->getQueryDriver();
+        $sql = $query->toSql($driver, $arguments);
+        $stm = $this->write->prepare($sql);
+        if ($stm->execute($arguments->toArray())) {
+            return $stm->fetchAll($fetchMode);
+        }
+        return false;
+    }
+
+
 
     /**
      * Executes a select query in the read connection and fetch the column from the result.
@@ -779,7 +791,7 @@ abstract class BaseRepo implements Countable
      *
      * @return Maghead\Runtime\BaseCollection
      */
-    public function fetch(SelectQuery $query)
+    public function fetchCollection(SelectQuery $query)
     {
         $driver = $this->read->getQueryDriver();
         $arguments = new ArgumentArray;
@@ -792,6 +804,23 @@ abstract class BaseRepo implements Countable
         // Create collection object with the current repo and the current PDOStatement
         $cls = static::COLLECTION_CLASS;
         return new $cls($this, $stm);
+    }
+
+
+    /**
+     * @param SelectQuery $query
+     *
+     * @return array
+     */
+    public function fetchAll(SelectQuery $query, $fetchMode = PDO::FETCH_OBJ)
+    {
+        $driver = $this->read->getQueryDriver();
+        $arguments = new ArgumentArray;
+        $sql = $query->toSql($driver, $arguments);
+
+        $stm = $this->read->prepare($sql);
+        $stm->execute($arguments->toArray());
+        return $stm->fetchAll($fetchMode);
     }
 
 
