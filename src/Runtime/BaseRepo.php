@@ -39,6 +39,7 @@ use Symfony\Component\Yaml\Yaml;
 use Countable;
 
 use Maghead\Sharding\Traits\RepoShardTrait;
+use Maghead\Sharding\Shard;
 
 abstract class BaseRepo implements Countable
 {
@@ -66,6 +67,12 @@ abstract class BaseRepo implements Countable
      */
     protected $read;
 
+
+    /**
+     * @var Maghead\Sharding\Shard
+     */
+    protected $shard;
+
     protected $_preparedCreateStms = [];
 
     /**
@@ -89,10 +96,11 @@ abstract class BaseRepo implements Countable
      */
     abstract protected function unsetImmutableArgs($args);
 
-    public function __construct(Connection $write, Connection $read = null)
+    public function __construct(Connection $write, Connection $read = null, Shard $shard = null)
     {
         $this->write = $write;
         $this->read = $read ? $read : $write;
+        $this->shard = $shard;
     }
 
     public function getReadConnection()
@@ -133,6 +141,11 @@ abstract class BaseRepo implements Countable
         return $this;
     }
 
+
+    public function getShard()
+    {
+        return $this->shard;
+    }
 
     /**
      * Load method loads one record from the repository with compound conditions.

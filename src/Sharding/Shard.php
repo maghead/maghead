@@ -77,7 +77,8 @@ class Shard
     {
         return new $repoClass(
             $this->dataSourceManager->getWriteConnection($this->id),
-            $this->dataSourceManager->getReadConnection($this->id)
+            $this->dataSourceManager->getReadConnection($this->id),
+            $this
         );
     }
 }

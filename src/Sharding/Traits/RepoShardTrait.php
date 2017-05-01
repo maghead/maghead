@@ -29,7 +29,7 @@ trait RepoShardTrait
         $shardKey = static::SHARD_KEY;
         $table = $this->getTable();
         $stm = $this->write->prepare("SELECT {$shardKey} AS shardKey, COUNT({$shardKey}) AS numberOfRows FROM {$table} GROUP BY shardKey ORDER BY numberOfRows ASC");
-        $stm->setFetchMode(PDO::FETCH_CLASS, 'Maghead\\Sharding\\ShardKeyStat');
+        $stm->setFetchMode(PDO::FETCH_CLASS, 'Maghead\\Sharding\\ShardKeyStat', [$this]);
         $stm->execute();
         return $stm->fetchAll();
     }
