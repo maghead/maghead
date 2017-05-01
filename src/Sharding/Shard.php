@@ -37,6 +37,8 @@ class Shard
     /**
      * Query UUID from the database.
      *
+     * TODO: remove this, use DB UUID instead.
+     *
      * @return string
      */
     public function queryUUID()
@@ -67,7 +69,7 @@ class Shard
 
 
     /**
-     * Create repo object from the selected nodes
+     * Create repo object from the selected nodes.
      *
      * @return \Maghead\Runtime\BaseRepo
      */
