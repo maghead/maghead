@@ -14,6 +14,8 @@ class Chunk
 
     private $dataSourceManager;
 
+    protected $status;
+
     /**
      * @var integer The default hash range 4294967296 = 2 ** 32
      */
@@ -31,6 +33,21 @@ class Chunk
         $this->shardId  = $shardId;
         $this->dataSourceManager = $dataSourceManager;
     }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * Get the status of the chunk.
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+
 
     /**
      * @param number $index hashed index
