@@ -23,6 +23,7 @@ class ShardStatsCollector
             $startTime = microtime(true);
             $stats[$shard->id]['rows'] = count($repo);
             $stats[$shard->id]['queryTime'] = microtime(true) - $startTime;
+            $stats[$shard->id]['keys'] = $repo->fetchShardKeys();
             // TODO: query table/index stats
         }
         return $stats;
