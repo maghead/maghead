@@ -67,6 +67,14 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
      */
     const DEFAULT_DATASOURCE_ID = 'master';
 
+    /**
+     * column class alias table for quickly defining the column types.
+     *
+     * usage:
+     *
+     *    $this->column('item_uuid', 'uuid');
+     *    $this->column('order_uuid', 'uuid-text');
+     */
     public static $columnClassAliases = [
         // we only define the short class names so users can override the
         // implementation
