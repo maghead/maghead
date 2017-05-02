@@ -19,14 +19,14 @@ class DbCommandsTest extends CommandTestCase
         $db = getenv('DB') ?: 'sqlite';
         copy("tests/config/$db.yml", "tests/config/tmp.yml");
         $this->app->run(['maghead','use','tests/config/tmp.yml']);
-
         if ($db == "sqlite") {
             return $this->markTestSkipped('sqlite migration is not supported.');
         }
     }
 
-    public function testDbCommands()
+    public function testDbCreate()
     {
+        $this->expectOutputRegex('/Database testing2 is dropped successfully/');
         $this->app->run(['maghead','db','add','--user', 'root', 'testing2',  "mysql:host=localhost;dbname=testing2"]);
         $this->app->run(['maghead','db','remove','--drop', 'testing2']);
     }
