@@ -42,7 +42,7 @@ script:
 - travis/run-phpunit
 - travis/run-examples
 after_success:
-- php vendor/bin/coveralls -v
+- if [[ "$DB" == "mysql" ]]; then php vendor/bin/coveralls -v ; fi
 # matrix:
 #   exclude:
 #     - php: hhvm
