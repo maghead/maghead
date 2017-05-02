@@ -5,6 +5,9 @@ namespace Maghead\Schema\Column;
 use Maghead\Schema\DeclareColumn;
 use Maghead\Schema\DeclareSchema;
 
+/**
+ * @codeCoverageIgnore
+ */
 class UUIDTextColumn extends DeclareColumn
 {
     /**
