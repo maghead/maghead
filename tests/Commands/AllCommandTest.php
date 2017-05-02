@@ -1,4 +1,5 @@
 <?php
+
 use CLIFramework\Testing\CommandTestCase;
 
 /**
@@ -27,16 +28,6 @@ class AllCommandsTest extends CommandTestCase
         $this->assertNotNull($this->app->createCommand('Maghead\Command\SchemaCommand'));
         $this->assertNotNull($this->app->createCommand('Maghead\Command\DiffCommand'));
     }
-
-    /**
-     * @depends testConfCommand
-     */
-    public function testDbCommands()
-    {
-        $this->app->run(['maghead','db','add','--user', 'root', 'testing2',  "mysql:host=localhost;dbname=testing2"]);
-        $this->app->run(['maghead','db','remove','--drop', 'testing2']);
-    }
-
 
     /**
      * @depends testConfCommand
