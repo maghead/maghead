@@ -1138,6 +1138,16 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
         return $this->indexes;
     }
 
+    public function newFindByGlobalPrimaryKeyQuery()
+    {
+        if ($globalPrimaryKey = $this->findGlobalPrimaryKey()) {
+            $query = $this->newSelectQuery();
+            $query->where()->equal($globalPrimaryKey, new ParamMarker($globalPrimaryKey));
+            $query->limit(1);
+            return $query;
+        }
+    }
+
     public function newFindByPrimaryKeyQuery()
     {
         $query = $this->newSelectQuery();
