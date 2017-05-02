@@ -755,7 +755,7 @@ abstract class BaseRepo implements Countable
      *
      * This method executes PDOStatement::execute and return the result directly.
      *
-     * @return [bool, string sql, array args]
+     * @return bool
      */
     public function execute(ToSqlInterface $query)
     {
