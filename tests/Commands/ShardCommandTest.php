@@ -49,15 +49,17 @@ class ShardCommandsTest extends CommandTestCase
         ]);
     }
 
-    public function testShardClone()
+    public function testShardCloneAndPrune()
     {
-        $this->expectOutputRegex('/Copying TABLE/');
+        // $this->expectOutputRegex('/Copying TABLE/');
 
         $this->app->run(['maghead', 'shard',
             'mapping', 'add', '--hash', '-s', 's1', '-s', 's2', '--key', 'store_id', 'store_key'
         ]);
 
-        $this->app->run(['maghead', 'shard', 'clone', '--mapping', 'store_key', '--instance', 'local', 'master', 'a11']);
+        $this->app->run(['maghead', 'shard', 'clone', '--drop-first', '--mapping', 'store_key', '--instance', 'local', 'master', 'a11']);
+
+        $this->app->run(['maghead', 'shard', 'prune', '--mapping', 'store_key', 'a11']);
 
         $this->app->run(['maghead', 'shard',
             'mapping', 'remove', 'store_key'
