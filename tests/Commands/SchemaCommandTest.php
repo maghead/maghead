@@ -38,6 +38,15 @@ class SchemaCommandsTest extends CommandTestCase
     /**
      * @depends testSchemaListCommand
      */
+    public function testSchemaStatusCommand()
+    {
+        $ret = $this->app->run(array('maghead','schema','status'));
+        $this->assertTrue($ret);
+    }
+
+    /**
+     * @depends testSchemaListCommand
+     */
     public function testSchemaCleanCommand()
     {
         $ret = $this->app->run(array('maghead','schema','clean'));
