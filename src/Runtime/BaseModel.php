@@ -814,7 +814,11 @@ abstract class BaseModel implements Serializable
 
     abstract public function removeLocalPrimaryKey();
 
+    /*
     abstract public function removeGlobalPrimaryKey();
+
+    abstract public function getGlobalPrimaryKey();
+     */
 
     /**
      * Do we have this column ?
