@@ -40,6 +40,9 @@ class PrimaryKeyColumnMissingException extends SchemaRelatedException { }
  */
 class BaseModelClassGenerator
 {
+
+    public static $forcePrimaryKey = false;
+
     public static function create(DeclareSchema $schema, $baseClass)
     {
         // get data source ids
@@ -47,7 +50,8 @@ class BaseModelClassGenerator
         $writeTo  = $schema->getWriteSourceId();
 
         $primaryKey = $schema->primaryKey;
-        if (!$primaryKey) {
+
+        if (static::$forcePrimaryKey && !$primaryKey) {
             throw new PrimaryKeyColumnMissingException($schema, "PrimaryKey is required to be defined in the schema.");
         }
 

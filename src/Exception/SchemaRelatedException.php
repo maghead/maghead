@@ -12,7 +12,9 @@ class SchemaRelatedException extends Exception
     public function __construct(SchemaInterface $schema, $message)
     {
         $this->schema = $schema;
-        parent::__construct($message);
+
+        $cls = get_class($schema);
+        parent::__construct("{$cls}: {$message}");
     }
 
     public function getSchema()

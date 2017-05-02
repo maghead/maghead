@@ -12,10 +12,12 @@ class AllCommandsTest extends CommandTestCase
         return new Maghead\Console;
     }
 
-    public function testConfCommand()
+    public function setUp()
     {
-        $this->expectOutputRegex('/Creating symbol/');
-        $this->app->run(array('maghead','use','tests/config/mysql.yml'));
+        parent::setUp();
+        $db = getenv('DB') ?: 'sqlite';
+        copy("tests/config/$db.yml", "tests/config/tmp.yml");
+        $this->app->run(['maghead','use','tests/config/tmp.yml']);
     }
 
     public function testCommands()
