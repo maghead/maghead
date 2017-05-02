@@ -169,12 +169,16 @@ class BaseModelClassGenerator
             return [];
         });
 
-        $cTemplate->addMethod('public', 'removeGlobalPrimaryKey', [], function () use ($schema) {
-            if ($key = $schema->findGlobalPrimaryKey()) {
-                return "\$this->$key = null;";
-            }
-            return [];
-        });
+        if ($globalPk = $schema->findGlobalPrimaryKey()) {
+            $cTemplate->addMethod('public', 'removeGlobalPrimaryKey', [], function () use ($globalPk) {
+                return "\$this->$globalPk = null;";
+            });
+
+            $cTemplate->addMethod('public', 'getGlobalPrimaryKey', [], function () use ($globalPk) {
+                return "return \$this->$globalPk;";
+            });
+        }
+
 
 
 
