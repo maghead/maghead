@@ -5,7 +5,7 @@ namespace Maghead\Sharding\Balancer;
 use Maghead\Schema\BaseSchema;
 
 use Maghead\Sharding\ShardMapping;
-
+use Maghead\Sharding\Manager\ChunkManager;
 use Maghead\Sharding\Balancer\Policy\ConservativeShardBalancerPolicy;
 use Maghead\Sharding\Balancer\Policy\ShardBalancerPolicy;
 
@@ -37,19 +37,28 @@ class ShardBalancer
         $chunks = $mapping->loadChunks();
 
         $schema = $schemas[0];
+
         $collector = new ShardStatsCollector($mapping);
-
-        // This prepares shard stats
         $collector->collect($shards, $schema);
+
         $migrateInfo = $this->policy->balance($shards, $chunks);
-
-        // TODO: use Migration manager to migrate chunks
-        var_dump($migrateInfo);
-
+        $chunkManager = new ChunkManager($mapping);
         foreach ($migrateInfo as $mInfo) {
+            $rets = $chunkManager->move($mInfo->chunk, $mInfo->to, $schemas);
 
+            $failed = false;
+            foreach ($rets as $tables => $ret) {
+                if ($ret->error) {
+                    $failed = true;
+                    break;
+                }
+            }
+            if ($failed) {
+                $mInfo->setFailed();
+            } else {
+                $mInfo->setSucceed();
+            }
         }
+        return $migrateInfo;
     }
-
-    // Handle the migration here
 }

@@ -379,6 +379,10 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
         $mapping = $this->shardManager->loadShardMapping('M_store_id');
 
         $balancer = new ShardBalancer(new ConservativeShardBalancerPolicy(1, false, 1.3));
-        var_dump($balancer->balance($mapping, [new OrderSchema]));
+        $migrateInfo = $balancer->balance($mapping, [new OrderSchema]);
+
+        foreach ($migrateInfo as $m) {
+            $this->assertTrue($m->succeed());
+        }
     }
 }

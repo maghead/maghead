@@ -157,4 +157,42 @@ class ChunkManagerTest extends StoreTestCase
             $this->assertResultsSuccess($rets);
         }
     }
+
+
+    public function testChunkSplitAndMigrate()
+    {
+        $this->assertInsertStores(static::$stores);
+        $this->assertInsertOrders(static::$orders);
+
+        $repo = Order::repo('node1');
+        $orders = $repo->select()->fetch();
+        $this->assertCount(6, $orders);
+
+        $chunkManager = new ChunkManager($this->mapping);
+        $this->assertCount(8, $this->mapping->chunks);
+
+
+        $c = $this->mapping->loadChunk(536870912);
+        $indexes = $chunkManager->split($c, 12);
+        $this->assertCount(11, $indexes);
+
+        // shard keys: 2, 6
+        $shardKeys = [450215437, 498629140];
+        $this->assertSame([
+            492131673 => [ 450215437 ],
+            536870912 => [ 498629140 ],
+        ], $this->mapping->partition($shardKeys));
+        $this->assertCount(19, $this->mapping->chunks);
+
+        $shards = $this->mapping->loadShardCollection();
+
+        $schemas = SchemaUtils::findSchemasByConfig($this->config);
+        foreach ($indexes as $index) {
+            $c = $this->mapping->loadChunk($index);
+            $rets = $chunkManager->migrate($c, $shards['node3'], $schemas);
+            $this->assertResultsSuccess($rets);
+        }
+    }
+
+
 }
