@@ -48,4 +48,19 @@ class ShardCommandsTest extends CommandTestCase
             'mapping', 'remove', 'store_key'
         ]);
     }
+
+    public function testShardClone()
+    {
+        $this->expectOutputRegex('/Copying TABLE/');
+
+        $this->app->run(['maghead', 'shard',
+            'mapping', 'add', '--hash', '-s', 's1', '-s', 's2', '--key', 'store_id', 'store_key'
+        ]);
+
+        $this->app->run(['maghead', 'shard', 'clone', '--mapping', 'store_key', '--instance', 'local', 'master', 'a11']);
+
+        $this->app->run(['maghead', 'shard',
+            'mapping', 'remove', 'store_key'
+        ]);
+    }
 }

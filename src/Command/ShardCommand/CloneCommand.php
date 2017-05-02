@@ -19,6 +19,9 @@ class CloneCommand extends BaseCommand
     {
         parent::options($opts);
 
+        $opts->add('mapping:', 'the mapping id')
+            ->required();
+
         $opts->add('instance:', 'the instance id')
             ->defaultValue('local');
 
@@ -40,7 +43,7 @@ class CloneCommand extends BaseCommand
         if ($this->options->{"drop-first"}) {
             $o->setDropFirst(true);
         }
-        $o->clone($this->options->instance, $destNode, $srcNode);
+        $o->clone($this->options->mapping, $this->options->instance, $destNode, $srcNode);
 
         ConfigWriter::write($config);
     }
