@@ -30,4 +30,12 @@ class DbCommandsTest extends CommandTestCase
         $this->app->run(['maghead','db','add','--user', 'root', 'testing2',  "mysql:host=localhost;dbname=testing2"]);
         $this->app->run(['maghead','db','remove','--drop', 'testing2']);
     }
+
+    public function testDbReCreate()
+    {
+        $this->expectOutputRegex('/Database testing2 is dropped successfully/');
+        $this->app->run(['maghead','db','add', '--create', '--user', 'root', 'testing2',  "mysql:host=localhost;dbname=testing2"]);
+        $this->app->run(['maghead','db','recreate', 'testing2']);
+        $this->app->run(['maghead','db','drop', 'testing2']);
+    }
 }
