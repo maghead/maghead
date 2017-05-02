@@ -20,16 +20,13 @@ class DropCommand extends BaseCommand
         return 'drop database base on the database config.';
     }
 
-    public function execute($nodeId = null)
+    public function execute($nodeId)
     {
         $config = $this->getConfig(true);
-
-        $dsId = $nodeId ?: $this->getCurrentDataSourceId();
-
         $dataSourceManager = DataSourceManager::getInstance();
         $conn = $dataSourceManager->connectInstance($nodeId);
 
-        $node = $config->getDataSource($dsId);
+        $node = $config->getDataSource($nodeId);
 
         $dbManager = new DatabaseManager($conn);
         list($ret, $sql) = $dbManager->drop($node['database']);

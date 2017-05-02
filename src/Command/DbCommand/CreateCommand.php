@@ -20,12 +20,11 @@ class CreateCommand extends BaseCommand
         return 'create database base on the database config.';
     }
 
-    public function execute($nodeId = null)
+    public function execute($nodeId)
     {
         $config = $this->getConfig(true);
-        $dsId = $nodeId ?: $this->getCurrentDataSourceId();
 
-        $ds = $config->getDataSource($dsId);
+        $ds = $config->getDataSource($nodeId);
 
         if ($ds['driver'] === 'sqlite') {
             $this->logger->error('Create database query is not supported by sqlite. ths sqlite database shall have been created.');
@@ -40,7 +39,7 @@ class CreateCommand extends BaseCommand
         }
 
         $dataSourceManager = DataSourceManager::getInstance();
-        $conn = $dataSourceManager->connectInstance($dsId);
+        $conn = $dataSourceManager->connectInstance($nodeId);
 
         $queryDriver = $conn->getQueryDriver();
 
