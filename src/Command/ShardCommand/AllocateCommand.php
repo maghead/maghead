@@ -41,7 +41,7 @@ class AllocateCommand extends BaseCommand
         $config = $this->getConfig(true);
 
         $op = new AllocateShard($config);
-        $op->allocate($this->options->instance, $nodeId, $this->options->mapping);
+        $op->allocate($this->options->mapping, $this->options->instance, $nodeId);
 
         ConfigWriter::write($config);
     }

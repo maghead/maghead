@@ -65,7 +65,7 @@ class AddCommand extends BaseCommand
         $mapping = new ShardMapping($mappingId, $mappingConfig, $dataSourceManager);
 
         $chunkManager = new ChunkManager($mapping);
-        $chunkIndexes = $chunkManager->distribute($this->options->chunks);
+        $chunkIndexes = $chunkManager->distribute($mappingConfig['shards'], $this->options->chunks);
 
         // var_dump($this->options->shard);
         $chunkGroups = [];
