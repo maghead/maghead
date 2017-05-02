@@ -24,6 +24,12 @@ class DbCommandsTest extends CommandTestCase
         }
     }
 
+    public function testDbList()
+    {
+        $this->expectOutputRegex('/master/');
+        $this->app->run(['maghead','db','list']);
+    }
+
     public function testDbCreate()
     {
         $this->expectOutputRegex('/Database testing2 is dropped successfully/');
