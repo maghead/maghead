@@ -22,6 +22,7 @@ class AddCommand extends BaseCommand
         $opts->add('port:', 'port for database');
         $opts->add('user:', 'user id for database connection');
         $opts->add('password:', 'password for database connection');
+        $opts->add('dbname:', 'databasename');
     }
 
     public function arguments($args)
@@ -35,13 +36,26 @@ class AddCommand extends BaseCommand
         // force loading data source
         $config = $this->getConfig(true);
         $configManager = new ConfigManager($config);
-        $nodeConfig = $configManager->addDatabase($nodeId, $dsnStr, [
-            'host'     => $this->options->host,
-            'port'     => $this->options->port,
-            'database' => $this->options->dbname,
-            'user'     => $this->options->user,
-            'password' => $this->options->password,
-        ]);
+
+        $nodeOptions = [];
+
+        if ($this->options->host) {
+            $nodeOptions['host'] = $this->options->host;
+        }
+        if ($this->options->port) {
+            $nodeOptions['port'] = $this->options->port;
+        }
+        if ($this->options->database) {
+            $nodeOptions['database'] = $this->options->database;
+        }
+        if ($this->options->user) {
+            $nodeOptions['user'] = $this->options->user;
+        }
+        if ($this->options->password) {
+            $nodeOptions['password'] = $this->options->password;
+        }
+
+        $nodeConfig = $configManager->addDatabase($nodeId, $dsnStr, $nodeOptions);
         $configManager->save();
 
         if ($this->options->create) {

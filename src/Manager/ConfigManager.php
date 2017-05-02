@@ -36,11 +36,11 @@ class ConfigManager
 
     private function reconcileNodeConfigKeys(array $node)
     {
-        if (isset($node['dbname'])) {
+        if (isset($node['dbname']) && $node['dbname']) {
             $node['database'] = $node['dbname'];
             unset($node['dbname']);
         }
-        if (isset($node['pass'])) {
+        if (isset($node['pass']) && $node['pass']) {
             $node['password'] = $node['pass'];
             unset($node['pass']);
         }

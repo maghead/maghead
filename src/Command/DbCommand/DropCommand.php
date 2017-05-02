@@ -4,9 +4,13 @@ namespace Maghead\Command\DbCommand;
 
 use Maghead\Command\BaseCommand;
 use Maghead\DSN\DSNParser;
+use Maghead\Manager\DatabaseManager;
+use Maghead\Manager\DataSourceManager;
 use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\DropDatabaseQuery;
+
+
 use PDO;
 
 class DropCommand extends BaseCommand
@@ -19,34 +23,18 @@ class DropCommand extends BaseCommand
     public function execute($nodeId = null)
     {
         $config = $this->getConfig(true);
+
         $dsId = $nodeId ?: $this->getCurrentDataSourceId();
-        $ds = $config->getDataSource($dsId);
 
-        $dsn = DSNParser::parse($ds['dsn']);
+        $dataSourceManager = DataSourceManager::getInstance();
+        $conn = $dataSourceManager->connectInstance($nodeId);
 
-        $dbName = $dsn->getAttribute('dbname');
+        $node = $config->getDataSource($dsId);
 
-        $dsn->removeAttribute('dbname');
+        $dbManager = new DatabaseManager($conn);
+        list($ret, $sql) = $dbManager->drop($node['database']);
+        $this->logger->debug($sql);
 
-        $this->logger->debug('Connection DSN: '.$dsn);
-
-        $pdo = new PDO($dsn, @$ds['user'], @$ds['pass'], @$ds['connection_options']);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $q = new DropDatabaseQuery($dbName);
-        $q->ifExists();
-
-        // Create query Driver object
-        $queryDriver = PDODriverFactory::create($pdo);
-        $sql = $q->toSql($queryDriver, new ArgumentArray());
-        $this->logger->info($sql);
-
-        if ($pdo->query($sql) === false) {
-            list($statusCode, $errorCode, $message) = $pdo->errorInfo();
-            $this->logger->error("$statusCode:$errorCode $message");
-
-            return false;
-        }
         $this->logger->info('Database dropped successfully.');
     }
 }
