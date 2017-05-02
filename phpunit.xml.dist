@@ -45,11 +45,7 @@
       <!-- Run all apps tests before anyother tests -->
       <directory suffix="Test.php">tests/apps</directory>
       <directory suffix="Test.php">tests</directory>
-
-      <!-- Command Test affect all configloader singleton instance -->
-      <exclude suffix="Test.php">tests/Commands</exclude>
     </testsuite>
-
 
     <testsuite name="Model">
       <directory suffix="Test.php">tests/ModelTest</directory>
