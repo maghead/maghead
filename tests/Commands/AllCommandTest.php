@@ -30,24 +30,6 @@ class AllCommandsTest extends CommandTestCase
     }
 
     /**
-     * @depends testConfCommand
-     */
-    public function testSchemaCommand()
-    {
-        $this->app->run(array('maghead','schema','build'));
-    }
-
-
-    /**
-     * @depends testSchemaCommand
-     */
-    public function testListSchemaCommand()
-    {
-        $this->expectOutputRegex('/AuthorBooks\\\\Model\\\\AuthorSchema/');
-        $this->app->run(array('maghead','schema','list'));
-    }
-
-    /**
      * @depends testSchemaCommand
      */
     public function testSqlCommand()
