@@ -37,11 +37,10 @@ class BuildCommand extends BaseCommand
     public function execute()
     {
         $args = func_get_args();
-        $logger = $this->getLogger();
         $config = $this->getConfig();
 
         $this->logger->debug('Finding schemas...');
-        $schemas = SchemaUtils::findSchemasByArguments($config, $args, $logger);
+        $schemas = SchemaUtils::findSchemasByArguments($config, $args, $this->logger);
 
         $generator = new SchemaGenerator($config);
         if ($this->options->force) {
