@@ -79,29 +79,6 @@ class Chunk
     }
 
     /**
-     * Filters keys that belongs to this Chunk.
-     */
-    public function filterKeys(array $keys, callable $accessor = null)
-    {
-        $chunkKeys = [];
-
-        $hasher = $this->hasher;
-        foreach ($keys as $key) {
-            if ($accessor) {
-                $k = $accessor($key);
-            } else {
-                $k = $key;
-            }
-            if ($this->contains($hasher->hash($k))) {
-                $chunkKeys[] = $key;
-            }
-        }
-
-        return $chunkKeys;
-    }
-
-
-    /**
      * @param number $index hashed index
      */
     public function contains($index)
