@@ -49,7 +49,7 @@ class CreateCommand extends BaseCommand
         ]);
         if ($ret) {
             $this->logger->info("Succeed: $sql");
-            $this->logger->info('Database created successfully.');
+            $this->logger->info("Database $nodeId is created successfully.");
         } else {
             $this->logger->info("Failed: $sql");
             $this->logger->info("Failed to create database $dbName.");

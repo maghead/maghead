@@ -32,6 +32,6 @@ class DropCommand extends BaseCommand
         list($ret, $sql) = $dbManager->drop($node['database']);
         $this->logger->debug($sql);
 
-        $this->logger->info('Database dropped successfully.');
+        $this->logger->info("Database $nodeId is dropped successfully.");
     }
 }
