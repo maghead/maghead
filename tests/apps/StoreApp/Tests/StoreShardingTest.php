@@ -1,4 +1,5 @@
 <?php
+
 use Maghead\Testing\ModelTestCase;
 use Maghead\ConfigLoader;
 use StoreApp\Model\Store;
@@ -9,7 +10,9 @@ use StoreApp\Model\OrderRepo;
 use StoreApp\Model\OrderSchema;
 use StoreApp\Model\OrderCollection;
 
-use Maghead\Sharding\ShardStatsCollector;
+use Maghead\Sharding\Balancer\ShardStatsCollector;
+use Maghead\Sharding\Balancer\ShardBalancer;
+use Maghead\Sharding\Balancer\Policy\ConservativeShardBalancerPolicy;
 
 /**
  * @group app
@@ -17,10 +20,6 @@ use Maghead\Sharding\ShardStatsCollector;
  */
 class StoreShardingTest extends \StoreApp\StoreTestCase
 {
-
-
-
-
     /**
      * @dataProvider storeDataProvider
      */
@@ -314,21 +313,44 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
     }
 
 
+
     /**
      * @rebuild false
      * @depends testInsertOrder
      */
-    public function testShardStatsCollector()
+    public function testChunkObjects()
     {
         $mapping = $this->shardManager->loadShardMapping('M_store_id');
         $shards = $mapping->loadShardCollection();
         $this->assertInstanceOf('Maghead\\Sharding\\ShardCollection', $shards);
 
-        $collector = new ShardStatsCollector($shards);
-        $stats = $collector->collect(new OrderSchema);
-        $this->assertEquals(1, $stats['node1']['rows']);
-        $this->assertEquals(1, $stats['node2']['rows']);
-        $this->assertEquals(1, $stats['node3']['rows']);
+        $chunks = $mapping->loadChunks();
+        $this->assertCount(8, $chunks);
+        foreach ($chunks as $i => $chunk) {
+            $this->assertInstanceOf('Maghead\\Sharding\\Chunk', $chunk);
+        }
+    }
+
+    public function testShardStatsCollector()
+    {
+        $this->assertInsertStores(static::$stores);
+        $this->assertInsertOrders(static::$orders);
+
+        $mapping = $this->shardManager->loadShardMapping('M_store_id');
+        $shards = $mapping->loadShardCollection();
+        $this->assertInstanceOf('Maghead\\Sharding\\ShardCollection', $shards);
+
+        $collector = new ShardStatsCollector($mapping);
+        $stats = $collector->collect($shards, new OrderSchema);
+        $this->assertEquals(6, $stats['node1']->numberOfRows);
+        $this->assertEquals(18, $stats['node2']->numberOfRows);
+        $this->assertEquals(12, $stats['node3']->numberOfRows);
+
+        $numberOfOrders = 0;
+        foreach (static::$orders as $storeId => $orders) {
+            $numberOfOrders += count($orders);
+        }
+        $this->assertEquals($numberOfOrders, $stats['node1']->numberOfRows + $stats['node2']->numberOfRows + $stats['node3']->numberOfRows);
     }
 
     public function testRepoFetchShardKeyStats()
@@ -348,23 +370,15 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
         }
     }
 
-    /**
-     * @rebuild false
-     * @depends testInsertOrder
-     */
-    public function testChunkObjects()
+
+    public function testShardBalancer()
     {
+        $this->assertInsertStores(static::$stores);
+        $this->assertInsertOrders(static::$orders);
+
         $mapping = $this->shardManager->loadShardMapping('M_store_id');
-        $shards = $mapping->loadShardCollection();
-        $this->assertInstanceOf('Maghead\\Sharding\\ShardCollection', $shards);
 
-        $chunks = $mapping->loadChunks();
-        $this->assertCount(8, $chunks);
-        foreach ($chunks as $i => $chunk) {
-            $this->assertInstanceOf('Maghead\\Sharding\\Chunk', $chunk);
-        }
-
-
-
+        $balancer = new ShardBalancer(new ConservativeShardBalancerPolicy(1, false, 1.3));
+        var_dump($balancer->balance($mapping, [new OrderSchema]));
     }
 }

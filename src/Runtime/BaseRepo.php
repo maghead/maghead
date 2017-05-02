@@ -840,18 +840,20 @@ abstract class BaseRepo implements Countable
     }
 
 
-
     // Countable interface
-    // ==============================================
+    // =========================================
     public function count()
     {
+        // TODO: Generate count query from the generator.
         $pk = static::PRIMARY_KEY;
-        return $this->select("COUNT(m.{$pk})", "m")->fetchColumn(0);
+        $table = static::TABLE;
+        $stm = $this->read->prepare("SELECT COUNT(m.{$pk}) FROM $table AS m");
+        $stm->execute();
+        return intval($stm->fetchColumn(0));
     }
 
-    // ================= QUERY METHODS =============
-
-
+    // QUERY METHODS
+    // =========================================
 
     /**
      * @return Maghead\Runtime\Query\SelectQuery

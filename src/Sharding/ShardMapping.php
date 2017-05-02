@@ -137,9 +137,9 @@ class ShardMapping
             }
             $lastIndex = $i;
         }
+        ksort($this->chunkObjects, SORT_REGULAR);
         return $this->chunkObjects;
     }
-
 
     /**
      * Load the chunk object.

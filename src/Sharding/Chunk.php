@@ -78,6 +78,27 @@ class Chunk
         return $this->status;
     }
 
+    /**
+     * Filters keys that belongs to this Chunk.
+     */
+    public function filterKeys(array $keys, callable $accessor = null)
+    {
+        $chunkKeys = [];
+
+        $hasher = $this->hasher;
+        foreach ($keys as $key) {
+            if ($accessor) {
+                $k = $accessor($key);
+            } else {
+                $k = $key;
+            }
+            if ($this->contains($hasher->hash($k))) {
+                $chunkKeys[] = $key;
+            }
+        }
+
+        return $chunkKeys;
+    }
 
 
     /**
@@ -100,5 +121,14 @@ class Chunk
     public function getShardId()
     {
         return $this->shardId;
+    }
+
+    public function __debugInfo()
+    {
+        return [
+            'shardId' => $this->shardId,
+            'min' => $this->from,
+            'max' => $this->index,
+        ];
     }
 }

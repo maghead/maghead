@@ -37,9 +37,8 @@ class ChunkManager
      *
      * @return array distribution info
      */
-    public function computeDistribution($numberOfChunks = 32, $range = 4294967296)
+    public function computeDistribution(array $shardIds, $numberOfChunks = 32, $range = 4294967296)
     {
-        $shardIds = $this->mapping->getShardIds();
         $chunksPerShard = intval(ceil($numberOfChunks / count($shardIds)));
         $rangePerChunk = intval(ceil($range / $numberOfChunks));
         return [
@@ -54,9 +53,8 @@ class ChunkManager
     /**
      * Distribute the chunks.
      */
-    public function distribute($numberOfChunks = 32)
+    public function distribute(array $shardIds, $numberOfChunks = 32)
     {
-        $shardIds = $this->mapping->getShardIds();
         $chunksPerShard = intval(ceil($numberOfChunks / count($shardIds)));
         $rangePerChunk = intval(ceil(Chunk::MAX_KEY / $numberOfChunks));
 
@@ -94,7 +92,6 @@ class ChunkManager
         $schemas = SchemaUtils::filterShardMappingSchemas($this->mapping->id, $schemas);
 
         $shardKey = $this->mapping->getKey();
-        $shards = $this->mapping->loadShardCollection();
         $hasher = $this->mapping->getHasher();
 
         // get shard Id of the chunk
@@ -121,15 +118,12 @@ class ChunkManager
         return $allRets;
     }
 
-    public function clone($chunkIndex, $targetShardId, array $schemas)
+    public function clone(Chunk $chunk, Shard $dstShard, array $schemas)
     {
-        $chunk = $this->mapping->loadChunk($chunkIndex);
         $shardId = $chunk->getShardId();
-        if ($targetShardId === $shardId) {
-            throw new InvalidArgumentException("$targetShardId == $shardId");
+        if ($dstShard->id === $shardId) {
+            throw new InvalidArgumentException("{$dstShard->id} == $shardId");
         }
-        $shards = $this->mapping->loadShardCollection();
-        $dstShard = $shards[$targetShardId];
         return $this->processChunk($chunk, $schemas, function($srcRepo, $repoClass, $keys) use ($dstShard) {
             $dstRepo = $dstShard->repo($repoClass);
             return $this->cloneRecords($srcRepo, $dstRepo, $keys);
@@ -139,15 +133,12 @@ class ChunkManager
     /**
      * Move a chunk
      */
-    public function move($chunkIndex, $targetShardId, array $schemas)
+    public function move(Chunk $chunk, Shard $dstShard, array $schemas)
     {
-        $chunk = $this->mapping->loadChunk($chunkIndex);
         $shardId = $chunk->getShardId();
-        if ($targetShardId === $shardId) {
-            throw new InvalidArgumentException("$targetShardId == $shardId");
+        if ($dstShard->id === $shardId) {
+            throw new InvalidArgumentException("{$dstShard->id} == $shardId");
         }
-        $shards = $this->mapping->loadShardCollection();
-        $dstShard = $shards[$targetShardId];
         return $this->processChunk($chunk, $schemas, function($srcRepo, $repoClass, $keys) use ($dstShard) {
             $dstRepo = $dstShard->repo($repoClass);
             return $this->migrateRecords($srcRepo, $dstRepo, $keys);
@@ -157,12 +148,11 @@ class ChunkManager
     /**
      * splits the chunk in the middle
      *
-     * @param integer $chunkIndex the index of the existing chunk
+     * @param Chunk $chunk the index of the existing chunk
      * @return array created indexes.
      */
-    public function split($chunkIndex, $n = 2)
+    public function split(Chunk $chunk, $n = 2)
     {
-        $chunk = $this->mapping->loadChunk($chunkIndex);
         $range = $chunk->index - $chunk->from;
         $delta = intval(ceil($range / $n));
 

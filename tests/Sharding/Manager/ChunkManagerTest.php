@@ -31,8 +31,9 @@ class ChunkManagerTest extends StoreTestCase
     public function testChunkDistribute()
     {
         $numberOfChunks = 32;
+        $shardIds = $this->mapping->getShardIds();
         $chunkManager = new ChunkManager($this->mapping);
-        $chunks = $chunkManager->distribute($numberOfChunks);
+        $chunks = $chunkManager->distribute($shardIds, $numberOfChunks);
         $this->assertTrue(isset($chunks[Chunk::MAX_KEY]));
         $this->assertNotNull($chunks[Chunk::MAX_KEY]);
         $this->assertCount($numberOfChunks, $chunks);
@@ -57,15 +58,24 @@ class ChunkManagerTest extends StoreTestCase
 
         $targetNode = 'node2';
         $chunkManager = new ChunkManager($this->mapping);
-        $rets = $chunkManager->move(536870912, $targetNode, $schemas);
+
+        $c = $this->mapping->loadChunk(536870912);
+
+        $shards = $this->mapping->loadShardCollection();
+        $dstShard = $shards[$targetNode];
+
+        $rets = $chunkManager->move($c, $dstShard, $schemas);
         $this->assertCount(6, $rets);
         $this->assertResultsSuccess($rets);
 
-        $rets = $chunkManager->move(1073741824, $targetNode, $schemas);
+        $c = $this->mapping->loadChunk(1073741824);
+
+        $rets = $chunkManager->move($c, $dstShard, $schemas);
         $this->assertResultsSuccess($rets);
         $this->assertCount(0, $rets);
 
-        $rets = $chunkManager->move(1610612736, $targetNode, $schemas);
+        $c = $this->mapping->loadChunk(1610612736);
+        $rets = $chunkManager->move($c, $dstShard, $schemas);
         $this->assertResultsSuccess($rets);
         $this->assertCount(0, $rets);
 
@@ -86,7 +96,10 @@ class ChunkManagerTest extends StoreTestCase
     {
         $chunkManager = new ChunkManager($this->mapping);
         $this->assertCount(8, $this->mapping->chunks);
-        $indexes = $chunkManager->split(1073741824);
+
+        $c = $this->mapping->loadChunk(1073741824);
+
+        $indexes = $chunkManager->split($c);
         $this->assertCount(1, $indexes);
         $this->assertEquals(805306368, $indexes[0]);
         $this->assertCount(9, $this->mapping->chunks);
@@ -101,7 +114,12 @@ class ChunkManagerTest extends StoreTestCase
         $this->assertCount(8, $this->mapping->chunks);
 
         $schemas = SchemaUtils::findSchemasByConfig($this->config);
-        $rets = $chunkManager->clone(536870912, 'node2', $schemas);
+
+        $c = $this->mapping->loadChunk(536870912);
+
+        $shards = $this->mapping->loadShardCollection();
+
+        $rets = $chunkManager->clone($c, $shards['node2'], $schemas);
         $this->assertResultsSuccess($rets);
     }
 
@@ -116,7 +134,10 @@ class ChunkManagerTest extends StoreTestCase
 
         $chunkManager = new ChunkManager($this->mapping);
         $this->assertCount(8, $this->mapping->chunks);
-        $indexes = $chunkManager->split(536870912, 12);
+
+
+        $c = $this->mapping->loadChunk(536870912);
+        $indexes = $chunkManager->split($c, 12);
         $this->assertCount(11, $indexes);
 
         // shard keys: 2, 6
@@ -127,9 +148,12 @@ class ChunkManagerTest extends StoreTestCase
         ], $this->mapping->partition($shardKeys));
         $this->assertCount(19, $this->mapping->chunks);
 
+        $shards = $this->mapping->loadShardCollection();
+
         $schemas = SchemaUtils::findSchemasByConfig($this->config);
         foreach ($indexes as $index) {
-            $rets = $chunkManager->move($index, 'node3', $schemas);
+            $c = $this->mapping->loadChunk($index);
+            $rets = $chunkManager->move($c, $shards['node3'], $schemas);
             $this->assertResultsSuccess($rets);
         }
     }

@@ -17,12 +17,28 @@ class Shard
      */
     public $id;
 
+    /**
+     * @var object DistributionStatus
+     */
+    protected $stats;
+
+    protected $chunks;
+
     public function __construct($id, DataSourceManager $dataSourceManager)
     {
         $this->id           = $id;
         $this->dataSourceManager = $dataSourceManager;
     }
 
+    public function setStats($stats)
+    {
+        $this->stats = $stats;
+    }
+
+    public function getStats()
+    {
+        return $this->stats;
+    }
 
     public function getWriteConnection()
     {
@@ -81,4 +97,13 @@ class Shard
             $this
         );
     }
+
+
+    public function __debugInfo()
+    {
+        return [
+            '_shardId_' => $this->id,
+        ];
+    }
+
 }

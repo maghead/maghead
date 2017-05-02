@@ -10,6 +10,8 @@ class ShardKeyStat
 
     public $numberOfRows;
 
+    public $hash;
+
     protected $repo;
 
     public function __construct(BaseRepo $repo)
@@ -17,5 +19,14 @@ class ShardKeyStat
         $this->repo = $repo;
         $this->shardKey = intval($this->shardKey);
         $this->numberOfRows = intval($this->numberOfRows);
+    }
+
+    public function __debugInfo()
+    {
+        return [
+            'shardKey'     => $this->shardKey,
+            'numberOfRows' => $this->numberOfRows,
+            'hash' => $this->hash,
+        ];
     }
 }

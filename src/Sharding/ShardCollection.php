@@ -6,12 +6,13 @@ use LogicException;
 use ArrayAccess;
 use IteratorAggregate;
 use ArrayIterator;
+use Countable;
 use Maghead\Sharding\Hasher\FastHasher;
 use Maghead\Sharding\Hasher\Hasher;
 use Ramsey\Uuid\Uuid;
 use SQLBuilder\Universal\Query\UUIDQuery;
 
-class ShardCollection implements ArrayAccess, IteratorAggregate
+class ShardCollection implements ArrayAccess, IteratorAggregate, Countable
 {
     protected $shards;
 
@@ -28,6 +29,10 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
         $this->repoClass = $repoClass;
     }
 
+    public function count()
+    {
+        return count($this->shards);
+    }
 
     /**
      * A simple UUID generator base on Ramsey's implementation.
@@ -199,4 +204,16 @@ class ShardCollection implements ArrayAccess, IteratorAggregate
         $repo = $shard->createRepo($this->repoClass);
         return $callback($repo, $shard);
     }
+
+
+    public function __debugInfo()
+    {
+        return [
+            'repoClass' => $this->repoClass,
+            'mapping'   => $this->mapping,
+            'shards'    => $this->shards,
+        ];
+    }
+
+
 }
