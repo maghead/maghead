@@ -132,12 +132,29 @@ class BaseRepoClassGenerator
             $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], AnnotatedBlock::apply($elements, $codegenSettings));
         }
 
+        if ($findByGlobalPrimaryKeyQuery = $schema->newFindByGlobalPrimaryKeyQuery()) {
+            $findByGlobalPrimaryKeySql = $findByGlobalPrimaryKeyQuery->toSql($readQueryDriver, new ArgumentArray());
+            $cTemplate->addConst('FIND_BY_GLOBAL_PRIMARY_KEY_SQL', $findByGlobalPrimaryKeySql);
+            $cTemplate->addProtectedProperty('findGlobalPrimaryKeyStm');
+            $cTemplate->addMethod('public', 'findByGlobalPrimaryKey', ['$pkId'], function () use ($schema) {
+                return [
+                    "if (!\$this->findGlobalPrimaryKeyStm) {",
+                    "   \$this->findGlobalPrimaryKeyStm = \$this->read->prepare(self::FIND_BY_GLOBAL_PRIMARY_KEY_SQL);",
+                    "   \$this->findGlobalPrimaryKeyStm->setFetchMode(PDO::FETCH_CLASS, '{$schema->getModelClass()}', [\$this]);",
+                    "}",
+                    "\$this->findGlobalPrimaryKeyStm->execute([ \$pkId ]);",
+                    "\$obj = \$this->findGlobalPrimaryKeyStm->fetch();",
+                    "\$this->findGlobalPrimaryKeyStm->closeCursor();",
+                    "return \$obj;",
+                ];
+            });
+        }
 
-        $arguments = new ArgumentArray();
+
         $findByPrimaryKeyQuery = $schema->newFindByPrimaryKeyQuery();
-        $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, $arguments);
+        $findByPrimaryKeySql = $findByPrimaryKeyQuery->toSql($readQueryDriver, new ArgumentArray());
         $cTemplate->addConst('FIND_BY_PRIMARY_KEY_SQL', $findByPrimaryKeySql);
-
+        $cTemplate->addProtectedProperty('loadStm');
         $cTemplate->addMethod('public', 'findByPrimaryKey', ['$pkId'], function () use ($schema) {
             return [
                 "if (!\$this->loadStm) {",
