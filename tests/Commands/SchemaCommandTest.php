@@ -23,7 +23,8 @@ class SchemaCommandsTest extends CommandTestCase
 
     public function testSchemaBuildCommand()
     {
-        $ret = $this->app->run(array('maghead','schema','build'));
+        $this->expectOutputRegex('/Updated/');
+        $ret = $this->app->run(array('maghead','schema','build','-f'));
         $this->assertTrue($ret);
     }
 
@@ -41,6 +42,7 @@ class SchemaCommandsTest extends CommandTestCase
      */
     public function testSchemaStatusCommand()
     {
+        // $this->expectOutputRegex('/up-to-date/');
         $ret = $this->app->run(array('maghead','schema','status'));
         $this->assertTrue($ret);
     }
@@ -50,6 +52,7 @@ class SchemaCommandsTest extends CommandTestCase
      */
     public function testSchemaCleanCommand()
     {
+        $this->expectOutputRegex('/Cleaning schema/');
         $ret = $this->app->run(array('maghead','schema','clean'));
         $this->assertTrue($ret);
     }
