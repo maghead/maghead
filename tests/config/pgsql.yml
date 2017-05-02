@@ -10,22 +10,29 @@ schema:
 instance:
   local:
     dsn: 'pgsql:host=localhost'
+    driver: pgsql
+    host: localhost
     user: postgres
 databases:
   master:
     dsn: 'pgsql:host=localhost;dbname=testing'
+    driver: pgsql
+    host: localhost
     user: postgres
   node1:
+    driver: pgsql
     dsn: 'pgsql:host=localhost'
     user: postgres
     host: localhost
     database: s1
   node2:
+    driver: pgsql
     dsn: 'pgsql:host=localhost'
     user: postgres
     host: localhost
     database: s2
   node3:
+    driver: pgsql
     dsn: 'pgsql:host=localhost'
     user: postgres
     host: localhost
