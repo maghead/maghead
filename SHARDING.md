@@ -1,46 +1,9 @@
 ## Sharding
 
-
 Gearman
 
     phpbrew ext install github:wcgallego/pecl-gearman
 
-## Reference
-
-Consistent Hash
-
-- chash extension <https://code.google.com/archive/p/chash/source/default/source>
-
-TiDB
-
-- How we build tidb <https://pingcap.github.io/blog/2016/10/17/how-we-build-tidb/>
-
-MariaDB
-
-- MaxScale <https://mariadb.com/products/mariadb-maxscale>
-
-HBase + Phoenix
-
-- Phoenix hbase <https://www.infoq.com/news/2013/01/Phoenix-HBase-SQL>
-- Data aggregation in hbase <https://www.panaseer.com/2016/04/11/data-aggregation-in-hbase/>
-
-Doctrine
-
-- <http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/index.html>
-- <http://doctrine.readthedocs.io/en/latest/en/manual/unit-testing.html>
-- <http://doctrine.readthedocs.io/en/latest/en/manual/dql-doctrine-query-language.html#indexby-keyword>
-
-Load Balancing
-
-- <https://github.com/WMSPanel/load-balancer/blob/master/load-balancer/nimble_lb.php>
-- Nginx 4 load balancing <https://www.nginx.com/resources/glossary/layer-4-load-balancing/>
-
-Sphinx Document
-
-- <http://www.sphinx-doc.org/en/1.5.1/theming.html>
-- <http://www.sphinx-doc.org/en/1.5.1/rest.html>
-- <http://thomas-cokelaer.info/tutorials/sphinx/rest_syntax.html>
-- <http://openalea.gforge.inria.fr/doc/openalea/doc/_build/html/source/sphinx/rest_syntax.html>
 
 
 
@@ -290,22 +253,12 @@ a new chunk list will be allocated in the shard mapping config:
         'key'    => 'store_id',
         'shards' => [ 's1', 's2' ],
         'chunks' => [
-            'c1' => ['shard' => 's1', 'dbname' => 'db_c1'], // the dbname may override the dbname in the DSN of the shard.
-            'c2' => ['shard' => 's1', 'dbname' => 'db_c2'],
-            'c3' => ['shard' => 's1', 'dbname' => 'db_c3'],
-            'c4' => ['shard' => 's2', 'dbname' => 'db_c4'],
-            'c5' => ['shard' => 's2', 'dbname' => 'db_c5'],
-        ],
-        'hash' => [
-            // pre-allocate more slices
-            't0' => 'c1',
-            't1' => 'c1',
-            't2' => 'c1',
-            't3' => 'c2',
-            't4' => 'c2',
-            't5' => 'c2',
-            // ...
-        ],
+            10000 => ['shard' => 's1' ], // the dbname may override the dbname in the DSN of the shard.
+            20000 => ['shard' => 's1' ],
+            30000 => ['shard' => 's1' ],
+            40000 => ['shard' => 's2' ],
+            50000 => ['shard' => 's2' ],
+        ]
     ],
 
 The chunk manager will then create the database schema on each chunk.
@@ -340,14 +293,48 @@ machine)
 
 To split a chunk, please run the command below:
 
-    maghead shard chunks:split c1 4
+    maghead shard chunk split 5400320 4
 
 The command above will split the chunk `c1` into 4 chunks by its shard targets.
 
 
+## Reference
 
-## Consistent Hashing libraries
+Consistent Hashing libraries
 
 - dailymotion chash https://github.com/dailymotion/chash
 - flexihash https://github.com/pda/flexihash
+- chash extension <https://code.google.com/archive/p/chash/source/default/source>
+
+TiDB
+
+- How we build tidb <https://pingcap.github.io/blog/2016/10/17/how-we-build-tidb/>
+
+MariaDB
+
+- MaxScale <https://mariadb.com/products/mariadb-maxscale>
+
+HBase + Phoenix
+
+- Phoenix hbase <https://www.infoq.com/news/2013/01/Phoenix-HBase-SQL>
+- Data aggregation in hbase <https://www.panaseer.com/2016/04/11/data-aggregation-in-hbase/>
+
+Doctrine
+
+- <http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/index.html>
+- <http://doctrine.readthedocs.io/en/latest/en/manual/unit-testing.html>
+- <http://doctrine.readthedocs.io/en/latest/en/manual/dql-doctrine-query-language.html#indexby-keyword>
+
+Load Balancing
+
+- <https://github.com/WMSPanel/load-balancer/blob/master/load-balancer/nimble_lb.php>
+- Nginx 4 load balancing <https://www.nginx.com/resources/glossary/layer-4-load-balancing/>
+
+Sphinx Document
+
+- <http://www.sphinx-doc.org/en/1.5.1/theming.html>
+- <http://www.sphinx-doc.org/en/1.5.1/rest.html>
+- <http://thomas-cokelaer.info/tutorials/sphinx/rest_syntax.html>
+- <http://openalea.gforge.inria.fr/doc/openalea/doc/_build/html/source/sphinx/rest_syntax.html>
+
 
