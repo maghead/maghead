@@ -184,6 +184,10 @@ class SchemaGenerator
         // class map [ class => class file path ]
         $classMap = array();
         foreach ($schemas as $schema) {
+            if ($schema->virtual) {
+                continue;
+            }
+
             $generated = $this->generateSchemaFiles($schema);
             if (!empty($generated)) {
                 $classMap = array_merge($classMap, $generated);

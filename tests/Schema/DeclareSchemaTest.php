@@ -6,6 +6,8 @@ class NoLocalPrimaryKeySchema extends DeclareSchema
 {
     var $enableHiddenPrimaryKey = false;
 
+    var $virtual = true;
+
     public function schema()
     {
         $this->removeColumn('id');
@@ -21,6 +23,8 @@ class LocalPrimaryKeySchema extends DeclareSchema
 {
     var $enableHiddenPrimaryKey = false;
 
+    var $virtual = true;
+
     public function schema()
     {
         $this->column('id')
@@ -35,6 +39,8 @@ class LocalPrimaryKeySchema extends DeclareSchema
 class GlobalPrimaryKeySchema extends DeclareSchema
 {
     var $enableHiddenPrimaryKey = false;
+
+    var $virtual = true;
 
     public function schema()
     {

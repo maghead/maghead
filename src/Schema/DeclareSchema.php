@@ -159,6 +159,11 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     public $primaryKey;
 
     /**
+     * virtual schema (won't generate class files)
+     */
+    var $virtual = false;
+
+    /**
      * Constructor of declare schema.
      *
      * The constructor calls `build` method to build the schema information.
