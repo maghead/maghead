@@ -860,8 +860,10 @@ class DeclareSchema extends BaseSchema implements Schema
     public function seeds()
     {
         $seeds = func_get_args();
-        $this->seeds = array_map(function ($class) {
-            return str_replace('::', '\\', $class);
+        $self = $this;
+        $this->seeds = array_map(function ($class) use($self) {
+            $class = str_replace('::', '\\', $class);
+            return resolveClass($class, [], $self, ['Seeds']);
         }, $seeds);
 
         return $this;

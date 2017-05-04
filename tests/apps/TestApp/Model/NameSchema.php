@@ -1,7 +1,17 @@
 <?php
+
 namespace TestApp\Model;
 
 use Maghead\Schema;
+
+class NameSeed
+{
+    public static function seed()
+    {
+        $name = new \TestApp\Model\Name;
+        $ret = $name->create(array('name' => 'Add','country' => 'Taiwan','address' => 'Address' ));
+    }
+}
 
 class NameSchema extends Schema
 {
@@ -72,6 +82,6 @@ class NameSchema extends Schema
                 return new \DateTime($val);
             });
 
-        $this->seeds('TestSeed');
+        $this->seeds('NameSeed');
     }
 }
