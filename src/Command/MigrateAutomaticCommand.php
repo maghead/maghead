@@ -8,7 +8,6 @@ use Maghead\Manager\MigrationManager;
 use Maghead\Manager\DataSourceManager;
 
 use Maghead\Schema\SchemaLoader;
-use Maghead\ServiceContainer;
 use Maghead\Backup\MySQLBackup;
 use SQLBuilder\Driver\PDOMySQLDriver;
 
