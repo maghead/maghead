@@ -100,11 +100,10 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
         foreach ($this->schemas as $schema) {
             // skip abstract classes.
             if (
-              !is_subclass_of($schema, 'Maghead\Schema\DeclareSchema', true)
-              || is_a($schema, 'Maghead\Schema\DynamicSchemaDeclare', true)
-              || is_a($schema, 'Maghead\Schema\MixinDeclareSchema', true)
-              || is_a($schema, 'Maghead\Schema\MixinSchemaDeclare', true)
-              || is_subclass_of($schema, 'Maghead\Schema\MixinDeclareSchema', true)
+              !is_subclass_of($schema, 'Maghead\\Schema\\DeclareSchema', true)
+              || is_a($schema, 'Maghead\\Schema\\DynamicSchemaDeclare', true)
+              || is_a($schema, 'Maghead\\Schema\\MixinDeclareSchema', true)
+              || is_subclass_of($schema, 'Maghead\\Schema\\MixinDeclareSchema', true)
             ) {
                 continue;
             }

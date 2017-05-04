@@ -223,11 +223,10 @@ class SchemaUtils
         foreach ($classes as $class) {
             // skip abstract classes.
             if (
-              !is_subclass_of($class, 'Maghead\Schema\DeclareSchema', true)
-              || is_a($class, 'Maghead\Schema\DynamicSchemaDeclare', true)
-              || is_a($class, 'Maghead\Schema\MixinDeclareSchema', true)
-              || is_a($class, 'Maghead\Schema\MixinSchemaDeclare', true)
-              || is_subclass_of($class, 'Maghead\Schema\MixinDeclareSchema', true)
+              !is_subclass_of($class, 'Maghead\\Schema\\DeclareSchema', true)
+              || is_a($class, 'Maghead\\Schema\\DynamicSchemaDeclare', true)
+              || is_a($class, 'Maghead\\Schema\\MixinDeclareSchema', true)
+              || is_subclass_of($class, 'Maghead\\Schema\\MixinDeclareSchema', true)
             ) {
                 continue;
             }
