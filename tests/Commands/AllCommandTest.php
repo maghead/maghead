@@ -36,7 +36,7 @@ class AllCommandsTest extends CommandTestCase
      */
     public function testSqlCommand()
     {
-        $this->expectOutputRegex('/Done/');
+        $this->expectOutputRegex('/Done. \d+ schema tables were generated into data source/');
         $this->app->run(array('maghead','sql','--rebuild'));
     }
 

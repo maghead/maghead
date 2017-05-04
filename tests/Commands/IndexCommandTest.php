@@ -5,7 +5,7 @@ use CLIFramework\Testing\CommandTestCase;
 /**
  * @group command
  */
-class AllCommandsTest extends CommandTestCase
+class IndexCommandsTest extends CommandTestCase
 {
     public function setupApplication()
     {

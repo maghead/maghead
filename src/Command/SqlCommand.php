@@ -52,8 +52,6 @@ DOC;
 
     public function execute($nodeId)
     {
-        $options = $this->options;
-        $logger = $this->logger;
         $config = $this->getConfig();
 
         $this->logger->debug('Finding schema classes...');
@@ -81,8 +79,8 @@ DOC;
             }
 
             $sqlBuilder = TableBuilder::create($driver, [
-                'rebuild' => $options->rebuild,
-                'clean' => $options->clean,
+                'rebuild' => $this->options->rebuild,
+                'clean' => $this->options->clean,
             ]);
 
             $fp = fopen($output, 'w');
@@ -103,8 +101,8 @@ DOC;
             $driver = $dataSourceManager->getQueryDriver($nodeId);
 
             $tableManager = new TableManager($conn, [
-                'rebuild' => $options->rebuild,
-                'clean' => $options->clean,
+                'rebuild' => $this->options->rebuild,
+                'clean' => $this->options->clean,
             ], $this->logger);
 
             $tableManager->build($schemas);
@@ -118,14 +116,14 @@ DOC;
             }
 
             $time = time();
-            $logger->info("Setting migration timestamp to $time");
+            $this->logger->info("Setting migration timestamp to $time");
             $metadata = new MetadataManager($conn, $driver);
 
             // update migration timestamp
             $metadata['migration'] = $time;
 
-            $logger->info(
-                $logger->formatter->format(
+            $this->logger->info(
+                $this->logger->formatter->format(
                     'Done. '.count($schemas)." schema tables were generated into data source '$nodeId'.", 'green')
             );
         }
