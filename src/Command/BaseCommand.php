@@ -56,13 +56,6 @@ class BaseCommand extends Command
     }
 
 
-    public function getCurrentConnection()
-    {
-        $dataSource = $this->getCurrentDataSourceId();
-        $dataSourceManager = DataSourceManager::getInstance();
-
-        return $dataSourceManager->getConnection($dataSource);
-    }
 
     public function findSchemasByArguments(array $args)
     {
