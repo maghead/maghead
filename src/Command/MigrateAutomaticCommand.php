@@ -30,7 +30,7 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
         AutomaticMigration::options($opts);
     }
 
-    public function execute($nodeId)
+    public function execute($nodeId = "master")
     {
         $dataSourceManager = DataSourceManager::getInstance();
         $conn = $dataSourceManager->getConnection($nodeId);
