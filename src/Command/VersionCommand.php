@@ -8,12 +8,12 @@ class VersionCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'Show database version';
+        return 'show database version';
     }
 
     public function usage()
     {
-        return "\tmaghead version\n";
+        return "maghead version\n";
     }
 
     public function execute($nodeId = 'master')

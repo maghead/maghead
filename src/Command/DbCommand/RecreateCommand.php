@@ -9,7 +9,7 @@ class RecreateCommand extends CreateCommand
         return 're-create database bases on the current config.';
     }
 
-    public function execute($nodeId)
+    public function execute($nodeId = 'master')
     {
         $dropCommand = $this->createCommand('Maghead\\Command\\DbCommand\\DropCommand');
         $dropCommand->options = $this->options;
