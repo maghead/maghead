@@ -44,8 +44,8 @@ class InitConfCommand extends Command
         $logger->info('Creating config file skeleton...');
         $content = <<<EOS
 ---
-bootstrap:
-- vendor/autoload.php
+cli:
+  bootstrap: vendor/autoload.php
 schema:
   # Insert auto-increment primary key to every schema classes
   auto_id: true

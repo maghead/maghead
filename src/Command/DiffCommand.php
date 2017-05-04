@@ -16,17 +16,13 @@ class DiffCommand extends BaseCommand
         return 'Compare the defined schemas with the tables in database.';
     }
 
-    public function execute()
+    public function execute($nodeId)
     {
         $formatter = new \CLIFramework\Formatter();
-        $options = $this->options;
-        $logger = $this->logger;
-
-        $dsId = $this->getCurrentDataSourceId();
 
         $dataSourceManager = \Maghead\Manager\DataSourceManager::getInstance();
-        $conn = $dataSourceManager->getConnection($dsId);
-        $driver = $dataSourceManager->getQueryDriver($dsId);
+        $conn = $dataSourceManager->getConnection($nodeId);
+        $driver = $dataSourceManager->getQueryDriver($nodeId);
 
         $this->logger->info('Performing comparison...');
 
@@ -50,7 +46,7 @@ class DiffCommand extends BaseCommand
                 if (count($diffs)) {
                     $found = true;
                     $printer = new ComparatorConsolePrinter($diffs);
-                    $printer->beforeName = $table.":data source [$dsId]";
+                    $printer->beforeName = $table.":data source [$nodeId]";
                     $printer->afterName = $table.':'.$filepath;
                     $printer->output();
                 }

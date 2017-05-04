@@ -3,6 +3,7 @@
 namespace Maghead\Command;
 
 use Maghead\Manager\MetadataManager;
+use Maghead\Manager\DataSourceManager;
 
 class MetaCommand extends BaseCommand
 {
@@ -19,13 +20,15 @@ class MetaCommand extends BaseCommand
             ."\tmaghead meta [key]\n";
     }
 
-    public function execute()
+    public function execute($nodeId)
     {
-        $dsId = $this->getCurrentDataSourceId();
-        $queryDriver = $this->getCurrentQueryDriver();
-        $conn = $this->getCurrentConnection();
+        $dataSourceManager = DataSourceManager::getInstance();
+        $conn = $dataSourceManager->getConnection($nodeId);
+        $queryDriver = $conn->getQueryDriver();
 
         $args = func_get_args();
+        array_shift($args);
+
         if (empty($args)) {
             $meta = new MetadataManager($conn, $queryDriver);
             printf("%26s | %-20s\n", 'Key', 'Value');

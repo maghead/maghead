@@ -15,8 +15,6 @@ class BasedataCommand extends BaseCommand
 
     public function execute()
     {
-        $options = $this->options;
-        $logger = $this->logger;
         $config = $this->getConfig();
 
         $classes = $this->findSchemasByArguments(func_get_args());
