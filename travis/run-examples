@@ -9,4 +9,4 @@ php ../../bin/maghead db create master
 php ../../bin/maghead schema build -f
 
 # add testing2 database to the server
-php ../../bin/maghead sql --rebuild --basedata
+php ../../bin/maghead sql --rebuild --basedata master
