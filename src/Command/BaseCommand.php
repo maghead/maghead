@@ -34,13 +34,6 @@ class BaseCommand extends Command
         return $this->config;
     }
 
-    public function options($opts)
-    {
-        parent::options($opts);
-    }
-
-
-
     public function findSchemasByArguments(array $args)
     {
         $config = $this->getConfig();
