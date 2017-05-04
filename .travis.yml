@@ -48,3 +48,6 @@ cache:
   directories:
   - vendor
   - $HOME/.composer/cache
+notifications:
+  email:
+    on_failure: change
