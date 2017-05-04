@@ -5,7 +5,7 @@ namespace Maghead\Schema;
 use IteratorAggregate;
 use ArrayIterator;
 
-class RuntimeSchema extends BaseSchema implements SchemaInterface, IteratorAggregate
+class RuntimeSchema extends BaseSchema implements Schema, IteratorAggregate
 {
     // columns array
     public $columnData = [];

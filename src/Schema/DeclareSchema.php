@@ -64,7 +64,7 @@ function resolveClass($class, array $defaultNsList = [], $refObject = null, arra
     return $class;
 }
 
-class DeclareSchema extends BaseSchema implements SchemaInterface
+class DeclareSchema extends BaseSchema implements Schema
 {
     /**
      * The defualt data source ID needs to be "default" and to be resolved in

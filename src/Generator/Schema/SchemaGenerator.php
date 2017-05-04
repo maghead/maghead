@@ -5,7 +5,7 @@ namespace Maghead\Generator\Schema;
 use RuntimeException;
 use ClassTemplate\ClassFile;
 use Maghead\Schema;
-use Maghead\Schema\SchemaInterface;
+use Maghead\Schema\Schema;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\BaseSchema;
 use Maghead\Generator\Schema\BaseModelClassGenerator;
@@ -139,7 +139,7 @@ class SchemaGenerator
         return true;
     }
 
-    public function generateSchemaFiles(SchemaInterface $schema)
+    public function generateSchemaFiles(Schema $schema)
     {
         $classMap = array();
         $cTemplates = array();

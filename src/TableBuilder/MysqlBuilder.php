@@ -2,7 +2,7 @@
 
 namespace Maghead\TableBuilder;
 
-use Maghead\Schema\SchemaInterface;
+use Maghead\Schema\Schema;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Schema\DeclareColumn;
 use SQLBuilder\ArgumentArray;
@@ -26,7 +26,7 @@ class MysqlBuilder extends BaseBuilder
         ];
     }
 
-    public function createTable(SchemaInterface $schema)
+    public function createTable(Schema $schema)
     {
         $sql = 'CREATE TABLE ';
 
@@ -94,7 +94,7 @@ class MysqlBuilder extends BaseBuilder
      *
      *  FOREIGN KEY (`order_uuid`) REFERENCES orders(`uuid`)
      */
-    public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column)
+    public function buildColumnSql(Schema $schema, DeclareColumn $column)
     {
         $name = $column->name;
         $isa = $column->isa ?: 'str';
@@ -142,7 +142,7 @@ class MysqlBuilder extends BaseBuilder
         return $sql;
     }
 
-    public function dropTable(SchemaInterface $schema)
+    public function dropTable(Schema $schema)
     {
         return 'DROP TABLE IF EXISTS '
             .$this->driver->quoteIdentifier($schema->getTable())

@@ -101,7 +101,7 @@ class AuthorBookModelTest extends ModelTestCase
     /**
      * @rebuild false
      */
-    public function testSchemaInterface()
+    public function testSchema()
     {
         $author = new Author;
         $names = array('updated_on','created_on','id','name','email','identity','confirmed');

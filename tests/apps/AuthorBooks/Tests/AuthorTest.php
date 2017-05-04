@@ -77,7 +77,7 @@ class AuthorTest extends ModelTestCase
     }
 
 
-    public function testSchemaInterface()
+    public function testSchema()
     {
         $author = new Author;
 

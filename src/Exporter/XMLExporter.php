@@ -5,7 +5,7 @@ namespace Maghead\Exporter;
 use Maghead\Runtime\BaseModel;
 use Maghead\Runtime\BaseCollection;
 use Maghead\Schema\Relationship\Relationship;
-use Maghead\Schema\SchemaInterface;
+use Maghead\Schema\Schema;
 use DOMDocument;
 use DOMElement;
 use DOMText;
@@ -104,7 +104,7 @@ class XMLExporter
         return $dom;
     }
 
-    protected function appendRecord(DOMDocument $dom, DOMElement $root, BaseModel $record, SchemaInterface $schema = null, $recursive = true)
+    protected function appendRecord(DOMDocument $dom, DOMElement $root, BaseModel $record, Schema $schema = null, $recursive = true)
     {
         if (!$schema) {
             $schema = $record->getSchema();
@@ -115,7 +115,7 @@ class XMLExporter
         $this->appendRecordInplace($dom, $recordElement, $record, $schema, $recursive);
     }
 
-    protected function appendRecordInplace(DOMDocument $dom, DOMElement $root, BaseModel $record, SchemaInterface $schema = null, $recursive = true)
+    protected function appendRecordInplace(DOMDocument $dom, DOMElement $root, BaseModel $record, Schema $schema = null, $recursive = true)
     {
         if (!$schema) {
             $schema = $record->getSchema();

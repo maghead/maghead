@@ -3,7 +3,7 @@
 namespace Maghead\TableBuilder;
 
 use Maghead\Schema;
-use Maghead\Schema\SchemaInterface;
+use Maghead\Schema\Schema;
 use Maghead\Schema\DeclareColumn;
 use SQLBuilder\ArgumentArray;
 
@@ -14,7 +14,7 @@ use SQLBuilder\ArgumentArray;
  */
 class PgsqlBuilder extends BaseBuilder
 {
-    public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column)
+    public function buildColumnSql(Schema $schema, DeclareColumn $column)
     {
         $name = $column->name;
         $isa = $column->isa ?: 'str';
@@ -33,12 +33,12 @@ class PgsqlBuilder extends BaseBuilder
         return $sql;
     }
 
-    public function buildForeignKeys(SchemaInterface $schema)
+    public function buildForeignKeys(Schema $schema)
     {
         return [];
     }
 
-    public function dropTable(SchemaInterface $schema)
+    public function dropTable(Schema $schema)
     {
         return 'DROP TABLE IF EXISTS '
                 .$this->driver->quoteIdentifier($schema->getTable())

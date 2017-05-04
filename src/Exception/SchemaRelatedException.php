@@ -3,13 +3,13 @@
 namespace Maghead\Exception;
 
 use Exception;
-use Maghead\Schema\SchemaInterface;
+use Maghead\Schema\Schema;
 
 class SchemaRelatedException extends Exception
 {
     public $schema;
 
-    public function __construct(SchemaInterface $schema, $message)
+    public function __construct(Schema $schema, $message)
     {
         $this->schema = $schema;
 

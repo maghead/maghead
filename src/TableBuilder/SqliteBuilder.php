@@ -2,7 +2,7 @@
 
 namespace Maghead\TableBuilder;
 
-use Maghead\Schema\SchemaInterface;
+use Maghead\Schema\Schema;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Schema\DeclareColumn;
 use SQLBuilder\ArgumentArray;
@@ -21,7 +21,7 @@ class SqliteBuilder extends BaseBuilder
         ];
     }
 
-    public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column)
+    public function buildColumnSql(Schema $schema, DeclareColumn $column)
     {
         $name = $column->name;
         $isa = $column->isa ?: 'str';
@@ -78,19 +78,19 @@ class SqliteBuilder extends BaseBuilder
         return $sql;
     }
 
-    public function dropTable(SchemaInterface $schema)
+    public function dropTable(Schema $schema)
     {
         return 'DROP TABLE IF EXISTS '
             .$this->driver->quoteIdentifier($schema->getTable())
             .';';
     }
 
-    public function buildIndex(SchemaInterface $schema)
+    public function buildIndex(Schema $schema)
     {
         return [];
     }
 
-    public function buildForeignKeys(SchemaInterface $schema)
+    public function buildForeignKeys(Schema $schema)
     {
         return [];
     }

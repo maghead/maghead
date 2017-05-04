@@ -7,7 +7,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\Universal\Syntax\Constraint;
 use Maghead\Schema\DynamicSchemaDeclare;
-use Maghead\Schema\SchemaInterface;
+use Maghead\Schema\Schema;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Runtime\BaseModel;
 use Maghead\Schema\DeclareColumn;
@@ -31,7 +31,7 @@ abstract class BaseBuilder
         }
     }
 
-    abstract public function buildColumnSql(SchemaInterface $schema, DeclareColumn $column);
+    abstract public function buildColumnSql(Schema $schema, DeclareColumn $column);
 
     public function setClean($clean = true)
     {
@@ -53,7 +53,7 @@ abstract class BaseBuilder
         return [];
     }
 
-    public function createTable(SchemaInterface $schema)
+    public function createTable(Schema $schema)
     {
         $sql = 'CREATE TABLE '
             .$this->driver->quoteIdentifier($schema->getTable())." ( \n";
@@ -73,7 +73,7 @@ abstract class BaseBuilder
         return $sql;
     }
 
-    public function build(SchemaInterface $schema)
+    public function build(Schema $schema)
     {
         if ($schema instanceof BaseModel) {
             $model = $schema;
@@ -89,7 +89,7 @@ abstract class BaseBuilder
         return $sqls;
     }
 
-    public function buildTable(SchemaInterface $schema)
+    public function buildTable(Schema $schema)
     {
         $sqls = array();
         if ($this->clean || $this->rebuild) {
@@ -103,7 +103,7 @@ abstract class BaseBuilder
         return $sqls;
     }
 
-    public function buildIndex(SchemaInterface $schema)
+    public function buildIndex(Schema $schema)
     {
         // build single column index
         $sqls = array();
@@ -140,7 +140,7 @@ abstract class BaseBuilder
         return $constraint;
     }
 
-    public function buildForeignKeys(SchemaInterface $schema)
+    public function buildForeignKeys(Schema $schema)
     {
         $sqls = [];
         foreach ($schema->relations as $rel) {

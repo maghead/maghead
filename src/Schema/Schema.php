@@ -2,7 +2,7 @@
 
 namespace Maghead\Schema;
 
-interface SchemaInterface
+interface Schema
 {
     /**
      * Returns table name.

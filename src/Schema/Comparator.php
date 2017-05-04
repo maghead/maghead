@@ -24,7 +24,7 @@ class Comparator
      * @param Schema $before schema before
      * @param Schema $after  new schema
      */
-    public function compare(SchemaInterface $before, SchemaInterface $after)
+    public function compare(Schema $before, Schema $after)
     {
         $diff = array();
 
