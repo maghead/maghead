@@ -24,29 +24,32 @@ class TableCommand extends BaseCommand
         $opts->add('v|verbose', 'Display verbose information');
     }
 
-    public function execute()
+    public function execute($nodeId = 'master')
     {
         $tables = func_get_args();
+        array_shift($tables);
+
         $config = $this->getConfig(true);
 
-        $dataSource = $this->getCurrentDataSourceId();
-        $conn = $this->getCurrentConnection();
-        $driver = $this->getCurrentQueryDriver();
+        $dataSourceManager = \Maghead\Manager\DataSourceManager::getInstance();
+        $conn = $dataSourceManager->getConnection($nodeId);
+        $driver = $dataSourceManager->getQueryDriver($nodeId);
 
-        if ($driver instanceof PDOMySQLDriver) {
-            $status = new MySQLTableStatus($conn, $driver);
-
-            $this->logger->info('Table Status:');
-            $rows = $status->queryDetails($tables);
-            $this->displayRows($rows);
-
-            $this->logger->newline();
-            $this->logger->info('Table Status Summary:');
-            $rows = $status->querySummary($tables);
-            $this->displayRows($rows);
-        } else {
-            $this->logger->error('Driver not supported.');
+        if (!$driver instanceof PDOMySQLDriver) {
+            $driverClass = get_class($driver);
+            $this->logger->error("Driver {$driverClass} not supported.");
         }
+
+        $status = new MySQLTableStatus($conn, $driver);
+
+        $this->logger->info('Table Status:');
+        $rows = $status->queryDetails($tables);
+        $this->displayRows($rows);
+
+        $this->logger->newline();
+        $this->logger->info('Table Status Summary:');
+        $rows = $status->querySummary($tables);
+        $this->displayRows($rows);
     }
 
     protected function displayRows(array $rows)
