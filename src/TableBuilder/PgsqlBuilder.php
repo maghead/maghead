@@ -2,7 +2,6 @@
 
 namespace Maghead\TableBuilder;
 
-use Maghead\Schema;
 use Maghead\Schema\Schema;
 use Maghead\Schema\DeclareColumn;
 use SQLBuilder\ArgumentArray;
