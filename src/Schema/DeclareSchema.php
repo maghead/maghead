@@ -32,7 +32,7 @@ class ShardKeyMissingException extends SchemaRelatedException
 }
 
 /**
- * try resolves the class name if the class doesn't exist or can't be found via
+ * try to resolve the class name if the class doesn't exist or can't be found via
  * the registered spl class loader.
  *
  * @param array $defaultNsList The default namespace list for lookup the class.
