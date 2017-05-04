@@ -14,7 +14,7 @@ class InitCommand extends Command
     public function mkpath($path)
     {
         if (!file_exists($path)) {
-            $this->logger->info($path);
+            $this->logger->info("Creating $path");
             mkdir($path, 0755, true);
         }
     }
@@ -23,9 +23,16 @@ class InitCommand extends Command
     {
         $this->mkpath('db/config');
         $this->mkpath('db/migration');
-        $command = $this->createCommand('Maghead\\Command\\InitConfCommand');
-        $command->execute();
-        $command = $this->createCommand('Maghead\\Command\\UseCommand');
-        $command->execute('db/config/database.yml');
+
+
+        $defaultConfigFile = 'db/config/database.yml';
+        if (file_exists($defaultConfigFile)) {
+            $command = $this->createCommand('Maghead\\Command\\UseCommand');
+            $command->execute('db/config/database.yml');
+        } else {
+            // If the default database config file is not found, create one.
+            $command = $this->createCommand('Maghead\\Command\\InitConfCommand');
+            $command->execute();
+        }
     }
 }
