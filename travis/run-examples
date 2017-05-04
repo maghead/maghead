@@ -2,7 +2,7 @@
 set -e
 cd examples/todos
 php ../../bin/maghead use db/config/database.yml
+php ../../bin/maghead schema build -f
 php ../../bin/maghead db create master
-php ../../bin/maghead schema build
 # add testing2 database to the server
 php ../../bin/maghead sql --rebuild --basedata
