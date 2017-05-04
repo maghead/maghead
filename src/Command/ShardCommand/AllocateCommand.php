@@ -9,7 +9,7 @@ use Maghead\Manager\ConnectionManager;
 use Maghead\Sharding\Manager\ConfigManager;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\DSN\DSN;
-use Maghead\Runtime\Config\FileConfigWriter;
+use Maghead\Runtime\Config\SymbolicLinkConfigWriter;
 use Maghead\Sharding\Operations\AllocateShard;
 
 
@@ -43,6 +43,6 @@ class AllocateCommand extends BaseCommand
         $op = new AllocateShard($config);
         $op->allocate($this->options->mapping, $this->options->instance, $nodeId);
 
-        FileConfigWriter::write($config);
+        SymbolicLinkConfigWriter::write($config);
     }
 }

@@ -28,7 +28,6 @@ class PruneShard extends BaseShardOperation
 {
     public function pruneShard(ShardMapping $mapping, Shard $shard)
     {
-
     }
 
     public function prune($mappingId, array $schemas, $nodeId = null)

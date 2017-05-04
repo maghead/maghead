@@ -1,5 +1,6 @@
 <?php
 namespace Maghead\Connector;
+
 use Maghead\Connection;
 use Maghead\DSN\DSNParser;
 use PDO;

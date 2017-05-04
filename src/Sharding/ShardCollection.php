@@ -214,6 +214,4 @@ class ShardCollection implements ArrayAccess, IteratorAggregate, Countable
             'shards'    => $this->shards,
         ];
     }
-
-
 }

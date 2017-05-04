@@ -62,7 +62,7 @@ class ShardDispatcher
      *
      * This API is not stable, might be removed in the future.
      *
-     * @unstable 
+     * @unstable
      *
      * @param string $shardId the shard ID
      * @param array $keys the keys in the chunk or shard.
@@ -80,6 +80,4 @@ class ShardDispatcher
         }
         return $mkeys;
     }
-
-
 }

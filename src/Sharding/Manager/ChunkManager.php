@@ -24,9 +24,13 @@ use Iterator;
 use IteratorAggregate;
 use InvalidArgumentException;
 
-class MigrateException extends RuntimeException { }
+class MigrateException extends RuntimeException
+{
+}
 
-class MigrateRecoveryException extends RuntimeException { }
+class MigrateRecoveryException extends RuntimeException
+{
+}
 
 class ChunkManager
 {
@@ -148,7 +152,7 @@ class ChunkManager
         if ($dstShard->id === $shardId) {
             throw new InvalidArgumentException("{$dstShard->id} == $shardId");
         }
-        return $this->processChunk($chunk, $schemas, function($srcRepo, $repoClass, $keys) use ($dstShard) {
+        return $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
             $dstRepo = $dstShard->repo($repoClass);
             return $this->cloneRecords($srcRepo, $dstRepo, $keys);
         });
@@ -162,30 +166,26 @@ class ChunkManager
         }
 
         try {
-
-            $created = $this->processChunk($chunk, $schemas, function($srcRepo, $repoClass, $keys) use ($dstShard) {
+            $created = $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
                 $dstRepo = $dstShard->repo($repoClass);
                 return $this->cloneRecords($srcRepo, $dstRepo, $keys);
             });
 
-            $missed = $this->processChunk($chunk, $schemas, function($srcRepo, $repoClass, $keys) use ($dstShard) {
+            $missed = $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
                 $dstRepo = $dstShard->repo($repoClass);
                 return $this->verifyRecords($srcRepo, $dstRepo, $keys);
             });
 
-            $deleted = $this->processChunk($chunk, $schemas, function($srcRepo, $repoClass, $keys) use ($dstShard) {
+            $deleted = $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
                 $this->deleteRecords($srcRepo, $keys);
             });
 
             return $created;
-
         } catch (MigrateException $e) {
-
-            return $this->processChunk($chunk, $schemas, function($srcRepo, $repoClass, $keys) use ($dstShard) {
+            return $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
                 $dstRepo = $dstShard->repo($repoClass);
                 $this->deleteRecords($dstRepo, $keys);
             });
-
         }
     }
 
@@ -198,7 +198,7 @@ class ChunkManager
         if ($dstShard->id === $shardId) {
             throw new InvalidArgumentException("{$dstShard->id} == $shardId");
         }
-        return $this->processChunk($chunk, $schemas, function($srcRepo, $repoClass, $keys) use ($dstShard) {
+        return $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
             $dstRepo = $dstShard->repo($repoClass);
             return $this->migrateRecords($srcRepo, $dstRepo, $keys);
         });
@@ -227,7 +227,7 @@ class ChunkManager
 
     protected function selectChunkKeys(BaseRepo $repo, Chunk $chunk, Hasher $hasher)
     {
-        return array_filter($repo->fetchShardKeys(), function($k) use ($hasher, $chunk) {
+        return array_filter($repo->fetchShardKeys(), function ($k) use ($hasher, $chunk) {
             return $chunk->contains($hasher->hash($k));
         });
     }
@@ -308,5 +308,4 @@ class ChunkManager
         }
         return $rets;
     }
-
 }

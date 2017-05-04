@@ -10,7 +10,7 @@ class ShardStatistics
 
     protected $shard;
 
-    function __construct(Shard $shard, array $schemaStats)
+    public function __construct(Shard $shard, array $schemaStats)
     {
         $this->shard = $shard;
         $this->schemaStats = $schemaStats;
@@ -22,6 +22,3 @@ class ShardStatistics
     $shardStats['keys'] = $repo->fetchShardKeyStats();
     */
 }
-
-
-

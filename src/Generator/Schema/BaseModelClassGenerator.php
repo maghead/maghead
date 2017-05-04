@@ -28,7 +28,9 @@ use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
 
-class PrimaryKeyColumnMissingException extends SchemaRelatedException { }
+class PrimaryKeyColumnMissingException extends SchemaRelatedException
+{
+}
 
 /**
  * Base Model class generator.
@@ -40,7 +42,6 @@ class PrimaryKeyColumnMissingException extends SchemaRelatedException { }
  */
 class BaseModelClassGenerator
 {
-
     public static $forcePrimaryKey = false;
 
     public static function create(DeclareSchema $schema, $baseClass)
@@ -72,17 +73,17 @@ class BaseModelClassGenerator
             'TABLE_ALIAS'        => 'm',
         ]);
 
-        $cTemplate->addConst('SCHEMA_CLASS',       get_class($schema));
-        $cTemplate->addConst('LABEL',              $schema->getLabel());
-        $cTemplate->addConst('MODEL_NAME',         $schema->getModelName());
-        $cTemplate->addConst('MODEL_NAMESPACE',    $schema->getNamespace());
-        $cTemplate->addConst('MODEL_CLASS',        $schema->getModelClass());
-        $cTemplate->addConst('REPO_CLASS',        $schema->getBaseRepoClass());
-        $cTemplate->addConst('COLLECTION_CLASS',   $schema->getCollectionClass());
-        $cTemplate->addConst('TABLE',              $schema->getTable());
-        $cTemplate->addConst('PRIMARY_KEY',        $schema->primaryKey);
+        $cTemplate->addConst('SCHEMA_CLASS', get_class($schema));
+        $cTemplate->addConst('LABEL', $schema->getLabel());
+        $cTemplate->addConst('MODEL_NAME', $schema->getModelName());
+        $cTemplate->addConst('MODEL_NAMESPACE', $schema->getNamespace());
+        $cTemplate->addConst('MODEL_CLASS', $schema->getModelClass());
+        $cTemplate->addConst('REPO_CLASS', $schema->getBaseRepoClass());
+        $cTemplate->addConst('COLLECTION_CLASS', $schema->getCollectionClass());
+        $cTemplate->addConst('TABLE', $schema->getTable());
+        $cTemplate->addConst('PRIMARY_KEY', $schema->primaryKey);
         $cTemplate->addConst('GLOBAL_PRIMARY_KEY', $schema->findGlobalPrimaryKey());
-        $cTemplate->addConst('LOCAL_PRIMARY_KEY',  $schema->findLocalPrimaryKey());
+        $cTemplate->addConst('LOCAL_PRIMARY_KEY', $schema->findLocalPrimaryKey());
 
 
         // Sharding related constants
@@ -216,7 +217,7 @@ class BaseModelClassGenerator
 
 
         $cTemplate->addMethod('public', 'getAlterableData', [], function () use ($properties) {
-            $alterableProperties = array_filter($properties, function($p) {
+            $alterableProperties = array_filter($properties, function ($p) {
                 list($columnName, $propertyName, $column) = $p;
                 return !$column->immutable;
             });

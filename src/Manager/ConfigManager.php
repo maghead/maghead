@@ -4,7 +4,7 @@ namespace Maghead\Manager;
 
 use Maghead\Runtime\Config\Config;
 use Maghead\Runtime\Config\FileConfigLoader;
-use Maghead\Runtime\Config\FileConfigWriter;
+use Maghead\Runtime\Config\SymbolicLinkConfigWriter;
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;
 use PDO;
@@ -18,7 +18,7 @@ class ConfigManager
     {
         if (is_string($arg)) {
             $this->config = FileConfigLoader::load($arg);
-        } else if ($arg instanceof Config) {
+        } elseif ($arg instanceof Config) {
             $this->config = $arg;
         } else {
             throw new InvalidArgumentException("Constructor argument need to be a valid config path or a config object.");
@@ -64,6 +64,6 @@ class ConfigManager
     public function save($file = null)
     {
         $f = $file ?: $this->config->file;
-        return FileConfigWriter::write($this->config, $f);
+        return SymbolicLinkConfigWriter::write($this->config, $f);
     }
 }

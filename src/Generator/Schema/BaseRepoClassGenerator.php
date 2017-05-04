@@ -192,12 +192,11 @@ class BaseRepoClassGenerator
 
         // TODO: can be static method
         $cTemplate->addMethod('protected', 'unsetImmutableArgs', ['$args'], function () use ($schema) {
-
-            $immutableColumns = array_filter($schema->getColumns(false), function($c) {
+            $immutableColumns = array_filter($schema->getColumns(false), function ($c) {
                 return $c->immutable;
             });
 
-            $lines = array_map(function($c) {
+            $lines = array_map(function ($c) {
                 return "unset(\$args[\"{$c->name}\"]);";
             }, $immutableColumns);
 

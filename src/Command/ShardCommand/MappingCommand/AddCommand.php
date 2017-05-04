@@ -26,9 +26,9 @@ class AddCommand extends BaseCommand
         $opts->add('master', 'set new chunks to master');
 
         $opts->add('s|shard+', 'shard id')
-            ->defaultValue(function() {
+            ->defaultValue(function () {
                 $dataSourceManager = DataSourceManager::getInstance();
-                return array_filter($dataSourceManager->getNodeIds(), function($nodeId) {
+                return array_filter($dataSourceManager->getNodeIds(), function ($nodeId) {
                     return $nodeId !== 'master';
                 });
             });
@@ -58,7 +58,7 @@ class AddCommand extends BaseCommand
         ];
         if ($this->options->shard) {
             $mappingConfig['shards'] = (array) $this->options->shard;
-        } else if ($this->options->master) {
+        } elseif ($this->options->master) {
             $mappingConfig['shards'] = ['master'];
         }
 

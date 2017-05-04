@@ -217,7 +217,6 @@ abstract class BaseTestCase extends TestCase
             }
 
             return $conn;
-
         } catch (PDOException $e) {
             if ($this->allowConnectionFailure) {
                 $this->markTestSkipped(

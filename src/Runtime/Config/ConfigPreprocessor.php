@@ -8,7 +8,6 @@ use PDO;
 
 class ConfigPreprocessor
 {
-
     public static function preprocess(array $config)
     {
         if (isset($config['databases'])) {
@@ -153,4 +152,3 @@ class ConfigPreprocessor
         return $newconfig;
     }
 }
-

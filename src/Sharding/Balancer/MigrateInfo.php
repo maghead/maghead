@@ -5,8 +5,8 @@ namespace Maghead\Sharding\Balancer;
 use Maghead\Sharding\Chunk;
 use Maghead\Sharding\Shard;
 
-class MigrateInfo {
-
+class MigrateInfo
+{
     public $chunk;
 
     public $keys;
@@ -18,11 +18,12 @@ class MigrateInfo {
 
     public $status = null;
 
-    const SUCCEED = TRUE;
+    const SUCCEED = true;
 
-    const FAILED = FALSE;
+    const FAILED = false;
 
-    public function __construct(Shard $shard, Chunk $chunk, array $keys) {
+    public function __construct(Shard $shard, Chunk $chunk, array $keys)
+    {
         $this->to    = $shard;
         $this->chunk = $chunk;
         $this->keys  = $keys;

@@ -302,7 +302,7 @@ abstract class BaseRepo implements Countable
                 continue;
             }
 
-            // FIXME check immutable 
+            // FIXME check immutable
             // if column is required (can not be empty) //   and default is defined.
             if ($c->required && array_key_exists($n, $args) && $args[$n] === null) {
                 return Result::failure("Value of $n is required.");

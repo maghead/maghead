@@ -24,8 +24,12 @@ use Maghead\Schema\Relationship\BelongsTo;
 
 use Maghead\Exception\SchemaRelatedException;
 
-class ShardMappingMissingException extends SchemaRelatedException { }
-class ShardKeyMissingException extends SchemaRelatedException { }
+class ShardMappingMissingException extends SchemaRelatedException
+{
+}
+class ShardKeyMissingException extends SchemaRelatedException
+{
+}
 
 /**
  * try resolves the class name if the class doesn't exist or can't be found via
@@ -38,7 +42,8 @@ class ShardKeyMissingException extends SchemaRelatedException { }
  * @return string The resolved class name, if it's not changed, the original
  * class name will be returned.
  */
-function resolveClass($class, array $defaultNsList = [], $refObject = null, array $refSubDirs = []) {
+function resolveClass($class, array $defaultNsList = [], $refObject = null, array $refSubDirs = [])
+{
     if (class_exists($class, true)) {
         return $class;
     }
@@ -48,7 +53,7 @@ function resolveClass($class, array $defaultNsList = [], $refObject = null, arra
         foreach ($refSubDirs as $subDir) {
             array_unshift($nslist, $refl->getNamespaceName() . "\\$subDir\\");
         }
-        array_unshift($nslist,$refl->getNamespaceName());
+        array_unshift($nslist, $refl->getNamespaceName());
     }
     foreach ($nslist as $ns) {
         $c = "{$ns}\\{$class}";
@@ -125,7 +130,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
     public $onUpdate;
 
     /**
-     * @var string 
+     * @var string
      *
      * shard mapping Id
      *
@@ -137,7 +142,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
 
     public $shardMapping;
 
-    var $enableHiddenPrimaryKey = true;
+    public $enableHiddenPrimaryKey = true;
 
     /**
      * The table name here is dynamic, could be overrided.

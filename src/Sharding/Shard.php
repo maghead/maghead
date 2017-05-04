@@ -105,5 +105,4 @@ class Shard
             '_shardId_' => $this->id,
         ];
     }
-
 }

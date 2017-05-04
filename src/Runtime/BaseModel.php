@@ -566,9 +566,7 @@ abstract class BaseModel implements Serializable
             });
 
             return $ret;
-
-        } else if (static::SHARD_MAPPING_ID) {
-
+        } elseif (static::SHARD_MAPPING_ID) {
             $shards = static::shards();
             $mapping = $shards->getMapping();
             $shardKeyName = $mapping->getKey();
@@ -589,8 +587,6 @@ abstract class BaseModel implements Serializable
             });
         }
         return static::masterRepo()->rawCreate($args);
-
-
     }
 
     /**

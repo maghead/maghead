@@ -11,7 +11,6 @@ use Maghead\Sharding\Balancer\MigrateInfo;
 
 use Maghead\Schema\BaseSchema;
 
-
 class ConservativeShardBalancerPolicy implements ShardBalancerPolicy
 {
     const MILLION = 1000000;
@@ -77,11 +76,11 @@ class ConservativeShardBalancerPolicy implements ShardBalancerPolicy
             $chunkDistribution[$x]['hashes'][] = $hash;
         }
 
-        uasort($chunkDistribution, function($a, $b) {
+        uasort($chunkDistribution, function ($a, $b) {
             return $a['rows'] <=> $b['rows'];
         });
 
-        return array_map(function($index) use ($to, $chunks, $chunkDistribution) {
+        return array_map(function ($index) use ($to, $chunks, $chunkDistribution) {
             return new MigrateInfo($to, $chunks[$index], $chunkDistribution[$index]['keys']);
         }, array_slice(array_keys($chunkDistribution), 0, $this->maxNumberOfMigrationChunks));
     }
@@ -138,7 +137,6 @@ class ConservativeShardBalancerPolicy implements ShardBalancerPolicy
         $best = false;
         $max = PHP_INT_MAX;
         foreach ($shards as $shardId => $shard) {
-
             if (!$this->isShardSuitable($shard)) {
                 continue;
             }

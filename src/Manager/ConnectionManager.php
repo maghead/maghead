@@ -361,5 +361,4 @@ class ConnectionManager implements ArrayAccess
     {
         $this->nodeConfigurations = [];
     }
-
 }

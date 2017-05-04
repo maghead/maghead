@@ -24,17 +24,17 @@ class SchemaProxyClassGenerator
         $cTemplate = new ClassFile($schema->getSchemaProxyClass());
         $cTemplate->extendClass('\\Maghead\\Schema\\RuntimeSchema');
 
-        $cTemplate->addConst('SCHEMA_CLASS',       get_class($schema));
-        $cTemplate->addConst('LABEL',              $schema->getLabel());
-        $cTemplate->addConst('MODEL_NAME',         $schema->getModelName());
-        $cTemplate->addConst('MODEL_NAMESPACE',    $schema->getNamespace());
-        $cTemplate->addConst('MODEL_CLASS',        $schema->getModelClass());
-        $cTemplate->addConst('REPO_CLASS',         $schema->getBaseRepoClass());
-        $cTemplate->addConst('COLLECTION_CLASS',   $schema->getCollectionClass());
-        $cTemplate->addConst('TABLE',              $schema->getTable());
-        $cTemplate->addConst('PRIMARY_KEY',        $schema->primaryKey);
+        $cTemplate->addConst('SCHEMA_CLASS', get_class($schema));
+        $cTemplate->addConst('LABEL', $schema->getLabel());
+        $cTemplate->addConst('MODEL_NAME', $schema->getModelName());
+        $cTemplate->addConst('MODEL_NAMESPACE', $schema->getNamespace());
+        $cTemplate->addConst('MODEL_CLASS', $schema->getModelClass());
+        $cTemplate->addConst('REPO_CLASS', $schema->getBaseRepoClass());
+        $cTemplate->addConst('COLLECTION_CLASS', $schema->getCollectionClass());
+        $cTemplate->addConst('TABLE', $schema->getTable());
+        $cTemplate->addConst('PRIMARY_KEY', $schema->primaryKey);
         $cTemplate->addConst('GLOBAL_PRIMARY_KEY', $schema->findGlobalPrimaryKey());
-        $cTemplate->addConst('LOCAL_PRIMARY_KEY',  $schema->findLocalPrimaryKey());
+        $cTemplate->addConst('LOCAL_PRIMARY_KEY', $schema->findLocalPrimaryKey());
 
         $cTemplate->useClass('\\Maghead\\Schema\\RuntimeColumn');
         $cTemplate->useClass('\\Maghead\\Schema\\Relationship\\Relationship');

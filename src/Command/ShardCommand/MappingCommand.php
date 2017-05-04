@@ -25,5 +25,3 @@ class MappingCommand extends BaseCommand
         return true;
     }
 }
-
-

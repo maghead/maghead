@@ -6,7 +6,7 @@ use Maghead\Command\BaseCommand;
 use PDO;
 use Exception;
 use Maghead\Sharding\Operations\CloneShard;
-use Maghead\Runtime\Config\FileConfigWriter;
+use Maghead\Runtime\Config\SymbolicLinkConfigWriter;
 
 class CloneCommand extends BaseCommand
 {
@@ -45,6 +45,6 @@ class CloneCommand extends BaseCommand
         }
         $o->clone($this->options->mapping, $this->options->instance, $destNode, $srcNode);
 
-        FileConfigWriter::write($config);
+        SymbolicLinkConfigWriter::write($config);
     }
 }

@@ -32,7 +32,7 @@ class Config implements ArrayAccess
     {
         if (isset($this->stash['cli']['bootstrap'])) {
             return (array) $this->stash['cli']['bootstrap'];
-        } else if (isset($this->stash['bootstrap'])) {
+        } elseif (isset($this->stash['bootstrap'])) {
             return (array) $this->stash['bootstrap'];
         }
     }

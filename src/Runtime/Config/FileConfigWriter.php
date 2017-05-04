@@ -2,11 +2,8 @@
 
 namespace Maghead\Runtime\Config;
 
-use ConfigKit\ConfigCompiler;
 use Exception;
-use PDO;
 use Symfony\Component\Yaml\Yaml;
-use Maghead\Runtime\Config\Config;
 
 class FileConfigWriter
 {

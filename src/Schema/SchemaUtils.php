@@ -248,7 +248,7 @@ class SchemaUtils
     public static function filterShardMappingSchemas($mappingId, array $schemas)
     {
         $mappingIds = (array) $mappingId;
-        return array_filter($schemas, function(DeclareSchema $s) use ($mappingIds) {
+        return array_filter($schemas, function (DeclareSchema $s) use ($mappingIds) {
             return in_array($s->shardMapping, $mappingIds);
         });
     }
