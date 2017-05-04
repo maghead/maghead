@@ -47,19 +47,6 @@ class BaseRepoClassGenerator
 
         $cTemplate = new ClassFile($schema->getBaseRepoClass());
 
-        // Generate a require statement here to prevent spl autoload when
-        // loading the model class.
-        //
-        // If the user pre-loaded the schema proxy file by the user himself,
-        // then this line will cause error.
-        //
-        // By design, users shouldn't use the schema proxy class, it
-        // should be only used by model/collection class.
-        $schemaProxyFileName = $schema->getModelName() . 'SchemaProxy.php';
-        $cTemplate->prependStatement(new RequireOnceStatement(
-            new ConcatExpr(new Raw('__DIR__'), DIRECTORY_SEPARATOR . $schemaProxyFileName)
-        ));
-
         $cTemplate->useClass('Maghead\\Schema\\SchemaLoader');
         $cTemplate->useClass('Maghead\\Result');
         $cTemplate->useClass('Maghead\\Runtime\\BaseModel');
