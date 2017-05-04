@@ -5,6 +5,7 @@ namespace Maghead\Command;
 use Maghead\Migration\MigrationLoader;
 use Maghead\Migration\AutomaticMigration;
 use Maghead\Manager\MigrationManager;
+use Maghead\Manager\DataSourceManager;
 
 use Maghead\Schema\SchemaLoader;
 use Maghead\ServiceContainer;
@@ -29,13 +30,13 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
         AutomaticMigration::options($opts);
     }
 
-    public function execute()
+    public function execute($nodeId)
     {
-        $dsId = $this->getCurrentDataSourceId();
-        $container = ServiceContainer::getInstance();
+        $dataSourceManager = DataSourceManager::getInstance();
+        $conn = $dataSourceManager->getConnection($nodeId);
+        $driver = $conn->getQueryDriver();
 
-        $conn = $this->getCurrentConnection();
-        $driver = $this->getCurrentQueryDriver();
+        $container = ServiceContainer::getInstance();
 
         if ($this->options->backup) {
             if (!$driver instanceof PDOMySQLDriver) {
@@ -51,7 +52,7 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
         }
 
         // TODO: this could be refactored with MigrationManager
-        $this->logger->info("Performing automatic upgrade over data source: $dsId");
+        $this->logger->info("Performing automatic upgrade over data source: $nodeId");
 
         $tableSchemas = SchemaLoader::loadSchemaTableMap();
         $script = new AutomaticMigration($conn, $driver, $this->logger, $this->options);

@@ -14,9 +14,7 @@ class MigrateNewCommand extends MigrateBaseCommand
 
     public function execute($taskName)
     {
-        $dsId = $this->getCurrentDataSourceId();
-
-        $generator = new MigrationGenerator(Console::getInstance()->getLogger(), 'db/migrations');
+        $generator = new MigrationGenerator($this->logger, 'db/migrations');
         $this->logger->info("Creating migration script for '".$taskName."'");
         list($class, $path) = $generator->generate($taskName);
         $this->logger->info("Migration script is generated: $path");

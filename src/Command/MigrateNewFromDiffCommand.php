@@ -13,21 +13,23 @@ class MigrateNewFromDiffCommand extends MigrateBaseCommand
         return array('nd');
     }
 
-    public function execute($taskName)
+    public function execute($nodeId, $taskName)
     {
-        $dsId = $this->getCurrentDataSourceId();
-        $config = $this->getConfig();
+        $dataSourceManager = \Maghead\Manager\DataSourceManager::getInstance();
+        $conn = $dataSourceManager->getConnection($nodeId);
+        $driver = $conn->getQueryDriver();
 
-        $this->logger->info('Loading schema objects...');
+        $config = $this->getConfig();
+        $this->logger->debug('Loading schema objects...');
         $finder = new SchemaFinder();
         $finder->setPaths($config->getSchemaPaths() ?: array());
         $finder->load();
 
         $generator = new MigrationGenerator($this->logger, 'db/migrations');
-        $this->logger->info('Creating migration script from diff');
+        $this->logger->debug('Creating migration script from diff');
 
         $schemaMap = SchemaLoader::loadSchemaTableMap();
-        list($class, $path) = $generator->generateWithDiff($taskName, $dsId, $schemaMap);
+        list($class, $path) = $generator->generateWithDiff($taskName, $nodeId, $schemaMap);
         $this->logger->info("Migration script is generated: $path");
     }
 }

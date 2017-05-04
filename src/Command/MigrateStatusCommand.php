@@ -18,13 +18,11 @@ class MigrateStatusCommand extends MigrateBaseCommand
         return array('s', 'st');
     }
 
-    public function execute()
+    public function execute($nodeId)
     {
-        $dsId = $this->getCurrentDataSourceId();
-
-        $dataSourceManager = DataSourceManager::getInstance();
-        $conn = $dataSourceManager->getConnection($dsId);
-        $driver = $dataSourceManager->getQueryDriver($dsId);
+        $dataSourceManager = \Maghead\Manager\DataSourceManager::getInstance();
+        $conn = $dataSourceManager->getConnection($nodeId);
+        $driver = $conn->getQueryDriver();
 
         $scripts = MigrationLoader::getDeclaredMigrationScripts();
 

@@ -17,32 +17,10 @@ class MigrateUpgradeCommand extends MigrateBaseCommand
         return array('u', 'up');
     }
 
-    public function execute()
+    public function execute($nodeId)
     {
         $dataSourceManager = DataSourceManager::getInstance();
         $migrationManager = new MigrationManager($dataSourceManager, $this->logger);
-        if ($dsId = $this->getCurrentDataSourceId()) {
-
-            /*
-            $conn = $this->getCurrentConnection();
-            $driver = $this->getCurrentQueryDriver();
-            if ($this->options->backup) {
-                if (!$driver instanceof PDOMySQLDriver) {
-                    $this->logger->error('backup is only supported for MySQL');
-
-                    return false;
-                }
-                $this->logger->info('Backing up database...');
-                $backup = new MySQLBackup();
-                if ($dbname = $backup->incrementalBackup($conn)) {
-                    $this->logger->info("Backup at $dbname");
-                }
-            }
-            */
-
-            $migrationManager->upgrade([$dsId], 1);
-        } else {
-            $migrationManager->upgrade();
-        }
+        $migrationManager->upgrade([$nodeId], 1);
     }
 }
