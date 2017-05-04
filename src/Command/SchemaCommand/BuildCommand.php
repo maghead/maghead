@@ -7,7 +7,7 @@ use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\SchemaUtils;
 
 /**
- * $ lazy build-schema path/to/Schema path/to/SchemaDir.
+ * $ maghead schema build path/to/Schema path/to/SchemaDir.
  */
 class BuildCommand extends BaseCommand
 {
