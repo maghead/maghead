@@ -18,7 +18,7 @@ class MigrateStatusCommand extends MigrateBaseCommand
         return array('s', 'st');
     }
 
-    public function execute($nodeId)
+    public function execute($nodeId = "master")
     {
         $dataSourceManager = \Maghead\Manager\DataSourceManager::getInstance();
         $conn = $dataSourceManager->getConnection($nodeId);
