@@ -15,11 +15,15 @@ class BaseCommand extends Command
 {
     protected $config;
 
+    protected $dataSourceManager;
+
     public function prepare()
     {
         // softly load the config file.
         $this->config = SymbolicLinkConfigLoader::load(null, true); // force loading
         Bootstrap::setupForCLI($this->config);
+
+        $this->dataSourceManager = DataSourceManager::getInstance();
     }
 
     /**

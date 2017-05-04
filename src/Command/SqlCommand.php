@@ -96,9 +96,8 @@ DOC;
 
             $this->logger->warn('Warning: seeding is not supported when using --output option.');
         } else {
-            $dataSourceManager = DataSourceManager::getInstance();
-            $conn = $dataSourceManager->getConnection($nodeId);
-            $driver = $dataSourceManager->getQueryDriver($nodeId);
+            $conn = $this->dataSourceManager->getConnection($nodeId);
+            $driver = $conn->getQueryDriver();
 
             $tableManager = new TableManager($conn, [
                 'rebuild' => $this->options->rebuild,

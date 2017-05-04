@@ -20,8 +20,7 @@ class MigrateStatusCommand extends MigrateBaseCommand
 
     public function execute($nodeId = "master")
     {
-        $dataSourceManager = \Maghead\Manager\DataSourceManager::getInstance();
-        $conn = $dataSourceManager->getConnection($nodeId);
+        $conn = $this->dataSourceManager->getConnection($nodeId);
         $driver = $conn->getQueryDriver();
 
         $scripts = MigrationLoader::getDeclaredMigrationScripts();

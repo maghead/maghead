@@ -31,9 +31,8 @@ class TableCommand extends BaseCommand
 
         $config = $this->getConfig(true);
 
-        $dataSourceManager = \Maghead\Manager\DataSourceManager::getInstance();
-        $conn = $dataSourceManager->getConnection($nodeId);
-        $driver = $dataSourceManager->getQueryDriver($nodeId);
+        $conn = $this->dataSourceManager->getConnection($nodeId);
+        $driver = $conn->getQueryDriver();
 
         if (!$driver instanceof PDOMySQLDriver) {
             $driverClass = get_class($driver);

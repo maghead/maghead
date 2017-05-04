@@ -20,9 +20,8 @@ class DiffCommand extends BaseCommand
     {
         $formatter = new \CLIFramework\Formatter();
 
-        $dataSourceManager = \Maghead\Manager\DataSourceManager::getInstance();
-        $conn = $dataSourceManager->getConnection($nodeId);
-        $driver = $dataSourceManager->getQueryDriver($nodeId);
+        $conn = $this->dataSourceManager->getConnection($nodeId);
+        $driver = $this->dataSourceManager->getQueryDriver($nodeId);
 
         $this->logger->info('Performing comparison...');
 

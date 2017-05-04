@@ -31,8 +31,7 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
 
     public function execute($nodeId = "master")
     {
-        $dataSourceManager = DataSourceManager::getInstance();
-        $conn = $dataSourceManager->getConnection($nodeId);
+        $conn = $this->dataSourceManager->getConnection($nodeId);
         $driver = $conn->getQueryDriver();
 
         if ($this->options->backup) {

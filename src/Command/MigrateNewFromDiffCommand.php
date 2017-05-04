@@ -13,10 +13,9 @@ class MigrateNewFromDiffCommand extends MigrateBaseCommand
         return array('nd');
     }
 
-    public function execute($nodeId, $taskName)
+    public function execute($nodeId = 'master', $taskName)
     {
-        $dataSourceManager = \Maghead\Manager\DataSourceManager::getInstance();
-        $conn = $dataSourceManager->getConnection($nodeId);
+        $conn = $this->dataSourceManager->getConnection($nodeId);
         $driver = $conn->getQueryDriver();
 
         $config = $this->getConfig();

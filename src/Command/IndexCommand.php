@@ -30,8 +30,7 @@ class IndexCommand extends BaseCommand
     {
         $tables = $this->options->table;
 
-        $dataSourceManager = DataSourceManager::getInstance();
-        $conn = $dataSourceManager->getConnection($nodeId);
+        $conn = $this->dataSourceManager->getConnection($nodeId);
         $driver = $conn->getQueryDriver();
 
         if (!$driver instanceof PDOMySQLDriver) {

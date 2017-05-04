@@ -19,8 +19,7 @@ class MigrateDowngradeCommand extends MigrateBaseCommand
 
     public function execute($nodeId, $steps = 1)
     {
-        $dataSourceManager = DataSourceManager::getInstance();
-        $migrationManager = new MigrationManager($dataSourceManager, $this->logger);
+        $migrationManager = new MigrationManager($this->dataSourceManager, $this->logger);
         $migrationManager->downgrade([$nodeId], $steps);
     }
 }

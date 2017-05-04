@@ -13,18 +13,12 @@ class VersionCommand extends BaseCommand
 
     public function usage()
     {
-        return "\tlazy version\n";
+        return "\tmaghead version\n";
     }
 
-    public function options($opts)
+    public function execute($nodeId = 'master')
     {
-        $opts->add('D|data-source:', 'specify data source id');
-    }
-
-    public function execute()
-    {
-        $dsId = $this->options->{'data-source'} ?: $this->config->getMasterDataSourceId();
-        $meta = new MetadataManager($dsId);
-        $this->logger->info('database version: '.$meta['version']);
+        $meta = new MetadataManager($nodeId);
+        $this->logger->info("{$nodeId} database version: {$meta['version']}");
     }
 }

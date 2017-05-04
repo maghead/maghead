@@ -17,10 +17,9 @@ class MigrateUpgradeCommand extends MigrateBaseCommand
         return array('u', 'up');
     }
 
-    public function execute($nodeId)
+    public function execute($nodeId = 'master')
     {
-        $dataSourceManager = DataSourceManager::getInstance();
-        $migrationManager = new MigrationManager($dataSourceManager, $this->logger);
+        $migrationManager = new MigrationManager($this->dataSourceManager, $this->logger);
         $migrationManager->upgrade([$nodeId], 1);
     }
 }

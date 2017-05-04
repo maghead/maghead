@@ -22,8 +22,7 @@ class MetaCommand extends BaseCommand
 
     public function execute($nodeId = 'master')
     {
-        $dataSourceManager = DataSourceManager::getInstance();
-        $conn = $dataSourceManager->getConnection($nodeId);
+        $conn = $this->dataSourceManager->getConnection($nodeId);
         $queryDriver = $conn->getQueryDriver();
 
         $args = func_get_args();
