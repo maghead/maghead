@@ -13,9 +13,23 @@ use Maghead\Runtime\Bootstrap;
 
 class BaseCommand extends Command
 {
-    protected $config;
+    public $config;
 
-    protected $dataSourceManager;
+    public $dataSourceManager;
+
+    /**
+     * @override
+     */
+    public function createCommand($commandClass)
+    {
+        $cmd = parent::createCommand($commandClass);
+
+        if ($cmd instanceof BaseCommand) {
+            $cmd->config = $this->config;
+            $cmd->dataSourceManager = $this->dataSourceManager;
+        }
+        return $cmd;
+    }
 
     public function prepare()
     {
