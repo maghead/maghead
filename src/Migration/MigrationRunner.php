@@ -5,7 +5,6 @@ namespace Maghead\Migration;
 use Maghead\Manager\MetadataManager;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Connection;
-use Maghead\ServiceContainer;
 use GetOptionKit\OptionResult;
 use CLIFramework\Logger;
 use SQLBuilder\Driver\BaseDriver;

@@ -7,7 +7,6 @@ use Maghead\Migration\MigrationLoader;
 use Maghead\Migration\MigrationRunner;
 use Maghead\Migration\AutomaticMigration;
 use Maghead\Connection;
-use Maghead\ServiceContainer;
 use GetOptionKit\OptionResult;
 use CLIFramework\Logger;
 use SQLBuilder\Driver\BaseDriver;
