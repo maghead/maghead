@@ -1,10 +1,12 @@
 <?php
-use Maghead\Inflator;
 
+namespace Maghead;
+
+use PHPUnit\Framework\TestCase;
 /**
  * @group hydrate
  */
-class InflatorTest extends PHPUnit\Framework\TestCase
+class InflatorTest extends TestCase
 {
     public function testBooleanFalse()
     {

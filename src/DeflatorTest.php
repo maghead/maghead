@@ -2,7 +2,6 @@
 
 namespace Maghead;
 
-use Maghead\Deflator;
 use DateTime;
 
 /**
