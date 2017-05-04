@@ -46,7 +46,7 @@ class MysqlBuilder extends BaseBuilder
         $referencesSqls = $this->buildForeignKeys($schema);
         $sql .= implode(",\n", array_merge($columnSqls, $referencesSqls));
 
-        $sql .= "\n);\n";
+        $sql .= "\n) ENGINE=InnoDB;\n";
 
         return $sql;
     }
