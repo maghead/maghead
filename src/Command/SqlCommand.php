@@ -50,7 +50,7 @@ DOC;
         return 'build sql and insert into database.';
     }
 
-    public function execute($nodeId)
+    public function execute($nodeId = 'master')
     {
         $config = $this->getConfig();
 
