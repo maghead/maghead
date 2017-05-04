@@ -20,9 +20,9 @@ class CreateCommand extends BaseCommand
         return 'create database base on the database config.';
     }
 
-    public function execute($nodeId)
+    public function execute($nodeId = 'master')
     {
-        $config = $this->getConfig(true);
+        $config = $this->getConfig();
 
         $ds = $config->getDataSource($nodeId);
 

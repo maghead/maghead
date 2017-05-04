@@ -22,7 +22,7 @@ class DropCommand extends BaseCommand
 
     public function execute($nodeId)
     {
-        $config = $this->getConfig(true);
+        $config = $this->getConfig();
         $dataSourceManager = DataSourceManager::getInstance();
         $conn = $dataSourceManager->connectInstance($nodeId);
 
