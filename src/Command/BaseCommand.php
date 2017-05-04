@@ -55,13 +55,6 @@ class BaseCommand extends Command
         return $this->options->{'data-source'} ?: 'master';
     }
 
-    public function getCurrentQueryDriver()
-    {
-        $dataSource = $this->getCurrentDataSourceId();
-        $dataSourceManager = DataSourceManager::getInstance();
-
-        return $dataSourceManager->getQueryDriver($dataSource);
-    }
 
     public function getCurrentConnection()
     {
