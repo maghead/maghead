@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Runtime;
 
 use Maghead\TableBuilder\BaseBuilder;
 use Maghead\Schema\SchemaCollection;

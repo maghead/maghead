@@ -9,7 +9,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Handler\ErrorLogHandler;
 
 use Maghead\Runtime\Config\FileConfigLoader;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 
 $config = ConfigLoader::loadFromArray([
     'cli' => ['bootstrap' => 'vendor/autoload.php'],

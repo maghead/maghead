@@ -7,7 +7,7 @@ use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Manager\DataSourceManager;
 use RuntimeException;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 
 class BaseCommand extends Command
 {

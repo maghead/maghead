@@ -10,7 +10,7 @@ use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Runtime\BaseCollection;
 use Maghead\Runtime\Result;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 use Maghead\PDOExceptionPrinter;
 use SQLBuilder\Driver\BaseDriver;
 use PHPUnit\Framework\TestCase;

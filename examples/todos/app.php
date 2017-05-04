@@ -2,7 +2,7 @@
 require '../../vendor/autoload.php';
 
 use Maghead\Runtime\Config\FileConfigLoader;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 
 use Todos\Model\Todo;
 use Todos\Model\TodoCollection;

@@ -11,7 +11,7 @@ use Maghead\Runtime\Config\Config;
 use Maghead\Utils\ClassUtils;
 use Maghead\Schema\Column\AutoIncrementPrimaryKeyColumn;
 use Maghead\Schema\Column\UUIDPrimaryKeyColumn;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\ParamMarker;

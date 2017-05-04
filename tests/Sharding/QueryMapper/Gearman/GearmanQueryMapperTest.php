@@ -10,7 +10,7 @@ use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 
 // used by worker
 use Monolog\Logger;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryWorker;
 use Maghead\Manager\DataSourceManager;
 use Monolog\Handler\ErrorLogHandler;

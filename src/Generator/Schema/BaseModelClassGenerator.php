@@ -10,7 +10,7 @@ use Maghead\Schema\DeclareSchema;
 use Maghead\Exception\SchemaRelatedException;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Manager\DataSourceManager;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 use Doctrine\Common\Inflector\Inflector;
 
 use Maghead\Generator\PDOStatementGenerator;

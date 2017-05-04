@@ -20,7 +20,7 @@ use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\RuntimeColumn;
 use Maghead\Schema\Relationship\Relationship;

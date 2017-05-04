@@ -7,7 +7,7 @@ use StoreApp\StoreTestCase;
 
 use Maghead\Sharding\Operations\{AllocateShard, CloneShard, RemoveShard, PruneShard};
 use Maghead\Utils;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 use Maghead\Schema\SchemaUtils;
 
 /**

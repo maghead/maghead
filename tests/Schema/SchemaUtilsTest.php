@@ -1,6 +1,6 @@
 <?php
 use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 use Maghead\Schema\SchemaUtils;
 
 /**

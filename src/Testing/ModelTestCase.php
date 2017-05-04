@@ -4,7 +4,7 @@ namespace Maghead\Testing;
 
 use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Connection;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Utils\ClassUtils;
 use Maghead\SeedBuilder;

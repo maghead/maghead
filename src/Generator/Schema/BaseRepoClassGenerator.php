@@ -6,7 +6,7 @@ use ClassTemplate\ClassFile;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
-use Maghead\Bootstrap;
+use Maghead\Runtime\Bootstrap;
 use Doctrine\Common\Inflector\Inflector;
 use ReflectionClass;
 
