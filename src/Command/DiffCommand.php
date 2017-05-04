@@ -16,7 +16,7 @@ class DiffCommand extends BaseCommand
         return 'Compare the defined schemas with the tables in database.';
     }
 
-    public function execute($nodeId)
+    public function execute($nodeId = "master")
     {
         $formatter = new \CLIFramework\Formatter();
 
