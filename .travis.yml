@@ -21,7 +21,6 @@ before_install:
 - if [[ "$DB" == "mysql" ]]; then sudo sh travis/install-mysql-utilities ; fi
 install:
 - phpenv rehash
-- travis_retry composer require "satooshi/php-coveralls" "~1"
 - travis_retry composer install
 before_script:
   - "rm -rf *.sqlite"
@@ -36,6 +35,7 @@ script:
 - travis/run-phpunit
 - travis/run-examples
 after_success:
+- travis_retry composer require "satooshi/php-coveralls" "~1"
 - if [[ "$DB" == "mysql" ]]; then php vendor/bin/coveralls -v ; fi
 # matrix:
 #   exclude:
