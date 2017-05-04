@@ -15,12 +15,12 @@ class MetaCommand extends BaseCommand
     public function usage()
     {
         return
-              "\tmaghead meta\n"
-            ."\tmaghead meta [key] [value]\n"
-            ."\tmaghead meta [key]\n";
+              "\tmaghead meta [node]\n"
+            ."\tmaghead meta [node] [key] [value]\n"
+            ."\tmaghead meta [node] [key]\n";
     }
 
-    public function execute($nodeId)
+    public function execute($nodeId = 'master')
     {
         $dataSourceManager = DataSourceManager::getInstance();
         $conn = $dataSourceManager->getConnection($nodeId);
