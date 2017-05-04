@@ -1,10 +1,13 @@
 <?php
+
+namespace Maghead\Utils;
+
 use Maghead\Utils\ArrayUtils;
 
 /**
  * @group utils
  */
-class ArrayUtilsTest extends PHPUnit\Framework\TestCase
+class ArrayUtilsTest extends \PHPUnit\Framework\TestCase
 {
     public function testAssocArrayCheck()
     {
