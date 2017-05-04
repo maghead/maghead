@@ -8,14 +8,21 @@ use PHPUnit\Framework\TestCase;
  */
 class InflatorTest extends TestCase
 {
-    public function testBooleanFalse()
+    public function booleanDataProvider()
     {
-        $this->assertFalse(Inflator::inflate('0', 'bool'));
+        return [
+            [true, '1'],
+            [false, '0'],
+            [false, '0'],
+        ];
     }
 
-    public function testBooleanTrue()
+    /**
+     * @dataProvider booleanDataProvider
+     */
+    public function testBooleanTrue($exp, $input)
     {
-        $this->assertTrue(Inflator::inflate('1', 'bool'));
+        $this->assertEquals($exp, Inflator::inflate($input, 'bool'));
     }
 
     public function testFloat()
