@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Runtime;
 
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\PDOMySQLDriver;

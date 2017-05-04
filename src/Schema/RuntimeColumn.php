@@ -3,8 +3,8 @@
 namespace Maghead\Schema;
 
 use DateTime;
-use Maghead\Deflator;
-use Maghead\Inflator;
+use Maghead\Runtime\Deflator;
+use Maghead\Runtime\Inflator;
 use Maghead\Utils\ArrayUtils;
 use Maghead\Utils;
 use Maghead\Runtime\BaseModel;

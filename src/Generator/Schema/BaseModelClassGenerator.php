@@ -60,8 +60,8 @@ class BaseModelClassGenerator
         $cTemplate->extendClass('\\'.$baseClass);
 
         $cTemplate->useClass('Maghead\\Schema\\SchemaLoader');
-        $cTemplate->useClass('Maghead\\Result');
-        $cTemplate->useClass('Maghead\\Inflator');
+        $cTemplate->useClass('Maghead\\Runtime\\Result');
+        $cTemplate->useClass('Maghead\\Runtime\\Inflator');
         $cTemplate->useClass('SQLBuilder\\Bind');
         $cTemplate->useClass('SQLBuilder\\ArgumentArray');
         $cTemplate->useClass('DateTime');
