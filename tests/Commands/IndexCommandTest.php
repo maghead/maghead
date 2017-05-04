@@ -16,7 +16,7 @@ class IndexCommandsTest extends CommandTestCase
     {
         parent::setUp();
         $db = getenv('DB') ?: 'sqlite';
-        if ($db == "sqlite") {
+        if ($db != "mysql") {
             return $this->markTestSkipped('sqlite migration is not supported.');
         }
         copy("tests/config/$db.yml", "tests/config/tmp.yml");
