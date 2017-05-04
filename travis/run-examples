@@ -3,7 +3,10 @@ set -e
 set -x
 cd examples/todos
 php ../../bin/maghead use db/config/database.yml
-php ../../bin/maghead schema build -f
 php ../../bin/maghead db create master
+
+# schema build requires the database to be setup
+php ../../bin/maghead schema build -f
+
 # add testing2 database to the server
 php ../../bin/maghead sql --rebuild --basedata
