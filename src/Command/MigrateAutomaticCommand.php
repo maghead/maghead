@@ -36,8 +36,6 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
         $conn = $dataSourceManager->getConnection($nodeId);
         $driver = $conn->getQueryDriver();
 
-        $container = ServiceContainer::getInstance();
-
         if ($this->options->backup) {
             if (!$driver instanceof PDOMySQLDriver) {
                 $this->logger->error('backup is only supported for MySQL');
