@@ -138,7 +138,7 @@ class SchemaGenerator
         return true;
     }
 
-    public function generateSchemaFiles(Schema $schema)
+    public function generateSchemaFiles(DeclareSchema $schema)
     {
         $classMap = array();
         $cTemplates = array();

@@ -26,7 +26,7 @@ class IndexCommand extends BaseCommand
         $opts->add('t|table+');
     }
 
-    public function execute($nodeId)
+    public function execute($nodeId = 'master')
     {
         $tables = $this->options->table;
 
