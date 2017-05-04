@@ -874,9 +874,9 @@ class DeclareSchema extends BaseSchema implements Schema
      *
      * @param string $seed
      */
-    public function addSeed($seed)
+    public function addSeed($class)
     {
-        $this->seeds[] = $seed;
+        $this->seeds[] = resolveClass($class, [], $this, ['Seeds']);
 
         return $this;
     }
