@@ -4,7 +4,6 @@ namespace Maghead\Generator\Schema;
 
 use RuntimeException;
 use ClassTemplate\ClassFile;
-use Maghead\Schema;
 use Maghead\Schema\Schema;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\BaseSchema;
