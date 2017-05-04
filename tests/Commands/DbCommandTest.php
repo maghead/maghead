@@ -17,11 +17,11 @@ class DbCommandsTest extends CommandTestCase
     {
         parent::setUp();
         $db = getenv('DB') ?: 'sqlite';
-        copy("tests/config/$db.yml", "tests/config/tmp.yml");
-        $this->app->run(['maghead','use','tests/config/tmp.yml']);
         if ($db == "sqlite") {
             return $this->markTestSkipped('sqlite migration is not supported.');
         }
+        copy("tests/config/$db.yml", "tests/config/tmp.yml");
+        $this->app->run(['maghead','use','tests/config/tmp.yml']);
     }
 
     public function testDbList()
