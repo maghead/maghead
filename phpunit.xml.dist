@@ -5,8 +5,8 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          colors="true"
-         stopOnFailure="false"
-         stopOnError="false"
+         stopOnFailure="true"
+         stopOnError="true"
          verbose="true">
   <php>
 
