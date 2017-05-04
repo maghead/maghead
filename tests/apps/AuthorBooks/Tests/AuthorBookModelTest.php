@@ -101,10 +101,10 @@ class AuthorBookModelTest extends ModelTestCase
     /**
      * @rebuild false
      */
-    public function testSchema()
+    public function testSchemaGetColumns()
     {
         $author = new Author;
-        $names = array('updated_on','created_on','id','name','email','identity','confirmed');
+        $names = ['updated_on','created_on','id','name','email','identity','confirmed'];
         foreach ($author->getColumnNames() as $n) {
             $this->assertTrue(in_array($n, $names));
             $this->assertNotNull($author->getColumn($n));
@@ -121,6 +121,32 @@ class AuthorBookModelTest extends ModelTestCase
 
         $this->assertInstanceOf('AuthorBooks\Model\AuthorCollection', $author->newCollection());
     }
+
+
+
+    /**
+     * @rebuild false
+     */
+    public function testGetSchema()
+    {
+        $author = new Author;
+        $this->assertNotNull($author->getSchema());
+
+        $columnMap = $author->getSchema()->getColumns();
+
+        $this->assertTrue(isset($columnMap['confirmed']));
+        $this->assertTrue(isset($columnMap['identity']));
+        $this->assertTrue(isset($columnMap['name']));
+
+        $columnMap = $author->getColumns();
+
+        $this->assertTrue(isset($columnMap['identity']));
+        $this->assertTrue(isset($columnMap['name']));
+    }
+
+
+
+
 
     /**
      * @rebuild false
@@ -161,25 +187,6 @@ class AuthorBookModelTest extends ModelTestCase
         $authors = new AuthorCollection;
     }
 
-    /**
-     * @rebuild false
-     */
-    public function testSchema()
-    {
-        $author = new Author;
-        $this->assertNotNull($author->getSchema());
-
-        $columnMap = $author->getSchema()->getColumns();
-
-        $this->assertTrue(isset($columnMap['confirmed']));
-        $this->assertTrue(isset($columnMap['identity']));
-        $this->assertTrue(isset($columnMap['name']));
-
-        $columnMap = $author->getColumns();
-
-        $this->assertTrue(isset($columnMap['identity']));
-        $this->assertTrue(isset($columnMap['name']));
-    }
 
 
 
