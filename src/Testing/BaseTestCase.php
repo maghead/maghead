@@ -5,7 +5,7 @@ namespace Maghead\Testing;
 use Maghead\Manager\DataSourceManager;
 use Maghead\TableBuilder\TableBuilder;
 use Maghead\Runtime\BaseModel;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Runtime\BaseCollection;
@@ -116,7 +116,7 @@ abstract class BaseTestCase extends TestCase
             throw new InvalidArgumentException("$configFile doesn't exist.");
         }
 
-        $config = ConfigLoader::loadFromFile($configFile);
+        $config = FileConfigLoader::load($configFile);
         $config->setAutoId();
         return $config;
     }
@@ -133,6 +133,7 @@ abstract class BaseTestCase extends TestCase
 
         // Always reset config from symbol file
         $this->config = $this->config();
+        Bootstrap::setConfig($this->config);
         Bootstrap::setupDataSources($this->config, $this->dataSourceManager);
         Bootstrap::setupGlobalVars($this->config, $this->dataSourceManager);
 

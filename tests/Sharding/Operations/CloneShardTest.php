@@ -1,6 +1,6 @@
 <?php
 use Maghead\Testing\ModelTestCase;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 use StoreApp\StoreTestCase;

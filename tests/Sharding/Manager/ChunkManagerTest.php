@@ -2,7 +2,7 @@
 use SQLBuilder\Universal\Query\SelectQuery;
 use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryMapper;
 use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryWorker;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Manager\ChunkManager;
 use Maghead\Sharding\Manager\ConfigManager;

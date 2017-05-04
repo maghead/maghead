@@ -4,7 +4,7 @@ namespace StoreApp;
 use Maghead\Testing\ModelTestCase;
 use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryMapper;
 use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryWorker;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Manager\ChunkManager;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
@@ -109,7 +109,7 @@ abstract class StoreTestCase extends ModelTestCase
     protected function config()
     {
         $driver = $this->getCurrentDriverType();
-        return ConfigLoader::loadFromFile("tests/apps/StoreApp/config/{$driver}.yml", true);
+        return FileConfigLoader::load("tests/apps/StoreApp/config/{$driver}.yml", true);
     }
 
     public function orderDataProvider()

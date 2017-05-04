@@ -2,7 +2,7 @@
 use Maghead\Testing\ModelTestCase;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\ShardDispatcher;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use StoreApp\Model\{Store, StoreSchema};
 use StoreApp\StoreTestCase;
 

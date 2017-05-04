@@ -139,7 +139,7 @@ Create an empty shard with the corresponding schema.
 
 To use the allocate operation:
 
-    $config = ConfigLoader::loadFromFile('.../config.yml');
+    $config = FileConfigLoader::load('.../config.yml');
     $o = new AllocateShard($config);
     $o->allocate('local', 't1', 'M_store_id');
 
@@ -162,7 +162,7 @@ The ShardCloning operation uses mysqldbcopy to copy the database.
 
 To clone a shard in PHP code:
 
-    $config = ConfigLoader::loadFromFile('.../config.yml');
+    $config = FileConfigLoader::load('.../config.yml');
     $o = new CloneShard($config);
     $o->setDropFirst(true);
     $o->clone('local', 't2', 'master');
@@ -184,7 +184,7 @@ Prune all rows that doesn't belong to the shard.
 Shard pruning finds all schema related to the shard mapping, and then iterate
 each collection to prune the rows that does not belong to the shard itself.
 
-    $config = ConfigLoader::loadFromFile('.../config.yml');
+    $config = FileConfigLoader::load('.../config.yml');
     $o = new PruneShard($config, $logger);
     $o->prune('M_store_id', $schemas, 't1');
 

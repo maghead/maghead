@@ -2,7 +2,7 @@
 
 namespace Maghead\Sharding\Operations;
 
-use Maghead\Config;
+use Maghead\Runtime\Config\Config;
 use Maghead\Manager\ConnectionManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Manager\DataSourceManager;

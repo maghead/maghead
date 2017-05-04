@@ -15,7 +15,7 @@ use Maghead\Generator\Schema\CollectionClassGenerator;
 use Maghead\Generator\Schema\ModelClassGenerator;
 use Maghead\Generator\Schema\RepoClassGenerator;
 use Maghead\Generator\Schema\SchemaProxyClassGenerator;
-use Maghead\Config;
+use Maghead\Runtime\Config\Config;
 
 /**
  * Builder for building static schema class file.

@@ -1,7 +1,7 @@
 <?php
 
 use Maghead\Testing\ModelTestCase;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use StoreApp\Model\Store;
 use StoreApp\Model\StoreCollection;
 use StoreApp\Model\StoreSchema;

@@ -13,8 +13,8 @@ use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
 
-use Maghead\Config;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\Config;
+use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Sharding\Manager\ShardManager;
 

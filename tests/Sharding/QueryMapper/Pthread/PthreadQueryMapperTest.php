@@ -4,7 +4,7 @@ use Maghead\Testing\ModelTestCase;
 use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryMapper;
 use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryWorker;
 use Maghead\Sharding\ShardDispatcher;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Sharding\Manager\ShardManager;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderSchema, OrderRepo};

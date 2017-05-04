@@ -20,10 +20,11 @@ use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
+use Maghead\Bootstrap;
 use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\RuntimeColumn;
 use Maghead\Schema\Relationship\Relationship;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Shard;
@@ -219,7 +220,7 @@ abstract class BaseModel implements Serializable
             return $shardManager->loadShardCollectionOf(static::SHARD_MAPPING_ID);
         }
         // Get shard nodes of this table.
-        $config = ConfigLoader::getCurrentConfig();
+        $config = Bootstrap::getConfig();
         $shardManager = new ShardManager($config, DataSourceManager::getInstance());
         return $shardManager->loadShardCollectionOf(static::SHARD_MAPPING_ID, static::REPO_CLASS);
     }

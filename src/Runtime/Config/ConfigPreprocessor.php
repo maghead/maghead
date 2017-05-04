@@ -1,82 +1,15 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Runtime\Config;
 
-use ConfigKit\ConfigCompiler;
-use Exception;
-use PDO;
 use Maghead\DSN\DSN;
 use Maghead\DSN\DSNParser;
+use PDO;
 
-/**
- * ConfigLoader provides methods for loading the config file.
- *
- * We made ConfigLoader with instance methods because we have to save the
- * latest loaded config object for DeclareSchema to check some configuration
- * values.
- *
- * You may use ConfigLoader::getInstance() to get the singleton instance.
- */
-class ConfigLoader
+class ConfigPreprocessor
 {
-    const ANCHOR_FILENAME = '.lazy.yml';
 
-    public static $currentConfig;
-
-    public static function writeToSymbol(Config $config, $targetFile = null)
-    {
-        return ConfigWriter::write($config, $targetFile);
-    }
-
-    /**
-     * This is used when running command line application
-     */
-    public static function loadFromSymbol($force = false)
-    {
-        if (file_exists(self::ANCHOR_FILENAME)) {
-            return self::loadFromFile(realpath(self::ANCHOR_FILENAME), $force);
-        }
-    }
-
-    /**
-     * Load config from array directly.
-     *
-     * @param array $config
-     */
-    public static function loadFromArray(array $config)
-    {
-        return self::$currentConfig = new Config(self::preprocessConfig($config));
-    }
-
-    /**
-     * Load config from the YAML config file...
-     *
-     * @param string $file
-     */
-    public static function loadFromFile($sourceFile, $force = false)
-    {
-        return self::$currentConfig = new Config(self::compile($sourceFile, $force), $sourceFile);
-    }
-
-    public static function getCurrentConfig()
-    {
-        return self::$currentConfig;
-    }
-
-    public static function compile($sourceFile, $force = false)
-    {
-        $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
-        if ($force || ConfigCompiler::test($sourceFile, $compiledFile)) {
-            $config = ConfigCompiler::parse($sourceFile);
-            $config = self::preprocessConfig($config);
-            ConfigCompiler::write($compiledFile, $config);
-            return $config;
-        } else {
-            return require $compiledFile;
-        }
-    }
-
-    public static function preprocessConfig(array $config)
+    public static function preprocess(array $config)
     {
         if (isset($config['databases'])) {
             $config['databases'] = self::normalizeNodeConfigArray($config['databases']);
@@ -95,7 +28,7 @@ class ConfigLoader
         return $nodeConfig;
     }
 
-    public static function normalizeNodeConfig(array $config)
+    private static function normalizeNodeConfig(array $config)
     {
         // if DSN is defined, then we use the DSN to update the node config
         $dsn = null;
@@ -211,7 +144,7 @@ class ConfigLoader
      *
      * @param array PHP array from yaml config file
      */
-    public static function normalizeNodeConfigArray(array $dbconfig)
+    private static function normalizeNodeConfigArray(array $dbconfig)
     {
         $newconfig = [];
         foreach ($dbconfig as $nodeId => $config) {
@@ -219,14 +152,5 @@ class ConfigLoader
         }
         return $newconfig;
     }
-
-
-    public static function getInstance()
-    {
-        static $instance;
-        if ($instance) {
-            return $instance;
-        }
-        return $instance = new self();
-    }
 }
+

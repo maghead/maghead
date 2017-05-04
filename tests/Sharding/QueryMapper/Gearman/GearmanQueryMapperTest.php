@@ -2,7 +2,7 @@
 use SQLBuilder\Universal\Query\SelectQuery;
 use Maghead\Testing\ModelTestCase;
 use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryMapper;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\ShardDispatcher;
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};

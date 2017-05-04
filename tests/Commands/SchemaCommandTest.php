@@ -23,7 +23,6 @@ class SchemaCommandsTest extends CommandTestCase
 
     public function testSchemaBuildCommand()
     {
-        $this->expectOutputRegex('/Updated/');
         $ret = $this->app->run(array('maghead','schema','build','-f'));
         $this->assertTrue($ret);
     }

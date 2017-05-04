@@ -3,7 +3,9 @@
 namespace Maghead\Command;
 
 use Exception;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
+use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
+use Maghead\ConfigWriter;
 use CLIFramework\Command;
 
 function cross_symlink($sourcePath, $targetPath)
@@ -55,7 +57,7 @@ class UseCommand extends Command
                 if (file_exists($path)) {
                     $this->logger->info("Found default config file: $path");
                     $configFile = $path;
-                    ConfigLoader::compile($configFile);
+                    FileConfigLoader::compile($configFile);
                 }
             }
         }
@@ -66,11 +68,10 @@ class UseCommand extends Command
 
         $this->logger->info("Building config from $configFile");
         $dir = dirname($configFile);
-        ConfigLoader::compile($configFile, $this->options->force);
+        FileConfigLoader::compile($configFile, $this->options->force);
 
         // make master config link
-        $loader = ConfigLoader::getInstance();
-        $cleanup = [ConfigLoader::ANCHOR_FILENAME, '.lazy.php', '.lazy.yml'];
+        $cleanup = [SymbolicLinkConfigLoader::ANCHOR_FILENAME, '.lazy.php', '.lazy.yml'];
         foreach ($cleanup as $symlink) {
             if (file_exists($symlink)) {
                 $this->logger->debug('Cleaning up symbol link: '.$symlink);
@@ -78,10 +79,10 @@ class UseCommand extends Command
             }
         }
 
-        $this->logger->info('Creating symbol link: '.ConfigLoader::ANCHOR_FILENAME.' -> '.$configFile);
-        if (cross_symlink($configFile, ConfigLoader::ANCHOR_FILENAME) === false) {
+        $this->logger->info('Creating symbol link: '.SymbolicLinkConfigLoader::ANCHOR_FILENAME.' -> '.$configFile);
+        if (cross_symlink($configFile, SymbolicLinkConfigLoader::ANCHOR_FILENAME) === false) {
             $this->logger->error('Config linking failed.');
         }
-        $this->logger->info('Done');
+        $this->logger->info('command line environment is now configured.');
     }
 }

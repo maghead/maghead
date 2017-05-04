@@ -5,6 +5,7 @@ namespace Maghead;
 use CLIFramework\Logger;
 use Maghead\Schema\BaseSchema;
 use Maghead\Schema\SchemaCollection;
+use Maghead\Runtime\Config\Config;
 use InvalidArgumentException;
 
 class SeedBuilder

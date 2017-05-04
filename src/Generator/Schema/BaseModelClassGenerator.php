@@ -6,11 +6,11 @@ use ReflectionClass;
 use ReflectionMethod;
 use InvalidArgumentException;
 
-use Maghead\ConfigLoader;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Exception\SchemaRelatedException;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Manager\DataSourceManager;
+use Maghead\Bootstrap;
 use Doctrine\Common\Inflector\Inflector;
 
 use Maghead\Generator\PDOStatementGenerator;
@@ -100,7 +100,7 @@ class BaseModelClassGenerator
 
         // Sharding related constants
         // If sharding is not enabled, don't throw exception.
-        $config = ConfigLoader::getCurrentConfig();
+        $config = Bootstrap::getConfig();
         if (isset($config['sharding'])) {
             $cTemplate->addConst('SHARD_MAPPING_ID', $schema->shardMapping);
             $cTemplate->addConst('GLOBAL_TABLE', $schema->globalTable);

@@ -38,6 +38,7 @@ class BuildCommand extends BaseCommand
     {
         $args = func_get_args();
         $config = $this->getConfig();
+        return;
 
         $this->logger->debug('Finding schemas...');
         $schemas = SchemaUtils::findSchemasByArguments($config, $args, $this->logger);

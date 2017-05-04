@@ -2,7 +2,7 @@
 
 namespace Maghead\Command\SchemaCommand;
 
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Command\BaseCommand;

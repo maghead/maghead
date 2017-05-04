@@ -2,7 +2,7 @@
 
 namespace Maghead\Testing;
 
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Connection;
 use Maghead\Bootstrap;
 use Maghead\Manager\DataSourceManager;

@@ -1,16 +1,16 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Runtime\Config;
 
 use ConfigKit\ConfigCompiler;
 use Exception;
 use PDO;
 use Symfony\Component\Yaml\Yaml;
-use Maghead\Config;
+use Maghead\Runtime\Config\Config;
 
-class ConfigWriter
+class FileConfigWriter
 {
-    const ANCHOR_FILENAME = '.lazy.yml';
+    const ANCHOR_FILENAME = '.maghead-cli.yml';
 
     public static $inlineLevel = 5;
 

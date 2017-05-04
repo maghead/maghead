@@ -8,7 +8,7 @@ use Exception;
 
 use Maghead\Sharding\Operations\PruneShard;
 use Maghead\Schema\SchemaUtils;
-use Maghead\ConfigWriter;
+use Maghead\Runtime\Config\FileConfigWriter;
 
 class PruneCommand extends BaseCommand
 {
@@ -37,6 +37,6 @@ class PruneCommand extends BaseCommand
         $o = new PruneShard($config);
         $o->prune($this->options->mapping, $schemas, $shardId);
 
-        ConfigWriter::write($config);
+        FileConfigWriter::write($config);
     }
 }

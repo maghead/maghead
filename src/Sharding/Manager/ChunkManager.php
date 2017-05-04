@@ -9,7 +9,7 @@ use Maghead\Sharding\Chunk;
 use Maghead\Sharding\Hasher\Hasher;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\DatabaseManager;
-use Maghead\Config;
+use Maghead\Runtime\Config\Config;
 use Maghead\Runtime\BaseRepo;
 use Maghead\Schema\SchemaUtils;
 

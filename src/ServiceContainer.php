@@ -11,7 +11,7 @@ class ServiceContainer extends Container
     public function __construct()
     {
         $this['config'] = function ($c) {
-            $config = ConfigLoader::loadFromSymbol(true); // force loading
+            $config = SymbolicLinkConfigLoader::load(true); // force loading
             Bootstrap::setup($config);
             return $config;
         };

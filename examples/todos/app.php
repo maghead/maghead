@@ -1,13 +1,13 @@
 <?php
 require '../../vendor/autoload.php';
 
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Bootstrap;
 
 use Todos\Model\Todo;
 use Todos\Model\TodoCollection;
 
-$config = ConfigLoader::loadFromFile('db/config/database.yml');
+$config = FileConfigLoader::load('db/config/database.yml');
 Bootstrap::setup($config);
 
 // Use delete query to delete the previous records

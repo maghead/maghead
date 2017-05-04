@@ -1,7 +1,7 @@
 <?php
 use Maghead\Manager\ConfigManager;
-use Maghead\Config;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\Config;
+use Maghead\Runtime\Config\FileConfigLoader;
 
 /**
  * @group manager
@@ -53,7 +53,7 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
 
     public function testAddNodeWithoutOptions()
     {
-        $config = ConfigLoader::loadFromFile(self::TEST_CONFIG, true);
+        $config = FileConfigLoader::load(self::TEST_CONFIG, true);
         $manager = new ConfigManager($config);
         $manager->addDatabase('shard1', 'mysql:host=localhost;dbname=shard1');
         $manager->addDatabase('shard2', 'mysql:host=localhost;dbname=shard2');

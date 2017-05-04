@@ -9,7 +9,7 @@ use Maghead\Sharding\Shard;
 use Maghead\Sharding\ShardCollection;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\ConnectionManager;
-use Maghead\Config;
+use Maghead\Runtime\Config\Config;
 
 use LogicException;
 use Exception;

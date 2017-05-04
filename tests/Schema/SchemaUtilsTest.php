@@ -1,5 +1,5 @@
 <?php
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
 use Maghead\Bootstrap;
 use Maghead\Schema\SchemaUtils;
 
@@ -12,7 +12,7 @@ class SchemaUtilsTest extends PHPUnit\Framework\TestCase
 
     public function setUp()
     {
-        $this->config = ConfigLoader::loadFromSymbol(true); // force loading
+        $this->config = SymbolicLinkConfigLoader::load(null, true); // force loading
         Bootstrap::setup($this->config);
     }
 

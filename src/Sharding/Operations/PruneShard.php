@@ -13,7 +13,7 @@ use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\ConfigManager;
 use Maghead\Manager\MetadataManager;
 use Maghead\Manager\TableManager;
-use Maghead\Config;
+use Maghead\Runtime\Config\Config;
 use Maghead\Runtime\BaseRepo;
 use Maghead\Schema;
 use Maghead\Schema\SchemaUtils;

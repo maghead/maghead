@@ -2,8 +2,9 @@
 
 namespace Maghead\Manager;
 
-use Maghead\Config;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\Config;
+use Maghead\Runtime\Config\FileConfigLoader;
+use Maghead\Runtime\Config\FileConfigWriter;
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;
 use PDO;
@@ -16,7 +17,7 @@ class ConfigManager
     public function __construct($arg)
     {
         if (is_string($arg)) {
-            $this->config = ConfigLoader::loadFromFile($arg);
+            $this->config = FileConfigLoader::load($arg);
         } else if ($arg instanceof Config) {
             $this->config = $arg;
         } else {
@@ -63,6 +64,6 @@ class ConfigManager
     public function save($file = null)
     {
         $f = $file ?: $this->config->file;
-        return ConfigLoader::writeToSymbol($this->config, $f);
+        return FileConfigWriter::write($this->config, $f);
     }
 }

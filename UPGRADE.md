@@ -56,7 +56,7 @@ UPGRADE TO 4.0.x
 
 ### ConfigLoader
 
-1. ConfigLoader::loadFromFile -> ConfigLoader::loadFile as a static method and 
+1. FileConfigLoader::load -> ConfigLoader::loadFile as a static method and 
     return `Config` object.
 
 2. Simplify `data_source` config by assumming the default node is "master".

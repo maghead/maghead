@@ -6,6 +6,7 @@ use ClassTemplate\ClassFile;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
+use Maghead\Bootstrap;
 use Doctrine\Common\Inflector\Inflector;
 use ReflectionClass;
 
@@ -26,7 +27,7 @@ use Maghead\Generator\PDOStatementGenerator;
 use Maghead\Generator\CodeGenSettingsParser;
 use Maghead\Generator\MethodBlockParser;
 
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 
 /**
  * Base Repo class generator.
@@ -81,7 +82,7 @@ class BaseRepoClassGenerator
         ));
 
 
-        $config = ConfigLoader::getCurrentConfig();
+        $config = Bootstrap::getConfig();
 
         // Sharding related constants
         // If sharding is not enabled, don't throw exception.

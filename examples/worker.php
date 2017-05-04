@@ -3,12 +3,12 @@ require 'vendor/autoload.php';
 
 use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryWorker;
 use Maghead\Manager\ConnectionManager;
-use Maghead\Config;
+use Maghead\Runtime\Config\Config;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\ErrorLogHandler;
 
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Bootstrap;
 
 $config = ConfigLoader::loadFromArray([

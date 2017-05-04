@@ -8,15 +8,29 @@ use Maghead\Schema\SchemaFinder;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Runtime\BaseModel;
 use Maghead\Runtime\BaseCollection;
-use CLIFramework\Logger;
-
-use ConfigKit\ConfigCompiler;
+use Maghead\Runtime\Config\Config;
 use PDOException;
 use Exception;
 use ArrayAccess;
 
 class Bootstrap
 {
+
+    /**
+     * The config object of the current context.
+     */
+    public static $config;
+
+    public static function getConfig()
+    {
+        return self::$config;
+    }
+
+    public static function setConfig(Config $config)
+    {
+        self::$config = $config;
+    }
+
     /**
      * Run bootstrap script if it's defined in the config.
      * This is used for the command-line app.
@@ -68,7 +82,6 @@ class Bootstrap
         }
     }
 
-
     public static function setupGlobalVars(Config $config, DataSourceManager $dataSourceManager)
     {
         BaseModel::$dataSourceManager = $dataSourceManager;
@@ -77,6 +90,8 @@ class Bootstrap
 
     public static function setup(Config $config)
     {
+        self::$config = $config;
+
         $dataSourceManager = DataSourceManager::getInstance();
 
         // TODO: this could be moved to Environment class.

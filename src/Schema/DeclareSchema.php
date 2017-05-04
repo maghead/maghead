@@ -6,11 +6,12 @@ use Exception;
 use InvalidArgumentException;
 use ReflectionObject;
 use ReflectionClass;
-use Maghead\ConfigLoader;
-use Maghead\Config;
+use Maghead\Runtime\Config\FileConfigLoader;
+use Maghead\Runtime\Config\Config;
 use Maghead\Utils\ClassUtils;
 use Maghead\Schema\Column\AutoIncrementPrimaryKeyColumn;
 use Maghead\Schema\Column\UUIDPrimaryKeyColumn;
+use Maghead\Bootstrap;
 use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\ParamMarker;
@@ -181,7 +182,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
 
         // if the primary key is not define, we should append the default primary key => id
         // AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY
-        $config = ConfigLoader::getCurrentConfig();
+        $config = Bootstrap::getConfig();
         if (false === $this->primaryKey && $this->enableHiddenPrimaryKey) {
             if ($config && $config->hasAutoId()) {
                 $this->tryInsertPrimaryKeyColumn($config);
@@ -400,7 +401,7 @@ class DeclareSchema extends BaseSchema implements SchemaInterface
 
     public function getShardKey()
     {
-        $config = ConfigLoader::getCurrentConfig();
+        $config = Bootstrap::getConfig();
 
         // If sharding is not enabled, don't throw exception.
         if (!isset($config['sharding']) || !$this->shardMapping) {

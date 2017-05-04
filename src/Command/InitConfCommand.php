@@ -3,7 +3,7 @@
 namespace Maghead\Command;
 
 use CLIFramework\Command;
-use Maghead\ConfigLoader;
+use Maghead\Runtime\Config\FileConfigLoader;
 
 class InitConfCommand extends Command
 {
