@@ -13,6 +13,8 @@
     "description": "The Fast PHP ORM",
     "require": {
         "php": ">=5.6.0",
+        "corneltek/configkit": "^1",
+        "corneltek/cascading-attribute": "^1.2",
         "corneltek/sqlbuilder": "4.0.x-dev",
         "corneltek/cliframework": "3.0.x-dev",
         "corneltek/class-template": "^3.0",
@@ -22,8 +24,6 @@
         "symfony/yaml": "^2.8",
         "doctrine/inflector": "~1.0",
         "twig/twig": "1.32.x",
-        "corneltek/configkit": "^1",
-        "corneltek/cascading-attribute": "^1.2",
         "pimple/pimple": "^3.0",
         "cypresslab/gitelephant": "^1.0",
         "psr/log": "^1.0",
