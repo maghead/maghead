@@ -17,6 +17,7 @@ class SqliteBuilder extends BaseBuilder
     public function prepare()
     {
         return [
+            // skip foreign key checks
             'PRAGMA foreign_keys = 0',
         ];
     }

@@ -52,7 +52,7 @@ class IndexCommand extends BaseCommand
             'SUM(index_stat.stat_value)' => 'pages',
 
             // THIS FAILS ON TRAVIS-CI
-            'CONCAT(ROUND((SUM(stat_value) * @@Innodb_page_size) / 1024 / 1024, 1), "MB")' => 'page_size',
+            'CONCAT(ROUND((SUM(index_stat.stat_value) * @@Innodb_page_size) / 1024 / 1024, 1), "MB")' => 'page_size',
         ]);
         $query->from('information_schema.STATISTICS stat');
 
