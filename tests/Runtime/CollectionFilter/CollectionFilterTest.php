@@ -1,5 +1,5 @@
 <?php
-use Maghead\CollectionFilter\CollectionFilter;
+use Maghead\Runtime\CollectionFilter;
 use Maghead\Testing\ModelTestCase;
 use TestApp\Model\PostCollection;
 use TestApp\Model\Post;

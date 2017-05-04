@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\CollectionFilter;
+namespace Maghead\Runtime;
 
 use Closure;
 use Exception;
