@@ -8,7 +8,7 @@ class SchemaCommand extends Command
 {
     public function brief()
     {
-        return 'schema command.';
+        return 'schema commands';
     }
 
     public function init()
@@ -38,6 +38,5 @@ class SchemaCommand extends Command
         $diffCommand = $this->createCommand('Maghead\\Command\\DiffCommand');
         $diffCommand->options = $this->options;
         $diffCommand->executeWrapper(array());
-        // $this->logger->info('Usage: schema [build|sql|list]');
     }
 }

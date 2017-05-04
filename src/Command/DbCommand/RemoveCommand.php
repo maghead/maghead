@@ -9,7 +9,7 @@ class RemoveCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'Remove node from config file.';
+        return 'remove node from config file.';
     }
 
     public function options($opts)

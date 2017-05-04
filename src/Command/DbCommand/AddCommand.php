@@ -4,8 +4,6 @@ namespace Maghead\Command\DbCommand;
 
 use Maghead\Command\BaseCommand;
 use Maghead\Manager\ConfigManager;
-use Maghead\DSN\DSNParser;
-use PDO;
 
 class AddCommand extends BaseCommand
 {
