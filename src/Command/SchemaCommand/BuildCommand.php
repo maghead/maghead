@@ -40,7 +40,7 @@ class BuildCommand extends BaseCommand
         $config = $this->getConfig();
 
         $this->logger->debug('Finding schemas...');
-        $schemas = SchemaUtils::findSchemasByArguments($config, $args, $this->logger);
+        $schemas = $this->findSchemasByArguments($args);
 
         $generator = new SchemaGenerator($config);
         if ($this->options->force) {

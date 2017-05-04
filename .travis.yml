@@ -31,9 +31,7 @@ before_script:
   - bin/maghead use -f tests/config/$DB.yml
   # - php bin/maghead db create -D=master
   - bin/maghead schema build -f
-  - bin/maghead schema build Maghead\\Model\\MetadataSchema
-  - bin/maghead schema build -f src # build meta model class
-  - bin/maghead sql --rebuild -D=master
+  - bin/maghead sql --rebuild master
 script:
 - travis/run-phpunit
 - travis/run-examples

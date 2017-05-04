@@ -19,7 +19,7 @@ class BasedataCommand extends BaseCommand
         $logger = $this->logger;
         $config = $this->getConfig();
 
-        $classes = SchemaUtils::findSchemasByArguments($config, func_get_args(), $this->logger);
+        $classes = $this->findSchemasByArguments(func_get_args());
 
         SchemaUtils::printSchemaClasses($classes, $this->logger);
 

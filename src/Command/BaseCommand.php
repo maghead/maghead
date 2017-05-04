@@ -5,6 +5,8 @@ namespace Maghead\Command;
 use CLIFramework\Command;
 use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
 use Maghead\Schema\SchemaUtils;
+use Maghead\Schema\SchemaLoader;
+use Maghead\Schema\SchemaFinder;
 use Maghead\Manager\DataSourceManager;
 use RuntimeException;
 use Maghead\Runtime\Bootstrap;
@@ -69,8 +71,31 @@ class BaseCommand extends Command
         return $dataSourceManager->getConnection($dataSource);
     }
 
-    public function findSchemasByArguments(array $arguments)
+    public function findSchemasByArguments(array $args)
     {
-        return SchemaUtils::findSchemasByArguments($this->getConfig(), $arguments, $this->logger);
+        $config = $this->getConfig();
+        $classes = SchemaUtils::argumentsToSchemaObjects($args);
+
+        // filter file path argumets
+        $paths = array_filter($args, 'file_exists');
+        if (empty($paths)) {
+            $paths = $config->getSchemaPaths();
+        }
+
+        if (!empty($paths)) {
+            $finder = new SchemaFinder($paths);
+            $finder->find();
+        }
+
+        // load class from class map
+        if ($classMap = $config->getClassMap()) {
+            foreach ($classMap as $file => $class) {
+                if (is_numeric($file)) {
+                    continue;
+                }
+                require_once $file;
+            }
+        }
+        return SchemaLoader::loadDeclaredSchemas();
     }
 }

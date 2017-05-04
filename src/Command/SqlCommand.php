@@ -50,21 +50,19 @@ DOC;
         return 'build sql and insert into database.';
     }
 
-    public function execute($nodeId = null)
+    public function execute($nodeId)
     {
         $options = $this->options;
         $logger = $this->logger;
         $config = $this->getConfig();
 
-        $id = $nodeId ?: $this->getCurrentDataSourceId();
-
         $this->logger->debug('Finding schema classes...');
-        $schemas = SchemaUtils::findSchemasByArguments($config, func_get_args(), $this->logger);
+        $schemas = $this->findSchemasByArguments(func_get_args());
 
         $this->logger->debug('Initialize schema builder...');
 
         if ($output = $this->options->output) {
-            $dataSourceConfig = $config->getDataSource($id);
+            $dataSourceConfig = $config->getDataSource($nodeId);
             $driverType = $dataSourceConfig['driver'];
 
             switch ($driverType) {
@@ -101,8 +99,8 @@ DOC;
             $this->logger->warn('Warning: seeding is not supported when using --output option.');
         } else {
             $dataSourceManager = DataSourceManager::getInstance();
-            $conn = $dataSourceManager->getConnection($id);
-            $driver = $dataSourceManager->getQueryDriver($id);
+            $conn = $dataSourceManager->getConnection($nodeId);
+            $driver = $dataSourceManager->getQueryDriver($nodeId);
 
             $tableManager = new TableManager($conn, [
                 'rebuild' => $options->rebuild,
@@ -128,7 +126,7 @@ DOC;
 
             $logger->info(
                 $logger->formatter->format(
-                    'Done. '.count($schemas)." schema tables were generated into data source '$id'.", 'green')
+                    'Done. '.count($schemas)." schema tables were generated into data source '$nodeId'.", 'green')
             );
         }
     }
