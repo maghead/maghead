@@ -45,7 +45,8 @@
     "extra": { "branch-alias": { "dev-master": "4.0.x-dev" } },
     "autoload": {
         "psr-4": {
-            "Maghead\\": "src/"
+            "Maghead\\": "src/",
+            "Todos\\": "examples/todos/src/"
         }
     },
     "autoload-dev": {
