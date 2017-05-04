@@ -22,7 +22,10 @@ class BaseCommand extends Command
         Bootstrap::setupForCLI($this->config);
     }
 
-    public function getConfig($force = false)
+    /**
+     * Return the config object in the current context
+     */
+    protected function getConfig($force = false)
     {
         if (!$this->config || $force) {
             $this->config = SymbolicLinkConfigLoader::load(null, true); // force loading
@@ -34,7 +37,7 @@ class BaseCommand extends Command
         return $this->config;
     }
 
-    public function findSchemasByArguments(array $args)
+    protected function findSchemasByArguments(array $args)
     {
         $config = $this->getConfig();
         $classes = SchemaUtils::argumentsToSchemaObjects($args);
