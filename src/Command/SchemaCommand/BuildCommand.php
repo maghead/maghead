@@ -49,8 +49,15 @@ class BuildCommand extends BaseCommand
 
         $classMap = array();
         foreach ($schemas as $schema) {
+            $cls = get_class($schema);
+
             if ($this->logger->isDebug()) {
-                $this->logger->debug('Checking '.get_class($schema));
+                $this->logger->debug("Checking $cls");
+            }
+
+            if ($schema->virtual) {
+                $this->logger->info("Skipping virtual $cls");
+                continue;
             }
 
             $generated = $generator->generateSchemaFiles($schema);
