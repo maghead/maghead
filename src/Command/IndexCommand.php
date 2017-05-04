@@ -50,7 +50,9 @@ class IndexCommand extends BaseCommand
             'stat.NON_UNIQUE',
             'stat.COMMENT',
             'SUM(index_stat.stat_value)' => 'pages',
-            'CONCAT(ROUND((SUM(stat_value) * @@innodb_page_size) / 1024 / 1024, 1), "MB")' => 'page_size',
+
+            // THIS FAILS ON TRAVIS-CI
+            'CONCAT(ROUND((SUM(stat_value) * @@Innodb_page_size) / 1024 / 1024, 1), "MB")' => 'page_size',
         ]);
         $query->from('information_schema.STATISTICS stat');
 
