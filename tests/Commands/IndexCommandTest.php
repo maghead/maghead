@@ -21,7 +21,7 @@ class IndexCommandsTest extends CommandTestCase
         }
 
         if (getenv('TRAVIS')) {
-            // FIXME: FAILS ON TRAVIS-CI, innodb 
+            // FIXME: FAILS ON TRAVIS-CI, innodb
             return $this->markTestSkipped('innodb is not supported on Travis-CI');
         }
 

@@ -830,7 +830,7 @@ class DeclareSchema extends BaseSchema implements Schema
      *
      * @return CreateIndexQuery
      */
-    protected function index($name, $columns = null, $using = null)
+    public function index($name, $columns = null, $using = null)
     {
         // return the cached index query object
         if (isset($this->indexes[$name])) {

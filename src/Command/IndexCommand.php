@@ -29,7 +29,6 @@ class IndexCommand extends BaseCommand
 
     public function execute($nodeId = 'master')
     {
-
         $conn = $this->dataSourceManager->getConnection($nodeId);
         $driver = $conn->getQueryDriver();
 
