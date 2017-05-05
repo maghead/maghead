@@ -8,6 +8,7 @@ use SQLBuilder\ArgumentArray;
 use CLIFramework\Component\Table\Table;
 
 use Maghead\Manager\DataSourceManager;
+use PDO;
 
 class IndexCommand extends BaseCommand
 {
@@ -45,10 +46,10 @@ class IndexCommand extends BaseCommand
             'CONCAT(stat.INDEX_NAME, " (", GROUP_CONCAT(DISTINCT stat.COLUMN_NAME ORDER BY stat.SEQ_IN_INDEX ASC), ")")' => 'COLUMNS',
             'stat.INDEX_TYPE',
             'stat.NULLABLE',
-            'stat.NON_UNIQUE',
-            'stat.COMMENT',
+            'CASE stat.NON_UNIQUE WHEN 1 THEN \'\' WHEN 0 THEN \'UNIQUE\' END' => 'UNIQ',
             'SUM(index_stat.stat_value)' => 'pages',
-            'CONCAT(ROUND((SUM(index_stat.stat_value) * @@Innodb_page_size) / 1024 / 1024, 1), "MB")' => 'page_size',
+            'CONCAT(ROUND((SUM(index_stat.stat_value) * @@Innodb_page_size) / 1024 / 1024, 1), "MB")' => 'PAGE_SIZE',
+            'stat.COMMENT',
         ]);
         $query->from('information_schema.STATISTICS stat');
 
@@ -79,11 +80,13 @@ class IndexCommand extends BaseCommand
         $args = new ArgumentArray();
         $sql = $query->toSql($driver, $args);
 
+        echo $sql;
+
         $this->logger->debug($sql);
 
         $stm = $conn->prepare($sql);
         $stm->execute($args->toArray());
-        $rows = $stm->fetchAll();
+        $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
         $this->displayRows($rows);
     }
 
