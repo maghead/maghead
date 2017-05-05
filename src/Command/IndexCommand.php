@@ -80,8 +80,6 @@ class IndexCommand extends BaseCommand
         $args = new ArgumentArray();
         $sql = $query->toSql($driver, $args);
 
-        echo $sql;
-
         $this->logger->debug($sql);
 
         $stm = $conn->prepare($sql);
