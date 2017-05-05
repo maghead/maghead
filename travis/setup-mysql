@@ -1,5 +1,8 @@
 #!/bin/bash
+set -e
+set -x
 mysql -uroot -e "create database if not exists testing charset utf8;"
 mysql -uroot -e "create database if not exists s1 charset utf8;"
 mysql -uroot -e "create database if not exists s2 charset utf8;"
 mysql -uroot -e "create database if not exists s3 charset utf8;"
+mysql -uroot -e "SELECT @@Innodb_page_size"
