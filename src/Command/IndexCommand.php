@@ -28,7 +28,6 @@ class IndexCommand extends BaseCommand
 
     public function execute($nodeId = 'master')
     {
-        $tables = $this->options->table;
 
         $conn = $this->dataSourceManager->getConnection($nodeId);
         $driver = $conn->getQueryDriver();
@@ -63,6 +62,7 @@ class IndexCommand extends BaseCommand
             ->equal('stat.TABLE_SCHEMA', 'bossnet')
             ;
 
+        $tables = $this->options->table;
         if (!empty($tables)) {
             $query->where()
                 ->in('stat.TABLE_NAME', $tables)
@@ -87,16 +87,6 @@ class IndexCommand extends BaseCommand
         $stm->execute($args->toArray());
         $rows = $stm->fetchAll();
         $this->displayRows($rows);
-
-        /*
-        $status = new MySQLTableStatus($conn, $driver);
-        $this->logger->info("Table Status:");
-        $rows = $status->queryDetails($tables);
-        $this->displayRows($rows);
-        $this->logger->newline();
-        $this->logger->info("Table Status Summary:");
-        $rows = $status->querySummary($tables);
-        */
     }
 
     protected function displayRows(array $rows)
