@@ -58,9 +58,7 @@ class IndexCommand extends BaseCommand
                 AND index_stat.index_name = stat.INDEX_NAME')
             ;
 
-        $query->where()
-            ->equal('stat.TABLE_SCHEMA', 'bossnet')
-            ;
+        $query->where()->equal('stat.TABLE_SCHEMA', $dbName);
 
         $tables = $this->options->table;
         if (!empty($tables)) {
