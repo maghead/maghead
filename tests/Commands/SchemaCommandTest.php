@@ -7,9 +7,21 @@ use Maghead\Testing\CommandWorkFlowTestCase;
  */
 class SchemaCommandsTest extends CommandWorkFlowTestCase
 {
-    public function testSchemaBuildCommand()
+    public function schemaBuildParameterDataProvider()
     {
-        $ret = $this->app->run(array('maghead','schema','build','-f'));
+        return [
+            [['-f']],
+            [['-f', 'src']],
+            [['-f', 'tests/apps/AuthorBooks/Model/AddressSchema.php', 'tests/apps/AuthorBooks/Model/AuthorSchema.php']],
+        ];
+    }
+
+    /**
+     * @dataProvider schemaBuildParameterDataProvider
+     */
+    public function testSchemaBuildCommand($args)
+    {
+        $ret = $this->app->run(array_merge(['maghead','schema','build'], $args));
         $this->assertTrue($ret);
     }
 
@@ -27,7 +39,6 @@ class SchemaCommandsTest extends CommandWorkFlowTestCase
      */
     public function testSchemaStatusCommand()
     {
-        // $this->expectOutputRegex('/up-to-date/');
         $ret = $this->app->run(array('maghead','schema','status'));
         $this->assertTrue($ret);
     }
