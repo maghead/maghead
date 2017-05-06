@@ -1,6 +1,6 @@
 <?php
 use Maghead\Testing\ModelTestCase;
-use Maghead\Backup\MySQLBackup;
+use Maghead\Platform\MySQL\MySQLBackup;
 use Maghead\Connection;
 
 /**

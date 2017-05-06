@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\Backup;
+namespace Maghead\Platform\MySQL;
 
 use Maghead\Connection;
 use Maghead\DSN\DSNParser;
