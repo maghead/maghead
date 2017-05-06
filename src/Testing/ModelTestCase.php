@@ -7,7 +7,7 @@ use Maghead\Runtime\Connection;
 use Maghead\Runtime\Bootstrap;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Utils\ClassUtils;
-use Maghead\SeedBuilder;
+use Maghead\Runtime\SeedBuilder;
 use Maghead\TableBuilder\TableBuilder;
 use Maghead\TableParser\TableParser;
 use Maghead\Generator\Schema\SchemaGenerator;

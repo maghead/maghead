@@ -10,7 +10,7 @@ use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\TableManager;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Schema\SchemaCollection;
-use Maghead\SeedBuilder;
+use Maghead\Runtime\SeedBuilder;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;

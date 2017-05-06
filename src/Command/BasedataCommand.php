@@ -2,7 +2,7 @@
 
 namespace Maghead\Command;
 
-use Maghead\SeedBuilder;
+use Maghead\Runtime\SeedBuilder;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Schema\SchemaCollection;
 
