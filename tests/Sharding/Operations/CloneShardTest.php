@@ -16,7 +16,6 @@ class CloneShardTest extends StoreTestCase
     protected $onlyDriver = 'mysql';
 
     /**
-     * @depends testAllocateShard
      * @rebuild false
      */
     public function testCloneShard()
@@ -29,6 +28,8 @@ class CloneShardTest extends StoreTestCase
 
         $o = new CloneShard($this->config);
         $o->setDropFirst(true);
+
+        // Copy master to t2
         $o->clone('M_store_id', 'local', 't2', 'master');
 
         $o = new RemoveShard($this->config);
