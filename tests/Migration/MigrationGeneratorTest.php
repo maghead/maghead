@@ -40,7 +40,7 @@ class MigrationGeneratorTest extends ModelTestCase
         list($scriptClass, $path) = $generator->generate('UpdateUser', '20120902');
         // this requires timezone = Asia/Taipei
 
-        $this->assertEquals('UpdateUser_1346515200', $scriptClass);
+        $this->assertStringMatchesFormat('UpdateUser_%i', $scriptClass);
         $this->assertFileExists($path);
         $this->assertEquals('tests/migrations/20120902_UpdateUser.php', $path);
         $this->assertFileEquals('tests/migrations/20120902_UpdateUser.php.expected', $path);
