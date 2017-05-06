@@ -14,6 +14,9 @@ class RecreateCommand extends CreateCommand
         $dropCommand = $this->createCommand('Maghead\\Command\\DbCommand\\DropCommand');
         $dropCommand->options = $this->options;
         $dropCommand->execute($nodeId);
-        parent::execute($nodeId);
+        $ret = parent::execute($nodeId);
+
+        $this->logger->info("Database $nodeId is re-created successfully.");
+        return $ret;
     }
 }

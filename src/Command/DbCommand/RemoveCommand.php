@@ -35,6 +35,8 @@ class RemoveCommand extends BaseCommand
         $manager = new ConfigManager($config);
         $manager->removeDatabase($nodeId);
         $manager->save();
+
+        $this->logger->info("Database $nodeId is removed successfully.");
         return true;
     }
 }
