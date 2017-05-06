@@ -38,10 +38,43 @@ class CloneShard extends BaseShardOperation
 {
     protected $dropFirst = false;
 
+    protected $verbose = false;
+
+    protected $storageEngine = 'InnoDB';
+
+    protected $multiprocess;
+
+    /**
+     * @var string 'master' or 'salve'
+     */
+    protected $replicateAs;
+
+    /**
+     * @var string user ID used for replicate
+     */
+    protected $replicateUser;
+
     public function setDropFirst($enabled = true)
     {
         $this->dropFirst = $enabled;
     }
+
+
+    public function setVerbose($verbose = true)
+    {
+        $this->verbose = $verbose;
+    }
+
+    public function setReplicateAs($replicateAs)
+    {
+        $this->replicateAs = $replicateAs;
+    }
+
+    public function setMultiprocess($numberOfProcesses)
+    {
+        $this->multiprocess = $numberOfProcesses;
+    }
+
 
     public function clone($mappingId, $instanceId, $newNodeId, $srcNodeId)
     {
@@ -85,17 +118,32 @@ class CloneShard extends BaseShardOperation
         // @see https://dev.mysql.com/doc/mysql-utilities/1.5/en/mysqldbcopy.html
 
         $args = [Utils::findBin('mysqldbcopy')];
-        $args[] = '--verbose';
-        $args[] = '--new-storage-engine=InnoDB';
-        $args[] = '--default-storage-engine=InnoDB';
-        $args[] = '--source';
+
+        if ($this->verbose) {
+            $args[] = '--verbose';
+        }
+
+        $args[] = "--new-storage-engine={$this->storageEngine}";
+        $args[] = "--default-storage-engine={$this->storageEngine}";
+
+        if ($this->replicateAs) {
+            $args[] = "--replication={$this->replicateAs}";
+        }
+        if ($this->replicateUser) {
+            $args[] = "--rpl-user={$this->replicateUser}";
+        }
+        if ($this->multiprocess) {
+            $args[] = "--multiprocess={$this->multiprocess}";
+        }
+
+        $args[] = "--source";
         $args[] = $this->buildSourceParam($srcNode);
 
-        $args[] = '--destination';
+        $args[] = "--destination";
         $args[] = $this->buildDestParam($newNodeConfig);
 
         if ($this->dropFirst) {
-            $args[] = '--drop-first';
+            $args[] = "--drop-first";
         }
 
         $args[] = $this->getDB($srcNode) . ":" . $this->getDB($newNodeConfig);
