@@ -8,7 +8,7 @@ class NameSeed
 {
     public static function seed()
     {
-        $ret = Name::create(array('name' => 'Add','country' => 'Taiwan','address' => 'Address' ));
+        $ret = Name::create(['name' => 'Add','country' => 'Taiwan','address' => 'Address' ]);
     }
 }
 
@@ -16,10 +16,7 @@ class NameSchema extends Schema
 {
     public function schema()
     {
-        $this->column('id')
-            ->integer()
-            ->primary()
-            ->autoIncrement();
+        $this->column('id', 'ai-pk');
 
         $this->column('name')
             ->required()
