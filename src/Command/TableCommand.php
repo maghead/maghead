@@ -39,7 +39,7 @@ class TableCommand extends BaseCommand
             $this->logger->error("Driver {$driverClass} not supported.");
         }
 
-        $status = new MySQLTableStatus($conn, $driver);
+        $status = new MySQLTableStatus($conn);
 
         $this->logger->info('Table Status:');
         $rows = $status->queryDetails($tables);

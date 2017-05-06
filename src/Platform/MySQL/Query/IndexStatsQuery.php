@@ -46,11 +46,4 @@ class IndexStatsQuery extends SelectQuery
             ->in('stat.TABLE_NAME', $tables)
             ;
     }
-
-
-
-
 }
-
-
-
