@@ -252,6 +252,40 @@ class DeclareSchema extends BaseSchema implements Schema
         return self::DEFAULT_DATASOURCE_ID;
     }
 
+    /**
+     * Define new column object.
+     *
+     * @param string $name  column name
+     * @param string $class column class name
+     *
+     * @return DeclareColumn
+     */
+    public function column($name, $class = 'Maghead\\Schema\\DeclareColumn')
+    {
+        if (isset($this->columns[$name])) {
+            throw new Exception("column $name of ".get_class($this).' is already defined.');
+        }
+        $this->columnNames[] = $name;
+
+        if (isset(self::$columnClassAliases[$class])) {
+            $class = self::$columnClassAliases[$class];
+        }
+        $class = resolveClass($class, ['Maghead\\Schema\\Column'], $this, ['Column']);
+        return $this->columns[$name] = new $class($this, $name);
+    }
+
+    /**
+     * SchemaGenerator generates column accessor methods from the
+     * column definition automatically.
+     *
+     * If you don't want these accessors to be generated, you may simply call
+     * 'disableColumnAccessors'
+     */
+    protected function disableColumnAccessors()
+    {
+        $this->enableColumnAccessors = false;
+    }
+
     public function getColumns($includeVirtual = false)
     {
         if ($includeVirtual) {
@@ -317,6 +351,14 @@ class DeclareSchema extends BaseSchema implements Schema
         if (isset($this->columns[ $name ])) {
             return $this->columns[ $name ];
         }
+    }
+
+    public function removeColumn($columnName)
+    {
+        unset($this->columns[$columnName]);
+        $this->columnNames = array_filter($this->columnNames, function ($n) use ($columnName) {
+            return $n !== $columnName;
+        });
     }
 
     /**
@@ -644,14 +686,6 @@ class DeclareSchema extends BaseSchema implements Schema
         return $this->columns[ $column->name ] = $column;
     }
 
-    public function removeColumn($columnName)
-    {
-        unset($this->columns[$columnName]);
-        $this->columnNames = array_filter($this->columnNames, function ($n) use ($columnName) {
-            return $n !== $columnName;
-        });
-    }
-
     protected function _modelClassToLabel()
     {
         /* Get the latest token. */
@@ -711,40 +745,6 @@ class DeclareSchema extends BaseSchema implements Schema
         $this->table = $table;
 
         return $this;
-    }
-
-    /**
-     * Define new column object.
-     *
-     * @param string $name  column name
-     * @param string $class column class name
-     *
-     * @return DeclareColumn
-     */
-    public function column($name, $class = 'Maghead\\Schema\\DeclareColumn')
-    {
-        if (isset($this->columns[$name])) {
-            throw new Exception("column $name of ".get_class($this).' is already defined.');
-        }
-        $this->columnNames[] = $name;
-
-        if (isset(self::$columnClassAliases[$class])) {
-            $class = self::$columnClassAliases[$class];
-        }
-        $class = resolveClass($class, ['Maghead\\Schema\\Column'], $this, ['Column']);
-        return $this->columns[$name] = new $class($this, $name);
-    }
-
-    /**
-     * SchemaGenerator generates column accessor methods from the
-     * column definition automatically.
-     *
-     * If you don't want these accessors to be generated, you may simply call
-     * 'disableColumnAccessors'
-     */
-    protected function disableColumnAccessors()
-    {
-        $this->enableColumnAccessors = false;
     }
 
     /**
