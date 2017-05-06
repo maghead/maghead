@@ -29,7 +29,7 @@ class AddCellphoneMigration extends Migration
  */
 class MigrationTest extends ModelTestCase
 {
-    protected $onlyDriver = 'mysql';
+    protected $onlyDriver = ['mysql', 'pgsql'];
 
     public function models()
     {
