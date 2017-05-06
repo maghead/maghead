@@ -23,17 +23,10 @@ use Maghead\DSN\DSN;
 use Maghead\Utils;
 
 use RuntimeException;
+use InvalidArgumentException;
 
 use CLIFramework\Logger;
 
-/**
- * TODO:
- *
- *   --locking=LOCKING     choose the lock type for the operation: no-locks = do
- *                      not use any table locks, lock-all = use table locks
- *                      but no transaction and no consistent read, snaphot
- *                      (default): consistent read using a single transaction.
- */
 class CloneShard extends BaseShardOperation
 {
     protected $dropFirst = false;
@@ -53,6 +46,13 @@ class CloneShard extends BaseShardOperation
      * @var string user ID used for replicate
      */
     protected $replicateUser;
+
+
+    /**
+     * @var locking
+     */
+    protected $locking;
+
 
     public function setDropFirst($enabled = true)
     {
@@ -75,6 +75,20 @@ class CloneShard extends BaseShardOperation
         $this->multiprocess = $numberOfProcesses;
     }
 
+
+    /**
+     *   --locking=LOCKING  choose the lock type for the operation: no-locks = do
+     *                      not use any table locks, lock-all = use table locks
+     *                      but no transaction and no consistent read, snaphot
+     *                      (default): consistent read using a single transaction.
+     */
+    public function setLocking($locking)
+    {
+        if (!in_array($locking, ['no-locks', 'lock-all'])) {
+            throw new InvalidArgumentException("Invalid locking value: '$locking'");
+        }
+        $this->locking = $locking;
+    }
 
     public function clone($mappingId, $instanceId, $newNodeId, $srcNodeId)
     {
@@ -134,6 +148,10 @@ class CloneShard extends BaseShardOperation
         }
         if ($this->multiprocess) {
             $args[] = "--multiprocess={$this->multiprocess}";
+        }
+
+        if ($this->locking) {
+            $args[] = "--locking={$this->locking}";
         }
 
         $args[] = "--source";
