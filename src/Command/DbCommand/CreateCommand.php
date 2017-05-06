@@ -38,12 +38,12 @@ class CreateCommand extends BaseCommand
             throw new Exception("Attribute 'database' is missing in the config.");
         }
 
-        $dataSourceManager = DataSourceManager::getInstance();
-        $conn = $dataSourceManager->connectInstance($nodeId);
-
-        $queryDriver = $conn->getQueryDriver();
+        $conn = $this->dataSourceManager->connectInstance($nodeId);
 
         $dbManager = new DatabaseManager($conn);
+
+        $this->logger->info("Creating database {$ds['database']}");
+
         list($ret, $sql) = $dbManager->create($ds['database'], [
             'charset' => isset($ds['charset']) ? $ds['charset'] : null,
         ]);
