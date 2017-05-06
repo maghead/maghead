@@ -32,7 +32,7 @@ abstract class CommandWorkFlowTestCase extends TestCase
         ob_start();
         $app = new Console;
         $app->run(['maghead','use','tests/config/tmp.yml']);
-        ob_clean();
+        ob_end_clean();
         return $app;
     }
 

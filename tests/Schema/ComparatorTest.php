@@ -65,7 +65,7 @@ class ComparatorTest extends \PHPUnit\Framework\TestCase
         ob_start();
         $printer->output();
         $content = ob_get_contents();
-        ob_clean();
+        ob_end_clean();
         like('#removed#',$content);
         like('#added#',$content);
         */
