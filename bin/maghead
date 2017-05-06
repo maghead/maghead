@@ -1,9 +1,10 @@
 #!/usr/bin/env php
 <?php
-use Maghead\Console;
 require 'vendor/autoload.php';
 
-$console = Console::getInstance();
+use Maghead\Console\Application;
+
+$console = Application::getInstance();
 if (isset($argv[1]) && $argv[1] == '-d') {
     $ret = $console->run($argv);
 } else {

@@ -2,7 +2,7 @@
 
 namespace Maghead\Testing;
 
-use Maghead\Console;
+use Maghead\Console\Application;
 
 /**
  * @codeCoverageIgnore
@@ -33,7 +33,7 @@ abstract class CommandWorkFlowTestCase extends TestCase
         copy("tests/config/$type.yml", "tests/config/tmp.yml");
 
         ob_start();
-        $app = new Console;
+        $app = new Application;
         $app->run(['maghead','use','tests/config/tmp.yml']);
         ob_end_clean();
         return $app;

@@ -1,6 +1,6 @@
 <?php
 use Maghead\Testing\CommandWorkFlowTestCase;
-use Maghead\Console;
+use Maghead\Console\Application;
 
 /**
  * @group command

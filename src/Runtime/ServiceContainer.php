@@ -18,7 +18,7 @@ class ServiceContainer extends Container
         };
 
         $this['logger'] = function ($c) {
-            return Console::getInstance()->getLogger();
+            return Application::getInstance()->getLogger();
         };
 
         $this['schema_finder'] = function ($c) {

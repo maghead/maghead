@@ -6,7 +6,7 @@ use SQLBuilder\Universal\Query\AlterTableQuery;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
-use Maghead\Console;
+use Maghead\Console\Application;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\DynamicSchemaDeclare;
 use Maghead\TableBuilder\TableBuilder;

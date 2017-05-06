@@ -9,13 +9,13 @@ class AllCommandsTest extends CommandWorkFlowTestCase
 {
     public function testCommands()
     {
-        $this->assertNotNull($this->app->createCommand('Maghead\Command\UseCommand'));
-        $this->assertNotNull($this->app->createCommand('Maghead\Command\SchemaCommand\BuildCommand'));
-        $this->assertNotNull($this->app->createCommand('Maghead\Command\BasedataCommand'));
-        $this->assertNotNull($this->app->createCommand('Maghead\Command\InitCommand'));
-        $this->assertNotNull($this->app->createCommand('Maghead\Command\MigrateCommand'));
-        $this->assertNotNull($this->app->createCommand('Maghead\Command\SchemaCommand'));
-        $this->assertNotNull($this->app->createCommand('Maghead\Command\DiffCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\UseCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\SchemaCommand\BuildCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\BasedataCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\InitCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\MigrateCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\SchemaCommand'));
+        $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\DiffCommand'));
     }
 
     public function testSchemaCommand()

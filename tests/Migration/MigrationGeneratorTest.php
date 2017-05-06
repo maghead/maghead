@@ -1,7 +1,7 @@
 <?php
 use Maghead\Migration\MigrationGenerator;
 use Maghead\Migration\MigrationLoader;
-use Maghead\Console;
+use Maghead\Console\Application;
 use Maghead\Migration\MigrationRunner;
 use Maghead\Schema\SchemaFinder;
 use Maghead\Testing\ModelTestCase;
