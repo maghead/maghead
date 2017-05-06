@@ -6,7 +6,7 @@ use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\ArgumentArray;
 
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 use Maghead\Platform\MySQL\Query\TableStatusSummaryQuery;
 use Maghead\Platform\MySQL\Query\TableStatusDetailQuery;
 use PDO;

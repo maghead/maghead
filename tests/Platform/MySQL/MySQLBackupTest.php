@@ -1,7 +1,7 @@
 <?php
 use Maghead\Testing\ModelTestCase;
 use Maghead\Platform\MySQL\MySQLBackup;
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 
 /**
  * @group mysql

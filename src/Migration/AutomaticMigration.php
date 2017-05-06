@@ -6,7 +6,7 @@ use Maghead\Schema\Comparator;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\TableParser\TableParser;
 use Maghead\TableParser\ReferenceParser;
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 use GetOptionKit\OptionResult;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;

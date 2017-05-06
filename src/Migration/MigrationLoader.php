@@ -2,7 +2,7 @@
 namespace Maghead\Migration;
 
 use Maghead\Manager\DataSourceManager;
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 use GetOptionKit\OptionResult;
 use CLIFramework\Logger;
 use SQLBuilder\Driver\BaseDriver;

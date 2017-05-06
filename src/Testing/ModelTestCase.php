@@ -3,7 +3,7 @@
 namespace Maghead\Testing;
 
 use Maghead\Runtime\Config\FileConfigLoader;
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 use Maghead\Runtime\Bootstrap;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Utils\ClassUtils;

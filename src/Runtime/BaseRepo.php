@@ -26,7 +26,7 @@ use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
 
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 use Maghead\Runtime\Result\OperationError;
 use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\RuntimeColumn;
@@ -58,12 +58,12 @@ abstract class BaseRepo implements Countable
 
 
     /**
-     * @var Maghead\Connection
+     * @var Maghead\Runtime\Connection
      */
     protected $write;
 
     /**
-     * @var Maghead\Connection
+     * @var Maghead\Runtime\Connection
      */
     protected $read;
 

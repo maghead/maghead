@@ -9,7 +9,7 @@ use Maghead\Sharding\ShardCollection;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Manager\ConfigManager;
 
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 
 use Maghead\Manager\ConnectionManager;
 use Maghead\Manager\DatabaseManager;

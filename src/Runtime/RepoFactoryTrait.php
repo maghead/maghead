@@ -41,8 +41,8 @@ trait RepoFactoryTrait
     /**
      * This will be overrided by child model class.
      *
-     * @param \Maghead\Connection $write
-     * @param \Maghead\Connection $read
+     * @param \Maghead\Runtime\Connection $write
+     * @param \Maghead\Runtime\Connection $read
      * @return \Maghead\Runtime\BaseRepo
      */
     abstract public static function createRepo($write, $read);

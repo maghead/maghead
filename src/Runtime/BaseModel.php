@@ -29,7 +29,7 @@ use Maghead\Manager\DataSourceManager;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Shard;
 use Maghead\Sharding\ShardCollection;
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 use SerializerKit\XmlSerializer;
 use ActionKit;
 use Symfony\Component\Yaml\Yaml;

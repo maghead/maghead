@@ -2,7 +2,7 @@
 
 namespace Maghead\Platform\MySQL;
 
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 use Maghead\DSN\DSNParser;
 use LogicException;
 use DateTime;

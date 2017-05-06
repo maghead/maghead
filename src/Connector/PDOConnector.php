@@ -2,7 +2,7 @@
 
 namespace Maghead\Connector;
 
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 use PDO;
 
 class PDOConnector

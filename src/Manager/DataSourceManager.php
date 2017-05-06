@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use PDO;
 use ArrayAccess;
 use Maghead\DSN\DSN;
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 use Maghead\Connector\PDOMySQLConnector;
 
 class DataSourceManager extends ConnectionManager

@@ -2,7 +2,7 @@
 
 namespace Maghead\Manager;
 
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;
 

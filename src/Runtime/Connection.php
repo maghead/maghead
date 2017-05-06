@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Runtime;
 
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;

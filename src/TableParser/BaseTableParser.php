@@ -6,7 +6,7 @@ use PDO;
 use SQLBuilder\Driver\BaseDriver;
 use Maghead\QueryDriver;
 use Maghead\Schema\DeclareSchema;
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 
 abstract class BaseTableParser
 {

@@ -36,7 +36,7 @@ abstract class DbTestCase extends TestCase
     protected $config;
 
     /**
-     * @var Maghead\Connection
+     * @var Maghead\Runtime\Connection
      *
      * The default connection object.
      */
@@ -138,7 +138,7 @@ abstract class DbTestCase extends TestCase
     }
 
     /**
-     * @return Maghead\Connection
+     * @return Maghead\Runtime\Connection
      */
     protected function setupConnection(string $connId)
     {

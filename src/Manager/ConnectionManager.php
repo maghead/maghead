@@ -9,7 +9,7 @@ use PDO;
 use ArrayAccess;
 use Maghead\DSN\DSN;
 use Maghead\DSN\DSNParser;
-use Maghead\Connection;
+use Maghead\Runtime\Connection;
 use Maghead\Connector\PDOMySQLConnector;
 use Maghead\Connector\PDOConnector;
 
