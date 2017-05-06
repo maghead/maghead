@@ -3,12 +3,13 @@ use SQLBuilder\Column;
 use SQLBuilder\Driver\PDODriverFactory;
 use Maghead\Migration\Migration;
 use Maghead\Testing\ModelTestCase;
+use TestApp\Model\NameSchema;
 
 class AddCellphoneMigration extends Migration
 {
     public function upgrade()
     {
-        $this->addColumn('foo', function ($column) {
+        $this->addColumn('names', function ($column) {
             $column->name('cellphone')
                 ->type('varchar(128)')
                 ->default('(none)')
@@ -18,7 +19,7 @@ class AddCellphoneMigration extends Migration
 
     public function downgrade()
     {
-        // $this->dropColumn('foo', 'cellphone');
+        $this->dropColumn('names', 'cellphone');
     }
 }
 
@@ -32,17 +33,12 @@ class MigrationTest extends ModelTestCase
 
     public function models()
     {
-        return [];
+        return [new NameSchema];
     }
 
     public function testUpgradeWithAddColumnByCallable()
     {
-        ob_start();
-        $this->conn->query('DROP TABLE IF EXISTS foo');
-        $this->conn->query('CREATE TABLE foo (id INTEGER PRIMARY KEY, name varchar(32));');
         $migration = new AddCellphoneMigration($this->conn, $this->queryDriver, $this->logger);
         $migration->upgrade();
-        $this->conn->query('DROP TABLE IF EXISTS foo');
-        ob_end_clean();
     }
 }
