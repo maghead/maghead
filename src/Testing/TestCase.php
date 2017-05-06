@@ -2,7 +2,7 @@
 
 namespace Maghead\Testing;
 
-class TestCase extends \PHPUnit\Framework\TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     const DEFAULT_DRIVER_TYPE = 'sqlite';
 

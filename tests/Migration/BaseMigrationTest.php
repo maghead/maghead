@@ -18,7 +18,7 @@ class AddCellphoneMigration extends Migration
 
     public function downgrade()
     {
-        $this->dropColumn('foo', 'cellphone');
+        // $this->dropColumn('foo', 'cellphone');
     }
 }
 
@@ -42,7 +42,6 @@ class MigrationTest extends ModelTestCase
         $this->conn->query('CREATE TABLE foo (id INTEGER PRIMARY KEY, name varchar(32));');
         $migration = new AddCellphoneMigration($this->conn, $this->queryDriver, $this->logger);
         $migration->upgrade();
-        $migration->downgrade();
         $this->conn->query('DROP TABLE IF EXISTS foo');
         ob_end_clean();
     }

@@ -31,13 +31,20 @@ class AllCommandsTest extends CommandTestCase
         $this->assertNotNull($this->app->createCommand('Maghead\Command\DiffCommand'));
     }
 
+    public function testSchemaCommand()
+    {
+        $ret = $this->app->run(['maghead', 'schema', 'build']);
+        $this->assertTrue($ret);
+    }
+
     /**
      * @depends testSchemaCommand
      */
     public function testSqlCommand()
     {
-        $this->expectOutputRegex('/Done. \d+ schema tables were generated into data source/');
-        $this->app->run(array('maghead','sql','--rebuild'));
+        $this->expectOutputRegex('/Done. \d+ schema tables were generated into/');
+        $ret = $this->app->run(array('maghead','sql','--rebuild'));
+        $this->assertTrue($ret);
     }
 
     /**
@@ -46,7 +53,8 @@ class AllCommandsTest extends CommandTestCase
     public function testDiffCommand()
     {
         $this->expectOutputRegex('//');
-        $this->app->run(array('maghead','diff'));
+        $ret = $this->app->run(array('maghead','diff'));
+        $this->assertTrue($ret);
     }
 
     /**
