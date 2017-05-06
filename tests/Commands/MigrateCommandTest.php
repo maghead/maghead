@@ -7,7 +7,7 @@ use Maghead\Console\Application;
  */
 class MigrateCommandsTest extends CommandWorkFlowTestCase
 {
-    public $onlyDriver = ['mysql', 'pgsql'];
+    public $onlyDriver = ['mysql'];
 
     public function testMigrateStatus()
     {
