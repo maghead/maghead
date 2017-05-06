@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Runtime;
 
 use PDOException;
 use CLIFramework\Logger;

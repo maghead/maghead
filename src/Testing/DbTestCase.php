@@ -11,7 +11,7 @@ use Maghead\Schema\DeclareSchema;
 use Maghead\Runtime\BaseCollection;
 use Maghead\Runtime\Result;
 use Maghead\Runtime\Bootstrap;
-use Maghead\PDOExceptionPrinter;
+use Maghead\Runtime\PDOExceptionPrinter;
 use SQLBuilder\Driver\BaseDriver;
 use CLIFramework\Logger;
 use PDO;

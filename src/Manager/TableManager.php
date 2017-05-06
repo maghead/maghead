@@ -5,7 +5,7 @@ namespace Maghead\Manager;
 use Maghead\TableBuilder\TableBuilder;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Runtime\Connection;
-use Maghead\PDOExceptionPrinter;
+use Maghead\Runtime\PDOExceptionPrinter;
 use CLIFramework\Logger;
 use PDOException;
 
