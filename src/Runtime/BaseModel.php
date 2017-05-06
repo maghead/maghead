@@ -210,7 +210,7 @@ abstract class BaseModel implements Serializable
 
 
     /**
-     * Return the shards used by this model.
+     * Shards factory, returns the shards used by this model.
      *
      * @return Maghead\Sharding\Shard[]
      */

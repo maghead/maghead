@@ -4,6 +4,9 @@ namespace Maghead\Testing;
 
 use Maghead\Console;
 
+/**
+ * @codeCoverageIgnore
+ */
 abstract class CommandWorkFlowTestCase extends TestCase
 {
     public static $globalApp;

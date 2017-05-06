@@ -2,6 +2,9 @@
 
 namespace Maghead\Testing;
 
+/**
+ * @codeCoverageIgnore
+ */
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     const DEFAULT_DRIVER_TYPE = 'sqlite';

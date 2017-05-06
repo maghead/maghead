@@ -6,6 +6,8 @@ use DateTime as PHPDateTime;
 
 /**
  * Extended DateTime class from PHP built-in DateTime.
+ *
+ * @codeCoverageIgnore
  */
 class DateTime extends PHPDateTime
 {
