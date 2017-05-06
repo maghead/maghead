@@ -31,13 +31,11 @@ class TableStatusSummaryQuery extends SelectQuery
 
     public function fromDatabase($dbName)
     {
-        $this->where()->equal('stat.TABLE_SCHEMA', $dbName);
+        $this->where()->equal('TABLE_SCHEMA', $dbName);
     }
 
     public function fromTables($tables)
     {
-        $this->where()
-            ->in('stat.TABLE_NAME', $tables)
-            ;
+        $this->where()->in('TABLE_NAME', $tables);
     }
 }

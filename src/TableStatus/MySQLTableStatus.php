@@ -7,8 +7,9 @@ use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\ArgumentArray;
 
 use Maghead\Connection;
-use Maghead\Platform\MySQL\TableStatusSummaryQuery;
-use Maghead\Platform\MySQL\TableStatusDetailQuery;
+use Maghead\Platform\MySQL\Query\TableStatusSummaryQuery;
+use Maghead\Platform\MySQL\Query\TableStatusDetailQuery;
+use PDO;
 
 class MySQLTableStatus
 {
@@ -22,9 +23,16 @@ class MySQLTableStatus
         $this->driver = $conn->getQueryDriver();
     }
 
+
+    protected function getDbName()
+    {
+        return $this->conn->query('SELECT database()')->fetchColumn();
+    }
+
     public function querySummary(array $tables)
     {
-        $dbName = $this->conn->query('SELECT database();')->fetchColumn();
+        $dbName = $this->getDbName();
+
         $query = new TableStatusSummaryQuery();
 
         $query->fromDatabase($dbName);
@@ -42,7 +50,8 @@ class MySQLTableStatus
 
     public function queryDetails(array $tables)
     {
-        $dbName = $this->conn->query('SELECT database();')->fetchColumn();
+        $dbName = $this->getDbName();
+
         $query = new TableStatusDetailQuery;
         $query->fromDatabase($dbName);
         if (count($tables)) {
