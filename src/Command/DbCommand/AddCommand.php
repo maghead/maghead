@@ -56,6 +56,8 @@ class AddCommand extends BaseCommand
         $nodeConfig = $configManager->addDatabase($nodeId, $dsnStr, $nodeOptions);
         $configManager->save();
 
+        $this->logger->info("Database $nodeId is added successfully");
+
         if ($this->options->create) {
             $cmd = $this->createCommand('Maghead\\Command\\DbCommand\\CreateCommand');
             return $cmd->execute($nodeId);
