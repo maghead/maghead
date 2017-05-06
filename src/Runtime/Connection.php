@@ -4,7 +4,7 @@ namespace Maghead\Runtime;
 
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;
-use Maghead\Connector\PDOMySQLConnector;
+use Maghead\Runtime\Connector\PDOMySQLConnector;
 use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\Raw;
 

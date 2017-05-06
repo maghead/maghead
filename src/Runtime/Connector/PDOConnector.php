@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\Connector;
+namespace Maghead\Runtime\Connector;
 
 use Maghead\Runtime\Connection;
 use PDO;

@@ -10,8 +10,8 @@ use ArrayAccess;
 use Maghead\DSN\DSN;
 use Maghead\DSN\DSNParser;
 use Maghead\Runtime\Connection;
-use Maghead\Connector\PDOMySQLConnector;
-use Maghead\Connector\PDOConnector;
+use Maghead\Runtime\Connector\PDOMySQLConnector;
+use Maghead\Runtime\Connector\PDOConnector;
 
 class ConnectionManager implements ArrayAccess
 {

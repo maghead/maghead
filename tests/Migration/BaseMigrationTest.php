@@ -5,7 +5,11 @@ use Maghead\Migration\Migration;
 use Maghead\Testing\ModelTestCase;
 use TestApp\Model\NameSchema;
 
-class AddCellphoneMigration extends Migration
+/**
+ * Migration Script Class that starts with "Test" won't be included from
+ * getDeclaredMigrationScripts
+ */
+class TestAddCellphoneMigration extends Migration
 {
     public function upgrade()
     {
@@ -38,7 +42,8 @@ class MigrationTest extends ModelTestCase
 
     public function testUpgradeWithAddColumnByCallable()
     {
-        $migration = new AddCellphoneMigration($this->conn, $this->queryDriver, $this->logger);
+        $migration = new TestAddCellphoneMigration($this->conn, $this->queryDriver, $this->logger);
         $migration->upgrade();
+        $migration->downgrade();
     }
 }

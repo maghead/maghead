@@ -21,7 +21,7 @@ class MigrateCommandsTest extends CommandWorkFlowTestCase
     public function testMigrateUp()
     {
         $this->expectOutputRegex('/Performing upgrade on node master/');
-        $this->app->run(array('maghead','migrate','up', 'master'));
+        $this->app->run(['maghead','migrate','up', 'master']);
     }
 
     /**
@@ -30,7 +30,7 @@ class MigrateCommandsTest extends CommandWorkFlowTestCase
     public function testMigrateDown()
     {
         $this->expectOutputRegex('/Performing downgrade on node master/');
-        $this->app->run(array('maghead','migrate','down','master'));
+        $this->app->run(['maghead', 'migrate', 'down', 'master']);
     }
 
     /**

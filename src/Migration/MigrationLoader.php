@@ -10,6 +10,8 @@ use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
+use Maghead\Migration\Migration;
+
 class MigrationLoader
 {
     /**
@@ -69,10 +71,11 @@ class MigrationLoader
      */
     public static function getDeclaredMigrationScripts()
     {
-        $classes = get_declared_classes();
-        $classes = array_filter($classes, function ($class) {
-            return is_a($class, 'Maghead\\Migration\\Migration', true)
-                && $class != 'Maghead\\Migration\\Migration';
+        $classes = array_filter(get_declared_classes(), function ($class) {
+            return is_a($class, Migration::CLASS, true)
+                && $class !== Migration::CLASS
+                && !preg_match('/^Test/', $class)
+                ;
         });
         return self::sortMigrationScripts($classes);
     }

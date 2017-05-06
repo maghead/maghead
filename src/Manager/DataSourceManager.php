@@ -9,7 +9,7 @@ use PDO;
 use ArrayAccess;
 use Maghead\DSN\DSN;
 use Maghead\Runtime\Connection;
-use Maghead\Connector\PDOMySQLConnector;
+use Maghead\Runtime\Connector\PDOMySQLConnector;
 
 class DataSourceManager extends ConnectionManager
 {
