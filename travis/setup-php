@@ -2,7 +2,8 @@
 # echo $TRAVIS_PHP_VERSION
 # phpenv config-rm xdebug.ini
 if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then
-    echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+    # echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     # echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     phpenv config-add travis/php.ini
+    phpenv config-add travis/php-exts.ini
 fi
