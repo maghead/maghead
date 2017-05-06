@@ -16,21 +16,7 @@ use PDO;
 use Exception;
 use RuntimeException;
 use InvalidArgumentException;
-use Throwable;
-
-class MigrationException extends Exception
-{
-    protected $sql;
-
-    protected $migration;
-
-    public function __construct($message, BaseMigration $migration, $sql, Throwable $e) {
-        $this->migration = $migration;
-        $this->sql = $sql;
-        parent::__construct($message, 0, $e);
-    }
-}
-
+use Maghead\Migration\Exception\MigrationException;
 
 class BaseMigration
 {
@@ -110,7 +96,6 @@ class BaseMigration
             try {
                 $this->connection->query($q);
             } catch (Exception $e) {
-                fwrite(STDOUT, get_class($this));
                 throw new MigrationException("Migration failed", $this, $q,$e);
             }
         }
