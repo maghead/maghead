@@ -4,7 +4,6 @@ namespace Maghead\Schema;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Maghead\ServiceContainer;
 use CLIFramework\Logger;
 
 /**

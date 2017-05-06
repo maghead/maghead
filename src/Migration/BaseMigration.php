@@ -10,13 +10,13 @@ use Maghead\Console;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\DynamicSchemaDeclare;
 use Maghead\TableBuilder\TableBuilder;
-use Maghead\ServiceContainer;
 use CLIFramework\Logger;
 use PDO;
 use Exception;
 use RuntimeException;
 use InvalidArgumentException;
 use Maghead\Migration\Exception\MigrationException;
+use Maghead\Runtime\Connection;
 
 class BaseMigration
 {
@@ -40,14 +40,10 @@ class BaseMigration
      */
     protected $builder;
 
-    public function __construct(PDO $connection, BaseDriver $driver, Logger $logger = null)
+    public function __construct(Connection $connection, BaseDriver $driver, Logger $logger)
     {
         $this->connection = $connection;
         $this->driver = $driver;
-        if (!$logger) {
-            $c = ServiceContainer::getInstance();
-            $logger = $c['logger'] ?: Console::getInstance()->getLogger();
-        }
         $this->logger = $logger;
         $this->builder = TableBuilder::create($driver);
     }

@@ -7,11 +7,8 @@ use CLIFramework\Logger;
 
 class PDOExceptionPrinter
 {
-    public static function show(PDOException $e, $sqlQuery = null, array $arguments = null, Logger $logger = null)
+    public static function show(Logger $logger, PDOException $e, $sqlQuery = null, array $arguments = null)
     {
-        $c = ServiceContainer::getInstance();
-        $logger = $logger ?: $c['logger'];
-
         $logger->error('Exception: '.get_class($e));
         $logger->error('Error Message: '.$e->getMessage());
 

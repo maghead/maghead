@@ -14,11 +14,6 @@ class Console extends Application
         return 'Maghead ORM';
     }
 
-    public function getServiceContainer()
-    {
-        return new ServiceContainer();
-    }
-
     public function init()
     {
         parent::init();

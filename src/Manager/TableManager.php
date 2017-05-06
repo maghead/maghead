@@ -100,7 +100,7 @@ class TableManager
             $this->conn->query($sql);
         } catch (PDOException $e) {
             if ($this->logger) {
-                PDOExceptionPrinter::show($e, $sql, [], $this->logger);
+                PDOExceptionPrinter::show($this->logger, $e, $sql, []);
             } else {
                 throw $e;
             }

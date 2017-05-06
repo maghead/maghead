@@ -263,7 +263,7 @@ abstract class DbTestCase extends TestCase
 
             return $ret;
         } catch (PDOException $e) {
-            PDOExceptionPrinter::show($e, $sql, $args, new Logger());
+            PDOExceptionPrinter::show(new Logger, $e, $sql, $args);
             throw $e;
         }
     }
