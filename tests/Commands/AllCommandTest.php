@@ -29,7 +29,7 @@ class AllCommandsTest extends CommandWorkFlowTestCase
      */
     public function testSqlCommand()
     {
-        $this->expectOutputRegex('/Done. \d+ schema tables were generated into/');
+        $this->expectOutputRegex('/Done. \d+ schema tables/');
         $ret = $this->app->run(array('maghead','sql','--rebuild'));
         $this->assertTrue($ret);
     }
