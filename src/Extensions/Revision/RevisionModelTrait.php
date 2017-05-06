@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\ModelTrait;
+namespace Maghead\Extensions\Revision;
 
 use LogicException;
 
