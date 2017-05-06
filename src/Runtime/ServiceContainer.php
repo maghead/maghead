@@ -1,10 +1,11 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Runtime;
 
 use Pimple\Container;
 use Maghead\Schema\SchemaFinder;
 use CLIFramework\Logger;
+use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
 
 class ServiceContainer extends Container
 {
