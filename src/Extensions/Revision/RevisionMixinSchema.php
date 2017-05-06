@@ -1,9 +1,8 @@
 <?php
 
-namespace Maghead\Schema\Mixin;
+namespace Maghead\Extensions\Revision;
 
 use Maghead\Schema\MixinDeclareSchema;
-use Maghead\Schema;
 use DateTime;
 use SQLBuilder\Raw;
 
@@ -42,6 +41,6 @@ class RevisionMixinSchema extends MixinDeclareSchema
         $this->belongsTo('root_revision', get_class($this->parentSchema), 'id', 'revision_root_id');
         $this->belongsTo('parent_revision', get_class($this->parentSchema), 'id', 'revision_parent_id');
 
-        $this->addModelTrait('Maghead\\ModelTrait\\RevisionModelTrait');
+        $this->addModelTrait('Maghead\\Extensions\\Revision\\RevisionModelTrait');
     }
 }

@@ -9,7 +9,7 @@ class PageSchema extends DeclareSchema
     {
         $this->column('title')->varchar(128)->localize(['en', 'fr']);
         $this->column('brief')->text();
-        $this->mixin('RevisionMixinSchema');
-        $this->mixin('LocalizeMixinSchema');
+        $this->mixin('Maghead\\Extensions\\Revision\\RevisionMixinSchema');
+        $this->mixin('Maghead\\Extensions\\Localize\\LocalizeMixinSchema');
     }
 }

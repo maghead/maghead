@@ -1,9 +1,8 @@
 <?php
 
-namespace Maghead\Schema\Mixin;
+namespace Maghead\Extensions\Localize;
 
 use Maghead\Schema\MixinDeclareSchema;
-use Maghead\Schema;
 
 class LocalizeMixinSchema extends MixinDeclareSchema
 {
