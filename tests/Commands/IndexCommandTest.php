@@ -1,33 +1,21 @@
 <?php
 
-use CLIFramework\Testing\CommandTestCase;
+use Maghead\Testing\CommandWorkFlowTestCase;
 
 /**
  * @group command
  */
-class IndexCommandsTest extends CommandTestCase
+class IndexCommandsTest extends CommandWorkFlowTestCase
 {
-    public function setupApplication()
-    {
-        return new Maghead\Console;
-    }
+    public $onlyDriver = 'mysql';
 
     public function setUp()
     {
-        parent::setUp();
-        $db = getenv('DB') ?: 'sqlite';
-        if ($db !== "mysql") {
-            return $this->markTestSkipped('sqlite migration is not supported.');
-        }
-
         if (getenv('TRAVIS')) {
             // FIXME: FAILS ON TRAVIS-CI, innodb
             return $this->markTestSkipped('innodb is not supported on Travis-CI');
         }
-
-
-        copy("tests/config/$db.yml", "tests/config/tmp.yml");
-        $this->app->run(['maghead','use','tests/config/tmp.yml']);
+        parent::setUp();
     }
 
     public function testIndex()

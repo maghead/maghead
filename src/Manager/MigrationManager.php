@@ -61,7 +61,7 @@ class MigrationManager
             $scripts = MigrationLoader::getDeclaredMigrationScripts();
 
             $runner = new MigrationRunner($conn, $driver, $this->logger, $scripts);
-            $runner->runDowngrade($conn, $driver);
+            $runner->runDowngrade($steps);
 
             $this->logger->info("node $id is successfully migrated.");
         }

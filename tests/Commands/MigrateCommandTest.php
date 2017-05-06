@@ -1,31 +1,44 @@
 <?php
-use CLIFramework\Testing\CommandTestCase;
+use Maghead\Testing\CommandWorkFlowTestCase;
 use Maghead\Console;
 
 /**
  * @group command
  */
-class MigrateCommandsTest extends CommandTestCase
+class MigrateCommandsTest extends CommandWorkFlowTestCase
 {
-    public function setupApplication()
-    {
-        return new Console;
-    }
+    public $onlyDriver = ['mysql', 'pgsql'];
 
-    public function setUp()
+    public function testMigrateStatus()
     {
-        parent::setUp();
-        $db = getenv('DB') ?: 'sqlite';
-        copy("tests/config/$db.yml", "tests/config/tmp.yml");
-        $this->app->run(['maghead','use','tests/config/tmp.yml']);
-
-        if ($db == "sqlite") {
-            return $this->markTestSkipped('sqlite migration is not supported.');
-        }
-    }
-
-    public function testMigrateStatusCommand()
-    {
+        $this->expectOutputRegex("/Found \\d+ migration script to be executed/");
         $this->app->run(array('maghead','migrate','status'));
+    }
+
+    /**
+     * @depends testMigrateStatus
+     */
+    public function testMigrateUp()
+    {
+        $this->expectOutputRegex('/Performing upgrade on node master/');
+        $this->app->run(array('maghead','migrate','up', 'master'));
+    }
+
+    /**
+     * @depends testMigrateUp
+     */
+    public function testMigrateDown()
+    {
+        $this->expectOutputRegex('/Performing downgrade on node master/');
+        $this->app->run(array('maghead','migrate','down','master'));
+    }
+
+    /**
+     * @depends testMigrateDown
+     */
+    public function testMigrateAuto()
+    {
+        $this->expectOutputRegex('/Performing automatic upgrade over data source: master/');
+        $this->app->run(['maghead','migrate','auto','master']);
     }
 }
