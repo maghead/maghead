@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead;
+namespace Maghead\Runtime;
 
 use CLIFramework\Logger;
 use Maghead\Schema\BaseSchema;
