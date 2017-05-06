@@ -96,7 +96,6 @@ class DeclareSchema extends BaseSchema implements Schema
         'ai-pk'   => 'AutoIncrementPrimaryKeyColumn',
     ];
 
-    public $enableColumnAccessors = true;
 
     /**
      * @var string[]
@@ -162,6 +161,11 @@ class DeclareSchema extends BaseSchema implements Schema
      * virtual schema (won't generate class files)
      */
     var $virtual = false;
+
+    /**
+     * Generate column accessors in the class.
+     */
+    var $enableColumnAccessors = true;
 
     /**
      * Constructor of declare schema.
