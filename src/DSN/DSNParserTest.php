@@ -1,10 +1,11 @@
 <?php
-use Maghead\DSN\DSNParser;
+
+namespace Maghead\DSN;
 
 /**
  * @group dsn
  */
-class DSNParserTest extends PHPUnit\Framework\TestCase
+class DSNParserTest extends \PHPUnit\Framework\TestCase
 {
     public function dsnProvider()
     {
