@@ -8,6 +8,7 @@ use SQLBuilder\ArgumentArray;
 use CLIFramework\Component\Table\Table;
 
 use Maghead\Manager\DataSourceManager;
+use Maghead\Platform\MySQL\Query\IndexStatsQuery;
 use PDO;
 
 class IndexCommand extends BaseCommand
@@ -39,42 +40,13 @@ class IndexCommand extends BaseCommand
 
         $dbName = $conn->query('SELECT database();')->fetchColumn();
 
-        $query = new SelectQuery();
-        $query->select([
-            'stat.TABLE_NAME',
-            'CONCAT(stat.INDEX_NAME, " (", GROUP_CONCAT(DISTINCT stat.COLUMN_NAME ORDER BY stat.SEQ_IN_INDEX ASC), ")")' => 'COLUMNS',
-            'stat.INDEX_TYPE',
-            'stat.NULLABLE',
-            'CASE stat.NON_UNIQUE WHEN 1 THEN \'\' WHEN 0 THEN \'UNIQUE\' END' => 'UNIQ',
-            'SUM(index_stat.stat_value)' => 'pages',
-            'CONCAT(ROUND((SUM(index_stat.stat_value) * @@Innodb_page_size) / 1024 / 1024, 1), "MB")' => 'PAGE_SIZE',
-            'stat.COMMENT',
-        ]);
-        $query->from('information_schema.STATISTICS stat');
-
-        $query->join('mysql.innodb_index_stats', 'index_stat', 'LEFT')
-            ->on('index_stat.database_name = stat.TABLE_SCHEMA 
-                AND index_stat.table_name = stat.TABLE_NAME 
-                AND index_stat.index_name = stat.INDEX_NAME')
-            ;
-
-        $query->where()->equal('stat.TABLE_SCHEMA', $dbName);
+        $query = new IndexStatsQuery;
+        $query->fromDatabase($dbName);
 
         $tables = $this->options->table;
         if (!empty($tables)) {
-            $query->where()
-                ->in('stat.TABLE_NAME', $tables)
-                ;
+            $query->fromTables($tables);
         }
-
-        $query->groupBy('stat.INDEX_NAME');
-        $query->groupBy('stat.TABLE_NAME');
-        $query->groupBy('stat.TABLE_SCHEMA');
-
-        $query->orderBy('stat.TABLE_SCHEMA', 'ASC');
-        $query->orderBy('stat.TABLE_NAME', 'ASC');
-        $query->orderBy('stat.INDEX_NAME', 'ASC');
-        $query->orderBy('stat.SEQ_IN_INDEX', 'ASC');
 
         $args = new ArgumentArray();
         $sql = $query->toSql($driver, $args);
