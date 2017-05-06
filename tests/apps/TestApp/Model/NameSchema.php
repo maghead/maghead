@@ -8,8 +8,7 @@ class NameSeed
 {
     public static function seed()
     {
-        $name = new \TestApp\Model\Name;
-        $ret = $name->create(array('name' => 'Add','country' => 'Taiwan','address' => 'Address' ));
+        $ret = Name::create(array('name' => 'Add','country' => 'Taiwan','address' => 'Address' ));
     }
 }
 
