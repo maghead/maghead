@@ -6,8 +6,8 @@ use CLIFramework\Application;
 
 class Console extends Application
 {
-    const name = 'Maghead';
-    const VERSION = '2.2.4';
+    const NAME = 'Maghead';
+    const VERSION = '4.0.x';
 
     public function brief()
     {
