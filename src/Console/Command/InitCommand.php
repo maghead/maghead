@@ -3,12 +3,13 @@
 namespace Maghead\Console\Command;
 
 use CLIFramework\Command;
+use Maghead\Runtime\Bootstrap;
 
 class InitCommand extends Command
 {
     public function brief()
     {
-        return 'initialize your lazyrecord structures.';
+        return 'initialize your maghead project structures.';
     }
 
     public function mkpath($path)
@@ -24,11 +25,10 @@ class InitCommand extends Command
         $this->mkpath('db/config');
         $this->mkpath('db/migration');
 
-
-        $defaultConfigFile = 'db/config/database.yml';
+        $defaultConfigFile = Bootstrap::DEFAULT_CONFIG_FILE;
         if (file_exists($defaultConfigFile)) {
             $command = $this->createCommand('Maghead\\Console\\Command\\UseCommand');
-            $command->execute('db/config/database.yml');
+            $command->execute($defaultConfigFile);
         } else {
             // If the default database config file is not found, create one.
             $command = $this->createCommand('Maghead\\Console\\Command\\InitConfCommand');

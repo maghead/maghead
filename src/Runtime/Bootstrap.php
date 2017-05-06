@@ -15,6 +15,7 @@ use ArrayAccess;
 
 class Bootstrap
 {
+    const DEFAULT_CONFIG_FILE = 'db/config/database.yml';
 
     /**
      * The config object of the current context.
