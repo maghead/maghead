@@ -108,7 +108,7 @@ abstract class StoreTestCase extends ModelTestCase
 
     protected function config()
     {
-        $driver = $this->getCurrentDriverType();
+        $driver = static::getCurrentDriverType();
         return FileConfigLoader::load("tests/apps/StoreApp/config/{$driver}.yml", true);
     }
 

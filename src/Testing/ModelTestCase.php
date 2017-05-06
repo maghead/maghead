@@ -19,7 +19,7 @@ use SQLBuilder\Driver\BaseDriver;
 /**
  * @codeCoverageIgnore
  */
-abstract class ModelTestCase extends BaseTestCase
+abstract class ModelTestCase extends DbTestCase
 {
     /**
      * Define this to support multiple connection
@@ -32,16 +32,8 @@ abstract class ModelTestCase extends BaseTestCase
 
     protected $tableManager;
 
-
     public function setUp()
     {
-        if ($this->onlyDriver !== null && $this->getCurrentDriverType() !== $this->onlyDriver) {
-            return $this->markTestSkipped("{$this->onlyDriver} only. ");
-        }
-        if ($this->skipDriver !== null && $this->getCurrentDriverType() === $this->skipDriver) {
-            return $this->markTestSkipped("Skip {$this->skipDriver}");
-        }
-
         parent::setUp();
 
         // Ensure that we use the correct master data source ID

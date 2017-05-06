@@ -30,10 +30,6 @@ class BasicCRUDTest extends ModelTestCase
 
     public function setUp()
     {
-        if (! extension_loaded('pdo_' . $this->driver)) {
-            $this->markTestSkipped('pdo_' . $this->driver . ' extension is required for model testing');
-            return;
-        }
         parent::setUp();
     }
 

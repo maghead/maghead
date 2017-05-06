@@ -1,5 +1,4 @@
 <?php
-use Maghead\Testing\BaseTestCase;
 use Maghead\Testing\ModelTestCase;
 use Maghead\TableParser\TableParser;
 

@@ -13,7 +13,6 @@ use Maghead\Runtime\Result;
 use Maghead\Runtime\Bootstrap;
 use Maghead\PDOExceptionPrinter;
 use SQLBuilder\Driver\BaseDriver;
-use PHPUnit\Framework\TestCase;
 use CLIFramework\Logger;
 use PDO;
 use PDOException;
@@ -22,15 +21,8 @@ use Exception;
 /**
  * @codeCoverageIgnore
  */
-abstract class BaseTestCase extends TestCase
+abstract class DbTestCase extends TestCase
 {
-    /**
-     * @var string $driver name
-     *
-     * This is used for filtering test cases for specific database driver. e.g. sqlite, mysql, pgsql... etc
-     */
-    protected $driver = 'sqlite';
-
     /**
      * @var string
      *
@@ -38,22 +30,6 @@ abstract class BaseTestCase extends TestCase
      * by default, $this->driver will be the default data source.
      */
     protected $defaultDataSource;
-
-
-    /**
-     * @var string
-     *
-     * This is used for filtering test cases for specific database driver. e.g. sqlite, mysql, pgsql... etc
-     */
-    protected $onlyDriver;
-
-    /**
-     * @var string
-     *
-     * This is used for skipping specific database driver such as sqlite...
-     */
-    protected $skipDriver;
-
 
     protected $dataSourceManager;
 
@@ -95,13 +71,6 @@ abstract class BaseTestCase extends TestCase
         return 'master';
     }
 
-    /**
-     * By overriding the DB environment variable, we can test specific test suites.
-     */
-    protected function getCurrentDriverType()
-    {
-        return getenv('DB') ?: $this->driver;
-    }
 
     /**
      * by default we load the config from symbolic file. (this will be created
@@ -109,7 +78,7 @@ abstract class BaseTestCase extends TestCase
      */
     protected function config()
     {
-        $driverType = $this->getCurrentDriverType();
+        $driverType = static::getCurrentDriverType();
         $configFile = "tests/config/{$driverType}.yml";
 
         if (!file_exists($configFile)) {
@@ -123,13 +92,7 @@ abstract class BaseTestCase extends TestCase
 
     public function setUp()
     {
-        if ($this->onlyDriver !== null && $this->getCurrentDriverType() !== $this->onlyDriver) {
-            return $this->markTestSkipped("{$this->onlyDriver} only");
-        }
-
-        if ($this->skipDriver !== null && $this->getCurrentDriverType() === $this->skipDriver) {
-            return $this->markTestSkipped("Skip {$this->skipDriver}");
-        }
+        parent::setUp();
 
         // Always reset config from symbol file
         $this->config = $this->config();
@@ -139,34 +102,6 @@ abstract class BaseTestCase extends TestCase
 
         $this->prepareConnections();
     }
-
-
-    /**
-     * skips the test case for the driver
-     *
-     * @param string $driver
-     */
-    protected function skipDrivers($driver)
-    {
-        $drivers = func_get_args();
-        if (in_array($this->getCurrentDriverType(), $drivers)) {
-            return $this->markTestSkipped("Skip drivers: " . join(',', $drivers));
-        }
-    }
-
-    /**
-     * run the test case only for the drivers
-     *
-     * @param string $driver
-     */
-    protected function forDrivers($driver)
-    {
-        $drivers = func_get_args();
-        if (!in_array($this->getCurrentDriverType(), $drivers)) {
-            return $this->markTestSkipped("only for drivers: " . join(',', $drivers));
-        }
-    }
-
 
     public function tearDown()
     {
@@ -211,7 +146,7 @@ abstract class BaseTestCase extends TestCase
             // Create the default connection
             $conn = $this->dataSourceManager->getWriteConnection($connId);
 
-            if ($this->getCurrentDriverType() === 'sqlite') {
+            if (static::getCurrentDriverType() === 'sqlite') {
                 // This is for sqlite:memory, copy the connection object to another connection ID.
                 $this->dataSourceManager->shareWrite($connId);
             }
@@ -294,7 +229,6 @@ abstract class BaseTestCase extends TestCase
     {
         return $this->config;
     }
-
 
     // ==========================================================
     // Assertion Methods

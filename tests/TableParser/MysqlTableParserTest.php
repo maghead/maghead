@@ -1,5 +1,5 @@
 <?php
-use Maghead\Testing\BaseTestCase;
+use Maghead\Testing\DbTestCase;
 use SQLBuilder\Driver\PDOSQLiteDriver;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use Maghead\TableParser\SqliteTableParser;
@@ -9,7 +9,7 @@ use Maghead\TableParser\MysqlTableParser;
  * @group mysql
  * @group table-parser
  */
-class MysqlTableParserTest extends BaseTestCase
+class MysqlTableParserTest extends DbTestCase
 {
     protected $onlyDriver = 'mysql';
 
