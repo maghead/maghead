@@ -1,4 +1,5 @@
 <?php
+
 namespace Maghead\Schema;
 
 use Maghead\Schema\SchemaFinder;
