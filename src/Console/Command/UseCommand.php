@@ -6,17 +6,10 @@ use Exception;
 use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
 use Maghead\Runtime\Bootstrap;
+use Maghead\Utils;
 
 use CLIFramework\Command;
 
-function cross_symlink($sourcePath, $targetPath)
-{
-    if (PHP_OS == 'WINNT') {
-        return link($sourcePath, $targetPath);
-    } else {
-        return symlink($sourcePath, $targetPath);
-    }
-}
 
 class UseCommand extends Command
 {
@@ -41,11 +34,6 @@ class UseCommand extends Command
 
     public function execute($configFile = null)
     {
-        /*
-         * $ lazy bulid-conf config/lazy.yml phifty/config/lazy.yml
-         *
-         * build/lazy/config.php   # is generated
-         */
         if (!$configFile) {
             $possiblePaths = [
                 'db/config/site_database.yml',
@@ -57,7 +45,7 @@ class UseCommand extends Command
                 if (file_exists($path)) {
                     $this->logger->info("Found default config file: $path");
                     $configFile = $path;
-                    FileConfigLoader::compile($configFile);
+                    FileConfigLoader::load($configFile, true);
                 }
             }
         }
@@ -68,7 +56,7 @@ class UseCommand extends Command
 
         $this->logger->info("Building config from $configFile");
         $dir = dirname($configFile);
-        FileConfigLoader::compile($configFile, $this->options->force);
+        FileConfigLoader::load($configFile, $this->options->force);
 
         // make master config link
         $cleanup = [SymbolicLinkConfigLoader::ANCHOR_FILENAME, '.lazy.php', '.lazy.yml'];
@@ -80,7 +68,7 @@ class UseCommand extends Command
         }
 
         $this->logger->info('Creating symbol link: '.SymbolicLinkConfigLoader::ANCHOR_FILENAME.' -> '.$configFile);
-        if (cross_symlink($configFile, SymbolicLinkConfigLoader::ANCHOR_FILENAME) === false) {
+        if (Utils::symlink($configFile, SymbolicLinkConfigLoader::ANCHOR_FILENAME) === false) {
             $this->logger->error('Config linking failed.');
         }
         $this->logger->info('command line environment is now configured.');

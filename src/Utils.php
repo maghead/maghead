@@ -40,4 +40,13 @@ class Utils
         }
         return false;
     }
+
+    public static function symlink($sourcePath, $targetPath)
+    {
+        if (PHP_OS === 'WINNT') {
+            return link($sourcePath, $targetPath);
+        } else {
+            return symlink($sourcePath, $targetPath);
+        }
+    }
 }
