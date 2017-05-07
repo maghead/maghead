@@ -28,7 +28,8 @@
         "cypresslab/gitelephant": "^1.0",
         "psr/log": "^1.0",
         "monolog/monolog": "^1.22",
-        "ramsey/uuid": "^3.5"
+        "ramsey/uuid": "^3.5",
+        "mongodb/mongodb": "^1.1"
     },
     "require-dev": {
         "ext-apcu": "*"
