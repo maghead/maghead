@@ -211,27 +211,8 @@ class Result
         return $msg;
     }
 
-    /**
-     * Trigger error with errorType, default to E_USER_NOTICE.
-     *
-     * @param string $desc      error description
-     * @param int    $errorType error types defined in http://php.net/manual/en/function.trigger-error.php
-     */
-    public function triggerError($desc = null, $errorType = E_USER_NOTICE)
-    {
-        trigger_error(($desc ? "$desc:" : '').$this->message, $errorType);
-    }
-
     public function silentError($desc = null, $messageType = 0)
     {
         error_log(($desc ? "$desc:" : '').$this->message, $messageType);
-    }
-
-    /**
-     * @param string $desc
-     */
-    public function notice($desc = null)
-    {
-        trigger_error(($desc ? "$desc:" : '').$this->message, E_USER_NOTICE);
     }
 }
