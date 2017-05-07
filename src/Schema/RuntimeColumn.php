@@ -303,8 +303,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                 $validator = $this->validatorArgs ? new $validator($this->get('validatorArgs')) : new $validator();
                 $ret = $validator->validate($val);
                 $msgs = $validator->getMessages();
-                $msg = isset($msgs[0]) ? $msgs[0] : 'Validation failed.';
-                return ['valid' => $ret, 'message' => $msg, 'field' => $this->name];
+                return ['valid' => $ret, 'message' => $msgs, 'field' => $this->name];
             }
 
             throw new LogicException("Unsupported validator on column {$this->name}");

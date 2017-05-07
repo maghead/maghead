@@ -28,6 +28,7 @@ class AuthorSchema extends Schema
             ->unique()
             ->required()
             ->varchar(128)
+            ->validator('StringLength', ['min' => 3, 'max' => 64])
             ->findable()
             ;
 

@@ -175,7 +175,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testManyToManyRelationRecordCreate()
     {
-        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zaa' ));
         $this->assertNotNull(
             $book = $author->books->create(array(
                 'title' => 'Programming Perl I',
@@ -221,7 +221,7 @@ class BasicCRUDTest extends ModelTestCase
     public function testPrimaryKeyIdIsInteger()
     {
         $author = new \AuthorBooks\Model\Author;
-        $ret = Author::create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $ret = Author::create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zaa' ));
         $this->assertResultSuccess($ret);
 
         $author = Author::masterRepo()->load($ret->key);
@@ -236,7 +236,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testManyToManyRelationFetchRecord()
     {
-        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zaa' ));
 
         $book = $author->books->create(array( 'title' => 'Book Test' ));
         $this->assertNotNull($book);
@@ -293,7 +293,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testHasManyRelationCreate2()
     {
-        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zaa' ));
 
         // append items
         $author->addresses[] = array( 'address' => 'Harvard' );
@@ -317,7 +317,7 @@ class BasicCRUDTest extends ModelTestCase
      */
     public function testHasManyRelationCreate()
     {
-        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zaa' ));
 
         $address = $author->addresses->create(array(
             'address' => 'farfaraway'
@@ -333,7 +333,7 @@ class BasicCRUDTest extends ModelTestCase
 
     public function testHasManyRelationFetch()
     {
-        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zaa' ));
         $this->assertNotFalse($author);
 
         $address = Address::createAndLoad(array(

@@ -49,7 +49,7 @@ class XMLExporterTest extends ModelTestCase
 
         $author = new Author;
         $ret = Author::create(array(
-            'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z'
+            'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zaa'
         ));
         $this->assertResultSuccess($ret);
 
@@ -64,7 +64,7 @@ class XMLExporterTest extends ModelTestCase
         $author = Author::createAndLoad(array(
             'name' => 'Z',
             'email' => 'z@z',
-            'identity' => 'z',
+            'identity' => 'zaa',
             'updated_on' => '2012-01-01 00:00:00',
             'created_on' => '2012-01-01 00:00:00',
         ));

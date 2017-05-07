@@ -12,7 +12,8 @@ class AddressSchema extends Schema
             ->integer();
 
         $this->column('address')
-                ->varchar(128);
+            ->varchar(128)
+            ;
 
         $this->column('unused')
             ->boolean()

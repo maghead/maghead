@@ -18,12 +18,23 @@ class AuthorAddressModelTest extends ModelTestCase
         );
     }
 
+
+    public function testIdentityMinStringLength3()
+    {
+        $ret = Author::create(['name' => 'Yo-An Lin' , 'email' => 'c9s@gmail.com' , 'identity' => 'c' ]);
+        $vld = $ret->getColumnValidation('identity');
+        $this->assertFalse($vld['valid']);
+        // FIXME check the message
+        // $this->assertStringMatchesFormat('',$vld['message']);
+    }
+
+
     /**
      * @basedata false
      */
     public function testHasManyFetch()
     {
-        $author = Author::createAndLoad(['name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ]);
+        $author = Author::createAndLoad(['name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zzz' ]);
         $this->assertNotFalse($author);
         for ($i = 0 ; $i < 10 ; $i++) {
             $address = Address::createAndLoad([
@@ -41,7 +52,7 @@ class AuthorAddressModelTest extends ModelTestCase
      */
     public function testHasManyCollectionAccessor()
     {
-        $author = Author::createAndLoad(['name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ]);
+        $author = Author::createAndLoad(['name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zae' ]);
         $this->assertNotFalse($author);
         for ($i = 0 ; $i < 10 ; $i++) {
             $address = Address::createAndLoad([
@@ -60,7 +71,7 @@ class AuthorAddressModelTest extends ModelTestCase
      */
     public function testBelongsToFetch()
     {
-        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'fetch' ));
         $this->assertNotFalse($author);
 
         $address = Address::createAndLoad(array(
@@ -79,7 +90,7 @@ class AuthorAddressModelTest extends ModelTestCase
      */
     public function testHasManyRelationFetch()
     {
-        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zzz' ));
         $this->assertNotFalse($author);
 
         $address = Address::createAndLoad(array(
@@ -122,7 +133,7 @@ class AuthorAddressModelTest extends ModelTestCase
      */
     public function testHasManyRelationCreate()
     {
-        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zzz' ));
         $this->assertNotFalse($author);
         $this->assertNotNull($author->id);
 
@@ -145,7 +156,7 @@ class AuthorAddressModelTest extends ModelTestCase
      */
     public function testHasManyDynamicAccessorWithCreate()
     {
-        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zaa' ));
         $this->assertNotFalse($author);
 
         // append items

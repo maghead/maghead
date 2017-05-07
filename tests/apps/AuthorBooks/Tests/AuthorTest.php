@@ -38,7 +38,7 @@ class AuthorTest extends ModelTestCase
         $this->assertNotFalse($author = Author::createAndLoad([
             'name' => 'FooBar',
             'email' => 'a@a',
-            'identity' => 'a',
+            'identity' => 'aaa',
             'confirmed' => false,
         ]));
         $author->name = 'FooBarZoo';
@@ -51,7 +51,7 @@ class AuthorTest extends ModelTestCase
         $this->assertNotFalse($author = Author::createAndLoad(array(
             'name' => 'FooBar',
             'email' => 'timcook@apple.com',
-            'identity' => 'a',
+            'identity' => 'timcook',
             'confirmed' => false,
         )));
         $timCook = Author::masterRepo()->findByEmail('timcook@apple.com');
@@ -67,7 +67,7 @@ class AuthorTest extends ModelTestCase
         $this->assertNotFalse($author = Author::createAndLoad(array(
             'name' => 'FooBar',
             'email' => 'a@a',
-            'identity' => 'a',
+            'identity' => 'foo',
             'confirmed' => false,
         )));
         $collection = $author->asCollection();
@@ -110,7 +110,7 @@ class AuthorTest extends ModelTestCase
         $ret = Author::create(array(
             'name' => 'a',
             'email' => 'a@a',
-            'identity' => 'a',
+            'identity' => 'aaa',
             'confirmed' => false,
         ));
         $this->assertResultSuccess($ret);
@@ -118,7 +118,7 @@ class AuthorTest extends ModelTestCase
         $ret = Author::create(array(
             'name' => 'b',
             'email' => 'b@b',
-            'identity' => 'b',
+            'identity' => 'bbb',
             'confirmed' => true,
         ));
         $this->assertResultSuccess($ret);
@@ -147,7 +147,7 @@ class AuthorTest extends ModelTestCase
         $author = Author::createAndLoad([
             'name' => 'Pedro',
             'email' => 'pedro@gmail.com',
-            'identity' => 'id',
+            'identity' => 'pedro',
             'confirmed' => true,
         ]);
         $str = serialize($author);
@@ -161,7 +161,7 @@ class AuthorTest extends ModelTestCase
         $ret = Author::create([
             'name' => 'Pedro',
             'email' => 'pedro@gmail.com',
-            'identity' => 'id',
+            'identity' => 'pedro',
             'confirmed' => true,
         ]);
         $this->assertResultSuccess($ret);
@@ -178,7 +178,7 @@ class AuthorTest extends ModelTestCase
     public function testStringContainsQuotes()
     {
         $a = new Author;
-        $ret = Author::create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
+        $ret = Author::create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id2' ));
         $this->assertResultSuccess($ret);
     }
 

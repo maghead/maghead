@@ -30,12 +30,12 @@ class AuthorBookModelTest extends ModelTestCase
     public function testBooleanCreate()
     {
         $a = new Author;
-        $ret = Author::create(array(
+        $ret = Author::create([
             'name' => 'a',
             'email' => 'a@a',
-            'identity' => 'a',
+            'identity' => 'aaa',
             'confirmed' => true,
-        ));
+        ]);
         $this->resultOK(true, $ret);
 
         $a = Author::load($ret->key);
@@ -56,7 +56,7 @@ class AuthorBookModelTest extends ModelTestCase
         $ret = Author::create(array(
             'name' => 'a',
             'email' => 'a@a',
-            'identity' => 'a',
+            'identity' => 'aaa',
             'confirmed' => false,
         ));
         $this->resultOK(true, $ret);
@@ -67,7 +67,7 @@ class AuthorBookModelTest extends ModelTestCase
         $ret = Author::create(array(
             'name' => 'b',
             'email' => 'b@b',
-            'identity' => 'b',
+            'identity' => 'bbb',
             'confirmed' => true,
         ));
         $this->resultOK(true, $ret);
@@ -169,7 +169,7 @@ class AuthorBookModelTest extends ModelTestCase
         $ret = Author::create(array(
             'name' => 'Pedro' ,
             'email' => 'pedro@gmail.com' ,
-            'identity' => 'id',
+            'identity' => 'pedro',
         ));
         $this->assertResultSuccess($ret);
         $author = Author::masterRepo()->load($ret->key);
@@ -209,7 +209,7 @@ class AuthorBookModelTest extends ModelTestCase
         $a2 = Author::load(array( 'name' => 'A record does not exist.' ));
         $this->assertFalse($a2);
 
-        $ret = Author::create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'id' ));
+        $ret = Author::create(array( 'name' => 'long string \'` long string' , 'email' => 'email' , 'identity' => 'myid' ));
         $this->assertTrue($ret->success);
 
         $a2 = Author::load($ret->key);
@@ -430,7 +430,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testManyToManyRelationCreate()
     {
-        $ret = Author::create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $ret = Author::create(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zak' ));
         $this->assertResultSuccess($ret);
         $author = Author::load($ret->key);
 
@@ -476,7 +476,7 @@ class AuthorBookModelTest extends ModelTestCase
 
     public function testManyToManyRelationFetch()
     {
-        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'z' ));
+        $author = Author::createAndLoad(array( 'name' => 'Z' , 'email' => 'z@z' , 'identity' => 'zak' ));
 
         // XXX: in different database engine, it's different.
         // sometimes it's string, sometimes it's integer

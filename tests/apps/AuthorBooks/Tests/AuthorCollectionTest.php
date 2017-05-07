@@ -211,7 +211,7 @@ class AuthorCollectionTest extends ModelTestCase
         $ret = Author::create(array(
             'name' => 'a',
             'email' => 'a@a',
-            'identity' => 'a',
+            'identity' => 'aaa',
             'confirmed' => false,
         ));
         $this->assertResultSuccess($ret);
@@ -220,7 +220,7 @@ class AuthorCollectionTest extends ModelTestCase
         $ret = Author::create(array(
             'name' => 'b',
             'email' => 'b@b',
-            'identity' => 'b',
+            'identity' => 'bbb',
             'confirmed' => true,
         ));
         $this->assertResultSuccess($ret);

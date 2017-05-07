@@ -143,6 +143,15 @@ class Result
         }
     }
 
+
+    public function getColumnValidation($columnName)
+    {
+        if (isset($this->validations[$columnName])) {
+            return $this->validations[$columnName];
+        }
+    }
+
+
     /**
      * returns an array contains success validations.
      */
