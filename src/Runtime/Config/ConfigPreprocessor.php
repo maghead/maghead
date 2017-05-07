@@ -27,7 +27,7 @@ class ConfigPreprocessor
         return $nodeConfig;
     }
 
-    private static function normalizeNodeConfig(array $config)
+    public static function normalizeNodeConfig(array $config)
     {
         // if DSN is defined, then we use the DSN to update the node config
         $dsn = null;
