@@ -185,6 +185,9 @@ class Config implements ArrayAccess
         return is_array($this->stash['schema']['auto_id']);
     }
 
+    // TODO: column classes alias should be defined here.
+    // TODO: implement the column object factory
+    // TODO: dynamically resolve the column classes
     public function getAutoIdColumnClass()
     {
         if (is_array($this->stash['schema']['auto_id'])) {
