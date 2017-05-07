@@ -3,7 +3,6 @@
 namespace Maghead;
 
 use Maghead\Schema\SchemaFinder;
-use Maghead\Schema\SchemaLoader;
 
 class Utils
 {

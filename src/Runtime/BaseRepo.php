@@ -28,7 +28,6 @@ use SQLBuilder\Raw;
 
 use Maghead\Runtime\Connection;
 use Maghead\Runtime\Result\OperationError;
-use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\RuntimeColumn;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Exception\MissingPrimaryKeyException;

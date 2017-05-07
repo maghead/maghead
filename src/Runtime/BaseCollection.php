@@ -19,7 +19,6 @@ use SQLBuilder\ArgumentArray;
 use SerializerKit\XmlSerializer;
 use Symfony\Component\Yaml\Yaml;
 
-use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\BaseSchema;
 use Maghead\Manager\DataSourceManager;
 
@@ -119,18 +118,7 @@ abstract class BaseCollection implements IteratorAggregate, ArrayAccess, Countab
         $this->preferredTable = $tableName;
     }
 
-    /**
-     * This method will be overrided by code gen.
-     */
-    public static function getSchema()
-    {
-        if ($this->_schema) {
-            return $this->_schema;
-        } elseif (@constant('static::SCHEMA_PROXY_CLASS')) {
-            return $this->_schema = SchemaLoader::load(static::SCHEMA_PROXY_CLASS);
-        }
-        throw new RuntimeException('schema is not defined in '.get_class($this));
-    }
+    abstract public static function getSchema();
 
     public function selectAll()
     {

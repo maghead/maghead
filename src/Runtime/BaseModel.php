@@ -21,7 +21,6 @@ use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
 use Maghead\Runtime\Bootstrap;
-use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\RuntimeColumn;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Runtime\Config\FileConfigLoader;
@@ -1113,19 +1112,7 @@ abstract class BaseModel implements Serializable
         return new $class();
     }
 
-    public static function getSchema()
-    {
-        // This is not static property becase different model loads different schema objects.
-        if ($this->_schema) {
-            return $this->_schema;
-        } elseif (constant('static::SCHEMA_PROXY_CLASS')) {
-            if ($this->_schema = SchemaLoader::load(static::SCHEMA_PROXY_CLASS)) {
-                return $this->_schema;
-            }
-            throw new Exception('Can not load '.static::SCHEMA_PROXY_CLASS);
-        }
-        throw new Exception('schema is not defined in '.get_class($this));
-    }
+    abstract public static function getSchema();
 
     /***************************************
      * Cache related methods
