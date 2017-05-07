@@ -25,13 +25,29 @@ class Config implements ArrayAccess
         $this->file = $file;
     }
 
+
     /**
-     * run bootstrap code.
+     * return the config server uri if any
+     *
+     * @return string
      */
-    public function getBootstrapScripts()
+    public function getConfigServer()
+    {
+        if (isset($this->stash['configServer'])) {
+            return $this->stash['configServer'];
+        }
+    }
+
+
+    /**
+     * return the bootstrap script path
+     *
+     * @return string 
+     */
+    public function getBootstrapScript()
     {
         if (isset($this->stash['cli']['bootstrap'])) {
-            return (array) $this->stash['cli']['bootstrap'];
+            return $this->stash['cli']['bootstrap'];
         }
     }
 

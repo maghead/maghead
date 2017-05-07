@@ -1,4 +1,5 @@
 ---
+configServer: "mongodb://127.0.0.1"
 cli:
   bootstrap: tests/bootstrap.php
 schema:
