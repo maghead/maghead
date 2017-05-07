@@ -15,6 +15,8 @@ use ArrayAccess;
 
 class Bootstrap
 {
+    const DEFAULT_SITE_CONFIG_FILE = 'db/config/site_database.yml';
+
     const DEFAULT_CONFIG_FILE = 'db/config/database.yml';
 
     /**

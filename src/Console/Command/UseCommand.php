@@ -36,7 +36,7 @@ class UseCommand extends Command
     {
         if (!$configFile) {
             $possiblePaths = [
-                'db/config/site_database.yml',
+                Bootstrap::DEFAULT_SITE_CONFIG_FILE,
                 Bootstrap::DEFAULT_CONFIG_FILE,
                 'config/database.yml',
                 'config/site_database.yml',
