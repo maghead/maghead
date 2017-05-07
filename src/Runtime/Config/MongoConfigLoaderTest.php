@@ -13,12 +13,7 @@ class MongoConfigLoaderTest extends TestCase
             $this->markTestSkipped('this test requires mongodb');
         }
 
-        $client = new \MongoDB\Client("mongodb://localhost:27017");
-
-        /*
-        $collection = $client->maghead->configs;
-        $result = $collection->deleteMany([]);
-         */
+        $client = new Client("mongodb://localhost:27017");
 
         $result = MongoConfigWriter::remove('testapp', $client);
         $this->assertTrue($result->isAcknowledged());
