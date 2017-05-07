@@ -40,15 +40,4 @@ class Application extends \CLIFramework\Application
         $this->command('index');
         $this->command('shard');
     }
-
-    public static function getInstance()
-    {
-        static $self;
-        if ($self) {
-            return $self;
-        }
-
-        return $self = new self();
-    }
 }
-
