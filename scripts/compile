@@ -20,7 +20,7 @@ onion --debug compile \
     --exclude ".git" \
     --exclude "composer.json$" \
     --classloader \
-    --bootstrap scripts/lazy.emb.php \
+    --bootstrap scripts/maghead.emb.php \
     --executable \
     --output lazy.phar
 mv lazy.phar lazy
