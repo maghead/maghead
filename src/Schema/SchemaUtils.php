@@ -95,33 +95,6 @@ class SchemaUtils
         return $schemas;
     }
 
-    /**
-     * Filter non-dynamic schema declare classes.
-     *
-     * @param string[] $classes class list.
-     */
-    public static function filterBuildableSchemas(array $schemas)
-    {
-        $list = array();
-        foreach ($schemas as $schema) {
-            // skip abstract classes.
-            if ($schema instanceof DynamicSchemaDeclare
-                || $schema instanceof MixinDeclareSchema
-                || (!$schema instanceof SchemaDeclare && !$schema instanceof DeclareSchema)
-            ) {
-                continue;
-            }
-
-            $rf = new ReflectionObject($schema);
-            if ($rf->isAbstract()) {
-                continue;
-            }
-            $list[] = $schema;
-        }
-
-        return $list;
-    }
-
     public static function findSchemasByPaths(array $paths = null)
     {
         if ($paths && !empty($paths)) {
