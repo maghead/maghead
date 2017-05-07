@@ -28,7 +28,6 @@ class UseCommand extends Command
     public function options($opts)
     {
         $opts->add('f|force', 'force building config file.');
-        $opts->add('s|search', 'search default config file automatically');
     }
 
     public function arguments($args)
@@ -47,13 +46,13 @@ class UseCommand extends Command
          *
          * build/lazy/config.php   # is generated
          */
-        if (!$configFile && $this->options->{'search'}) {
-            $possiblePaths = array(
+        if (!$configFile) {
+            $possiblePaths = [
                 'db/config/site_database.yml',
                 Bootstrap::DEFAULT_CONFIG_FILE,
                 'config/database.yml',
                 'config/site_database.yml',
-            );
+            ];
             foreach ($possiblePaths as $path) {
                 if (file_exists($path)) {
                     $this->logger->info("Found default config file: $path");
