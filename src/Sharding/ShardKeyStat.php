@@ -21,6 +21,9 @@ class ShardKeyStat
         $this->numberOfRows = intval($this->numberOfRows);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function __debugInfo()
     {
         return [
