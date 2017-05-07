@@ -14,8 +14,6 @@ use Maghead\Runtime\Bootstrap;
 
 class BaseCommand extends Command
 {
-    public $config;
-
     public $dataSourceManager;
 
     /**
@@ -26,7 +24,6 @@ class BaseCommand extends Command
         $cmd = parent::createCommand($commandClass);
 
         if ($cmd instanceof BaseCommand) {
-            $cmd->config = $this->config;
             $cmd->dataSourceManager = $this->dataSourceManager;
         }
         return $cmd;
@@ -34,32 +31,33 @@ class BaseCommand extends Command
 
     public function prepare()
     {
+        $this->loadConfig();
+    }
+
+    protected function loadConfig()
+    {
         // softly load the config file.
         if (file_exists('db/appId')) {
             $appId = file_get_contents('db/appId');
-            $this->config = AutoConfigLoader::load($appId, SymbolicLinkConfigLoader::ANCHOR_FILENAME);
+            $config = AutoConfigLoader::load($appId, SymbolicLinkConfigLoader::ANCHOR_FILENAME);
         } else {
-            $this->config = SymbolicLinkConfigLoader::load(null, true); // force loading
+            $config = SymbolicLinkConfigLoader::load(null, true); // force loading
         }
-
-        Bootstrap::setupForCLI($this->config);
-
+        Bootstrap::setupForCLI($config);
         $this->dataSourceManager = DataSourceManager::getInstance();
+        return $config;
     }
 
     /**
      * Return the config object in the current context
      */
-    protected function getConfig($force = false)
+    protected function getConfig($reload = false)
     {
-        if (!$this->config || $force) {
-            $this->config = SymbolicLinkConfigLoader::load(null, true); // force loading
+        $config = Bootstrap::getConfig();
+        if (!$config || $reload) {
+            return $this->loadConfig();
         }
-        if (!$this->config) {
-            throw new \Exception("Can't load symbolic config file.");
-        }
-        Bootstrap::setupForCLI($this->config);
-        return $this->config;
+        return $config;
     }
 
     protected function findSchemasByArguments(array $args)
