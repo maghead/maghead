@@ -5,7 +5,8 @@ namespace Maghead\Console\Command;
 use Exception;
 use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
-use Maghead\ConfigWriter;
+use Maghead\Runtime\Bootstrap;
+
 use CLIFramework\Command;
 
 function cross_symlink($sourcePath, $targetPath)
@@ -49,7 +50,7 @@ class UseCommand extends Command
         if (!$configFile && $this->options->{'search'}) {
             $possiblePaths = array(
                 'db/config/site_database.yml',
-                'db/config/database.yml',
+                Bootstrap::DEFAULT_CONFIG_FILE,
                 'config/database.yml',
                 'config/site_database.yml',
             );

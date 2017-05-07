@@ -4,6 +4,7 @@ namespace Maghead\Console\Command;
 
 use CLIFramework\Command;
 use Maghead\Runtime\Config\FileConfigLoader;
+use Maghead\Runtime\Bootstrap;
 
 class InitConfCommand extends Command
 {
@@ -21,7 +22,7 @@ class InitConfCommand extends Command
     {
         $logger = $this->getLogger();
 
-        $configFile = $this->options->config ?: 'db/config/database.yml';
+        $configFile = $this->options->config ?: Bootstrap::DEFAULT_CONFIG_FILE;
         if (file_exists($configFile)) {
             $logger->info("Config file $configFile already exists.");
 
