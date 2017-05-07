@@ -46,13 +46,11 @@
     ],
     "extra": { "branch-alias": { "dev-master": "4.0.x-dev" } },
     "autoload": {
-        "psr-4": {
-            "Maghead\\": "src/",
-            "Todos\\": "examples/todos/src/"
-        }
+        "psr-4": { "Maghead\\": "src/" }
     },
     "autoload-dev": {
         "psr-4": {
+            "Todos\\": "examples/todos/src/",
             "AuthorBooks\\": "tests/apps/AuthorBooks/",
             "MetricApp\\": "tests/apps/MetricApp/",
             "PageApp\\": "tests/apps/PageApp/",
