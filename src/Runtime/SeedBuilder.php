@@ -24,13 +24,13 @@ class SeedBuilder
         $seedData = $schema->seeds();
         if (!empty($seedData)) {
             $modelClass = $schema->getModelClass()
-            $this->logger->info("Creating base data of $modelClass");
+            $this->logger->info("Seeding $modelClass");
             foreach ($seedData as $seedArg) {
                 if (!is_array($seedArg)) {
                     throw new InvalidArgumentException('Seeds data needs to be plain array.');
                 }
 
-                $this->logger->info("Seeding: " . ArrayUtils::describe($seedArg));
+                $this->logger->debug("Creating seed: " . ArrayUtils::describe($seedArg));
                 $ret = $modelClass::create($seedArg);
                 if ($ret->error) {
                     $this->logger->error("ERROR: {$ret->message}");
