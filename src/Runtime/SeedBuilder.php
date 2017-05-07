@@ -26,11 +26,11 @@ class SeedBuilder
                 $this->logger->info("Creating base data of $modelClass");
                 $seedList = $schema->seeds();
                 if (!empty($seedList)) {
-                    var_dump($seedList);
                     foreach ($seedList as $seedArg) {
                         if (!is_array($seedArg)) {
-                            continue;
+                            throw new InvalidArgumentException('Seeds data needs to be plain array.');
                         }
+
                         $this->logger->info("Seeding: " . ArrayUtils::describe($seedArg));
                         $ret = $modelClass::create($seedArg);
                         if ($ret->error) {

@@ -48,7 +48,7 @@ class NameSchema extends Schema
             ->varchar(12)
             ->required()
             ->index()
-            ->validValues(array( 'Taiwan' , 'Taipei' , 'Tokyo' ));
+            ->validValues(array( 'Taiwan' , 'Taipei' , 'Tokyo', 'US'));
 
         $this->column('type')
             ->varchar(24)
@@ -79,5 +79,13 @@ class NameSchema extends Schema
             });
 
         $this->useSeeds('NameSeed');
+    }
+
+    public function seeds()
+    {
+        return [
+            ['name' => 'Tim Cook','country' => 'US', 'address' => 'Tim Cook\'s Address' ],
+            ['name' => 'Tsai','country' => 'Taipei', 'address' => 'Tsia' ],
+        ];
     }
 }

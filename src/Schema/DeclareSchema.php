@@ -854,6 +854,19 @@ class DeclareSchema extends BaseSchema implements Schema
         return $query;
     }
 
+
+    /**
+     * seeds method is used for user to define the pre-configured dataset in plain array structure.
+     *
+     * this could reduce the effort to check the errors.
+     *
+     * @return array
+     */
+    public function seeds() {
+        return false;
+    }
+
+
     /**
      * 'seeds' helps you define seed classes.
      *
