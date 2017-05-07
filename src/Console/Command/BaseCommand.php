@@ -71,15 +71,6 @@ class BaseCommand extends Command
             $finder->find();
         }
 
-        // load class from class map
-        if ($classMap = $config->getClassMap()) {
-            foreach ($classMap as $file => $class) {
-                if (is_numeric($file)) {
-                    continue;
-                }
-                require_once $file;
-            }
-        }
         return SchemaLoader::loadDeclaredSchemas();
     }
 }

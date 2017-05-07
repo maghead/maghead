@@ -11,8 +11,6 @@ class Config implements ArrayAccess
 
     public $file;
 
-    protected $classMap = [];
-
     const DEFAULT_BASE_COLLECTION_CLASS = '\\Maghead\\Runtime\\BaseCollection';
 
     const DEFAULT_BASE_MODEL_CLASS = '\\Maghead\\Runtime\\BaseModel';
@@ -46,12 +44,6 @@ class Config implements ArrayAccess
             return $this->stash['schema']['loader'];
         }
     }
-
-    public function getClassMap()
-    {
-        return $this->classMap;
-    }
-
 
     public function removeDataSource($dataSourceId)
     {

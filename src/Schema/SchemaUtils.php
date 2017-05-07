@@ -139,16 +139,7 @@ class SchemaUtils
      */
     public static function findSchemasByConfig(Config $config)
     {
-        // load class from class map
-        if ($classMap = $config->getClassMap()) {
-            foreach ($classMap as $file => $class) {
-                if (!is_integer($file) && is_string($file)) {
-                    require $file;
-                }
-            }
-        }
-        $paths = $config->getSchemaPaths();
-        return self::findSchemasByPaths($paths);
+        return self::findSchemasByPaths($config->getSchemaPaths());
     }
 
     public static function argumentsToSchemaObjects(array $args)
