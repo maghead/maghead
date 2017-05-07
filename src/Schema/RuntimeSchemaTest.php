@@ -1,9 +1,11 @@
 <?php
 
+namespace Maghead\Schema;
+
 /**
  * @group schema
  */
-class RuntimeSchemaTest extends PHPUnit\Framework\TestCase
+class RuntimeSchemaTest extends \PHPUnit\Framework\TestCase
 {
     public function schemaProxyProvider()
     {
@@ -11,7 +13,7 @@ class RuntimeSchemaTest extends PHPUnit\Framework\TestCase
             ['AuthorBooks\\Model\\AuthorSchemaProxy'],
             ['AuthorBooks\\Model\\BookSchemaProxy'],
             ['AuthorBooks\\Model\\AuthorBookSchemaProxy'],
-            ['TestApp\Model\\NameSchemaProxy'],
+            ['TestApp\\Model\\NameSchemaProxy'],
         ];
     }
 
