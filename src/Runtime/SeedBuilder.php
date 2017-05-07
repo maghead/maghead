@@ -21,20 +21,19 @@ class SeedBuilder
 
     public function buildSchemaSeeds(BaseSchema $schema)
     {
-        if ($modelClass = $schema->getModelClass()) {
+        $seedData = $schema->seeds();
+        if (!empty($seedData)) {
+            $modelClass = $schema->getModelClass()
             $this->logger->info("Creating base data of $modelClass");
-            $seedList = $schema->seeds();
-            if (!empty($seedList)) {
-                foreach ($seedList as $seedArg) {
-                    if (!is_array($seedArg)) {
-                        throw new InvalidArgumentException('Seeds data needs to be plain array.');
-                    }
+            foreach ($seedData as $seedArg) {
+                if (!is_array($seedArg)) {
+                    throw new InvalidArgumentException('Seeds data needs to be plain array.');
+                }
 
-                    $this->logger->info("Seeding: " . ArrayUtils::describe($seedArg));
-                    $ret = $modelClass::create($seedArg);
-                    if ($ret->error) {
-                        $this->logger->error("ERROR: {$ret->message}");
-                    }
+                $this->logger->info("Seeding: " . ArrayUtils::describe($seedArg));
+                $ret = $modelClass::create($seedArg);
+                if ($ret->error) {
+                    $this->logger->error("ERROR: {$ret->message}");
                 }
             }
         }
