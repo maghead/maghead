@@ -38,7 +38,8 @@ script:
 before_cache:
 - travis_retry composer require "satooshi/php-coveralls" "~1"
 after_success:
-- if [[ "$DB" == "mysql" ]]; then php vendor/bin/coveralls -v ; fi
+# - if [[ "$DB" == "mysql" ]]; then php vendor/bin/coveralls -v ; fi
+- php vendor/bin/coveralls -v
 # matrix:
 #   exclude:
 #     - php: hhvm
