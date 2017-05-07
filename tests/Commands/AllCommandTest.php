@@ -11,7 +11,6 @@ class AllCommandsTest extends CommandWorkFlowTestCase
     {
         $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\UseCommand'));
         $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\SchemaCommand\BuildCommand'));
-        $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\BasedataCommand'));
         $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\InitCommand'));
         $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\MigrateCommand'));
         $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\SchemaCommand'));
@@ -30,7 +29,10 @@ class AllCommandsTest extends CommandWorkFlowTestCase
     public function testSqlCommand()
     {
         $this->expectOutputRegex('/Done. \d+ schema tables/');
-        $ret = $this->app->run(array('maghead','sql','--rebuild'));
+        $ret = $this->app->run(['maghead','sql','--rebuild']);
+        $this->assertTrue($ret);
+
+        $ret = $this->app->run(['maghead','seed']);
         $this->assertTrue($ret);
     }
 }

@@ -6,11 +6,16 @@ use Maghead\Runtime\SeedBuilder;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Schema\SchemaCollection;
 
-class BasedataCommand extends BaseCommand
+class SeedCommand extends BaseCommand
 {
     public function brief()
     {
-        return 'insert basedata into datasource.';
+        return 'seed data';
+    }
+
+    public function aliases()
+    {
+        return ['sd'];
     }
 
     public function execute()
