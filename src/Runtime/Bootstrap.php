@@ -40,8 +40,9 @@ class Bootstrap
      */
     protected static function loadBootstrapScript($config)
     {
-        $script = $config->getBootstrapScript();
-        require_once $script;
+        if ($script = $config->getBootstrapScript()) {
+            require_once $script;
+        }
     }
 
     /**
