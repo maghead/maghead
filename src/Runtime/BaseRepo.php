@@ -322,7 +322,7 @@ abstract class BaseRepo implements Countable
 
             // The is_array function here is for checking raw sql value.
             if ($args[$n] !== null && !is_array($args[$n]) && !$args[$n] instanceof Raw) {
-                if (false === $c->validateType($args[$n])) {
+                if (false === $c->validateIsa($args[$n])) {
                     return Result::failure($args[$n].' is not '.$c->isa.' type');
                 }
             }
@@ -331,7 +331,7 @@ abstract class BaseRepo implements Countable
                 $args[$n] = $c->canonicalizeValue($args[$n], $record, $args);
             }
 
-            if ($validationResult = static::_validateColumn($c, $args[$n], $args, $record)) {
+            if ($validationResult = $c->validate($args[$n], $args, $record)) {
                 $validationResults[$n] = $validationResult;
                 if (!$validationResult['valid']) {
                     $validationError = true;
@@ -489,7 +489,7 @@ abstract class BaseRepo implements Countable
             // @codegenBlockEnd
 
             // @codegenBlock validateColumn
-            if ($validationResult = static::_validateColumn($c, $val, $args, null)) {
+            if ($validationResult = $c->validate($val, $args, null)) {
                 $validationResults[$n] = $validationResult;
                 if (!$validationResult['valid']) {
                     $validationError = true;
@@ -626,105 +626,6 @@ abstract class BaseRepo implements Countable
 
 
     // ============================= UTILITY METHODS =============================
-
-    /**
-     * Run validator to validate column.
-     *
-     * A validator could be:
-     *   1. a ValidationKit validator,
-     *   2. a closure
-     *   3. a function name
-     *
-     * The validation result must be returned as in following format:
-     *
-     *   boolean (valid or invalid, true or false)
-     *
-     *   array( boolean valid , string message )
-     *
-     *   ValidationKit\ValidationMessage object.
-     *
-     * This method returns
-     *
-     *   (object) {
-     *       valid: boolean valid or invalid
-     *       field: string field name
-     *       message:
-     *   }
-     */
-    public static function _validateColumn(RuntimeColumn $column, $val, array $args, $record)
-    {
-        // check for requried columns
-        if ($column->required && ($val === '' || $val === null)) {
-            return array(
-                'valid' => false,
-                'message' => sprintf('Field %s is required.', $column->getLabel()),
-                'field' => $column->name,
-            );
-        }
-
-        // TODO: migrate this section to runtime column
-        // required variables: $record, $args, $val
-        if ($validator = $column->validator) {
-            if (is_callable($validator)) {
-                $ret = call_user_func($validator, $val, $args, $record);
-                if (is_bool($ret)) {
-                    return array('valid' => $ret, 'message' => 'Validation failed.', 'field' => $column->name);
-                } elseif (is_array($ret)) {
-                    return array('valid' => $ret[0], 'message' => $ret[1], 'field' => $column->name);
-                } else {
-                    throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
-                }
-            } elseif (is_string($validator) && is_a($validator, 'ValidationKit\\Validator', true)) {
-                // it's a ValidationKit\Validator
-                $validator = $column->validatorArgs ? new $validator($column->get('validatorArgs')) : new $validator();
-                $ret = $validator->validate($val);
-                $msgs = $validator->getMessages();
-                $msg = isset($msgs[0]) ? $msgs[0] : 'Validation failed.';
-
-                return array('valid' => $ret, 'message' => $msg, 'field' => $column->name);
-            } else {
-                throw new Exception('Unsupported validator');
-            }
-        }
-        if ($val && $column->validValues) {
-            if ($validValues = $column->getValidValues($record, $args)) {
-                // sort by index
-                if (isset($validValues[0]) && !in_array($val, $validValues)) {
-                    return array(
-                        'valid' => false,
-                        'message' => sprintf('%s is not a valid value for %s', $val, $column->name),
-                        'field' => $column->name,
-                    );
-                }
-
-                /*
-                 * Validate for Options
-                 * "Label" => "Value",
-                 * "Group" => array( "Label" => "Value" )
-
-                 * Order with key => value
-                 *    value => label
-                 */
-                else {
-                    $values = array_values($validValues);
-                    foreach ($values as &$v) {
-                        if (is_array($v)) {
-                            $v = array_values($v);
-                        }
-                    }
-
-                    if (!in_array($val, $values)) {
-                        return array(
-                            'valid' => false,
-                            'message' => sprintf('%s is not a valid value for %s', $val, $column->name),
-                            'field' => $column->name,
-                        );
-                    }
-                }
-            }
-        }
-    }
-
 
     /**
      * PDO::exec — Execute an SQL statement and return the number of affected rows

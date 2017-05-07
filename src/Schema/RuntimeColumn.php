@@ -5,15 +5,16 @@ namespace Maghead\Schema;
 use DateTime;
 use Maghead\Runtime\Deflator;
 use Maghead\Runtime\Inflator;
+use Maghead\Runtime\BaseModel;
 use Maghead\Utils\ArrayUtils;
 use Maghead\Utils;
-use Maghead\Runtime\BaseModel;
 use Exception;
 use ArrayIterator;
 use IteratorAggregate;
 use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;
 use Closure;
+use LogicException;
 
 class InvalidValueTypeException extends Exception
 {
@@ -222,7 +223,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         return $value;
     }
 
-    public function validateType($value)
+    public function validateIsa($value)
     {
         switch ($this->isa) {
         case 'str':
@@ -248,6 +249,106 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         }
         return true;
     }
+
+    /**
+     * Validate the input value base on the column definition.
+     *
+     * @param mixed $value
+     * @param array $args
+     * @param BaseModel $record
+     *
+     * A validator could be:
+     *   1. a ValidationKit validator,
+     *   2. a closure
+     *   3. a function name
+     *
+     * The validation result must be returned as in following format:
+     *
+     *   boolean (valid or invalid, true or false)
+     *
+     *   array( boolean valid , string message )
+     *
+     *   ValidationKit\ValidationMessage object.
+     *
+     * This method returns
+     *
+     *   (object) {
+     *       valid: boolean valid or invalid
+     *       field: string field name
+     *       message:
+     *   }
+     */
+    public function validate($val, array $args, BaseModel $record = null)
+    {
+        if ($this->required && ($val === '' || $val === null)) {
+            return [
+                'valid'   => false,
+                'message' => sprintf('Field %s is required.', $this->getLabel()),
+                'field'   => $this->name,
+            ];
+        }
+
+        if ($validator = $this->validator) {
+            if (is_callable($validator)) {
+                $ret = call_user_func($validator, $val, $args, $record);
+                if (is_bool($ret)) {
+                    return ['valid' => $ret, 'message' => 'Validation failed.', 'field' => $this->name];
+                } else if (is_array($ret)) {
+                    return ['valid' => $ret[0], 'message' => $ret[1], 'field' => $this->name];
+                } else {
+                    throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
+                }
+            } else if (is_string($validator) && is_a($validator, 'ValidationKit\\Validator', true)) {
+                // it's a ValidationKit\Validator
+                $validator = $this->validatorArgs ? new $validator($this->get('validatorArgs')) : new $validator();
+                $ret = $validator->validate($val);
+                $msgs = $validator->getMessages();
+                $msg = isset($msgs[0]) ? $msgs[0] : 'Validation failed.';
+                return ['valid' => $ret, 'message' => $msg, 'field' => $this->name];
+            }
+
+            throw new LogicException("Unsupported validator on column {$this->name}");
+        }
+
+        if ($val && $this->validValues) {
+            if ($validValues = $this->getValidValues($record, $args)) {
+                // sort by index
+                if (isset($validValues[0]) && !in_array($val, $validValues)) {
+                    return [
+                        'valid' => false,
+                        'message' => sprintf('%s is not a valid value for %s', $val, $this->name),
+                        'field' => $this->name,
+                    ];
+                } else {
+                    /*
+                     * Validate for Options
+                     * "Label" => "Value",
+                     * "Group" => array( "Label" => "Value" )
+                     * Order with key => value
+                     *    value => label
+                     */
+                    $values = array_values($validValues);
+                    foreach ($values as &$v) {
+                        if (is_array($v)) {
+                            $v = array_values($v);
+                        }
+                    }
+
+                    if (!in_array($val, $values)) {
+                        return [
+                            'valid' => false,
+                            'message' => sprintf('%s is not a valid value for %s', $val, $this->name),
+                            'field' => $this->name,
+                        ];
+                    }
+                }
+            }
+        }
+
+
+    }
+
+
 
     /**
      * deflate value.

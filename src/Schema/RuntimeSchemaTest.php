@@ -2,11 +2,27 @@
 
 namespace Maghead\Schema;
 
+use Maghead\Runtime\Config\Config;
+use Maghead\Generator\Schema\SchemaGenerator;
+use Maghead\Testing\ModelTestCase;
+
 /**
  * @group schema
  */
-class RuntimeSchemaTest extends \PHPUnit\Framework\TestCase
+class RuntimeSchemaTest extends ModelTestCase
 {
+
+    public function models()
+    {
+        return [
+            new \AuthorBooks\Model\AuthorSchema,
+            new \AuthorBooks\Model\BookSchema,
+            new \AuthorBooks\Model\AuthorBookSchema,
+            new \TestApp\Model\NameSchema,
+        ];
+    }
+
+
     public function schemaProxyProvider()
     {
         return [
