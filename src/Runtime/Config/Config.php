@@ -19,6 +19,8 @@ class Config implements ArrayAccess
 
     const DEFAULT_AUTO_ID_COLUMN_CLASS = '\\Maghead\\Schema\\Column\\AutoIncrementPrimaryKeyColumn';
 
+    const MASTER_ID = 'master';
+
     public function __construct(array $stash, $file = null)
     {
         $this->stash = $stash;
@@ -32,8 +34,6 @@ class Config implements ArrayAccess
     {
         if (isset($this->stash['cli']['bootstrap'])) {
             return (array) $this->stash['cli']['bootstrap'];
-        } elseif (isset($this->stash['bootstrap'])) {
-            return (array) $this->stash['bootstrap'];
         }
     }
 
@@ -51,9 +51,6 @@ class Config implements ArrayAccess
     {
         return $this->classMap;
     }
-
-
-
 
 
     public function removeDataSource($dataSourceId)
@@ -91,7 +88,7 @@ class Config implements ArrayAccess
 
     public function getMasterDataSourceId()
     {
-        return 'master';
+        return self::MASTER_ID;
     }
 
     public function getSeedScripts()
@@ -137,7 +134,7 @@ class Config implements ArrayAccess
         if (isset($this->stash['databases'][$sourceId])) {
             return $this->stash['databases'][$sourceId];
         }
-        throw new Exception("data source $sourceId is not defined.");
+        throw new Exception("database $sourceId is not defined.");
     }
 
     /**
@@ -227,18 +224,6 @@ class Config implements ArrayAccess
 
         return self::DEFAULT_BASE_COLLECTION_CLASS;
     }
-
-    public function & getStash()
-    {
-        return $this->stash;
-    }
-
-    public function setStash(array $config)
-    {
-        $this->stash = $config;
-    }
-
-
 
     /******************************
      * Implements interface of ArrayAccess

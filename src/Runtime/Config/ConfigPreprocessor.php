@@ -10,6 +10,11 @@ class ConfigPreprocessor
 {
     public static function preprocess(array $config)
     {
+        if (isset($config['bootstrap'])) {
+            $config['cli']['bootstrap'] = $config['bootstrap'];
+            unset $config['bootstrap'];
+        }
+
         if (isset($config['databases'])) {
             $config['databases'] = self::normalizeNodeConfigArray($config['databases']);
         }
