@@ -1,10 +1,13 @@
 <?php
+
+namespace Maghead\Runtime;
+
 use Maghead\Runtime\CollectionPager;
 
 /**
  * @group collection
  */
-class CollectionPagerTest extends PHPUnit\Framework\TestCase
+class CollectionPagerTest extends \PHPUnit\Framework\TestCase
 {
     public function testCollectionPager()
     {
