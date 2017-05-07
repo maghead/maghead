@@ -1,4 +1,7 @@
 <?php
+
+namespace Maghead\Schema;
+
 use Maghead\Schema\Comparator;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Comparator\ConsolePrinter;
