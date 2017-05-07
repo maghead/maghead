@@ -847,7 +847,7 @@ abstract class BaseCollection implements IteratorAggregate, ArrayAccess, Countab
             return yaml_emit($list, YAML_UTF8_ENCODING);
         }
 
-        return file_put_contents($yamlFile, "---\n".Yaml::dump($list, $inline = true, $exceptionOnInvalidType = true));
+        return "---\n".Yaml::dump($list, $inline = true, $exceptionOnInvalidType = true);
     }
 
     public function sql()
