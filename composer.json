@@ -30,9 +30,7 @@
         "monolog/monolog": "^1.22",
         "ramsey/uuid": "^3.5"
     },
-    "require-dev": {
-        "ext-apcu": "*"
-    },
+    "require-dev": { },
     "suggest": { "ext-xarray": "*" },
     "bin": [
         "bin/maghead"
