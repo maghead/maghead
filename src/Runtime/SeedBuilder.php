@@ -23,7 +23,7 @@ class SeedBuilder
     {
         $seedData = $schema->seeds();
         if (!empty($seedData)) {
-            $modelClass = $schema->getModelClass()
+            $modelClass = $schema->getModelClass();
             $this->logger->info("Seeding $modelClass");
             foreach ($seedData as $seedArg) {
                 if (!is_array($seedArg)) {
