@@ -4,6 +4,7 @@ namespace Maghead\Console\Command;
 
 use CLIFramework\Command;
 use Maghead\Runtime\Bootstrap;
+use Maghead\Utils;
 
 class InitCommand extends Command
 {
@@ -12,18 +13,9 @@ class InitCommand extends Command
         return 'initialize your maghead project structures.';
     }
 
-    public function mkpath($path)
-    {
-        if (!file_exists($path)) {
-            $this->logger->info("Creating $path");
-            mkdir($path, 0755, true);
-        }
-    }
-
     public function execute()
     {
-        $this->mkpath('db/config');
-        $this->mkpath('db/migration');
+        Utils::mkpath(['db/config', 'db/migration'], 0755, $this->logger);
 
         $defaultConfigFile = Bootstrap::DEFAULT_CONFIG_FILE;
         if (file_exists($defaultConfigFile)) {

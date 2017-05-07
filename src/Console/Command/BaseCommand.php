@@ -4,6 +4,7 @@ namespace Maghead\Console\Command;
 
 use CLIFramework\Command;
 use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
+use Maghead\Runtime\Config\AutoConfigLoader;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\SchemaFinder;
@@ -34,7 +35,13 @@ class BaseCommand extends Command
     public function prepare()
     {
         // softly load the config file.
-        $this->config = SymbolicLinkConfigLoader::load(null, true); // force loading
+        if (file_exists('db/appId')) {
+            $appId = file_get_contents('db/appId');
+            $this->config = AutoConfigLoader::load($appId, SymbolicLinkConfigLoader::ANCHOR_FILENAME);
+        } else {
+            $this->config = SymbolicLinkConfigLoader::load(null, true); // force loading
+        }
+
         Bootstrap::setupForCLI($this->config);
 
         $this->dataSourceManager = DataSourceManager::getInstance();

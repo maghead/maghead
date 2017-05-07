@@ -6,6 +6,24 @@ use Maghead\Schema\SchemaFinder;
 
 class Utils
 {
+
+    public static function mkpath($path, $mode = 0755, $logger = null)
+    {
+        if (is_array($path)) {
+            foreach ($path as $p) {
+                self::mkpath($p, $mode);
+            }
+        } else {
+            if (!file_exists($path)) {
+                if ($logger) {
+                    $logger->debug("Creating $path");
+                }
+                mkdir($path, $mode, true);
+            }
+        }
+    }
+
+
     public static function evaluate($data, $params = array())
     {
         if ($data && is_callable($data)) {

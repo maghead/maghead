@@ -19,6 +19,11 @@ class AutoConfigLoader
      */
     public static function load($appId, $file, $ttl = 0)
     {
+        // use the modification time as the cache key, and so if the file is modified,
+        // we will reload the file.
+        if (is_link($file)) {
+            $file = realpath($file);
+        }
         $mtime = filemtime($file);
         return ApcuConfigLoader::loadWithTtl("{$appId}_{$mtime}", $ttl, function() use($appId, $file) {
             $config = FileConfigLoader::load($file);
