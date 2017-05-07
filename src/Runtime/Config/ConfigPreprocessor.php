@@ -12,7 +12,7 @@ class ConfigPreprocessor
     {
         if (isset($config['bootstrap'])) {
             $config['cli']['bootstrap'] = $config['bootstrap'];
-            unset $config['bootstrap'];
+            unset($config['bootstrap']);
         }
 
         if (isset($config['databases'])) {
