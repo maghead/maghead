@@ -179,11 +179,4 @@ class SchemaUtils
             return in_array($s->shardMapping, $mappingIds);
         });
     }
-
-    public static function filterDeclareSchemaClasses(array $classes)
-    {
-        return array_filter(function ($class) {
-            return is_subclass_of($class, 'Maghead\Schema\DeclareSchema', true);
-        }, $classes);
-    }
 }
