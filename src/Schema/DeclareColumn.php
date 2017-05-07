@@ -219,6 +219,9 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         return $this;
     }
 
+    /**
+     * Define a validator
+     */
     public function validator()
     {
         $args = func_get_args();
@@ -226,9 +229,9 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
             $this->attributes['validator'] = $args[0];
 
             return $this;
-        } elseif (is_string($args[0])) {
+        } else if (is_string($args[0])) {
             $arg = $args[0];
-            if (is_a($arg, 'ValidationKit\Validator', true)) {
+            if (is_a($arg, 'ValidationKit\\Validator', true)) {
                 $this->attributes['validator'] = $args[0];
                 if (isset($args[1])) {
                     $this->attributes['validatorArgs'] = $args[1];

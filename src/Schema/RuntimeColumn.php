@@ -278,7 +278,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      *       message:
      *   }
      */
-    public function validate($val, array $args, BaseModel $record = null)
+    public function validate($val, array $args, $record = null)
     {
         if ($this->required && ($val === '' || $val === null)) {
             return [
