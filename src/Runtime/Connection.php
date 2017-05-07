@@ -28,12 +28,6 @@ class Connection extends PDO
     protected $pass;
 
     /**
-     * @var Maghead\DSN\DSN
-     */
-    private $dsn;
-
-
-    /**
      * @var SQLBuilder\Driver\BaseDriver
      */
     private $queryDriver;
@@ -51,11 +45,6 @@ class Connection extends PDO
             return $this->queryDriver;
         }
         return $this->queryDriver = PDODriverFactory::create($this);
-    }
-
-    public function __clone()
-    {
-        $this->dsn = clone $this->dsn;
     }
 
     public function raw($val)
