@@ -98,7 +98,9 @@ class Shard
         );
     }
 
-
+    /**
+     * @codeCoverageIgnore
+     */
     public function __debugInfo()
     {
         return [

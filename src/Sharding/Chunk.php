@@ -100,6 +100,9 @@ class Chunk
         return $this->shardId;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function __debugInfo()
     {
         return [

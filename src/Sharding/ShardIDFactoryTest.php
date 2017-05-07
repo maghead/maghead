@@ -1,5 +1,6 @@
 <?php
-use Maghead\Sharding\ShardIDFactory;
+
+namespace Maghead\Sharding;
 
 class ShardIDFactoryTest extends \PHPUnit\Framework\TestCase
 {
