@@ -31,7 +31,7 @@ class Config implements ArrayAccess
      *
      * @return string
      */
-    public function getConfigServer()
+    public function getConfigServerUrl()
     {
         if (isset($this->stash['configServer'])) {
             return $this->stash['configServer'];
