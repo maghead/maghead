@@ -56,6 +56,19 @@ class ConfigPreprocessorTest extends TestCase
             ]
         ];
 
+        $data[] = [
+            ['driver' => 'mysql', 'host' => 'localhost', 'user' => 'root'],
+            [
+                'driver' => 'mysql',
+                'host' => 'localhost',
+                'user' => 'root',
+                'password' => null,
+                'query_options' => [],
+                'connection_options' => [ 1002 => 'SET NAMES utf8' ],
+                'dsn' => 'mysql:host=localhost',
+            ]
+        ];
+
         return $data;
     }
 
