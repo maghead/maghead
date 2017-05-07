@@ -53,17 +53,6 @@ class Connection extends PDO
         return $this->queryDriver = PDODriverFactory::create($this);
     }
 
-    /**
-     * @return Maghead\DSN object
-     */
-    public function getDSN()
-    {
-        if ($this->dsn) {
-            return $this->dsn;
-        }
-        return $this->dsn = DSNParser::parse($this->config['dsn']);
-    }
-
     public function __clone()
     {
         $this->dsn = clone $this->dsn;
