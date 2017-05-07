@@ -1,15 +1,17 @@
 <?php
+
+namespace Maghead\Schema\Relationship;
+
 use Maghead\Schema\DeclareSchema;
-use Maghead\Schema\Relationship\Relationship;
 
 /**
  * @group schema
  */
-class RelationshipTest extends PHPUnit\Framework\TestCase
+class RelationshipTest extends \PHPUnit\Framework\TestCase
 {
     public function testRelationshipOperation()
     {
-        $r = new Maghead\Schema\Relationship\Relationship('books', array(
+        $r = new Relationship('books', array(
                 'type' => Relationship::HAS_MANY,
                 'self_column' => "id",
                 'self_schema' => "AuthorBooks\Model\AuthorSchema",
