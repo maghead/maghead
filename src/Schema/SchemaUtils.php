@@ -151,38 +151,6 @@ class SchemaUtils
         return self::findSchemasByPaths($paths);
     }
 
-    /**
-     * Returns schema objects.
-     *
-     * @return array schema objects
-     */
-    public static function findSchemasByArguments(Config $config, array $args)
-    {
-        $classes = self::argumentsToSchemaObjects($args);
-
-        // filter file path argumets
-        $paths = array_filter($args, 'file_exists');
-        if (empty($paths)) {
-            $paths = $config->getSchemaPaths();
-        }
-
-        if (!empty($paths)) {
-            $finder = new SchemaFinder($paths);
-            $finder->find();
-        }
-
-        // load class from class map
-        if ($classMap = $config->getClassMap()) {
-            foreach ($classMap as $file => $class) {
-                if (is_numeric($file)) {
-                    continue;
-                }
-                require_once $file;
-            }
-        }
-        return SchemaLoader::loadDeclaredSchemas();
-    }
-
     public static function argumentsToSchemaObjects(array $args)
     {
         $classes = ClassUtils::filterExistingClasses($args);
