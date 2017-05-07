@@ -340,6 +340,10 @@ abstract class BaseCollection implements IteratorAggregate, ArrayAccess, Countab
         return Result::success('Updated', array('sql' => $sql));
     }
 
+
+
+    // ====================== ELEMENT MANIPULATION ======================
+
     public function splice($pos, $count = null)
     {
         $this->items();
