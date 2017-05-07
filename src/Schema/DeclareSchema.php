@@ -861,7 +861,7 @@ class DeclareSchema extends BaseSchema implements Schema
      *
      * @return DeclareSchema
      */
-    public function seeds()
+    public function useSeeds()
     {
         $seeds = func_get_args();
         $self = $this;
@@ -869,8 +869,6 @@ class DeclareSchema extends BaseSchema implements Schema
             $class = str_replace('::', '\\', $class);
             return resolveClass($class, [], $self, ['Seeds']);
         }, $seeds);
-
-        return $this;
     }
 
     /**

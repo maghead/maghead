@@ -6,6 +6,8 @@ use CLIFramework\Logger;
 use Maghead\Schema\BaseSchema;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Runtime\Config\Config;
+use Maghead\Utils\ArrayUtils;
+
 use InvalidArgumentException;
 
 class SeedBuilder
@@ -19,12 +21,26 @@ class SeedBuilder
 
     public function buildSchemaSeeds(BaseSchema $schema)
     {
-        if (method_exists($schema, 'bootstrap')) {
+        if (method_exists($schema, 'seeds')) {
             if ($modelClass = $schema->getModelClass()) {
                 $this->logger->info("Creating base data of $modelClass");
-                $schema->bootstrap(new $modelClass());
+                $seedList = $schema->seeds();
+                if (!empty($seedList)) {
+                    var_dump($seedList);
+                    foreach ($seedList as $seedArg) {
+                        if (!is_array($seedArg)) {
+                            continue;
+                        }
+                        $this->logger->info("Seeding: " . ArrayUtils::describe($seedArg));
+                        $ret = $modelClass::create($seedArg);
+                        if ($ret->error) {
+                            $this->logger->error("ERROR: {$ret->message}");
+                        }
+                    }
+                }
             }
         }
+
         if ($seeds = $schema->getSeedClasses()) {
             foreach ($seeds as $seedClass) {
                 if (class_exists($seedClass, true)) {

@@ -78,6 +78,6 @@ class NameSchema extends Schema
                 return new \DateTime($val);
             });
 
-        $this->seeds('NameSeed');
+        $this->useSeeds('NameSeed');
     }
 }

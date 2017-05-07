@@ -25,4 +25,17 @@ class ArrayUtils
 
         return count($keys) == count($keys2);
     }
+
+    public static function describe(array $array)
+    {
+        $desc = [];
+        foreach ($array as $key => $val) {
+            if (is_object($val)) {
+                $desc[] = "{$key} => " . get_class($val);
+            } else {
+                $desc[] = "{$key} => {$val}";
+            }
+        }
+        return join(', ',$desc);
+    }
 }
