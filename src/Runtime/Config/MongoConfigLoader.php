@@ -15,12 +15,12 @@ class MongoConfigLoader
         ]
     ];
 
-    public static function load($appId, Client $client)
+    public static function load(Client $client, $appId)
     {
         $collection = $client->maghead->configs;
         $doc = $collection->findOne(['appId' => $appId], static::$queryOptions);
         if ($doc) {
-            return new Config($doc['stash']);
+            return new Config($doc);
         }
     }
 }

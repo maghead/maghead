@@ -30,6 +30,10 @@ abstract class CommandWorkFlowTestCase extends TestCase
 
     public static function tearDownAfterClass()
     {
+        $config = Bootstrap::getConfig();
+        if ($configServerUrl = $config->getConfigServerUrl()) {
+            MongoConfigWriter::remove($config);
+        }
         Bootstrap::removeConfig();
     }
 

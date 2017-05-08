@@ -24,23 +24,9 @@ class UploadCommand extends BaseCommand
         return 'upload the current config to the config server';
     }
 
-    public function options($opts)
-    {
-        $opts->add('appId:', 'the application Id');
-    }
-
-
     public function execute($mongoUrl = null)
     {
         $config = $this->getConfig();
-        if (file_exists('db/appId')) {
-            $appId = file_get_contents('db/appId');
-        } else {
-            $appId = $this->options->appId;
-        }
-        if (!$appId) {
-            throw new Exception('appId is required.');
-        }
 
         if ($mongoUrl) {
             $client = new Client($mongoUrl);
@@ -51,7 +37,7 @@ class UploadCommand extends BaseCommand
         }
 
         $this->logger->info("uploading...");
-        $result = MongoConfigWriter::write($appId, $client, $config);
+        $result = MongoConfigWriter::write($client, $config);
 
         $isAcknowledged = $result->isAcknowledged();
         $this->logger->info("isAcknowledged: $isAcknowledged");

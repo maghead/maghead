@@ -15,16 +15,19 @@ class MongoConfigLoaderTest extends TestCase
 
         $client = new Client("mongodb://localhost:27017");
 
-        $result = MongoConfigWriter::remove('testapp', $client);
+        $result = MongoConfigWriter::removeById($client, 'testapp');
         $this->assertTrue($result->isAcknowledged());
 
         $config = FileConfigLoader::load('tests/config/mysql_configserver.yml');
 
-        $result = MongoConfigWriter::write('testapp', $client, $config);
+        $result = MongoConfigWriter::write($client, $config);
         $this->assertTrue($result->isAcknowledged());
         // $this->assertNotNull($result->getInsertedId());
 
-        $config = MongoConfigLoader::load('testapp', $client);
+        $config = MongoConfigLoader::load($client, 'testapp');
         $this->assertInstanceOf('Maghead\\Runtime\\Config\\Config', $config);
+
+        $result = MongoConfigWriter::removeById($client, 'testapp');
+        $this->assertTrue($result->isAcknowledged());
     }
 }

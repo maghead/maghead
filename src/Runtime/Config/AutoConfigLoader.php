@@ -17,7 +17,7 @@ class AutoConfigLoader
      * @param string $file the path of the config file.
      * @param numeric $ttl the default time to live seconds for apcu cache.
      */
-    public static function load($appId, $file, $ttl = 0)
+    public static function load($file, $ttl = 0, $offline = false)
     {
         // use the modification time as the cache key, and so if the file is modified,
         // we will reload the file.
@@ -25,27 +25,35 @@ class AutoConfigLoader
             $file = realpath($file);
         }
 
+        if ($offline) {
+            return FileConfigLoader::load($file, true);
+        }
+
         if ($ttl === false) {
-            return self::loadRemoteConfigIfFound($appId, $file);
+            return self::loadRemoteConfigIfFound($file, true);
         }
 
         $mtime = filemtime($file);
-        return ApcuConfigLoader::loadWithTtl("{$appId}_{$mtime}", $ttl, function() use($appId, $file) {
-            return self::loadRemoteConfigIfFound($appId, $file);
+        // TODO: fix for the app ID here....
+        return ApcuConfigLoader::loadWithTtl("config_{$mtime}", $ttl, function() use($file) {
+            // Since we have cache, we can force reload from the file.
+            return self::loadRemoteConfigIfFound($file, true);
         });
     }
 
-    private static function loadRemoteConfigIfFound($appId, $file)
+    private static function loadRemoteConfigIfFound($file, $force = false)
     {
-        $config = FileConfigLoader::load($file);
+        $config = FileConfigLoader::load($file, $force);
         if ($configServerUrl = $config->getConfigServerUrl()) {
             // Use the config from server if any
-            if ($serverConfig = MongoConfigLoader::load($appId, new Client($configServerUrl))) {
+            $appId = $config->getAppId();
+            if (!$appId) {
+                throw new \Exception("appId is not given.");
+            }
+            if ($serverConfig = MongoConfigLoader::load(new Client($configServerUrl), $appId)) {
                 return $serverConfig;
             }
         }
         return $config;
     }
-
-
 }

@@ -25,6 +25,12 @@ class Config implements ArrayAccess
         $this->file = $file;
     }
 
+    public function getAppId()
+    {
+        if (isset($this->stash['appId'])) {
+            return $this->stash['appId'];
+        }
+    }
 
     /**
      * return the config server uri if any

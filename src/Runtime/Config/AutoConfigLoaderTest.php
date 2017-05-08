@@ -14,7 +14,7 @@ class AutoConfigLoaderTest extends TestCase
             $this->markTestSkipped('this test requires apcu');
         }
 
-        $config = AutoConfigLoader::load('autotest', 'tests/config/mysql_configserver.yml', 1);
+        $config = AutoConfigLoader::load('tests/config/mysql_configserver.yml', false);
         $this->assertInstanceOf('Maghead\\Runtime\\Config\\Config', $config);
     }
 }

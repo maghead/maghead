@@ -1,4 +1,5 @@
 ---
+appId: testapp
 configServer: "mongodb://localhost:27017"
 cli:
   bootstrap: tests/bootstrap.php

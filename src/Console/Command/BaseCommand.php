@@ -36,15 +36,9 @@ class BaseCommand extends Command
 
     protected function loadConfig()
     {
-        // softly load the config file.
-        if (file_exists('db/appId')) {
-            $appId = file_get_contents('db/appId');
-
-            // $ttl = false disable the apcu cache
-            $config = AutoConfigLoader::load($appId, SymbolicLinkConfigLoader::ANCHOR_FILENAME, false);
-        } else {
-            $config = SymbolicLinkConfigLoader::load(null, true); // force loading
-        }
+        // $ttl = false disable the apcu cache
+        $config = AutoConfigLoader::load(SymbolicLinkConfigLoader::ANCHOR_FILENAME, false);
+        // $config = SymbolicLinkConfigLoader::load(null, true);
         Bootstrap::setupForCLI($config);
         $this->dataSourceManager = DataSourceManager::getInstance();
         return $config;

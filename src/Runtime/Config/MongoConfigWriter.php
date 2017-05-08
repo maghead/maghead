@@ -15,18 +15,37 @@ class MongoConfigWriter
         ]
     ];
 
-    public static function write($appId, Client $client, Config $config)
+    public static function write(Client $client, Config $config)
     {
+        $appId = $config->getAppId();
+        if (!$appId) {
+            throw new \Exception("config appId entry is required.");
+        }
         $collection = $client->maghead->configs;
         $result = $collection->updateOne(
             [ 'appId' => $appId ],
-            [ '$set' => ['appId' => $appId , 'stash' => $config->stash ]],
+            [ '$set' => $config->stash ],
             [ 'upsert' => true ]);
         return $result;
     }
 
-    public static function remove($appId, Client $client)
+    public static function removeById(Client $client, $appId)
     {
+        $collection = $client->maghead->configs;
+        return $collection->deleteOne([ 'appId' => $appId ]);
+    }
+
+    public static function remove(Config $config)
+    {
+        $configServerUrl = $config->getConfigServerUrl();
+        $appId = $config->getAppId();
+
+        if (!$appId) {
+            throw new \Exception("config appId entry is required.");
+        }
+
+        $client = new Client($configServerUrl);
+
         $collection = $client->maghead->configs;
         return $collection->deleteOne([ 'appId' => $appId ]);
     }

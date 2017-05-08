@@ -20,7 +20,6 @@ class UseCommand extends Command
     public function options($opts)
     {
         $opts->add('f|force', 'force building config file.');
-        $opts->add('appId:', 'the application Id');
     }
 
     public function arguments($args)
@@ -67,11 +66,6 @@ class UseCommand extends Command
                 $this->logger->debug('Cleaning up symbol link: '.$symlink);
                 unlink($symlink);
             }
-        }
-
-        if ($appId = $this->options->appId) {
-            $this->logger->info("Setting up appId {$appId} at db/appId");
-            file_put_contents('db/appId', $appId);
         }
 
         $this->logger->info('Creating symbol link: '.SymbolicLinkConfigLoader::ANCHOR_FILENAME.' -> '.$configFile);
