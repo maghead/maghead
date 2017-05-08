@@ -1,12 +1,16 @@
 <?php
 
-namespace Maghead\Console\Command;
+namespace Maghead\Console\Command\ConfigCommand;
 
 use CLIFramework\Command;
 use Maghead\Runtime\Config\FileConfigLoader;
+use Maghead\Runtime\Config\AutoConfigLoader;
+use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
 use Maghead\Runtime\Bootstrap;
+use Maghead\Runtime\Config\Config;
+use Maghead\Utils;
 
-class InitConfCommand extends Command
+class InitCommand extends Command
 {
     public function options($opts)
     {
@@ -15,7 +19,7 @@ class InitConfCommand extends Command
         $opts->add('database:', 'database name');
         $opts->add('username:', 'username');
         $opts->add('password:', 'password');
-        $opts->add('config:', 'config file');
+        $opts->add('c|config:', 'config file');
     }
 
     public function execute()
@@ -25,7 +29,6 @@ class InitConfCommand extends Command
         $configFile = $this->options->config ?: Bootstrap::DEFAULT_CONFIG_FILE;
         if (file_exists($configFile)) {
             $logger->info("Config file $configFile already exists.");
-
             return;
         }
 
@@ -72,8 +75,7 @@ EOS;
         ConfigLoader::compile($configFile, true);
 
         // make master config link
-        $loader = ConfigLoader::getInstance();
-        $cleanup = [ConfigLoader::ANCHOR_FILENAME, '.lazy.php', '.lazy.yml'];
+        $cleanup = [SymbolicLinkConfigLoader::ANCHOR_FILENAME, '.lazy.php', '.lazy.yml'];
         foreach ($cleanup as $symlink) {
             if (file_exists($symlink)) {
                 $this->logger->debug('Cleaning up symbol link: '.$symlink);
@@ -81,8 +83,8 @@ EOS;
             }
         }
 
-        $this->logger->info('Creating symbol link: '.ConfigLoader::ANCHOR_FILENAME.' -> '.$configFile);
-        if (cross_symlink($configFile, ConfigLoader::ANCHOR_FILENAME) === false) {
+        $this->logger->info('Creating symbol link: '.SymbolicLinkConfigLoader::ANCHOR_FILENAME.' -> '.$configFile);
+        if (Utils::symlink($configFile, SymbolicLinkConfigLoader::ANCHOR_FILENAME) === false) {
             $this->logger->error('Config linking failed.');
         }
         $this->logger->info('Done');
