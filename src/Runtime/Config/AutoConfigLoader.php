@@ -34,7 +34,7 @@ class AutoConfigLoader
         }
 
         $mtime = filemtime($file);
-        // TODO: fix for the app ID here....
+        // TODO: fix for the app ID here, different apps might be in the same PHP process.
         return ApcuConfigLoader::loadWithTtl("config_{$mtime}", $ttl, function() use($file) {
             // Since we have cache, we can force reload from the file.
             return self::loadRemoteConfigIfFound($file, true);
