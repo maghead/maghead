@@ -21,11 +21,6 @@ class Application extends \CLIFramework\Application
          */
         $this->command('init');
 
-        /*
-         * Command for building config file.
-         */
-        $this->command('use');
-        // $this->command('init-conf', 'Maghead\\Command\\InitConfCommand');
 
         $this->command('schema'); // the schema command builds all schema files and shows a diff after building new schema
         $this->command('seed');
@@ -40,6 +35,7 @@ class Application extends \CLIFramework\Application
         $this->command('index');
         $this->command('shard');
 
+        $this->command('use');
         $this->command('config');
     }
 }
