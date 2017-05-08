@@ -16,11 +16,12 @@ class Application extends \CLIFramework\Application
     {
         parent::init();
 
-        /*
-         * Command for initialize related file structure
-         */
+        // The order of the command list follows the workflow.
+
         $this->command('init');
 
+        $this->command('use');
+        $this->command('config');
 
         $this->command('schema'); // the schema command builds all schema files and shows a diff after building new schema
         $this->command('seed');
@@ -35,7 +36,5 @@ class Application extends \CLIFramework\Application
         $this->command('index');
         $this->command('shard');
 
-        $this->command('use');
-        $this->command('config');
     }
 }

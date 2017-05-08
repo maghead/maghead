@@ -3,6 +3,7 @@
 namespace Maghead\Testing;
 
 use Maghead\Console\Application;
+use Maghead\Runtime\Bootstrap;
 
 /**
  * @codeCoverageIgnore
@@ -27,6 +28,11 @@ abstract class CommandWorkFlowTestCase extends TestCase
         static::$globalApp = static::setupApplication();
     }
 
+    public static function tearDownAfterClass()
+    {
+        Bootstrap::removeConfig();
+    }
+
     public static function setupApplication()
     {
         $type = static::getCurrentDriverType();
@@ -44,4 +50,6 @@ abstract class CommandWorkFlowTestCase extends TestCase
         // fwrite(STDOUT, __METHOD__ . "\n");
         $this->app = static::$globalApp;
     }
+
+
 }

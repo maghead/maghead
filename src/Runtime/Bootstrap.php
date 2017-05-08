@@ -35,6 +35,14 @@ class Bootstrap
     }
 
     /**
+     * Remove the config from the context.
+     */
+    public static function removeConfig()
+    {
+        self::$config = null;
+    }
+
+    /**
      * Run bootstrap script if it's defined in the config.
      * This is used for the command-line app.
      */

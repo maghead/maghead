@@ -24,16 +24,28 @@ class AutoConfigLoader
         if (is_link($file)) {
             $file = realpath($file);
         }
+
+        if ($ttl === false) {
+            return self::loadRemoteConfigIfFound($appId, $file);
+        }
+
         $mtime = filemtime($file);
         return ApcuConfigLoader::loadWithTtl("{$appId}_{$mtime}", $ttl, function() use($appId, $file) {
-            $config = FileConfigLoader::load($file);
-            if ($configServerUrl = $config->getConfigServerUrl()) {
-                // Use the config from server if any
-                if ($serverConfig = MongoConfigLoader::load($appId, new Client($configServerUrl))) {
-                    return $serverConfig;
-                }
-            }
-            return $config;
+            return self::loadRemoteConfigIfFound($appId, $file);
         });
     }
+
+    private static function loadRemoteConfigIfFound($appId, $file)
+    {
+        $config = FileConfigLoader::load($file);
+        if ($configServerUrl = $config->getConfigServerUrl()) {
+            // Use the config from server if any
+            if ($serverConfig = MongoConfigLoader::load($appId, new Client($configServerUrl))) {
+                return $serverConfig;
+            }
+        }
+        return $config;
+    }
+
+
 }

@@ -2,6 +2,7 @@
 
 namespace Maghead\Testing;
 
+
 /**
  * @codeCoverageIgnore
  */
@@ -82,8 +83,4 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         parent::assertPreConditions();
     }
     */
-
-    public static function tearDownAfterClass()
-    {
-    }
 }
