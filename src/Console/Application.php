@@ -39,5 +39,7 @@ class Application extends \CLIFramework\Application
         $this->command('table');
         $this->command('index');
         $this->command('shard');
+
+        $this->command('config');
     }
 }
