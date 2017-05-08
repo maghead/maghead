@@ -6,7 +6,6 @@ use MongoDB\Client;
 
 class MongoConfigLoader
 {
-
     public static $queryOptions = [
         'typeMap' => [
             'array' => 'array',
@@ -23,4 +22,17 @@ class MongoConfigLoader
             return new Config($doc);
         }
     }
+
+    public static function loadFromConfig(Config $config)
+    {
+        $appId = $config->getAppId();
+        if (!$appId) {
+            throw new \Exception("config appId entry is required.");
+        }
+
+        $configServerUrl = $config->getConfigServerUrl();
+        return self::load(new Client($configServerUrl), $appId);
+    }
+
+
 }

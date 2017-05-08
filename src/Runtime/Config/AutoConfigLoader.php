@@ -44,13 +44,8 @@ class AutoConfigLoader
     private static function loadRemoteConfigIfFound($file, $force = false)
     {
         $config = FileConfigLoader::load($file, $force);
-        if ($configServerUrl = $config->getConfigServerUrl()) {
-            // Use the config from server if any
-            $appId = $config->getAppId();
-            if (!$appId) {
-                throw new \Exception("appId is not given.");
-            }
-            if ($serverConfig = MongoConfigLoader::load(new Client($configServerUrl), $appId)) {
+        if ($config->getAppId()) {
+            if ($serverConfig = MongoConfigLoader::loadFromConfig($config)) {
                 return $serverConfig;
             }
         }

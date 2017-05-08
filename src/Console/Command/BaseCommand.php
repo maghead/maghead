@@ -38,7 +38,6 @@ class BaseCommand extends Command
     {
         // $ttl = false disable the apcu cache
         $config = AutoConfigLoader::load(SymbolicLinkConfigLoader::ANCHOR_FILENAME, false);
-        // $config = SymbolicLinkConfigLoader::load(null, true);
         Bootstrap::setupForCLI($config);
         $this->dataSourceManager = DataSourceManager::getInstance();
         return $config;

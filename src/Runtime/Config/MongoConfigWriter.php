@@ -37,16 +37,17 @@ class MongoConfigWriter
 
     public static function remove(Config $config)
     {
-        $configServerUrl = $config->getConfigServerUrl();
         $appId = $config->getAppId();
 
         if (!$appId) {
             throw new \Exception("config appId entry is required.");
         }
 
+        $configServerUrl = $config->getConfigServerUrl();
         $client = new Client($configServerUrl);
 
         $collection = $client->maghead->configs;
         return $collection->deleteOne([ 'appId' => $appId ]);
     }
+
 }
