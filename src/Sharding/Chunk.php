@@ -100,6 +100,15 @@ class Chunk
         return $this->shardId;
     }
 
+    public function toArray()
+    {
+        return [
+            'from' => $this->from, // just cache, this shouldn't be used for now.
+            'status' => $this->status,
+            'shard' => $this->shardId,
+        ];
+    }
+
     /**
      * @codeCoverageIgnore
      */
