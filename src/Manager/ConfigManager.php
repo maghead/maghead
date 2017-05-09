@@ -7,22 +7,15 @@ use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Runtime\Config\SymbolicLinkConfigWriter;
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;
-use PDO;
 use InvalidArgumentException;
 
 class ConfigManager
 {
     protected $config;
 
-    public function __construct($arg)
+    public function __construct(Config $config)
     {
-        if (is_string($arg)) {
-            $this->config = FileConfigLoader::load($arg);
-        } elseif ($arg instanceof Config) {
-            $this->config = $arg;
-        } else {
-            throw new InvalidArgumentException("Constructor argument need to be a valid config path or a config object.");
-        }
+        $this->config = $config;
     }
 
     public function removeDatabase($nodeId)

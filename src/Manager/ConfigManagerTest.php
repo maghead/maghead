@@ -1,12 +1,14 @@
 <?php
-use Maghead\Manager\ConfigManager;
+
+namespace Maghead\Manager;
+
 use Maghead\Runtime\Config\Config;
 use Maghead\Runtime\Config\FileConfigLoader;
 
 /**
  * @group manager
  */
-class ConfigManagerTest extends PHPUnit\Framework\TestCase
+class ConfigManagerTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_CONFIG = 'tests/config/.database.config.yml';
 
@@ -25,7 +27,7 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
 
     public function testRemoveNode()
     {
-        $manager = new ConfigManager(self::TEST_CONFIG);
+        $manager = new ConfigManager(FileConfigLoader::load(self::TEST_CONFIG, true));
         $manager->removeDatabase('sqlite');
         $manager->removeDatabase('mysql');
         $ret = $manager->save(self::TEST_CONFIG);
@@ -37,7 +39,7 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
 
     public function testAddNodeWithOptions()
     {
-        $manager = new ConfigManager(self::TEST_CONFIG);
+        $manager = new ConfigManager(FileConfigLoader::load(self::TEST_CONFIG, true));
         $manager->addDatabase('shard1', 'mysql', [
             'host' => 'localhost',
             'dbname' => 'shard1',
@@ -53,8 +55,7 @@ class ConfigManagerTest extends PHPUnit\Framework\TestCase
 
     public function testAddNodeWithoutOptions()
     {
-        $config = FileConfigLoader::load(self::TEST_CONFIG, true);
-        $manager = new ConfigManager($config);
+        $manager = new ConfigManager(FileConfigLoader::load(self::TEST_CONFIG, true));
         $manager->addDatabase('shard1', 'mysql:host=localhost;dbname=shard1');
         $manager->addDatabase('shard2', 'mysql:host=localhost;dbname=shard2');
         $ret = $manager->save(self::TEST_CONFIG);
