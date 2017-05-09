@@ -4,6 +4,7 @@ namespace Maghead\Runtime\Config;
 
 use ArrayAccess;
 use Exception;
+use Maghead\Sharding\ShardingConfig;
 
 class Config implements ArrayAccess
 {
@@ -112,17 +113,18 @@ class Config implements ArrayAccess
         }
     }
 
-
     public function setShardingConfig(array $config)
     {
         $this->stash['sharding'] = $config;
     }
 
-
+    /**
+     * Return the sharding config.
+     */
     public function getShardingConfig()
     {
         if (isset($this->stash['sharding'])) {
-            return $this->stash['sharding'];
+            return new ShardingConfig($this->stash['sharding']);
         }
     }
 
