@@ -38,7 +38,7 @@ class RemoveShard extends BaseShardOperation
         $dbManager = new DatabaseManager($conn);
         $dbManager->drop($nodeConfig['database']);
 
-        $this->config->removeDataSource($nodeId);
+        $this->config->removeDatabase($nodeId);
         $this->dataSourceManager->removeNode($nodeId);
 
         $mapping = $this->shardManager->loadShardMapping($mappingId);

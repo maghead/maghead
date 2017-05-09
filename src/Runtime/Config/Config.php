@@ -67,12 +67,12 @@ class Config implements ArrayAccess
         }
     }
 
-    public function removeDataSource($dataSourceId)
+    public function removeDatabase($dataSourceId)
     {
         unset($this->stash['databases'][ $dataSourceId ]);
     }
 
-    public function addDataSource($dataSourceId, array $config)
+    public function addDatabase($dataSourceId, array $config)
     {
         $this->stash['databases'][ $dataSourceId ] = $config;
     }

@@ -106,7 +106,7 @@ class CloneShard extends BaseShardOperation
         $newNodeConfig = DSN::update($newNodeConfig);
 
         // add the new node to the config
-        $this->config->addDataSource($newNodeId, $newNodeConfig);
+        $this->config->addDatabase($newNodeId, $newNodeConfig);
 
         // add the new node to the connection manager
         $this->dataSourceManager->addNode($newNodeId, $newNodeConfig);

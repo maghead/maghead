@@ -78,7 +78,7 @@ class AllocateShard extends BaseShardOperation
         $nodeConfig = DSN::update($nodeConfig);
 
         // 4. Register the node config into config and the connectionManager
-        $this->config->addDataSource($newNodeId, $nodeConfig);
+        $this->config->addDatabase($newNodeId, $nodeConfig);
         $this->dataSourceManager->addNode($newNodeId, $nodeConfig);
 
         // 5. Create shard tables
