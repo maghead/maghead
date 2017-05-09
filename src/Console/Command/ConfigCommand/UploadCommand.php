@@ -37,7 +37,7 @@ class UploadCommand extends BaseCommand
         }
 
         $this->logger->info("uploading...");
-        $result = MongoConfigWriter::write($client, $config);
+        $result = MongoConfigWriter::write($config, $client);
 
         $isAcknowledged = $result->isAcknowledged();
         $this->logger->info("isAcknowledged: $isAcknowledged");
