@@ -15,9 +15,12 @@ class ConfigManagerTest extends TestCase
 {
     protected $config;
 
+    const TEST_CONFIG =  "tests/config/.config.tmp.yml";
+
     public function setUp()
     {
-        $this->config = FileConfigLoader::load("tests/config/mysql_configserver.yml", true);
+        copy("tests/config/mysql_configserver.yml", self::TEST_CONFIG);
+        $this->config = FileConfigLoader::load(self::TEST_CONFIG, true);
     }
 
     protected function assertPreConditions()
@@ -30,9 +33,13 @@ class ConfigManagerTest extends TestCase
     public function tearDown()
     {
         MongoConfigWriter::remove($this->config);
+
+        if (file_exists(self::TEST_CONFIG)) {
+            unlink(self::TEST_CONFIG);
+        }
     }
 
-    public function test()
+    public function testShardMappingAddAndRemove()
     {
         $manager = new ConfigManager($this->config);
 
@@ -48,5 +55,10 @@ class ConfigManagerTest extends TestCase
         // $shardManager = new ShardManager($this->config);
         // $shardManager->addShardMapping( );
     }
-}
 
+
+    public function testDatabaseAddAndRemove()
+    {
+        $manager = new ConfigManager($this->config);
+    }
+}
