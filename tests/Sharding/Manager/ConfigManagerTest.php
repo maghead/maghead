@@ -49,7 +49,7 @@ class ShardConfigManagerTest extends StoreTestCase
         $this->assertCount($numberOfChunks, $chunks);
 
         $configManager = new ConfigManager($this->config);
-        $configManager->addShardMapping($this->mapping);
+        $configManager->setShardMapping($this->mapping);
         $ret = $configManager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
         // copy(self::TEST_CONFIG, 'tests/fixtures/config/testAddShardMapping.expected');

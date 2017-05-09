@@ -30,7 +30,28 @@ class ConfigManager extends BaseConfigManager
         }
     }
 
-    public function addShardMapping(ShardMapping $mapping)
+    /**
+     * update the chunks of one shard mapping
+     */
+    public function updateShardMappingChunks(ShardMapping $mapping)
+    {
+        $this->config['sharding']['mappings'][$mapping->id] = $mapping->toArray();
+        if ($this->client) {
+            return $this->collection->updateOne([
+                'appId' => $this->appId,
+            ], [
+                '$set' => [ "sharding.mappings.{$mapping->id}.chunks" => $mapping->getChunks() ]
+            ], [ 'upsert' => true ]);
+        }
+    }
+
+    /**
+     * set (update) shard mapping config.
+     *
+     * If the config server url is defined, the whole shard mapping will be
+     * updated to the config server.
+     */
+    public function setShardMapping(ShardMapping $mapping)
     {
         $this->config['sharding']['mappings'][$mapping->id] = $mapping->toArray();
         if ($this->client) {

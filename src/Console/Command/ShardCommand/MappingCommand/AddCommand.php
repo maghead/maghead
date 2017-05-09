@@ -80,7 +80,7 @@ class AddCommand extends BaseCommand
         }
 
         $configManager = new ConfigManager($config);
-        $configManager->addShardMapping($mapping);
+        $configManager->setShardMapping($mapping);
         $configManager->save();
         return true;
     }

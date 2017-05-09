@@ -51,7 +51,7 @@ class ShardManager
     }
 
 
-    public function addShardMapping(ShardMapping $mapping)
+    public function setShardMapping(ShardMapping $mapping)
     {
         $this->config['sharding']['mappings'][$mapping->id] = $mapping->toArray();
     }
