@@ -61,18 +61,26 @@ class ConfigPreprocessor
             $config['user'] = $config['username'];
         }
 
-        // alias socket to unix_socket
+        // rewrite alias 'socket' to 'unix_socket'
         if (isset($config['socket'])) {
-            $config['unix_socket'] = $config['socket'];
+            if ($config['socket']) {
+                $config['unix_socket'] = $config['socket'];
+            }
         }
-        // alias pass to pasword
+
+        // rewrite alias 'pass' => 'password'
         if (isset($config['pass'])) {
-            $config['password'] = $config['pass'];
+            if ($config['pass']) {
+                $config['password'] = $config['pass'];
+            }
             unset($config['pass']);
         }
 
+        // rewrite alias
         if (isset($config['dbname'])) {
-            $config['database'] = $config['dbname'];
+            if ($config['dbname']) {
+                $config['database'] = $config['dbname'];
+            }
             unset($config['dbname']);
         }
 

@@ -60,5 +60,10 @@ class ConfigManagerTest extends TestCase
     public function testDatabaseAddAndRemove()
     {
         $manager = new ConfigManager($this->config);
+        $ret = $manager->addDatabase('t1', 'sqlite::memory:');
+        $this->assertTrue($ret->isAcknowledged());
+
+        $ret = $manager->removeDatabase('t1');
+        $this->assertTrue($ret->isAcknowledged());
     }
 }

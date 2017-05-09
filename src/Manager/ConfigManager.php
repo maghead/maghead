@@ -25,7 +25,7 @@ class ConfigManager
 
     public function addDatabaseConfig($nodeId, array $nodeConfig)
     {
-        $this->config['databases'][$nodeId] = $nodeConfig;
+        return $this->config['databases'][$nodeId] = $nodeConfig;
     }
 
     private function reconcileNodeConfigKeys(array $node)
@@ -50,8 +50,7 @@ class ConfigManager
             $node = array_merge($node, $opts);
         }
         $node = DSN::update($node);
-        $this->config['databases'][$nodeId] = $node;
-        return $node;
+        return $this->addDatabaseConfig($nodeId, $node);
     }
 
     public function save($file = null)

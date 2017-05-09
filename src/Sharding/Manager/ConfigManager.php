@@ -36,7 +36,7 @@ class ConfigManager extends BaseConfigManager
         if ($this->client) {
             return $this->collection->updateOne([ 'appId' => $this->appId ], [
                 '$set' => [ "sharding.mappings.{$mapping->id}" => $mapping->toArray() ]
-            ]);
+            ], [ 'upsert' => true ]);
         }
     }
 
@@ -46,7 +46,7 @@ class ConfigManager extends BaseConfigManager
         if ($this->client) {
             return $this->collection->updateOne([ 'appId' => $this->appId ], [
                 '$unset' => [ "sharding.mappings.{$mapping->id}" => '' ]
-            ]);
+            ], [ 'upsert' => true ]);
         }
     }
 
@@ -56,7 +56,27 @@ class ConfigManager extends BaseConfigManager
         if ($this->client) {
             return $this->collection->updateOne([ 'appId' => $this->appId ], [
                 '$unset' => [ "sharding.mappings.{$mappingId}" => '' ]
-            ]);
+            ], [ 'upsert' => true ]);
+        }
+    }
+
+    public function addDatabaseConfig($nodeId, array $node)
+    {
+        parent::addDatabaseConfig($nodeId, $node);
+        if ($this->client) {
+            return $this->collection->updateOne([ 'appId' => $this->appId ], [
+                '$set' => [ "databases.{$nodeId}" => $node ]
+            ], [ 'upsert' => true ]);
+        }
+    }
+
+    public function removeDatabase($nodeId)
+    {
+        unset($this->config['databases'][$nodeId]);
+        if ($this->client) {
+            return $this->collection->updateOne([ 'appId' => $this->appId ], [
+                '$unset' => [ "databases.{$nodeId}" => '' ]
+            ], [ 'upsert' => true ]);
         }
     }
 
