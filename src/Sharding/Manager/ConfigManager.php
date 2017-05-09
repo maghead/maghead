@@ -3,6 +3,7 @@
 namespace Maghead\Sharding\Manager;
 
 use Maghead\Sharding\ShardMapping;
+use Maghead\Sharding\Chunk;
 use Maghead\Runtime\Config\Config;
 use Maghead\Manager\ConfigManager as BaseConfigManager;
 
@@ -29,6 +30,23 @@ class ConfigManager extends BaseConfigManager
             $this->collection = $this->client->maghead->configs;
         }
     }
+
+
+    /**
+     * Update only one chunk from the shard mapping
+     */
+    public function updateShardMappingChunk(ShardMapping $mapping, Chunk $chunk)
+    {
+        $this->config['sharding']['mappings'][$mapping->id]['chunks'][$chunk->index] = $chunk->toArray();
+        if ($this->client) {
+            return $this->collection->updateOne([
+                'appId' => $this->appId,
+            ], [
+                '$set' => [ "sharding.mappings.{$mapping->id}.chunks.{$chunk->index}" => $chunk->toArray() ]
+            ], [ 'upsert' => true ]);
+        }
+    }
+
 
     /**
      * update the chunks of one shard mapping

@@ -81,6 +81,35 @@ class ConfigManagerTest extends TestCase
     }
 
 
+    public function testShardMappingOneChunkUpdate()
+    {
+        $configManager = new ConfigManager($this->config);
+
+        $ds = new DataSourceManager($this->config->getDataSources());
+
+        $mapping = new ShardMapping('xxx', [ 'key' => 'store_id', 'shards' => ['node1', 'node2', 'node3'], 'hash' => true, 'chunks' => [] ], $ds);
+        $ret = $configManager->setShardMapping($mapping);
+        $this->assertTrue($ret->isAcknowledged());
+
+        $chunkManager = new ChunkManager($mapping);
+        $chunks = $chunkManager->distribute(['node1', 'node2', 'node3'], 4);
+
+        // $chunk = $mapping->loadChunk(4294967296);
+
+        $ret = $configManager->updateShardMappingChunk($mapping, $chunk);
+        $this->assertTrue($ret->isAcknowledged());
+
+        $newc = MongoConfigLoader::loadFromConfig($this->config);
+        $this->assertInstanceOf('Maghead\\Runtime\\Config\\Config', $newc);
+        $this->assertCount(4, $newc['sharding']['mappings']['xxx']['chunks']);
+
+        $ret = $configManager->removeShardMapping($mapping);
+        $this->assertTrue($ret->isAcknowledged());
+    }
+
+
+
+
     public function testDatabaseAddAndRemove()
     {
         $manager = new ConfigManager($this->config);

@@ -75,7 +75,7 @@ class ChunkManager
                 if ($r + $rangePerChunk > Chunk::MAX_KEY) {
                     $r = Chunk::MAX_KEY;
                 }
-                $chunks[$r] = [ 'shard' => $shardId ];
+                $chunks[$r] = [ 'index' => $r, 'shard' => $shardId ];
                 if ($r + $rangePerChunk > Chunk::MAX_KEY) {
                     break;
                 }
