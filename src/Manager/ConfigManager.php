@@ -18,6 +18,23 @@ class ConfigManager
         $this->config = $config;
     }
 
+    public function removeInstance($nodeId)
+    {
+        unset($this->config['instances'][$nodeId]);
+    }
+
+    public function addInstance($nodeId, $dsnArg, array $opts = null)
+    {
+        $dsn = DSNParser::parse($dsnArg);
+        $node = $dsn->toConfig();
+        if ($opts) {
+            $opts = $this->reconcileNodeConfigKeys($opts);
+            $node = array_merge($node, $opts);
+        }
+        $node = DSN::update($node);
+        return $this->config['instances'][$nodeId] = $node;
+    }
+
     public function removeDatabase($nodeId)
     {
         unset($this->config['databases'][$nodeId]);

@@ -107,6 +107,26 @@ class ConfigManager extends BaseConfigManager
         }
     }
 
+    public function removeInstance($nodeId)
+    {
+        unset($this->config['instances'][$nodeId]);
+        if ($this->client) {
+            return $this->collection->updateOne([ 'appId' => $this->appId ], [
+                '$unset' => [ "instances.{$nodeId}" => '' ]
+            ], [ 'upsert' => true ]);
+        }
+    }
+
+    public function addInstance($nodeId, $dsnArg, array $opts = null)
+    {
+        $node = parent::addInstance($nodeId, $dsnArg, $opts);
+        if ($this->client) {
+            return $this->collection->updateOne([ 'appId' => $this->appId ], [
+                '$set' => [ "instances.{$nodeId}" => $node ]
+            ], [ 'upsert' => true ]);
+        }
+    }
+
     public function addDatabaseConfig($nodeId, array $node)
     {
         parent::addDatabaseConfig($nodeId, $node);

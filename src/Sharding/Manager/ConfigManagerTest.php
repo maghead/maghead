@@ -39,12 +39,22 @@ class ConfigManagerTest extends TestCase
         }
     }
 
+    public function testInstanceAddAndRemove()
+    {
+        $manager = new ConfigManager($this->config);
+        $ret = $manager->addInstance('t11', 'mysql:host=localhost', [ 'user' => 'root', 'password' => null ]);
+        $this->assertTrue($ret->isAcknowledged(), 'instance added successfully');
+
+        $ret = $manager->removeInstance('t11');
+        $this->assertTrue($ret->isAcknowledged(), 'instance remove successfully');
+    }
+
+
     public function testShardMappingAddAndRemove()
     {
         $manager = new ConfigManager($this->config);
 
         $ds = new DataSourceManager($this->config->getDataSources());
-
         $mapping = new ShardMapping('xxx', [ 'key' => 'store_id', 'shards' => ['node1', 'node2', 'node3'], 'hash' => true, 'chunks' => [] ], $ds);
         $ret = $manager->setShardMapping($mapping);
         $this->assertTrue($ret->isAcknowledged());
