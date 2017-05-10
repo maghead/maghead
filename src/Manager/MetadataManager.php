@@ -6,6 +6,7 @@ use ArrayAccess;
 use IteratorAggregate;
 use Maghead\TableParser\TableParser;
 use Maghead\Manager\DataSourceManager;
+use Maghead\Runtime\Connection;
 use SQLBuilder\Driver\BaseDriver;
 use ArrayIterator;
 use PDO;
@@ -33,10 +34,10 @@ class MetadataManager implements ArrayAccess, IteratorAggregate
      *
      * @param string $dsId
      */
-    public function __construct(PDO $connection, BaseDriver $driver)
+    public function __construct(Connection $conn)
     {
-        $this->connection = $connection;
-        $this->driver = $driver;
+        $this->connection = $conn;
+        $this->driver = $conn->getQueryDriver();
         $this->init();
     }
 

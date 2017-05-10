@@ -18,7 +18,8 @@ class VersionCommand extends BaseCommand
 
     public function execute($nodeId = 'master')
     {
-        $meta = new MetadataManager($nodeId);
+        $conn = $this->dataSourceManager->getWriteConnection($nodeId);
+        $meta = new MetadataManager($conn);
         $this->logger->info("{$nodeId} database version: {$meta['version']}");
     }
 }
