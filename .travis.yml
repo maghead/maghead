@@ -21,7 +21,7 @@ addons:
     - gearman-tools
 
 php:
-- "7.0"
+# - "7.0"
 - "7.1"
 # - hhvm
 env:
