@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Sharding\Hasher\FastHasher;
+use ArrayObject;
 
 /**
  * shard mapping structure:
@@ -15,19 +16,11 @@ use Maghead\Sharding\Hasher\FastHasher;
  *       chunkId => [ shard  => shardId ]
  *    ]
  */
-class ShardMapping
+class ShardMapping extends ArrayObject
 {
     public $id;
 
-    public $key;
-
-    public $shardIds;
-
-    public $chunks;
-
-    protected $chunkObjects;
-
-    protected $config;
+    protected $chunkObjects = [];
 
     // Shard method
     const RANGE = 1;
@@ -44,10 +37,7 @@ class ShardMapping
     public function __construct($id, array $conf, DataSourceManager $dataSourceManager)
     {
         $this->id       = $id;
-        $this->key      = $conf['key'];
-        $this->shardIds = $conf['shards'];
-        $this->chunks   = $conf['chunks'];
-        $this->config    = $conf;
+        parent::__construct($conf, ArrayObject::ARRAY_AS_PROPS);
         $this->dataSourceManager = $dataSourceManager;
 
         // TODO: may be changed by config in future.
@@ -61,13 +51,13 @@ class ShardMapping
 
     public function hasKeyGenerator()
     {
-        return isset($this->config['key_generator']);
+        return isset($this['key_generator']);
     }
 
     public function getKeyGenerator()
     {
-        if (isset($this->config['key_generator'])) {
-            return $this->config['key_generator'];
+        if (isset($this['key_generator'])) {
+            return $this['key_generator'];
         }
     }
 
@@ -88,9 +78,9 @@ class ShardMapping
      */
     public function getShardType()
     {
-        if (isset($this->config['hash'])) {
+        if (isset($this['hash'])) {
             return self::HASH;
-        } elseif (isset($this->config['range'])) {
+        } elseif (isset($this['range'])) {
             return self::RANGE;
         }
     }
@@ -216,14 +206,14 @@ class ShardMapping
 
     public function addShardId($shardId)
     {
-        $this->shardIds[] = $shardId;
-        array_unique($this->shardIds);
+        $this->shards[] = $shardId;
+        array_unique($this->shards);
     }
 
     public function removeShardId($shardId)
     {
-        if ($k = array_search($shardId, $this->shardIds)) {
-            unset($this->shardIds[$k]);
+        if ($k = array_search($shardId, $this->shards)) {
+            unset($this->shards[$k]);
         }
     }
 
@@ -234,15 +224,15 @@ class ShardMapping
      */
     public function getShardIds()
     {
-        if ($this->shardIds) {
-            return $this->shardIds;
+        if ($this->shards) {
+            return $this->shards;
         }
         return $this->getUsingShardIds();
     }
 
     public function getHashBy()
     {
-        return $this->config['hash'];
+        return $this['hash'];
     }
 
     public function loadShardCollection() : ShardCollection
@@ -281,10 +271,6 @@ class ShardMapping
 
     public function toArray()
     {
-        $conf           = $this->config; // this will copy the config array.
-        $conf['key']    = $this->key;
-        $conf['shards'] = $this->shardIds;
-        $conf['chunks'] = $this->chunks;
-        return $conf;
+        return $this->getArrayCopy(); // this will copy the config array.
     }
 }
