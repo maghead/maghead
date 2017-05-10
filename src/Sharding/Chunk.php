@@ -3,10 +3,10 @@
 namespace Maghead\Sharding;
 
 use Maghead\Manager\DataSourceManager;
+use ArrayObject;
 
-class Chunk
+class Chunk extends ArrayObject
 {
-
     /**
      * @var integer The default hash range 4294967296 = 2 ** 32
      */
@@ -33,21 +33,20 @@ class Chunk
      * @var number The main index of the chunk. indexes below this index number
      *             should belongs to this Chunk.
      */
-    public $index;
+    // public $index;
 
     /**
      * @var number The index where the chunk from
      */
-    public $from;
+    // public $from;
 
     /**
      * @var string The ID of the shard
      */
-    public $shardId;
+    // public $shardId;
+
 
     private $dataSourceManager;
-
-    protected $status = self::STATUS_OK;
 
     /**
      * @param nubmer $index the chunk index
@@ -56,9 +55,12 @@ class Chunk
      */
     public function __construct($index, $from, $shardId, DataSourceManager $dataSourceManager)
     {
-        $this->index  = $index;
-        $this->from   = $from;
-        $this->shardId  = $shardId;
+        parent::__construct([
+            'index' => $index,
+            'from' => $from,
+            'shardId' => $shardId,
+            'status' => self::STATUS_OK,
+        ], ArrayObject::ARRAY_AS_PROPS);
         $this->dataSourceManager = $dataSourceManager;
     }
 
