@@ -117,7 +117,7 @@ class ChunkManager
      * @param Shard $dstShard
      * @param array $schemas
      */
-    public function removeIn(Chunk $chunk, Shard $dstShard, array $schemas)
+    public function removeFrom(Chunk $chunk, Shard $dstShard, array $schemas)
     {
         return $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
             $dstRepo = $dstShard->repo($repoClass);
@@ -209,7 +209,7 @@ class ChunkManager
 
         } catch (MigrateException $e) {
 
-            $deleted = $this->removeIn($chunk, $dstShard, $schemas);
+            $deleted = $this->removeFrom($chunk, $dstShard, $schemas);
 
             return new MigrateResult(false, [
                 'deleted' => $deleted,
