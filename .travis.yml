@@ -1,4 +1,8 @@
 # sudo: required
+
+
+# trusly use mysql5.6 and which supports the innodb variables
+# see https://github.com/travis-ci/travis-ci/issues/7699 for more information
 dist: trusty
 
 language: php
