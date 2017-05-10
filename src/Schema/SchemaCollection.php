@@ -2,54 +2,46 @@
 
 namespace Maghead\Schema;
 
-use ArrayAccess;
-use IteratorAggregate;
-use Countable;
-use ArrayIterator;
 use InvalidArgumentException;
+use ReflectionClass;
+use ArrayObject;
 
-class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
+class SchemaCollection extends ArrayObject
 {
-    protected $schemas = array();
-
-    public function __construct(array $classNames)
-    {
-        $this->schemas = $classNames;
-    }
-
     public function filter(callable $cb)
     {
-        return new self(array_filter($this->schemas, $cb));
+        $a = [];
+        foreach ($this as $s) {
+            if ($cb($s)) {
+                $a[] = $s;
+            }
+        }
+        return new self($a);
     }
 
     public function map(callable $cb)
     {
-        $this->schemas = array_map($this->schemas, $cb);
+        $a = [];
+        foreach ($this as $s) {
+            $a[] = $cb($s);
+        }
+        return new self($a);
     }
 
     public function evaluate()
     {
-        return new self(array_map(function ($a) {
-            if (is_string($a)) {
-                return new $a();
-            } elseif (is_object($a)) {
-                return $a;
-            } else {
-                throw new InvalidArgumentException('Invalid schema class argument');
-            }
-
-            return $a;
-        }, $this->schemas));
+        return $this->map(function ($a) {
+            return is_string($a) ? new $a : $a;
+        });
     }
 
     public function expandDependency()
     {
-        $expands = array();
-        foreach ($this->schemas as $schema) {
+        $expands = [];
+        foreach ($this as $schema) {
             $expands = array_merge($expands, $this->expandSchemaDependency($schema));
         }
         $expands = array_unique($expands);
-
         return new self($expands);
     }
 
@@ -73,50 +65,38 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
     public function getDeclareSchemas()
     {
         return $this->filter(function ($schema) {
-            return is_subclass_of($schema, 'Maghead\Schema\DeclareSchema', true);
+            return is_subclass_of($schema, 'Maghead\\Schema\\DeclareSchema', true);
         });
     }
 
-    /*
-        foreach ($classes as $class) {
-        }
-    */
-
     public function getSchemas()
     {
-        return $this->schemas;
+        return $this;
     }
 
-    public function getClasses()
+    public function classes()
     {
-        return array_map(function ($a) {
+        return $this->map(function ($a) {
             return get_class($a);
-        }, $this->schemas);
+        });
     }
 
-    public function getBuildableSchemas()
+    public function buildable()
     {
-        $list = array();
-        foreach ($this->schemas as $schema) {
-            // skip abstract classes.
+        return $this->filter(function($schema) {
             if (
               !is_subclass_of($schema, 'Maghead\\Schema\\DeclareSchema', true)
               || is_a($schema, 'Maghead\\Schema\\DynamicSchemaDeclare', true)
               || is_a($schema, 'Maghead\\Schema\\MixinDeclareSchema', true)
               || is_subclass_of($schema, 'Maghead\\Schema\\MixinDeclareSchema', true)
             ) {
-                continue;
+                return false;
             }
 
             // Skip abstract class files...
             $rf = new ReflectionClass($schema);
-            if ($rf->isAbstract()) {
-                continue;
-            }
-            $list[] = $schema;
-        }
-
-        return $list;
+            return !$rf->isAbstract();
+        });
     }
 
     public static function evaluateArray(array $classes)
@@ -126,39 +106,5 @@ class SchemaCollection implements IteratorAggregate, ArrayAccess, Countable
         }, $classes);
 
         return new self($schemas);
-    }
-
-    public function getIterator()
-    {
-        return new ArrayIterator($this->schemas);
-    }
-
-    public function offsetSet($name, $value)
-    {
-        if ($name) {
-            $this->schemas[$name] = $value;
-        } else {
-            $this->schemas[] = $value;
-        }
-    }
-
-    public function offsetExists($name)
-    {
-        return isset($this->schemas[ $name ]);
-    }
-
-    public function offsetGet($name)
-    {
-        return $this->schemas[ $name ];
-    }
-
-    public function offsetUnset($name)
-    {
-        unset($this->schemas[$name]);
-    }
-
-    public function count()
-    {
-        return count($this->schemas);
     }
 }

@@ -1,11 +1,45 @@
 <?php
-use Maghead\Schema\SchemaCollection;
 
-/**
- * @group schema
- */
-class SchemaCollectionTest extends PHPUnit\Framework\TestCase
+namespace Maghead\Schema;
+
+use PHPUnit\Framework\TestCase;
+
+class SchemaCollectionTest extends TestCase
 {
+    public function testGetBuildableSchemasShouldReturnBuildableSchemas()
+    {
+        $c = new SchemaCollection([
+            'AuthorBooks\\Model\\AuthorSchema',
+            'AuthorBooks\\Model\\BookSchema',
+        ]);
+        $schemas = $c->buildable();
+        $this->assertCount(2, $schemas);
+    }
+
+    public function testEvaluateShouldCreateObjects()
+    {
+        $c = new SchemaCollection([
+            '\TestApp\Model\UserSchema',
+            '\TestApp\Model\IDNumberSchema',
+            '\TestApp\Model\NameSchema',
+            '\AuthorBooks\Model\AddressSchema',
+            '\AuthorBooks\Model\BookSchema',
+            '\AuthorBooks\Model\AuthorSchema',
+            '\AuthorBooks\Model\AuthorBookSchema',
+            '\AuthorBooks\Model\PublisherSchema',
+        ]);
+
+        foreach ($c as $s) {
+            $this->assertInternalType('string', $s);
+        }
+
+        $ec = $c->evaluate();
+        foreach ($ec as $s) {
+            $this->assertTrue(is_object($s));
+            $this->assertInstanceOf('Maghead\\Schema\\DeclareSchema', $s);
+        }
+    }
+
     public function testCountable()
     {
         $collection = new SchemaCollection([
@@ -19,29 +53,6 @@ class SchemaCollectionTest extends PHPUnit\Framework\TestCase
             '\AuthorBooks\Model\PublisherSchema',
         ]);
         $this->assertEquals(8, $collection->count());
-    }
-
-    public function testEvaluate()
-    {
-        $c = new SchemaCollection([
-            '\TestApp\Model\UserSchema',
-            '\TestApp\Model\IDNumberSchema',
-            '\TestApp\Model\NameSchema',
-            '\AuthorBooks\Model\AddressSchema',
-            '\AuthorBooks\Model\BookSchema',
-            '\AuthorBooks\Model\AuthorSchema',
-            '\AuthorBooks\Model\AuthorBookSchema',
-            '\AuthorBooks\Model\PublisherSchema',
-        ]);
-
-        foreach ($c->getSchemas() as $s) {
-            $this->assertInternalType('string', $s);
-        }
-
-        $ec = $c->evaluate();
-        foreach ($ec->getSchemas() as $s) {
-            $this->assertInstanceOf('Maghead\Schema\DeclareSchema', $s);
-        }
     }
 
     public function testFilter()
@@ -62,7 +73,7 @@ class SchemaCollectionTest extends PHPUnit\Framework\TestCase
         $rc = $c->evaluate()->filter(function ($schema) {
             return $schema instanceof \AuthorBooks\Model\BookSchema;
         });
-        $this->assertEquals(1, count($rc));
+        $this->assertCount(1, $rc);
 
         $expanded = $rc->expandDependency();
         $this->assertInstanceOf('Maghead\Schema\SchemaCollection', $expanded);
