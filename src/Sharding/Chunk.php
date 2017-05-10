@@ -45,7 +45,6 @@ class Chunk extends ArrayObject
      */
     // public $shardId;
 
-
     private $dataSourceManager;
 
     /**

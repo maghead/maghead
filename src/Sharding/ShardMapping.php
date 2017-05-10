@@ -119,11 +119,6 @@ class ShardMapping extends ArrayObject
         }, $newchunks));
     }
 
-    public function appendChunk(array $chunk)
-    {
-        $this->chunks[] = $chunk;
-    }
-
     public function sortChunks()
     {
         uasort($this->chunks, function($a, $b) {
