@@ -1,0 +1,26 @@
+#!/bin/bash
+ext_install() {
+    (phpize > /dev/null && ./configure > /dev/null && make install > /dev/null)
+}
+
+mkdir -p exts
+if [[ -e exts/pthreads ]] ; then
+    (cd exts/pthreads && git pull)
+else
+    git clone https://github.com/krakjoe/pthreads exts/pthreads
+fi
+(cd exts/pthreads && ext_install)
+
+if [[ -e exts/gearman ]] ; then
+    (cd exts/gearman && git pull)
+else
+    git clone https://github.com/wcgallego/pecl-gearman exts/gearman
+fi
+(cd exts/gearman && ext_install)
+
+if [[ -e exts/apcu ]] ; then
+    (cd exts/apcu && git pull)
+else
+    git clone https://github.com/krakjoe/apcu exts/apcu
+fi
+(cd exts/apcu && ext_install)

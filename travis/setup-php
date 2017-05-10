@@ -1,6 +1,7 @@
 #!/bin/bash
 # echo $TRAVIS_PHP_VERSION
 # phpenv config-rm xdebug.ini
+
 if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then
     echo 'date.timezone = "Asia/Taipei"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     # the below two seems don't work
@@ -8,35 +9,19 @@ if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then
     phpenv config-add travis/php-exts.ini
 
     mkdir exts
-
-
     if [[ -e exts/pthreads ]] ; then
         (cd exts/pthreads && git pull)
     else
         git clone https://github.com/krakjoe/pthreads exts/pthreads
     fi
-    (cd exts/pthreads && phpize && ./configure && make install > /dev/null)
+
+    ./travis/setup-php-exts
+
     echo "extension = pthreads.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-
-
-    if [[ -e exts/gearman ]] ; then
-        (cd exts/gearman && git pull)
-    else
-        git clone https://github.com/wcgallego/pecl-gearman exts/gearman
-    fi
-    (cd exts/gearman && phpize > /dev/null && ./configure && make install > /dev/null)
     echo "extension = gearman.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-
-    if [[ -e exts/apcu ]] ; then
-        (cd exts/apcu && git pull)
-    else
-        git clone https://github.com/krakjoe/apcu exts/apcu
-    fi
-    (cd exts/apcu && phpize > /dev/null && ./configure && make install > /dev/null)
     echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
     # echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     # echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     # echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 fi
-
