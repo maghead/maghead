@@ -49,7 +49,7 @@ class MySQLBackup
         $destDSN = DSNParser::parse($dest['dsn']);
 
         $newdb = $destDSN->getAttribute('dbname').'_'.date('Ymd_Hi');
-        $destDSN->setAttribute('dbname', $newdb);
+        $destDSN['dbname'] = $newdb;
         $dest['dsn'] = $destDSN->__toString();
 
         $conn->query("CREATE DATABASE IF NOT EXISTS {$newdb} CHARSET utf8");

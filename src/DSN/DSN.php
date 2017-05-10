@@ -2,7 +2,7 @@
 
 namespace Maghead\DSN;
 
-use ArrayAccess;
+use ArrayObject;
 use Exception;
 use PDO;
 
@@ -11,17 +11,12 @@ use PDO;
  *
  * getHost(), getPort(), getDBName() methods are used by MySQL and PostgreSQL
  */
-class DSN implements ArrayAccess
+class DSN extends ArrayObject
 {
     /**
      * @var string
      */
     protected $driver;
-
-    /**
-     * @var array
-     */
-    protected $attributes;
 
     /**
      * @var array
@@ -35,20 +30,10 @@ class DSN implements ArrayAccess
 
     public function __construct($driver, array $attributes = array(), array $arguments = array(), $originalDSN = null)
     {
+        parent::__construct($attributes, ArrayObject::ARRAY_AS_PROPS);
         $this->driver = $driver;
-        $this->attributes = $attributes;
         $this->arguments = $arguments;
         $this->originalDSN = $originalDSN;
-    }
-
-    public function __isset($key)
-    {
-        return isset($this->attributes[$key]);
-    }
-
-    public function __get($key)
-    {
-        return $this->getAttribute($key);
     }
 
     public function __toString()
@@ -59,47 +44,22 @@ class DSN implements ArrayAccess
     public function getAttributeString()
     {
         $attrstrs = [];
-        foreach ($this->attributes as $key => $val) {
+        foreach ($this as $key => $val) {
             $attrstrs[] = $key.'='.$val;
         }
 
         return implode(';', $attrstrs);
     }
 
-    public function offsetSet($key, $value)
-    {
-        $this->attributes[ $key ] = $value;
-    }
-
-    public function offsetExists($key)
-    {
-        return isset($this->attributes[ $key ]);
-    }
-
-    public function offsetGet($key)
-    {
-        return $this->attributes[ $key ];
-    }
-
-    public function offsetUnset($key)
-    {
-        unset($this->attributes[$key]);
-    }
-
     public function setAttribute($key, $val)
     {
-        $this->attributes[$key] = $val;
-    }
-
-    public function removeAttribute($key)
-    {
-        unset($this->attributes[$key]);
+        $this[$key] = $val;
     }
 
     public function getAttribute($key)
     {
-        if (isset($this->attributes[$key])) {
-            return $this->attributes[$key];
+        if (isset($this[$key])) {
+            return $this[$key];
         }
     }
 
@@ -130,7 +90,7 @@ class DSN implements ArrayAccess
 
     public function removeDBName()
     {
-        return $this->removeAttribute('dbname');
+        unset($this['dbname']);
     }
 
     public function getDBName()
@@ -175,25 +135,25 @@ class DSN implements ArrayAccess
         $dsn = new self($config['driver']);
 
         if (isset($config['unix_socket'])) {
-            $dsn->setAttribute('unix_socket', $config['unix_socket']);
+            $dsn['unix_socket'] = $config['unix_socket'];
         } else {
             if (isset($config['host'])) {
-                $dsn->setAttribute('host', $config['host']);
+                $dsn['host'] = $config['host'];
             }
             if (isset($config['port'])) {
-                $dsn->setAttribute('port', $config['port']);
+                $dsn['port'] = $config['port'];
             }
         }
 
         foreach (array('database', 'dbname') as $key) {
             if (isset($config[$key])) {
-                $dsn->setAttribute('dbname', $config[$key]);
+                $dsn['dbname'] = $config[$key];
                 break;
             }
         }
 
         if (isset($config['charset'])) {
-            $dsn->setAttribute('charset', $config['charset']);
+            $dsn['charset'] = $config['charset'];
         }
 
 
