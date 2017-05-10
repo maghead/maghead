@@ -9,15 +9,6 @@ class IndexCommandsTest extends CommandWorkFlowTestCase
 {
     public $onlyDriver = 'mysql';
 
-    public function setUp()
-    {
-        if (0 && getenv('TRAVIS')) {
-            // FIXME: FAILS ON TRAVIS-CI, innodb
-            return $this->markTestSkipped('innodb is not supported on Travis-CI');
-        }
-        parent::setUp();
-    }
-
     public function testIndex()
     {
         $this->expectOutputRegex('/TABLE_NAME/');
