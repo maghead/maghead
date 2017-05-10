@@ -19,10 +19,10 @@ use Maghead\DSN\DSN;
 use LogicException;
 use Exception;
 use RuntimeException;
-use ArrayIterator;
 use Iterator;
 use IteratorAggregate;
 use InvalidArgumentException;
+use ArrayObject;
 
 class MigrateException extends RuntimeException
 {
@@ -30,6 +30,17 @@ class MigrateException extends RuntimeException
 
 class MigrateRecoveryException extends RuntimeException
 {
+}
+
+class MigrateResult extends ArrayObject {
+
+    public $success;
+
+    function __construct($success, array $result)
+    {
+        parent::__construct($result, ArrayObject::ARRAY_AS_PROPS);
+        $this->success = $success;
+    }
 }
 
 class ChunkManager
@@ -87,21 +98,40 @@ class ChunkManager
     }
 
     /**
-     * Steps of migrating a chunk
-     *
-     * 1) Clone the chunk to the dest shard.
-     * 2) Verify the chunks
-     * 3) Update chunk meta to the new shard ID
-     * 4) Remove the old chunk
+     * Verify the chunk in the original shard with the chunk in dstShard
      */
-    protected function verifyChunk(Chunk $chunk, array $schemas, callable $callback)
+    public function verify(Chunk $chunk, Shard $dstShard, array $schemas)
     {
-        // TODO: implement this.
+        $missed = $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
+            $dstRepo = $dstShard->repo($repoClass);
+            return $this->verifyRecords($srcRepo, $dstRepo, $keys);
+        });
+
+        return $missed;
     }
 
-    protected function removeChunk(Chunk $chunk, array $schemas, callable $callback)
+    /**
+     * Remove the chunk range in the given shard instead of the shard the chunk belons to.
+     *
+     * @param Chunk $chunk
+     * @param Shard $dstShard
+     * @param array $schemas
+     */
+    public function removeIn(Chunk $chunk, Shard $dstShard, array $schemas)
     {
-        // TODO: implement this
+        return $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
+            $dstRepo = $dstShard->repo($repoClass);
+            $this->deleteRecords($dstRepo, $keys);
+        });
+    }
+
+    public function remove(Chunk $chunk, array $schemas)
+    {
+        $deleted = $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) {
+            $this->deleteRecords($srcRepo, $keys);
+        });
+
+        return $deleted;
     }
 
     /**
@@ -141,6 +171,9 @@ class ChunkManager
         return $allRets;
     }
 
+    /**
+     * Clone the record in the chunk range from the original shard to the dstShard.
+     */
     public function clone(Chunk $chunk, Shard $dstShard, array $schemas)
     {
         $shardId = $chunk->getShardId();
@@ -161,26 +194,27 @@ class ChunkManager
         }
 
         try {
-            $created = $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
-                $dstRepo = $dstShard->repo($repoClass);
-                return $this->cloneRecords($srcRepo, $dstRepo, $keys);
-            });
 
-            $missed = $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
-                $dstRepo = $dstShard->repo($repoClass);
-                return $this->verifyRecords($srcRepo, $dstRepo, $keys);
-            });
+            $created = $this->clone($chunk, $dstShard, $schemas);
 
-            $deleted = $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
-                $this->deleteRecords($srcRepo, $keys);
-            });
+            $missed = $this->verify($chunk, $dstShard, $schemas);
 
-            return $created;
+            $deleted = $this->remove($chunk, $schemas);
+
+            return new MigrateResult(true, [
+                'created' => $created,
+                'missed'  => $missed,
+                'deleted' => $deleted,
+            ]);
+
         } catch (MigrateException $e) {
-            return $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
-                $dstRepo = $dstShard->repo($repoClass);
-                $this->deleteRecords($dstRepo, $keys);
-            });
+
+            $deleted = $this->removeIn($chunk, $dstShard, $schemas);
+
+            return new MigrateResult(false, [
+                'deleted' => $deleted,
+            ]);
+
         }
     }
 
