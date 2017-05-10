@@ -11,7 +11,7 @@ class IndexCommandsTest extends CommandWorkFlowTestCase
 
     public function setUp()
     {
-        if (getenv('TRAVIS')) {
+        if (0 && getenv('TRAVIS')) {
             // FIXME: FAILS ON TRAVIS-CI, innodb
             return $this->markTestSkipped('innodb is not supported on Travis-CI');
         }
