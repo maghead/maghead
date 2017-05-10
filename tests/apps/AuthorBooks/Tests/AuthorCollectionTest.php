@@ -80,7 +80,7 @@ class AuthorCollectionTest extends ModelTestCase
         $this->assertResultSuccess(Book::create([ 'title' => 'Book 3' ]));
 
         $q = Book::masterRepo()->delete();
-        $ret = $q->where()->equal('title', 'Book 1')->execute(); // This tests the fallback method dispatch on condition class.
+        list($ret, $stm) = $q->where()->equal('title', 'Book 1')->execute(); // This tests the fallback method dispatch on condition class.
         $this->assertTrue($ret);
 
         $books = Book::masterRepo()->select()->fetch();
@@ -94,7 +94,7 @@ class AuthorCollectionTest extends ModelTestCase
         $this->assertResultSuccess(Book::create([ 'title' => 'Book 2' ]));
         $this->assertResultSuccess(Book::create([ 'title' => 'Book 3' ]));
 
-        $ret = Book::masterRepo()->update([ 'title' => 'Updated' ])->execute();
+        list($ret, $stm) = Book::masterRepo()->update([ 'title' => 'Updated' ])->execute();
         $this->assertTrue($ret);
 
         $titles = Book::masterRepo()->select('DISTINCT title')->fetchColumn(0);
@@ -216,7 +216,6 @@ class AuthorCollectionTest extends ModelTestCase
         ));
         $this->assertResultSuccess($ret);
 
-        $a = new Author;
         $ret = Author::create(array(
             'name' => 'b',
             'email' => 'b@b',

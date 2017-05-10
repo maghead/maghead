@@ -22,7 +22,7 @@ class DeleteQuery extends BaseQuery implements Executable
     /**
      * Executes the query on the repository
      *
-     * @return bool returns from PDOStatement::execute
+     * @return [bool,PDOStatement] returns from PDOStatement::execute
      */
     public function execute()
     {

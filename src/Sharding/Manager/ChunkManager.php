@@ -28,7 +28,7 @@ class MigrateException extends RuntimeException
 {
 }
 
-class MigrateRecoveryException extends RuntimeException
+class MigrateRecoveryException extends MigrateException
 {
 }
 
@@ -320,9 +320,11 @@ class ChunkManager
         $shardKey = $this->mapping->getKey();
         $q = $repo->delete();
         $q->where()->in($shardKey, $keys);
-        if (false === $q->execute()) {
+        list($ret, $stm) = $q->execute();
+        if ($ret === false) {
             throw new MigrateRecoveryException;
         }
+        return $stm->rowCount(); // how many records are deleted.
     }
 
 

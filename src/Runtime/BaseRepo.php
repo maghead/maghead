@@ -647,7 +647,7 @@ abstract class BaseRepo implements Countable
     public function write($sql, $args)
     {
         $stm = $this->write->prepare($sql, $args);
-        return $stm->execute($args);
+        return [$stm->execute($args), $stm];
     }
 
     /**
@@ -655,7 +655,7 @@ abstract class BaseRepo implements Countable
      *
      * This method executes PDOStatement::execute and return the result directly.
      *
-     * @return bool
+     * @return [bool, PDOStatement]
      */
     public function execute(ToSqlInterface $query)
     {
@@ -663,7 +663,7 @@ abstract class BaseRepo implements Countable
         $driver = $this->write->getQueryDriver();
         $sql = $query->toSql($driver, $arguments);
         $stm = $this->write->prepare($sql);
-        return $stm->execute($arguments->toArray());
+        return [$stm->execute($arguments->toArray()), $stm];
     }
 
     public function executeAndFetchAll(ToSqlInterface $query, $fetchMode = PDO::FETCH_OBJ)
