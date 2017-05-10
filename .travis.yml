@@ -21,8 +21,8 @@ addons:
     - gearman-tools
 
 php:
-- "7.0"
 - "7.1"
+# - "7.0"
 # - hhvm
 
 env:
@@ -60,7 +60,7 @@ script:
 before_cache:
 - travis_retry composer require "satooshi/php-coveralls" "~1"
 after_success:
-- if [[ "$DB" == "mysql" ]]; then php vendor/bin/coveralls -v ; fi
+- if [[ "$DB" != "sqlite" ]]; then php vendor/bin/coveralls -v ; fi
 # matrix:
 #   exclude:
 #     - php: hhvm
