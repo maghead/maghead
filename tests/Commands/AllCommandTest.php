@@ -28,6 +28,7 @@ class AllCommandsTest extends CommandWorkFlowTestCase
             [['maghead', 'help', 'db', 'drop']],
             [['maghead', 'help', 'db', 'remove']],
             [['maghead', 'help', 'meta']],
+            [['maghead', 'help', 'index']],
             [['maghead', 'help', 'shard']],
             [['maghead', 'help', 'shard', 'mapping']],
             [['maghead', 'help', 'shard', 'allocate']],
