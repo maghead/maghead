@@ -90,7 +90,9 @@ class DSN extends ArrayObject
 
     public function removeDBName()
     {
-        unset($this['dbname']);
+        if ($this->offsetExists('dbname')) {
+            $this->offsetUnset('dbname');
+        }
     }
 
     public function getDBName()
