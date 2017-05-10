@@ -7,7 +7,7 @@ use Maghead\Testing\CommandWorkFlowTestCase;
  */
 class AllCommandsTest extends CommandWorkFlowTestCase
 {
-    public function testCommands()
+    public function testCreateCommandObjects()
     {
         $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\UseCommand'));
         $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\SchemaCommand\BuildCommand'));
@@ -17,14 +17,48 @@ class AllCommandsTest extends CommandWorkFlowTestCase
         $this->assertNotNull($this->app->createCommand('Maghead\Console\Command\DiffCommand'));
     }
 
-    public function testSchemaCommand()
+    public function commandsProvider()
+    {
+        return [
+            [['maghead', 'help', 'schema']],
+            [['maghead', 'help', 'version']],
+            [['maghead', 'help', 'db']],
+            [['maghead', 'help', 'db', 'create']],
+            [['maghead', 'help', 'db', 'recreate']],
+            [['maghead', 'help', 'db', 'drop']],
+            [['maghead', 'help', 'db', 'remove']],
+            [['maghead', 'help', 'meta']],
+            [['maghead', 'help', 'shard']],
+            [['maghead', 'help', 'shard', 'mapping']],
+            [['maghead', 'help', 'shard', 'allocate']],
+            [['maghead', 'help', 'shard', 'clone']],
+            [['maghead', 'help', 'shard', 'prune']],
+            [['maghead', 'help', 'config']],
+            [['maghead', 'help', 'config', 'upload']],
+            [['maghead', 'help', 'config', 'use']],
+        ];
+    }
+
+
+    /**
+     * @dataProvider commandsProvider
+     */
+    public function testCommands($cmds)
+    {
+        ob_start();
+        $ret = $this->app->run($cmds);
+        $this->assertTrue($ret);
+        ob_end_clean();
+    }
+
+    public function testSchemaBuildCommand()
     {
         $ret = $this->app->run(['maghead', 'schema', 'build']);
         $this->assertTrue($ret);
     }
 
     /**
-     * @depends testSchemaCommand
+     * @depends testSchemaBuildCommand
      */
     public function testSqlCommand()
     {
