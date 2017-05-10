@@ -5,6 +5,13 @@ namespace Maghead\Schema\Column;
 use Maghead\Schema\DeclareColumn;
 use Maghead\Schema\DeclareSchema;
 
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\ToSqlInterface;
+
 class UUIDColumn extends DeclareColumn
 {
     /**
@@ -20,5 +27,21 @@ class UUIDColumn extends DeclareColumn
             ->length($length)
             ->notNull()
             ;
+    }
+
+    public function buildTypeName(BaseDriver $driver)
+    {
+        if ($driver instanceof PgSQLDriver) {
+            // FIXME: 
+            // we have an issue when fetching bytea column from postgresql:
+            //
+            // PDOException: SQLSTATE[22021]: Character not in repertoire: 7 ERROR:  invalid byte sequence for encoding "UTF8": 0x8b
+            //
+            // - http://stackoverflow.com/questions/16001238/writing-to-a-bytea-field-error-invalid-byte-sequence-for-encoding-utf8-0x9
+            // - https://github.com/laravel/framework/issues/10847
+            // - uuid https://www.postgresql.org/docs/9.1/static/datatype-uuid.html
+            return 'bytea';
+        }
+        return parent::buildTypeName($driver);
     }
 }

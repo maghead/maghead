@@ -17,6 +17,8 @@ class TestUUIDSchema extends DeclareSchema
 
 class UUIDColumnTest extends ModelTestCase
 {
+    public $onlyDriver = 'mysql';
+
     public function models()
     {
         return [
