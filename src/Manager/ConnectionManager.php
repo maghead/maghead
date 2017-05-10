@@ -13,13 +13,10 @@ use Maghead\Runtime\Connection;
 use Maghead\Runtime\Connector\PDOMySQLConnector;
 use Maghead\Runtime\Connector\PDOConnector;
 
-class ConnectionManager implements ArrayAccess
-{
-    /**
-     * @var array contains node configurations
-     */
-    protected $nodeConfigurations;
+use ArrayObject;
 
+class ConnectionManager extends ArrayObject
+{
     /**
      * @var PDOConnection[] contains PDO connection objects (write)
      */
@@ -29,11 +26,6 @@ class ConnectionManager implements ArrayAccess
      * @var PDOConnection[] contains PDO connection object for read only purpose.
      */
     protected $reads = [];
-
-    public function __construct(array $nodeConfigurations = [])
-    {
-        $this->nodeConfigurations = $nodeConfigurations;
-    }
 
 
     /**
@@ -108,17 +100,17 @@ class ConnectionManager implements ArrayAccess
                 $config['driver'] = $driver;
             }
         }
-        $this->nodeConfigurations[ $id ] = $config;
+        $this[ $id ] = $config;
     }
 
     public function hasNode($nodeId)
     {
-        return isset($this->nodeConfigurations[$nodeId]);
+        return isset($this[$nodeId]);
     }
 
     public function removeNode($id)
     {
-        unset($this->nodeConfigurations[$id]);
+        unset($this[$id]);
     }
 
     /**
@@ -128,7 +120,11 @@ class ConnectionManager implements ArrayAccess
      */
     public function getNodeIds()
     {
-        return array_keys($this->nodeConfigurations);
+        $nodeIds = [];
+        foreach ($this as $nodeId) {
+            $nodeIds[] = $nodeId;
+        }
+        return $nodeIds;
     }
 
     /**
@@ -138,8 +134,8 @@ class ConnectionManager implements ArrayAccess
      */
     public function getNodeConfig($id)
     {
-        if (isset($this->nodeConfigurations[ $id ])) {
-            return $this->nodeConfigurations[ $id ];
+        if (isset($this[$id])) {
+            return $this[ $id ];
         }
     }
 
@@ -212,7 +208,7 @@ class ConnectionManager implements ArrayAccess
      */
     public function connectInstance($nodeId)
     {
-        $config = $this->nodeConfigurations[$nodeId];
+        $config = $this[$nodeId];
         $dsn = DSNParser::parse($config['dsn']);
         $dsn->removeDBName(); // works for pgsql and mysql only
         $config['dsn'] = $dsn->__toString();
@@ -221,11 +217,11 @@ class ConnectionManager implements ArrayAccess
 
     public function connectRead($nodeId)
     {
-        if (!isset($this->nodeConfigurations[$nodeId])) {
-            $nodeIds = join(', ', array_keys($this->nodeConfigurations)) ?: '{none}';
+        if (!isset($this[$nodeId])) {
+            $nodeIds = join(', ', $this->getNodeIds()) ?: '{none}';
             throw new InvalidArgumentException("data source {$nodeId} not found, valid nodes are {$nodeIds}");
         }
-        $config = $this->nodeConfigurations[$nodeId];
+        $config = $this[$nodeId];
         if (isset($config['read'])) {
             // Implement a load balancer
             $idx = array_rand($config['read']);
@@ -236,11 +232,11 @@ class ConnectionManager implements ArrayAccess
 
     public function connectWrite($nodeId)
     {
-        if (!isset($this->nodeConfigurations[$nodeId])) {
-            $nodeIds = join(', ', array_keys($this->nodeConfigurations)) ?: '{none}';
+        if (!isset($this[$nodeId])) {
+            $nodeIds = join(', ', $this->getNodeIds()) ?: '{none}';
             throw new InvalidArgumentException("data source {$nodeId} not found, valid nodes are {$nodeIds}");
         }
-        $config = $this->nodeConfigurations[$nodeId];
+        $config = $this[$nodeId];
         if (isset($config['write'])) {
             // Implement a load balancer
             $idx = array_rand($config['write']);
@@ -251,11 +247,11 @@ class ConnectionManager implements ArrayAccess
 
     public function connect($nodeId)
     {
-        if (!isset($this->nodeConfigurations[$nodeId])) {
-            $nodeIds = join(', ', array_keys($this->nodeConfigurations)) ?: '{none}';
+        if (!isset($this[$nodeId])) {
+            $nodeIds = join(', ', $this->getNodeIds()) ?: '{none}';
             throw new InvalidArgumentException("data source {$nodeId} not found, valid nodes are {$nodeIds}");
         }
-        $config = $this->nodeConfigurations[$nodeId];
+        $config = $this[$nodeId];
         if (isset($config['write'])) {
             $idx = array_rand($config['write']);
             return PDOConnector::connect($config['write'][$idx]);
@@ -300,43 +296,9 @@ class ConnectionManager implements ArrayAccess
         }
     }
 
-
-    /**
-     * ArrayAccess interface.
-     *
-     * @param string     $name
-     * @param Connection $value
-     */
-    public function offsetSet($name, $value)
-    {
-        if (!$value instanceof Connection) {
-            throw new InvalidArgumentException('$value is not a Connection object.');
-        }
-        $this->conns[ $name ] = $value;
-    }
-
-    /**
-     * Check if a connection exists.
-     *
-     * @param string $name
-     */
-    public function offsetExists($name)
-    {
-        return isset($this->conns[ $name ]);
-    }
-
-    /**
-     * Get connection by data source id.
-     *
-     * @param string $name
-     */
-    public function offsetGet($name)
-    {
-        return $this->getConnection($name);
-    }
-
     public function offsetUnset($name)
     {
+        parent::offsetUnset($name);
         $this->close($name);
     }
 
@@ -354,11 +316,11 @@ class ConnectionManager implements ArrayAccess
         $this->closeAll();
         $this->conns = [];
         $this->reads = [];
+        $this->exchangeArray([]);
     }
-
 
     public function clean()
     {
-        $this->nodeConfigurations = [];
+        $this->exchangeArray([]);
     }
 }
