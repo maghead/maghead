@@ -33,6 +33,7 @@
       <directory suffix=".php">src</directory>
       <exclude>
         <directory suffix="Test.php">src</directory>
+        <directory suffix=".php">src/Model</directory>
       </exclude>
     </whitelist>
   </filter>
