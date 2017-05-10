@@ -191,6 +191,12 @@ class ShardMapping
         }
     }
 
+    public function loadChunkByIndex($i)
+    {
+        $c = $this->chunks[$i];
+        return new Chunk($c['index'], $c['from'], $c['shard'], $this->dataSourceManager);
+    }
+
     /**
      * Get the defined chunks in this mapping.
      */
