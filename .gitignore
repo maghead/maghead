@@ -21,3 +21,4 @@ src/Model/MetadataBaseRepo.php
 examples/todos/db/config/database.php
 /tests/migrations_testing/
 *.tmp.yml
+Test*.php
