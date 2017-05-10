@@ -35,7 +35,7 @@ class MongoConfigWriter
         $collection = $client->maghead->configs;
         $result = $collection->updateOne(
             [ 'appId' => $appId ],
-            [ '$set' => $config->stash ],
+            [ '$set' => $config->getArrayCopy() ],
             [ 'upsert' => true ]);
         return $result;
     }

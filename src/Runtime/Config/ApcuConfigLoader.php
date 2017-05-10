@@ -32,7 +32,7 @@ class ApcuConfigLoader
                 $config = $f3();
             }
         }
-        apcu_store($cacheKey, $config->stash, $ttl);
+        apcu_store($cacheKey, $config->getArrayCopy(), $ttl);
         return $config;
     }
 }

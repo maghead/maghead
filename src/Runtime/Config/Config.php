@@ -2,14 +2,12 @@
 
 namespace Maghead\Runtime\Config;
 
-use ArrayAccess;
+use ArrayObject;
 use Exception;
 use Maghead\Sharding\ShardingConfig;
 
-class Config implements ArrayAccess
+class Config extends ArrayObject
 {
-    public $stash = [];
-
     public $file;
 
     const DEFAULT_BASE_COLLECTION_CLASS = '\\Maghead\\Runtime\\BaseCollection';
@@ -22,14 +20,14 @@ class Config implements ArrayAccess
 
     public function __construct(array $stash, $file = null)
     {
-        $this->stash = $stash;
+        parent::__construct($stash);
         $this->file = $file;
     }
 
     public function getAppId()
     {
-        if (isset($this->stash['appId'])) {
-            return $this->stash['appId'];
+        if (isset($this['appId'])) {
+            return $this['appId'];
         }
     }
 
@@ -40,8 +38,8 @@ class Config implements ArrayAccess
      */
     public function getConfigServerUrl()
     {
-        if (isset($this->stash['configServer'])) {
-            return $this->stash['configServer'];
+        if (isset($this['configServer'])) {
+            return $this['configServer'];
         }
     }
 
@@ -53,8 +51,8 @@ class Config implements ArrayAccess
      */
     public function getBootstrapScript()
     {
-        if (isset($this->stash['cli']['bootstrap'])) {
-            return $this->stash['cli']['bootstrap'];
+        if (isset($this['cli']['bootstrap'])) {
+            return $this['cli']['bootstrap'];
         }
     }
 
@@ -63,19 +61,19 @@ class Config implements ArrayAccess
      */
     public function getExternalSchemaLoader()
     {
-        if (isset($this->stash['schema']['loader'])) {
-            return $this->stash['schema']['loader'];
+        if (isset($this['schema']['loader'])) {
+            return $this['schema']['loader'];
         }
     }
 
     public function removeDatabase($dataSourceId)
     {
-        unset($this->stash['databases'][ $dataSourceId ]);
+        unset($this['databases'][ $dataSourceId ]);
     }
 
     public function addDatabase($dataSourceId, array $config)
     {
-        $this->stash['databases'][ $dataSourceId ] = $config;
+        $this['databases'][ $dataSourceId ] = $config;
     }
 
     /**
@@ -85,8 +83,8 @@ class Config implements ArrayAccess
      */
     public function getDataSources()
     {
-        if (isset($this->stash['databases'])) {
-            return $this->stash['databases'];
+        if (isset($this['databases'])) {
+            return $this['databases'];
         }
 
         return array();
@@ -96,8 +94,8 @@ class Config implements ArrayAccess
     {
         $id = $this->getMasterDataSourceId();
 
-        if (isset($this->stash['databases'][$id])) {
-            return $this->stash['databases'][$id];
+        if (isset($this['databases'][$id])) {
+            return $this['databases'][$id];
         }
     }
 
@@ -108,14 +106,14 @@ class Config implements ArrayAccess
 
     public function getSeedScripts()
     {
-        if (isset($this->stash['seeds'])) {
-            return $this->stash['seeds'];
+        if (isset($this['seeds'])) {
+            return $this['seeds'];
         }
     }
 
     public function setShardingConfig(array $config)
     {
-        $this->stash['sharding'] = $config;
+        $this['sharding'] = $config;
     }
 
     /**
@@ -123,21 +121,21 @@ class Config implements ArrayAccess
      */
     public function getShardingConfig()
     {
-        if (isset($this->stash['sharding'])) {
-            return new ShardingConfig($this->stash['sharding']);
+        if (isset($this['sharding'])) {
+            return new ShardingConfig($this['sharding']);
         }
     }
 
     public function getCacheConfig()
     {
-        if (isset($this->stash['cache'])) {
-            return $this->stash['cache'];
+        if (isset($this['cache'])) {
+            return $this['cache'];
         }
     }
 
     public function getInstances()
     {
-        return $this->stash['instance'];
+        return $this['instance'];
     }
 
     /**
@@ -147,8 +145,8 @@ class Config implements ArrayAccess
      */
     public function getDataSource($sourceId)
     {
-        if (isset($this->stash['databases'][$sourceId])) {
-            return $this->stash['databases'][$sourceId];
+        if (isset($this['databases'][$sourceId])) {
+            return $this['databases'][$sourceId];
         }
         throw new Exception("database $sourceId is not defined.");
     }
@@ -160,8 +158,8 @@ class Config implements ArrayAccess
      */
     public function getSchema()
     {
-        return isset($this->stash['schema']) ?
-                     $this->stash['schema'] : null;
+        return isset($this['schema']) ?
+                     $this['schema'] : null;
     }
 
     /**
@@ -171,26 +169,26 @@ class Config implements ArrayAccess
      */
     public function getSchemaPaths()
     {
-        return isset($this->stash['schema']['paths'])
-                    ? $this->stash['schema']['paths'] : null;
+        return isset($this['schema']['paths'])
+                    ? $this['schema']['paths'] : null;
     }
 
     public function setAutoId($enabled = true)
     {
-        $this->stash['schema']['auto_id'] = $enabled;
+        $this['schema']['auto_id'] = $enabled;
     }
 
     public function hasAutoId()
     {
-        return isset($this->stash['schema']['auto_id']);
+        return isset($this['schema']['auto_id']);
     }
 
 
     public function getAutoIdColumnName()
     {
-        if (is_array($this->stash['schema']['auto_id'])) {
-            if (isset($this->stash['schema']['auto_id']['name'])) {
-                return $this->stash['schema']['auto_id']['name'];
+        if (is_array($this['schema']['auto_id'])) {
+            if (isset($this['schema']['auto_id']['name'])) {
+                return $this['schema']['auto_id']['name'];
             }
         }
         return 'id';
@@ -198,7 +196,7 @@ class Config implements ArrayAccess
 
     public function hasAutoIdConfig()
     {
-        return is_array($this->stash['schema']['auto_id']);
+        return is_array($this['schema']['auto_id']);
     }
 
     // TODO: column classes alias should be defined here.
@@ -206,9 +204,9 @@ class Config implements ArrayAccess
     // TODO: dynamically resolve the column classes
     public function getAutoIdColumnClass()
     {
-        if (is_array($this->stash['schema']['auto_id'])) {
-            if (isset($this->stash['schema']['auto_id']['class'])) {
-                return $this->stash['schema']['auto_id']['class'];
+        if (is_array($this['schema']['auto_id'])) {
+            if (isset($this['schema']['auto_id']['class'])) {
+                return $this['schema']['auto_id']['class'];
             }
         }
         // Alternative class '\Maghead\Schema\Column\UUIDPrimaryKeyColumn';
@@ -217,9 +215,9 @@ class Config implements ArrayAccess
 
     public function getAutoIdColumnParams()
     {
-        if (is_array($this->stash['schema']['auto_id'])) {
-            if (isset($this->stash['schema']['auto_id']['params'])) {
-                return $this->stash['schema']['auto_id']['params'];
+        if (is_array($this['schema']['auto_id'])) {
+            if (isset($this['schema']['auto_id']['params'])) {
+                return $this['schema']['auto_id']['params'];
             }
         }
         // Alternative class '\Maghead\Schema\Column\UUIDPrimaryKeyColumn';
@@ -228,8 +226,8 @@ class Config implements ArrayAccess
 
     public function getBaseModelClass()
     {
-        if (isset($this->stash['schema']['base_model'])) {
-            return $this->stash['schema']['base_model'];
+        if (isset($this['schema']['base_model'])) {
+            return $this['schema']['base_model'];
         }
 
         return self::DEFAULT_BASE_MODEL_CLASS;
@@ -237,33 +235,10 @@ class Config implements ArrayAccess
 
     public function getBaseCollectionClass()
     {
-        if (isset($this->stash['schema']['base_collection'])) {
-            return $this->stash['schema']['base_collection'];
+        if (isset($this['schema']['base_collection'])) {
+            return $this['schema']['base_collection'];
         }
 
         return self::DEFAULT_BASE_COLLECTION_CLASS;
-    }
-
-    /******************************
-     * Implements interface of ArrayAccess
-     ******************************/
-    public function & offsetGet($offset)
-    {
-        return $this->stash[ $offset ];
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        $this->stash[ $offset ] = $value;
-    }
-
-    public function offsetExists($offset)
-    {
-        return isset($this->stash[$offset]);
-    }
-
-    public function offsetUnset($offset)
-    {
-        unset($this->stash[$offset]);
     }
 }

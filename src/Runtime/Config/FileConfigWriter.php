@@ -27,7 +27,7 @@ class FileConfigWriter
             throw new Exception('Missing target config file. incorrect symbol link.');
         }
 
-        $yaml = Yaml::dump($config->stash, self::$inlineLevel, self::$indentSpaces);
+        $yaml = Yaml::dump($config->getArrayCopy(), self::$inlineLevel, self::$indentSpaces);
         if (false === file_put_contents($targetFile, "---\n".$yaml)) {
             throw new Exception("YAML config update failed: $targetFile");
         }
