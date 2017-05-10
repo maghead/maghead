@@ -8,16 +8,16 @@ if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then
     phpenv config-add travis/php-exts.ini
 
     git clone https://github.com/krakjoe/pthreads
-    (cd pthreads && phpize && ./configure && make install)
-
-    # install pthreads.so
+    (cd pthreads && phpize && ./configure && make install > /dev/null)
     echo "extension = pthreads.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
     git clone https://github.com/wcgallego/pecl-gearman gearman
-    (cd gearman && phpize && ./configure && make install)
-
-    # install pthreads.so
+    (cd gearman && phpize > /dev/null && ./configure && make install > /dev/null)
     echo "extension = gearman.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
+    git clone https://github.com/krakjoe/apcu apcu
+    (cd apcu && phpize > /dev/null && ./configure && make install > /dev/null)
+    echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
     # echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     # echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
