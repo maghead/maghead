@@ -22,8 +22,10 @@ class AutoConfigLoader
         // use the modification time as the cache key, and so if the file is modified,
         // we will reload the file.
         if (is_link($file)) {
-            $file = realpath($file);
+            $file = readlink($file);
         }
+
+        $file = realpath($file);
 
         if ($offline) {
             return FileConfigLoader::load($file, true);

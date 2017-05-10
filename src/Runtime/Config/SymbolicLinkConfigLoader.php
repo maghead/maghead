@@ -12,6 +12,7 @@ class SymbolicLinkConfigLoader
     public static function load($force = false)
     {
         $file = self::ANCHOR_FILENAME;
+
         // TODO: lookup config in the fallback directories
         if (!file_exists($file)) {
             return false;

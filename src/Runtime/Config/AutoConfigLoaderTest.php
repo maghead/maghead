@@ -17,6 +17,16 @@ class AutoConfigLoaderTest extends TestCase
         $config = AutoConfigLoader::load('tests/config/mysql_configserver.yml', false);
         $this->assertInstanceOf('Maghead\\Runtime\\Config\\Config', $config);
     }
+
+    public function testLoadSymlink()
+    {
+        if (!file_exists(SymbolicLinkConfigLoader::ANCHOR_FILENAME)) {
+            $this->markTestSkipped("require " . SymbolicLinkConfigLoader::ANCHOR_FILENAME);
+        }
+        $config = AutoConfigLoader::load(SymbolicLinkConfigLoader::ANCHOR_FILENAME, false);
+        $this->assertInstanceOf('Maghead\\Runtime\\Config\\Config', $config);
+
+    }
 }
 
 
