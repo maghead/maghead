@@ -50,9 +50,10 @@ class FastHasher implements Hasher
     {
         $this->mapping = $mapping;
         // register chunk index directly
-        foreach ($mapping->chunks as $index => $target) {
-            $this->buckets[$index] = $index;
-            $this->targetIndexes[$index][] = $index;
+        foreach ($mapping->chunks as $i => $c) {
+            $x = $c['index'];
+            $this->buckets[$x] = $i;
+            $this->targetIndexes[$i][] = $x;
         }
         ksort($this->buckets, SORT_REGULAR);
     }
@@ -112,25 +113,24 @@ class FastHasher implements Hasher
         $index = $this->hash($target);
 
         $from = 0;
-        foreach ($this->buckets as $key => $nodeId) {
-            if ($key > $index) {
+        foreach ($this->buckets as $x => $nodeId) {
+            if ($x > $index) {
                 return new HashRange($this, $target, $index, $from);
             }
-            $from = $key;
+            $from = $x;
         }
         return new HashRange($this, $target, $index, $from);
     }
 
     public function lookup($key)
     {
-        $index = $this->hash($key);
-        foreach ($this->buckets as $key => $value) {
-            if ($key > $index) {
+        $hash = $this->hash($key);
+        foreach ($this->buckets as $x => $value) {
+            if ($x > $hash) {
                 return $value;
             }
         }
         reset($this->buckets);
-        $first = current($this->buckets);
-        return $first;
+        return current($this->buckets);
     }
 }

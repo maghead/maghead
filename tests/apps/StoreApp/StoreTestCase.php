@@ -2,11 +2,14 @@
 namespace StoreApp;
 
 use Maghead\Testing\ModelTestCase;
-use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryMapper;
-use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryWorker;
 use Maghead\Runtime\Config\FileConfigLoader;
+use Maghead\Manager\DataSourceManager;
+
+use Maghead\Sharding\ShardMapping;
 use Maghead\Sharding\Manager\ShardManager;
 use Maghead\Sharding\Manager\ChunkManager;
+use Maghead\Sharding\Manager\ConfigManager;
+
 use StoreApp\Model\{Store, StoreSchema, StoreRepo};
 use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 
@@ -103,13 +106,29 @@ abstract class StoreTestCase extends ModelTestCase
     public function setUp()
     {
         parent::setUp();
+
+        $mapping = new ShardMapping('M_store_id',
+            [ 'key' => 'store_id', 'shards' => ['node1', 'node2', 'node3'], 'hash' => true, 'chunks' => [] ],
+            $this->dataSourceManager
+        );
+
+        $chunkManager = new ChunkManager($mapping);
+        $chunkManager->distribute(['node1', 'node2', 'node3'], 8);
+
+        $configManager = new ConfigManager($this->config);
+        $configManager->setShardMapping($mapping);
+
+        // $this->assertTrue($ret->isAcknowledged());
+        // $configManager->save($configFile);
+
         $this->shardManager = new ShardManager($this->config, $this->dataSourceManager);
     }
 
     protected function config()
     {
         $driver = static::getCurrentDriverType();
-        return FileConfigLoader::load("tests/apps/StoreApp/config/{$driver}.yml", true);
+        $configFile = "tests/apps/StoreApp/config/{$driver}.yml";
+        return FileConfigLoader::load($configFile, true);
     }
 
     public function orderDataProvider()

@@ -26,6 +26,7 @@ class ConfigManagerTest extends TestCase
     protected function assertPreConditions()
     {
         $this->assertInstanceOf('Maghead\\Runtime\\Config\\Config', $this->config);
+
         $ret = MongoConfigWriter::write($this->config);
         $this->assertTrue($ret->isAcknowledged(), 'config uploaded successfully');
     }
@@ -33,7 +34,6 @@ class ConfigManagerTest extends TestCase
     public function tearDown()
     {
         MongoConfigWriter::remove($this->config);
-
         if (file_exists(self::TEST_CONFIG)) {
             unlink(self::TEST_CONFIG);
         }
@@ -67,7 +67,7 @@ class ConfigManagerTest extends TestCase
         $this->assertTrue($ret->isAcknowledged());
 
         $chunkManager = new ChunkManager($mapping);
-        $chunkManager->distribute(['node1', 'node2', 'node3'], 32);
+        $chunks = $chunkManager->distribute(['node1', 'node2', 'node3'], 32);
 
         $ret = $configManager->updateShardMappingChunks($mapping);
         $this->assertTrue($ret->isAcknowledged());
@@ -88,13 +88,16 @@ class ConfigManagerTest extends TestCase
         $ds = new DataSourceManager($this->config->getDataSources());
 
         $mapping = new ShardMapping('xxx', [ 'key' => 'store_id', 'shards' => ['node1', 'node2', 'node3'], 'hash' => true, 'chunks' => [] ], $ds);
-        $ret = $configManager->setShardMapping($mapping);
-        $this->assertTrue($ret->isAcknowledged());
 
         $chunkManager = new ChunkManager($mapping);
         $chunks = $chunkManager->distribute(['node1', 'node2', 'node3'], 4);
 
-        // $chunk = $mapping->loadChunk(4294967296);
+        // Update the shard mapping to the config server
+        $ret = $configManager->setShardMapping($mapping);
+        $this->assertTrue($ret->isAcknowledged());
+
+        $chunk = $mapping->loadChunk(4294967296);
+        $this->assertInstanceOf('Maghead\\Sharding\\Chunk', $chunk);
 
         $ret = $configManager->updateShardMappingChunk($mapping, $chunk);
         $this->assertTrue($ret->isAcknowledged());
@@ -102,13 +105,7 @@ class ConfigManagerTest extends TestCase
         $newc = MongoConfigLoader::loadFromConfig($this->config);
         $this->assertInstanceOf('Maghead\\Runtime\\Config\\Config', $newc);
         $this->assertCount(4, $newc['sharding']['mappings']['xxx']['chunks']);
-
-        $ret = $configManager->removeShardMapping($mapping);
-        $this->assertTrue($ret->isAcknowledged());
     }
-
-
-
 
     public function testDatabaseAddAndRemove()
     {

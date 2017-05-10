@@ -104,6 +104,7 @@ class Chunk
     {
         return [
             'from' => $this->from, // just cache, this shouldn't be used for now.
+            'index' => $this->index,
             'status' => $this->status,
             'shard' => $this->shardId,
         ];
@@ -116,8 +117,9 @@ class Chunk
     {
         return [
             'shardId' => $this->shardId,
-            'min' => $this->from,
-            'max' => $this->index,
+            'from' => $this->from, // just cache, this shouldn't be used for now.
+            'index' => $this->index,
+            'status' => $this->status,
         ];
     }
 }

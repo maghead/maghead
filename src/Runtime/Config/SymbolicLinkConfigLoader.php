@@ -2,7 +2,7 @@
 
 namespace Maghead\Runtime\Config;
 
-class SymbolicLinkConfigLoader extends FileConfigLoader
+class SymbolicLinkConfigLoader
 {
     const ANCHOR_FILENAME = '.maghead-cli.yml';
 
@@ -18,6 +18,6 @@ class SymbolicLinkConfigLoader extends FileConfigLoader
         }
 
         $file = realpath($file);
-        return parent::load(realpath($file), $force);
+        return FileConfigLoader::load(realpath($file), $force);
     }
 }

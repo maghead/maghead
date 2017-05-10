@@ -20,14 +20,14 @@ class FastHasherTest extends StoreTestCase
             'key' => 'store_id',
             'shards' => ['node1', 'node2', 'node3'],
             'chunks' => [
-                536870912  =>  [ "shard" =>  "node1" ],
-                1073741824 =>  [ "shard" =>  "node1" ],
-                1610612736 =>  [ "shard" =>  "node1" ],
-                2147483648 =>  [ "shard" =>  "node2" ],
-                2684354560 =>  [ "shard" =>  "node2" ],
-                3221225472 =>  [ "shard" =>  "node2" ],
-                3758096384 =>  [ "shard" =>  "node3" ],
-                4294967296 =>  [ "shard" =>  "node3" ],
+                ["from" => 0,          "index" => 536870912,  "shard" =>  "node1" ],
+                ["from" => 536870912,  "index" => 1073741824, "shard" =>  "node1" ],
+                ["from" => 1073741824, "index" => 1610612736, "shard" =>  "node1" ],
+                ["from" => 1610612736, "index" => 2147483648, "shard" =>  "node2" ],
+                ["from" => 2147483648, "index" => 2684354560, "shard" =>  "node2" ],
+                ["from" => 2684354560, "index" => 3221225472, "shard" =>  "node2" ],
+                ["from" => 3221225472, "index" => 3758096384, "shard" =>  "node3" ],
+                ["from" => 3758096384, "index" => 4294967296, "shard" =>  "node3" ],
             ]
         ], $this->dataSourceManager);
     }
@@ -37,14 +37,14 @@ class FastHasherTest extends StoreTestCase
         $hasher = new FastHasher($this->mapping);
         $buckets = $hasher->getBuckets();
         $this->assertEquals([
-            536870912  => 536870912,
-            1073741824 => 1073741824,
-            1610612736 => 1610612736,
-            2147483648 => 2147483648,
-            2684354560 => 2684354560,
-            3221225472 => 3221225472,
-            3758096384 => 3758096384,
-            4294967296 => 4294967296,
+            536870912 => 0,
+            1073741824 => 1,
+            1610612736 => 2,
+            2147483648 => 3,
+            2684354560 => 4,
+            3221225472 => 5,
+            3758096384 => 6,
+            4294967296 => 7
         ], $buckets);
     }
 
@@ -53,8 +53,8 @@ class FastHasherTest extends StoreTestCase
     public function lookupKeyProvider()
     {
         return [
-            [30, 2473281379,   2684354560],
-            [40, 3693793700,   3758096384],
+            [30, 2473281379,   4],
+            [40, 3693793700,   6],
         ];
     }
 
@@ -78,8 +78,8 @@ class FastHasherTest extends StoreTestCase
     {
         return [
             /* newNode, nextNode, from, index */
-            ['c2.5', 2147483648, 1610612736, 1921809152], // migrate c3 to c2.5 with range 1591159457 ~ 1921809152
-            ['c4', 1073741824, 536870912, 784195118], // migrate c3 to c2.5 with range 1591159457 ~ 1921809152
+            ['c2.5' , 3 , 1610612736 , 1921809152] , // migrate c3 to c2.5 with range 1591159457 ~ 1921809152
+            ['c4'   , 1 , 536870912  , 784195118]  , // migrate c3 to c2.5 with range 1591159457 ~ 1921809152
         ];
     }
 

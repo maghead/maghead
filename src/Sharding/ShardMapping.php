@@ -76,6 +76,11 @@ class ShardMapping
         return $this->hasher;
     }
 
+    public function getDataSourceManager()
+    {
+        return $this->dataSourceManager;
+    }
+
     /**
      * Return the type of this shard mapping.
      *
@@ -93,14 +98,15 @@ class ShardMapping
     /**
      * Partition hash items into the parition array.
      *
-     * @param array $hashes
+     * @param int[] $hashes the hashed index.
+     * @return array the array of partitions.
      */
     public function partition(array $hashes)
     {
         sort($hashes);
-
         $partitions = [];
-        foreach ($this->chunks as $x => $c) {
+        foreach ($this->chunks as $c) {
+            $x = $c['index'];
             while (count($hashes) && $hashes[0] < $x) {
                 $partitions[$x][] = array_shift($hashes);
             }
@@ -109,18 +115,30 @@ class ShardMapping
     }
 
     /**
-     * Insert a chunk into the chunk index.
+     * Replace the chunk with the new chunk objects.
      *
-     * @param number $chunkIndex
-     * @param string $shardId
+     * @param number $i the index of the chunk object. note, this index starts from zero.
      */
-    public function insertChunk($chunkIndex, $shardId)
+    public function replaceChunk($i, array $newchunks)
     {
-        if ($chunkIndex > Chunk::MAX_KEY) {
-            throw new InvalidArgumentException("$chunkIndex should be less than {Chunk::MAX_KEY}");
-        }
-        $this->chunks[$chunkIndex] = ['shard' => $shardId];
-        ksort($this->chunks, SORT_REGULAR);
+        return array_splice($this->chunks, $i, 1, array_map(function($c) {
+            if ($c instanceof Chunk) {
+                return $c->toArray();
+            }
+            return $c;
+        }, $newchunks));
+    }
+
+    public function appendChunk(array $chunk)
+    {
+        $this->chunks[] = $chunk;
+    }
+
+    public function sortChunks()
+    {
+        uasort($this->chunks, function($a, $b) {
+            return $a['index'] <=> $b['index'];
+        });
     }
 
     /**
@@ -130,35 +148,48 @@ class ShardMapping
      */
     public function loadChunks()
     {
-        $lastIndex = 0;
+        // make sure the chunks are in the correct order.
+        $this->sortChunks();
         foreach ($this->chunks as $i => $c) {
-            if (!isset($this->chunkObjects[$i])) {
-                $this->chunkObjects[$i] = new Chunk($i, $lastIndex, $c['shard'], $this->dataSourceManager);
-            }
-            $lastIndex = $i;
+            $this->chunkObjects[$i] = new Chunk($c['index'], $c['from'], $c['shard'], $this->dataSourceManager);
         }
-        ksort($this->chunkObjects, SORT_REGULAR);
         return $this->chunkObjects;
     }
+
+
+    public function searchChunk($a)
+    {
+        if (is_numeric($a)) {
+            $x = $a;
+        } else if ($a instanceof Chunk) {
+            $x = $a->index;
+        } else {
+            throw new \InvalidArgumentException("Invalid chunk argument");
+        }
+
+        foreach ($this->chunks as $i => $c) {
+            if ($c['index'] === $x) {
+                return $i;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * Load the chunk object.
      *
      * @return Chunk
      */
-    public function loadChunk($chunkIndex)
+    public function loadChunk($x)
     {
-        $indexFrom = 0;
-        foreach ($this->chunks as $i => $c) {
-            if ($i === $chunkIndex) {
-                break;
+        foreach ($this->chunks as $c) {
+            if ($c['index'] === $x) {
+                return new Chunk($c['index'], $c['from'], $c['shard'], $this->dataSourceManager);
             }
-            $indexFrom = $i;
         }
-        $config = $this->chunks[$chunkIndex]; // get the chunk config.
-        return $this->chunkObjects[$chunkIndex] = new Chunk($chunkIndex, $indexFrom, $config['shard'], $this->dataSourceManager);
     }
-
 
     /**
      * Get the defined chunks in this mapping.
@@ -172,6 +203,10 @@ class ShardMapping
     {
         $this->chunks = $chunks;
     }
+
+
+
+
 
     public function addShardId($shardId)
     {
@@ -232,8 +267,8 @@ class ShardMapping
     public function getUsingShardIds()
     {
         $shards = [];
-        foreach ($this->chunks as $chunkIndex => $chunk) {
-            $shards[$chunk['shard']][] = $chunkIndex;
+        foreach ($this->chunks as $c) {
+            $shards[$chunk['shard']][] = $c['index'];
         }
         return array_keys($shards);
     }

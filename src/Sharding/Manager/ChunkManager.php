@@ -34,6 +34,9 @@ class MigrateRecoveryException extends RuntimeException
 
 class ChunkManager
 {
+    /**
+     * @var ShardMapping
+     */
     protected $mapping;
 
     public function __construct(ShardMapping $mapping)
@@ -65,19 +68,17 @@ class ChunkManager
     public function distribute(array $shardIds, $numberOfChunks = 32)
     {
         $chunksPerShard = intval(ceil($numberOfChunks / count($shardIds)));
-        $rangePerChunk = intval(ceil(Chunk::MAX_KEY / $numberOfChunks));
-
+        $div = intval(ceil(Chunk::MAX_KEY / $numberOfChunks));
         $chunks = [];
-        $r = 0;
+        $from = 0;
         foreach ($shardIds as $shardId) {
             for ($i = 0 ; $i < $chunksPerShard; $i++) {
-                $r += $rangePerChunk;
-                if ($r + $rangePerChunk > Chunk::MAX_KEY) {
-                    $r = Chunk::MAX_KEY;
-                }
-                $chunks[$r] = [ 'index' => $r, 'shard' => $shardId ];
-                if ($r + $rangePerChunk > Chunk::MAX_KEY) {
-                    break;
+                if ($from + $div >= Chunk::MAX_KEY) {
+                    $chunks[] = [ 'from' => $from, 'index' => Chunk::MAX_KEY, 'shard' => $shardId ];
+                    break 2;
+                } else {
+                    $chunks[] = [ 'from' => $from, 'index' => $from + $div, 'shard' => $shardId ];
+                    $from += $div;
                 }
             }
         }
@@ -102,12 +103,6 @@ class ChunkManager
     {
         // TODO: implement this
     }
-
-    public function update(Chunk $chunk, Shard $dstShard, callback $callback)
-    {
-        // TODO: implement this
-    }
-
 
     /**
      * process the chunk with the given callback.
@@ -205,25 +200,34 @@ class ChunkManager
     }
 
     /**
-     * splits the chunk in the middle
+     * Insert a chunk into the chunk index.
      *
-     * @param Chunk $chunk the index of the existing chunk
-     * @return array created indexes.
+     * @param number $index the index of the existing chunk.
      */
     public function split(Chunk $chunk, $n = 2)
     {
-        $range = $chunk->index - $chunk->from;
-        $delta = intval(ceil($range / $n));
-
-        $indexes = [];
-        $index = $chunk->from;
-        while (--$n) {
-            $index += $delta;
-            $this->mapping->insertChunk($index, $chunk->shardId);
-            $indexes[] = $index;
+        $index = $chunk->index;
+        if ($index > Chunk::MAX_KEY) {
+            throw new InvalidArgumentException("$index should be less than {Chunk::MAX_KEY}");
         }
-        return $indexes;
+        foreach ($this->mapping->chunks as $i => $c) {
+            if ($c['index'] === $index) {
+                $subchunks = [];
+                $from = $c['from'];
+                $range = $index - $from;
+                $div   = intval(ceil($range / $n + 1));
+                while ($n--) {
+                    // echo "n: $n\n";
+                    $subchunks[] = new Chunk($from, $from + $div, $c['shard'], $this->mapping->getDataSourceManager()); // use the same data source manager
+                    $from += $div;
+                }
+                // echo "subchunks: ", count($subchunks) , "\n";
+                $this->mapping->replaceChunk($i, $subchunks);
+                return $subchunks;
+            }
+        }
     }
+
 
     protected function selectChunkKeys(BaseRepo $repo, Chunk $chunk, Hasher $hasher)
     {

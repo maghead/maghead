@@ -5,9 +5,6 @@ Gearman
     phpbrew ext install github:wcgallego/pecl-gearman
 
 
-
-
-
 ## Instance
 
 To define your database instance connections, simply define:

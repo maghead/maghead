@@ -37,12 +37,20 @@ class ConfigManager extends BaseConfigManager
      */
     public function updateShardMappingChunk(ShardMapping $mapping, Chunk $chunk)
     {
-        $this->config['sharding']['mappings'][$mapping->id]['chunks'][$chunk->index] = $chunk->toArray();
+        $i = $mapping->searchChunk($chunk);
+        if ($i === false) {
+            throw new \InvalidArgumentException("Chunk {$chunk->index} not found.");
+        }
+
+        $this->config['sharding']['mappings'][$mapping->id]['chunks'][$i] = $chunk->toArray();
         if ($this->client) {
             return $this->collection->updateOne([
-                'appId' => $this->appId,
+                "appId" => $this->appId,
+
+                // locate the correct chunk index in '$'
+                "sharding.mappings.{$mapping->id}.chunks.index" => $chunk->index,
             ], [
-                '$set' => [ "sharding.mappings.{$mapping->id}.chunks.{$chunk->index}" => $chunk->toArray() ]
+                '$set' => [ "sharding.mappings.{$mapping->id}.chunks.$" => $chunk->toArray() ]
             ], [ 'upsert' => true ]);
         }
     }

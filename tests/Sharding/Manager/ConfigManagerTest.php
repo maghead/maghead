@@ -44,8 +44,9 @@ class ShardConfigManagerTest extends StoreTestCase
         $numberOfChunks = 8;
         $chunkManager = new ChunkManager($this->mapping);
         $chunks = $chunkManager->distribute($this->mapping->getShardIds(), $numberOfChunks);
-        $this->assertTrue(isset($chunks[Chunk::MAX_KEY]));
-        $this->assertNotNull($chunks[Chunk::MAX_KEY]);
+
+        $lastChunk = end($chunks);
+        $this->assertEquals(Chunk::MAX_KEY, $lastChunk['index']);
         $this->assertCount($numberOfChunks, $chunks);
 
         $configManager = new ConfigManager($this->config);

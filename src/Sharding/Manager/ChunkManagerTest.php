@@ -34,8 +34,9 @@ class ChunkManagerTest extends StoreTestCase
         $shardIds = $this->mapping->getShardIds();
         $chunkManager = new ChunkManager($this->mapping);
         $chunks = $chunkManager->distribute($shardIds, $numberOfChunks);
-        $this->assertTrue(isset($chunks[Chunk::MAX_KEY]));
-        $this->assertNotNull($chunks[Chunk::MAX_KEY]);
+
+        $lastChunk = end($chunks);
+        $this->assertEquals(Chunk::MAX_KEY, $lastChunk['index']);
         $this->assertCount($numberOfChunks, $chunks);
     }
 
@@ -98,10 +99,11 @@ class ChunkManagerTest extends StoreTestCase
         $this->assertCount(8, $this->mapping->chunks);
 
         $c = $this->mapping->loadChunk(1073741824);
+        $this->assertInstanceOf('Maghead\\Sharding\\Chunk', $c);
 
-        $indexes = $chunkManager->split($c);
-        $this->assertCount(1, $indexes);
-        $this->assertEquals(805306368, $indexes[0]);
+        $newchunks = $chunkManager->split($c);
+        $this->assertCount(2, $newchunks);
+        // $this->assertEquals(805306368, $indexes[0]);
         $this->assertCount(9, $this->mapping->chunks);
     }
 
@@ -135,24 +137,22 @@ class ChunkManagerTest extends StoreTestCase
         $chunkManager = new ChunkManager($this->mapping);
         $this->assertCount(8, $this->mapping->chunks);
 
-
         $c = $this->mapping->loadChunk(536870912);
-        $indexes = $chunkManager->split($c, 12);
-        $this->assertCount(11, $indexes);
+        $subchunks = $chunkManager->split($c, 12);
+        $this->assertCount(12, $subchunks);
 
         // shard keys: 2, 6
         $shardKeys = [450215437, 498629140];
         $this->assertSame([
-            492131673 => [ 450215437 ],
-            536870912 => [ 498629140 ],
+            492131684 => [ 450215437 ],
+            1073741824 => [ 498629140 ],
         ], $this->mapping->partition($shardKeys));
         $this->assertCount(19, $this->mapping->chunks);
 
         $shards = $this->mapping->loadShardCollection();
 
         $schemas = SchemaUtils::findSchemasByConfig($this->config);
-        foreach ($indexes as $index) {
-            $c = $this->mapping->loadChunk($index);
+        foreach ($subchunks as $c) {
             $rets = $chunkManager->move($c, $shards['node3'], $schemas);
             $this->assertResultsSuccess($rets);
         }
@@ -173,22 +173,21 @@ class ChunkManagerTest extends StoreTestCase
 
 
         $c = $this->mapping->loadChunk(536870912);
-        $indexes = $chunkManager->split($c, 12);
-        $this->assertCount(11, $indexes);
+        $subchunks = $chunkManager->split($c, 12);
+        $this->assertCount(12, $subchunks);
 
         // shard keys: 2, 6
         $shardKeys = [450215437, 498629140];
         $this->assertSame([
-            492131673 => [ 450215437 ],
-            536870912 => [ 498629140 ],
+            492131684 => [ 450215437 ],
+            1073741824 => [ 498629140 ],
         ], $this->mapping->partition($shardKeys));
         $this->assertCount(19, $this->mapping->chunks);
 
         $shards = $this->mapping->loadShardCollection();
 
         $schemas = SchemaUtils::findSchemasByConfig($this->config);
-        foreach ($indexes as $index) {
-            $c = $this->mapping->loadChunk($index);
+        foreach ($subchunks as $c) {
             $rets = $chunkManager->migrate($c, $shards['node3'], $schemas);
             $this->assertResultsSuccess($rets);
         }
