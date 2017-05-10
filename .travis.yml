@@ -40,12 +40,11 @@ matrix:
 before_install:
 - if [[ "$DB" == "mysql" ]]; then sudo sh travis/install-mysql-utilities ; fi
 
-
-
 install:
 - phpenv rehash
 - ./travis/setup-php
 - travis_retry composer install
+
 before_script:
   - "rm -rf *.sqlite"
   - if [[ "$DB" == "pgsql" ]]; then ./travis/setup-pgsql ; fi
@@ -54,13 +53,17 @@ before_script:
   # - php bin/maghead db create -D=master
   - bin/maghead schema build -f
   - bin/maghead sql --rebuild master
+
 script:
 - travis/run-phpunit
 - travis/run-examples
+
 before_cache:
 - travis_retry composer require "satooshi/php-coveralls" "~1"
+
 after_success:
 - if [[ "$DB" != "sqlite" ]]; then php vendor/bin/coveralls -v ; fi
+
 # matrix:
 #   exclude:
 #     - php: hhvm
