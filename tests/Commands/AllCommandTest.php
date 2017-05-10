@@ -54,8 +54,10 @@ class AllCommandsTest extends CommandWorkFlowTestCase
 
     public function testSchemaBuildCommand()
     {
+        ob_start();
         $ret = $this->app->run(['maghead', 'schema', 'build']);
         $this->assertTrue($ret);
+        ob_end_clean();
     }
 
     /**
@@ -67,7 +69,17 @@ class AllCommandsTest extends CommandWorkFlowTestCase
         $ret = $this->app->run(['maghead','sql','--rebuild']);
         $this->assertTrue($ret);
 
+    }
+
+
+    /**
+     * @depends testSqlCommand
+     */
+    public function testSeedCommand()
+    {
+        $this->expectOutputRegex('/Seeding/');
         $ret = $this->app->run(['maghead','seed']);
         $this->assertTrue($ret);
     }
+
 }
