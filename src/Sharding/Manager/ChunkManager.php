@@ -34,14 +34,19 @@ class MigrateRecoveryException extends RuntimeException
 
 class MigrateResult extends ArrayObject {
 
-    public $success;
-
-    function __construct($success, array $result)
+    function __construct(array $result)
     {
         parent::__construct($result, ArrayObject::ARRAY_AS_PROPS);
-        $this->success = $success;
+    }
+
+    public function isSuccessful() {
+        return $this instanceof SucceededMigrateResult;
     }
 }
+
+class SucceededMigrateResult extends MigrateResult {}
+
+class FailedMigrateResult extends MigrateResult {}
 
 class ChunkManager
 {
@@ -201,7 +206,7 @@ class ChunkManager
 
             $deleted = $this->remove($chunk, $schemas);
 
-            return new MigrateResult(true, [
+            return new SucceededMigrateResult([
                 'created' => $created,
                 'missed'  => $missed,
                 'deleted' => $deleted,
@@ -211,9 +216,7 @@ class ChunkManager
 
             $deleted = $this->removeFrom($chunk, $dstShard, $schemas);
 
-            return new MigrateResult(false, [
-                'deleted' => $deleted,
-            ]);
+            return new FailedMigrateResult([ 'deleted' => $deleted ]);
 
         }
     }

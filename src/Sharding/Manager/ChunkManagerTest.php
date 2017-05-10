@@ -189,7 +189,7 @@ class ChunkManagerTest extends StoreTestCase
         $schemas = SchemaUtils::findSchemasByConfig($this->config);
         foreach ($subchunks as $c) {
             $result = $chunkManager->migrate($c, $shards['node3'], $schemas);
-            $this->assertTrue($result->success);
+            $this->assertTrue($result->isSuccessful());
             $this->assertResultsSuccess($result->created);
         }
     }
