@@ -71,6 +71,7 @@ cache:
   apt: true
   directories:
   - vendor
+  - exts
   - $HOME/.composer/cache
 notifications:
   email:
