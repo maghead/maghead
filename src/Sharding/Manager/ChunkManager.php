@@ -24,12 +24,19 @@ use IteratorAggregate;
 use InvalidArgumentException;
 use ArrayObject;
 
-class MigrateException extends RuntimeException
-{
-}
+class MigrateException extends RuntimeException {}
 
-class MigrateRecoveryException extends MigrateException
-{
+class MigrateRecoveryException extends MigrateException {}
+
+class MigrateCloneFailedException extends MigrateException {
+
+    protected $record;
+
+    function __construct($record, $message = '', $code = 0, $previous = null) {
+        parent::__construct($message, $code, $previous);
+        $this->record = $record;
+    }
+
 }
 
 class MigrateResult extends ArrayObject {
@@ -126,14 +133,16 @@ class ChunkManager
     {
         return $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) use ($dstShard) {
             $dstRepo = $dstShard->repo($repoClass);
-            $this->deleteRecords($dstRepo, $keys);
+
+            return $this->deleteRecords($dstRepo, $keys);
         });
     }
 
     public function remove(Chunk $chunk, array $schemas)
     {
         $deleted = $this->processChunk($chunk, $schemas, function ($srcRepo, $repoClass, $keys) {
-            $this->deleteRecords($srcRepo, $keys);
+
+            return $this->deleteRecords($srcRepo, $keys);
         });
 
         return $deleted;
@@ -156,6 +165,7 @@ class ChunkManager
         $shard = $chunk->loadShard();
 
         $allRets = [];
+
         foreach ($schemas as $schema) {
             // skip schemas that is global table.
             if ($schema->globalTable) {
@@ -168,7 +178,11 @@ class ChunkManager
             $keys = $this->selectChunkKeys($repo, $chunk, $hasher);
             if (!empty($keys)) {
                 if ($rets = $callback($repo, $repoClass, $keys)) {
-                    $allRets = array_merge($allRets, $rets);
+                    if (is_array($rets)) {
+                        $allRets = array_merge($allRets, $rets);
+                    } else {
+                        $allRets[] = $rets;
+                    }
                 }
             }
         }
@@ -299,15 +313,15 @@ class ChunkManager
     protected function cloneRecords(BaseRepo $srcRepo, BaseRepo $dstRepo, array $keys)
     {
         $shardKey = $this->mapping->getKey();
-        $select = $srcRepo->select();
-        $select->where()->in($shardKey, $keys);
-        $records = $select->fetch();
+        $q = $srcRepo->select();
+        $q->where()->in($shardKey, $keys);
+        $records = $q->fetch();
 
         $created = [];
         foreach ($records as $record) {
             $ret = $dstRepo->import($record);
             if ($ret->error) {
-                throw new MigrateException;
+                throw new MigrateCloneFailedException($record, $ret->message);
             }
             $created[] = $ret;
         }
@@ -315,15 +329,22 @@ class ChunkManager
         return $created;
     }
 
+    /**
+     * Delete the records and return the number of deletion.
+     *
+     * @return number the number of deletion
+     */
     protected function deleteRecords(BaseRepo $repo, array $keys)
     {
         $shardKey = $this->mapping->getKey();
         $q = $repo->delete();
         $q->where()->in($shardKey, $keys);
+
         list($ret, $stm) = $q->execute();
         if ($ret === false) {
             throw new MigrateRecoveryException;
         }
+
         return $stm->rowCount(); // how many records are deleted.
     }
 
