@@ -44,6 +44,7 @@ class SchemaCollection extends ArrayObject
         });
     }
 
+
     public function expandDependency()
     {
         $expands = [];

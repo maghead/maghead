@@ -28,6 +28,6 @@ class SchemaLoader
     public static function loadDeclaredSchemas()
     {
         $collection = SchemaCollection::declared()->buildable();
-        return SchemaUtils::expandSchemaClasses($collection);
+        return SchemaUtils::expandSchemas($collection);
     }
 }

@@ -52,13 +52,13 @@ class SchemaUtils
      *
      * @param string[] schema objects
      */
-    public static function expandSchemaClasses($classes)
+    public static function expandSchemas($collection)
     {
         $map = [];
         $schemas = [];
-        foreach ($classes as $class) {
-            $schema = is_string($class) ? new $class : $class; // declare schema
+        foreach ($collection->evaluate() as $schema) {
 
+            // expand reference
             if ($refs = $schema->getReferenceSchemas()) {
                 foreach ($refs as $refClass => $v) {
                     if (isset($map[$refClass])) {
@@ -79,6 +79,7 @@ class SchemaUtils
                     $map[get_class($expandedSchema)] = true;
                 }
             } else {
+                $class = get_class($schema);
                 if (isset($map[$class])) {
                     continue;
                 }
