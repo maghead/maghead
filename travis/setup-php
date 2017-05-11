@@ -8,9 +8,12 @@ if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then
     phpenv config-add travis/php.ini
     phpenv config-add travis/php-exts.ini
 
-    wget -Ophpunit https://phar.phpunit.de/phpunit-6.1.phar
-    chmod +x phpunit
-    mv -v phpunit $(which phpunit)
+
+    if [[ ! -e travis/phpunit ]] ; then
+        wget -Otravis/phpunit https://phar.phpunit.de/phpunit-6.1.phar
+        chmod +x travis/phpunit
+        mv -v travis/phpunit $(which phpunit)
+    fi
     phpunit --version
 
     mkdir exts
