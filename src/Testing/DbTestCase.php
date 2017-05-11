@@ -273,7 +273,7 @@ abstract class DbTestCase extends TestCase
         }
     }
 
-    public function successfulDelete(BaseModel $record)
+    public function assertDelete(BaseModel $record)
     {
         $this->assertResultSuccess($record->delete());
     }

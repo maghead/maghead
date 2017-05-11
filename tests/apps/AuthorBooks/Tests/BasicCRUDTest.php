@@ -124,7 +124,7 @@ class BasicCRUDTest extends ModelTestCase
         $b3 = new Book;
         $b3 = $b3->loadOrCreate(array( 'title' => 'LoadOrCreateTest3'  ), 'title');
         $this->assertNotEquals($id, $b3->id, 'we should create anther one');
-        $this->successfulDelete($b3);
+        $this->assertDelete($b3);
     }
 
     public function testCreateRepoWithDataSourceId()
@@ -211,7 +211,7 @@ class BasicCRUDTest extends ModelTestCase
 
         $books = $author->books;
         $this->assertEquals(2, $books->size(), '2 books');
-        $this->successfulDelete($author);
+        $this->assertDelete($author);
     }
 
 
@@ -230,7 +230,7 @@ class BasicCRUDTest extends ModelTestCase
         // sometimes it's string, sometimes it's integer
         // ok( is_string( $author->getValue('id') ) );
         $this->assertTrue(is_integer($author->getId()));
-        $this->successfulDelete($author);
+        $this->assertDelete($author);
     }
 
 
@@ -296,7 +296,6 @@ class BasicCRUDTest extends ModelTestCase
      */
     public function testRecordUpdateWithRawSQL()
     {
-        $book = new \AuthorBooks\Model\Book ;
         $ret = Book::create(array(
             'title' => 'book title',
             'view' => 0,
@@ -343,6 +342,6 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertNotFalse($found);
         $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
         $this->assertEquals(0, $found->view);
-        $this->successfulDelete($found);
+        $this->assertDelete($found);
     }
 }

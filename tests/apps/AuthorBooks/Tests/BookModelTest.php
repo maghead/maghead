@@ -30,7 +30,7 @@ class BookModelTest extends ModelTestCase
 
         $ret = $b->update(array('isbn'  => '456456' ));
         $this->assertResultFail($ret, 'Should not update immutable column');
-        $this->successfulDelete($b);
+        $this->assertDelete($b);
     }
 
 

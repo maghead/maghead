@@ -87,7 +87,7 @@ class NameModelTest extends ModelTestCase
 
         $n = Name::load($n->id);
         $this->assertNull($n->isConfirmed());
-        $this->successfulDelete($n);
+        $this->assertDelete($n);
     }
 
 
@@ -108,7 +108,7 @@ class NameModelTest extends ModelTestCase
         $n = Name::load($n->id);
         $this->assertNotFalse($n);
         $this->assertTrue($n->isConfirmed(), 'Confirmed value should be TRUE.');
-        $this->successfulDelete($n);
+        $this->assertDelete($n);
     }
 
     /**
@@ -147,7 +147,7 @@ class NameModelTest extends ModelTestCase
         $this->assertNotFalse($n);
         $this->assertNotNull($n->id);
         $this->assertFalse($n->isConfirmed());
-        $this->successfulDelete($n);
+        $this->assertDelete($n);
     }
 
 
@@ -312,6 +312,6 @@ class NameModelTest extends ModelTestCase
         $d = $n->getDate(); // inflated
         $this->assertInstanceOf('DateTime', $d);
         $this->assertEquals('20110101', $d->format('Ymd'));
-        $this->successfulDelete($n);
+        $this->assertDelete($n);
     }
 }
