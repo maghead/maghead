@@ -39,13 +39,10 @@ class SchemaUtils
         }
         return $parents;
     }
-     */
+    */
 
-    public static function buildSchemaMap($schemas)
-    {
-        $collection = new SchemaCollection($schemas);
-        return $collection->tables()->getArrayCopy();
-    }
+
+
 
     /**
      * Get referenced schema classes and put them in order.

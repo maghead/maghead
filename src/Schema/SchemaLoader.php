@@ -15,9 +15,8 @@ class SchemaLoader
      */
     public static function loadSchemaTableMap()
     {
-        $schemas = self::loadDeclaredSchemas();
-
-        return SchemaUtils::buildSchemaMap($schemas);
+        $array = self::loadDeclaredSchemas();
+        return SchemaCollection::create($array)->tables()->getArrayCopy();
     }
 
     /**
