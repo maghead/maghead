@@ -55,7 +55,7 @@ class BaseCommand extends Command
         return $config;
     }
 
-    protected function findSchemasByArguments(array $args)
+    protected function loadSchemasFromArguments(array $args)
     {
         $config = $this->getConfig();
 

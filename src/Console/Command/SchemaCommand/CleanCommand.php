@@ -32,7 +32,7 @@ class CleanCommand extends BaseCommand
         $config = $this->getConfig(true);
 
         $this->logger->debug('Finding schemas...');
-        $schemas = $this->findSchemasByArguments(func_get_args());
+        $schemas = $this->loadSchemasFromArguments(func_get_args());
 
         foreach ($schemas as $schema) {
             $this->logger->info('Cleaning schema '.get_class($schema));

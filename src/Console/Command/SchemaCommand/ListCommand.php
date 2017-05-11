@@ -36,7 +36,7 @@ class ListCommand extends BaseCommand
         $generator = new SchemaGenerator($config, $logger);
 
         $args = func_get_args();
-        $classes = $this->findSchemasByArguments($args);
+        $classes = $this->loadSchemasFromArguments($args);
 
         foreach ($classes as $class) {
             $rfc = new ReflectionClass($class);

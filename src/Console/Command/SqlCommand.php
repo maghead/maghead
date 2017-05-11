@@ -55,7 +55,7 @@ DOC;
         $config = $this->getConfig();
 
         $this->logger->debug('Finding schema classes...');
-        $schemas = $this->findSchemasByArguments(func_get_args());
+        $schemas = $this->loadSchemasFromArguments(func_get_args());
 
         $this->logger->debug('Initialize schema builder...');
 
