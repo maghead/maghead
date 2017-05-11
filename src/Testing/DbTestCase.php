@@ -44,7 +44,7 @@ abstract class DbTestCase extends TestCase
 
     protected $allowConnectionFailure = false;
 
-    protected $freeConnections = true;
+    protected $freeConnections;
 
     /**
      * @var Maghead\QueryDriver
@@ -105,7 +105,12 @@ abstract class DbTestCase extends TestCase
 
     public function tearDown()
     {
-        if ($this->freeConnections) {
+        // for sqlite
+        if ($this->freeConnections === null) {
+            $driverType = static::getCurrentDriverType();
+            $this->freeConnections = $driverType === 'sqlite';
+        }
+        if (true === $this->freeConnections) {
             $this->dataSourceManager->free();
             $this->dataSourceManager->clean();
             $this->conn = null;
