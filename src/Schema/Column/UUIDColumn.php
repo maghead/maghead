@@ -40,7 +40,7 @@ class UUIDColumn extends DeclareColumn
             // - http://stackoverflow.com/questions/16001238/writing-to-a-bytea-field-error-invalid-byte-sequence-for-encoding-utf8-0x9
             // - https://github.com/laravel/framework/issues/10847
             // - uuid https://www.postgresql.org/docs/9.1/static/datatype-uuid.html
-            return 'bytea';
+            // return 'bytea';
         }
         return parent::buildTypeName($driver);
     }
