@@ -17,10 +17,4 @@ class ConfigCommand extends BaseCommand
         $this->command('init');
         $this->command('use');
     }
-
-    public function execute()
-    {
-        $cmd = $this->createCommand('CLIFramework\\Command\\HelpCommand');
-        $cmd->execute($this->getName());
-    }
 }

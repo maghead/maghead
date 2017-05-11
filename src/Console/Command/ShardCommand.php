@@ -24,10 +24,4 @@ class ShardCommand extends BaseCommand
         $this->command('prune');
         // $this->command('move');
     }
-
-    public function execute()
-    {
-        $cmd = $this->createCommand('CLIFramework\\Command\\HelpCommand');
-        $cmd->execute($this->getName());
-    }
 }

@@ -20,10 +20,4 @@ class DbCommand extends BaseCommand
         $this->command('drop');
         $this->command('list');
     }
-
-    public function execute()
-    {
-        $cmd = $this->createCommand('CLIFramework\\Command\\HelpCommand');
-        $cmd->execute($this->getName());
-    }
 }
