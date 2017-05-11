@@ -51,7 +51,6 @@ class GlobalPrimaryKeySchema extends DeclareSchema
 
 class DeclareSchemaTest extends TestCase
 {
-
     public function testFindGlobalPrimaryKey()
     {
         $schema = new GlobalPrimaryKeySchema;

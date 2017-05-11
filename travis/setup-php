@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+# set -e
 # echo $TRAVIS_PHP_VERSION
 # phpenv config-rm xdebug.ini
 
