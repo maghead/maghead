@@ -55,6 +55,11 @@ class BaseCommand extends Command
         return $config;
     }
 
+    /**
+     * Loads schemas from arguments. Two types of the argument are supported: file and class name
+     *
+     * @return SchemaCollection
+     */
     protected function loadSchemasFromArguments(array $args)
     {
         $config = $this->getConfig();
@@ -70,6 +75,6 @@ class BaseCommand extends Command
         }
 
         $classes = array_filter($args, function($a) { return class_exists($a, true); });
-        return SchemaUtils::argumentsToSchemaObjects($classes)->notForTest()->getArrayCopy();
+        return SchemaUtils::argumentsToSchemaObjects($classes)->notForTest();
     }
 }

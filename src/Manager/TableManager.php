@@ -62,7 +62,7 @@ class TableManager
      *
      * @param DeclareSchema[] $schemas
      */
-    public function build(array $schemas)
+    public function build($schemas)
     {
         if ($sqls = $this->builder->prepare()) {
             $this->executeStatements($sqls);

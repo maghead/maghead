@@ -51,7 +51,7 @@ abstract class ModelTestCase extends DbTestCase
             $basedata = false;
         }
 
-        $schemas = (new SchemaCollection($this->models()))->evaluate()->getArrayCopy();
+        $schemas = SchemaCollection::create($this->models())->evaluate();
         if (! $this->schemaHasBeenBuilt) {
             $this->prepareSchemaFiles($schemas);
         }
@@ -66,7 +66,7 @@ abstract class ModelTestCase extends DbTestCase
         }
     }
 
-    protected function prepareDatabase(Connection $conn, BaseDriver $queryDriver, array $schemas, bool $rebuild, bool $basedata)
+    protected function prepareDatabase(Connection $conn, BaseDriver $queryDriver, SchemaCollection $schemas, bool $rebuild, bool $basedata)
     {
         $this->prepareTables($conn, $queryDriver, $schemas, $rebuild);
         if ($rebuild && $basedata) {
@@ -74,20 +74,21 @@ abstract class ModelTestCase extends DbTestCase
         }
     }
 
-    protected function prepareBaseData($schemas)
+    protected function prepareBaseData(SchemaCollection $schemas)
     {
         $seeder = new SeedBuilder($this->logger);
-        $seeder->build(new SchemaCollection($schemas));
+        $seeder->build($schemas);
         $seeder->buildConfigSeeds($this->config);
     }
 
-    protected function prepareTables(Connection $conn, BaseDriver $queryDriver, array $schemas, bool $rebuild)
+    protected function prepareTables(Connection $conn, BaseDriver $queryDriver, SchemaCollection $schemas, bool $rebuild)
     {
         if ($rebuild === false) {
+            // Find missing tables...
             $tableParser = TableParser::create($conn, $queryDriver, $this->config);
             $tables = $tableParser->getTables();
-            $schemas = array_filter($schemas, function ($schema) use ($tables) {
-                return !in_array($schema->getTable(), $tables);
+            $schemas = $schemas->filter(function ($s) use ($tables) {
+                return !in_array($s->getTable(), $tables);
             });
         }
 
@@ -95,7 +96,7 @@ abstract class ModelTestCase extends DbTestCase
         $this->tableManager->build($schemas);
     }
 
-    protected function prepareSchemaFiles(array $schemas)
+    protected function prepareSchemaFiles(SchemaCollection $schemas)
     {
         $g = new SchemaGenerator($this->config);
         $g->setForceUpdate(true);
@@ -108,7 +109,7 @@ abstract class ModelTestCase extends DbTestCase
         $this->tableManager->remove($schemas);
     }
 
-    protected function buildSchemaTables(array $schemas)
+    protected function buildSchemaTables($schemas)
     {
         $this->tableManager->build($schemas);
     }

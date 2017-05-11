@@ -178,10 +178,10 @@ class SchemaGenerator
      *
      * @return array class map array of schema class and file path.
      */
-    public function generate(array $schemas)
+    public function generate($schemas)
     {
         // class map [ class => class file path ]
-        $classMap = array();
+        $classMap = [];
         foreach ($schemas as $schema) {
             if ($schema->virtual) {
                 continue;
