@@ -22,13 +22,7 @@ class SeedCommand extends BaseCommand
     {
         $config = $this->getConfig();
 
-        $classes = $this->findSchemasByArguments(func_get_args());
-
-        SchemaUtils::printSchemaClasses($classes, $this->logger);
-
-        $collection = new SchemaCollection($classes);
-        $collection = $collection->evaluate();
-
+        $collection = $this->findSchemasByArguments(func_get_args());
         $seedBuilder = new SeedBuilder($this->logger);
         $seedBuilder->build($collection);
         $seedBuilder->buildConfigSeeds($config);

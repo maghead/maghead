@@ -81,6 +81,30 @@ class SchemaCollection extends ArrayObject
         });
     }
 
+    public function notForTest()
+    {
+        return $this->filter(function($schema) {
+            $cls = is_string($schema) ? $schema : get_class($schema);
+            return !preg_match('/^Test\w+$/i', $cls);
+        });
+    }
+
+    public function exists()
+    {
+        return $this->filter(function($s) {
+            if (is_object($s)) {
+                return $s;
+            }
+            return class_exists($s, true);
+        });
+    }
+
+    public function unique()
+    {
+        $classes = $this->getArrayCopy();
+        return new self(array_unique($classes));
+    }
+
     public function buildable()
     {
         return $this->filter(function($schema) {
@@ -97,6 +121,41 @@ class SchemaCollection extends ArrayObject
             $rf = new ReflectionClass($schema);
             return !$rf->isAbstract();
         });
+    }
+
+
+    /**
+     * return the table schema map
+     */
+    public function tables()
+    {
+        $tableMap = [];
+
+        // map table names to declare schema objects
+        foreach ($this as $a) {
+            $s = is_string($a) ? new $a : $a;
+            $tableMap[$s->getTable()] = $s;
+        }
+
+        return new self($tableMap);
+    }
+
+    /**
+     * Return declared schema class collection
+     */
+    public static function declared()
+    {
+        // Trigger spl to load metadata schema
+        class_exists('Maghead\\Model\\MetadataSchema', true);
+
+        $classes = get_declared_classes();
+
+        return new self($classes);
+    }
+
+    public static function create(array $args)
+    {
+        return new self($args);
     }
 
     public static function evaluateArray(array $classes)

@@ -51,7 +51,7 @@ abstract class ModelTestCase extends DbTestCase
             $basedata = false;
         }
 
-        $schemas = SchemaUtils::instantiateSchemaClasses($this->models());
+        $schemas = (new SchemaCollection($this->models()))->evaluate()->getArrayCopy();
         if (! $this->schemaHasBeenBuilt) {
             $this->prepareSchemaFiles($schemas);
         }

@@ -41,15 +41,10 @@ class SchemaUtils
     }
      */
 
-    public static function buildSchemaMap(array $schemas)
+    public static function buildSchemaMap($schemas)
     {
-        $schemaMap = [];
-        // map table names to declare schema objects
-        foreach ($schemas as $schema) {
-            $schemaMap[$schema->getTable()] = $schema;
-        }
-
-        return $schemaMap;
+        $collection = new SchemaCollection($schemas);
+        return $collection->tables()->getArrayCopy();
     }
 
     /**
@@ -57,12 +52,12 @@ class SchemaUtils
      *
      * @param string[] schema objects
      */
-    public static function expandSchemaClasses(array $classes)
+    public static function expandSchemaClasses($classes)
     {
-        $map = array();
-        $schemas = array();
+        $map = [];
+        $schemas = [];
         foreach ($classes as $class) {
-            $schema = new $class(); // declare schema
+            $schema = is_string($class) ? new $class : $class; // declare schema
 
             if ($refs = $schema->getReferenceSchemas()) {
                 foreach ($refs as $refClass => $v) {
@@ -117,55 +112,15 @@ class SchemaUtils
 
     public static function argumentsToSchemaObjects(array $args)
     {
-        $classes = ClassUtils::filterExistingClasses($args);
-        $classes = array_unique($classes);
-        $classes = self::filterSchemaClasses($classes);
-        return self::instantiateSchemaClasses($classes);
-    }
-
-    public static function instantiateSchemaClasses(array $classes)
-    {
-        return array_map(function ($class) {
-            return new $class();
-        }, $classes);
+        if (empty($args)) {
+            return SchemaCollection::declared()->buildable()->evaluate();
+        }
+        return SchemaCollection::create($args)->exists()->unique()->buildable()->evaluate();
     }
 
     public static function getLoadedDeclareSchemaClasses()
     {
-        // Trigger spl to load metadata schema
-        class_exists('Maghead\\Model\\MetadataSchema', true);
-
-        $classes = get_declared_classes();
-
-        return self::filterSchemaClasses($classes);
-    }
-
-    /**
-     * Filter non-dynamic schema declare classes.
-     *
-     * @param string[] $classes class list.
-     */
-    public static function filterSchemaClasses(array $classes)
-    {
-        $list = array();
-        foreach ($classes as $class) {
-            // skip abstract classes.
-            if (
-              !is_subclass_of($class, 'Maghead\\Schema\\DeclareSchema', true)
-              || is_a($class, 'Maghead\\Schema\\DynamicSchemaDeclare', true)
-              || is_a($class, 'Maghead\\Schema\\MixinDeclareSchema', true)
-              || is_subclass_of($class, 'Maghead\\Schema\\MixinDeclareSchema', true)
-            ) {
-                continue;
-            }
-            $rf = new ReflectionClass($class);
-            if ($rf->isAbstract()) {
-                continue;
-            }
-            $list[] = $class;
-        }
-
-        return $list;
+        return SchemaCollection::declared()->buildable();
     }
 
     /**

@@ -58,19 +58,18 @@ class BaseCommand extends Command
     protected function findSchemasByArguments(array $args)
     {
         $config = $this->getConfig();
-        $classes = SchemaUtils::argumentsToSchemaObjects($args);
 
         // filter file path argumets
         $paths = array_filter($args, 'file_exists');
         if (empty($paths)) {
             $paths = $config->getSchemaPaths();
         }
-
         if (!empty($paths)) {
             $finder = new SchemaFinder($paths);
             $finder->find();
         }
 
-        return SchemaLoader::loadDeclaredSchemas();
+        $classes = array_filter($args, function($a) { return class_exists($a, true); });
+        return SchemaUtils::argumentsToSchemaObjects($classes)->notForTest()->getArrayCopy();
     }
 }

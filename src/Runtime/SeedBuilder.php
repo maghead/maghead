@@ -4,7 +4,7 @@ namespace Maghead\Runtime;
 
 use CLIFramework\Logger;
 use Maghead\Schema\BaseSchema;
-use Maghead\Schema\SchemaCollection;
+use Maghead\Schema\DeclareSchema;
 use Maghead\Runtime\Config\Config;
 use Maghead\Utils\ArrayUtils;
 
@@ -19,12 +19,12 @@ class SeedBuilder
         $this->logger = $logger;
     }
 
-    public function buildSchemaSeeds(BaseSchema $schema)
+    public function buildSchemaSeeds(DeclareSchema $schema)
     {
         $seedData = $schema->seeds();
         if (!empty($seedData)) {
             $modelClass = $schema->getModelClass();
-            $this->logger->info("Seeding $modelClass");
+            $this->logger->info("Found seeds in $modelClass");
             foreach ($seedData as $seedArg) {
                 if (!is_array($seedArg)) {
                     throw new InvalidArgumentException('Seeds data needs to be plain array.');
@@ -72,9 +72,8 @@ class SeedBuilder
         }
     }
 
-    public function build(SchemaCollection $collection)
+    public function build($collection)
     {
-        $collection = $collection->evaluate();
         foreach ($collection as $s) {
             $this->buildSchemaSeeds($s);
         }
