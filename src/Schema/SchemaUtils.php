@@ -52,7 +52,7 @@ class SchemaUtils
      *
      * @param string[] schema objects
      */
-    public static function expandSchemas($collection)
+    public static function expandSchemas(SchemaCollection $collection)
     {
         $map = [];
         $schemas = [];
