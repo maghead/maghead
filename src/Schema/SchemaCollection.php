@@ -8,6 +8,15 @@ use ArrayObject;
 
 class SchemaCollection extends ArrayObject
 {
+    public function __construct($a)
+    {
+        if ($a instanceof SchemaCollection) {
+            parent::__construct($a->getArrayCopy());
+        } else {
+            parent::__construct($a);
+        }
+    }
+
     public function filter(callable $cb)
     {
         $a = [];
