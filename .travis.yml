@@ -55,7 +55,7 @@ before_script:
   - bin/maghead sql --rebuild master
 
 script:
-- travis/run-phpunit
+- travis/run-phpunit --debug
 - travis/run-examples
 
 before_cache:
