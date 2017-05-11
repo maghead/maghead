@@ -20,8 +20,16 @@ class AllCommandsTest extends CommandWorkFlowTestCase
     public function commandsProvider()
     {
         return [
+            [['maghead', 'schema']],
             [['maghead', 'help', 'schema']],
+            [['maghead', 'help', 'schema', 'build']],
+            [['maghead', 'help', 'schema', 'clean']],
+            [['maghead', 'help', 'schema', 'list']],
+            [['maghead', 'help', 'schema', 'status']],
+
             [['maghead', 'help', 'version']],
+
+            [['maghead', 'db']],
             [['maghead', 'help', 'db']],
             [['maghead', 'help', 'db', 'create']],
             [['maghead', 'help', 'db', 'recreate']],
@@ -29,11 +37,16 @@ class AllCommandsTest extends CommandWorkFlowTestCase
             [['maghead', 'help', 'db', 'remove']],
             [['maghead', 'help', 'meta']],
             [['maghead', 'help', 'index']],
+            [['maghead', 'help', 'table']],
+
+            [['maghead', 'shard']],
             [['maghead', 'help', 'shard']],
             [['maghead', 'help', 'shard', 'mapping']],
             [['maghead', 'help', 'shard', 'allocate']],
             [['maghead', 'help', 'shard', 'clone']],
             [['maghead', 'help', 'shard', 'prune']],
+
+            [['maghead', 'config']],
             [['maghead', 'help', 'config']],
             [['maghead', 'help', 'config', 'upload']],
             [['maghead', 'help', 'config', 'use']],
