@@ -16,6 +16,36 @@ class SchemaCollectionTest extends TestCase
         $this->assertCount(2, $schemas);
     }
 
+    public function testUnique()
+    {
+        $c = new SchemaCollection([
+            'TestApp\Model\UserSchema',
+            'TestApp\Model\IDNumberSchema',
+            'TestApp\Model\UserSchema',
+            'TestApp\Model\IDNumberSchema',
+            'TestApp\Model\NameSchema',
+            'TestApp\Model\NameSchema',
+            'TestApp\Model\NameSchema',
+        ]);
+        $c = $c->unique();
+        $this->assertCount(3, $c);
+    }
+
+    public function testUniqueEvaluated()
+    {
+        $c = new SchemaCollection([
+            'TestApp\Model\UserSchema',
+            'TestApp\Model\IDNumberSchema',
+            'TestApp\Model\UserSchema',
+            'TestApp\Model\IDNumberSchema',
+            'TestApp\Model\NameSchema',
+            'TestApp\Model\NameSchema',
+            'TestApp\Model\NameSchema',
+        ]);
+        $c = $c->evaluate()->unique();
+        $this->assertCount(3, $c);
+    }
+
     public function testEvaluateShouldCreateObjects()
     {
         $c = new SchemaCollection([

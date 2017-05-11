@@ -27,8 +27,7 @@ class SchemaLoader
      */
     public static function loadDeclaredSchemas()
     {
-        return SchemaUtils::expandSchemaClasses(
-            SchemaUtils::getLoadedDeclareSchemaClasses()
-        );
+        $collection = SchemaCollection::declared()->buildable();
+        return SchemaUtils::expandSchemaClasses($collection);
     }
 }

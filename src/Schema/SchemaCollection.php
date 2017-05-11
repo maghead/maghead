@@ -110,8 +110,12 @@ class SchemaCollection extends ArrayObject
 
     public function unique()
     {
-        $classes = $this->getArrayCopy();
-        return new self(array_unique($classes));
+        $map = [];
+        foreach ($this as $s) {
+            $k = is_string($s) ? $s : get_class($s);
+            $map[$k] = $s;
+        }
+        return new self(array_values($map));
     }
 
     public function buildable()

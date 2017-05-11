@@ -118,11 +118,6 @@ class SchemaUtils
         return SchemaCollection::create($args)->exists()->unique()->buildable()->evaluate();
     }
 
-    public static function getLoadedDeclareSchemaClasses()
-    {
-        return SchemaCollection::declared()->buildable();
-    }
-
     /**
      * Given a list of schema object,
      * return the schema objects that are defined with shard mapping
