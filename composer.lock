@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8c4eec0f99bc971af11fb30ecc60aac3",
+    "content-hash": "4ab17f4b5d9460e3db26bd022dfe3c4a",
     "packages": [
         {
             "name": "corneltek/cascading-attribute",
@@ -352,12 +352,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/SQLBuilder.git",
-                "reference": "ac6c7fc2b7bae093fad198f9835e36b48bb33cf1"
+                "reference": "58475b02d990409f7339310b8a2f710e6e26df92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/SQLBuilder/zipball/ac6c7fc2b7bae093fad198f9835e36b48bb33cf1",
-                "reference": "ac6c7fc2b7bae093fad198f9835e36b48bb33cf1",
+                "url": "https://api.github.com/repos/c9s/SQLBuilder/zipball/58475b02d990409f7339310b8a2f710e6e26df92",
+                "reference": "58475b02d990409f7339310b8a2f710e6e26df92",
                 "shasum": ""
             },
             "require-dev": {
@@ -385,7 +385,7 @@
                 }
             ],
             "description": "Fast and Powerful SQLBuilder for PHP",
-            "time": "2017-04-10 13:00:28"
+            "time": "2017-05-10 07:44:18"
         },
         {
             "name": "corneltek/universal",
@@ -1356,7 +1356,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.0"
+        "php": ">=7.0"
     },
     "platform-dev": {
         "ext-apcu": "*"
