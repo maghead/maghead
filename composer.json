@@ -16,7 +16,7 @@
         "corneltek/configkit": "^1",
         "corneltek/cascading-attribute": "^1.2",
         "corneltek/sqlbuilder": "4.0.x-dev",
-        "corneltek/cliframework": "3.0.x-dev",
+        "corneltek/cliframework": "4.0.x-dev",
         "corneltek/class-template": "^3.0",
         "corneltek/codegen": "3.1.x-dev",
         "corneltek/serializerkit": "^1",
