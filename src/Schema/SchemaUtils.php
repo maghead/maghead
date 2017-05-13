@@ -4,7 +4,6 @@ namespace Maghead\Schema;
 
 use CLIFramework\Logger;
 use Maghead\Runtime\Config\Config;
-use Maghead\Utils\ClassUtils;
 use ReflectionObject;
 use ReflectionClass;
 

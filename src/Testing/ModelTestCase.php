@@ -6,7 +6,6 @@ use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Runtime\Connection;
 use Maghead\Runtime\Bootstrap;
 use Maghead\Manager\DataSourceManager;
-use Maghead\Utils\ClassUtils;
 use Maghead\Runtime\SeedBuilder;
 use Maghead\TableBuilder\TableBuilder;
 use Maghead\TableParser\TableParser;
