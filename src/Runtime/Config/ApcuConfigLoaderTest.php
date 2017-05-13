@@ -13,9 +13,19 @@ class ApcuConfigLoaderTest extends TestCase
         }
     }
 
-    public function testApcuConfigLoader()
+    public function testApcuConfigLoaderFallback()
     {
         $config = ApcuConfigLoader::load("testapp", function() {
+            return FileConfigLoader::load('tests/config/mysql.yml');
+        });
+        $this->assertInstanceOf('Maghead\\Runtime\\Config\\Config', $config);
+    }
+
+    public function testApcuConfigLoaderSecondFallback()
+    {
+        $config = ApcuConfigLoader::load("testapp", function() {
+            return false;
+        }, function() {
             return FileConfigLoader::load('tests/config/mysql.yml');
         });
         $this->assertInstanceOf('Maghead\\Runtime\\Config\\Config', $config);
