@@ -36,6 +36,7 @@ class SqliteTableSchemaParserTest extends TestCase
         $data[] = ['CREATE TEMP TABLE `foo` (`a` TIMESTAMP DEFAULT CURRENT_DATE)', new Token('literal','CURRENT_DATE')];
         $data[] = ['CREATE TEMP TABLE `foo` (`a` TIMESTAMP DEFAULT CURRENT_TIMESTAMP)', new Token('literal','CURRENT_TIMESTAMP')];
         $data[] = ['CREATE TEMP TABLE `foo` (`a` INT DEFAULT -20 CONSTRAINT aa UNIQUE(a))', -20];
+        $data[] = ['CREATE TEMP TABLE `foo` (`a` INT DEFAULT -20 CONSTRAINT aa PRIMARY(a))', -20];
         return $data;
     }
 
@@ -50,7 +51,18 @@ class SqliteTableSchemaParserTest extends TestCase
         $this->assertEquals('foo', $def->tableName);
         $this->assertCount(1, $def->columns);
         $this->assertEquals($exp, $def->columns[0]->default);
+    }
 
+    public function testUniqueIndex()
+    {
+        $sql = 'CREATE TEMP TABLE `foo` (`a` INT DEFAULT 0, name VARCHAR, address VARCHAR, CONSTRAINT address_idx UNIQUE(name, address))';
+        $parser = new SqliteTableSchemaParser;
+        $def = $parser->parse($sql);
+        $this->assertCount(3, $def->columns);
+        $this->assertCount(1, $def->constraints);
+        $this->assertInstanceOf('Maghead\\TableParser\\Constraint', $def->constraints[0]);
+        $this->assertEquals('address_idx', $def->constraints[0]->name);
+        $this->assertCount(2, $def->constraints[0]->unique);
     }
 
 

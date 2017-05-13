@@ -15,6 +15,8 @@ class TableDef {
 
     public $tableName;
 
+    public $constraints;
+
 }
 
 class Constraint {
@@ -381,7 +383,7 @@ class SqliteTableSchemaParser extends BaseTableSchemaParser
         } // end of column parsing
 
         if ($tableConstraints = $this->tryParseTableConstraints()) {
-            $tableDef->tableConstraints = $tableConstraints;
+            $tableDef->constraints = $tableConstraints;
         }
         $this->ignoreSpaces();
         return $tableDef;
