@@ -204,7 +204,12 @@ class BaseTableSchemaParser
  *
  * The syntax follows the official documentation below:
  *
- *  http://www.sqlite.org/lang_createtable.html
+ *   http://www.sqlite.org/lang_createtable.html
+ *
+ * Unsupported:
+ *
+ * - Create table .. AS SELECT ...
+ * - Foreign key clause actions
  */
 class SqliteTableSchemaParser extends BaseTableSchemaParser
 {
