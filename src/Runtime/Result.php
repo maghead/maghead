@@ -171,6 +171,9 @@ class Result
         return $msg;
     }
 
+    /**
+     * TODO: move to ResultLogger::ErrorLog
+     */
     public function silentError($desc = null, $messageType = 0)
     {
         error_log(($desc ? "$desc:" : '').$this->message, $messageType);
