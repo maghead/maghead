@@ -11,14 +11,14 @@ use Maghead\Runtime\Connection;
 
 class TableParser
 {
-    public static function create(Connection $conn, BaseDriver $d)
+    public static function create(Connection $c, BaseDriver $d)
     {
         if ($d instanceof MySQLDriver) {
-            return new MysqlTableParser($conn, $d);
+            return new MysqlTableParser($c, $d);
         } else if ($d instanceof PgSQLDriver) {
-            return new PgsqlTableParser($conn, $d);
+            return new PgsqlTableParser($c, $d);
         } else if ($d instanceof SQLiteDriver) {
-            return new SqliteTableParser($conn, $d);
+            return new SqliteTableParser($c, $d);
         }
         // This is not going to happen
         throw new InvalidArgumentException("table parser driver does not support {$d->getDriverName()} currently.");
