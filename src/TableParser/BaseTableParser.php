@@ -43,24 +43,6 @@ abstract class BaseTableParser
      */
     abstract public function reverseTableSchema($table, $referenceSchema = null);
 
-    /**
-     * Find all user-defined schema.
-     *
-     * This is not used right now.
-     */
-    public function getTableSchemaMap()
-    {
-        $tableSchemas = array();
-
-        // Parse existing table and try to find the schema
-        $tables = $this->getTables();
-        foreach ($tables as $table) {
-            $tableSchemas[$table] = $this->reverseTableSchema($table);
-        }
-
-        return $tableSchemas;
-    }
-
     public function typenameToIsa($typeName)
     {
         $typeInfo = TypeInfoParser::parseTypeInfo($typeName);
