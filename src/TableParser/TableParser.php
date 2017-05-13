@@ -14,11 +14,11 @@ class TableParser
     public static function create(Connection $conn, BaseDriver $d)
     {
         if ($d instanceof MySQLDriver) {
-            return new MySQLTableParser($conn, $d);
+            return new MysqlTableParser($conn, $d);
         } else if ($d instanceof PgSQLDriver) {
-            return new PgSQLTableParser($conn, $d);
+            return new PgsqlTableParser($conn, $d);
         } else if ($d instanceof SQLiteDriver) {
-            return new SQLiteTableParser($conn, $d);
+            return new SqliteTableParser($conn, $d);
         }
         // This is not going to happen
         throw new InvalidArgumentException("table parser driver does not support {$d->getDriverName()} currently.");
