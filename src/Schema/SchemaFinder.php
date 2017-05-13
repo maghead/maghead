@@ -4,7 +4,8 @@ namespace Maghead\Schema;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use CLIFramework\Logger;
+
+use Maghead\Schema\Loader\FileSchemaLoader;
 
 /**
  * Find schema classes from files (or from current runtime).
@@ -33,28 +34,8 @@ class SchemaFinder
 
     public function findByPaths(array $paths)
     {
-        $files = array();
-        foreach ($paths as $path) {
-            if (is_file($path)) {
-                require_once $path;
-                $files[] = $path;
-            } elseif (is_dir($path)) {
-                $rii = new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator($path,
-                        RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::FOLLOW_SYMLINKS
-                    ),
-                    RecursiveIteratorIterator::SELF_FIRST
-                );
-                foreach ($rii as $fi) {
-                    if (substr($fi->getFilename(), -10) == 'Schema.php') {
-                        require_once $fi->getPathname();
-                        $files[] = $path;
-                    }
-                }
-            }
-        }
-
-        return $files;
+        $loader = new FileSchemaLoader($paths);
+        return $loader->load();
     }
 
     public function find()
