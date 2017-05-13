@@ -38,12 +38,12 @@ class SqliteTableParser extends BaseTableParser
     public function parseTableSql($table)
     {
         $sql = $this->getTableSql($table);
-        if (!preg_match('#`?(\w+)`?\s*\((.*)\)#ism', $sql, $matches)) {
+        if (!preg_match('#create\s+table\s+`?(\w+)`?\s*\((.*)\)#ism', $sql, $matches)) {
             throw new Exception("Can't parse sqlite table schema.");
         }
         list($matched, $name, $columnstr) = $matches;
-        $parser = new SqliteTableDefinitionParser($columnstr);
-        return $parser->parseColumnDefinitions();
+        $parser = new SqliteTableSchemaParser();
+        return $parser->parse($matches[0]);
     }
 
     public function reverseTableSchema($table, $referenceSchema = null)

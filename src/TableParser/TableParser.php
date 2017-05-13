@@ -2,18 +2,25 @@
 
 namespace Maghead\TableParser;
 
-use PDO;
-use Exception;
+use InvalidArgumentException;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
+use Maghead\Runtime\Connection;
 
 class TableParser
 {
-    public static function create(PDO $connection, BaseDriver $driver)
+    public static function create(Connection $conn, BaseDriver $d)
     {
-        $class = 'Maghead\\TableParser\\'.ucfirst($driver->getDriverName()).'TableParser';
-        if (!class_exists($class, true)) {
-            throw new Exception("parser driver does not support {$driver->getDriverName()} currently.");
+        if ($d instanceof MySQLDriver) {
+            return new MySQLTableParser($conn, $d);
+        } else if ($d instanceof PgSQLDriver) {
+            return new PgSQLTableParser($conn, $d);
+        } else if ($d instanceof SQLiteDriver) {
+            return new SQLiteTableParser($conn, $d);
         }
-        return new $class($connection, $driver);
+        // This is not going to happen
+        throw new InvalidArgumentException("table parser driver does not support {$d->getDriverName()} currently.");
     }
 }

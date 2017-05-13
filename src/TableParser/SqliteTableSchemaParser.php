@@ -36,37 +36,35 @@ class Token
  *
  *  http://www.sqlite.org/lang_createtable.html
  */
-class SqliteTableDefinitionParser
+class SqliteTableSchemaParser
 {
     /**
      *  @var int
      *
      *  The default buffer offset
      */
-    public $p = 0;
+    protected $p = 0;
 
     /**
      * @var string
      *
      * The buffer string for parsing.
      */
-    public $str = '';
-
-    public function __construct($str, $offset = 0)
-    {
-        $this->str = $str;
-        $this->strlen = strlen($str);
-        $this->p = $offset;
-    }
+    protected $str = '';
 
     protected function looksLikeTableConstraint()
     {
         return $this->test(['CONSTRAINT', 'PRIMARY', 'UNIQUE', 'FOREIGN', 'CHECK']);
     }
 
-    public function parse()
+    public function parse($input, $offset = 0)
     {
+        $this->str    = $input;
+        $this->strlen = strlen($input);
+        $this->p = $offset;
+
         $tableDef = new stdClass();
+        $tableDef->columns = [];
 
         $this->skipSpaces();
 
@@ -84,26 +82,31 @@ class SqliteTableDefinitionParser
 
         $this->skipSpaces();
 
-        if ($this->tryParseKeyword(['IF']) && $this->tryParseKeyword(['NOT']) && $this->tryParseKeyword(['EXISTS'])) {
+        if ($this->tryParseKeyword(['IF'])) {
+            if (!$this->tryParseKeyword(['NOT'])) {
+                throw new Exception('Unexpected token');
+            }
+            if (!$this->tryParseKeyword(['EXISTS'])) {
+                throw new Exception('Unexpected token');
+            }
             $tableDef->ifNotExists = true;
         }
 
         $tableName = $this->tryParseIdentifier();
+
         $tableDef->tableName = $tableName->val;
 
         $this->advance('(');
-        $tableDef->columns = $this->parseColumnDefinitions();
+        $this->parseColumnDefinitions($tableDef);
         $this->advance(')');
 
         return $tableDef;
     }
 
-    public function parseColumnDefinitions()
+    protected function parseColumnDefinitions($tableDef)
     {
         $this->skipSpaces();
 
-        $tableDef = new stdClass();
-        $tableDef->columns = [];
 
         while (!$this->metEnd()) {
             while (!$this->metEnd()) {
@@ -161,7 +164,6 @@ class SqliteTableDefinitionParser
                         } elseif ($constraintToken->val == 'NULL') {
                             $column->notNull = false;
                         } elseif ($constraintToken->val == 'DEFAULT') {
-
                             // parse scalar
                             if ($scalarToken = $this->tryParseScalar()) {
                                 $column->default = $scalarToken->val;
@@ -363,8 +365,9 @@ class SqliteTableDefinitionParser
     {
         if (!$this->metEnd()) {
             if ($c) {
-                if ($c == $this->str[$this->p]) {
+                if ($c === $this->str[$this->p]) {
                     ++$this->p;
+                    return true;
                 }
             } else {
                 ++$this->p;
@@ -532,33 +535,34 @@ class SqliteTableDefinitionParser
     {
         $this->skipSpaces();
 
-        if ($this->cur() == "'") {
-            $this->advance();
+        if ($this->advance("'")) {
 
             $p = $this->p;
 
             while (!$this->metEnd()) {
-                $this->advance();
-                if ($this->cur() == "'") {
-                    $pos = $this->p;
-                    $this->advance();
-                    if ($this->cur() != "'") {
-                        $this->rollback($pos);
-                        break;
-                    }
+                if ($this->advance("'")) {
+                    break;
                 }
+                $this->advance("\\"); // skip
+                $this->advance();
             }
+
             $string = str_replace("''", "'", substr($this->str, $p, ($this->p - 1) - $p));
 
             return new Token('string', $string);
-        } elseif (preg_match('/-?\d+  \. \d+/x', substr($this->str, $this->p), $matches)) {
+
+        } else if (preg_match('/-?\d+  \. \d+/x', substr($this->str, $this->p), $matches)) {
+
             $this->p += strlen($matches[0]);
 
             return new Token('double', doubleval($matches[0]));
-        } elseif (preg_match('/-?\d+/x', substr($this->str, $this->p), $matches)) {
+
+        } else if (preg_match('/-?\d+/x', substr($this->str, $this->p), $matches)) {
+
             $this->p += strlen($matches[0]);
 
             return new Token('int', intval($matches[0]));
+
         }
     }
 }
