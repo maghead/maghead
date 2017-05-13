@@ -39,6 +39,7 @@ class SqliteTableSchemaParserTest extends TestCase
         $data[] = ['CREATE TEMP TABLE `foo` (`a` TIMESTAMP DEFAULT CURRENT_TIMESTAMP)', new Token('literal','CURRENT_TIMESTAMP')];
         $data[] = ['CREATE TEMP TABLE `foo` (`a` INT DEFAULT -20 CONSTRAINT aa UNIQUE(a))', -20];
         $data[] = ['CREATE TEMP TABLE `foo` (`a` INT DEFAULT -20 CONSTRAINT aa PRIMARY(a))', -20];
+        $data[] = ['CREATE TEMP TABLE `foo` (`a` INT DEFAULT -20 CONSTRAINT aa PRIMARY KEY(a))', -20];
         return $data;
     }
 
@@ -65,6 +66,25 @@ class SqliteTableSchemaParserTest extends TestCase
         $this->assertInstanceOf('Maghead\\TableParser\\Constraint', $def->constraints[0]);
         $this->assertEquals('address_idx', $def->constraints[0]->name);
         $this->assertCount(2, $def->constraints[0]->unique);
+    }
+
+    public function testForeignKeyReferenceParsing()
+    {
+        $parser = new SqliteTableSchemaParser;
+        $def = $parser->parse('CREATE TABLE foo (`book_id` INT UNSIGNED NOT NULL CONSTRAINT const_book FOREIGN KEY (book_id) REFERENCES books(id))');
+        $this->assertNotNull($def);
+        $this->assertEquals('foo', $def->tableName);
+        $this->assertCount(1, $def->columns);
+        $this->assertEquals('book_id', $def->columns[0]->name);
+        $this->assertEquals('INT', $def->columns[0]->type);
+
+        $this->assertCount(1, $def->constraints);
+        $this->assertInstanceOf('Maghead\\TableParser\\Constraint', $def->constraints[0]);
+        $this->assertEquals('const_book', $def->constraints[0]->name);
+
+        $this->assertEquals(['book_id'], $def->constraints[0]->foreignKey->columns ); 
+        $this->assertEquals('books', $def->constraints[0]->foreignKey->references->table ); 
+        $this->assertEquals(['id'], $def->constraints[0]->foreignKey->references->columns ); 
     }
 
 

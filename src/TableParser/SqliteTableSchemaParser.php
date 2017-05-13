@@ -111,6 +111,14 @@ class BaseTableSchemaParser
         return $this->str[ $this->p ];
     }
 
+    protected function expectKeyword(array $keywords, $as = 'keyword')
+    {
+        if ($t = $this->tryParseKeyword($keywords, $as)) {
+            return $t;
+        }
+        throw new Exception("Expect keywords " . join(',',$keywords) . ':' . $this->currentWindow());
+    }
+
     protected function expect($c)
     {
         if ($c === $this->str[$this->p]) {
@@ -227,7 +235,7 @@ class SqliteTableSchemaParser extends BaseTableSchemaParser
 
         $this->ignoreSpaces();
 
-        $keyword = $this->tryParseKeyword(['CREATE']);
+        $this->expectKeyword(['CREATE']);
 
         $this->ignoreSpaces();
 
@@ -237,7 +245,7 @@ class SqliteTableSchemaParser extends BaseTableSchemaParser
 
         $this->ignoreSpaces();
 
-        $this->tryParseKeyword(['TABLE']);
+        $this->expectKeyword(['TABLE']);
 
         $this->ignoreSpaces();
 
@@ -301,6 +309,7 @@ class SqliteTableSchemaParser extends BaseTableSchemaParser
                 }
 
                 while ($constraintToken = $this->tryParseColumnConstraint()) {
+
                     if ($constraintToken->val == 'PRIMARY') {
                         $this->tryParseKeyword(['KEY']);
 
@@ -349,26 +358,8 @@ class SqliteTableSchemaParser extends BaseTableSchemaParser
 
                     } else if ($constraintToken->val == 'REFERENCES') {
 
-                        $tableNameToken = $this->tryParseIdentifier();
+                        $column->references = $this->parseReferenceClause();
 
-                        $this->expect('(');
-                        $columnNames = $this->parseColumnNames();
-                        $this->expect(')');
-
-                        $actions = [];
-                        if ($this->tryParseKeyword(['ON'])) {
-                            while ($onToken = $this->tryParseKeyword(['DELETE', 'UPDATE'])) {
-                                $on = $onToken->val;
-                                $actionToken = $this->tryParseKeyword(['SET NULL', 'SET DEFAULT', 'CASCADE', 'RESTRICT', 'NO ACTION']);
-                                $actions[$on] = $actionToken->val;
-                            }
-                        }
-
-                        $column->references = (object) [
-                            'table' => $tableNameToken->val,
-                            'columns' => $columnNames,
-                            'actions' => $actions,
-                        ];
                     }
                     $this->ignoreSpaces();
                 }
@@ -388,6 +379,30 @@ class SqliteTableSchemaParser extends BaseTableSchemaParser
         $this->ignoreSpaces();
         return $tableDef;
     }
+
+    protected function parseReferenceClause()
+    {
+        $tableNameToken = $this->tryParseIdentifier();
+
+        $this->expect('(');
+        $columnNames = $this->parseColumnNames();
+        $this->expect(')');
+
+        $actions = [];
+        if ($this->tryParseKeyword(['ON'])) {
+            while ($onToken = $this->tryParseKeyword(['DELETE', 'UPDATE'])) {
+                $on = $onToken->val;
+                $actionToken = $this->tryParseKeyword(['SET NULL', 'SET DEFAULT', 'CASCADE', 'RESTRICT', 'NO ACTION']);
+                $actions[$on] = $actionToken->val;
+            }
+        }
+        return (object) [
+            'table' => $tableNameToken->val,
+            'columns' => $columnNames,
+            'actions' => $actions,
+        ];
+    }
+
     
     protected function looksLikeTableConstraint()
     {
@@ -443,6 +458,8 @@ class SqliteTableSchemaParser extends BaseTableSchemaParser
                 $this->tryParseKeyword(['KEY']);
             }
 
+            $this->ignoreSpaces();
+
             if ($tableConstraintKeyword->val == 'PRIMARY') {
                 if ($indexColumns = $this->tryParseIndexColumns()) {
                     $tableConstraint->primaryKey = $indexColumns;
@@ -452,9 +469,18 @@ class SqliteTableSchemaParser extends BaseTableSchemaParser
                     $tableConstraint->unique = $indexColumns;
                 }
             } else if ($tableConstraintKeyword->val == 'FOREIGN') {
+
+                $foreignKey = new stdClass;
+
                 $this->expect('(');
-                $tableConstraint->foreignKey = $this->parseColumnNames();
+                $foreignKey->columns = $this->parseColumnNames();
                 $this->expect(')');
+
+                $this->expectKeyword(['REFERENCES']);
+
+                $foreignKey->references = $this->parseReferenceClause();
+
+                $tableConstraint->foreignKey = $foreignKey;
             }
             $tableConstraints[] = $tableConstraint;
         }
