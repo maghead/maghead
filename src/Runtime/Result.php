@@ -94,18 +94,6 @@ class Result
         return $result;
     }
 
-    public function setSuccess()
-    {
-        $this->success = true;
-        $this->error = false;
-    }
-
-    public function setError()
-    {
-        $this->success = false;
-        $this->error = true;
-    }
-
     public function setDebugInfo(array $info)
     {
         $this->debugInfo = $info;
