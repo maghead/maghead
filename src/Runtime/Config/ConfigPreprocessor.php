@@ -26,12 +26,6 @@ class ConfigPreprocessor
         return $config;
     }
 
-    private static function updateDSN(array $nodeConfig)
-    {
-        $nodeConfig['dsn'] = DSN::create($nodeConfig)->__toString();
-        return $nodeConfig;
-    }
-
     public static function normalizeNodeConfig(array $config)
     {
         // if DSN is defined, then we use the DSN to update the node config
