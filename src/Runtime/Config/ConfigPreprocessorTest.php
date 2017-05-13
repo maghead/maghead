@@ -144,6 +144,58 @@ class ConfigPreprocessorTest extends TestCase
             ]
         ];
 
+        $data[] = [
+            [   'driver' => 'mysql',
+                'user' => 'root',
+                'database' => 'testing',
+                'write' => ['192.168.0.1'],
+                'read' => ['192.168.0.2', '192.168.0.3'],
+            ],
+            [
+                'driver' => 'mysql',
+                'user' => 'root',
+                'password' => null,
+                'query_options' => [],
+                'connection_options' => [ 1002 => 'SET NAMES utf8' ],
+                'database' => 'testing',
+                'write' => [
+                    [
+                        'driver' => 'mysql',
+                        'user' => 'root',
+                        'database' => 'testing',
+                        'password' => null,
+                        'query_options' => Array(),
+                        'connection_options' => Array(1002 => 'SET NAMES utf8'),
+                        'host' => '192.168.0.1',
+                        'dsn' => 'mysql:host=192.168.0.1;dbname=testing',
+                    ]
+                ],
+                'read' => [
+                    0 => [
+                        'driver' => 'mysql',
+                        'user' => 'root',
+                        'database' => 'testing',
+                        'password' => null,
+                        'query_options' => Array(),
+                        'connection_options' => Array(1002 => 'SET NAMES utf8'),
+                        'host' => '192.168.0.2',
+                        'dsn' => 'mysql:host=192.168.0.2;dbname=testing',
+                    ],
+                    1 => [
+                        'driver' => 'mysql',
+                        'user' => 'root',
+                        'database' => 'testing',
+                        'password' => null,
+                        'query_options' => Array (),
+                        'connection_options' => Array(1002 => 'SET NAMES utf8'),
+                        'host' => '192.168.0.3',
+                        'dsn' => 'mysql:host=192.168.0.3;dbname=testing',
+                    ],
+                ],
+            ]
+        ];
+
+
 
 
         return $data;
