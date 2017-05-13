@@ -159,15 +159,6 @@ class Result
         return $vlds;
     }
 
-    public function toException($message = '')
-    {
-        if ($this->exception) {
-            return $this->exception;
-        }
-
-        return new ResultException($message.';'.$this->message);
-    }
-
     public function throwExceptionIfFailed()
     {
         if ($this->error) {
