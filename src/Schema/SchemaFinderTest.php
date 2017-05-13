@@ -14,7 +14,8 @@ class SchemaFinderTest extends TestCase
     public function testSchemaFinder()
     {
         $finder = new SchemaFinder;
-        $finder->findByPaths(['src', 'tests']);
+        $files = $finder->findByPaths(['src', 'tests']);
+        $this->assertNotEmpty($files);
 
         $schemas = SchemaLoader::loadDeclaredSchemas();
         $this->assertNotEmpty($schemas);
