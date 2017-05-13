@@ -59,17 +59,8 @@ class Column {
 
 }
 
-/**
- * SQLite Parser for parsing table column definitions:.
- *
- *  CREATE TABLE {identifier} ( columndef, columndef, ... );
- *
- *
- * The syntax follows the official documentation below:
- *
- *  http://www.sqlite.org/lang_createtable.html
- */
-class SqliteTableSchemaParser
+
+class BaseTableSchemaParser
 {
     /**
      *  @var int
@@ -85,10 +76,139 @@ class SqliteTableSchemaParser
      */
     protected $str = '';
 
-    protected function looksLikeTableConstraint()
+    protected function consume($token, $typeName)
     {
-        return $this->test(['CONSTRAINT', 'PRIMARY', 'UNIQUE', 'FOREIGN', 'CHECK']);
+        if (($p2 = stripos($this->str, $token, $this->p)) !== false && $p2 == $this->p) {
+            $this->p += strlen($token);
+
+            return new Token($typeName, $token);
+        }
+
+        return false;
     }
+
+    protected function tryParseKeyword(array $keywords, $as = 'keyword')
+    {
+        $this->ignoreSpaces();
+        $this->sortKeywordsByLen($keywords);
+
+        foreach ($keywords as $keyword) {
+            $p2 = stripos($this->str, $keyword, $this->p);
+            if ($p2 === $this->p) {
+                $this->p += strlen($keyword);
+
+                return new Token($as, $keyword);
+            }
+        }
+
+        return;
+    }
+
+    protected function cur()
+    {
+        return $this->str[ $this->p ];
+    }
+
+    protected function expect($c)
+    {
+        if ($c === $this->str[$this->p]) {
+            ++$this->p;
+            return true;
+        }
+        throw new Exception("Expect '$c': ".$this->currentWindow());
+    }
+
+    protected function advance($c = null)
+    {
+        if (!$this->metEnd()) {
+            if ($c) {
+                if ($c === $this->str[$this->p]) {
+                    ++$this->p;
+                    return true;
+                }
+            } else {
+                ++$this->p;
+            }
+        }
+    }
+
+    /**
+     * return the current buffer window
+     */
+    protected function currentWindow($window = 32)
+    {
+        return var_export(substr($this->str, $this->p, $window) . '...', true)." FROM '{$this->str}'\n";
+    }
+
+    protected function metEnd()
+    {
+        return $this->p + 1 >= $this->strlen;
+    }
+
+    protected function ignoreSpaces()
+    {
+        while (!$this->metEnd() && in_array($this->str[$this->p], [' ', "\t", "\n"])) {
+            ++$this->p;
+        }
+    }
+
+    protected function metComma()
+    {
+        return !$this->metEnd() && $this->str[$this->p] == ',';
+    }
+
+    protected function skipComma()
+    {
+        if (!$this->metEnd() && $this->str[ $this->p ] == ',') {
+            ++$this->p;
+        }
+    }
+
+    protected function rollback($p)
+    {
+        $this->p = $p;
+    }
+
+    protected function test($str)
+    {
+        if (is_array($str)) {
+            foreach ($str as $s) {
+                if ($this->test($s)) {
+                    return strlen($s);
+                }
+            }
+        } elseif (is_string($str)) {
+            $p = stripos($this->str, $str, $this->p);
+
+            return $p === $this->p ? strlen($str) : false;
+        } else {
+            throw new Exception('Invalid argument type');
+        }
+    }
+
+    protected function skip($tokens)
+    {
+        while ($len = $this->test($tokens)) {
+            $this->p += $len;
+        }
+    }
+
+}
+
+
+/**
+ * SQLite Parser for parsing table column definitions:.
+ *
+ *  CREATE TABLE {identifier} ( columndef, columndef, ... );
+ *
+ *
+ * The syntax follows the official documentation below:
+ *
+ *  http://www.sqlite.org/lang_createtable.html
+ */
+class SqliteTableSchemaParser extends BaseTableSchemaParser
+{
+
 
     public function parse($input, $offset = 0)
     {
@@ -98,21 +218,21 @@ class SqliteTableSchemaParser
 
         $tableDef = new TableDef;
 
-        $this->skipSpaces();
+        $this->ignoreSpaces();
 
         $keyword = $this->tryParseKeyword(['CREATE']);
 
-        $this->skipSpaces();
+        $this->ignoreSpaces();
 
         if ($this->tryParseKeyword(['TEMPORARY', 'TEMP'])) {
             $tableDef->temporary = true;
         }
 
-        $this->skipSpaces();
+        $this->ignoreSpaces();
 
         $this->tryParseKeyword(['TABLE']);
 
-        $this->skipSpaces();
+        $this->ignoreSpaces();
 
         if ($this->tryParseKeyword(['IF'])) {
             if (!$this->tryParseKeyword(['NOT'])) {
@@ -128,10 +248,10 @@ class SqliteTableSchemaParser
 
         $tableDef->tableName = $tableName->val;
 
-        $this->skipSpaces();
-        $this->advance('(');
+        $this->ignoreSpaces();
+        $this->expect('(');
         $this->parseColumns($tableDef);
-        $this->advance(')');
+        $this->expect(')');
 
         return $tableDef;
     }
@@ -140,11 +260,9 @@ class SqliteTableSchemaParser
     {
         // Parse columns
         while (!$this->metEnd()) {
-            $this->skipSpaces();
+            $this->ignoreSpaces();
 
-            $tryPos = $this->p;
-            if ($this->tryParseTableConstraints()) {
-                $this->rollback($tryPos);
+            if ($this->looksLikeTableConstraint()) {
                 break;
             }
 
@@ -156,10 +274,10 @@ class SqliteTableSchemaParser
             $column = new Column;
             $column->name = $identifier->val;
 
-            $this->skipSpaces();
+            $this->ignoreSpaces();
             $typeName = $this->tryParseTypeName();
             if ($typeName) {
-                $this->skipSpaces();
+                $this->ignoreSpaces();
                 $column->type = $typeName->val;
                 $precision = $this->tryParseTypePrecision();
                 if ($precision && $precision->val) {
@@ -226,9 +344,9 @@ class SqliteTableSchemaParser
 
                         $tableNameToken = $this->tryParseIdentifier();
 
-                        $this->advance('(');
+                        $this->expect('(');
                         $columnNames = $this->parseColumnNames();
-                        $this->advance(')');
+                        $this->expect(')');
 
                         $actions = [];
                         if ($this->tryParseKeyword(['ON'])) {
@@ -245,57 +363,28 @@ class SqliteTableSchemaParser
                             'actions' => $actions,
                         ];
                     }
-                    $this->skipSpaces();
+                    $this->ignoreSpaces();
                 }
             }
 
             $tableDef->columns[] = $column;
-            $this->skipSpaces();
+            $this->ignoreSpaces();
             if ($this->metComma()) {
                 $this->skipComma();
-                $this->skipSpaces();
+                $this->ignoreSpaces();
             }
         } // end of column parsing
 
         if ($tableConstraints = $this->tryParseTableConstraints()) {
             $tableDef->tableConstraints = $tableConstraints;
-            $this->skipSpaces();
-            if ($this->metComma()) {
-                $this->skipComma();
-                $this->skipSpaces();
-            }
         }
-
+        $this->ignoreSpaces();
         return $tableDef;
     }
-
-    protected function rollback($p)
+    
+    protected function looksLikeTableConstraint()
     {
-        $this->p = $p;
-    }
-
-    protected function test($str)
-    {
-        if (is_array($str)) {
-            foreach ($str as $s) {
-                if ($this->test($s)) {
-                    return strlen($s);
-                }
-            }
-        } elseif (is_string($str)) {
-            $p = stripos($this->str, $str, $this->p);
-
-            return $p === $this->p ? strlen($str) : false;
-        } else {
-            throw new Exception('Invalid argument type');
-        }
-    }
-
-    protected function skip($tokens)
-    {
-        while ($len = $this->test($tokens)) {
-            $this->p += $len;
-        }
+        return $this->test(['CONSTRAINT', 'PRIMARY', 'UNIQUE', 'FOREIGN', 'CHECK']);
     }
 
     protected function parseColumnNames()
@@ -303,10 +392,10 @@ class SqliteTableSchemaParser
         $columnNames = [];
         while ($identifier = $this->tryParseIdentifier()) {
             $columnNames[] = $identifier->val;
-            $this->skipSpaces();
+            $this->ignoreSpaces();
             if ($this->metComma()) {
                 $this->skipComma();
-                $this->skipSpaces();
+                $this->ignoreSpaces();
             } else {
                 break;
             }
@@ -320,11 +409,11 @@ class SqliteTableSchemaParser
         $tableConstraints = null;
 
         while (!$this->metEnd()) {
-            $this->skipSpaces();
+            $this->ignoreSpaces();
             $tableConstraint = new Constraint;
 
             if ($this->tryParseKeyword(['CONSTRAINT'])) {
-                $this->skipSpaces();
+                $this->ignoreSpaces();
                 $constraintName = $this->tryParseIdentifier();
                 if (!$constraintName) {
                     throw new Exception('Expect constraint name');
@@ -332,7 +421,7 @@ class SqliteTableSchemaParser
                 $tableConstraint->name = $constraintName->val;
             }
 
-            $this->skipSpaces();
+            $this->ignoreSpaces();
             $tableConstraintKeyword = $this->tryParseKeyword(['PRIMARY', 'UNIQUE', 'CHECK', 'FOREIGN']);
 
             if (!$tableConstraintKeyword) {
@@ -343,7 +432,7 @@ class SqliteTableSchemaParser
             }
 
             if (in_array($tableConstraintKeyword->val, ['PRIMARY', 'FOREIGN'])) {
-                $this->skipSpaces();
+                $this->ignoreSpaces();
                 $this->tryParseKeyword(['KEY']);
             }
 
@@ -356,17 +445,9 @@ class SqliteTableSchemaParser
                     $tableConstraint->unique = $indexColumns;
                 }
             } else if ($tableConstraintKeyword->val == 'FOREIGN') {
-                if ($this->cur() == '(') {
-                    $this->advance('(');
-                    $tableConstraint->foreignKey = $this->parseColumnNames();
-                    if ($this->cur() == ')') {
-                        $this->advance(')');
-                    } else {
-                        throw new Exception('Unexpected token: '.$this->currentWindow());
-                    }
-                } else {
-                    throw new Exception('Unexpected token: '.$this->currentWindow());
-                }
+                $this->expect('(');
+                $tableConstraint->foreignKey = $this->parseColumnNames();
+                $this->expect(')');
             }
             $tableConstraints[] = $tableConstraint;
         }
@@ -374,90 +455,23 @@ class SqliteTableSchemaParser
         return $tableConstraints;
     }
 
-    /**
-     * return the current buffer window
-     */
-    protected function currentWindow($window = 32)
-    {
-        return var_export(substr($this->str, $this->p, $window) . '...', true)." FROM '{$this->str}'\n";
-    }
-
-    protected function metEnd()
-    {
-        return $this->p + 1 >= $this->strlen;
-    }
-
-    protected function skipSpaces()
-    {
-        while (!$this->metEnd() && in_array($this->str[$this->p], [' ', "\t", "\n"])) {
-            ++$this->p;
-        }
-    }
-
-    protected function metComma()
-    {
-        return !$this->metEnd() && $this->str[$this->p] == ',';
-    }
-
-    protected function skipComma()
-    {
-        if (!$this->metEnd() && $this->str[ $this->p ] == ',') {
-            ++$this->p;
-        }
-    }
-
     protected function tryParseColumnConstraint()
     {
         return $this->tryParseKeyword(['PRIMARY', 'UNIQUE', 'NOT NULL', 'NULL', 'DEFAULT', 'COLLATE', 'REFERENCES'], 'constraint');
     }
 
-    protected function cur()
-    {
-        return $this->str[ $this->p ];
-    }
-
-    protected function advance($c = null)
-    {
-        if (!$this->metEnd()) {
-            if ($c) {
-                if ($c === $this->str[$this->p]) {
-                    ++$this->p;
-                    return true;
-                }
-            } else {
-                ++$this->p;
-            }
-        }
-    }
-
-    protected function tryParseKeyword(array $keywords, $as = 'keyword')
-    {
-        $this->skipSpaces();
-        $this->sortKeywordsByLen($keywords);
-
-        foreach ($keywords as $keyword) {
-            $p2 = stripos($this->str, $keyword, $this->p);
-            if ($p2 === $this->p) {
-                $this->p += strlen($keyword);
-
-                return new Token($as, $keyword);
-            }
-        }
-
-        return;
-    }
 
     protected function tryParseIndexColumns()
     {
-        $this->advance('(');
-        $this->skipSpaces();
+        $this->expect('(');
+        $this->ignoreSpaces();
         $indexColumns = [];
         while ($columnName = $this->tryParseIdentifier()) {
             $indexColumn = new stdClass();
             $indexColumn->name = $columnName->val;
 
             if ($this->tryParseKeyword(['COLLATE'])) {
-                $this->skipSpaces();
+                $this->ignoreSpaces();
                 if ($collationName = $this->tryParseIdentifier()) {
                     $indexColumn->collationName = $collationName->val;
                 }
@@ -467,17 +481,14 @@ class SqliteTableSchemaParser
                 $indexColumn->ordering = $ordering->val;
             }
 
-            $this->skipSpaces();
+            $this->ignoreSpaces();
             if ($this->metComma()) {
                 $this->skipComma();
             }
-            $this->skipSpaces();
             $indexColumns[] = $indexColumn;
+            $this->ignoreSpaces();
         }
-        if ($this->cur() == ')') {
-            $this->advance();
-        }
-
+        $this->expect(')');
         return $indexColumns;
     }
 
@@ -520,16 +531,6 @@ class SqliteTableSchemaParser
     public static $textTypes = ['CHARACTER', 'VARCHAR', 'VARYING CHARACTER', 'NCHAR', 'NATIVE CHARACTER', 'NVARCHAR', 'TEXT', 'BLOB', 'BINARY'];
     public static $numericTypes = ['NUMERIC', 'DECIMAL', 'BOOLEAN', 'DATE', 'DATETIME', 'TIMESTAMP'];
 
-    protected function consume($token, $typeName)
-    {
-        if (($p2 = stripos($this->str, $token, $this->p)) !== false && $p2 == $this->p) {
-            $this->p += strlen($token);
-
-            return new Token($typeName, $token);
-        }
-
-        return false;
-    }
 
     protected function tryParseTypeName()
     {
@@ -556,7 +557,7 @@ class SqliteTableSchemaParser
 
     protected function tryParseIdentifier()
     {
-        $this->skipSpaces();
+        $this->ignoreSpaces();
         if ($this->str[$this->p] == '`') {
             ++$this->p;
             // find the quote pair position
@@ -580,7 +581,7 @@ class SqliteTableSchemaParser
 
     protected function tryParseScalar()
     {
-        $this->skipSpaces();
+        $this->ignoreSpaces();
 
         if ($this->advance("'")) {
 
@@ -594,9 +595,7 @@ class SqliteTableSchemaParser
                 $this->advance();
             }
 
-            $string = str_replace("''", "'", substr($this->str, $p, ($this->p - 1) - $p));
-
-            return new Token('string', $string);
+            return new Token('string', substr($this->str, $p, ($this->p - 1) - $p));
 
         } else if (preg_match('/-?\d+  \. \d+/x', substr($this->str, $this->p), $matches)) {
 
@@ -612,4 +611,6 @@ class SqliteTableSchemaParser
 
         }
     }
+
+
 }

@@ -73,7 +73,7 @@ class SqliteTableSchemaParserTest extends TestCase
     public function testForIssue94()
     {
         $parser = new SqliteTableSchemaParser;
-        $def = $parser->parse('CREATE TABLE foo (`col4` text DEFAULT \'123\\\'\'\')');
+        $def = $parser->parse('CREATE TABLE foo (`col4` text DEFAULT \'123\\\'\')');
         $this->assertNotNull($def);
         $this->assertEquals('foo', $def->tableName);
         $this->assertCount(1, $def->columns);
