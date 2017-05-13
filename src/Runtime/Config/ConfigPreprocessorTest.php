@@ -69,6 +69,48 @@ class ConfigPreprocessorTest extends TestCase
             ]
         ];
 
+        $data[] = [
+            ['driver' => 'mysql', 'host' => 'localhost', 'user' => 'root', 'port' => 3306],
+            [
+                'driver' => 'mysql',
+                'host' => 'localhost',
+                'user' => 'root',
+                'port' => 3306,
+                'password' => null,
+                'query_options' => [],
+                'connection_options' => [ 1002 => 'SET NAMES utf8' ],
+                'dsn' => 'mysql:host=localhost;port=3306',
+            ]
+        ];
+
+        $data[] = [
+            ['driver' => 'mysql', 'host' => 'localhost', 'user' => 'root', 'unix_socket' => '/opt/local/var/run/mysql56/mysqld.sock'],
+            [
+                'driver' => 'mysql',
+                'host' => 'localhost',
+                'user' => 'root',
+                'password' => null,
+                'query_options' => [],
+                'connection_options' => [ 1002 => 'SET NAMES utf8' ],
+                'unix_socket' => '/opt/local/var/run/mysql56/mysqld.sock',
+                'dsn' => 'mysql:unix_socket=/opt/local/var/run/mysql56/mysqld.sock',
+            ]
+        ];
+
+        $data[] = [
+            ['driver' => 'mysql', 'host' => 'localhost', 'user' => 'root', 'socket' => '/opt/local/var/run/mysql56/mysqld.sock'],
+            [
+                'driver' => 'mysql',
+                'host' => 'localhost',
+                'user' => 'root',
+                'password' => null,
+                'query_options' => [],
+                'connection_options' => [ 1002 => 'SET NAMES utf8' ],
+                'unix_socket' => '/opt/local/var/run/mysql56/mysqld.sock',
+                'dsn' => 'mysql:unix_socket=/opt/local/var/run/mysql56/mysqld.sock',
+            ]
+        ];
+
         return $data;
     }
 

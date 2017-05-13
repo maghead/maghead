@@ -60,6 +60,7 @@ class ConfigPreprocessor
             if ($config['socket']) {
                 $config['unix_socket'] = $config['socket'];
             }
+            unset($config['socket']);
         }
 
         // rewrite alias 'pass' => 'password'
