@@ -98,11 +98,6 @@ class Result
         return $result;
     }
 
-    public function setMessage($msg)
-    {
-        $this->message = $msg;
-    }
-
     public function setType($type)
     {
         $this->type = $type;
