@@ -159,26 +159,9 @@ class Result
         return $vlds;
     }
 
-    public function throwExceptionIfFailed()
-    {
-        if ($this->error) {
-            if ($this->exception) {
-                throw $this->exception;
-            }
-            throw new ResultException($this->message);
-        }
-    }
-
     public function __toString()
     {
         $msg = $this->message."\n";
-        if ($this->exception) {
-            $msg .= ' Exception:'.$this->exception->getMessage()."\n";
-            if ($this->sql) {
-                $msg .= ' SQL:'.$this->sql."\n";
-            }
-        }
-
         if ($this->validations) {
             foreach ($this->validations as $k => $vld) {
                 $msg .= $k.': '.($vld->valid ? 'Valid' : 'Invalid')."\n";
