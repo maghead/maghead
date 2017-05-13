@@ -27,6 +27,7 @@ class SqliteTableSchemaParserTest extends TestCase
         $data[] = ['CREATE TEMP TABLE `foo` (`a` BOOLEAN DEFAULT FALSE)', false];
         $data[] = ['CREATE TEMP TABLE `foo` (`a` INT UNSIGNED DEFAULT 0)', 0];
         $data[] = ['CREATE TEMP TABLE `foo` (`a` INT UNSIGNED DEFAULT 0.1)', 0.1];
+        $data[] = ['CREATE TEMP TABLE `foo` (`a` INT UNSIGNED DEFAULT 1.222)', 1.222];
         $data[] = ['CREATE TEMP TABLE `foo` (`a` INT UNSIGNED DEFAULT NULL)', NULL];
         $data[] = ['CREATE TEMP TABLE `foo` (`a` INT DEFAULT -20)', -20];
         $data[] = ['CREATE TEMP TABLE `foo` (`a` VARCHAR NOT NULL DEFAULT \'test\')', 'test'];

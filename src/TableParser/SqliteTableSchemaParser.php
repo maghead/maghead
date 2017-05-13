@@ -604,16 +604,13 @@ class SqliteTableSchemaParser extends BaseTableSchemaParser
 
             return new Token('string', substr($this->str, $p, ($this->p - 1) - $p));
 
-        } else if (preg_match('/-?\d+  \. \d+/x', substr($this->str, $this->p), $matches)) {
+        } else if (preg_match('/-?\d+(\.\d+)?/x', substr($this->str, $this->p), $matches)) {
 
             $this->p += strlen($matches[0]);
 
-            return new Token('double', doubleval($matches[0]));
-
-        } else if (preg_match('/-?\d+/x', substr($this->str, $this->p), $matches)) {
-
-            $this->p += strlen($matches[0]);
-
+            if (isset($matches[1])) {
+                return new Token('double', doubleval($matches[0]));
+            }
             return new Token('int', intval($matches[0]));
 
         }
