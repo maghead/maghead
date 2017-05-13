@@ -32,6 +32,10 @@ class SqliteTableSchemaParserTest extends TestCase
         $data[] = ['CREATE TEMP TABLE `foo` (`a` VARCHAR NOT NULL DEFAULT \'test\')', 'test'];
         $data[] = ['CREATE TEMP TABLE `foo` (`a` VARCHAR NOT NULL DEFAULT \'t\\\'est\')', 't\\\'est'];
         $data[] = ['CREATE TEMP TABLE `foo` (`a` VARCHAR NOT NULL DEFAULT \'t\\\'est\')', 't\\\'est'];
+        $data[] = ['CREATE TEMP TABLE `foo` (`a` TIMESTAMP DEFAULT CURRENT_TIME)', new Token('literal','CURRENT_TIME')];
+        $data[] = ['CREATE TEMP TABLE `foo` (`a` TIMESTAMP DEFAULT CURRENT_DATE)', new Token('literal','CURRENT_DATE')];
+        $data[] = ['CREATE TEMP TABLE `foo` (`a` TIMESTAMP DEFAULT CURRENT_TIMESTAMP)', new Token('literal','CURRENT_TIMESTAMP')];
+        $data[] = ['CREATE TEMP TABLE `foo` (`a` INT DEFAULT -20 CONSTRAINT aa UNIQUE(a))', -20];
         return $data;
     }
 
@@ -46,6 +50,7 @@ class SqliteTableSchemaParserTest extends TestCase
         $this->assertEquals('foo', $def->tableName);
         $this->assertCount(1, $def->columns);
         $this->assertEquals($exp, $def->columns[0]->default);
+
     }
 
 
