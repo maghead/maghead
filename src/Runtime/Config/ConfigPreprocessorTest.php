@@ -129,6 +129,23 @@ class ConfigPreprocessorTest extends TestCase
         ];
 
 
+        // 'pass' should be renamed to 'password'
+        $data[] = [
+            ['driver' => 'mysql', 'host' => 'localhost', 'user' => 'root', 'database' => 'testing', 'pass' => 'testing'],
+            [
+                'driver' => 'mysql',
+                'host' => 'localhost',
+                'user' => 'root',
+                'password' => 'testing',
+                'query_options' => [],
+                'connection_options' => [ 1002 => 'SET NAMES utf8' ],
+                'dsn' => 'mysql:host=localhost;dbname=testing',
+                'database' => 'testing'
+            ]
+        ];
+
+
+
         return $data;
     }
 
