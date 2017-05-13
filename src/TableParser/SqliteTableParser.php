@@ -7,6 +7,7 @@ use Exception;
 use LogicException;
 use Maghead\Schema\DeclareSchema;
 use SQLBuilder\Raw;
+use Maghead\SqliteParser\CreateTableParser;
 
 class SqliteTableParser extends BaseTableParser
 {
@@ -42,7 +43,7 @@ class SqliteTableParser extends BaseTableParser
             throw new Exception("Can't parse sqlite table schema.");
         }
         list($matched, $name, $columnstr) = $matches;
-        $parser = new SqliteTableSchemaParser();
+        $parser = new CreateTableParser();
         return $parser->parse($matches[0]);
     }
 
@@ -74,17 +75,17 @@ class SqliteTableParser extends BaseTableParser
             }
             $column->type($type);
 
-            if (isset($columnDef->length)) {
+            if ($columnDef->length) {
                 $column->length($columnDef->length);
             }
-            if (isset($columnDef->decimals)) {
+            if ($columnDef->decimals) {
                 $column->decimals($columnDef->decimals);
             }
 
             $isa = $this->typenameToIsa($type);
             $column->isa($isa);
 
-            if (isset($columnDef->notNull) && $columnDef->notNull !== null) {
+            if ($columnDef->notNull !== null) {
                 if ($columnDef->notNull) {
                     $column->notNull();
                 } else {
@@ -92,25 +93,23 @@ class SqliteTableParser extends BaseTableParser
                 }
             }
 
-            if (isset($columnDef->primary)) {
+            if ($columnDef->primary) {
                 $column->primary(true);
                 $schema->primaryKey = $name;
 
                 if (isset($columnDef->autoIncrement)) {
                     $column->autoIncrement(true);
                 }
-            } elseif (isset($columnDef->unique)) {
+            } else if ($columnDef->unique) {
                 $column->unique(true);
             }
 
-            if (isset($columnDef->default)) {
+            if ($columnDef->default) {
                 $default = $columnDef->default;
                 if (is_scalar($default)) {
                     $column->default($default);
                 } elseif ($default instanceof Token && $default->type == 'literal') {
                     $column->default(new Raw($default->val));
-                } else {
-                    throw new Exception('Incorrect literal token');
                 }
             }
         }

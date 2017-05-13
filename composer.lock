@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3793f642ba30cbbcfe71efee52a70464",
+    "content-hash": "b56d62dd3178ae17b1ce48aff4a3c203",
     "packages": [
         {
             "name": "corneltek/cascading-attribute",
@@ -576,6 +576,54 @@
                 "string"
             ],
             "time": "2015-11-06T14:35:42+00:00"
+        },
+        {
+            "name": "maghead/sqlite-parser",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maghead/sqlite-parser.git",
+                "reference": "2229b28b18e03a4351394c7a2b7ca5c35848484f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maghead/sqlite-parser/zipball/2229b28b18e03a4351394c7a2b7ca5c35848484f",
+                "reference": "2229b28b18e03a4351394c7a2b7ca5c35848484f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Maghead\\SqliteParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Yo-An Lin",
+                    "email": "cornelius.howl@gmail.com"
+                }
+            ],
+            "description": "sqlite table schema parser",
+            "homepage": "https://github.com/maghead/sqlite-parser",
+            "keywords": [
+                "database",
+                "parser",
+                "sql",
+                "sqlite"
+            ],
+            "time": "2017-05-13 11:44:34"
         },
         {
             "name": "mongodb/mongodb",
@@ -1351,7 +1399,8 @@
     "stability-flags": {
         "corneltek/sqlbuilder": 20,
         "corneltek/cliframework": 20,
-        "corneltek/codegen": 20
+        "corneltek/codegen": 20,
+        "maghead/sqlite-parser": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
