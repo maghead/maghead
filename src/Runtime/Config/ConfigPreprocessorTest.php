@@ -97,6 +97,7 @@ class ConfigPreprocessorTest extends TestCase
             ]
         ];
 
+        // socket should be renamed to "unix_socket"
         $data[] = [
             ['driver' => 'mysql', 'host' => 'localhost', 'user' => 'root', 'socket' => '/opt/local/var/run/mysql56/mysqld.sock'],
             [
@@ -110,6 +111,23 @@ class ConfigPreprocessorTest extends TestCase
                 'dsn' => 'mysql:unix_socket=/opt/local/var/run/mysql56/mysqld.sock',
             ]
         ];
+
+
+        // dbname should be renamed to 'database'
+        $data[] = [
+            ['driver' => 'mysql', 'host' => 'localhost', 'user' => 'root', 'dbname' => 'testing'],
+            [
+                'driver' => 'mysql',
+                'host' => 'localhost',
+                'user' => 'root',
+                'password' => null,
+                'query_options' => [],
+                'connection_options' => [ 1002 => 'SET NAMES utf8' ],
+                'dsn' => 'mysql:host=localhost;dbname=testing',
+                'database' => 'testing'
+            ]
+        ];
+
 
         return $data;
     }
