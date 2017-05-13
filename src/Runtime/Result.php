@@ -63,8 +63,6 @@ class Result
 
     public $exception;
 
-    public $debugInfo;
-
     public $shard;
 
     public $subResults;
@@ -76,6 +74,9 @@ class Result
         $this->message = $message;
     }
 
+    /**
+     * Create successful result
+     */
     public static function success($msg = null, array $extra = array())
     {
         $result = new self(true, $msg);
@@ -85,6 +86,9 @@ class Result
         return $result;
     }
 
+    /**
+     * Create failed result.
+     */
     public static function failure($msg = null, array $extra = array())
     {
         $result = new self(false, $msg);
@@ -92,16 +96,6 @@ class Result
             $result->$k = $v;
         }
         return $result;
-    }
-
-    public function setDebugInfo(array $info)
-    {
-        $this->debugInfo = $info;
-    }
-
-    public function getDebugInfo()
-    {
-        return $this->debugInfo;
     }
 
     public function setMessage($msg)
