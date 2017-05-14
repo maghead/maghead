@@ -3,7 +3,6 @@ use Maghead\Migration\MigrationGenerator;
 use Maghead\Migration\MigrationLoader;
 use Maghead\Console\Application;
 use Maghead\Migration\MigrationRunner;
-use Maghead\Schema\SchemaFinder;
 use Maghead\Testing\ModelTestCase;
 
 /**
@@ -55,14 +54,11 @@ class MigrationGeneratorTest extends ModelTestCase
 
         $generator = new MigrationGenerator($this->logger, self::MIGRATION_SCRIPT_DIR);
 
-        $this->assertTrue(class_exists('TestApp\Model\UserSchema', true));
-
-        $finder = new SchemaFinder;
-        $finder->find();
+        $this->assertTrue(class_exists('TestApp\\Model\\UserSchema', true));
 
         list($scriptClass, $path) = $generator->generateWithDiff('DiffMigration',
             'master',
-            [ "users" => new TestApp\Model\UserSchema ],
+            [ "users" => new \TestApp\Model\UserSchema ],
             '20120101');
 
         $this->assertFileExists('tests/migrations/20120101_DiffMigration.php.expected', $path);
