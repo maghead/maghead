@@ -242,7 +242,7 @@ You can define specific data source for different model in the model schema:
 
 ```php
 use Maghead\Schema\DeclareSchema;
-class UserSchema extends Schema {
+class UserSchema extends DeclareSchema {
     public function schema() {
         $this->writeTo('master');
         $this->readFrom('slave');
@@ -254,7 +254,7 @@ Or you can specify for both (read and write):
 
 ```php
 use Maghead\Schema\DeclareSchema;
-class UserSchema extends Schema {
+class UserSchema extends DeclareSchema {
     public function schema() {
         $this->using('master');
     }
@@ -423,7 +423,7 @@ $driver->configure('quote_table',true);
 ```php
 use Maghead\Schema\DeclareSchema;
 
-class AuthorSchema extends Schema
+class AuthorSchema extends DeclareSchema
 {
     function schema()
     {
