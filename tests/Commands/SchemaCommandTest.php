@@ -21,8 +21,10 @@ class SchemaCommandsTest extends CommandWorkFlowTestCase
      */
     public function testSchemaBuildCommand($args)
     {
+        ob_start();
         $ret = $this->app->run(array_merge(['maghead','schema','build'], $args));
         $this->assertTrue($ret);
+        ob_end_clean();
     }
 
     /**
@@ -39,8 +41,10 @@ class SchemaCommandsTest extends CommandWorkFlowTestCase
      */
     public function testSchemaStatusCommand()
     {
+        ob_start();
         $ret = $this->app->run(array('maghead','schema','status'));
         $this->assertTrue($ret);
+        ob_end_clean();
     }
 
     /**

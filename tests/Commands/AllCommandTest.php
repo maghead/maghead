@@ -86,9 +86,10 @@ class AllCommandsTest extends CommandWorkFlowTestCase
      */
     public function testSeedCommand()
     {
-        $this->expectOutputRegex('/Seeding/');
+        ob_start();
         $ret = $this->app->run(['maghead','seed']);
         $this->assertTrue($ret);
+        ob_end_clean();
     }
 
 }

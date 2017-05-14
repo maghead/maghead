@@ -77,7 +77,9 @@ abstract class ModelTestCase extends DbTestCase
     {
         $seeder = new SeedBuilder($this->logger);
         $seeder->build($schemas);
-        $seeder->buildConfigSeeds($this->config);
+        if ($seeds = $this->config->loadSeedScripts()) {
+            $seedBuilder->buildSeeds($seeds);
+        }
     }
 
     protected function prepareTables(Connection $conn, BaseDriver $queryDriver, SchemaCollection $schemas, bool $rebuild)

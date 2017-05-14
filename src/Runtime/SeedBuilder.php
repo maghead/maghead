@@ -37,28 +37,26 @@ class SeedBuilder
                 }
             }
         }
-
         if ($seeds = $schema->getSeedClasses()) {
-            foreach ($seeds as $seedClass) {
-                if (class_exists($seedClass, true)) {
-                    $this->logger->info("Seeding: $seedClass");
-                    $seedClass::seed();
-                } else {
-                    $this->logger->error("ERROR: Seed script $seedClass not found.");
-                }
-            }
+            $this->buildSeeds($seeds);
         }
     }
 
-    public function buildConfigSeeds(Config $config)
+    /**
+     * Evaluate seed classes.
+     *
+     * @param BaseSeed[] $seeds
+     */
+    public function buildSeeds(array $seeds)
     {
-        if ($seeds = $config->loadSeedScripts()) {
-            foreach ($seeds as $seed) {
-                $seed::seed();
-            }
+        foreach ($seeds as $seed) {
+            $seed::seed();
         }
     }
 
+    /**
+     * Build seeds from an array of schema
+     */
     public function build($collection)
     {
         foreach ($collection as $s) {

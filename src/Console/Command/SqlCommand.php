@@ -109,8 +109,8 @@ DOC;
             if ($this->options->basedata) {
                 $seedBuilder = new SeedBuilder($this->logger);
                 $seedBuilder->build(new SchemaCollection($schemas));
-                if ($config) {
-                    $seedBuilder->buildConfigSeeds($config);
+                if ($seeds = $config->loadSeedScripts()) {
+                    $seedBuilder->buildSeeds($seeds);
                 }
             }
 
