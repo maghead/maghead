@@ -25,3 +25,4 @@ Test*.php
 *Base.php
 *BaseCollection.php
 *RepoBase.php
+/.maghead-cli.yml
