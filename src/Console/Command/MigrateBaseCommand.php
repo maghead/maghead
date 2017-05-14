@@ -9,6 +9,7 @@ class MigrateBaseCommand extends BaseCommand
     public function options($opts)
     {
         parent::options($opts);
+
         $opts->add('script-dir', 'Migration script directory. (default: db/migrations)')
             ->defaultValue('db/migrations')
             ;

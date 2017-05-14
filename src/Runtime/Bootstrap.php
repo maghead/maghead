@@ -4,7 +4,7 @@ namespace Maghead\Runtime;
 
 use Maghead\TableBuilder\BaseBuilder;
 use Maghead\Schema\SchemaCollection;
-use Maghead\Schema\SchemaFinder;
+use Maghead\Schema\Loader\FileSchemaLoader;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Runtime\BaseModel;
 use Maghead\Runtime\BaseCollection;
@@ -72,8 +72,8 @@ class Bootstrap
         // Load default schema loader
         $paths = $config->getSchemaPaths();
         if (!empty($paths)) {
-            $finder = new SchemaFinder($paths);
-            $finder->find();
+            $loader = new FileSchemaLoader($paths);
+            $loadedFiles = $loader->load();
         }
     }
 

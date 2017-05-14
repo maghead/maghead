@@ -3,7 +3,6 @@
 namespace Maghead\Console\Command;
 
 use Maghead\Migration\MigrationGenerator;
-use Maghead\Schema\SchemaFinder;
 use Maghead\Schema\SchemaLoader;
 
 class MigrateNewFromDiffCommand extends MigrateBaseCommand
@@ -19,10 +18,8 @@ class MigrateNewFromDiffCommand extends MigrateBaseCommand
         $driver = $conn->getQueryDriver();
 
         $config = $this->getConfig();
-        $this->logger->debug('Loading schema objects...');
-        $finder = new SchemaFinder();
-        $finder->setPaths($config->getSchemaPaths() ?: array());
-        $finder->load();
+
+        $this->loadSchemasFromArguments([]);
 
         $generator = new MigrationGenerator($this->logger, 'db/migrations');
         $this->logger->debug('Creating migration script from diff');

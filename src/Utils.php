@@ -2,8 +2,6 @@
 
 namespace Maghead;
 
-use Maghead\Schema\SchemaFinder;
-
 class Utils
 {
 

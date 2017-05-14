@@ -7,7 +7,8 @@ use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
 use Maghead\Runtime\Config\AutoConfigLoader;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Schema\SchemaLoader;
-use Maghead\Schema\SchemaFinder;
+use Maghead\Schema\Loader\FileSchemaLoader;
+use Maghead\Schema\Loader\ComposerSchemaLoader;
 use Maghead\Manager\DataSourceManager;
 use RuntimeException;
 use Maghead\Runtime\Bootstrap;
@@ -70,8 +71,16 @@ class BaseCommand extends Command
             $paths = $config->getSchemaPaths();
         }
         if (!empty($paths)) {
-            $finder = new SchemaFinder($paths);
-            $finder->find();
+            $loader = new FileSchemaLoader($paths);
+            $loadedFiles = $loader->load();
+        }
+        if (file_exists('composer.json')) {
+            $this->logger->info('Found composer.json, trying to scan files from the autoload sections...');
+            $loader = ComposerSchemaLoader::from('composer.json');
+            $loadedFiles = $loader->load();
+            foreach ($loadedFiles as $f) {
+                $this->logger->info("Found $f");
+            }
         }
 
         $classes = array_filter($args, function($a) { return class_exists($a, true); });
