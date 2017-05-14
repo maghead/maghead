@@ -78,7 +78,7 @@ abstract class DbTestCase extends TestCase
      */
     protected function config()
     {
-        $driverType = static::getCurrentDriverType();
+        $driverType = $this->getCurrentDriverType();
         $configFile = "tests/config/{$driverType}.yml";
 
         if (!file_exists($configFile)) {
@@ -107,7 +107,7 @@ abstract class DbTestCase extends TestCase
     {
         // for sqlite
         if ($this->freeConnections === null) {
-            $driverType = static::getCurrentDriverType();
+            $driverType = $this->getCurrentDriverType();
             $this->freeConnections = $driverType === 'sqlite';
         }
         if (true === $this->freeConnections) {
@@ -151,7 +151,7 @@ abstract class DbTestCase extends TestCase
             // Create the default connection
             $conn = $this->dataSourceManager->getWriteConnection($connId);
 
-            if (static::getCurrentDriverType() === 'sqlite') {
+            if ($this->getCurrentDriverType() === 'sqlite') {
                 // This is for sqlite:memory, copy the connection object to another connection ID.
                 $this->dataSourceManager->shareWrite($connId);
             }

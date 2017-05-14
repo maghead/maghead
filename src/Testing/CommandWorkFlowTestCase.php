@@ -40,7 +40,9 @@ abstract class CommandWorkFlowTestCase extends TestCase
 
     public static function setupApplication()
     {
-        $type = static::getCurrentDriverType();
+        // Note that we don't use getCurrentDriverType method because we can't
+        // call dynamic method here.
+        $type = getenv('DB') ?: static::DEFAULT_DRIVER_TYPE;
         copy("tests/config/$type.yml", "tests/config/tmp.yml");
 
         ob_start();

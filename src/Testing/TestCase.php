@@ -2,7 +2,6 @@
 
 namespace Maghead\Testing;
 
-
 /**
  * @codeCoverageIgnore
  */
@@ -26,13 +25,20 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected $skipDriver;
 
+    protected $currentDriverType;
+
+    public function setCurrentDriverType($type)
+    {
+        $this->currentDriverType = $type;
+    }
+
     /**
      * By overriding the DB environment variable, we can test specific test suites.
      */
-    protected static function getCurrentDriverType()
+    public function getCurrentDriverType()
     {
         // self::DEFAULT_DRIVER_TYPE
-        return getenv('DB') ?: self::DEFAULT_DRIVER_TYPE;
+        return $this->currentDriverType ?: getenv('DB') ?: self::DEFAULT_DRIVER_TYPE;
     }
 
     /**
@@ -43,7 +49,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function skipDrivers($driver)
     {
         $drivers = is_array($driver) ? $driver : func_get_args();
-        if (in_array(static::getCurrentDriverType(), $drivers)) {
+        if (in_array($this->getCurrentDriverType(), $drivers)) {
             return $this->markTestSkipped("Skip drivers: " . join(',', $drivers));
         }
     }
@@ -56,7 +62,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function forDrivers($driver)
     {
         $drivers = is_array($driver) ? $driver : func_get_args();
-        if (!in_array(static::getCurrentDriverType(), $drivers)) {
+        if (!in_array($this->getCurrentDriverType(), $drivers)) {
             return $this->markTestSkipped("only for drivers: " . join(',', $drivers));
         }
     }
@@ -71,7 +77,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $this->markTestSkipped("Skip {$this->skipDriver}");
         }
 
-        $driver = static::getCurrentDriverType();
+        $driver = $this->getCurrentDriverType();
         if (! extension_loaded("pdo_{$driver}")) {
             $this->markTestSkipped("pdo_{$driver} extension is required for model testing");
         }

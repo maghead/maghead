@@ -1,4 +1,5 @@
 <?php
+
 use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorSchema;
@@ -8,7 +9,7 @@ use AuthorBooks\Model\AddressSchema;
 /**
  * @group app
  */
-class AuthorAddressModelTest extends ModelTestCase
+class AuthorAddressTest extends ModelTestCase
 {
     public function models()
     {
