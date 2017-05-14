@@ -21,11 +21,12 @@ use GetOptionKit\OptionCollection;
  */
 class AuthorMigrationTest extends ModelTestCase
 {
-    protected $onlyDriver = 'mysql';
-
     public function models()
     {
-        return [];
+        return [
+            new AddressSchema,
+            new AuthorSchema,
+        ];
     }
 
     public function testImportSchema()
@@ -46,6 +47,8 @@ class AuthorMigrationTest extends ModelTestCase
 
     public function testModifyColumn()
     {
+        $this->forDrivers('mysql');
+
         $schema = new AuthorSchema;
         $schema->getColumn('email')
             ->varchar(20)
@@ -64,20 +67,31 @@ class AuthorMigrationTest extends ModelTestCase
 
     public function testAddColumn()
     {
+        // pgsql: multiple primary keys for table "authors" are not allowed
+        $this->skipDrivers('pgsql');
+
         $schema = new AuthorSchema;
+        $this->dropSchemaTables([$schema]);
+
         $schema->removeColumn('email');
+
         $this->buildSchemaTables([$schema], true);
+
         AutomaticMigration::options($options = new OptionCollection);
+
         $migrate = new AutomaticMigration(
             $this->conn,
             $this->queryDriver,
             $this->logger,
             OptionResult::create($options, [ ]));
+
         $migrate->upgrade([$schema]);
     }
 
     public function testRemoveColumn()
     {
+        $this->forDrivers('mysql');
+
         $schema = new AuthorSchema;
         $schema->column('cellphone')
             ->varchar(30);
