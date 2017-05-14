@@ -104,11 +104,23 @@ class Config extends ArrayObject
         return self::MASTER_ID;
     }
 
-    public function getSeedScripts()
+
+    /**
+     * load seed classes and return the seed objects
+     */
+    public function loadSeedScripts()
     {
-        if (isset($this['seeds'])) {
-            return $this['seeds'];
+        if (!isset($this['seeds'])) {
+            return [];
         }
+        $seeds = [];
+        foreach ($this['seeds'] as $seed) {
+            $seed = str_replace('::', '\\', $seed);
+            if (class_exists($seed, true)) {
+                $seeds[] = new $seed;
+            }
+        }
+        return $seeds;
     }
 
     public function setShardingConfig(array $config)

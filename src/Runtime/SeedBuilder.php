@@ -50,24 +50,11 @@ class SeedBuilder
         }
     }
 
-    public function buildScriptSeed($script)
-    {
-        if (file_exists($seed)) {
-            return require $seed;
-        } else {
-            $seed = str_replace('::', '\\', $seed);
-            if (class_exists($seed, true)) {
-                return $seed::seed();
-            }
-        }
-        throw new InvalidArgumentException('Invalid seed script name');
-    }
-
     public function buildConfigSeeds(Config $config)
     {
-        if ($seeds = $config->getSeedScripts()) {
+        if ($seeds = $config->loadSeedScripts()) {
             foreach ($seeds as $seed) {
-                $this->buildScriptSeed($seed);
+                $seed::seed();
             }
         }
     }
