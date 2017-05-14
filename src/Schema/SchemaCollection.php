@@ -164,7 +164,7 @@ class SchemaCollection extends ArrayObject
 
         $classes = get_declared_classes();
 
-        return new self($classes);
+        return (new self($classes))->buildable();
     }
 
     public static function create(array $args)
