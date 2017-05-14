@@ -51,9 +51,7 @@ abstract class ModelTestCase extends DbTestCase
         }
 
         $schemas = SchemaCollection::create($this->models())->evaluate();
-        if (! $this->schemaHasBeenBuilt) {
-            $this->prepareSchemaFiles($schemas);
-        }
+        $this->prepareSchemaFiles($schemas);
 
         if ($this->requiredDataSources) {
             foreach ($this->requiredDataSources as $nodeId) {
@@ -102,7 +100,6 @@ abstract class ModelTestCase extends DbTestCase
         $g = new SchemaGenerator($this->config);
         $g->setForceUpdate(true);
         $g->generate($schemas);
-        $this->schemaHasBeenBuilt = true;
     }
 
     protected function dropSchemaTables($schemas)
