@@ -1,6 +1,9 @@
 <?php
-use Maghead\Manager\MetadataManager;
+
+namespace Maghead\Manager;
+
 use Maghead\Model\MetadataSchema;
+use Maghead\Model\MetadataCollection;
 use Maghead\Testing\ModelTestCase;
 
 /**
@@ -10,9 +13,7 @@ class MetadataManagerTest extends ModelTestCase
 {
     public function models()
     {
-        return [
-            new MetadataSchema,
-        ];
+        return [ new MetadataSchema ];
     }
 
     public function testArrayAccessor()
@@ -51,7 +52,7 @@ class MetadataManagerTest extends ModelTestCase
         $metadata->init();
         $metadata['version'] = 1;
         $metadata['name'] = 'c9s';
-        $metas = new Maghead\Model\MetadataCollection;
+        $metas = new MetadataCollection;
         foreach ($metas as $meta) {
             $this->assertNotNull($meta);
         }
