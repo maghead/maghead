@@ -1,13 +1,13 @@
 <?php
-use Maghead\Schema\DeclareSchema;
-use Maghead\Schema\DeclareColumn;
 
-/**
- * @group schema
- */
-class DeclareColumnTest extends PHPUnit\Framework\TestCase
+namespace Maghead\Schema;
+
+use Maghead\Schema\DeclareSchema;
+use PHPUnit\Framework\TestCase;
+
+class DeclareColumnTest extends TestCase
 {
-    public function test()
+    public function testPrimaryKeyColumn()
     {
         $column = new DeclareColumn(new DeclareSchema, 'foo');
         $column->primary()

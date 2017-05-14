@@ -21,7 +21,7 @@ class MetadataManager implements ArrayAccess, IteratorAggregate
     /**
      * @var PDO PDO connection object
      */
-    public $connection;
+    protected $connection;
 
     /**
      * @var SQLBuilder\QueryDriver QueryDriver from SQLBuilder
