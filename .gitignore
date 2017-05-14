@@ -2,7 +2,6 @@
 .onion/
 .lazy.*
 .php_cs.cache
-*SchemaProxy.php
 /vendor
 /build/
 /db/config/*.php
@@ -17,11 +16,12 @@ tests/config/.database.config.php
 /tests/config/*.php
 src/Model/MetadataBase.php
 src/Model/MetadataCollectionBase.php
-src/Model/MetadataBaseRepo.php
+src/Model/MetadataRepoBase.php
 examples/todos/db/config/database.php
 /tests/migrations_testing/
 *.tmp.yml
 Test*.php
+*SchemaProxy.php
 *Base.php
 *BaseCollection.php
 *RepoBase.php
