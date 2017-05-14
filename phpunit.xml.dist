@@ -74,6 +74,7 @@
 
     <testsuite name="examples">
       <directory suffix="Test.php">examples/books</directory>
+      <directory suffix="Test.php">examples/metric</directory>
     </testsuite>
 
   </testsuites>

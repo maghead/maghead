@@ -53,7 +53,7 @@
     "autoload-dev": {
         "psr-4": {
             "AuthorBooks\\": "examples/books/",
-            "MetricApp\\": "tests/apps/MetricApp/",
+            "MetricApp\\": "examples/metric/",
             "PageApp\\": "tests/apps/PageApp/",
             "StoreApp\\": "tests/apps/StoreApp/",
             "TestApp\\": "tests/apps/TestApp/",
