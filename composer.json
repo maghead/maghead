@@ -54,7 +54,7 @@
         "psr-4": {
             "AuthorBooks\\": "examples/books/",
             "MetricApp\\": "examples/metric/",
-            "PageApp\\": "tests/apps/PageApp/",
+            "PageApp\\": "examples/page/",
             "StoreApp\\": "tests/apps/StoreApp/",
             "TestApp\\": "tests/apps/TestApp/",
             "Todos\\": "examples/todos/src/Todos/"

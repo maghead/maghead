@@ -64,17 +64,14 @@
       <directory suffix="Test.php">tests/Runtime</directory>
     </testsuite>
 
-    <testsuite name="PageApp">
-      <directory suffix="Test.php">tests/apps/PageApp</directory>
-    </testsuite>
-
     <testsuite name="StoreApp">
       <directory suffix="Test.php">tests/apps/StoreApp</directory>
     </testsuite>
 
     <testsuite name="examples">
-      <directory suffix="Test.php">examples/books</directory>
-      <directory suffix="Test.php">examples/metric</directory>
+      <directory suffix="Test.php">examples/books/Tests</directory>
+      <directory suffix="Test.php">examples/metric/Tests</directory>
+      <directory suffix="Test.php">examples/page/Tests</directory>
     </testsuite>
 
   </testsuites>
