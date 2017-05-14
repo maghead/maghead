@@ -46,9 +46,7 @@
 
   <testsuites>
     <testsuite name="All">
-      <!-- Run all apps tests before anyother tests -->
       <directory suffix="Test.php">src</directory>
-      <directory suffix="Test.php">tests/apps</directory>
       <directory suffix="Test.php">tests</directory>
     </testsuite>
 
