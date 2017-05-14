@@ -72,8 +72,12 @@
       <directory suffix="Test.php">tests/apps/StoreApp</directory>
     </testsuite>
 
-    <testsuite name="AuthorBooks">
-      <directory suffix="Test.php">tests/apps/AuthorBooks</directory>
+    <testsuite name="examples">
+      <directory suffix="Test.php">examples</directory>
+    </testsuite>
+
+    <testsuite name="BookStore">
+      <directory suffix="Test.php">examples/books</directory>
     </testsuite>
 
     <testsuite name="Schema">
