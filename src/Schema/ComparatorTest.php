@@ -2,6 +2,8 @@
 
 namespace Maghead\Schema;
 
+use PHPUnit\Framework\TestCase;
+
 use Maghead\Schema\Comparator;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Comparator\ConsolePrinter;
@@ -19,7 +21,7 @@ class NeutralDriver extends BaseDriver
 /**
  * @group schema
  */
-class ComparatorTest extends \PHPUnit\Framework\TestCase
+class ComparatorTest extends TestCase
 {
     public function testBasicComparison()
     {
