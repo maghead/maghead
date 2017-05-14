@@ -50,7 +50,6 @@ before_script:
   - if [[ "$DB" == "pgsql" ]]; then ./travis/setup-pgsql ; fi
   - if [[ "$DB" == "mysql" ]]; then ./travis/setup-mysql ; fi
   - bin/maghead use -f tests/config/$DB.yml
-  - php bin/maghead db create master
   - bin/maghead schema build f
 
 script:
