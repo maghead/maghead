@@ -1,9 +1,9 @@
 <?php
 namespace Todos\Model;
 
-use Todos\Model\TodoBaseRepo;
+use Todos\Model\TodoRepoBase;
 
 class TodoRepo
-    extends TodoBaseRepo
+    extends TodoRepoBase
 {
 }
