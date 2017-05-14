@@ -36,53 +36,16 @@ class BasicCRUDTest extends ModelTestCase
         parent::setUp();
     }
 
-    /**
-     * @expectedException PDOException
-     */
-    public function testTitleIsRequired()
-    {
-        $book = Book::load(array( 'name' => 'LoadOrCreateTest' ));
-        $this->assertNotFalse($book);
-        $this->assertNull($book->id);
-    }
-
-
-    public function testRecordRawCreateBook()
-    {
-        $ret = Book::rawCreate(array( 'title' => 'Go Programming' ));
-        $this->assertResultSuccess($ret);
-        $this->assertEquals(Result::TYPE_CREATE, $ret->type);
-
-        $book = Book::load($ret->key);
-        $this->assertNotNull($book->id);
-    }
-
-    public function testRecordRawUpdateBook()
-    {
-        $ret = Book::rawCreate(array( 'title' => 'Go Programming without software validation' ));
-        $this->assertResultSuccess($ret);
-        $this->assertNotNull($ret->key);
-
-
-        $book = Book::load($ret->key);
-        $ret = $book->rawUpdate(array( 'title' => 'Perl Programming without filtering' ));
-        $this->assertResultSuccess($ret);
-        $this->assertEquals(Result::TYPE_UPDATE, $ret->type);
-    }
-
-
-
     public function testLoadOrCreateModel()
     {
         $results = array();
-        $b = new \AuthorBooks\Model\Book;
 
-        $ret = $b->create(array( 'title' => 'Should Create, not load this' ));
+        $ret = Book::create(array( 'title' => 'Should Create, not load this' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
         $b = Book::masterRepo()->load($ret->key);
 
-        $ret = $b->create(array( 'title' => 'LoadOrCreateTest' ));
+        $ret = Book::create(array( 'title' => 'LoadOrCreateTest' ));
         $this->assertResultSuccess($ret);
         $results[] = $ret;
         $b = Book::masterRepo()->load($ret->key);
@@ -304,26 +267,5 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $this->assertEquals(4, $book->view);
         $this->assertResultSuccess($book->delete());
-    }
-
-
-
-    /**
-     * @rebuild false
-     */
-    public function testZeroInflator()
-    {
-        $b = new \AuthorBooks\Model\Book ;
-        $ret = $b->create(array( 'title' => 'Zero number inflator' , 'view' => 0 ));
-        $this->assertResultSuccess($ret);
-        $b = Book::masterRepo()->load($ret->key);
-        $this->assertNotNull($b->id);
-        $this->assertEquals(0, $b->view);
-
-        $found = Book::masterRepo()->load($ret->key);
-        $this->assertNotFalse($found);
-        $this->assertInstanceOf('AuthorBooks\Model\Book', $found);
-        $this->assertEquals(0, $found->view);
-        $this->assertDelete($found);
     }
 }

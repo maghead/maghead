@@ -1,4 +1,7 @@
 <?php
+
+namespace AuthorBooks\Tests;
+
 use Maghead\TableBuilder;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
@@ -22,9 +25,6 @@ class AuthorFactory
     }
 }
 
-/**
- * @group app
- */
 class AuthorCollectionTest extends ModelTestCase
 {
     public function models()

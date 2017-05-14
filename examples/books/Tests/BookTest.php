@@ -3,6 +3,7 @@ namespace AuthorBooks\Tests;
 
 use SQLBuilder\Raw;
 use Maghead\Testing\ModelTestCase;
+use Maghead\Runtime\Result;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\BookSchema;
@@ -204,6 +205,28 @@ class BookTest extends ModelTestCase
         $this->assertEquals($id, $book->id);
     }
 
+    public function testRecordRawCreateBook()
+    {
+        $ret = Book::rawCreate(array( 'title' => 'Go Programming' ));
+        $this->assertResultSuccess($ret);
+        $this->assertEquals(Result::TYPE_CREATE, $ret->type);
+
+        $book = Book::load($ret->key);
+        $this->assertNotNull($book->id);
+    }
+
+    public function testRecordRawUpdateBook()
+    {
+        $ret = Book::rawCreate([ 'title' => 'Go Programming without software validation' ]);
+        $this->assertResultSuccess($ret);
+        $this->assertNotNull($ret->key);
+
+
+        $book = Book::load($ret->key);
+        $ret = $book->rawUpdate([ 'title' => 'Perl Programming without filtering' ]);
+        $this->assertResultSuccess($ret);
+        $this->assertEquals(Result::TYPE_UPDATE, $ret->type);
+    }
 
     /**
      * @rebuild false
@@ -228,5 +251,15 @@ class BookTest extends ModelTestCase
 
         $book = Book::load($book->id);
         $this->assertEquals(2, $book->view);
+    }
+
+    /**
+     * @expectedException PDOException
+     */
+    public function testTitleIsRequired()
+    {
+        $book = Book::load(array( 'name' => 'LoadOrCreateTest' ));
+        $this->assertNotFalse($book);
+        $this->assertNull($book->id);
     }
 }

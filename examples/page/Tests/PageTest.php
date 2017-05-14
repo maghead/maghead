@@ -1,4 +1,7 @@
 <?php
+
+namespace PageApp\Tests;
+
 use Maghead\Testing\ModelTestCase;
 use PageApp\Model\Page;
 use PageApp\Model\PageSchema;
@@ -7,7 +10,7 @@ use PageApp\Model\PageCollection;
 /**
  * @group app
  */
-class PageModelTest extends ModelTestCase
+class PageTest extends ModelTestCase
 {
     public function models()
     {

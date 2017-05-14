@@ -5,8 +5,12 @@ use PHPUnit\Framework\TestSuite;
 abstract class AbstractDatabaseTestSuite extends TestSuite
 {
     static $crossPlatformTests = [
-        'AuthorBooks\Tests\AuthorTest',
-        'AuthorBooks\Tests\BookTest',
+        'AuthorBooks\\Tests\\AuthorTest',
+        'AuthorBooks\\Tests\\AuthorAddressTest',
+        'AuthorBooks\\Tests\\BookTest',
+        'AuthorBooks\\Tests\\AuthorBookTest',
+        'AuthorBooks\\Tests\\AuthorCollectionTest',
+        'PageApp\\Tests\\PageTest',
     ];
 
     public function setTestingDriverType($type)
@@ -31,6 +35,9 @@ class PgsqlSuiteTest extends AbstractDatabaseTestSuite
     {
         $suite = new self;
         foreach (static::$crossPlatformTests as $testCase) {
+            if (!class_exists($testCase, true)) {
+                throw new Exception("$testCase doesn't exist.");
+            }
             $suite->addTestSuite($testCase);
         }
         $suite->setTestingDriverType('pgsql');
@@ -47,6 +54,9 @@ class MysqlSuiteTest extends AbstractDatabaseTestSuite
     {
         $suite = new self;
         foreach (static::$crossPlatformTests as $testCase) {
+            if (!class_exists($testCase, true)) {
+                throw new Exception("$testCase doesn't exist.");
+            }
             $suite->addTestSuite($testCase);
         }
         $suite->setTestingDriverType('mysql');
@@ -63,6 +73,9 @@ class SqliteSuiteTest extends AbstractDatabaseTestSuite
     {
         $suite = new self;
         foreach (static::$crossPlatformTests as $testCase) {
+            if (!class_exists($testCase, true)) {
+                throw new Exception("$testCase doesn't exist.");
+            }
             $suite->addTestSuite($testCase);
         }
         $suite->setTestingDriverType('sqlite');
