@@ -23,6 +23,9 @@ use Exception;
  */
 abstract class DbTestCase extends TestCase
 {
+
+    const TMP_CONFIG_PATH = "tests/config/.config.tmp.yml";
+
     /**
      * @var string
      *
@@ -85,7 +88,8 @@ abstract class DbTestCase extends TestCase
             throw new InvalidArgumentException("$configFile doesn't exist.");
         }
 
-        $config = FileConfigLoader::load($configFile);
+        copy($configFile, self::TMP_CONFIG_PATH);
+        $config = FileConfigLoader::load(self::TMP_CONFIG_PATH, true);
         $config->setAutoId();
         return $config;
     }
@@ -115,6 +119,7 @@ abstract class DbTestCase extends TestCase
             $this->dataSourceManager->clean();
             $this->conn = null;
         }
+
     }
 
     public static function tearDownAfterClass()

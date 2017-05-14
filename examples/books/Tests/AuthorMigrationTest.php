@@ -18,7 +18,6 @@ use GetOptionKit\OptionResult;
 use GetOptionKit\OptionCollection;
 
 /**
- * @group app
  * @group mysql
  * @group migration
  */

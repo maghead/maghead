@@ -11,9 +11,6 @@ use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Driver\PDOPgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 
-/**
- * @group app
- */
 class AuthorTest extends ModelTestCase
 {
     protected $requiredDataSources = ['master', 'node1', 'node2', 'node3'];
@@ -25,15 +22,6 @@ class AuthorTest extends ModelTestCase
             new \AuthorBooks\Model\BookSchema,
             new \AuthorBooks\Model\AddressSchema,
         ];
-    }
-
-    public function tearDown()
-    {
-        // Clean up all author records
-        $authors = new AuthorCollection;
-        foreach ($authors as $author) {
-            $author->delete();
-        }
     }
 
     public function testSave()
@@ -410,11 +398,9 @@ class AuthorTest extends ModelTestCase
     /**
      * @group migration
      */
-    public function testMigrationRename()
+    public function testMigrationRenameColumn()
     {
-        if ($this->queryDriver instanceof SQLiteDriver) {
-            return $this->markTestSkipped('skip this test when sqlite driver is used.');
-        }
+        $this->skipDrivers('sqlite');
         $migration = new Migration($this->conn, $this->queryDriver, $this->logger);
         $author = new Author;
         $schema = $author->getDeclareSchema();
