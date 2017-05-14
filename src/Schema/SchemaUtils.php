@@ -10,14 +10,6 @@ use ReflectionClass;
 
 class SchemaUtils
 {
-    public static function printSchemaClasses(array $classes, Logger $logger)
-    {
-        $logger->info('Schema classes:');
-        foreach ($classes as $class) {
-            $logger->info($logger->formatter->format($class, 'green'), 1);
-        }
-    }
-
     /*
     static public function find_schema_parents(array $classes)
     {
