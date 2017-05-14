@@ -45,8 +45,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
     public function __construct(DeclareSchema $schema, $name = null, $type = null)
     {
         $this->schema = $schema;
-        $this->attributeTypes = $this->attributeTypes + array(
-            /* primary key */
+        $this->attributeTypes = array_merge($this->attributeTypes, array(
             'primary' => self::ATTR_FLAG,
             'size' => self::ATTR_INTEGER,
             'autoIncrement' => self::ATTR_FLAG,
@@ -58,14 +57,12 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
             'renderable' => self::ATTR_FLAG,
             'findable' => self::ATTR_FLAG,
 
-            /* column label */
             'label' => self::ATTR_ANY,
 
             'desc' => self::ATTR_STRING,
 
             'comment' => self::ATTR_STRING,
 
-            /* reference to model schema */
             'refer' => self::ATTR_STRING,
 
             'default' => self::ATTR_ANY,
@@ -80,24 +77,20 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
 
             'optionValues' => self::ATTR_ANY,
 
-            /* contains an associative array */
             'validPairs' => self::ATTR_ANY,
 
-            // canonicalizer
             'canonicalizer' => self::ATTR_CALLABLE,
 
             'virtual' => self::ATTR_FLAG,
 
             'required' => self::ATTR_FLAG,
 
-            // an alias of canonicalizer
             'filter' => self::ATTR_CALLABLE,
 
             'inflator' => self::ATTR_CALLABLE,
 
             'deflator' => self::ATTR_CALLABLE,
 
-            // renderAs widget
             'renderAs' => self::ATTR_STRING,
 
             'widgetAttributes' => self::ATTR_ARRAY,
@@ -107,7 +100,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
 
             /* primary field for CMS */
             'primaryField' => self::ATTR_FLAG,
-        );
+        ));
         parent::__construct($name, $type);
     }
 
