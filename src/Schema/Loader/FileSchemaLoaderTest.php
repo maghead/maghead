@@ -12,4 +12,25 @@ class FileSchemaLoaderTest extends TestCase
         $files = $loader->load();
         $this->assertNotEmpty($files);
     }
+
+    public function classDeclProvider()
+    {
+        $data = [];
+        $data[] = ["FooSchema extends DeclareSchema"];
+        $data[] = ["FooSchema extends\nDeclareSchema"];
+        $data[] = ["FooSchema\nextends\nDeclareSchema"];
+        $data[] = ["FooSchema extends\nMaghead\\Schema\\DeclareSchema"];
+        $data[] = ["FooSchema extends\nMaghead\\Schema\\MixinSchema"];
+        $data[] = ["PowerUserSchema extends UserSchema"];
+        return $data;
+    }
+
+
+    /**
+     * @dataProvider classDeclProvider
+     */
+    public function testClassDeclPattern($content)
+    {
+        $this->assertRegExp(FileSchemaLoader::CLASSDECL_PATTERN, $content);
+    }
 }
