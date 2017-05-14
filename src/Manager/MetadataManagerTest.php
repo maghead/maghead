@@ -2,6 +2,7 @@
 
 namespace Maghead\Manager;
 
+use Maghead\Model\Metadata;
 use Maghead\Model\MetadataSchema;
 use Maghead\Model\MetadataCollection;
 use Maghead\Testing\ModelTestCase;
@@ -18,7 +19,7 @@ class MetadataManagerTest extends ModelTestCase
 
     public function testArrayAccessor()
     {
-        $metadata = new MetadataManager($this->conn, $this->queryDriver);
+        $metadata = new MetadataManager($this->conn);
         $metadata->init();
         $metadata['version'] = 1;
         $this->assertEquals(1, $metadata['version']);
@@ -35,20 +36,20 @@ class MetadataManagerTest extends ModelTestCase
 
     public function testMetadata()
     {
-        $metadata = new MetadataManager($this->conn, $this->queryDriver);
+        $metadata = new MetadataManager($this->conn);
         $metadata->init();
 
-        $metaItem = new \Maghead\Model\Metadata;
+        $metaItem = new Metadata;
         $schema = $metaItem->getSchema();
         $this->assertNotNull($schema);
 
-        $ret = $metaItem->create(array('name' => 'version', 'value' => '0.1' ));
+        $ret = $metaItem->create(['name' => 'version', 'value' => '0.1' ]);
         $this->assertResultSuccess($ret);
     }
 
     public function testCollection()
     {
-        $metadata = new MetadataManager($this->conn, $this->queryDriver);
+        $metadata = new MetadataManager($this->conn);
         $metadata->init();
         $metadata['version'] = 1;
         $metadata['name'] = 'c9s';

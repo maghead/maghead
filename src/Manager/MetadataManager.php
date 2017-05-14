@@ -5,6 +5,7 @@ namespace Maghead\Manager;
 use ArrayAccess;
 use IteratorAggregate;
 use Maghead\TableParser\TableParser;
+use Maghead\TableBuilder\TableBuilder;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Runtime\Connection;
 use SQLBuilder\Driver\BaseDriver;
@@ -41,15 +42,6 @@ class MetadataManager implements ArrayAccess, IteratorAggregate
         $this->init();
     }
 
-    public static function createWithDataSource($dsId)
-    {
-        $connm = DataSourceManager::getInstance();
-        $connection = $connm->getConnection($dsId);
-        $driver = $connm->getQueryDriver($dsId);
-
-        return new self($connection, $driver);
-    }
-
     /**
      * This method initialize the metadata table if needed.
      */
@@ -61,7 +53,7 @@ class MetadataManager implements ArrayAccess, IteratorAggregate
         // if the __meta__table is not found, we should create one to prevent error.
         // this will be needed for the compatibility of the older version lazyrecord.
         if (!in_array('__meta__', $tables)) {
-            $schema = new \Maghead\Model\MetadataSchema();
+            $schema = new \Maghead\Model\MetadataSchema;
             $builder = \Maghead\TableBuilder\TableBuilder::create($this->driver);
             $sqls = $builder->build($schema);
             foreach ($sqls as $sql) {
