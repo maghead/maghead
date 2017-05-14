@@ -1,10 +1,10 @@
 <?php
 namespace TestApp\Model;
 
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 use SQLBuilder\Raw;
 
-class EdmSchema extends Schema
+class EdmSchema extends DeclareSchema
 {
     public function schema()
     {

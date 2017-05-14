@@ -1,9 +1,9 @@
 <?php
 namespace AuthorBooks\Model;
 
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 
-class BookSchema extends Schema
+class BookSchema extends DeclareSchema
 {
     public function schema()
     {

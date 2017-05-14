@@ -70,11 +70,19 @@ class FileSchemaLoader
                         RecursiveIteratorIterator::SELF_FIRST
                     );
                     foreach ($rii as $fi) {
+                        // skip non php files
                         if ('php' !== $fi->getExtension()) {
                             continue;
                         }
 
                         $filename = $fi->getFilename();
+
+                        // skip unit test files
+                        if (preg_match('/Test\.php$/i', $filename)) {
+                            continue;
+                        }
+
+
                         $filepath = $fi->getPathname();
 
                         switch ($matchBy) {

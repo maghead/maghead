@@ -1,9 +1,9 @@
 <?php
 namespace TestApp\Model;
 
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 
-class UserSchema extends Schema
+class UserSchema extends DeclareSchema
 {
     public function schema()
     {

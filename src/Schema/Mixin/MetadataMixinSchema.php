@@ -3,7 +3,7 @@
 namespace Maghead\Schema\Mixin;
 
 use Maghead\Schema\MixinDeclareSchema;
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 use DateTime;
 use SQLBuilder\Raw;
 

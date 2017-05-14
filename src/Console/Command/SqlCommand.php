@@ -3,7 +3,7 @@
 namespace Maghead\Console\Command;
 
 use CLIFramework\Logger;
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 use Maghead\TableBuilder\TableBuilder;
 use Maghead\Manager\MetadataManager;
 use Maghead\Manager\DataSourceManager;

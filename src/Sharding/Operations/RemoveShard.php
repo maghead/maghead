@@ -11,7 +11,7 @@ use Maghead\Manager\ConfigManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Manager\MetadataManager;
 use Maghead\Manager\TableManager;
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\SchemaUtils;
 use Maghead\TableBuilder\TableBuilder;
 

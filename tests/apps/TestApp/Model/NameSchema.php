@@ -2,7 +2,7 @@
 
 namespace TestApp\Model;
 
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 
 class NameSeed
 {
@@ -12,7 +12,7 @@ class NameSeed
     }
 }
 
-class NameSchema extends Schema
+class NameSchema extends DeclareSchema
 {
     public function schema()
     {

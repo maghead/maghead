@@ -5,7 +5,7 @@ namespace Maghead\Migration;
 use RuntimeException;
 use ReflectionClass;
 use CLIFramework\Logger;
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 use Maghead\TableParser\TableParser;
 use Maghead\Schema\Comparator;
 use ClassTemplate\ClassFile;

@@ -2,9 +2,9 @@
 namespace TestApp\Model;
 
 use Maghead\Runtime\BaseModel;
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 
-class WineSchema extends Schema
+class WineSchema extends DeclareSchema
 {
     public function schema()
     {

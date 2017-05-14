@@ -241,7 +241,7 @@ The bootstrap method is triggerd when you run:
 You can define specific data source for different model in the model schema:
 
 ```php
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 class UserSchema extends Schema {
     public function schema() {
         $this->writeTo('master');
@@ -253,7 +253,7 @@ class UserSchema extends Schema {
 Or you can specify for both (read and write):
 
 ```php
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 class UserSchema extends Schema {
     public function schema() {
         $this->using('master');
@@ -421,7 +421,7 @@ $driver->configure('quote_table',true);
 ## A More Advanced Model Schema
 
 ```php
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 
 class AuthorSchema extends Schema
 {

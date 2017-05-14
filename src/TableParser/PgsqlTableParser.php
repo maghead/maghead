@@ -3,7 +3,7 @@
 namespace Maghead\TableParser;
 
 use PDO;
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\DeclareSchema;
 
 class PgsqlTableParser extends BaseTableParser

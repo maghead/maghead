@@ -1,7 +1,7 @@
 <?php
 namespace AuthorBooks\Model;
 
-use Maghead\Schema;
+use Maghead\Schema\DeclareSchema;
 
 /**
  * @codegen currentUserCan=false
@@ -10,7 +10,7 @@ use Maghead\Schema;
  * @codegen validateRequire=false
  * @codegen handleValidationError=false
  */
-class TagSchema extends Schema
+class TagSchema extends DeclareSchema
 {
     public function schema()
     {
