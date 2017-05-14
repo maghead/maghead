@@ -32,7 +32,7 @@ class FileSchemaLoader
 
     protected $fileSuffixLen;
 
-    protected $matchBy = self::MATCH_FILENAME;
+    protected $matchBy = self::MATCH_CLASSDECL;
 
     protected $directoryIteratorFlags = RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::FOLLOW_SYMLINKS;
 
@@ -70,19 +70,25 @@ class FileSchemaLoader
                         RecursiveIteratorIterator::SELF_FIRST
                     );
                     foreach ($rii as $fi) {
+                        if ('php' !== $fi->getExtension()) {
+                            continue;
+                        }
+
                         $filename = $fi->getFilename();
+                        $filepath = $fi->getPathname();
+
                         switch ($matchBy) {
                             case self::MATCH_FILENAME:
                                 if (substr($filename, - $this->fileSuffixLen) == self::FILE_SUFFIX) {
                                     require_once $fi->getPathname();
-                                    $this->collectedFiles[] = $path;
+                                    $this->collectedFiles[] = $filepath;
                                 }
                                 break;
                             case self::MATCH_CLASSDECL:
                                 $content = file_get_contents($fi->getPathname());
                                 if (preg_match(self::CLASSDECL_PATTERN, $content, $matches)) {
                                     require_once $fi->getPathname();
-                                    $this->collectedFiles[] = $path;
+                                    $this->collectedFiles[] = $filepath;
                                 }
                                 break;
                         }
