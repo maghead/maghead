@@ -1,4 +1,7 @@
 <?php
+
+namespace AuthorBooks\Tests;
+
 use SQLBuilder\Raw;
 use Maghead\Testing\ModelTestCase;
 use Maghead\Runtime\Result;
@@ -67,27 +70,6 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertEquals(Result::TYPE_UPDATE, $ret->type);
     }
 
-
-    public function testFind()
-    {
-        $results = array();
-        $book1 = Book::createAndLoad(array( 'title' => 'Book1' ));
-        $this->assertNotFalse($book1);
-
-        $book2 = Book::createAndLoad(array( 'title' => 'Book2' ));
-        $this->assertNotFalse($book2);
-
-        $book = Book::load($book1->id);
-        $this->assertNotFalse($book);
-        $this->assertInstanceOf('AuthorBooks\Model\Book', $book);
-        $this->assertEquals($book1->id, $book->id);
-
-
-        $book = Book::load($book2->id);
-        $this->assertNotFalse($book);
-        $this->assertInstanceOf('AuthorBooks\Model\Book', $book);
-        $this->assertEquals($book2->id, $book->id);
-    }
 
 
     public function testLoadOrCreateModel()

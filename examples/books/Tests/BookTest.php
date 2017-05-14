@@ -13,7 +13,7 @@ use DateTime;
 /**
  * @group app
  */
-class BookModelTest extends ModelTestCase
+class BookTest extends ModelTestCase
 {
     public function models()
     {
@@ -33,6 +33,26 @@ class BookModelTest extends ModelTestCase
         $this->assertDelete($b);
     }
 
+    public function testFindBook()
+    {
+        $results = array();
+        $book1 = Book::createAndLoad(array( 'title' => 'Book1' ));
+        $this->assertNotFalse($book1);
+
+        $book2 = Book::createAndLoad(array( 'title' => 'Book2' ));
+        $this->assertNotFalse($book2);
+
+        $book = Book::load($book1->id);
+        $this->assertNotFalse($book);
+        $this->assertInstanceOf('AuthorBooks\Model\Book', $book);
+        $this->assertEquals($book1->id, $book->id);
+
+
+        $book = Book::load($book2->id);
+        $this->assertNotFalse($book);
+        $this->assertInstanceOf('AuthorBooks\Model\Book', $book);
+        $this->assertEquals($book2->id, $book->id);
+    }
 
     /**
      * TODO: Should we validate the field ? think again.

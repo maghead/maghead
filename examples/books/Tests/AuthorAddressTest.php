@@ -1,14 +1,13 @@
 <?php
 
+namespace AuthorBooks\Tests;
+
 use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorSchema;
 use AuthorBooks\Model\Address;
 use AuthorBooks\Model\AddressSchema;
 
-/**
- * @group app
- */
 class AuthorAddressTest extends ModelTestCase
 {
     public function models()

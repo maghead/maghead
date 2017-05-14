@@ -13,7 +13,7 @@ use SQLBuilder\Raw;
 /**
  * @group app
  */
-class AuthorBookModelTest extends ModelTestCase
+class AuthorBookTest extends ModelTestCase
 {
     public function models()
     {
