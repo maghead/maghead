@@ -26,7 +26,7 @@ class FileSchemaLoader
 
     const MATCH_CLASSDECL = 2;
 
-    const CLASSDECL_PATTERN = '/Schema\s+extends\s+((?:Maghead\\\\Schema\\\\)?(?:Declare|Mixin|\w+)Schema)/sm';
+    const CLASSDECL_PATTERN = '/Schema\s+extends\s+((?:Maghead\\\\Schema\\\\)?(?:Declare|Mixin|Template|\w+)Schema)/sm';
 
     protected $paths;
 
