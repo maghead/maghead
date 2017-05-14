@@ -95,7 +95,7 @@ abstract class BaseSchema
 
     public function getBaseRepoClass()
     {
-        return $this->getModelClass().'BaseRepo';
+        return $this->getModelClass().'RepoBase';
     }
 
     public function getCollectionClass()
