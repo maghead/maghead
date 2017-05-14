@@ -73,16 +73,9 @@
     </testsuite>
 
     <testsuite name="examples">
-      <directory suffix="Test.php">examples</directory>
-    </testsuite>
-
-    <testsuite name="BookStore">
       <directory suffix="Test.php">examples/books</directory>
     </testsuite>
 
-    <testsuite name="Schema">
-      <directory suffix="Test.php">tests/Schema</directory>
-    </testsuite>
   </testsuites>
 
   <logging>
