@@ -14,8 +14,28 @@ class SchemaFinderTest extends TestCase
     public function testSchemaFinder()
     {
         $finder = new SchemaFinder;
-        $files = $finder->findByPaths(['src', 'tests']);
+        $files = $finder->findByPaths(['src']);
         $this->assertNotEmpty($files);
+        $expected = array(
+            'src/Extensions/Localize/LocalizeMixinSchema.php',
+            'src/Extensions/Revision/RevisionMixinSchema.php',
+            'src/Model/MetadataSchema.php',
+            'src/Model/MetadataSchemaProxy.php',
+            'src/Schema/Column/UUIDColumnTest.php',
+            'src/Schema/DeclareSchema.php',
+            'src/Schema/DynamicSchemaDeclare.php',
+            'src/Schema/Loader/ComposerSchemaLoaderTest.php',
+            'src/Schema/Mixin/I18nSchema.php',
+            'src/Schema/Mixin/MetadataMixinSchema.php',
+            'src/Schema/MixinDeclareSchema.php',
+            'src/Schema/RuntimeSchema.php',
+            'src/Schema/SchemaDeclare.php',
+            'src/Schema/TemplateSchema.php',
+            'src/Schema.php',
+        );
+        foreach ($expected as $e) {
+            $this->assertContains($e, $files);
+        }
 
         $schemas = SchemaLoader::loadDeclaredSchemas();
         $this->assertNotEmpty($schemas);
