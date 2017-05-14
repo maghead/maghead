@@ -13,6 +13,17 @@ abstract class AbstractDatabaseTestSuite extends TestSuite
         'PageApp\\Tests\\PageTest',
     ];
 
+
+    public static function registerTests(TestSuite $suite)
+    {
+        foreach (static::$crossPlatformTests as $testCase) {
+            if (!class_exists($testCase, true)) {
+                throw new Exception("$testCase doesn't exist.");
+            }
+            $suite->addTestSuite($testCase);
+        }
+    }
+
     public function setTestingDriverType($type)
     {
         foreach ($this->tests() as $ts) {
@@ -34,12 +45,7 @@ class PgsqlSuiteTest extends AbstractDatabaseTestSuite
     public static function suite()
     {
         $suite = new self;
-        foreach (static::$crossPlatformTests as $testCase) {
-            if (!class_exists($testCase, true)) {
-                throw new Exception("$testCase doesn't exist.");
-            }
-            $suite->addTestSuite($testCase);
-        }
+        $suite->registerTests($suite);
         $suite->setTestingDriverType('pgsql');
         return $suite;
     }
@@ -53,12 +59,7 @@ class MysqlSuiteTest extends AbstractDatabaseTestSuite
     public static function suite()
     {
         $suite = new self;
-        foreach (static::$crossPlatformTests as $testCase) {
-            if (!class_exists($testCase, true)) {
-                throw new Exception("$testCase doesn't exist.");
-            }
-            $suite->addTestSuite($testCase);
-        }
+        $suite->registerTests($suite);
         $suite->setTestingDriverType('mysql');
         return $suite;
     }
@@ -72,12 +73,7 @@ class SqliteSuiteTest extends AbstractDatabaseTestSuite
     public static function suite()
     {
         $suite = new self;
-        foreach (static::$crossPlatformTests as $testCase) {
-            if (!class_exists($testCase, true)) {
-                throw new Exception("$testCase doesn't exist.");
-            }
-            $suite->addTestSuite($testCase);
-        }
+        $suite->registerTests($suite);
         $suite->setTestingDriverType('sqlite');
         return $suite;
     }
