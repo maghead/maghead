@@ -1,4 +1,7 @@
 <?php
+
+namespace AuthorBooks\Tests;
+
 use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorSchema;
