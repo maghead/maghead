@@ -24,7 +24,7 @@ use Exception;
 abstract class DbTestCase extends TestCase
 {
 
-    const TMP_CONFIG_PATH = "tests/config/.config.tmp.yml";
+    const TMP_CONFIG_PATH = "tests/config/tmp.yml";
 
     /**
      * @var string
