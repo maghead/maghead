@@ -1165,6 +1165,14 @@ class DeclareSchema extends BaseSchema implements Schema
         return $this->indexes;
     }
 
+    public function newSelectQuery()
+    {
+        $query = new SelectQuery();
+        $query->from($this->getTable());
+        $query->select('*');
+        return $query;
+    }
+
     public function newFindByGlobalPrimaryKeyQuery()
     {
         if ($globalPrimaryKey = $this->findGlobalPrimaryKey()) {
@@ -1183,11 +1191,11 @@ class DeclareSchema extends BaseSchema implements Schema
         return $query;
     }
 
-    public function newSelectQuery()
+    public function newDeleteByPrimaryKeyQuery()
     {
-        $query = new SelectQuery();
-        $query->from($this->getTable());
-        $query->select('*');
+        $query = new DeleteQuery();
+        $query->delete($this->getTable());
+        $query->where()->equal($this->primaryKey, new ParamMarker($this->primaryKey));
         return $query;
     }
 }

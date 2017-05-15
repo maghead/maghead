@@ -207,10 +207,7 @@ class BaseRepoClassGenerator
 
 
         $arguments = new ArgumentArray();
-        $deleteQuery = new DeleteQuery();
-        $deleteQuery->delete($schema->getTable());
-        $deleteQuery->where()->equal($schema->primaryKey, new ParamMarker($schema->primaryKey));
-        $deleteQuery->limit(1);
+        $deleteQuery = $schema->newDeleteByPrimaryKeyQuery();
         $deleteByPrimaryKeySql = $deleteQuery->toSql($writeQueryDriver, $arguments);
         $cTemplate->addConst('DELETE_BY_PRIMARY_KEY_SQL', $deleteByPrimaryKeySql);
         $cTemplate->addMethod('public',
