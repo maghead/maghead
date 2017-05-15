@@ -94,6 +94,20 @@ class PgsqlTableParser extends BaseTableParser
                 $column->decimals($typeInfo->precision);
             }
 
+            if ($val = $row->column_default) {
+                switch ($type) {
+                    case "boolean":
+                        $column->default(filter_var($val, FILTER_VALIDATE_BOOLEAN));
+                        break;
+                    case "integer":
+                        if (preg_match('/^\d+(.\d+)?$/', $val)) {
+                            $column->default(filter_var($val, FILTER_VALIDATE_INT));
+                        }
+                        break;
+                }
+            }
+
+            // Not supported yet.
             // $row->ordinal_position
             // $row->data_type
             // $row->column_default
