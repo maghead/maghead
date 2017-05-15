@@ -12,7 +12,6 @@ services:
 - postgresql
 - mysql
 
-
 addons:
   apt:
     packages:
@@ -26,9 +25,10 @@ php:
 # - hhvm
 
 env:
-  - DB=mysql     # mysql database tests only
-  - DB=sqlite    # pgsql database tests only
-  - DB=pgsql
+- DB=mysql     # mysql database tests only
+- DB=sqlite    # pgsql database tests only
+- DB=pgsql
+
 matrix:
   fast_finish: true
   allow_failures:

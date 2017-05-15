@@ -17,6 +17,9 @@ abstract class CrossPlatformSuiteTest extends TestSuite
 
     public static function registerTests(TestSuite $suite)
     {
+        if (getenv('DB') && getenv('DB') !== 'mysql') {
+            return;
+        }
         foreach (static::$crossPlatformTests as $testCase) {
             if (!class_exists($testCase, true)) {
                 throw new Exception("$testCase doesn't exist.");
@@ -27,7 +30,6 @@ abstract class CrossPlatformSuiteTest extends TestSuite
 
     public function setTestingDriverType($type)
     {
-        echo get_class($this), PHP_EOL;
         foreach ($this->tests() as $ts) {
             foreach ($ts->tests() as $tc) {
                 if (method_exists($tc, 'setCurrentDriverType')) {
