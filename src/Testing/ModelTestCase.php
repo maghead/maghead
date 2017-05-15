@@ -37,7 +37,6 @@ abstract class ModelTestCase extends DbTestCase
 
         // Ensure that we use the correct master data source ID
         $this->assertEquals($this->getMasterDataSourceId(), $this->config->getMasterDataSourceId());
-        $this->assertInstanceOf('SQLBuilder\\Driver\\BaseDriver', $this->queryDriver, 'QueryDriver object OK');
 
         // Rebuild means rebuild the database for new tests
         $annnotations = $this->getAnnotations();
@@ -59,7 +58,7 @@ abstract class ModelTestCase extends DbTestCase
                 $this->prepareDatabase($conn, $conn->getQueryDriver(), $schemas, $rebuild, $basedata);
             }
         } else {
-            $this->prepareDatabase($this->conn, $this->queryDriver, $schemas, $rebuild, $basedata);
+            $this->prepareDatabase($this->conn, $this->conn->getQueryDriver(), $schemas, $rebuild, $basedata);
         }
     }
 
@@ -97,9 +96,13 @@ abstract class ModelTestCase extends DbTestCase
 
     protected function prepareSchemaFiles(SchemaCollection $schemas)
     {
+        if ($this->schemaHasBeenBuilt) {
+            return;
+        }
         $g = new SchemaGenerator($this->config);
         $g->setForceUpdate(true);
         $g->generate($schemas);
+        $this->schemaHasBeenBuilt = true;
     }
 
     protected function dropSchemaTables($schemas)
