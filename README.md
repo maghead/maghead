@@ -210,31 +210,8 @@ class MetadataMixinSchema extends MixinDeclareSchema
 Then you can use the `fooMethod` on your model object:
 
 ```php
-$record = new FooModal;
 $result = $record->fooMethod(1,2,3,4);
 ```
-
-
-### Do Some Preparation When Model Is Ready
-
-If you want to do something after the schmea is created into a database, you can define a
-`bootstrap` method in your schema class:
-
-```php
-namespace User;
-class UserSchema extends Maghead\Schema { 
-    public function schema() {
-        // ...
-    }
-    public function bootstrap($model) {
-        // do something you want
-    }
-}
-```
-
-The bootstrap method is triggerd when you run:
-
-`lazy sql`
 
 ### Using Multiple Data Source
 
@@ -242,11 +219,14 @@ You can define specific data source for different model in the model schema:
 
 ```php
 use Maghead\Schema\DeclareSchema;
+
 class UserSchema extends DeclareSchema {
+
     public function schema() {
         $this->writeTo('master');
         $this->readFrom('slave');
     }
+
 }
 ```
 
@@ -254,10 +234,13 @@ Or you can specify for both (read and write):
 
 ```php
 use Maghead\Schema\DeclareSchema;
+
 class UserSchema extends DeclareSchema {
+
     public function schema() {
         $this->using('master');
     }
+
 }
 ```
 
@@ -272,7 +255,7 @@ change without pain.
 Once you modified the schema code, you can execute `lazy diff` command to compare
 current exisiting database table:
 
-    $ lazy diff
+    $ maghead diff
     + table 'authors'            tests/tests/Author.php
     + table 'addresses'          tests/tests/Address.php
     + table 'author_books'       tests/tests/AuthorBook.php
@@ -292,12 +275,12 @@ now you can generate the migration script or upgrade database schema directly.
 
 to upgrade database schema directly, you can simply run:
 
-    $ lazy migrate auto
+    $ maghead migrate auto
 
 to upgrade database schema through a customizable migration script, you can 
 generate a new migration script like:
 
-    $ lazy migrate diff AddUserRoleColumn
+    $ maghead migrate diff AddUserRoleColumn
     Loading schema objects...
     Creating migration script from diff
     Found 10 schemas to compare.
@@ -356,18 +339,18 @@ want.
 After the migration script is generated, you can check the status of 
 current database and waiting migration scripts:
 
-    $ lazy migrate status
+    $ maghead migrate status
     Found 1 migration script to be executed.
     - AddUserColumn_1347451491
 
 now you can run upgrade command to 
 upgrade database schema through the migration script:
 
-    $ lazy migrate up
+    $ maghead migrate up
 
 If you regret, you can run downgrade migrations through the command:
 
-    $ lazy migrate down
+    $ maghead migrate down
 
 But please note that SQLite doesn't support column renaming and column
 dropping.
@@ -375,25 +358,7 @@ dropping.
 To see what migration script could do, please check the documentation of
 SQLBuilder package.
 
-## Mix-In Schema
-
-...
-
-
-
-## Basedata Seed
-
-
-## Setting up QueryDriver for SQL syntax
- 
-```php
-$driver = Maghead\QueryDriver::getInstance('databases_id');
-$driver->configure('driver','pgsql');
-$driver->configure('quote_column',true);
-$driver->configure('quote_table',true);
-```
-
-## A More Advanced Model Schema
+### A More Advanced Model Schema
 
 ```php
 use Maghead\Schema\DeclareSchema;
@@ -437,31 +402,6 @@ class AuthorSchema extends DeclareSchema
     }
 }
 ```
-
-### Manipulating Schema Objects
-
-To get the model class name from a schema:
-
-```php
-$class = $schema->getModelClass();
-```
-
-To get the table name of a schema:
-
-```php
-$t = $schema->getTable();
-```
-
-To iterate the column objects, you may call `getColumns`, which returns the
-column objects in an associative array:
-
-```php
-foreach( $schema->getColumns() as $n => $c ) {
-    echo $c->name; // column name
-}
-```
-
-
 
 
 LICENSE
