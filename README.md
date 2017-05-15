@@ -18,12 +18,12 @@ Maghead
 Maghead is an open-source Object-Relational Mapping (ORM) designed for PHP7.
 
 Maghead uses static code generator to generate static classes that maps to the database records and methods, which reduces runtime
-costs, therefore it's pretty lightweight and fast.
+costs, therefore it's pretty lightweight and extremely fast.
 
 With the simple schema design, you can define your model schema very easily and
 you can even embed closure in your schema classes.
 
-How fast is it? [See the benchmark for more details](https://github.com/c9s/forked-php-orm-benchmark).
+How fast is it? Currently it's the fastest ORM written in pure PHP. [See the benchmark for more details](https://github.com/c9s/forked-php-orm-benchmark).
 
 Automatic Migration Demonstration
 --------------------------------
