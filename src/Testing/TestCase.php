@@ -37,7 +37,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     public function getCurrentDriverType()
     {
-        // self::DEFAULT_DRIVER_TYPE
         return $this->currentDriverType ?: getenv('DB') ?: self::DEFAULT_DRIVER_TYPE;
     }
 

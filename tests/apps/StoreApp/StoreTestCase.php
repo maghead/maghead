@@ -128,7 +128,11 @@ abstract class StoreTestCase extends ModelTestCase
     {
         $driver = $this->getCurrentDriverType();
         $configFile = "tests/apps/StoreApp/config/{$driver}.yml";
-        return FileConfigLoader::load($configFile, true);
+
+        $tmpConfig = "tests/apps/StoreApp/config/.tmp.yml";
+
+        copy($configFile, $tmpConfig);
+        return FileConfigLoader::load($tmpConfig, true);
     }
 
     public function orderDataProvider()
