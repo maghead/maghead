@@ -12,6 +12,7 @@ class MysqlSuiteTest extends CrossPlatformSuiteTest
         $suite = new self;
         $suite->registerTests($suite);
         $suite->setTestingDriverType('mysql');
+        $suite->addTestSuite('Maghead\\TableParser\\MysqlTableParserTest');
         return $suite;
     }
 }

@@ -12,6 +12,7 @@ class SqliteSuiteTest extends CrossPlatformSuiteTest
         $suite = new self;
         $suite->registerTests($suite);
         $suite->setTestingDriverType('sqlite');
+        $suite->addTestSuite('Maghead\\TableParser\\SqliteTableParserTest');
         return $suite;
     }
 }

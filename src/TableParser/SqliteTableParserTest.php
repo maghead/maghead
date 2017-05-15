@@ -1,17 +1,20 @@
 <?php
+
+namespace Maghead\TableParser;
+
 use SQLBuilder\Driver\PDOSQLiteDriver;
 use Maghead\TableParser\SqliteTableParser;
+use Maghead\Runtime\Connection;
+use PDO;
 
 /**
  * @group table-parser
  */
-class SqliteTableParserTest extends PHPUnit\Framework\TestCase
+class SqliteTableParserTest extends \PHPUnit\Framework\TestCase
 {
-
-
     public function testParsingQuotedIdentifier()
     {
-        $conn = new PDO('sqlite::memory:');
+        $conn = new Connection('sqlite::memory:');
         $defsql = "CREATE TABLE foo (`uuid` BINARY(16) NOT NULL PRIMARY KEY, `name` varchar(12))";
         $conn->query($defsql);
 
@@ -40,7 +43,7 @@ class SqliteTableParserTest extends PHPUnit\Framework\TestCase
 
     public function testSQLiteTableParser()
     {
-        $pdo = new PDO('sqlite::memory:');
+        $pdo = new Connection('sqlite::memory:');
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->query('CREATE TABLE foo ( id integer primary key autoincrement, name varchar(12), phone varchar(32) unique , address text not null );');
         $pdo->query('CREATE TABLE bar ( id integer primary key autoincrement, confirmed boolean default false, content blob );');

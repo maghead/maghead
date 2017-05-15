@@ -1,4 +1,7 @@
 <?php
+
+namespace Maghead\TableParser;
+
 use Maghead\Testing\DbTestCase;
 use SQLBuilder\Driver\PDOSQLiteDriver;
 use SQLBuilder\Driver\PDOMySQLDriver;
