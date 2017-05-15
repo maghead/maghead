@@ -63,7 +63,7 @@ class AuthorTest extends ModelTestCase
         )));
         $collection = $author->asCollection();
         $this->assertNotNull($collection);
-        $this->assertInstanceOf('Maghead\Runtime\BaseCollection', $collection);
+        $this->assertInstanceOf('Maghead\\Runtime\\BaseCollection', $collection);
         $this->assertResultSuccess($author->delete());
     }
 
