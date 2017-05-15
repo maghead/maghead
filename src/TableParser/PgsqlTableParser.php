@@ -106,14 +106,7 @@ class PgsqlTableParser extends BaseTableParser
                         break;
                 }
             }
-
-            // Not supported yet.
-            // $row->ordinal_position
-            // $row->data_type
-            // $row->column_default
-            // $row->character_maximum_length
         }
-
         return $schema;
     }
 }
