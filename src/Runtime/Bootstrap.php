@@ -97,6 +97,11 @@ class Bootstrap
         Collection::$dataSourceManager = $dataSourceManager;
     }
 
+    /**
+     * Setup the environment for models.
+     *
+     * If DataSourceManager is ignored, then the DataSourceManager singleton will be used.
+     */
     public static function setup(Config $config, DataSourceManager $dataSourceManager = null)
     {
         self::$config = $config;
