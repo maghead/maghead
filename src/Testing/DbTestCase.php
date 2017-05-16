@@ -17,6 +17,7 @@ use CLIFramework\Logger;
 use PDO;
 use PDOException;
 use Exception;
+use InvalidArgumentException;
 
 /**
  * @codeCoverageIgnore
