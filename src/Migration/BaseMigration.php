@@ -115,7 +115,7 @@ class BaseMigration
         if ($schema instanceof DeclareSchema) {
             $sqls = $this->builder->build($schema);
             $this->query($sqls);
-        } elseif ($schema instanceof BaseModel && method_exists($schema, 'schema')) {
+        } elseif ($schema instanceof Model && method_exists($schema, 'schema')) {
             $model = $schema;
             $schema = new DynamicSchemaDeclare($model);
             $sqls = $this->builder->build($schema);

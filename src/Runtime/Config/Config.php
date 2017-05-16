@@ -12,7 +12,7 @@ class Config extends ArrayObject
 
     const DEFAULT_BASE_COLLECTION_CLASS = '\\Maghead\\Runtime\\BaseCollection';
 
-    const DEFAULT_BASE_MODEL_CLASS = '\\Maghead\\Runtime\\BaseModel';
+    const DEFAULT_BASE_MODEL_CLASS = '\\Maghead\\Runtime\\Model';
 
     const DEFAULT_AUTO_ID_COLUMN_CLASS = '\\Maghead\\Schema\\Column\\AutoIncrementPrimaryKeyColumn';
 

@@ -193,9 +193,9 @@ abstract class Repo implements Countable
      * Inserts the record into the repository but local keys will be removed
      * before the insertion.
      *
-     * @param BaseModel $record
+     * @param Model $record
      */
-    public function import(BaseModel $record)
+    public function import(Model $record)
     {
         $new = clone $record;
         $new->removeLocalPrimaryKey();

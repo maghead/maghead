@@ -25,6 +25,6 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('Maghead\\Schema\\DeclareSchema', $schema);
 
         $model = $r->newForeignModel();
-        $this->assertInstanceOf('Maghead\\Runtime\\BaseModel', $model);
+        $this->assertInstanceOf('Maghead\\Runtime\\Model', $model);
     }
 }

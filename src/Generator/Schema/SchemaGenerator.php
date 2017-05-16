@@ -41,7 +41,7 @@ class SchemaGenerator
             return $this->config->getBaseModelClass();
         }
 
-        return 'Maghead\\Runtime\\BaseModel';
+        return 'Maghead\\Runtime\\Model';
     }
 
     protected function getBaseCollectionClass()

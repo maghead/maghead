@@ -4,7 +4,7 @@ namespace Maghead\Testing;
 
 use Maghead\Manager\DataSourceManager;
 use Maghead\TableBuilder\TableBuilder;
-use Maghead\Runtime\BaseModel;
+use Maghead\Runtime\Model;
 use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\DeclareSchema;
@@ -278,7 +278,7 @@ abstract class DbTestCase extends TestCase
         }
     }
 
-    public function assertDelete(BaseModel $record)
+    public function assertDelete(Model $record)
     {
         $this->assertResultSuccess($record->delete());
     }
@@ -288,9 +288,9 @@ abstract class DbTestCase extends TestCase
         $this->assertTrue($ret->error, $message ?: $ret->message);
     }
 
-    public function assertInstanceOfModel(BaseModel $record)
+    public function assertInstanceOfModel(Model $record)
     {
-        $this->assertInstanceOf('Maghead\Runtime\BaseModel', $record);
+        $this->assertInstanceOf('Maghead\Runtime\Model', $record);
     }
 
     public function assertInstanceOfCollection(BaseCollection $collection)
@@ -303,7 +303,7 @@ abstract class DbTestCase extends TestCase
         $this->assertEquals($size, $collection->size(), $message ?: 'Colletion size should match');
     }
 
-    public function assertRecordLoaded(BaseModel $record, $message = null)
+    public function assertRecordLoaded(Model $record, $message = null)
     {
         $data = $record->getStashedData();
         $this->assertNotEmpty($data, $message ?: 'Record loaded');

@@ -15,7 +15,7 @@ $config = ConfigLoader::loadFromArray([
     'cli' => ['bootstrap' => 'vendor/autoload.php'],
     'schema' => [
         'auto_id' => true,
-        'base_model' => '\\Maghead\\Runtime\\BaseModel',
+        'base_model' => '\\Maghead\\Runtime\\Model',
         'base_collection' => '\\Maghead\\Runtime\\BaseCollection',
         'paths' => ['tests'],
     ],

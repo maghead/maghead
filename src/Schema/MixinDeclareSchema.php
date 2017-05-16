@@ -36,7 +36,7 @@ class MixinDeclareSchema extends DeclareSchema
     }
 
     /**
-     * compatible methods for BaseModel to mixin.
+     * compatible methods for Model to mixin.
      */
     public static function beforeCreate($args)
     {

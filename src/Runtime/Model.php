@@ -39,7 +39,7 @@ defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
  * Base Model class,
  * every model class extends from this class.
  */
-abstract class BaseModel implements Serializable
+abstract class Model implements Serializable
 {
     use ActionCreatorTrait;
     use RepoFactoryTrait;
@@ -282,7 +282,7 @@ abstract class BaseModel implements Serializable
     /**
      * Create and return the created record from the master repository.
      *
-     * @return BaseModel
+     * @return Model
      */
     public static function createAndLoad(array $args)
     {
@@ -709,7 +709,7 @@ abstract class BaseModel implements Serializable
 
         // for relationship record
         $val = $this->get($name);
-        if ($val && $val instanceof \Maghead\Runtime\BaseModel) {
+        if ($val && $val instanceof \Maghead\Runtime\Model) {
             return $val->dataLabel();
         }
     }
@@ -846,7 +846,7 @@ abstract class BaseModel implements Serializable
      * Dynamically create a model object with the relationship key for HAS-ONE relationship.
      *
      * @param string $key
-     * @return \Maghead\Runtime\BaseModel
+     * @return \Maghead\Runtime\Model
      */
     protected function fetchHasOne($key)
     {
@@ -869,7 +869,7 @@ abstract class BaseModel implements Serializable
      * Dynamically create a model object with the relationship key for BELONGS-TO relationship.
      *
      * @param string $key
-     * @return \Maghead\Runtime\BaseModel
+     * @return \Maghead\Runtime\Model
      */
     protected function fetchBelongsTo($key)
     {

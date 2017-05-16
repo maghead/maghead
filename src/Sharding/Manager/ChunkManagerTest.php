@@ -89,7 +89,7 @@ class ChunkManagerTest extends StoreTestCase
         foreach ($orderIds as $oId) {
             $o = $repo2->findByPrimaryKey($oId);
             $this->assertNotFalse($o);
-            $this->assertInstanceOf('Maghead\\Runtime\\BaseModel', $o);
+            $this->assertInstanceOf('Maghead\\Runtime\\Model', $o);
         }
     }
 

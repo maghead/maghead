@@ -196,7 +196,7 @@ abstract class BaseSchema
                 throw new RuntimeException("Foreign schema class '$class' not found in schema {$this}.");
             }
 
-            if (is_a($class, 'Maghead\\Runtime\\BaseModel', true)) {
+            if (is_a($class, 'Maghead\\Runtime\\Model', true)) {
                 // bless model class to schema object.
                 if (!method_exists($class, 'schema')) {
                     throw new Exception(get_class($this).": You need to define schema method in $class class.");

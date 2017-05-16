@@ -9,7 +9,7 @@ use SQLBuilder\Universal\Syntax\Constraint;
 use Maghead\Schema\DynamicSchemaDeclare;
 use Maghead\Schema\Schema;
 use Maghead\Schema\Relationship\Relationship;
-use Maghead\Runtime\BaseModel;
+use Maghead\Runtime\Model;
 use Maghead\Schema\DeclareColumn;
 
 abstract class BaseBuilder
@@ -75,7 +75,7 @@ abstract class BaseBuilder
 
     public function build(Schema $schema)
     {
-        if ($schema instanceof BaseModel) {
+        if ($schema instanceof Model) {
             $model = $schema;
             $schema = new DynamicSchemaDeclare($model);
         }

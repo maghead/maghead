@@ -344,7 +344,7 @@ class AuthorTest extends ModelTestCase
         $unusedAddresses = $author->unused_addresses;
         $this->assertCollectionSize(1, $unusedAddresses);
 
-        $this->assertInstanceOf('Maghead\Runtime\BaseModel', $unusedAddresses[0]);
+        $this->assertInstanceOf('Maghead\Runtime\Model', $unusedAddresses[0]);
         $this->assertTrue($unusedAddresses[0]->isUnused());
     }
 

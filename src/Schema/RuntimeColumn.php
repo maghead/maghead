@@ -5,7 +5,7 @@ namespace Maghead\Schema;
 use DateTime;
 use Maghead\Runtime\Deflator;
 use Maghead\Runtime\Inflator;
-use Maghead\Runtime\BaseModel;
+use Maghead\Runtime\Model;
 use Maghead\Utils\ArrayUtils;
 use Maghead\Utils;
 use Exception;
@@ -135,7 +135,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      * record ($record) and the arguments ($args)
      *
      * @param mixed     $value
-     * @param BaseModel $record
+     * @param Model $record
      * @param array     $args
      *
      * @return mixed $value
@@ -255,7 +255,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
      *
      * @param mixed $value
      * @param array $args
-     * @param BaseModel $record
+     * @param Model $record
      *
      * A validator could be:
      *   1. a ValidationKit validator,

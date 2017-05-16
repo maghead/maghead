@@ -49,7 +49,7 @@ class BaseRepoClassGenerator
 
         $cTemplate->useClass('Maghead\\Schema\\SchemaLoader');
         $cTemplate->useClass('Maghead\\Runtime\\Result');
-        $cTemplate->useClass('Maghead\\Runtime\\BaseModel');
+        $cTemplate->useClass('Maghead\\Runtime\\Model');
         $cTemplate->useClass('Maghead\\Runtime\\Inflator');
         $cTemplate->useClass('SQLBuilder\\Bind');
         $cTemplate->useClass('SQLBuilder\\ArgumentArray');
@@ -236,7 +236,7 @@ class BaseRepoClassGenerator
                     $cTemplate->addProtectedProperty($propertyName);
 
                     $selfColumn    = $rel->getSelfColumn();
-                    $cTemplate->addMethod('public', $methodName, ['BaseModel $record'],
+                    $cTemplate->addMethod('public', $methodName, ['Model $record'],
                         PDOStatementGenerator::generateFetchOne(
                             $propertyName,
                             $constName,
@@ -252,7 +252,7 @@ class BaseRepoClassGenerator
                     $cTemplate->addProtectedProperty($propertyName);
 
                     $selfColumn = $rel->getSelfColumn();
-                    $cTemplate->addMethod('public', $methodName, ['BaseModel $record'],
+                    $cTemplate->addMethod('public', $methodName, ['Model $record'],
                         PDOStatementGenerator::generateFetchAll(
                             $propertyName,
                             $constName,

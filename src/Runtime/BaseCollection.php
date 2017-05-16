@@ -480,7 +480,7 @@ abstract class BaseCollection implements IteratorAggregate, ArrayAccess, Countab
         $this->explictSelect = true;
 
         // for models and schemas join
-        if ($target instanceof BaseModel || $target instanceof BaseSchema) {
+        if ($target instanceof Model || $target instanceof BaseSchema) {
             $query = $this->getCurrentQuery();
             $table = $target->getTable();
 
@@ -545,7 +545,7 @@ abstract class BaseCollection implements IteratorAggregate, ArrayAccess, Countab
     /**
      * Get items.
      *
-     * @return Maghead\Runtime\BaseModel[]
+     * @return Maghead\Runtime\Model[]
      */
     public function items()
     {
@@ -684,7 +684,7 @@ abstract class BaseCollection implements IteratorAggregate, ArrayAccess, Countab
     }
 
 
-    public function add(BaseModel $record)
+    public function add(Model $record)
     {
         $this->rows[] = $record;
     }
@@ -873,7 +873,7 @@ abstract class BaseCollection implements IteratorAggregate, ArrayAccess, Countab
     /**
      * Create a new model object.
      *
-     * @return object BaseModel
+     * @return object Model
      */
     public function newModel()
     {
@@ -889,7 +889,7 @@ abstract class BaseCollection implements IteratorAggregate, ArrayAccess, Countab
         $schema = static::getSchema();
         $records = [];
         foreach ($list as $item) {
-            if ($item instanceof BaseModel) {
+            if ($item instanceof Model) {
                 $records[] = $item;
             } else {
                 $model = $schema->newModel();

@@ -6,7 +6,7 @@ use Maghead\TableBuilder\BaseBuilder;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\Loader\FileSchemaLoader;
 use Maghead\Manager\DataSourceManager;
-use Maghead\Runtime\BaseModel;
+use Maghead\Runtime\Model;
 use Maghead\Runtime\BaseCollection;
 use Maghead\Runtime\Config\Config;
 use PDOException;
@@ -93,7 +93,7 @@ class Bootstrap
 
     public static function setupGlobalVars(Config $config, DataSourceManager $dataSourceManager)
     {
-        BaseModel::$dataSourceManager = $dataSourceManager;
+        Model::$dataSourceManager = $dataSourceManager;
         BaseCollection::$dataSourceManager = $dataSourceManager;
     }
 
@@ -104,7 +104,7 @@ class Bootstrap
         $dataSourceManager = DataSourceManager::getInstance();
 
         // TODO: this could be moved to Environment class.
-        BaseModel::$yamlExtension = extension_loaded('yaml');
+        Model::$yamlExtension = extension_loaded('yaml');
 
         self::setupDataSources($config, $dataSourceManager);
         self::setupGlobalVars($config, $dataSourceManager);
