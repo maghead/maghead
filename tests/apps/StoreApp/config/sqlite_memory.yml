@@ -4,7 +4,7 @@ cli:
 schema:
   auto_id: true
   base_model: \Maghead\Runtime\Model
-  base_collection: \Maghead\BaseCollection
+  base_collection: \Maghead\Collection
   paths:
   - tests
 instance:

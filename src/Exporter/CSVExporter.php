@@ -2,7 +2,7 @@
 
 namespace Maghead\Exporter;
 
-use Maghead\Runtime\BaseCollection;
+use Maghead\Runtime\Collection;
 use PDOStatement;
 use PDO;
 
@@ -78,7 +78,7 @@ class CSVExporter
      *
      * int fputcsv ( resource $handle , array $fields [, string $delimiter = "," [, string $enclosure = '"' [, string $escape_char = "\" ]]] )
      */
-    public function exportCollection(BaseCollection $collection, array $intersectKeys = null)
+    public function exportCollection(Collection $collection, array $intersectKeys = null)
     {
         $schema = $collection->getSchema();
         $keys = $schema->getColumnNames();

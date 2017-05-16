@@ -705,7 +705,7 @@ abstract class Repo implements Countable
      * @param SelectQuery $query
      * @param ArgumentArray $args
      *
-     * @return Maghead\Runtime\BaseCollection
+     * @return Maghead\Runtime\Collection
      */
     public function fetchCollection(SelectQuery $query)
     {

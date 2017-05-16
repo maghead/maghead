@@ -4,7 +4,7 @@ namespace Maghead\Runtime;
 
 use Closure;
 use Exception;
-use Maghead\Runtime\BaseCollection;
+use Maghead\Runtime\Collection;
 
 class CollectionFilter
 {
@@ -47,7 +47,7 @@ class CollectionFilter
 
     public $validFields = array();
 
-    public function __construct(BaseCollection $collection)
+    public function __construct(Collection $collection)
     {
         $this->collection = $collection;
         $this->schema = $collection->getSchema();

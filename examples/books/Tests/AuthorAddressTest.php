@@ -62,7 +62,7 @@ class AuthorAddressTest extends ModelTestCase
             $this->assertNotFalse($address);
         }
         $addresses = $author->getAddresses();
-        $this->assertInstanceOf('Maghead\Runtime\BaseCollection', $addresses);
+        $this->assertInstanceOf('Maghead\Runtime\Collection', $addresses);
         $this->assertCount(10, $addresses);
     }
 

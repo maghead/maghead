@@ -3,7 +3,7 @@
 namespace Maghead\Exporter;
 
 use Maghead\Runtime\Model;
-use Maghead\Runtime\BaseCollection;
+use Maghead\Runtime\Collection;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Schema\Schema;
 use DOMDocument;
@@ -47,7 +47,7 @@ class XMLExporter
     /**
      * @return DOMDocument
      */
-    public function exportCollection(BaseCollection $collection)
+    public function exportCollection(Collection $collection)
     {
         $dom = new DOMDocument('1.0', 'utf-8');
         $root = $dom->createElement('export');

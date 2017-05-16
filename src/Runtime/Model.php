@@ -1006,7 +1006,7 @@ abstract class Model implements Serializable
     /**
      * Return the collection object of current model object.
      *
-     * @return Maghead\Runtime\BaseCollection
+     * @return Maghead\Runtime\Collection
      */
     public function asCollection()
     {

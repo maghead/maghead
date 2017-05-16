@@ -8,7 +8,7 @@ use Maghead\Runtime\Model;
 use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\DeclareSchema;
-use Maghead\Runtime\BaseCollection;
+use Maghead\Runtime\Collection;
 use Maghead\Runtime\Result;
 use Maghead\Runtime\Bootstrap;
 use Maghead\Runtime\PDOExceptionPrinter;
@@ -293,12 +293,12 @@ abstract class DbTestCase extends TestCase
         $this->assertInstanceOf('Maghead\Runtime\Model', $record);
     }
 
-    public function assertInstanceOfCollection(BaseCollection $collection)
+    public function assertInstanceOfCollection(Collection $collection)
     {
-        $this->assertInstanceOf('Maghead\Runtime\BaseCollection', $collection);
+        $this->assertInstanceOf('Maghead\Runtime\Collection', $collection);
     }
 
-    public function assertCollectionSize($size, BaseCollection $collection, $message = null)
+    public function assertCollectionSize($size, Collection $collection, $message = null)
     {
         $this->assertEquals($size, $collection->size(), $message ?: 'Colletion size should match');
     }

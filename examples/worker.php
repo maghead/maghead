@@ -16,7 +16,7 @@ $config = ConfigLoader::loadFromArray([
     'schema' => [
         'auto_id' => true,
         'base_model' => '\\Maghead\\Runtime\\Model',
-        'base_collection' => '\\Maghead\\Runtime\\BaseCollection',
+        'base_collection' => '\\Maghead\\Runtime\\Collection',
         'paths' => ['tests'],
     ],
     'sharding' => [

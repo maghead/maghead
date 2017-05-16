@@ -3,7 +3,7 @@
 namespace Maghead\Schema\Relationship;
 
 use SQLBuilder\Universal\Syntax\Conditions;
-use Maghead\Runtime\BaseCollection;
+use Maghead\Runtime\Collection;
 use LogicException;
 use ArrayAccess;
 use IteratorAggregate;
@@ -84,7 +84,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
      *
      * This method is only for many-to-many relationship object.
      *
-     * @return Maghead\Runtime\BaseCollection The foreign foreign collection.
+     * @return Maghead\Runtime\Collection The foreign foreign collection.
      */
     public function newForeignForeignCollection($junctionRelation)
     {
@@ -115,21 +115,21 @@ class Relationship implements IteratorAggregate, ArrayAccess
         return $this->data['type'] === self::HAS_MANY;
     }
 
-    public function applyFilter(BaseCollection &$collection)
+    public function applyFilter(Collection &$collection)
     {
         if (isset($this->data['filter'])) {
             $collection = call_user_func_array($this->data['filter'], array($collection));
         }
     }
 
-    public function applyWhere(BaseCollection &$collection)
+    public function applyWhere(Collection &$collection)
     {
         if ($this->where) {
             $collection->setWhere($this->where);
         }
     }
 
-    public function applyOrder(BaseCollection &$collection)
+    public function applyOrder(Collection &$collection)
     {
         if (isset($this->data['orderBy']) && $this->data['orderBy']) {
             foreach ($this->data['orderBy'] as $o) {

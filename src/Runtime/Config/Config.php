@@ -10,7 +10,7 @@ class Config extends ArrayObject
 {
     public $file;
 
-    const DEFAULT_BASE_COLLECTION_CLASS = '\\Maghead\\Runtime\\BaseCollection';
+    const DEFAULT_BASE_COLLECTION_CLASS = '\\Maghead\\Runtime\\Collection';
 
     const DEFAULT_BASE_MODEL_CLASS = '\\Maghead\\Runtime\\Model';
 

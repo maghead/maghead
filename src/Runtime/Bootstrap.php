@@ -7,7 +7,7 @@ use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\Loader\FileSchemaLoader;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Runtime\Model;
-use Maghead\Runtime\BaseCollection;
+use Maghead\Runtime\Collection;
 use Maghead\Runtime\Config\Config;
 use PDOException;
 use Exception;
@@ -94,7 +94,7 @@ class Bootstrap
     public static function setupGlobalVars(Config $config, DataSourceManager $dataSourceManager)
     {
         Model::$dataSourceManager = $dataSourceManager;
-        BaseCollection::$dataSourceManager = $dataSourceManager;
+        Collection::$dataSourceManager = $dataSourceManager;
     }
 
     public static function setup(Config $config)

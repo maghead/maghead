@@ -50,7 +50,7 @@ class SchemaGenerator
             return $this->config->getBaseCollectionClass();
         }
 
-        return 'Maghead\\Runtime\\BaseCollection';
+        return 'Maghead\\Runtime\\Collection';
     }
 
     /**

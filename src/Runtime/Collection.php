@@ -27,7 +27,7 @@ defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
 /**
  * base collection class.
  */
-abstract class BaseCollection implements IteratorAggregate, ArrayAccess, Countable
+abstract class Collection implements IteratorAggregate, ArrayAccess, Countable
 {
     use RepoFactoryTrait;
     use WhereTrait;
