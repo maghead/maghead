@@ -93,7 +93,7 @@ abstract class BaseModel implements Serializable
      *
      * @endcode
      */
-    public function __construct(BaseRepo $repo = null)
+    public function __construct(Repo $repo = null)
     {
         $this->repo = $repo;
     }
@@ -153,12 +153,12 @@ abstract class BaseModel implements Serializable
     }
 
     /**
-     * An alias for BaseRepo::findByKeys
+     * An alias for Repo::findByKeys
      */
     protected static function findByKeys(array $args, $byKeys = null)
     {
         if (static::SHARD_MAPPING_ID) {
-            return static::shards()->first(function (BaseRepo $repo, Shard $shard) use ($arg, $byKeys) {
+            return static::shards()->first(function (Repo $repo, Shard $shard) use ($arg, $byKeys) {
                 return $repo->findByKeys($args, $byKeys);
             });
         }
@@ -300,7 +300,7 @@ abstract class BaseModel implements Serializable
     public static function load($arg)
     {
         if (static::SHARD_MAPPING_ID) {
-            return static::shards()->first(function (BaseRepo $repo, Shard $shard) use ($arg) {
+            return static::shards()->first(function (Repo $repo, Shard $shard) use ($arg) {
                 return $repo->load($arg);
             });
         }
@@ -310,7 +310,7 @@ abstract class BaseModel implements Serializable
     public static function findByPrimaryKey($arg)
     {
         if (static::SHARD_MAPPING_ID) {
-            return static::shards()->first(function (BaseRepo $repo, Shard $shard) use ($arg) {
+            return static::shards()->first(function (Repo $repo, Shard $shard) use ($arg) {
                 return $repo->findByPrimaryKey($arg);
             });
         }
@@ -320,7 +320,7 @@ abstract class BaseModel implements Serializable
     public static function findWith($args)
     {
         if (static::SHARD_MAPPING_ID) {
-            return static::shards()->first(function (BaseRepo $repo, Shard $shard) use ($arg) {
+            return static::shards()->first(function (Repo $repo, Shard $shard) use ($arg) {
                 return $repo->findWith($arg);
             });
         }
@@ -330,7 +330,7 @@ abstract class BaseModel implements Serializable
     public static function loadForUpdate($args)
     {
         if (static::SHARD_MAPPING_ID) {
-            return static::shards()->first(function (BaseRepo $repo, Shard $shard) use ($arg) {
+            return static::shards()->first(function (Repo $repo, Shard $shard) use ($arg) {
                 // FIXME: the update should commit the transation on the same connection.
                 return $repo->loadForUpdate($arg);
             });
@@ -400,10 +400,10 @@ abstract class BaseModel implements Serializable
      * Imports the current record to the target repository.
      * This method will keep all the primary keys for the created record.
      *
-     * @param BaseRepo $target The target repository.
+     * @param Repo $target The target repository.
      * @return Result
      */
-    public function import(BaseRepo $target)
+    public function import(Repo $target)
     {
         // just a simple check
         if ($this->repo === $target) {
@@ -422,10 +422,10 @@ abstract class BaseModel implements Serializable
      *
      * Note: This method removes the local primary key (int + auto_increment) and global primar key (uuid keys)
      *
-     * @param BaseRepo $target The target repository.
+     * @param Repo $target The target repository.
      * @return Result
      */
-    public function duplicate(BaseRepo $target)
+    public function duplicate(Repo $target)
     {
         // just a simple check
         if ($this->repo === $target) {
@@ -447,10 +447,10 @@ abstract class BaseModel implements Serializable
      * The local primary key (int + auto_increment) will be removed in the new
      * record to prevent the duplciated key issue.
      *
-     * @param BaseRepo $target The target repository.
+     * @param Repo $target The target repository.
      * @return Result
      */
-    public function move(BaseRepo $target)
+    public function move(Repo $target)
     {
         // just a simple check
         if ($this->repo === $target) {

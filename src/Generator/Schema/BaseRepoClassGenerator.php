@@ -114,7 +114,7 @@ class BaseRepoClassGenerator
         // parse codegen settings from schema doc comment string
         $codegenSettings = CodeGenSettingsParser::parse($schemaDocComment);
         if (!empty($codegenSettings)) {
-            $reflectionRepo = new ReflectionClass('Maghead\\Runtime\\BaseRepo');
+            $reflectionRepo = new ReflectionClass('Maghead\\Runtime\\Repo');
             $createMethod = $reflectionRepo->getMethod('create');
             $elements = MethodBlockParser::parseElements($createMethod, 'codegenBlock');
             $cTemplate->addMethod('public', 'create', ['array $args', 'array $options = array()'], AnnotatedBlock::apply($elements, $codegenSettings));

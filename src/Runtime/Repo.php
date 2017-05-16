@@ -40,7 +40,7 @@ use Countable;
 use Maghead\Sharding\Traits\RepoShardTrait;
 use Maghead\Sharding\Shard;
 
-abstract class BaseRepo implements Countable
+abstract class Repo implements Countable
 {
     // Move this to Repo class Generator
     use RepoShardTrait;

@@ -7,7 +7,7 @@ trait RepoFactoryTrait
     /**
      * masterRepo method creates the Repo instance class with the default data source IDs
      *
-     * @return \Maghead\Runtime\BaseRepo
+     * @return \Maghead\Runtime\Repo
      */
     public static function masterRepo()
     {
@@ -22,7 +22,7 @@ trait RepoFactoryTrait
      *
      * @param string|Connection $write
      * @param string|Connection $read
-     * @return Maghead\Runtime\BaseRepo
+     * @return Maghead\Runtime\Repo
      */
     public static function repo($write = null, $read = null)
     {
@@ -43,7 +43,7 @@ trait RepoFactoryTrait
      *
      * @param \Maghead\Runtime\Connection $write
      * @param \Maghead\Runtime\Connection $read
-     * @return \Maghead\Runtime\BaseRepo
+     * @return \Maghead\Runtime\Repo
      */
     abstract public static function createRepo($write, $read);
 }

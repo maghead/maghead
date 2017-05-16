@@ -209,7 +209,7 @@ class BaseModelClassGenerator
             if ($column->findable) {
                 $findMethodName = 'findBy'.ucfirst(Inflector::camelize($columnName));
                 $cTemplate->addMethod('public', $findMethodName, ['$value'], function () use ($findMethodName) {
-                    // Call BaseRepo methods on masterRepo
+                    // Call Repo methods on masterRepo
                     return ["return static::masterRepo()->{$findMethodName}(\$value);"];
                 });
             }

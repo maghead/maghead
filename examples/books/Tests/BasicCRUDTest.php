@@ -75,7 +75,7 @@ class BasicCRUDTest extends ModelTestCase
     public function testCreateRepoWithDataSourceId()
     {
         $repo = Book::repo('master');
-        $this->assertInstanceOf('Maghead\Runtime\BaseRepo', $repo);
+        $this->assertInstanceOf('Maghead\Runtime\Repo', $repo);
     }
 
     public function booleanTrueTestDataProvider()

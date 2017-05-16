@@ -10,7 +10,7 @@ use Maghead\Sharding\Hasher\Hasher;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Manager\DatabaseManager;
 use Maghead\Runtime\Config\Config;
-use Maghead\Runtime\BaseRepo;
+use Maghead\Runtime\Repo;
 use Maghead\Schema\SchemaUtils;
 
 use Maghead\DSN\DSNParser;
@@ -280,14 +280,14 @@ class ChunkManager
     }
 
 
-    protected function selectChunkKeys(BaseRepo $repo, Chunk $chunk, Hasher $hasher)
+    protected function selectChunkKeys(Repo $repo, Chunk $chunk, Hasher $hasher)
     {
         return array_filter($repo->fetchShardKeys(), function ($k) use ($hasher, $chunk) {
             return $chunk->contains($hasher->hash($k));
         });
     }
 
-    protected function verifyRecords(BaseRepo $srcRepo, BaseRepo $dstRepo, array $keys)
+    protected function verifyRecords(Repo $srcRepo, Repo $dstRepo, array $keys)
     {
         $shardKey = $this->mapping->getKey();
         $select = $srcRepo->select();
@@ -310,7 +310,7 @@ class ChunkManager
         return $missed;
     }
 
-    protected function cloneRecords(BaseRepo $srcRepo, BaseRepo $dstRepo, array $keys)
+    protected function cloneRecords(Repo $srcRepo, Repo $dstRepo, array $keys)
     {
         $shardKey = $this->mapping->getKey();
         $q = $srcRepo->select();
@@ -334,7 +334,7 @@ class ChunkManager
      *
      * @return number the number of deletion
      */
-    protected function deleteRecords(BaseRepo $repo, array $keys)
+    protected function deleteRecords(Repo $repo, array $keys)
     {
         $shardKey = $this->mapping->getKey();
         $q = $repo->delete();
@@ -355,12 +355,12 @@ class ChunkManager
      * Moves the records by the given shard key to the dest repository
      * PROGRESSIVELY.
      *
-     * @param BaseRepo $srcRepo
-     * @param BaseRepo $dstRepo
+     * @param Repo $srcRepo
+     * @param Repo $dstRepo
      * @param array $keys
      * @return Result[]
      */
-    protected function migrateRecords(BaseRepo $srcRepo, BaseRepo $dstRepo, array $keys)
+    protected function migrateRecords(Repo $srcRepo, Repo $dstRepo, array $keys)
     {
         $shardKey = $this->mapping->getKey();
         $select = $srcRepo->select();

@@ -2,7 +2,7 @@
 
 namespace Maghead\Sharding;
 
-use Maghead\Runtime\BaseRepo;
+use Maghead\Runtime\Repo;
 
 class ShardKeyStat
 {
@@ -14,7 +14,7 @@ class ShardKeyStat
 
     protected $repo;
 
-    public function __construct(BaseRepo $repo)
+    public function __construct(Repo $repo)
     {
         $this->repo = $repo;
         $this->shardKey = intval($this->shardKey);

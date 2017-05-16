@@ -56,7 +56,7 @@ class ShardManagerTest extends StoreTestCase
         $this->assertInstanceOf('Maghead\\Sharding\\Shard', $shard);
 
         $repo = $shard->createRepo('StoreApp\\Model\\StoreRepo');
-        $this->assertInstanceOf('Maghead\\Runtime\\BaseRepo', $repo);
+        $this->assertInstanceOf('Maghead\\Runtime\\Repo', $repo);
         $this->assertInstanceOf('StoreApp\\Model\\StoreRepo', $repo);
         return $repo;
     }

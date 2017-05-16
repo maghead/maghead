@@ -9,9 +9,9 @@ use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use PDO;
 use SQLBuilder\Universal\Query\InsertQuery;
-use Maghead\BaseRepo;
+use Maghead\Runtime\Repo;
 
-class PageRepo extends BaseRepo
+class PageRepo extends Repo
 {
     const SCHEMA_CLASS = 'PageApp\\Model\\PageSchema';
     const SCHEMA_PROXY_CLASS = 'PageApp\\Model\\PageSchemaProxy';

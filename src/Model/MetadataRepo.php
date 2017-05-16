@@ -9,9 +9,9 @@ use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use PDO;
 use SQLBuilder\Universal\Query\InsertQuery;
-use Maghead\Runtime\BaseRepo;
+use Maghead\Runtime\Repo;
 
-class MetadataRepo extends BaseRepo
+class MetadataRepo extends Repo
 {
     const SCHEMA_CLASS = 'Maghead\\Model\\MetadataSchema';
     const SCHEMA_PROXY_CLASS = 'Maghead\\Model\\MetadataSchemaProxy';

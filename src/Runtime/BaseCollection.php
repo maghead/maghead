@@ -96,13 +96,13 @@ abstract class BaseCollection implements IteratorAggregate, ArrayAccess, Countab
      * Basically we won't create mass collection objects in one time.
      * Therefore we can prepare more stuff here.
      */
-    public function __construct(BaseRepo $repo = null, PDOStatement $stm = null)
+    public function __construct(Repo $repo = null, PDOStatement $stm = null)
     {
         $this->repo = $repo ?: static::masterRepo();
         $this->stm = $stm;
     }
 
-    public function setRepo(BaseRepo $repo)
+    public function setRepo(Repo $repo)
     {
         $this->repo = $repo;
     }

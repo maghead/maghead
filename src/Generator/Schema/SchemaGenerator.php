@@ -146,7 +146,7 @@ class SchemaGenerator
         // always update schema proxy and base classes
         $cTemplates[] = SchemaProxyClassGenerator::create($schema);
         $cTemplates[] = BaseModelClassGenerator::create($schema, $this->getBaseModelClass());
-        $cTemplates[] = BaseRepoClassGenerator::create($schema, 'Maghead\\Runtime\\BaseRepo');
+        $cTemplates[] = BaseRepoClassGenerator::create($schema, 'Maghead\\Runtime\\Repo');
         $cTemplates[] = BaseCollectionClassGenerator::create($schema, $this->getBaseCollectionClass());
         foreach ($cTemplates as $cTemplate) {
             if ($result = $this->updateClassFile($cTemplate, $schema, true)) {

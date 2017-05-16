@@ -9,9 +9,9 @@ use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use PDO;
 use SQLBuilder\Universal\Query\InsertQuery;
-use Maghead\BaseRepo;
+use Maghead\Runtime\Repo;
 
-class AuthorBookRepo extends BaseRepo
+class AuthorBookRepo extends Repo
 {
     const SCHEMA_CLASS = 'AuthorBooks\\Model\\AuthorBookSchema';
     const SCHEMA_PROXY_CLASS = 'AuthorBooks\\Model\\AuthorBookSchemaProxy';

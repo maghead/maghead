@@ -4,7 +4,7 @@ namespace Maghead\Sharding;
 
 use Maghead\Sharding\Balancer\RandBalancer;
 use Maghead\Manager\DataSourceManager;
-use Maghead\Runtime\BaseRepo;
+use Maghead\Runtime\Repo;
 use SQLBuilder\Universal\Query\UUIDQuery;
 use SQLBuilder\ArgumentArray;
 
@@ -70,7 +70,7 @@ class Shard
     /**
      * Fetches the distinct shard key from the repo.
      */
-    public function fetchShardKeys(BaseRepo $repo)
+    public function fetchShardKeys(Repo $repo)
     {
         return $repo->fetchShardKeys();
     }
@@ -87,7 +87,7 @@ class Shard
     /**
      * Create repo object from the selected nodes.
      *
-     * @return \Maghead\Runtime\BaseRepo
+     * @return \Maghead\Runtime\Repo
      */
     public function createRepo(string $repoClass)
     {
