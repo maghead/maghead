@@ -24,12 +24,11 @@ class GearmanQueryMapperTest extends StoreTestCase
 {
     protected $processId;
 
+    /**
+     * @requires extension gearman
+     */
     public function setUp()
     {
-        if (!extension_loaded('gearman')) {
-            return $this->markTestSkipped('require gearman extension');
-        }
-
         $this->processId = pcntl_fork();
         if ($this->processId === -1) {
             die('could not fork');
