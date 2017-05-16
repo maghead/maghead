@@ -51,6 +51,7 @@
         "psr-4": { "Maghead\\": "src/" }
     },
     "autoload-dev": {
+        "classmap": ["tests"],
         "psr-4": {
             "AuthorBooks\\": "examples/books/",
             "MetricApp\\": "examples/metric/",
