@@ -36,6 +36,7 @@
         "ext-apcu": "*"
     },
     "suggest": {
+        "mongodb/mongodb": "^1.1",
         "ext-xarray": "*"
     },
     "bin": [
