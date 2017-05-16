@@ -3,8 +3,9 @@
 namespace Maghead\Console\Command;
 
 use CLIFramework\Command;
+use Maghead\Console\Command\BaseCommand;
 
-class SchemaCommand extends Command
+class SchemaCommand extends BaseCommand
 {
     public function brief()
     {
@@ -32,10 +33,9 @@ class SchemaCommand extends Command
         $args = func_get_args();
 
         $buildCommand = $this->getCommand('build');
-        $buildCommand->options = $this->options;
         $buildCommand->executeWrapper($args);
 
-        $diffCommand = $this->getCommand('diff');
+        $diffCommand = $this->createCommand('Maghead\\Console\\Command\\DiffCommand');
         $diffCommand->options = $this->options;
         $diffCommand->executeWrapper(array());
     }
