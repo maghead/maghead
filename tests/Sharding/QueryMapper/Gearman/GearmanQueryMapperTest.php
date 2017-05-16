@@ -41,7 +41,7 @@ class GearmanQueryMapperTest extends StoreTestCase
             // create worker here.
             $dataSourceManager = DataSourceManager::getInstance();
             $dataSourceManager->free();
-            Bootstrap::setup($config = $this->config(), true); // setup connection manager
+            Bootstrap::setup($config = $this->config()); // setup connection manager
 
             // create a log channel
             $logger = new Logger('query-worker');

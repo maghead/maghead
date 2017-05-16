@@ -97,11 +97,13 @@ class Bootstrap
         Collection::$dataSourceManager = $dataSourceManager;
     }
 
-    public static function setup(Config $config)
+    public static function setup(Config $config, DataSourceManager $dataSourceManager = null)
     {
         self::$config = $config;
 
-        $dataSourceManager = DataSourceManager::getInstance();
+        if (!$dataSourceManager) {
+            $dataSourceManager = DataSourceManager::getInstance();
+        }
 
         // TODO: this could be moved to Environment class.
         Model::$yamlExtension = extension_loaded('yaml');
