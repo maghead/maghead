@@ -14,7 +14,6 @@ class ConfigCommand extends BaseCommand
     public function init()
     {
         $this->command('upload');
-        $this->command('init');
         $this->command('use');
     }
 }

@@ -3,6 +3,7 @@
 namespace Maghead\Runtime\Config;
 
 use ConfigKit\ConfigCompiler;
+use RuntimeException;
 
 class FileConfigLoader
 {
@@ -21,6 +22,9 @@ class FileConfigLoader
         $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
         if ($force || ConfigCompiler::test($sourceFile, $compiledFile)) {
             $config = ConfigCompiler::parse($sourceFile);
+            if ($config === false) {
+                throw new RuntimeException("Can't parse config file '$sourceFile'.");
+            }
             $config = ConfigPreprocessor::preprocess($config);
             ConfigCompiler::write($compiledFile, $config);
             return $config;

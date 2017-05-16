@@ -19,12 +19,9 @@ class InitCommand extends Command
 
         $defaultConfigFile = Bootstrap::DEFAULT_CONFIG_FILE;
         if (file_exists($defaultConfigFile)) {
+            $this->logger->info("Found config $defaultConfigFile");
             $command = $this->createCommand('Maghead\\Console\\Command\\UseCommand');
             $command->execute($defaultConfigFile);
-        } else {
-            // If the default database config file is not found, create one.
-            $command = $this->createCommand('Maghead\\Console\\Command\\InitConfCommand');
-            $command->execute();
         }
     }
 }
