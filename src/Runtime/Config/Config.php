@@ -16,7 +16,10 @@ class Config extends ArrayObject
 
     const DEFAULT_AUTO_ID_COLUMN_CLASS = '\\Maghead\\Schema\\Column\\AutoIncrementPrimaryKeyColumn';
 
+    const DEFAULT_MIGRATION_SCRIPT_DIR = 'db/migrations';
+
     const MASTER_ID = 'master';
+
 
     public function __construct(array $stash, $file = null)
     {

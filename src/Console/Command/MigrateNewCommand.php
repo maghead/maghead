@@ -14,7 +14,7 @@ class MigrateNewCommand extends MigrateBaseCommand
 
     public function execute($taskName)
     {
-        $generator = new MigrationGenerator($this->logger, 'db/migrations');
+        $generator = new MigrationGenerator($this->logger, $this->options->{'script-dir'});
         $this->logger->info("Creating migration script for '".$taskName."'");
         list($class, $path) = $generator->generate($taskName);
         $this->logger->info("Migration script is generated: $path");
