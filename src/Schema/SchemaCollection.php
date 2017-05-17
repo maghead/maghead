@@ -75,7 +75,7 @@ class SchemaCollection extends ArrayObject
     public function getDeclareSchemas()
     {
         return $this->filter(function ($schema) {
-            return is_subclass_of($schema, 'Maghead\\Schema\\DeclareSchema', true);
+            return is_subclass_of($schema, DeclareSchema::class, true);
         });
     }
 
@@ -123,10 +123,10 @@ class SchemaCollection extends ArrayObject
     {
         return $this->filter(function($schema) {
             if (
-              !is_subclass_of($schema, 'Maghead\\Schema\\DeclareSchema', true)
-              || is_a($schema, 'Maghead\\Schema\\DynamicSchemaDeclare', true)
-              || is_a($schema, 'Maghead\\Schema\\MixinDeclareSchema', true)
-              || is_subclass_of($schema, 'Maghead\\Schema\\MixinDeclareSchema', true)
+              !is_subclass_of($schema, DeclareSchema::class, true)
+              || is_a($schema, DynamicSchemaDeclare::class, true)
+              || is_a($schema, MixinDeclareSchema::class, true)
+              || is_subclass_of($schema, MixinDeclareSchema::class, true)
             ) {
                 return false;
             }
