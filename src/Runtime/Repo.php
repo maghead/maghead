@@ -26,8 +26,6 @@ use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Raw;
 
-use Maghead\Runtime\Connection;
-use Maghead\Runtime\Result\OperationError;
 use Maghead\Schema\RuntimeColumn;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Exception\MissingPrimaryKeyException;
@@ -826,6 +824,17 @@ abstract class Repo implements Countable
         }
     }
 
+
+    // ================= TRIGGER METHODS ===================
+    public function commit()
+    {
+        return $this->write->commit();
+    }
+
+    public function rollback()
+    {
+        return $this->write->rollback();
+    }
 
 
     // ================= TRIGGER METHODS ===================

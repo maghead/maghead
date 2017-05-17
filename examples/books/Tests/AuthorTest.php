@@ -350,9 +350,7 @@ class AuthorTest extends ModelTestCase
 
     public function testLoadForUpdate()
     {
-        if (!$this->queryDriver instanceof PDOMySQLDriver) {
-            return $this->markTestSkipped('select for update is for mysql driver');
-        }
+        $this->forDrivers('mysql');
 
         $author = new Author;
         $ret = Author::create(array(
