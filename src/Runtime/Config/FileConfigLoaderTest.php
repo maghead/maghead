@@ -11,5 +11,15 @@ class FileConfigLoaderTest extends TestCase
         $config = FileConfigLoader::load('tests/config/mysql.yml');
         $this->assertInstanceOf('Maghead\\Runtime\\Config\\Config', $config);
     }
+
+    /**
+     * @depends testLoadSimpleFile
+     */
+    public function testLoadFromPhpFormatFile()
+    {
+        FileConfigLoader::compile('tests/config/mysql.yml');
+        $config = FileConfigLoader::load('tests/config/mysql.php');
+        $this->assertInstanceOf('Maghead\\Runtime\\Config\\Config', $config);
+    }
 }
 
