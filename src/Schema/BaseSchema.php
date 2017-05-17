@@ -8,6 +8,8 @@ use Exception;
 use Maghead\Exception\TableNameConversionException;
 use Doctrine\Common\Inflector\Inflector;
 
+use Maghead\Runtime\Model;
+
 abstract class BaseSchema
 {
     const PRIMARY_KEY = null;
@@ -196,7 +198,7 @@ abstract class BaseSchema
                 throw new RuntimeException("Foreign schema class '$class' not found in schema {$this}.");
             }
 
-            if (is_a($class, 'Maghead\\Runtime\\Model', true)) {
+            if (is_a($class, Model::class, true)) {
                 // bless model class to schema object.
                 if (!method_exists($class, 'schema')) {
                     throw new Exception(get_class($this).": You need to define schema method in $class class.");
@@ -207,7 +209,7 @@ abstract class BaseSchema
                 if ($recursive) {
                     $schemas = array_merge($schemas, $schema->getReferenceSchemas(false));
                 }
-            } elseif (is_subclass_of($class, 'Maghead\\Schema\\DeclareSchema', true)) {
+            } elseif (is_subclass_of($class, DeclareSchema::class, true)) {
                 $schemas[ $class ] = 1;
                 $fs = new $class();
                 if ($recursive) {
