@@ -8,7 +8,7 @@ use CLIFramework\Logger;
 use Maghead\Schema\DeclareSchema;
 use Maghead\TableParser\TableParser;
 use Maghead\Schema\Comparator;
-use ClassTemplate\ClassFile;
+use CodeGen\ClassFile;
 use CodeGen\Expr\MethodCallExpr;
 use CodeGen\Statement\Statement;
 use CodeGen\Raw;
@@ -65,7 +65,7 @@ class MigrationGenerator
     }
 
     /**
-     * @return ClassTemplate\ClassFile
+     * @return CodeGen\ClassFile
      */
     public function createClassTemplate($taskName, $time = null)
     {

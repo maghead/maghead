@@ -2,7 +2,7 @@
 
 namespace Maghead\Generator\Schema;
 
-use ClassTemplate\ClassFile;
+use CodeGen\ClassFile;
 use Maghead\Schema\DeclareSchema;
 use SerializerKit\PhpSerializer;
 

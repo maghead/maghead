@@ -11,7 +11,6 @@ use Maghead\Runtime\Config\Config;
 use Maghead\Schema\Column\AutoIncrementPrimaryKeyColumn;
 use Maghead\Schema\Column\UUIDPrimaryKeyColumn;
 use Maghead\Runtime\Bootstrap;
-use ClassTemplate\ClassTrait;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Universal\Query\SelectQuery;
@@ -534,7 +533,7 @@ class DeclareSchema extends BaseSchema implements Schema
      *
      * @param string $class...
      *
-     * @return ClassTrait object
+     * @return string object
      */
     public function addModelTrait($traitClass)
     {
@@ -546,7 +545,7 @@ class DeclareSchema extends BaseSchema implements Schema
      *
      * @param string $class...
      *
-     * @return ClassTrait object
+     * @return string object
      */
     public function addCollectionTrait($traitClass)
     {

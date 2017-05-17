@@ -22,7 +22,7 @@ use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\ArgumentArray;
 
-use ClassTemplate\ClassFile;
+use CodeGen\ClassFile;
 use CodeGen\Statement\RequireStatement;
 use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;

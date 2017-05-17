@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9b80eb76595126b832daf4ad132db0cb",
+    "content-hash": "fd35de9bfbea8aceeaec096d108e6edd",
     "packages": [
         {
             "name": "corneltek/cascading-attribute",
@@ -197,16 +197,16 @@
         },
         {
             "name": "corneltek/configkit",
-            "version": "1.6.1",
+            "version": "1.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/ConfigKit.git",
-                "reference": "5647513c581a0e77936034498a648366b0d88be3"
+                "reference": "5e8a79eead3c3109a35a66a724107b02f3b0610d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/ConfigKit/zipball/5647513c581a0e77936034498a648366b0d88be3",
-                "reference": "5647513c581a0e77936034498a648366b0d88be3",
+                "url": "https://api.github.com/repos/c9s/ConfigKit/zipball/5e8a79eead3c3109a35a66a724107b02f3b0610d",
+                "reference": "5e8a79eead3c3109a35a66a724107b02f3b0610d",
                 "shasum": ""
             },
             "require": {
@@ -221,7 +221,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "ConfigKit\\": "src/ConfigKit/"
+                    "ConfigKit\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -235,7 +235,7 @@
                 "config",
                 "yaml"
             ],
-            "time": "2016-06-12T02:15:08+00:00"
+            "time": "2017-05-17T13:57:17+00:00"
         },
         {
             "name": "corneltek/fileutil",

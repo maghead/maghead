@@ -3,7 +3,7 @@
 namespace Maghead\Generator\Schema;
 
 use RuntimeException;
-use ClassTemplate\ClassFile;
+use CodeGen\ClassFile;
 use Maghead\Schema\Schema;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\BaseSchema;
@@ -61,7 +61,7 @@ class SchemaGenerator
      * If the schema file is newer or the forceUpdate flag is specified, then
      * the generated class files should be updated.
      *
-     * @param ClassTemplate\ClassFile $cTemplate
+     * @param CodeGen\ClassFile $cTemplate
      * @param DeclareSchema           $schema
      */
     protected function updateClassFile(ClassFile $cTemplate, DeclareSchema $schema, $canOverwrite = false)
@@ -127,7 +127,7 @@ class SchemaGenerator
      * Write class template to the schema directory.
      *
      * @param string $directory The schema class directory.
-     * @param ClassTemplate\ClassFile class template object.
+     * @param CodeGen\ClassFile class template object.
      * @param bool $overwrite Overwrite class file.
      *
      * @return array

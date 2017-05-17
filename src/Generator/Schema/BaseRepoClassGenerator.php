@@ -2,7 +2,7 @@
 
 namespace Maghead\Generator\Schema;
 
-use ClassTemplate\ClassFile;
+use CodeGen\ClassFile;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
