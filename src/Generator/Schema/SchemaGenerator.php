@@ -15,6 +15,9 @@ use Maghead\Generator\Schema\ModelClassGenerator;
 use Maghead\Generator\Schema\RepoClassGenerator;
 use Maghead\Generator\Schema\SchemaProxyClassGenerator;
 use Maghead\Runtime\Config\Config;
+use Maghead\Runtime\Repo;
+use Maghead\Runtime\Model;
+use Maghead\Runtime\Collection;
 
 /**
  * Builder for building static schema class file.
@@ -41,7 +44,7 @@ class SchemaGenerator
             return $this->config->getBaseModelClass();
         }
 
-        return 'Maghead\\Runtime\\Model';
+        return Model::class;
     }
 
     protected function getBaseCollectionClass()
@@ -50,7 +53,7 @@ class SchemaGenerator
             return $this->config->getBaseCollectionClass();
         }
 
-        return 'Maghead\\Runtime\\Collection';
+        return Collection::class;
     }
 
     /**
@@ -146,7 +149,7 @@ class SchemaGenerator
         // always update schema proxy and base classes
         $cTemplates[] = SchemaProxyClassGenerator::create($schema);
         $cTemplates[] = BaseModelClassGenerator::create($schema, $this->getBaseModelClass());
-        $cTemplates[] = BaseRepoClassGenerator::create($schema, 'Maghead\\Runtime\\Repo');
+        $cTemplates[] = BaseRepoClassGenerator::create($schema, Repo::class);
         $cTemplates[] = BaseCollectionClassGenerator::create($schema, $this->getBaseCollectionClass());
         foreach ($cTemplates as $cTemplate) {
             if ($result = $this->updateClassFile($cTemplate, $schema, true)) {

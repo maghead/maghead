@@ -10,14 +10,12 @@ class PDOStatementGenerator
         ];
     }
 
-
-
     public static function generateFetchAll(string $propertyName, string $constName, string $class, string $args)
     {
         return [
             "if (!\$this->{$propertyName}) {",
             "    \$this->{$propertyName} = \$this->read->prepare(self::$constName);",
-            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$class}', [\$this]);",
+            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, \\{$class}::class, [\$this]);",
             "}",
             "\$this->{$propertyName}->execute($args);",
             // "return \$this->{$propertyName}->fetchAll(PDO::FETCH_CLASS);",
@@ -30,7 +28,7 @@ class PDOStatementGenerator
         return [
             "if (!\$this->{$propertyName}) {",
             "    \$this->{$propertyName} = \$this->read->prepare(self::$constName);",
-            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, '\\{$class}', [\$this]);",
+            "    \$this->{$propertyName}->setFetchMode(PDO::FETCH_CLASS, \\{$class}::class, [\$this]);",
             "}",
             "\$this->{$propertyName}->execute($args);",
             "\$obj = \$this->{$propertyName}->fetch();",
