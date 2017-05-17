@@ -156,14 +156,6 @@ class BaseRepoClassGenerator
             ];
         });
 
-        $cTemplate->addMethod('public', 'prepareRead', ['$sql'], function () use ($schema) {
-            return "return \$this->read->prepare(\$sql);";
-        });
-
-        $cTemplate->addMethod('public', 'prepareWrite', ['$sql'], function () use ($schema) {
-            return "return \$this->write->prepare(\$sql);";
-        });
-
         foreach ($schema->getColumns() as $column) {
             if (!$column->findable) {
                 continue;

@@ -625,6 +625,15 @@ abstract class Repo implements Countable
 
 
     // ============================= UTILITY METHODS =============================
+    public function prepareRead($sql)
+    {
+        return $this->read->prepare($sql);
+    }
+
+    public function prepareWrite($sql)
+    {
+        return $this->write->prepare($sql);
+    }
 
     /**
      * PDO::exec — Execute an SQL statement and return the number of affected rows
