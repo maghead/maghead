@@ -151,7 +151,7 @@ abstract class Repo implements Countable
      */
     public function findWith(array $args)
     {
-        $schema = $this->getSchema();
+        $schema = static::getSchema();
         $query = new SelectQuery($this);
         $query->select('*');
         $query->from($this->getTable(), $this->getAlias());
@@ -212,10 +212,10 @@ abstract class Repo implements Countable
 
     public function loadForUpdate(array $args)
     {
-        $conn = $this->read;
-        $schema = $this->getSchema();
-        $driver = $conn->getQueryDriver();
+        $conn = $this->write;
+        $schema = static::getSchema();
 
+        $driver = $conn->getQueryDriver();
         if (!$driver instanceof PDOMySQLDriver) {
             throw new Exception("The current driver doesn't support SELECT ... FOR UPDATE");
         }
@@ -229,6 +229,7 @@ abstract class Repo implements Countable
         $arguments = new ArgumentArray();
 
         $sql = $query->toSql($driver, $arguments);
+        
         $stm = $conn->prepare($sql);
         $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this]);
         $stm->execute($arguments->toArray());
@@ -826,11 +827,44 @@ abstract class Repo implements Countable
 
 
     // ================= TRIGGER METHODS ===================
+
+    /**
+     * Begin a transaction.
+     *
+     * This method calls beginTransaction on the write connection.
+     *
+     * http://php.net/manual/en/pdo.begintransaction.php
+     *
+     * @return boolean
+     */
+    public function begin()
+    {
+        return $this->write->beginTransaction();
+    }
+
+    /**
+     * Check if the current connection is in transaction
+     *
+     * @return boolean
+     */
+    public function inTransaction()
+    {
+        return $this->write->inTransaction();
+    }
+
+    /**
+     * Commit the current transaction
+     *
+     * @return boolean
+     */
     public function commit()
     {
         return $this->write->commit();
     }
 
+    /**
+     * @return boolean
+     */
     public function rollback()
     {
         return $this->write->rollback();

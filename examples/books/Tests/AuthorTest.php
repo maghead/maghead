@@ -348,11 +348,60 @@ class AuthorTest extends ModelTestCase
         $this->assertTrue($unusedAddresses[0]->isUnused());
     }
 
-    public function testLoadForUpdate()
+
+    public function testLoadForUpdateThenRollback()
     {
         $this->forDrivers('mysql');
 
-        $author = new Author;
+        $repo = Author::masterRepo();
+
+        $ret = $repo->create([
+            'name' => 'Elon Musk',
+            'email' => 'elon@boring',
+            'identity' => 'elon',
+        ]);
+        $this->assertResultSuccess($ret);
+
+        $repo->begin();
+        $a2 = $repo->loadForUpdate([ 'identity' => 'elon' ]);
+        $this->assertNotFalse($a2);
+        $ret = $a2->update(['name' => 'Mars']);
+        $this->assertResultSuccess($ret);
+
+        $this->assertTrue($repo->inTransaction());
+
+        $this->assertTrue($repo->rollback());
+
+        $a3 = $repo->load(['identity' => 'elon']);
+        $this->assertEquals('Elon Musk',$a3->getName());
+    }
+
+
+    public function testLoadForUpdateThenCommit()
+    {
+        $this->forDrivers('mysql');
+
+        $repo = Author::masterRepo();
+
+        $ret = $repo->create([
+            'name' => 'Mary III',
+            'email' => 'zz3@zz3',
+            'identity' => 'zz3',
+        ]);
+        $this->assertResultSuccess($ret);
+
+        $repo->begin();
+
+        $a2 = $repo->loadForUpdate([ 'identity' => 'zz3' ]);
+        $this->assertNotFalse($a2);
+
+        $repo->commit();
+    }
+
+    public function testLoadForUpdateShouldCommitWhenUpdate()
+    {
+        $this->forDrivers('mysql');
+
         $ret = Author::create(array(
             'name' => 'Mary III',
             'email' => 'zz3@zz3',
