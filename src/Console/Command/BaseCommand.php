@@ -9,9 +9,9 @@ use Maghead\Schema\SchemaUtils;
 use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\Loader\FileSchemaLoader;
 use Maghead\Schema\Loader\ComposerSchemaLoader;
+use Maghead\Runtime\Bootstrap;
 use Maghead\Manager\DataSourceManager;
 use RuntimeException;
-use Maghead\Runtime\Bootstrap;
 
 class BaseCommand extends Command
 {
@@ -37,9 +37,7 @@ class BaseCommand extends Command
 
     protected function loadConfig()
     {
-        // $ttl = false disable the apcu cache
-        $config = AutoConfigLoader::load(SymbolicLinkConfigLoader::ANCHOR_FILENAME, false);
-        Bootstrap::setupForCLI($config);
+        $config = $this->getApplication()->loadConfig();
         $this->dataSourceManager = DataSourceManager::getInstance();
         return $config;
     }

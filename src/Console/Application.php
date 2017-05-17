@@ -2,14 +2,37 @@
 
 namespace Maghead\Console;
 
+use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
+use Maghead\Runtime\Config\AutoConfigLoader;
+use Maghead\Runtime\Bootstrap;
+use Maghead\Manager\DataSourceManager;
+
 class Application extends \CLIFramework\Application
 {
     const NAME = 'Maghead';
     const VERSION = '4.0.x';
 
+    protected $dataSourceManager;
+
     public function brief()
     {
         return 'Maghead ORM';
+    }
+
+    public function options($opts)
+    {
+        $opts->add('c|config:','the path to the config file')
+            ->isa('file');
+    }
+
+    public function loadConfig()
+    {
+        // $ttl = false disable the apcu cache
+        $configFile = $this->options->config ?: SymbolicLinkConfigLoader::ANCHOR_FILENAME;
+        $config = AutoConfigLoader::load($configFile, false);
+        Bootstrap::setupForCLI($config);
+        $this->dataSourceManager = DataSourceManager::getInstance();
+        return $config;
     }
 
     public function init()
