@@ -14,6 +14,10 @@ class FileConfigLoader
      */
     public static function load($sourceFile, $force = false)
     {
+        if (preg_match('/\.php$/', $sourceFile)) {
+            $stash = require $sourceFile;
+            return new Config($stash);
+        }
         return new Config(self::compile($sourceFile, $force), $sourceFile);
     }
 
