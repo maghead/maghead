@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b56d62dd3178ae17b1ce48aff4a3c203",
+    "content-hash": "9b80eb76595126b832daf4ad132db0cb",
     "packages": [
         {
             "name": "corneltek/cascading-attribute",
@@ -93,12 +93,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/CLIFramework.git",
-                "reference": "49361701362909b4cf4990cd452b1ccc80828254"
+                "reference": "45af966f0f80a305ca2df7474ae2112e91620270"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/CLIFramework/zipball/49361701362909b4cf4990cd452b1ccc80828254",
-                "reference": "49361701362909b4cf4990cd452b1ccc80828254",
+                "url": "https://api.github.com/repos/c9s/CLIFramework/zipball/45af966f0f80a305ca2df7474ae2112e91620270",
+                "reference": "45af966f0f80a305ca2df7474ae2112e91620270",
                 "shasum": ""
             },
             "require": {
@@ -108,8 +108,8 @@
                 "corneltek/universal": "^1.7",
                 "php": ">=5.3.0",
                 "pimple/pimple": "*",
-                "symfony/class-loader": "^2.8|3.0",
-                "symfony/finder": "^2.8|3.0"
+                "symfony/class-loader": "~2.8|~3.0|~3.2",
+                "symfony/finder": "~2.8|~3.0|~3.2"
             },
             "require-dev": {
                 "corneltek/phpunit-testmore": "dev-master",
@@ -146,7 +146,7 @@
                 "getopt",
                 "zsh"
             ],
-            "time": "2017-05-13 02:18:22"
+            "time": "2017-05-16 14:13:46"
         },
         {
             "name": "corneltek/codegen",
@@ -154,12 +154,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/CodeGen.git",
-                "reference": "4f30b7ee03ef22aa8e630aaf4ff491726bd6d810"
+                "reference": "b06298170ab9bf49f54391973b520e661ad0d37f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/CodeGen/zipball/4f30b7ee03ef22aa8e630aaf4ff491726bd6d810",
-                "reference": "4f30b7ee03ef22aa8e630aaf4ff491726bd6d810",
+                "url": "https://api.github.com/repos/c9s/CodeGen/zipball/b06298170ab9bf49f54391973b520e661ad0d37f",
+                "reference": "b06298170ab9bf49f54391973b520e661ad0d37f",
                 "shasum": ""
             },
             "require": {
@@ -178,7 +178,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "CodeGen\\": "src/CodeGen/"
+                    "CodeGen\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -193,7 +193,7 @@
             ],
             "description": "PHP Code Generation Library",
             "homepage": "http://github.com/c9s/CodeGen",
-            "time": "2017-02-05 15:58:55"
+            "time": "2017-05-17 05:29:08"
         },
         {
             "name": "corneltek/configkit",
@@ -579,7 +579,7 @@
         },
         {
             "name": "maghead/sqlite-parser",
-            "version": "dev-master",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/maghead/sqlite-parser.git",
@@ -623,65 +623,7 @@
                 "sql",
                 "sqlite"
             ],
-            "time": "2017-05-13 11:44:34"
-        },
-        {
-            "name": "mongodb/mongodb",
-            "version": "1.1.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mongodb/mongo-php-library.git",
-                "reference": "a307dd60e71e1291c60927ea4f3a1905146063f5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/a307dd60e71e1291c60927ea4f3a1905146063f5",
-                "reference": "a307dd60e71e1291c60927ea4f3a1905146063f5",
-                "shasum": ""
-            },
-            "require": {
-                "ext-mongodb": "^1.2.0",
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "MongoDB\\": "src/"
-                },
-                "files": [
-                    "src/functions.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Jeremy Mikola",
-                    "email": "jmikola@gmail.com"
-                },
-                {
-                    "name": "Hannes Magnusson",
-                    "email": "bjori@mongodb.com"
-                },
-                {
-                    "name": "Derick Rethans",
-                    "email": "github@derickrethans.nl"
-                }
-            ],
-            "description": "MongoDB driver library",
-            "homepage": "https://jira.mongodb.org/browse/PHPLIB",
-            "keywords": [
-                "database",
-                "driver",
-                "mongodb",
-                "persistence"
-            ],
-            "time": "2017-02-16T18:40:32+00:00"
+            "time": "2017-05-13T11:44:34+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -1393,14 +1335,72 @@
             "time": "2017-02-27T00:07:03+00:00"
         }
     ],
-    "packages-dev": [],
+    "packages-dev": [
+        {
+            "name": "mongodb/mongodb",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mongodb/mongo-php-library.git",
+                "reference": "a307dd60e71e1291c60927ea4f3a1905146063f5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/a307dd60e71e1291c60927ea4f3a1905146063f5",
+                "reference": "a307dd60e71e1291c60927ea4f3a1905146063f5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mongodb": "^1.2.0",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MongoDB\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremy Mikola",
+                    "email": "jmikola@gmail.com"
+                },
+                {
+                    "name": "Hannes Magnusson",
+                    "email": "bjori@mongodb.com"
+                },
+                {
+                    "name": "Derick Rethans",
+                    "email": "github@derickrethans.nl"
+                }
+            ],
+            "description": "MongoDB driver library",
+            "homepage": "https://jira.mongodb.org/browse/PHPLIB",
+            "keywords": [
+                "database",
+                "driver",
+                "mongodb",
+                "persistence"
+            ],
+            "time": "2017-02-16T18:40:32+00:00"
+        }
+    ],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "corneltek/sqlbuilder": 20,
         "corneltek/cliframework": 20,
-        "corneltek/codegen": 20,
-        "maghead/sqlite-parser": 20
+        "corneltek/codegen": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
