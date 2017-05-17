@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd35de9bfbea8aceeaec096d108e6edd",
+    "content-hash": "e8a81f430f7b8f574cb6962498bc3f88",
     "packages": [
         {
             "name": "corneltek/cascading-attribute",
