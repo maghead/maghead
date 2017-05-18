@@ -4,7 +4,7 @@ namespace Maghead\Extensions\Revision;
 
 use Maghead\Schema\MixinDeclareSchema;
 use DateTime;
-use SQLBuilder\Raw;
+use Magsql\Raw;
 
 class RevisionMixinSchema extends MixinDeclareSchema
 {

@@ -1,5 +1,5 @@
 <?php
-use SQLBuilder\Universal\Query\SelectQuery;
+use Magsql\Universal\Query\SelectQuery;
 use Maghead\Testing\ModelTestCase;
 use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryMapper;
 use Maghead\Sharding\QueryMapper\Pthread\PthreadQueryWorker;

@@ -3,8 +3,8 @@
 namespace Maghead\TableParser;
 
 use Maghead\Testing\DbTestCase;
-use SQLBuilder\Driver\PDOSQLiteDriver;
-use SQLBuilder\Driver\PDOMySQLDriver;
+use Magsql\Driver\PDOSQLiteDriver;
+use Magsql\Driver\PDOMySQLDriver;
 use Maghead\TableParser\SqliteTableParser;
 use Maghead\TableParser\MysqlTableParser;
 

@@ -4,7 +4,7 @@ namespace Maghead\TableBuilder;
 
 use Maghead\Schema\Schema;
 use Maghead\Schema\DeclareColumn;
-use SQLBuilder\ArgumentArray;
+use Magsql\ArgumentArray;
 
 /**
  * Schema SQL builder.

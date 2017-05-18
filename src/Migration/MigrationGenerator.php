@@ -13,10 +13,10 @@ use CodeGen\Expr\MethodCallExpr;
 use CodeGen\Statement\Statement;
 use CodeGen\Raw;
 use CodeGen\ClassMethod;
-use SQLBuilder\Universal\Query\AlterTableQuery;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\ToSqlInterface;
-use SQLBuilder\Driver\BaseDriver;
+use Magsql\Universal\Query\AlterTableQuery;
+use Magsql\ArgumentArray;
+use Magsql\ToSqlInterface;
+use Magsql\Driver\BaseDriver;
 use Doctrine\Common\Inflector\Inflector;
 
 class MigrationGenerator
@@ -76,17 +76,17 @@ class MigrationGenerator
         }
         $className = $taskName.'_'.$time;
         $template = new ClassFile($className);
-        $template->useClass('SQLBuilder\\Universal\\Syntax\\Column');
-        $template->useClass('SQLBuilder\\Universal\\Query\\AlterTableQuery');
-        $template->useClass('SQLBuilder\\Universal\\Query\\CreateTableQuery');
-        $template->useClass('SQLBuilder\\Universal\\Query\\UpdateTableQuery');
-        $template->useClass('SQLBuilder\\Universal\\Query\\DeleteTableQuery');
-        $template->useClass('SQLBuilder\\Universal\\Query\\InsertTableQuery');
-        $template->useClass('SQLBuilder\\Universal\\Query\\CreateIndexQuery');
-        $template->useClass('SQLBuilder\\Universal\\Query\\UnionQuery');
-        $template->useClass('SQLBuilder\\Bind');
-        $template->useClass('SQLBuilder\\ArgumentArray');
-        $template->useClass('SQLBuilder\\Literal');
+        $template->useClass('Magsql\\Universal\\Syntax\\Column');
+        $template->useClass('Magsql\\Universal\\Query\\AlterTableQuery');
+        $template->useClass('Magsql\\Universal\\Query\\CreateTableQuery');
+        $template->useClass('Magsql\\Universal\\Query\\UpdateTableQuery');
+        $template->useClass('Magsql\\Universal\\Query\\DeleteTableQuery');
+        $template->useClass('Magsql\\Universal\\Query\\InsertTableQuery');
+        $template->useClass('Magsql\\Universal\\Query\\CreateIndexQuery');
+        $template->useClass('Magsql\\Universal\\Query\\UnionQuery');
+        $template->useClass('Magsql\\Bind');
+        $template->useClass('Magsql\\ArgumentArray');
+        $template->useClass('Magsql\\Literal');
         $template->extendClass('Maghead\Migration\Migration');
 
         return $template;

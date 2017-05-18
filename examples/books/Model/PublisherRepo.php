@@ -5,10 +5,10 @@ require_once __DIR__ . '/PublisherSchemaProxy.php';
 use Maghead\Schema\SchemaLoader;
 use Maghead\Result;
 use Maghead\Inflator;
-use SQLBuilder\Bind;
-use SQLBuilder\ArgumentArray;
+use Magsql\Bind;
+use Magsql\ArgumentArray;
 use PDO;
-use SQLBuilder\Universal\Query\InsertQuery;
+use Magsql\Universal\Query\InsertQuery;
 use Maghead\Runtime\Repo;
 
 class PublisherRepo extends Repo

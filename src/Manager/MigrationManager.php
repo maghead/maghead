@@ -9,7 +9,7 @@ use Maghead\Migration\AutomaticMigration;
 use Maghead\Runtime\Connection;
 use GetOptionKit\OptionResult;
 use CLIFramework\Logger;
-use SQLBuilder\Driver\BaseDriver;
+use Magsql\Driver\BaseDriver;
 use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

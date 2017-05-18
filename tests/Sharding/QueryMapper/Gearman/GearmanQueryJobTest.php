@@ -1,6 +1,6 @@
 <?php
 use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryJob;
-use SQLBuilder\Universal\Query\SelectQuery;
+use Magsql\Universal\Query\SelectQuery;
 
 
 class GearmanQueryJobTest extends PHPUnit\Framework\TestCase

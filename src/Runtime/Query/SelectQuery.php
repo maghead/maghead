@@ -2,8 +2,8 @@
 
 namespace Maghead\Runtime\Query;
 
-use SQLBuilder\Universal\Query\SelectQuery as BaseQuery;
-use SQLBuilder\ArgumentArray;
+use Magsql\Universal\Query\SelectQuery as BaseQuery;
+use Magsql\ArgumentArray;
 
 use Maghead\Runtime\Repo;
 

@@ -5,8 +5,8 @@ namespace Maghead\Runtime;
 use Maghead\DSN\DSNParser;
 use Maghead\DSN\DSN;
 use Maghead\Runtime\Connector\PDOMySQLConnector;
-use SQLBuilder\Driver\PDODriverFactory;
-use SQLBuilder\Raw;
+use Magsql\Driver\PDODriverFactory;
+use Magsql\Raw;
 
 use PDO;
 
@@ -28,7 +28,7 @@ class Connection extends PDO
     protected $pass;
 
     /**
-     * @var SQLBuilder\Driver\BaseDriver
+     * @var Magsql\Driver\BaseDriver
      */
     private $queryDriver;
 

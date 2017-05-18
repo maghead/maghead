@@ -2,7 +2,7 @@
 
 namespace Maghead\Sharding\QueryMapper;
 
-use SQLBuilder\ToSqlInterface;
+use Magsql\ToSqlInterface;
 use Maghead\Sharding\ShardCollection;
 
 interface QueryMapper

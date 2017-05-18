@@ -12,7 +12,7 @@ use Maghead\Runtime\Collection;
 use Maghead\Runtime\Result;
 use Maghead\Runtime\Bootstrap;
 use Maghead\Runtime\PDOExceptionPrinter;
-use SQLBuilder\Driver\BaseDriver;
+use Magsql\Driver\BaseDriver;
 use CLIFramework\Logger;
 use PDO;
 use PDOException;

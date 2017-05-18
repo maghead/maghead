@@ -10,12 +10,12 @@ use ArrayAccess;
 use Countable;
 use IteratorAggregate;
 use ArrayIterator;
-use SQLBuilder\Universal\Query\SelectQuery;
-use SQLBuilder\Universal\Query\UpdateQuery;
-use SQLBuilder\Universal\Query\DeleteQuery;
-use SQLBuilder\Universal\Traits\WhereTrait;
-use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\ArgumentArray;
+use Magsql\Universal\Query\SelectQuery;
+use Magsql\Universal\Query\UpdateQuery;
+use Magsql\Universal\Query\DeleteQuery;
+use Magsql\Universal\Traits\WhereTrait;
+use Magsql\Driver\BaseDriver;
+use Magsql\ArgumentArray;
 use SerializerKit\XmlSerializer;
 use Symfony\Component\Yaml\Yaml;
 

@@ -2,8 +2,8 @@
 
 namespace Maghead\Runtime;
 
-use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\PDOMySQLDriver;
+use Magsql\Driver\BaseDriver;
+use Magsql\Driver\PDOMySQLDriver;
 use DateTime;
 
 /**

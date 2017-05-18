@@ -2,7 +2,7 @@
 
 namespace Maghead\Schema;
 
-use SQLBuilder\Universal\Syntax\Column;
+use Magsql\Universal\Syntax\Column;
 use Maghead\Exception\SchemaRelatedException;
 use ArrayIterator;
 use IteratorAggregate;

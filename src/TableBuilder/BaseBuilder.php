@@ -2,10 +2,10 @@
 
 namespace Maghead\TableBuilder;
 
-use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Universal\Query\CreateIndexQuery;
-use SQLBuilder\Universal\Syntax\Constraint;
+use Magsql\Driver\BaseDriver;
+use Magsql\ArgumentArray;
+use Magsql\Universal\Query\CreateIndexQuery;
+use Magsql\Universal\Syntax\Constraint;
 use Maghead\Schema\DynamicSchemaDeclare;
 use Maghead\Schema\Schema;
 use Maghead\Schema\Relationship\Relationship;

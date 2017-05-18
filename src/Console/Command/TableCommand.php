@@ -3,7 +3,7 @@
 namespace Maghead\Console\Command;
 
 use Maghead\TableStatus\MySQLTableStatus;
-use SQLBuilder\Driver\PDOMySQLDriver;
+use Magsql\Driver\PDOMySQLDriver;
 use CLIFramework\Component\Table\Table;
 
 class TableCommand extends BaseCommand

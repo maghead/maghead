@@ -2,7 +2,7 @@
 
 namespace Maghead\Types;
 
-use SQLBuilder\RawValue;
+use Magsql\RawValue;
 
 /**
  * @codeCoverageIgnore

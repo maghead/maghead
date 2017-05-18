@@ -8,10 +8,10 @@ use Maghead\Manager\DataSourceManager;
 
 use Maghead\Runtime\Config\MongoConfigWriter;
 
-use SQLBuilder\Driver\PDODriverFactory;
-use SQLBuilder\Driver\PDOSQLiteDriver;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Universal\Query\CreateDatabaseQuery;
+use Magsql\Driver\PDODriverFactory;
+use Magsql\Driver\PDOSQLiteDriver;
+use Magsql\ArgumentArray;
+use Magsql\Universal\Query\CreateDatabaseQuery;
 use PDO;
 use Exception;
 

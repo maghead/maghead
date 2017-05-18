@@ -8,7 +8,7 @@ use Maghead\Schema\Comparator;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Comparator\ConsolePrinter;
 use Maghead\Schema\ColumnDiff;
-use SQLBuilder\Driver\BaseDriver;
+use Magsql\Driver\BaseDriver;
 
 class NeutralDriver extends BaseDriver
 {

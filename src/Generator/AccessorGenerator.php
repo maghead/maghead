@@ -10,11 +10,11 @@ use Maghead\Manager\DataSourceManager;
 use Doctrine\Common\Inflector\Inflector;
 
 
-use SQLBuilder\Universal\Query\SelectQuery;
-use SQLBuilder\Universal\Query\DeleteQuery;
-use SQLBuilder\Bind;
-use SQLBuilder\ParamMarker;
-use SQLBuilder\ArgumentArray;
+use Magsql\Universal\Query\SelectQuery;
+use Magsql\Universal\Query\DeleteQuery;
+use Magsql\Bind;
+use Magsql\ParamMarker;
+use Magsql\ArgumentArray;
 
 use CodeGen\ClassFile;
 use CodeGen\Statement\RequireStatement;

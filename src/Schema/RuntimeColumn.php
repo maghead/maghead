@@ -11,8 +11,8 @@ use Maghead\Utils;
 use Exception;
 use ArrayIterator;
 use IteratorAggregate;
-use SQLBuilder\Raw;
-use SQLBuilder\Driver\BaseDriver;
+use Magsql\Raw;
+use Magsql\Driver\BaseDriver;
 use Closure;
 use LogicException;
 
@@ -54,7 +54,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
         $this->name = $name;
         $this->attributes = $attributes;
 
-        // predefined properties in SQLBuilder\Universal\Syntax\Column
+        // predefined properties in Magsql\Universal\Syntax\Column
         $this->primary = $attributes['primary'];
         $this->unsigned = $attributes['unsigned'];
         $this->type = $attributes['type'];

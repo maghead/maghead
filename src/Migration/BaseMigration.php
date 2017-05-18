@@ -2,10 +2,10 @@
 
 namespace Maghead\Migration;
 
-use SQLBuilder\Universal\Query\AlterTableQuery;
-use SQLBuilder\ToSqlInterface;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Driver\BaseDriver;
+use Magsql\Universal\Query\AlterTableQuery;
+use Magsql\ToSqlInterface;
+use Magsql\ArgumentArray;
+use Magsql\Driver\BaseDriver;
 use Maghead\Console\Application;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\DynamicSchemaDeclare;
@@ -59,7 +59,7 @@ class BaseMigration
     }
 
     /**
-     * executeQuery method execute the query for objects that supports SQLBuilder\ToSqlInterface.
+     * executeQuery method execute the query for objects that supports Magsql\ToSqlInterface.
      *
      * @param ToSqlInterface $query
      */

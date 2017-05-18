@@ -5,8 +5,8 @@ namespace Maghead\Sharding;
 use Maghead\Sharding\Balancer\RandBalancer;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Runtime\Repo;
-use SQLBuilder\Universal\Query\UUIDQuery;
-use SQLBuilder\ArgumentArray;
+use Magsql\Universal\Query\UUIDQuery;
+use Magsql\ArgumentArray;
 
 class Shard
 {

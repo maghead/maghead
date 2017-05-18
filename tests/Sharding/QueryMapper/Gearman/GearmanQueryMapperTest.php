@@ -1,5 +1,5 @@
 <?php
-use SQLBuilder\Universal\Query\SelectQuery;
+use Magsql\Universal\Query\SelectQuery;
 use Maghead\Testing\ModelTestCase;
 use Maghead\Sharding\QueryMapper\Gearman\GearmanQueryMapper;
 use Maghead\Runtime\Config\FileConfigLoader;

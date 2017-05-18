@@ -2,7 +2,7 @@
 
 namespace Maghead\Platform\MySQL\Query;
 
-use SQLBuilder\Universal\Query\SelectQuery;
+use Magsql\Universal\Query\SelectQuery;
 
 class TableStatusSummaryQuery extends SelectQuery
 {

@@ -6,10 +6,10 @@ use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
 use AuthorBooks\Model\AuthorCollection;
 use Maghead\Migration\Migration;
-use SQLBuilder\Universal\Syntax\Column;
-use SQLBuilder\Driver\PDOMySQLDriver;
-use SQLBuilder\Driver\PDOPgSQLDriver;
-use SQLBuilder\Driver\SQLiteDriver;
+use Magsql\Universal\Syntax\Column;
+use Magsql\Driver\PDOMySQLDriver;
+use Magsql\Driver\PDOPgSQLDriver;
+use Magsql\Driver\SQLiteDriver;
 
 class AuthorTest extends ModelTestCase
 {

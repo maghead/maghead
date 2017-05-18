@@ -12,7 +12,7 @@ use AuthorBooks\Model\{
     BookSchema,
     AuthorBook,
     AuthorBookSchema};
-use SQLBuilder\Raw;
+use Magsql\Raw;
 
 /**
  * @group app

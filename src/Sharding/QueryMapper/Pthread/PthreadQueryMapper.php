@@ -2,9 +2,9 @@
 
 namespace Maghead\Sharding\QueryMapper\Pthread;
 
-use SQLBuilder\Universal\Query\CreateDatabaseQuery;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Driver\PDOMySQLDriver;
+use Magsql\Universal\Query\CreateDatabaseQuery;
+use Magsql\ArgumentArray;
+use Magsql\Driver\PDOMySQLDriver;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Sharding\QueryMapper\QueryMapper;
 use Maghead\Sharding\ShardCollection;

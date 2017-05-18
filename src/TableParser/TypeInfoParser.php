@@ -3,9 +3,9 @@
 namespace Maghead\TableParser;
 
 use Exception;
-use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\PgSQLDriver;
+use Magsql\Driver\MySQLDriver;
+use Magsql\Driver\BaseDriver;
+use Magsql\Driver\PgSQLDriver;
 
 class TypeInfoParser
 {

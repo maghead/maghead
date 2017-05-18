@@ -2,7 +2,7 @@
 namespace TestApp\Model;
 
 use Maghead\Schema\DeclareSchema;
-use SQLBuilder\Raw;
+use Magsql\Raw;
 
 class EdmSchema extends DeclareSchema
 {

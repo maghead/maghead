@@ -2,8 +2,8 @@
 
 namespace Maghead\Runtime\Query;
 
-use SQLBuilder\Universal\Query\UpdateQuery as BaseQuery;
-use SQLBuilder\ArgumentArray;
+use Magsql\Universal\Query\UpdateQuery as BaseQuery;
+use Magsql\ArgumentArray;
 
 use Maghead\Runtime\Repo;
 

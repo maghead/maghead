@@ -5,10 +5,10 @@ require_once __DIR__ . '/MetadataSchemaProxy.php';
 use Maghead\Schema\SchemaLoader;
 use Maghead\Runtime\Result;
 use Maghead\Runtime\Inflator;
-use SQLBuilder\Bind;
-use SQLBuilder\ArgumentArray;
+use Magsql\Bind;
+use Magsql\ArgumentArray;
 use PDO;
-use SQLBuilder\Universal\Query\InsertQuery;
+use Magsql\Universal\Query\InsertQuery;
 use Maghead\Runtime\Repo;
 
 class MetadataRepo extends Repo

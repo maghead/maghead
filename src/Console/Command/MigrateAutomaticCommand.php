@@ -9,7 +9,7 @@ use Maghead\Manager\DataSourceManager;
 
 use Maghead\Schema\SchemaLoader;
 use Maghead\Platform\MySQL\MySQLBackup;
-use SQLBuilder\Driver\PDOMySQLDriver;
+use Magsql\Driver\PDOMySQLDriver;
 
 class MigrateAutomaticCommand extends MigrateBaseCommand
 {

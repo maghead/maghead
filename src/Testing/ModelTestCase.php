@@ -13,7 +13,7 @@ use Maghead\Generator\Schema\SchemaGenerator;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Manager\TableManager;
-use SQLBuilder\Driver\BaseDriver;
+use Magsql\Driver\BaseDriver;
 
 /**
  * @codeCoverageIgnore

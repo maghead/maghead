@@ -2,7 +2,7 @@
 
 namespace Maghead\Schema\Comparator;
 
-use SQLBuilder\Raw;
+use Magsql\Raw;
 
 class AttributeDiff
 {

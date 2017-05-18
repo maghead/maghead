@@ -5,12 +5,12 @@ namespace Maghead\Schema\Column;
 use Maghead\Schema\DeclareColumn;
 use Maghead\Schema\DeclareSchema;
 
-use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PgSQLDriver;
-use SQLBuilder\Driver\SQLiteDriver;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\ToSqlInterface;
+use Magsql\Driver\BaseDriver;
+use Magsql\Driver\MySQLDriver;
+use Magsql\Driver\PgSQLDriver;
+use Magsql\Driver\SQLiteDriver;
+use Magsql\ArgumentArray;
+use Magsql\ToSqlInterface;
 
 class UUIDColumn extends DeclareColumn
 {

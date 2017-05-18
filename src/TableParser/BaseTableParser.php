@@ -3,7 +3,7 @@
 namespace Maghead\TableParser;
 
 use PDO;
-use SQLBuilder\Driver\BaseDriver;
+use Magsql\Driver\BaseDriver;
 use Maghead\QueryDriver;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Runtime\Connection;

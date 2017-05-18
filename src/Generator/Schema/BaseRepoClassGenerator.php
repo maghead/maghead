@@ -11,11 +11,11 @@ use Doctrine\Common\Inflector\Inflector;
 use ReflectionClass;
 
 // used for SQL generator
-use SQLBuilder\Universal\Query\SelectQuery;
-use SQLBuilder\Universal\Query\DeleteQuery;
-use SQLBuilder\Bind;
-use SQLBuilder\ParamMarker;
-use SQLBuilder\ArgumentArray;
+use Magsql\Universal\Query\SelectQuery;
+use Magsql\Universal\Query\DeleteQuery;
+use Magsql\Bind;
+use Magsql\ParamMarker;
+use Magsql\ArgumentArray;
 
 use CodeGen\Statement\RequireStatement;
 use CodeGen\Statement\RequireOnceStatement;
@@ -51,10 +51,10 @@ class BaseRepoClassGenerator
         $cTemplate->useClass('Maghead\\Runtime\\Result');
         $cTemplate->useClass('Maghead\\Runtime\\Model');
         $cTemplate->useClass('Maghead\\Runtime\\Inflator');
-        $cTemplate->useClass('SQLBuilder\\Bind');
-        $cTemplate->useClass('SQLBuilder\\ArgumentArray');
+        $cTemplate->useClass('Magsql\\Bind');
+        $cTemplate->useClass('Magsql\\ArgumentArray');
         $cTemplate->useClass('PDO');
-        $cTemplate->useClass('SQLBuilder\\Universal\\Query\\InsertQuery');
+        $cTemplate->useClass('Magsql\\Universal\\Query\\InsertQuery');
 
         $cTemplate->addConsts(array(
             'SCHEMA_CLASS'       => get_class($schema),

@@ -2,7 +2,7 @@
 
 namespace AuthorBooks\Tests;
 
-use SQLBuilder\Raw;
+use Magsql\Raw;
 use Maghead\Testing\ModelTestCase;
 use Maghead\Runtime\Result;
 use AuthorBooks\Model\Author;

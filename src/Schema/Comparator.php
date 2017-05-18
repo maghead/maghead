@@ -4,10 +4,10 @@ namespace Maghead\Schema;
 
 use Maghead\Schema\Comparator\ColumnDiff;
 use Maghead\Schema\Comparator\AttributeDiff;
-use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\MySQLDriver;
+use Magsql\Driver\BaseDriver;
+use Magsql\Driver\MySQLDriver;
 use Closure;
-use SQLBuilder\Raw;
+use Magsql\Raw;
 
 class Comparator
 {

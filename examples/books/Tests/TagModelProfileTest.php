@@ -1,7 +1,7 @@
 <?php
 namespace AuthorBooks\Tests;
 
-use SQLBuilder\Raw;
+use Magsql\Raw;
 use Maghead\Testing\ModelProfileTestCase;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookSchema;

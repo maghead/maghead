@@ -8,7 +8,7 @@ use Maghead\TableParser\TableParser;
 use Maghead\TableBuilder\TableBuilder;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Runtime\Connection;
-use SQLBuilder\Driver\BaseDriver;
+use Magsql\Driver\BaseDriver;
 use ArrayIterator;
 use PDO;
 
@@ -24,7 +24,7 @@ class MetadataManager implements ArrayAccess, IteratorAggregate
     protected $connection;
 
     /**
-     * @var SQLBuilder\QueryDriver QueryDriver from SQLBuilder
+     * @var Magsql\QueryDriver QueryDriver from Magsql
      */
     public $driver;
 

@@ -3,7 +3,7 @@
 namespace Maghead\Runtime;
 
 use Maghead\Types\DateTime;
-use SQLBuilder\Raw;
+use Magsql\Raw;
 
 class Inflator
 {

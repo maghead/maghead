@@ -3,10 +3,10 @@
 namespace Maghead\TableParser;
 
 use InvalidArgumentException;
-use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PgSQLDriver;
-use SQLBuilder\Driver\SQLiteDriver;
+use Magsql\Driver\BaseDriver;
+use Magsql\Driver\MySQLDriver;
+use Magsql\Driver\PgSQLDriver;
+use Magsql\Driver\SQLiteDriver;
 use Maghead\Runtime\Connection;
 
 class TableParser

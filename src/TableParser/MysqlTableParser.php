@@ -5,7 +5,7 @@ namespace Maghead\TableParser;
 use PDO;
 use stdClass;
 use Maghead\Schema\DeclareSchema;
-use SQLBuilder\Raw;
+use Magsql\Raw;
 use Doctrine\Common\Inflector\Inflector;
 
 class MysqlTableParser extends BaseTableParser implements ReferenceParser

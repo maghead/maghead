@@ -9,9 +9,9 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\ErrorLogHandler;
 
-use SQLBuilder\Universal\Query\SelectQuery;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Driver\BaseDriver;
+use Magsql\Universal\Query\SelectQuery;
+use Magsql\ArgumentArray;
+use Magsql\Driver\BaseDriver;
 
 use Maghead\Runtime\Config\Config;
 use Maghead\Runtime\Config\FileConfigLoader;

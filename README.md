@@ -356,7 +356,7 @@ But please note that SQLite doesn't support column renaming and column
 dropping.
 
 To see what migration script could do, please check the documentation of
-SQLBuilder package.
+Magsql package.
 
 ### A More Advanced Model Schema
 

@@ -11,9 +11,9 @@ use Maghead\Manager\TableManager;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Runtime\SeedBuilder;
-use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PgSQLDriver;
-use SQLBuilder\Driver\SQLiteDriver;
+use Magsql\Driver\MySQLDriver;
+use Magsql\Driver\PgSQLDriver;
+use Magsql\Driver\SQLiteDriver;
 use Exception;
 
 class SqlCommand extends BaseCommand

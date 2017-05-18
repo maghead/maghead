@@ -5,8 +5,8 @@ namespace Maghead\TableBuilder;
 use Maghead\Schema\Schema;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Schema\DeclareColumn;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Universal\Syntax\Constraint;
+use Magsql\ArgumentArray;
+use Magsql\Universal\Syntax\Constraint;
 
 class MysqlBuilder extends BaseBuilder
 {

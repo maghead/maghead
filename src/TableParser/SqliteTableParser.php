@@ -6,7 +6,7 @@ use PDO;
 use Exception;
 use LogicException;
 use Maghead\Schema\DeclareSchema;
-use SQLBuilder\Raw;
+use Magsql\Raw;
 use Maghead\SqliteParser\CreateTableParser;
 
 class SqliteTableParser extends BaseTableParser

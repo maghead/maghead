@@ -2,9 +2,9 @@
 
 namespace Maghead\TableStatus;
 
-use SQLBuilder\Driver\PDOMySQLDriver;
-use SQLBuilder\Universal\Query\SelectQuery;
-use SQLBuilder\ArgumentArray;
+use Magsql\Driver\PDOMySQLDriver;
+use Magsql\Universal\Query\SelectQuery;
+use Magsql\ArgumentArray;
 
 use Maghead\Runtime\Connection;
 use Maghead\Platform\MySQL\Query\TableStatusSummaryQuery;

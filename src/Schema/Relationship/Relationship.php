@@ -2,7 +2,7 @@
 
 namespace Maghead\Schema\Relationship;
 
-use SQLBuilder\Universal\Syntax\Conditions;
+use Magsql\Universal\Syntax\Conditions;
 use Maghead\Runtime\Collection;
 use LogicException;
 use ArrayAccess;
@@ -26,7 +26,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
     public $accessor;
 
     /**
-     * @var Conditions The SQLBuilder Condition Syntax Object
+     * @var Conditions The Magsql Condition Syntax Object
      */
     public $where;
 

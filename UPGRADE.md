@@ -89,7 +89,7 @@ UPGRADE TO 2.0
 WIP
 ======================
 
-- Rebuild `SQLBuilder\Universal\SelectQuery` from Relationship with the `filter` and `where`.
+- Rebuild `Magsql\Universal\SelectQuery` from Relationship with the `filter` and `where`.
 - Add a test case for relationship with custom where conditions, filter and order by and group by.
 
 // vim:sw=2:ts=2:sts=2:

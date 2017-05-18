@@ -140,7 +140,7 @@ class ConnectionManager extends ArrayObject
     }
 
     /**
-     * Get SQLBuilder\QueryDriver by data source id.
+     * Get Magsql\QueryDriver by data source id.
      *
      * @param string $id datasource name
      *

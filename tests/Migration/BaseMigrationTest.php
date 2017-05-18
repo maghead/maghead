@@ -1,6 +1,6 @@
 <?php
-use SQLBuilder\Column;
-use SQLBuilder\Driver\PDODriverFactory;
+use Magsql\Column;
+use Magsql\Driver\PDODriverFactory;
 use Maghead\Migration\Migration;
 use Maghead\Testing\ModelTestCase;
 use TestApp\Model\NameSchema;

@@ -1,15 +1,15 @@
 <?php
-use SQLBuilder\Universal\Syntax\Column;
-use SQLBuilder\Universal\Query\AlterTableQuery;
-use SQLBuilder\Universal\Query\CreateTableQuery;
-use SQLBuilder\Universal\Query\UpdateTableQuery;
-use SQLBuilder\Universal\Query\DeleteTableQuery;
-use SQLBuilder\Universal\Query\InsertTableQuery;
-use SQLBuilder\Universal\Query\CreateIndexQuery;
-use SQLBuilder\Universal\Query\UnionQuery;
-use SQLBuilder\Bind;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Literal;
+use Magsql\Universal\Syntax\Column;
+use Magsql\Universal\Query\AlterTableQuery;
+use Magsql\Universal\Query\CreateTableQuery;
+use Magsql\Universal\Query\UpdateTableQuery;
+use Magsql\Universal\Query\DeleteTableQuery;
+use Magsql\Universal\Query\InsertTableQuery;
+use Magsql\Universal\Query\CreateIndexQuery;
+use Magsql\Universal\Query\UnionQuery;
+use Magsql\Bind;
+use Magsql\ArgumentArray;
+use Magsql\Literal;
 class DiffMigration_1325347200
     extends Maghead\Migration\Migration
 {

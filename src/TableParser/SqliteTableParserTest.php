@@ -2,7 +2,7 @@
 
 namespace Maghead\TableParser;
 
-use SQLBuilder\Driver\PDOSQLiteDriver;
+use Magsql\Driver\PDOSQLiteDriver;
 use Maghead\TableParser\SqliteTableParser;
 use Maghead\Runtime\Connection;
 use PDO;

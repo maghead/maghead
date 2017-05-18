@@ -2,10 +2,10 @@
 
 namespace Maghead\Migration;
 
-use SQLBuilder\Universal\Query\AlterTableQuery;
-use SQLBuilder\Universal\Syntax\Column;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Driver\MySQLDriver;
+use Magsql\Universal\Query\AlterTableQuery;
+use Magsql\Universal\Syntax\Column;
+use Magsql\ArgumentArray;
+use Magsql\Driver\MySQLDriver;
 use Maghead\Schema\DynamicSchemaDeclare;
 use CLIFramework\Logger;
 use Exception;

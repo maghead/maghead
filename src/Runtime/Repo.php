@@ -17,14 +17,14 @@ use Maghead\Runtime\Query\SelectQuery;
 use Maghead\Runtime\Query\DeleteQuery;
 use Maghead\Runtime\Query\UpdateQuery;
 
-use SQLBuilder\ToSqlInterface;
-use SQLBuilder\Universal\Query\InsertQuery;
+use Magsql\ToSqlInterface;
+use Magsql\Universal\Query\InsertQuery;
 
-use SQLBuilder\Driver\PDOPgSQLDriver;
-use SQLBuilder\Driver\PDOMySQLDriver;
-use SQLBuilder\Bind;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Raw;
+use Magsql\Driver\PDOPgSQLDriver;
+use Magsql\Driver\PDOMySQLDriver;
+use Magsql\Bind;
+use Magsql\ArgumentArray;
+use Magsql\Raw;
 
 use Maghead\Schema\RuntimeColumn;
 use Maghead\Schema\Relationship\Relationship;
@@ -407,7 +407,7 @@ abstract class Repo implements Countable
      *    a new arguments.
      *
      * 5. use these new arguments to build a SQL query with
-     *    SQLBuilder\QueryBuilder.
+     *    Magsql\QueryBuilder.
      *
      * 6. insert SQL into data source (write)
      *
