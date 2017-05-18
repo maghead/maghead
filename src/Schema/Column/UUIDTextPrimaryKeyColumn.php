@@ -2,13 +2,12 @@
 
 namespace Maghead\Schema\Column;
 
-use Maghead\Schema\DeclareColumn;
 use Maghead\Schema\DeclareSchema;
 
 /**
  * @codeCoverageIgnore
  */
-class UUIDTextColumn extends DeclareColumn
+class UUIDTextPrimaryKeyColumn extends UUIDPrimaryKeyColumn
 {
     /**
      * BINARY(16) is the best column type for UUID.
@@ -19,12 +18,6 @@ class UUIDTextColumn extends DeclareColumn
      */
     public function __construct(DeclareSchema $schema, $name = 'uuid', $type = 'CHAR', $length = 36)
     {
-        parent::__construct($schema, $name);
-        $this->type($type)
-            ->isa('str')
-            ->length($length)
-            ->primary()
-            ->notNull()
-            ;
+        parent::__construct($schema, $name, $type, $length);
     }
 }
