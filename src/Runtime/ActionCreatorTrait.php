@@ -2,6 +2,8 @@
 
 namespace Maghead\Runtime;
 
+use ActionKit\RecordAction\BaseRecordAction;
+
 trait ActionCreatorTrait
 {
     public function asCreateAction(array $args = array(), array $options = array())
@@ -34,7 +36,7 @@ trait ActionCreatorTrait
     public function newAction($type, array $args = array(), $options = array())
     {
         $class = get_class($this);
-        $actionClass = \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class, $type);
+        $actionClass = BaseRecordAction::createCRUDClass($class, $type);
         $options['record'] = $this;
 
         return new $actionClass($args, $options);
@@ -43,6 +45,6 @@ trait ActionCreatorTrait
     public function getRecordActionClass($type)
     {
         $class = get_class($this);
-        return \ActionKit\RecordAction\BaseRecordAction::createCRUDClass($class, $type);
+        return BaseRecordAction::createCRUDClass($class, $type);
     }
 }
