@@ -38,13 +38,12 @@ class AuthorSchema extends DeclareSchema
 
         $this->mixin('Maghead\\Schema\\Mixin\\MetadataMixinSchema');
 
-        $this->many('addresses', 'AuthorBooks\Model\AddressSchema', 'author_id', 'id');
+        $this->many('addresses', AddressSchema::class, 'author_id', 'id');
 
-        $this->many('unused_addresses', 'AuthorBooks\Model\AddressSchema', 'author_id', 'id')
-            ->where()
-                ->equal('unused', true);
+        $this->many('unused_addresses', AddressSchema::class, 'author_id', 'id')
+            ->where()->equal('unused', true);
 
-        $this->many('author_books', 'AuthorBooks\Model\AuthorBookSchema', 'author_id', 'id');
+        $this->many('author_books', AuthorBookSchema::class, 'author_id', 'id');
 
         $this->manyToMany('books', 'author_books', 'book');
     }
