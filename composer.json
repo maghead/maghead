@@ -23,7 +23,6 @@
         "maghead/sqlite-parser": "^4.0",
         "symfony/yaml": "^2.8|^3.0|^3.2",
         "doctrine/inflector": "~1.0",
-        "twig/twig": "~1.32.0",
         "pimple/pimple": "^3.0",
         "cypresslab/gitelephant": "^1.0",
         "psr/log": "^1.0",
