@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use Exception;
 use Maghead\Exception\TableNameConversionException;
 use Doctrine\Common\Inflector\Inflector;
+use Maghead\Schema\Relationship\Relationship;
 
 use Maghead\Runtime\Model;
 
@@ -164,6 +165,23 @@ abstract class BaseSchema
             return $this->relations[ $relationId ];
         }
     }
+
+    public function hasRelation($relationId)
+    {
+        return isset($this->relations[ $relationId ]);
+    }
+
+    public function addRelation($key, Relationship $config)
+    {
+        return $this->relations[$key] = $config;
+    }
+
+    public function removeRelation($key)
+    {
+        unset($this->relations[$key]);
+    }
+
+
 
     /**
      * Get relationship data.
