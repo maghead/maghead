@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e8a81f430f7b8f574cb6962498bc3f88",
+    "content-hash": "acb6ed27370829baa43fa60a3afdad6f",
     "packages": [
         {
             "name": "corneltek/cascading-attribute",
@@ -45,16 +45,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/CLIFramework.git",
-                "reference": "eac3a85ceabc83fbf92369bdf5c79ea8fd85904b"
+                "reference": "a3e46e3982f24592510b78be2a01359548486a87"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/CLIFramework/zipball/eac3a85ceabc83fbf92369bdf5c79ea8fd85904b",
-                "reference": "eac3a85ceabc83fbf92369bdf5c79ea8fd85904b",
+                "url": "https://api.github.com/repos/c9s/CLIFramework/zipball/a3e46e3982f24592510b78be2a01359548486a87",
+                "reference": "a3e46e3982f24592510b78be2a01359548486a87",
                 "shasum": ""
             },
             "require": {
-                "corneltek/codegen": "^3.1.0",
+                "corneltek/codegen": "~3.2",
                 "corneltek/getoptionkit": "~2.5.4",
                 "corneltek/universal": "^1.7",
                 "php": ">=5.3.0",
@@ -97,20 +97,20 @@
                 "getopt",
                 "zsh"
             ],
-            "time": "2017-05-17 15:56:48"
+            "time": "2017-05-18 14:22:11"
         },
         {
             "name": "corneltek/codegen",
-            "version": "dev-master",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/CodeGen.git",
-                "reference": "b06298170ab9bf49f54391973b520e661ad0d37f"
+                "reference": "266c2087eeaf630764f4a0a7d707cc7ef568710e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/CodeGen/zipball/b06298170ab9bf49f54391973b520e661ad0d37f",
-                "reference": "b06298170ab9bf49f54391973b520e661ad0d37f",
+                "url": "https://api.github.com/repos/c9s/CodeGen/zipball/266c2087eeaf630764f4a0a7d707cc7ef568710e",
+                "reference": "266c2087eeaf630764f4a0a7d707cc7ef568710e",
                 "shasum": ""
             },
             "require": {
@@ -124,7 +124,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.1.x-dev"
+                    "dev-master": "3.2.x-dev"
                 }
             },
             "autoload": {
@@ -144,7 +144,7 @@
             ],
             "description": "PHP Code Generation Library",
             "homepage": "http://github.com/c9s/CodeGen",
-            "time": "2017-05-17 05:29:08"
+            "time": "2017-05-18T14:12:40+00:00"
         },
         {
             "name": "corneltek/configkit",
@@ -1354,8 +1354,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "corneltek/sqlbuilder": 20,
-        "corneltek/cliframework": 20,
-        "corneltek/codegen": 20
+        "corneltek/cliframework": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
