@@ -29,6 +29,11 @@ class Application extends \CLIFramework\Application
     {
         // $ttl = false disable the apcu cache
         $configFile = $this->options->config ?: SymbolicLinkConfigLoader::ANCHOR_FILENAME;
+
+        if (!file_exists($configFile)) {
+            throw new \Exception("File $configFile doesn't exist.");
+        }
+
         $config = AutoConfigLoader::load($configFile, false);
         Bootstrap::setupForCLI($config);
         $this->dataSourceManager = DataSourceManager::getInstance();
