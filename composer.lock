@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2dea43152218f9323a703211e6bd41ec",
+    "content-hash": "a8ea8f829f9e7b22ac0c9160127b0ada",
     "packages": [
         {
             "name": "corneltek/cascading-attribute",
@@ -1407,7 +1407,20 @@
             "time": "2017-02-16T18:40:32+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "4.0",
+            "alias_normalized": "4.0.0.0",
+            "version": "4.0.9999999.9999999-dev",
+            "package": "corneltek/cliframework"
+        },
+        {
+            "alias": "4.0",
+            "alias_normalized": "4.0.0.0",
+            "version": "4.0.9999999.9999999-dev",
+            "package": "corneltek/codegen"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "corneltek/cliframework": 20,
