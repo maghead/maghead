@@ -53,7 +53,7 @@ before_script:
   - bin/maghead schema build f
 
 script:
-- travis/run-phpunit --debug
+- travis/run-phpunit
 - travis/run-examples
 
 before_cache:
