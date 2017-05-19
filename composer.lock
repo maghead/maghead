@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a8ea8f829f9e7b22ac0c9160127b0ada",
+    "content-hash": "54ac98aadf6c35075b32b3aa3df58996",
     "packages": [
         {
             "name": "corneltek/cascading-attribute",
@@ -1409,16 +1409,22 @@
     ],
     "aliases": [
         {
-            "alias": "4.0",
+            "alias": "4.0.0",
             "alias_normalized": "4.0.0.0",
             "version": "4.0.9999999.9999999-dev",
             "package": "corneltek/cliframework"
         },
         {
-            "alias": "4.0",
+            "alias": "4.0.0",
             "alias_normalized": "4.0.0.0",
             "version": "4.0.9999999.9999999-dev",
             "package": "corneltek/codegen"
+        },
+        {
+            "alias": "4.0.0",
+            "alias_normalized": "4.0.0.0",
+            "version": "4.0.9999999.9999999-dev",
+            "package": "maghead/magsql"
         }
     ],
     "minimum-stability": "stable",
