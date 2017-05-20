@@ -14,6 +14,29 @@ class TestSeed extends BaseSeed
 
 class ConfigTest extends TestCase
 {
+    public function testSchemaLoaders()
+    {
+        $config = new Config([
+            "schema" => [
+                "loaders" => [
+                    [
+                        "name" => "FileSchemaLoader",
+                        "args" => [["examples/metric/Model"]],
+                    ],
+                    [
+                        "name" => "ComposerSchemaLoader",
+                        "args" => ["composer.json"],
+                    ],
+                ],
+            ],
+        ]);
+        $loaders = $config->loadSchemaLoaders();
+        $this->assertNotEmpty($loaders);
+        foreach ($loaders as $loader) {
+            $loader->load();
+        }
+    }
+
     public function testLoadSeedScripts()
     {
         $config = new Config([

@@ -2,8 +2,55 @@
 
 namespace Maghead;
 
+use ReflectionObject;
+use ReflectionClass;
+
 class Utils
 {
+    /**
+     * try to resolve the class name if the class doesn't exist or can't be found via
+     * the registered spl class loader.
+     *
+     * @param array $defaultNsRoots The default namespace list for lookup the class.
+     * @param any $refObject The class name of the reference object will be used for lookup the class.
+     * @param array $refSubDirs The subdirectories to lookup on the namespace of the reference object.
+     *
+     * @return string The resolved class name, if it's not changed, the original
+     * class name will be returned.
+     */
+    public static function resolveClass($class, array $defaultNsRoots, $refObject = null, array $refSubNss = [])
+    {
+        // Always replace :: with '\\'
+        $class = str_replace('::', '\\', $class);
+
+        if (class_exists($class, true)) {
+            return $class;
+        }
+
+        $nsRoots = $defaultNsRoots;
+        if ($refObject) {
+            $refl = new ReflectionObject($refObject);
+            $namespaceName = $refl->getNamespaceName();
+            foreach ($refSubNss as $subNs) {
+                array_unshift($nsRoots,  "$namespaceName\\$subNs");
+            }
+            array_unshift($nsRoots, $namespaceName);
+        }
+
+        foreach ($nsRoots as $nsRoot) {
+            $c = "{$nsRoot}\\{$class}";
+            if (class_exists($c, true)) {
+                return $c;
+            }
+        }
+
+        if (!class_exists($class)) {
+            return false;
+        }
+
+        return $class;
+    }
+
 
     public static function mkpath($path, $mode = 0755, $logger = null)
     {

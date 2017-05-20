@@ -5,6 +5,7 @@ namespace Maghead\Runtime\Config;
 use ArrayObject;
 use Exception;
 use Maghead\Sharding\ShardingConfig;
+use Maghead\Utils;
 
 class Config extends ArrayObject
 {
@@ -60,13 +61,33 @@ class Config extends ArrayObject
     }
 
     /**
-     * load external schema loader.
+     * return the external schema loader.
      */
-    public function getExternalSchemaLoader()
+    public function loadSchemaLoaders($refObject = null)
     {
-        if (isset($this['schema']['loader'])) {
-            return $this['schema']['loader'];
+        if (!isset($this['schema']['loaders'])) {
+            return [];
         }
+
+        $configs = array_map(function($config) {
+            if (is_string($config)) {
+                return [ 'name' => $config ];
+            }
+            return $config;
+        }, (array) $this['schema']['loaders']);
+
+        $loaders = [];
+        foreach ($configs as $config) {
+            $name = $config['name'];
+            $class = Utils::resolveClass($name, ['Maghead\\Schema\\Loader'], $refObject, ['Schema\\Loader']);
+            $reflClass = new \ReflectionClass($class);
+            if (isset($config['args'])) {
+                $loaders[] = $reflClass->newInstanceArgs($config['args']);
+            } else {
+                $loaders[] = $reflClass->newInstance();
+            }
+        }
+        return $loaders;
     }
 
     public function removeDatabase($dataSourceId)

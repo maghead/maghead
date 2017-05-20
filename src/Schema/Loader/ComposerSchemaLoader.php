@@ -9,9 +9,16 @@ class ComposerSchemaLoader
 {
     protected $config;
 
-    public function __construct(array $composerConfig)
+    public function __construct($composerConfig)
     {
-        $this->config = $composerConfig;
+        if (is_string($composerConfig)) {
+            if (!file_exists($composerConfig)) {
+                throw new \InvalidArgumentException("ComposerSchemaLoader::__construct expects the first argument to be a composer.json path or the json config array.");
+            }
+            $this->config = json_decode(file_get_contents($composerConfig), true);
+        } else {
+            $this->config = $composerConfig;
+        }
     }
 
     protected function scanAutoload($a)

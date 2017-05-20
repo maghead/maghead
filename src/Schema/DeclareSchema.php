@@ -19,8 +19,8 @@ use Maghead\Schema\Relationship\Relationship;
 use Maghead\Schema\Relationship\HasMany;
 use Maghead\Schema\Relationship\HasOne;
 use Maghead\Schema\Relationship\BelongsTo;
-
 use Maghead\Exception\SchemaRelatedException;
+use Maghead\Utils;
 
 class ShardMappingMissingException extends SchemaRelatedException
 {
@@ -29,38 +29,6 @@ class ShardKeyMissingException extends SchemaRelatedException
 {
 }
 
-/**
- * try to resolve the class name if the class doesn't exist or can't be found via
- * the registered spl class loader.
- *
- * @param array $defaultNsList The default namespace list for lookup the class.
- * @param any $refObject The class name of the reference object will be used for lookup the class.
- * @param array $refSubDirs The subdirectories to lookup on the namespace of the reference object.
- *
- * @return string The resolved class name, if it's not changed, the original
- * class name will be returned.
- */
-function resolveClass($class, array $defaultNsList = [], $refObject = null, array $refSubDirs = [])
-{
-    if (class_exists($class, true)) {
-        return $class;
-    }
-    $nslist = $defaultNsList;
-    if ($refObject) {
-        $refl = new ReflectionObject($refObject);
-        foreach ($refSubDirs as $subDir) {
-            array_unshift($nslist, $refl->getNamespaceName() . "\\$subDir\\");
-        }
-        array_unshift($nslist, $refl->getNamespaceName());
-    }
-    foreach ($nslist as $ns) {
-        $c = "{$ns}\\{$class}";
-        if (class_exists($c, true)) {
-            return $c;
-        }
-    }
-    return $class;
-}
 
 class DeclareSchema extends BaseSchema implements Schema
 {
@@ -268,7 +236,7 @@ class DeclareSchema extends BaseSchema implements Schema
         if (isset(self::$columnClassAliases[$class])) {
             $class = self::$columnClassAliases[$class];
         }
-        $class = resolveClass($class, ['Maghead\\Schema\\Column'], $this, ['Column']);
+        $class = Utils::resolveClass($class, ['Maghead\\Schema\\Column'], $this, ['Column']);
         return $this->columns[$name] = new $class($this, $name);
     }
 
@@ -773,7 +741,7 @@ class DeclareSchema extends BaseSchema implements Schema
     public function mixin($class, array $options = array())
     {
         if (!class_exists($class, true)) {
-            $class = resolveClass($class, ['Maghead\\Schema\\Mixin'], $this, ['Mixin']);
+            $class = Utils::resolveClass($class, ['Maghead\\Schema\\Mixin'], $this, ['Mixin']);
         }
         if (!class_exists($class)) {
             throw new Exception("Mixin class $class not found.");
@@ -877,8 +845,7 @@ class DeclareSchema extends BaseSchema implements Schema
         $seeds = func_get_args();
         $self = $this;
         $this->seeds = array_map(function ($class) use($self) {
-            $class = str_replace('::', '\\', $class);
-            return resolveClass($class, [], $self, ['Seeds']);
+            return Utils::resolveClass($class, [], $self, ['Seeds']);
         }, $seeds);
     }
 
@@ -889,7 +856,7 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function addSeed($class)
     {
-        $this->seeds[] = resolveClass($class, [], $this, ['Seeds']);
+        $this->seeds[] = Utils::resolveClass($class, [], $this, ['Seeds']);
 
         return $this;
     }
