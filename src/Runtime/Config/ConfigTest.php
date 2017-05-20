@@ -14,7 +14,7 @@ class TestSeed extends BaseSeed
 
 class ConfigTest extends TestCase
 {
-    public function testSchemaLoaders()
+    public function testLoadSchemaLoadersWithClassResolver()
     {
         $config = new Config([
             "schema" => [
@@ -26,7 +26,7 @@ class ConfigTest extends TestCase
                     [
                         "name" => "ComposerSchemaLoader",
                         "args" => ["composer.json"],
-                    ],
+                    ]
                 ],
             ],
         ]);

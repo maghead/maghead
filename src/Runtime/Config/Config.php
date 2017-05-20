@@ -63,7 +63,7 @@ class Config extends ArrayObject
     /**
      * return the external schema loader.
      */
-    public function loadSchemaLoaders($refObject = null)
+    public function loadSchemaLoaders(array $namespaceRoots = [], $refObject = null, array $refSubNamespaceNames = [])
     {
         if (!isset($this['schema']['loaders'])) {
             return [];
@@ -79,7 +79,12 @@ class Config extends ArrayObject
         $loaders = [];
         foreach ($configs as $config) {
             $name = $config['name'];
-            $class = Utils::resolveClass($name, ['Maghead\\Schema\\Loader'], $refObject, ['Schema\\Loader']);
+
+            array_push($namespaceRoots, 'Maghead\\Schema\\Loader');
+            array_push($refSubNamespaceNames, "Schema\\Loader");
+
+            $class = Utils::resolveClass($name, $namespaceRoots, $refObject, $refSubNamespaceNames);
+
             $reflClass = new \ReflectionClass($class);
             if (isset($config['args'])) {
                 $loaders[] = $reflClass->newInstanceArgs($config['args']);
