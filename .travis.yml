@@ -36,7 +36,6 @@ matrix:
   - php: "7.0"
 
 
-
 before_install:
 - if [[ "$DB" == "mysql" ]]; then sudo sh travis/install-mysql-utilities ; fi
 
@@ -74,6 +73,12 @@ cache:
   - vendor
   - exts
   - $HOME/.composer/cache
+
 notifications:
   email:
-    on_failure: change
+    on_success: change # default: always
+    on_failure: change # default: always
+  slack:
+    secure: G/7MNT2ZQirPcxX4ui1qn7mfDi29FPIY1ThN4c+KMp5IMLoFtHmrs+3hdCXLQC4mYkWrqLQVQpqRZb92qemZAbRpyaV+1g6IDFzunia95aF2eDRD73TQCNDrKkxhBi69FGo3ToOiB1wTtX/WYLFfkfOmFI43Wu+5fTmvH2mOtIk=
+    on_success: always # default: always
+    on_failure: always # default: always
