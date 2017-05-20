@@ -18,9 +18,16 @@ class FileConfigLoader
             $stash = require $sourceFile;
             return new Config($stash);
         }
-        return new Config(self::compile($sourceFile, $force), $sourceFile);
+        $compiledFile = self::compile($sourceFile, $force);
+        $stash = require $compiledFile;
+        return new Config($stash, $sourceFile);
     }
 
+    /**
+     * compile the source config file.
+     *
+     * @return path the compiled config file
+     */
     public static function compile($sourceFile, $force = false)
     {
         $compiledFile = ConfigCompiler::compiled_filename($sourceFile);
@@ -31,9 +38,7 @@ class FileConfigLoader
             }
             $config = ConfigPreprocessor::preprocess($config);
             ConfigCompiler::write($compiledFile, $config);
-            return $config;
-        } else {
-            return require $compiledFile;
         }
+        return $compiledFile;
     }
 }
