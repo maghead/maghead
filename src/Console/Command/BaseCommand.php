@@ -5,12 +5,14 @@ namespace Maghead\Console\Command;
 use CLIFramework\Command;
 use Maghead\Runtime\Config\SymbolicLinkConfigLoader;
 use Maghead\Runtime\Config\AutoConfigLoader;
+use Maghead\Runtime\Config\Config;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Schema\SchemaLoader;
 use Maghead\Schema\Loader\FileSchemaLoader;
 use Maghead\Schema\Loader\ComposerSchemaLoader;
 use Maghead\Runtime\Bootstrap;
 use Maghead\Manager\DataSourceManager;
+use Maghead\Utils;
 use RuntimeException;
 
 class BaseCommand extends Command
@@ -54,6 +56,35 @@ class BaseCommand extends Command
         return $config;
     }
 
+
+    /**
+     * The default schema loader
+     * If we have predefined schema loaders in the config, then we should pre-load these classes.
+     */
+    protected function runDefaultSchemaLoader(Config $config)
+    {
+        $loaders = $config->loadSchemaLoaders();
+        if (!empty($loaders)) {
+            foreach ($loaders as $loader) {
+                $loadedFiles = $loader->load();
+                foreach ($loadedFiles as $f) {
+                    $this->logger->info("Found schema $f");
+                }
+            }
+        } else {
+            // If loaders are not defined, then we check if we can load them by composer.json file
+            if (file_exists('composer.json')) {
+                $this->logger->info('Found composer.json, trying to scan files from the autoload sections...');
+                $loader = ComposerSchemaLoader::from('composer.json');
+                $loadedFiles = $loader->load();
+                foreach ($loadedFiles as $f) {
+                    $this->logger->info("Found schema $f");
+                }
+            }
+        }
+    }
+
+
     /**
      * Loads schemas from arguments. Two types of the argument are supported: file and class name
      *
@@ -63,8 +94,12 @@ class BaseCommand extends Command
     {
         $config = $this->getConfig();
 
+        $this->runDefaultSchemaLoader($config);
+
         // filter file path argumets
-        $paths = array_filter($args, 'file_exists');
+        $paths = Utils::filterPathsFromArgs($args);
+        $classes = Utils::filterClassesFromArgs($args);
+
         if (empty($paths)) {
             $paths = $config->getSchemaPaths();
         }
@@ -72,16 +107,7 @@ class BaseCommand extends Command
             $loader = new FileSchemaLoader($paths);
             $loadedFiles = $loader->load();
         }
-        if (file_exists('composer.json')) {
-            $this->logger->info('Found composer.json, trying to scan files from the autoload sections...');
-            $loader = ComposerSchemaLoader::from('composer.json');
-            $loadedFiles = $loader->load();
-            foreach ($loadedFiles as $f) {
-                $this->logger->info("Found $f");
-            }
-        }
 
-        $classes = array_filter($args, function($a) { return class_exists($a, true); });
         return SchemaUtils::argumentsToSchemaObjects($classes)->notForTest();
     }
 }

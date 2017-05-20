@@ -111,4 +111,16 @@ class Utils
             return symlink($sourcePath, $targetPath);
         }
     }
+
+    public static function filterClassesFromArgs(array $args)
+    {
+        return array_values(array_filter($args, function($a) {
+            return class_exists($a, true);
+        }));
+    }
+
+    public static function filterPathsFromArgs(array $args)
+    {
+        return array_filter($args, 'file_exists');
+    }
 }

@@ -37,4 +37,18 @@ class UtilsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, Utils::evaluate(1));
         $this->assertEquals(2, Utils::evaluate(function () { return 2; }));
     }
+
+    public function testFilterClasses()
+    {
+        $args = ['examples/books', 'PageApp\\Model\\PageSchema'];
+        $classes = Utils::filterClassesFromArgs($args);
+        $this->assertEquals(['PageApp\\Model\\PageSchema'], $classes);
+    }
+
+    public function testFilterPaths()
+    {
+        $args = ['examples/books', 'PageApp\\Model\\PageSchema'];
+        $classes = Utils::filterPathsFromArgs($args);
+        $this->assertEquals(['examples/books'], $classes);
+    }
 }
