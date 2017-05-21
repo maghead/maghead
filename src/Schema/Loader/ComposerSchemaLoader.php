@@ -64,13 +64,16 @@ class ComposerSchemaLoader
 
     public function load()
     {
+        $allFiles = [];
         if (isset($this->config['autoload'])) {
             $files = $this->scanAutoload($this->config['autoload']);
+            $allFiles = array_merge($allFiles, $files);
         }
         if (isset($this->config['autoload-dev'])) {
-            $devFiles = $this->scanAutoload($this->config['autoload-dev']);
+            $files = $this->scanAutoload($this->config['autoload-dev']);
+            $allFiles = array_merge($allFiles, $files);
         }
-        return array_merge($files, $devFiles);
+        return $allFiles;
     }
 
     public static function from($composerJson)
