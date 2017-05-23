@@ -38,10 +38,22 @@ class FileSchemaLoader
 
     protected $collectedFiles = [];
 
+    /**
+     * Includes '/vendor/' to ignore schema defined in the vendor directory.
+     */
+    protected $ignorePatterns = ['Test\.php$', '/(?:\.git|\.svn|vendor)/'];
+
+    private $compiledIgnorePattern;
+
     public function __construct(array $paths = [])
     {
         $this->paths = $paths;
         $this->fileSuffixLen = strlen(self::FILE_SUFFIX);
+    }
+
+    public function addIgnorePattern($pattern)
+    {
+        $this->ignorePatterns[] = $pattern;
     }
 
     public function addPath($p, $matchBy = null)
@@ -56,11 +68,14 @@ class FileSchemaLoader
 
     protected function scanPaths(array $paths, $matchBy)
     {
+
         foreach ($paths as $a) {
             if ($a instanceof MatchSet) {
                 $this->scanPaths($a->getArrayCopy(), $a->matchBy ?: $matchBy);
             } else {
                 $path = $a;
+
+
                 if (is_file($path)) {
                     require_once $path;
                     $this->collectedFiles[] = $path;
@@ -70,20 +85,29 @@ class FileSchemaLoader
                         RecursiveIteratorIterator::SELF_FIRST
                     );
                     foreach ($rii as $fi) {
+
+                        $filename = $fi->getFilename();
+                        $filepath = $fi->getPathname();
+
+                        if ($this->compiledIgnorePattern && preg_match($this->compiledIgnorePattern, $filepath)) {
+                            echo "ignore $filepath\n";
+                            continue;
+                        }
+
+
                         // skip non php files
                         if ('php' !== $fi->getExtension()) {
                             continue;
                         }
 
-                        $filename = $fi->getFilename();
 
                         // skip unit test files
+                        /*
                         if (preg_match('/Test\.php$/i', $filename)) {
                             continue;
                         }
+                        */
 
-
-                        $filepath = $fi->getPathname();
 
                         switch ($matchBy) {
                             case self::MATCH_FILENAME:
@@ -108,6 +132,12 @@ class FileSchemaLoader
 
     public function load()
     {
+        $this->compiledIgnorePattern = join('|', array_map(function($p) {
+            $p = str_replace('#', '\\#', $p);
+            return "(?:$p)";
+        }, $this->ignorePatterns));
+        $this->compiledIgnorePattern = "!{$this->compiledIgnorePattern}!";
+
         $this->scanPaths($this->paths, $this->matchBy);
         return $this->collectedFiles;
     }
