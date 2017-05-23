@@ -90,7 +90,6 @@ class FileSchemaLoader
                         $filepath = $fi->getPathname();
 
                         if ($this->compiledIgnorePattern && preg_match($this->compiledIgnorePattern, $filepath)) {
-                            echo "ignore $filepath\n";
                             continue;
                         }
 
@@ -99,15 +98,6 @@ class FileSchemaLoader
                         if ('php' !== $fi->getExtension()) {
                             continue;
                         }
-
-
-                        // skip unit test files
-                        /*
-                        if (preg_match('/Test\.php$/i', $filename)) {
-                            continue;
-                        }
-                        */
-
 
                         switch ($matchBy) {
                             case self::MATCH_FILENAME:
