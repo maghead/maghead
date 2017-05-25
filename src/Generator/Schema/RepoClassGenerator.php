@@ -9,9 +9,9 @@ class RepoClassGenerator
 {
     public static function create(DeclareSchema $schema)
     {
-        $cTemplate = new ClassFile($schema->getRepoClass());
-        $cTemplate->extendClass('\\'.$schema->getBaseRepoClass());
+        $template = clone $schema->classes->repo;
+        $template->extendClass('\\'.$schema->getBaseRepoClass());
 
-        return $cTemplate;
+        return $template;
     }
 }

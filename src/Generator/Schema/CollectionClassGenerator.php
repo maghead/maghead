@@ -9,9 +9,9 @@ class CollectionClassGenerator
 {
     public static function create(DeclareSchema $schema)
     {
-        $cTemplate = new ClassFile($schema->getCollectionClass());
-        $cTemplate->extendClass('\\'.$schema->getBaseCollectionClass());
+        $template = clone $schema->classes->collection;
+        $template->extendClass('\\'.$schema->getBaseCollectionClass());
 
-        return $cTemplate;
+        return $template;
     }
 }

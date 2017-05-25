@@ -9,9 +9,9 @@ class ModelClassGenerator
 {
     public static function create(DeclareSchema $schema)
     {
-        $cTemplate = new ClassFile($schema->getModelClass());
-        $cTemplate->extendClass('\\'.$schema->getBaseModelClass());
+        $template = clone $schema->classes->model;
+        $template->extendClass('\\'.$schema->getBaseModelClass());
 
-        return $cTemplate;
+        return $template;
     }
 }

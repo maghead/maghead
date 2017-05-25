@@ -22,12 +22,17 @@ use Maghead\Schema\Relationship\BelongsTo;
 use Maghead\Exception\SchemaRelatedException;
 use Maghead\Utils;
 
+use CodeGen\UserClass;
+use CodeGen\ClassFile;
+
 class ShardMappingMissingException extends SchemaRelatedException
 {
 }
 class ShardKeyMissingException extends SchemaRelatedException
 {
 }
+
+class MetaClass extends UserClass {  }
 
 
 class DeclareSchema extends BaseSchema implements Schema
@@ -123,6 +128,15 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public $primaryKey;
 
+
+    /**
+     * meta classes
+     *
+     * contains ClassFile[modal|collection|repo]
+     */
+    public $classes;
+
+
     /**
      * virtual schema (won't generate class files)
      */
@@ -140,6 +154,11 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function __construct(array $options = array())
     {
+        $this->classes = (object) [
+            'modal'      => new ClassFile($this->getModelClass()),
+            'collection' => new ClassFile($this->getCollectionClass()),
+            'repo'       => new ClassFile($this->getRepoClass())
+        ];
         $this->build($options);
     }
 
