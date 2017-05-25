@@ -155,7 +155,10 @@ class DeclareSchema extends BaseSchema implements Schema
     public function __construct(array $options = array())
     {
         $this->classes = (object) [
-            'modal'      => new ClassFile($this->getModelClass()),
+            'baseModel'      => new ClassFile($this->getBaseModelClass()),
+            'baseCollection' => new ClassFile($this->getBaseCollectionClass()),
+            'baseRepo'       => new ClassFile($this->getBaseRepoClass()),
+            'model'      => new ClassFile($this->getModelClass()),
             'collection' => new ClassFile($this->getCollectionClass()),
             'repo'       => new ClassFile($this->getRepoClass())
         ];

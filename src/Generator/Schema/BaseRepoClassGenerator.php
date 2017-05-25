@@ -45,7 +45,7 @@ class BaseRepoClassGenerator
         $writeConnection = DataSourceManager::getInstance()->getConnection($writeTo);
         $writeQueryDriver = $writeConnection->getQueryDriver();
 
-        $cTemplate = new ClassFile($schema->getBaseRepoClass());
+        $cTemplate = clone $schema->classes->baseRepo;
 
         $cTemplate->useClass('Maghead\\Schema\\SchemaLoader');
         $cTemplate->useClass('Maghead\\Runtime\\Result');

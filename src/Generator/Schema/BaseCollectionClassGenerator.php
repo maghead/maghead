@@ -9,7 +9,7 @@ class BaseCollectionClassGenerator
 {
     public static function create(DeclareSchema $schema, $baseCollectionClass)
     {
-        $cTemplate = new ClassFile($schema->getBaseCollectionClass());
+        $cTemplate = clone $schema->classes->baseCollection;
         $cTemplate->addConsts(array(
             'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),
             'MODEL_CLASS' => $schema->getModelClass(),

@@ -56,7 +56,7 @@ class BaseModelClassGenerator
             throw new PrimaryKeyColumnMissingException($schema, "PrimaryKey is required to be defined in the schema.");
         }
 
-        $cTemplate = new ClassFile($schema->getBaseModelClass());
+        $cTemplate = clone $schema->classes->baseModel;
         $cTemplate->extendClass('\\'.$baseClass);
 
         $cTemplate->useClass('Maghead\\Schema\\SchemaLoader');
