@@ -377,7 +377,7 @@ abstract class Model implements Serializable
                 return $repo->deleteByPrimaryKey($key);
             });
             return $ret;
-        } elseif (static::SHARD_MAPPING_ID) {
+        } else if (static::SHARD_MAPPING_ID) {
             if (!$this->repo) {
                 throw new LogicException("property repo is not defined. be sure to load the repo for the model.");
             }
@@ -500,7 +500,8 @@ abstract class Model implements Serializable
             $this->afterUpdate($args);
 
             return $ret;
-        } elseif (static::SHARD_MAPPING_ID) {
+
+        } else if (static::SHARD_MAPPING_ID) {
             if (!$this->repo) {
                 throw new LogicException("property repo is not defined. be sure to load the repo for the model.");
             }
@@ -515,17 +516,18 @@ abstract class Model implements Serializable
             $this->afterUpdate($args);
 
             return $ret;
-        } else {
-            if ($a = $this->beforeUpdate($args)) {
-                $args = $a;
-            }
-
-            $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
-            $this->setData($args);
-            $this->afterUpdate($args);
-
-            return $ret;
         }
+
+        // The original behavior
+        if ($a = $this->beforeUpdate($args)) {
+            $args = $a;
+        }
+
+        $ret = static::masterRepo()->updateByPrimaryKey($key, $args);
+        $this->setData($args);
+        $this->afterUpdate($args);
+
+        return $ret;
     }
 
     /**
