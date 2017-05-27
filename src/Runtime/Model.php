@@ -155,7 +155,7 @@ abstract class Model implements Serializable
     /**
      * An alias for Repo::findByKeys
      */
-    protected static function findByKeys(array $args, $byKeys = null)
+    public static function findByKeys(array $args, $byKeys = null)
     {
         if (static::SHARD_MAPPING_ID) {
             return static::shards()->first(function (Repo $repo, Shard $shard) use ($arg, $byKeys) {
