@@ -63,7 +63,20 @@ class Result
 
     public $exception;
 
+    /**
+     * the shard object where the action happened.
+     *
+     * @var Maghead\Sharding\Shard
+     */
     public $shard;
+
+
+    /**
+     * the repo object where the action happened.
+     *
+     * @var Maghead\Runtime\Repo
+     */
+    public $repo;
 
     public $subResults;
 
