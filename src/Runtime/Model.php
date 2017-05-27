@@ -348,10 +348,12 @@ abstract class Model implements Serializable
 
     public function beforeUpdate($args)
     {
+        return $args;
     }
 
     public function afterUpdate($args)
     {
+
     }
 
     /**
