@@ -176,7 +176,7 @@ abstract class Model implements Serializable
      * @param array $byKeys
      * @return Result
      */
-    public function updateOrCreate(array $args)
+    public static function updateOrCreate(array $args)
     {
         if ($this->hasKey()) {
             return $this->update($args);
@@ -192,7 +192,7 @@ abstract class Model implements Serializable
      * @param array $args
      * @param array $byKeys it's optional if you defined primary key
      */
-    public function loadOrCreate(array $args, $byKeys = null)
+    public static function loadOrCreate(array $args, $byKeys = null)
     {
         // FIXME: sharding
         $repo = static::masterRepo();
