@@ -176,7 +176,7 @@ abstract class Model implements Serializable
      * @param array $byKeys
      * @return Result
      */
-    public static function updateOrCreate(array $args)
+    public function updateOrCreate(array $args)
     {
         if ($this->hasKey()) {
             return $this->update($args);
@@ -583,6 +583,7 @@ abstract class Model implements Serializable
                 $shardKey = $shards->generateUUID();
             }
 
+            // locate one shard and execute the operation
             return static::shards()->locateAndExecute($shardKey, function ($repo, $shard) use ($args) {
                 $ret = $repo->rawCreate($args);
                 $ret->shard = $shard;
