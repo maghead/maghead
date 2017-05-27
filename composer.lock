@@ -45,12 +45,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/CLIFramework.git",
-                "reference": "3e2e11bcefc62a89624637f560108148128a1137"
+                "reference": "f69a19febc57f3d7fba7262be7d3bc3d4f8ad092"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/CLIFramework/zipball/3e2e11bcefc62a89624637f560108148128a1137",
-                "reference": "3e2e11bcefc62a89624637f560108148128a1137",
+                "url": "https://api.github.com/repos/c9s/CLIFramework/zipball/f69a19febc57f3d7fba7262be7d3bc3d4f8ad092",
+                "reference": "f69a19febc57f3d7fba7262be7d3bc3d4f8ad092",
                 "shasum": ""
             },
             "require": {
@@ -97,7 +97,7 @@
                 "getopt",
                 "zsh"
             ],
-            "time": "2017-05-20 16:24:55"
+            "time": "2017-05-27 10:02:27"
         },
         {
             "name": "corneltek/codegen",
