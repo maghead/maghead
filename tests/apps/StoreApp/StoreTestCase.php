@@ -129,7 +129,9 @@ abstract class StoreTestCase extends ModelTestCase
         $driver = $this->getCurrentDriverType();
         $configFile = __DIR__ . "/config/{$driver}.yml";
         $tmpConfig = __DIR__ . "/config/tmp.yml";
-        copy($configFile, $tmpConfig);
+        if (false === copy($configFile, $tmpConfig)) {
+            throw new \Exception("failed to copy the config file: $configFile");
+        }
         return FileConfigLoader::load($tmpConfig, true);
     }
 
