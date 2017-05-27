@@ -166,7 +166,7 @@ abstract class Model implements Serializable
     }
 
     /**
-     * Create or update an record by checking
+     * update or create an record by checking
      * the existence from the $byKeys array
      * that you defined.
      *
@@ -176,12 +176,15 @@ abstract class Model implements Serializable
      * @param array $byKeys
      * @return Result
      */
-    public function updateOrCreate(array $args)
+    public static function updateOrCreate(array $args, $byKeys = null)
     {
-        if ($this->hasKey()) {
-            return $this->update($args);
+        $record = static::findByKeys($args, $byKeys);
+
+        if ($record) {
+            return $record->update($args);
         }
-        return static::masterRepo()->create($args);
+
+        return static::create($args);
     }
 
 
@@ -354,6 +357,20 @@ abstract class Model implements Serializable
     public function afterUpdate($args)
     {
 
+    }
+
+    public function reload()
+    {
+        $key = $this->getKey();
+        if ($this->repo) {
+            if ($record = $this->repo->findByPrimaryKey($key)) {
+                $this->setData($record->getData());
+                return Result::success('Record reloaded', [ 'type' => Result::TYPE_LOAD ]);
+            }
+
+            return Result::failure('Record reload failed.', [ 'type' => Result::TYPE_LOAD ]);
+        }
+        throw new \Exception('Repo instance is missing.');
     }
 
     /**

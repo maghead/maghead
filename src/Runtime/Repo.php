@@ -169,13 +169,21 @@ abstract class Repo implements Countable
         return $stm->fetch(PDO::FETCH_CLASS);
     }
 
+    /**
+     * Find the record by its primary key or the given keys
+     *
+     * @return Model
+     */
     public function findByKeys(array $args, $byKeys = null)
     {
         $pk = static::PRIMARY_KEY;
-        $record = null;
+
         if ($pk && isset($args[$pk])) {
+
             return $this->findByPrimaryKey($args[$pk]);
-        } elseif ($byKeys) {
+
+        } else if ($byKeys) {
+
             $conds = [];
             foreach ((array) $byKeys as $k) {
                 if (array_key_exists($k, $args)) {
@@ -184,7 +192,8 @@ abstract class Repo implements Countable
             }
             return $this->findWith($conds);
         }
-        throw new MissingPrimaryKeyException('primary key is not defined.');
+
+        return false;
     }
 
     /**

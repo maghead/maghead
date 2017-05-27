@@ -182,10 +182,22 @@ class BookTest extends ModelTestCase
         $this->assertEquals('00-00-00 00-00-00', $date->diff($book->getPublishedAt())->format('%Y-%M-%D %H-%I-%S'));
     }
 
+    public function testUpdateOrCreateByPrimaryKey()
+    {
+        $args = [ 'title' => 'Create With Time' , 'view' => 0 ];
+        $ret = Book::updateOrCreate($args);
+        $this->assertResultSuccess($ret); // create
+
+        /*
+        $args[Book::PRIMARY_KEY] = $ret->key;
+
+        $ret = Book::updateOrCreate($args);
+        $this->assertResultSuccess($ret); // update
+         */
+    }
 
 
-
-    public function testCreateOrUpdateOnTimestampColumn()
+    public function testUpdateOrCreateOnTimestampColumn()
     {
         $date = new DateTime;
 
@@ -198,9 +210,13 @@ class BookTest extends ModelTestCase
         $book = Book::load([ 'published_at' => $date ]);
         $this->assertNotNull($book);
 
-        $ret = $book->updateOrCreate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date ], [ 'published_at' ]);
+        $ret = Book::updateOrCreate([ 'title' => 'Update With Time' , 'view' => 0, 'published_at' => $date ], ['published_at']);
         $this->assertResultSuccess($ret);
         $this->assertCount(1, new BookCollection);
+
+        // reload
+        $book->reload();
+
         $this->assertEquals('Update With Time', $book->title);
         $this->assertEquals($id, $book->id);
     }
