@@ -36,7 +36,7 @@ class SchemaCommand extends BaseCommand
         $buildCommand->executeWrapper($args);
 
         $diffCommand = $this->createCommand('Maghead\\Console\\Command\\DiffCommand');
-        $diffCommand->options = $this->options;
+        $diffCommand->setOptions($this->options);
         $diffCommand->executeWrapper(array());
     }
 }
