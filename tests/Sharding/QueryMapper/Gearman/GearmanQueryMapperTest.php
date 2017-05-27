@@ -78,12 +78,12 @@ class GearmanQueryMapperTest extends StoreTestCase
         $dispatcher = new ShardDispatcher($mapping, $shards);
 
         $g1 = $shards['node1'];
-        $repo1 = $g1->createRepo('StoreApp\\Model\\OrderRepo');
-        $this->assertInstanceOf('Maghead\\Runtime\\Repo', $repo1);
+        $repo1 = $g1->createRepo(OrderRepo::class);
+        $this->assertInstanceOf(OrderRepo::class, $repo1);
 
         $g2 = $shards['node2'];
-        $repo2 = $g2->createRepo('StoreApp\\Model\\OrderRepo');
-        $this->assertInstanceOf('Maghead\\Runtime\\Repo', $repo2);
+        $repo2 = $g2->createRepo(OrderRepo::class);
+        $this->assertInstanceOf(OrderRepo::class, $repo2);
 
         $ret = $repo1->create(['store_id' => 1, 'amount' => 200]);
         $this->assertResultSuccess($ret);
