@@ -609,6 +609,7 @@ abstract class Model implements Serializable
             return $this->update($data);
         }
         // FIXME: fix me for sharding
+        // should updte the repo / shard property after the create
         return static::create($data);
     }
 
