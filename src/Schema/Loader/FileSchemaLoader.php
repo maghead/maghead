@@ -72,50 +72,51 @@ class FileSchemaLoader
         $this->collectedFiles[] = $path;
     }
 
-    protected function scanPaths(array $paths, $matchBy)
+    /**
+     * If the file matches the conditions, then return true.
+     */
+    public function scan($filepath, $matchBy = self::MATCH_CLASSDECL)
     {
+        if ($this->compiledIgnorePattern && preg_match($this->compiledIgnorePattern, $filepath)) {
+            return false;
+        }
+        if (!preg_match('/\.php$/', $filepath)) {
+            return false;
+        }
 
+        switch ($matchBy) {
+            case self::MATCH_FILENAME:
+                return substr($filepath, - $this->fileSuffixLen) === self::FILE_SUFFIX;
+            case self::MATCH_CLASSDECL:
+                $content = file_get_contents($filepath);
+                return preg_match(self::CLASSDECL_PATTERN, $content, $matches);
+        }
+
+        return true;
+    }
+
+    public function scanPaths(array $paths, $matchBy)
+    {
         foreach ($paths as $a) {
             if ($a instanceof MatchSet) {
                 $this->scanPaths($a->getArrayCopy(), $a->matchBy ?: $matchBy);
             } else {
                 $path = $a;
 
-
                 if (is_file($path)) {
+
                     $this->requireAndCollect($path);
+
                 } else if (is_dir($path)) {
                     $rii = new RecursiveIteratorIterator(
                         new RecursiveDirectoryIterator($path, $this->directoryIteratorFlags),
                         RecursiveIteratorIterator::SELF_FIRST
                     );
+
                     foreach ($rii as $fi) {
-
-                        $filename = $fi->getFilename();
                         $filepath = $fi->getPathname();
-
-                        if ($this->compiledIgnorePattern && preg_match($this->compiledIgnorePattern, $filepath)) {
-                            continue;
-                        }
-
-
-                        // skip non php files
-                        if ('php' !== $fi->getExtension()) {
-                            continue;
-                        }
-
-                        switch ($matchBy) {
-                            case self::MATCH_FILENAME:
-                                if (substr($filename, - $this->fileSuffixLen) == self::FILE_SUFFIX) {
-                                    $this->requireAndCollect($filepath);
-                                }
-                                break;
-                            case self::MATCH_CLASSDECL:
-                                $content = file_get_contents($fi->getPathname());
-                                if (preg_match(self::CLASSDECL_PATTERN, $content, $matches)) {
-                                    $this->requireAndCollect($filepath);
-                                }
-                                break;
+                        if ($this->scan($filepath)) {
+                            $this->requireAndCollect($filepath);
                         }
                     }
                 }
