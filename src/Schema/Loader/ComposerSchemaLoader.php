@@ -9,6 +9,8 @@ class ComposerSchemaLoader
 {
     protected $config;
 
+    protected $rootDir;
+
     public function __construct($composerConfig)
     {
         if (is_string($composerConfig)) {
@@ -16,9 +18,38 @@ class ComposerSchemaLoader
                 throw new \InvalidArgumentException("ComposerSchemaLoader::__construct expects the first argument to be a composer.json path or the json config array.");
             }
             $this->config = json_decode(file_get_contents($composerConfig), true);
+            $this->rootDir = dirname(realpath($composerConfig));
         } else {
             $this->config = $composerConfig;
         }
+    }
+
+    protected function requireComposerFile($rootDir, $file)
+    {
+        $path = $rootDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'composer' . DIRECTORY_SEPARATOR . $file;
+        if (!file_exists($path)) {
+            return false;
+        }
+
+        return require $path;
+    }
+
+    protected function scanVendor($rootDir)
+    {
+        $fsLoader = new FileSchemaLoader;
+        if ($namespaces = $this->requireComposerFile($rootDir, 'autoload_psr4.php')) {
+            foreach ($namespaces as $prefix => $dir) {
+                $fsLoader->addPath($dir);
+            }
+        }
+        if ($classMap = $this->requireComposerFile($rootDir, 'autoload_classmap.php')) {
+            foreach ($classMap as $className => $classPath) {
+                if (preg_match('/Schema$/', $className)) {
+                    $fsLoader->requireAndCollect($classPath);
+                }
+            }
+        }
+        return $fsLoader->load();
     }
 
     protected function scanAutoload($a)
@@ -55,10 +86,11 @@ class ComposerSchemaLoader
             }
         }
         if (isset($a['files'])) {
-            foreach ($a['files'] as $f) {
-                $fsLoader->addPath($f);
+            foreach ($a['files'] as $file) {
+                $fsLoader->requireAndCollect($file);
             }
         }
+
         return $fsLoader->load();
     }
 
@@ -73,11 +105,17 @@ class ComposerSchemaLoader
             $files = $this->scanAutoload($this->config['autoload-dev']);
             $allFiles = array_merge($allFiles, $files);
         }
+
+        // If rootDir is defined, then we can scan the vendor files
+        if ($this->rootDir) {
+            $files = $this->scanVendor($this->rootDir);
+            $allFiles = array_merge($allFiles, $files);
+        }
         return $allFiles;
     }
 
     public static function from($composerJson)
     {
-        return new self(json_decode(file_get_contents($composerJson), true));
+        return new self($composerJson);
     }
 }

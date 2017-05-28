@@ -145,16 +145,16 @@
         },
         {
             "name": "corneltek/configkit",
-            "version": "1.6.4",
+            "version": "1.6.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/c9s/ConfigKit.git",
-                "reference": "55ac495a8c9e6a58024ffe42fbbd66e038ad361d"
+                "reference": "a10aaeeca3624e38bffcc9a0636c3bb62dec197d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/c9s/ConfigKit/zipball/55ac495a8c9e6a58024ffe42fbbd66e038ad361d",
-                "reference": "55ac495a8c9e6a58024ffe42fbbd66e038ad361d",
+                "url": "https://api.github.com/repos/c9s/ConfigKit/zipball/a10aaeeca3624e38bffcc9a0636c3bb62dec197d",
+                "reference": "a10aaeeca3624e38bffcc9a0636c3bb62dec197d",
                 "shasum": ""
             },
             "require": {
@@ -183,7 +183,7 @@
                 "config",
                 "yaml"
             ],
-            "time": "2017-05-21T13:52:35+00:00"
+            "time": "2017-05-27T07:41:50+00:00"
         },
         {
             "name": "corneltek/fileutil",

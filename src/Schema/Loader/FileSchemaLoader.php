@@ -66,6 +66,12 @@ class FileSchemaLoader
         $this->matchBy = $m;
     }
 
+    public function requireAndCollect($path)
+    {
+        require_once $path;
+        $this->collectedFiles[] = $path;
+    }
+
     protected function scanPaths(array $paths, $matchBy)
     {
 
@@ -77,8 +83,7 @@ class FileSchemaLoader
 
 
                 if (is_file($path)) {
-                    require_once $path;
-                    $this->collectedFiles[] = $path;
+                    $this->requireAndCollect($path);
                 } else if (is_dir($path)) {
                     $rii = new RecursiveIteratorIterator(
                         new RecursiveDirectoryIterator($path, $this->directoryIteratorFlags),
@@ -102,15 +107,13 @@ class FileSchemaLoader
                         switch ($matchBy) {
                             case self::MATCH_FILENAME:
                                 if (substr($filename, - $this->fileSuffixLen) == self::FILE_SUFFIX) {
-                                    require_once $fi->getPathname();
-                                    $this->collectedFiles[] = $filepath;
+                                    $this->requireAndCollect($filepath);
                                 }
                                 break;
                             case self::MATCH_CLASSDECL:
                                 $content = file_get_contents($fi->getPathname());
                                 if (preg_match(self::CLASSDECL_PATTERN, $content, $matches)) {
-                                    require_once $fi->getPathname();
-                                    $this->collectedFiles[] = $filepath;
+                                    $this->requireAndCollect($filepath);
                                 }
                                 break;
                         }
