@@ -5,6 +5,8 @@
 /vendor
 /build/
 /db/config/*.php
+/tests/config/*.php
+/tests/apps/StoreApp/config/*.php
 /phpunit.xml
 *.sqlite
 *.log
@@ -13,7 +15,6 @@ tests/config/.database.config.php
 /db/migrations
 /tmp
 /tests/tmp
-/tests/config/*.php
 src/Model/MetadataBase.php
 src/Model/MetadataCollectionBase.php
 src/Model/MetadataRepoBase.php
