@@ -1,7 +1,12 @@
 ---
+cli:
+  bootstrap: vendor/autoload.php
 schema:
-  paths:
-    - tests
+  loaders:
+    -
+      name: ComposerSchemaLoader
+      args:
+        - composer.json
 databases:
   master:
     dsn: 'sqlite::memory:'

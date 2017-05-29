@@ -25,6 +25,15 @@ class ConfigManagerTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public static function assertFileEquals($expect, $actual, $message = '', $canonicalize = false, $ignoreCase = false)
+    {
+        if (!file_exists($expect)) {
+            copy($actual, $expect);
+        }
+        parent::assertFileEquals($expect, $actual);
+    }
+
+
     public function testRemoveNode()
     {
         $manager = new ConfigManager(FileConfigLoader::load(self::TEST_CONFIG, true));
@@ -33,7 +42,6 @@ class ConfigManagerTest extends \PHPUnit\Framework\TestCase
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
 
-        // copy(self::TEST_CONFIG, 'tests/fixtures/config/testRemoveNode.expected');
         $this->assertFileEquals('tests/fixtures/config/testRemoveNode.expected', self::TEST_CONFIG);
     }
 
