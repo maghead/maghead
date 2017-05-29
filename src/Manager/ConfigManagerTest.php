@@ -4,35 +4,28 @@ namespace Maghead\Manager;
 
 use Maghead\Runtime\Config\Config;
 use Maghead\Runtime\Config\FileConfigLoader;
+use Maghead\Testing\TestCase;
 
 /**
  * @group manager
  */
-class ConfigManagerTest extends \PHPUnit\Framework\TestCase
+class ConfigManagerTest extends TestCase
 {
     const TEST_CONFIG = 'tests/config/.database.config.yml';
 
     public function setUp()
     {
-        copy('tests/config/database.yml', self::TEST_CONFIG);
         parent::setUp();
+        copy('tests/config/database.yml', self::TEST_CONFIG);
     }
 
     public function tearDown()
     {
+        parent::tearDown();
         if (file_exists(self::TEST_CONFIG)) {
             unlink(self::TEST_CONFIG);
         }
     }
-
-    public static function assertFileEquals($expect, $actual, $message = '', $canonicalize = false, $ignoreCase = false)
-    {
-        if (!file_exists($expect)) {
-            copy($actual, $expect);
-        }
-        parent::assertFileEquals($expect, $actual);
-    }
-
 
     public function testRemoveNode()
     {

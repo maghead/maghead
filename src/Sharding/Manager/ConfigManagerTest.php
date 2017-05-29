@@ -8,8 +8,7 @@ use Maghead\Runtime\Config\MongoConfigWriter;
 
 use Maghead\Sharding\ShardMapping;
 use Maghead\Manager\DataSourceManager;
-
-use PHPUnit\Framework\TestCase;
+use Maghead\Testing\TestCase;
 
 class ConfigManagerTest extends TestCase
 {
@@ -19,6 +18,7 @@ class ConfigManagerTest extends TestCase
 
     public function setUp()
     {
+        parent::setUp();
         copy("tests/config/mysql_configserver.yml", self::TEST_CONFIG);
         $this->config = FileConfigLoader::load(self::TEST_CONFIG, true);
     }
@@ -33,6 +33,7 @@ class ConfigManagerTest extends TestCase
 
     public function tearDown()
     {
+        parent::tearDown();
         MongoConfigWriter::remove($this->config);
         if (file_exists(self::TEST_CONFIG)) {
             unlink(self::TEST_CONFIG);

@@ -82,6 +82,17 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public static function assertFileEquals($expect, $actual, $message = '', $canonicalize = false, $ignoreCase = false)
+    {
+        if (!file_exists($expect)) {
+            echo "\n==================\n";
+            echo file_get_contents($actual);
+            echo "\n==================\n";
+            copy($actual, $expect);
+        }
+        parent::assertFileEquals($expect, $actual);
+    }
+
     /*
     protected function assertPreConditions()
     {
