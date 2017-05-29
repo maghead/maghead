@@ -11,7 +11,7 @@ class ComposerSchemaLoader
 
     protected $rootDir;
 
-    public function __construct($composerConfig)
+    public function __construct($composerConfig = 'composer.json')
     {
         if (is_string($composerConfig)) {
             if (!file_exists($composerConfig)) {
