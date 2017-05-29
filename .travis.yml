@@ -35,7 +35,7 @@ before_script:
 - if [[ "$DB" == "pgsql" ]]; then ./travis/setup-pgsql ; fi
 - if [[ "$DB" == "mysql" ]]; then ./travis/setup-mysql ; fi
 - bin/maghead use -f tests/config/$DB.yml
-- bin/maghead schema build f
+- bin/maghead schema build -f
 script:
 - travis/run-phpunit
 - travis/run-examples
