@@ -1,4 +1,6 @@
 ---
+cli:
+  bootstrap: vendor/autoload.php
 schema:
   paths:
     - tests
