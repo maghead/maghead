@@ -53,7 +53,6 @@ class ShardConfigManagerTest extends StoreTestCase
         $configManager->setShardMapping($this->mapping);
         $ret = $configManager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
-        // copy(self::TEST_CONFIG, 'tests/fixtures/config/testAddShardMapping.expected');
         $this->assertFileEquals('tests/fixtures/config/testAddShardMapping.expected', self::TEST_CONFIG);
     }
 }
