@@ -7,7 +7,8 @@ schema:
   base_model: \Maghead\Runtime\Model
   base_collection: \Maghead\Runtime\Collection
   loaders:
-  - ComposerSchemaLoader
+  - { name: ComposerSchemaLoader, args: ["composer.json"] }
+
 
 instance:
   local:

@@ -3,7 +3,8 @@ cli:
   bootstrap: vendor/autoload.php
 schema:
   loaders:
-  - ComposerSchemaLoader
+  - { name: ComposerSchemaLoader, args: ["composer.json"] }
+
 databases:
   master:
     dsn: 'sqlite::memory:'

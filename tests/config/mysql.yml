@@ -4,7 +4,8 @@ cli:
 schema:
   auto_id: true
   loaders:
-  - Phifty::Schema::Loader::AppSchemaLoader
+  - { name: ComposerSchemaLoader, args: ["composer.json"] }
+
 instance:
   local:
     dsn: 'mysql:host=localhost'
