@@ -6,8 +6,9 @@ schema:
   auto_id: true
   base_model: \Maghead\Runtime\Model
   base_collection: \Maghead\Runtime\Collection
-  paths:
-    - tests
+  loaders:
+  - ComposerSchemaLoader
+
 instance:
   local:
     dsn: 'pgsql:host=localhost'

@@ -2,8 +2,8 @@
 cli:
   bootstrap: vendor/autoload.php
 schema:
-  paths:
-    - tests
+  loaders:
+  - ComposerSchemaLoader
 databases:
   master:
     dsn: 'sqlite::memory:'
