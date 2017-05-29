@@ -49,8 +49,6 @@ class ConfigManagerTest extends TestCase
         ]);
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
-
-        // copy(self::TEST_CONFIG, 'tests/fixtures/config/testAddNodeWithOptions.expected');
         $this->assertFileEquals('tests/fixtures/config/testAddNodeWithOptions.expected', self::TEST_CONFIG);
     }
 
@@ -61,8 +59,6 @@ class ConfigManagerTest extends TestCase
         $manager->addDatabase('shard2', 'mysql:host=localhost;dbname=shard2');
         $ret = $manager->save(self::TEST_CONFIG);
         $this->assertTrue($ret);
-
-        // copy(self::TEST_CONFIG, 'tests/fixtures/config/testAddNodeWithoutOptions.expected');
         $this->assertFileEquals('tests/fixtures/config/testAddNodeWithoutOptions.expected', self::TEST_CONFIG);
     }
 }
