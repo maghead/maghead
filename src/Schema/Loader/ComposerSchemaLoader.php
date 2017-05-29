@@ -44,7 +44,7 @@ class ComposerSchemaLoader
         }
         if ($classMap = $this->requireComposerFile($rootDir, 'autoload_classmap.php')) {
             foreach ($classMap as $className => $classPath) {
-                if (preg_match('/Schema$/', $className)) {
+                if (preg_match('/Schema$/', $className) && $fsLoader->scan($classPath)) {
                     $fsLoader->requireAndCollect($classPath);
                 }
             }
@@ -52,37 +52,29 @@ class ComposerSchemaLoader
         return $fsLoader->load();
     }
 
+
     protected function scanAutoload($a)
     {
         $fsLoader = new FileSchemaLoader;
 
         // Setup default match by
         $fsLoader->matchBy(FileSchemaLoader::MATCH_CLASSDECL);
+
+        $autoloadDir = $this->rootDir ?: getcwd();
+
         if (isset($a['psr-4'])) {
             foreach ($a['psr-4'] as $prefix => $ps) {
-                if ($ps === "") {
-                    $fsLoader->addPath(getcwd());
-                } else {
-                    $fsLoader->addPath($ps);
-                }
+                $fsLoader->addPath($ps === "" ? $autoloadDir : $ps, FileSchemaLoader::MATCH_CLASSDECL);
             }
         }
         if (isset($a['psr-0'])) {
             foreach ($a['psr-0'] as $prefix => $ps) {
-                if ($ps === "") {
-                    $fsLoader->addPath(getcwd());
-                } else {
-                    $fsLoader->addPath($ps);
-                }
+                $fsLoader->addPath($ps === "" ? $autoloadDir : $ps, FileSchemaLoader::MATCH_CLASSDECL);
             }
         }
         if (isset($a['classmap'])) {
             foreach ($a['classmap'] as $prefix => $ps) {
-                if ($ps === "") {
-                    $fsLoader->addPath(getcwd());
-                } else {
-                    $fsLoader->addPath($ps);
-                }
+                $fsLoader->addPath($ps === "" ? $autoloadDir : $ps, FileSchemaLoader::MATCH_CLASSDECL);
             }
         }
         if (isset($a['files'])) {

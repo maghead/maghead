@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 use Maghead\Schema\DeclareSchema;
 
-class NoLocalPrimaryKeySchema extends DeclareSchema
+class TestNoLocalPrimaryKeySchema extends DeclareSchema
 {
     var $enableHiddenPrimaryKey = false;
 
@@ -19,7 +19,7 @@ class NoLocalPrimaryKeySchema extends DeclareSchema
     }
 }
 
-class LocalPrimaryKeySchema extends DeclareSchema
+class TestLocalPrimaryKeySchema extends DeclareSchema
 {
     var $enableHiddenPrimaryKey = false;
 
@@ -36,7 +36,7 @@ class LocalPrimaryKeySchema extends DeclareSchema
     }
 }
 
-class GlobalPrimaryKeySchema extends DeclareSchema
+class TestGlobalPrimaryKeySchema extends DeclareSchema
 {
     var $enableHiddenPrimaryKey = false;
 
@@ -53,7 +53,7 @@ class DeclareSchemaTest extends TestCase
 {
     public function testFindGlobalPrimaryKey()
     {
-        $schema = new GlobalPrimaryKeySchema;
+        $schema = new TestGlobalPrimaryKeySchema;
         $key = $schema->findGlobalPrimaryKey();
         $this->assertNotNull($key);
         $this->assertEquals('uuid', $key);
@@ -61,14 +61,14 @@ class DeclareSchemaTest extends TestCase
 
     public function testFindLocalPrimaryKeyFailed()
     {
-        $schema = new NoLocalPrimaryKeySchema;
+        $schema = new TestNoLocalPrimaryKeySchema;
         $key = $schema->findLocalPrimaryKey();
         $this->assertNull($key);
     }
 
     public function testFindLocalPrimaryKey()
     {
-        $schema = new LocalPrimaryKeySchema;
+        $schema = new TestLocalPrimaryKeySchema;
         $key = $schema->findLocalPrimaryKey();
         $this->assertEquals('id', $key);
     }

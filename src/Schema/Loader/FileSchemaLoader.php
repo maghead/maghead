@@ -41,9 +41,13 @@ class FileSchemaLoader
     /**
      * Includes '/vendor/' to ignore schema defined in the vendor directory.
      */
-    protected $ignorePatterns = ['Test\.php$', '/(?:\.git|\.svn|vendor)/'];
+    protected $excludePatterns = ['Test\.php$', '/(?:\.git|\.svn|vendor)/', 'Test\w+\.php$'];
 
-    private $compiledIgnorePattern;
+    protected $includePatterns = ['\.php$'];
+
+    private $compiledExcludePattern;
+
+    private $compiledIncludePattern;
 
     public function __construct(array $paths = [])
     {
@@ -51,9 +55,16 @@ class FileSchemaLoader
         $this->fileSuffixLen = strlen(self::FILE_SUFFIX);
     }
 
-    public function addIgnorePattern($pattern)
+
+    public function addInclude($pattern)
     {
-        $this->ignorePatterns[] = $pattern;
+        $this->includePatterns[] = $pattern;
+    }
+
+
+    public function addExclude($pattern)
+    {
+        $this->excludePatterns[] = $pattern;
     }
 
     public function addPath($p, $matchBy = null)
@@ -72,24 +83,65 @@ class FileSchemaLoader
         $this->collectedFiles[] = $path;
     }
 
+    protected function shouldInclude($filepath)
+    {
+        if (!$this->compiledIncludePattern) {
+            $this->compiledIncludePattern = join('|', array_map(function($p) {
+                $p = str_replace('#', '\\#', $p);
+                return "(?:$p)";
+            }, $this->includePatterns));
+            $this->compiledIncludePattern = "!{$this->compiledIncludePattern}!";
+        }
+
+        return preg_match($this->compiledIncludePattern, $filepath);
+    }
+
+
+    /**
+     * should we exclude this file? by the exclude pattern?
+     *
+     * @return bool
+     */
+    protected function shouldExclude($filepath)
+    {
+        if (!$this->compiledExcludePattern) {
+            $this->compiledExcludePattern = join('|', array_map(function($p) {
+                $p = str_replace('#', '\\#', $p);
+                return "(?:$p)";
+            }, $this->excludePatterns));
+            $this->compiledExcludePattern = "!{$this->compiledExcludePattern}!";
+        }
+
+        return preg_match($this->compiledExcludePattern, $filepath);
+    }
+
+
+    /**
+     * find the class declaration in the file.
+     *
+     * @return bool
+     */
+    protected function scanClassDecl($filepath, & $matches = null)
+    {
+        $content = file_get_contents($filepath);
+        return preg_match(self::CLASSDECL_PATTERN, $content, $matches);
+    }
+
     /**
      * If the file matches the conditions, then return true.
      */
     public function scan($filepath, $matchBy = self::MATCH_CLASSDECL)
     {
-        if ($this->compiledIgnorePattern && preg_match($this->compiledIgnorePattern, $filepath)) {
-            return false;
-        }
-        if (!preg_match('/\.php$/', $filepath)) {
+        if ($this->shouldExclude($filepath) || !$this->shouldInclude($filepath)) {
             return false;
         }
 
+        // check more details
         switch ($matchBy) {
             case self::MATCH_FILENAME:
                 return substr($filepath, - $this->fileSuffixLen) === self::FILE_SUFFIX;
             case self::MATCH_CLASSDECL:
-                $content = file_get_contents($filepath);
-                return preg_match(self::CLASSDECL_PATTERN, $content, $matches);
+                return $this->scanClassDecl($filepath);
         }
 
         return true;
@@ -126,12 +178,6 @@ class FileSchemaLoader
 
     public function load()
     {
-        $this->compiledIgnorePattern = join('|', array_map(function($p) {
-            $p = str_replace('#', '\\#', $p);
-            return "(?:$p)";
-        }, $this->ignorePatterns));
-        $this->compiledIgnorePattern = "!{$this->compiledIgnorePattern}!";
-
         $this->scanPaths($this->paths, $this->matchBy);
         return $this->collectedFiles;
     }
