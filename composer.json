@@ -22,7 +22,7 @@
         "corneltek/serializerkit": "^1",
         "corneltek/validationkit": "^1",
         "symfony/yaml": "^2.8|^3.0|^3.2",
-        "doctrine/inflector": "~1.0",
+        "doctrine/inflector": "^1.0",
         "pimple/pimple": "^3.0",
         "cypresslab/gitelephant": "^1.0",
         "psr/log": "^1.0",
