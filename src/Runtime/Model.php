@@ -287,7 +287,7 @@ abstract class Model implements Serializable
      *
      * @return Model
      */
-    public static function createAndLoad(array $args)
+    public static function createAndLoad(array $args, & $ret = null)
     {
         $repo = static::masterRepo();
         $ret = $repo->create($args);
@@ -1029,7 +1029,7 @@ abstract class Model implements Serializable
 
 
     /**
-     * Return the collection object of current model object.
+     * Return the collection object of current record object.
      *
      * @return Maghead\Runtime\Collection
      */
