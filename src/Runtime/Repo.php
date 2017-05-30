@@ -589,6 +589,7 @@ abstract class Repo implements Countable
             'sql' => $sql,
             'args' => $args,
             'binds' => $arguments,
+            'repo' => $this,
             'validations' => $validationResults,
             'type' => Result::TYPE_CREATE,
         ]);

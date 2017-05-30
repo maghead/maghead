@@ -248,8 +248,11 @@ abstract class Model implements Serializable
             $ret->subResults = static::shards()->map(function ($repo) use ($args) {
                 return $repo->create($args);
             });
+
             return $ret;
-        } elseif (static::SHARD_MAPPING_ID) {
+
+        } else if (static::SHARD_MAPPING_ID) {
+
             $shards = static::shards();
             $mapping = $shards->getMapping();
             $shardKeyName = $mapping->getKey();
@@ -289,12 +292,13 @@ abstract class Model implements Serializable
      */
     public static function createAndLoad(array $args, & $ret = null)
     {
-        $repo = static::masterRepo();
-        $ret = $repo->create($args);
+        // XXX: call static::create to create the record
+        $ret = static::create($args);
         if ($ret->error) {
             return false;
         }
-        return $repo->findByPrimaryKey($ret->key);
+
+        return $ret->repo->findByPrimaryKey($ret->key);
     }
 
     /**
