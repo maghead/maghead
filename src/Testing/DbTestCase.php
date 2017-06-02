@@ -24,9 +24,6 @@ use InvalidArgumentException;
  */
 abstract class DbTestCase extends TestCase
 {
-
-    const TMP_CONFIG_PATH = "tests/config/tmp.yml";
-
     /**
      * @var string
      *
@@ -89,8 +86,9 @@ abstract class DbTestCase extends TestCase
             throw new InvalidArgumentException("$configFile doesn't exist.");
         }
 
-        copy($configFile, self::TMP_CONFIG_PATH);
-        $config = FileConfigLoader::load(self::TMP_CONFIG_PATH, true);
+        $tmpConfig = tempnam("/tmp", "{$driverType}_") . '.yml';
+        copy($configFile, $tmpConfig);
+        $config = FileConfigLoader::load($tmpConfig, true);
         $config->setAutoId();
         return $config;
     }

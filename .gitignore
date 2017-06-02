@@ -27,5 +27,4 @@ Test*.php
 *BaseCollection.php
 *RepoBase.php
 .maghead-cli.yml
-.*.yml
 tmp.yml
