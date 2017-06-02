@@ -16,6 +16,7 @@
         "corneltek/configkit": "^1.6",
         "corneltek/cascading-attribute": "^1.2",
         "corneltek/cliframework": "4.0.x-dev",
+        "universal/universal": "@dev",
         "corneltek/codegen": "4.0.x-dev",
         "maghead/magsql": "4.0.x-dev",
         "maghead/sqlite-parser": "^4.0",
