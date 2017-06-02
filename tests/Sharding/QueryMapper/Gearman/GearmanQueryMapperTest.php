@@ -37,11 +37,12 @@ class GearmanQueryMapperTest extends StoreTestCase
             // pcntl_wait($status); // Protect against Zombie children
             parent::setUp();
         } else {
+            $config = $this->config();
             // we are the child
             // create worker here.
             $dataSourceManager = DataSourceManager::getInstance();
             $dataSourceManager->free();
-            Bootstrap::setup($config = $this->config()); // setup connection manager
+            Bootstrap::setup($config); // setup connection manager
 
             // create a log channel
             $logger = new Logger('query-worker');
