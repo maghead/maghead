@@ -28,6 +28,10 @@ use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
 
+use ActionKit\RecordAction\BaseRecordAction;
+
+use Maghead\Runtime\ActionCreatorTrait;
+
 class PrimaryKeyColumnMissingException extends SchemaRelatedException
 {
 }
@@ -65,6 +69,10 @@ class BaseModelClassGenerator
         $cTemplate->useClass('Magsql\\Bind');
         $cTemplate->useClass('Magsql\\ArgumentArray');
         $cTemplate->useClass('DateTime');
+
+        if (class_exists(BaseRecordAction::class, true)) {
+            $cTemplate->useTrait(ActionCreatorTrait::class);
+        }
 
         $cTemplate->addConsts([
             'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),

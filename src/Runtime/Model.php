@@ -41,7 +41,6 @@ defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
  */
 abstract class Model implements Serializable
 {
-    use ActionCreatorTrait;
     use RepoFactoryTrait;
 
     public static $yamlExtension = false;

@@ -31,6 +31,7 @@
         "monolog/monolog": "^1.22"
     },
     "require-dev": {
+        "corneltek/actionkit": "4.0.x-dev",
         "mongodb/mongodb": "^1.1",
         "ext-apcu": "*"
     },
