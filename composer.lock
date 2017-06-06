@@ -449,12 +449,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/maghead/magsql.git",
-                "reference": "b6e074247883548f92fb99ec054fbbe98c611f54"
+                "reference": "015ca71209de16ff4c05b0d95e3fe35fa92c0980"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maghead/magsql/zipball/b6e074247883548f92fb99ec054fbbe98c611f54",
-                "reference": "b6e074247883548f92fb99ec054fbbe98c611f54",
+                "url": "https://api.github.com/repos/maghead/magsql/zipball/015ca71209de16ff4c05b0d95e3fe35fa92c0980",
+                "reference": "015ca71209de16ff4c05b0d95e3fe35fa92c0980",
                 "shasum": ""
             },
             "replace": {
@@ -485,7 +485,7 @@
                 }
             ],
             "description": "Fast and Powerful SQL for PHP",
-            "time": "2017-06-05 03:38:41"
+            "time": "2017-06-06 10:07:18"
         },
         {
             "name": "maghead/sqlite-parser",
@@ -1364,12 +1364,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/corneltek/ActionKit.git",
-                "reference": "1e032af5095ac5648524b8c84f1213933f576be9"
+                "reference": "f84aecb2b26a07f057d67597458d5d063cc00243"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/corneltek/ActionKit/zipball/1e032af5095ac5648524b8c84f1213933f576be9",
-                "reference": "1e032af5095ac5648524b8c84f1213933f576be9",
+                "url": "https://api.github.com/repos/corneltek/ActionKit/zipball/f84aecb2b26a07f057d67597458d5d063cc00243",
+                "reference": "f84aecb2b26a07f057d67597458d5d063cc00243",
                 "shasum": ""
             },
             "require": {
@@ -1413,7 +1413,7 @@
                     "email": "yoanlin93+composer@gmail.com"
                 }
             ],
-            "time": "2017-06-04T13:56:44+00:00"
+            "time": "2017-06-06T06:39:40+00:00"
         },
         {
             "name": "corneltek/formkit",
