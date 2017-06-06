@@ -12,7 +12,7 @@
     ],
     "description": "The Fast PHP ORM",
     "require": {
-        "php": ">=7.0",
+        "php": ">=5.6",
         "corneltek/configkit": "^1.6",
         "corneltek/cascading-attribute": "^1.2",
         "corneltek/cliframework": "4.0.x-dev",
