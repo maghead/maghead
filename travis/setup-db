@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+set -x
+rm -rf *.sqlite
+if [[ "$DB" == "pgsql" ]]
+then
+    psql -c "create database testing;" -U postgres
+    psql -c "create database s1;" -U postgres
+    psql -c "create database s2;" -U postgres
+    psql -c "create database s3;" -U postgres
+fi
+if [[ "$DB" == "mysql" ]]
+then
+    mysql -uroot -e "create database if not exists testing charset utf8;"
+    mysql -uroot -e "create database if not exists s1 charset utf8;"
+    mysql -uroot -e "create database if not exists s2 charset utf8;"
+    mysql -uroot -e "create database if not exists s3 charset utf8;"
+fi

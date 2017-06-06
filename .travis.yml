@@ -31,9 +31,7 @@ install:
 - "./travis/setup-php"
 - travis_retry composer install
 before_script:
-- rm -rf *.sqlite
-- if [[ "$DB" == "pgsql" ]]; then ./travis/setup-pgsql ; fi
-- if [[ "$DB" == "mysql" ]]; then ./travis/setup-mysql ; fi
+- "./travis/setup-db"
 - bin/maghead use -f tests/config/$DB.yml
 - bin/maghead schema build -f
 script:
