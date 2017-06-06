@@ -20,7 +20,7 @@ class TodoSchema extends DeclareSchema
         $this->column('description')
             ->text();
 
-        $this->column('created_on')
+        $this->column('created_at')
             ->timestamp()
             ->default(function() {
                 return date('c');

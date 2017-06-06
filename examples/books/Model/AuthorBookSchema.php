@@ -17,7 +17,7 @@ class AuthorBookSchema extends DeclareSchema
             ->required()
             ;
 
-        $this->column('created_on')
+        $this->column('created_at')
                 ->isa('str')
                 ->timestamp()
                 ;

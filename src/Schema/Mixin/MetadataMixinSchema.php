@@ -11,7 +11,7 @@ class MetadataMixinSchema extends MixinDeclareSchema
 {
     public function schema()
     {
-        $this->column('created_on')
+        $this->column('created_at')
             ->timestamp()
             ->null()
             ->isa('DateTime')
@@ -19,7 +19,7 @@ class MetadataMixinSchema extends MixinDeclareSchema
                 return new \DateTime();
             });
 
-        $this->column('updated_on')
+        $this->column('updated_at')
             ->timestamp()
             ->isa('DateTime')
             ->null()
@@ -31,7 +31,7 @@ class MetadataMixinSchema extends MixinDeclareSchema
     // Mixin methods
     public static function getAge($record)
     {
-        $createdOn = $record->getCreatedOn();
+        $createdOn = $record->getCreatedAt();
         $currentDate = new DateTime();
         return $currentDate->diff($createdOn);
     }

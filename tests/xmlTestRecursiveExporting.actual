@@ -11,6 +11,8 @@
       <published isa="bool" type="boolean">0</published>
       <publisher_id isa="int" type="int"></publisher_id>
       <published_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</published_at>
+      <updated_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</updated_at>
+      <created_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_at>
       <is_hot isa="bool" type="boolean">1</is_hot>
       <is_selled isa="bool" type="boolean">0</is_selled>
     </record>
@@ -24,6 +26,8 @@
       <published isa="bool" type="boolean">0</published>
       <publisher_id isa="int" type="int"></publisher_id>
       <published_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</published_at>
+      <updated_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</updated_at>
+      <created_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_at>
       <is_hot isa="bool" type="boolean">1</is_hot>
       <is_selled isa="bool" type="boolean">0</is_selled>
     </record>
@@ -34,8 +38,8 @@
     <email isa="str" type="varchar">z@z</email>
     <identity isa="str" type="varchar">zaa</identity>
     <confirmed isa="bool" type="boolean">0</confirmed>
-    <created_on isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_on>
-    <updated_on isa="DateTime" type="timestamp">2012-01-01 00:00:00</updated_on>
+    <created_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_at>
+    <updated_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</updated_at>
     <addresses type="has-many">
       <collection>
         <record class="AuthorBooks\Model\Address">
@@ -70,13 +74,13 @@
           <id isa="int" type="int">1</id>
           <author_id isa="int" type="int">1</author_id>
           <book_id isa="int" type="int">1</book_id>
-          <created_on isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_on>
+          <created_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_at>
         </record>
         <record class="AuthorBooks\Model\AuthorBook">
           <id isa="int" type="int">2</id>
           <author_id isa="int" type="int">1</author_id>
           <book_id isa="int" type="int">2</book_id>
-          <created_on isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_on>
+          <created_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_at>
         </record>
       </collection>
     </author_books>

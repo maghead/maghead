@@ -124,7 +124,7 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertNotNull(
             $book = $author->books->create(array(
                 'title' => 'Programming Perl I',
-                'author_books' => array( 'created_on' => '2010-01-01' ),
+                'author_books' => array( 'created_at' => '2010-01-01' ),
             ))
         );
         $this->assertNotNull($book->id);
@@ -133,8 +133,8 @@ class BasicCRUDTest extends ModelTestCase
         $this->assertEquals(1, $author->books->size());
         $this->assertEquals(1, $author->author_books->size());
         $this->assertNotNull($author->author_books[0]);
-        $this->assertNotNull($author->author_books[0]->created_on);
-        $this->assertEquals('2010-01-01', $author->author_books[0]->getCreatedOn()->format('Y-m-d'));
+        $this->assertNotNull($author->author_books[0]->created_at);
+        $this->assertEquals('2010-01-01', $author->author_books[0]->getCreatedAt()->format('Y-m-d'));
 
         $author->books[] = array(
             'title' => 'Programming Perl II',

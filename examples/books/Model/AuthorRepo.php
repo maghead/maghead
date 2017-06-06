@@ -30,8 +30,8 @@ class AuthorRepo extends Repo
       2 => 'email',
       3 => 'identity',
       4 => 'confirmed',
-      5 => 'created_on',
-      6 => 'updated_on',
+      5 => 'created_at',
+      6 => 'updated_at',
     );
     public static $columnHash = array(
       'id' => 1,
@@ -39,8 +39,8 @@ class AuthorRepo extends Repo
       'email' => 1,
       'identity' => 1,
       'confirmed' => 1,
-      'created_on' => 1,
-      'updated_on' => 1,
+      'created_at' => 1,
+      'updated_at' => 1,
     );
     public static $mixinClasses = array(
       0 => 'Maghead\\Schema\\Mixin\\MetadataMixinSchema',

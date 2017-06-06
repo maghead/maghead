@@ -28,13 +28,13 @@ class AuthorBookRepo extends Repo
       0 => 'id',
       1 => 'author_id',
       2 => 'book_id',
-      3 => 'created_on',
+      3 => 'created_at',
     );
     public static $columnHash = array(
       'id' => 1,
       'author_id' => 1,
       'book_id' => 1,
-      'created_on' => 1,
+      'created_at' => 1,
     );
     public static $mixinClasses = array(
     );

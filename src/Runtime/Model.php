@@ -1001,7 +1001,7 @@ abstract class Model implements Serializable
             // for creating many-to-many subrecords, like:
             //
             //    $author->books[] = array(
-            //        'author_books' => [ 'created_on' => date('c') ],
+            //        'author_books' => [ 'created_at' => date('c') ],
             //        'title' => 'Book Title',
             //    );
             $collection->setAfterCreate(function ($record, $args) use ($sSchema, $junctionRelKey, $junctionRel, $foreignRel, $value) {

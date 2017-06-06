@@ -65,8 +65,8 @@ class XMLExporterTest extends ModelTestCase
             'name' => 'Z',
             'email' => 'z@z',
             'identity' => 'zaa',
-            'updated_on' => '2012-01-01 00:00:00',
-            'created_on' => '2012-01-01 00:00:00',
+            'updated_at' => '2012-01-01 00:00:00',
+            'created_at' => '2012-01-01 00:00:00',
         ));
 
         // Has Many Relationship
@@ -79,28 +79,28 @@ class XMLExporterTest extends ModelTestCase
         $book = Book::createAndLoad([
             'title' => 'Run & Skate',
             'published_at' => '2012-01-01 00:00:00',
-            'updated_on' => '2012-01-01 00:00:00',
-            'created_on' => '2012-01-01 00:00:00',
+            'updated_at' => '2012-01-01 00:00:00',
+            'created_at' => '2012-01-01 00:00:00',
             'is_selled' => false,
         ]);
 
         // ManyToMany
         $author->author_books->create([
             'book_id' => $book->id,
-            'created_on' => '2012-01-01 00:00:00',
+            'created_at' => '2012-01-01 00:00:00',
         ]);
 
 
         $book = Book::createAndLoad([
             'title' => 'Run & Skate II',
-            'updated_on' => '2012-01-01 00:00:00',
-            'created_on' => '2012-01-01 00:00:00',
+            'updated_at' => '2012-01-01 00:00:00',
+            'created_at' => '2012-01-01 00:00:00',
             'published_at' => '2012-01-01 00:00:00',
             'is_selled' => false,
         ]);
         $author->author_books->create([
             'book_id' => $book->id,
-            'created_on' => '2012-01-01 00:00:00',
+            'created_at' => '2012-01-01 00:00:00',
         ]);
 
 
@@ -113,6 +113,7 @@ class XMLExporterTest extends ModelTestCase
         $this->assertNotEmpty($xml);
 
         file_put_contents('tests/xmlTestRecursiveExporting.actual', $xml);
+        // file_put_contents('tests/xmlTestRecursiveExporting.expected', $xml);
         $this->assertFileEquals('tests/xmlTestRecursiveExporting.expected', 'tests/xmlTestRecursiveExporting.actual');
     }
 }

@@ -20,7 +20,7 @@ function dumpExpr($expr, $level = 0)
  *
  * SELECT m.title, m.content, m.status, m.id FROM posts m  WHERE status =
  * published AND status = draft AND content like %foo% AND content like
- * %bar% AND created_on BETWEEN '2011-01-01' AND '2011-12-30'
+ * %bar% AND created_at BETWEEN '2011-01-01' AND '2011-12-30'
  *
  * @group collection
  */
@@ -44,13 +44,13 @@ class CollectionFilterTest extends ModelTestCase
         $filter = new CollectionFilter($posts);
         $filter->defineEqual('status', [ 'published', 'draft' ]);
         $filter->defineContains('content');
-        $filter->defineRange('created_on', CollectionFilter::String);
+        $filter->defineRange('created_at', CollectionFilter::String);
         $filter->defineInSet('created_by', CollectionFilter::Integer);
 
         $collection = $filter->apply([
             'status' => ['published','draft'],
             'content' => ['foo', 'bar'],
-            'created_on' => [ '2011-01-01', '2011-12-30' ],
+            'created_at' => [ '2011-01-01', '2011-12-30' ],
             'created_by' => [1,2,3,4],
         ]);
         // ok($collection->toSql());

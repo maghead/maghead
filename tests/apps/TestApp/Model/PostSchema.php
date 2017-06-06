@@ -18,7 +18,7 @@ class PostSchema extends DeclareSchema
             ->varchar(20)
             ;
 
-        $this->column('created_on')
+        $this->column('created_at')
             ->timestamp()
             ;
 

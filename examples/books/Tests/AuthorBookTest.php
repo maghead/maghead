@@ -108,7 +108,7 @@ class AuthorBookTest extends ModelTestCase
     public function testSchemaGetColumns()
     {
         $author = new Author;
-        $names = ['updated_on','created_on','id','name','email','identity','confirmed'];
+        $names = ['updated_at','created_at','id','name','email','identity','confirmed'];
         foreach ($author->getColumnNames() as $n) {
             $this->assertTrue(in_array($n, $names));
             $this->assertNotNull($author->getColumn($n));
@@ -441,7 +441,7 @@ class AuthorBookTest extends ModelTestCase
         $this->assertNotNull(
             $book = $author->books->create(array(
                 'title' => 'Programming Perl I',
-                'author_books' => ['created_on' => '2010-01-01'],
+                'author_books' => ['created_at' => '2010-01-01'],
             ))
         );
         $this->assertNotNull($book->id);
@@ -450,8 +450,8 @@ class AuthorBookTest extends ModelTestCase
         $this->assertEquals(1, $author->books->size());
         $this->assertEquals(1, $author->author_books->size());
         $this->assertNotNull($author->author_books[0]);
-        $this->assertNotNull($author->author_books[0]->created_on);
-        $this->assertEquals('2010-01-01', $author->author_books[0]->getCreatedOn()->format('Y-m-d'));
+        $this->assertNotNull($author->author_books[0]->created_at);
+        $this->assertEquals('2010-01-01', $author->author_books[0]->getCreatedAt()->format('Y-m-d'));
 
         $author->books[] = array(
             'title' => 'Programming Perl II',

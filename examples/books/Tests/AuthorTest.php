@@ -72,7 +72,7 @@ class AuthorTest extends ModelTestCase
     {
         $author = new Author;
 
-        $names = array('updated_on','created_on','id','name','email','identity','confirmed');
+        $names = array('updated_at','created_at','id','name','email','identity','confirmed');
         foreach ($author->getColumnNames() as $n) {
             // $this->assertContains($n, $names);
 
