@@ -657,6 +657,31 @@ class DeclareSchema extends BaseSchema implements Schema
         return self::convertClassToTableName($this->getModelName());
     }
 
+
+    public function addColumnFromArray(array $config)
+    {
+        $column = $this->column($config['name']);
+
+        if (isset($config['required'])) {
+            $column->required($config['required']);
+        }
+
+        if (isset($config['label'])) {
+            $column->label($config['label']);
+        }
+        if (isset($config['renderAs'])) {
+            $column->renderAs($config['renderAs']);
+        }
+        if (isset($config['type'])) {
+            $column->type($config['type']);
+        }
+        if (isset($config['isa'])) {
+            $column->isa($config['isa']);
+        }
+
+        return $column;
+    }
+
     /**
      * Add column object into the column list.
      *
