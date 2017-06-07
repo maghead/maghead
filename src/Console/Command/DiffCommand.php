@@ -18,7 +18,12 @@ class DiffCommand extends BaseCommand
 
     public function execute($nodeId = "master")
     {
+        $args = func_get_args();
+        array_shift($args);
+        $this->loadSchemasFromArguments($args);
+
         $formatter = new \CLIFramework\Formatter();
+
 
         $conn = $this->dataSourceManager->getConnection($nodeId);
         $driver = $this->dataSourceManager->getQueryDriver($nodeId);
@@ -28,6 +33,7 @@ class DiffCommand extends BaseCommand
         $parser = TableParser::create($conn, $driver);
         $existingTables = $parser->getTables();
         $tableSchemas = SchemaLoader::loadSchemaTableMap();
+
 
         $found = false;
         $comparator = new Comparator($driver);

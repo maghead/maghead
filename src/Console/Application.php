@@ -21,6 +21,7 @@ class Application extends \CLIFramework\Application
 
     public function options($opts)
     {
+        parent::options($opts);
         $opts->add('c|config:','the path to the config file')
             ->isa('file');
     }

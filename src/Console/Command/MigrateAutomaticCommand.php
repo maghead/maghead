@@ -10,6 +10,7 @@ use Maghead\Manager\DataSourceManager;
 use Maghead\Schema\SchemaLoader;
 use Maghead\Platform\MySQL\MySQLBackup;
 use Magsql\Driver\PDOMySQLDriver;
+use Exception;
 
 class MigrateAutomaticCommand extends MigrateBaseCommand
 {
@@ -31,6 +32,10 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
 
     public function execute($nodeId = "master")
     {
+        $args = func_get_args();
+        array_shift($args);
+        $this->loadSchemasFromArguments($args);
+        
         $conn = $this->dataSourceManager->getConnection($nodeId);
         $driver = $conn->getQueryDriver();
 
@@ -61,12 +66,25 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
 
             $this->logger->info('Committing...');
             $conn->commit();
+
         } catch (Exception $e) {
+
             $this->logger->error('Exception was thrown: '.$e->getMessage());
+
+            if ($pe = $e->getPrevious()) {
+                if ($pe->xdebug_message) {
+                    $this->logger->warn($pe->xdebug_message);
+                } else if (isset($pe->errorInfo)) {
+                    $this->logger->warn(join(' ',$pe->errorInfo));
+                } else if ($msg = $pe->getMessage()) {
+                    $this->logger->warn($msg);
+                }
+            }
+
             $this->logger->warn('Rolling back ...');
             $conn->rollback();
             $this->logger->warn('Recovered, escaping...');
-            throw $e;
+
         }
         $this->logger->info('Done.');
     }
