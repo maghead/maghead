@@ -189,12 +189,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         $this->attributes['refer'] = $class;
 
         // get the primary key from the refered schema
-        if (get_class($this->schema) === ltrim($class, '\\')) {
-            $schema = $this->schema;
-        } else {
-            $schema = new $class();
-        }
-
+        $schema = new $class();
         if ($primaryKey = $schema->findPrimaryKeyColumn()) {
             $this->applyType($primaryKey);
         }
