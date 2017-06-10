@@ -349,7 +349,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      *
      * @return DeclareColumn
      */
-    public function applyType(DeclareColumn $column)
+    protected function applyType(DeclareColumn $column)
     {
         $this->type = $column->type;
         $this->isa = $column->isa;
