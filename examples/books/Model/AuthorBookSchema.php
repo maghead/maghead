@@ -8,12 +8,12 @@ class AuthorBookSchema extends DeclareSchema
     public function schema()
     {
         $this->column('author_id')
-            ->refer('Author')
+            ->refer(AuthorSchema::class)
             ->required()
             ;
 
         $this->column('book_id')
-            ->refer('Book')
+            ->refer(BookSchema::class)
             ->required()
             ;
 

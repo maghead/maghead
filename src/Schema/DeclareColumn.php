@@ -191,7 +191,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         // get the primary key from the refered schema
         $schema = new $class();
         if ($primaryKey = $schema->findPrimaryKeyColumn()) {
-            $this->applyType($primaryKey);
+            $this->applyColumnType($primaryKey);
         }
         return $this;
     }
@@ -349,7 +349,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      *
      * @return DeclareColumn
      */
-    protected function applyType(DeclareColumn $column)
+    protected function applyColumnType(DeclareColumn $column)
     {
         $this->type = $column->type;
         $this->isa = $column->isa;
