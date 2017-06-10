@@ -7,6 +7,7 @@ use Maghead\Exception\SchemaRelatedException;
 use ArrayIterator;
 use IteratorAggregate;
 use Closure;
+use Maghead\Utils;
 
 /**
  * Postgresql Data Types:.
@@ -185,7 +186,9 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
             $schemaClass = $this->schema->getNamespace().'\\'.$schemaClass;
         }
 
-        if (!class_exists($schemaClass, true)) {
+        $schemaClass = Utils::resolveClass($schemaClass, [], $this->schema);
+
+        if (!$schemaClass) {
             throw new SchemaRelatedException($this->schema, "Can't find referred schema class '$schemaClass'.");
         }
 
