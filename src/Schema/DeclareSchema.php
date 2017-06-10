@@ -928,13 +928,11 @@ class DeclareSchema extends BaseSchema implements Schema
         return $this;
     }
 
-
+    /**
+     * Return the current schema (for mixin schema, we need to return the parent schema object)
+     */
     protected function getCurrentSchemaClass()
     {
-        if ($this instanceof MixinDeclareSchema) {
-            return get_class($this->parentSchema);
-        }
-
         return get_class($this);
     }
 
@@ -956,22 +954,24 @@ class DeclareSchema extends BaseSchema implements Schema
      *
      * @param string $foreignClass  foreign schema class.
      * @param string $foreignColumn foreign reference schema column.
-     * @param string $selfColumn    self column name
+     * @param string $selfColumn    self column name, the self column could be configured lately by using "by(...)"
+     *
+     * @return Relationship
      */
-    public function belongsTo($accessor, $schemaClass, $foreignColumn = null, $selfColumn = null)
+    public function belongsTo($accessor, $foreignClass, $foreignColumn = null, $selfColumn = null)
     {
-        $schemaClass = $this->resolveSchemaClass($schemaClass);
+        $foreignClass = $this->resolveSchemaClass($foreignClass);
         if (!$foreignColumn) {
-            $schema = new $schemaClass;
+            $schema = new $foreignClass;
             $foreignColumn = $schema->primaryKey;
         }
 
         return $this->relations[$accessor] = new BelongsTo($accessor, [
-            'type' => Relationship::BELONGS_TO,
-            'self_schema' => $this->getCurrentSchemaClass(),
-            'self_column' => $selfColumn,
+            'type'           => Relationship::BELONGS_TO,
             'foreign_schema' => $foreignClass,
             'foreign_column' => $foreignColumn,
+            'self_schema'    => $this->getCurrentSchemaClass(),
+            'self_column'    => $selfColumn,
         ]);
     }
 

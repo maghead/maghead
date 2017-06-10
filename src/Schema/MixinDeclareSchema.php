@@ -18,6 +18,15 @@ class MixinDeclareSchema extends DeclareSchema
     }
 
     /**
+     * Return the current schema (for mixin schema, we need to return the parent schema object)
+     */
+    protected function getCurrentSchemaClass()
+    {
+        return get_class($this->parentSchema);
+    }
+
+
+    /**
      * Build schema.
      */
     public function build(array $options = array())
