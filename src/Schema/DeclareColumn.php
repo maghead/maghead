@@ -175,37 +175,34 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
      *
      * @param string $relationship relationship id
      */
-    public function refer($schemaClass)
+    public function refer($name)
     {
-        if (!preg_match('/Schema$/', $schemaClass)) {
-            $schemaClass = "{$schemaClass}Schema";
+        if (!preg_match('/Schema$/', $name)) {
+            $name = "{$name}Schema";
         }
 
-        // try classes
-        if (!class_exists($schemaClass, true)) {
-            $schemaClass = $this->schema->getNamespace().'\\'.$schemaClass;
+        $class = Utils::resolveClass($name, [], $this->schema);
+        if (!$class) {
+            throw new SchemaRelatedException($this->schema, "Can't find referred schema class '$class'.");
         }
 
-        $schemaClass = Utils::resolveClass($schemaClass, [], $this->schema);
-
-        if (!$schemaClass) {
-            throw new SchemaRelatedException($this->schema, "Can't find referred schema class '$schemaClass'.");
-        }
-
-        $this->attributes['refer'] = $schemaClass;
+        $this->attributes['refer'] = $class;
 
         // get the primary key from the refered schema
-        if (get_class($this->schema) === ltrim($schemaClass, '\\')) {
+        if (get_class($this->schema) === ltrim($class, '\\')) {
             $schema = $this->schema;
         } else {
-            $schema = new $schemaClass();
+            $schema = new $class();
         }
+
         if ($primaryKey = $schema->findPrimaryKeyColumn()) {
             $this->applyType($primaryKey);
         }
-
         return $this;
     }
+
+
+
 
     public function index($indexName = null, $using = null)
     {
