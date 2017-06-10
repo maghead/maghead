@@ -931,9 +931,9 @@ class DeclareSchema extends BaseSchema implements Schema
     /**
      * Return the current schema (for mixin schema, we need to return the parent schema object)
      */
-    protected function getCurrentSchemaClass()
+    protected function getCurrentSchema()
     {
-        return get_class($this);
+        return $this;
     }
 
     /*****************************************************************************
@@ -970,7 +970,7 @@ class DeclareSchema extends BaseSchema implements Schema
             'type'           => Relationship::BELONGS_TO,
             'foreign_schema' => $foreignClass,
             'foreign_column' => $foreignColumn,
-            'self_schema'    => $this->getCurrentSchemaClass(),
+            'self_schema'    => get_class($this->getCurrentSchema()),
             'self_column'    => $selfColumn,
         ]);
     }
@@ -996,7 +996,7 @@ class DeclareSchema extends BaseSchema implements Schema
 
         return $this->relations[ $accessor ] = new Relationship($accessor, array(
             'type' => Relationship::HAS_ONE,
-            'self_schema' => $this->getCurrentSchemaClass(),
+            'self_schema' => get_class($this->getCurrentSchema()),
             'self_column' => $selfColumn,
             'foreign_schema' => $this->resolveSchemaClass($foreignClass),
             'foreign_column' => $foreignColumn,
@@ -1045,15 +1045,11 @@ class DeclareSchema extends BaseSchema implements Schema
      * @param string $foreignColumn foreign schema column
      * @param string $selfColumn    self schema column
      */
-    public function many($accessor, $foreignClass, $foreignColumn, $selfColumn = null)
+    public function many($accessor, $foreignClass, $foreignColumn, $selfColumn)
     {
-        if (!$selfColumn) {
-            $foreignColumn = $this->getCurrentSchemaClass()->primaryKey;
-        }
-        
         return $this->relations[$accessor] = new HasMany($accessor, array(
             'type' => Relationship::HAS_MANY,
-            'self_schema' => $this->getCurrentSchemaClass(),
+            'self_schema' => get_class($this->getCurrentSchema()),
             'self_column' => $selfColumn,
             'foreign_schema' => $this->resolveSchemaClass($foreignClass),
             'foreign_column' => $foreignColumn,
