@@ -9,7 +9,6 @@ class AddressSchema extends DeclareSchema
     {
         $this->column('author_id')
             ->refer(AuthorSchema::class)
-            ->required()
             ;
 
         $this->column('address')

@@ -958,24 +958,21 @@ class DeclareSchema extends BaseSchema implements Schema
      * @param string $foreignColumn foreign reference schema column.
      * @param string $selfColumn    self column name
      */
-    public function belongsTo($accessor, $foreignClass, $foreignColumn = 'id', $selfColumn = null)
+    public function belongsTo($accessor, $schemaClass, $foreignColumn = null, $selfColumn = null)
     {
-        $foreignClass = $this->resolveSchemaClass($foreignClass);
-        // XXX: we can't create the foreign class here, because it might
-        // create a recursive class loading here...
-        /*
-        if ($foreignClass && null === $foreignColumn) {
-            $s = new $foreignClass();
-            $foreignColumn = $s->primaryKey;
+        $schemaClass = $this->resolveSchemaClass($schemaClass);
+        if (!$foreignColumn) {
+            $schema = new $schemaClass;
+            $foreignColumn = $schema->primaryKey;
         }
-        */
-        return $this->relations[$accessor] = new BelongsTo($accessor, array(
+
+        return $this->relations[$accessor] = new BelongsTo($accessor, [
             'type' => Relationship::BELONGS_TO,
             'self_schema' => $this->getCurrentSchemaClass(),
             'self_column' => $selfColumn,
             'foreign_schema' => $foreignClass,
             'foreign_column' => $foreignColumn,
-        ));
+        ]);
     }
 
     /**
@@ -1075,16 +1072,14 @@ class DeclareSchema extends BaseSchema implements Schema
     protected function resolveSchemaClass($class)
     {
         if (!preg_match('/Schema$/', $class)) {
-            $class = $class.'Schema';
+            $class = "{$class}Schema";
         }
-        if ($class[0] == '\\' || class_exists($class)) {
-            return $class;
+        $class2 = \Maghead\Utils::resolveClass($class, [], $this);
+        if (!$class2) {
+            throw new Exception("Schema class $class not found.");
         }
-        $nsClass = $this->getNamespace().'\\'.$class;
-        if (class_exists($nsClass)) {
-            return $nsClass;
-        }
-        throw new Exception("Schema class $class or $nsClass not found.");
+
+        return $class2;
     }
 
     /*****************************************************************************
