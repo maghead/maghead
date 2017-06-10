@@ -989,7 +989,11 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function hasOne($accessor, $foreignClass, $foreignColumn = null, $selfColumn)
     {
-        // foreignColumn is default to foreignClass.primary key
+        if (!$foreignColumn) {
+            $schema = new $foreignClass;
+            $foreignColumn = $schema->primaryKey;
+        }
+
         return $this->relations[ $accessor ] = new Relationship($accessor, array(
             'type' => Relationship::HAS_ONE,
             'self_schema' => $this->getCurrentSchemaClass(),
@@ -1033,7 +1037,7 @@ class DeclareSchema extends BaseSchema implements Schema
      * TODO: provide a relationship object to handle sush operation, that will be:
      *
      *    $this->hasMany('books','id')
-     *         ->from('App_Model_Book','author_id')
+     *         ->from(BookSchema::class,'author_id')
      *
      *
      * @param string $accessor      accessor name.
@@ -1041,8 +1045,12 @@ class DeclareSchema extends BaseSchema implements Schema
      * @param string $foreignColumn foreign schema column
      * @param string $selfColumn    self schema column
      */
-    public function many($accessor, $foreignClass, $foreignColumn, $selfColumn)
+    public function many($accessor, $foreignClass, $foreignColumn, $selfColumn = null)
     {
+        if (!$selfColumn) {
+            $foreignColumn = $this->getCurrentSchemaClass()->primaryKey;
+        }
+        
         return $this->relations[$accessor] = new HasMany($accessor, array(
             'type' => Relationship::HAS_MANY,
             'self_schema' => $this->getCurrentSchemaClass(),
