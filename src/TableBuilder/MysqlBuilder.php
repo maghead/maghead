@@ -68,7 +68,7 @@ class MysqlBuilder extends BaseBuilder
 
         $keys = (array) $rel['foreign_column'];
 
-        $references = $constraint->references($fSchema->getTable(), (array) $rel['foreign_column']);
+        $references = $constraint->references($fSchema->getTable(), $keys);
         if ($act = $rel->onUpdate) {
             $references->onUpdate($act);
         }
