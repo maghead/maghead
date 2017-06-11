@@ -3,11 +3,12 @@
 namespace Maghead\Schema;
 
 use AuthorBooks\Model\AuthorSchema;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group schema
  */
-class MixinDeclareSchemaTest extends PHPUnit\Framework\TestCase
+class MixinDeclareSchemaTest extends TestCase
 {
     public function testCallMixinSchemaDirectly()
     {
