@@ -86,7 +86,7 @@ class BookSchema extends DeclareSchema
          *
          * link book => author_books
          */
-        $this->many('book_authors', AuthorBookSchema::class, 'book_id');
+        $this->many('book_authors', AuthorBookSchema::class, 'book_id', 'id');
 
         $this->addModelTrait('TestApp\ModelTrait\EBookTrait');
         $this->addModelInterface('TestApp\ModelInterface\EBookInterface');

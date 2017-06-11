@@ -1048,9 +1048,9 @@ class DeclareSchema extends BaseSchema implements Schema
     public function many($accessor, $foreignClass, $foreignColumn, $selfColumn)
     {
         return $this->relations[$accessor] = new HasMany($accessor, array(
-            'type' => Relationship::HAS_MANY,
-            'self_schema' => get_class($this->getCurrentSchema()),
-            'self_column' => $selfColumn,
+            'type'           => Relationship::HAS_MANY,
+            'self_schema'    => get_class($this->getCurrentSchema()),
+            'self_column'    => $selfColumn,
             'foreign_schema' => $this->resolveSchemaClass($foreignClass),
             'foreign_column' => $foreignColumn,
         ));
