@@ -2,6 +2,7 @@
 namespace AuthorBooks\Model;
 
 use Maghead\Schema\DeclareSchema;
+use Maghead\Schema\Mixin\MetadataMixinSchema;
 
 class AuthorSchema extends DeclareSchema
 {
@@ -36,7 +37,7 @@ class AuthorSchema extends DeclareSchema
             ->boolean()
             ->default(false);
 
-        $this->mixin('Maghead\\Schema\\Mixin\\MetadataMixinSchema');
+        $this->mixin(MetadataMixinSchema::class);
 
         $this->many('addresses', AddressSchema::class, 'author_id', 'id');
 
