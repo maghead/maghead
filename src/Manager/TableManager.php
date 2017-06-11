@@ -74,7 +74,7 @@ class TableManager
             $this->executeStatements($sqls);
         }
         foreach ($schemas as $schema) {
-            if (!$schema->hasPlatformSupport()) {
+            if (!$schema->hasPlatformSupport($this->driver)) {
                 continue;
             }
 
