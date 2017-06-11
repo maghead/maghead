@@ -9,11 +9,15 @@ class AuthorBookSchema extends DeclareSchema
     {
         $this->column('author_id')
             ->refer(AuthorSchema::class)
+            ->integer()
+            ->unsigned()
             ->required()
             ;
 
         $this->column('book_id')
             ->refer(BookSchema::class)
+            ->integer()
+            ->unsigned()
             ->required()
             ;
 
