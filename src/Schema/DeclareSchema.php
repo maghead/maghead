@@ -10,6 +10,7 @@ use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Runtime\Config\Config;
 use Maghead\Schema\Column\AutoIncrementPrimaryKeyColumn;
 use Maghead\Schema\Column\UUIDPrimaryKeyColumn;
+use Maghead\Schema\SchemaLoader;
 use Maghead\Runtime\Bootstrap;
 use Magsql\Universal\Query\CreateIndexQuery;
 use Magsql\ParamMarker;
@@ -962,7 +963,7 @@ class DeclareSchema extends BaseSchema implements Schema
     {
         $foreignClass = $this->resolveSchemaClass($foreignClass);
         if (!$foreignColumn) {
-            $schema = new $foreignClass;
+            $schema = SchemaLoader::load($foreignClass);
             $foreignColumn = $schema->primaryKey;
         }
 
