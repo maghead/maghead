@@ -61,7 +61,7 @@ class SchemaProxyClassGenerator
                 .var_export($columnName, true).','
                 .php_var_export($columnAttributes['attributes']).');';
         }
-        // $method->block[] = 'parent::__construct();';
+
 
         /*
         // export column names including virutal columns

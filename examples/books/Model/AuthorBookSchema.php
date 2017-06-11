@@ -26,14 +26,12 @@ class AuthorBookSchema extends DeclareSchema
                 ->timestamp()
                 ;
 
-        $this->belongsTo('book', 'Book', 'id')
-            ->by('book_id')
+        $this->belongsTo('book', 'Book', 'id', 'book_id')
             ->onDelete('CASCADE')
             ->onUpdate('CASCADE')
             ;
 
-        $this->belongsTo('author', 'Author', 'id')
-            ->by('author_id')
+        $this->belongsTo('author', 'Author', 'id', 'author_id')
             ->onDelete('CASCADE')
             ->onUpdate('CASCADE')
             ;

@@ -88,7 +88,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
      */
     public function newForeignForeignCollection($junctionRelation)
     {
-        $junctionSchema = new $junctionRelation['foreign_schema']();
+        $junctionSchema = SchemaLoader::load($junctionRelation['foreign_schema']);
         $foreignRelation = $junctionSchema->getRelation($this['relation_foreign']);
         $collection = $foreignRelation->newForeignCollection();
         $this->applyFilter($collection); // apply this filter to the foreign collection.

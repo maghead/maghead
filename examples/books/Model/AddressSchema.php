@@ -20,7 +20,7 @@ class AddressSchema extends DeclareSchema
             ->defaultValue(false)
             ;
 
-        $this->belongsTo('author', 'Author')
+        $this->belongsTo('author', 'Author', 'id')
             ->by('author_id')
             ->onDelete('CASCADE')
             ;
