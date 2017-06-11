@@ -3,8 +3,8 @@ cli:
   bootstrap: vendor/autoload.php
 schema:
   auto_id: true
-  loaders:
-  - { name: ComposerSchemaLoader, args: ["composer.json"] }
+  finders:
+  - { name: ComposerSchemaFinder, args: ["composer.json"] }
 
 instance:
   local:

@@ -1,11 +1,11 @@
 <?php
 
-namespace Maghead\Schema\Loader;
+namespace Maghead\Schema\Finder;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class ComposerSchemaLoader
+class ComposerSchemaFinder
 {
     protected $config;
 
@@ -15,7 +15,7 @@ class ComposerSchemaLoader
     {
         if (is_string($composerConfig)) {
             if (!file_exists($composerConfig)) {
-                throw new \InvalidArgumentException("ComposerSchemaLoader::__construct expects the first argument to be a composer.json path or the json config array.");
+                throw new \InvalidArgumentException("ComposerSchemaFinder::__construct expects the first argument to be a composer.json path or the json config array.");
             }
             $this->config = json_decode(file_get_contents($composerConfig), true);
             $this->rootDir = dirname(realpath($composerConfig));
@@ -36,7 +36,7 @@ class ComposerSchemaLoader
 
     protected function scanVendor($rootDir)
     {
-        $fsLoader = new FileSchemaLoader;
+        $fsLoader = new FileSchemaFinder;
         if ($namespaces = $this->requireComposerFile($rootDir, 'autoload_psr4.php')) {
             foreach ($namespaces as $prefix => $dir) {
                 $fsLoader->addPath($dir);
@@ -49,32 +49,32 @@ class ComposerSchemaLoader
                 }
             }
         }
-        return $fsLoader->load();
+        return $fsLoader->find();
     }
 
 
     protected function scanAutoload($a)
     {
-        $fsLoader = new FileSchemaLoader;
+        $fsLoader = new FileSchemaFinder;
 
         // Setup default match by
-        $fsLoader->matchBy(FileSchemaLoader::MATCH_CLASSDECL);
+        $fsLoader->matchBy(FileSchemaFinder::MATCH_CLASSDECL);
 
         $autoloadDir = $this->rootDir ?: getcwd();
 
         if (isset($a['psr-4'])) {
             foreach ($a['psr-4'] as $prefix => $ps) {
-                $fsLoader->addPath($ps === "" ? $autoloadDir : $ps, FileSchemaLoader::MATCH_CLASSDECL);
+                $fsLoader->addPath($ps === "" ? $autoloadDir : $ps, FileSchemaFinder::MATCH_CLASSDECL);
             }
         }
         if (isset($a['psr-0'])) {
             foreach ($a['psr-0'] as $prefix => $ps) {
-                $fsLoader->addPath($ps === "" ? $autoloadDir : $ps, FileSchemaLoader::MATCH_CLASSDECL);
+                $fsLoader->addPath($ps === "" ? $autoloadDir : $ps, FileSchemaFinder::MATCH_CLASSDECL);
             }
         }
         if (isset($a['classmap'])) {
             foreach ($a['classmap'] as $prefix => $ps) {
-                $fsLoader->addPath($ps === "" ? $autoloadDir : $ps, FileSchemaLoader::MATCH_CLASSDECL);
+                $fsLoader->addPath($ps === "" ? $autoloadDir : $ps, FileSchemaFinder::MATCH_CLASSDECL);
             }
         }
         if (isset($a['files'])) {
@@ -83,10 +83,10 @@ class ComposerSchemaLoader
             }
         }
 
-        return $fsLoader->load();
+        return $fsLoader->find();
     }
 
-    public function load()
+    public function find()
     {
         $allFiles = [];
         if (isset($this->config['autoload'])) {

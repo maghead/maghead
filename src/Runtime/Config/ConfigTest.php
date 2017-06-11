@@ -18,22 +18,22 @@ class ConfigTest extends TestCase
     {
         $config = new Config([
             "schema" => [
-                "loaders" => [
+                "finders" => [
                     [
-                        "name" => "FileSchemaLoader",
+                        "name" => "FileSchemaFinder",
                         "args" => [["examples/metric/Model"]],
                     ],
                     [
-                        "name" => "ComposerSchemaLoader",
+                        "name" => "ComposerSchemaFinder",
                         "args" => ["composer.json"],
                     ]
                 ],
             ],
         ]);
-        $loaders = $config->loadSchemaLoaders();
-        $this->assertNotEmpty($loaders);
-        foreach ($loaders as $loader) {
-            $loader->load();
+        $finders = $config->loadSchemaFinders();
+        $this->assertNotEmpty($finders);
+        foreach ($finders as $finder) {
+            $finder->find();
         }
     }
 

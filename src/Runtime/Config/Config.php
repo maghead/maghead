@@ -6,6 +6,7 @@ use ArrayObject;
 use Exception;
 use Maghead\Sharding\ShardingConfig;
 use Maghead\Utils;
+use Maghead\Schema\Finder;
 
 class Config extends ArrayObject
 {
@@ -61,11 +62,11 @@ class Config extends ArrayObject
     }
 
     /**
-     * return the external schema loader.
+     * return the external schema finders
      */
-    public function loadSchemaLoaders(array $namespaceRoots = [], $refObject = null, array $refSubNamespaceNames = [])
+    public function loadSchemaFinders(array $namespaceRoots = [], $refObject = null, array $refSubNamespaceNames = [])
     {
-        if (!isset($this['schema']['loaders'])) {
+        if (!isset($this['schema']['finders'])) {
             return [];
         }
 
@@ -74,25 +75,25 @@ class Config extends ArrayObject
                 return [ 'name' => $config ];
             }
             return $config;
-        }, (array) $this['schema']['loaders']);
+        }, (array) $this['schema']['finders']);
 
-        $loaders = [];
+        $finders = [];
         foreach ($configs as $config) {
             $name = $config['name'];
 
-            array_push($namespaceRoots, 'Maghead\\Schema\\Loader');
-            array_push($refSubNamespaceNames, "Schema\\Loader");
+            array_push($namespaceRoots, Finder::class);
+            array_push($refSubNamespaceNames, "Schema\\Finder");
 
             $class = Utils::resolveClass($name, $namespaceRoots, $refObject, $refSubNamespaceNames);
 
             $reflClass = new \ReflectionClass($class);
             if (isset($config['args'])) {
-                $loaders[] = $reflClass->newInstanceArgs($config['args']);
+                $finders[] = $reflClass->newInstanceArgs($config['args']);
             } else {
-                $loaders[] = $reflClass->newInstance();
+                $finders[] = $reflClass->newInstance();
             }
         }
-        return $loaders;
+        return $finders;
     }
 
     public function removeDatabase($dataSourceId)

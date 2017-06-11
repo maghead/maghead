@@ -4,7 +4,7 @@ namespace Maghead\Runtime;
 
 use Maghead\TableBuilder\BaseBuilder;
 use Maghead\Schema\SchemaCollection;
-use Maghead\Schema\Loader\FileSchemaLoader;
+use Maghead\Schema\Finder\FileSchemaFinder;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Runtime\Model;
 use Maghead\Runtime\Collection;
@@ -56,15 +56,19 @@ class Bootstrap
     /**
      * load external schema loader.
      */
-    protected static function loadExternalSchemaLoader($config)
+    protected static function loadExternalSchemaFinder($config)
     {
-        if (isset($config['schema']['loader'])) {
-            require_once $config['schema']['loader'];
+        $finders = $config->loadSchemaFinders();
 
-            return true;
+        if (empty($finders)) {
+            return false;
         }
 
-        return false;
+        foreach ($finders as $finder) {
+            $finder->find();
+        }
+
+        return true;
     }
 
     protected static function loadSchemaFromFinder($config)
@@ -72,14 +76,14 @@ class Bootstrap
         // Load default schema loader
         $paths = $config->getSchemaPaths();
         if (!empty($paths)) {
-            $loader = new FileSchemaLoader($paths);
-            $loadedFiles = $loader->load();
+            $finder = new FileSchemaFinder($paths);
+            $files = $finder->find();
         }
     }
 
-    protected static function loadSchemaLoader($config)
+    protected static function loadSchemaFinders($config)
     {
-        if (!self::loadExternalSchemaLoader($config)) {
+        if (!self::loadExternalSchemaFinder($config)) {
             self::loadSchemaFromFinder($config);
         }
     }
@@ -125,6 +129,6 @@ class Bootstrap
     {
         self::setup($config);
         self::loadBootstrapScript($config);
-        self::loadSchemaLoader($config);
+        self::loadSchemaFinders($config);
     }
 }

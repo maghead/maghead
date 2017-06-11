@@ -75,9 +75,9 @@ UPGRADE TO 4.0.x
 
 - Added BaseRepo::move(BaseRepo $target) method for moving records.
 
-- Renamed 'schema.loader' to 'schema.loaders'
+- Renamed 'schema.loader' to 'schema.finders'
 
-- Renamed 'getExternalSchemaLoader' to 'loadSchemaLoaders'
+- Renamed 'getExternalSchemaLoader' to 'loadSchemaFinders'
 
 
 

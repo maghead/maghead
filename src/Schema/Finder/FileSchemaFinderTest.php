@@ -1,15 +1,15 @@
 <?php
 
-namespace Maghead\Schema\Loader;
+namespace Maghead\Schema\Finder;
 
 use PHPUnit\Framework\TestCase;
 
-class FileSchemaLoaderTest extends TestCase
+class FileSchemaFinderTest extends TestCase
 {
     public function test()
     {
-        $loader = new FileSchemaLoader(['tests/apps/AuthorBooks/Model', 'tests/apps/StoreApp/Model']);
-        $files = $loader->load();
+        $finder = new FileSchemaFinder(['tests/apps/AuthorBooks/Model', 'tests/apps/StoreApp/Model']);
+        $files = $finder->find();
         $this->assertNotEmpty($files);
     }
 
@@ -31,6 +31,6 @@ class FileSchemaLoaderTest extends TestCase
      */
     public function testClassDeclPattern($content)
     {
-        $this->assertRegExp(FileSchemaLoader::CLASSDECL_PATTERN, $content);
+        $this->assertRegExp(FileSchemaFinder::CLASSDECL_PATTERN, $content);
     }
 }

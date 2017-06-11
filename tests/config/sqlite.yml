@@ -6,8 +6,8 @@ schema:
   auto_id: true
   base_model: \Maghead\Runtime\Model
   base_collection: \Maghead\Runtime\Collection
-  loaders:
-  - { name: ComposerSchemaLoader, args: ["composer.json"] }
+  finders:
+  - { name: ComposerSchemaFinder, args: ["composer.json"] }
 
 
 

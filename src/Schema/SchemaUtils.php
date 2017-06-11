@@ -4,7 +4,7 @@ namespace Maghead\Schema;
 
 use CLIFramework\Logger;
 use Maghead\Runtime\Config\Config;
-use Maghead\Schema\Loader\FileSchemaLoader;
+use Maghead\Schema\Finder\FileSchemaFinder;
 use ReflectionObject;
 use ReflectionClass;
 
@@ -83,8 +83,8 @@ class SchemaUtils
     public static function findSchemasByPaths(array $paths = null)
     {
         if ($paths && !empty($paths)) {
-            $loader = new FileSchemaLoader($paths);
-            $loadedFiles = $loader->load();
+            $finder = new FileSchemaFinder($paths);
+            $loadedFiles = $finder->find();
         }
 
         return SchemaLoader::loadDeclaredSchemas();

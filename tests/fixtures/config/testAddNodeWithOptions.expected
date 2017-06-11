@@ -2,9 +2,9 @@
 cli:
   bootstrap: vendor/autoload.php
 schema:
-  loaders:
+  finders:
     -
-      name: ComposerSchemaLoader
+      name: ComposerSchemaFinder
       args:
         - composer.json
 databases:

@@ -8,8 +8,8 @@ use Maghead\Runtime\Config\AutoConfigLoader;
 use Maghead\Runtime\Config\Config;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Schema\SchemaLoader;
-use Maghead\Schema\Loader\FileSchemaLoader;
-use Maghead\Schema\Loader\ComposerSchemaLoader;
+use Maghead\Schema\Finder\FileSchemaFinder;
+use Maghead\Schema\Finder\ComposerSchemaFinder;
 use Maghead\Runtime\Bootstrap;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Utils;
@@ -63,7 +63,7 @@ class BaseCommand extends Command
      */
     protected function runDefaultSchemaLoader(Config $config)
     {
-        $loaders = $config->loadSchemaLoaders();
+        $loaders = $config->loadSchemaFinders();
         if (!empty($loaders)) {
             foreach ($loaders as $loader) {
                 $loadedFiles = $loader->load();
@@ -75,7 +75,7 @@ class BaseCommand extends Command
             // If loaders are not defined, then we check if we can load them by composer.json file
             if (file_exists('composer.json')) {
                 $this->logger->info('Found composer.json, trying to scan files from the autoload sections...');
-                $loader = ComposerSchemaLoader::from('composer.json');
+                $loader = ComposerSchemaFinder::from('composer.json');
                 $loadedFiles = $loader->load();
                 foreach ($loadedFiles as $f) {
                     $this->logger->info("Found schema $f");
@@ -104,7 +104,7 @@ class BaseCommand extends Command
             $paths = $config->getSchemaPaths();
         }
         if (!empty($paths)) {
-            $loader = new FileSchemaLoader($paths);
+            $loader = new FileSchemaFinder($paths);
             $loadedFiles = $loader->load();
         }
 

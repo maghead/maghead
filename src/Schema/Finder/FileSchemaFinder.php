@@ -1,6 +1,6 @@
 <?php
 
-namespace Maghead\Schema\Loader;
+namespace Maghead\Schema\Finder;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -18,7 +18,7 @@ class MatchSet extends ArrayObject {
     }
 }
 
-class FileSchemaLoader
+class FileSchemaFinder
 {
     const FILE_SUFFIX = 'Schema.php';
 
@@ -176,7 +176,7 @@ class FileSchemaLoader
         }
     }
 
-    public function load()
+    public function find()
     {
         $this->scanPaths($this->paths, $this->matchBy);
         return $this->collectedFiles;
