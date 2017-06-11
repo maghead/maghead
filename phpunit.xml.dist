@@ -53,7 +53,7 @@
     <testsuite name="examples">
       <directory suffix="Test.php">examples/books/Tests</directory>
       <directory suffix="Test.php">examples/metric/Tests</directory>
-      <directory suffix="Test.php">examples/page/Tests</directory>
+      <directory suffix="Test.php">examples/page</directory>
     </testsuite>
 
     <testsuite name="StoreApp">
