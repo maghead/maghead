@@ -12,7 +12,6 @@ addons:
     - libgearman-dev
     - gearman-tools
 php:
-- '7.0'
 - '7.1'
 - hhvm
 env:
