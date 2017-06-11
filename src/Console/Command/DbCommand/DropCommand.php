@@ -21,6 +21,12 @@ class DropCommand extends BaseCommand
         $node = $config->getDataSource($nodeId);
 
         $dbManager = new DatabaseManager($conn);
+
+        if (!isset($node['database'])) {
+            $this->logger->error("'database' is not set.");
+            return false;
+        }
+        
         list($ret, $sql) = $dbManager->drop($node['database']);
         $this->logger->debug($sql);
 
