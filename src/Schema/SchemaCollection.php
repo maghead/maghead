@@ -147,7 +147,7 @@ class SchemaCollection extends ArrayObject
 
         // map table names to declare schema objects
         foreach ($this as $a) {
-            $s = is_string($a) ? new $a : $a;
+            $s = is_string($a) ? SchemaLoader::load($a) : $a;
             $tableMap[$s->getTable()] = $s;
         }
 
@@ -175,7 +175,7 @@ class SchemaCollection extends ArrayObject
     public static function evaluateArray(array $classes)
     {
         $schemas = array_map(function ($a) {
-            return is_string($a) ? new $a() : $a;
+            return is_string($a) ? SchemaLoader::load($a) : $a;
         }, $classes);
 
         return new self($schemas);

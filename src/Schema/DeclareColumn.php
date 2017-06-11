@@ -4,6 +4,7 @@ namespace Maghead\Schema;
 
 use Magsql\Universal\Syntax\Column;
 use Maghead\Exception\SchemaRelatedException;
+use Maghead\Schema\SchemaLoader;
 use ArrayIterator;
 use IteratorAggregate;
 use Closure;
@@ -189,11 +190,7 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         $this->attributes['refer'] = $class;
 
         // get the primary key from the refered schema
-        if ($class === get_class($this->schema)) {
-            $schema = $this->schema;
-        } else {
-            $schema = new $class();
-        }
+        $schema = SchemaLoader::load($class);
         if ($primaryKey = $schema->findPrimaryKeyColumn()) {
             $this->applyColumnType($primaryKey);
         }

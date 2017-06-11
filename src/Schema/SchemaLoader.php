@@ -13,6 +13,9 @@ class SchemaLoader
 
     public static function load($class)
     {
+        if (isset(self::$objects[$class])) {
+            return self::$objects[$class];
+        }
         return self::$objects[$class] = new $class;
     }
 
@@ -22,6 +25,8 @@ class SchemaLoader
     }
 
     /**
+     * TODO: move out
+     *
      * @return DeclareSchema[] Return declared schema object in associative array
      */
     public static function loadSchemaTableMap()
@@ -31,6 +36,8 @@ class SchemaLoader
     }
 
     /**
+     * TODO: move out
+     *
      * Returns declared schema objects.
      *
      * @return array Schema objects
