@@ -58,15 +58,15 @@ class BaseCommand extends Command
 
 
     /**
-     * The default schema loader
-     * If we have predefined schema loaders in the config, then we should pre-load these classes.
+     * The default schema finder
+     * If we have predefined schema finder in the config, then we should pre-load these classes.
      */
     protected function runDefaultSchemaLoader(Config $config)
     {
         $finders = $config->loadSchemaFinders();
         if (!empty($finders)) {
-            foreach ($finders as $loader) {
-                $loadedFiles = $loader->find();
+            foreach ($finders as $finder) {
+                $loadedFiles = $finder->find();
                 foreach ($loadedFiles as $f) {
                     $this->logger->info("Found schema $f");
                 }
@@ -104,8 +104,8 @@ class BaseCommand extends Command
             $paths = $config->getSchemaPaths();
         }
         if (!empty($paths)) {
-            $loader = new FileSchemaFinder($paths);
-            $loadedFiles = $loader->load();
+            $finder = new FileSchemaFinder($paths);
+            $loadedFiles = $finder->find();
         }
 
         return SchemaUtils::argumentsToSchemaObjects($classes)->notForTest();
