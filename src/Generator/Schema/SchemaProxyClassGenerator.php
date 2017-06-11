@@ -3,8 +3,31 @@
 namespace Maghead\Generator\Schema;
 
 use CodeGen\ClassFile;
+use CodeGen\Generator\AppClassGenerator;
+use CodeGen\UserClass;
+use CodeGen\Block;
+use CodeGen\Raw;
+use CodeGen\Statement\RequireStatement;
+use CodeGen\Statement\RequireComposerAutoloadStatement;
+use CodeGen\Statement\RequireClassStatement;
+use CodeGen\Statement\ReturnStatement;
+use CodeGen\Statement\ConstStatement;
+use CodeGen\Statement\DefineStatement;
+use CodeGen\Statement\AssignStatement;
+use CodeGen\Statement\Statement;
+use CodeGen\Expr\NewObject;
+use CodeGen\Expr\MethodCall;
+use CodeGen\Expr\StaticMethodCall;
+use CodeGen\Variable;
+use CodeGen\Comment;
+use CodeGen\CommentBlock;
+
+use ReflectionObject;
+
+
 use Maghead\Schema\DeclareSchema;
 use SerializerKit\PhpSerializer;
+
 
 function php_var_export($obj)
 {
@@ -38,6 +61,10 @@ class SchemaProxyClassGenerator
 
         $cTemplate->useClass('\\Maghead\\Schema\\RuntimeColumn');
         $cTemplate->useClass('\\Maghead\\Schema\\Relationship\\Relationship');
+        $cTemplate->useClass('\\Maghead\\Schema\\Relationship\\HasOne');
+        $cTemplate->useClass('\\Maghead\\Schema\\Relationship\\HasMany');
+        $cTemplate->useClass('\\Maghead\\Schema\\Relationship\\BelongsTo');
+        $cTemplate->useClass('\\Maghead\\Schema\\Relationship\\ManyToMany');
 
         $cTemplate->addPublicProperty('columnNames', $schema->getColumnNames());
         $cTemplate->addPublicProperty('primaryKey', $schema->getPrimaryKey());
@@ -52,6 +79,18 @@ class SchemaProxyClassGenerator
 
         $constructor = $cTemplate->addMethod('public', '__construct', []);
         if (!empty($schemaArray['relations'])) {
+
+            /*
+            foreach ($schemaArray['relations'] as $rid => $rel) {
+                $refl = new ReflectionObject($rel);
+                $constructor->block[] = new AssignStatement("\$this->relations['{$rid}']", new NewObject(
+                    $refl->getShortName(), [
+                        $rid, $rel['data'],
+                    ]
+                ));
+            }
+            */
+
             $constructor->block[] = '$this->relations = '.php_var_export($schemaArray['relations']).';';
         }
 
