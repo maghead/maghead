@@ -1170,7 +1170,7 @@ class DeclareSchema extends BaseSchema implements Schema
     public function getPlatform()
     {
         if ($comment = $this->refl->getDocComment()) {
-            if (preg_match("/@platform\s+(pgsql|mysql|sqlite)/i", $comment, $matches)) {
+            if (preg_match("/@platform\s+(\w+)/i", $comment, $matches)) {
                 return strtolower($matches[1]);
             }
         }
