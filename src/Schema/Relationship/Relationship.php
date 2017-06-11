@@ -227,20 +227,20 @@ class Relationship implements IteratorAggregate, ArrayAccess
     /**
      * To support var_export.
      */
-    public static function __set_state(array $data)
+    public static function __set_state(array $stash)
     {
-        $r = new static($data['accessor'], $data['data']);
-        if (isset($data['where'])) {
-            $r->where = $data['where'];
+        $r = new static($stash['accessor'], $stash['data']);
+        if (isset($stash['where'])) {
+            $r->where = $stash['where'];
         }
-        if (isset($data['orderBy'])) {
-            $r->orderBy = $data['orderBy'];
+        if (isset($stash['orderBy'])) {
+            $r->orderBy = $stash['orderBy'];
         }
-        if (isset($data['onUpdate'])) {
-            $r->onUpdate = $data['onUpdate'];
+        if (isset($stash['onUpdate'])) {
+            $r->onUpdate = $stash['onUpdate'];
         }
-        if (isset($data['onDelete'])) {
-            $r->onDelete = $data['onDelete'];
+        if (isset($stash['onDelete'])) {
+            $r->onDelete = $stash['onDelete'];
         }
 
         return $r;
