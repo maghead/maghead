@@ -63,11 +63,12 @@ class BaseModelClassGenerator
             throw new PrimaryKeyColumnMissingException($schema, "PrimaryKey is required to be defined in the schema.");
         }
 
+        var_dump($schema->classes->baseModel);
+
         $cTemplate = clone $schema->classes->baseModel;
         $cTemplate->extendClass('\\'.$baseClass);
 
         $cTemplate->useClass(SchemaLoader::class);
-
         $cTemplate->useClass('Maghead\\Runtime\\Result');
         $cTemplate->useClass('Maghead\\Runtime\\Inflator');
         $cTemplate->useClass('Magsql\\Bind');

@@ -39,8 +39,9 @@ class RevisionMixinSchema extends MixinDeclareSchema
             ;
 
         $this->belongsTo('root_revision', get_class($this->parentSchema), 'id', 'revision_root_id');
+
         $this->belongsTo('parent_revision', get_class($this->parentSchema), 'id', 'revision_parent_id');
 
-        $this->addModelTrait('Maghead\\Extensions\\Revision\\RevisionModelTrait');
+        $this->parentSchema->addModelTrait('Maghead\\Extensions\\Revision\\RevisionModelTrait');
     }
 }

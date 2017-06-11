@@ -50,26 +50,14 @@
       <directory suffix="Test.php">tests</directory>
     </testsuite>
 
-    <testsuite name="Model">
-      <directory suffix="Test.php">tests/ModelTest</directory>
-    </testsuite>
-
-    <testsuite name="Sharding">
-      <directory suffix="Test.php">tests/Sharding</directory>
-    </testsuite>
-
-    <testsuite name="Runtime">
-      <directory suffix="Test.php">tests/Runtime</directory>
-    </testsuite>
-
-    <testsuite name="StoreApp">
-      <directory suffix="Test.php">tests/apps/StoreApp</directory>
-    </testsuite>
-
     <testsuite name="examples">
       <directory suffix="Test.php">examples/books/Tests</directory>
       <directory suffix="Test.php">examples/metric/Tests</directory>
       <directory suffix="Test.php">examples/page/Tests</directory>
+    </testsuite>
+
+    <testsuite name="StoreApp">
+      <directory suffix="Test.php">tests/apps/StoreApp</directory>
     </testsuite>
 
   </testsuites>

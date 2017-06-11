@@ -140,9 +140,9 @@ class DeclareSchema extends BaseSchema implements Schema
             'baseModel'      => new ClassFile($this->getBaseModelClass()),
             'baseCollection' => new ClassFile($this->getBaseCollectionClass()),
             'baseRepo'       => new ClassFile($this->getBaseRepoClass()),
-            'model'      => new ClassFile($this->getModelClass()),
-            'collection' => new ClassFile($this->getCollectionClass()),
-            'repo'       => new ClassFile($this->getRepoClass())
+            'model'          => new ClassFile($this->getModelClass()),
+            'collection'     => new ClassFile($this->getCollectionClass()),
+            'repo'           => new ClassFile($this->getRepoClass())
         ];
         $this->build($options);
     }
@@ -729,7 +729,7 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     protected function helper($helperName, array $arguments = array())
     {
-        $helperClass = 'Maghead\\Schema\\Helper\\'.$helperName.'Helper';
+        $helperClass = "Maghead\\Schema\\Helper\\{$helperName}Helper";
 
         return new $helperClass($this, $arguments);
     }

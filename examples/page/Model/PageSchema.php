@@ -2,6 +2,8 @@
 namespace PageApp\Model;
 
 use Maghead\Schema\DeclareSchema;
+use Maghead\Extensions\Revision\RevisionMixinSchema;
+use Maghead\Extensions\Localize\LocalizeMixinSchema;
 
 class PageSchema extends DeclareSchema
 {
@@ -9,7 +11,7 @@ class PageSchema extends DeclareSchema
     {
         $this->column('title')->varchar(128)->localize(['en', 'fr']);
         $this->column('brief')->text();
-        $this->mixin('Maghead\\Extensions\\Revision\\RevisionMixinSchema');
-        $this->mixin('Maghead\\Extensions\\Localize\\LocalizeMixinSchema');
+        $this->mixin(RevisionMixinSchema::class);
+        $this->mixin(LocalizeMixinSchema::class);
     }
 }

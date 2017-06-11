@@ -2,11 +2,11 @@
 
 namespace Maghead\Schema;
 
-class MixinDeclareSchema extends DeclareSchema
+abstract class MixinDeclareSchema extends DeclareSchema
 {
     protected $parentSchema;
 
-    public function __construct($parentSchema, array $options = array())
+    public function __construct(DeclareSchema $parentSchema, array $options = array())
     {
         $this->parentSchema = $parentSchema;
         parent::__construct($options);
@@ -41,25 +41,6 @@ class MixinDeclareSchema extends DeclareSchema
     }
 
     public function postSchema()
-    {
-    }
-
-    /**
-     * compatible methods for Model to mixin.
-     */
-    public static function beforeCreate($args)
-    {
-        return $args;
-    }
-    public static function beforeUpdate($args)
-    {
-        return $args;
-    }
-
-    public static function afterCreate($args)
-    {
-    }
-    public static function afterUpdate($args)
     {
     }
 
