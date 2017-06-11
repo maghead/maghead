@@ -4,6 +4,7 @@ namespace Maghead\Schema;
 
 use AuthorBooks\Model\AuthorSchema;
 use PHPUnit\Framework\TestCase;
+use Maghead\Schema\Mixin\MetadataMixinSchema;
 
 /**
  * @group schema
@@ -12,7 +13,7 @@ class MixinDeclareSchemaTest extends TestCase
 {
     public function testCallMixinSchemaDirectly()
     {
-        $mixin = new Maghead\Schema\Mixin\MetadataMixinSchema(new AuthorSchema);
+        $mixin = new MetadataMixinSchema(new AuthorSchema);
         $this->assertNotEmpty($mixin->getColumns());
         foreach ($mixin->getColumns() as $column) {
             $this->assertInstanceOf(DeclareColumn::class, $column);
