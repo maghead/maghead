@@ -17,9 +17,10 @@ use Magsql\ParamMarker;
 use Magsql\Universal\Query\SelectQuery;
 use Magsql\Universal\Query\DeleteQuery;
 use Maghead\Schema\Relationship\Relationship;
-use Maghead\Schema\Relationship\HasMany;
 use Maghead\Schema\Relationship\HasOne;
 use Maghead\Schema\Relationship\BelongsTo;
+use Maghead\Schema\Relationship\HasMany;
+use Maghead\Schema\Relationship\ManyToMany;
 use Maghead\Exception\SchemaRelatedException;
 use Maghead\Utils;
 
@@ -952,7 +953,7 @@ class DeclareSchema extends BaseSchema implements Schema
             $foreignColumn = $schema->primaryKey;
         }
 
-        return $this->relations[ $accessor ] = new Relationship($accessor, array(
+        return $this->relations[ $accessor ] = new HasOne($accessor, array(
             'type' => Relationship::HAS_ONE,
             'self_schema' => get_class($this->getCurrentSchema()),
             'self_column' => $selfColumn,
@@ -1022,7 +1023,7 @@ class DeclareSchema extends BaseSchema implements Schema
     public function manyToMany($accessor, $relationId, $foreignRelationId)
     {
         if ($r = $this->getRelation($relationId)) {
-            return $this->relations[ $accessor ] = new Relationship($accessor, array(
+            return $this->relations[ $accessor ] = new ManyToMany($accessor, array(
                 'type' => Relationship::MANY_TO_MANY,
                 'relation_junction' => $relationId,
                 'relation_foreign' => $foreignRelationId,
