@@ -79,8 +79,7 @@ class BookSchema extends DeclareSchema
          *
          * $book->publisher->name;
          **/
-        $this->belongsTo('publisher', PublisherSchema::class, 'id')
-            ->by('publisher_id');
+        $this->belongsTo('publisher', PublisherSchema::class, 'id', 'publisher_id');
 
         /**
          * accessor , mapping self.id => BookAuthors.book_id
@@ -89,11 +88,11 @@ class BookSchema extends DeclareSchema
          */
         $this->many('book_authors', AuthorBookSchema::class, 'book_id', 'id');
 
-        $this->addModelTrait('TestApp\ModelTrait\EBookTrait');
-        $this->addModelInterface('TestApp\ModelInterface\EBookInterface');
+        $this->classes->model->useTrait('TestApp\ModelTrait\EBookTrait');
+        $this->classes->model->implementInterface('TestApp\ModelInterface\EBookInterface');
 
-        $this->addCollectionTrait('TestApp\ModelTrait\EBookCollectionTrait');
-        $this->addCollectionInterface('TestApp\ModelInterface\EBookCollectionInterface');
+        $this->classes->collection->useTrait('TestApp\ModelTrait\EBookCollectionTrait');
+        $this->classes->collection->implementInterface('TestApp\ModelInterface\EBookCollectionInterface');
 
 
         /**
