@@ -1181,13 +1181,13 @@ class DeclareSchema extends BaseSchema implements Schema
     {
         if ($platform = $this->getPlatform()) {
             if ($platform === "pgsql") {
-                return $this->driver instanceof PgSQLDriver;
+                return $driver instanceof PgSQLDriver;
             }
             if ($platform === "mysql") {
-                return $this->driver instanceof MySQLDriver;
+                return $driver instanceof MySQLDriver;
             }
             if ($platform === "sqlite") {
-                return $this->driver instanceof SQLiteDriver;
+                return $driver instanceof SQLiteDriver;
             }
         }
         return true;
