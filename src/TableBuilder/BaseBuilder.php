@@ -17,8 +17,6 @@ use Maghead\Schema\Relationship\BelongsTo;
 use Maghead\Schema\Relationship\HasMany;
 use Maghead\Schema\Relationship\ManyToMany;
 
-
-
 abstract class BaseBuilder
 {
     protected $rebuild;

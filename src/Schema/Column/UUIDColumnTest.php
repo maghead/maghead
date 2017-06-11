@@ -7,6 +7,9 @@ use Maghead\Schema\DeclareSchema;
 
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @platform mysql
+ */
 class TestUUIDSchema extends DeclareSchema
 {
     public function schema()

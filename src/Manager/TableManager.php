@@ -8,6 +8,12 @@ use Maghead\Runtime\Connection;
 use Maghead\Runtime\PDOExceptionPrinter;
 use CLIFramework\Logger;
 use PDOException;
+use ReflectionObject;
+
+use Magsql\Driver\BaseDriver;
+use Magsql\Driver\MySQLDriver;
+use Magsql\Driver\PgSQLDriver;
+use Magsql\Driver\SQLiteDriver;
 
 class TableManager
 {
@@ -68,6 +74,32 @@ class TableManager
             $this->executeStatements($sqls);
         }
         foreach ($schemas as $schema) {
+
+            $refl = new ReflectionObject($schema);
+            if ($comment = $refl->getDocComment()) {
+                if (preg_match("/@platform\s+(pgsql|mysql|sqlite)/i", $comment, $matches)) {
+                    switch ($matches[1]) {
+                    case "pgsql":
+                        if ($this->driver instanceof PgSQLDriver) {
+                            continue;
+                        }
+                        break;
+                    case "mysql":
+                        if ($this->driver instanceof MySQLDriver) {
+                            continue;
+                        }
+                        break;
+                    case "sqlite":
+                        if ($this->driver instanceof SQLiteDriver) {
+                            continue;
+                        }
+                        break;
+                    }
+
+                }
+            }
+
+
             $sqls = $this->builder->buildTable($schema);
             if (!empty($sqls)) {
                 $this->executeStatements($sqls);
