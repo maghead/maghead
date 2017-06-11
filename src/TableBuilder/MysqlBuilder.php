@@ -57,9 +57,17 @@ class MysqlBuilder extends BaseBuilder
     public function buildForeignKeyConstraint(Relationship $rel)
     {
         $schemaClass = $rel['foreign_schema'];
-        $fSchema = new $schemaClass();
+
+        $fSchema = new $schemaClass;
         $constraint = new Constraint();
         $constraint->foreignKey($rel['self_column']);
+
+        if (empty($rel['foreign_column'])) {
+            throw new \Exception("foreign key column of {$rel->accessor} is empty.");
+        }
+
+        $keys = (array) $rel['foreign_column'];
+
         $references = $constraint->references($fSchema->getTable(), (array) $rel['foreign_column']);
         if ($act = $rel->onUpdate) {
             $references->onUpdate($act);

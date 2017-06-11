@@ -956,7 +956,7 @@ class DeclareSchema extends BaseSchema implements Schema
         $foreignClass = $this->resolveSchemaClass($foreignClass);
         if (!$foreignColumn) {
             $schema = SchemaLoader::load($foreignClass);
-            $foreignColumn = $schema->primaryKey;
+            $foreignColumn = $schema->findPrimaryKey();
         }
 
         return $this->relations[$accessor] = new BelongsTo($accessor, [
