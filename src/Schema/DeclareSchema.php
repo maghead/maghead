@@ -2,9 +2,9 @@
 
 namespace Maghead\Schema;
 
+use ReflectionObject;
 use Exception;
 use InvalidArgumentException;
-use ReflectionObject;
 use ReflectionClass;
 use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Runtime\Config\Config;
@@ -23,6 +23,11 @@ use Maghead\Schema\Relationship\HasMany;
 use Maghead\Schema\Relationship\ManyToMany;
 use Maghead\Exception\SchemaRelatedException;
 use Maghead\Utils;
+
+use Magsql\Driver\BaseDriver;
+use Magsql\Driver\MySQLDriver;
+use Magsql\Driver\PgSQLDriver;
+use Magsql\Driver\SQLiteDriver;
 
 use CodeGen\UserClass;
 use CodeGen\ClassFile;
@@ -123,6 +128,9 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     var $enableColumnAccessors = true;
 
+
+    private $relf;
+
     /**
      * Constructor of declare schema.
      *
@@ -139,6 +147,7 @@ class DeclareSchema extends BaseSchema implements Schema
             'repo'           => new ClassFile($this->getRepoClass())
         ];
         $this->build($options);
+        $this->refl = new ReflectionObject($this);
     }
 
     /**
@@ -1067,16 +1076,12 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function getDirectory()
     {
-        $refl = new ReflectionObject($this);
-
-        return $dir = dirname($refl->getFilename());
+        return $dir = dirname($this->refl->getFilename());
     }
 
     public function getClassFileName()
     {
-        $refl = new ReflectionObject($this);
-
-        return $refl->getFilename();
+        return $this->refl->getFilename();
     }
 
     /**
@@ -1086,9 +1091,7 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function getModificationTime()
     {
-        $refl = new ReflectionObject($this);
-
-        return filemtime($refl->getFilename());
+        return filemtime($this->refl->getFilename());
     }
 
     /**
@@ -1160,4 +1163,35 @@ class DeclareSchema extends BaseSchema implements Schema
         $query->where()->equal($this->primaryKey, new ParamMarker($this->primaryKey));
         return $query;
     }
+
+    /**
+     * @return string pgsql|mysql|sqlite
+     */
+    public function getPlatform()
+    {
+        if ($comment = $this->refl->getDocComment()) {
+            if (preg_match("/@platform\s+(pgsql|mysql|sqlite)/i", $comment, $matches)) {
+                return strtolower($matches[1]);
+            }
+        }
+        return false;
+    }
+
+    public function hasPlatformSupport(BaseDriver $driver)
+    {
+        if ($platform = $this->getPlatform()) {
+            if ($platform === "pgsql") {
+                return $this->driver instanceof PgSQLDriver;
+            }
+            if ($platform === "mysql") {
+                return $this->driver instanceof MySQLDriver;
+            }
+            if ($platform === "sqlite") {
+                return $this->driver instanceof SQLiteDriver;
+            }
+        }
+        return true;
+    }
+
+
 }

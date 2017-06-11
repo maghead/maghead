@@ -74,31 +74,9 @@ class TableManager
             $this->executeStatements($sqls);
         }
         foreach ($schemas as $schema) {
-
-            $refl = new ReflectionObject($schema);
-            if ($comment = $refl->getDocComment()) {
-                if (preg_match("/@platform\s+(pgsql|mysql|sqlite)/i", $comment, $matches)) {
-                    switch ($matches[1]) {
-                    case "pgsql":
-                        if ($this->driver instanceof PgSQLDriver) {
-                            continue;
-                        }
-                        break;
-                    case "mysql":
-                        if ($this->driver instanceof MySQLDriver) {
-                            continue;
-                        }
-                        break;
-                    case "sqlite":
-                        if ($this->driver instanceof SQLiteDriver) {
-                            continue;
-                        }
-                        break;
-                    }
-
-                }
+            if (!$schema->hasPlatformSupport()) {
+                continue;
             }
-
 
             $sqls = $this->builder->buildTable($schema);
             if (!empty($sqls)) {
