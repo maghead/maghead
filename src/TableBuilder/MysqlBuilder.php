@@ -5,6 +5,7 @@ namespace Maghead\TableBuilder;
 use Maghead\Schema\Schema;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Schema\DeclareColumn;
+use Maghead\Schema\SchemaLoader;
 use Magsql\ArgumentArray;
 use Magsql\Universal\Syntax\Constraint;
 
@@ -58,7 +59,7 @@ class MysqlBuilder extends BaseBuilder
     {
         $schemaClass = $rel['foreign_schema'];
 
-        $fSchema = new $schemaClass;
+        $fSchema = SchemaLoader::load($schemaClass);
         $constraint = new Constraint();
         $constraint->foreignKey($rel['self_column']);
 
