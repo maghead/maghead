@@ -195,27 +195,7 @@ class DeclareSchema extends BaseSchema implements Schema
 
     protected function tryInsertPrimaryKeyColumn(Config $config)
     {
-        $column = null;
-        $columnClass = null;
-        $columnName = 'id';
-        if ($config->hasAutoIdConfig()) {
-            if ($cls = $config->getAutoIdColumnClass()) {
-                $columnClass = $cls;
-            }
-            if ($n = $config->getAutoIdColumnName()) {
-                $columnName = $n;
-            }
-        }
-        if (isset($this->columns[$columnName])) {
-            throw new Exception("Column '{$columnName}' is already defined in the schema.");
-        }
-
-        if ($columnClass) {
-            $refClass = new ReflectionClass($columnClass);
-            $column = $refClass->newInstanceArgs([$this, $columnName]);
-        } else {
-            $column = new AutoIncrementPrimaryKeyColumn($this, $columnName, 'integer');
-        }
+        $column = $config->createPrimaryKeyColumn($this, 'id');
         $this->primaryKey = $column->name;
         $this->insertColumn($column);
         return $column;
@@ -242,6 +222,19 @@ class DeclareSchema extends BaseSchema implements Schema
     }
 
     /**
+     * resolve the column alias name to class name
+     */
+    static protected function resolveColumnAlias($alias)
+    {
+        if (isset(static::$columnClassAliases[$alias])) {
+            return static::$columnClassAliases[$alias];
+        }
+
+        return $alias;
+    }
+
+
+    /**
      * Define new column object.
      *
      * @param string $name  column name
@@ -256,9 +249,8 @@ class DeclareSchema extends BaseSchema implements Schema
         }
         $this->columnNames[] = $name;
 
-        if (isset(self::$columnClassAliases[$class])) {
-            $class = self::$columnClassAliases[$class];
-        }
+        $class = $this->resolveColumnAlias($class);
+
         $class = Utils::resolveClass($class, ['Maghead\\Schema\\Column'], $this, ['Column']);
         return $this->columns[$name] = new $class($this, $name);
     }

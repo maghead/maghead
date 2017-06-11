@@ -7,6 +7,9 @@ use Exception;
 use Maghead\Sharding\ShardingConfig;
 use Maghead\Utils;
 use Maghead\Schema\Finder;
+use Maghead\Schema\DeclareSchema;
+use Maghead\Schema\Column\AutoIncrementPrimaryKeyColumn;
+use Maghead\Schema\Column\UUIDPrimaryKeyColumn;
 
 class Config extends ArrayObject
 {
@@ -95,6 +98,29 @@ class Config extends ArrayObject
         }
         return $finders;
     }
+
+    public function createPrimaryKeyColumn(DeclareSchema $schema, $columnName)
+    {
+        $column = null;
+        $columnClass = null;
+        if ($this->hasAutoIdConfig()) {
+            if ($cls = $this->getAutoIdColumnClass()) {
+                $columnClass = $cls;
+            }
+            if ($n = $this->getAutoIdColumnName()) {
+                $columnName = $n;
+            }
+        }
+
+        if ($columnClass) {
+            $refClass = new ReflectionClass($columnClass);
+            return $refClass->newInstanceArgs([$schema, $columnName]);
+        }
+
+        return new AutoIncrementPrimaryKeyColumn($schema, $columnName, 'integer');
+    }
+    
+
 
     public function removeDatabase($dataSourceId)
     {
