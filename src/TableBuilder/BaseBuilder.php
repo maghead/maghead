@@ -8,9 +8,16 @@ use Magsql\Universal\Query\CreateIndexQuery;
 use Magsql\Universal\Syntax\Constraint;
 use Maghead\Schema\DynamicSchemaDeclare;
 use Maghead\Schema\Schema;
-use Maghead\Schema\Relationship\Relationship;
 use Maghead\Runtime\Model;
 use Maghead\Schema\DeclareColumn;
+
+use Maghead\Schema\Relationship\Relationship;
+use Maghead\Schema\Relationship\HasOne;
+use Maghead\Schema\Relationship\BelongsTo;
+use Maghead\Schema\Relationship\HasMany;
+use Maghead\Schema\Relationship\ManyToMany;
+
+
 
 abstract class BaseBuilder
 {
@@ -144,19 +151,18 @@ abstract class BaseBuilder
     {
         $sqls = [];
         foreach ($schema->relations as $rel) {
-            switch ($rel['type']) {
-                case Relationship::BELONGS_TO:
-                case Relationship::HAS_MANY:
-                case Relationship::HAS_ONE:
-                    if ($rel['foreign_schema'] == $rel['self_schema']) {
-                        continue;
+            if ($rel instanceof BelongsTo
+                || $rel instanceof HasMany
+                || $rel instanceof HasOne
+            ) {
+                if ($rel['foreign_schema'] == $rel['self_schema']) {
+                    continue;
+                }
+                if (isset($rel['self_column']) && $rel['self_column'] != 'id') {
+                    if ($constraint = $this->buildForeignKeyConstraint($rel)) {
+                        $sqls[] = $constraint->toSql($this->driver, new ArgumentArray());
                     }
-                    if (isset($rel['self_column']) && $rel['self_column'] != 'id') {
-                        if ($constraint = $this->buildForeignKeyConstraint($rel)) {
-                            $sqls[] = $constraint->toSql($this->driver, new ArgumentArray());
-                        }
-                    }
-                break;
+                }
             }
         }
 

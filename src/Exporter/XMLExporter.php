@@ -5,6 +5,9 @@ namespace Maghead\Exporter;
 use Maghead\Runtime\Model;
 use Maghead\Runtime\Collection;
 use Maghead\Schema\Relationship\Relationship;
+use Maghead\Schema\Relationship\ManyToMany;
+use Maghead\Schema\Relationship\HasOne;
+use Maghead\Schema\Relationship\HasMany;
 use Maghead\Schema\Schema;
 use DOMDocument;
 use DOMElement;
@@ -59,7 +62,7 @@ class XMLExporter
 
         // find foreign many-to-many schema
         foreach ($relations as $rel) {
-            if ($rel['type'] === Relationship::MANY_TO_MANY) {
+            if ($rel instanceof ManyToMany) {
                 $junctionRel = $relations[$rel['relation_junction']];
 
                 $junctionSchema = $junctionRel->newForeignSchema();
@@ -151,7 +154,7 @@ class XMLExporter
         }
 
         foreach ($schema->getRelations() as $rId => $r) {
-            if ($r['type'] === Relationship::HAS_MANY) {
+            if ($r instanceof HasMany) {
                 $foreignRecords = $record->get($rId);
 
                 if (!$foreignRecords || $foreignRecords->size() === 0) {
@@ -168,7 +171,9 @@ class XMLExporter
                 foreach ($foreignRecords as $foreignRecord) {
                     $this->appendRecord($dom, $collectionElement, $foreignRecord, null, false);
                 }
-            } elseif ($r['type'] === Relationship::HAS_ONE) {
+
+            } else if ($r instanceof HasOne) {
+
                 $foreignRecord = $record->get($rId);
                 if (!$foreignRecord) {
                     continue;
@@ -179,7 +184,9 @@ class XMLExporter
                 $relationElement->setAttribute('type', 'has-one');
 
                 $this->appendRecord($dom, $relationElement, $foreignRecord, null, false);
-            } elseif ($r['type'] === Relationship::MANY_TO_MANY) {
+
+            } else if ($r instanceof ManyToMany) {
+
                 $foreignRecords = $record->get($rId);
                 if (!$foreignRecords || $foreignRecords->size() === 0) {
                     continue;

@@ -4,6 +4,7 @@ namespace Maghead\Migration;
 
 use Maghead\Schema\Comparator;
 use Maghead\Schema\Relationship\Relationship;
+use Maghead\Schema\Relationship\BelongsTo;
 use Maghead\TableParser\TableParser;
 use Maghead\TableParser\ReferenceParser;
 use Maghead\Runtime\Connection;
@@ -114,12 +115,15 @@ class AutomaticMigration extends BaseMigration
 
                 $relationshipColumns = [];
                 foreach ($relationships as $accessor => $rel) {
-                    if ($rel['type'] !== Relationship::BELONGS_TO) {
+                    if (!$rel instanceof BelongsTo) {
                         continue;
                     }
-                    if ($rel['foreign_schema'] == $rel['self_schema']) {
+
+                    if ($rel['foreign_schema'] === $rel['self_schema']) {
                         continue;
                     }
+
+                    // FIXME: remove "id"
                     if (isset($rel['self_column']) && $rel['self_column'] == 'id') {
                         continue;
                     }

@@ -6,6 +6,10 @@ use CodeGen\ClassFile;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Relationship\Relationship;
+use Maghead\Schema\Relationship\HasOne;
+use Maghead\Schema\Relationship\HasMany;
+use Maghead\Schema\Relationship\BelongsTo;
+use Maghead\Schema\Relationship\ManyToMany;
 use Maghead\Runtime\Bootstrap;
 use Doctrine\Common\Inflector\Inflector;
 use ReflectionClass;
@@ -214,48 +218,43 @@ class BaseRepoClassGenerator
             $propertyName = "fetch{$relName}Stm";
             $constName = "FETCH_" . strtoupper($relKey) . "_SQL";
 
-            switch ($rel['type']) {
 
-                case Relationship::HAS_ONE:
-                case Relationship::BELONGS_TO:
-                    $foreignSchema = $rel->newForeignSchema();
-                    $query = $foreignSchema->newSelectQuery(); // foreign key
-                    $query->where()->equal($rel->getForeignColumn(), new ParamMarker());
-                    $query->limit(1); // Since it's a belongs to relationship, there is only one record.
-                    $sql = $query->toSql($readQueryDriver, new ArgumentArray);
+            if ($rel instanceof HasOne || $rel instanceof BelongsTo) {
+                $foreignSchema = $rel->newForeignSchema();
+                $query = $foreignSchema->newSelectQuery(); // foreign key
+                $query->where()->equal($rel->getForeignColumn(), new ParamMarker());
+                $query->limit(1); // Since it's a belongs to relationship, there is only one record.
+                $sql = $query->toSql($readQueryDriver, new ArgumentArray);
 
-                    $cTemplate->addConst($constName, $sql);
-                    $cTemplate->addProtectedProperty($propertyName);
+                $cTemplate->addConst($constName, $sql);
+                $cTemplate->addProtectedProperty($propertyName);
 
-                    $selfColumn    = $rel->getSelfColumn();
-                    $cTemplate->addMethod('public', $methodName, ['Model $record'],
-                        PDOStatementGenerator::generateFetchOne(
-                            $propertyName,
-                            $constName,
-                            $foreignSchema->getModelClass(), "[\$record->$selfColumn]"));
-                    break;
-                case Relationship::HAS_MANY:
-                    $foreignSchema = $rel->newForeignSchema();
-                    $query = $foreignSchema->newSelectQuery(); // foreign key
-                    $query->where()->equal($rel->getForeignColumn(), new ParamMarker());
-                    $sql = $query->toSql($readQueryDriver, new ArgumentArray);
+                $selfColumn    = $rel->getSelfColumn();
+                $cTemplate->addMethod('public', $methodName, ['Model $record'],
+                    PDOStatementGenerator::generateFetchOne(
+                        $propertyName,
+                        $constName,
+                        $foreignSchema->getModelClass(), "[\$record->$selfColumn]"));
 
-                    $cTemplate->addConst($constName, $sql);
-                    $cTemplate->addProtectedProperty($propertyName);
+            } else if ($rel instanceof HasMany) {
 
-                    $selfColumn = $rel->getSelfColumn();
-                    $cTemplate->addMethod('public', $methodName, ['Model $record'],
-                        PDOStatementGenerator::generateFetchAll(
-                            $propertyName,
-                            $constName,
-                            $foreignSchema->getModelClass(), "[\$record->$selfColumn]"));
+                $foreignSchema = $rel->newForeignSchema();
+                $query = $foreignSchema->newSelectQuery(); // foreign key
+                $query->where()->equal($rel->getForeignColumn(), new ParamMarker());
+                $sql = $query->toSql($readQueryDriver, new ArgumentArray);
 
+                $cTemplate->addConst($constName, $sql);
+                $cTemplate->addProtectedProperty($propertyName);
 
-                    break;
+                $selfColumn = $rel->getSelfColumn();
+                $cTemplate->addMethod('public', $methodName, ['Model $record'],
+                    PDOStatementGenerator::generateFetchAll(
+                        $propertyName,
+                        $constName,
+                        $foreignSchema->getModelClass(), "[\$record->$selfColumn]"));
+
             }
         }
-
-
 
         $cTemplate->extendClass('\\'.$baseClass);
         return $cTemplate;

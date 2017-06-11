@@ -8,7 +8,13 @@ use InvalidArgumentException;
 
 use Maghead\Schema\DeclareSchema;
 use Maghead\Exception\SchemaRelatedException;
+
 use Maghead\Schema\Relationship\Relationship;
+use Maghead\Schema\Relationship\BelongsTo;
+use Maghead\Schema\Relationship\HasOne;
+use Maghead\Schema\Relationship\HasMany;
+use Maghead\Schema\Relationship\ManyToMany;
+
 use Maghead\Manager\DataSourceManager;
 use Maghead\Runtime\Bootstrap;
 use Doctrine\Common\Inflector\Inflector;
@@ -241,25 +247,22 @@ class BaseModelClassGenerator
 
 
         foreach ($schema->getRelations() as $relKey => $rel) {
-            switch ($rel['type']) {
-                case Relationship::HAS_ONE:
-                case Relationship::HAS_MANY:
-                case Relationship::BELONGS_TO:
+
+            if ($rel instanceof HasOne
+                || $rel instanceof HasMany
+                || $rel instanceof BelongsTo
+            ) {
                 $relName = ucfirst(Inflector::camelize($relKey));
                 $methodName = 'fetch'. $relName;
                 $repoMethodName = 'fetch'. $relName . 'Of';
-                $cTemplate->addMethod('public', $methodName, [],
-                    "return static::masterRepo()->{$repoMethodName}(\$this);");
-                break;
+                $cTemplate->addMethod('public', $methodName, [], "return static::masterRepo()->{$repoMethodName}(\$this);");
             }
-
 
             $relName = ucfirst(Inflector::camelize($relKey));
             $methodName = 'get'. $relName;
 
-            switch ($rel['type']) {
-                case Relationship::HAS_MANY:
 
+            if ($rel instanceof HasMany) {
                 $foreignSchema = $rel->newForeignSchema();
                 $foreignCollectionClass = $foreignSchema->getCollectionClass();
 
@@ -274,12 +277,7 @@ class BaseModelClassGenerator
                         "return \$collection;",
                     ];
                 });
-
-                break;
-
-                case Relationship::MANY_TO_MANY:
-
-
+            } else if ($rel instanceof ManyToMany) {
 
                 // assemble the join query with the collection class string
                 $cTemplate->addMethod('public', $methodName, [], function () use ($schema, $relName, $relKey, $rel) {
@@ -323,7 +321,6 @@ class BaseModelClassGenerator
                         "return \$collection;",
                     ];
                 });
-                break;
             }
         }
 

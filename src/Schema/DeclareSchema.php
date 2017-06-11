@@ -180,7 +180,7 @@ class DeclareSchema extends BaseSchema implements Schema
     protected function resolveRelationshipKeys()
     {
         foreach ($this->relations as $rel) {
-            if (in_array($rel['type'], [ Relationship::MANY_TO_MANY ])) {
+            if ($rel instanceof ManyToMany) {
                 continue;
             }
             if (!$rel['foreign_column']) {

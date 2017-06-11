@@ -15,21 +15,16 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
 {
     public function testRelationshipOperation()
     {
-        $r = new Relationship('books', [
-                'type' => Relationship::HAS_MANY,
+        $r = new HasMany('books', [
+            'self_column' => "id",
+            'self_schema' => AuthorSchema::class,
 
-                'self_column' => "id",
-                'self_schema' => AuthorSchema::class,
-
-                'foreign_column' => "author_id",
-                'foreign_schema' => AddressSchema::class,
+            'foreign_column' => "author_id",
+            'foreign_schema' => AddressSchema::class,
         ]);
 
-        $this->assertTrue(isset($r['type']));
-        $this->assertEquals(Relationship::HAS_MANY, $r['type']);
-
         $schema = $r->newForeignSchema();
-        $this->assertInstanceOf('Maghead\\Schema\\DeclareSchema', $schema);
+        $this->assertInstanceOf(DeclareSchema::class, $schema);
 
         $model = $r->newForeignModel();
         $this->assertInstanceOf('Maghead\\Runtime\\Model', $model);
@@ -38,14 +33,10 @@ class RelationshipTest extends \PHPUnit\Framework\TestCase
     public function testBelongsTo()
     {
         $rel = new BelongsTo('book', [
-            'type'           => Relationship::BELONGS_TO,
             'foreign_schema' => BookSchema::class,
             'foreign_column' => 'id',
             'self_schema'    => AuthorBookSchema::class,
             'self_column'    => 'book_id',
         ]);
     }
-
-
-
 }

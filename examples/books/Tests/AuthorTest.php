@@ -335,8 +335,8 @@ class AuthorTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $author = Author::load($ret->key);
 
-        $author->addresses[] = array( 'address' => 'Using address', 'unused' => false );
-        $author->addresses[] = array( 'address' => 'Unused address', 'unused' => true );
+        $author->addresses[] = ['address' => 'Using address', 'unused' => false];
+        $author->addresses[] = ['address' => 'Unused address', 'unused' => true];
 
         $addresses = $author->addresses;
         $this->assertCollectionSize(2, $addresses);

@@ -22,7 +22,13 @@ use Magsql\ArgumentArray;
 use Magsql\Raw;
 use Maghead\Runtime\Bootstrap;
 use Maghead\Schema\RuntimeColumn;
+
 use Maghead\Schema\Relationship\Relationship;
+use Maghead\Schema\Relationship\HasOne;
+use Maghead\Schema\Relationship\HasMany;
+use Maghead\Schema\Relationship\BelongsTo;
+use Maghead\Schema\Relationship\ManyToMany;
+
 use Maghead\Runtime\Config\FileConfigLoader;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Sharding\Manager\ShardManager;
@@ -944,28 +950,20 @@ abstract class Model implements Serializable
         return $collection;
     }
 
-
-    public function getRelationalRecords($key, $relation = null)
+    public function getRelationalRecords($key, Relationship $relation)
     {
         // check for the object cache
-        $cacheKey = 'relationship::'.$key;
-        if (!$relation) {
-            $relation = static::getSchema()->getRelation($key);
-        }
 
-        switch ($relation['type']) {
-            case Relationship::HAS_ONE:
-                return $this->fetchHasOne($key);
-                break;
-            case Relationship::BELONGS_TO:
-                return $this->fetchBelongsTo($key);
-                break;
-            case Relationship::HAS_MANY:
-                return $this->fetchHasMany($key);
-                break;
-        }
+        if ($relation instanceof HasOne) {
+            return $this->fetchHasOne($key);
+        } else if ($relation instanceof BelongsTo) {
+            return $this->fetchBelongsTo($key);
+        } else if ($relation instanceof HasMany) {
+            return $this->fetchHasMany($key);
+        } else if ($relation instanceof ManyToMany) {
 
-        if (Relationship::MANY_TO_MANY === $relation['type']) {
+            $cacheKey = "relationship::{$key}";
+
             $junctionRelKey = $relation['relation_junction'];  // use relationId to get middle relation. (author_books)
             $rId2 = $relation['relation_foreign'];  // get external relationId from the middle relation. (book from author_books)
 
@@ -1027,7 +1025,8 @@ abstract class Model implements Serializable
             return $collection;
         }
 
-        throw new Exception("The relationship type of $key is not supported.");
+        $modelClass = get_class($this);
+        throw new Exception("The relationship '$key' is not supported in modal $modelClass: " . get_class($relation));
     }
 
 

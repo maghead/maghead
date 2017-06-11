@@ -4,10 +4,14 @@ namespace Maghead\TableBuilder;
 
 use Maghead\Schema\Schema;
 use Maghead\Schema\Relationship\Relationship;
+use Maghead\Schema\Relationship\BelongsTo;
 use Maghead\Schema\DeclareColumn;
 use Maghead\Schema\SchemaLoader;
 use Magsql\ArgumentArray;
 use Magsql\Universal\Syntax\Constraint;
+
+
+
 
 class MysqlBuilder extends BaseBuilder
 {
@@ -139,13 +143,11 @@ class MysqlBuilder extends BaseBuilder
         @see http://stackoverflow.com/questions/10028214/add-foreign-key-to-existing-table
         */
         foreach ($schema->relations as $rel) {
-            switch ($rel['type']) {
-                case Relationship::BELONGS_TO:
+            if ($rel instanceof BelongsTo) {
                 if ($name != 'id' && $rel['self_column'] == $name) {
                     $fSchema = new $rel['foreign_schema']();
                     $fColumn = $rel['foreign_column'];
                 }
-                break;
             }
         }
 

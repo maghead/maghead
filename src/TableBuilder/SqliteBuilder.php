@@ -4,6 +4,10 @@ namespace Maghead\TableBuilder;
 
 use Maghead\Schema\Schema;
 use Maghead\Schema\Relationship\Relationship;
+use Maghead\Schema\Relationship\HasOne;
+use Maghead\Schema\Relationship\HasMany;
+use Maghead\Schema\Relationship\BelongsTo;
+use Maghead\Schema\Relationship\ManyToMany;
 use Maghead\Schema\DeclareColumn;
 use Magsql\ArgumentArray;
 
@@ -63,16 +67,16 @@ class SqliteBuilder extends BaseBuilder
          * );
          */
         foreach ($schema->relations as $rel) {
-            switch ($rel['type']) {
-            case Relationship::BELONGS_TO:
-            case Relationship::HAS_MANY:
-            case Relationship::HAS_ONE:
+            if ($rel instanceof BelongsTo
+             || $rel instanceof HasMany
+             || $rel instanceof HasOne
+            ) {
+                // FIXME: remove "id"
                 if ($name != 'id' && $rel['self_column'] == $name) {
                     $fSchema = new $rel['foreign_schema']();
                     $fColumn = $rel['foreign_column'];
                     $sql .= ' REFERENCES '.$fSchema->getTable().'('.$fColumn.')';
                 }
-                break;
             }
         }
 

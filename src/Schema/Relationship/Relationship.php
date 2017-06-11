@@ -95,26 +95,6 @@ class Relationship implements IteratorAggregate, ArrayAccess
         return $collection;
     }
 
-    public function isType($type)
-    {
-        return $this->data['type'] === $type;
-    }
-
-    public function isManyToMany()
-    {
-        return $this->data['type'] === self::MANY_TO_MANY;
-    }
-
-    public function isOneToMany()
-    {
-        return $this->data['type'] === self::HAS_MANY;
-    }
-
-    public function isHasMany()
-    {
-        return $this->data['type'] === self::HAS_MANY;
-    }
-
     public function applyFilter(Collection &$collection)
     {
         if (isset($this->data['filter'])) {
@@ -244,7 +224,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
      */
     public static function __set_state(array $data)
     {
-        $r = new self($data['accessor'], $data['data']);
+        $r = new static($data['accessor'], $data['data']);
         if (isset($data['where'])) {
             $r->where = $data['where'];
         }
