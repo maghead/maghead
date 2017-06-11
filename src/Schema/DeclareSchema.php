@@ -1167,11 +1167,11 @@ class DeclareSchema extends BaseSchema implements Schema
     /**
      * @return string pgsql|mysql|sqlite
      */
-    public function getPlatform()
+    public function getPlatforms()
     {
         if ($comment = $this->refl->getDocComment()) {
             if (preg_match("/@platform\s+(\w+)/i", $comment, $matches)) {
-                return strtolower($matches[1]);
+                return array_map('strtolower', explode('|',$matches[1]));
             }
         }
         return false;
@@ -1179,14 +1179,14 @@ class DeclareSchema extends BaseSchema implements Schema
 
     public function hasPlatformSupport(BaseDriver $driver)
     {
-        if ($platform = $this->getPlatform()) {
-            if ($platform === "pgsql") {
+        if ($platforms = $this->getPlatform()) {
+            if (in_array("pgsql", $platforms)) {
                 return $driver instanceof PgSQLDriver;
             }
-            if ($platform === "mysql") {
+            if (in_array("mysql", $platform)) {
                 return $driver instanceof MySQLDriver;
             }
-            if ($platform === "sqlite") {
+            if (in_array("sqlite",$platform)) {
                 return $driver instanceof SQLiteDriver;
             }
         }

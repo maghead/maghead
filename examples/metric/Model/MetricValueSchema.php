@@ -4,6 +4,9 @@ namespace MetricApp\Model;
 use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\TemplateSchema;
 
+/**
+ * @platform mysql|sqlite
+ */
 class MetricValueSchema extends TemplateSchema
 {
     public function schema()
