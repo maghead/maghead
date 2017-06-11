@@ -53,13 +53,14 @@ class MysqlBuilder extends BaseBuilder
     }
 
     /**
-     Please refer to http://dev.mysql.com/doc/refman/5.7/en/innodb-foreign-key-constraints.html for correct foreign key definition.
+     * Please refer to http://dev.mysql.com/doc/refman/5.7/en/innodb-foreign-key-constraints.html for correct foreign key definition.
      */
     public function buildForeignKeyConstraint(Relationship $rel)
     {
         $schemaClass = $rel['foreign_schema'];
 
         $fSchema = SchemaLoader::load($schemaClass);
+
         $constraint = new Constraint();
         $constraint->foreignKey($rel['self_column']);
 

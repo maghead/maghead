@@ -4,6 +4,7 @@ namespace Maghead\Runtime\Config;
 
 use ArrayObject;
 use Exception;
+use ReflectionClass;
 use Maghead\Sharding\ShardingConfig;
 use Maghead\Utils;
 use Maghead\Schema\Finder;
@@ -89,7 +90,7 @@ class Config extends ArrayObject
 
             $class = Utils::resolveClass($name, $namespaceRoots, $refObject, $refSubNamespaceNames);
 
-            $reflClass = new \ReflectionClass($class);
+            $reflClass = new ReflectionClass($class);
             if (isset($config['args'])) {
                 $finders[] = $reflClass->newInstanceArgs($config['args']);
             } else {
