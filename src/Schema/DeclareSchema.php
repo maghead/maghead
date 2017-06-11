@@ -191,6 +191,21 @@ class DeclareSchema extends BaseSchema implements Schema
                 $this->tryInsertPrimaryKeyColumn($config);
             }
         }
+
+        $this->resolveRelationshipKeys();
+    }
+
+    protected function resolveRelationshipKeys()
+    {
+        foreach ($this->relations as $rel) {
+            if (in_array($rel['type'], [ Relationship::MANY_TO_MANY ])) {
+                continue;
+            }
+            if (!$rel['foreign_column']) {
+                $schema = SchemaLoader::load($rel['foreign_schema']);
+                $rel['foreign_column'] = $schema->getPrimaryKey();
+            }
+        }
     }
 
     protected function tryInsertPrimaryKeyColumn(Config $config)
