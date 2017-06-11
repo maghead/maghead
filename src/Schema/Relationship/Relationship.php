@@ -3,10 +3,12 @@
 namespace Maghead\Schema\Relationship;
 
 use Magsql\Universal\Syntax\Conditions;
+use Maghead\Schema\SchemaLoader;
 use Maghead\Runtime\Collection;
 use LogicException;
 use ArrayAccess;
 use IteratorAggregate;
+use ArrayObject;
 
 class Relationship implements IteratorAggregate, ArrayAccess
 {
@@ -58,9 +60,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
 
     public function newForeignSchema()
     {
-        $class = $this->data['foreign_schema'];
-
-        return new $class();
+        return SchemaLoader::load($this->data['foreign_schema']);
     }
 
     public function newForeignModel()
