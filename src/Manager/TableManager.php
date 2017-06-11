@@ -101,9 +101,8 @@ class TableManager
         } catch (PDOException $e) {
             if ($this->logger) {
                 PDOExceptionPrinter::show($this->logger, $e, $sql, []);
-            } else {
-                throw $e;
             }
+            throw $e;
         }
     }
 }
