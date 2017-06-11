@@ -63,20 +63,20 @@ class BaseCommand extends Command
      */
     protected function runDefaultSchemaLoader(Config $config)
     {
-        $loaders = $config->loadSchemaFinders();
-        if (!empty($loaders)) {
-            foreach ($loaders as $loader) {
-                $loadedFiles = $loader->load();
+        $finders = $config->loadSchemaFinders();
+        if (!empty($finders)) {
+            foreach ($finders as $loader) {
+                $loadedFiles = $loader->find();
                 foreach ($loadedFiles as $f) {
                     $this->logger->info("Found schema $f");
                 }
             }
         } else {
-            // If loaders are not defined, then we check if we can load them by composer.json file
+            // If finders are not defined, then we check if we can load them by composer.json file
             if (file_exists('composer.json')) {
                 $this->logger->info('Found composer.json, trying to scan files from the autoload sections...');
-                $loader = ComposerSchemaFinder::from('composer.json');
-                $loadedFiles = $loader->load();
+                $finder = ComposerSchemaFinder::from('composer.json');
+                $loadedFiles = $finder->find();
                 foreach ($loadedFiles as $f) {
                     $this->logger->info("Found schema $f");
                 }
