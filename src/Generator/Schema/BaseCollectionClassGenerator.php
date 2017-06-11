@@ -4,6 +4,7 @@ namespace Maghead\Generator\Schema;
 
 use CodeGen\ClassFile;
 use Maghead\Schema\DeclareSchema;
+use Maghead\Generator\GetSchemaMethodGenerator;
 
 class BaseCollectionClassGenerator
 {
@@ -18,33 +19,13 @@ class BaseCollectionClassGenerator
             'WRITE_SOURCE_ID' => $schema->getWriteSourceId(),
             'PRIMARY_KEY' => $schema->primaryKey,
         ));
-        if ($traitClasses = $schema->getCollectionTraitClasses()) {
-            foreach ($traitClasses as $traitClass) {
-                $cTemplate->useTrait($traitClass);
-            }
-        }
         $cTemplate->extendClass('\\'.$baseCollectionClass);
 
         $cTemplate->addStaticMethod('public', 'createRepo', ['$write', '$read'], function () use ($schema) {
             return "return new \\{$schema->getBaseRepoClass()}(\$write, \$read);";
         });
 
-        $cTemplate->addStaticMethod('public', 'getSchema', [], function () use ($schema) {
-            return [
-                "static \$schema;",
-                "if (\$schema) {",
-                "   return \$schema;",
-                "}",
-                "return \$schema = new \\{$schema->getSchemaProxyClass()};",
-            ];
-        });
-
-        // interfaces
-        if ($ifs = $schema->getCollectionInterfaces()) {
-            foreach ($ifs as $iface) {
-                $cTemplate->implementClass($iface);
-            }
-        }
+        GetSchemaMethodGenerator::generate($cTemplate, $schema);
 
         return $cTemplate;
     }

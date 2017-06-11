@@ -69,25 +69,6 @@ class DeclareSchema extends BaseSchema implements Schema
     ];
 
 
-    /**
-     * @var string[]
-     */
-    public $modelTraitClasses = [];
-
-    /**
-     * @var string[]
-     */
-    public $collectionTraitClasses = [];
-
-    /**
-     * @var string[]
-     */
-    public $modelInterfaceClasses = [];
-
-    /**
-     * @var string[]
-     */
-    public $collectionInterfaceClasses = [];
 
     /**
      * @var array[string indexName] = CreateIndexQuery
@@ -535,7 +516,18 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function addModelTrait($traitClass)
     {
-        $this->classes->model->useTrait($traitClass);
+        $this->classes->baseModel->useTrait($traitClass);
+    }
+
+
+    /**
+     * Implement interface in model class.
+     *
+     * @param string $class
+     */
+    public function addModelInterface($iface)
+    {
+        $this->classes->baseModel->implementInterface($iface);
     }
 
     /**
@@ -547,18 +539,9 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function addCollectionTrait($traitClass)
     {
-        $this->classes->collection->useTrait($traitClass);
+        $this->classes->baseCollection->useTrait($traitClass);
     }
 
-    /**
-     * Implement interface in model class.
-     *
-     * @param string $class
-     */
-    public function addModelInterface($iface)
-    {
-        $this->classes->model->implementInterface($iface);
-    }
 
     /**
      * Implement interface in collection class.
@@ -567,39 +550,7 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function addCollectionInterface($iface)
     {
-        $this->classes->collection->implementInterface($iface);
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getModelTraitClasses()
-    {
-        return $this->modelTraitClasses;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getCollectionTraitClasses()
-    {
-        return $this->collectionTraitClasses;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getModelInterfaces()
-    {
-        return $this->modelInterfaceClasses;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getCollectionInterfaces()
-    {
-        return $this->collectionInterfaceClasses;
+        $this->classes->baseCollection->implementInterface($iface);
     }
 
     public function getShortClassName()
@@ -810,7 +761,6 @@ class DeclareSchema extends BaseSchema implements Schema
         $this->columns = array_merge($this->columns, $mixin->columns);
         $this->relations = array_merge($this->relations, $mixin->relations);
         $this->indexes = array_merge($this->indexes, $mixin->indexes);
-        $this->modelTraitClasses = array_merge($this->modelTraitClasses, $mixin->modelTraitClasses);
     }
 
     /**

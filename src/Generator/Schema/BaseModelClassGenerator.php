@@ -12,15 +12,18 @@ use Maghead\Schema\Relationship\Relationship;
 use Maghead\Manager\DataSourceManager;
 use Maghead\Runtime\Bootstrap;
 use Doctrine\Common\Inflector\Inflector;
+use Maghead\Schema\SchemaLoader;
 
 use Maghead\Generator\PDOStatementGenerator;
 use Maghead\Generator\AccessorGenerator;
+use Maghead\Generator\GetSchemaMethodGenerator;
 
 use Magsql\Universal\Query\SelectQuery;
 use Magsql\Universal\Query\DeleteQuery;
 use Magsql\Bind;
 use Magsql\ParamMarker;
 use Magsql\ArgumentArray;
+
 
 use CodeGen\ClassFile;
 use CodeGen\Statement\RequireStatement;
@@ -63,7 +66,8 @@ class BaseModelClassGenerator
         $cTemplate = clone $schema->classes->baseModel;
         $cTemplate->extendClass('\\'.$baseClass);
 
-        $cTemplate->useClass('Maghead\\Schema\\SchemaLoader');
+        $cTemplate->useClass(SchemaLoader::class);
+
         $cTemplate->useClass('Maghead\\Runtime\\Result');
         $cTemplate->useClass('Maghead\\Runtime\\Inflator');
         $cTemplate->useClass('Magsql\\Bind');
@@ -108,36 +112,11 @@ class BaseModelClassGenerator
         $cTemplate->addStaticVar('column_names', $schema->getColumnNames());
         $cTemplate->addStaticVar('mixin_classes', array_reverse($schema->getMixinSchemaClasses()));
 
-        $cTemplate->addStaticMethod('public', 'getSchema', [], function () use ($schema) {
-            return [
-                "static \$schema;",
-                "if (\$schema) {",
-                "   return \$schema;",
-                "}",
-                "return \$schema = new \\{$schema->getSchemaProxyClass()};",
-            ];
-        });
-
-        if ($traitClasses = $schema->getModelTraitClasses()) {
-            foreach ($traitClasses as $traitClass) {
-                $cTemplate->useTrait($traitClass);
-            }
-        }
+        GetSchemaMethodGenerator::generate($cTemplate, $schema);
 
         $cTemplate->addStaticMethod('public', 'createRepo', ['$write', '$read'], function () use ($schema) {
             return "return new \\{$schema->getBaseRepoClass()}(\$write, \$read);";
         });
-
-
-        // interfaces
-        if ($ifs = $schema->getModelInterfaces()) {
-            foreach ($ifs as $iface) {
-                $cTemplate->implementClass($iface);
-            }
-        }
-
-
-
 
         $cTemplate->addMethod('public', 'getKeyName', [], function () use ($primaryKey) {
             return "return " . var_export($primaryKey, true) . ';' ;

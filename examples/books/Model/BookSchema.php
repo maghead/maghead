@@ -88,11 +88,11 @@ class BookSchema extends DeclareSchema
          */
         $this->many('book_authors', AuthorBookSchema::class, 'book_id', 'id');
 
-        $this->classes->model->useTrait('TestApp\ModelTrait\EBookTrait');
-        $this->classes->model->implementInterface('TestApp\ModelInterface\EBookInterface');
+        $this->classes->baseModel->useTrait('TestApp\ModelTrait\EBookTrait');
+        $this->classes->baseModel->implementInterface('TestApp\ModelInterface\EBookInterface');
 
-        $this->classes->collection->useTrait('TestApp\ModelTrait\EBookCollectionTrait');
-        $this->classes->collection->implementInterface('TestApp\ModelInterface\EBookCollectionInterface');
+        $this->classes->baseCollection->useTrait('TestApp\ModelTrait\EBookCollectionTrait');
+        $this->classes->baseCollection->implementInterface('TestApp\ModelInterface\EBookCollectionInterface');
 
 
         /**
