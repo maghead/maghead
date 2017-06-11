@@ -18,8 +18,11 @@ class TagSchema extends DeclareSchema
 
         $this->column('book_id')
             ->integer()
-            ->refer('AuthorBooks\\Model\\BookSchema')
+            ->unsigned()
+            ->required()
+            ->refer(BookSchema::class)
             ;
+
         $this->column('title')
             ->varchar(30)
             ;
