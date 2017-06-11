@@ -26,6 +26,13 @@ class Config extends ArrayObject
 
     const MASTER_ID = 'master';
 
+    /**
+     * The defualt data source ID needs to be "default" and to be resolved in
+     * the runtime because these node IDs will be compiled into the schema
+     * files.
+     */
+    const DEFAULT_DATASOURCE_ID = 'master';
+
 
     public function __construct(array $stash, $file = null)
     {

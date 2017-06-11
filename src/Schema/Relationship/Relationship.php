@@ -13,14 +13,19 @@ use ArrayObject;
 class Relationship implements IteratorAggregate, ArrayAccess
 {
     const HAS_MANY = 1;
+
     const HAS_ONE = 2;
+
     const BELONGS_TO = 3;
+
     const MANY_TO_MANY = 4;
+
+
 
     /**
      * @var array The stashed data
      */
-    public $data = array();
+    public $data = [];
 
     /**
      * @var string The accessor name
@@ -32,7 +37,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
      */
     public $where;
 
-    public $orderBy = array();
+    public $orderBy = [];
 
     public $onUpdate;
 
@@ -40,7 +45,7 @@ class Relationship implements IteratorAggregate, ArrayAccess
 
     public $usingIndex;
 
-    public function __construct($accessor, array $data = array())
+    public function __construct($accessor, array $data = [])
     {
         $this->accessor = $accessor;
         $this->data = $data;

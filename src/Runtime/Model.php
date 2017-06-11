@@ -924,7 +924,8 @@ abstract class Model implements Serializable
 
     protected function fetchHasMany($key)
     {
-        $cacheKey = 'relationship::'.$key;
+        $cacheKey = "relationship::{$key}";
+
         $relation = static::getSchema()->getRelation($key);
 
         // TODO: migrate this code to Relationship class.
@@ -946,6 +947,7 @@ abstract class Model implements Serializable
         // though collection object, we need to pre-set
         // the relational record id.
         $collection->setPresetVars([$fColumn => $sValue]);
+
         $this->setInternalCache($cacheKey, $collection);
         return $collection;
     }
@@ -955,11 +957,17 @@ abstract class Model implements Serializable
         // check for the object cache
 
         if ($relation instanceof HasOne) {
+
             return $this->fetchHasOne($key);
+
         } else if ($relation instanceof BelongsTo) {
+
             return $this->fetchBelongsTo($key);
+
         } else if ($relation instanceof HasMany) {
+
             return $this->fetchHasMany($key);
+
         } else if ($relation instanceof ManyToMany) {
 
             $cacheKey = "relationship::{$key}";

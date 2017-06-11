@@ -40,13 +40,6 @@ class MetaClass extends UserClass {  }
 class DeclareSchema extends BaseSchema implements Schema
 {
     /**
-     * The defualt data source ID needs to be "default" and to be resolved in
-     * the runtime because these node IDs will be compiled into the schema
-     * files.
-     */
-    const DEFAULT_DATASOURCE_ID = 'master';
-
-    /**
      * column class alias table for quickly defining the column types.
      *
      * usage:
@@ -207,7 +200,8 @@ class DeclareSchema extends BaseSchema implements Schema
         if ($this->writeSourceId) {
             return $this->writeSourceId;
         }
-        return self::DEFAULT_DATASOURCE_ID;
+
+        return Config::DEFAULT_DATASOURCE_ID;
     }
 
     public function getReadSourceId()
@@ -215,7 +209,8 @@ class DeclareSchema extends BaseSchema implements Schema
         if ($this->readSourceId) {
             return $this->readSourceId;
         }
-        return self::DEFAULT_DATASOURCE_ID;
+
+        return Config::DEFAULT_DATASOURCE_ID;
     }
 
     /**
@@ -926,7 +921,6 @@ class DeclareSchema extends BaseSchema implements Schema
         }
 
         return $this->relations[$accessor] = new BelongsTo($accessor, [
-            'type'           => Relationship::BELONGS_TO,
             'foreign_schema' => $foreignClass,
             'foreign_column' => $foreignColumn,
             'self_schema'    => get_class($this->getCurrentSchema()),
@@ -954,7 +948,6 @@ class DeclareSchema extends BaseSchema implements Schema
         }
 
         return $this->relations[ $accessor ] = new HasOne($accessor, array(
-            'type' => Relationship::HAS_ONE,
             'self_schema' => get_class($this->getCurrentSchema()),
             'self_column' => $selfColumn,
             'foreign_schema' => $this->resolveSchemaClass($foreignClass),
@@ -1007,7 +1000,6 @@ class DeclareSchema extends BaseSchema implements Schema
     public function many($accessor, $foreignClass, $foreignColumn, $selfColumn)
     {
         return $this->relations[$accessor] = new HasMany($accessor, array(
-            'type'           => Relationship::HAS_MANY,
             'self_schema'    => get_class($this->getCurrentSchema()),
             'self_column'    => $selfColumn,
             'foreign_schema' => $this->resolveSchemaClass($foreignClass),
@@ -1024,7 +1016,6 @@ class DeclareSchema extends BaseSchema implements Schema
     {
         if ($r = $this->getRelation($relationId)) {
             return $this->relations[ $accessor ] = new ManyToMany($accessor, array(
-                'type' => Relationship::MANY_TO_MANY,
                 'relation_junction' => $relationId,
                 'relation_foreign' => $foreignRelationId,
             ));
