@@ -520,7 +520,7 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function addModelTrait($traitClass)
     {
-        $this->modelTraitClasses[] = $traitClass;
+        $this->classes->model->useTrait($traitClass);
     }
 
     /**
@@ -532,7 +532,7 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function addCollectionTrait($traitClass)
     {
-        $this->collectionTraitClasses[] = $traitClass;
+        $this->classes->collection->useTrait($traitClass);
     }
 
     /**
@@ -542,7 +542,7 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function addModelInterface($iface)
     {
-        $this->modelInterfaceClasses[] = $iface;
+        $this->classes->model->implementInterface($iface);
     }
 
     /**
@@ -552,7 +552,7 @@ class DeclareSchema extends BaseSchema implements Schema
      */
     public function addCollectionInterface($iface)
     {
-        $this->collectionInterfaceClasses[] = $iface;
+        $this->classes->collection->implementInterface($iface);
     }
 
     /**
