@@ -8,6 +8,8 @@ class AddressSchema extends DeclareSchema
     public function schema()
     {
         $this->column('author_id')
+            ->integer()
+            ->unsigned()
             ->refer(AuthorSchema::class)
             ;
 
