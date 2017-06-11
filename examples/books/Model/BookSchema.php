@@ -79,7 +79,8 @@ class BookSchema extends DeclareSchema
          *
          * $book->publisher->name;
          **/
-        $this->belongsTo('publisher', PublisherSchema::class, 'id', 'publisher_id');
+        $this->belongsTo('publisher', PublisherSchema::class, 'id')
+            ->by('publisher_id');
 
         /**
          * accessor , mapping self.id => BookAuthors.book_id
