@@ -94,10 +94,6 @@ class BookSchema extends DeclareSchema
         $this->classes->baseCollection->useTrait('TestApp\ModelTrait\EBookCollectionTrait');
         $this->classes->baseCollection->implementInterface('TestApp\ModelInterface\EBookCollectionInterface');
 
-
-        /**
-         * get BookAuthor.author
-         */
         $this->manyToMany('authors', 'book_authors', 'author')
             ->filter(function ($collection) {
                 return $collection;
