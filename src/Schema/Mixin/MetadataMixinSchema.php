@@ -71,11 +71,6 @@ class MetadataMixinSchema extends MixinDeclareSchema
             ->label('Updated At')
             ;
 
-    // Mixin methods
-    public static function getAge($record)
-    {
-        $createdOn = $record->getCreatedAt();
-        $currentDate = new DateTime();
-        return $currentDate->diff($createdOn);
+        $this->parentSchema->classes->baseModel->useTrait(\Maghead\Extensions\Metadata\AgeModelTrait::class);
     }
 }
