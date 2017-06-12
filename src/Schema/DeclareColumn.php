@@ -190,7 +190,11 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         $this->attributes['refer'] = $class;
 
         // get the primary key from the refered schema
-        $schema = SchemaLoader::load($class);
+        if ($class === get_class($this->schema)) {
+            $schema = $this->schema;
+        } else {
+            $schema = SchemaLoader::load($class);
+        }
         if ($primaryKey = $schema->findPrimaryKeyColumn()) {
             $this->applyColumnType($primaryKey);
         }
