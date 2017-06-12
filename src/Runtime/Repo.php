@@ -38,6 +38,8 @@ use Countable;
 use Maghead\Sharding\Traits\RepoShardTrait;
 use Maghead\Sharding\Shard;
 
+use Universal\Event\EventDispatcher;
+
 abstract class Repo implements Countable
 {
     // Move this to Repo class Generator
@@ -55,18 +57,23 @@ abstract class Repo implements Countable
 
 
     /**
-     * @var Maghead\Runtime\Connection
+     * @var \Maghead\Runtime\Connection
      */
     protected $write;
 
     /**
-     * @var Maghead\Runtime\Connection
+     * @var \Maghead\Runtime\Connection
      */
     protected $read;
 
+    /**
+     * @var \Universal\Event\EventDispatcher
+     */
+    protected $events;
+
 
     /**
-     * @var Maghead\Sharding\Shard
+     * @var \Maghead\Sharding\Shard
      */
     protected $shard;
 
@@ -93,11 +100,12 @@ abstract class Repo implements Countable
      */
     abstract protected function unsetImmutableArgs($args);
 
-    public function __construct(Connection $write, Connection $read = null, Shard $shard = null)
+    public function __construct(Connection $write, Connection $read = null, Shard $shard = null, EventDispatcher $events = null)
     {
         $this->write = $write;
         $this->read = $read ? $read : $write;
         $this->shard = $shard;
+        $this->events = $events ?: EventDispatcher::getInstance();
     }
 
     public function getReadConnection()
@@ -238,7 +246,7 @@ abstract class Repo implements Countable
         $arguments = new ArgumentArray();
 
         $sql = $query->toSql($driver, $arguments);
-        
+
         $stm = $conn->prepare($sql);
         $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this]);
         $stm->execute($arguments->toArray());
@@ -723,7 +731,7 @@ abstract class Repo implements Countable
      * @param SelectQuery $query
      * @param ArgumentArray $args
      *
-     * @return Maghead\Runtime\Collection
+     * @return \Maghead\Runtime\Collection
      */
     public function fetchCollection(SelectQuery $query)
     {
@@ -774,7 +782,7 @@ abstract class Repo implements Countable
     // =========================================
 
     /**
-     * @return Maghead\Runtime\Query\SelectQuery
+     * @return \Maghead\Runtime\Query\SelectQuery
      */
     public function select($sel = '*', $alias = 'm')
     {
@@ -785,7 +793,7 @@ abstract class Repo implements Countable
     }
 
     /**
-     * @return Maghead\Runtime\Query\DeleteQuery
+     * @return \Maghead\Runtime\Query\DeleteQuery
      */
     public function delete()
     {
@@ -795,7 +803,7 @@ abstract class Repo implements Countable
     }
 
     /**
-     * @return Maghead\Runtime\Query\UpdateQuery
+     * @return \Maghead\Runtime\Query\UpdateQuery
      */
     public function update($data = null)
     {
@@ -916,5 +924,10 @@ abstract class Repo implements Countable
      */
     public function afterCreate(array $args)
     {
+    }
+
+    protected function triggerEvent($eventName, $arguments)
+    {
+        $this->events->trigger($eventName, $arguments);
     }
 }
