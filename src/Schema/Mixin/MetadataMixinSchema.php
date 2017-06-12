@@ -11,20 +11,28 @@ class MetadataMixinSchema extends MixinDeclareSchema
 {
     public function schema()
     {
-        $this->column('created_at')
-            ->timestamp()
-            ->null()
-            ->isa('DateTime')
-            ->default(function () {
-                return new \DateTime();
-            });
-
+        // MySQL: ts TIMESTAMP
+        // which equals to :
+        // ts DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         $this->column('updated_at')
             ->timestamp()
-            ->isa('DateTime')
             ->null()
+            ->isa('DateTime')
+            ->renderAs('DateTimeInput')
             ->default(new Raw('CURRENT_TIMESTAMP'))
             ->onUpdate(new Raw('CURRENT_TIMESTAMP'))
+            ->label('Updated at')
+            ;
+
+        $this->column('created_at')
+            ->timestamp()
+            ->isa('DateTime')
+            ->null()
+            ->renderAs('DateTimeInput')
+            ->label( _('建立時間') )
+            ->default(function() {
+                return new \DateTime;
+            })
             ;
     }
 
