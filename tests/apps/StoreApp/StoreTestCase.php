@@ -15,8 +15,6 @@ use StoreApp\Model\{Order, OrderSchema, OrderRepo};
 
 abstract class StoreTestCase extends ModelTestCase
 {
-    protected $skipDriver = 'pgsql';
-
     protected $defaultDataSource = 'master';
 
     protected $requiredDataSources = ['master', 'node1', 'node2', 'node3'];
