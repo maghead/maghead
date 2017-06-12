@@ -13,17 +13,15 @@ class CollectionDispatchTest extends TestCase
         m::close();
     }
 
-    public function test_it_should_fire_event_when_sql_execute()
+    public function test_collection_fetch_all_will_receive_event()
     {
         $events = EventDispatcher::getInstance();
         $events->bind('maghead.query', function($sql, $arguments) {
-            var_dump($sql, $arguments);
+            $this->assertSame($sql, 'SELECT m.* FROM `foo_table` AS m WHERE 1 = 1');
         });
 
         $collection = (new DispatchCollection(
-            $repo = m::mock('Maghead\Runtime\Repo'),
-            null,
-            $events
+            $repo = m::mock('Maghead\Runtime\Repo'), null,
         ))->where('1 = 1');
 
         $repo->shouldReceive('getReadConnection')->twice()->andReturn(
@@ -44,7 +42,7 @@ class CollectionDispatchTest extends TestCase
         $stmt->shouldReceive('execute');
         $stmt->shouldReceive('fetchAll')->once()->with(PDO::FETCH_CLASS, 'fooModel', [$repo])->andReturn(true);
 
-        $this->assertTrue($collection->items());
+        $collection->items();
     }
 }
 

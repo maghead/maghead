@@ -22,8 +22,6 @@ use Symfony\Component\Yaml\Yaml;
 use Maghead\Schema\BaseSchema;
 use Maghead\Manager\DataSourceManager;
 
-use Universal\Event\EventDispatcher;
-
 defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
 
 /**
@@ -33,6 +31,7 @@ abstract class Collection implements IteratorAggregate, ArrayAccess, Countable
 {
     use RepoFactoryTrait;
     use WhereTrait;
+    use DispatchTrait;
 
     public static $yamlExtension;
 
@@ -103,11 +102,10 @@ abstract class Collection implements IteratorAggregate, ArrayAccess, Countable
      * Basically we won't create mass collection objects in one time.
      * Therefore we can prepare more stuff here.
      */
-    public function __construct(Repo $repo = null, PDOStatement $stm = null, EventDispatcher $events = null)
+    public function __construct(Repo $repo = null, PDOStatement $stm = null)
     {
         $this->repo = $repo ?: static::masterRepo();
         $this->stm = $stm;
-        $this->events = $events ?: EventDispatcher::instance();
     }
 
     public function setRepo(Repo $repo)
@@ -600,7 +598,7 @@ abstract class Collection implements IteratorAggregate, ArrayAccess, Countable
         $this->stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this->repo]);
         $this->stm->execute($vars);
 
-        $this->events->trigger('maghead.query', $sql, $vars);
+        $this->triggerEvent('maghead.query', $sql, $vars);
 
         return Result::success('Updated', array('sql' => $sql));
     }
