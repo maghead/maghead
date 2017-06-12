@@ -5,6 +5,9 @@ use Maghead\Schema\DeclareSchema;
 use Maghead\Schema\Column\UUIDPrimaryKeyColumn;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @platform mysql
+ */
 class OrderSchema extends DeclareSchema
 {
     public function schema()

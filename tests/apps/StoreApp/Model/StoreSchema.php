@@ -3,6 +3,9 @@ namespace StoreApp\Model;
 
 use Maghead\Schema\DeclareSchema;
 
+/**
+ * @platform mysql
+ */
 class StoreSchema extends DeclareSchema
 {
     public function schema()
