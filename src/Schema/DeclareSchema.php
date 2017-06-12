@@ -1179,7 +1179,7 @@ class DeclareSchema extends BaseSchema implements Schema
 
     public function hasPlatformSupport(BaseDriver $driver)
     {
-        if ($platforms = $this->getPlatform()) {
+        if ($platforms = $this->getPlatforms()) {
             if (in_array("pgsql", $platforms)) {
                 return $driver instanceof PgSQLDriver;
             }
