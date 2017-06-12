@@ -70,6 +70,8 @@ class DeclareSchemaTest extends TestCase
     }
 
 
+
+
     public function testFindLocalPrimaryKeyFailed()
     {
         $schema = new TestNoLocalPrimaryKeySchema;

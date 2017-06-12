@@ -1180,14 +1180,14 @@ class DeclareSchema extends BaseSchema implements Schema
     public function hasPlatformSupport(BaseDriver $driver)
     {
         if ($platforms = $this->getPlatforms()) {
-            if (in_array("pgsql", $platforms)) {
-                return $driver instanceof PgSQLDriver;
+            if ($driver instanceof PgSQLDriver) {
+                return in_array("pgsql", $platforms);
             }
-            if (in_array("mysql", $platforms)) {
-                return $driver instanceof MySQLDriver;
+            if ($driver instanceof MySQLDriver) {
+                return in_array("mysql", $platforms);
             }
-            if (in_array("sqlite",$platforms)) {
-                return $driver instanceof SQLiteDriver;
+            if ($driver instanceof SQLiteDriver) {
+                return in_array("sqlite",$platforms);
             }
         }
         return true;
