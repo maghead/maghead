@@ -21,6 +21,7 @@ class TableParser
             return new SqliteTableParser($c, $d);
         }
         // This is not going to happen
-        throw new InvalidArgumentException("table parser driver does not support {$d::ID} currently.");
+        $id = $d::ID;
+        throw new InvalidArgumentException("table parser driver does not support {$d} currently.");
     }
 }
