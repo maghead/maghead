@@ -16,7 +16,7 @@ class PageRepo extends Repo
     const SCHEMA_CLASS = 'PageApp\\Model\\PageSchema';
     const SCHEMA_PROXY_CLASS = 'PageApp\\Model\\PageSchemaProxy';
     const COLLECTION_CLASS = 'PageApp\\Model\\PageCollection';
-    const MODEL_CLASS = 'PageApp\\Model\\Page';
+    const RECORD_CLASS = 'PageApp\\Model\\Page';
     const TABLE = 'pages';
     const READ_SOURCE_ID = 'default';
     const WRITE_SOURCE_ID = 'default';

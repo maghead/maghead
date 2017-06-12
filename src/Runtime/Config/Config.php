@@ -18,7 +18,7 @@ class Config extends ArrayObject
 
     const DEFAULT_BASE_COLLECTION_CLASS = '\\Maghead\\Runtime\\Collection';
 
-    const DEFAULT_BASE_MODEL_CLASS = '\\Maghead\\Runtime\\Model';
+    const DEFAULT_BASE_RECORD_CLASS = '\\Maghead\\Runtime\\Record';
 
     const DEFAULT_AUTO_ID_COLUMN_CLASS = '\\Maghead\\Schema\\Column\\AutoIncrementPrimaryKeyColumn';
 
@@ -302,11 +302,11 @@ class Config extends ArrayObject
 
     public function getBaseModelClass()
     {
-        if (isset($this['schema']['base_model'])) {
-            return $this['schema']['base_model'];
+        if (isset($this['schema']['base_record'])) {
+            return $this['schema']['base_record'];
         }
 
-        return self::DEFAULT_BASE_MODEL_CLASS;
+        return self::DEFAULT_BASE_RECORD_CLASS;
     }
 
     public function getBaseCollectionClass()

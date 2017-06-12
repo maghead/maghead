@@ -163,7 +163,7 @@ abstract class Repo implements Countable
         $arguments = new ArgumentArray();
         $sql = $query->toSql($driver, $arguments);
         $stm = $conn->prepare($sql);
-        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this]);
+        $stm->setFetchMode(PDO::FETCH_CLASS, static::RECORD_CLASS, [$this]);
         $stm->execute($arguments->toArray());
 
         return $stm->fetch(PDO::FETCH_CLASS);
@@ -172,8 +172,7 @@ abstract class Repo implements Countable
     /**
      * Find the record by its primary key or the given keys
      *
-     * @return Model
-     */
+     * @return Record      */
     public function findByKeys(array $args, $byKeys = null)
     {
         $pk = static::PRIMARY_KEY;
@@ -200,9 +199,9 @@ abstract class Repo implements Countable
      * Inserts the record into the repository but local keys will be removed
      * before the insertion.
      *
-     * @param Model $record
+     * @param Record $record
      */
-    public function import(Model $record)
+    public function import(Record $record)
     {
         $new = clone $record;
         $new->removeLocalPrimaryKey();
@@ -240,7 +239,7 @@ abstract class Repo implements Countable
         $sql = $query->toSql($driver, $arguments);
         
         $stm = $conn->prepare($sql);
-        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this]);
+        $stm->setFetchMode(PDO::FETCH_CLASS, static::RECORD_CLASS, [$this]);
         $stm->execute($arguments->toArray());
 
         return $stm->fetch(PDO::FETCH_CLASS);
@@ -732,7 +731,7 @@ abstract class Repo implements Countable
         $sql = $query->toSql($driver, $arguments);
 
         $stm = $this->read->prepare($sql);
-        $stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this]);
+        $stm->setFetchMode(PDO::FETCH_CLASS, static::RECORD_CLASS, [$this]);
         $stm->execute($arguments->toArray());
 
         // Create collection object with the current repo and the current PDOStatement

@@ -16,7 +16,7 @@ class TagRepo extends Repo
     const SCHEMA_CLASS = 'AuthorBooks\\Model\\TagSchema';
     const SCHEMA_PROXY_CLASS = 'AuthorBooks\\Model\\TagSchemaProxy';
     const COLLECTION_CLASS = 'AuthorBooks\\Model\\TagCollection';
-    const MODEL_CLASS = 'AuthorBooks\\Model\\Tag';
+    const RECORD_CLASS = 'AuthorBooks\\Model\\Tag';
     const TABLE = 'book_tags';
     const READ_SOURCE_ID = 'default';
     const WRITE_SOURCE_ID = 'default';

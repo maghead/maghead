@@ -117,7 +117,7 @@ class RuntimeSchema extends BaseSchema implements Schema, IteratorAggregate
 
     public function getModelClass()
     {
-        return static::MODEL_CLASS;
+        return static::RECORD_CLASS;
     }
 
     public function getCollectionClass()
@@ -127,7 +127,7 @@ class RuntimeSchema extends BaseSchema implements Schema, IteratorAggregate
 
     public function newModel()
     {
-        $class = static::MODEL_CLASS;
+        $class = static::RECORD_CLASS;
 
         return new $class();
     }

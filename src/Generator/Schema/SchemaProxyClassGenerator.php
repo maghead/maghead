@@ -51,7 +51,7 @@ class SchemaProxyClassGenerator
         $cTemplate->addConst('LABEL', $schema->getLabel());
         $cTemplate->addConst('MODEL_NAME', $schema->getModelName());
         $cTemplate->addConst('MODEL_NAMESPACE', $schema->getNamespace());
-        $cTemplate->addConst('MODEL_CLASS', $schema->getModelClass());
+        $cTemplate->addConst('RECORD_CLASS', $schema->getModelClass());
         $cTemplate->addConst('REPO_CLASS', $schema->getBaseRepoClass());
         $cTemplate->addConst('COLLECTION_CLASS', $schema->getCollectionClass());
         $cTemplate->addConst('TABLE', $schema->getTable());

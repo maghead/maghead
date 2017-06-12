@@ -64,7 +64,7 @@ class BaseRepoClassGenerator
             'SCHEMA_CLASS'       => get_class($schema),
             'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),
             'COLLECTION_CLASS'   => $schema->getCollectionClass(),
-            'MODEL_CLASS'        => $schema->getModelClass(),
+            'RECORD_CLASS'        => $schema->getModelClass(),
             'TABLE'              => $schema->getTable(),
             'READ_SOURCE_ID'     => $schema->getReadSourceId(),
             'WRITE_SOURCE_ID'    => $schema->getWriteSourceId(),
@@ -230,7 +230,7 @@ class BaseRepoClassGenerator
                 $cTemplate->addProtectedProperty($propertyName);
 
                 $selfColumn    = $rel->getSelfColumn();
-                $cTemplate->addMethod('public', $methodName, ['Model $record'],
+                $cTemplate->addMethod('public', $methodName, ['Record $record'],
                     PDOStatementGenerator::generateFetchOne(
                         $propertyName,
                         $constName,
@@ -247,7 +247,7 @@ class BaseRepoClassGenerator
                 $cTemplate->addProtectedProperty($propertyName);
 
                 $selfColumn = $rel->getSelfColumn();
-                $cTemplate->addMethod('public', $methodName, ['Model $record'],
+                $cTemplate->addMethod('public', $methodName, ['Record $record'],
                     PDOStatementGenerator::generateFetchAll(
                         $propertyName,
                         $constName,

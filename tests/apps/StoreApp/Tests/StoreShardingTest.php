@@ -291,7 +291,7 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
         $ret = $order->update([ 'amount' => 9999 ]);
         $this->assertResultSuccess($ret);
         $this->assertEquals(9999, $order->amount, 'update amount to 9999');
-        $this->assertNotNull($order->repo, 'Model should be have the repo object.');
+        $this->assertNotNull($order->repo, 'Record should be have the repo object.');
 
         // reload the order
         $order2 = Order::findByPrimaryKey($orderRet->key);

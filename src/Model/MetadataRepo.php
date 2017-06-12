@@ -16,7 +16,7 @@ class MetadataRepo extends Repo
     const SCHEMA_CLASS = 'Maghead\\Model\\MetadataSchema';
     const SCHEMA_PROXY_CLASS = 'Maghead\\Model\\MetadataSchemaProxy';
     const COLLECTION_CLASS = 'Maghead\\Model\\MetadataCollection';
-    const MODEL_CLASS = 'Maghead\\Model\\Metadata';
+    const RECORD_CLASS = 'Maghead\\Model\\Metadata';
     const TABLE = '__meta__';
     const READ_SOURCE_ID = 'master';
     const WRITE_SOURCE_ID = 'master';

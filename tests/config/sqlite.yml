@@ -4,7 +4,7 @@ cli:
 
 schema:
   auto_id: true
-  base_model: \Maghead\Runtime\Model
+  base_record: \Maghead\Runtime\Record
   base_collection: \Maghead\Runtime\Collection
   finders:
   - { name: ComposerSchemaFinder, args: ["composer.json"] }

@@ -13,7 +13,7 @@ class BaseCollectionClassGenerator
         $cTemplate = clone $schema->classes->baseCollection;
         $cTemplate->addConsts(array(
             'SCHEMA_PROXY_CLASS' => $schema->getSchemaProxyClass(),
-            'MODEL_CLASS' => $schema->getModelClass(),
+            'RECORD_CLASS' => $schema->getModelClass(),
             'TABLE' => $schema->getTable(),
             'READ_SOURCE_ID' => $schema->getReadSourceId(),
             'WRITE_SOURCE_ID' => $schema->getWriteSourceId(),

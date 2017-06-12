@@ -16,7 +16,7 @@ use Maghead\Generator\Schema\RepoClassGenerator;
 use Maghead\Generator\Schema\SchemaProxyClassGenerator;
 use Maghead\Runtime\Config\Config;
 use Maghead\Runtime\Repo;
-use Maghead\Runtime\Model;
+use Maghead\Runtime\Record;
 use Maghead\Runtime\Collection;
 
 /**

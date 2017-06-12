@@ -16,7 +16,7 @@ class PublisherRepo extends Repo
     const SCHEMA_CLASS = 'AuthorBooks\\Model\\PublisherSchema';
     const SCHEMA_PROXY_CLASS = 'AuthorBooks\\Model\\PublisherSchemaProxy';
     const COLLECTION_CLASS = 'AuthorBooks\\Model\\PublisherCollection';
-    const MODEL_CLASS = 'AuthorBooks\\Model\\Publisher';
+    const RECORD_CLASS = 'AuthorBooks\\Model\\Publisher';
     const TABLE = 'publishers';
     const READ_SOURCE_ID = 'default';
     const WRITE_SOURCE_ID = 'default';

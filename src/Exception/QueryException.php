@@ -3,7 +3,7 @@ namespace Maghead\Exception;
 
 use RuntimeException;
 use Exception;
-use Maghead\Runtime\Model;
+use Maghead\Runtime\Record;
 
 class QueryException extends RuntimeException
 {
@@ -11,7 +11,7 @@ class QueryException extends RuntimeException
 
     protected $record;
 
-    public function __construct($msg, Model $record, Exception $previous = null, $debugInfo = array())
+    public function __construct($msg, Record $record, Exception $previous = null, $debugInfo = array())
     {
         parent::__construct($msg, 0, $previous);
         $this->debugInfo = $debugInfo;

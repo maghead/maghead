@@ -9,7 +9,7 @@ use Maghead\Exception\TableNameConversionException;
 use Doctrine\Common\Inflector\Inflector;
 use Maghead\Schema\Relationship\Relationship;
 
-use Maghead\Runtime\Model;
+use Maghead\Runtime\Record;
 
 abstract class BaseSchema
 {

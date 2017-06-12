@@ -3,7 +3,7 @@ cli:
   bootstrap: tests/bootstrap.php
 schema:
   auto_id: true
-  base_model: \Maghead\Runtime\Model
+  base_record: \Maghead\Runtime\Record
   base_collection: \Maghead\Runtime\Collection
   paths:
   - tests

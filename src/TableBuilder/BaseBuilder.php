@@ -8,7 +8,7 @@ use Magsql\Universal\Query\CreateIndexQuery;
 use Magsql\Universal\Syntax\Constraint;
 use Maghead\Schema\DynamicSchemaDeclare;
 use Maghead\Schema\Schema;
-use Maghead\Runtime\Model;
+use Maghead\Runtime\Record;
 use Maghead\Schema\DeclareColumn;
 
 use Maghead\Schema\Relationship\Relationship;

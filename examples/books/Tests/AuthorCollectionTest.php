@@ -341,7 +341,7 @@ class AuthorCollectionTest extends ModelTestCase
     {
         $authors = new AuthorCollection;
         $this->assertEquals('AuthorBooks\Model\AuthorSchemaProxy', $authors::SCHEMA_PROXY_CLASS);
-        $this->assertEquals('AuthorBooks\Model\Author', $authors::MODEL_CLASS);
+        $this->assertEquals('AuthorBooks\Model\Author', $authors::RECORD_CLASS);
     }
 
 

@@ -469,7 +469,7 @@ abstract class Collection implements IteratorAggregate, ArrayAccess, Countable
      *
      *       $collection->join('authors','RIGHT','a'); // right join with alias 'a'
      *
-     * @param mixed  $target (Model object or table name)
+     * @param mixed  $target (Record object or table name)
      * @param string $type   Join Type (default 'LEFT')
      * @param string $alias  Alias
      *
@@ -480,7 +480,7 @@ abstract class Collection implements IteratorAggregate, ArrayAccess, Countable
         $this->explictSelect = true;
 
         // for models and schemas join
-        if ($target instanceof Model || $target instanceof BaseSchema) {
+        if ($target instanceof Record || $target instanceof BaseSchema) {
             $query = $this->getCurrentQuery();
             $table = $target->getTable();
 
@@ -545,7 +545,7 @@ abstract class Collection implements IteratorAggregate, ArrayAccess, Countable
     /**
      * Get items.
      *
-     * @return Maghead\Runtime\Model[]
+     * @return Maghead\Runtime\Record[]
      */
     public function items()
     {
@@ -566,7 +566,7 @@ abstract class Collection implements IteratorAggregate, ArrayAccess, Countable
         if (!$this->stm) {
             $this->prepareHandle();
         }
-        return $this->stm->fetchAll(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this->repo]);
+        return $this->stm->fetchAll(PDO::FETCH_CLASS, static::RECORD_CLASS, [$this->repo]);
     }
 
     /**
@@ -588,7 +588,7 @@ abstract class Collection implements IteratorAggregate, ArrayAccess, Countable
         $this->_lastSql = $sql = $this->getCurrentQuery()->toSql($driver, $arguments);
         $this->_vars = $vars = $arguments->toArray();
         $this->stm = $conn->prepare($sql);
-        $this->stm->setFetchMode(PDO::FETCH_CLASS, static::MODEL_CLASS, [$this->repo]);
+        $this->stm->setFetchMode(PDO::FETCH_CLASS, static::RECORD_CLASS, [$this->repo]);
         $this->stm->execute($vars);
         return Result::success('Updated', array('sql' => $sql));
     }
@@ -684,7 +684,7 @@ abstract class Collection implements IteratorAggregate, ArrayAccess, Countable
     }
 
 
-    public function add(Model $record)
+    public function add(Record $record)
     {
         $this->rows[] = $record;
     }
@@ -873,8 +873,7 @@ abstract class Collection implements IteratorAggregate, ArrayAccess, Countable
     /**
      * Create a new model object.
      *
-     * @return object Model
-     */
+     * @return object Record      */
     public function newModel()
     {
         return static::getSchema()->newModel();

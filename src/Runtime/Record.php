@@ -42,10 +42,10 @@ use Symfony\Component\Yaml\Yaml;
 defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
 
 /**
- * Base Model class,
+ * Base Record class,
  * every model class extends from this class.
  */
-abstract class Model implements Serializable
+abstract class Record implements Serializable
 {
     use RepoFactoryTrait;
 
@@ -743,7 +743,7 @@ abstract class Model implements Serializable
 
         // for relationship record
         $val = $this->get($name);
-        if ($val && $val instanceof \Maghead\Runtime\Model) {
+        if ($val && $val instanceof \Maghead\Runtime\Record) {
             return $val->dataLabel();
         }
     }
@@ -880,7 +880,7 @@ abstract class Model implements Serializable
      * Dynamically create a model object with the relationship key for HAS-ONE relationship.
      *
      * @param string $key
-     * @return \Maghead\Runtime\Model
+     * @return \Maghead\Runtime\Record
      */
     protected function fetchHasOne($key)
     {
@@ -903,7 +903,7 @@ abstract class Model implements Serializable
      * Dynamically create a model object with the relationship key for BELONGS-TO relationship.
      *
      * @param string $key
-     * @return \Maghead\Runtime\Model
+     * @return \Maghead\Runtime\Record
      */
     protected function fetchBelongsTo($key)
     {

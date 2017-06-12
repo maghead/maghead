@@ -16,7 +16,7 @@ class AuthorBookRepo extends Repo
     const SCHEMA_CLASS = 'AuthorBooks\\Model\\AuthorBookSchema';
     const SCHEMA_PROXY_CLASS = 'AuthorBooks\\Model\\AuthorBookSchemaProxy';
     const COLLECTION_CLASS = 'AuthorBooks\\Model\\AuthorBookCollection';
-    const MODEL_CLASS = 'AuthorBooks\\Model\\AuthorBook';
+    const RECORD_CLASS = 'AuthorBooks\\Model\\AuthorBook';
     const TABLE = 'author_books';
     const READ_SOURCE_ID = 'default';
     const WRITE_SOURCE_ID = 'default';

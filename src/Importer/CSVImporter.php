@@ -2,12 +2,12 @@
 
 namespace Maghead\Importer;
 
-use Maghead\Runtime\Model;
+use Maghead\Runtime\Record;
 
 class CSVImporter
 {
     /**
-     * @var Maghead\Runtime\Model
+     * @var Maghead\Runtime\Record
      */
     protected $model;
 
@@ -21,7 +21,7 @@ class CSVImporter
      */
     protected $columnMap;
 
-    public function __construct(Model $model, array $columnMap = null)
+    public function __construct(Record $model, array $columnMap = null)
     {
         $this->model = $model;
         $this->columnMap = $columnMap;

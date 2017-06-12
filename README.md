@@ -358,7 +358,7 @@ dropping.
 To see what migration script could do, please check the documentation of
 Magsql package.
 
-### A More Advanced Model Schema
+### A More Advanced Record Schema
 
 ```php
 use Maghead\Schema\DeclareSchema;

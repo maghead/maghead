@@ -16,7 +16,7 @@ class AddressRepo extends Repo
     const SCHEMA_CLASS = 'AuthorBooks\\Model\\AddressSchema';
     const SCHEMA_PROXY_CLASS = 'AuthorBooks\\Model\\AddressSchemaProxy';
     const COLLECTION_CLASS = 'AuthorBooks\\Model\\AddressCollection';
-    const MODEL_CLASS = 'AuthorBooks\\Model\\Address';
+    const RECORD_CLASS = 'AuthorBooks\\Model\\Address';
     const TABLE = 'addresses';
     const READ_SOURCE_ID = 'default';
     const WRITE_SOURCE_ID = 'default';

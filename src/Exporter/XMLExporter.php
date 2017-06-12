@@ -2,7 +2,7 @@
 
 namespace Maghead\Exporter;
 
-use Maghead\Runtime\Model;
+use Maghead\Runtime\Record;
 use Maghead\Runtime\Collection;
 use Maghead\Schema\Relationship\Relationship;
 use Maghead\Schema\Relationship\ManyToMany;
@@ -97,7 +97,7 @@ class XMLExporter
     /**
      * @return DOMDocument
      */
-    public function exportRecord(Model $record)
+    public function exportRecord(Record $record)
     {
         $dom = new DOMDocument('1.0', 'utf-8');
         $root = $dom->createElement('export');
@@ -107,7 +107,7 @@ class XMLExporter
         return $dom;
     }
 
-    protected function appendRecord(DOMDocument $dom, DOMElement $root, Model $record, Schema $schema = null, $recursive = true)
+    protected function appendRecord(DOMDocument $dom, DOMElement $root, Record $record, Schema $schema = null, $recursive = true)
     {
         if (!$schema) {
             $schema = $record->getSchema();
@@ -118,7 +118,7 @@ class XMLExporter
         $this->appendRecordInplace($dom, $recordElement, $record, $schema, $recursive);
     }
 
-    protected function appendRecordInplace(DOMDocument $dom, DOMElement $root, Model $record, Schema $schema = null, $recursive = true)
+    protected function appendRecordInplace(DOMDocument $dom, DOMElement $root, Record $record, Schema $schema = null, $recursive = true)
     {
         if (!$schema) {
             $schema = $record->getSchema();

@@ -46,7 +46,7 @@ class PrimaryKeyColumnMissingException extends SchemaRelatedException
 }
 
 /**
- * Base Model class generator.
+ * Base Record class generator.
  *
  * Some rules for generating code:
  *
@@ -94,7 +94,7 @@ class BaseModelClassGenerator
         $cTemplate->addConst('LABEL', $schema->getLabel());
         $cTemplate->addConst('MODEL_NAME', $schema->getModelName());
         $cTemplate->addConst('MODEL_NAMESPACE', $schema->getNamespace());
-        $cTemplate->addConst('MODEL_CLASS', $schema->getModelClass());
+        $cTemplate->addConst('RECORD_CLASS', $schema->getModelClass());
         $cTemplate->addConst('REPO_CLASS', $schema->getBaseRepoClass());
         $cTemplate->addConst('COLLECTION_CLASS', $schema->getCollectionClass());
         $cTemplate->addConst('TABLE', $schema->getTable());

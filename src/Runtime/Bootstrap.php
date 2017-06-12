@@ -6,7 +6,7 @@ use Maghead\TableBuilder\BaseBuilder;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\Finder\FileSchemaFinder;
 use Maghead\Manager\DataSourceManager;
-use Maghead\Runtime\Model;
+use Maghead\Runtime\Record;
 use Maghead\Runtime\Collection;
 use Maghead\Runtime\Config\Config;
 use PDOException;
