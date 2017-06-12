@@ -33,6 +33,10 @@
     "require-dev": {
         "maghead/sqlite-parser": "4.0.x-dev",
         "corneltek/actionkit": "4.0.x-dev",
+        "mockery/mockery": "^0.9.9",
+        "phpunit/phpunit": "^6.1"
+    },
+    "_require-dev": {
         "mongodb/mongodb": "^1.1",
         "ext-apcu": "*"
     },
@@ -55,6 +59,9 @@
         "psr-4": { "Maghead\\": "src/" }
     },
     "autoload-dev": {
+        "files": [
+            "src/polyfill.php"
+        ],
         "classmap": ["tests"],
         "psr-4": {
             "AuthorBooks\\": "examples/books/",
