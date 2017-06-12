@@ -20,6 +20,9 @@ use Maghead\Sharding\Balancer\Policy\ConservativeShardBalancerPolicy;
  */
 class StoreShardingTest extends \StoreApp\StoreTestCase
 {
+    protected $skipDriver = 'pgsql';
+
+
     /**
      * @dataProvider storeDataProvider
      */
