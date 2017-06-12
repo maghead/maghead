@@ -6,7 +6,7 @@ use Maghead\Schema\Column\UUIDPrimaryKeyColumn;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @platform mysql
+ * @platform mysql|sqlite
  */
 class OrderSchema extends DeclareSchema
 {

@@ -4,7 +4,7 @@ namespace StoreApp\Model;
 use Maghead\Schema\DeclareSchema;
 
 /**
- * @platform mysql
+ * @platform mysql|sqlite
  */
 class StoreSchema extends DeclareSchema
 {
