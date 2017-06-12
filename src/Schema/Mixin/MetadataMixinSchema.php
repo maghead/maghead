@@ -51,30 +51,25 @@ class MetadataMixinSchema extends MixinDeclareSchema
      */
     public function schema()
     {
-        // MySQL: ts TIMESTAMP
-        // which equals to :
-        // ts DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        $this->column('updated_at')
-            ->timestamp()
-            ->null()
-            ->isa('DateTime')
-            ->renderAs('DateTimeInput')
-            ->default(new Raw('CURRENT_TIMESTAMP'))
-            ->onUpdate(new Raw('CURRENT_TIMESTAMP'))
-            ->label('Updated at')
-            ;
-
         $this->column('created_at')
             ->timestamp()
             ->isa('DateTime')
-            ->null()
+            ->null() // explicitly declare the "NULL"
             ->renderAs('DateTimeInput')
-            ->label( _('建立時間') )
+            ->label('Created At')
             ->default(function() {
                 return new \DateTime;
             })
             ;
-    }
+        $this->column('updated_at')
+            ->timestamp()
+            ->notNull() // explicitly declare the "NOT NULL"
+            ->isa('DateTime')
+            ->renderAs('DateTimeInput')
+            ->default(new Raw('CURRENT_TIMESTAMP'))
+            ->onUpdate(new Raw('CURRENT_TIMESTAMP'))
+            ->label('Updated At')
+            ;
 
     // Mixin methods
     public static function getAge($record)
