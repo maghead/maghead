@@ -193,6 +193,4 @@ class ChunkManagerTest extends StoreTestCase
             $this->assertResultsSuccess($result->created);
         }
     }
-
-
 }

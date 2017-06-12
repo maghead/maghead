@@ -1170,7 +1170,7 @@ class DeclareSchema extends BaseSchema implements Schema
     public function getPlatforms()
     {
         if ($comment = $this->refl->getDocComment()) {
-            if (preg_match("/@platform\s+(\w+)/i", $comment, $matches)) {
+            if (preg_match("/@platform\s+([\w\|]+)/i", $comment, $matches)) {
                 return array_map('strtolower', explode('|',$matches[1]));
             }
         }
@@ -1192,6 +1192,4 @@ class DeclareSchema extends BaseSchema implements Schema
         }
         return true;
     }
-
-
 }
