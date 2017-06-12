@@ -21,7 +21,8 @@ class CollectionDispatchTest extends TestCase
         });
 
         $collection = (new DispatchCollection(
-            $repo = m::mock('Maghead\Runtime\Repo'), null,
+            $repo = m::mock('Maghead\Runtime\Repo'),
+            null
         ))->where('1 = 1');
 
         $repo->shouldReceive('getReadConnection')->twice()->andReturn(
