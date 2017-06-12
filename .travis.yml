@@ -29,6 +29,7 @@ install:
 - phpenv rehash
 - "./travis/setup-php"
 - travis_retry composer install
+- travis_retry composer require mongodb/mongodb
 before_script:
 - "./travis/setup-db"
 - bin/maghead use -f tests/config/$DB.yml
