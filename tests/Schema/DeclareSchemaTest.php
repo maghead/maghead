@@ -36,6 +36,9 @@ class TestLocalPrimaryKeySchema extends DeclareSchema
     }
 }
 
+/**
+ * @platform mysql|sqlite
+ */
 class TestGlobalPrimaryKeySchema extends DeclareSchema
 {
     var $enableHiddenPrimaryKey = false;
@@ -58,6 +61,16 @@ class DeclareSchemaTest extends TestCase
         $this->assertNotNull($key);
         $this->assertEquals('uuid', $key);
     }
+
+    public function testGetPlatformShouldReturnThePlatformArray()
+    {
+        $schema = new TestGlobalPrimaryKeySchema;
+        $platforms = $schema->getPlatforms();
+        $this->assertEquals(['mysql', 'sqlite'], $platforms);
+    }
+
+
+
 
     public function testFindLocalPrimaryKeyFailed()
     {

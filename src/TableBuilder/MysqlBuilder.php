@@ -33,9 +33,7 @@ class MysqlBuilder extends BaseBuilder
 
     public function createTable(Schema $schema)
     {
-        $sql = 'CREATE TABLE ';
-
-        $sql .= ' IF NOT EXISTS ';
+        $sql = 'CREATE TABLE  IF NOT EXISTS ';
 
         $sql .= $this->driver->quoteIdentifier($schema->getTable());
 
@@ -142,9 +140,10 @@ class MysqlBuilder extends BaseBuilder
         A column with foreign key should not be nullable.
         @see http://stackoverflow.com/questions/10028214/add-foreign-key-to-existing-table
         */
+        $pk = $schema->getPrimaryKey();
         foreach ($schema->relations as $rel) {
             if ($rel instanceof BelongsTo) {
-                if ($name != 'id' && $rel['self_column'] == $name) {
+                if ($name !== $pk && $rel['self_column'] == $name) {
                     $fSchema = new $rel['foreign_schema']();
                     $fColumn = $rel['foreign_column'];
                 }

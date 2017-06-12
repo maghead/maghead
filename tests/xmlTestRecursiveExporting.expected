@@ -11,10 +11,10 @@
       <published isa="bool" type="boolean">0</published>
       <publisher_id isa="int" type="int"></publisher_id>
       <published_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</published_at>
-      <updated_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</updated_at>
-      <created_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_at>
       <is_hot isa="bool" type="boolean">1</is_hot>
       <is_selled isa="bool" type="boolean">0</is_selled>
+      <created_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_at>
+      <updated_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</updated_at>
     </record>
     <record class="AuthorBooks\Model\Book">
       <id isa="int" type="int">2</id>
@@ -26,10 +26,10 @@
       <published isa="bool" type="boolean">0</published>
       <publisher_id isa="int" type="int"></publisher_id>
       <published_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</published_at>
-      <updated_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</updated_at>
-      <created_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_at>
       <is_hot isa="bool" type="boolean">1</is_hot>
       <is_selled isa="bool" type="boolean">0</is_selled>
+      <created_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</created_at>
+      <updated_at isa="DateTime" type="timestamp">2012-01-01 00:00:00</updated_at>
     </record>
   </collection>
   <record class="AuthorBooks\Model\Author">

@@ -22,6 +22,13 @@ class StoreShardingTest extends \StoreApp\StoreTestCase
 {
     protected $skipDriver = 'pgsql';
 
+    public function testOrderSchemaPlatforms()
+    {
+        $schema = new OrderSchema;
+        $platforms = $schema->getPlatforms();
+        $this->assertEquals(['mysql', 'sqlite'], $platforms);
+        $this->assertTrue($schema->hasPlatformSupport($this->conn->getQueryDriver()));
+    }
 
     /**
      * @dataProvider storeDataProvider
