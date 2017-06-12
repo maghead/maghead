@@ -33,11 +33,11 @@
     "require-dev": {
         "maghead/sqlite-parser": "4.0.x-dev",
         "corneltek/actionkit": "4.0.x-dev",
+        "mongodb/mongodb": "^1.1",
         "mockery/mockery": "^0.9.9",
         "phpunit/phpunit": "^6.1"
     },
     "_require-dev": {
-        "mongodb/mongodb": "^1.1",
         "ext-apcu": "*"
     },
     "suggest": {
