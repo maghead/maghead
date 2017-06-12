@@ -1183,10 +1183,10 @@ class DeclareSchema extends BaseSchema implements Schema
             if (in_array("pgsql", $platforms)) {
                 return $driver instanceof PgSQLDriver;
             }
-            if (in_array("mysql", $platform)) {
+            if (in_array("mysql", $platforms)) {
                 return $driver instanceof MySQLDriver;
             }
-            if (in_array("sqlite",$platform)) {
+            if (in_array("sqlite",$platforms)) {
                 return $driver instanceof SQLiteDriver;
             }
         }
