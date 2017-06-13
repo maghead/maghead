@@ -20,10 +20,10 @@ class CollectionDispatchTest extends TestCase
             $this->assertSame($sql, 'SELECT m.* FROM `foo_table` AS m');
         });
 
-        $collection = new DispatchCollection(
+        $collection = (new DispatchCollection(
             $repo = m::mock('Maghead\Runtime\Repo'),
             null
-        );
+        ))->where('1 = 1');
 
         $repo->shouldReceive('getReadConnection')->twice()->andReturn(
             $connection = m::mock('Maghead\Runtime\Connection')
