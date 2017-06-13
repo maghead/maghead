@@ -10,6 +10,7 @@ use Magsql\Universal\Syntax\Column;
 use Magsql\Driver\PDOMySQLDriver;
 use Magsql\Driver\PDOPgSQLDriver;
 use Magsql\Driver\SQLiteDriver;
+use DateInterval;
 
 class AuthorTest extends ModelTestCase
 {
@@ -267,7 +268,7 @@ class AuthorTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $author = Author::load($ret->key);
         $age = $author->getAge();
-        $this->assertInstanceOf('DateInterval', $age);
+        $this->assertInstanceOf(DateInterval::class, $age);
         $this->assertStringMatchesFormat('%i seconds', $age->format('%s seconds'));
     }
 
