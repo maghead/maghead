@@ -17,13 +17,13 @@ class CollectionDispatchTest extends TestCase
     {
         $events = EventDispatcher::getInstance();
         $events->bind('maghead.query', function($sql, $arguments) {
-            $this->assertSame($sql, 'SELECT m.* FROM `foo_table` AS m WHERE 1 = 1');
+            $this->assertSame($sql, 'SELECT m.* FROM `foo_table` AS m');
         });
 
-        $collection = (new DispatchCollection(
+        $collection = new DispatchCollection(
             $repo = m::mock('Maghead\Runtime\Repo'),
             null
-        ))->where('1 = 1');
+        );
 
         $repo->shouldReceive('getReadConnection')->twice()->andReturn(
             $connection = m::mock('Maghead\Runtime\Connection')
@@ -35,7 +35,7 @@ class CollectionDispatchTest extends TestCase
 
         $driver->shouldReceive('quoteTable')->once()->with('foo_table')->andReturn('`foo_table`');
 
-        $connection->shouldReceive('prepare')->once()->with('SELECT m.* FROM `foo_table` AS m WHERE 1 = 1')->andReturn(
+        $connection->shouldReceive('prepare')->once()->with('SELECT m.* FROM `foo_table` AS m')->andReturn(
             $stmt = m::mock('PDOStatement')
         );
 

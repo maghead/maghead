@@ -36,12 +36,9 @@
         "mockery/mockery": "^0.9.9",
         "phpunit/phpunit": "^6.1"
     },
-    "_require-dev": {
-        "mongodb/mongodb": "^1.1",
-        "ext-apcu": "*"
-    },
     "suggest": {
         "mongodb/mongodb": "^1.1",
+        "ext-apcu": "*",
         "ext-xarray": "*"
     },
     "bin": [
