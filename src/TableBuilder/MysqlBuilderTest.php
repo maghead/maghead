@@ -20,7 +20,7 @@ class MysqlBuilderTest extends ModelTestCase
     {
         $schema = new BookSchema;
         $b = new MysqlBuilder($this->conn->getQueryDriver());
-        $sql = $b->buildColumnSql($schema, $schema->getColumn('updated_at'));
+        $sql = $b->buildColumn($schema, $schema->getColumn('updated_at'));
         $this->assertContains('DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP', $sql);
     }
 }

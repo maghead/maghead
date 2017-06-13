@@ -44,7 +44,7 @@ class MysqlBuilder extends BaseBuilder
             if ($column->virtual) {
                 continue;
             }
-            $columnSqls[] = '  '.$this->buildColumnSql($schema, $column);
+            $columnSqls[] = '  '.$this->buildColumn($schema, $column);
         }
         $referencesSqls = $this->buildForeignKeys($schema);
         $sql .= implode(",\n", array_merge($columnSqls, $referencesSqls));
@@ -84,7 +84,7 @@ class MysqlBuilder extends BaseBuilder
     }
 
     /**
-     * Override buildColumnSql to support inline reference.
+     * Override buildColumn to support inline reference.
      *
      *  MySQL Syntax:
      *
@@ -106,7 +106,7 @@ class MysqlBuilder extends BaseBuilder
      *
      *  FOREIGN KEY (`order_uuid`) REFERENCES orders(`uuid`)
      */
-    public function buildColumnSql(Schema $schema, DeclareColumn $column)
+    public function buildColumn(Schema $schema, DeclareColumn $column)
     {
         $name = $column->name;
         $isa = $column->isa ?: 'str';
