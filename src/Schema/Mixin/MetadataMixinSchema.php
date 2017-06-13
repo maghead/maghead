@@ -4,6 +4,8 @@ namespace Maghead\Schema\Mixin;
 
 use Maghead\Schema\MixinDeclareSchema;
 use Maghead\Schema\DeclareSchema;
+use Maghead\Extensions\Metadata\AgeModelTrait;
+
 use DateTime;
 use Magsql\Raw;
 
@@ -71,6 +73,6 @@ class MetadataMixinSchema extends MixinDeclareSchema
             ->label('Updated At')
             ;
 
-        $this->parentSchema->classes->baseModel->useTrait(\Maghead\Extensions\Metadata\AgeModelTrait::class);
+        $this->parentSchema->classes->baseModel->useTrait(AgeModelTrait::class);
     }
 }
