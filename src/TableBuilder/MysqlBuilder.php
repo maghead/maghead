@@ -10,10 +10,7 @@ use Maghead\Schema\SchemaLoader;
 use Magsql\ArgumentArray;
 use Magsql\Universal\Syntax\Constraint;
 
-
-
-
-class MysqlBuilder extends BaseBuilder
+class MysqlBuilder extends TableBuilder
 {
     public function prepare()
     {
@@ -117,29 +114,28 @@ class MysqlBuilder extends BaseBuilder
         $args = new ArgumentArray();
         $sql = $column->buildDefinitionSql($this->driver, $args);
 
-        /*
-        BUILD COLUMN REFERENCE
 
-        track(
-        	FOREIGN KEY(trackartist) REFERENCES artist(artistid)
-            artist_id INTEGER REFERENCES artist
-        )
+        // BUILD COLUMN REFERENCE
 
+        // track(
+        //     FOREIGN KEY(trackartist) REFERENCES artist(artistid)
+        //     artist_id INTEGER REFERENCES artist
+        // )
 
-        And here is the important part:
+        // And here is the important part:
 
-        Furthermore, MySQL parses but ignores “inline REFERENCES
-        specifications” (as defined in the SQL standard) where the references
-        are defined as part of the column specification.
+        // Furthermore, MySQL parses but ignores “inline REFERENCES specifications”
+        // (as defined in the SQL standard) where the references
+        // are defined as part of the column specification.
 
-        MySQL accepts REFERENCES clauses only when specified as part of a
-        separate FOREIGN KEY specification. For storage engines that do not
-        support foreign keys (such as MyISAM), MySQL Server parses and ignores
-        foreign key specifications.
+        // MySQL accepts REFERENCES clauses only when specified as part of a
+        // separate FOREIGN KEY specification. For storage engines that do not
+        // support foreign keys (such as MyISAM), MySQL Server parses and ignores
+        // foreign key specifications.
 
-        A column with foreign key should not be nullable.
-        @see http://stackoverflow.com/questions/10028214/add-foreign-key-to-existing-table
-        */
+        // A column with foreign key should not be nullable.
+        // @see http://stackoverflow.com/questions/10028214/add-foreign-key-to-existing-table
+
         $pk = $schema->getPrimaryKey();
         foreach ($schema->relations as $rel) {
             if ($rel instanceof BelongsTo) {
@@ -149,8 +145,8 @@ class MysqlBuilder extends BaseBuilder
                 }
             }
         }
-
         return $sql;
+
     }
 
     public function dropTable(Schema $schema)

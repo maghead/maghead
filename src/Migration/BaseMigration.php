@@ -36,7 +36,7 @@ class BaseMigration
     protected $logger;
 
     /**
-     * @var Maghead\TableBuilder\BaseBuilder
+     * @var Maghead\TableBuilder\TableBuilder
      */
     protected $builder;
 

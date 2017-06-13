@@ -2,7 +2,7 @@
 
 namespace Maghead\Runtime;
 
-use Maghead\TableBuilder\BaseBuilder;
+use Maghead\TableBuilder\TableBuilder;
 use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\Finder\FileSchemaFinder;
 use Maghead\Manager\DataSourceManager;

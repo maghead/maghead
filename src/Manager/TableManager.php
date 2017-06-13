@@ -22,7 +22,7 @@ class TableManager
     protected $driver;
 
     /**
-     * @var Maghead\TableBuilder\BaseBuilder
+     * @var Maghead\TableBuilder\TableBuilder
      */
     protected $builder;
 

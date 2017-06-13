@@ -11,7 +11,7 @@ use Magsql\ArgumentArray;
  *
  * @see http://www.sqlite.org/docs.html
  */
-class PgsqlBuilder extends BaseBuilder
+class PgsqlBuilder extends TableBuilder
 {
     public function buildColumn(Schema $schema, DeclareColumn $column)
     {

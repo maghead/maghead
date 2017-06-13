@@ -16,7 +16,7 @@ use Magsql\ArgumentArray;
  *
  * @see http://www.sqlite.org/docs.html
  */
-class SqliteBuilder extends BaseBuilder
+class SqliteBuilder extends TableBuilder
 {
     public function prepare()
     {
