@@ -4,7 +4,12 @@ namespace AuthorBooks\Tests;
 
 use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
+use AuthorBooks\Model\AuthorSchema;
 use AuthorBooks\Model\AuthorCollection;
+
+use AuthorBooks\Model\BookSchema;
+use AuthorBooks\Model\AddressSchema;
+
 use Maghead\Migration\Migration;
 use Magsql\Universal\Syntax\Column;
 use Magsql\Driver\PDOMySQLDriver;
@@ -18,11 +23,7 @@ class AuthorTest extends ModelTestCase
 
     public function models()
     {
-        return [
-            new \AuthorBooks\Model\AuthorSchema,
-            new \AuthorBooks\Model\BookSchema,
-            new \AuthorBooks\Model\AddressSchema,
-        ];
+        return [ new AuthorSchema, new BookSchema, new AddressSchema ];
     }
 
     public function testSave()
