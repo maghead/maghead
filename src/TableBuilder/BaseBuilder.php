@@ -36,7 +36,7 @@ abstract class BaseBuilder
         }
     }
 
-    abstract public function buildColumnSql(Schema $schema, DeclareColumn $column);
+    abstract public function buildColumn(Schema $schema, DeclareColumn $column);
 
     public function setClean($clean = true)
     {
@@ -68,7 +68,7 @@ abstract class BaseBuilder
             if ($column->virtual) {
                 continue;
             }
-            $columnSqls[] = '  '.$this->buildColumnSql($schema, $column);
+            $columnSqls[] = '  '.$this->buildColumn($schema, $column);
         }
         $referencesSqls = $this->buildForeignKeys($schema);
         $sql .= implode(",\n", array_merge($columnSqls, $referencesSqls));

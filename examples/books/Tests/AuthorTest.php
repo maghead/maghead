@@ -4,12 +4,18 @@ namespace AuthorBooks\Tests;
 
 use Maghead\Testing\ModelTestCase;
 use AuthorBooks\Model\Author;
+use AuthorBooks\Model\AuthorSchema;
 use AuthorBooks\Model\AuthorCollection;
+
+use AuthorBooks\Model\BookSchema;
+use AuthorBooks\Model\AddressSchema;
+
 use Maghead\Migration\Migration;
 use Magsql\Universal\Syntax\Column;
 use Magsql\Driver\PDOMySQLDriver;
 use Magsql\Driver\PDOPgSQLDriver;
 use Magsql\Driver\SQLiteDriver;
+use DateInterval;
 
 class AuthorTest extends ModelTestCase
 {
@@ -17,11 +23,7 @@ class AuthorTest extends ModelTestCase
 
     public function models()
     {
-        return [
-            new \AuthorBooks\Model\AuthorSchema,
-            new \AuthorBooks\Model\BookSchema,
-            new \AuthorBooks\Model\AddressSchema,
-        ];
+        return [ new AuthorSchema, new BookSchema, new AddressSchema ];
     }
 
     public function testSave()
@@ -267,7 +269,7 @@ class AuthorTest extends ModelTestCase
         $this->assertResultSuccess($ret);
         $author = Author::load($ret->key);
         $age = $author->getAge();
-        $this->assertInstanceOf('DateInterval', $age);
+        $this->assertInstanceOf(DateInterval::class, $age);
         $this->assertStringMatchesFormat('%i seconds', $age->format('%s seconds'));
     }
 

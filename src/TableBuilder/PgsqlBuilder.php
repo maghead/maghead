@@ -13,7 +13,7 @@ use Magsql\ArgumentArray;
  */
 class PgsqlBuilder extends BaseBuilder
 {
-    public function buildColumnSql(Schema $schema, DeclareColumn $column)
+    public function buildColumn(Schema $schema, DeclareColumn $column)
     {
         $name = $column->name;
         $isa = $column->isa ?: 'str';
