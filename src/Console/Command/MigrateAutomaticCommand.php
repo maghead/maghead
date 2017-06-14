@@ -34,7 +34,8 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
     {
         $args = func_get_args();
         array_shift($args);
-        $this->loadSchemasFromArguments($args);
+
+        $schemas = $this->loadSchemasFromArguments($args);
         
         $conn = $this->dataSourceManager->getConnection($nodeId);
         $driver = $conn->getQueryDriver();
@@ -55,7 +56,12 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
         // TODO: this could be refactored with MigrationManager
         $this->logger->info("Performing automatic upgrade over data source: $nodeId");
 
-        $tableSchemas = SchemaLoader::loadSchemaTableMap();
+        $tableSchemas = [];
+        foreach ($schemas as $schema) {
+            $tableSchemas[ $schema->getTable() ] = $schema;
+        }
+
+        // $tableSchemas = SchemaLoader::loadSchemaTableMap();
         $script = new AutomaticMigration($conn, $driver, $this->logger, $this->options);
         try {
             $this->logger->info('Begining transaction...');

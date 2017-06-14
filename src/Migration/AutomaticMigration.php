@@ -45,17 +45,17 @@ class AutomaticMigration extends BaseMigration
         foreach ($tableSchemas as $key => $a) {
             $table = is_numeric($key) ? $a->getTable() : $key;
 
-            $this->logger->debug("Checking table $table for schema ".get_class($a));
+            $this->logger->debug("Checking table '$table' for schema ".get_class($a));
 
             if (!in_array($table, $existingTables)) {
-                $this->logger->debug("Table $table does not exist, try importing...");
+                $this->logger->debug("Table '$table' does not exist, try importing...");
                 // generate create table statement.
                 // use sqlbuilder to build schema sql
                 $this->importSchema($a);
                 continue;
             }
 
-            $this->logger->debug("Found existing table $table");
+            $this->logger->debug("Found existing table '$table'");
 
             $b = $parser->reverseTableSchema($table, $a);
 

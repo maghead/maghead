@@ -74,14 +74,6 @@ class SchemaUtils
         return self::findSchemasByPaths($config->getSchemaPaths());
     }
 
-    public static function argumentsToSchemaObjects(array $args)
-    {
-        if (empty($args)) {
-            return SchemaCollection::declared()->buildable()->evaluate();
-        }
-        return SchemaCollection::create($args)->exists()->unique()->buildable()->evaluate();
-    }
-
     /**
      * Given a list of schema object,
      * return the schema objects that are defined with shard mapping

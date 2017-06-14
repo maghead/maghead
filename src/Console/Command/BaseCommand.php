@@ -8,6 +8,7 @@ use Maghead\Runtime\Config\AutoConfigLoader;
 use Maghead\Runtime\Config\Config;
 use Maghead\Schema\SchemaUtils;
 use Maghead\Schema\SchemaLoader;
+use Maghead\Schema\SchemaCollection;
 use Maghead\Schema\Finder\FileSchemaFinder;
 use Maghead\Schema\Finder\ComposerSchemaFinder;
 use Maghead\Runtime\Bootstrap;
@@ -92,22 +93,32 @@ class BaseCommand extends Command
      */
     protected function loadSchemasFromArguments(array $args)
     {
-        $config = $this->getConfig();
+        $this->logger->debug("Loading schemas...");
 
-        $this->runDefaultSchemaLoader($config);
+        if (empty($args)) {
+            $this->logger->debug("Using default schemas loader...");
+            $config = $this->getConfig();
+            $this->runDefaultSchemaLoader($config);
+        } else {
+            // filter file path argumets
+            $classes = Utils::filterClassesFromArgs($args);
 
-        // filter file path argumets
-        $paths = Utils::filterPathsFromArgs($args);
-        $classes = Utils::filterClassesFromArgs($args);
-
-        if (empty($paths)) {
-            $paths = $config->getSchemaPaths();
+            $paths = Utils::filterPathsFromArgs($args);
+            if (!empty($paths)) {
+                $this->logger->debug("Loading schemas from " . join(', ', $paths));
+                $finder = new FileSchemaFinder($paths);
+                $finder->find();
+            }
         }
-        if (!empty($paths)) {
-            $finder = new FileSchemaFinder($paths);
-            $loadedFiles = $finder->find();
+
+        if (count($classes)) {
+            $schemas = SchemaCollection::create($classes)->exists()->unique()->buildable()->evaluate();
+        } else {
+            $schemas = SchemaCollection::declared()->buildable()->evaluate();
         }
 
-        return SchemaUtils::argumentsToSchemaObjects($classes)->notForTest();
+        $numberOfSchemas = count($schemas);
+        $this->logger->debug("{$numberOfSchemas} schemas loaded");
+        return $schemas;
     }
 }
