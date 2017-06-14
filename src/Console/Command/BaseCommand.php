@@ -95,20 +95,18 @@ class BaseCommand extends Command
     {
         $this->logger->debug("Loading schemas...");
 
+        // filter file path argumets
+        $classes = Utils::filterClassesFromArgs($args);
+        $paths = Utils::filterPathsFromArgs($args);
+
         if (empty($args)) {
             $this->logger->debug("Using default schemas loader...");
             $config = $this->getConfig();
             $this->runDefaultSchemaLoader($config);
-        } else {
-            // filter file path argumets
-            $classes = Utils::filterClassesFromArgs($args);
-
-            $paths = Utils::filterPathsFromArgs($args);
-            if (!empty($paths)) {
-                $this->logger->debug("Loading schemas from " . join(', ', $paths));
-                $finder = new FileSchemaFinder($paths);
-                $finder->find();
-            }
+        } else if (!empty($paths)) {
+            $this->logger->debug("Loading schemas from " . join(', ', $paths));
+            $finder = new FileSchemaFinder($paths);
+            $finder->find();
         }
 
         if (count($classes)) {
