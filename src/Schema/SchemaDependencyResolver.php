@@ -27,6 +27,8 @@ class SchemaDependencyResolver
 
     protected $logger;
 
+    protected $classMap;
+
     public function __construct(Logger $logger)
     {
         $this->logger = $logger;
@@ -40,20 +42,20 @@ class SchemaDependencyResolver
 
         $schemas = $classes->evaluate();
 
-        $classToSchema = new ClassInstanceMap;
+        $this->classMap = new ClassInstanceMap;
         foreach ($schemas as $schema) {
-            $classToSchema->add($schema);
+            $this->classMap->add($schema);
         }
 
         $this->logger->debug("start tracing ...");
         foreach ($schemas as $schema) {
-            $this->traceUp($schema, $classToSchema, $this->traced);
+            $this->traceUp($schema);
         }
 
         return $this->resolved;
     }
 
-    protected function traceUp(DeclareSchema $schema, ClassInstanceMap $classToSchema)
+    protected function traceUp(DeclareSchema $schema)
     {
         $this->logger->debug("trace {$schema}");
         $this->logger->indent();
@@ -63,14 +65,14 @@ class SchemaDependencyResolver
         foreach ($rels as $relKey => $rel) {
             if ($rel instanceof BelongsTo) {
                 $foreignSchemaClass = $rel['foreign_schema'];
-                if (!isset($classToSchema[$foreignSchemaClass])) {
-                    $classToSchema->add(new $foreignSchemaClass);
+                if (!isset($this->classMap[$foreignSchemaClass])) {
+                    $this->classMap->add(new $foreignSchemaClass);
                 }
 
-                $fs = $classToSchema[$foreignSchemaClass];
+                $fs = $this->classMap[$foreignSchemaClass];
                 if (!$this->traced->contains($fs)) {
                     $this->logger->debug("found belongs to relationship {$schema}.{$relKey} => {$foreignSchemaClass}");
-                    $this->traceUp($fs, $classToSchema);
+                    $this->traceUp($fs);
                 } else {
                     $this->logger->debug("already traced {$schema}.{$relKey} => {$foreignSchemaClass}");
                 }
