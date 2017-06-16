@@ -2,7 +2,11 @@
 
 namespace Maghead\Schema;
 
-use AuthorBooks\Model\{AuthorSchema, AuthorBookSchema, BookSchema, AddressSchema, PublisherSchema};
+use AuthorBooks\Model\AuthorSchema;
+use AuthorBooks\Model\AuthorBookSchema;
+use AuthorBooks\Model\BookSchema;
+use AuthorBooks\Model\AddressSchema;
+use AuthorBooks\Model\PublisherSchema;
 use PHPUnit\Framework\TestCase;
 use CLIFramework\Logger;
 
@@ -33,4 +37,3 @@ class SchemaDependencyResolverTest extends TestCase
         ], $classes);
     }
 }
-

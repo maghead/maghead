@@ -32,7 +32,7 @@ class UUIDColumn extends DeclareColumn
     public function buildTypeName(BaseDriver $driver)
     {
         if ($driver instanceof PgSQLDriver) {
-            // FIXME: 
+            // FIXME:
             // we have an issue when fetching bytea column from postgresql:
             //
             // PDOException: SQLSTATE[22021]: Character not in repertoire: 7 ERROR:  invalid byte sequence for encoding "UTF8": 0x8b

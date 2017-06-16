@@ -39,7 +39,9 @@ class ShardKeyMissingException extends SchemaRelatedException
 {
 }
 
-class MetaClass extends UserClass {  }
+class MetaClass extends UserClass
+{
+}
 
 
 class DeclareSchema extends BaseSchema implements Schema
@@ -121,12 +123,12 @@ class DeclareSchema extends BaseSchema implements Schema
     /**
      * virtual schema (won't generate class files)
      */
-    var $virtual = false;
+    public $virtual = false;
 
     /**
      * Generate column accessors in the class.
      */
-    var $enableColumnAccessors = true;
+    public $enableColumnAccessors = true;
 
 
     private $relf;
@@ -225,7 +227,7 @@ class DeclareSchema extends BaseSchema implements Schema
     /**
      * resolve the column alias name to class name
      */
-    static protected function resolveColumnAlias($alias)
+    protected static function resolveColumnAlias($alias)
     {
         if (isset(static::$columnClassAliases[$alias])) {
             return static::$columnClassAliases[$alias];
@@ -838,7 +840,8 @@ class DeclareSchema extends BaseSchema implements Schema
      *
      * @return array
      */
-    public function seeds() {
+    public function seeds()
+    {
         return false;
     }
 
@@ -854,7 +857,7 @@ class DeclareSchema extends BaseSchema implements Schema
     {
         $seeds = func_get_args();
         $self = $this;
-        $this->seeds = array_map(function ($class) use($self) {
+        $this->seeds = array_map(function ($class) use ($self) {
             return Utils::resolveClass($class, [], $self, ['Seeds']);
         }, $seeds);
     }
@@ -1171,7 +1174,7 @@ class DeclareSchema extends BaseSchema implements Schema
     {
         if ($comment = $this->refl->getDocComment()) {
             if (preg_match("/@platform\s+([\w\|]+)/i", $comment, $matches)) {
-                return array_map('strtolower', explode('|',$matches[1]));
+                return array_map('strtolower', explode('|', $matches[1]));
             }
         }
         return false;

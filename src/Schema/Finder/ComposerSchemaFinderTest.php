@@ -13,4 +13,3 @@ class ComposerSchemaFinderTest extends TestCase
         $this->assertNotEmpty($files);
     }
 }
-

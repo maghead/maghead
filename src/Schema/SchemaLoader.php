@@ -2,7 +2,6 @@
 
 namespace Maghead\Schema;
 
-
 /**
  * Schema loader actually catches
  * schema object instances by schema class name.

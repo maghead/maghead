@@ -7,13 +7,12 @@ use ArrayObject;
 use Maghead\Schema\Relationship\BelongsTo;
 use CLIFramework\Logger;
 
-class ClassInstanceMap extends ArrayObject {
-
+class ClassInstanceMap extends ArrayObject
+{
     public function add($obj)
     {
         $this[get_class($obj)] = $obj;
     }
-
 }
 
 

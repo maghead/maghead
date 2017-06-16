@@ -7,11 +7,11 @@ use RecursiveIteratorIterator;
 
 use ArrayObject;
 
-class MatchSet extends ArrayObject {
-
+class MatchSet extends ArrayObject
+{
     public $matchBy;
 
-    function __construct(array $files, $matchBy = null)
+    public function __construct(array $files, $matchBy = null)
     {
         parent::__construct($files);
         $this->matchBy = $matchBy;
@@ -86,7 +86,7 @@ class FileSchemaFinder
     protected function shouldInclude($filepath)
     {
         if (!$this->compiledIncludePattern) {
-            $this->compiledIncludePattern = join('|', array_map(function($p) {
+            $this->compiledIncludePattern = join('|', array_map(function ($p) {
                 $p = str_replace('#', '\\#', $p);
                 return "(?:$p)";
             }, $this->includePatterns));
@@ -105,7 +105,7 @@ class FileSchemaFinder
     protected function shouldExclude($filepath)
     {
         if (!$this->compiledExcludePattern) {
-            $this->compiledExcludePattern = join('|', array_map(function($p) {
+            $this->compiledExcludePattern = join('|', array_map(function ($p) {
                 $p = str_replace('#', '\\#', $p);
                 return "(?:$p)";
             }, $this->excludePatterns));
@@ -156,10 +156,8 @@ class FileSchemaFinder
                 $path = $a;
 
                 if (is_file($path)) {
-
                     $this->requireAndCollect($path);
-
-                } else if (is_dir($path)) {
+                } elseif (is_dir($path)) {
                     $rii = new RecursiveIteratorIterator(
                         new RecursiveDirectoryIterator($path, $this->directoryIteratorFlags),
                         RecursiveIteratorIterator::SELF_FIRST

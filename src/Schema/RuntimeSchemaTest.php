@@ -11,7 +11,6 @@ use Maghead\Testing\ModelTestCase;
  */
 class RuntimeSchemaTest extends ModelTestCase
 {
-
     public function models()
     {
         return [

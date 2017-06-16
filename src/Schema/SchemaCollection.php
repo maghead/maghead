@@ -82,7 +82,7 @@ class SchemaCollection extends ArrayObject
 
     public function notForTest()
     {
-        return $this->filter(function($schema) {
+        return $this->filter(function ($schema) {
             $cls = is_string($schema) ? $schema : get_class($schema);
             return !preg_match('/^Test\w+$/i', $cls);
         });
@@ -90,7 +90,7 @@ class SchemaCollection extends ArrayObject
 
     public function exists()
     {
-        return $this->filter(function($s) {
+        return $this->filter(function ($s) {
             if (is_object($s)) {
                 return $s;
             }
@@ -110,7 +110,7 @@ class SchemaCollection extends ArrayObject
 
     public function buildable()
     {
-        return $this->filter(function($schema) {
+        return $this->filter(function ($schema) {
             if (
               !is_subclass_of($schema, DeclareSchema::class, true)
               || is_a($schema, DynamicSchemaDeclare::class, true)

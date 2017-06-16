@@ -27,7 +27,7 @@ class MetadataMixinSchema extends MixinDeclareSchema
           `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         );
-            
+
     In MySQL, timestamp columns are default to "NOT NULL"
 
 
@@ -59,7 +59,7 @@ class MetadataMixinSchema extends MixinDeclareSchema
             ->null() // explicitly declare the "NULL"
             ->renderAs('DateTimeInput')
             ->label('Created At')
-            ->default(function() {
+            ->default(function () {
                 return new \DateTime;
             })
             ;

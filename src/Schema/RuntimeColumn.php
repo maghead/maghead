@@ -293,12 +293,12 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                 $ret = call_user_func($validator, $val, $args, $record);
                 if (is_bool($ret)) {
                     return ['valid' => $ret, 'message' => 'Validation failed.', 'field' => $this->name];
-                } else if (is_array($ret)) {
+                } elseif (is_array($ret)) {
                     return ['valid' => $ret[0], 'message' => $ret[1], 'field' => $this->name];
                 } else {
                     throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
                 }
-            } else if (is_string($validator) && is_a($validator, 'ValidationKit\\Validator', true)) {
+            } elseif (is_string($validator) && is_a($validator, 'ValidationKit\\Validator', true)) {
                 // it's a ValidationKit\Validator
                 $validator = $this->validatorArgs ? new $validator($this->get('validatorArgs')) : new $validator();
                 $ret = $validator->validate($val);
@@ -343,8 +343,6 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                 }
             }
         }
-
-
     }
 
 
