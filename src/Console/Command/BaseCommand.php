@@ -16,6 +16,8 @@ use Maghead\Manager\DataSourceManager;
 use Maghead\Utils;
 use RuntimeException;
 
+use Maghead\Schema\SchemaDependencyResolver;
+
 class BaseCommand extends Command
 {
     public $dataSourceManager;
@@ -114,6 +116,9 @@ class BaseCommand extends Command
         } else {
             $schemas = SchemaCollection::declared()->buildable()->evaluate();
         }
+
+        $resolver = new SchemaDependencyResolver($this->logger);
+        $schemas = $resolver->resolve($schemas);
 
         $numberOfSchemas = count($schemas);
         $this->logger->debug("{$numberOfSchemas} schemas loaded");
