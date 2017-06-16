@@ -186,6 +186,15 @@ class BaseRepoClassGenerator
             });
         }
 
+        $cTemplate->addMethod('public', 'collection', [], function() use ($schema) {
+            $collectionClass = $schema->getCollectionClass();
+            $ns = explode('\\',$collectionClass);
+            $shortName = end($ns);
+            return [
+                "return new {$shortName}(\$this);",
+            ];
+        });
+
         // TODO: can be static method
         $cTemplate->addMethod('protected', 'unsetImmutableArgs', ['$args'], function () use ($schema) {
             $immutableColumns = array_filter($schema->getColumns(false), function ($c) {
