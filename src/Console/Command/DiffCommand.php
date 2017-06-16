@@ -20,10 +20,10 @@ class DiffCommand extends BaseCommand
     {
         $args = func_get_args();
         array_shift($args);
-        $this->loadSchemasFromArguments($args);
+
+        $schemas = $this->loadSchemasFromArguments($args);
 
         $formatter = new \CLIFramework\Formatter();
-
 
         $conn = $this->dataSourceManager->getConnection($nodeId);
         $driver = $this->dataSourceManager->getQueryDriver($nodeId);
@@ -32,7 +32,11 @@ class DiffCommand extends BaseCommand
 
         $parser = TableParser::create($conn, $driver);
         $existingTables = $parser->getTables();
-        $tableSchemas = SchemaLoader::loadSchemaTableMap();
+
+        $tableSchemas = [];
+        foreach ($schemas as $schema) {
+            $tableSchemas[ $schema->getTable() ] = $schema;
+        }
 
 
         $found = false;

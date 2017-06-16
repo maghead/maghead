@@ -58,10 +58,9 @@ class MigrateAutomaticCommand extends MigrateBaseCommand
 
         $tableSchemas = [];
         foreach ($schemas as $schema) {
-            $tableSchemas[ $schema->getTable() ] = $schema;
+            $tableSchemas[$schema->getTable()] = $schema;
         }
 
-        // $tableSchemas = SchemaLoader::loadSchemaTableMap();
         $script = new AutomaticMigration($conn, $driver, $this->logger, $this->options);
         try {
             $this->logger->info('Begining transaction...');
