@@ -93,6 +93,11 @@ abstract class Repo implements Countable
      */
     abstract protected function unsetImmutableArgs($args);
 
+    /**
+     * New collection object from this repo
+     */
+    abstract public function collection();
+
     public function __construct(Connection $write, Connection $read = null, Shard $shard = null)
     {
         $this->write = $write;
