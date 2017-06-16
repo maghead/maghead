@@ -104,9 +104,5 @@ class SchemaCollectionTest extends TestCase
             return $schema instanceof \AuthorBooks\Model\BookSchema;
         });
         $this->assertCount(1, $rc);
-
-        $expanded = $rc->expandDependency();
-        $this->assertInstanceOf('Maghead\Schema\SchemaCollection', $expanded);
-        $this->assertEquals(4, count($expanded));
     }
 }

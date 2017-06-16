@@ -44,17 +44,6 @@ class SchemaCollection extends ArrayObject
         });
     }
 
-
-    public function expandDependency()
-    {
-        $expands = [];
-        foreach ($this as $schema) {
-            $expands = array_merge($expands, $this->expandSchemaDependency($schema));
-        }
-        $expands = array_unique($expands);
-        return new self($expands);
-    }
-
     protected function expandSchemaDependency(DeclareSchema $schema)
     {
         $expands = array();

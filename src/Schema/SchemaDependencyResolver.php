@@ -56,7 +56,6 @@ class SchemaDependencyResolver
     {
         $this->logger->info("trace up {$schema}");
         $this->logger->indent();
-
         $this->traced->attach($schema);
 
         $rels = $schema->getRelations();
