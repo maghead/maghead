@@ -44,7 +44,7 @@ class SchemaDependencyResolver
             $classToSchema->add($schema);
         }
 
-        $this->logger->info("start tracing ...");
+        $this->logger->debug("start tracing ...");
         foreach ($schemas as $schema) {
             $this->traceUp($schema, $classToSchema, $this->traced);
         }
@@ -54,7 +54,7 @@ class SchemaDependencyResolver
 
     protected function traceUp(DeclareSchema $schema, ClassInstanceMap $classToSchema)
     {
-        $this->logger->info("trace up {$schema}");
+        $this->logger->debug("trace up {$schema}");
         $this->logger->indent();
         $this->traced->attach($schema);
 
@@ -68,16 +68,16 @@ class SchemaDependencyResolver
 
                 $fs = $classToSchema[$foreignSchemaClass];
                 if (!$this->traced->contains($fs)) {
-                    $this->logger->info("found belongs to relationship {$schema}.{$relKey} => {$foreignSchemaClass}");
+                    $this->logger->debug("found belongs to relationship {$schema}.{$relKey} => {$foreignSchemaClass}");
                     $this->traceUp($fs, $classToSchema);
                 } else {
-                    $this->logger->info("already traced {$schema}.{$relKey} => {$foreignSchemaClass}");
+                    $this->logger->debug("already traced {$schema}.{$relKey} => {$foreignSchemaClass}");
                 }
             }
         }
 
         if (!$this->resolvedStorage->contains($schema)) {
-            $this->logger->info("adding {$schema}");
+            $this->logger->debug("adding {$schema}");
             $this->resolved[] = $schema;
             $this->resolvedStorage->attach($schema);
         }
