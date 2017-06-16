@@ -91,7 +91,7 @@ abstract class Repo implements Countable
     /**
      * Unset immutable args
      */
-    abstract protected function unsetImmutableArgs($args);
+    abstract static protected function unsetImmutableArgs($args);
 
     /**
      * New collection object from this repo
@@ -277,8 +277,7 @@ abstract class Repo implements Countable
     public function updateByPrimaryKey($kVal, array $args)
     {
         $schema = static::getSchema();
-
-        $args = $this->unsetImmutableArgs($args);
+        $args = static::unsetImmutableArgs($args);
 
         // backup the arguments
         $origArgs = $args;
