@@ -4,6 +4,7 @@ namespace Maghead\Schema;
 
 use SplObjectStorage;
 use ArrayObject;
+use Maghead\Schema\Relationship\BelongsTo;
 use CLIFramework\Logger;
 
 class ClassInstanceMap extends ArrayObject {
@@ -54,13 +55,13 @@ class SchemaDependencyResolver
 
     protected function traceUp(DeclareSchema $schema, ClassInstanceMap $classToSchema)
     {
-        $this->logger->debug("trace up {$schema}");
+        $this->logger->debug("trace {$schema}");
         $this->logger->indent();
         $this->traced->attach($schema);
 
         $rels = $schema->getRelations();
         foreach ($rels as $relKey => $rel) {
-            if ($rel instanceof Relationship\BelongsTo) {
+            if ($rel instanceof BelongsTo) {
                 $foreignSchemaClass = $rel['foreign_schema'];
                 if (!isset($classToSchema[$foreignSchemaClass])) {
                     $classToSchema->add(new $foreignSchemaClass);
