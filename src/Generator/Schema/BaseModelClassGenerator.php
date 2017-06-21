@@ -37,9 +37,8 @@ use CodeGen\Statement\RequireOnceStatement;
 use CodeGen\Expr\ConcatExpr;
 use CodeGen\Raw;
 
-use ActionKit\RecordAction\BaseRecordAction;
-
-use Maghead\Runtime\ActionCreatorTrait;
+use WebAction\RecordAction\BaseRecordAction;
+use WebAction\Maghead\Traits\ActionCreatorTrait;
 
 class PrimaryKeyColumnMissingException extends SchemaRelatedException
 {
