@@ -7,6 +7,7 @@
       <subtitle isa="str" type="varchar"></subtitle>
       <isbn isa="str" type="varchar"></isbn>
       <description isa="str" type="text"></description>
+      <category_id isa="int" type="int"></category_id>
       <view isa="int" type="int">0</view>
       <published isa="bool" type="boolean">0</published>
       <publisher_id isa="int" type="int"></publisher_id>
@@ -22,6 +23,7 @@
       <subtitle isa="str" type="varchar"></subtitle>
       <isbn isa="str" type="varchar"></isbn>
       <description isa="str" type="text"></description>
+      <category_id isa="int" type="int"></category_id>
       <view isa="int" type="int">0</view>
       <published isa="bool" type="boolean">0</published>
       <publisher_id isa="int" type="int"></publisher_id>

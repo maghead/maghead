@@ -1,4 +1,5 @@
 <?php
+
 namespace AuthorBooks\Tests;
 
 use Magsql\Raw;
@@ -7,6 +8,7 @@ use Maghead\Runtime\Result;
 use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\BookSchema;
+use AuthorBooks\Model\CategorySchema;
 use AuthorBooks\Model\AuthorSchema;
 use AuthorBooks\Model\AuthorBookSchema;
 use DateTime;
@@ -28,11 +30,12 @@ class BookTest extends ModelTestCase
     public function testImmutableColumn()
     {
         $b = Book::createAndLoad(array( 'isbn' => '123123123' ));
-
         $ret = $b->update(array('isbn'  => '456456' ));
         $this->assertResultFail($ret, 'Should not update immutable column');
         $this->assertDelete($b);
     }
+
+
 
     public function testFindBook()
     {
@@ -65,6 +68,15 @@ class BookTest extends ModelTestCase
         // Column not found: 1054 Unknown column 'name' in 'where clause'
         $book = Book::load([ 'name' => 'LoadOrCreateTest' ]);
     }
+
+
+    public function testChildrenRecords()
+    {
+
+        // Book::
+    }
+
+
 
     public function testFlagHelper()
     {

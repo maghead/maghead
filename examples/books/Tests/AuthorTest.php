@@ -26,6 +26,7 @@ class AuthorTest extends ModelTestCase
         return [ new AuthorSchema, new BookSchema, new AddressSchema ];
     }
 
+
     public function testSave()
     {
         $this->assertNotFalse($author = Author::createAndLoad([
