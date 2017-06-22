@@ -31,7 +31,7 @@ use Maghead\Schema\Relationship\Relationship;
 use Maghead\Exception\MissingPrimaryKeyException;
 use Maghead\Exception\QueryException;
 use SerializerKit\XmlSerializer;
-use ActionKit;
+use WebAction;
 use Symfony\Component\Yaml\Yaml;
 use Countable;
 
@@ -319,7 +319,7 @@ abstract class Repo implements Countable
                 return Result::failure("Value of $n is required.");
             }
 
-            // TODO: Do not render immutable field in ActionKit
+            // TODO: Do not render immutable field in WebAction
             // FIXME: calling ::save() might update the immutable columns
             if ($c->immutable) {
                 continue;

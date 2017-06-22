@@ -36,7 +36,7 @@ use Maghead\Sharding\Shard;
 use Maghead\Sharding\ShardCollection;
 use Maghead\Runtime\Connection;
 use SerializerKit\XmlSerializer;
-use ActionKit;
+use WebAction;
 use Symfony\Component\Yaml\Yaml;
 
 defined('YAML_UTF8_ENCODING') || define('YAML_UTF8_ENCODING', 0);
@@ -1220,7 +1220,7 @@ abstract class Model implements Serializable
 
 
     /**
-     * Used by ActionKit
+     * Used by WebAction
      */
     public function fetchOneToManyRelationCollection($relationId)
     {
@@ -1230,7 +1230,7 @@ abstract class Model implements Serializable
     }
 
     /**
-     * Used by ActionKit
+     * Used by WebAction
      */
     public function fetchManyToManyRelationCollection($relationId)
     {
