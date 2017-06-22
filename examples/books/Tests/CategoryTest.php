@@ -9,6 +9,7 @@ use AuthorBooks\Model\Book;
 use AuthorBooks\Model\BookCollection;
 use AuthorBooks\Model\BookSchema;
 use AuthorBooks\Model\Category;
+use AuthorBooks\Model\CategoryCollection;
 use AuthorBooks\Model\CategorySchema;
 use AuthorBooks\Model\AuthorSchema;
 use AuthorBooks\Model\AuthorBookSchema;
@@ -29,9 +30,9 @@ class CategoryTest extends ModelTestCase
         ];
     }
 
-    public function testChildrenRecords()
+    public function testFindChildrenRecords()
     {
-        $c1 = Category::createAndLoad([
+        $p1 = Category::createAndLoad([
             "name" => "P1",
         ]);
 
@@ -45,33 +46,22 @@ class CategoryTest extends ModelTestCase
             "parent_id" => $p1->getKey(),
         ]);
 
-        $b1 = Book::createAndLoad([ 'title' => 'Book1' , 'category_id' => $c1->getKey()  ]);
+        $b1 = Book::createAndLoad([ 'title' => 'Book1' , 'category_id' => $p1->getKey()  ]);
         $b2 = Book::createAndLoad([ 'title' => 'Book2' , 'category_id' => $cc1->getKey() ]);
 
-        $children = $c1->getChildren();
+        $children = $p1->findChildrenRecords();
 
         $this->assertArrayHasKey("subcategories", $children);
+        $this->assertInstanceOf(CategoryCollection::class, $children["subcategories"]);
+        $this->assertCount(2, $children["subcategories"]);
         $this->assertArrayHasKey("books", $children);
+        $this->assertInstanceOf(BookCollection::class, $children["books"]);
+        $this->assertCount(1, $children["books"]);
 
-        /*
-        [
-            "subcategories" => [ $c1, $c2 ],
-            "books" => [$b1, $b2],
-        ]
-        */
-
-
-        /*
-        foreach ($children["subcategories"] as $cc) {
-
-        }
-        */
-
-
-
-        // $children->subcategories [ c1 and c2 ]
-            //
+        $children = $cc1->findChildrenRecords();
+        $this->assertInstanceOf(CategoryCollection::class, $children["subcategories"]);
+        $this->assertCount(0, $children["subcategories"]);
+        $this->assertInstanceOf(BookCollection::class, $children["books"]);
+        $this->assertCount(1, $children["books"]);
     }
-
-
 }

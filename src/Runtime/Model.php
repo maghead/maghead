@@ -882,10 +882,9 @@ abstract class Model implements Serializable
      * @param string $key
      * @return \Maghead\Runtime\Model
      */
-    protected function fetchHasOne($key)
+    protected function fetchHasOne($key, Relationship $relation)
     {
         $cacheKey = 'relationship::'.$key;
-        $relation = static::getSchema()->getRelation($key);
         $selfColumn = $relation['self_column'];
         $fSchema = $relation->newForeignSchema();
         $fColumn = $relation['foreign_column'];
@@ -922,11 +921,9 @@ abstract class Model implements Serializable
         return $record;
     }
 
-    protected function fetchHasMany($key)
+    protected function fetchHasMany($key, Relationship $relation)
     {
         $cacheKey = "relationship::{$key}";
-
-        $relation = static::getSchema()->getRelation($key);
 
         // TODO: migrate this code to Relationship class.
         $selfColumn = $relation['self_column'];
@@ -952,13 +949,36 @@ abstract class Model implements Serializable
         return $collection;
     }
 
+    public function findChildrenRecords()
+    {
+        $schema = static::getSchema();
+
+        $children = [];
+        foreach ($schema->relations as $relId => $rel) {
+
+            if ($rel instanceof HasOne) {
+
+                $children[$relId] = [$this->fetchHasOne($relId, $rel)];
+
+            } else if ($rel instanceof HasMany) {
+
+                $children[$relId] = $this->fetchHasMany($relId, $rel);
+
+            }
+        }
+
+        return $children;
+    }
+
+
+
     public function getRelationalRecords($key, Relationship $relation)
     {
         // check for the object cache
 
         if ($relation instanceof HasOne) {
 
-            return $this->fetchHasOne($key);
+            return $this->fetchHasOne($key, $relation);
 
         } else if ($relation instanceof BelongsTo) {
 
@@ -966,7 +986,7 @@ abstract class Model implements Serializable
 
         } else if ($relation instanceof HasMany) {
 
-            return $this->fetchHasMany($key);
+            return $this->fetchHasMany($key, $relation);
 
         } else if ($relation instanceof ManyToMany) {
 
