@@ -5,6 +5,7 @@ namespace Maghead\Schema;
 use AuthorBooks\Model\AuthorSchema;
 use AuthorBooks\Model\AuthorBookSchema;
 use AuthorBooks\Model\BookSchema;
+use AuthorBooks\Model\CategorySchema;
 use AuthorBooks\Model\AddressSchema;
 use AuthorBooks\Model\PublisherSchema;
 use PHPUnit\Framework\TestCase;
