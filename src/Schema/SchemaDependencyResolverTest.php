@@ -32,6 +32,7 @@ class SchemaDependencyResolverTest extends TestCase
             AuthorSchema::class,
             AddressSchema::class,
             PublisherSchema::class,
+            CategorySchema::class,
             BookSchema::class,
             AuthorBookSchema::class,
         ], $classes);
