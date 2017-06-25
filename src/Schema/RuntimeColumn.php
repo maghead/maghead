@@ -298,7 +298,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                 } else {
                     throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
                 }
-            } elseif (is_string($validator) && is_a($validator, 'ValidationKit\\Validator', true)) {
+            } else if (is_string($validator) && is_a($validator, 'ValidationKit\\Validator', true)) {
                 // it's a ValidationKit\Validator
                 $validator = $this->validatorArgs ? new $validator($this->get('validatorArgs')) : new $validator();
                 $ret = $validator->validate($val);
