@@ -20,7 +20,7 @@
         "corneltek/codegen": "4.0.x-dev",
         "maghead/magsql": "4.0.x-dev",
         "maghead/sqlite-parser": "^4.0",
-        "corneltek/serializerkit": "^1",
+        "corneltek/serializerkit": "^1.1",
         "corneltek/validationkit": "^1",
         "symfony/yaml": "^2.8|^3.0|^3.2",
         "doctrine/inflector": "^1.0",
