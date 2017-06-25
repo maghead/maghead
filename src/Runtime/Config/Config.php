@@ -89,6 +89,7 @@ class Config extends ArrayObject
         }, (array) $this['schema']['finders']);
 
         $finders = [];
+
         foreach ($configs as $config) {
             $name = $config['name'];
 
@@ -96,6 +97,10 @@ class Config extends ArrayObject
             array_push($refSubNamespaceNames, "Schema\\Finder");
 
             $class = Utils::resolveClass($name, $namespaceRoots, $refObject, $refSubNamespaceNames);
+
+            if (!$class) {
+                throw new Exception("Finder class '$name' can't be loaded.");
+            }
 
             $reflClass = new ReflectionClass($class);
             if (isset($config['args'])) {
