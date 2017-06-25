@@ -23,7 +23,7 @@ class AuthorAddressTest extends ModelTestCase
     {
         $ret = Author::create(['name' => 'Yo-An Lin' , 'email' => 'c9s@gmail.com' , 'identity' => 'c' ]);
         $vld = $ret->getColumnValidation('identity');
-        $this->assertFalse($vld['valid']);
+        $this->assertFalse($vld->valid);
         // FIXME check the message
         // $this->assertStringMatchesFormat('',$vld['message']);
     }

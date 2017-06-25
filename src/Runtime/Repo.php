@@ -345,7 +345,7 @@ abstract class Repo implements Countable
 
             if ($validationResult = $c->validate($args[$n], $args, $record)) {
                 $validationResults[$n] = $validationResult;
-                if (!$validationResult['valid']) {
+                if (!$validationResult->valid) {
                     $validationError = true;
                 }
             }
@@ -503,7 +503,7 @@ abstract class Repo implements Countable
             // @codegenBlock validateColumn
             if ($validationResult = $c->validate($val, $args, null)) {
                 $validationResults[$n] = $validationResult;
-                if (!$validationResult['valid']) {
+                if (!$validationResult->valid) {
                     $validationError = true;
                 }
             }

@@ -6,6 +6,7 @@ use DateTime;
 use Maghead\Runtime\Deflator;
 use Maghead\Runtime\Inflator;
 use Maghead\Runtime\Model;
+use Maghead\Runtime\Validation;
 use Maghead\Utils\ArrayUtils;
 use Maghead\Utils;
 use Exception;
@@ -15,6 +16,8 @@ use Magsql\Raw;
 use Magsql\Driver\BaseDriver;
 use Closure;
 use LogicException;
+use ArrayObject;
+
 
 class InvalidValueTypeException extends Exception
 {
@@ -292,18 +295,27 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
             if (is_callable($validator)) {
                 $ret = call_user_func($validator, $val, $args, $record);
                 if (is_bool($ret)) {
-                    return ['valid' => $ret, 'message' => 'Validation failed.', 'field' => $this->name];
-                } elseif (is_array($ret)) {
-                    return ['valid' => $ret[0], 'message' => $ret[1], 'field' => $this->name];
+
+                    return new Validation($ret, $this->name, "validation failed.");
+
+                } else if (is_array($ret)) {
+
+                    return new Validation($ret[0], $this->name, $ret[1]);
+
                 } else {
+
                     throw new Exception('Wrong validation result format, Please returns (valid,message) or (valid)');
+
                 }
             } else if (is_string($validator) && is_a($validator, 'ValidationKit\\Validator', true)) {
+
                 // it's a ValidationKit\Validator
                 $validator = $this->validatorArgs ? new $validator($this->get('validatorArgs')) : new $validator();
                 $ret = $validator->validate($val);
                 $msgs = $validator->getMessages();
-                return ['valid' => $ret, 'message' => $msgs, 'field' => $this->name];
+
+                return new Validation($ret, $this->name, $msgs);
+                // return ['valid' => $ret, 'message' => $msgs, 'field' => $this->name];
             }
 
             throw new LogicException("Unsupported validator on column {$this->name}");
@@ -313,16 +325,18 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
             if ($validValues = $this->getValidValues($record, $args)) {
                 // sort by index
                 if (isset($validValues[0]) && !in_array($val, $validValues)) {
-                    return [
-                        'valid' => false,
-                        'message' => sprintf('%s is not a valid value for %s', $val, $this->name),
-                        'field' => $this->name,
-                    ];
+
+                    return new Validation(
+                        false, 
+                        $this->name,
+                        sprintf('%s is not a valid value for %s', $val, $this->name)
+                    );
+
                 } else {
                     /*
                      * Validate for Options
                      * "Label" => "Value",
-                     * "Group" => array( "Label" => "Value" )
+                     * "Group" => array("Label" => "Value")
                      * Order with key => value
                      *    value => label
                      */
@@ -334,11 +348,11 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
                     }
 
                     if (!in_array($val, $values)) {
-                        return [
-                            'valid' => false,
-                            'message' => sprintf('%s is not a valid value for %s', $val, $this->name),
-                            'field' => $this->name,
-                        ];
+                        return new Validation(
+                            false,
+                            $this->name,
+                            sprintf('%s is not a valid value for %s', $val, $this->name)
+                        );
                     }
                 }
             }

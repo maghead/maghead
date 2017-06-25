@@ -22,12 +22,9 @@ class RuntimeColumnTest extends TestCase
         ]);
 
         $ret = $column->validate("foo", [ ]);
-        $this->assertFalse($ret['valid']);
+        $this->assertFalse($ret->valid);
 
         $ret = $column->validate("admin", [ ]);
         $this->assertNull($ret);
     }
 }
-
-
-
