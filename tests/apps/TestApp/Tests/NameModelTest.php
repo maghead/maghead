@@ -174,7 +174,7 @@ class NameModelTest extends ModelTestCase
         $ret = $name->create(array(  'name' => 'Foo' , 'country' => 'Taiwan' ));
         $this->assertNotEmpty($ret->validations);
         $this->assertTrue(isset($ret->validations['address']));
-        $this->assertTrue($ret->validations['address']['valid']);
+        $this->assertTrue($ret->validations['address']->valid);
         $this->assertNotNull($vlds = $ret->getSuccessValidations());
         $this->assertCount(1, $vlds);
 
@@ -186,7 +186,7 @@ class NameModelTest extends ModelTestCase
         $this->assertNotNull($ret->validations);
 
         foreach ($ret->getErrorValidations() as $vld) {
-            $this->assertFalse($vld['valid']);
+            $this->assertFalse($vld->valid);
             $this->assertEquals('Please don\'t', $vld['message']);
         }
     }
