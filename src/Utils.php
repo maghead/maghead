@@ -7,6 +7,42 @@ use ReflectionClass;
 
 class Utils
 {
+    public static function searchValue(array $values, $needle)
+    {
+        foreach ($values as $item) {
+            // wrapped valid value
+            if (is_array($item)) {
+                if (isset($item['value']) && $item['value'] === $needle) {
+                    return true;
+                }
+
+                //  this is for backward compatibility
+                //
+                //  Validate for Options
+                //      "Label" => "Value",
+                //      "Group" => array("Label" => "Value")
+                // 
+                if (isset($item['Group']) && true === self::searchValue($item['Group'], $needle)) {
+                    return true;
+                }
+
+                // for grouped values
+                if (isset($item['items']) && true === self::searchValue($item['items'], $needle)) {
+                    return true;
+                }
+            }
+
+
+            // for indexed array, scalar item
+            if ($item === $needle) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
     /**
      * try to resolve the class name if the class doesn't exist or can't be found via
      * the registered spl class loader.

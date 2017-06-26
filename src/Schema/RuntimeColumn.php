@@ -323,37 +323,13 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 
         if ($val && $this->validValues) {
             if ($validValues = $this->getValidValues($record, $args)) {
-                // sort by index
-                if (isset($validValues[0]) && !in_array($val, $validValues)) {
 
+                if (false === search_value($validValues, $val)) {
                     return new Validation(
                         false, 
                         $this->name,
                         sprintf('%s is not a valid value for %s', $val, $this->name)
                     );
-
-                } else {
-                    /*
-                     * Validate for Options
-                     * "Label" => "Value",
-                     * "Group" => array("Label" => "Value")
-                     * Order with key => value
-                     *    value => label
-                     */
-                    $values = array_values($validValues);
-                    foreach ($values as &$v) {
-                        if (is_array($v)) {
-                            $v = array_values($v);
-                        }
-                    }
-
-                    if (!in_array($val, $values)) {
-                        return new Validation(
-                            false,
-                            $this->name,
-                            sprintf('%s is not a valid value for %s', $val, $this->name)
-                        );
-                    }
                 }
             }
         }

@@ -11,6 +11,37 @@ use Maghead\Schema\Column\UUIDPrimaryKeyColumn;
 class UtilsTest extends \PHPUnit\Framework\TestCase
 {
 
+
+    public function searchValueDataProvider()
+    {
+        return [
+            [ false, [1,2,3], 10 ],
+            [ true, [1,2,3], 3 ],
+            [ true, ["admin", "user", "guest"],  "guest"],
+            [ false, ["admin", "user", "guest"],  "foo"],
+
+            [ true, [
+                [ "value" => "admin" ],
+                [ "value" => "user" ],
+                [ "value" => "guest" ],
+            ],  "guest"],
+
+            [ true, [
+                [ "label" => "Asia", "items" => [  ["value" => "Tokyo"], ["value" => "Taipei"]  ] ],
+                [ "label" => "Europe", "items" => [  ["value" => "Paris"], ["value" => "Berlin"]  ] ],
+            ],  "Berlin"],
+        ];
+    }
+
+
+    /**
+     * @dataProvider searchValueDataProvider
+     */
+    public function testSearchValueWithIndexedArray($found, $array, $needle)
+    {
+        $this->assertSame($found, Utils::searchValue($array, $needle));
+    }
+
     public function resolveClassDataProvider()
     {
         $data = [];
