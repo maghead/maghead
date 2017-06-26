@@ -4,7 +4,6 @@ namespace Maghead\Schema;
 
 use Magsql\Universal\Syntax\Column;
 use Maghead\Exception\SchemaRelatedException;
-use Maghead\Schema\SchemaLoader;
 use ArrayIterator;
 use IteratorAggregate;
 use Closure;

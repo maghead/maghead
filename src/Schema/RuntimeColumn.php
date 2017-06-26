@@ -323,8 +323,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
 
         if ($val && $this->validValues) {
             if ($validValues = $this->getValidValues($record, $args)) {
-
-                if (false === search_value($validValues, $val)) {
+                if (false === Utils::searchValue($validValues, $val)) {
                     return new Validation(
                         false, 
                         $this->name,
