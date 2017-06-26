@@ -187,7 +187,7 @@ class NameModelTest extends ModelTestCase
 
         foreach ($ret->getErrorValidations() as $vld) {
             $this->assertFalse($vld->valid);
-            $this->assertEquals('Please don\'t', $vld['message']);
+            $this->assertEquals('Please don\'t', $vld->message);
         }
     }
 
