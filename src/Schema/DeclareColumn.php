@@ -222,6 +222,9 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
 
             return $this;
         } elseif (is_string($args[0])) {
+
+            // TODO: use Utils::resovleClass
+
             $arg = $args[0];
             if (is_a($arg, 'ValidationKit\\Validator', true)) {
                 $this->attributes['validator'] = $args[0];
