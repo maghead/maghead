@@ -12,7 +12,7 @@ class UtilsTest extends \PHPUnit\Framework\TestCase
 {
 
 
-    public function searchValueDataProvider()
+    public function searchOptionDataProvider()
     {
         return [
             [ false, [1,2,3], 10 ],
@@ -35,11 +35,11 @@ class UtilsTest extends \PHPUnit\Framework\TestCase
 
 
     /**
-     * @dataProvider searchValueDataProvider
+     * @dataProvider searchOptionDataProvider
      */
-    public function testSearchValueWithIndexedArray($found, $array, $needle)
+    public function testSearchOptionWithIndexedArray($found, $array, $needle)
     {
-        $this->assertSame($found, Utils::searchValue($array, $needle));
+        $this->assertSame($found, Utils::searchOption($array, $needle));
     }
 
     public function resolveClassDataProvider()

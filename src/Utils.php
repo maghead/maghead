@@ -7,7 +7,7 @@ use ReflectionClass;
 
 class Utils
 {
-    public static function searchValue(array $values, $needle)
+    public static function searchOption(array $values, $needle)
     {
         foreach ($values as $item) {
             // wrapped valid value
@@ -22,12 +22,12 @@ class Utils
                 //      "Label" => "Value",
                 //      "Group" => array("Label" => "Value")
                 // 
-                if (isset($item['Group']) && true === self::searchValue($item['Group'], $needle)) {
+                if (isset($item['Group']) && true === self::searchOption($item['Group'], $needle)) {
                     return true;
                 }
 
                 // for grouped values
-                if (isset($item['items']) && true === self::searchValue($item['items'], $needle)) {
+                if (isset($item['items']) && true === self::searchOption($item['items'], $needle)) {
                     return true;
                 }
             }
