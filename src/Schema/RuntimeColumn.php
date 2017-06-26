@@ -284,11 +284,11 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
     public function validate($val, array $args, $record = null)
     {
         if ($this->required && ($val === '' || $val === null)) {
-            return [
-                'valid'   => false,
-                'message' => sprintf('Field %s is required.', $this->getLabel()),
-                'field'   => $this->name,
-            ];
+            return new Validation(
+                false,
+                $this->name,
+                sprintf('Field %s is required.', $this->getLabel())
+            );
         }
 
         if ($validator = $this->validator) {
