@@ -48,7 +48,8 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
         $this->schema = $schema;
         $this->attributeTypes = array_merge($this->attributeTypes, array(
             'primary' => self::ATTR_FLAG,
-            'size' => self::ATTR_INTEGER,
+
+
             'autoIncrement' => self::ATTR_FLAG,
             'immutable' => self::ATTR_FLAG,
             'unique' => self::ATTR_FLAG, /* unique, should support by SQL syntax */
@@ -76,6 +77,8 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
 
             'validValueBuilder' => self::ATTR_CALLABLE,
 
+            'buildParam' => self::ATTR_CALLABLE,
+
             'optionValues' => self::ATTR_ANY,
 
             'validPairs' => self::ATTR_ANY,
@@ -98,6 +101,8 @@ class DeclareColumn extends Column implements ColumnAccessorInterface, IteratorA
 
             /* content type can be any text like 'ImageFile', 'File', 'Binary', 'Text', 'Image' */
             'contentType' => self::ATTR_STRING,
+
+            'size' => self::ATTR_INTEGER,
 
             /* primary field for CMS */
             'primaryField' => self::ATTR_FLAG,
