@@ -199,7 +199,7 @@ class BaseModelClassGenerator
             // Generate findable proxy methods
             if ($column->findable) {
                 $findMethodName = 'findBy'.ucfirst(Inflector::camelize($columnName));
-                $cTemplate->addMethod('public', $findMethodName, ['$value'], function () use ($findMethodName) {
+                $cTemplate->addStaticMethod('public', $findMethodName, ['$value'], function () use ($findMethodName) {
                     // Call Repo methods on masterRepo
                     return ["return static::masterRepo()->{$findMethodName}(\$value);"];
                 });
