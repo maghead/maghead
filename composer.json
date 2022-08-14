@@ -50,7 +50,11 @@
     "authors": [
         { "name": "Yo-An Lin", "email": "cornelius.howl@gmail.com" }
     ],
-    "extra": { "branch-alias": { "dev-master": "4.0.x-dev" } },
+    "extra": {
+        "branch-alias": { "dev-master": "4.0.x-dev" }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": { "Maghead\\": "src/" }
     },
