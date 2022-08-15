@@ -24,7 +24,7 @@ class Deflator
             return json_encode($value);
         case "DateTime":
             if (is_a($value, 'DateTime',true)) {
-                return $value->format( DateTime::ATOM );
+                return $value->format("Y-m-d H:i:s");
             } 
             if (!$value) {
                 return NULL;

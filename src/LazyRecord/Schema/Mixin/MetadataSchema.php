@@ -11,14 +11,14 @@ class MetadataSchema extends MixinSchemaDeclare
         $this->column('updated_on')
             ->timestamp()
             ->default(function() { 
-                return date('c'); 
+                return date('Y-m-d H:i:s'); 
             })
             ->timestamp();
 
         $this->column('created_on')
             ->timestamp()
             ->default(function() { 
-                return date('c'); 
+                return date('Y-m-d H:i:s'); 
             })
             ->timestamp();
     }

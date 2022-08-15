@@ -271,7 +271,7 @@ class RuntimeColumn implements IteratorAggregate, ColumnAccessorInterface
             } 
             // quick inflator for DateTime object.
             elseif ( $value instanceof DateTime) {
-                return $value->format( DateTime::ATOM );
+                return $value->format("Y-m-d H:i:s");
             }
         }
         return $value;
